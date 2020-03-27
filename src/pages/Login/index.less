@@ -1,0 +1,29 @@
+
+.login-form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: #eee;
+  :global {
+    .login-form {
+      width: 320px;
+      height: 400px !important;
+      padding: 36px;
+      background: #fff;
+      border-radius: 3px;
+      box-shadow: #ddd 0 0 5px 3px;
+      .ant-row.ant-form-item {
+        height: auto;
+        margin-bottom: 24px;
+      }
+    }
+    .login-name {
+      padding: 10px 0;
+      font-weight: bold;
+      font-size: 16px;
+      text-align: center;
+    }
+  }
+
+}
