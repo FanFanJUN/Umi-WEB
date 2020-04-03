@@ -21,8 +21,18 @@ export default [
         name: "moduleName",
         component: "./Demo",
         title: 'demo',
+      },
+      {
+        path: '/purchase/strategy',
+        component: './PurchaseStrategy',
+        title: "采购策略"
+      },
+      {
+        path: '/purchase/strategy/detail',
+        component: './PurchaseStrateGy/StrategyDetail',
+        title: "策略详情"
       }
     ],
-  },
+  }
 ];
 
