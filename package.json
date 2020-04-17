@@ -1,6 +1,6 @@
 {
-  "name": "srm-ps-web",
-  "title": "srm-ps-web",
+  "name": "react-srm-ps-web",
+  "title": "react-srm-ps-web",
   "version": "1.0.0",
   "private": true,
   "scripts": {
