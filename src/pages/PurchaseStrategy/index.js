@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import AdvancedForm from '@/components/AdvancedForm';
 // import { connect } from 'dva';
 import { psBaseUrl } from '@/utils/commonUrl';
+import { openNewTab } from '@/utils';
 import {
   purchaseCompanyProps,
   purchaseOrganizationProps,
@@ -230,7 +231,6 @@ function PurchaseStategy() {
   }
   // 高级搜索
   function handleAdvnacedSearch(v) {
-    console.log(v)
     setSearchValue({
       ...v
     })
@@ -261,6 +261,17 @@ function PurchaseStategy() {
     cleanSelectedRecord()
     tableRef.current.remoteDataRefresh()
   }
+  function handleEditor() {
+    const [key] = selectedRowKeys;
+    openNewTab(`/purchase/strategy/editor?id=${key}`,'编辑采购策略', true )
+  }
+  function handleCreate() {
+    openNewTab('/purchase/strategy/create', '新增采购策略', true )
+  }
+  function handleCheckDetail () {
+    const [key] = selectedRowKeys;
+    openNewTab(`/purchase/strategy/detail?id=${key}`, '新增采购策略', true )
+  }
   useEffect(() => {
     uploadTable()
   }, [searchValue])
@@ -269,10 +280,10 @@ function PurchaseStategy() {
       <Header
         left={
           <>
-            <Button type='primary' className={styles.btn}>新增</Button>
-            <Button disabled={multiple || empty} className={styles.btn}>编辑</Button>
+            <Button type='primary' className={styles.btn} onClick={handleCreate}>新增</Button>
+            <Button disabled={multiple || empty} className={styles.btn} onClick={handleEditor}>编辑</Button>
             <Button onClick={handleRemoveItem} disabled={empty} className={styles.btn}>删除</Button>
-            <Button disabled={multiple || empty} className={styles.btn}>明细</Button>
+            <Button disabled={multiple || empty} className={styles.btn} onClick={handleCheckDetail}>明细</Button>
             <Button disabled={multiple || empty} className={styles.btn}>提交审核</Button>
             <Button disabled={multiple || empty} className={styles.btn}>审核历史</Button>
             <Button disabled={multiple || empty} className={styles.btn}>变更</Button>

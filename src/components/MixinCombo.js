@@ -123,7 +123,6 @@ export const ComboAttachment = forwardRef(({
           const { id: key } = one;
           return key !== id
         })
-        console.log(filter)
         setFileList(filter)
         onChange(filter)
       }}
