@@ -8,16 +8,26 @@
 
 import React from 'react';
 import { Button, Row, Col, Form, Input } from 'antd';
-import { ComboGrid, ComboList, ComboTree } from 'suid';
+import { ComboGrid, ComboList, ComboTree, ComboSelect, MixinSelect } from '@/components';
 import styles from './index.less';
-
+const FormItem = Form.Item;
 const Combos = {
   grid: ComboGrid,
   list: ComboList,
   tree: ComboTree,
   searchTable: ComboGrid,
-  select: ComboList,
+  multiple: ComboSelect,
+  select: MixinSelect,
   selectTree: ComboTree,
+}
+
+const formLayout = {
+  labelCol: {
+    span: 8
+  },
+  wrapperCol: {
+    span: 16
+  }
 }
 
 function AdvancedForm({
@@ -44,22 +54,21 @@ function AdvancedForm({
       <Row>
         {
           formItems.map((item, index) => {
-            const Item = Combos[item.type] || Input
+            const Item = Combos[item.type] || Input;
             return (
               <Col
                 key={`${item.key}-${index}`}
                 span={8}
-                className={styles.col}
               >
-                <span>{item.title} ： </span>
-                {
-                  getFieldDecorator(item.key)(
-                    <Item
-                      {...item.props}
-                      className={styles.colItem}
-                    />
-                  )
-                }
+                <FormItem style={{ width: '100%' }} label={item.title} {...formLayout}>
+                  {
+                    getFieldDecorator(item.key)(
+                      <Item
+                        {...item.props}
+                      />
+                    )
+                  }
+                </FormItem>
               </Col>
             )
           })

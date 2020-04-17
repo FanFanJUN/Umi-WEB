@@ -1,10 +1,11 @@
 import { request, constants } from "@/utils";
-
+import { gatewayUrl } from '@/utils/commonUrl';
+console.log(gatewayUrl)
 const { AUTH_SERVER_PATH } = constants;
 
 /** 登录*/
 export async function login(params) {
-  const url = `${AUTH_SERVER_PATH}/userAuth/login`;
+  const url = `${gatewayUrl}${AUTH_SERVER_PATH}/userAuth/login`;
   return request({
     url,
     method: "POST",

@@ -17,20 +17,24 @@ export default [
       { path: '/', redirect: '/dashboard' },
       { path: '/dashboard', component: './Dashboard' },
       {
-        path: "/moduleName/demo",
-        name: "moduleName",
-        component: "./Demo",
-        title: 'demo',
-      },
-      {
         path: '/purchase/strategy',
         component: './PurchaseStrategy',
         title: "采购策略"
       },
       {
         path: '/purchase/strategy/detail',
-        component: './PurchaseStrateGy/StrategyDetail',
+        component: './PurchaseStrategy/DetailStrategy',
         title: "策略详情"
+      },
+      {
+        path: '/purchase/strategy/create',
+        component: './PurchaseStrategy/CreateStrategy',
+        title: "新增策略"
+      },
+      {
+        path: '/purchase/strategy/editor',
+        component: './PurchaseStrategy/EditorStrategy',
+        title: '编辑策略'
       }
     ],
   }

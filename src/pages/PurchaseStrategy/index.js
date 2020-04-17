@@ -1,124 +1,219 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { ExtTable } from 'suid';
-import { Input, Button } from 'antd';
+import { Input, Button, message } from 'antd';
 import Header from '@/components/Header';
 import AdvancedForm from '@/components/AdvancedForm';
-import { connect } from 'dva';
+// import { connect } from 'dva';
+import { psBaseUrl } from '@/utils/commonUrl';
+import {
+  purchaseCompanyProps,
+  purchaseOrganizationProps,
+  majorGroupProps,
+  proPlanMaterialTypeProps,
+  materialLevel,
+  materialClassProps,
+  materialClassTypeProps,
+  corporationProps,
+  frequencyProps,
+  costTargetProps,
+  effectStatusProps
+} from '@/utils/commonProps';
+import {
+  removeStrategyTableItem
+} from '@/services/strategy';
 import styles from './index.less';
 import classnames from 'classnames';
+import { useEffect } from 'react';
+import Modal from 'antd/es/modal';
 const { Search } = Input
 const columns = [
   {
-    title: "预警",
-    dataIndex: "state",
+    title: '预警',
+    dataIndex: 'warningStatus',
     render(state) {
       switch (state) {
-        case "Waring":
+        case 'Waring':
           return <div className={classnames([styles.dot, styles.warning])}></div>
-        case "Expire":
+        case 'Expire':
           return <div className={classnames([styles.dot, styles.error])}></div>
         default:
-          return ""
+          return ''
       }
     },
     width: 96,
   },
-  { title: "状态", dataIndex: "status" },
   {
-    title: "审批状态",
-    dataIndex: "approvalState",
+    title: '状态',
+    dataIndex: 'state',
+    render(st) {
+      switch (st) {
+        case 'Draft':
+          return '草稿'
+        case 'Effective':
+          return '生效'
+        default:
+          return '未知'
+      }
+    }
+  },
+  {
+    title: '审批状态',
+    dataIndex: 'approvalState',
     render(approvalState) {
       switch (approvalState) {
-        case "Uncommitted":
-          return "未提交审批"
-        case "InApproval":
-          return "审批中"
-        case "Finish":
-          return "审批完成"
+        case 'Uncommitted':
+          return '未提交审批'
+        case 'InApproval':
+          return '审批中'
+        case 'Finish':
+          return '审批完成'
         default:
-          return ""
+          return ''
       }
     },
   },
   {
-    title: "是否作废",
-    dataIndex: "invalid",
+    title: '是否作废',
+    dataIndex: 'invalid',
     render(invalid) {
-      return invalid ? "是" : "否"
+      return invalid ? '是' : '否'
     },
     width: 80,
   },
   {
-    title: "是否变更",
-    dataIndex: "changeable",
+    title: '是否变更',
+    dataIndex: 'changeable',
     render(changeable) {
-      return changeable ? "是" : "否"
+      return changeable ? '是' : '否'
     },
     width: 80,
   },
-  { title: "采购策略编号", dataIndex: "code" },
-  { title: "采购策略名称", dataIndex: "name" },
-  { title: "物料级别", dataIndex: "materialLevelName" },
-  { title: "采购公司", dataIndex: "purchaseCompanyName" },
-  { title: "采购组织", dataIndex: "purchaseOrganizationName" },
-  { title: "专业组", dataIndex: "professionalGroupName" },
-  { title: "采购组", dataIndex: "purchaseGroupName" },
-  { title: "申请人", dataIndex: "creatorName" },
-  { title: "创建时间", dataIndex: "createdDate" }
-].map(_ => ({ ..._, align: "center" }))
+  { title: '采购策略编号', dataIndex: 'code' },
+  { title: '采购策略名称', dataIndex: 'name' },
+  { title: '物料级别', dataIndex: 'materialLevelName' },
+  { title: '采购公司', dataIndex: 'purchaseCompanyName' },
+  { title: '采购组织', dataIndex: 'purchaseOrganizationName' },
+  { title: '专业组', dataIndex: 'professionalGroupName' },
+  { title: '采购组', dataIndex: 'purchaseGroupName' },
+  { title: '申请人', dataIndex: 'creatorName' },
+  { title: '创建时间', dataIndex: 'createdDate' }
+].map(_ => ({ ..._, align: 'center' }))
 
-function PurchaseStategy({
-  dispatch,
-  state
-}) {
-  const { dataSource, loading, pagination } = state;
+function PurchaseStategy() {
+  const headerRef = useRef(null)
+  const tableRef = useRef(null)
   const [selectedRowKeys, setRowKeys] = useState([]);
+  const [searchValue, setSearchValue] = useState({})
   const [selectedRows, setRows] = useState([]);
   const multiple = selectedRowKeys.length > 1;
   const empty = selectedRowKeys.length === 0;
+  const tableProps = {
+    store: {
+      url: `${psBaseUrl}/purchaseStrategyHeader/listByPage`,
+      params: searchValue,
+      type: 'POST'
+    }
+  }
   const formItems = [
     {
-      type: "grid",
-      key: "purchaseCompanyName",
-      title: "公司",
+      title: '采购公司',
+      type: 'list',
+      key: 'Q_EQ_purchaseCompanyCode',
+      props: purchaseCompanyProps
+    },
+    {
+      title: '采购组织',
+      type: 'list',
+      key: 'Q_EQ_purchaseOrganizationCode',
+      props: purchaseOrganizationProps
+    },
+    {
+      title: '专业组',
+      type: 'list',
+      key: 'Q_EQ_professionalGroupCode',
+      props: majorGroupProps
+    },
+    {
+      title: '采购策略编号',
+      key: 'Q_LK_code',
       props: {
-        reader: {
-          name: "purchaseCompanyName"
-        },
-        placeholder: "请选择公司",
-        columns: [
-          { dataIndex: "", title: "公司代码" },
-          { dataIndex: "", title: "公司名称" },
-          { dataIndex: "", title: "公司id" },
-        ],
-        width: 650
+        placeholder: '输入采购策略编号'
       }
     },
     {
-      title: "公司",
-      key: "purchaseCompanyCode",
+      title: '适应范围',
+      type: 'multiple',
+      key: 'searchble',
+      props: corporationProps
+    },
+    {
+      title: '采购策略名称',
+      key: 'Q_LK_name',
       props: {
-        placeholder: "请输入公司代码"
+        placeholder: '输入采购策略名称'
       }
     },
     {
-      title: "条件",
-      key: "searchble",
+      title: '采购计划物料类别',
+      type: 'list',
+      key: 'Q_EQ_purchaseGoodsClassificationName',
+      props: proPlanMaterialTypeProps
+    },
+    {
+      title: '物料级别',
+      type: 'list',
+      key: 'Q_EQ_materialLevelCode',
+      props: materialLevel
+    },
+    {
+      title: '二次分类物料组',
+      type: 'list',
+      key: 'Q_EQ_materialClassificationCode',
+      props: materialClassProps
+    },
+    {
+      title: '采购方式',
+      type: 'list',
+      key: 'Q_EQ_purchaseTypeCode',
+      props: materialClassTypeProps
+    },
+    {
+      title: '定价频次',
+      type: 'select',
+      key: 'Q_EQ_pricingFrequency',
+      props: frequencyProps
+    },
+    {
+      title: '成本目标',
+      type: 'select',
+      key: 'Q_LK_costTarget',
+      props: costTargetProps
+    },
+    {
+      title: '关键词',
+      type: 'input',
+      key: "Q_LK_keyWord",
       props: {
-        placeholder: "你随便输入，搜到算我输"
+        placeholder: '输入关键词查询'
       }
     },
     {
-      title: "条件",
-      key: "searchble",
+      title: '申请人',
+      type: 'input',
+      key: 'Q_LK_creatorName',
       props: {
-        placeholder: "你随便输入，搜到算我输"
+        placeholder: '输入申请人查询'
       }
+    },
+    {
+      title: '状态',
+      type: 'select',
+      key: 'Q_EQ_state',
+      props: effectStatusProps
     }
   ]
   // 记录列表选中
   function handleSelectedRows(rowKeys, rows) {
-    console.log(selectedRows)
     setRowKeys(rowKeys)
     setRows(rows)
   }
@@ -127,41 +222,54 @@ function PurchaseStategy({
     setRowKeys([])
     setRows([])
   }
-  // 切换页码
-  function handlePaginationChange({ current, pageSize }) {
-    dispatch({
-      type: "purchaseStrategy/queryDataSource",
-      payload: {
-        rows: pageSize,
-        page: current
-      }
-    })
-  }
   // 快速搜索
   function handleQuickSerach(v) {
-    dispatch({
-      type: "purchaseStrategy/queryDataSource",
-      payload: {
-        rows: pagination.pageSize || 30,
-        page: 1,
-        Quick_value: v
-      }
+    setSearchValue({
+      Quick_value: v
     })
   }
   // 高级搜索
   function handleAdvnacedSearch(v) {
     console.log(v)
+    setSearchValue({
+      ...v
+    })
+    headerRef.current.hide()
   }
   // 删除
-  function handleRemoveItem() {
-    cleanSelectedRecord()
+  async function removeListItem() {
+    const { success, message: msg } = await removeStrategyTableItem({
+      ids: selectedRowKeys
+    })
+    if (success) {
+      message.success(msg)
+      uploadTable()
+      return
+    }
+    message.error(msg)
   }
+  function handleRemoveItem() {
+    Modal.confirm({
+      title: '删除采购策略',
+      content: '删除后无法恢复，是否继续？',
+      onOk: removeListItem,
+      okText: '确定',
+      cancelText: '取消'
+    })
+  }
+  function uploadTable() {
+    cleanSelectedRecord()
+    tableRef.current.remoteDataRefresh()
+  }
+  useEffect(() => {
+    uploadTable()
+  }, [searchValue])
   return (
     <>
       <Header
         left={
           <>
-            <Button type="primary" className={styles.btn}>新增</Button>
+            <Button type='primary' className={styles.btn}>新增</Button>
             <Button disabled={multiple || empty} className={styles.btn}>编辑</Button>
             <Button onClick={handleRemoveItem} disabled={empty} className={styles.btn}>删除</Button>
             <Button disabled={multiple || empty} className={styles.btn}>明细</Button>
@@ -174,7 +282,7 @@ function PurchaseStategy({
         right={
           <>
             <Search
-              placeholder="请输入采购策略编号或名称查询"
+              placeholder='请输入采购策略编号或名称查询'
               className={styles.btn}
               onSearch={handleQuickSerach}
               allowClear
@@ -182,25 +290,25 @@ function PurchaseStategy({
           </>
         }
         content={
-          <AdvancedForm formItems={formItems} onOk={handleAdvnacedSearch}/>
+          <AdvancedForm formItems={formItems} onOk={handleAdvnacedSearch} />
         }
         advanced
+        ref={headerRef}
       />
       <ExtTable
         columns={columns}
         showSearch={false}
-        loading={loading}
-        dataSource={dataSource}
+        ref={tableRef}
         rowKey={(item) => item.id}
         checkbox={true}
+        remotePaging={true}
         ellipsis={false}
-        pagination={pagination}
         onSelectRow={handleSelectedRows}
-        onChange={handlePaginationChange}
         selectedRowKeys={selectedRowKeys}
+        {...tableProps}
       />
     </>
   )
 }
 
-export default connect(({ purchaseStrategy }) => ({ state: purchaseStrategy }))(PurchaseStategy)
+export default PurchaseStategy

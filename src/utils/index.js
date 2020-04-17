@@ -1,5 +1,142 @@
 import * as constants from './constants';
 import * as userAuth from './user';
+import {mainTabAction} from 'sei-utils';
+import { utils } from 'suid';
+const getUUID = utils.getUUID;
+
+export function CloseCurrent() {
+    if (window.self.frameElement) {
+        let currentId = window.self.frameElement.id;
+        if (window.top.homeView && (typeof window.top.homeView.getTabPanel) === 'function') {
+            window.top.homeView.getTabPanel().close(currentId);
+        } else {
+            mainTabAction.tabClose(currentId);
+        }
+    }
+}
+
+/**
+ * 打开新的页签
+ * @param {srm项目的 uri 或者其他带 http的全路径地址} uri
+ * @param { 页签名称 } title
+ * @param {是否关闭当前页签} closeCurrent
+ * @param { 指定打开页签的 id，关闭页签时已该 id 为准 } id
+ */
+export function openNewTab(uri, title, closeCurrent = false, id = undefined) {
+    if (!id) {
+        id = getUUID();
+    }
+    if (closeCurrent) {
+        if (window.self.frameElement) {
+            let currentId = window.self.frameElement.id;
+            if (window.top.homeView && (typeof window.top.homeView.getTabPanel) === 'function') {
+                window.top.homeView.getTabPanel().close(currentId);
+            } else {
+                mainTabAction.tabClose(currentId);
+            }
+        }
+    }
+    let url = uri.indexOf('http://') === 0 ? uri : "http://" + window.location.host + "/srm-ps-web/" + uri;
+    let tab = {
+        title: title,
+        url: url,
+        id: id
+    };
+    if (window.top.homeView && (typeof window.top.homeView.addTab) === 'function') {
+        window.top.homeView.addTab(tab);
+    } else {
+        let newTabData = {
+            name: tab.title,
+            featureUrl: tab.url,
+            id: tab.id
+        }
+        if (!window.top.homeView) {
+            window.open(url);
+            return;
+        }
+        mainTabAction.tabOpen(newTabData)
+    }
+    return id;
+}
+
+export function openNewTabOther(uri, title, closeCurrent = false, id = undefined, proxy) {
+    if (!id) {
+        id = getUUID();
+    }
+    if (closeCurrent) {
+        if (window.self.frameElement) {
+            let currentId = window.self.frameElement.id;
+            if (window.top.homeView && (typeof window.top.homeView.getTabPanel) === 'function') {
+                window.top.homeView.getTabPanel().close(currentId);
+            } else {
+                mainTabAction.tabClose(currentId);
+            }
+        }
+    }
+    let url = uri.indexOf('http://') === 0 ? uri : "http://" + window.location.host + proxy + uri;
+    let tab = {
+        title: title,
+        url: url,
+        id: id
+    };
+    if (window.top.homeView && (typeof window.top.homeView.addTab) === 'function') {
+        window.top.homeView.addTab(tab);
+    } else {
+        let newTabData = {
+            name: tab.title,
+            featureUrl: tab.url,
+            id: tab.id
+        }
+        mainTabAction.tabOpen(newTabData)
+    }
+    return id;
+}
+
+/**
+ *  当前页面展示时回调，主要用于更新
+ * @param {页签获取焦点时的回调方法} callBack
+ */
+export function tabForceCallBack(callBack) {
+    let con = window.top.homeView;
+    if (con) {
+        let currentId = con.currentTabId
+        if (!window.top.homeView.tabListener[currentId]) {
+            currentId && con.addTabListener(currentId, function (id, win) {
+                callBack()
+            });
+        }
+    }
+}
+
+
+export const leftPad = (str, len, ch) => {
+  const cache = [
+    '',
+    ' ',
+    '  ',
+    '   ',
+    '    ',
+    '     ',
+    '      ',
+    '       ',
+    '        ',
+    '         '
+  ];
+  str = str + '';
+  len = len - str.length;
+  if (len <= 0) return str;
+  if (!ch && ch !== 0) ch = ' ';
+  ch = ch + '';
+  if (ch === ' ' && len < 10) return cache[len] + str;
+  let pad = '';
+  while (true) {
+    if (len & 1) pad += ch;
+    len >>= 1;
+    if (len) ch += ch;
+    else break;
+  }
+  return pad + str;
+}
 
 export { default as request } from './request';
 export { constants, userAuth as userUtils, };

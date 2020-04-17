@@ -4,9 +4,9 @@
  * @date 2020.4.3
  */
 import React, { useState, forwardRef, useRef } from "react";
-import { Col, Row, Tree, Input, Select, Skeleton } from "antd";
+import { Col, Row, Tree, Input, Select, Spin } from "antd";
 import { request } from '@/utils'
-import { baseUrl, psBaseUrl } from '@/utils/commonUrl'
+import { baseUrl } from '@/utils/commonUrl'
 import styles from './index.less';
 import { ExtTable } from "suid";
 import PropTypes from 'prop-types';
@@ -29,10 +29,10 @@ const columns = [
 ];
 
 const UserSelect = forwardRef(({
-  form = {},
-  name = 'id',
-  field = [],
-  reader = {},
+  form={},
+  name='id',
+  field=[],
+  reader={},
   onChange = () => null,
   onRowsChange = () => null,
   wrapperClass,
@@ -52,13 +52,12 @@ const UserSelect = forwardRef(({
   const [selectedRows, setSelectedRows] = useState([])
   const [selectedKeys, setSelectedKeys] = useState([])
   const searchInput = useRef(null)
-  const { name: readName = 'id', field: readField = ['id'] } = reader;
+  const {name: readName='id', field: readField=['id']} = reader;
   //网络请求树控件数据（协议分类）
   const getTreeData = () => {
     triggerLoading(true)
     request({
-      // url: `${psBaseUrl}/basic/listAllOrgnazation`,
-      url: `${psBaseUrl}/purchaseStrategyHeader/listAllOrgnazation`,
+      url: `${baseUrl}/basic/listAllOrgnazation`,
       method: 'get'
     }).then(data => {
       if (data.success) {
@@ -154,47 +153,35 @@ const UserSelect = forwardRef(({
   };
   const rowOnChange = (keys, rows) => {
     setSelectedKeys(keys)
-    if (!!setFieldsValue) {
+    if(!!setFieldsValue) {
       setFieldsValue({
-        [name]: keys
+        [name] : keys
       });
-      const fieldValues = readField.map(item => {
-        return rows.map(i => i[item]);
+      const fieldValues = readField.map(item=>{
+        return rows.map(i=>i[item]);
       })
-      field.forEach((item, k) => {
+      field.forEach((item, k)=>{
         setFieldsValue({
-          [item]: fieldValues[k]
+          [item] : fieldValues[k]
         })
       })
     }
-    setSelectedRows(rows)                            
+    setSelectedRows(rows)
+    onChange(keys)
     onRowsChange(rows)
   }
   return (
     <div>
       <Select
         ref={ref}
-        onDropdownVisibleChange={(visi) => {
-          visi && getTreeData()
+        onDropdownVisibleChange={() => {
+          getTreeData()
         }}
         onDeselect={(key) => {
           const keys = selectedKeys.filter(item => item !== key)
           const rows = selectedRows.filter(item => item.code !== key)
-          setSelectedKeys(keys);
-          if (!!setFieldsValue) {
-            setFieldsValue({
-              [name]: keys
-            });
-            const fieldValues = readField.map(item => {
-              return rows.map(i => i[item]);
-            })
-            field.forEach((item, k) => {
-              setFieldsValue({
-                [item]: fieldValues[k]
-              })
-            })
-          }
-          setSelectedRows(rows)
+          setSelectedKeys(keys)
+          onChange(keys)
           onRowsChange(rows)
         }}
         {...props}
@@ -213,7 +200,7 @@ const UserSelect = forwardRef(({
                   style={{ width: '220px' }}
                   enterButton
                   ref={searchInput}
-                  onMouseDown={(e) => {
+                  onMouseDown={(e)=> {
                     e.preventDefault()
                     searchInput.current.focus()
                   }}
@@ -223,18 +210,20 @@ const UserSelect = forwardRef(({
             </Row>
             <Row>
               <Col span={10} className={styles.col}>
-                {treeData.length > 0 ? (
-                  <DirectoryTree
-                    expandAction={"click"}
-                    onSelect={onTreeSelect}
-                    autoExpandParent={autoExpandParent}
-                    expandedKeys={expandedKeys}
-                    onExpand={onExpand}
-                    loading={loading}
-                    draggable={false}>
-                    {renderTreeNodes(searchValue === "" ? treeData : findResultData)}
-                  </DirectoryTree>
-                ) : <Skeleton active/>}
+                <Spin spinning={loading}>
+                  {treeData.length > 0 ? (
+                    <DirectoryTree
+                      expandAction={"click"}
+                      onSelect={onTreeSelect}
+                      autoExpandParent={autoExpandParent}
+                      expandedKeys={expandedKeys}
+                      onExpand={onExpand}
+                      loading={loading}
+                      draggable={false}>
+                      {renderTreeNodes(searchValue === "" ? treeData : findResultData)}
+                    </DirectoryTree>
+                  ) : null}
+                </Spin>
               </Col>
               <Col span={14} className={styles.col}>
                 <ExtTable
@@ -243,7 +232,7 @@ const UserSelect = forwardRef(({
                   loading={loading}
                   selectedRowKeys={selectedKeys}
                   onSelectRow={rowOnChange}
-                  rowKey={(item) => item[readName]}
+                  rowKey={(item) => item.code}
                   dataSource={userData}
                   columns={columns}
                 />
