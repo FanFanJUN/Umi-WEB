@@ -110,7 +110,7 @@ export const ComboAttachment = forwardRef(({
         }
       })
     }
-  },[attachment, onChange])
+  },[attachment])
   return (
     <Attachment
       fileList={fileList}

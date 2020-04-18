@@ -1,18 +1,19 @@
 import * as constants from './constants';
 import * as userAuth from './user';
-import {mainTabAction} from 'sei-utils';
+import { mainTabAction } from 'sei-utils';
 import { utils } from 'suid';
+import { target } from '../../config/proxy.config';
 const getUUID = utils.getUUID;
 
 export function CloseCurrent() {
-    if (window.self.frameElement) {
-        let currentId = window.self.frameElement.id;
-        if (window.top.homeView && (typeof window.top.homeView.getTabPanel) === 'function') {
-            window.top.homeView.getTabPanel().close(currentId);
-        } else {
-            mainTabAction.tabClose(currentId);
-        }
+  if (window.self.frameElement) {
+    let currentId = window.self.frameElement.id;
+    if (window.top.homeView && (typeof window.top.homeView.getTabPanel) === 'function') {
+      window.top.homeView.getTabPanel().close(currentId);
+    } else {
+      mainTabAction.tabClose(currentId);
     }
+  }
 }
 
 /**
@@ -23,73 +24,73 @@ export function CloseCurrent() {
  * @param { 指定打开页签的 id，关闭页签时已该 id 为准 } id
  */
 export function openNewTab(uri, title, closeCurrent = false, id = undefined) {
-    if (!id) {
-        id = getUUID();
+  if (!id) {
+    id = getUUID();
+  }
+  if (closeCurrent) {
+    if (window.self.frameElement) {
+      let currentId = window.self.frameElement.id;
+      if (window.top.homeView && (typeof window.top.homeView.getTabPanel) === 'function') {
+        window.top.homeView.getTabPanel().close(currentId);
+      } else {
+        mainTabAction.tabClose(currentId);
+      }
     }
-    if (closeCurrent) {
-        if (window.self.frameElement) {
-            let currentId = window.self.frameElement.id;
-            if (window.top.homeView && (typeof window.top.homeView.getTabPanel) === 'function') {
-                window.top.homeView.getTabPanel().close(currentId);
-            } else {
-                mainTabAction.tabClose(currentId);
-            }
-        }
+  }
+  let url = uri.indexOf('http://') === 0 ? uri : "http://" + window.location.host + "/srm-ps-web/" + uri;
+  let tab = {
+    title: title,
+    url: url,
+    id: id
+  };
+  if (window.top.homeView && (typeof window.top.homeView.addTab) === 'function') {
+    window.top.homeView.addTab(tab);
+  } else {
+    let newTabData = {
+      name: tab.title,
+      featureUrl: tab.url,
+      id: tab.id
     }
-    let url = uri.indexOf('http://') === 0 ? uri : "http://" + window.location.host + "/srm-ps-web/" + uri;
-    let tab = {
-        title: title,
-        url: url,
-        id: id
-    };
-    if (window.top.homeView && (typeof window.top.homeView.addTab) === 'function') {
-        window.top.homeView.addTab(tab);
-    } else {
-        let newTabData = {
-            name: tab.title,
-            featureUrl: tab.url,
-            id: tab.id
-        }
-        if (!window.top.homeView) {
-            window.open(url);
-            return;
-        }
-        mainTabAction.tabOpen(newTabData)
+    if (!window.top.homeView) {
+      window.open(url);
+      return;
     }
-    return id;
+    mainTabAction.tabOpen(newTabData)
+  }
+  return id;
 }
 
 export function openNewTabOther(uri, title, closeCurrent = false, id = undefined, proxy) {
-    if (!id) {
-        id = getUUID();
+  if (!id) {
+    id = getUUID();
+  }
+  if (closeCurrent) {
+    if (window.self.frameElement) {
+      let currentId = window.self.frameElement.id;
+      if (window.top.homeView && (typeof window.top.homeView.getTabPanel) === 'function') {
+        window.top.homeView.getTabPanel().close(currentId);
+      } else {
+        mainTabAction.tabClose(currentId);
+      }
     }
-    if (closeCurrent) {
-        if (window.self.frameElement) {
-            let currentId = window.self.frameElement.id;
-            if (window.top.homeView && (typeof window.top.homeView.getTabPanel) === 'function') {
-                window.top.homeView.getTabPanel().close(currentId);
-            } else {
-                mainTabAction.tabClose(currentId);
-            }
-        }
+  }
+  let url = uri.indexOf('http://') === 0 ? uri : "http://" + window.location.host + proxy + uri;
+  let tab = {
+    title: title,
+    url: url,
+    id: id
+  };
+  if (window.top.homeView && (typeof window.top.homeView.addTab) === 'function') {
+    window.top.homeView.addTab(tab);
+  } else {
+    let newTabData = {
+      name: tab.title,
+      featureUrl: tab.url,
+      id: tab.id
     }
-    let url = uri.indexOf('http://') === 0 ? uri : "http://" + window.location.host + proxy + uri;
-    let tab = {
-        title: title,
-        url: url,
-        id: id
-    };
-    if (window.top.homeView && (typeof window.top.homeView.addTab) === 'function') {
-        window.top.homeView.addTab(tab);
-    } else {
-        let newTabData = {
-            name: tab.title,
-            featureUrl: tab.url,
-            id: tab.id
-        }
-        mainTabAction.tabOpen(newTabData)
-    }
-    return id;
+    mainTabAction.tabOpen(newTabData)
+  }
+  return id;
 }
 
 /**
@@ -97,15 +98,15 @@ export function openNewTabOther(uri, title, closeCurrent = false, id = undefined
  * @param {页签获取焦点时的回调方法} callBack
  */
 export function tabForceCallBack(callBack) {
-    let con = window.top.homeView;
-    if (con) {
-        let currentId = con.currentTabId
-        if (!window.top.homeView.tabListener[currentId]) {
-            currentId && con.addTabListener(currentId, function (id, win) {
-                callBack()
-            });
-        }
+  let con = window.top.homeView;
+  if (con) {
+    let currentId = con.currentTabId
+    if (!window.top.homeView.tabListener[currentId]) {
+      currentId && con.addTabListener(currentId, function (id, win) {
+        callBack()
+      });
     }
+  }
 }
 
 
@@ -136,6 +137,16 @@ export const leftPad = (str, len, ch) => {
     else break;
   }
   return pad + str;
+}
+
+export const getLocationHost = () => {
+  const host = window.location.host;
+  const isDev = /^localhost/.test(host) || /^192/.test(host);
+  console.log(isDev)
+  if(isDev) {
+    return target
+  }
+  return host
 }
 
 export { default as request } from './request';

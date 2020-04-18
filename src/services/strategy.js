@@ -35,7 +35,11 @@ export const savePurchaseStrategy = params => createServiceRequest({
   params
 })
 
-// 采购策略提交审核
+// 采购策略保存并提交审核
+export const savePurcahseAndApprove = params => createServiceRequest({
+  path: `${psBaseUrl}/purchaseStrategyHeader/saveAndApprove`,
+  params
+})
 
 // 采购策略行创建
 export const strategyTableCreateLine = params => createServiceRequest({

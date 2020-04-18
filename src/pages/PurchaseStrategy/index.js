@@ -263,14 +263,14 @@ function PurchaseStategy() {
   }
   function handleEditor() {
     const [key] = selectedRowKeys;
-    openNewTab(`/purchase/strategy/editor?id=${key}`,'编辑采购策略', true )
+    openNewTab(`purchase/strategy/editor?id=${key}`,'编辑采购策略', true )
   }
   function handleCreate() {
-    openNewTab('/purchase/strategy/create', '新增采购策略', true )
+    openNewTab('purchase/strategy/create', '新增采购策略', true )
   }
   function handleCheckDetail () {
     const [key] = selectedRowKeys;
-    openNewTab(`/purchase/strategy/detail?id=${key}`, '新增采购策略', true )
+    openNewTab(`purchase/strategy/detail?id=${key}`, '新增采购策略', true )
   }
   useEffect(() => {
     uploadTable()

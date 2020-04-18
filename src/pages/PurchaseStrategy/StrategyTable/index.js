@@ -1,8 +1,10 @@
-import React, { useState, createRef } from 'react';
+import React, { useState, createRef, useEffect } from 'react';
 import { ExtTable, DataImport, utils } from 'suid';
 import { Button, Modal } from 'antd'
 import CommonForm from './CommonForm';
+import { ComboAttachment } from '@/components';
 import { psBaseUrl } from '../../../utils/commonUrl';
+import { getLocationHost } from '../../../utils';
 import styles from './index.less';
 function StrategyTable({
   loading = false,
@@ -17,9 +19,10 @@ function StrategyTable({
   const [selectedRows, setRows] = useState([]);
   const [visible, setVisible] = useState(false);
   const [line, setLine] = useState(1);
-  // const [showAttach, triggerShowAttach] = useState(false);
+  const [showAttach, triggerShowAttach] = useState(false);
+  const [attachId, setAttachId] = useState('')
   const [initialValue, setInitialValue] = useState({});
-  const [modalType, setModalType] = useState("add");
+  const [modalType, setModalType] = useState('add');
   const disableEditor = selectedRowKeys.length !== 1;
   const disableRemove = selectedRowKeys.length === 0;
   const columns = [
@@ -36,7 +39,7 @@ function StrategyTable({
       title: '适应范围',
       dataIndex: 'adjustScopeList',
       render(text=[]) {
-        return text.map(item=>item.name).join("，")
+        return text.map(item=>item.name).join('，')
       }
     }, {
       title: '采购方式',
@@ -80,12 +83,24 @@ function StrategyTable({
       dataIndex: 'supplierCooperationWay'
     }, {
       title: '附件',
-      dataIndex: ''
+      dataIndex: 'attachment',
+      render: (text) => {
+        return <Button onClick={()=> {
+          setAttachId(text)
+          triggerShowAttach(true)
+        }}>查看附件</Button>
+      }
     }, {
       title: '备注',
       dataIndex: 'remark'
     }
   ].map(item => ({ ...item, align: 'center' }));
+  useEffect(()=> {
+    if(dataSource.length === 0 ){
+      setRowKeys([])
+      setRows([])
+    }
+  },[dataSource])
   // 记录列表选中
   function handleSelectedRows(rowKeys) {
     setRowKeys(rowKeys)
@@ -100,7 +115,7 @@ function StrategyTable({
     setRows([])
   }
   // 显示新增编辑modal
-  function showModal(t = "add") {
+  function showModal(t = 'add') {
     const len = dataSource.length;
     if (t === 'add') {
       setLine(len + 1)
@@ -132,6 +147,7 @@ function StrategyTable({
     onEditor(val, selectedRowKeys, hideModal)
     cleanSelectedRecord()
   }
+  // 处理删除行
   function handleRemove() {
     Modal.confirm({
       title: '删除标的物',
@@ -144,6 +160,10 @@ function StrategyTable({
       cancelText: '取消'
     })
   }
+  function hideAttach() {
+    setAttachId('')
+    triggerShowAttach(false)
+  }
   const left = type !== 'detail' && (
     <>
       <Button type='primary' className={styles.btn} onClick={()=>showModal()}>新增</Button>
@@ -153,7 +173,8 @@ function StrategyTable({
         <DataImport templateFileList={[
           {
             download: ()=> {
-              utils.downloadFileByALink(`http://10.8.4.102:8088/${psBaseUrl}/purchaseStrategyDetail/downloadTemplate`)
+              const host = getLocationHost()
+              utils.downloadFileByALink(`${host}/${psBaseUrl}/purchaseStrategyDetail/downloadTemplate`)
             },
             // download: `/${psBaseUrl}/purchaseStrategyDetail/downloadTemplate`,
             fileName: '采购策略批量上传模板.xlsx',
@@ -193,9 +214,28 @@ function StrategyTable({
         wrappedComponentRef={commonFormRef}
         loading={loading}
       />
-      {/* <Modal visible={showAttach}>
-        
-      </Modal> */}
+      <Modal
+        visible={showAttach}
+        onCancel={hideAttach}
+        footer={
+          <Button type='ghost' onClick={hideAttach}>关闭</Button>
+        }
+      >
+        <ComboAttachment
+          allowPreview={false}
+          allowDownload={false}
+          allowDelete={false}
+          showViewType={false}
+          uploadButton={{
+            disabled: true
+          }}
+          serviceHost='/edm-service'
+          uploadUrl='upload'
+          multiple={false}
+          attachment={attachId}
+          customBatchDownloadFileName={true}
+        />
+      </Modal>
     </div>
   )
 }

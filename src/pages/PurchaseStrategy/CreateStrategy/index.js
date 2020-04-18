@@ -10,6 +10,7 @@ import {
   strategyTableCreateLine,
   strategyTableLineRelevanceDocment
 } from '@/services/strategy';
+import { openNewTab } from '@/utils';
 import styles from './index.less';
 function StrategyDetail() {
   const formRef = createRef()
@@ -24,7 +25,7 @@ function StrategyDetail() {
           purchaseStrategyDate,
           files,
           sendList: sList,
-          submitList: smList,
+          submitList: smList = [],
           ...otherData
         } = val;
         let params = {}
@@ -60,10 +61,14 @@ function StrategyDetail() {
           purchaseStrategyEnd,
           detailList: dataSource.map((item, key) => ({ ...item, lineNo: key + 1 }))
         }
-        const { success, data, message: msg, other } = await savePurchaseStrategy(params)
+        const { success, message: msg } = await savePurchaseStrategy(params)
         triggerLoading(false)
-        // 处理保存成功后的逻辑
-        console.log(success, msg, data, other)
+        if(success) {
+          openNewTab('purchase/strategy', '采购策略', true)
+          return
+        }
+        message.success(msg)
+        // console.log(success, msg, data, other)
       }
     })
   }
@@ -176,7 +181,9 @@ function StrategyDetail() {
     Modal.confirm({
       title: '返回提示',
       content: '未保存的内容会全部丢失，确认已经保存或者不需要保存吗？',
-      onOk: () => console.log('ok'),
+      onOk: () => {
+        openNewTab('purchase/strategy', '采购策略', true)
+      },
       okText: '确定返回',
       cancelText: '取消'
     })

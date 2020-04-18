@@ -1,7 +1,7 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useState } from 'react';
 import { Form, Row, Input, Col, DatePicker, Radio } from 'antd';
 import { utils, ComboList, ComboTree } from 'suid';
-import styles from './StrategyForm.less';
+import styles from './ChangeForm.less';
 import {
   purchaseCompanyProps,
   purchaseGroupProps,
@@ -45,15 +45,14 @@ const confirmRadioOptions = [
 const FormRef = forwardRef(({
   form,
   type = "add",
-  initialValue = {},
-  onChangeMaterialLevel=() => null
+  initialValue = {}
 }, ref) => {
   useImperativeHandle(ref, () => ({
     form
   }));
   const { getFieldDecorator } = form;
   const [createName, setCreateName] = useState("")
-  const { attachment = null } = initialValue;
+  const { attachment=null } = initialValue;
   useEffect(() => {
     const { userName } = storage.sessionStorage.get("Authorization")
     setCreateName(userName)
@@ -90,7 +89,7 @@ const FormRef = forwardRef(({
                       message: '请选择采购公司'
                     }
                   ]
-                })(<ComboList disabled={type === "detail"} {...purchaseCompanyProps} name='purchaseCompanyName' field={['purchaseCompanyCode']} form={form} />)
+                })(<ComboList disabled={true} {...purchaseCompanyProps} name='purchaseCompanyName' field={['purchaseCompanyCode']} form={form} />)
               }
             </Item>
           </Col>
@@ -105,7 +104,7 @@ const FormRef = forwardRef(({
                       message: '请选择采购组织'
                     }
                   ]
-                })(<ComboList disabled={type === "detail"} {...purchaseOrganizationProps} name='purchaseOrganizationName' field={['purchaseOrganizationCode']} form={form} />)
+                })(<ComboList disabled={true} {...purchaseOrganizationProps} name='purchaseOrganizationName' field={['purchaseOrganizationCode']} form={form} />)
               }
             </Item>
           </Col>
@@ -122,7 +121,7 @@ const FormRef = forwardRef(({
                       message: '请选择专业组'
                     }
                   ]
-                })(<ComboList disabled={type === "detail"} {...majorGroupProps} form={form} name='professionalGroupName' field={['professionalGroupCode']} />)
+                })(<ComboList disabled={true} {...majorGroupProps} form={form} name='professionalGroupName' field={['professionalGroupCode']} />)
               }
             </Item>
           </Col>
@@ -154,7 +153,7 @@ const FormRef = forwardRef(({
                       message: '请选择采购物料类别'
                     }
                   ]
-                })(<ComboTree disabled={type === "detail"} {...proPlanMaterialTypeProps} name='purchaseGoodsClassificationName' field={['purchaseGoodsClassificationCode']} form={form} />)
+                })(<ComboTree disabled={true} {...proPlanMaterialTypeProps} name='purchaseGoodsClassificationName' field={['purchaseGoodsClassificationCode']} form={form} />)
               }
             </Item>
           </Col>
@@ -169,7 +168,7 @@ const FormRef = forwardRef(({
                       message: '请选择物料级别'
                     }
                   ]
-                })(<ComboList disabled={type === "detail"} {...materialLevel} form={form} name='materialLevelName' field={['materialLevelCode']} afterSelect={onChangeMaterialLevel}/>)
+                })(<ComboList disabled={true} {...materialLevel} form={form} name='materialLevelName' field={['materialLevelCode']} />)
               }
             </Item>
           </Col>
@@ -237,22 +236,20 @@ const FormRef = forwardRef(({
           </Col>
         </Row>
         <Row>
-          <Col span={12}>
-            <Item label='联系方式' {...formLayout}>
-              {
-                getFieldDecorator('phone', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '请填写联系方式'
-                    }
-                  ]
-                })(
-                  <Input disabled={type === "detail"} placeholder='请填写联系方式' />
-                )
-              }
-            </Item>
-          </Col>
+          <Item label='联系方式' {...formLayoutAlone}>
+            {
+              getFieldDecorator('phone', {
+                rules: [
+                  {
+                    required: true,
+                    message: '请填写联系方式'
+                  }
+                ]
+              })(
+                <Input disabled={type === "detail"} placeholder='请填写联系方式' />
+              )
+            }
+          </Item>
         </Row>
         <Row>
           <Item label='内容简介' {...formLayoutAlone}>
@@ -286,7 +283,7 @@ const FormRef = forwardRef(({
           <Col span={24}>
             <Item label='其他内容' {...formLayoutAlone}>
               {
-                getFieldDecorator('comment')(<TextArea placeholder='其他需要单独说明的内容' autoSize={{ minRows: 3, maxRows: 5 }} disabled={type === 'detail'} />)
+                getFieldDecorator('comment')(<TextArea placeholder='其他需要单独说明的内容' autoSize={{ minRows: 3, maxRows: 5 }} disabled={type==='detail'}/>)
               }
             </Item>
           </Col>
@@ -298,10 +295,10 @@ const FormRef = forwardRef(({
                 <ComboAttachment
                   allowPreview={false}
                   allowDownload={false}
-                  allowDelete={type !== 'detail'}
-                  showViewType={type !== 'detail'}
+                  allowDelete={type!=='detail'}
+                  showViewType={type!=='detail'}
                   uploadButton={{
-                    disabled: type === 'detail'
+                    disabled: type==='detail'
                   }}
                   maxUploadNum={1}
                   serviceHost='/edm-service'

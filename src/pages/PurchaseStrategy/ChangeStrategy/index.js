@@ -253,19 +253,7 @@ function StrategyDetail() {
     }).filter(_ => _)
     setDataSource(filterDataSource);
   }
-  // 编辑时更改物料级别
-  function handleChangeMaterialLevel() {
-    Modal.confirm({
-      title: '更改物料分类级别',
-      content: '更改物料分类级别将清空当前所有物料分类行，确定要更改物料级别？',
-      onOk: () => {
-        setDataSource([])
-      },
-      onCancel: () => initFommFieldsValuesAndTableDataSource(),
-      okText: '确定',
-      cancelText: '取消'
-    })
-  }
+
   useEffect(() => {
     initFommFieldsValuesAndTableDataSource()
   }, [])
@@ -296,7 +284,6 @@ function StrategyDetail() {
       <StrategyForm
         wrappedComponentRef={formRef}
         initialValue={initValues}
-        onChangeMaterialLevel={handleChangeMaterialLevel}
         type='editor'
       />
       <StrategyTable
