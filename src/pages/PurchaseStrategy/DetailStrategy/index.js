@@ -9,7 +9,7 @@ import {
 } from '@/services/strategy';
 import moment from 'moment';
 import styles from './index.less';
-function StrategyDetail() {
+function DetailStrategy() {
   const formRef = createRef();
   const { query } = router.useLocation();
   const [dataSource, setDataSource] = useState([]);
@@ -101,4 +101,4 @@ function StrategyDetail() {
   )
 }
 
-export default connect(({ purchaseStrategy }) => ({ state: purchaseStrategy }))(StrategyDetail);
+export default DetailStrategy;

@@ -8,7 +8,12 @@
 
 import React from 'react';
 import { Button, Row, Col, Form, Input } from 'antd';
-import { ComboGrid, ComboList, ComboTree, ComboSelect, MixinSelect } from '@/components';
+import { ComboSelect, MixinSelect } from '@/components';
+import {
+  ComboGrid,
+  ComboList,
+  ComboTree
+} from 'suid'
 import styles from './index.less';
 const FormItem = Form.Item;
 const Combos = {
@@ -33,12 +38,13 @@ const formLayout = {
 function AdvancedForm({
   formItems = [],
   onOk = () => null,
-  form: {
+  form={}
+}) {
+  const {
     getFieldDecorator,
     resetFields,
     validateFields
-  }
-}) {
+  } = form;
   function handleSubmit() {
     validateFields((err, val) => {
       if (!err) {
@@ -62,9 +68,13 @@ function AdvancedForm({
               >
                 <FormItem style={{ width: '100%' }} label={item.title} {...formLayout}>
                   {
-                    getFieldDecorator(item.key)(
+                    getFieldDecorator(`${item.key}`),
+                    getFieldDecorator(`${item.key}_name`)(
                       <Item
+                        form={form}
                         {...item.props}
+                        name={`${item.key}_name`}
+                        field={[item.key]}
                       />
                     )
                   }

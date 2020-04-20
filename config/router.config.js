@@ -35,6 +35,11 @@ export default [
         path: '/purchase/strategy/editor',
         component: './PurchaseStrategy/EditorStrategy',
         title: '编辑策略'
+      },
+      {
+        path: '/purchase/strategy/change',
+        component: './PurchaseStrategy/ChangeStrategy',
+        title: '变更采购策略'
       }
     ],
   }

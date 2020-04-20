@@ -104,8 +104,11 @@ function PurchaseStategy() {
   const headerRef = useRef(null)
   const tableRef = useRef(null)
   const [selectedRowKeys, setRowKeys] = useState([]);
-  const [searchValue, setSearchValue] = useState({})
-  const [selectedRows, setRows] = useState([]);
+  const [selectedRows, setRows] = useState([])
+  const [searchValue, setSearchValue] = useState({});
+  const [singleRow={}] = selectedRows;
+  const {state:rowState} = singleRow;
+  const takeEffect = rowState === 'Effective'
   const multiple = selectedRowKeys.length > 1;
   const empty = selectedRowKeys.length === 0;
   const tableProps = {
@@ -221,7 +224,6 @@ function PurchaseStategy() {
   // 清除选中项
   function cleanSelectedRecord() {
     setRowKeys([])
-    setRows([])
   }
   // 快速搜索
   function handleQuickSerach(v) {
@@ -286,7 +288,7 @@ function PurchaseStategy() {
             <Button disabled={multiple || empty} className={styles.btn} onClick={handleCheckDetail}>明细</Button>
             <Button disabled={multiple || empty} className={styles.btn}>提交审核</Button>
             <Button disabled={multiple || empty} className={styles.btn}>审核历史</Button>
-            <Button disabled={multiple || empty} className={styles.btn}>变更</Button>
+            <Button disabled={multiple || empty ||!takeEffect} className={styles.btn}>变更</Button>
             <Button disabled={multiple || empty} className={styles.btn}>变更历史</Button>
           </>
         }
@@ -311,7 +313,9 @@ function PurchaseStategy() {
         showSearch={false}
         ref={tableRef}
         rowKey={(item) => item.id}
-        checkbox={true}
+        checkbox={{
+          multiSelect: false
+        }}
         remotePaging={true}
         ellipsis={false}
         onSelectRow={handleSelectedRows}

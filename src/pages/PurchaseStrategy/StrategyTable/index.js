@@ -97,8 +97,7 @@ function StrategyTable({
   ].map(item => ({ ...item, align: 'center' }));
   useEffect(()=> {
     if(dataSource.length === 0 ){
-      setRowKeys([])
-      setRows([])
+      cleanSelectedRecord()
     }
   },[dataSource])
   // 记录列表选中

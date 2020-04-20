@@ -136,7 +136,7 @@ const FormRef = forwardRef(({
                       message: '请选择采购组'
                     }
                   ]
-                })(<ComboList disabled={type === "detail"} {...purchaseGroupProps} name='purchaseGroupName' field={['purchaseGroupCode']} form={form} />)
+                })(<ComboList disabled {...purchaseGroupProps} name='purchaseGroupName' field={['purchaseGroupCode']} form={form} />)
               }
             </Item>
           </Col>
@@ -229,7 +229,7 @@ const FormRef = forwardRef(({
                 getFieldDecorator("creatorName", {
                   initialValue: createName
                 })(
-                  <Input readOnly />
+                  <Input readOnly disabled/>
                 )
               }
             </Item>

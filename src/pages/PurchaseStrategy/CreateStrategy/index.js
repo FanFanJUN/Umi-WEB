@@ -1,5 +1,4 @@
 import React, { createRef, useState } from 'react';
-import { connect } from 'dva';
 import { Button, Modal, message, Spin } from 'antd';
 import { utils } from 'suid';
 import StrategyForm from '../StrategyForm';
@@ -12,7 +11,7 @@ import {
 } from '@/services/strategy';
 import { openNewTab } from '@/utils';
 import styles from './index.less';
-function StrategyDetail() {
+function CreateStrategy() {
   const formRef = createRef()
   const [dataSource, setDataSource] = useState([]);
   const [loading, triggerLoading] = useState(false);
@@ -63,7 +62,7 @@ function StrategyDetail() {
         }
         const { success, message: msg } = await savePurchaseStrategy(params)
         triggerLoading(false)
-        if(success) {
+        if (success) {
           openNewTab('purchase/strategy', '采购策略', true)
           return
         }
@@ -214,4 +213,4 @@ function StrategyDetail() {
   )
 }
 
-export default connect(({ purchaseStrategy }) => ({ state: purchaseStrategy }))(StrategyDetail);
+export default CreateStrategy;

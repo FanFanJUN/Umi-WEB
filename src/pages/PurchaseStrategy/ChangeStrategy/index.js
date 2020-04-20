@@ -1,9 +1,13 @@
 import React, { createRef, useState, useEffect } from 'react';
-import { connect, router } from 'dva';
-import { utils, WorkFlow } from 'suid';
-import { Button, Modal, message, Spin } from 'antd';
-import StrategyForm from '../StrategyForm';
+import { router } from 'dva';
+import {
+  utils,
+  // WorkFlow
+} from 'suid';
+import { Button, Modal, message, Spin, Row, Input, Form, Col } from 'antd';
+import ChangeForm from '../ChangeForm';
 import StrategyTable from '../StrategyTable';
+import { ComboAttachment } from '@/components';
 import classnames from 'classnames';
 import {
   savePurchaseStrategy,
@@ -15,14 +19,29 @@ import {
 import moment from 'moment';
 import { openNewTab } from '@/utils';
 import styles from './index.less';
-const { StartFlow } = WorkFlow;
-function StrategyDetail() {
+// const { StartFlow } = WorkFlow;
+const formLayout = {
+  labelCol: {
+    span: 8
+  },
+  wrapperCol: {
+    span: 16
+  }
+}
+function ChangeStrategy({
+  form
+}) {
+  const { getFieldDecorator, getFieldValue } = form;
   const formRef = createRef();
   const { query } = router.useLocation();
   const [dataSource, setDataSource] = useState([]);
+  const [visible, setVisible] = useState(false);
   const [initValues, setInitValues] = useState({});
   const [loading, triggerLoading] = useState(true);
-  const [currentId, setCurrentId] = useState("")
+  const [currentId, setCurrentId] = useState('');
+  const [currentCode, setCurrentCode] = useState('');
+  const files = getFieldValue('changeFiles') || [];
+  const allowUpload = files.length !== 1;
   async function initFommFieldsValuesAndTableDataSource() {
     const { data, success, message: msg } = await findStrategyDetailById(query);
     if (success) {
@@ -73,6 +92,7 @@ function StrategyDetail() {
       setFieldsValue(mixinValues);
       setDataSource(addIdList);
       setCurrentId(id)
+      setCurrentCode(code)
       triggerLoading(false);
       return
     }
@@ -153,8 +173,30 @@ function StrategyDetail() {
     }
     return params;
   }
+  // 保存并提交审核
+  async function handleBeforeStartFlow() {
+    const changeParams = await formatChangeReasonPamras();
+    if (!changeParams) return;
+    const { validateFieldsAndScroll } = formRef.current.form;
+    validateFieldsAndScroll(async (err, val) => {
+      if (!err) {
+        triggerLoading(true)
+        const params = await formatSaveParams(val);
+        const { success, message: msg, data } = await savePurcahseAndApprove(params);
+        if (success) {
+          triggerLoading(false)
+        }
+        triggerLoading(false)
+      }
+    })
+    return new Promise((resolve, reject) => {
+      reject()
+    })
+  }
   // 保存
   async function handleSave() {
+    const changeParams = await formatChangeReasonPamras();
+    if (!changeParams) return;
     const { validateFieldsAndScroll } = formRef.current.form;
     validateFieldsAndScroll(async (err, val) => {
       if (!err) {
@@ -168,26 +210,6 @@ function StrategyDetail() {
         }
         message.success(msg)
       }
-    })
-  }
-  // 保存并提交审核
-  async function handleBeforeStartFlow() {
-    const { validateFieldsAndScroll } = formRef.current.form;
-    validateFieldsAndScroll(async (err, val) => {
-      if (!err) {
-        triggerLoading(true)
-        const params = await formatSaveParams(val);
-        const { success, message: msg, data } = await savePurcahseAndApprove(params);
-        if (success) {
-          console.log(msg)
-          console.log(data)
-          triggerLoading(false)
-        }
-        triggerLoading(false)
-      }
-    })
-    return new Promise((resolve, reject) => {
-      reject()
     })
   }
   async function handleCreateLine(val, hide) {
@@ -242,7 +264,7 @@ function StrategyDetail() {
     })
   }
   // 删除行数据
-  function handleRemoveLines(rowKeys = [], rows) {
+  function handleRemoveLines(rowKeys = []) {
     const filterDataSource = dataSource.map(item => {
       let { localId } = item;
       let isMatch = rowKeys.find(i => i === localId);
@@ -253,35 +275,62 @@ function StrategyDetail() {
     }).filter(_ => _)
     setDataSource(filterDataSource);
   }
-
+  function showModal() {
+    setVisible(true)
+  }
+  function hideModal() {
+    setVisible(false)
+  }
+  // 验证变更原因表单并关联变更附件attachment
+  function formatChangeReasonPamras() {
+    return new Promise((resolve, reject) => {
+      const { validateFields } = form;
+      validateFields(async (err, val) => {
+        if (!err) {
+          const { changeFiles = [] } = val;
+          const [fileInfo = {}] = changeFiles;
+          const { response = [] } = fileInfo;
+          const [attachment = {}] = response;
+          const { id = null } = attachment;
+          let params = {}
+          const uuid = utils.getUUID()
+          if (!!id) {
+            const { success } = await strategyTableLineRelevanceDocment({
+              id: uuid,
+              docIds: [id]
+            })
+            params = {
+              reason: val.reason,
+              attachment: success ? uuid : null
+            }
+          } else {
+            params = {
+              reason: val.reason
+            }
+          }
+          resolve(params);
+        }
+        else {
+          reject(false)
+        }
+      })
+    })
+  }
   useEffect(() => {
     initFommFieldsValuesAndTableDataSource()
-  }, [])
+  })
   return (
     <Spin spinning={loading} tip="处理中...">
       <div className={classnames([styles.header, styles.flexBetweenStart])}>
         <span className={styles.title}>
-          编辑采购策略
+          变更采购策略：{currentCode}
         </span>
         <div>
           <Button className={styles.btn} onClick={handleBack}>返回</Button>
-          <Button className={styles.btn} onClick={handleSave}>保存</Button>
-          <StartFlow
-            style={{overflow: 'none'}}
-            preStart={()=> {
-              console.log("sldkfjl")
-              return new Promise(resolve=> {
-                resolve('skdjfsdfjdfjl')
-              })
-            }}
-            businessKey="ssdjflsdjflk"
-            businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyFlow"
-          >
-            <Button type='primary' className={styles.btn} onClick={handleBeforeStartFlow}>保存并提交审核</Button>
-          </StartFlow>
+          <Button onClick={showModal}>保存并提交审核</Button>
         </div>
       </div>
-      <StrategyForm
+      <ChangeForm
         wrappedComponentRef={formRef}
         initialValue={initValues}
         type='editor'
@@ -294,8 +343,52 @@ function StrategyDetail() {
         type="editor"
         loading={loading}
       />
+      <Modal
+        title='变更原因'
+        visible={visible}
+        width='70vw'
+        onOk={handleBeforeStartFlow}
+        onCancel={hideModal}
+        okText="提交审核"
+        cancelText='取消'
+      >
+        <Row>
+          <Col span={18}>
+            <Form.Item label='变更原因' {...formLayout}>
+              {
+                getFieldDecorator('reason', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请填写变更原因'
+                    }
+                  ]
+                })(<Input.TextArea />)
+              }
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={18}>
+            <Form.Item label='附件' {...formLayout}>
+              {
+                getFieldDecorator('changeFiles')(
+                  <ComboAttachment
+                    allowPreview={false}
+                    allowDownload={false}
+                    maxUploadNum={1}
+                    allowUpload={allowUpload}
+                    serviceHost='/edm-service'
+                    uploadUrl='upload'
+                  />
+                )
+              }
+            </Form.Item>
+          </Col>
+        </Row>
+      </Modal>
     </Spin>
   )
 }
 
-export default connect(({ purchaseStrategy }) => ({ state: purchaseStrategy }))(StrategyDetail);
+export default Form.create()(ChangeStrategy);

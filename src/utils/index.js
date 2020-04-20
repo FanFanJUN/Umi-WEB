@@ -142,7 +142,6 @@ export const leftPad = (str, len, ch) => {
 export const getLocationHost = () => {
   const host = window.location.host;
   const isDev = /^localhost/.test(host) || /^192/.test(host);
-  console.log(isDev)
   if(isDev) {
     return target
   }
