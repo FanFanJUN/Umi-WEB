@@ -86,7 +86,7 @@ export default {
     javascriptEnabled: true,
   },
   manifest: {
-    basePath: '/react-srm-ps-web/',
+    basePath: '/',
   },
   chainWebpack: webpackPlugin,
 };
