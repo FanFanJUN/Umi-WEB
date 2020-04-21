@@ -30,7 +30,7 @@
     "react-dom": "^16.8.6",
     "react-fast-compare": "^2.0.4",
     "sei-utils": "^1.0.91",
-    "suid": "^1.2.34"
+    "suid": "^1.2.38"
   },
   "devDependencies": {
     "babel-eslint": "^9.0.0",

@@ -53,7 +53,7 @@ const importColumns = [
   },
   {
     title: '成本目标',
-    dataIndex: 'costTargetName'
+    dataIndex: 'costTarget'
   },
   {
     title: '成本控制方式',
@@ -238,7 +238,149 @@ function StrategyTable({
     triggerShowAttach(false)
   }
   function importDataValidate(column) {
-    const { } = column
+    const {
+      materialClassificationName,
+      expectedDemandScaleAmount,
+      expectedDemandScalePrice,
+      adjustScope,
+      purchaseTypeName,
+      planSupplyResourceAmount,
+      priceCombine,
+      pricingFrequency,
+      pricingTime,
+      runningOperation,
+      resourceOperation,
+      costTarget,
+      costControlWay,
+      storageControlWay,
+      supplierSelectRule,
+      supplierCooperationWay
+    } = column;
+    const timeDisabled = pricingFrequency === '按单' || pricingFrequency === '按旬';
+    const error = {
+      validate: false,
+      status: '不通过',
+      statusCode: 'error'
+    }
+    if (!materialClassificationName) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写物料分类'
+      }
+    }
+    if (!expectedDemandScaleAmount) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写预计需求数量'
+      }
+    }
+    if (!expectedDemandScalePrice) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写预计需求规模'
+      }
+    }
+    if (!adjustScope) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写适应范围'
+      }
+    }
+    if (!purchaseTypeName) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写采购方式'
+      }
+    }
+    if (!planSupplyResourceAmount) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写规划供应资源数'
+      }
+    }
+    if (!priceCombine) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写价格组成'
+      }
+    }
+    if (!pricingFrequency) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写定价频次'
+      }
+    }
+    if (!timeDisabled && !pricingTime) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写定价时间'
+      }
+    }
+    if (!runningOperation) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写市场运行情况'
+      }
+    }
+    if (!resourceOperation) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写资源保障情况'
+      }
+    }
+    if (!costTarget) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写成本目标'
+      }
+    }
+    if (!costControlWay) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写成本控制方式'
+      }
+    }
+    if (!storageControlWay) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写库存控制方式'
+      }
+    }
+    if (!supplierSelectRule) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写供应商选择原则'
+      }
+    }
+    if (!supplierCooperationWay) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写供应商合作方式'
+      }
+    }
+    return {
+      validate: true,
+      status: '通过',
+      statusCode: 'success',
+      message: '验证通过',
+      ...column
+    }
   }
   const left = type !== 'detail' && (
     <>
@@ -263,16 +405,10 @@ function StrategyTable({
           tableProps={{
             columns: importColumns
           }}
-          validateFunc={(item)=> {
-            return item.map(i=> ({
-              ...i,
-              validate: true,
-              status: '通过',
-              statusCode: 'success',
-              message: '验证通过'
-            }))
+          validateFunc={(item) => {
+            return item.map(importDataValidate)
           }}
-          importFunc={(item)=> {
+          importFunc={(item) => {
             console.log(item)
           }}
         >

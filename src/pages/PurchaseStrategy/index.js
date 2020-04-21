@@ -223,10 +223,8 @@ function PurchaseStategy() {
   ]
   // 记录列表选中
   function handleSelectedRows(rowKeys, rows) {
-    setRowKeys(rowKeys)
-    setRows(rows)
-    console.log(rows)
-    console.log(rowKeys)
+    setRowKeys(rowKeys);
+    setRows(rows);
   }
   // 清除选中项
   function cleanSelectedRecord() {
@@ -301,11 +299,6 @@ function PurchaseStategy() {
               style={{ display: 'inline-flex' }}
               businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyFlow"
               businessKey={businessid}
-              store={{
-                baseUrl: "/",
-                url: `${psBaseUrl}/purchaseStrategyFlow/startFlow`,
-                type: 'GET'
-              }}
             >
               {
                 (loading) => {
