@@ -1,11 +1,81 @@
-import React, { useState, createRef, useEffect } from 'react';
+import React, { useState, createRef, useEffect, useLayoutEffect } from 'react';
 import { ExtTable, DataImport, utils } from 'suid';
 import { Button, Modal } from 'antd'
 import CommonForm from './CommonForm';
 import { ComboAttachment } from '@/components';
 import { psBaseUrl } from '../../../utils/commonUrl';
-import { getLocationHost } from '../../../utils';
+import { getLocationHost, getUserAccount } from '../../../utils';
 import styles from './index.less';
+const importColumns = [
+  {
+    title: '物料分类',
+    dataIndex: 'materialClassificationName'
+  },
+  {
+    title: '预计需求规模(数量)',
+    dataIndex: 'expectedDemandScaleAmount'
+  },
+  {
+    title: '预计需求规模(数量)',
+    dataIndex: 'expectedDemandScalePrice'
+  },
+  {
+    title: '适应范围',
+    dataIndex: 'adjustScope'
+  },
+  {
+    title: '采购方式',
+    dataIndex: 'purchaseTypeName'
+  },
+  {
+    title: '规划供应资源数量',
+    dataIndex: 'planSupplyResourceAmount'
+  },
+  {
+    title: '价格组成',
+    dataIndex: 'priceCombine'
+  },
+  {
+    title: '定价频次',
+    dataIndex: 'pricingFrequency'
+  },
+  {
+    title: '定价时间',
+    dataIndex: 'pricingTime'
+  },
+  {
+    title: '市场运行情况',
+    dataIndex: 'runningOperation'
+  },
+  {
+    title: '资源保障情况',
+    dataIndex: 'resourceOperation'
+  },
+  {
+    title: '成本目标',
+    dataIndex: 'costTargetName'
+  },
+  {
+    title: '成本控制方式',
+    dataIndex: 'costControlWay'
+  },
+  {
+    title: '库存控制方式',
+    dataIndex: 'storageControlWay'
+  },
+  {
+    title: '供应商选择原则',
+    dataIndex: 'supplierSelectRule'
+  },
+  {
+    title: '供应商合作方式',
+    dataIndex: 'supplierCooperationWay'
+  },
+  {
+    title: '备注',
+    dataIndex: 'remark'
+  }
+]
 function StrategyTable({
   loading = false,
   dataSource = [],
@@ -15,7 +85,8 @@ function StrategyTable({
   type = 'add'
 }) {
   const commonFormRef = createRef();
-  const [selectedRowKeys, setRowKeys] = useState([]);
+  const [selectedRowKeys,
+    setRowKeys] = useState([]);
   const [selectedRows, setRows] = useState([]);
   const [visible, setVisible] = useState(false);
   const [line, setLine] = useState(1);
@@ -38,8 +109,8 @@ function StrategyTable({
     }, {
       title: '适应范围',
       dataIndex: 'adjustScopeList',
-      render(text=[]) {
-        return text.map(item=>item.name).join('，')
+      render(text = []) {
+        return text.map(item => item.name).join('，')
       }
     }, {
       title: '采购方式',
@@ -57,8 +128,8 @@ function StrategyTable({
     }, {
       title: '定价时间',
       dataIndex: 'pricingDateList',
-      render(text){
-        return text.map(item=>item.date).join('；')
+      render(text) {
+        return text.map(item => item.date).join('；')
       }
     }, {
       title: '市场运行情况',
@@ -85,7 +156,7 @@ function StrategyTable({
       title: '附件',
       dataIndex: 'attachment',
       render: (text) => {
-        return <Button onClick={()=> {
+        return <Button onClick={() => {
           setAttachId(text)
           triggerShowAttach(true)
         }}>查看附件</Button>
@@ -95,16 +166,19 @@ function StrategyTable({
       dataIndex: 'remark'
     }
   ].map(item => ({ ...item, align: 'center' }));
-  useEffect(()=> {
-    if(dataSource.length === 0 ){
+  useLayoutEffect(() => {
+    if (dataSource.length === 0) {
       cleanSelectedRecord()
     }
-  },[dataSource])
+  }, [dataSource])
   // 记录列表选中
-  function handleSelectedRows(rowKeys) {
+  function handleSelectedRows(rowKeys, rowItems) {
+    console.log('dataSource', dataSource)
+    console.log('rowKeys', rowKeys)
+    console.log('rowItems', rowItems)
     setRowKeys(rowKeys)
-    const rows = dataSource.filter(i=>{
-      return rowKeys.findIndex(find=>i.localId === find) !== -1
+    const rows = dataSource.filter(i => {
+      return rowKeys.findIndex(find => i.localId === find) !== -1
     })
     setRows(rows)
   }
@@ -124,7 +198,7 @@ function StrategyTable({
       const [row] = selectedRows;
       const currentIndex = dataSource.findIndex(item => item.localId === v);
       setLine(currentIndex + 1)
-      setInitialValue({...row})
+      setInitialValue({ ...row })
     }
     setVisible(true)
     setModalType(t)
@@ -163,23 +237,46 @@ function StrategyTable({
     setAttachId('')
     triggerShowAttach(false)
   }
+  function importDataValidate(column) {
+    const { } = column
+  }
   const left = type !== 'detail' && (
     <>
-      <Button type='primary' className={styles.btn} onClick={()=>showModal()}>新增</Button>
+      <Button type='primary' className={styles.btn} onClick={() => showModal()}>新增</Button>
       <Button className={styles.btn} onClick={() => showModal('editor')} disabled={disableEditor}>编辑</Button>
       <Button className={styles.btn} disabled={disableRemove} onClick={handleRemove}>删除</Button>
       <div style={{ display: 'inline-block' }}>
-        <DataImport templateFileList={[
-          {
-            download: ()=> {
-              const host = getLocationHost()
-              utils.downloadFileByALink(`${host}/${psBaseUrl}/purchaseStrategyDetail/downloadTemplate`)
+        <DataImport
+          templateFileList={[
+            {
+              download: () => {
+                const host = getLocationHost();
+                const useAccount = getUserAccount();
+                utils.downloadFileByALink(`${host}/${psBaseUrl}/purchaseStrategyDetail/downloadTemplate?userAccount=${useAccount}`)
+              },
+              fileName: '采购策略批量上传模板.xlsx',
+              key: 'contract',
             },
-            // download: `/${psBaseUrl}/purchaseStrategyDetail/downloadTemplate`,
-            fileName: '采购策略批量上传模板.xlsx',
-            key: 'contract',
-          },
-        ]} columns={columns} uploadBtn={<Button>批量导入</Button>}></DataImport>
+          ]}
+          // uploadBtn={()=><Button>批量导入</Button>}
+          validateAll={false}
+          tableProps={{
+            columns: importColumns
+          }}
+          validateFunc={(item)=> {
+            return item.map(i=> ({
+              ...i,
+              validate: true,
+              status: '通过',
+              statusCode: 'success',
+              message: '验证通过'
+            }))
+          }}
+          importFunc={(item)=> {
+            console.log(item)
+          }}
+        >
+        </DataImport>
       </div>
     </>
   )
@@ -200,7 +297,7 @@ function StrategyTable({
           rowKey={(item) => `${item.localId}`}
           onSelectRow={handleSelectedRows}
           selectedRowKeys={selectedRowKeys}
-          checkbox={type!=='detail'}
+          checkbox={type !== 'detail'}
         />
       </div>
       <CommonForm

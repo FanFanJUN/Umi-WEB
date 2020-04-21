@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { ExtTable } from 'suid';
+import { ExtTable, WorkFlow } from 'suid';
 import { Input, Button, message } from 'antd';
 import Header from '@/components/Header';
 import AdvancedForm from '@/components/AdvancedForm';
@@ -27,6 +27,7 @@ import classnames from 'classnames';
 import { useEffect } from 'react';
 import Modal from 'antd/es/modal';
 const { Search } = Input
+const { StartFlow } = WorkFlow;
 const columns = [
   {
     title: '预警',
@@ -52,6 +53,8 @@ const columns = [
           return '草稿'
         case 'Effective':
           return '生效'
+        case 'Changing':
+          return '变更中'
         default:
           return '未知'
       }
@@ -106,9 +109,11 @@ function PurchaseStategy() {
   const [selectedRowKeys, setRowKeys] = useState([]);
   const [selectedRows, setRows] = useState([])
   const [searchValue, setSearchValue] = useState({});
-  const [singleRow={}] = selectedRows;
-  const {state:rowState} = singleRow;
+  const [singleRow = {}] = selectedRows;
+  const { state: rowState, approvalState: rowApprovalState, changeable: rowChangeable, id :businessid } = singleRow;
   const takeEffect = rowState === 'Effective'
+  const approvalEffect = rowApprovalState === 'Uncommitted';
+  const changeEffect = !rowChangeable
   const multiple = selectedRowKeys.length > 1;
   const empty = selectedRowKeys.length === 0;
   const tableProps = {
@@ -220,6 +225,8 @@ function PurchaseStategy() {
   function handleSelectedRows(rowKeys, rows) {
     setRowKeys(rowKeys)
     setRows(rows)
+    console.log(rows)
+    console.log(rowKeys)
   }
   // 清除选中项
   function cleanSelectedRecord() {
@@ -265,14 +272,18 @@ function PurchaseStategy() {
   }
   function handleEditor() {
     const [key] = selectedRowKeys;
-    openNewTab(`purchase/strategy/editor?id=${key}`,'编辑采购策略', true )
+    openNewTab(`purchase/strategy/editor?id=${key}`, '编辑采购策略', true)
   }
   function handleCreate() {
-    openNewTab('purchase/strategy/create', '新增采购策略', true )
+    openNewTab('purchase/strategy/create', '新增采购策略', true)
   }
-  function handleCheckDetail () {
+  function handleChange() {
     const [key] = selectedRowKeys;
-    openNewTab(`purchase/strategy/detail?id=${key}`, '新增采购策略', true )
+    openNewTab(`purchase/strategy/change?id=${key}`, '变更采购策略', true)
+  }
+  function handleCheckDetail() {
+    const [key] = selectedRowKeys;
+    openNewTab(`purchase/strategy/detail?id=${key}`, '新增采购策略', true)
   }
   useEffect(() => {
     uploadTable()
@@ -286,10 +297,31 @@ function PurchaseStategy() {
             <Button disabled={multiple || empty} className={styles.btn} onClick={handleEditor}>编辑</Button>
             <Button onClick={handleRemoveItem} disabled={empty} className={styles.btn}>删除</Button>
             <Button disabled={multiple || empty} className={styles.btn} onClick={handleCheckDetail}>明细</Button>
-            <Button disabled={multiple || empty} className={styles.btn}>提交审核</Button>
-            <Button disabled={multiple || empty} className={styles.btn}>审核历史</Button>
-            <Button disabled={multiple || empty ||!takeEffect} className={styles.btn}>变更</Button>
-            <Button disabled={multiple || empty} className={styles.btn}>变更历史</Button>
+            <StartFlow
+              style={{ display: 'inline-flex' }}
+              businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyFlow"
+              businessKey={businessid}
+              store={{
+                baseUrl: "/",
+                url: `${psBaseUrl}/purchaseStrategyFlow/startFlow`,
+                type: 'GET'
+              }}
+            >
+              {
+                (loading) => {
+                  return (
+                    <Button
+                      className={styles.btn}
+                      loading={loading}
+                      disabled={multiple || empty} className={styles.btn}
+                    >提交审核</Button>
+                  )
+                }
+              }
+            </StartFlow>
+            <Button disabled={multiple || empty || approvalEffect} className={styles.btn}>审核历史</Button>
+            <Button disabled={multiple || empty || !takeEffect} className={styles.btn} onClick={handleChange}>变更</Button>
+            <Button disabled={multiple || empty || changeEffect} className={styles.btn}>变更历史</Button>
           </>
         }
         right={
@@ -313,9 +345,7 @@ function PurchaseStategy() {
         showSearch={false}
         ref={tableRef}
         rowKey={(item) => item.id}
-        checkbox={{
-          multiSelect: false
-        }}
+        checkbox={true}
         remotePaging={true}
         ellipsis={false}
         onSelectRow={handleSelectedRows}

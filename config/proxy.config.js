@@ -1,3 +1,4 @@
+// export const target = 'http://10.8.4.102:8088';
 export const target = 'http://10.4.69.39:8100';
 
 export default {
@@ -23,6 +24,12 @@ export default {
   //     '^/service.api/srm-ps-web': '/srm-ps-web'
   //   }
   // },
+  '/service.api/srm-ps-web/flow-service': {
+    target: target,
+    changeOrigin: true,
+    secure: false,
+    pathRewrite: { '^/service.api/srm-ps-web/flow-service': '/flow-service' },
+  },
   '/service.api/': {
     target: target,
     // target: 'http://10.8.4.102:8088',

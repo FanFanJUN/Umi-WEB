@@ -7,10 +7,10 @@
 import { base } from '../../public/app.config.json';
 
 /** 服务接口基地址，默认是当前站点的域名地址 */
-const BASE_DOMAIN = '/';
+const BASE_DOMAIN = '';
 
 /** 网关地址 */
-const GATEWAY = 'mobileapi-gateway';
+const GATEWAY = '';
 
 /** 
 * 非生产环境下是使用mocker开发，还是与真实后台开发或联调 

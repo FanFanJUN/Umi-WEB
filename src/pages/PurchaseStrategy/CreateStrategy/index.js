@@ -66,7 +66,7 @@ function CreateStrategy() {
           openNewTab('purchase/strategy', '采购策略', true)
           return
         }
-        message.success(msg)
+        message.error(msg)
         // console.log(success, msg, data, other)
       }
     })

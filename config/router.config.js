@@ -40,6 +40,11 @@ export default [
         path: '/purchase/strategy/change',
         component: './PurchaseStrategy/ChangeStrategy',
         title: '变更采购策略'
+      },
+      {
+        path: '/purchase/strategy/change/history',
+        component: './PurchaseStrategy/ChangeStrategyHistory',
+        title: '采购策略变更历史'
       }
     ],
   }

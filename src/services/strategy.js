@@ -59,3 +59,9 @@ export const findStrategyDetailById = params => createServiceRequest({
   path: `${psBaseUrl}/purchaseStrategyHeader/findEditVo`,
   params
 })
+
+// 采购策略整单作废/取消作废
+export const changeInvalidState = params => createServiceRequest({
+  path: `${psBaseUrl}/purchaseStrategyHeader/invalidOrCancel`,
+  params
+})

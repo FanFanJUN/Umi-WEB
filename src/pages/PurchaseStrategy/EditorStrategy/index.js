@@ -1,5 +1,5 @@
 import React, { createRef, useState, useEffect } from 'react';
-import { connect, router } from 'dva';
+import { router } from 'dva';
 import { utils, WorkFlow } from 'suid';
 import { Button, Modal, message, Spin } from 'antd';
 import StrategyForm from '../StrategyForm';
@@ -14,6 +14,7 @@ import {
 } from '@/services/strategy';
 import moment from 'moment';
 import { openNewTab } from '@/utils';
+import { psBaseUrl } from '@/utils/commonUrl';
 import styles from './index.less';
 const { StartFlow } = WorkFlow;
 function StrategyDetail() {
@@ -22,7 +23,9 @@ function StrategyDetail() {
   const [dataSource, setDataSource] = useState([]);
   const [initValues, setInitValues] = useState({});
   const [loading, triggerLoading] = useState(true);
-  const [currentId, setCurrentId] = useState("")
+  const [currentId, setCurrentId] = useState("");
+  const [isInvalid, setIsInvalid] = useState({ name: '', state: false });
+  const [currentCode, setCurrentCode] = useState('');
   async function initFommFieldsValuesAndTableDataSource() {
     const { data, success, message: msg } = await findStrategyDetailById(query);
     if (success) {
@@ -73,6 +76,8 @@ function StrategyDetail() {
       setFieldsValue(mixinValues);
       setDataSource(addIdList);
       setCurrentId(id)
+      setCurrentCode(code)
+      setIsInvalid({ name: invalid ? '（作废）' : '', state: invalid })
       triggerLoading(false);
       return
     }
@@ -104,7 +109,6 @@ function StrategyDetail() {
         attachment: ses ? headerUUID : null
       }
     }
-
     const [begin, end] = purchaseStrategyDate;
     const purchaseStrategyBegin = begin.format('YYYY-MM-DD HH:mm:ss')
     const purchaseStrategyEnd = end.format('YYYY-MM-DD HH:mm:ss')
@@ -160,34 +164,37 @@ function StrategyDetail() {
       if (!err) {
         triggerLoading(true)
         const params = await formatSaveParams(val)
-        const { success, message: msg, } = await savePurchaseStrategy(params)
+        const { success, message: msg, } = await savePurchaseStrategy(params);
         triggerLoading(false)
         if (success) {
           openNewTab('purchase/strategy', '采购策略', true)
           return
         }
-        message.success(msg)
+        message.error(msg)
       }
     })
   }
   // 保存并提交审核
   async function handleBeforeStartFlow() {
-    const { validateFieldsAndScroll } = formRef.current.form;
-    validateFieldsAndScroll(async (err, val) => {
-      if (!err) {
-        triggerLoading(true)
-        const params = await formatSaveParams(val);
-        const { success, message: msg, data } = await savePurcahseAndApprove(params);
-        if (success) {
-          console.log(msg)
-          console.log(data)
-          triggerLoading(false)
-        }
-        triggerLoading(false)
-      }
-    })
     return new Promise((resolve, reject) => {
-      reject()
+      const { validateFieldsAndScroll } = formRef.current.form;
+      validateFieldsAndScroll(async (err, val) => {
+        if (!err) {
+          const params = await formatSaveParams(val);
+          const { success, message: msg, data } = await savePurcahseAndApprove(params);
+          if (success) {
+            resolve({
+              success: true,
+              message: msg,
+              data: {
+                businessKey: data.id
+              }
+            })
+            // return
+          }
+          reject(false)
+        }
+      })
     })
   }
   async function handleCreateLine(val, hide) {
@@ -273,23 +280,32 @@ function StrategyDetail() {
     <Spin spinning={loading} tip="处理中...">
       <div className={classnames([styles.header, styles.flexBetweenStart])}>
         <span className={styles.title}>
-          编辑采购策略
+          编辑采购策略: {currentCode} {isInvalid.name}
         </span>
         <div>
           <Button className={styles.btn} onClick={handleBack}>返回</Button>
           <Button className={styles.btn} onClick={handleSave}>保存</Button>
           <StartFlow
-            style={{overflow: 'none'}}
-            preStart={()=> {
-              console.log("sldkfjl")
-              return new Promise(resolve=> {
-                resolve('skdjfsdfjdfjl')
-              })
-            }}
-            businessKey="ssdjflsdjflk"
+            style={{ display: 'inline-flex' }}
+            beforeStart={handleBeforeStartFlow}
             businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyFlow"
+            // store={{
+            //   // baseUrl: "",
+            //   url: `${psBaseUrl}/purchaseStrategyFlow/startFlow`,
+            //   type: 'GET'
+            // }}
           >
-            <Button type='primary' className={styles.btn} onClick={handleBeforeStartFlow}>保存并提交审核</Button>
+            {
+              (loading) => {
+                return (
+                  <Button
+                    type='primary'
+                    className={styles.btn}
+                    loading={loading}
+                  >保存并提交审核</Button>
+                )
+              }
+            }
           </StartFlow>
         </div>
       </div>
@@ -311,4 +327,4 @@ function StrategyDetail() {
   )
 }
 
-export default connect(({ purchaseStrategy }) => ({ state: purchaseStrategy }))(StrategyDetail);
+export default StrategyDetail;

@@ -3,8 +3,7 @@ import * as userAuth from './user';
 import { mainTabAction } from 'sei-utils';
 import { utils } from 'suid';
 import { target } from '../../config/proxy.config';
-const getUUID = utils.getUUID;
-
+const { getUUID, storage } = utils;
 export function CloseCurrent() {
   if (window.self.frameElement) {
     let currentId = window.self.frameElement.id;
@@ -37,7 +36,7 @@ export function openNewTab(uri, title, closeCurrent = false, id = undefined) {
       }
     }
   }
-  let url = uri.indexOf('http://') === 0 ? uri : "http://" + window.location.host + "/srm-ps-web/" + uri;
+  let url = uri.indexOf('http://') === 0 ? uri : "http://" + window.location.host + "/react-srm-ps-web/" + uri;
   let tab = {
     title: title,
     url: url,
@@ -146,6 +145,12 @@ export const getLocationHost = () => {
     return target
   }
   return host
+}
+
+export const getUserAccount = () => {
+  const  info = storage.sessionStorage.get('Authorization') || {};
+  const {account=""} = info
+  return account
 }
 
 export { default as request } from './request';

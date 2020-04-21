@@ -1,4 +1,4 @@
-import React, { createRef, useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { router } from 'dva';
 import {
   utils,
@@ -32,7 +32,7 @@ function ChangeStrategy({
   form
 }) {
   const { getFieldDecorator, getFieldValue } = form;
-  const formRef = createRef();
+  const formRef = useRef(null);
   const { query } = router.useLocation();
   const [dataSource, setDataSource] = useState([]);
   const [visible, setVisible] = useState(false);
@@ -40,6 +40,7 @@ function ChangeStrategy({
   const [loading, triggerLoading] = useState(true);
   const [currentId, setCurrentId] = useState('');
   const [currentCode, setCurrentCode] = useState('');
+  const [isInvalid, setIsInvalid] = useState({ name: '', state: false });
   const files = getFieldValue('changeFiles') || [];
   const allowUpload = files.length !== 1;
   async function initFommFieldsValuesAndTableDataSource() {
@@ -72,8 +73,8 @@ function ChangeStrategy({
         purchaseStrategyBegin,
         ...initialValues
       } = data;
-      const { form } = formRef.current
-      const { setFieldsValue } = form
+      const { form: childrenForm } = formRef.current
+      const { setFieldsValue } = childrenForm
       const mixinValues = {
         ...initialValues,
         submitName: submitList.map(item => item.userName),
@@ -93,6 +94,7 @@ function ChangeStrategy({
       setDataSource(addIdList);
       setCurrentId(id)
       setCurrentCode(code)
+      setIsInvalid({ name: invalid ? '（作废）' : '', state: invalid })
       triggerLoading(false);
       return
     }
@@ -323,11 +325,12 @@ function ChangeStrategy({
     <Spin spinning={loading} tip="处理中...">
       <div className={classnames([styles.header, styles.flexBetweenStart])}>
         <span className={styles.title}>
-          变更采购策略：{currentCode}
+          变更采购策略：{currentCode} {isInvalid.name}
         </span>
         <div>
           <Button className={styles.btn} onClick={handleBack}>返回</Button>
-          <Button onClick={showModal}>保存并提交审核</Button>
+          <Button className={styles.btn}>作废/取消作废</Button>
+          <Button onClick={showModal} type='primary'>保存并提交审核</Button>
         </div>
       </div>
       <ChangeForm
