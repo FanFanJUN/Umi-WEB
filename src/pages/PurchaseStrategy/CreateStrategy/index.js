@@ -1,65 +1,72 @@
 import React, { createRef, useState } from 'react';
 import { Button, Modal, message, Spin } from 'antd';
-import { utils } from 'suid';
+import { utils, WorkFlow } from 'suid';
 import StrategyForm from '../StrategyForm';
 import StrategyTable from '../StrategyTable';
 import classnames from 'classnames';
 import {
   savePurchaseStrategy,
+  savePurcahseAndApprove,
   strategyTableCreateLine,
   strategyTableLineRelevanceDocment
 } from '@/services/strategy';
 import { openNewTab } from '@/utils';
 import styles from './index.less';
+const { StartFlow } = WorkFlow;
 function CreateStrategy() {
   const formRef = createRef()
   const [dataSource, setDataSource] = useState([]);
   const [loading, triggerLoading] = useState(false);
+  // 格式化vo参数
+  async function formatSaveParams(val) {
+    let params = {}
+    const {
+      purchaseStrategyDate,
+      files,
+      sendList: sList,
+      submitList: smList,
+      ...otherData
+    } = val;
+    if (!!files) {
+      const filesIds = files.map((item) => {
+        const [res] = item.response;
+        const { id = null } = res;
+        return id
+      }).filter(_ => _);
+      const headerUUID = utils.getUUID();
+      const { success: ses } = await strategyTableLineRelevanceDocment({
+        id: headerUUID,
+        docIds: filesIds
+      })
+      params = {
+        attachment: ses ? headerUUID : null
+      }
+    }
+    const [begin, end] = purchaseStrategyDate;
+    const purchaseStrategyBegin = begin.format('YYYY-MM-DD HH:mm:ss')
+    const purchaseStrategyEnd = end.format('YYYY-MM-DD HH:mm:ss')
+    const accoutList = sList.map((item) => ({
+      userAccount: item
+    }))
+    const smAccountList = smList.map(item => ({ userAccount: item }))
+    params = {
+      ...params,
+      ...otherData,
+      sendList: accoutList,
+      submitList: smAccountList,
+      purchaseStrategyBegin,
+      purchaseStrategyEnd,
+      detailList: dataSource.map((item, key) => ({ ...item, lineNo: key + 1 }))
+    }
+    return params;
+  }
+  // 保存
   async function handleSave() {
     const { validateFieldsAndScroll } = formRef.current.form;
     validateFieldsAndScroll(async (err, val) => {
       if (!err) {
         triggerLoading(true)
-        const {
-          purchaseStrategyDate,
-          files,
-          sendList: sList,
-          submitList: smList = [],
-          ...otherData
-        } = val;
-        let params = {}
-        if (!!files) {
-          const filesIds = files.map((item) => {
-            const [res] = item.response;
-            const { id = null } = res;
-            return id
-          }).filter(_ => _);
-          const headerUUID = utils.getUUID();
-          const { success: ses } = await strategyTableLineRelevanceDocment({
-            id: headerUUID,
-            docIds: filesIds
-          })
-          params = {
-            attachment: ses ? headerUUID : null
-          }
-        }
-
-        const [begin, end] = purchaseStrategyDate;
-        const purchaseStrategyBegin = begin.format('YYYY-MM-DD HH:mm:ss')
-        const purchaseStrategyEnd = end.format('YYYY-MM-DD HH:mm:ss')
-        const accoutList = sList.map((item) => ({
-          userAccount: item
-        }))
-        const smAccountList = smList.map(item => ({ userAccount: item }))
-        params = {
-          ...params,
-          ...otherData,
-          sendList: accoutList,
-          submitList: smAccountList,
-          purchaseStrategyBegin,
-          purchaseStrategyEnd,
-          detailList: dataSource.map((item, key) => ({ ...item, lineNo: key + 1 }))
-        }
+        const params = await formatSaveParams(val);
         const { success, message: msg } = await savePurchaseStrategy(params)
         triggerLoading(false)
         if (success) {
@@ -67,8 +74,29 @@ function CreateStrategy() {
           return
         }
         message.error(msg)
-        // console.log(success, msg, data, other)
       }
+    })
+  }
+  // 保存并提交审核
+  async function handleBeforeStartFlow() {
+    return new Promise((resolve, reject) => {
+      const { validateFieldsAndScroll } = formRef.current.form;
+      validateFieldsAndScroll(async (err, val) => {
+        if (!err) {
+          const params = await formatSaveParams(val);
+          const { success, message: msg, data } = await savePurcahseAndApprove(params);
+          if (success) {
+            resolve({
+              success: true,
+              message: msg,
+              data: {
+                businessKey: data.id
+              }
+            })
+          }
+          reject(false)
+        }
+      })
     })
   }
   async function handleCreateLine(val, hide) {
@@ -176,6 +204,9 @@ function CreateStrategy() {
     }).filter(_ => _)
     setDataSource(filterDataSource);
   }
+  function handleComplete() {
+    openNewTab('purchase/strategy', '采购策略', true)
+  }
   function handleBack() {
     Modal.confirm({
       title: '返回提示',
@@ -196,7 +227,25 @@ function CreateStrategy() {
         <div>
           <Button className={styles.btn} onClick={handleBack}>返回</Button>
           <Button className={styles.btn} onClick={handleSave}>保存</Button>
-          <Button type='primary' className={styles.btn}>保存并提交审核</Button>
+          <StartFlow
+            style={{ display: 'inline-flex' }}
+            beforeStart={handleBeforeStartFlow}
+            startComplete={handleComplete}
+            businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyFlow"
+            typeId='94B53F78-7E24-11EA-A0BD-0242C0A8441A'
+          >
+            {
+              (loading) => {
+                return (
+                  <Button
+                    type='primary'
+                    className={styles.btn}
+                    loading={loading}
+                  >保存并提交审核</Button>
+                )
+              }
+            }
+          </StartFlow>
         </div>
       </div>
       <StrategyForm

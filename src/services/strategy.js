@@ -5,10 +5,12 @@ function createServiceRequest(option) {
         path: url,
         method="POST",
         headers,
-        params: data
+        params: data,
+        base=psBaseUrl
     } = option
+    const URI = `${base}${url}`
     return request({
-        url,
+        url: URI,
         method,
         headers,
         data,
@@ -18,50 +20,57 @@ function createServiceRequest(option) {
 
 // 获取采购策略列表数据源
 export const queryStrategyTableList = params => createServiceRequest({
-    path: `${psBaseUrl}/purchaseStrategyHeader/listByPage`,
+    path: '/purchaseStrategyHeader/listByPage',
     params
 })
 
 // 删除采购策略
 export const removeStrategyTableItem = params => createServiceRequest({
-  path: `${psBaseUrl}/purchaseStrategyHeader/deleteBatch`,
+  path: '/purchaseStrategyHeader/deleteBatch',
   params
 })
 
 // 保存采购策略
 
 export const savePurchaseStrategy = params => createServiceRequest({
-  path: `${psBaseUrl}/purchaseStrategyHeader/saveVo`,
+  path: '/purchaseStrategyHeader/saveVo',
   params
 })
 
 // 采购策略保存并提交审核
 export const savePurcahseAndApprove = params => createServiceRequest({
-  path: `${psBaseUrl}/purchaseStrategyHeader/saveAndApprove`,
+  path: '/purchaseStrategyHeader/saveAndApprove',
   params
 })
 
 // 采购策略行创建
 export const strategyTableCreateLine = params => createServiceRequest({
-  path: `${psBaseUrl}/purchaseStrategyDetail/check`,
+  path: '/purchaseStrategyDetail/check',
   params
 })
 
 
 // 关联创建行附件
 export const strategyTableLineRelevanceDocment = (params) => createServiceRequest({
-  path: `${psBaseUrl}/purchaseStrategyHeader/submitBusinessInfos`,
+  path: '/purchaseStrategyHeader/submitBusinessInfos',
   params
 })
 
 // 通过ID查询采购策略详情
 export const findStrategyDetailById = params => createServiceRequest({
-  path: `${psBaseUrl}/purchaseStrategyHeader/findEditVo`,
+  path: '/purchaseStrategyHeader/findEditVo',
   params
 })
 
 // 采购策略整单作废/取消作废
 export const changeInvalidState = params => createServiceRequest({
-  path: `${psBaseUrl}/purchaseStrategyHeader/invalidOrCancel`,
+  path: '/purchaseStrategyHeader/invalidOrCancel',
   params
+})
+
+// 通过采购策略列表code，查询流程id (businessKey)
+export const getBusinessKeyByListCode = params => createServiceRequest({
+  path: '/purchaseStrategyHeader/findFlowIdByPurchaseStrategyCode',
+  params,
+  method: 'GET'
 })

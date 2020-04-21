@@ -14,7 +14,6 @@ import {
 } from '@/services/strategy';
 import moment from 'moment';
 import { openNewTab } from '@/utils';
-import { psBaseUrl } from '@/utils/commonUrl';
 import styles from './index.less';
 const { StartFlow } = WorkFlow;
 function StrategyDetail() {
@@ -273,6 +272,9 @@ function StrategyDetail() {
       cancelText: '取消'
     })
   }
+  function handleComplete() {
+    openNewTab('purchase/strategy', '采购策略', true)
+  }
   useEffect(() => {
     initFommFieldsValuesAndTableDataSource()
   }, [])
@@ -288,12 +290,9 @@ function StrategyDetail() {
           <StartFlow
             style={{ display: 'inline-flex' }}
             beforeStart={handleBeforeStartFlow}
+            startComplete={handleComplete}
             businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyFlow"
-            // store={{
-            //   // baseUrl: "",
-            //   url: `${psBaseUrl}/purchaseStrategyFlow/startFlow`,
-            //   type: 'GET'
-            // }}
+            typeId='94B53F78-7E24-11EA-A0BD-0242C0A8441A'
           >
             {
               (loading) => {

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { ExtTable, WorkFlow } from 'suid';
+import { ExtTable, WorkFlow, ExtModal } from 'suid';
 import { Input, Button, message } from 'antd';
 import Header from '@/components/Header';
 import AdvancedForm from '@/components/AdvancedForm';
@@ -20,14 +20,15 @@ import {
   effectStatusProps
 } from '@/utils/commonProps';
 import {
-  removeStrategyTableItem
+  removeStrategyTableItem,
+  getBusinessKeyByListCode
 } from '@/services/strategy';
 import styles from './index.less';
 import classnames from 'classnames';
 import { useEffect } from 'react';
 import Modal from 'antd/es/modal';
 const { Search } = Input
-const { StartFlow } = WorkFlow;
+const { StartFlow, FlowHistory } = WorkFlow;
 const columns = [
   {
     title: '预警',
@@ -107,13 +108,15 @@ function PurchaseStategy() {
   const headerRef = useRef(null)
   const tableRef = useRef(null)
   const [selectedRowKeys, setRowKeys] = useState([]);
-  const [selectedRows, setRows] = useState([])
+  const [selectedRows, setRows] = useState([]);
   const [searchValue, setSearchValue] = useState({});
+  const [visible, triggerVisible] = useState(false);
   const [singleRow = {}] = selectedRows;
-  const { state: rowState, approvalState: rowApprovalState, changeable: rowChangeable, id :businessid } = singleRow;
-  const takeEffect = rowState === 'Effective'
+  const { state: rowState, approvalState: rowApprovalState, changeable: rowChangeable, id: businessId } = singleRow;
+  const takeEffect = rowState === 'Effective';
   const approvalEffect = rowApprovalState === 'Uncommitted';
-  const changeEffect = !rowChangeable
+  const approvaling = rowApprovalState === "InApproval";
+  const changeEffect = !rowChangeable;
   const multiple = selectedRowKeys.length > 1;
   const empty = selectedRowKeys.length === 0;
   const tableProps = {
@@ -283,6 +286,33 @@ function PurchaseStategy() {
     const [key] = selectedRowKeys;
     openNewTab(`purchase/strategy/detail?id=${key}`, '新增采购策略', true)
   }
+  function handleBeforeStartFlow() {
+    const [ item ] = selectedRows;
+    const { code } = item;
+    return new Promise(async (resolve, reject) => {
+      const { success, message: msg, data } = await getBusinessKeyByListCode({ code });
+      console.log(success, msg, data)
+      // if (success) {
+      //   resolve({
+      //     success: true,
+      //     message: msg,
+      //     data: {
+      //       businessKey: data.id
+      //     }
+      //   })
+      // }
+      // reject(false)
+    })
+  }
+  function handleComplete(info) {
+    console.log(info)
+  }
+  function showHistory() {
+    triggerVisible(true)
+  }
+  function hideHistory() {
+    triggerVisible(false)
+  }
   useEffect(() => {
     uploadTable()
   }, [searchValue])
@@ -292,13 +322,14 @@ function PurchaseStategy() {
         left={
           <>
             <Button type='primary' className={styles.btn} onClick={handleCreate}>新增</Button>
-            <Button disabled={multiple || empty} className={styles.btn} onClick={handleEditor}>编辑</Button>
-            <Button onClick={handleRemoveItem} disabled={empty} className={styles.btn}>删除</Button>
-            <Button disabled={multiple || empty} className={styles.btn} onClick={handleCheckDetail}>明细</Button>
+            <Button disabled={multiple || empty || approvaling} className={styles.btn} onClick={handleEditor}>编辑</Button>
+            <Button onClick={handleRemoveItem} disabled={empty || approvaling} className={styles.btn}>删除</Button>
+            <Button disabled={multiple || empty || approvaling} className={styles.btn} onClick={handleCheckDetail}>明细</Button>
             <StartFlow
+              beforeStart={handleBeforeStartFlow}
+              startComplete={handleComplete}
               style={{ display: 'inline-flex' }}
               businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyFlow"
-              businessKey={businessid}
             >
               {
                 (loading) => {
@@ -306,14 +337,14 @@ function PurchaseStategy() {
                     <Button
                       className={styles.btn}
                       loading={loading}
-                      disabled={multiple || empty} className={styles.btn}
+                      disabled={multiple || empty || approvaling} className={styles.btn}
                     >提交审核</Button>
                   )
                 }
               }
             </StartFlow>
-            <Button disabled={multiple || empty || approvalEffect} className={styles.btn}>审核历史</Button>
-            <Button disabled={multiple || empty || !takeEffect} className={styles.btn} onClick={handleChange}>变更</Button>
+            <Button disabled={multiple || empty || approvalEffect} className={styles.btn} onClick={showHistory}>审核历史</Button>
+            <Button disabled={multiple || empty || !takeEffect || approvaling} className={styles.btn} onClick={handleChange}>变更</Button>
             <Button disabled={multiple || empty || changeEffect} className={styles.btn}>变更历史</Button>
           </>
         }
@@ -345,6 +376,13 @@ function PurchaseStategy() {
         selectedRowKeys={selectedRowKeys}
         {...tableProps}
       />
+      <ExtModal
+        visible={visible}
+        onCancel={hideHistory}
+        footer={null}
+      >
+        <FlowHistory businessId={businessId} />
+      </ExtModal>
     </>
   )
 }
