@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { router } from 'dva';
 import {
   utils,
-  // WorkFlow
+  WorkFlow
 } from 'suid';
 import { Button, Modal, message, Spin, Row, Input, Form, Col } from 'antd';
 import ChangeForm from '../ChangeForm';
@@ -10,7 +10,6 @@ import StrategyTable from '../StrategyTable';
 import { ComboAttachment } from '@/components';
 import classnames from 'classnames';
 import {
-  savePurchaseStrategy,
   findStrategyDetailById,
   savePurcahseAndApprove,
   strategyTableCreateLine,
@@ -19,7 +18,7 @@ import {
 import moment from 'moment';
 import { openNewTab } from '@/utils';
 import styles from './index.less';
-// const { StartFlow } = WorkFlow;
+const { StartFlow } = WorkFlow;
 const formLayout = {
   labelCol: {
     span: 8
@@ -177,41 +176,25 @@ function ChangeStrategy({
   }
   // 保存并提交审核
   async function handleBeforeStartFlow() {
-    const changeParams = await formatChangeReasonPamras();
-    if (!changeParams) return;
-    const { validateFieldsAndScroll } = formRef.current.form;
-    validateFieldsAndScroll(async (err, val) => {
-      if (!err) {
-        triggerLoading(true)
-        const params = await formatSaveParams(val);
-        const { success, message: msg, data } = await savePurcahseAndApprove(params);
-        if (success) {
-          triggerLoading(false)
-        }
-        triggerLoading(false)
-      }
-    })
     return new Promise((resolve, reject) => {
-      reject()
-    })
-  }
-  // 保存
-  async function handleSave() {
-    const changeParams = await formatChangeReasonPamras();
-    if (!changeParams) return;
-    const { validateFieldsAndScroll } = formRef.current.form;
-    validateFieldsAndScroll(async (err, val) => {
-      if (!err) {
-        triggerLoading(true)
-        const params = await formatSaveParams(val)
-        const { success, message: msg, } = await savePurchaseStrategy(params)
-        triggerLoading(false)
-        if (success) {
-          openNewTab('purchase/strategy', '采购策略', true)
-          return
+      const { validateFieldsAndScroll } = formRef.current.form;
+      validateFieldsAndScroll(async (err, val) => {
+        if (!err) {
+          const params = await formatSaveParams(val);
+          const { success, message: msg, data } = await savePurcahseAndApprove(params);
+          if (success) {
+            resolve({
+              success: true,
+              message: msg,
+              data: {
+                businessKey: data.id
+              }
+            })
+            // return
+          }
+          reject(false)
         }
-        message.success(msg)
-      }
+      })
     })
   }
   async function handleCreateLine(val, hide) {
@@ -318,9 +301,12 @@ function ChangeStrategy({
       })
     })
   }
+  function handleComplete() {
+    openNewTab('purchase/strategy', '采购策略', true)
+  }
   useEffect(() => {
     initFommFieldsValuesAndTableDataSource()
-  })
+  }, [])
   return (
     <Spin spinning={loading} tip="处理中...">
       <div className={classnames([styles.header, styles.flexBetweenStart])}>
@@ -354,6 +340,30 @@ function ChangeStrategy({
         onCancel={hideModal}
         okText="提交审核"
         cancelText='取消'
+        footer={
+          <>
+            <Button onClick={hideModal}>取消</Button>
+            <StartFlow
+              style={{ display: 'inline-flex' }}
+              beforeStart={handleBeforeStartFlow}
+              startComplete={handleComplete}
+              businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyFlow"
+              typeId='94B53F78-7E24-11EA-A0BD-0242C0A8441A'
+            >
+              {
+                (loading) => {
+                  return (
+                    <Button
+                      type='primary'
+                      className={styles.btn}
+                      loading={loading}
+                    >保存并提交审核</Button>
+                  )
+                }
+              }
+            </StartFlow>
+          </>
+        }
       >
         <Row>
           <Col span={18}>

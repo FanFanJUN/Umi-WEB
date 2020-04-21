@@ -51,7 +51,7 @@ export const strategyTableCreateLine = params => createServiceRequest({
 
 // 保存批量导入采购策略行
 export const saveStrategyTableImportData = params => createServiceRequest({
-  path: '/purchaseStrategyDetail/saveImportData',
+  path: '/purchaseStrategyDetail/importFromExcel',
   params
 })
 
