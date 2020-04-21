@@ -8,6 +8,7 @@ import {
   savePurchaseStrategy,
   savePurcahseAndApprove,
   strategyTableCreateLine,
+  saveStrategyTableImportData,
   strategyTableLineRelevanceDocment
 } from '@/services/strategy';
 import { openNewTab } from '@/utils';
@@ -99,6 +100,7 @@ function CreateStrategy() {
       })
     })
   }
+  // 采购策略行创建
   async function handleCreateLine(val, hide) {
     const { files = [], pricingDateList = [], adjustScopeListCode = [] } = val;
     const [fileInfo = {}] = files;
@@ -140,6 +142,19 @@ function CreateStrategy() {
     }
     triggerLoading(false)
     message.error(msg)
+  }
+  async function handleImportData(items) {
+    triggerLoading(true)
+    const { success, data, message: msg } = await saveStrategyTableImportData({ ios: items });
+    triggerLoading(false)
+    if(success) {
+      const newSource = [...dataSource, ...data].map((item, key) => ({
+        ...item,
+        localId: !!item.id ? item.id : `${key}-dataSource`
+      }));
+      setDataSource(newSource)
+      message.success(msg)
+    }
   }
   async function handleEditorLine(val, keys, hide) {
     const [localId] = keys;
@@ -255,6 +270,7 @@ function CreateStrategy() {
         onCreateLine={handleCreateLine}
         onRemove={handleRemoveLines}
         onEditor={handleEditorLine}
+        onImportData={handleImportData}
         loading={loading}
         dataSource={dataSource}
       />

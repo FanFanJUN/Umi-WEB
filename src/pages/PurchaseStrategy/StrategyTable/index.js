@@ -82,6 +82,7 @@ function StrategyTable({
   onCreateLine = () => null,
   onRemove = () => null,
   onEditor = () => null,
+  onImportData = () => null,
   type = 'add'
 }) {
   const commonFormRef = createRef();
@@ -409,7 +410,7 @@ function StrategyTable({
             return item.map(importDataValidate)
           }}
           importFunc={(item) => {
-            console.log(item)
+            onImportData(item)
           }}
         >
         </DataImport>

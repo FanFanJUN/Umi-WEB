@@ -1,27 +1,27 @@
 import { request } from '@/utils';
 import { psBaseUrl } from '@/utils/commonUrl';
 function createServiceRequest(option) {
-    const {
-        path: url,
-        method="POST",
-        headers,
-        params: data,
-        base=psBaseUrl
-    } = option
-    const URI = `${base}${url}`
-    return request({
-        url: URI,
-        method,
-        headers,
-        data,
-        params: method === 'GET' ? data : null
-    })
+  const {
+    path: url,
+    method = "POST",
+    headers,
+    params: data,
+    base = psBaseUrl
+  } = option
+  const URI = `${base}${url}`
+  return request({
+    url: URI,
+    method,
+    headers,
+    data,
+    params: method === 'GET' ? data : null
+  })
 }
 
 // 获取采购策略列表数据源
 export const queryStrategyTableList = params => createServiceRequest({
-    path: '/purchaseStrategyHeader/listByPage',
-    params
+  path: '/purchaseStrategyHeader/listByPage',
+  params
 })
 
 // 删除采购策略
@@ -49,6 +49,11 @@ export const strategyTableCreateLine = params => createServiceRequest({
   params
 })
 
+// 保存批量导入采购策略行
+export const saveStrategyTableImportData = params => createServiceRequest({
+  path: '/purchaseStrategyDetail/saveImportData',
+  params
+})
 
 // 关联创建行附件
 export const strategyTableLineRelevanceDocment = (params) => createServiceRequest({
