@@ -45,6 +45,11 @@ export default [
         path: '/purchase/strategy/change/history',
         component: './PurchaseStrategy/ChangeStrategyHistory',
         title: '采购策略变更历史'
+      },
+      {
+        path: '/purchase/strategy/approve',
+        component: './PurchaseStrategy/ApprovePage',
+        title: '采购策略审批'
       }
     ],
   }

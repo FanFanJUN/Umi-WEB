@@ -4,7 +4,7 @@ import { mainTabAction } from 'sei-utils';
 import { utils } from 'suid';
 import { target } from '../../config/proxy.config';
 const { getUUID, storage } = utils;
-export function CloseCurrent() {
+export function closeCurrent() {
   if (window.self.frameElement) {
     let currentId = window.self.frameElement.id;
     if (window.top.homeView && (typeof window.top.homeView.getTabPanel) === 'function') {

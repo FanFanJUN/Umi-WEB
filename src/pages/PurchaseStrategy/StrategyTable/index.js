@@ -400,7 +400,7 @@ function StrategyTable({
               key: 'contract',
             },
           ]}
-          // uploadBtn={()=><Button>批量导入</Button>}
+          uploadBtnText='批量导入'
           validateAll={false}
           tableProps={{
             columns: importColumns

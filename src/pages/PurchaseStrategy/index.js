@@ -112,7 +112,7 @@ function PurchaseStategy() {
   const [searchValue, setSearchValue] = useState({});
   const [visible, triggerVisible] = useState(false);
   const [singleRow = {}] = selectedRows;
-  const { state: rowState, approvalState: rowApprovalState, changeable: rowChangeable, id: businessId } = singleRow;
+  const { state: rowState, approvalState: rowApprovalState, changeable: rowChangeable, flowId: businessId } = singleRow;
   const takeEffect = rowState === 'Effective';
   const approvalEffect = rowApprovalState === 'Uncommitted';
   const approvaling = rowApprovalState === "InApproval";
