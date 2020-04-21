@@ -174,8 +174,33 @@ function ChangeStrategy({
     }
     return params;
   }
+  /**
+   * // 保存并提交审核
+  async function handleBeforeStartFlow() {
+    const changeParams = await formatChangeReasonPamras();
+    if (!changeParams) return;
+    const { validateFieldsAndScroll } = formRef.current.form;
+    validateFieldsAndScroll(async (err, val) => {
+      if (!err) {
+        triggerLoading(true)
+        const params = await formatSaveParams(val);
+        const { success, message: msg, data } = await savePurcahseAndApprove(params);
+        if (success) {
+          triggerLoading(false)
+        }
+        triggerLoading(false)
+      }
+    })
+    return new Promise((resolve, reject) => {
+      reject()
+    })
+  }
+
+   */
   // 保存并提交审核
   async function handleBeforeStartFlow() {
+    const changeParams = await formatChangeReasonPamras();
+    if(!changeParams) return
     return new Promise((resolve, reject) => {
       const { validateFieldsAndScroll } = formRef.current.form;
       validateFieldsAndScroll(async (err, val) => {
