@@ -13,6 +13,7 @@ import {
   findStrategyDetailById,
   savePurcahseAndApprove,
   strategyTableCreateLine,
+  saveStrategyTableImportData,
   strategyTableLineRelevanceDocment
 } from '@/services/strategy';
 import moment from 'moment';
@@ -200,7 +201,7 @@ function ChangeStrategy({
   // 保存并提交审核
   async function handleBeforeStartFlow() {
     const changeParams = await formatChangeReasonPamras();
-    if(!changeParams) return
+    if (!changeParams) return
     return new Promise((resolve, reject) => {
       const { validateFieldsAndScroll } = formRef.current.form;
       validateFieldsAndScroll(async (err, val) => {
@@ -329,6 +330,20 @@ function ChangeStrategy({
   function handleComplete() {
     openNewTab('purchase/strategy', '采购策略', true)
   }
+  // 批量导入
+  async function handleImportData(items) {
+    triggerLoading(true)
+    const { success, data, message: msg } = await saveStrategyTableImportData({ ios: items });
+    triggerLoading(false)
+    if (success) {
+      const newSource = [...dataSource, ...data].map((item, key) => ({
+        ...item,
+        localId: !!item.id ? item.id : `${key}-dataSource`
+      }));
+      setDataSource(newSource)
+      message.success(msg)
+    }
+  }
   useEffect(() => {
     initFommFieldsValuesAndTableDataSource()
   }, [])
@@ -353,6 +368,7 @@ function ChangeStrategy({
         onCreateLine={handleCreateLine}
         onRemove={handleRemoveLines}
         onEditor={handleEditorLine}
+        onImportData={handleImportData}
         dataSource={dataSource}
         type="editor"
         loading={loading}

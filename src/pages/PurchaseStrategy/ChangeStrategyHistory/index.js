@@ -17,9 +17,9 @@ function ChangeStrategyHistory() {
   )
   const tableProps = {
     store: {
-      url: `${psBaseUrl}/PurchaseStrategyModifyHistory/listByPage`,
+      url: `${psBaseUrl}/purchaseStrategyModifyHeader/listByPage`,
       params: {
-        Q_EQ_id: query.id ? query.id : ''
+        Q_EQ_purchaseStrategyCode: query.code ? query.code : ''
       }
     },
     columns: [
@@ -65,7 +65,7 @@ function ChangeStrategyHistory() {
     <div>
       <div className={classnames([styles.header, styles.flexBetweenStart])}>
         <span className={styles.title}>
-          采购策略审批
+          采购策略变更历史
           </span>
         <div>
           <Button className={styles.btn} onClick={handleClose}>关闭</Button>

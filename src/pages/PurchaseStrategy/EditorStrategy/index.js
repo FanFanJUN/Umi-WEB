@@ -10,6 +10,7 @@ import {
   findStrategyDetailById,
   savePurcahseAndApprove,
   strategyTableCreateLine,
+  saveStrategyTableImportData,
   strategyTableLineRelevanceDocment
 } from '@/services/strategy';
 import moment from 'moment';
@@ -40,7 +41,7 @@ function StrategyDetail() {
         changeVo,
         creatorId,
         detailList,
-        submitList,
+        submitList=[],
         attachment,
         changeable,
         tenantCode,
@@ -89,8 +90,8 @@ function StrategyDetail() {
     const {
       purchaseStrategyDate,
       files,
-      sendList: sList,
-      submitList: smList,
+      sendList: sList=[],
+      submitList: smList=[],
       ...otherData
     } = val;
     if (!!files) {
@@ -196,6 +197,7 @@ function StrategyDetail() {
       })
     })
   }
+  // 标的物行创建
   async function handleCreateLine(val, hide) {
     const params = await formatLineParams(val);
     const { data, success, message: msg } = await strategyTableCreateLine(params);
@@ -211,6 +213,7 @@ function StrategyDetail() {
     }
     message.error(msg)
   }
+  // 标的物行编辑
   async function handleEditorLine(val, keys, hide) {
     triggerLoading(true)
     const params = await formatLineParams(val);
@@ -238,6 +241,7 @@ function StrategyDetail() {
     triggerLoading(false)
     message.error(msg)
   }
+  // 点击返回采购策略列表
   function handleBack() {
     Modal.confirm({
       title: '返回提示',
@@ -272,6 +276,21 @@ function StrategyDetail() {
       cancelText: '取消'
     })
   }
+  // 批量导入
+  async function handleImportData(items) {
+    triggerLoading(true)
+    const { success, data, message: msg } = await saveStrategyTableImportData({ ios: items });
+    triggerLoading(false)
+    if(success) {
+      const newSource = [...dataSource, ...data].map((item, key) => ({
+        ...item,
+        localId: !!item.id ? item.id : `${key}-dataSource`
+      }));
+      setDataSource(newSource)
+      message.success(msg)
+    }
+  }
+  // 提交审核流程完毕回调
   function handleComplete() {
     openNewTab('purchase/strategy', '采购策略', true)
   }
@@ -318,6 +337,7 @@ function StrategyDetail() {
         onCreateLine={handleCreateLine}
         onRemove={handleRemoveLines}
         onEditor={handleEditorLine}
+        onImportData={handleImportData}
         dataSource={dataSource}
         type="editor"
         loading={loading}

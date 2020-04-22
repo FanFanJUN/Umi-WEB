@@ -24,8 +24,8 @@ function CreateStrategy() {
     const {
       purchaseStrategyDate,
       files,
-      sendList: sList,
-      submitList: smList,
+      sendList: sList=[],
+      submitList: smList=[],
       ...otherData
     } = val;
     if (!!files) {
@@ -143,6 +143,7 @@ function CreateStrategy() {
     triggerLoading(false)
     message.error(msg)
   }
+  // 批量导入
   async function handleImportData(items) {
     triggerLoading(true)
     const { success, data, message: msg } = await saveStrategyTableImportData({ ios: items });

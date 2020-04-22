@@ -20,8 +20,9 @@ import {
   effectStatusProps
 } from '@/utils/commonProps';
 import {
+  getBusinessKeyByListId,
   removeStrategyTableItem,
-  getBusinessKeyByListCode
+  getBusinessKeyByListCode,
 } from '@/services/strategy';
 import styles from './index.less';
 import classnames from 'classnames';
@@ -113,12 +114,13 @@ function PurchaseStategy() {
   const [visible, triggerVisible] = useState(false);
   const [singleRow = {}] = selectedRows;
   const { state: rowState, approvalState: rowApprovalState, changeable: rowChangeable, flowId: businessId } = singleRow;
+  /* 按钮禁用状态控制 */
   const takeEffect = rowState === 'Effective';
   const approvalEffect = rowApprovalState === 'Uncommitted';
   const approvaling = rowApprovalState === "InApproval";
-  const changeEffect = !rowChangeable;
   const multiple = selectedRowKeys.length > 1;
   const empty = selectedRowKeys.length === 0;
+  const approvalFinish = rowApprovalState === 'Finish';
   const tableProps = {
     store: {
       url: `${psBaseUrl}/purchaseStrategyHeader/listByPage`,
@@ -286,32 +288,34 @@ function PurchaseStategy() {
     const [key] = selectedRowKeys;
     openNewTab(`purchase/strategy/detail?id=${key}`, '新增采购策略', true)
   }
+  // 启动审核流程
   function handleBeforeStartFlow() {
-    const [ item ] = selectedRows;
-    const { code } = item;
+    const [item] = selectedRows;
+    const { flowId } = item;
     return new Promise(async (resolve, reject) => {
-      const { success, message: msg, data } = await getBusinessKeyByListCode({ code });
-      console.log(success, msg, data)
-      // if (success) {
-      //   resolve({
-      //     success: true,
-      //     message: msg,
-      //     data: {
-      //       businessKey: data.id
-      //     }
-      //   })
-      // }
-      // reject(false)
+      resolve({
+        success: true,
+        message: 'success',
+        data: {
+          businessKey: flowId
+        }
+      })
+      reject(false)
     })
   }
   function handleComplete(info) {
-    console.log(info)
+    tableRef.current.remoteDataRefresh()
   }
   function showHistory() {
     triggerVisible(true)
   }
   function hideHistory() {
     triggerVisible(false)
+  }
+  function handleCheckChangeHistory() {
+    const [row] = selectedRows
+    const { code } = row;
+    openNewTab(`purchase/strategy/change/history?code=${code}`, false, '变更历史')
   }
   useEffect(() => {
     uploadTable()
@@ -344,8 +348,8 @@ function PurchaseStategy() {
               }
             </StartFlow>
             <Button disabled={multiple || empty || approvalEffect} className={styles.btn} onClick={showHistory}>审核历史</Button>
-            <Button disabled={multiple || empty || !takeEffect || approvaling} className={styles.btn} onClick={handleChange}>变更</Button>
-            <Button disabled={multiple || empty || changeEffect} className={styles.btn}>变更历史</Button>
+            <Button disabled={multiple || empty || !takeEffect || approvaling || !approvalFinish} className={styles.btn} onClick={handleChange}>变更</Button>
+            <Button disabled={multiple || empty || !rowChangeable} className={styles.btn} onClick={handleCheckChangeHistory}>变更历史</Button>
           </>
         }
         right={
@@ -369,7 +373,9 @@ function PurchaseStategy() {
         showSearch={false}
         ref={tableRef}
         rowKey={(item) => item.id}
-        checkbox={true}
+        checkbox={{
+          multiSelect: false
+        }}
         remotePaging={true}
         ellipsis={false}
         onSelectRow={handleSelectedRows}
@@ -380,6 +386,7 @@ function PurchaseStategy() {
         visible={visible}
         onCancel={hideHistory}
         footer={null}
+        width={'80vw'}
       >
         <FlowHistory businessId={businessId} />
       </ExtModal>

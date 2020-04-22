@@ -73,9 +73,24 @@ export const changeInvalidState = params => createServiceRequest({
   params
 })
 
+// 变更历史、审核历史界面获取流程id
 // 通过采购策略列表code，查询流程id (businessKey)
 export const getBusinessKeyByListCode = params => createServiceRequest({
   path: '/purchaseStrategyHeader/findFlowIdByPurchaseStrategyCode',
   params,
   method: 'GET'
 })
+
+// 通过采购策略列表ID，查询流程ID
+export const getBusinessKeyByListId = params => createServiceRequest({
+  path: '/purchaseStrategyHeader/approve',
+  params,
+  method: 'GET'
+})
+
+// 根据流程id查询采购策略Vo
+  export const getPurchaseStrategyVoByFlowId = params => createServiceRequest({
+    path: '/purchaseStrategyHeader/findVoByFlowId',
+    params,
+    method: 'GET'
+  })

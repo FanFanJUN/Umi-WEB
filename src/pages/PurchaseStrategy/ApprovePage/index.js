@@ -6,7 +6,7 @@ import StrategyForm from '../StrategyForm';
 import StrategyTable from '../StrategyTable';
 import classnames from 'classnames';
 import {
-  findStrategyDetailById
+  getPurchaseStrategyVoByFlowId
 } from '@/services/strategy';
 import { closeCurrent } from '../../../utils';
 import moment from 'moment';
@@ -20,7 +20,8 @@ function ApprovePage() {
   const [loading, triggerLoading] = useState(true);
   const { id: businessId, taskId, instanceId } = query;
   async function initFommFieldsValuesAndTableDataSource() {
-    const { data, success, message: msg } = await findStrategyDetailById(query);
+    const { id: flowId } = query;
+    const { data, success, message: msg } = await getPurchaseStrategyVoByFlowId({ id: flowId });
     if (success) {
       const {
         id,
@@ -96,6 +97,7 @@ function ApprovePage() {
         businessId={businessId}
         taskId={taskId}
         instanceId={instanceId}
+        submitComplete={closeCurrent}
       >
         <Spin spinning={loading}>
           <StrategyForm
