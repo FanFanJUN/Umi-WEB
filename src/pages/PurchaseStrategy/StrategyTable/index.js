@@ -83,6 +83,7 @@ function StrategyTable({
   onRemove = () => null,
   onEditor = () => null,
   onImportData = () => null,
+  onInvalidChange = () => null,
   type = 'add'
 }) {
   const commonFormRef = createRef();
@@ -167,6 +168,17 @@ function StrategyTable({
       dataIndex: 'remark'
     }
   ].map(item => ({ ...item, align: 'center' }));
+  const changeColumns = [
+    {
+      title: '是否作废',
+      dataIndex: 'invalid',
+      render(text) {
+        return text ? '是' : '否'
+      },
+      align: 'center'
+    },
+    ...columns
+  ]
   useLayoutEffect(() => {
     if (dataSource.length === 0) {
       cleanSelectedRecord()
@@ -174,9 +186,6 @@ function StrategyTable({
   }, [dataSource])
   // 记录列表选中
   function handleSelectedRows(rowKeys, rowItems) {
-    console.log('dataSource', dataSource)
-    console.log('rowKeys', rowKeys)
-    console.log('rowItems', rowItems)
     setRowKeys(rowKeys)
     const rows = dataSource.filter(i => {
       return rowKeys.findIndex(find => i.localId === find) !== -1
@@ -220,6 +229,9 @@ function StrategyTable({
     }
     onEditor(val, selectedRowKeys, hideModal)
     cleanSelectedRecord()
+  }
+  function handleLineInvalidChange() {
+    onInvalidChange({ids:selectedRowKeys})
   }
   // 处理删除行
   function handleRemove() {
@@ -388,6 +400,10 @@ function StrategyTable({
       <Button type='primary' className={styles.btn} onClick={() => showModal()}>新增</Button>
       <Button className={styles.btn} onClick={() => showModal('editor')} disabled={disableEditor}>编辑</Button>
       <Button className={styles.btn} disabled={disableRemove} onClick={handleRemove}>删除</Button>
+      {
+        type === 'change' ? 
+          <Button className={styles.btn} onClick={handleLineInvalidChange} disabled={disableRemove}>作废/取消作废</Button> : null
+      }
       <div style={{ display: 'inline-block' }}>
         <DataImport
           templateFileList={[
@@ -425,7 +441,7 @@ function StrategyTable({
           toolBar={{
             left: left
           }}
-          columns={columns}
+          columns={type==='change' ? changeColumns : columns}
           loading={loading}
           showSearch={true}
           searchPlaceHolder='请输入物料分类查询'

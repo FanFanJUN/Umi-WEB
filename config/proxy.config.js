@@ -1,5 +1,5 @@
-// export const target = 'http://10.8.4.102:8088';
-export const target = 'http://10.4.69.39:8100';
+export const target = 'http://10.8.4.102:8088';
+// export const target = 'http://10.4.69.39:8100';
 
 export default {
   '/mocker.api': {

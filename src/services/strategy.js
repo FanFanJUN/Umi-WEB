@@ -68,8 +68,14 @@ export const findStrategyDetailById = params => createServiceRequest({
 })
 
 // 采购策略整单作废/取消作废
-export const changeInvalidState = params => createServiceRequest({
+export const changeOwnInvalidState = params => createServiceRequest({
   path: '/purchaseStrategyHeader/invalidOrCancel',
+  params
+})
+
+// 采购策略标的物行作废
+export const changeLineInvalidState = params => createServiceRequest({
+  path: '/purchaseStrategyDetail/invalidOrCancel',
   params
 })
 

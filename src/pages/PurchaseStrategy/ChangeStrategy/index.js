@@ -10,6 +10,8 @@ import StrategyTable from '../StrategyTable';
 import { ComboAttachment } from '@/components';
 import classnames from 'classnames';
 import {
+  changeOwnInvalidState,
+  changeLineInvalidState,
   findStrategyDetailById,
   savePurcahseAndApprove,
   strategyTableCreateLine,
@@ -175,29 +177,6 @@ function ChangeStrategy({
     }
     return params;
   }
-  /**
-   * // 保存并提交审核
-  async function handleBeforeStartFlow() {
-    const changeParams = await formatChangeReasonPamras();
-    if (!changeParams) return;
-    const { validateFieldsAndScroll } = formRef.current.form;
-    validateFieldsAndScroll(async (err, val) => {
-      if (!err) {
-        triggerLoading(true)
-        const params = await formatSaveParams(val);
-        const { success, message: msg, data } = await savePurcahseAndApprove(params);
-        if (success) {
-          triggerLoading(false)
-        }
-        triggerLoading(false)
-      }
-    })
-    return new Promise((resolve, reject) => {
-      reject()
-    })
-  }
-
-   */
   // 保存并提交审核
   async function handleBeforeStartFlow() {
     const changeParams = await formatChangeReasonPamras();
@@ -344,6 +323,42 @@ function ChangeStrategy({
       message.success(msg)
     }
   }
+  // 整单作废
+  function handleChangeOwnInvalidState() {
+    Modal.confirm({
+      title: '整单作废',
+      content: '是否确定作废?',
+      okText: '确定',
+      cancelText: '取消',
+      onOk: async () => {
+        const { success, message: msg } = await changeOwnInvalidState(query);
+        if(success) {
+          message.success(msg)
+          initFommFieldsValuesAndTableDataSource()
+          return
+        }
+        message.error(msg)
+      }
+    })
+  }
+  // 标的物行作废
+  function handleChangeLineInvalidState(id) {
+    Modal.confirm({
+      title: '整单作废',
+      content: '是否确定作废?',
+      okText: '确定',
+      cancelText: '取消',
+      onOk: async () => {
+        const { success, message: msg } = await changeLineInvalidState(id);
+        if(success) {
+          message.success(msg)
+          initFommFieldsValuesAndTableDataSource()
+          return
+        }
+        message.error(msg)
+      }
+    })
+  }
   useEffect(() => {
     initFommFieldsValuesAndTableDataSource()
   }, [])
@@ -355,22 +370,23 @@ function ChangeStrategy({
         </span>
         <div>
           <Button className={styles.btn} onClick={handleBack}>返回</Button>
-          <Button className={styles.btn}>作废/取消作废</Button>
+          <Button className={styles.btn} onClick={handleChangeOwnInvalidState}>作废/取消作废</Button>
           <Button onClick={showModal} type='primary'>保存并提交审核</Button>
         </div>
       </div>
       <ChangeForm
         wrappedComponentRef={formRef}
         initialValue={initValues}
-        type='editor'
+        type='change'
       />
       <StrategyTable
         onCreateLine={handleCreateLine}
         onRemove={handleRemoveLines}
         onEditor={handleEditorLine}
         onImportData={handleImportData}
+        onInvalidChange={handleChangeLineInvalidState}
         dataSource={dataSource}
-        type="editor"
+        type="change"
         loading={loading}
       />
       <Modal
