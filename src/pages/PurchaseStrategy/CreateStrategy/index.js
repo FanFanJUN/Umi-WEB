@@ -5,7 +5,6 @@ import StrategyForm from '../StrategyForm';
 import StrategyTable from '../StrategyTable';
 import classnames from 'classnames';
 import {
-  savePurchaseStrategy,
   savePurcahseAndApprove,
   strategyTableCreateLine,
   saveStrategyTableImportData,
@@ -68,7 +67,7 @@ function CreateStrategy() {
       if (!err) {
         triggerLoading(true)
         const params = await formatSaveParams(val);
-        const { success, message: msg } = await savePurchaseStrategy(params)
+        const { success, message: msg } = await savePurcahseAndApprove(params)
         triggerLoading(false)
         if (success) {
           openNewTab('purchase/strategy', '采购策略', true)

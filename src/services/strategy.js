@@ -43,6 +43,12 @@ export const savePurcahseAndApprove = params => createServiceRequest({
   params
 })
 
+// 变更采购策略保存并提交审核
+export const changePurchaseAndApprove = params => createServiceRequest({
+  path: '/purchaseStrategyHeader/changeAndApprove',
+  params
+})
+
 // 采购策略行创建
 export const strategyTableCreateLine = params => createServiceRequest({
   path: '/purchaseStrategyDetail/check',
@@ -95,8 +101,22 @@ export const getBusinessKeyByListId = params => createServiceRequest({
 })
 
 // 根据流程id查询采购策略Vo
-  export const getPurchaseStrategyVoByFlowId = params => createServiceRequest({
-    path: '/purchaseStrategyHeader/findVoByFlowId',
-    params,
-    method: 'GET'
-  })
+export const getPurchaseStrategyVoByFlowId = params => createServiceRequest({
+  path: '/purchaseStrategyHeader/findVoByFlowId',
+  params,
+  method: 'GET'
+})
+
+// 删除采购策略变更历史
+export const removePurchaseStrategyChangeHistory = params => createServiceRequest({
+  path: '/purchaseStrategyModifyHeader/deleteChange',
+  params,
+  method: 'GET'
+})
+
+// 变更策略审批获取Vo参数
+export const getPurchaseStrategyChangeVoByFlowId = params => createServiceRequest({
+  path: '/purchaseStrategyHeader/findChangeVoByFlowId',
+  params,
+  method: 'GET'
+})

@@ -1,6 +1,6 @@
 import React, { forwardRef, useState, useEffect } from 'react';
 import { ComboGrid as Grid, ComboList as List, ComboTree as Tree, Attachment, utils } from 'suid';
-import { Select } from 'antd'
+import { Select, Spin } from 'antd'
 const { Option } = Select;
 const { request } = utils;
 export const ComboGrid = forwardRef(({
@@ -84,53 +84,63 @@ export const MixinSelect = forwardRef(({
 
 // 附件管理MixinComponent
 export const ComboAttachment = forwardRef(({
-  onChange=() => null,
-  value =[],
+  onChange = () => null,
+  value = [],
   attachment = null,
   ...props
 }, ref) => {
   const [fileList, setFileList] = useState([]);
-  useEffect(()=>{
-    if(!!attachment) {
+  const [loading, triggerLoading] = useState(false)
+  useEffect(() => {
+    if (!!attachment) {
+      triggerLoading(true)
       request({
         url: '/edm-service/getEntityDocumentInfos',
         params: { entityId: attachment },
         method: 'POST'
-      }).then((response)=> {
+      }).then((response) => {
+        triggerLoading(false)
         const { data, success } = response;
-        const files = data.map((item, k)=>({
-          ...item,
-          name: item.fileName,
-          response: [data[k]],
-          status: 'done'
-        }))
-        if(success) {
+        if (success && !!data) {
+          const files = data.map((item, k) => ({
+            ...item,
+            name: item.fileName,
+            response: [data[k]],
+            status: 'done'
+          }))
           setFileList(files)
           onChange(files)
+          return
         }
+        triggerLoading(false)
+        setFileList([])
+        onChange([])
       })
     }
-  },[attachment])
+  }, [attachment])
   return (
-    <Attachment
-      fileList={fileList}
-      ref={ref}
-      onDeleteFile={(file)=> {
-        const [ info ] = file;
-        const { id } = info;
-        const filter = fileList.filter((item)=> {
-          const [ one ] = item.response;
-          const { id: key } = one;
-          return key !== id
-        })
-        setFileList(filter)
-        onChange(filter)
-      }}
-      onChange={(infos)=> {
-        setFileList(infos)
-        onChange(infos)
-      }}
-      {...props}
-    />
+    <Spin spinning={loading}>
+      <Attachment
+        fileList={fileList}
+        ref={ref}
+        onDeleteFile={(file) => {
+          const [info] = file;
+          const { id } = info;
+          const filter = fileList.filter((item) => {
+            const { response = [] } = item
+            const [one = {}] = response;
+            const { id: key = '' } = one;
+            return key !== id
+          })
+          setFileList(filter)
+          onChange(filter)
+        }}
+        onChange={(infos) => {
+          setFileList(infos)
+          onChange(infos)
+        }}
+        {...props}
+      />
+    </Spin>
   )
 })

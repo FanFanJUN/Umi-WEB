@@ -102,59 +102,79 @@ function StrategyTable({
     {
       title: '物料分类',
       dataIndex: 'materialClassificationName'
-    }, {
+    },
+    {
       title: '预计需求规模（数量）',
       dataIndex: 'expectedDemandScaleAmount'
-    }, {
+    },
+    {
       title: '预计需求规模（万元）',
       dataIndex: 'expectedDemandScalePrice'
-    }, {
+    },
+    {
+      title: '币种',
+      dataIndex: 'currencyName'
+    },
+    {
       title: '适应范围',
       dataIndex: 'adjustScopeList',
       render(text = []) {
         return text.map(item => item.name).join('，')
       }
-    }, {
+    },
+    {
       title: '采购方式',
       dataIndex: 'purchaseTypeName'
-    }, {
+    },
+    {
       title: '规划供应资源数量',
       dataIndex: 'planSupplyResourceAmountName',
       width: 150
-    }, {
+    },
+    {
       title: '价格组成',
       dataIndex: 'priceCombineName'
-    }, {
+    },
+    {
       title: '定价频次',
       dataIndex: 'pricingFrequencyName'
-    }, {
+    },
+    {
       title: '定价时间',
       dataIndex: 'pricingDateList',
       render(text) {
         return text.map(item => item.date).join('；')
       }
-    }, {
+    },
+    {
       title: '市场运行情况',
       dataIndex: 'runningOperation'
-    }, {
+    },
+    {
       title: '资源保障情况',
       dataIndex: 'resourceOperation'
-    }, {
+    },
+    {
       title: '成本目标',
       dataIndex: 'costTargetName'
-    }, {
+    },
+    {
       title: '成本控制方式',
       dataIndex: 'costControlWay'
-    }, {
+    },
+    {
       title: '库存控制方式',
       dataIndex: 'storageControlWay'
-    }, {
+    },
+    {
       title: '供应商选择原则',
       dataIndex: 'supplierSelectRule'
-    }, {
+    },
+    {
       title: '供应商合作方式',
       dataIndex: 'supplierCooperationWay'
-    }, {
+    },
+    {
       title: '附件',
       dataIndex: 'attachment',
       render: (text) => {
@@ -163,7 +183,8 @@ function StrategyTable({
           triggerShowAttach(true)
         }}>查看附件</Button>
       }
-    }, {
+    },
+    {
       title: '备注',
       dataIndex: 'remark'
     }
@@ -231,7 +252,7 @@ function StrategyTable({
     cleanSelectedRecord()
   }
   function handleLineInvalidChange() {
-    onInvalidChange({ids:selectedRowKeys})
+    onInvalidChange({ ids: selectedRowKeys })
   }
   // 处理删除行
   function handleRemove() {
@@ -401,7 +422,7 @@ function StrategyTable({
       <Button className={styles.btn} onClick={() => showModal('editor')} disabled={disableEditor}>编辑</Button>
       <Button className={styles.btn} disabled={disableRemove} onClick={handleRemove}>删除</Button>
       {
-        type === 'change' ? 
+        type === 'change' ?
           <Button className={styles.btn} onClick={handleLineInvalidChange} disabled={disableRemove}>作废/取消作废</Button> : null
       }
       <div style={{ display: 'inline-block' }}>
@@ -441,7 +462,7 @@ function StrategyTable({
           toolBar={{
             left: left
           }}
-          columns={type==='change' ? changeColumns : columns}
+          columns={type === 'change' ? changeColumns : columns}
           loading={loading}
           showSearch={true}
           searchPlaceHolder='请输入物料分类查询'

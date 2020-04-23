@@ -3,7 +3,7 @@ import { ExtTable, WorkFlow, ExtModal } from 'suid';
 import { Input, Button, message } from 'antd';
 import Header from '@/components/Header';
 import AdvancedForm from '@/components/AdvancedForm';
-// import { connect } from 'dva';
+import { ComboAttachment } from '@/components';
 import { psBaseUrl } from '@/utils/commonUrl';
 import { openNewTab } from '@/utils';
 import {
@@ -20,90 +20,13 @@ import {
   effectStatusProps
 } from '@/utils/commonProps';
 import {
-  getBusinessKeyByListId,
-  removeStrategyTableItem,
-  getBusinessKeyByListCode,
+  removeStrategyTableItem
 } from '@/services/strategy';
 import styles from './index.less';
 import classnames from 'classnames';
-import { useEffect } from 'react';
 import Modal from 'antd/es/modal';
 const { Search } = Input
 const { StartFlow, FlowHistory } = WorkFlow;
-const columns = [
-  {
-    title: '预警',
-    dataIndex: 'warningStatus',
-    render(state) {
-      switch (state) {
-        case 'Waring':
-          return <div className={classnames([styles.dot, styles.warning])}></div>
-        case 'Expire':
-          return <div className={classnames([styles.dot, styles.error])}></div>
-        default:
-          return ''
-      }
-    },
-    width: 96,
-  },
-  {
-    title: '状态',
-    dataIndex: 'state',
-    render(st) {
-      switch (st) {
-        case 'Draft':
-          return '草稿'
-        case 'Effective':
-          return '生效'
-        case 'Changing':
-          return '变更中'
-        default:
-          return '未知'
-      }
-    }
-  },
-  {
-    title: '审批状态',
-    dataIndex: 'approvalState',
-    render(approvalState) {
-      switch (approvalState) {
-        case 'Uncommitted':
-          return '未提交审批'
-        case 'InApproval':
-          return '审批中'
-        case 'Finish':
-          return '审批完成'
-        default:
-          return ''
-      }
-    },
-  },
-  {
-    title: '是否作废',
-    dataIndex: 'invalid',
-    render(invalid) {
-      return invalid ? '是' : '否'
-    },
-    width: 80,
-  },
-  {
-    title: '是否变更',
-    dataIndex: 'changeable',
-    render(changeable) {
-      return changeable ? '是' : '否'
-    },
-    width: 80,
-  },
-  { title: '采购策略编号', dataIndex: 'code' },
-  { title: '采购策略名称', dataIndex: 'name' },
-  { title: '物料级别', dataIndex: 'materialLevelName' },
-  { title: '采购公司', dataIndex: 'purchaseCompanyName' },
-  { title: '采购组织', dataIndex: 'purchaseOrganizationName' },
-  { title: '专业组', dataIndex: 'professionalGroupName' },
-  { title: '采购组', dataIndex: 'purchaseGroupName' },
-  { title: '申请人', dataIndex: 'creatorName' },
-  { title: '创建时间', dataIndex: 'createdDate' }
-].map(_ => ({ ..._, align: 'center' }))
 
 function PurchaseStategy() {
   const headerRef = useRef(null)
@@ -112,8 +35,94 @@ function PurchaseStategy() {
   const [selectedRows, setRows] = useState([]);
   const [searchValue, setSearchValue] = useState({});
   const [visible, triggerVisible] = useState(false);
+  const [attachId, setAttachId] = useState('');
+  const [showAttach, triggerShowAttach] = useState(false);
   const [singleRow = {}] = selectedRows;
   const { state: rowState, approvalState: rowApprovalState, changeable: rowChangeable, flowId: businessId } = singleRow;
+  const columns = [
+    {
+      title: '预警',
+      dataIndex: 'warningStatus',
+      render(state) {
+        switch (state) {
+          case 'Waring':
+            return <div className={classnames([styles.dot, styles.warning])}></div>
+          case 'Expire':
+            return <div className={classnames([styles.dot, styles.error])}></div>
+          default:
+            return ''
+        }
+      },
+      width: 96,
+    },
+    {
+      title: '状态',
+      dataIndex: 'state',
+      render(st) {
+        switch (st) {
+          case 'Draft':
+            return '草稿'
+          case 'Effective':
+            return '生效'
+          case 'Changing':
+            return '变更中'
+          default:
+            return '未知'
+        }
+      }
+    },
+    {
+      title: '审批状态',
+      dataIndex: 'approvalState',
+      render(approvalState) {
+        switch (approvalState) {
+          case 'Uncommitted':
+            return '未提交审批'
+          case 'InApproval':
+            return '审批中'
+          case 'Finish':
+            return '审批完成'
+          default:
+            return ''
+        }
+      },
+    },
+    {
+      title: '是否作废',
+      dataIndex: 'invalid',
+      render(invalid) {
+        return invalid ? '是' : '否'
+      },
+      width: 80,
+    },
+    {
+      title: '是否变更',
+      dataIndex: 'changeable',
+      render(changeable) {
+        return changeable ? '是' : '否'
+      },
+      width: 80,
+    },
+    { title: '采购策略编号', dataIndex: 'code' },
+    { title: '采购策略名称', dataIndex: 'name' },
+    { title: '物料级别', dataIndex: 'materialLevelName' },
+    { title: '采购公司', dataIndex: 'purchaseCompanyName' },
+    { title: '采购组织', dataIndex: 'purchaseOrganizationName' },
+    { title: '专业组', dataIndex: 'professionalGroupName' },
+    { title: '采购组', dataIndex: 'purchaseGroupName' },
+    { title: '申请人', dataIndex: 'creatorName' },
+    {
+      title: '附件',
+      dataIndex: 'attachment',
+      render(text) {
+        return !!text ? <Button onClick={() => {
+          setAttachId(text)
+          triggerShowAttach(true)
+        }}>查看附件</Button> : '无'
+      }
+    },
+    { title: '创建时间', dataIndex: 'createdDate' }
+  ].map(_ => ({ ..._, align: 'center' }))
   /* 按钮禁用状态控制 */
   const takeEffect = rowState === 'Effective';
   const approvalEffect = rowApprovalState === 'Uncommitted';
@@ -123,7 +132,7 @@ function PurchaseStategy() {
   const approvalFinish = rowApprovalState === 'Finish';
   const tableProps = {
     store: {
-      url: `${psBaseUrl}/purchaseStrategyHeader/listByPage`,
+      url: `${psBaseUrl}/purchaseStrategyHeader/listByPageLocal`,
       params: searchValue,
       type: 'POST'
     }
@@ -238,14 +247,16 @@ function PurchaseStategy() {
   // 快速搜索
   function handleQuickSerach(v) {
     setSearchValue({
-      Quick_value: v
+      quickSearchValue: v
     })
+    uploadTable()
   }
   // 高级搜索
   function handleAdvnacedSearch(v) {
     setSearchValue({
       ...v
     })
+    uploadTable()
     headerRef.current.hide()
   }
   // 删除
@@ -303,8 +314,8 @@ function PurchaseStategy() {
       reject(false)
     })
   }
-  function handleComplete(info) {
-    tableRef.current.remoteDataRefresh()
+  function handleComplete() {
+    uploadTable()
   }
   function showHistory() {
     triggerVisible(true)
@@ -312,14 +323,15 @@ function PurchaseStategy() {
   function hideHistory() {
     triggerVisible(false)
   }
+  function hideAttach() {
+    setAttachId('')
+    triggerShowAttach(false)
+  }
   function handleCheckChangeHistory() {
     const [row] = selectedRows
     const { code } = row;
     openNewTab(`purchase/strategy/change/history?code=${code}`, false, '变更历史')
   }
-  useEffect(() => {
-    uploadTable()
-  }, [searchValue])
   return (
     <>
       <Header
@@ -333,7 +345,7 @@ function PurchaseStategy() {
               beforeStart={handleBeforeStartFlow}
               startComplete={handleComplete}
               style={{ display: 'inline-flex' }}
-              businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyFlow"
+              businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyHeader"
             >
               {
                 (loading) => {
@@ -389,6 +401,24 @@ function PurchaseStategy() {
         width={'80vw'}
       >
         <FlowHistory businessId={businessId} />
+      </ExtModal>
+      <ExtModal
+        visible={showAttach}
+        onCancel={hideAttach}
+        footer={null}
+        destroyOnClose
+      >
+        <ComboAttachment
+          allowPreview={false}
+          allowDownload={false}
+          maxUploadNum={1}
+          allowUpload={false}
+          serviceHost='/edm-service'
+          uploadUrl='upload'
+          attachment={attachId}
+          multiple={false}
+          customBatchDownloadFileName={true}
+        />
       </ExtModal>
     </>
   )

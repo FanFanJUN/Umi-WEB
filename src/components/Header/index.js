@@ -8,7 +8,8 @@ const Header = forwardRef(({
   right = null,
   extra = "高级查询",
   content = null,
-  advanced = false
+  advanced = false,
+  advancedProps={}
 }, ref) => {
   const [visible, triggerVisible] = useState(false);
   useImperativeHandle(ref, () => ({
@@ -21,7 +22,11 @@ const Header = forwardRef(({
         {right}
         {
           advanced &&
-          <Button icon={visible ? "up" : "down"} onClick={() => triggerVisible(!visible)}>{extra}</Button>
+          <Button
+            icon={visible ? "up" : "down"}
+            onClick={() => triggerVisible(!visible)}
+            {...advancedProps}
+          >{extra}</Button>
         }
       </div>
       <div className={classnames({
@@ -33,6 +38,9 @@ const Header = forwardRef(({
           {content}
         </div>
       </div>
+      {
+        visible ? <div className={styles.mask}></div> : null
+      }
     </div>
   )
 })

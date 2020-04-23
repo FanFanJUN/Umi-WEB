@@ -13,7 +13,7 @@ import {
   changeOwnInvalidState,
   changeLineInvalidState,
   findStrategyDetailById,
-  savePurcahseAndApprove,
+  changePurchaseAndApprove,
   strategyTableCreateLine,
   saveStrategyTableImportData,
   strategyTableLineRelevanceDocment
@@ -42,7 +42,7 @@ function ChangeStrategy({
   const [loading, triggerLoading] = useState(true);
   const [currentId, setCurrentId] = useState('');
   const [currentCode, setCurrentCode] = useState('');
-  const [isInvalid, setIsInvalid] = useState({ name: '', state: false });
+  const [isInvalid, setIsInvalid] = useState('');
   const files = getFieldValue('changeFiles') || [];
   const allowUpload = files.length !== 1;
   async function initFommFieldsValuesAndTableDataSource() {
@@ -53,6 +53,7 @@ function ChangeStrategy({
         code,
         send,
         state,
+        flowId,
         header,
         submit,
         invalid,
@@ -96,7 +97,7 @@ function ChangeStrategy({
       setDataSource(addIdList);
       setCurrentId(id)
       setCurrentCode(code)
-      setIsInvalid({ name: invalid ? '（作废）' : '', state: invalid })
+      setIsInvalid(invalid ? '（作废）' : '')
       triggerLoading(false);
       return
     }
@@ -186,7 +187,7 @@ function ChangeStrategy({
       validateFieldsAndScroll(async (err, val) => {
         if (!err) {
           const params = await formatSaveParams(val);
-          const { success, message: msg, data } = await savePurcahseAndApprove(params);
+          const { success, message: msg, data } = await changePurchaseAndApprove({...params, modifyHeader: changeParams });
           if (success) {
             resolve({
               success: true,
@@ -195,7 +196,6 @@ function ChangeStrategy({
                 businessKey: data.id
               }
             })
-            // return
           }
           reject(false)
         }
@@ -290,12 +290,12 @@ function ChangeStrategy({
               docIds: [id]
             })
             params = {
-              reason: val.reason,
+              modifyReason: val.reason,
               attachment: success ? uuid : null
             }
           } else {
             params = {
-              reason: val.reason
+              modifyReason: val.reason
             }
           }
           resolve(params);
@@ -306,8 +306,14 @@ function ChangeStrategy({
       })
     })
   }
-  function handleComplete() {
-    openNewTab('purchase/strategy', '采购策略', true)
+  function handleComplete(info) {
+    const { success, message: msg } = info;
+    hideModal()
+    if(success) {
+      message.success(msg)
+      return
+    }
+    message.error(msg)
   }
   // 批量导入
   async function handleImportData(items) {
@@ -326,13 +332,13 @@ function ChangeStrategy({
   // 整单作废
   function handleChangeOwnInvalidState() {
     Modal.confirm({
-      title: '整单作废',
-      content: '是否确定作废?',
+      title: '变更作废状态',
+      content: '是否确定变更作废状态?',
       okText: '确定',
       cancelText: '取消',
       onOk: async () => {
         const { success, message: msg } = await changeOwnInvalidState(query);
-        if(success) {
+        if (success) {
           message.success(msg)
           initFommFieldsValuesAndTableDataSource()
           return
@@ -344,13 +350,13 @@ function ChangeStrategy({
   // 标的物行作废
   function handleChangeLineInvalidState(id) {
     Modal.confirm({
-      title: '整单作废',
-      content: '是否确定作废?',
+      title: '变更作废状态',
+      content: '是否确定变更作废状态?',
       okText: '确定',
       cancelText: '取消',
       onOk: async () => {
         const { success, message: msg } = await changeLineInvalidState(id);
-        if(success) {
+        if (success) {
           message.success(msg)
           initFommFieldsValuesAndTableDataSource()
           return
@@ -366,7 +372,7 @@ function ChangeStrategy({
     <Spin spinning={loading} tip="处理中...">
       <div className={classnames([styles.header, styles.flexBetweenStart])}>
         <span className={styles.title}>
-          变更采购策略：{currentCode} {isInvalid.name}
+          变更采购策略：{currentCode} {isInvalid}
         </span>
         <div>
           <Button className={styles.btn} onClick={handleBack}>返回</Button>
@@ -392,20 +398,19 @@ function ChangeStrategy({
       <Modal
         title='变更原因'
         visible={visible}
+        destroyOnClose
         width='70vw'
-        onOk={handleBeforeStartFlow}
         onCancel={hideModal}
         okText="提交审核"
         cancelText='取消'
         footer={
           <>
-            <Button onClick={hideModal}>取消</Button>
+            <Button onClick={hideModal} className={styles.btn}>取消</Button>
             <StartFlow
               style={{ display: 'inline-flex' }}
               beforeStart={handleBeforeStartFlow}
               startComplete={handleComplete}
-              businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyFlow"
-              typeId='94B53F78-7E24-11EA-A0BD-0242C0A8441A'
+              businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyModifyHeader"
             >
               {
                 (loading) => {

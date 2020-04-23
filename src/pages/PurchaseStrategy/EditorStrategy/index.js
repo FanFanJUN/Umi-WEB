@@ -6,7 +6,6 @@ import StrategyForm from '../StrategyForm';
 import StrategyTable from '../StrategyTable';
 import classnames from 'classnames';
 import {
-  savePurchaseStrategy,
   findStrategyDetailById,
   savePurcahseAndApprove,
   strategyTableCreateLine,
@@ -17,7 +16,9 @@ import moment from 'moment';
 import { openNewTab } from '@/utils';
 import styles from './index.less';
 const { StartFlow } = WorkFlow;
-function StrategyDetail() {
+function EditorStrategy({
+  mode = 'default'
+}) {
   const formRef = createRef();
   const { query } = router.useLocation();
   const [dataSource, setDataSource] = useState([]);
@@ -41,7 +42,7 @@ function StrategyDetail() {
         changeVo,
         creatorId,
         detailList,
-        submitList=[],
+        submitList = [],
         attachment,
         changeable,
         tenantCode,
@@ -90,8 +91,8 @@ function StrategyDetail() {
     const {
       purchaseStrategyDate,
       files,
-      sendList: sList=[],
-      submitList: smList=[],
+      sendList: sList = [],
+      submitList: smList = [],
       ...otherData
     } = val;
     if (!!files) {
@@ -164,7 +165,7 @@ function StrategyDetail() {
       if (!err) {
         triggerLoading(true)
         const params = await formatSaveParams(val)
-        const { success, message: msg, } = await savePurchaseStrategy(params);
+        const { success, message: msg, } = await savePurcahseAndApprove(params);
         triggerLoading(false)
         if (success) {
           openNewTab('purchase/strategy', '采购策略', true)
@@ -281,7 +282,7 @@ function StrategyDetail() {
     triggerLoading(true)
     const { success, data, message: msg } = await saveStrategyTableImportData({ ios: items });
     triggerLoading(false)
-    if(success) {
+    if (success) {
       const newSource = [...dataSource, ...data].map((item, key) => ({
         ...item,
         localId: !!item.id ? item.id : `${key}-dataSource`
@@ -296,37 +297,39 @@ function StrategyDetail() {
   }
   useEffect(() => {
     initFommFieldsValuesAndTableDataSource()
-  }, [])
+  }, []);
   return (
     <Spin spinning={loading} tip="处理中...">
-      <div className={classnames([styles.header, styles.flexBetweenStart])}>
-        <span className={styles.title}>
-          编辑采购策略: {currentCode} {isInvalid.name}
-        </span>
-        <div>
-          <Button className={styles.btn} onClick={handleBack}>返回</Button>
-          <Button className={styles.btn} onClick={handleSave}>保存</Button>
-          <StartFlow
-            style={{ display: 'inline-flex' }}
-            beforeStart={handleBeforeStartFlow}
-            startComplete={handleComplete}
-            businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyFlow"
-            typeId='94B53F78-7E24-11EA-A0BD-0242C0A8441A'
-          >
-            {
-              (loading) => {
-                return (
-                  <Button
-                    type='primary'
-                    className={styles.btn}
-                    loading={loading}
-                  >保存并提交审核</Button>
-                )
+      {
+        mode === 'default' ? <div className={classnames([styles.header, styles.flexBetweenStart])}>
+          <span className={styles.title}>
+            编辑采购策略: {currentCode} {isInvalid.name}
+          </span>
+          <div>
+            <Button className={styles.btn} onClick={handleBack}>返回</Button>
+            <Button className={styles.btn} onClick={handleSave}>保存</Button>
+            <StartFlow
+              style={{ display: 'inline-flex' }}
+              beforeStart={handleBeforeStartFlow}
+              startComplete={handleComplete}
+              businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyFlow"
+              typeId='94B53F78-7E24-11EA-A0BD-0242C0A8441A'
+            >
+              {
+                (loading) => {
+                  return (
+                    <Button
+                      type='primary'
+                      className={styles.btn}
+                      loading={loading}
+                    >保存并提交审核</Button>
+                  )
+                }
               }
-            }
-          </StartFlow>
-        </div>
-      </div>
+            </StartFlow>
+          </div>
+        </div> : null
+      }
       <StrategyForm
         wrappedComponentRef={formRef}
         initialValue={initValues}
@@ -346,4 +349,4 @@ function StrategyDetail() {
   )
 }
 
-export default StrategyDetail;
+export default EditorStrategy;
