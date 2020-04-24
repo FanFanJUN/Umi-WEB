@@ -2,7 +2,7 @@ import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import styles from './index.less';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { Button } from 'antd';
+import { Button, Icon } from 'antd';
 const Header = forwardRef(({
   left = null,
   right = null,
@@ -12,8 +12,9 @@ const Header = forwardRef(({
   advancedProps={}
 }, ref) => {
   const [visible, triggerVisible] = useState(false);
+  const hide = () => triggerVisible(false);
   useImperativeHandle(ref, () => ({
-    hide : () => triggerVisible(false)
+    hide
   }))
   return (
     <div className={classnames([styles.wrapper, styles.flexBetweenStart])}>
@@ -34,13 +35,11 @@ const Header = forwardRef(({
         [styles.show]: visible,
         [styles.hide]: !visible
       })}>
+        <Icon type='close' className={styles.close} onClick={hide}/>
         <div className={styles.content}>
           {content}
         </div>
       </div>
-      {
-        visible ? <div className={styles.mask}></div> : null
-      }
     </div>
   )
 })
