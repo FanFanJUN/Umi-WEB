@@ -10,17 +10,15 @@ import StrategyTable from '../StrategyTable';
 import { ComboAttachment } from '@/components';
 import classnames from 'classnames';
 import {
-  changeOwnInvalidState,
   changeLineInvalidState,
-  findStrategyDetailById,
-  changePurchaseAndApprove,
+  changeEditorAndApprove,
   strategyTableCreateLine,
   saveStrategyTableImportData,
   strategyTableLineRelevanceDocment,
   getPurchaseStrategyChangeVoByFlowId
 } from '@/services/strategy';
 import moment from 'moment';
-import { openNewTab } from '@/utils';
+import { openNewTab, getUUID } from '@/utils';
 import styles from './index.less';
 const { Approve } = WorkFlow;
 const formLayout = {
@@ -94,7 +92,7 @@ function ChangeStrategy({
         purchaseStrategyDate: [moment(purchaseStrategyBegin), moment(purchaseStrategyEnd)]
       }
       const { modifyReason, attachment: reasonAttach } = modifyHeader;
-      
+
       setReasonAttach(reasonAttach)
       setInitValues({
         attachment
@@ -170,8 +168,8 @@ function ChangeStrategy({
     const [attachment = {}] = response;
     const { id = null } = attachment;
     let params = {}
-    const uuid = utils.getUUID()
     if (!!id) {
+      const uuid = utils.getUUID();
       const { success } = await strategyTableLineRelevanceDocment({
         id: uuid,
         docIds: [id]
@@ -180,6 +178,7 @@ function ChangeStrategy({
         ...val,
         adjustScopeList: adjustScopeListCode.map((item) => ({ code: item })),
         pricingDateList: pricingDateList.map(item => ({ date: item })),
+        // docIds: [id]
         attachment: success ? uuid : null
       }
     } else {
@@ -195,23 +194,25 @@ function ChangeStrategy({
   async function handleBeforeStartFlow() {
     const changeParams = await formatChangeReasonPamras();
     if (!changeParams) return
+    const { validateFields } = formRef.current.form;
+    const sourceParams = await validateFields().then(r => r)
+    const params = await formatSaveParams(sourceParams)
+    console.log(changeParams, params)
+    const { success, message: msg, data } = await changeEditorAndApprove({ ...params, modifyHeader: changeParams });
     return new Promise((resolve, reject) => {
-      const { validateFieldsAndScroll } = formRef.current.form;
-      validateFieldsAndScroll(async (err, val) => {
-        if (!err) {
-          const params = await formatSaveParams(val);
-          const { success, message: msg, data } = await changePurchaseAndApprove({ ...params, modifyHeader: changeParams });
-          if (success) {
-            resolve({
-              success: true,
-              message: msg,
-              data: {
-                businessKey: data.id
-              }
-            })
+      if (success) {
+        resolve({
+          success: true,
+          message: msg,
+          data: {
+            businessKey: data.id
           }
-          reject(false)
-        }
+        })
+        return
+      }
+      resolve({
+        success: false,
+        message: msg
       })
     })
   }
@@ -276,39 +277,32 @@ function ChangeStrategy({
     setVisible(false)
   }
   // 验证变更原因表单并关联变更附件attachment
-  function formatChangeReasonPamras() {
-    return new Promise((resolve, reject) => {
-      const { validateFields } = form;
-      validateFields(async (err, val) => {
-        if (!err) {
-          const { changeFiles = [] } = val;
-          const [fileInfo = {}] = changeFiles;
-          const { response = [] } = fileInfo;
-          const [attachment = {}] = response;
-          const { id = null } = attachment;
-          let params = {}
-          const uuid = utils.getUUID()
-          if (!!id) {
-            const { success } = await strategyTableLineRelevanceDocment({
-              id: uuid,
-              docIds: [id]
-            })
-            params = {
-              modifyReason: val.reason,
-              attachment: success ? uuid : null
-            }
-          } else {
-            params = {
-              modifyReason: val.reason
-            }
-          }
-          resolve(params);
-        }
-        else {
-          reject(false)
-        }
+  async function formatChangeReasonPamras() {
+    const { validateFieldsAndScroll } = form;
+    const val = await validateFieldsAndScroll().then(_ => _).catch(err=>null);
+    if(!val) return false;
+    let params = {}
+    const { changeFiles = [] } = val;
+    const [fileInfo = {}] = changeFiles;
+    const { response = [] } = fileInfo;
+    const [attachment = {}] = response;
+    const { id = null } = attachment;
+    const uuid = utils.getUUID()
+    if (!!id) {
+      const { success } = await strategyTableLineRelevanceDocment({
+        id: uuid,
+        docIds: [id]
       })
-    })
+      params = {
+        modifyReason: val.reason,
+        attachment: success ? uuid : null
+      }
+    } else {
+      params = {
+        modifyReason: val.reason
+      }
+    }
+    return params
   }
   function handleComplete(info) {
     const { success, message: msg } = info;

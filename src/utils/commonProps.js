@@ -219,6 +219,16 @@ export const frequencyProps = {
 
 // 价格组成枚举
 export const priceCombineProps = {
+  store: {
+    url: `${baseUrl}/dataDictionaryItem/getDictByTypeCode`,
+    params: {
+      dictTypeCode: 'priceComposition'
+    }
+  },
+  reader: {
+    name: 'name',
+    field: ['value']
+  },
   options: [
     {
       value: 'CombineModelA',

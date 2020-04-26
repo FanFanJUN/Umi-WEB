@@ -340,7 +340,7 @@ function PurchaseStategy() {
             <Button type='primary' className={styles.btn} onClick={handleCreate}>新增</Button>
             <Button disabled={multiple || empty || approvaling} className={styles.btn} onClick={handleEditor}>编辑</Button>
             <Button onClick={handleRemoveItem} disabled={empty || approvaling} className={styles.btn}>删除</Button>
-            <Button disabled={multiple || empty || approvaling} className={styles.btn} onClick={handleCheckDetail}>明细</Button>
+            <Button disabled={multiple || empty} className={styles.btn} onClick={handleCheckDetail}>明细</Button>
             <StartFlow
               beforeStart={handleBeforeStartFlow}
               startComplete={handleComplete}

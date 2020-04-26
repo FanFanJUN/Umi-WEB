@@ -21,7 +21,7 @@ import {
   planSupplyResourceAmountProps
 } from '@/utils/commonProps';
 import { ComboSelect, ComboDatePicker, ComboAttachment, MixinSelect } from '@/components';
-import { ComboTree, ComboGrid } from 'suid';
+import { ComboTree, ComboGrid, ComboList } from 'suid';
 import { leftPad } from '@/utils';
 const { create, Item } = Form;
 const { TextArea } = Input;
@@ -80,7 +80,6 @@ const CommonForm = forwardRef(({
         reference,
         attachment,
         localId,
-        priceCombineName,
         pricingFrequencyName,
         planSupplyResourceAmountName,
         costTargetName,
@@ -227,7 +226,8 @@ const CommonForm = forwardRef(({
         <Col span={12}>
           <Item label='价格组成' {...formLayout}>
             {
-              getFieldDecorator('priceCombine', {
+              getFieldDecorator('priceCombineCode'),
+              getFieldDecorator('priceCombineName', {
                 rules: [
                   {
                     required: true,
@@ -235,7 +235,7 @@ const CommonForm = forwardRef(({
                   }
                 ]
               })(
-                <MixinSelect {...priceCombineProps} />
+                <ComboList {...priceCombineProps}  form={form} name='priceCombineName' field={['priceCombineCode']}/>
               )
             }
           </Item>

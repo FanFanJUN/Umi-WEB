@@ -49,6 +49,11 @@ export const changePurchaseAndApprove = params => createServiceRequest({
   params
 })
 
+export const changeEditorAndApprove = params => createServiceRequest({
+  path: '/purchaseStrategyHeader/changeEditOnApprove',
+  params
+})
+
 // 采购策略行创建
 export const strategyTableCreateLine = params => createServiceRequest({
   path: '/purchaseStrategyDetail/check',
