@@ -1,10 +1,13 @@
 import React, { useState, useRef } from 'react';
-import { ExtTable } from 'suid';
+import { ExtTable, utils } from 'suid';
 import { Input, Button, Modal } from 'antd';
 import Header from '@/components/Header';
 import AdvancedForm from '@/components/AdvancedForm';
 import { psBaseUrl } from '@/utils/commonUrl';
-import { leftPad } from '@/utils';
+import { leftPad, getLocationHost } from '../../utils';
+import {
+  downloadExcelForChangeParams
+} from '@/services/strategy'
 import { ComboAttachment } from '@/components';
 import {
   purchaseCompanyProps,
@@ -267,6 +270,12 @@ function PurchaseStrategyExecute() {
   function uploadTable() {
     tableRef.current.remoteDataRefresh()
   }
+  async function downloadExcelForPamras() {
+    const host = getLocationHost();
+    const params = utils.jsonToParams(searchValue);
+    // console.log(`${host}/${psBaseUrl}/purchaseStrategyHeader/exportData?${params}`)
+    utils.downloadFileByALink(`${psBaseUrl}/purchaseStrategyHeader/exportData?${params}`, '采购策略执行明细.xlsx')
+  }
   function hideAttach() {
     setAttachId('')
     triggerShowAttach(false)
@@ -276,7 +285,7 @@ function PurchaseStrategyExecute() {
       <Header
         left={
           <>
-            <Button className={styles.btn}>导出Excel</Button>
+            <Button onClick={downloadExcelForPamras} className={styles.btn}>导出Excel</Button>
           </>
         }
         right={

@@ -1,4 +1,4 @@
-import React, { useState, createRef, useEffect, useLayoutEffect } from 'react';
+import React, { useState, createRef, useLayoutEffect } from 'react';
 import { ExtTable, DataImport, utils } from 'suid';
 import { Button, Modal } from 'antd'
 import CommonForm from './CommonForm';

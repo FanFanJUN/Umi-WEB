@@ -297,7 +297,7 @@ function PurchaseStategy() {
   }
   function handleCheckDetail() {
     const [key] = selectedRowKeys;
-    openNewTab(`purchase/strategy/detail?id=${key}`, '新增采购策略', true)
+    openNewTab(`purchase/strategy/detail?id=${key}`, '新增采购策略', false)
   }
   // 启动审核流程
   function handleBeforeStartFlow() {

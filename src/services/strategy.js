@@ -125,3 +125,11 @@ export const getPurchaseStrategyChangeVoByFlowId = params => createServiceReques
   params,
   method: 'GET'
 })
+
+// 变更明细下载excel
+export const downloadExcelForChangeParams = params => request({
+  url: `${psBaseUrl}/purchaseStrategyHeader/exportData`,
+  method: 'POST',
+  data: params,
+  responseType: 'blob'
+})
