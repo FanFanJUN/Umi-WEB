@@ -90,22 +90,22 @@ function ApproveEditor() {
       message.success(msg)
     }
   }
-// 标的物行创建
-async function handleCreateLine(val, hide) {
-  const params = await formatLineParams(val);
-  const { data, success, message: msg } = await strategyTableCreateLine(params);
-  if (success) {
-    const newSource = [...dataSource, data].map((item, key) => ({
-      ...item,
-      localId: !!item.id ? item.id : `${key}-dataSource`
-    }));
-    setDataSource(newSource)
-    message.success(msg)
-    hide()
-    return
+  // 标的物行创建
+  async function handleCreateLine(val, hide) {
+    const params = await formatLineParams(val);
+    const { data, success, message: msg } = await strategyTableCreateLine(params);
+    if (success) {
+      const newSource = [...dataSource, data].map((item, key) => ({
+        ...item,
+        localId: !!item.id ? item.id : `${key}-dataSource`
+      }));
+      setDataSource(newSource)
+      message.success(msg)
+      hide()
+      return
+    }
+    message.error(msg)
   }
-  message.error(msg)
-}
   // 标的物行编辑
   async function handleEditorLine(val, keys, hide) {
     triggerLoading(true)
@@ -235,19 +235,28 @@ async function handleCreateLine(val, hide) {
   }
   // 保存变更
   async function handleBeforeStartFlow() {
-    const { validateFieldsAndScroll } = formRef.current.form;
-    validateFieldsAndScroll(async (err, val) => {
-      if (!err) {
-        triggerLoading(true)
-        const params = await formatSaveParams(val)
-        const { success, message: msg, } = await savePurchaseStrategy(params);
-        triggerLoading(false)
-        if (success) {
-          message.success(msg)
-          return
+    return new Promise((resolve, reject) => {
+      const { validateFieldsAndScroll } = formRef.current.form;
+      validateFieldsAndScroll(async (err, val) => {
+        if (!err) {
+          triggerLoading(true)
+          const params = await formatSaveParams(val)
+          const { success, message: msg, } = await savePurchaseStrategy(params);
+          triggerLoading(false)
+          if (success) {
+            resolve({
+              success,
+              message: msg
+            })
+            message.success(msg)
+            return
+          }
+          message.error(msg)
+          reject(false)
+        } else {
+          reject(false)
         }
-        message.error(msg)
-      }
+      })
     })
   }
   function handleClose() {
