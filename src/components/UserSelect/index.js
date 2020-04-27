@@ -57,8 +57,8 @@ const UserSelect = forwardRef(({
   const getTreeData = () => {
     triggerLoading(true)
     request({
-      // url: `${psBaseUrl}/basic/listAllOrgnazation`,
-      url: `${psBaseUrl}/purchaseStrategyHeader/listAllOrgnazation`,
+      url: `${psBaseUrl}/basic/listAllOrgnazation`,
+      // url: `${psBaseUrl}/purchaseStrategyHeader/listAllOrgnazation`,
       method: 'get'
     }).then(data => {
       if (data.success) {
