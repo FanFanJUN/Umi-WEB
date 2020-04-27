@@ -194,6 +194,8 @@ function EditorStrategy({
             // return
           }
           reject(false)
+        }else {
+          reject(false)
         }
       })
     })

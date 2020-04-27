@@ -79,6 +79,9 @@ function CreateStrategy() {
   }
   // 保存并提交审核
   async function handleBeforeStartFlow() {
+    // const sourceParams = validateFieldsAndScroll().then(r=>r).catch(_=>null)
+    // if(!sourceParams) return;
+
     return new Promise((resolve, reject) => {
       const { validateFieldsAndScroll } = formRef.current.form;
       validateFieldsAndScroll(async (err, val) => {
@@ -94,6 +97,8 @@ function CreateStrategy() {
               }
             })
           }
+          reject(false)
+        }else {
           reject(false)
         }
       })
