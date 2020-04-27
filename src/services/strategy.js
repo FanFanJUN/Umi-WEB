@@ -127,9 +127,19 @@ export const getPurchaseStrategyChangeVoByFlowId = params => createServiceReques
 })
 
 // 变更明细下载excel
-export const downloadExcelForChangeParams = params => request({
-  url: `${psBaseUrl}/purchaseStrategyHeader/exportData`,
-  method: 'POST',
-  data: params,
-  responseType: 'blob'
-})
+export const downloadExcelForChangeParams = params =>
+  request({
+    url: `${psBaseUrl}/purchaseStrategyHeader/exportData`,
+    method: 'POST',
+    data: params,
+    responseType: 'blob'
+  })
+
+// 采购策略批量上传模板下载
+export const downloadExcelDataImportTemplate = params =>
+  request({
+    url: `${psBaseUrl}/purchaseStrategyDetail/downloadTemplate`,
+    data: params,
+    method: 'POST',
+    responseType: 'blob'
+  })

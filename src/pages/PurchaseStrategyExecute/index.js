@@ -1,10 +1,10 @@
 import React, { useState, useRef } from 'react';
 import { ExtTable, utils } from 'suid';
-import { Input, Button, Modal } from 'antd';
+import { Input, Button, Modal, message } from 'antd';
 import Header from '@/components/Header';
 import AdvancedForm from '@/components/AdvancedForm';
 import { psBaseUrl } from '@/utils/commonUrl';
-import { leftPad, getLocationHost } from '../../utils';
+import { leftPad, downloadBlobFile } from '../../utils';
 import {
   downloadExcelForChangeParams
 } from '@/services/strategy'
@@ -271,10 +271,13 @@ function PurchaseStrategyExecute() {
     tableRef.current.remoteDataRefresh()
   }
   async function downloadExcelForPamras() {
-    const host = getLocationHost();
-    const params = utils.jsonToParams(searchValue);
-    // console.log(`${host}/${psBaseUrl}/purchaseStrategyHeader/exportData?${params}`)
-    utils.downloadFileByALink(`${psBaseUrl}/purchaseStrategyHeader/exportData?${params}`, '采购策略执行明细.xlsx')
+    const { success, data, message: msg } = await downloadExcelForChangeParams(searchValue);
+    if(success) {
+      message.success(msg)
+      downloadBlobFile(data, '采购策略执行明细.xlsx')
+      return
+    }
+    message.error(msg)
   }
   function hideAttach() {
     setAttachId('')

@@ -1,10 +1,11 @@
 import React, { useState, createRef, useLayoutEffect } from 'react';
 import { ExtTable, DataImport, utils } from 'suid';
-import { Button, Modal } from 'antd'
+import { Button, Modal, message } from 'antd'
 import CommonForm from './CommonForm';
 import { ComboAttachment } from '@/components';
-import { psBaseUrl } from '../../../utils/commonUrl';
-import { getLocationHost, getUserAccount } from '../../../utils';
+// import { psBaseUrl } from '../../../utils/commonUrl';
+import { getUserAccount, downloadBlobFile } from '../../../utils';
+import { downloadExcelDataImportTemplate } from '../../../services/strategy';
 import styles from './index.less';
 const importColumns = [
   {
@@ -429,10 +430,17 @@ function StrategyTable({
         <DataImport
           templateFileList={[
             {
-              download: () => {
-                const host = getLocationHost();
+              download: async () => {
                 const useAccount = getUserAccount();
-                utils.downloadFileByALink(`${host}/${psBaseUrl}/purchaseStrategyDetail/downloadTemplate?userAccount=${useAccount}`)
+                message.loading()
+                const { success, data, message: msg } = await downloadExcelDataImportTemplate({ useAccount })
+                message.destroy()
+                if (success) {
+                  downloadBlobFile(data, '采购策略批量上传模板.xlsx')
+                  message.success('下载成功')
+                  return
+                }
+                message.error(msg)
               },
               fileName: '采购策略批量上传模板.xlsx',
               key: 'contract',
