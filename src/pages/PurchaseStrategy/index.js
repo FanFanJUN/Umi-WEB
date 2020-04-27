@@ -330,7 +330,7 @@ function PurchaseStategy() {
   function handleCheckChangeHistory() {
     const [row] = selectedRows
     const { code } = row;
-    openNewTab(`purchase/strategy/change/history?code=${code}`, false, '变更历史')
+    openNewTab(`purchase/strategy/change/history?code=${code}`, '采购策略变更历史', false )
   }
   return (
     <>

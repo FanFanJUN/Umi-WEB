@@ -180,15 +180,20 @@ function ChangeStrategy({
   }
   // 保存并提交审核
   async function handleBeforeStartFlow() {
+    return new Promise(async (resolve, reject) => {
     const changeParams = await formatChangeReasonPamras();
-    if (!changeParams) return
+    if (!changeParams) {
+      reject(false);
+      return
+    }
     const { validateFieldsAndScroll } = formRef.current.form;
     const sourceParams = await validateFieldsAndScroll().then(r => r).catch(err => null);
-    if (!sourceParams) return
+    if (!sourceParams) {
+      reject(false)
+      return;
+    }
     const params = await formatSaveParams(sourceParams);
-    console.log(params, changeParams);
     const { success, message: msg, data } = await changePurchaseAndApprove({ ...params, modifyHeader: changeParams });
-    return new Promise((resolve, reject) => {
       if (success) {
         resolve({
           success: true,
