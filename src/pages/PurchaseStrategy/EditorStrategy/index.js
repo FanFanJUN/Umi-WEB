@@ -294,8 +294,14 @@ function EditorStrategy({
     }
   }
   // 提交审核流程完毕回调
-  function handleComplete() {
-    openNewTab('purchase/strategy', '采购策略', true)
+  function handleComplete(info) {
+    const { success, message: msg } = info
+    if(success){
+      message.success(msg)
+      openNewTab('purchase/strategy', '采购策略', true)
+      return
+    }
+    message.error(msg)
   }
   useEffect(() => {
     initFommFieldsValuesAndTableDataSource()
@@ -314,8 +320,7 @@ function EditorStrategy({
               style={{ display: 'inline-flex' }}
               beforeStart={handleBeforeStartFlow}
               startComplete={handleComplete}
-              businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyFlow"
-              typeId='94B53F78-7E24-11EA-A0BD-0242C0A8441A'
+              businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyHeader"
             >
               {
                 (loading) => {
