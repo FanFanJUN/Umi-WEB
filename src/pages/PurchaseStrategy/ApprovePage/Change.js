@@ -106,7 +106,15 @@ function ApprovePage() {
     }
     message.error(msg)
   }
-
+  function handleComplete(info) {
+    const { success, messge: msg } = info;
+    if(success) {
+      message.success(msg)
+      closeCurrent()
+      return
+    }
+    message.error(msg)
+  }
   function handleClose() {
     Modal.confirm({
       title: '返回提示',
@@ -133,7 +141,7 @@ function ApprovePage() {
         businessId={businessId}
         taskId={taskId}
         instanceId={instanceId}
-        submitComplete={closeCurrent}
+        submitComplete={handleComplete}
       >
         <Tabs>
           <TabPane tab='策略明细' key='detail'>
