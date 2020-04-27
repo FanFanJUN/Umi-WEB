@@ -271,7 +271,9 @@ function PurchaseStrategyExecute() {
     tableRef.current.remoteDataRefresh()
   }
   async function downloadExcelForPamras() {
+    message.loading()
     const { success, data, message: msg } = await downloadExcelForChangeParams(searchValue);
+    message.destroy()
     if(success) {
       message.success(msg)
       downloadBlobFile(data, '采购策略执行明细.xlsx')

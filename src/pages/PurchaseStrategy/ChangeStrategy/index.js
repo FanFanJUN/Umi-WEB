@@ -182,24 +182,23 @@ function ChangeStrategy({
   async function handleBeforeStartFlow() {
     const changeParams = await formatChangeReasonPamras();
     if (!changeParams) return
+    const { validateFieldsAndScroll } = formRef.current.form;
+    const sourceParams = await validateFieldsAndScroll().then(r => r).catch(err => null);
+    if (!sourceParams) return
+    const params = await formatSaveParams(sourceParams);
+    console.log(params, changeParams);
+    const { success, message: msg, data } = await changePurchaseAndApprove({ ...params, modifyHeader: changeParams });
     return new Promise((resolve, reject) => {
-      const { validateFieldsAndScroll } = formRef.current.form;
-      validateFieldsAndScroll(async (err, val) => {
-        if (!err) {
-          const params = await formatSaveParams(val);
-          const { success, message: msg, data } = await changePurchaseAndApprove({...params, modifyHeader: changeParams });
-          if (success) {
-            resolve({
-              success: true,
-              message: msg,
-              data: {
-                businessKey: data.id
-              }
-            })
+      if (success) {
+        resolve({
+          success: true,
+          message: msg,
+          data: {
+            businessKey: data.id
           }
-          reject(false)
-        }
-      })
+        })
+      }
+      reject(false)
     })
   }
   async function handleCreateLine(val, hide) {
@@ -309,7 +308,8 @@ function ChangeStrategy({
   function handleComplete(info) {
     const { success, message: msg } = info;
     hideModal()
-    if(success) {
+    if (success) {
+      openNewTab('purchase/strategy', '采购策略', true)
       message.success(msg)
       return
     }

@@ -18,7 +18,7 @@ import {
   getPurchaseStrategyChangeVoByFlowId
 } from '@/services/strategy';
 import moment from 'moment';
-import { openNewTab, getUUID } from '@/utils';
+import { openNewTab, getUUID, closeCurrent } from '@/utils';
 import styles from './index.less';
 const { Approve } = WorkFlow;
 const formLayout = {
@@ -308,6 +308,7 @@ function ChangeStrategy({
     const { success, message: msg } = info;
     hideModal()
     if (success) {
+      closeCurrent()
       message.success(msg)
       return
     }
@@ -363,6 +364,7 @@ function ChangeStrategy({
         taskId={taskId}
         instanceId={instanceId}
         beforeSubmit={handleBeforeStartFlow}
+        submitComplete={handleComplete}
       >
         <Spin spinning={loading} tip="处理中...">
           <ChangeForm
