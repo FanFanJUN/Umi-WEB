@@ -365,8 +365,7 @@ const FormRef = forwardRef(({
       </div>
     </div>
   )
-}
-)
+})
 const CommonForm = create()(FormRef)
 
 export default CommonForm

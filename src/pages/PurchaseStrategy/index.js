@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { ExtTable, WorkFlow, ExtModal } from 'suid';
+import { ExtTable, WorkFlow, ExtModal, AuthAction } from 'suid';
 import { Input, Button, message } from 'antd';
 import Header from '@/components/Header';
 import AdvancedForm from '@/components/AdvancedForm';
@@ -330,14 +330,16 @@ function PurchaseStategy() {
   function handleCheckChangeHistory() {
     const [row] = selectedRows
     const { code } = row;
-    openNewTab(`purchase/strategy/change/history?code=${code}`, '采购策略变更历史', false )
+    openNewTab(`purchase/strategy/change/history?code=${code}`, '采购策略变更历史', false)
   }
   return (
     <>
       <Header
         left={
           <>
-            <Button type='primary' className={styles.btn} onClick={handleCreate}>新增</Button>
+            <AuthAction key='PURCHASE_CREATE'>
+              <Button type='primary' className={styles.btn} onClick={handleCreate}>新增</Button>
+            </AuthAction>
             <Button disabled={multiple || empty || approvaling} className={styles.btn} onClick={handleEditor}>编辑</Button>
             <Button onClick={handleRemoveItem} disabled={empty || approvaling} className={styles.btn}>删除</Button>
             <Button disabled={multiple || empty} className={styles.btn} onClick={handleCheckDetail}>明细</Button>
