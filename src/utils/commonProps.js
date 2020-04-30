@@ -49,7 +49,7 @@ export const majorGroupProps = {
 // 采购组织
 export const purchaseOrganizationProps = {
   store: {
-    url: `${baseUrl}/basic/listAllOrgnazation`
+    url: `${baseUrl}/purchaseOrg/listByPage`
   },
   columns: [{
     title: '代码',
