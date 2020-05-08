@@ -16,7 +16,7 @@ export const ComboGrid = forwardRef(({
       setV(undefined)
     }
   }, [value])
-  return <Grid {...props} ref={ref} value={v} afterSelect={(item) => {
+  return <Grid remotePaging={true} {...props} ref={ref} value={v} afterSelect={(item) => {
     onChange(item[dataIndex])
     setV(item[text])
   }} />
@@ -34,7 +34,7 @@ export const ComboList = forwardRef(({
       setV(undefined)
     }
   }, [value])
-  return <List {...props} ref={ref} value={v} afterSelect={(item) => {
+  return <List remotePaging={true} {...props} ref={ref} value={v} afterSelect={(item) => {
     onChange(item[dataIndex])
     setV(item[text])
   }} />
@@ -52,7 +52,7 @@ export const ComboTree = forwardRef(({
       setV(undefined)
     }
   }, [value])
-  return <Tree {...props} ref={ref} value={v} afterSelect={(item) => {
+  return <Tree remotePaging={true} {...props} ref={ref} value={v} afterSelect={(item) => {
     onChange(item[dataIndex])
     setV(item[text])
   }} />
@@ -72,7 +72,7 @@ export const MixinSelect = forwardRef(({
     }
     setV(value)
   }, [value])
-  return <Select {...props} onChange={(val) => {
+  return <Select remotePaging={true} {...props} onChange={(val) => {
     onChange(val)
     setV(val)
   }} ref={ref} value={v}>

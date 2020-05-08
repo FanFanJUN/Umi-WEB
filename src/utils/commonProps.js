@@ -1,4 +1,4 @@
-import { tenderingBidBaseUrl, baseUrl, purchaseApplyBaseUrl } from './commonUrl';
+import { purchaseApplyBaseUrl, baseUrl } from './commonUrl';
 // 采购公司
 export const purchaseCompanyProps = {
   store: {
@@ -41,7 +41,7 @@ export const majorGroupProps = {
     width: '100%'
   },
   store: {
-    url: `${tenderingBidBaseUrl}/tendering/getPurchaseDepartments`
+    url: `${purchaseApplyBaseUrl}/tendering/getPurchaseDepartments`
   },
   placeholder: "请选择专业组"
 }
