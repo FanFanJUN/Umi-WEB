@@ -41,7 +41,7 @@ export const majorGroupProps = {
     width: '100%'
   },
   store: {
-    url: `${purchaseApplyBaseUrl}/tendering/getPurchaseDepartments`
+    url: `${purchaseApplyBaseUrl}/purchaseDepartment/findByPage`
   },
   placeholder: "请选择专业组"
 }
