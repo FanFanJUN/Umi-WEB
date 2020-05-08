@@ -188,7 +188,7 @@ function EditorStrategy({
               success: true,
               message: msg,
               data: {
-                businessKey: data.id
+                businessKey: data.flowId
               }
             })
             // return
