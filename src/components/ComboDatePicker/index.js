@@ -52,7 +52,7 @@ const ComboDatePicker = forwardRef(({
   const [visible, triggerVisible] = useState(false);
   const num = ENUM[frequency].value;
   const times = Array.from({ length: num }).map((_, k) => (
-    <div className={classnames([styles.flexBetweenCenter, styles.title])} key={`data-picker-${k}`}>
+    <div className={classnames([styles.flexBetweenCenter, styles.title])} key={`data-picker-${k}-${num}`}>
       <div className={styles.number}>{k + 1}</div>
       <div className={styles.time}>
         <MonthPicker onChange={(date, dateString) => handleItemsChange(date, dateString, k)} />
@@ -93,8 +93,10 @@ const ComboDatePicker = forwardRef(({
   }
   function handleItemsChange(date, _, key) {
     const vv = [...value];
-    vv[key] = date.format('YYYY-MM-DD HH:mm:ss')
-    onChange(vv)
+    if(!!date) {
+      vv[key] = date.format('YYYY-MM-DD HH:mm:ss')
+      onChange(vv)
+    }
   }
   return (
     <div
@@ -116,7 +118,6 @@ const ComboDatePicker = forwardRef(({
       <Modal
         visible={visible}
         onCancel={() => triggerVisible(false)}
-        destroyOnClose
         footer={null}
       >
         {content}

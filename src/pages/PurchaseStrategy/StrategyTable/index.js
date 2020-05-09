@@ -29,8 +29,8 @@ const importColumns = [
     dataIndex: 'purchaseTypeName'
   },
   {
-    title: '规划供应资源数量',
-    dataIndex: 'planSupplyResourceAmount'
+    title: '规划供应资源类型名称',
+    dataIndex: 'planSupplyResourceTypeName'
   },
   {
     title: '价格组成',
@@ -99,6 +99,7 @@ function StrategyTable({
   const [modalType, setModalType] = useState('add');
   const disableEditor = selectedRowKeys.length !== 1;
   const disableRemove = selectedRowKeys.length === 0;
+  const len = dataSource.length;
   const columns = [
     {
       title: '物料分类',
@@ -279,7 +280,7 @@ function StrategyTable({
       expectedDemandScalePrice,
       adjustScope,
       purchaseTypeName,
-      planSupplyResourceAmount,
+      planSupplyResourceTypeName,
       priceCombine,
       pricingFrequency,
       pricingTime,
@@ -291,7 +292,7 @@ function StrategyTable({
       supplierSelectRule,
       supplierCooperationWay
     } = column;
-    const timeDisabled = pricingFrequency === '按单' || pricingFrequency === '按旬';
+    const timeDisabled = pricingFrequency === '按单' || pricingFrequency === '按需';
     const error = {
       validate: false,
       status: '不通过',
@@ -332,11 +333,11 @@ function StrategyTable({
         message: '未填写采购方式'
       }
     }
-    if (!planSupplyResourceAmount) {
+    if (!planSupplyResourceTypeName) {
       return {
         ...error,
         ...column,
-        message: '未填写规划供应资源数'
+        message: '未填写规划供应资源类型名称'
       }
     }
     if (!priceCombine) {
@@ -428,6 +429,7 @@ function StrategyTable({
       }
       <div style={{ display: 'inline-block' }}>
         <DataImport
+          key={`data-import-${len}`}
           templateFileList={[
             {
               download: async () => {

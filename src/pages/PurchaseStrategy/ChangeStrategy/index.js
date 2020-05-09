@@ -332,7 +332,9 @@ function ChangeStrategy({
       }));
       setDataSource(newSource)
       message.success(msg)
+      return
     }
+    message.error(msg)
   }
   // 整单作废
   function handleChangeOwnInvalidState() {

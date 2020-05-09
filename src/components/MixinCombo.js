@@ -1,6 +1,7 @@
 import React, { forwardRef, useState, useEffect } from 'react';
 import { ComboGrid as Grid, ComboList as List, ComboTree as Tree, Attachment, utils } from 'suid';
-import { Select, Spin } from 'antd'
+import { Select, Spin } from 'antd';
+import { ATTACMENT_HOST } from '../utils/constants';
 const { Option } = Select;
 const { request } = utils;
 export const ComboGrid = forwardRef(({
@@ -123,6 +124,19 @@ export const ComboAttachment = forwardRef(({
       <Attachment
         fileList={fileList}
         ref={ref}
+        serviceHost={ATTACMENT_HOST}
+        customBatchDownloadFileName={true}
+        // serviceHost={`${baseUrl}/supplierRegister`}
+        uploadUrl='upload'
+        download={(files)=> {
+          console.log(files)
+          return ({
+            url: 'edm-service/file/download',
+            params: {
+              docIds: files.map(item=>item.id).join(',')
+            }
+          })
+        }}
         onDeleteFile={(file) => {
           const [info] = file;
           const { id } = info;

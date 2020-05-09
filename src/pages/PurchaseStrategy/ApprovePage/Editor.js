@@ -88,7 +88,9 @@ function ApproveEditor() {
       }));
       setDataSource(newSource)
       message.success(msg)
+      return
     }
+    message.error(msg)
   }
   // 标的物行创建
   async function handleCreateLine(val, hide) {

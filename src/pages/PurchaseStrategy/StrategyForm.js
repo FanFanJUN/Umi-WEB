@@ -11,6 +11,7 @@ import {
   materialLevel,
   proPlanMaterialTypeProps
 } from '@/utils/commonProps';
+import { getUserPhoneNumberForAccount } from '../../services/strategy';
 import { UserSelect, ComboAttachment } from '@/components'
 const { RangePicker } = DatePicker;
 const { Item, create } = Form;
@@ -51,11 +52,24 @@ const FormRef = forwardRef(({
   useImperativeHandle(ref, () => ({
     form
   }));
+  async function getUserPhoneNumber(account) {
+    const { setFieldsValue } = form;
+    if(type==='add') {
+      const { success, data } = await getUserPhoneNumberForAccount({ code: account })
+      if(success) {
+        const { mobile } = data;
+        setFieldsValue({
+          phone: mobile
+        })
+      }
+    }
+  }
   const { getFieldDecorator } = form;
   const [createName, setCreateName] = useState("")
   const { attachment = null } = initialValue;
   useEffect(() => {
-    const { userName } = storage.sessionStorage.get("Authorization")
+    const { userName, account } = storage.sessionStorage.get("Authorization");
+    getUserPhoneNumber(account)
     setCreateName(userName)
   }, [])
   return (
@@ -90,7 +104,7 @@ const FormRef = forwardRef(({
                       message: '请选择采购公司'
                     }
                   ]
-                })(<ComboList disabled={type === "detail"} {...purchaseCompanyProps} name='purchaseCompanyName' field={['purchaseCompanyCode']} form={form} />)
+                })(<ComboList remotePaging  disabled={type === "detail"} {...purchaseCompanyProps} name='purchaseCompanyName' field={['purchaseCompanyCode']} form={form} />)
               }
             </Item>
           </Col>
@@ -105,7 +119,7 @@ const FormRef = forwardRef(({
                       message: '请选择采购组织'
                     }
                   ]
-                })(<ComboList disabled={type === "detail"} {...purchaseOrganizationProps} name='purchaseOrganizationName' field={['purchaseOrganizationCode']} form={form} />)
+                })(<ComboList remotePaging disabled={type === "detail"} {...purchaseOrganizationProps} name='purchaseOrganizationName' field={['purchaseOrganizationCode']} form={form} />)
               }
             </Item>
           </Col>
@@ -122,7 +136,7 @@ const FormRef = forwardRef(({
                       message: '请选择专业组'
                     }
                   ]
-                })(<ComboList disabled={type === "detail"} {...majorGroupProps} form={form} name='professionalGroupName' field={['professionalGroupCode']} />)
+                })(<ComboList remotePaging disabled={type === "detail"} {...majorGroupProps} form={form} name='professionalGroupName' field={['professionalGroupCode']} />)
               }
             </Item>
           </Col>
@@ -137,7 +151,7 @@ const FormRef = forwardRef(({
                       message: '请选择采购组'
                     }
                   ]
-                })(<ComboList disabled={type === "detail"} {...purchaseGroupProps} name='purchaseGroupName' field={['purchaseGroupCode']} form={form} />)
+                })(<ComboList remotePaging disabled={type === "detail"} {...purchaseGroupProps} name='purchaseGroupName' field={['purchaseGroupCode']} form={form} />)
               }
             </Item>
           </Col>
@@ -201,7 +215,7 @@ const FormRef = forwardRef(({
                       message: '请选择币种'
                     }
                   ]
-                })(<ComboList disabled={type === "detail"} {...currencyProps} name='currencyName' field={['currencyCode']} form={form} />)
+                })(<ComboList remotePaging disabled={type === "detail"} {...currencyProps} name='currencyName' field={['currencyCode']} form={form} />)
               }
             </Item>
           </Col>
@@ -297,15 +311,12 @@ const FormRef = forwardRef(({
               getFieldDecorator('files')(
                 <ComboAttachment
                   allowPreview={false}
-                  allowDownload={false}
                   allowDelete={type !== 'detail'}
                   showViewType={type !== 'detail'}
                   uploadButton={{
                     disabled: type === 'detail'
                   }}
                   maxUploadNum={1}
-                  serviceHost='/edm-service'
-                  uploadUrl='upload'
                   multiple={false}
                   attachment={attachment}
                   customBatchDownloadFileName={true}

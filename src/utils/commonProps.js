@@ -94,7 +94,8 @@ export const proPlanMaterialTypeProps = {
   },
   reader: {
     name: 'purchaseMaterialCategoryName',
-    field: ['purchaseMaterialCategoryCode']
+    field: ['purchaseMaterialCategoryCode'],
+    childKey: 'childrenList'
   },
   placeholder: "请选择采购计划物料类别",
   style: {
@@ -252,22 +253,18 @@ export const priceCombineProps = {
 // 规划供应资源数量枚举
 
 export const planSupplyResourceAmountProps = {
-  options: [
-    {
-      value: 'MainAuxiliaryStandby',
-      label: '一主一辅一备'
-    },
-    {
-      value: 'MainAuxiliary',
-      label: '一主一辅'
-    },
-    {
-      value: 'Exclusive',
-      label: '独家'
-    }
-  ],
+  store: {
+    url: `${purchaseApplyBaseUrl}/supplierResourceType/findByPage`
+  },
   style: {
     width: '100%'
+  },
+  reader: {
+    name: 'name',
+    field: ['code'],
+    // name: 'planSupplyResourceTypeName',
+    // field: ['planSupplyResourceTypeAmount'],
+    // description: 'planSupplyResourceTypeAmount'
   },
   placeholder: '选择规划供应资源数量'
 }

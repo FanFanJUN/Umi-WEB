@@ -291,7 +291,9 @@ function EditorStrategy({
       }));
       setDataSource(newSource)
       message.success(msg)
+      return
     }
+    message.error(msg)
   }
   // 提交审核流程完毕回调
   function handleComplete(info) {

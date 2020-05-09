@@ -1,5 +1,5 @@
 import { request } from '@/utils';
-import { psBaseUrl } from '@/utils/commonUrl';
+import { psBaseUrl, gatewayUrl, basicUrl } from '@/utils/commonUrl';
 function createServiceRequest(option) {
   const {
     path: url,
@@ -143,3 +143,11 @@ export const downloadExcelDataImportTemplate = params =>
     method: 'POST',
     responseType: 'blob'
   })
+
+// 获取当前用户联系方式
+export const getUserPhoneNumberForAccount = params => createServiceRequest({
+  path: `${basicUrl}/employee/findByCode`,
+  params,
+  method: 'GET',
+  base: gatewayUrl
+})

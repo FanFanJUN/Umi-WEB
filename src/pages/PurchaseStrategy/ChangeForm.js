@@ -89,7 +89,7 @@ const FormRef = forwardRef(({
                       message: '请选择采购公司'
                     }
                   ]
-                })(<ComboList disabled={true} {...purchaseCompanyProps} name='purchaseCompanyName' field={['purchaseCompanyCode']} form={form} />)
+                })(<ComboList remotePaging disabled={true} {...purchaseCompanyProps} name='purchaseCompanyName' field={['purchaseCompanyCode']} form={form} />)
               }
             </Item>
           </Col>
@@ -104,7 +104,7 @@ const FormRef = forwardRef(({
                       message: '请选择采购组织'
                     }
                   ]
-                })(<ComboList disabled={true} {...purchaseOrganizationProps} name='purchaseOrganizationName' field={['purchaseOrganizationCode']} form={form} />)
+                })(<ComboList remotePaging disabled={true} {...purchaseOrganizationProps} name='purchaseOrganizationName' field={['purchaseOrganizationCode']} form={form} />)
               }
             </Item>
           </Col>
@@ -121,7 +121,7 @@ const FormRef = forwardRef(({
                       message: '请选择专业组'
                     }
                   ]
-                })(<ComboList disabled={true} {...majorGroupProps} form={form} name='professionalGroupName' field={['professionalGroupCode']} />)
+                })(<ComboList remotePaging disabled={true} {...majorGroupProps} form={form} name='professionalGroupName' field={['professionalGroupCode']} />)
               }
             </Item>
           </Col>
@@ -136,7 +136,7 @@ const FormRef = forwardRef(({
                       message: '请选择采购组'
                     }
                   ]
-                })(<ComboList disabled {...purchaseGroupProps} name='purchaseGroupName' field={['purchaseGroupCode']} form={form} />)
+                })(<ComboList remotePaging disabled {...purchaseGroupProps} name='purchaseGroupName' field={['purchaseGroupCode']} form={form} />)
               }
             </Item>
           </Col>
@@ -200,7 +200,7 @@ const FormRef = forwardRef(({
                       message: '请选择币种'
                     }
                   ]
-                })(<ComboList disabled={type === "detail"} {...currencyProps} name='currencyName' field={['currencyCode']} form={form} />)
+                })(<ComboList remotePaging disabled={type === "detail"} {...currencyProps} name='currencyName' field={['currencyCode']} form={form} />)
               }
             </Item>
           </Col>
@@ -301,8 +301,6 @@ const FormRef = forwardRef(({
                     disabled: type==='detail'
                   }}
                   maxUploadNum={1}
-                  serviceHost='/edm-service'
-                  uploadUrl='upload'
                   multiple={false}
                   attachment={attachment}
                   customBatchDownloadFileName={true}

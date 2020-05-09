@@ -2,7 +2,7 @@ import * as constants from './constants';
 import * as userAuth from './user';
 import { mainTabAction } from 'sei-utils';
 import { utils } from 'suid';
-import { target } from '../../config/proxy.config';
+import { onLineTarget } from '../../config/proxy.config';
 const { getUUID, storage } = utils;
 export function closeCurrent() {
   if (window.self.frameElement) {
@@ -142,7 +142,7 @@ export const getLocationHost = () => {
   const host = window.location.host;
   const isDev = /^localhost/.test(host) || /^192/.test(host);
   if(isDev) {
-    return target
+    return onLineTarget
   }
   return host
 }

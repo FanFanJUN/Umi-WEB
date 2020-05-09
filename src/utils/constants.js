@@ -29,6 +29,13 @@ const getServerPath = function () {
   return `${BASE_DOMAIN}${GATEWAY}`
 }
 
+const getAttacmentHost = function () {
+  if(process.env.NODE_ENV !== 'production') {
+    return '/edm-service/file'
+  }
+  return 'http://base-service.changhong.com/edm-service/file'
+}
+
 export const AUTH_SERVER_PATH = '/auth-service'
 
 /** 项目的站点基地址 */
@@ -38,6 +45,8 @@ const APP_BASE = base;
 const LOCAL_PATH = process.env.NODE_ENV !== 'production' ? '..' : `../${APP_BASE}`;
 
 const BASE_URL = getServerPath();
+
+export const ATTACMENT_HOST = getAttacmentHost();
 
 const LOGIN_STATUS = {
   "SUCCESS": "success",
@@ -61,5 +70,5 @@ export default {
   BASE_URL,
   AUTH_SERVER_PATH,
   APP_MODULE_BTN_KEY,
-  LOGIN_STATUS,
+  LOGIN_STATUS
 };

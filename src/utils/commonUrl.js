@@ -30,4 +30,6 @@ export const pbBaseUrl = '/srm-pb-web';
 
 export const secondUrl = '/srm-pp-web';
 
-export const gatewayUrl = '/api-gateway'
+export const gatewayUrl = '/api-gateway';
+
+export const basicUrl = '/basic-service'

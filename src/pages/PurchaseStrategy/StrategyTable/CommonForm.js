@@ -81,7 +81,6 @@ const CommonForm = forwardRef(({
         attachment,
         localId,
         pricingFrequencyName,
-        planSupplyResourceAmountName,
         costTargetName,
         ...other
       } = initialValues
@@ -208,7 +207,8 @@ const CommonForm = forwardRef(({
         <Col span={12}>
           <Item label='规划供应资源数量' {...formLayout}>
             {
-              getFieldDecorator('planSupplyResourceAmount', {
+              getFieldDecorator('planSupplyResourceTypeAmount'),
+              getFieldDecorator('planSupplyResourceTypeName', {
                 rules: [
                   {
                     required: true,
@@ -216,7 +216,7 @@ const CommonForm = forwardRef(({
                   }
                 ]
               })(
-                <MixinSelect {...planSupplyResourceAmountProps} />
+                <ComboList form={form} {...planSupplyResourceAmountProps} name='planSupplyResourceTypeName' field={['planSupplyResourceTypeAmount']} />
               )
             }
           </Item>
@@ -235,7 +235,7 @@ const CommonForm = forwardRef(({
                   }
                 ]
               })(
-                <ComboList {...priceCombineProps}  form={form} name='priceCombineName' field={['priceCombineCode']}/>
+                <ComboList {...priceCombineProps} form={form} name='priceCombineName' field={['priceCombineCode']} />
               )
             }
           </Item>
@@ -266,8 +266,35 @@ const CommonForm = forwardRef(({
                   type: 'array',
                   message: '请选择定价时间',
                   required: !comboDatePickerDisabled
+                },
+                {
+                  validator: (_, value = [], cb) => {
+                    const fre = getFieldValue('pricingFrequency') || 'unknow';
+                    if (fre === 'Annually' && value.length !== 1) {
+                      cb('请选择年度 1 个定价时间')
+                      return
+                    }
+                    if (fre === 'SemiAnnually' && value.length !== 2) {
+                      cb('请选择半年 2 个定价时间')
+                      return
+                    }
+                    if (fre === 'Quarterly' && value.length !== 4) {
+                      cb('请选择季度 4 个定价时间')
+                      return
+                    }
+                    if (fre === 'Monthly' && value.length !== 12) {
+                      cb('请选择月度 12 个定价时间')
+                      return
+                    }
+                    if (fre === 'TenDays' && value.length !== 12) {
+                      cb('请选择按旬 12 个定价时间')
+                      return
+                    }
+                    cb()
+                  }
                 }
               ],
+              validateFirst: true
             })(
               <ComboDatePicker
                 disabled={comboDatePickerDisabled}
@@ -399,8 +426,6 @@ const CommonForm = forwardRef(({
                 allowDownload={false}
                 maxUploadNum={1}
                 allowUpload={allowUpload}
-                serviceHost='/edm-service'
-                uploadUrl='upload'
                 attachment={attachment}
                 multiple={false}
                 customBatchDownloadFileName={true}

@@ -326,7 +326,9 @@ function ChangeStrategy({
       }));
       setDataSource(newSource)
       message.success(msg)
+      return
     }
+    message.error(msg)
   }
   // 标的物行作废
   function handleChangeLineInvalidState(id) {

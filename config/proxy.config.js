@@ -1,5 +1,5 @@
-// export const target = 'http://10.8.4.102:8088';
-export const target = 'http://10.4.69.39:8100';
+export const localTarget = 'http://10.8.4.121:8088';
+export const onLineTarget = 'http://10.4.69.39:8100';
 
 export default {
   '/mocker.api': {
@@ -24,17 +24,22 @@ export default {
   //     '^/service.api/srm-ps-web': '/srm-ps-web'
   //   }
   // },
-  '/service.api/srm-ps-web/flow-service': {
-    target: target,
+  '/service.api/srm-ps-web': {
+    target: localTarget,
     changeOrigin: true,
     secure: false,
-    pathRewrite: { '^/service.api/srm-ps-web/flow-service': '/flow-service' },
+    pathRewrite: { '^/service.api/srm-ps-web': '/srm-ps-web' },
   },
-  '/service.api/': {
-    target: target,
-    // target: 'http://10.8.4.102:8088',
+  '/service.api': {
+    target: onLineTarget,
     changeOrigin: true,
     secure: false,
     pathRewrite: { '^/service.api': '' },
+  },
+  '/service.api/edm-service': {
+    target: 'http://base-service.changhong.com/edm-service',
+    changeOrigin: true,
+    secure: false,
+    pathRewrite: { '^/service.api/edm-service': '' },
   }
 };
