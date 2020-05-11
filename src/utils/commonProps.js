@@ -74,7 +74,8 @@ export const purchaseOrganizationProps = {
 // 币种
 export const currencyProps = {
   store: {
-    url: `${baseUrl}/supplierRegister/getAllCurrency`
+    url: `${baseUrl}/supplierRegister/getAllCurrency`,
+    params: { Q_EQ_frozen_bool: false }
   },
   reader: {
     name: 'name',

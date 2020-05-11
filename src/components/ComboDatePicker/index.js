@@ -52,7 +52,7 @@ const ComboDatePicker = forwardRef(({
   const [visible, triggerVisible] = useState(false);
   const num = ENUM[frequency].value;
   const times = Array.from({ length: num }).map((_, k) => (
-    <div className={classnames([styles.flexBetweenCenter, styles.title])} key={`data-picker-${k}-${num}`}>
+    <div className={classnames([styles.flexBetweenCenter, styles.title])} key={`data-picker-${k}-${frequency}`}>
       <div className={styles.number}>{k + 1}</div>
       <div className={styles.time}>
         <MonthPicker onChange={(date, dateString) => handleItemsChange(date, dateString, k)} />

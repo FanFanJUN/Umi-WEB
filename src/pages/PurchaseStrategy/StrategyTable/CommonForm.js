@@ -207,7 +207,7 @@ const CommonForm = forwardRef(({
         <Col span={12}>
           <Item label='规划供应资源数量' {...formLayout}>
             {
-              getFieldDecorator('planSupplyResourceTypeAmount'),
+              getFieldDecorator('planSupplyResourceTypeCode'),
               getFieldDecorator('planSupplyResourceTypeName', {
                 rules: [
                   {
@@ -216,7 +216,7 @@ const CommonForm = forwardRef(({
                   }
                 ]
               })(
-                <ComboList form={form} {...planSupplyResourceAmountProps} name='planSupplyResourceTypeName' field={['planSupplyResourceTypeAmount']} />
+                <ComboList form={form} {...planSupplyResourceAmountProps} name='planSupplyResourceTypeName' field={['planSupplyResourceTypeCode']} />
               )
             }
           </Item>

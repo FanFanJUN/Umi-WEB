@@ -47,29 +47,30 @@ const FormRef = forwardRef(({
   form,
   type = "add",
   initialValue = {},
-  onChangeMaterialLevel=() => null
+  onChangeMaterialLevel = () => null
 }, ref) => {
   useImperativeHandle(ref, () => ({
     form
   }));
-  async function getUserPhoneNumber(account) {
+  async function getUserPhoneNumber(id) {
     const { setFieldsValue } = form;
-    if(type==='add') {
-      const { success, data } = await getUserPhoneNumberForAccount({ code: account })
-      if(success) {
-        const { mobile } = data;
+    if (type === 'add') {
+      const { success, data } = await getUserPhoneNumberForAccount({ userId: id })
+      if (success) {
+        const { mobile = null } = data;
         setFieldsValue({
           phone: mobile
         })
       }
     }
   }
-  const { getFieldDecorator } = form;
-  const [createName, setCreateName] = useState("")
+  const { getFieldDecorator, setFieldsValue } = form;
+  const [createName, setCreateName] = useState("");
+  const [purchaseCompanyCode, setPurchaseCompanyCode] = useState('');
   const { attachment = null } = initialValue;
   useEffect(() => {
-    const { userName, account } = storage.sessionStorage.get("Authorization");
-    getUserPhoneNumber(account)
+    const { userName, userId } = storage.sessionStorage.get("Authorization");
+    getUserPhoneNumber(userId)
     setCreateName(userName)
   }, [])
   return (
@@ -104,7 +105,14 @@ const FormRef = forwardRef(({
                       message: '请选择采购公司'
                     }
                   ]
-                })(<ComboList remotePaging  disabled={type === "detail"} {...purchaseCompanyProps} name='purchaseCompanyName' field={['purchaseCompanyCode']} form={form} />)
+                })(<ComboList disabled={type === "detail"} {...purchaseCompanyProps} name='purchaseCompanyName' field={['purchaseCompanyCode']} form={form} afterSelect={(item) => {
+                  const { code } = item;
+                  setPurchaseCompanyCode(code)
+                  setFieldsValue({
+                    purchaseOrganizationCode: '',
+                    purchaseOrganizationName: ''
+                  })
+                }} />)
               }
             </Item>
           </Col>
@@ -119,7 +127,23 @@ const FormRef = forwardRef(({
                       message: '请选择采购组织'
                     }
                   ]
-                })(<ComboList remotePaging disabled={type === "detail"} {...purchaseOrganizationProps} name='purchaseOrganizationName' field={['purchaseOrganizationCode']} form={form} />)
+                })(
+                  <ComboList
+                    key={`combo-list-${purchaseCompanyCode}`}
+                    remotePaging
+                    disabled={type === "detail" || !purchaseCompanyCode}
+                    {...purchaseOrganizationProps}
+                    store={{
+                      ...purchaseOrganizationProps.store,
+                      params: {
+                        Q_EQ_corporationCode: purchaseCompanyCode
+                      }
+                    }}
+                    name='purchaseOrganizationName'
+                    field={['purchaseOrganizationCode']}
+                    form={form}
+                  />
+                )
               }
             </Item>
           </Col>
@@ -183,7 +207,7 @@ const FormRef = forwardRef(({
                       message: '请选择物料级别'
                     }
                   ]
-                })(<ComboList disabled={type === "detail"} {...materialLevel} form={form} name='materialLevelName' field={['materialLevelCode']} afterSelect={onChangeMaterialLevel}/>)
+                })(<ComboList disabled={type === "detail"} {...materialLevel} form={form} name='materialLevelName' field={['materialLevelCode']} afterSelect={onChangeMaterialLevel} />)
               }
             </Item>
           </Col>

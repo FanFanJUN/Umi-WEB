@@ -146,7 +146,7 @@ export const downloadExcelDataImportTemplate = params =>
 
 // 获取当前用户联系方式
 export const getUserPhoneNumberForAccount = params => createServiceRequest({
-  path: `${basicUrl}/employee/findByCode`,
+  path: `${basicUrl}/userProfile/findPersonalSettingInfo`,
   params,
   method: 'GET',
   base: gatewayUrl

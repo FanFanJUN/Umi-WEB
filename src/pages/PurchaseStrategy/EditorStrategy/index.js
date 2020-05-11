@@ -194,7 +194,7 @@ function EditorStrategy({
             // return
           }
           reject(false)
-        }else {
+        } else {
           reject(false)
         }
       })
@@ -298,7 +298,7 @@ function EditorStrategy({
   // 提交审核流程完毕回调
   function handleComplete(info) {
     const { success, message: msg } = info
-    if(success){
+    if (success) {
       message.success(msg)
       openNewTab('purchase/strategy', '采购策略', true)
       return
