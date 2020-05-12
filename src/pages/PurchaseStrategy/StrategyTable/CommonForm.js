@@ -49,6 +49,7 @@ const CommonForm = forwardRef(({
   onOk = () => null,
   initialValues = {},
   type = 'add',
+  mode = 'add',
   loading
 }, ref) => {
   useImperativeHandle(ref, () => ({ form }))
@@ -137,7 +138,7 @@ const CommonForm = forwardRef(({
                     message: '请选择物料分类'
                   }
                 ]
-              })(<ComboTree form={form} {...materialClassProps} name='materialClassificationName' field={['materialClassificationCode']} />)
+              })(<ComboTree form={form} {...materialClassProps} name='materialClassificationName' field={['materialClassificationCode']} disabled={mode==='change' && type === 'editor'}/>)
             }
           </Item>
         </Col>

@@ -99,6 +99,8 @@ function StrategyTable({
   const [modalType, setModalType] = useState('add');
   const disableEditor = selectedRowKeys.length !== 1;
   const disableRemove = selectedRowKeys.length === 0;
+  const [ single={} ] = selectedRows;
+  const { changeable=true } = single;
   const len = dataSource.length;
   const columns = [
     {
@@ -423,7 +425,7 @@ function StrategyTable({
     <>
       <Button type='primary' className={styles.btn} onClick={() => showModal()}>新增</Button>
       <Button className={styles.btn} onClick={() => showModal('editor')} disabled={disableEditor}>编辑</Button>
-      <Button className={styles.btn} disabled={disableRemove} onClick={handleRemove}>删除</Button>
+      <Button className={styles.btn} disabled={disableRemove || !changeable} onClick={handleRemove}>删除</Button>
       {
         type === 'change' ?
           <Button className={styles.btn} onClick={handleLineInvalidChange} disabled={disableRemove}>作废/取消作废</Button> : null
@@ -490,6 +492,7 @@ function StrategyTable({
         onCancel={handleCancel}
         onOk={handleSubmit}
         type={modalType}
+        mode={type}
         initialValues={initialValue}
         lineNumber={line}
         wrappedComponentRef={commonFormRef}

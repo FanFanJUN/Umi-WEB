@@ -34,11 +34,17 @@ function PurchaseStategy() {
   const [selectedRowKeys, setRowKeys] = useState([]);
   const [selectedRows, setRows] = useState([]);
   const [searchValue, setSearchValue] = useState({});
+  const [tableFilters, setTableFilters] = useState([]);
   const [visible, triggerVisible] = useState(false);
   const [attachId, setAttachId] = useState('');
   const [showAttach, triggerShowAttach] = useState(false);
   const [singleRow = {}] = selectedRows;
-  const { state: rowState, approvalState: rowApprovalState, changeable: rowChangeable, flowId: businessId } = singleRow;
+  const {
+    state: rowState,
+    approvalState: rowApprovalState,
+    changeable: rowChangeable,
+    flowId: businessId
+  } = singleRow;
   const columns = [
     {
       title: '预警',
@@ -133,7 +139,7 @@ function PurchaseStategy() {
   const tableProps = {
     store: {
       url: `${psBaseUrl}/purchaseStrategyHeader/listByPageLocal`,
-      params: searchValue,
+      params: {...searchValue, filters: tableFilters },
       type: 'POST'
     }
   }
@@ -176,7 +182,7 @@ function PurchaseStategy() {
     {
       title: '适应范围',
       type: 'multiple',
-      key: 'searchble',
+      key: 'Q_IN_adjustScope',
       props: corporationProps
     },
     {
@@ -263,9 +269,16 @@ function PurchaseStategy() {
   }
   // 高级搜索
   function handleAdvnacedSearch(v) {
-    setSearchValue({
-      ...v
-    })
+    const keys = Object.keys(v);
+    const filters = keys.map((item)=> {
+      const [_, operator, fieldName, isName] = item.split('_');
+      return {
+        fieldName,
+        operator,
+        value: !!isName ? undefined : v[item]
+      }
+    }).filter(item=> !!item.value)
+    setTableFilters(filters);
     uploadTable()
     headerRef.current.hide()
   }

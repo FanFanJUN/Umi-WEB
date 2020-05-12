@@ -25,7 +25,7 @@ export default {
   //   }
   // },
   '/service.api/srm-ps-web': {
-    target: onLineTarget,
+    target: localTarget,
     changeOrigin: true,
     secure: false,
     pathRewrite: { '^/service.api/srm-ps-web': '/srm-ps-web' },

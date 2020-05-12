@@ -174,6 +174,7 @@ function EditorStrategy({
   }
   // 保存并提交审核
   async function handleBeforeStartFlow() {
+    const len = dataSource.length;
     return new Promise((resolve, reject) => {
       const { validateFieldsAndScroll } = formRef.current.form;
       validateFieldsAndScroll(async (err, val) => {
@@ -188,11 +189,16 @@ function EditorStrategy({
                 businessKey: data.flowId
               }
             })
-            // return
           }
-          reject(false)
+          reject({
+            success: false,
+            message : msg
+          })
         } else {
-          reject(false)
+          reject({
+            success: false,
+            message: len === 0 ? '标的物不能为空' : '请完善采购策略基本信息'
+          })
         }
       })
     })

@@ -78,10 +78,12 @@ function CreateStrategy() {
   }
   // 保存并提交审核
   async function handleBeforeStartFlow() {
+    const len = dataSource.length;
     return new Promise((resolve, reject) => {
       const { validateFieldsAndScroll } = formRef.current.form;
       validateFieldsAndScroll(async (err, val) => {
-        if (!err) {
+        console.log(len)
+        if (!err && dataSource.length !== 0) {
           const params = await formatSaveParams(val);
           const { success, message: msg, data } = await savePurcahseAndApprove(params);
           if (success) {
@@ -93,9 +95,15 @@ function CreateStrategy() {
               }
             })
           }
-          reject(false)
+          reject({
+            success: false,
+            message : msg
+          })
         }else {
-          reject(false)
+          reject({
+            success: false,
+            message: len === 0 ? '标的物不能为空' : '请完善采购策略基本信息'
+          })
         }
       })
     })

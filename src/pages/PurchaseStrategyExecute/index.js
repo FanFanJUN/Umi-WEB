@@ -31,6 +31,7 @@ function PurchaseStrategyExecute() {
   const [searchValue, setSearchValue] = useState({});
   const [attachId, setAttachId] = useState('');
   const [showAttach, triggerShowAttach] = useState(false);
+  const [tableFilters, setTableFilters] = useState([]);
   const columns = [
     {
       title: '采购策略编号',
@@ -144,7 +145,7 @@ function PurchaseStrategyExecute() {
   const tableProps = {
     store: {
       url: `${psBaseUrl}/purchaseStrategyHeader/findPurchaseStrategyExecuteDetailByPage`,
-      params: searchValue,
+      params: {...searchValue, filters: tableFilters },
       type: 'POST'
     }
   }
@@ -177,7 +178,7 @@ function PurchaseStrategyExecute() {
     {
       title: '适应范围',
       type: 'multiple',
-      key: 'searchble',
+      key: 'Q_IN_adjustScope',
       props: corporationProps
     },
     {
@@ -255,16 +256,23 @@ function PurchaseStrategyExecute() {
   // 快速搜索
   function handleQuickSerach(v) {
     setSearchValue({
-      Quick_value: v
+      quickSearchValue: v
     })
     uploadTable()
   }
   // 高级搜索
   function handleAdvnacedSearch(v) {
-    setSearchValue({
-      ...v
-    })
-    uploadTable()()
+    const keys = Object.keys(v);
+    const filters = keys.map((item)=> {
+      const [_, operator, fieldName, isName] = item.split('_');
+      return {
+        fieldName,
+        operator,
+        value: !!isName ? undefined : v[item]
+      }
+    }).filter(item=> !!item.value)
+    setTableFilters(filters);
+    uploadTable()
     headerRef.current.hide()
   }
   function uploadTable() {
