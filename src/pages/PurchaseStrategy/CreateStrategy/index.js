@@ -29,8 +29,7 @@ function CreateStrategy() {
     } = val;
     if (!!files) {
       const filesIds = files.map((item) => {
-        const [res] = item.response;
-        const { id = null } = res;
+        const { id = null } = item;
         return id
       }).filter(_ => _);
       const headerUUID = utils.getUUID();
@@ -105,8 +104,7 @@ function CreateStrategy() {
   async function handleCreateLine(val, hide) {
     const { files = [], pricingDateList = [], adjustScopeListCode = [] } = val;
     const [fileInfo = {}] = files;
-    const { response = {} } = fileInfo;
-    const { docId:id = null } = response;
+    const { id = null } = fileInfo;
     let params = {}
     const uuid = utils.getUUID()
     triggerLoading(true)
@@ -163,9 +161,7 @@ function CreateStrategy() {
     const [localId] = keys;
     const { files = [], pricingDateList = [], adjustScopeListCode = [] } = val;
     const [fileInfo = {}] = files;
-    const { response = [] } = fileInfo;
-    const [attachment = {}] = response;
-    const { id = null } = attachment;
+    const { id = null } = fileInfo;
     let params = {}
     const uuid = utils.getUUID()
     triggerLoading(true)

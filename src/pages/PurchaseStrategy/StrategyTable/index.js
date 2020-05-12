@@ -114,10 +114,6 @@ function StrategyTable({
       dataIndex: 'expectedDemandScalePrice'
     },
     {
-      title: '币种',
-      dataIndex: 'currencyName'
-    },
-    {
       title: '适应范围',
       dataIndex: 'adjustScopeList',
       render(text = []) {
@@ -130,7 +126,12 @@ function StrategyTable({
     },
     {
       title: '规划供应资源数量',
-      dataIndex: 'planSupplyResourceAmountName',
+      dataIndex: 'planSupplyResourceTypeAmount',
+      width: 150
+    },
+    {
+      title: '规划供应资源名称',
+      dataIndex: 'planSupplyResourceTypeName',
       width: 150
     },
     {
@@ -503,14 +504,11 @@ function StrategyTable({
       >
         <ComboAttachment
           allowPreview={false}
-          allowDownload={false}
           allowDelete={false}
           showViewType={false}
           uploadButton={{
             disabled: true
           }}
-          serviceHost='/edm-service'
-          uploadUrl='upload'
           multiple={false}
           attachment={attachId}
           customBatchDownloadFileName={true}

@@ -127,8 +127,7 @@ function ChangeStrategy({
     } = val;
     if (!!files) {
       const filesIds = files.map((item) => {
-        const [res] = item.response;
-        const { id = null } = res;
+        const { id = null } = item;
         return id
       }).filter(_ => _);
       const headerUUID = utils.getUUID();
@@ -164,9 +163,7 @@ function ChangeStrategy({
   async function formatLineParams(val) {
     const { files = [], pricingDateList = [], adjustScopeListCode = [] } = val;
     const [fileInfo = {}] = files;
-    const { response = [] } = fileInfo;
-    const [attachment = {}] = response;
-    const { id = null } = attachment;
+    const { id = null } = fileInfo;
     let params = {}
     if (!!id) {
       const uuid = utils.getUUID();
@@ -284,9 +281,7 @@ function ChangeStrategy({
     let params = {}
     const { changeFiles = [] } = val;
     const [fileInfo = {}] = changeFiles;
-    const { response = [] } = fileInfo;
-    const [attachment = {}] = response;
-    const { id = null } = attachment;
+    const { id = null } = fileInfo;
     const uuid = utils.getUUID()
     if (!!id) {
       const { success } = await strategyTableLineRelevanceDocment({
@@ -427,7 +422,6 @@ function ChangeStrategy({
                       <ComboAttachment
                         attachment={reasonAttach}
                         allowPreview={false}
-                        allowDownload={false}
                         maxUploadNum={1}
                         allowUpload={allowUpload}
                         serviceHost='/edm-service'

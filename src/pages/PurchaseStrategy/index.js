@@ -410,7 +410,7 @@ function PurchaseStategy() {
       >
         <ComboAttachment
           allowPreview={false}
-          allowDownload={false}
+          // allowDownload={false}
           maxUploadNum={1}
           allowUpload={false}
           serviceHost='/edm-service'

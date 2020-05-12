@@ -173,8 +173,7 @@ function ApproveEditor() {
     } = val;
     if (!!files) {
       const filesIds = files.map((item) => {
-        const [res] = item.response;
-        const { id = null } = res;
+        const { id = null } = item;
         return id
       }).filter(_ => _);
       const headerUUID = utils.getUUID();
@@ -210,9 +209,7 @@ function ApproveEditor() {
   async function formatLineParams(val) {
     const { files = [], pricingDateList = [], adjustScopeListCode = [] } = val;
     const [fileInfo = {}] = files;
-    const { response = [] } = fileInfo;
-    const [attachment = {}] = response;
-    const { id = null } = attachment;
+    const { id = null } = fileInfo;
     let params = {}
     const uuid = utils.getUUID()
     if (!!id) {

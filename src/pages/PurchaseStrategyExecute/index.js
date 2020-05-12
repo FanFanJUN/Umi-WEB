@@ -335,7 +335,6 @@ function PurchaseStrategyExecute() {
       >
         <ComboAttachment
           allowPreview={false}
-          allowDownload={false}
           allowDelete={false}
           showViewType={false}
           uploadButton={{

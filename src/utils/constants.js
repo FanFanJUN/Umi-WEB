@@ -31,9 +31,16 @@ const getServerPath = function () {
 
 const getAttacmentHost = function () {
   if(process.env.NODE_ENV !== 'production') {
-    return '/edm-service/file'
+    return '/edm-service'
   }
-  return 'http://base-service.changhong.com/edm-service/file'
+  return 'http://base-service.changhong.com/edm-service'
+}
+
+const getAttacmentInfoHost = function () {
+  if(process.env.NODE_ENV !== 'production') {
+    return '/edm-service/document/getDocument'
+  }
+  return 'http://base-service.changhong.com/edm-service/document/getDocument'
 }
 
 export const AUTH_SERVER_PATH = '/auth-service'
@@ -47,6 +54,7 @@ const LOCAL_PATH = process.env.NODE_ENV !== 'production' ? '..' : `../${APP_BASE
 const BASE_URL = getServerPath();
 
 export const ATTACMENT_HOST = getAttacmentHost();
+export const ATTACMENT_INFO_HOST = getAttacmentInfoHost();
 
 const LOGIN_STATUS = {
   "SUCCESS": "success",

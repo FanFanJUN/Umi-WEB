@@ -116,8 +116,7 @@ function ChangeStrategy({
     } = val;
     if (!!files) {
       const filesIds = files.map((item) => {
-        const [res] = item.response;
-        const { id = null } = res;
+        const { id = null } = item;
         return id
       }).filter(_ => _);
       const headerUUID = utils.getUUID();
@@ -153,9 +152,7 @@ function ChangeStrategy({
   async function formatLineParams(val) {
     const { files = [], pricingDateList = [], adjustScopeListCode = [] } = val;
     const [fileInfo = {}] = files;
-    const { response = [] } = fileInfo;
-    const [attachment = {}] = response;
-    const { id = null } = attachment;
+    const { id = null } = fileInfo;
     let params = {}
     const uuid = utils.getUUID()
     if (!!id) {
@@ -283,9 +280,7 @@ function ChangeStrategy({
         if (!err) {
           const { changeFiles = [] } = val;
           const [fileInfo = {}] = changeFiles;
-          const { response = [] } = fileInfo;
-          const [attachment = {}] = response;
-          const { id = null } = attachment;
+          const { id = null } = fileInfo;
           let params = {}
           const uuid = utils.getUUID()
           if (!!id) {
@@ -457,7 +452,6 @@ function ChangeStrategy({
                 getFieldDecorator('changeFiles')(
                   <ComboAttachment
                     allowPreview={false}
-                    allowDownload={false}
                     maxUploadNum={1}
                     allowUpload={allowUpload}
                     serviceHost='/edm-service'

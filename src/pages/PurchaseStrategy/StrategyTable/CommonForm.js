@@ -423,7 +423,7 @@ const CommonForm = forwardRef(({
             getFieldDecorator('files')(
               <ComboAttachment
                 allowPreview={false}
-                allowDownload={false}
+                // allowDownload={false}
                 maxUploadNum={1}
                 allowUpload={allowUpload}
                 attachment={attachment}

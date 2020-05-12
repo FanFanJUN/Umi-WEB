@@ -1,7 +1,7 @@
 import React, { forwardRef, useState, useEffect } from 'react';
 import { ComboGrid as Grid, ComboList as List, ComboTree as Tree, Attachment, utils } from 'suid';
 import { Select, Spin } from 'antd';
-import { ATTACMENT_HOST } from '../utils/constants';
+import { ATTACMENT_HOST, ATTACMENT_INFO_HOST } from '../utils/constants';
 const { Option } = Select;
 const { request } = utils;
 export const ComboGrid = forwardRef(({
@@ -96,15 +96,16 @@ export const ComboAttachment = forwardRef(({
     if (!!attachment) {
       triggerLoading(true)
       request({
-        url: '/edm-service/getEntityDocumentInfos',
+        url: `${ATTACMENT_HOST}/document/getEntityDocumentInfos`,
         params: { entityId: attachment },
-        method: 'POST'
+        method: 'GET'
       }).then((response) => {
         triggerLoading(false)
         const { data, success } = response;
         if (success && !!data) {
           const files = data.map((item, k) => ({
             ...item,
+            id: item.docId,
             name: item.fileName,
             response: [data[k]],
             status: 'done'
@@ -126,12 +127,10 @@ export const ComboAttachment = forwardRef(({
         ref={ref}
         serviceHost={ATTACMENT_HOST}
         customBatchDownloadFileName={true}
-        // serviceHost={`${baseUrl}/supplierRegister`}
-        uploadUrl='upload'
+        uploadUrl='file/upload'
         download={(files)=> {
-          console.log(files)
           return ({
-            url: 'edm-service/file/download',
+            url: `${ATTACMENT_HOST}/file/download`,
             params: {
               docIds: files.map(item=>item.id).join(',')
             }
@@ -141,9 +140,9 @@ export const ComboAttachment = forwardRef(({
           const [info] = file;
           const { id } = info;
           const filter = fileList.filter((item) => {
-            const { response = [] } = item
-            const [one = {}] = response;
-            const { id: key = '' } = one;
+            const { id: key = '' } = item
+            console.log(file, item)
+            console.log(id, key)
             return key !== id
           })
           setFileList(filter)

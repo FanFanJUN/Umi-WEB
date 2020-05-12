@@ -246,7 +246,6 @@ function ChangeStrategyHistory() {
       >
         <ComboAttachment
           allowPreview={false}
-          allowDownload={false}
           maxUploadNum={1}
           allowUpload={false}
           serviceHost='/edm-service'
