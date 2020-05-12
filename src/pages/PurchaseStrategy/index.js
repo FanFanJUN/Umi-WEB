@@ -137,6 +137,10 @@ function PurchaseStategy() {
       type: 'POST'
     }
   }
+  useEffect(() => {
+    window.parent.frames.addEventListener('message', listenerParentClose, false);
+    return window.parent.frames.removeEventListener('message', listenerParentClose, false)
+  }, []);
   const formItems = [
     {
       title: '采购公司',
@@ -286,18 +290,18 @@ function PurchaseStategy() {
   }
   function handleEditor() {
     const [key] = selectedRowKeys;
-    openNewTab(`purchase/strategy/editor?id=${key}`, '编辑采购策略', true)
+    openNewTab(`purchase/strategy/editor?id=${key}`, '编辑采购策略', false)
   }
   function handleCreate() {
-    openNewTab('purchase/strategy/create', '新增采购策略', true)
+    openNewTab('purchase/strategy/create', '新增采购策略', false)
   }
   function handleChange() {
     const [key] = selectedRowKeys;
-    openNewTab(`purchase/strategy/change?id=${key}`, '变更采购策略', true)
+    openNewTab(`purchase/strategy/change?id=${key}`, '变更采购策略', false)
   }
   function handleCheckDetail() {
     const [key] = selectedRowKeys;
-    openNewTab(`purchase/strategy/detail?id=${key}`, '新增采购策略', false)
+    openNewTab(`purchase/strategy/detail?id=${key}`, '采购策略明细', false)
   }
   // 启动审核流程
   function handleBeforeStartFlow() {

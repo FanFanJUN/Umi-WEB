@@ -125,13 +125,13 @@ function StrategyTable({
       dataIndex: 'purchaseTypeName'
     },
     {
-      title: '规划供应资源数量',
-      dataIndex: 'planSupplyResourceTypeAmount',
+      title: '规划供应资源名称',
+      dataIndex: 'planSupplyResourceTypeName',
       width: 150
     },
     {
-      title: '规划供应资源名称',
-      dataIndex: 'planSupplyResourceTypeName',
+      title: '规划供应资源数量',
+      dataIndex: 'planSupplyResourceTypeAmount',
       width: 150
     },
     {
