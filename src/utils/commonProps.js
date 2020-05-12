@@ -3,6 +3,7 @@ import { purchaseApplyBaseUrl, baseUrl } from './commonUrl';
 export const purchaseCompanyProps = {
   store: {
     url: `${baseUrl}/basic/listAllCorporation`,
+    params: { Q_EQ_frozen_bool: false }
   },
   style: {
     width: '100%'
@@ -17,7 +18,8 @@ export const purchaseCompanyProps = {
 // 采购组
 export const purchaseGroupProps = {
   store: {
-    url: `${baseUrl}/purchaseGroup/listByPage`
+    url: `${baseUrl}/purchaseGroup/listByPage`,
+    params: { Q_EQ_frozen_bool: false }
   },
   placeholder: '请选择采购组',
   reader: {
@@ -41,7 +43,8 @@ export const majorGroupProps = {
     width: '100%'
   },
   store: {
-    url: `${purchaseApplyBaseUrl}/purchaseDepartment/findByPage`
+    url: `${purchaseApplyBaseUrl}/purchaseDepartment/findByPage`,
+    params: { Q_EQ_frozen_bool: false }
   },
   placeholder: "请选择专业组"
 }
@@ -49,7 +52,8 @@ export const majorGroupProps = {
 // 采购组织
 export const purchaseOrganizationProps = {
   store: {
-    url: `${baseUrl}/purchaseOrg/listByPage`
+    url: `${baseUrl}/purchaseOrg/listByPage`,
+    params: { Q_EQ_frozen_bool: false }
   },
   columns: [{
     title: '代码',
@@ -91,7 +95,8 @@ export const currencyProps = {
 export const proPlanMaterialTypeProps = {
   store: {
     url: `${purchaseApplyBaseUrl}/purchaseMaterialCategory/findByPage`,
-    type: 'post'
+    type: 'post',
+    params: { Q_EQ_frozen_bool: false }
   },
   reader: {
     name: 'purchaseMaterialCategoryName',
@@ -109,7 +114,8 @@ export const materialLevel = {
   store: {
     url: `${baseUrl}/dataDictionaryItem/getDictByTypeCode`,
     params: {
-      dictTypeCode: 'material_level'
+      dictTypeCode: 'material_level',
+      Q_EQ_frozen_bool: false
     }
   },
   reader: {
@@ -125,7 +131,8 @@ export const materialLevel = {
 // 二次分类物料组数据
 export const materialClassProps = {
   store: {
-    url: `${baseUrl}/SecondaryClassificationMaterialGroup/listAllGeneralTree`
+    url: `${baseUrl}/SecondaryClassificationMaterialGroup/listAllGeneralTree`,
+    params: { Q_EQ_frozen_bool: false }
   },
   reader: {
     name: 'name',
@@ -149,7 +156,8 @@ export const corporationProps = {
     }
   ],
   store: {
-    url: `${baseUrl}/basic/listAllCorporation`
+    url: `${baseUrl}/basic/listAllCorporation`,
+    params: { Q_EQ_frozen_bool: false }
   },
   reader: {
     name: 'name',
@@ -175,7 +183,8 @@ export const materialClassTypeProps = {
   ],
 
   store: {
-    url: `${purchaseApplyBaseUrl}/purchaseWay/findByPage`
+    url: `${purchaseApplyBaseUrl}/purchaseWay/findByPage`,
+    params: { Q_EQ_frozen_bool: false }
   },
   reader: {
     name: 'purchaseWayName',
@@ -224,7 +233,8 @@ export const priceCombineProps = {
   store: {
     url: `${baseUrl}/dataDictionaryItem/getDictByTypeCode`,
     params: {
-      dictTypeCode: 'priceComposition'
+      dictTypeCode: 'priceComposition',
+      Q_EQ_frozen_bool: false
     }
   },
   reader: {
@@ -251,21 +261,19 @@ export const priceCombineProps = {
   placeholder: '选择价格组成'
 }
 
-// 规划供应资源数量枚举
+// 规划供应资源数量主数据
 
 export const planSupplyResourceAmountProps = {
   store: {
-    url: `${purchaseApplyBaseUrl}/supplierResourceType/findByPage`
+    url: `${purchaseApplyBaseUrl}/supplierResourceType/findByPage`,
+    params: { Q_EQ_frozen_bool: false }
   },
   style: {
     width: '100%'
   },
   reader: {
     name: 'name',
-    field: ['code'],
-    // name: 'planSupplyResourceTypeName',
-    // field: ['planSupplyResourceTypeAmount'],
-    // description: 'planSupplyResourceTypeAmount'
+    field: ['code']
   },
   placeholder: '选择规划供应资源数量'
 }

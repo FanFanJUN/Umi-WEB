@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ExtTable, WorkFlow, ExtModal, AuthAction } from 'suid';
 import { Input, Button, message } from 'antd';
 import Header from '@/components/Header';
@@ -141,6 +141,12 @@ function PurchaseStategy() {
     window.parent.frames.addEventListener('message', listenerParentClose, false);
     return window.parent.frames.removeEventListener('message', listenerParentClose, false)
   }, []);
+  function listenerParentClose(event) {
+    const { data={} } = event;
+    if(data.tabAction === 'close') {
+      tableRef.current.remoteDataRefresh()
+    }
+  }
   const formItems = [
     {
       title: '采购公司',
