@@ -4,15 +4,13 @@
  * @date 2020.4.3
  */
 import React, { useState, forwardRef, useRef } from "react";
-import { Col, Row, Tree, Input, Select, Skeleton, Popover, Tag } from "antd";
+import { Col, Row, Tree, Input, Skeleton, Popover, Tag } from "antd";
 import { request } from '@/utils'
 import { baseUrl } from '@/utils/commonUrl'
 import styles from './index.less';
 import { ExtTable } from "suid";
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-
-const DirectoryTree = Tree.DirectoryTree;
 const TreeNode = Tree.TreeNode;
 const Search = Input.Search;
 
@@ -261,16 +259,7 @@ const UserSelect = forwardRef(({
           </div>
         }
       >
-        <div style={{
-          height: 36,
-          border: '1px solid #ccc',
-          borderRadius: 5,
-          padding: '0 12px',
-          display: 'flex',
-          justifyContent: 'flex-start',
-          alignItems: 'center',
-          cursor: 'pointer'
-        }}>
+        <div className={styles.input}>
           {
             value.map(item=> <Tag key={item}>
               { item }
