@@ -139,7 +139,7 @@ function PurchaseStategy() {
   const tableProps = {
     store: {
       url: `${psBaseUrl}/purchaseStrategyHeader/listByPageLocal`,
-      params: {...searchValue, filters: tableFilters },
+      params: {...searchValue },
       type: 'POST'
     }
   }
@@ -278,7 +278,10 @@ function PurchaseStategy() {
         value: !!isName ? undefined : v[item]
       }
     }).filter(item=> !!item.value)
-    setTableFilters(filters);
+    // setTableFilters(filters);
+    setSearchValue({
+      filters: filters
+    })
     uploadTable()
     headerRef.current.hide()
   }
