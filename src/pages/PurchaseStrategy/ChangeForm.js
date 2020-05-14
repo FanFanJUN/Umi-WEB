@@ -53,6 +53,13 @@ const FormRef = forwardRef(({
   const { getFieldDecorator } = form;
   const [createName, setCreateName] = useState("")
   const { attachment=null } = initialValue;
+  const treeNodeProps = (node) => {
+    if(node.nodeLevel===1) {
+      return {
+        selectable: false
+      }
+    }
+  }
   useEffect(() => {
     const { userName } = storage.sessionStorage.get("Authorization")
     setCreateName(userName)
@@ -153,7 +160,7 @@ const FormRef = forwardRef(({
                       message: '请选择采购物料类别'
                     }
                   ]
-                })(<ComboTree disabled={true} {...proPlanMaterialTypeProps} name='purchaseGoodsClassificationName' field={['purchaseGoodsClassificationCode']} form={form} />)
+                })(<ComboTree treeNodeProps={treeNodeProps} disabled={true} {...proPlanMaterialTypeProps} name='purchaseGoodsClassificationName' field={['purchaseGoodsClassificationCode']} form={form} />)
               }
             </Item>
           </Col>
