@@ -100,14 +100,14 @@ const CommonForm = forwardRef(({
   const fre = getFieldValue('pricingFrequency') || 'unknow';
   const files = getFieldValue('files') || []
   const allowUpload = files.length !== 1;
-  const treeNodeProps = (node) => {
-    if(node.nodeLevel === 0) {
-      return {
-        selectable: false,
-        // disabled: false
-      }
-    }
-  }
+  // const treeNodeProps = (node) => {
+  //   if(node.nodeLevel === 0) {
+  //     return {
+  //       selectable: false,
+  //       // disabled: false
+  //     }
+  //   }
+  // }
   const comboDatePickerDisabled = (fre === 'unknow') || (fre === 'Order') || (fre === 'Demand');
   const title = `行号：${leftPad(lineNumber, 4, '0')}`;
   const { attachment } = initialValues;
@@ -146,7 +146,7 @@ const CommonForm = forwardRef(({
                     message: '请选择物料分类'
                   }
                 ]
-              })(<ComboTree treeNodeProps={treeNodeProps} form={form} {...materialClassProps}  name='materialClassificationName' field={['materialClassificationCode']} disabled={mode==='change' && type === 'editor'}/>)
+              })(<ComboTree form={form} {...materialClassProps}  name='materialClassificationName' field={['materialClassificationCode']} disabled={mode==='change' && type === 'editor'}/>)
             }
           </Item>
         </Col>

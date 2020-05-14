@@ -100,7 +100,7 @@ function StrategyTable({
   const disableEditor = selectedRowKeys.length !== 1;
   const disableRemove = selectedRowKeys.length === 0;
   const [ single={} ] = selectedRows;
-  const { changeable=true } = single;
+  const { changeable=true, id: singleRowId } = single;
   const len = dataSource.length;
   const columns = [
     {
@@ -428,7 +428,7 @@ function StrategyTable({
       <Button className={styles.btn} disabled={disableRemove || !changeable} onClick={handleRemove}>删除</Button>
       {
         type === 'change' ?
-          <Button className={styles.btn} onClick={handleLineInvalidChange} disabled={disableRemove}>作废/取消作废</Button> : null
+          <Button className={styles.btn} onClick={handleLineInvalidChange} disabled={disableRemove || !singleRowId}>作废/取消作废</Button> : null
       }
       <div style={{ display: 'inline-block' }}>
         <DataImport
@@ -484,7 +484,9 @@ function StrategyTable({
           rowKey={(item) => `${item.localId}`}
           onSelectRow={handleSelectedRows}
           selectedRowKeys={selectedRowKeys}
-          checkbox={type !== 'detail'}
+          checkbox={
+            type !== 'detail'? { multiSelect: false } : false
+          }
         />
       </div>
       <CommonForm

@@ -1,4 +1,4 @@
-import { purchaseApplyBaseUrl, baseUrl, psBaseUrl } from './commonUrl';
+import { purchaseApplyBaseUrl, baseUrl, psBaseUrl, commonsUrl } from './commonUrl';
 // 采购公司
 export const purchaseCompanyProps = {
   store: {
@@ -78,8 +78,9 @@ export const purchaseOrganizationProps = {
 // 币种
 export const currencyProps = {
   store: {
-    url: `${baseUrl}/supplierRegister/getAllCurrency`,
-    params: { Q_EQ_frozen__Boolean: false }
+    url: `${commonsUrl}/currency/findByPage`,
+    params: { Q_EQ_frozen__Boolean: false },
+    type: 'post'
   },
   reader: {
     name: 'name',
@@ -94,9 +95,9 @@ export const currencyProps = {
 // 采购计划物料类别
 export const proPlanMaterialTypeProps = {
   store: {
-    url: `${purchaseApplyBaseUrl}/purchaseMaterialCategory/findByPage`,
+    url: `${psBaseUrl}/purchaseStrategyHeader/listPurchaseMaterialCategoryByPage`,
     type: 'post',
-    params: { frozen: false }
+    params: { Q_EQ_frozen__Boolean: false }
   },
   reader: {
     name: 'purchaseMaterialCategoryName',
@@ -183,7 +184,7 @@ export const materialClassTypeProps = {
   ],
 
   store: {
-    url: `${purchaseApplyBaseUrl}/purchaseWay/findByPage`,
+    url: `${psBaseUrl}/purchaseStrategyHeader/listPurchaseWayByPage`,
     params: { Q_EQ_frozen__Boolean: false }
   },
   reader: {

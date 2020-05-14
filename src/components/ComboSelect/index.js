@@ -6,6 +6,7 @@ import React, {
 } from 'react';
 import { ExtTable } from 'suid';
 import { Popover, Input } from 'antd';
+const { Search } = Input
 const ComboSelect = forwardRef(({
   columns = [],
   store = {},
@@ -56,21 +57,22 @@ const ComboSelect = forwardRef(({
         trigger='click'
         placement="bottomRight"
         autoAdjustOverflow={false}
-        // getPopupContainer={() => wrapperRef.current}
         content={
-          <ExtTable
-            store={store}
-            columns={columns}
-            rowKey={(item) => item[readeName]}
-            selectedRowKeys={selectedKeys}
-            onSelectRow={handleSelectedRow}
-            showSearch={false}
-            height={300}
-            width={400}
-            lineNumber={false}
-            allowCustomColumns={false}
-            checkbox={multiple}
-          />
+          <div>
+            <ExtTable
+              store={store}
+              columns={columns}
+              rowKey={(item) => item[readeName]}
+              selectedRowKeys={selectedKeys}
+              onSelectRow={handleSelectedRow}
+              showSearch={true}
+              height={300}
+              width={400}
+              lineNumber={false}
+              allowCustomColumns={false}
+              checkbox={multiple}
+            />
+          </div>
         }
       >
         <Input

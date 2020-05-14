@@ -69,10 +69,9 @@ const FormRef = forwardRef(({
   const [purchaseCompanyCode, setPurchaseCompanyCode] = useState('');
   const { attachment = null } = initialValue;
   const treeNodeProps = (node) => {
-    if(node.frozen) {
+    if(node.nodeLevel===1) {
       return {
-        selectable: false,
-        disabled: true
+        selectable: false
       }
     }
   }
