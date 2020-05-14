@@ -261,7 +261,7 @@ const FormRef = forwardRef(({
                     message: '请填写内容简介'
                   }
                 ]
-              })(<TextArea disabled={type === "detail"} autoSize={{ minRows: 3, maxRows: 5 }} placeholder="内容简介..." />)
+              })(<TextArea maxLength={800} disabled={type === "detail"} autoSize={{ minRows: 3, maxRows: 5 }} placeholder="内容简介..." />)
             }
           </Item>
         </Row>
@@ -275,7 +275,7 @@ const FormRef = forwardRef(({
                     message: '请填写关键词'
                   }
                 ]
-              })(<Input disabled={type === "detail"} placeholder='请填写关键词' />)
+              })(<Input maxLength={120} disabled={type === "detail"} placeholder='请填写关键词' />)
             }
           </Item>
         </Row>
@@ -283,7 +283,7 @@ const FormRef = forwardRef(({
           <Col span={24}>
             <Item label='其他内容' {...formLayoutAlone}>
               {
-                getFieldDecorator('comment')(<TextArea placeholder='其他需要单独说明的内容' autoSize={{ minRows: 3, maxRows: 5 }} disabled={type==='detail'}/>)
+                getFieldDecorator('comment')(<TextArea maxLength={800} placeholder='其他需要单独说明的内容' autoSize={{ minRows: 3, maxRows: 5 }} disabled={type==='detail'}/>)
               }
             </Item>
           </Col>

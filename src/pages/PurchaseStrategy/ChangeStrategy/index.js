@@ -200,7 +200,10 @@ function ChangeStrategy({
           }
         })
       }
-      reject(false)
+      reject({
+        success: false,
+        message: msg
+      })
     })
   }
   async function handleCreateLine(val, hide) {

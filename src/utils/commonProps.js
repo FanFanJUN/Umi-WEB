@@ -1,4 +1,4 @@
-import { purchaseApplyBaseUrl, baseUrl } from './commonUrl';
+import { purchaseApplyBaseUrl, baseUrl, psBaseUrl } from './commonUrl';
 // 采购公司
 export const purchaseCompanyProps = {
   store: {
@@ -43,7 +43,7 @@ export const majorGroupProps = {
     width: '100%'
   },
   store: {
-    url: `${purchaseApplyBaseUrl}/purchaseDepartment/findByPage`,
+    url: `${psBaseUrl}/purchaseStrategyHeader/listPurchaseDepartmentByPage`,
     params: { Q_EQ_frozen__Boolean: false }
   },
   placeholder: "请选择专业组"
@@ -96,7 +96,7 @@ export const proPlanMaterialTypeProps = {
   store: {
     url: `${purchaseApplyBaseUrl}/purchaseMaterialCategory/findByPage`,
     type: 'post',
-    params: { Q_EQ_frozen__Boolean: false }
+    params: { frozen: false }
   },
   reader: {
     name: 'purchaseMaterialCategoryName',

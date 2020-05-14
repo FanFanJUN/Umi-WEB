@@ -4,7 +4,7 @@
  * @date 2020.4.3
  */
 import React, { useState, forwardRef, useRef } from "react";
-import { Col, Row, Tree, Input, Select, Spin } from "antd";
+import { Col, Row, Tree, Input, Select, Skeleton, Popover } from "antd";
 import { request } from '@/utils'
 import { baseUrl } from '@/utils/commonUrl'
 import styles from './index.less';
@@ -29,10 +29,10 @@ const columns = [
 ];
 
 const UserSelect = forwardRef(({
-  form={},
-  name='id',
-  field=[],
-  reader={},
+  form = {},
+  name = 'id',
+  field = [],
+  reader = {},
   onChange = () => null,
   onRowsChange = () => null,
   wrapperClass,
@@ -49,18 +49,21 @@ const UserSelect = forwardRef(({
   const [expandedKeys, setExpandedKeys] = useState([]);
   const [userData, setUserData] = useState([]);
   const [keyList, setKeyList] = useState([]);
-  const [selectedRows, setSelectedRows] = useState([])
-  const [selectedKeys, setSelectedKeys] = useState([])
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedKeys, setSelectedKeys] = useState([]);
+  const [initState, setInitState] = useState(false);
   const searchInput = useRef(null)
-  const {name: readName='id', field: readField=['id']} = reader;
+  const { name: readName = 'id', field: readField = ['id'] } = reader;
   //网络请求树控件数据（协议分类）
   const getTreeData = () => {
     triggerLoading(true)
     request({
       url: `${baseUrl}/basic/listAllOrgnazation`,
+      // url: `${psBaseUrl}/purchaseStrategyHeader/listAllOrgnazation`,
       method: 'get'
     }).then(data => {
       if (data.success) {
+        setInitState(true)
         setTreeData(data.data)
       }
       triggerLoading(false)
@@ -153,35 +156,48 @@ const UserSelect = forwardRef(({
   };
   const rowOnChange = (keys, rows) => {
     setSelectedKeys(keys)
-    if(!!setFieldsValue) {
+    if (!!setFieldsValue) {
       setFieldsValue({
-        [name] : keys
+        [name]: keys
       });
-      const fieldValues = readField.map(item=>{
-        return rows.map(i=>i[item]);
+      const fieldValues = readField.map(item => {
+        return rows.map(i => i[item]);
       })
-      field.forEach((item, k)=>{
+      field.forEach((item, k) => {
         setFieldsValue({
-          [item] : fieldValues[k]
+          [item]: fieldValues[k]
         })
       })
     }
-    setSelectedRows(rows)
-    onChange(keys)
+    setSelectedRows(rows)                            
     onRowsChange(rows)
   }
   return (
     <div>
       <Select
         ref={ref}
-        onDropdownVisibleChange={() => {
-          getTreeData()
+        onDropdownVisibleChange={(visi) => {
+          if(initState) return;
+          visi && getTreeData()
         }}
         onDeselect={(key) => {
           const keys = selectedKeys.filter(item => item !== key)
           const rows = selectedRows.filter(item => item.code !== key)
-          setSelectedKeys(keys)
-          onChange(keys)
+          setSelectedKeys(keys);
+          if (!!setFieldsValue) {
+            setFieldsValue({
+              [name]: keys
+            });
+            const fieldValues = readField.map(item => {
+              return rows.map(i => i[item]);
+            })
+            field.forEach((item, k) => {
+              setFieldsValue({
+                [item]: fieldValues[k]
+              })
+            })
+          }
+          setSelectedRows(rows)
           onRowsChange(rows)
         }}
         {...props}
@@ -191,7 +207,7 @@ const UserSelect = forwardRef(({
             <div className={styles.header}>
               <span>组织机构</span>
             </div>
-            <Row className={styles.row}>
+            <Row className={styles.row}  onMouseDown={e => e.preventDefault()}>
               <Col span={12} className={styles.textRight}>
                 <Search
                   key="search"
@@ -200,30 +216,27 @@ const UserSelect = forwardRef(({
                   style={{ width: '220px' }}
                   enterButton
                   ref={searchInput}
-                  onMouseDown={(e)=> {
-                    e.preventDefault()
-                    searchInput.current.focus()
-                  }}
+                  // onMouseDown={(e) => {
+                  //   e.preventDefault()
+                  // }}
                 />
               </Col>
               <Col span={12} className={styles.textRight}></Col>
             </Row>
             <Row>
               <Col span={10} className={styles.col}>
-                <Spin spinning={loading}>
-                  {treeData.length > 0 ? (
-                    <DirectoryTree
-                      expandAction={"click"}
-                      onSelect={onTreeSelect}
-                      autoExpandParent={autoExpandParent}
-                      expandedKeys={expandedKeys}
-                      onExpand={onExpand}
-                      loading={loading}
-                      draggable={false}>
-                      {renderTreeNodes(searchValue === "" ? treeData : findResultData)}
-                    </DirectoryTree>
-                  ) : null}
-                </Spin>
+                {treeData.length > 0 ? (
+                  <DirectoryTree
+                    expandAction={"click"}
+                    onSelect={onTreeSelect}
+                    autoExpandParent={autoExpandParent}
+                    expandedKeys={expandedKeys}
+                    onExpand={onExpand}
+                    loading={loading}
+                    draggable={false}>
+                    {renderTreeNodes(searchValue === "" ? treeData : findResultData)}
+                  </DirectoryTree>
+                ) : <Skeleton active/>}
               </Col>
               <Col span={14} className={styles.col}>
                 <ExtTable
@@ -232,7 +245,7 @@ const UserSelect = forwardRef(({
                   loading={loading}
                   selectedRowKeys={selectedKeys}
                   onSelectRow={rowOnChange}
-                  rowKey={(item) => item.code}
+                  rowKey={(item) => item[readName]}
                   dataSource={userData}
                   columns={columns}
                 />
@@ -253,4 +266,3 @@ UserSelect.propTypes = {
 }
 
 export default UserSelect
-

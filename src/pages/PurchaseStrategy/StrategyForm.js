@@ -68,6 +68,14 @@ const FormRef = forwardRef(({
   const [createName, setCreateName] = useState("");
   const [purchaseCompanyCode, setPurchaseCompanyCode] = useState('');
   const { attachment = null } = initialValue;
+  const treeNodeProps = (node) => {
+    if(node.frozen) {
+      return {
+        selectable: false,
+        disabled: true
+      }
+    }
+  }
   useEffect(() => {
     const { userName, userId } = storage.sessionStorage.get("Authorization");
     getUserPhoneNumber(userId)
@@ -192,7 +200,7 @@ const FormRef = forwardRef(({
                       message: '请选择采购物料类别'
                     }
                   ]
-                })(<ComboTree disabled={type === "detail"} {...proPlanMaterialTypeProps} name='purchaseGoodsClassificationName' field={['purchaseGoodsClassificationCode']} form={form} />)
+                })(<ComboTree treeNodeProps={treeNodeProps} disabled={type === "detail"} {...proPlanMaterialTypeProps} name='purchaseGoodsClassificationName' field={['purchaseGoodsClassificationCode']} form={form} />)
               }
             </Item>
           </Col>
@@ -302,7 +310,7 @@ const FormRef = forwardRef(({
                     message: '请填写内容简介'
                   }
                 ]
-              })(<TextArea disabled={type === "detail"} autoSize={{ minRows: 3, maxRows: 5 }} placeholder="内容简介..." />)
+              })(<TextArea maxLength={800} disabled={type === "detail"} autoSize={{ minRows: 3, maxRows: 5 }} placeholder="内容简介..." />)
             }
           </Item>
         </Row>
@@ -316,7 +324,7 @@ const FormRef = forwardRef(({
                     message: '请填写关键词'
                   }
                 ]
-              })(<Input disabled={type === "detail"} placeholder='请填写关键词' />)
+              })(<Input maxLength={120} disabled={type === "detail"} placeholder='请填写关键词' />)
             }
           </Item>
         </Row>
@@ -324,7 +332,7 @@ const FormRef = forwardRef(({
           <Col span={24}>
             <Item label='其他内容' {...formLayoutAlone}>
               {
-                getFieldDecorator('comment')(<TextArea placeholder='其他需要单独说明的内容' autoSize={{ minRows: 3, maxRows: 5 }} disabled={type === 'detail'} />)
+                getFieldDecorator('comment')(<TextArea maxLength={800} placeholder='其他需要单独说明的内容' autoSize={{ minRows: 3, maxRows: 5 }} disabled={type === 'detail'} />)
               }
             </Item>
           </Col>
@@ -374,7 +382,7 @@ const FormRef = forwardRef(({
                     }
                   ]
                 })(
-                  <UserSelect disabled={type === "detail"} style={{ width: "100%", zIndex: 10 }} mode="tags" wrapperStyle={{ width: 800 }} placeholder="选择主送人员" name='sendName' reader={{ name: 'userName', field: ['code'] }} field={['sendList']} form={form} />
+                  <UserSelect disabled={type === "detail"} style={{ width: "100%", zIndex: 10 }} wrapperStyle={{ width: 800 }} placeholder="选择主送人员" name='sendName' reader={{ name: 'userName', field: ['code'] }} field={['sendList']} form={form} />
                 )
               }
             </Item>

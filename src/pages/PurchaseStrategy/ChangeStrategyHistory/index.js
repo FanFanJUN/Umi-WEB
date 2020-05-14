@@ -42,6 +42,9 @@ function ChangeStrategyHistory() {
   const [selectedRows, setRows] = useState([]);
   const multiple = selectedRowKeys.length > 1;
   const empty = selectedRowKeys.length === 0;
+  const [signleRow] = selectedRows;
+  const { flowStatus } = signleRow;
+  const disableSubmit = flowStatus !== 'INIT'
   const LEFT = (
     <>
       <Button type='primary' className={styles.btn}>审核历史</Button>
@@ -57,7 +60,7 @@ function ChangeStrategyHistory() {
               <Button
                 className={styles.btn}
                 loading={loading}
-                disabled={multiple || empty} className={styles.btn}
+                disabled={multiple || empty || disableSubmit} className={styles.btn}
               >提交审核</Button>
             )
           }

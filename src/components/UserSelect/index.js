@@ -4,9 +4,9 @@
  * @date 2020.4.3
  */
 import React, { useState, forwardRef, useRef } from "react";
-import { Col, Row, Tree, Input, Select, Skeleton } from "antd";
+import { Col, Row, Tree, Input, Select, Skeleton, Popover, Tag } from "antd";
 import { request } from '@/utils'
-import { baseUrl, psBaseUrl } from '@/utils/commonUrl'
+import { baseUrl } from '@/utils/commonUrl'
 import styles from './index.less';
 import { ExtTable } from "suid";
 import PropTypes from 'prop-types';
@@ -36,8 +36,9 @@ const UserSelect = forwardRef(({
   onChange = () => null,
   onRowsChange = () => null,
   wrapperClass,
-  wrapperStyle,
+  wrapperStyle = { width: 800 },
   nodeKey,
+  value=[],
   ...props
 }, ref) => {
   const { setFieldsValue } = form;
@@ -49,8 +50,9 @@ const UserSelect = forwardRef(({
   const [expandedKeys, setExpandedKeys] = useState([]);
   const [userData, setUserData] = useState([]);
   const [keyList, setKeyList] = useState([]);
-  const [selectedRows, setSelectedRows] = useState([])
-  const [selectedKeys, setSelectedKeys] = useState([])
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedKeys, setSelectedKeys] = useState([]);
+  const [initState, setInitState] = useState(false);
   const searchInput = useRef(null)
   const { name: readName = 'id', field: readField = ['id'] } = reader;
   //网络请求树控件数据（协议分类）
@@ -62,6 +64,7 @@ const UserSelect = forwardRef(({
       method: 'get'
     }).then(data => {
       if (data.success) {
+        setInitState(true)
         setTreeData(data.data)
       }
       triggerLoading(false)
@@ -92,13 +95,13 @@ const UserSelect = forwardRef(({
     if (value === "") {//没有搜索关键字
       setFindResultData(findResultData)
       setSearchValue(value)
-      setAutoExpandParent(false)
+      // setAutoExpandParent(false)
       setExpandedKeys([])
       return
     }
     setFindResultData(findResultData)
     setSearchValue(value)
-    setAutoExpandParent(true)
+    // setAutoExpandParent(true)
     setExpandedKeys(keyList)
   }
 
@@ -167,45 +170,48 @@ const UserSelect = forwardRef(({
         })
       })
     }
-    setSelectedRows(rows)                            
+    setSelectedRows(rows)
+    onRowsChange(rows)
+  }
+  const handleDeselect = (key) => {
+    console.log(selectedKeys, selectedRows);
+    const keys = selectedKeys.filter(item => item !== key)
+    const rows = selectedRows.filter(item => item.id !== key)
+    setSelectedKeys(keys);
+    if (!!setFieldsValue) {
+      setFieldsValue({
+        [name]: keys
+      });
+      const fieldValues = readField.map(item => {
+        return rows.map(i => i[item]);
+      })
+      field.forEach((item, k) => {
+        setFieldsValue({
+          [item]: fieldValues[k]
+        })
+      })
+    }
+    setSelectedRows(rows)
     onRowsChange(rows)
   }
   return (
     <div>
-      <Select
+      <Popover
         ref={ref}
-        onDropdownVisibleChange={(visi) => {
+        trigger="click"
+        placement="bottom"
+        onVisibleChange={(visi) => {
+          if(initState) return
           visi && getTreeData()
         }}
-        onDeselect={(key) => {
-          const keys = selectedKeys.filter(item => item !== key)
-          const rows = selectedRows.filter(item => item.code !== key)
-          setSelectedKeys(keys);
-          if (!!setFieldsValue) {
-            setFieldsValue({
-              [name]: keys
-            });
-            const fieldValues = readField.map(item => {
-              return rows.map(i => i[item]);
-            })
-            field.forEach((item, k) => {
-              setFieldsValue({
-                [item]: fieldValues[k]
-              })
-            })
-          }
-          setSelectedRows(rows)
-          onRowsChange(rows)
-        }}
         {...props}
-        dropdownMatchSelectWidth={false}
-        dropdownRender={() => (
-          <div className={classnames([wrapperClass, styles.wrapper])} style={wrapperStyle} onMouseDown={e => e.preventDefault()}>
+        content={
+          <div style={wrapperStyle} onMouseDown={e => e.preventDefault()}>
             <div className={styles.header}>
               <span>组织机构</span>
             </div>
-            <Row className={styles.row}>
-              <Col span={12} className={styles.textRight}>
+            <Row className={styles.row} onMouseDown={e => e.preventDefault()}>
+              <Col span={12} className={styles.textRight} onMouseDown={e => e.preventDefault()}>
                 <Search
                   key="search"
                   placeholder="输入分类名称查询"
@@ -224,17 +230,19 @@ const UserSelect = forwardRef(({
             <Row>
               <Col span={10} className={styles.col}>
                 {treeData.length > 0 ? (
-                  <DirectoryTree
+                  <Tree
                     expandAction={"click"}
                     onSelect={onTreeSelect}
                     autoExpandParent={autoExpandParent}
+                    defaultExpandParent
+                    autoExpandParent
                     expandedKeys={expandedKeys}
                     onExpand={onExpand}
                     loading={loading}
                     draggable={false}>
                     {renderTreeNodes(searchValue === "" ? treeData : findResultData)}
-                  </DirectoryTree>
-                ) : <Skeleton active/>}
+                  </Tree>
+                ) : <Skeleton active />}
               </Col>
               <Col span={14} className={styles.col}>
                 <ExtTable
@@ -242,6 +250,7 @@ const UserSelect = forwardRef(({
                   showSearch={false}
                   loading={loading}
                   selectedRowKeys={selectedKeys}
+                  selectedRows={selectedRows}
                   onSelectRow={rowOnChange}
                   rowKey={(item) => item[readName]}
                   dataSource={userData}
@@ -250,9 +259,25 @@ const UserSelect = forwardRef(({
               </Col>
             </Row>
           </div>
-        )}
+        }
       >
-      </Select>
+        <div style={{
+          height: 36,
+          border: '1px solid #ccc',
+          borderRadius: 5,
+          padding: '0 12px',
+          display: 'flex',
+          justifyContent: 'flex-start',
+          alignItems: 'center',
+          cursor: 'pointer'
+        }}>
+          {
+            value.map(item=> <Tag key={item}>
+              { item }
+            </Tag>)
+          }
+        </div>
+      </Popover>
     </div>
 
   )

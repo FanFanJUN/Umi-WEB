@@ -100,6 +100,14 @@ const CommonForm = forwardRef(({
   const fre = getFieldValue('pricingFrequency') || 'unknow';
   const files = getFieldValue('files') || []
   const allowUpload = files.length !== 1;
+  const treeNodeProps = (node) => {
+    if(node.nodeLevel === 0) {
+      return {
+        selectable: false,
+        // disabled: false
+      }
+    }
+  }
   const comboDatePickerDisabled = (fre === 'unknow') || (fre === 'Order') || (fre === 'Demand');
   const title = `行号：${leftPad(lineNumber, 4, '0')}`;
   const { attachment } = initialValues;
@@ -138,7 +146,7 @@ const CommonForm = forwardRef(({
                     message: '请选择物料分类'
                   }
                 ]
-              })(<ComboTree form={form} {...materialClassProps} name='materialClassificationName' field={['materialClassificationCode']} disabled={mode==='change' && type === 'editor'}/>)
+              })(<ComboTree treeNodeProps={treeNodeProps} form={form} {...materialClassProps}  name='materialClassificationName' field={['materialClassificationCode']} disabled={mode==='change' && type === 'editor'}/>)
             }
           </Item>
         </Col>
@@ -318,7 +326,7 @@ const CommonForm = forwardRef(({
                   message: '请填写市场运行情况'
                 }
               ]
-            })(<TextArea placeholder='填写市场运行情况' />)
+            })(<TextArea maxLength={800} placeholder='填写市场运行情况' />)
           }
         </Item>
       </Row>
@@ -332,7 +340,7 @@ const CommonForm = forwardRef(({
                   message: '请填写资源保障情况'
                 }
               ]
-            })(<TextArea placeholder='填写资源保证情况' />)
+            })(<TextArea maxLength={800} placeholder='填写资源保证情况' />)
           }
         </Item>
       </Row>
@@ -365,7 +373,7 @@ const CommonForm = forwardRef(({
                 }
               ]
             })(
-              <TextArea placeholder='填写成本控制方式' />
+              <TextArea maxLength={800} placeholder='填写成本控制方式' />
             )
           }
         </Item>
@@ -381,7 +389,7 @@ const CommonForm = forwardRef(({
                 }
               ]
             })(
-              <TextArea placeholder='库存控制方式' />
+              <TextArea maxLength={800} placeholder='库存控制方式' />
             )
           }
         </Item>
@@ -397,7 +405,7 @@ const CommonForm = forwardRef(({
                 }
               ]
             })(
-              <TextArea placeholder='供应商选择原则' />
+              <TextArea maxLength={800} placeholder='供应商选择原则' />
             )
           }
         </Item>
@@ -413,7 +421,7 @@ const CommonForm = forwardRef(({
                 }
               ]
             })(
-              <TextArea placeholder='供应商合作方式' />
+              <TextArea maxLength={800} placeholder='供应商合作方式' />
             )
           }
         </Item>
@@ -424,7 +432,6 @@ const CommonForm = forwardRef(({
             getFieldDecorator('files')(
               <ComboAttachment
                 allowPreview={false}
-                // allowDownload={false}
                 maxUploadNum={1}
                 allowUpload={allowUpload}
                 attachment={attachment}
@@ -438,7 +445,7 @@ const CommonForm = forwardRef(({
       <Row>
         <Item label='备注' {...formLayoutAlone}>
           {
-            getFieldDecorator('remark')(<TextArea placeholder='备注...' />)
+            getFieldDecorator('remark')(<TextArea maxLength={800} placeholder='备注...' />)
           }
         </Item>
       </Row>
