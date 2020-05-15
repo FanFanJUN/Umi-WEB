@@ -3,7 +3,7 @@ import { message, Modal, Button } from 'antd';
 import { ExtTable, ExtModal, WorkFlow } from 'suid';
 import { router } from 'dva';
 import { psBaseUrl } from '@/utils/commonUrl';
-import { openNewTab } from '@/utils';
+import { closeCurrent } from '@/utils';
 import { removePurchaseStrategyChangeHistory } from '@/services/strategy';
 import { ComboAttachment } from '@/components';
 import classnames from 'classnames';
@@ -167,7 +167,7 @@ function ChangeStrategyHistory() {
     setRowKeys([])
   }
   function handleClose() {
-    openNewTab('purchase/strategy', '采购策略', true)
+    closeCurrent()
   }
   // 启动审核流程
   function handleBeforeStartFlow() {

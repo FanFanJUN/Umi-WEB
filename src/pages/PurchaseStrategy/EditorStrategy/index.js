@@ -13,7 +13,7 @@ import {
   strategyTableLineRelevanceDocment
 } from '@/services/strategy';
 import moment from 'moment';
-import { openNewTab } from '@/utils';
+import { closeCurrent } from '../../../utils';
 import styles from './index.less';
 const { StartFlow } = WorkFlow;
 function EditorStrategy({
@@ -165,7 +165,7 @@ function EditorStrategy({
         const { success, message: msg, } = await savePurcahseAndApprove(params);
         triggerLoading(false)
         if (success) {
-          openNewTab('purchase/strategy', '采购策略', true)
+          closeCurrent()
           return
         }
         message.error(msg)
@@ -252,7 +252,7 @@ function EditorStrategy({
     Modal.confirm({
       title: '返回提示',
       content: '未保存的内容会全部丢失，确认已经保存或者不需要保存吗？',
-      onOk: () => openNewTab('purchase/strategy', '采购策略', true),
+      onOk: () => closeCurrent(),
       okText: '确定返回',
       cancelText: '取消'
     })
@@ -303,7 +303,7 @@ function EditorStrategy({
     const { success, message: msg } = info
     if (success) {
       message.success(msg)
-      openNewTab('purchase/strategy', '采购策略', true)
+      closeCurrent()
       return
     }
     message.error(msg)

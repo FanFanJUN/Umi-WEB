@@ -20,7 +20,7 @@ import {
   priceCombineProps,
   planSupplyResourceAmountProps
 } from '@/utils/commonProps';
-import { ComboSelect, ComboDatePicker, ComboAttachment, MixinSelect } from '@/components';
+import { ComboSelect, ComboDatePicker, ComboAttachment } from '@/components';
 import { ComboTree, ComboGrid, ComboList } from 'suid';
 import { leftPad } from '@/utils';
 const { create, Item } = Form;
@@ -75,16 +75,17 @@ const CommonForm = forwardRef(({
         creatorAccount,
         creatorId,
         lineNo,
+        planSupplyResourceTypeAmount,
         adjustScopeList,
         pricingDateList: dateList,
         invalid,
         reference,
         attachment,
         localId,
-        pricingFrequencyName,
-        costTargetName,
+        changeable,
         ...other
       } = initialValues
+      console.log(other)
       const adjustScopeListName = adjustScopeList.map(item => item.name);
       const adjustScopeListCode = adjustScopeList.map(item => item.code);
       const pricingDateList = dateList.map(item => item.date)
@@ -146,7 +147,7 @@ const CommonForm = forwardRef(({
                     message: '请选择物料分类'
                   }
                 ]
-              })(<ComboTree form={form} {...materialClassProps}  name='materialClassificationName' field={['materialClassificationCode']} disabled={mode==='change' && type === 'editor'}/>)
+              })(<ComboTree form={form} {...materialClassProps} name='materialClassificationName' field={['materialClassificationCode']} disabled={mode === 'change' && type === 'editor'} />)
             }
           </Item>
         </Col>
@@ -252,7 +253,8 @@ const CommonForm = forwardRef(({
         <Col span={12}>
           <Item label='定价频次' {...formLayout}>
             {
-              getFieldDecorator('pricingFrequency', {
+              getFieldDecorator('pricingFrequency'),
+              getFieldDecorator('pricingFrequencyName', {
                 rules: [
                   {
                     required: true,
@@ -260,7 +262,7 @@ const CommonForm = forwardRef(({
                   }
                 ],
               })(
-                <MixinSelect {...frequencyProps} onSelect={() => datePickerRef.current.cleanValues()} />
+                <ComboList {...frequencyProps} form={form} name='pricingFrequencyName' afterSelect={() => datePickerRef.current.cleanValues()} field={['pricingFrequency']} />
               )
             }
           </Item>
@@ -348,7 +350,8 @@ const CommonForm = forwardRef(({
         <Col span={12}>
           <Item label='成本目标' {...formLayout}>
             {
-              getFieldDecorator('costTarget', {
+              getFieldDecorator('costTarget'),
+              getFieldDecorator('costTargetName', {
                 rules: [
                   {
                     required: true,
@@ -356,7 +359,7 @@ const CommonForm = forwardRef(({
                   }
                 ]
               })(
-                <MixinSelect {...costTargetProps} />
+                <ComboList {...costTargetProps} name='costTargetName' field={['costTarget']} form={form} />
               )
             }
           </Item>

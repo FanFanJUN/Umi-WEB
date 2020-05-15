@@ -10,7 +10,7 @@ import {
   saveStrategyTableImportData,
   strategyTableLineRelevanceDocment
 } from '@/services/strategy';
-import { openNewTab } from '@/utils';
+import { closeCurrent } from '../../../utils';
 import styles from './index.less';
 const { StartFlow } = WorkFlow;
 function CreateStrategy() {
@@ -69,7 +69,7 @@ function CreateStrategy() {
         const { success, message: msg } = await savePurcahseAndApprove(params)
         triggerLoading(false)
         if (success) {
-          openNewTab('purchase/strategy', '采购策略', true)
+          closeCurrent()
           return
         }
         message.error(msg)
@@ -82,7 +82,6 @@ function CreateStrategy() {
     return new Promise((resolve, reject) => {
       const { validateFieldsAndScroll } = formRef.current.form;
       validateFieldsAndScroll(async (err, val) => {
-        console.log(len)
         if (!err && dataSource.length !== 0) {
           const params = await formatSaveParams(val);
           const { success, message: msg, data } = await savePurcahseAndApprove(params);
@@ -230,7 +229,7 @@ function CreateStrategy() {
     const { success, message: msg } = info
     if(success){
       message.success(msg)
-      openNewTab('purchase/strategy', '采购策略', true)
+      closeCurrent()
       return
     }
     message.error(msg)
@@ -240,7 +239,7 @@ function CreateStrategy() {
       title: '返回提示',
       content: '未保存的内容会全部丢失，确认已经保存或者不需要保存吗？',
       onOk: () => {
-        openNewTab('purchase/strategy', '采购策略', true)
+        closeCurrent()
       },
       okText: '确定返回',
       cancelText: '取消'

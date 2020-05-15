@@ -19,7 +19,7 @@ import {
   strategyTableLineRelevanceDocment
 } from '@/services/strategy';
 import moment from 'moment';
-import { openNewTab } from '@/utils';
+import { closeCurrent } from '../../../utils';
 import styles from './index.less';
 const { StartFlow } = WorkFlow;
 const formLayout = {
@@ -252,7 +252,7 @@ function ChangeStrategy({
     Modal.confirm({
       title: '返回提示',
       content: '未保存的内容会全部丢失，确认已经保存或者不需要保存吗？',
-      onOk: () => openNewTab('purchase/strategy', '采购策略', true),
+      onOk: () => closeCurrent(),
       okText: '确定返回',
       cancelText: '取消'
     })
@@ -312,7 +312,7 @@ function ChangeStrategy({
     const { success, message: msg } = info;
     hideModal()
     if (success) {
-      openNewTab('purchase/strategy', '采购策略', true)
+      closeCurrent()
       message.success(msg)
       return
     }
