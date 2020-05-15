@@ -75,11 +75,13 @@ function PurchaseStrategyExecute() {
     { title: '策略周期结束日期', dataIndex: 'purchaseStrategyEnd' },
     {
       title: '预计需求规模(数量)',
-      dataIndex: 'expectedDemandScaleAmount'
+      dataIndex: 'expectedDemandScaleAmount',
+      width: 180
     },
     {
-      title: '预计需求规模(数量)',
-      dataIndex: 'expectedDemandScalePrice'
+      title: '预计需求规模(万元)',
+      dataIndex: 'expectedDemandScalePrice',
+      width: 180
     },
     { title: '币种', dataIndex: 'currencyName' },
     {

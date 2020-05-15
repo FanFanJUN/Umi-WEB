@@ -79,7 +79,15 @@ export const purchaseOrganizationProps = {
 export const currencyProps = {
   store: {
     url: `${commonsUrl}/currency/findByPage`,
-    params: { Q_EQ_frozen__Boolean: false },
+    params: {
+      filters: [
+        {
+          fieldName: 'frozen',
+          value: false,
+          operator: 'EQ'
+        }
+      ]
+    },
     type: 'post'
   },
   reader: {
