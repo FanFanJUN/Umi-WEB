@@ -38,7 +38,7 @@ const formLayout = {
 function AdvancedForm({
   formItems = [],
   onOk = () => null,
-  form={}
+  form = {}
 }) {
   const {
     getFieldDecorator,
@@ -61,24 +61,44 @@ function AdvancedForm({
         {
           formItems.map((item, index) => {
             const Item = Combos[item.type] || Input;
+            if (!!item.type) {
+              return (
+                <Col
+                  key={`${item.key}-${index}`}
+                  span={8}
+                >
+                  <FormItem style={{ width: '100%' }} label={item.title} {...formLayout}>
+                    {
+                      getFieldDecorator(`${item.key}`),
+                      getFieldDecorator(`${item.key}_name`)(
+                        <Item
+                          form={form}
+                          {...item.props}
+                          name={`${item.key}_name`}
+                          field={[item.key]}
+                        />
+                      )
+                    }
+                  </FormItem>
+                </Col>
+              )
+            }
             return (
               <Col
                 key={`${item.key}-${index}`}
                 span={8}
               >
                 <FormItem style={{ width: '100%' }} label={item.title} {...formLayout}>
-                {
-                    getFieldDecorator(`${item.key}`),
-                    getFieldDecorator(`${item.key}_name`)(
+                  {
+                    getFieldDecorator(`${item.key}`)(
                       <Item
                         form={form}
                         {...item.props}
-                        name={`${item.key}_name`}
+                        name={`${item.key}`}
                         field={[item.key]}
                       />
                     )
                   }
-
                 </FormItem>
               </Col>
             )

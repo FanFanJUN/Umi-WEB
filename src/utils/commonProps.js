@@ -199,34 +199,38 @@ export const materialClassTypeProps = {
 
 // 定价频次枚举
 export const frequencyProps = {
-  options: [
+  dataSource: [
     {
-      value: 'Annually',
-      label: '年度'
+      code: 'Annually',
+      name: '年度'
     }, {
-      value: 'SemiAnnually',
-      label: '半年'
+      code: 'SemiAnnually',
+      name: '半年'
     }, {
-      value: 'Quarterly',
-      label: '季度'
+      code: 'Quarterly',
+      name: '季度'
     }, {
-      value: 'Monthly',
-      label: '月度'
+      code: 'Monthly',
+      name: '月度'
     }, {
-      value: 'TenDays',
-      label: '按旬'
+      code: 'TenDays',
+      name: '按旬'
     }, {
-      value: 'Order',
-      label: '按单'
+      code: 'Order',
+      name: '按单'
     }, {
-      value: 'Demand',
-      label: '按需'
+      code: 'Demand',
+      name: '按需'
     }
   ],
   style: {
     width: '100%'
   },
-  placeholder: '选择定价频次'
+  placeholder: '选择定价频次',
+  reader: {
+    name: 'name',
+    field: ['code']
+  }
 }
 
 // 价格组成枚举
@@ -242,20 +246,6 @@ export const priceCombineProps = {
     name: 'name',
     field: ['value']
   },
-  options: [
-    {
-      value: 'CombineModelA',
-      label: '组合价格模型（模具、加工费、成本费用）'
-    },
-    {
-      value: 'CombineModelB',
-      label: '组合价格模型（加工费、成本费用）'
-    },
-    {
-      value: 'CompositePrice',
-      label: '综合价格'
-    }
-  ],
   style: {
     width: '100%'
   },
@@ -281,15 +271,19 @@ export const planSupplyResourceAmountProps = {
 
 // 成本目标枚举
 export const costTargetProps = {
-  options: [
+  dataSource: [
     {
-      value: 'DropRatio',
-      label: '降比例'
+      code: 'DropRatio',
+      name: '降比例'
     }, {
-      value: 'DropPrice',
-      label: '降金额'
+      code: 'DropPrice',
+      name: '降金额'
     }
   ],
+  reader: {
+    name: 'name',
+    field: ['code']
+  },
   style: {
     width: '100%'
   },
@@ -298,16 +292,24 @@ export const costTargetProps = {
 
 // 生效状态枚举
 export const effectStatusProps = {
-  options: [
+  dataSource: [
     {
-      value: 'Draft',
-      label: '草稿'
+      code: 'Draft',
+      name: '草稿'
     },
     {
-      value: 'Effective',
-      label: '生效'
+      code: 'Effective',
+      name: '生效'
+    },
+    {
+      code: 'Changing',
+      name: '变更中'
     }
   ],
+  reader: {
+    name: 'name',
+    field: ['code']
+  },
   placeholder: '选择生效状态',
   style: {
     width: '100%'

@@ -18,7 +18,7 @@ import {
   frequencyProps,
   costTargetProps,
   effectStatusProps
-} from '@/utils/commonProps';
+} from '../../utils/commonProps';
 import {
   removeStrategyTableItem
 } from '@/services/strategy';
@@ -139,7 +139,7 @@ function PurchaseStategy() {
   const tableProps = {
     store: {
       url: `${psBaseUrl}/purchaseStrategyHeader/listByPageLocal`,
-      params: {...searchValue },
+      params: { ...searchValue },
       type: 'POST'
     }
   }
@@ -148,8 +148,8 @@ function PurchaseStategy() {
     return window.parent.frames.removeEventListener('message', listenerParentClose, false)
   }, []);
   function listenerParentClose(event) {
-    const { data={} } = event;
-    if(data.tabAction === 'close') {
+    const { data = {} } = event;
+    if (data.tabAction === 'close') {
       tableRef.current.remoteDataRefresh()
     }
   }
@@ -193,7 +193,7 @@ function PurchaseStategy() {
       }
     },
     {
-      title: '采购计划物料类别',
+      title: '采购物料类别',
       type: 'list',
       key: 'Q_EQ_purchaseGoodsClassificationName',
       props: proPlanMaterialTypeProps
@@ -218,19 +218,18 @@ function PurchaseStategy() {
     },
     {
       title: '定价频次',
-      type: 'select',
+      type: 'list',
       key: 'Q_EQ_pricingFrequency',
       props: frequencyProps
     },
     {
       title: '成本目标',
-      type: 'select',
-      key: 'Q_LK_costTarget',
+      type: 'list',
+      key: 'Q_EQ_costTarget',
       props: costTargetProps
     },
     {
       title: '关键词',
-      type: 'input',
       key: "Q_LK_keyWord",
       props: {
         placeholder: '输入关键词查询'
@@ -238,7 +237,6 @@ function PurchaseStategy() {
     },
     {
       title: '申请人',
-      type: 'input',
       key: 'Q_LK_creatorName',
       props: {
         placeholder: '输入申请人查询'
@@ -246,7 +244,7 @@ function PurchaseStategy() {
     },
     {
       title: '状态',
-      type: 'select',
+      type: 'list',
       key: 'Q_EQ_state',
       props: effectStatusProps
     }
@@ -270,15 +268,14 @@ function PurchaseStategy() {
   // 高级搜索
   function handleAdvnacedSearch(v) {
     const keys = Object.keys(v);
-    const filters = keys.map((item)=> {
+    const filters = keys.map((item) => {
       const [_, operator, fieldName, isName] = item.split('_');
       return {
         fieldName,
         operator,
         value: !!isName ? undefined : v[item]
       }
-    }).filter(item=> !!item.value)
-    // setTableFilters(filters);
+    }).filter(item => !!item.value)
     setSearchValue({
       filters: filters
     })
