@@ -219,25 +219,24 @@ function PurchaseStrategyExecute() {
     },
     {
       title: '定价频次',
-      type: 'select',
+      type: 'list',
       key: 'Q_EQ_pricingFrequency',
       props: frequencyProps
     },
     {
       title: '成本目标',
-      type: 'select',
-      key: 'Q_LK_costTarget',
+      type: 'list',
+      key: 'Q_EQ_costTarget',
       props: costTargetProps
     },
     {
       title: '价格组成',
-      type: 'select',
-      key: 'Q_LK_priceCombine',
+      type: 'list',
+      key: 'Q_EQ_priceCombineCode',
       props: priceCombineProps
     },
     {
       title: '关键词',
-      type: 'input',
       key: "Q_LK_keyWord",
       props: {
         placeholder: '输入关键词查询'
@@ -245,7 +244,6 @@ function PurchaseStrategyExecute() {
     },
     {
       title: '申请人',
-      type: 'input',
       key: 'Q_LK_creatorName',
       props: {
         placeholder: '输入申请人查询'
@@ -253,7 +251,7 @@ function PurchaseStrategyExecute() {
     },
     {
       title: '状态',
-      type: 'select',
+      type: 'list',
       key: 'Q_EQ_state',
       props: effectStatusProps
     }
