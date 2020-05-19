@@ -196,7 +196,7 @@ function PurchaseStrategyExecute() {
       }
     },
     {
-      title: '采购计划物料类别',
+      title: '采购物料类别',
       type: 'list',
       key: 'Q_EQ_purchaseGoodsClassificationName',
       props: proPlanMaterialTypeProps

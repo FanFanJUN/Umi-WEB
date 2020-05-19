@@ -33,6 +33,7 @@ const UserSelect = forwardRef(({
   reader = {},
   onChange = () => null,
   onRowsChange = () => null,
+  disabled,
   wrapperClass,
   wrapperStyle = { width: 800 },
   nodeKey,
@@ -51,6 +52,7 @@ const UserSelect = forwardRef(({
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [initState, setInitState] = useState(false);
+  const [visible, triggerVisible] = useState(false);
   const searchInput = useRef(null)
   const { name: readName = 'id', field: readField = ['id'] } = reader;
   //网络请求树控件数据（协议分类）
@@ -198,7 +200,10 @@ const UserSelect = forwardRef(({
         ref={ref}
         trigger="click"
         placement="bottom"
+        visible={visible}
         onVisibleChange={(visi) => {
+          if(disabled) return
+          triggerVisible(visi)
           if(initState) return
           visi && getTreeData()
         }}
@@ -259,7 +264,10 @@ const UserSelect = forwardRef(({
           </div>
         }
       >
-        <div className={styles.input}>
+        <div className={classnames({
+          [styles.input] : true,
+          [styles.inputDisabled] : disabled
+        })}>
           {
             value.map(item=> <Tag key={item}>
               { item }

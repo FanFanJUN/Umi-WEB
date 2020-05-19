@@ -1,5 +1,5 @@
 export const localTarget = 'http://10.8.4.121:8088';
-export const onLineTarget = 'http://10.4.69.39:8100';
+export const onLineTarget = 'http://decmp.changhong.com';
 
 export default {
   '/mocker.api': {

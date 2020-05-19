@@ -443,7 +443,7 @@ function ChangeStrategy({
                       message: '请填写变更原因'
                     }
                   ]
-                })(<Input.TextArea />)
+                })(<Input.TextArea maxLength={800}/>)
               }
             </Form.Item>
           </Col>

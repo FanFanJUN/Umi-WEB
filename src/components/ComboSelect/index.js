@@ -16,38 +16,38 @@ const ComboSelect = forwardRef(({
   field = [],
   multiple = true,
   placeholder = '选择范围',
-  form={},
-  reader={},
-  value=[]
+  form = {},
+  reader = {},
+  value = []
 }, ref) => {
   const wrapperRef = useRef(null)
-  const { name: readeName='id', field: readField=['id'] } = reader;
+  const { name: readeName = 'id', field: readField = ['id'] } = reader;
   const [selectedKeys, setSelectedKeys] = useState([]);
   const { setFieldsValue } = form;
   const [valueText, setValueText] = useState("")
   function handleSelectedRow(keys, rows) {
     setSelectedKeys(keys)
     // setValueText(joinVal)
-    if(!!setFieldsValue) {
+    if (!!setFieldsValue) {
       setFieldsValue({
-        [name] : keys
+        [name]: keys
       });
-      const fieldValues = readField.map(item=>{
-        return rows.map(i=>i[item]);
+      const fieldValues = readField.map(item => {
+        return rows.map(i => i[item]);
       })
-      field.forEach((item, k)=>{
+      field.forEach((item, k) => {
         setFieldsValue({
-          [item] : fieldValues[k]
+          [item]: fieldValues[k]
         })
       })
     }
     onChange(keys)
     onRowsChange(rows)
   }
-  useEffect(()=>{
+  useEffect(() => {
     const v = value.join('，')
     setValueText(v)
-  },[value])
+  }, [value])
   return (
     <div
       ref={wrapperRef}
