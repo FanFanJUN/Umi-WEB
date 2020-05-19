@@ -197,8 +197,8 @@ function PurchaseStrategyExecute() {
     },
     {
       title: '采购物料类别',
-      type: 'list',
-      key: 'Q_EQ_purchaseGoodsClassificationName',
+      type: 'tree',
+      key: 'Q_EQ_purchaseGoodsClassificationCode',
       props: proPlanMaterialTypeProps
     },
     {

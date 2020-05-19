@@ -128,7 +128,7 @@ const FormRef = forwardRef(({
                       message: '请选择专业组'
                     }
                   ]
-                })(<ComboList remotePaging disabled={true} {...majorGroupProps} form={form} name='professionalGroupName' field={['professionalGroupCode']} />)
+                })(<ComboList disabled={true} {...majorGroupProps} form={form} name='professionalGroupName' field={['professionalGroupCode']} />)
               }
             </Item>
           </Col>
