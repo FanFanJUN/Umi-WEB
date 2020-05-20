@@ -127,7 +127,7 @@ function PurchaseStategy() {
         }}>查看附件</Button> : '无'
       }
     },
-    { title: '创建时间', dataIndex: 'createdDate' }
+    { title: '创建时间', dataIndex: 'createdDate', width: 200 }
   ].map(_ => ({ ..._, align: 'center' }))
   /* 按钮禁用状态控制 */
   const takeEffect = rowState === 'Effective';
@@ -206,7 +206,7 @@ function PurchaseStategy() {
     },
     {
       title: '二次分类物料组',
-      type: 'list',
+      type: 'tree',
       key: 'Q_EQ_materialClassificationCode',
       props: materialClassProps
     },

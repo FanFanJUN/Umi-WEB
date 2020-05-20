@@ -115,6 +115,13 @@ export const proPlanMaterialTypeProps = {
   placeholder: "请选择采购计划物料类别",
   style: {
     width: '100%'
+  },
+  treeNodeProps: (node) => {
+    if(node.nodeLevel === 1) {
+      return {
+        selectable: false
+      }
+    }
   }
 }
 
@@ -150,6 +157,13 @@ export const materialClassProps = {
   placeholder: '请选择物料分类',
   style: {
     width: '100%'
+  },
+  treeNodeProps: (node) => {
+    if(node.nodeLevel === 0) {
+      return {
+        selectable: false
+      }
+    }
   }
 }
 
