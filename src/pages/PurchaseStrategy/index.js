@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ExtTable, WorkFlow, ExtModal, AuthAction } from 'suid';
+import { ExtTable, WorkFlow, ExtModal, utils } from 'suid';
 import { Input, Button, message } from 'antd';
 import Header from '@/components/Header';
 import AdvancedForm from '@/components/AdvancedForm';
@@ -27,14 +27,13 @@ import classnames from 'classnames';
 import Modal from 'antd/es/modal';
 const { Search } = Input
 const { StartFlow, FlowHistory } = WorkFlow;
-
+const { authAction } = utils;
 function PurchaseStategy() {
   const headerRef = useRef(null)
   const tableRef = useRef(null)
   const [selectedRowKeys, setRowKeys] = useState([]);
   const [selectedRows, setRows] = useState([]);
   const [searchValue, setSearchValue] = useState({});
-  const [tableFilters, setTableFilters] = useState([]);
   const [visible, triggerVisible] = useState(false);
   const [attachId, setAttachId] = useState('');
   const [showAttach, triggerShowAttach] = useState(false);

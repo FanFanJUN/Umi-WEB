@@ -1,6 +1,5 @@
 import { request, constants } from "@/utils";
 import { gatewayUrl } from '@/utils/commonUrl';
-console.log(gatewayUrl)
 const { AUTH_SERVER_PATH } = constants;
 
 /** 登录*/
