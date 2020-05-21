@@ -34,7 +34,8 @@ const getAttacmentHost = function () {
   if(process.env.NODE_ENV !== 'production') {
     return '/edm-service'
   }
-  return `${protocol}//base-service.changhong.com/edm-service`
+  // http://base-service.changhong.com/api-gateway/edm-service
+  return `${protocol}//base-service.changhong.com/api-gateway/edm-service`
 }
 
 const getAttacmentInfoHost = function () {
@@ -42,7 +43,7 @@ const getAttacmentInfoHost = function () {
   if(process.env.NODE_ENV !== 'production') {
     return '/edm-service/document/getDocument'
   }
-  return `${protocol}//base-service.changhong.com/edm-service/document/getDocument`
+  return `${protocol}//base-service.changhong.com/api-gateway/edm-service/document/getDocument`
 }
 
 export const AUTH_SERVER_PATH = '/auth-service'
