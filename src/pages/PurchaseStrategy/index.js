@@ -359,31 +359,66 @@ function PurchaseStategy() {
       <Header
         left={
           <>
-            <Button type='primary' className={styles.btn} onClick={handleCreate}>新增</Button>
-            <Button disabled={multiple || empty || approvaling || approvalFinish} className={styles.btn} onClick={handleEditor}>编辑</Button>
-            <Button onClick={handleRemoveItem} disabled={empty || approvaling || approvalFinish} className={styles.btn}>删除</Button>
-            <Button disabled={multiple || empty} className={styles.btn} onClick={handleCheckDetail}>明细</Button>
-            <StartFlow
-              beforeStart={handleBeforeStartFlow}
-              startComplete={handleComplete}
-              style={{ display: 'inline-flex' }}
-              businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyHeader"
-            >
-              {
-                (loading) => {
-                  return (
-                    <Button
-                      className={styles.btn}
-                      loading={loading}
-                      disabled={multiple || empty || approvaling || approvalFinish} className={styles.btn}
-                    >提交审核</Button>
-                  )
-                }
-              }
-            </StartFlow>
-            <Button disabled={multiple || empty || approvalEffect} className={styles.btn} onClick={showHistory}>审核历史</Button>
-            <Button disabled={multiple || empty || !takeEffect || approvaling || !approvalFinish} className={styles.btn} onClick={handleChange}>变更</Button>
-            <Button disabled={multiple || empty || !rowChangeable} className={styles.btn} onClick={handleCheckChangeHistory}>变更历史</Button>
+            {
+              authAction(
+                <Button type='primary' key='PURCHASE_CREATE' className={styles.btn} onClick={handleCreate}>新增</Button>
+              )
+            }
+            {
+              authAction(
+                <Button key='PURCHASE_EDITOR' disabled={multiple || empty || approvaling || approvalFinish} className={styles.btn} onClick={handleEditor}>编辑</Button>
+              )
+            }
+            {
+              authAction(
+                <Button key='	
+                PURCHASE_DELETE' onClick={handleRemoveItem} disabled={empty || approvaling || approvalFinish} className={styles.btn}>删除</Button>
+              )
+            }
+            {
+              authAction(
+                <Button key='PURCHASE_DETAIL' disabled={multiple || empty} className={styles.btn} onClick={handleCheckDetail}>明细</Button>
+              )
+            }
+            {
+              authAction(
+                <StartFlow
+                  beforeStart={handleBeforeStartFlow}
+                  key='PURCHASE_APPROVE'
+                  startComplete={handleComplete}
+                  style={{ display: 'inline-flex' }}
+                  businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyHeader"
+                >
+                  {
+                    (loading) => {
+                      return (
+                        <Button
+                          className={styles.btn}
+                          loading={loading}
+                          disabled={multiple || empty || approvaling || approvalFinish} className={styles.btn}
+                        >提交审核</Button>
+                      )
+                    }
+                  }
+                </StartFlow>
+              )
+
+            }
+            {
+              authAction(
+                <Button key='PURCHASE_APPROVE' disabled={multiple || empty || approvalEffect} className={styles.btn} onClick={showHistory}>审核历史</Button>
+              )
+            }
+            {
+              authAction(
+                <Button key='PURCHASE_CHANGE' disabled={multiple || empty || !takeEffect || approvaling || !approvalFinish} className={styles.btn} onClick={handleChange}>变更</Button>
+              )
+            }
+            {
+              authAction(
+                <Button key='PURCHASE_CHANGE_HISTORY' disabled={multiple || empty || !rowChangeable} className={styles.btn} onClick={handleCheckChangeHistory}>变更历史</Button>
+              )
+            }
           </>
         }
         right={
