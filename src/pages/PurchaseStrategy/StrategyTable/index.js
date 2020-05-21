@@ -101,6 +101,7 @@ function StrategyTable({
   const disableRemove = selectedRowKeys.length === 0;
   const [ single={} ] = selectedRows;
   const { changeable=true, id: singleRowId } = single;
+  const [count, setCount] = useState(0)
   const len = dataSource.length;
   const columns = [
     {
@@ -432,7 +433,7 @@ function StrategyTable({
       }
       <div style={{ display: 'inline-block' }}>
         <DataImport
-          key={`data-import-${len}`}
+          key={`data-import-${count}`}
           templateFileList={[
             {
               download: async () => {
@@ -460,7 +461,8 @@ function StrategyTable({
             return item.map(importDataValidate)
           }}
           importFunc={(item) => {
-            onImportData(item)
+            onImportData(item);
+            setCount(count + 1)
           }}
         >
         </DataImport>
