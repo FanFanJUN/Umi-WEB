@@ -37,7 +37,7 @@ export function openNewTab(uri, title, closeCurrent = false, id = undefined) {
     }
   }
   const protocol = window.location.protocol;
-  let url = uri.indexOf(protocol) === 0 ? uri : protocol + '//' + window.location.host + "/react-srm-ps-web/" + uri;
+  let url = uri.indexOf(protocol) === 0 ? uri : protocol + '//' + window.location.host + "/react-srm-ps-web/#/" + uri;
   let tab = {
     title: title,
     url: url,
