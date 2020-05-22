@@ -42,8 +42,8 @@ function ChangeStrategyHistory() {
   const [selectedRows, setRows] = useState([]);
   const multiple = selectedRowKeys.length > 1;
   const empty = selectedRowKeys.length === 0;
-  const [signleRow] = selectedRows;
-  const { flowStatus } = signleRow;
+  const [signleRow={}] = selectedRows;
+  const { flowStatus="" } = signleRow;
   const disableSubmit = flowStatus !== 'INIT'
   const LEFT = (
     <>

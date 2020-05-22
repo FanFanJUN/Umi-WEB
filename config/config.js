@@ -10,7 +10,7 @@ const { base } = require(appConfigPath);
 const { name, title } = require(pkg);
 
 export default {
-  history: 'browser',
+  history: 'hash',
   treeShaking: true,
   ignoreMomentLocale: true,
   targets: { ie: 11 },

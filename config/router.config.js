@@ -70,6 +70,11 @@ export default [
         path: '/purchase/strategy/execute',
         component: './PurchaseStrategyExecute',
         title: '采购策略执行明细'
+      },
+      {
+        path: '/purchase/strategy/approve/detail',
+        component: './PurchaseStrategy/ApprovePage/Detail',
+        title: '采购策略审批明细'
       }
     ],
   }
