@@ -78,14 +78,21 @@ const UserSelect = forwardRef(({
     const [id] = treeSelecteds;
     triggerLoading(true)
     request({
-      url: `${baseUrl}/basic/listAllCanAssignEmployeesByOrganization`,
-      method: 'get',
-      params: {
-        organizationId: id
+      url: `/api-gateway/basic-service/employee/findByUserQueryParam`,
+      method: 'post',
+      data: {
+        organizationId: id,
+        pageInfo: {
+          page: 1,
+          rows: 10000
+        },
+        sortOrders: [{property: "code", direction: "ASC"}],
+        quickSearchProperties: ["code", "user.userName"]
       }
     }).then(({ data }) => {
+      const { rows } = data;
       triggerLoading(false)
-      setUserData(data)
+      setUserData(rows)
     }).catch(_ => triggerLoading(false))
   }
 
@@ -94,15 +101,22 @@ const UserSelect = forwardRef(({
     const [ id ] = treeSelectedKeys;
     triggerLoading(true)
     request({
-      url: `${baseUrl}/basic/listAllCanAssignEmployeesByOrganization`,
-      method: 'get',
-      params: {
+      url: `/api-gateway/basic-service/employee/findByUserQueryParam`,
+      method: 'post',
+      data: {
         organizationId: id,
-        Quick_value: v
+        quickSearchValue: v,
+        pageInfo: {
+          page: 1,
+          rows: 10000
+        },
+        sortOrders: [{property: "code", direction: "ASC"}],
+        quickSearchProperties: ["code", "user.userName"]
       }
     }).then(({ data }) => {
+      const { rows } = data;
       triggerLoading(false)
-      setUserData(data)
+      setUserData(rows)
     }).catch(_=> triggerLoading(false))
   }
 
