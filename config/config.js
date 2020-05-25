@@ -10,7 +10,7 @@ const { base } = require(appConfigPath);
 const { name, title } = require(pkg);
 
 export default {
-  history: 'hash',
+  history: 'browser',
   treeShaking: true,
   ignoreMomentLocale: true,
   targets: { ie: 11 },
@@ -86,7 +86,7 @@ export default {
     javascriptEnabled: true,
   },
   manifest: {
-    basePath: '/',
+    basePath: `/`,
   },
   chainWebpack: webpackPlugin,
 };

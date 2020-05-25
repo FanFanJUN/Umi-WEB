@@ -137,14 +137,14 @@ const CommonForm = forwardRef(({
     >
       <Row>
         <Col span={12}>
-          <Item label='物料分类' {...formLayout}>
+          <Item label='物料二次分类' {...formLayout}>
             {
               getFieldDecorator('materialClassificationCode'),
               getFieldDecorator('materialClassificationName', {
                 rules: [
                   {
                     required: true,
-                    message: '请选择物料分类'
+                    message: '请选择物料二次分类'
                   }
                 ]
               })(<ComboTree form={form} {...materialClassProps} name='materialClassificationName' field={['materialClassificationCode']} disabled={mode === 'change' && type === 'editor'} />)

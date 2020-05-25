@@ -1,6 +1,6 @@
 import React, { useState, createRef, useLayoutEffect } from 'react';
 import { ExtTable, DataImport, utils } from 'suid';
-import { Button, Modal, message } from 'antd'
+import { Button, Modal, message, Table } from 'antd'
 import CommonForm from './CommonForm';
 import { ComboAttachment } from '@/components';
 // import { psBaseUrl } from '../../../utils/commonUrl';
@@ -9,7 +9,7 @@ import { downloadExcelDataImportTemplate } from '../../../services/strategy';
 import styles from './index.less';
 const importColumns = [
   {
-    title: '物料分类',
+    title: '物料二次分类',
     dataIndex: 'materialClassificationName'
   },
   {
@@ -99,13 +99,12 @@ function StrategyTable({
   const [modalType, setModalType] = useState('add');
   const disableEditor = selectedRowKeys.length !== 1;
   const disableRemove = selectedRowKeys.length === 0;
-  const [ single={} ] = selectedRows;
-  const { changeable=true, id: singleRowId } = single;
-  const [count, setCount] = useState(0)
-  const len = dataSource.length;
+  const [single = {}] = selectedRows;
+  const { changeable = true, id: singleRowId } = single;
+  const [count, setCount] = useState(0);
   const columns = [
     {
-      title: '物料分类',
+      title: '物料二次分类',
       dataIndex: 'materialClassificationName'
     },
     {
@@ -120,7 +119,13 @@ function StrategyTable({
       title: '适应范围',
       dataIndex: 'adjustScopeList',
       render(text = []) {
-        return text.map(item => item.name).join('，')
+        return (
+          <Button type='link' onClick={()=>checkAdjustScopeList(text)}>
+            {
+              text.map(item => item.name).join('，')
+            }
+          </Button>
+        )
       }
     },
     {
@@ -248,6 +253,25 @@ function StrategyTable({
   function handleCancel() {
     hideModal()
   }
+  // 查看适应范围
+  function checkAdjustScopeList(list) {
+    const columns = [
+      {
+        title: '公司代码',
+        dataIndex: 'code'
+      },
+      {
+        title: '公司名称',
+        dataIndex: 'name'
+      }
+    ]
+    Modal.info({
+      title: '适应范围',
+      content: <Table bordered columns={columns} dataSource={list} rowKey={({ id })=> id}/>,
+      icon: 'exception',
+      okText: '关闭'
+    })
+  }
   function handleSubmit(val) {
     if (modalType === 'add') {
       onCreateLine(val, hideModal)
@@ -306,7 +330,7 @@ function StrategyTable({
       return {
         ...error,
         ...column,
-        message: '未填写物料分类'
+        message: '未填写物料二次分类'
       }
     }
     if (!expectedDemandScaleAmount) {
@@ -487,7 +511,7 @@ function StrategyTable({
           onSelectRow={handleSelectedRows}
           selectedRowKeys={selectedRowKeys}
           checkbox={
-            type !== 'detail'? { multiSelect: false } : false
+            type !== 'detail' ? { multiSelect: false } : false
           }
         />
       </div>

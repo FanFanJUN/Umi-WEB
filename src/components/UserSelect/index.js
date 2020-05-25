@@ -53,7 +53,9 @@ const UserSelect = forwardRef(({
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [initState, setInitState] = useState(false);
   const [visible, triggerVisible] = useState(false);
+  const [treeSelectedKeys, setTreeSelectedKyes] = useState([]);
   const searchInput = useRef(null)
+  const userSearchInput = useRef(null)
   const { name: readName = 'id', field: readField = ['id'] } = reader;
   //网络请求树控件数据（协议分类）
   const getTreeData = () => {
@@ -71,8 +73,9 @@ const UserSelect = forwardRef(({
     })
   }
   //树节点选择触发
-  const onTreeSelect = (selectedKeys, info) => {
-    const [id] = selectedKeys;
+  const onTreeSelect = (treeSelecteds, info) => {
+    setTreeSelectedKyes(treeSelecteds);
+    const [id] = treeSelecteds;
     triggerLoading(true)
     request({
       url: `${baseUrl}/basic/listAllCanAssignEmployeesByOrganization`,
@@ -84,6 +87,23 @@ const UserSelect = forwardRef(({
       triggerLoading(false)
       setUserData(data)
     }).catch(_ => triggerLoading(false))
+  }
+
+  // 查找人员
+  const handleSearchUserData = (v) => {
+    const [ id ] = treeSelectedKeys;
+    triggerLoading(true)
+    request({
+      url: `${baseUrl}/basic/listAllCanAssignEmployeesByOrganization`,
+      method: 'get',
+      params: {
+        organizationId: id,
+        Quick_value: v
+      }
+    }).then(({ data }) => {
+      triggerLoading(false)
+      setUserData(data)
+    }).catch(_=> triggerLoading(false))
   }
 
   //查找树节点
@@ -173,27 +193,6 @@ const UserSelect = forwardRef(({
     setSelectedRows(rows)
     onRowsChange(rows)
   }
-  const handleDeselect = (key) => {
-    console.log(selectedKeys, selectedRows);
-    const keys = selectedKeys.filter(item => item !== key)
-    const rows = selectedRows.filter(item => item.id !== key)
-    setSelectedKeys(keys);
-    if (!!setFieldsValue) {
-      setFieldsValue({
-        [name]: keys
-      });
-      const fieldValues = readField.map(item => {
-        return rows.map(i => i[item]);
-      })
-      field.forEach((item, k) => {
-        setFieldsValue({
-          [item]: fieldValues[k]
-        })
-      })
-    }
-    setSelectedRows(rows)
-    onRowsChange(rows)
-  }
   return (
     <div>
       <Popover
@@ -214,7 +213,7 @@ const UserSelect = forwardRef(({
               <span>组织机构</span>
             </div>
             <Row className={styles.row} onMouseDown={e => e.preventDefault()}>
-              <Col span={12} className={styles.textRight} onMouseDown={e => e.preventDefault()}>
+              <Col span={10} className={styles.textRight} onMouseDown={e => e.preventDefault()}>
                 <Search
                   key="search"
                   placeholder="输入分类名称查询"
@@ -228,7 +227,20 @@ const UserSelect = forwardRef(({
                   }}
                 />
               </Col>
-              <Col span={12} className={styles.textRight}></Col>
+              <Col span={14} className={styles.textRight}>
+                <Search
+                  onSearch={ v => handleSearchUserData(v) }
+                  style={{ width: '220px' }}
+                  enterButton
+                  ref={userSearchInput}
+                  disabled={treeSelectedKeys.length === 0}
+                  placeholder="输入名字或人员编号查询"
+                  onMouseDown={(e) => {
+                    e.preventDefault()
+                    userSearchInput.current.focus()
+                  }}
+                />
+              </Col>
             </Row>
             <Row>
               <Col span={10} className={styles.col}>

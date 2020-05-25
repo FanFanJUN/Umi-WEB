@@ -16,7 +16,7 @@ function DetailStrategy() {
   const [initValues, setInitValues] = useState({});
   const [loading, triggerLoading] = useState(true);
   async function initFommFieldsValuesAndTableDataSource() {
-    const { flowId } = query;
+    const { id: flowId } = query;
     const { data, success, message: msg } = await getPurchaseStrategyVoByFlowId({ id: flowId });
     if (success) {
       const {

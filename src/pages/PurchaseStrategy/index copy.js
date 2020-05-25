@@ -362,29 +362,29 @@ function PurchaseStategy() {
           <>
             {
               authAction(
-                <Button type='primary' ignore={true} key='PURCHASE_CREATE' className={styles.btn} onClick={handleCreate}>新增</Button>
+                <Button type='primary' ignore={DEVELOPER_ENV} key='PURCHASE_CREATE' className={styles.btn} onClick={handleCreate}>新增</Button>
               )
             }
             {
               authAction(
-                <Button ignore={true} key='PURCHASE_EDITOR' disabled={multiple || empty || approvaling || approvalFinish} className={styles.btn} onClick={handleEditor}>编辑</Button>
+                <Button ignore={DEVELOPER_ENV} key='PURCHASE_EDITOR' disabled={multiple || empty || approvaling || approvalFinish} className={styles.btn} onClick={handleEditor}>编辑</Button>
               )
             }
             {
               authAction(
-                <Button ignore={true} key='	
+                <Button ignore={DEVELOPER_ENV} key='	
                 PURCHASE_DELETE' onClick={handleRemoveItem} disabled={empty || approvaling || approvalFinish} className={styles.btn}>删除</Button>
               )
             }
             {
               authAction(
-                <Button ignore={true} key='PURCHASE_DETAIL' disabled={multiple || empty} className={styles.btn} onClick={handleCheckDetail}>明细</Button>
+                <Button ignore={DEVELOPER_ENV} key='PURCHASE_DETAIL' disabled={multiple || empty} className={styles.btn} onClick={handleCheckDetail}>明细</Button>
               )
             }
             {
               authAction(
                 <StartFlow
-                  ignore={true}
+                  ignore={DEVELOPER_ENV}
                   beforeStart={handleBeforeStartFlow}
                   key='PURCHASE_APPROVE'
                   startComplete={handleComplete}
@@ -409,19 +409,19 @@ function PurchaseStategy() {
             {
               authAction(
                 <Button key='PURCHASE_APPROVE_HISTORY'
-                  ignore={true} disabled={multiple || empty || approvalEffect} className={styles.btn} onClick={showHistory}>审核历史</Button>
+                  ignore={DEVELOPER_ENV} disabled={multiple || empty || approvalEffect} className={styles.btn} onClick={showHistory}>审核历史</Button>
               )
             }
             {
               authAction(
                 <Button key='PURCHASE_CHANGE'
-                  ignore={true} disabled={multiple || empty || !takeEffect || approvaling || !approvalFinish} className={styles.btn} onClick={handleChange}>变更</Button>
+                  ignore={DEVELOPER_ENV} disabled={multiple || empty || !takeEffect || approvaling || !approvalFinish} className={styles.btn} onClick={handleChange}>变更</Button>
               )
             }
             {
               authAction(
                 <Button key='PURCHASE_CHANGE_HISTORY'
-                  ignore={true} disabled={multiple || empty || !rowChangeable} className={styles.btn} onClick={handleCheckChangeHistory}>变更历史</Button>
+                  ignore={DEVELOPER_ENV} disabled={multiple || empty || !rowChangeable} className={styles.btn} onClick={handleCheckChangeHistory}>变更历史</Button>
               )
             }
           </>
