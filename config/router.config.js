@@ -75,6 +75,11 @@ export default [
         path: '/purchase/strategy/approve/detail',
         component: './PurchaseStrategy/ApprovePage/Detail',
         title: '采购策略审批明细'
+      },
+      {
+        path: '/purchase/strategy/approve/change/detail',
+        component: './PurchaseStrategy/ApprovePage/ChangeDetail',
+        title: '采购策略变更审批明细'
       }
     ],
   }
