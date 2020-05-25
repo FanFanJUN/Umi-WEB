@@ -1,7 +1,8 @@
 import React from 'react';
 import { Button, message, notification } from 'antd';
 import { formatMessage } from 'umi-plugin-react/locale';
-
+import { ExtTable } from 'suid';
+ExtTable.defaultProps.height = 480
 // if pwa is true
 if (process.env.NODE_ENV === 'production') {
   // Notify user if offline now
