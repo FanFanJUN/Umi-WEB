@@ -35,7 +35,7 @@ const getAttacmentHost = function () {
     return '/edm-service'
   }
   // http://base-service.changhong.com/api-gateway/edm-service
-  return `${protocol}//base-service.changhong.com/api-gateway/edm-service`
+  return `${protocol}//base-service.changhong.com/edm-service`
 }
 
 const getAttacmentInfoHost = function () {
