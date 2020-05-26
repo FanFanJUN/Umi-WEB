@@ -267,6 +267,12 @@ function ApproveEditor() {
       cancelText: '取消'
     })
   }
+  function handleSubmitComplete(res) {
+    const { success } = res;
+    if (success) {
+      closeCurrent()
+    }
+  }
   useEffect(() => {
     initFommFieldsValuesAndTableDataSource()
   }, [])
@@ -284,7 +290,7 @@ function ApproveEditor() {
         businessId={businessId}
         taskId={taskId}
         instanceId={instanceId}
-        submitComplete={closeCurrent}
+        submitComplete={handleSubmitComplete}
         beforeSubmit={handleBeforeStartFlow}
       >
         <Spin spinning={loading}>

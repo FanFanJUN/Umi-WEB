@@ -70,7 +70,12 @@ function ApprovePage() {
     }
     message.error(msg)
   }
-
+  function handleSubmitComplete(res) {
+    const { success } = res;
+    if(success) {
+      closeCurrent()
+    }
+  }
   function handleClose() {
     Modal.confirm({
       title: '返回提示',
@@ -97,7 +102,7 @@ function ApprovePage() {
         businessId={businessId}
         taskId={taskId}
         instanceId={instanceId}
-        submitComplete={closeCurrent}
+        submitComplete={handleSubmitComplete}
       >
         <Spin spinning={loading}>
           <StrategyForm
