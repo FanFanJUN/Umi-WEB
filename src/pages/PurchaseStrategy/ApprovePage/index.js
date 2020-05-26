@@ -102,7 +102,7 @@ function ApprovePage() {
         businessId={businessId}
         taskId={taskId}
         instanceId={instanceId}
-        submitComplete={handleSubmitComplete}
+        // submitComplete={handleSubmitComplete}
       >
         <Spin spinning={loading}>
           <StrategyForm

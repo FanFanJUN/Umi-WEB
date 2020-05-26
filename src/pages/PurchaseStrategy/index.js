@@ -442,27 +442,32 @@ function PurchaseStategy() {
         advanced
         ref={headerRef}
       />
-      <ExtTable
-        columns={columns}
-        showSearch={false}
-        ref={tableRef}
-        rowKey={(item) => item.id}
-        checkbox={{
-          multiSelect: false
-        }}
-        remotePaging={true}
-        ellipsis={false}
-        onSelectRow={handleSelectedRows}
-        selectedRowKeys={selectedRowKeys}
-        {...tableProps}
-      />
+      <div style={{
+        width: '100vw',
+        height: 'calc(100%-80px)'
+      }}>
+        <ExtTable
+          columns={columns}
+          showSearch={false}
+          ref={tableRef}
+          rowKey={(item) => item.id}
+          checkbox={{
+            multiSelect: false
+          }}
+          remotePaging={true}
+          ellipsis={false}
+          onSelectRow={handleSelectedRows}
+          selectedRowKeys={selectedRowKeys}
+          {...tableProps}
+        />
+      </div>
       <ExtModal
         visible={visible}
         onCancel={hideHistory}
         footer={null}
         width={'80vw'}
       >
-        <FlowHistory businessId={businessId} flowMapUrl='flow-web/design/showLook'/>
+        <FlowHistory businessId={businessId} flowMapUrl='flow-web/design/showLook' />
       </ExtModal>
       <ExtModal
         visible={showAttach}
