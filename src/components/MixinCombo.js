@@ -128,14 +128,6 @@ export const ComboAttachment = forwardRef(({
         serviceHost={ATTACMENT_HOST}
         customBatchDownloadFileName={true}
         uploadUrl='file/upload'
-        download={(files)=> {
-          return ({
-            url: `${ATTACMENT_HOST}/file/download`,
-            params: {
-              docIds: files.map(item=>item.id).join(',')
-            }
-          })
-        }}
         onDeleteFile={(file) => {
           const [info] = file;
           const { id } = info;
