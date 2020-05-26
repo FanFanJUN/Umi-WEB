@@ -462,7 +462,7 @@ function PurchaseStategy() {
         footer={null}
         width={'80vw'}
       >
-        <FlowHistory businessId={businessId} />
+        <FlowHistory businessId={businessId} flowMapUrl='flow-web/design/showLook'/>
       </ExtModal>
       <ExtModal
         visible={showAttach}
