@@ -141,8 +141,6 @@ export const ComboAttachment = forwardRef(({
           const { id } = info;
           const filter = fileList.filter((item) => {
             const { id: key = '' } = item
-            console.log(file, item)
-            console.log(id, key)
             return key !== id
           })
           setFileList(filter)

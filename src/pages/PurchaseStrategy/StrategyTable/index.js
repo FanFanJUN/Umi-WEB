@@ -121,9 +121,7 @@ function StrategyTable({
       render(text = []) {
         return (
           <Button type='link' onClick={()=>checkAdjustScopeList(text)}>
-            {
-              text.map(item => item.name).join('，')
-            }
+            查看
           </Button>
         )
       }
@@ -267,9 +265,11 @@ function StrategyTable({
     ]
     Modal.info({
       title: '适应范围',
-      content: <Table bordered columns={columns} dataSource={list} rowKey={({ id })=> id}/>,
+      content: <Table size='small' bordered columns={columns} dataSource={list} rowKey={({ id })=> id}/>,
       icon: 'exception',
-      okText: '关闭'
+      okText: '关闭',
+      width: '60vw',
+      centered: true
     })
   }
   function handleSubmit(val) {

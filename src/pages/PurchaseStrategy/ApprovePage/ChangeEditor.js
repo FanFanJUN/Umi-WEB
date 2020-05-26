@@ -194,7 +194,6 @@ function ChangeStrategy({
     const { validateFields } = formRef.current.form;
     const sourceParams = await validateFields().then(r => r)
     const params = await formatSaveParams(sourceParams)
-    console.log(changeParams, params)
     const { success, message: msg, data } = await changeEditorAndApprove({ ...params, modifyHeader: changeParams });
     return new Promise((resolve, reject) => {
       if (success) {

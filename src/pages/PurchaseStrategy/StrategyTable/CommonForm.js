@@ -84,8 +84,7 @@ const CommonForm = forwardRef(({
         localId,
         changeable,
         ...other
-      } = initialValues
-      console.log(other)
+      } = initialValues;
       const adjustScopeListName = adjustScopeList.map(item => item.name);
       const adjustScopeListCode = adjustScopeList.map(item => item.code);
       const pricingDateList = dateList.map(item => item.date)
