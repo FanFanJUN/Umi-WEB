@@ -9,7 +9,8 @@ import {
   Form,
   Row,
   Col,
-  Input
+  Input,
+  Tooltip
 } from 'antd';
 import {
   materialClassProps,
@@ -100,6 +101,7 @@ const CommonForm = forwardRef(({
   const fre = getFieldValue('pricingFrequency') || 'unknow';
   const files = getFieldValue('files') || []
   const cost = getFieldValue('costTargetName');
+  const costText = getFieldValue('costTargetRemark');
   // const isCostInit = !cost
   const allowUpload = files.length !== 1;
   const comboDatePickerDisabled = (fre === 'unknow') || (fre === 'Order') || (fre === 'Demand');
@@ -358,11 +360,13 @@ const CommonForm = forwardRef(({
           </Item>
         </Col>
         <Col span={14}>
+          <Tooltip title={costText} placement='topLeft'>
             <Item labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
               {
-                getFieldDecorator('costTargetRemark')(<Input disabled={!cost}/>)
+                getFieldDecorator('costTargetRemark')(<Input disabled={!cost} />)
               }
             </Item>
+          </Tooltip>
         </Col>
       </Row>
       <Row>
