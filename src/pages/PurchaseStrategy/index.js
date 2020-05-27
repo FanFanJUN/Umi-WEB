@@ -146,7 +146,7 @@ function PurchaseStategy() {
   }
   useEffect(() => {
     window.parent.frames.addEventListener('message', listenerParentClose, false);
-    return window.parent.frames.removeEventListener('message', listenerParentClose, false)
+    return ()=> window.parent.frames.removeEventListener('message', listenerParentClose, false)
   }, []);
   function listenerParentClose(event) {
     const { data = {} } = event;
