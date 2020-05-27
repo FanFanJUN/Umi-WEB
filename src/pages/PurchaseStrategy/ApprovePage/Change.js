@@ -141,7 +141,7 @@ function ApprovePage() {
         businessId={businessId}
         taskId={taskId}
         instanceId={instanceId}
-        // submitComplete={handleComplete}
+        submitComplete={handleComplete}
       >
         <Tabs>
           <TabPane tab='策略明细' key='detail'>

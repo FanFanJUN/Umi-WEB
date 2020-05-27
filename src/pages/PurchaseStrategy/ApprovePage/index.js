@@ -71,6 +71,7 @@ function ApprovePage() {
     message.error(msg)
   }
   function handleSubmitComplete(res) {
+    console.log(res)
     const { success } = res;
     if(success) {
       closeCurrent()
@@ -102,7 +103,7 @@ function ApprovePage() {
         businessId={businessId}
         taskId={taskId}
         instanceId={instanceId}
-        // submitComplete={handleSubmitComplete}
+        submitComplete={handleSubmitComplete}
       >
         <Spin spinning={loading}>
           <StrategyForm

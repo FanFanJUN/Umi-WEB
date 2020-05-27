@@ -290,7 +290,7 @@ function ApproveEditor() {
         businessId={businessId}
         taskId={taskId}
         instanceId={instanceId}
-        // submitComplete={handleSubmitComplete}
+        submitComplete={handleSubmitComplete}
         beforeSubmit={handleBeforeStartFlow}
       >
         <Spin spinning={loading}>

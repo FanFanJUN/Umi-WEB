@@ -360,7 +360,7 @@ function ChangeStrategy({
         taskId={taskId}
         instanceId={instanceId}
         beforeSubmit={handleBeforeStartFlow}
-        // submitComplete={handleComplete}
+        submitComplete={handleComplete}
       >
         <Spin spinning={loading} tip="处理中...">
           <ChangeForm
