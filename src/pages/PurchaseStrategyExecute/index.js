@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react';
-import { ExtTable, utils } from 'suid';
+import { ExtTable } from 'suid';
 import { Input, Button, Modal, message } from 'antd';
 import Header from '@/components/Header';
+import AutoSizeLayout from '@/components/AutoSizeLayout';
 import AdvancedForm from '@/components/AdvancedForm';
 import { psBaseUrl } from '@/utils/commonUrl';
 import { leftPad, downloadBlobFile } from '../../utils';
@@ -329,16 +330,21 @@ function PurchaseStrategyExecute() {
         }}
         ref={headerRef}
       />
-      <ExtTable
-        columns={columns}
-        showSearch={false}
-        ref={tableRef}
-        rowKey={(item) => item.id}
-        checkbox={false}
-        remotePaging={true}
-        ellipsis={false}
-        {...tableProps}
-      />
+      <AutoSizeLayout>
+        {
+          (h) => <ExtTable
+          columns={columns}
+          showSearch={false}
+          ref={tableRef}
+          rowKey={(item) => item.id}
+          checkbox={false}
+          height={h}
+          remotePaging={true}
+          ellipsis={false}
+          {...tableProps}
+        />
+        }
+      </AutoSizeLayout>
       <Modal
         visible={showAttach}
         onCancel={hideAttach}

@@ -1,5 +1,5 @@
 export const localTarget = 'http://10.8.4.121:8088';
-export const onLineTarget = 'http://tecmp.changhong.com';
+export const onLineTarget = 'http://decmp.changhong.com';
 
 export default {
   '/mocker.api': {
@@ -25,7 +25,7 @@ export default {
   //   }
   // },
   '/service.api/srm-ps-web': {
-    target: onLineTarget,
+    target: localTarget,
     changeOrigin: true,
     secure: false,
     pathRewrite: { '^/service.api/srm-ps-web': '/srm-ps-web' },

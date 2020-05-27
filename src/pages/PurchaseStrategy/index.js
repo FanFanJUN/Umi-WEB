@@ -3,6 +3,7 @@ import { ExtTable, WorkFlow, ExtModal, utils } from 'suid';
 import { Input, Button, message } from 'antd';
 import Header from '@/components/Header';
 import AdvancedForm from '@/components/AdvancedForm';
+import AutoSizeLayout from '@/components/AutoSizeLayout';
 import { ComboAttachment } from '@/components';
 import { psBaseUrl } from '@/utils/commonUrl';
 import { openNewTab } from '@/utils';
@@ -442,25 +443,26 @@ function PurchaseStategy() {
         advanced
         ref={headerRef}
       />
-      <div style={{
-        width: '100vw',
-        height: 'calc(100%-80px)'
-      }}>
-        <ExtTable
-          columns={columns}
-          showSearch={false}
-          ref={tableRef}
-          rowKey={(item) => item.id}
-          checkbox={{
-            multiSelect: false
-          }}
-          remotePaging={true}
-          ellipsis={false}
-          onSelectRow={handleSelectedRows}
-          selectedRowKeys={selectedRowKeys}
-          {...tableProps}
-        />
-      </div>
+      <AutoSizeLayout>
+        {
+          (height) => <ExtTable
+            columns={columns}
+            showSearch={false}
+            ref={tableRef}
+            rowKey={(item) => item.id}
+            checkbox={{
+              multiSelect: false
+            }}
+            size='small'
+            height={height}
+            remotePaging={true}
+            ellipsis={false}
+            onSelectRow={handleSelectedRows}
+            selectedRowKeys={selectedRowKeys}
+            {...tableProps}
+          />
+        }
+      </AutoSizeLayout>
       <ExtModal
         visible={visible}
         onCancel={hideHistory}

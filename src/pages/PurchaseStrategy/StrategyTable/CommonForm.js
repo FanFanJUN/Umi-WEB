@@ -99,15 +99,9 @@ const CommonForm = forwardRef(({
   }, [visible])
   const fre = getFieldValue('pricingFrequency') || 'unknow';
   const files = getFieldValue('files') || []
+  const cost = getFieldValue('costTargetName');
+  // const isCostInit = !cost
   const allowUpload = files.length !== 1;
-  // const treeNodeProps = (node) => {
-  //   if(node.nodeLevel === 0) {
-  //     return {
-  //       selectable: false,
-  //       // disabled: false
-  //     }
-  //   }
-  // }
   const comboDatePickerDisabled = (fre === 'unknow') || (fre === 'Order') || (fre === 'Demand');
   const title = `行号：${leftPad(lineNumber, 4, '0')}`;
   const { attachment } = initialValues;
@@ -346,8 +340,8 @@ const CommonForm = forwardRef(({
         </Item>
       </Row>
       <Row>
-        <Col span={12}>
-          <Item label='成本目标' {...formLayout}>
+        <Col span={10}>
+          <Item label='成本目标' labelCol={{ span: 10 }} wrapperCol={{ span: 14 }}>
             {
               getFieldDecorator('costTarget'),
               getFieldDecorator('costTargetName', {
@@ -362,6 +356,13 @@ const CommonForm = forwardRef(({
               )
             }
           </Item>
+        </Col>
+        <Col span={14}>
+            <Item labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
+              {
+                getFieldDecorator('costTargetRemark')(<Input disabled={!cost}/>)
+              }
+            </Item>
         </Col>
       </Row>
       <Row>
