@@ -37,7 +37,7 @@ export default {
     pathRewrite: { '^/service.api': '' },
   },
   '/service.api/edm-service': {
-    target: 'http://base-service.changhong.com/edm-service',
+    target: 'https://decmp.changhong.com/api-gateway/edm-service',
     changeOrigin: true,
     secure: false,
     pathRewrite: { '^/service.api/edm-service': '' },
