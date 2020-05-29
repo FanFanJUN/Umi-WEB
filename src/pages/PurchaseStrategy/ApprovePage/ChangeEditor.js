@@ -377,6 +377,7 @@ function ChangeStrategy({
             dataSource={dataSource}
             type="change"
             loading={loading}
+            headerForm={formRef}
           />
           <Modal
             title='变更原因'

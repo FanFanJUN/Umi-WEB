@@ -124,6 +124,10 @@ function PurchaseStrategyExecute() {
       dataIndex: 'costTargetName'
     },
     {
+      title: '成本目标说明',
+      dataIndex: 'costTargetRemark'
+    },
+    {
       title: '成本控制方式',
       dataIndex: 'costControlWay'
     },

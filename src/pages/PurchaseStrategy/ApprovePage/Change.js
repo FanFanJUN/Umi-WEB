@@ -153,6 +153,7 @@ function ApprovePage() {
               />
               <StrategyTable
                 dataSource={dataSource}
+                headerForm={formRef}
                 type="detail"
               />
             </Spin>

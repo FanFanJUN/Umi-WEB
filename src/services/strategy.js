@@ -60,11 +60,17 @@ export const strategyTableCreateLine = params => createServiceRequest({
   params
 })
 
-// 保存批量导入采购策略行
-export const saveStrategyTableImportData = params => createServiceRequest({
+// 检查保存批量导入采购策略行
+export const validateStrategyTableImportData = params => createServiceRequest({
   path: '/purchaseStrategyDetail/importFromExcel',
   params
 })
+
+// 保存批量导入采购策略行
+export const saveStrategyTableImportData = params => createServiceRequest({
+  path: '/purchaseStrategyDetail/saveImportData',
+  params
+}) 
 
 // 关联创建行附件
 export const strategyTableLineRelevanceDocment = (params) => createServiceRequest({

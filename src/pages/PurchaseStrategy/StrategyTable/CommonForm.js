@@ -24,6 +24,7 @@ import {
 import { ComboSelect, ComboDatePicker, ComboAttachment } from '@/components';
 import { ComboTree, ComboGrid, ComboList } from 'suid';
 import { leftPad } from '@/utils';
+import { baseUrl } from '../../../utils/commonUrl';
 const { create, Item } = Form;
 const { TextArea } = Input;
 const formLayout = {
@@ -51,7 +52,8 @@ const CommonForm = forwardRef(({
   initialValues = {},
   type = 'add',
   mode = 'add',
-  loading
+  levelCode= '',
+  loading,
 }, ref) => {
   useImperativeHandle(ref, () => ({ form }))
   const {
@@ -107,6 +109,15 @@ const CommonForm = forwardRef(({
   const comboDatePickerDisabled = (fre === 'unknow') || (fre === 'Order') || (fre === 'Demand');
   const title = `行号：${leftPad(lineNumber, 4, '0')}`;
   const { attachment } = initialValues;
+  const materialClassPropsAddParams = {
+    ...materialClassProps,
+    store: {
+      url: `${baseUrl}/SecondaryClassificationMaterialGroup/listTreeByMaterialLevel`,
+      params: {
+        materialLevel: levelCode
+      }
+    }
+  }
   const datePickerRef = useRef(null)
   function handleSubmit() {
     validateFieldsAndScroll((err, val) => {
@@ -142,7 +153,7 @@ const CommonForm = forwardRef(({
                     message: '请选择物料二次分类'
                   }
                 ]
-              })(<ComboTree form={form} {...materialClassProps} name='materialClassificationName' field={['materialClassificationCode']} disabled={mode === 'change' && type === 'editor'} />)
+              })(<ComboTree form={form} {...materialClassPropsAddParams} name='materialClassificationName' field={['materialClassificationCode']} disabled={mode === 'change' && type === 'editor'} />)
             }
           </Item>
         </Col>

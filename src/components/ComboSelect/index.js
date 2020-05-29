@@ -61,6 +61,12 @@ const ComboSelect = forwardRef(({
           <div>
             <ExtTable
               store={store}
+              toolBar={{
+                layout:{
+                  leftSpan: 0,
+                  rightSpan: 24
+                }
+              }}
               columns={columns}
               rowKey={(item) => item[readeName]}
               selectedRowKeys={selectedKeys}

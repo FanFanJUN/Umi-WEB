@@ -8,6 +8,7 @@ import {
   savePurcahseAndApprove,
   strategyTableCreateLine,
   saveStrategyTableImportData,
+  validateStrategyTableImportData,
   strategyTableLineRelevanceDocment
 } from '@/services/strategy';
 import { closeCurrent } from '../../../utils';
@@ -164,6 +165,15 @@ function CreateStrategy() {
     }
     message.error(msg)
   }
+  async function handleValidateImportData(items) {
+    triggerLoading(true)
+    const { success, data, message: msg } = await validateStrategyTableImportData({ ios: items });
+    triggerLoading(false)
+    return data.map(item=> ({
+      ...item,
+      status: item.msg.keys
+    }))
+  }
   async function handleEditorLine(val, keys, hide) {
     const [localId] = keys;
     const { files = [], pricingDateList = [], adjustScopeListCode = [] } = val;
@@ -282,8 +292,10 @@ function CreateStrategy() {
         onRemove={handleRemoveLines}
         onEditor={handleEditorLine}
         onImportData={handleImportData}
+        onValidateImportData={handleValidateImportData}
         loading={loading}
         dataSource={dataSource}
+        headerForm={formRef}
       />
     </Spin>
   )

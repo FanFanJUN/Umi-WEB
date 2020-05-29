@@ -306,6 +306,7 @@ function ApproveEditor() {
             onRemove={handleRemoveLines}
             onEditor={handleEditorLine}
             onImportData={handleImportData}
+            headerForm={formRef}
           />
         </Spin>
       </Approve>

@@ -356,6 +356,7 @@ function EditorStrategy({
         dataSource={dataSource}
         type="editor"
         loading={loading}
+        headerForm={formRef}
       />
     </Spin>
   )

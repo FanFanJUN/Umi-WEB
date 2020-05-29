@@ -65,6 +65,7 @@ const ComboDatePicker = forwardRef(({
   const handleAutoAllocationTimes = () => {
     const ntm = moment().month();
     const nty = moment().year();
+    const ntd = moment().day();
     const ys = [1];
     const hy = [1, 6];
     const qs = [1,4,7,9];
@@ -79,12 +80,11 @@ const ComboDatePicker = forwardRef(({
     const sqs = nss.map(item=>{
       const y = (ntm + item) > 12 ? nty + 1 : nty;
       const m = (ntm + item) % 12 === 0 ? 12 : (ntm + item) % 12;
-      const tm = `${y}:${m}`;
+      const tm = `${y}-${m}-${ntd} 00:00:00`;
       const mtm = moment(tm).format('YYYY-MM-DD HH:mm:ss')
       return mtm
     })
     onChange(sqs)
-    // triggerVisible(false)
   }
   const content = (
     <div className={styles.contentWrapper}>
