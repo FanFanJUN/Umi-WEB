@@ -4,7 +4,7 @@
  * @date 2020.4.3
  */
 import React, { useState, forwardRef, useRef } from "react";
-import { Col, Row, Tree, Input, Skeleton, Popover, Tag } from "antd";
+import { Col, Row, Tree, Input, Skeleton, Popover, Tag, Table } from "antd";
 import { request } from '@/utils'
 import { baseUrl } from '@/utils/commonUrl'
 import styles from './index.less';
@@ -56,6 +56,7 @@ const UserSelect = forwardRef(({
   const [treeSelectedKeys, setTreeSelectedKyes] = useState([]);
   const searchInput = useRef(null)
   const userSearchInput = useRef(null)
+  const tableRef = useRef(null)
   const { name: readName = 'id', field: readField = ['id'] } = reader;
   //网络请求树控件数据（协议分类）
   const getTreeData = () => {
@@ -84,7 +85,7 @@ const UserSelect = forwardRef(({
         organizationId: id,
         pageInfo: {
           page: 1,
-          rows: 10000
+          rows: 100000
         },
         sortOrders: [{property: "code", direction: "ASC"}],
         quickSearchProperties: ["code", "user.userName"]
@@ -108,7 +109,7 @@ const UserSelect = forwardRef(({
         quickSearchValue: v,
         pageInfo: {
           page: 1,
-          rows: 10000
+          rows: 100000
         },
         sortOrders: [{property: "code", direction: "ASC"}],
         quickSearchProperties: ["code", "user.userName"]
@@ -117,6 +118,7 @@ const UserSelect = forwardRef(({
       const { rows } = data;
       triggerLoading(false)
       setUserData(rows)
+      tableRef.current.remoteDataRefresh()
     }).catch(_=> triggerLoading(false))
   }
 
@@ -191,9 +193,10 @@ const UserSelect = forwardRef(({
   };
   const rowOnChange = (keys, rows) => {
     setSelectedKeys(keys)
+    const names = rows.map(item=>item[readName])
     if (!!setFieldsValue) {
       setFieldsValue({
-        [name]: keys
+        [name]: names
       });
       const fieldValues = readField.map(item => {
         return rows.map(i => i[item]);
@@ -278,10 +281,11 @@ const UserSelect = forwardRef(({
                   checkbox={true}
                   showSearch={false}
                   loading={loading}
+                  ref={tableRef}
                   selectedRowKeys={selectedKeys}
                   selectedRows={selectedRows}
                   onSelectRow={rowOnChange}
-                  rowKey={(item) => item[readName]}
+                  rowKey={(item) => item.id}
                   dataSource={userData}
                   columns={columns}
                 />
@@ -313,3 +317,7 @@ UserSelect.propTypes = {
 
 export default UserSelect
 
+
+// 08ACB0F2-9587-11EA-9C86-5AA023055645
+// 1E4233EA-9587-11EA-9C86-5AA023055645
+// 44561E7E-932C-11EA-AF7D-0242C0A84402
