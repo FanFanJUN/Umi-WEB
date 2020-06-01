@@ -57,10 +57,6 @@ const importColumns = [
     dataIndex: 'costTarget'
   },
   {
-    title: '成本目标说明',
-    dataIndex: 'costTargetRemark'
-  },
-  {
     title: '成本控制方式',
     dataIndex: 'costControlWay'
   },
@@ -88,9 +84,7 @@ function StrategyTable({
   onRemove = () => null,
   onEditor = () => null,
   onImportData = () => null,
-  onValidateImportData = () => null,
   onInvalidChange = () => null,
-  headerForm={},
   type = 'add'
 }) {
   const commonFormRef = createRef();
@@ -108,7 +102,6 @@ function StrategyTable({
   const [single = {}] = selectedRows;
   const { changeable = true, id: singleRowId } = single;
   const [count, setCount] = useState(0);
-  const levelCode = headerForm.current && headerForm.current.form.getFieldValue('materialLevelCode');
   const columns = [
     {
       title: '物料二次分类',
@@ -175,10 +168,6 @@ function StrategyTable({
       dataIndex: 'costTargetName'
     },
     {
-      title: '成本目标说明',
-      dataIndex: 'costTargetRemark'
-    },
-    {
       title: '成本控制方式',
       dataIndex: 'costControlWay'
     },
@@ -240,12 +229,6 @@ function StrategyTable({
   }
   // 显示新增编辑modal
   function showModal(t = 'add') {
-    // console.log(headerForm)
-    const leve = headerForm.current.form.getFieldValue('materialLevelCode');
-    if(!leve) {
-      message.error('请先选择物料级别')
-      return
-    }
     const len = dataSource.length;
     if (t === 'add') {
       setLine(len + 1)
@@ -318,6 +301,151 @@ function StrategyTable({
     setAttachId('')
     triggerShowAttach(false)
   }
+  function importDataValidate(column) {
+    const {
+      materialClassificationName,
+      expectedDemandScaleAmount,
+      expectedDemandScalePrice,
+      adjustScope,
+      purchaseTypeName,
+      planSupplyResourceTypeName,
+      priceCombine,
+      pricingFrequency,
+      pricingTime,
+      runningOperation,
+      resourceOperation,
+      costTarget,
+      costControlWay,
+      storageControlWay,
+      supplierSelectRule,
+      supplierCooperationWay
+    } = column;
+    const timeDisabled = pricingFrequency === '按单' || pricingFrequency === '按需';
+    const error = {
+      validate: false,
+      status: '不通过',
+      statusCode: 'error'
+    }
+    if (!materialClassificationName) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写物料二次分类'
+      }
+    }
+    if (!expectedDemandScaleAmount) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写预计需求数量'
+      }
+    }
+    if (!expectedDemandScalePrice) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写预计需求规模'
+      }
+    }
+    if (!adjustScope) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写适应范围'
+      }
+    }
+    if (!purchaseTypeName) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写采购方式'
+      }
+    }
+    if (!planSupplyResourceTypeName) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写规划供应资源类型名称'
+      }
+    }
+    if (!priceCombine) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写价格组成'
+      }
+    }
+    if (!pricingFrequency) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写定价频次'
+      }
+    }
+    if (!timeDisabled && !pricingTime) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写定价时间'
+      }
+    }
+    if (!runningOperation) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写市场运行情况'
+      }
+    }
+    if (!resourceOperation) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写资源保障情况'
+      }
+    }
+    if (!costTarget) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写成本目标'
+      }
+    }
+    if (!costControlWay) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写成本控制方式'
+      }
+    }
+    if (!storageControlWay) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写库存控制方式'
+      }
+    }
+    if (!supplierSelectRule) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写供应商选择原则'
+      }
+    }
+    if (!supplierCooperationWay) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写供应商合作方式'
+      }
+    }
+    return {
+      validate: true,
+      status: '通过',
+      statusCode: 'success',
+      message: '验证通过',
+      ...column
+    }
+  }
   const left = type !== 'detail' && (
     <>
       <Button type='primary' className={styles.btn} onClick={() => showModal()}>新增</Button>
@@ -354,7 +482,7 @@ function StrategyTable({
             columns: importColumns
           }}
           validateFunc={(item) => {
-            onValidateImportData(item)
+            return item.map(importDataValidate)
           }}
           importFunc={(item) => {
             onImportData(item);
@@ -395,7 +523,6 @@ function StrategyTable({
         mode={type}
         initialValues={initialValue}
         lineNumber={line}
-        levelCode={levelCode}
         wrappedComponentRef={commonFormRef}
         loading={loading}
       />

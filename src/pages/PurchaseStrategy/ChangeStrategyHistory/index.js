@@ -8,7 +8,7 @@ import { removePurchaseStrategyChangeHistory } from '@/services/strategy';
 import { ComboAttachment } from '@/components';
 import classnames from 'classnames';
 import styles from './index.less';
-const { StartFlow } = WorkFlow;
+const { StartFlow, FlowHistory } = WorkFlow;
 const detailColumn = [
   {
     title: '操作内容',
@@ -37,17 +37,18 @@ function ChangeStrategyHistory() {
   const [checkId, setCheckId] = useState('');
   const [visible, triggerVisible] = useState(false);
   const [attachId, setAttachId] = useState('');
+  const [historyVisible,triggerHistoryVisible] = useState(false);
   const [showAttach, triggerShowAttach] = useState(false);
   const [selectedRowKeys, setRowKeys] = useState([]);
   const [selectedRows, setRows] = useState([]);
   const multiple = selectedRowKeys.length > 1;
   const empty = selectedRowKeys.length === 0;
-  const [signleRow={}] = selectedRows;
-  const { flowStatus="" } = signleRow;
+  const [signleRow = {}] = selectedRows;
+  const { flowStatus = "", flowId='' } = signleRow;
   const disableSubmit = flowStatus !== 'INIT'
   const LEFT = (
     <>
-      <Button type='primary' className={styles.btn}>审核历史</Button>
+      <Button type='primary' disabled={multiple || empty} className={styles.btn} onClick={showHistory}>审核历史</Button>
       <StartFlow
         beforeStart={handleBeforeStartFlow}
         startComplete={handleComplete}
@@ -149,6 +150,12 @@ function ChangeStrategyHistory() {
   async function showChangeDetail(id) {
     setCheckId(id)
     triggerVisible(true)
+  }
+  function showHistory() {
+    triggerHistoryVisible(true)
+  }
+  function hideHistory() {
+    triggerHistoryVisible(false)
   }
   function hideModal() {
     triggerVisible(false)
@@ -257,6 +264,14 @@ function ChangeStrategyHistory() {
           multiple={false}
           customBatchDownloadFileName={true}
         />
+      </ExtModal>
+      <ExtModal
+        visible={historyVisible}
+        footer={null}
+        destroyOnClose
+        onCancel={hideHistory}
+      >
+        <FlowHistory businessId={flowId} flowMapUrl='flow-web/design/showLook'/>
       </ExtModal>
     </div>
   )
