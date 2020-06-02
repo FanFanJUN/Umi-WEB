@@ -299,7 +299,7 @@ const UserSelect = forwardRef(({
           [styles.inputDisabled] : disabled
         })}>
           {
-            value.map(item=> <Tag key={item}>
+            value.map(item=> <Tag key={item} style={{ margin: '0 5px 5px 0'}}>
               { item }
             </Tag>)
           }
