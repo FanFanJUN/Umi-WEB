@@ -1,8 +1,6 @@
 import { utils } from 'suid';
 import constants from './constants.js';
-import { userUtils } from '@/utils';
-
-const { getAuthorization } = userUtils;
+import { getAuthorization } from './user';
 
 const { request } = utils;
 request.defaults.baseURL = constants.BASE_URL;
