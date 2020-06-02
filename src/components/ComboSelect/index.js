@@ -6,6 +6,7 @@ import React, {
 } from 'react';
 import { ExtTable } from 'suid';
 import { Popover, Input } from 'antd';
+import request from '../../utils/request';
 const { Search } = Input
 const ComboSelect = forwardRef(({
   columns = [],
@@ -21,16 +22,28 @@ const ComboSelect = forwardRef(({
   value = []
 }, ref) => {
   const wrapperRef = useRef(null)
-  const { name: readeName = 'id', field: readField = ['id'] } = reader;
+  const { name: readName = 'id', field: readField = ['id'] } = reader;
+  const [ fieldKeyCode ] = readField;
+  const [fk] = field;
   const [selectedKeys, setSelectedKeys] = useState([]);
-  const { setFieldsValue } = form;
-  const [valueText, setValueText] = useState("")
+  const [dataSource, setDataSource] = useState([]);
+  const { setFieldsValue, getFieldValue } = form;
+  const [valueText, setValueText] = useState("");
+  function getDataSource() {
+    const { url, params } = store;
+    request.post(url, params).then(({ data: response })=>{
+      const { rows=[] } = response;
+      setDataSource(rows)
+      const ks = getFieldValue(fk);
+      setSelectedKeys(ks)
+    })
+  }
   function handleSelectedRow(keys, rows) {
     setSelectedKeys(keys)
-    // setValueText(joinVal)
+    const names = rows.map(item=>item[readName])
     if (!!setFieldsValue) {
       setFieldsValue({
-        [name]: keys
+        [name]: names
       });
       const fieldValues = readField.map(item => {
         return rows.map(i => i[item]);
@@ -41,9 +54,12 @@ const ComboSelect = forwardRef(({
         })
       })
     }
-    onChange(keys)
+    onChange(names)
     onRowsChange(rows)
   }
+  useEffect(() => {
+    getDataSource()
+  }, [])
   useEffect(() => {
     const v = value.join('，')
     setValueText(v)
@@ -58,9 +74,9 @@ const ComboSelect = forwardRef(({
         placement="bottomRight"
         autoAdjustOverflow={false}
         content={
-          <div>
+          <div style={{ height: 300 }}>
             <ExtTable
-              store={store}
+              dataSource={dataSource}
               toolBar={{
                 layout:{
                   leftSpan: 0,
@@ -68,11 +84,11 @@ const ComboSelect = forwardRef(({
                 }
               }}
               columns={columns}
-              rowKey={(item) => item[readeName]}
+              rowKey={(item) => item[fieldKeyCode]}
               selectedRowKeys={selectedKeys}
               onSelectRow={handleSelectedRow}
               showSearch={true}
-              height={300}
+              // height={300}
               width={400}
               lineNumber={false}
               allowCustomColumns={false}
