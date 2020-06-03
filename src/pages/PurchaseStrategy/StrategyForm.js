@@ -11,7 +11,6 @@ import {
   materialLevel,
   proPlanMaterialTypeProps
 } from '@/utils/commonProps';
-import { getUserPhoneNumberForAccount } from '../../services/strategy';
 import { UserSelect, ComboAttachment } from '@/components'
 const { RangePicker } = DatePicker;
 const { Item, create } = Form;
@@ -52,18 +51,6 @@ const FormRef = forwardRef(({
   useImperativeHandle(ref, () => ({
     form
   }));
-  async function getUserPhoneNumber(id) {
-    const { setFieldsValue } = form;
-    if (type === 'add') {
-      const { success, data } = await getUserPhoneNumberForAccount({ userId: id })
-      if (success) {
-        const { mobile = null } = data;
-        setFieldsValue({
-          phone: mobile
-        })
-      }
-    }
-  }
   const { getFieldDecorator, setFieldsValue } = form;
   const [createName, setCreateName] = useState("");
   const [purchaseCompanyCode, setPurchaseCompanyCode] = useState('');
@@ -76,8 +63,10 @@ const FormRef = forwardRef(({
     }
   }
   useEffect(() => {
-    const { userName, userId } = storage.sessionStorage.get("Authorization");
-    getUserPhoneNumber(userId)
+    const { userName, userId, mobile } = storage.sessionStorage.get("Authorization");
+    setFieldsValue({
+      phone: mobile
+    })
     setCreateName(userName)
   }, [])
   return (

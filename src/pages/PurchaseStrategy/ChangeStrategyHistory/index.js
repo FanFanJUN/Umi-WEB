@@ -67,7 +67,7 @@ function ChangeStrategyHistory() {
           }
         }
       </StartFlow>
-      <Button onClick={handleRemove} disabled={multiple || empty} >删除</Button>
+      <Button onClick={handleRemove} disabled={multiple || empty || disableSubmit} >删除</Button>
     </>
   )
   const tableProps = {

@@ -85,7 +85,8 @@ function StrategyTable({
   onEditor = () => null,
   onImportData = () => null,
   onInvalidChange = () => null,
-  type = 'add'
+  type = 'add',
+  headerForm = {}
 }) {
   const commonFormRef = createRef();
   const [selectedRowKeys,
@@ -95,6 +96,7 @@ function StrategyTable({
   const [line, setLine] = useState(1);
   const [showAttach, triggerShowAttach] = useState(false);
   const [attachId, setAttachId] = useState('')
+  const [levelCode, setLevelCode] = useState('');
   const [initialValue, setInitialValue] = useState({});
   const [modalType, setModalType] = useState('add');
   const disableEditor = selectedRowKeys.length !== 1;
@@ -229,6 +231,13 @@ function StrategyTable({
   }
   // 显示新增编辑modal
   function showModal(t = 'add') {
+    const { getFieldValue } = headerForm.current.form;
+    const lc = getFieldValue('materialLevelCode');
+    if(!lc) {
+      message.error('请先选择物料级别')
+      return
+    }
+    setLevelCode(lc);
     const len = dataSource.length;
     if (t === 'add') {
       setLine(len + 1)
@@ -525,6 +534,7 @@ function StrategyTable({
         lineNumber={line}
         wrappedComponentRef={commonFormRef}
         loading={loading}
+        levelCode={levelCode}
       />
       <Modal
         visible={showAttach}

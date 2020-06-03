@@ -5,7 +5,7 @@ import React, {
   useEffect
 } from 'react';
 import { ExtTable } from 'suid';
-import { Popover, Input, Tag } from 'antd';
+import { Popover, Input } from 'antd';
 import request from '../../utils/request';
 const { Search } = Input
 const ComboSelect = forwardRef(({
@@ -19,14 +19,12 @@ const ComboSelect = forwardRef(({
   placeholder = '选择范围',
   form = {},
   reader = {},
-  value = [],
-  disabled=false
+  value = []
 }, ref) => {
   const wrapperRef = useRef(null)
   const { name: readName = 'id', field: readField = ['id'] } = reader;
   const [ fieldKeyCode ] = readField;
   const [fk] = field;
-  const [rdk] = readField;
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [dataSource, setDataSource] = useState([]);
   const { setFieldsValue, getFieldValue } = form;
@@ -59,16 +57,13 @@ const ComboSelect = forwardRef(({
     onChange(names)
     onRowsChange(rows)
   }
-  function handleCloseTab(item, index) {
-    const k = selectedKeys[index];
-    const ks = selectedKeys.filter(i => i !== k);
-    setSelectedKeys(ks)
-    const fds = dataSource.filter(i => ks.findIndex(item=> item === i[rdk]) !== -1 )
-    handleSelectedRow(ks, fds)
-  }
   useEffect(() => {
     getDataSource()
   }, [])
+  // useEffect(() => {
+  //   const v = value.join('，')
+  //   setValueText(v)
+  // }, [value])
   return (
     <div
       ref={wrapperRef}
@@ -102,24 +97,12 @@ const ComboSelect = forwardRef(({
           </div>
         }
       >
-        <div style={{
-          display: 'flex',
-          justifyContent: 'flex-start',
-          alignItems: 'center',
-          border: '1px solid #ccc',
-          borderRadius: 5,
-          padding: '0 12px',
-          cursor: disabled ? 'no-drop' : 'pointer',
-          background: disabled ? '#fafafa' : '',
-          flexWrap: 'wrap',
-          minHeight: 32
-        }}>
-          {
-            value.map((item, index)=><Tag style={{
-              margin: 5
-            }} closable onClose={()=> handleCloseTab(item, index)}>{item}</Tag>)
-          }
-        </div>
+        <Input
+          ref={ref}
+          readOnly
+          placeholder={placeholder}
+          value={valueText}
+        />
       </Popover>
     </div>
   )
