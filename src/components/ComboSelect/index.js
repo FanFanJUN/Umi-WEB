@@ -5,9 +5,8 @@ import React, {
   useEffect
 } from 'react';
 import { ExtTable } from 'suid';
-import { Popover, Input, Tag } from 'antd';
+import { Popover, Tag } from 'antd';
 import request from '../../utils/request';
-const { Search } = Input
 const ComboSelect = forwardRef(({
   columns = [],
   store = {},
@@ -19,7 +18,6 @@ const ComboSelect = forwardRef(({
   placeholder = '选择范围',
   form = {},
   reader = {},
-  value = [],
   disabled=false
 }, ref) => {
   const wrapperRef = useRef(null)
@@ -29,14 +27,14 @@ const ComboSelect = forwardRef(({
   const [rdk] = readField;
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [dataSource, setDataSource] = useState([]);
+  const [tabList, setTabList] = useState([]);
   const { setFieldsValue, getFieldValue } = form;
-  const [valueText, setValueText] = useState("");
   function getDataSource() {
     const { url, params } = store;
     request.post(url, params).then(({ data: response })=>{
       const { rows=[] } = response;
       setDataSource(rows)
-      const ks = getFieldValue(fk);
+      const ks = getFieldValue(fk) || [];
       setSelectedKeys(ks)
     })
   }
@@ -59,9 +57,8 @@ const ComboSelect = forwardRef(({
     onChange(names)
     onRowsChange(rows)
   }
-  function handleCloseTab(item, index) {
-    const k = selectedKeys[index];
-    const ks = selectedKeys.filter(i => i !== k);
+  function handleCloseTab(item) {
+    const ks = selectedKeys.filter(i => i !== item[rdk]);
     setSelectedKeys(ks)
     const fds = dataSource.filter(i => ks.findIndex(item=> item === i[rdk]) !== -1 )
     handleSelectedRow(ks, fds)
@@ -69,6 +66,15 @@ const ComboSelect = forwardRef(({
   useEffect(() => {
     getDataSource()
   }, [])
+  function updateTabList() {
+    const fds = dataSource.filter((item)=> {
+      return selectedKeys.findIndex(k=> k === item[rdk]) !== -1;
+    })
+    setTabList(fds)
+  }
+  useEffect(() => {
+    updateTabList()
+  }, [selectedKeys])
   return (
     <div
       ref={wrapperRef}
@@ -93,7 +99,6 @@ const ComboSelect = forwardRef(({
               selectedRowKeys={selectedKeys}
               onSelectRow={handleSelectedRow}
               showSearch={true}
-              // height={300}
               width={400}
               lineNumber={false}
               allowCustomColumns={false}
@@ -115,9 +120,12 @@ const ComboSelect = forwardRef(({
           minHeight: 32
         }}>
           {
-            value.map((item, index)=><Tag style={{
+            tabList.length === 0 ? <div style={{ color: '#ccc', height: 32, display: 'flex',justifyContent: 'center', alignItems: 'center' }}>{placeholder}</div> : null
+          }
+          {
+            tabList.map((item, index)=><Tag key={`${index}-tab-value`} style={{
               margin: 5
-            }} closable onClose={()=> handleCloseTab(item, index)}>{item}</Tag>)
+            }} closable onClose={()=> handleCloseTab(item)} visible={true}>{item[readName]}</Tag>)
           }
         </div>
       </Popover>
