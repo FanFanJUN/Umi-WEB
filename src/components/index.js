@@ -5,6 +5,7 @@ import ComboSelect from './ComboSelect';
 import AdvancedForm from './AdvancedForm';
 import { ComboGrid, ComboList, ComboTree, MixinSelect, ComboAttachment } from './MixinCombo';
 import ComboDatePicker from './ComboDatePicker';
+import Upload from './Upload';
 export {
   Loader,
   UserSelect,
@@ -16,5 +17,6 @@ export {
   ComboTree,
   ComboAttachment,
   ComboDatePicker,
-  MixinSelect
+  MixinSelect,
+  Upload
 };

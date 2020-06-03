@@ -8,7 +8,8 @@ import { psBaseUrl } from '@/utils/commonUrl';
 import { leftPad, downloadBlobFile } from '../../utils';
 import {
   downloadExcelForChangeParams
-} from '@/services/strategy'
+} from '@/services/strategy';
+import Upload from '../../components/Upload';
 import { ComboAttachment } from '@/components';
 import {
   purchaseCompanyProps,
@@ -147,10 +148,7 @@ function PurchaseStrategyExecute() {
       title: '附件',
       dataIndex: 'attachment',
       render: (text) => {
-        return !!text ? <Button onClick={() => {
-          setAttachId(text)
-          triggerShowAttach(true)
-        }}>查看附件</Button> : '无'
+        return !!text ? <Upload entityId={text} type='show'/> : '无'
       }
     }
   ].map(_ => ({ ..._, align: 'center' }))
@@ -337,6 +335,7 @@ function PurchaseStrategyExecute() {
       <AutoSizeLayout>
         {
           (h) => <ExtTable
+          allowCancelSelect
           columns={columns}
           showSearch={false}
           ref={tableRef}

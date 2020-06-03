@@ -450,6 +450,7 @@ function PurchaseStategy() {
         checkbox={{
           multiSelect: false
         }}
+        allowCancelSelect
         remotePaging={true}
         ellipsis={false}
         onSelectRow={handleSelectedRows}

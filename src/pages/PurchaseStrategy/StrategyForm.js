@@ -328,7 +328,7 @@ const FormRef = forwardRef(({
         <Row>
           <Item label='附件' {...formLayoutAlone}>
             {
-              getFieldDecorator('files')(
+              getFieldDecorator('attachment')(
                 <ComboAttachment
                   allowPreview={false}
                   allowDelete={type !== 'detail'}

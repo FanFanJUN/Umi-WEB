@@ -136,7 +136,7 @@ const CommonForm = forwardRef(({
       visible={visible}
       title={title}
       onCancel={onCancel}
-      destroyOnClose
+      destroyOnClose={true}
       width='80vw'
       maskClosable={false}
       onOk={handleSubmit}

@@ -4,7 +4,7 @@ import { Input, Button, message } from 'antd';
 import Header from '@/components/Header';
 import AdvancedForm from '@/components/AdvancedForm';
 import AutoSizeLayout from '@/components/AutoSizeLayout';
-import { ComboAttachment } from '@/components';
+import { ComboAttachment, Upload } from '@/components';
 import { psBaseUrl } from '@/utils/commonUrl';
 import { openNewTab } from '@/utils';
 import {
@@ -121,11 +121,8 @@ function PurchaseStategy() {
     {
       title: '附件',
       dataIndex: 'attachment',
-      render(text) {
-        return !!text ? <Button onClick={() => {
-          setAttachId(text)
-          triggerShowAttach(true)
-        }}>查看附件</Button> : '无'
+      render: (text) => {
+        return !!text ? <Upload entityId={text} type='show'/> : '无'
       }
     },
     { title: '创建时间', dataIndex: 'createdDate', width: 200 }
@@ -453,6 +450,7 @@ function PurchaseStategy() {
             checkbox={{
               multiSelect: false
             }}
+            allowCancelSelect
             size='small'
             height={height}
             remotePaging={true}
@@ -477,7 +475,8 @@ function PurchaseStategy() {
         footer={null}
         destroyOnClose
       >
-        <ComboAttachment
+        
+        {/* <ComboAttachment
           allowPreview={false}
           // allowDownload={false}
           maxUploadNum={1}
@@ -487,7 +486,7 @@ function PurchaseStategy() {
           attachment={attachId}
           multiple={false}
           customBatchDownloadFileName={true}
-        />
+        /> */}
       </ExtModal>
     </>
   )

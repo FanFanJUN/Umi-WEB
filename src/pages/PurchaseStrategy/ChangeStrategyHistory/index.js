@@ -223,7 +223,7 @@ function ChangeStrategyHistory() {
           <Button className={styles.btn} onClick={handleClose}>关闭</Button>
         </div>
       </div>
-      <ExtTable {...tableProps} showSearch={false}
+      <ExtTable {...tableProps} showSearch={false} allowCancelSelect 
         ref={tableRef} />
       <ExtModal
         visible={visible}
@@ -246,6 +246,7 @@ function ChangeStrategyHistory() {
           }}
           showSearch={false}
           columns={detailColumn}
+          allowCancelSelect
         />
       </ExtModal>
       <ExtModal

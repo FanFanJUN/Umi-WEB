@@ -361,6 +361,7 @@ function ChangeStrategy({
         instanceId={instanceId}
         beforeSubmit={handleBeforeStartFlow}
         submitComplete={handleComplete}
+        flowMapUrl='flow-web/design/showLook'
       >
         <Spin spinning={loading} tip="处理中...">
           <ChangeForm

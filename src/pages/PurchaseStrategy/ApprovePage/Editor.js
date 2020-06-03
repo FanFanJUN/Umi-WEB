@@ -292,6 +292,7 @@ function ApproveEditor() {
         instanceId={instanceId}
         submitComplete={handleSubmitComplete}
         beforeSubmit={handleBeforeStartFlow}
+        flowMapUrl='flow-web/design/showLook'
       >
         <Spin spinning={loading}>
           <StrategyForm

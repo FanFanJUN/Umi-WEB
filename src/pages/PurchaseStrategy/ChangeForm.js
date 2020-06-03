@@ -11,7 +11,7 @@ import {
   materialLevel,
   proPlanMaterialTypeProps
 } from '@/utils/commonProps';
-import { UserSelect, ComboAttachment } from '@/components'
+import { UserSelect, ComboAttachment } from '@/components';
 const { RangePicker } = DatePicker;
 const { Item, create } = Form;
 const { Group } = Radio;

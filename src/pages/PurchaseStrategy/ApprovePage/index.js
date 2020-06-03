@@ -103,6 +103,7 @@ function ApprovePage() {
         businessId={businessId}
         taskId={taskId}
         instanceId={instanceId}
+        flowMapUrl='flow-web/design/showLook'
         submitComplete={handleSubmitComplete}
       >
         <Spin spinning={loading}>

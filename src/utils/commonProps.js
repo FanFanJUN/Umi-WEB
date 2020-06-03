@@ -18,7 +18,7 @@ export const purchaseCompanyProps = {
 // 采购组
 export const purchaseGroupProps = {
   store: {
-    url: `${baseUrl}/purchaseGroup/listByPage`,
+    url: `${baseUrl}/purchaseGroup/listByPageWithDataAuth`,
     params: { Q_EQ_frozen__Boolean: false }
   },
   placeholder: '请选择采购组',

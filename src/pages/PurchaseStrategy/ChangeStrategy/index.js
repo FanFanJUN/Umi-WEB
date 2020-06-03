@@ -458,8 +458,7 @@ function ChangeStrategy({
                     allowPreview={false}
                     maxUploadNum={1}
                     allowUpload={allowUpload}
-                    serviceHost='/edm-service'
-                    uploadUrl='upload'
+                    multiple={false}
                   />
                 )
               }

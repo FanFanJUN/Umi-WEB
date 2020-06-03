@@ -1,4 +1,4 @@
-import React, { createRef, useState, useEffect } from 'react';
+import React, { createRef, useState, useEffect, useRef } from 'react';
 import { router } from 'dva';
 import { WorkFlow, ExtTable } from 'suid';
 import { Button, Modal, message, Spin, Tabs } from 'antd';
@@ -9,6 +9,7 @@ import classnames from 'classnames';
 import {
   getPurchaseStrategyChangeVoByFlowId
 } from '@/services/strategy';
+import { Upload } from '../../../components'
 import { closeCurrent } from '@/utils';
 import moment from 'moment';
 import styles from './index.less';
@@ -16,6 +17,7 @@ const { TabPane } = Tabs;
 const { Approve } = WorkFlow;
 function ApprovePage() {
   const formRef = createRef();
+  const tableRef = useRef(null)
   const { query } = router.useLocation();
   const { id: businessId, taskId, instanceId } = query;
   const [dataSource, setDataSource] = useState([]);
@@ -23,14 +25,14 @@ function ApprovePage() {
   const [loading, triggerLoading] = useState(true);
   const [checkId, setCheckId] = useState('EMPTY');
   const [reason, setReason] = useState('');
+  const [headerAttachment, setAttachment] = useState('');
+  const store = {
+    url: `${psBaseUrl}/PurchaseStrategyModifyHistory/listByPage`,
+    params: {
+      Q_EQ_changeHistoryId: checkId
+    }
+  }
   const detailColumn = [
-    {
-      title: '变更原因',
-      dataIndex: 'reason',
-      render() {
-        return reason
-      }
-    },
     {
       title: '操作内容',
       dataIndex: 'operation'
@@ -84,7 +86,7 @@ function ApprovePage() {
         purchaseStrategyBegin,
         ...initialValues
       } = data;
-      const { id: modifyId, modifyReason } = modifyHeader;
+      const { id: modifyId, modifyReason, attachment: attachmentHeader } = modifyHeader;
       const { setFieldsValue } = formRef.current.form;
       const mixinValues = {
         ...initialValues,
@@ -99,16 +101,18 @@ function ApprovePage() {
       });
       setCheckId(modifyId)
       setReason(modifyReason)
+      setAttachment(attachmentHeader)
       setFieldsValue(mixinValues);
       setDataSource(detailList);
       triggerLoading(false);
+      tableRef.current.remoteDataRefresh()
       return
     }
     message.error(msg)
   }
   function handleComplete(info) {
     const { success, messge: msg } = info;
-    if(success) {
+    if (success) {
       message.success(msg)
       closeCurrent()
       return
@@ -142,9 +146,52 @@ function ApprovePage() {
         taskId={taskId}
         instanceId={instanceId}
         submitComplete={handleComplete}
+        flowMapUrl='flow-web/design/showLook'
       >
         <Tabs>
-          <TabPane tab='策略明细' key='detail'>
+          <TabPane tab='变更明细' key='changeDetail' forceRender>
+            <div>
+              <div className={styles.lineTitle}>变更信息</div>
+              <div style={{
+                padding: '0 24px',
+                marginBottom: 12
+              }}>
+                <div>变更原因：{reason}</div>
+                <div>
+                  {
+                    !!headerAttachment ?
+                      <div style={{
+                        display: 'flex',
+                        justifyContent: 'flex-start',
+                        alignItems: 'center',
+                        padding: '0 12px'
+                      }}>
+                        <span>附件：</span><Upload entityId={headerAttachment} type='show' />
+                      </div> : null
+                  }
+                </div>
+              </div>
+            </div>
+            <div>
+              <div className={styles.lineTitle}>
+                变更明细
+              </div>
+              <div style={{
+                padding: '0 24px',
+                marginBottom: 12
+              }}>
+                <ExtTable
+                  store={store}
+                  allowCancelSelect
+                  showSearch={false}
+                  columns={detailColumn}
+                  ref={tableRef}
+                  remotePaging
+                />
+              </div>
+            </div>
+          </TabPane>
+          <TabPane tab='策略明细' key='detail' forceRender>
             <Spin spinning={loading}>
               <StrategyForm
                 wrappedComponentRef={formRef}
@@ -157,18 +204,6 @@ function ApprovePage() {
                 type="detail"
               />
             </Spin>
-          </TabPane>
-          <TabPane tab='变更明细' key='changeDetail'>
-            <ExtTable
-              store={{
-                url: `${psBaseUrl}/PurchaseStrategyModifyHistory/listByPage`,
-                params: {
-                  Q_EQ_changeHistoryId: checkId
-                }
-              }}
-              showSearch={false}
-              columns={detailColumn}
-            />
           </TabPane>
         </Tabs>
       </Approve>

@@ -2,7 +2,7 @@ import React, { useState, createRef, useLayoutEffect } from 'react';
 import { ExtTable, DataImport, utils } from 'suid';
 import { Button, Modal, message, Table } from 'antd'
 import CommonForm from './CommonForm';
-import { ComboAttachment } from '@/components';
+import { ComboAttachment, Upload } from '@/components';
 // import { psBaseUrl } from '../../../utils/commonUrl';
 import { getUserAccount, downloadBlobFile } from '../../../utils';
 import { downloadExcelDataImportTemplate } from '../../../services/strategy';
@@ -189,6 +189,7 @@ function StrategyTable({
       title: '附件',
       dataIndex: 'attachment',
       render: (text) => {
+        return !!text ? <Upload entityId={text} type='show'/> : '无'
         return <Button onClick={() => {
           setAttachId(text)
           triggerShowAttach(true)
@@ -258,6 +259,8 @@ function StrategyTable({
   }
   // 取消编辑或新增
   function handleCancel() {
+    const { resetFields } = commonFormRef.current.form;
+    resetFields()
     hideModal()
   }
   // 查看适应范围
@@ -283,11 +286,11 @@ function StrategyTable({
   }
   function handleSubmit(val) {
     if (modalType === 'add') {
-      onCreateLine(val, hideModal)
+      onCreateLine(val, ()=>hideModal())
       cleanSelectedRecord()
       return
     }
-    onEditor(val, selectedRowKeys, hideModal)
+    onEditor(val, selectedRowKeys, ()=>hideModal())
     cleanSelectedRecord()
   }
   function handleLineInvalidChange() {
@@ -510,6 +513,7 @@ function StrategyTable({
           toolBar={{
             left: left
           }}
+          allowCancelSelect
           columns={type === 'change' ? changeColumns : columns}
           loading={loading}
           showSearch={true}
@@ -535,6 +539,7 @@ function StrategyTable({
         wrappedComponentRef={commonFormRef}
         loading={loading}
         levelCode={levelCode}
+        destroyOnClose
       />
       <Modal
         visible={showAttach}
