@@ -34,7 +34,7 @@ const importColumns = [
   },
   {
     title: '价格组成',
-    dataIndex: 'priceCombine'
+    dataIndex: 'priceCombineName'
   },
   {
     title: '定价频次',
@@ -321,7 +321,7 @@ function StrategyTable({
       adjustScope,
       purchaseTypeName,
       planSupplyResourceTypeName,
-      priceCombine,
+      priceCombineName,
       pricingFrequency,
       pricingTime,
       runningOperation,
@@ -380,7 +380,7 @@ function StrategyTable({
         message: '未填写规划供应资源类型名称'
       }
     }
-    if (!priceCombine) {
+    if (!priceCombineName) {
       return {
         ...error,
         ...column,
