@@ -51,12 +51,12 @@ const FormRef = forwardRef(({
   useImperativeHandle(ref, () => ({
     form
   }));
-  const { getFieldDecorator, setFieldsValue } = form;
+  const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
   const [createName, setCreateName] = useState("");
-  const [purchaseCompanyCode, setPurchaseCompanyCode] = useState('');
+  const pcc = getFieldValue('purchaseCompanyCode');
   const { attachment = null } = initialValue;
   const treeNodeProps = (node) => {
-    if(node.nodeLevel===1) {
+    if (node.nodeLevel === 1) {
       return {
         selectable: false
       }
@@ -68,6 +68,9 @@ const FormRef = forwardRef(({
       phone: mobile
     })
     setCreateName(userName)
+  }, [])
+  useEffect(() => {
+
   }, [])
   return (
     <div className={styles.wrapper}>
@@ -101,14 +104,7 @@ const FormRef = forwardRef(({
                       message: '请选择采购公司'
                     }
                   ]
-                })(<ComboList disabled={type === "detail"} {...purchaseCompanyProps} name='purchaseCompanyName' field={['purchaseCompanyCode']} form={form} afterSelect={(item) => {
-                  const { code } = item;
-                  setPurchaseCompanyCode(code)
-                  setFieldsValue({
-                    purchaseOrganizationCode: '',
-                    purchaseOrganizationName: ''
-                  })
-                }} />)
+                })(<ComboList disabled={type === "detail"} {...purchaseCompanyProps} name='purchaseCompanyName' field={['purchaseCompanyCode']} form={form} />)
               }
             </Item>
           </Col>
@@ -125,14 +121,14 @@ const FormRef = forwardRef(({
                   ]
                 })(
                   <ComboList
-                    key={`combo-list-${purchaseCompanyCode}`}
+                    key={`combo-list-${pcc}`}
                     remotePaging
-                    disabled={type === "detail" || !purchaseCompanyCode}
+                    disabled={type === "detail" || !pcc}
                     {...purchaseOrganizationProps}
                     store={{
                       ...purchaseOrganizationProps.store,
                       params: {
-                        Q_EQ_corporationCode: purchaseCompanyCode
+                        Q_EQ_corporationCode: pcc
                       }
                     }}
                     name='purchaseOrganizationName'
