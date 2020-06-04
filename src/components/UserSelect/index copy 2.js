@@ -3,8 +3,8 @@
  * @author hezhi
  * @date 2020.4.3
  */
-import React, { useState, forwardRef, useRef, useEffect } from "react";
-import { Col, Row, Tree, Input, Skeleton, Popover, Tag, Checkbox } from "antd";
+import React, { useState, forwardRef, useRef } from "react";
+import { Col, Row, Tree, Input, Skeleton, Popover, Tag, Table } from "antd";
 import { request } from '@/utils'
 import { baseUrl } from '@/utils/commonUrl'
 import styles from './index.less';
@@ -37,9 +37,7 @@ const UserSelect = forwardRef(({
   wrapperClass,
   wrapperStyle = { width: 800 },
   nodeKey,
-  value = [],
-  placeholder='选择人员',
-  alias='',
+  value=[],
   ...props
 }, ref) => {
   const { setFieldsValue } = form;
@@ -48,7 +46,6 @@ const UserSelect = forwardRef(({
   const [searchValue, setSearchValue] = useState('');
   const [loading, triggerLoading] = useState(false);
   const [autoExpandParent, setAutoExpandParent] = useState(false);
-  const [include, setInclude] = useState(false);
   const [expandedKeys, setExpandedKeys] = useState([]);
   const [userData, setUserData] = useState([]);
   const [keyList, setKeyList] = useState([]);
@@ -58,39 +55,15 @@ const UserSelect = forwardRef(({
   const [visible, triggerVisible] = useState(false);
   const [treeSelectedKeys, setTreeSelectedKyes] = useState([]);
   const searchInput = useRef(null)
+  const userSearchInput = useRef(null)
   const tableRef = useRef(null)
   const { name: readName = 'id', field: readField = ['id'] } = reader;
-  const [rdk] = readField;
-  useEffect(() => {
-    if (treeSelectedKeys.length === 0) return
-    const [id] = treeSelectedKeys;
-    triggerLoading(true)
-    request({
-      url: `/api-gateway/basic-service/employee/findByUserQueryParam`,
-      method: 'post',
-      data: {
-        organizationId: id,
-        includeSubNode: include,
-        pageInfo: {
-          page: 1,
-          rows: 100000
-        },
-        sortOrders: [{ property: "code", direction: "ASC" }],
-        quickSearchProperties: ["code", "user.userName"]
-      }
-    }).then(({ data }) => {
-      const { rows } = data;
-      setUserData(rows)
-      const ks = value.map(item=>item[rdk])
-      setSelectedKeys(ks)
-      triggerLoading(false)
-    }).catch(_ => triggerLoading(false))
-  }, [include, treeSelectedKeys])
   //网络请求树控件数据（协议分类）
   const getTreeData = () => {
     triggerLoading(true)
     request({
       url: `${baseUrl}/basic/listAllOrgnazation`,
+      // url: `${psBaseUrl}/purchaseStrategyHeader/listAllOrgnazation`,
       method: 'get'
     }).then(data => {
       if (data.success) {
@@ -101,8 +74,52 @@ const UserSelect = forwardRef(({
     })
   }
   //树节点选择触发
-  const onTreeSelect = (treeSelecteds) => {
+  const onTreeSelect = (treeSelecteds, info) => {
     setTreeSelectedKyes(treeSelecteds);
+    const [id] = treeSelecteds;
+    triggerLoading(true)
+    request({
+      url: `/api-gateway/basic-service/employee/findByUserQueryParam`,
+      method: 'post',
+      data: {
+        organizationId: id,
+        pageInfo: {
+          page: 1,
+          rows: 100000
+        },
+        sortOrders: [{property: "code", direction: "ASC"}],
+        quickSearchProperties: ["code", "user.userName"]
+      }
+    }).then(({ data }) => {
+      const { rows } = data;
+      triggerLoading(false)
+      setUserData(rows)
+    }).catch(_ => triggerLoading(false))
+  }
+
+  // 查找人员
+  const handleSearchUserData = (v) => {
+    const [ id ] = treeSelectedKeys;
+    triggerLoading(true)
+    request({
+      url: `/api-gateway/basic-service/employee/findByUserQueryParam`,
+      method: 'post',
+      data: {
+        organizationId: id,
+        quickSearchValue: v,
+        pageInfo: {
+          page: 1,
+          rows: 100000
+        },
+        sortOrders: [{property: "code", direction: "ASC"}],
+        quickSearchProperties: ["code", "user.userName"]
+      }
+    }).then(({ data }) => {
+      const { rows } = data;
+      triggerLoading(false)
+      setUserData(rows)
+      tableRef.current.remoteDataRefresh()
+    }).catch(_=> triggerLoading(false))
   }
 
   //查找树节点
@@ -174,12 +191,9 @@ const UserSelect = forwardRef(({
       return <TreeNode title={item.name} key={item.id} isLeaf />;
     });
   };
-  const handleIncludeChange = (e) => {
-    setInclude(e.target.checked)
-  }
   const rowOnChange = (keys, rows) => {
     setSelectedKeys(keys)
-    const names = rows.map(item => item[readName])
+    const names = rows.map(item=>item[readName])
     if (!!setFieldsValue) {
       setFieldsValue({
         [name]: names
@@ -196,30 +210,6 @@ const UserSelect = forwardRef(({
     setSelectedRows(rows)
     onRowsChange(rows)
   }
-  function handleSelectedRow(keys, rows) {
-    setSelectedKeys(keys)
-    if (!!setFieldsValue) {
-      setFieldsValue({
-        [name]: rows
-      });
-      const fieldValues = readField.map(item => {
-        return rows.map(i => i[item]);
-      })
-      field.forEach((item, k) => {
-        setFieldsValue({
-          [item]: fieldValues[k]
-        })
-      })
-    }
-    onChange(rows)
-    onRowsChange(rows)
-  }
-  function handleCloseTab(item) {
-    const ks = selectedKeys.filter(i => i !== item[rdk]);
-    setSelectedKeys(ks)
-    const fds = userData.filter(i => ks.findIndex(item=> item === i[rdk]) !== -1 )
-    handleSelectedRow(ks, fds)
-  }
   return (
     <div>
       <Popover
@@ -228,38 +218,49 @@ const UserSelect = forwardRef(({
         placement="bottom"
         visible={visible}
         onVisibleChange={(visi) => {
-          if (disabled) return
+          if(disabled) return
           triggerVisible(visi)
-          if (initState) return
+          if(initState) return
           visi && getTreeData()
         }}
         {...props}
         content={
-          <div style={wrapperStyle}>
+          <div style={wrapperStyle} onMouseDown={e => e.preventDefault()}>
             <div className={styles.header}>
               <span>组织机构</span>
-              <div>
-                <Checkbox checked={include} onChange={handleIncludeChange}>包含子节点</Checkbox>
-              </div>
             </div>
+            <Row className={styles.row} onMouseDown={e => e.preventDefault()}>
+              <Col span={10} className={styles.textRight} onMouseDown={e => e.preventDefault()}>
+                <Search
+                  key="search"
+                  placeholder="输入分类名称查询"
+                  onSearch={e => handleSearch(e)}
+                  style={{ width: '220px' }}
+                  enterButton
+                  ref={searchInput}
+                  onMouseDown={(e) => {
+                    e.preventDefault()
+                    searchInput.current.focus()
+                  }}
+                />
+              </Col>
+              <Col span={14} className={styles.textRight}>
+                <Search
+                  onSearch={ v => handleSearchUserData(v) }
+                  style={{ width: '220px' }}
+                  enterButton
+                  ref={userSearchInput}
+                  disabled={treeSelectedKeys.length === 0}
+                  placeholder="输入名字或人员编号查询"
+                  onMouseDown={(e) => {
+                    e.preventDefault()
+                    userSearchInput.current.focus()
+                  }}
+                />
+              </Col>
+            </Row>
             <Row>
-              <Col span={10} className={styles.col} style={{ marginTop: 12 }}>
-                <Row>
-                  <Col span={10} className={styles.textRight} onMouseDown={e => e.preventDefault()}>
-                    <Search
-                      key="search"
-                      placeholder="输入分类名称查询"
-                      onSearch={e => handleSearch(e)}
-                      style={{ width: '220px' }}
-                      enterButton
-                      ref={searchInput}
-                      onMouseDown={(e) => {
-                        e.preventDefault()
-                        searchInput.current.focus()
-                      }}
-                    />
-                  </Col>
-                </Row>
+              <Col span={10} className={styles.col}>
                 {treeData.length > 0 ? (
                   <Tree
                     expandAction={"click"}
@@ -277,20 +278,14 @@ const UserSelect = forwardRef(({
               </Col>
               <Col span={14} className={styles.col}>
                 <ExtTable
-                  toolBar={{
-                    layout: {
-                      leftSpan: 0,
-                      rightSpan: 24
-                    }
-                  }}
                   checkbox={true}
+                  showSearch={false}
                   loading={loading}
                   ref={tableRef}
-                  searchProperties={['code', 'userName']}
                   selectedRowKeys={selectedKeys}
                   selectedRows={selectedRows}
-                  onSelectRow={handleSelectedRow}
-                  rowKey={(item) => item[rdk]}
+                  onSelectRow={rowOnChange}
+                  rowKey={(item) => item.id}
                   dataSource={userData}
                   columns={columns}
                 />
@@ -300,16 +295,13 @@ const UserSelect = forwardRef(({
         }
       >
         <div className={classnames({
-          [styles.input]: true,
-          [styles.inputDisabled]: disabled
+          [styles.input] : true,
+          [styles.inputDisabled] : disabled
         })}>
           {
-            value.length === 0 ? <div style={{ color: '#ccc', height: 32, display: 'flex',justifyContent: 'center', alignItems: 'center' }}>{placeholder}</div> : null
-          }
-          {
-            value.map((item, index)=><Tag key={`${index}-tab-value`} style={{
-              margin: 5
-            }} closable={!disabled} onClose={()=> handleCloseTab(item)} visible={true}>{item[readName]}</Tag>)
+            value.map(item=> <Tag key={item} style={{ margin: '0 5px 5px 0'}}>
+              { item }
+            </Tag>)
           }
         </div>
       </Popover>
@@ -323,4 +315,9 @@ UserSelect.propTypes = {
   onChange: PropTypes.func,
 }
 
-export default UserSelect;
+export default UserSelect
+
+
+// 08ACB0F2-9587-11EA-9C86-5AA023055645
+// 1E4233EA-9587-11EA-9C86-5AA023055645
+// 44561E7E-932C-11EA-AF7D-0242C0A84402

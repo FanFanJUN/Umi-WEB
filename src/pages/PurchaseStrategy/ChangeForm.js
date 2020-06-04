@@ -52,9 +52,9 @@ const FormRef = forwardRef(({
   }));
   const { getFieldDecorator } = form;
   const [createName, setCreateName] = useState("")
-  const { attachment=null } = initialValue;
+  const { attachment = null } = initialValue;
   const treeNodeProps = (node) => {
-    if(node.nodeLevel===1) {
+    if (node.nodeLevel === 1) {
       return {
         selectable: false
       }
@@ -236,7 +236,7 @@ const FormRef = forwardRef(({
                 getFieldDecorator("creatorName", {
                   initialValue: createName
                 })(
-                  <Input readOnly disabled/>
+                  <Input readOnly disabled />
                 )
               }
             </Item>
@@ -290,7 +290,7 @@ const FormRef = forwardRef(({
           <Col span={24}>
             <Item label='其他内容' {...formLayoutAlone}>
               {
-                getFieldDecorator('comment')(<TextArea maxLength={800} placeholder='其他需要单独说明的内容' autoSize={{ minRows: 3, maxRows: 5 }} disabled={type==='detail'}/>)
+                getFieldDecorator('comment')(<TextArea maxLength={800} placeholder='其他需要单独说明的内容' autoSize={{ minRows: 3, maxRows: 5 }} disabled={type === 'detail'} />)
               }
             </Item>
           </Col>
@@ -301,10 +301,10 @@ const FormRef = forwardRef(({
               getFieldDecorator('files')(
                 <ComboAttachment
                   allowPreview={false}
-                  allowDelete={type!=='detail'}
-                  showViewType={type!=='detail'}
+                  allowDelete={type !== 'detail'}
+                  showViewType={type !== 'detail'}
                   uploadButton={{
-                    disabled: type==='detail'
+                    disabled: type === 'detail'
                   }}
                   maxUploadNum={1}
                   multiple={false}
@@ -330,8 +330,7 @@ const FormRef = forwardRef(({
               }}
             >
               {
-                getFieldDecorator('sendList'),
-                getFieldDecorator('sendName', {
+                getFieldDecorator('sendList', {
                   rules: [
                     {
                       type: 'array',
@@ -340,7 +339,7 @@ const FormRef = forwardRef(({
                     }
                   ]
                 })(
-                  <UserSelect disabled={type === "detail"} style={{ width: "100%", zIndex: 10 }} mode="tags" wrapperStyle={{ width: 800 }} placeholder="选择主送人员" name='sendName' reader={{ name: 'userName', field: ['code'] }} field={['sendList']} form={form} />
+                  <UserSelect disabled={type === "detail"} style={{ width: "100%", zIndex: 10 }} wrapperStyle={{ width: 800 }} placeholder="选择主送人员" name='sendList' reader={{ name: 'userName', field: ['code'] }} form={form} />
                 )
               }
             </Item>
@@ -358,9 +357,8 @@ const FormRef = forwardRef(({
               }}
             >
               {
-                getFieldDecorator('submitList'),
-                getFieldDecorator('submitName')(
-                  <UserSelect disabled={type === "detail"} style={{ width: "100%", zIndex: 10 }} mode="tags" wrapperStyle={{ width: 800 }} placeholder="选择主送人员" name='submitName' reader={{ name: 'userName', field: ['code'] }} field={['submitList']} form={form} />
+                getFieldDecorator('submitList')(
+                  <UserSelect disabled={type === "detail"} style={{ width: "100%", zIndex: 10 }} mode="tags" wrapperStyle={{ width: 800 }} placeholder="选择主送人员" name='submitList' reader={{ name: 'userName', field: ['code'] }} form={form} />
                 )
               }
             </Item>

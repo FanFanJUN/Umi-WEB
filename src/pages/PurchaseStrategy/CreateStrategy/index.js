@@ -46,9 +46,9 @@ function CreateStrategy() {
     const purchaseStrategyBegin = begin.format('YYYY-MM-DD HH:mm:ss')
     const purchaseStrategyEnd = end.format('YYYY-MM-DD HH:mm:ss')
     const accoutList = sList.map((item) => ({
-      userAccount: item
+      userAccount: item.code
     }))
-    const smAccountList = smList.map(item => ({ userAccount: item }))
+    const smAccountList = smList.map(item => ({ userAccount: item.code }))
     params = {
       ...params,
       ...otherData,

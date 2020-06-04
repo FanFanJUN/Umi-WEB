@@ -452,9 +452,9 @@ function StrategyTable({
     }
     return {
       validate: true,
-      status: '通过',
+      status: '数据完整',
       statusCode: 'success',
-      message: '验证通过',
+      message: '表单填写完整',
       ...column
     }
   }

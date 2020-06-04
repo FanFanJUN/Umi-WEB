@@ -360,8 +360,7 @@ const FormRef = forwardRef(({
               }}
             >
               {
-                getFieldDecorator('sendList'),
-                getFieldDecorator('sendName', {
+                getFieldDecorator('sendList', {
                   rules: [
                     {
                       type: 'array',
@@ -370,7 +369,7 @@ const FormRef = forwardRef(({
                     }
                   ]
                 })(
-                  <UserSelect disabled={type === "detail"} style={{ width: "100%", zIndex: 10 }} wrapperStyle={{ width: 800 }} placeholder="选择主送人员" name='sendName' reader={{ name: 'userName', field: ['code'] }} field={['sendList']} form={form} />
+                  <UserSelect disabled={type === "detail"} style={{ width: "100%", zIndex: 10 }} wrapperStyle={{ width: 800 }} placeholder="选择主送人员" name='sendList' reader={{ name: 'userName', field: ['code'] }} form={form} />
                 )
               }
             </Item>
@@ -388,9 +387,8 @@ const FormRef = forwardRef(({
               }}
             >
               {
-                getFieldDecorator('submitList'),
-                getFieldDecorator('submitName')(
-                  <UserSelect disabled={type === "detail"} style={{ width: "100%", zIndex: 10 }} mode="tags" wrapperStyle={{ width: 800 }} placeholder="选择主送人员" name='submitName' reader={{ name: 'userName', field: ['code'] }} field={['submitList']} form={form} />
+                getFieldDecorator('submitList')(
+                  <UserSelect disabled={type === "detail"} style={{ width: "100%", zIndex: 10 }} mode="tags" wrapperStyle={{ width: 800 }} placeholder="选择主送人员" name='submitList' reader={{ name: 'userName', field: ['code'] }} form={form} />
                 )
               }
             </Item>

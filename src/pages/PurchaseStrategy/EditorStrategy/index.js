@@ -61,10 +61,8 @@ function EditorStrategy({
       const { setFieldsValue } = form
       const mixinValues = {
         ...initialValues,
-        submitName: submitList.map(item => item.userName),
-        submitList: submitList.map(item => item.userAccount),
-        sendName: sendList.map(item => item.userName),
-        sendList: sendList.map(item => item.userAccount),
+        submitList: submitList.map(item => ({ ...item, code: item.userAccount })),
+        sendList: sendList.map(item => ({ ...item, code: item.userAccount })),
         purchaseStrategyDate: [moment(purchaseStrategyBegin), moment(purchaseStrategyEnd)]
       }
       setInitValues({
@@ -113,9 +111,9 @@ function EditorStrategy({
     const purchaseStrategyBegin = begin.format('YYYY-MM-DD HH:mm:ss')
     const purchaseStrategyEnd = end.format('YYYY-MM-DD HH:mm:ss')
     const accoutList = sList.map((item) => ({
-      userAccount: item
+      userAccount: item.code
     }))
-    const smAccountList = smList.map(item => ({ userAccount: item }))
+    const smAccountList = smList.map(item => ({ userAccount: item.code }))
     params = {
       ...params,
       ...otherData,

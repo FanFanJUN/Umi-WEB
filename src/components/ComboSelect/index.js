@@ -65,7 +65,6 @@ const ComboSelect = forwardRef(({
   }
   useEffect(() => {
     getDataSource()
-    return () => console.log('desctory')
   }, [])
   function updateTabList() {
     const fds = dataSource.filter((item)=> {

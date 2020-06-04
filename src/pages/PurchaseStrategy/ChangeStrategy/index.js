@@ -80,10 +80,8 @@ function ChangeStrategy({
       const { setFieldsValue } = childrenForm
       const mixinValues = {
         ...initialValues,
-        submitName: submitList.map(item => item.userName),
-        submitList: submitList.map(item => item.userAccount),
-        sendName: sendList.map(item => item.userName),
-        sendList: sendList.map(item => item.userAccount),
+        submitList: submitList.map(item => ({ ...item, code: item.userAccount })),
+        sendList: sendList.map(item => ({ ...item, code: item.userAccount })),
         purchaseStrategyDate: [moment(purchaseStrategyBegin), moment(purchaseStrategyEnd)]
       }
       setInitValues({
