@@ -170,6 +170,17 @@ function StrategyTable({
       dataIndex: 'costTargetName'
     },
     {
+      title: '成本目标说明',
+      dataIndex: 'costTargetRemark',
+      render(costTargetRemark,{ costTarget }) {
+        if(!costTargetRemark) {
+          return ""
+        }
+        const suffix = costTarget === 'DropRatio' ? '%' : '万元';
+        return `${costTargetRemark}${suffix}`
+      }
+    },
+    {
       title: '成本控制方式',
       dataIndex: 'costControlWay'
     },
