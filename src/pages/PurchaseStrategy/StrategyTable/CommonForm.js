@@ -13,12 +13,12 @@ import {
   Tooltip
 } from 'antd';
 import {
-  materialClassProps,
-  corporationProps,
-  materialClassTypeProps,
-  costTargetProps,
   frequencyProps,
+  costTargetProps,
+  corporationProps,
   priceCombineProps,
+  materialClassProps,
+  materialClassTypeProps,
   planSupplyResourceAmountProps
 } from '@/utils/commonProps';
 import { ComboSelect, ComboDatePicker, ComboAttachment } from '@/components';
@@ -52,7 +52,7 @@ const CommonForm = forwardRef(({
   initialValues = {},
   type = 'add',
   mode = 'add',
-  levelCode= '',
+  levelCode = '',
   loading,
 }, ref) => {
   useImperativeHandle(ref, () => ({ form }))
@@ -102,8 +102,9 @@ const CommonForm = forwardRef(({
   }, [visible])
   const fre = getFieldValue('pricingFrequency') || 'unknow';
   const files = getFieldValue('files') || []
-  const cost = getFieldValue('costTargetName');
+  const cost = getFieldValue('costTarget');
   const costText = getFieldValue('costTargetRemark');
+  console.log(cost)
   // const isCostInit = !cost
   const allowUpload = files.length !== 1;
   const comboDatePickerDisabled = (fre === 'unknow') || (fre === 'Order') || (fre === 'Demand');
@@ -327,28 +328,14 @@ const CommonForm = forwardRef(({
       <Row>
         <Item label='市场运行情况' {...formLayoutAlone}>
           {
-            getFieldDecorator('runningOperation', {
-              rules: [
-                {
-                  required: true,
-                  message: '请填写市场运行情况'
-                }
-              ]
-            })(<TextArea maxLength={800} placeholder='填写市场运行情况' />)
+            getFieldDecorator('runningOperation')(<TextArea maxLength={800} placeholder='填写市场运行情况' />)
           }
         </Item>
       </Row>
       <Row>
         <Item label='资源保障情况' {...formLayoutAlone}>
           {
-            getFieldDecorator('resourceOperation', {
-              rules: [
-                {
-                  required: true,
-                  message: '请填写资源保障情况'
-                }
-              ]
-            })(<TextArea maxLength={800} placeholder='填写资源保证情况' />)
+            getFieldDecorator('resourceOperation')(<TextArea maxLength={800} placeholder='填写资源保证情况' />)
           }
         </Item>
       </Row>
@@ -370,11 +357,15 @@ const CommonForm = forwardRef(({
             }
           </Item>
         </Col>
-        <Col span={14}>
+        <Col span={7}>
           <Tooltip title={costText} placement='topLeft'>
             <Item labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
               {
-                getFieldDecorator('costTargetRemark')(<Input disabled={!cost} />)
+                !cost ? <Input disabled={true} /> :
+                  cost === 'DropRatio' ?
+                    getFieldDecorator('costTargetRemark')(<Input disabled={!cost} type='number' suffix={<span>%</span>} />)
+                    :
+                    getFieldDecorator('costTargetRemark')(<Input disabled={!cost} type='number' suffix={<span>万元</span>} />)
               }
             </Item>
           </Tooltip>
@@ -383,14 +374,7 @@ const CommonForm = forwardRef(({
       <Row>
         <Item label='成本控制方式' {...formLayoutAlone}>
           {
-            getFieldDecorator('costControlWay', {
-              rules: [
-                {
-                  required: true,
-                  message: '请填写成本控制方式'
-                }
-              ]
-            })(
+            getFieldDecorator('costControlWay')(
               <TextArea maxLength={800} placeholder='填写成本控制方式' />
             )
           }
@@ -399,14 +383,7 @@ const CommonForm = forwardRef(({
       <Row>
         <Item label='库存控制方式' {...formLayoutAlone}>
           {
-            getFieldDecorator('storageControlWay', {
-              rules: [
-                {
-                  required: true,
-                  message: '请填写库存控制方式'
-                }
-              ]
-            })(
+            getFieldDecorator('storageControlWay')(
               <TextArea maxLength={800} placeholder='库存控制方式' />
             )
           }

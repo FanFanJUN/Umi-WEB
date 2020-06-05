@@ -85,6 +85,15 @@ const FormRef = forwardRef(({
           </Col>
         </Row>
         <Row>
+          <Col span={12} offset={12}>
+            <Row>
+              <Col span={16} offset={8}>
+                <span style={{ color: 'red' }}>（提示：自己所属的采购组织）</span>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+        <Row>
           <Col span={12}>
             <Item label='采购公司' {...formLayout}>
               {
