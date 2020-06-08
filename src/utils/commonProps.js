@@ -278,7 +278,7 @@ export const priceCombineProps = {
 
 export const planSupplyResourceAmountProps = {
   store: {
-    url: `${purchaseApplyBaseUrl}/supplierResourceType/findByPage`,
+    url: `${purchaseApplyBaseUrl}/supplierResourceType/findByPageNotFrozen?page=1&rows=15&Q_EQ_frozen__bool=0`,
     params: { Q_EQ_frozen__Boolean: false }
   },
   style: {

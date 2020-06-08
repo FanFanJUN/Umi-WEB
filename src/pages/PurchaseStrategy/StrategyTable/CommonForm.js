@@ -104,7 +104,6 @@ const CommonForm = forwardRef(({
   const files = getFieldValue('files') || []
   const cost = getFieldValue('costTarget');
   const costText = getFieldValue('costTargetRemark');
-  console.log(cost)
   // const isCostInit = !cost
   const allowUpload = files.length !== 1;
   const comboDatePickerDisabled = (fre === 'unknow') || (fre === 'Order') || (fre === 'Demand');

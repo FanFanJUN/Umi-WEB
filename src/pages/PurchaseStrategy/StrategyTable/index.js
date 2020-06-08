@@ -296,12 +296,20 @@ function StrategyTable({
     })
   }
   function handleSubmit(val) {
+    const { resetFields } = commonFormRef.current.form;
+    resetFields()
     if (modalType === 'add') {
-      onCreateLine(val, ()=>hideModal())
+      onCreateLine(val, ()=>{
+        hideModal()
+        resetFields()
+      })
       cleanSelectedRecord()
       return
     }
-    onEditor(val, selectedRowKeys, ()=>hideModal())
+    onEditor(val, selectedRowKeys, ()=>{
+      hideModal()
+      resetFields()
+    })
     cleanSelectedRecord()
   }
   function handleLineInvalidChange() {
