@@ -296,7 +296,7 @@ export const costTargetProps = {
   dataSource: [
     {
       code: 'DropRatio',
-      name: '降比例'
+      name: '降幅比例'
     }, {
       code: 'DropPrice',
       name: '降金额'
