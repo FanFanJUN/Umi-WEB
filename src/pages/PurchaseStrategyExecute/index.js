@@ -219,7 +219,7 @@ function PurchaseStrategyExecute() {
     },
     {
       title: '物料分类',
-      type: 'list',
+      type: 'tree',
       key: 'Q_EQ_materialClassificationCode',
       props: materialClassProps
     },
@@ -336,7 +336,7 @@ function PurchaseStrategyExecute() {
     const { success, data, message: msg } = await downloadExcelForChangeParams(searchValue);
     message.destroy()
     if(success) {
-      message.success(msg)
+      message.success('导出成功')
       downloadBlobFile(data, '采购策略执行明细.xlsx')
       return
     }

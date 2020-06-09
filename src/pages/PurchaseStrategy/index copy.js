@@ -205,7 +205,7 @@ function PurchaseStategy() {
       props: materialLevel
     },
     {
-      title: '二次分类物料组',
+      title: '物料分类',
       type: 'tree',
       key: 'Q_EQ_materialClassificationCode',
       props: materialClassProps
