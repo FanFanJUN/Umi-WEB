@@ -69,9 +69,6 @@ const FormRef = forwardRef(({
     })
     setCreateName(userName)
   }, [])
-  useEffect(() => {
-
-  }, [])
   return (
     <div className={styles.wrapper}>
       <div className={styles.title}>基本信息</div>
@@ -333,7 +330,7 @@ const FormRef = forwardRef(({
         <Row>
           <Item label='附件' {...formLayoutAlone}>
             {
-              getFieldDecorator('attachment')(
+              getFieldDecorator('files')(
                 <ComboAttachment
                   allowPreview={false}
                   allowDelete={type !== 'detail'}

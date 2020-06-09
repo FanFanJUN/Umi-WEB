@@ -38,7 +38,7 @@ const importColumns = [
   },
   {
     title: '定价频次',
-    dataIndex: 'pricingFrequency'
+    dataIndex: 'pricingFrequencyName'
   },
   {
     title: '定价时间',
@@ -297,7 +297,6 @@ function StrategyTable({
   }
   function handleSubmit(val) {
     const { resetFields } = commonFormRef.current.form;
-    resetFields()
     if (modalType === 'add') {
       onCreateLine(val, ()=>{
         hideModal()
@@ -341,7 +340,7 @@ function StrategyTable({
       purchaseTypeName,
       planSupplyResourceTypeName,
       priceCombineName,
-      pricingFrequency,
+      pricingFrequencyName,
       pricingTime,
       runningOperation,
       resourceOperation,
@@ -351,7 +350,7 @@ function StrategyTable({
       supplierSelectRule,
       supplierCooperationWay
     } = column;
-    const timeDisabled = pricingFrequency === '按单' || pricingFrequency === '按需';
+    const timeDisabled = pricingFrequencyName === '按单' || pricingFrequencyName === '按需';
     const error = {
       validate: false,
       status: '不通过',
@@ -406,7 +405,7 @@ function StrategyTable({
         message: '未填写价格组成'
       }
     }
-    if (!pricingFrequency) {
+    if (!pricingFrequencyName) {
       return {
         ...error,
         ...column,

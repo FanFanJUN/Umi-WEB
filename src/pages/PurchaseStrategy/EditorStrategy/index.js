@@ -158,6 +158,7 @@ function EditorStrategy({
     const { validateFieldsAndScroll } = formRef.current.form;
     validateFieldsAndScroll(async (err, val) => {
       if (!err) {
+        console.log(val)
         triggerLoading(true)
         const params = await formatSaveParams(val)
         const { success, message: msg, } = await savePurcahseAndApprove(params);

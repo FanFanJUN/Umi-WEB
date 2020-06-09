@@ -4,7 +4,7 @@ import { Input, Button, message } from 'antd';
 import Header from '@/components/Header';
 import AdvancedForm from '@/components/AdvancedForm';
 import AutoSizeLayout from '@/components/AutoSizeLayout';
-import { ComboAttachment, Upload } from '@/components';
+import { Upload } from '@/components';
 import { psBaseUrl } from '@/utils/commonUrl';
 import { openNewTab } from '@/utils';
 import {
@@ -26,7 +26,7 @@ import {
 import styles from './index.less';
 import classnames from 'classnames';
 import Modal from 'antd/es/modal';
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+// const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 const { Search } = Input
 const { StartFlow, FlowHistory } = WorkFlow;
 const { authAction } = utils;
@@ -122,7 +122,7 @@ function PurchaseStategy() {
       title: '附件',
       dataIndex: 'attachment',
       render: (text) => {
-        return !!text ? <Upload entityId={text} type='show'/> : '无'
+        return !!text ? <Upload entityId={text} type='show' /> : '无'
       }
     },
     { title: '创建时间', dataIndex: 'createdDate', width: 200 }
@@ -143,7 +143,7 @@ function PurchaseStategy() {
   }
   useEffect(() => {
     window.parent.frames.addEventListener('message', listenerParentClose, false);
-    return ()=> window.parent.frames.removeEventListener('message', listenerParentClose, false)
+    return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
   }, []);
   function listenerParentClose(event) {
     const { data = {} } = event;
@@ -217,7 +217,7 @@ function PurchaseStategy() {
     {
       title: '定价频次',
       type: 'list',
-      key: 'Q_EQ_pricingFrequency',
+      key: 'Q_EQ_pricingFrequencyCode',
       props: frequencyProps
     },
     {
@@ -475,7 +475,7 @@ function PurchaseStategy() {
         footer={null}
         destroyOnClose
       >
-        
+
         {/* <ComboAttachment
           allowPreview={false}
           // allowDownload={false}

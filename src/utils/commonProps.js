@@ -221,37 +221,44 @@ export const materialClassTypeProps = {
 
 // 定价频次枚举
 export const frequencyProps = {
-  dataSource: [
-    {
-      code: 'Annually',
-      name: '年度'
-    }, {
-      code: 'SemiAnnually',
-      name: '半年'
-    }, {
-      code: 'Quarterly',
-      name: '季度'
-    }, {
-      code: 'Monthly',
-      name: '月度'
-    }, {
-      code: 'TenDays',
-      name: '按旬'
-    }, {
-      code: 'Order',
-      name: '按单'
-    }, {
-      code: 'Demand',
-      name: '按需'
+  store: {
+    url: `${baseUrl}/dataDictionaryItem/getDictByTypeCode`,
+    params: {
+      dictTypeCode: 'pricing_frequency',
+      Q_EQ_frozen__Boolean: false
     }
-  ],
+  },
+  // dataSource: [
+  //   {
+  //     code: 'Annually',
+  //     name: '年度'
+  //   }, {
+  //     code: 'SemiAnnually',
+  //     name: '半年'
+  //   }, {
+  //     code: 'Quarterly',
+  //     name: '季度'
+  //   }, {
+  //     code: 'Monthly',
+  //     name: '月度'
+  //   }, {
+  //     code: 'TenDays',
+  //     name: '按旬'
+  //   }, {
+  //     code: 'Order',
+  //     name: '按单'
+  //   }, {
+  //     code: 'Demand',
+  //     name: '按需'
+  //   }
+  // ],
   style: {
     width: '100%'
   },
   placeholder: '选择定价频次',
   reader: {
     name: 'name',
-    field: ['code']
+    field: ['value']
   }
 }
 
