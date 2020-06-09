@@ -266,7 +266,15 @@ function PurchaseStrategyExecute() {
       type: 'list',
       key: 'Q_EQ_state',
       props: effectStatusProps
-    }
+    },
+    // {
+    //   title: '创建时间',
+    //   type: 'rangePicker',
+    //   key: 'Q_GE$LE_createdDate',
+    //   props: {
+    //     format: "YYYY-MM-DD HH:mm:ss"
+    //   }
+    // }
   ]
   // 快速搜索
   function handleQuickSerach(v) {
@@ -278,15 +286,45 @@ function PurchaseStrategyExecute() {
   // 高级搜索
   function handleAdvnacedSearch(v) {
     const keys = Object.keys(v);
-    const filters = keys.map((item)=> {
+    const filters = keys.map((item) => {
       const [_, operator, fieldName, isName] = item.split('_');
       return {
         fieldName,
         operator,
         value: !!isName ? undefined : v[item]
       }
-    }).filter(item=> !!item.value)
-    setTableFilters(filters);
+    })
+    const range = filters.find(item=> Array.isArray(item.value));
+    const formatRangeValues = (rs) => {
+      if(!rs){
+        return [{ value: undefined }]
+      }
+      if(rs.value && rs.value.length > 0) {
+        const [begin, end] = rs.value;
+        const be = begin.format('YYYY-MM-DD HH:mm:ss')
+        const en = end.format('YYYY-MM-DD HH:mm:ss')
+        return [
+          {
+            fieldName: 'createdDate',
+            operator: 'GE',
+            value: be,
+            fieldType: 'Date'
+          },
+          {
+            fieldName: 'createdDate',
+            operator: 'LE',
+            value: en,
+            fieldType: 'Date'
+          }
+        ]
+      }
+      return [{ value: undefined }]
+    }
+    const athoerFields = formatRangeValues(range);
+    const formatFields = filters.concat(athoerFields).filter(item => !!item.value && !Array.isArray(item.value));
+    setSearchValue({
+      filters: formatFields
+    })
     uploadTable()
     headerRef.current.hide()
   }

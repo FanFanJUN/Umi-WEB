@@ -246,14 +246,14 @@ function PurchaseStategy() {
       key: 'Q_EQ_state',
       props: effectStatusProps
     },
-    {
-      title: '创建时间',
-      type: 'rangePicker',
-      key: 'Q_GE$LE_createdDate',
-      props: {
-        format: "YYYY-MM-DD HH:mm:ss"
-      }
-    }
+    // {
+    //   title: '创建时间',
+    //   type: 'rangePicker',
+    //   key: 'Q_GE$LE_createdDate',
+    //   props: {
+    //     format: "YYYY-MM-DD HH:mm:ss"
+    //   }
+    // }
   ]
   // 记录列表选中
   function handleSelectedRows(rowKeys, rows) {
