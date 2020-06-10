@@ -109,7 +109,7 @@ function AdvancedForm({
       </Row>
       <div className={styles.btnWrapper}>
         <Button onClick={handleReset} className={styles.btns}>重置</Button>
-        <Button type="primary" onClick={handleSubmit} className={styles.btns}>搜索</Button>
+        <Button type="primary" onClick={handleSubmit} className={styles.btns}>查询</Button>
       </div>
     </div>
   )

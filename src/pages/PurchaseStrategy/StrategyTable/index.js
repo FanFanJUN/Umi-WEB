@@ -9,7 +9,7 @@ import { downloadExcelDataImportTemplate } from '../../../services/strategy';
 import styles from './index.less';
 const importColumns = [
   {
-    title: '物料二次分类',
+    title: '物料分类',
     dataIndex: 'materialClassificationName'
   },
   {
@@ -106,7 +106,7 @@ function StrategyTable({
   const [count, setCount] = useState(0);
   const columns = [
     {
-      title: '物料二次分类',
+      title: '物料分类',
       dataIndex: 'materialClassificationName'
     },
     {
@@ -419,39 +419,11 @@ function StrategyTable({
         message: '未填写定价时间'
       }
     }
-    if (!runningOperation) {
-      return {
-        ...error,
-        ...column,
-        message: '未填写市场运行情况'
-      }
-    }
-    if (!resourceOperation) {
-      return {
-        ...error,
-        ...column,
-        message: '未填写资源保障情况'
-      }
-    }
     if (!costTarget) {
       return {
         ...error,
         ...column,
         message: '未填写成本目标'
-      }
-    }
-    if (!costControlWay) {
-      return {
-        ...error,
-        ...column,
-        message: '未填写成本控制方式'
-      }
-    }
-    if (!storageControlWay) {
-      return {
-        ...error,
-        ...column,
-        message: '未填写库存控制方式'
       }
     }
     if (!supplierSelectRule) {
