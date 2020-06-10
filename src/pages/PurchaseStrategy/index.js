@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ExtTable, WorkFlow, ExtModal, utils } from 'suid';
-import { Input, Button, message } from 'antd';
+import { Input, Button, message, Checkbox } from 'antd';
 import Header from '@/components/Header';
 import AdvancedForm from '@/components/AdvancedForm';
 import AutoSizeLayout from '@/components/AutoSizeLayout';
@@ -29,17 +29,20 @@ import Modal from 'antd/es/modal';
 // const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 const { Search } = Input
 const { StartFlow, FlowHistory } = WorkFlow;
-const { authAction } = utils;
+const { authAction, storage } = utils;
 function PurchaseStategy() {
   const headerRef = useRef(null)
   const tableRef = useRef(null)
   const [selectedRowKeys, setRowKeys] = useState([]);
+  const [onlyMe, setOnlyMe] = useState(true);
   const [selectedRows, setRows] = useState([]);
   const [searchValue, setSearchValue] = useState({});
   const [visible, triggerVisible] = useState(false);
   const [attachId, setAttachId] = useState('');
   const [showAttach, triggerShowAttach] = useState(false);
   const [singleRow = {}] = selectedRows;
+
+  const { account } = storage.sessionStorage.get("Authorization");
   const {
     state: rowState,
     approvalState: rowApprovalState,
@@ -137,7 +140,19 @@ function PurchaseStategy() {
   const tableProps = {
     store: {
       url: `${psBaseUrl}/purchaseStrategyHeader/listByPageLocal`,
-      params: { ...searchValue },
+      params: { 
+        ...searchValue,
+        filters: searchValue.filters ? 
+          searchValue.filters.concat([{
+            fieldName: 'creatorAccount',
+            operator: 'EQ',
+            value: onlyMe? account : undefined
+          }]) : [{
+            fieldName: 'creatorAccount',
+            operator: 'EQ',
+            value: onlyMe? account : undefined
+          }]
+      },
       type: 'POST'
     }
   }
@@ -270,6 +285,10 @@ function PurchaseStategy() {
       quickSearchValue: v
     })
     uploadTable()
+  }
+  // 切换仅查看我
+  function handleOnlyMeChange(e) {
+    console.log(e)
   }
   // 高级搜索
   function handleAdvnacedSearch(v) {
@@ -458,6 +477,7 @@ function PurchaseStategy() {
                   ignore={true} disabled={multiple || empty || !rowChangeable} className={styles.btn} onClick={handleCheckChangeHistory}>变更历史</Button>
               )
             }
+            <Checkbox onChange={handleOnlyMeChange}>仅我的</Checkbox>
           </>
         }
         right={
