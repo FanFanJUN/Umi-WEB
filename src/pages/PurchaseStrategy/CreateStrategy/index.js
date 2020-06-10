@@ -24,6 +24,8 @@ function CreateStrategy() {
     const {
       purchaseStrategyDate,
       files,
+      sendList: sList = [],
+      submitList: smList = [],
       ...otherData
     } = val;
     if (!!files) {
@@ -43,9 +45,15 @@ function CreateStrategy() {
     const [begin, end] = purchaseStrategyDate;
     const purchaseStrategyBegin = begin.format('YYYY-MM-DD HH:mm:ss')
     const purchaseStrategyEnd = end.format('YYYY-MM-DD HH:mm:ss')
+    const accoutList = sList.map((item) => ({
+      userAccount: item.code
+    }))
+    const smAccountList = smList.map(item => ({ userAccount: item.code }))
     params = {
       ...params,
       ...otherData,
+      sendList: accoutList,
+      submitList: smAccountList,
       purchaseStrategyBegin,
       purchaseStrategyEnd,
       detailList: dataSource.map((item, key) => ({ ...item, lineNo: key + 1 }))
@@ -89,9 +97,9 @@ function CreateStrategy() {
           }
           reject({
             success: false,
-            message : msg
+            message: msg
           })
-        }else {
+        } else {
           reject({
             success: false,
             message: len === 0 ? '标的物不能为空' : '请完善采购策略基本信息'
@@ -146,7 +154,7 @@ function CreateStrategy() {
     triggerLoading(true)
     const { success, data, message: msg } = await saveStrategyTableImportData({ ios: items });
     triggerLoading(false)
-    if(success) {
+    if (success) {
       const newSource = [...dataSource, ...data].map((item, key) => ({
         ...item,
         localId: !!item.id ? item.id : `${key}-dataSource`
@@ -220,7 +228,7 @@ function CreateStrategy() {
   }
   function handleComplete(info) {
     const { success, message: msg } = info
-    if(success){
+    if (success) {
       message.success(msg)
       closeCurrent()
       return

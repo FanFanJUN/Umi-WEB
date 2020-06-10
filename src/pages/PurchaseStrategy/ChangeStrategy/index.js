@@ -53,7 +53,6 @@ function ChangeStrategy({
         code,
         send,
         state,
-        flowId,
         header,
         submit,
         invalid,
@@ -61,9 +60,12 @@ function ChangeStrategy({
         creatorId,
         detailList,
         attachment,
+        submitList = [],
+        sendList = [],
         changeable,
         tenantCode,
         createdDate,
+        modifyHeader,
         lastEditorId,
         approvalState,
         lastEditorName,
@@ -74,10 +76,11 @@ function ChangeStrategy({
         purchaseStrategyBegin,
         ...initialValues
       } = data;
-      const { form: childrenForm } = formRef.current
-      const { setFieldsValue } = childrenForm
+      const { setFieldsValue } = formRef.current.form;
       const mixinValues = {
         ...initialValues,
+        submitList: submitList.map(item => ({ ...item, code: item.userAccount })),
+        sendList: sendList.map(item => ({ ...item, code: item.userAccount })),
         purchaseStrategyDate: [moment(purchaseStrategyBegin), moment(purchaseStrategyEnd)]
       }
       setInitValues({
@@ -104,6 +107,8 @@ function ChangeStrategy({
     const {
       purchaseStrategyDate,
       files,
+      sendList: sList = [],
+      submitList: smList = [],
       ...otherData
     } = val;
     if (!!files) {
@@ -120,18 +125,24 @@ function ChangeStrategy({
         attachment: ses ? headerUUID : null
       }
     }
-
     const [begin, end] = purchaseStrategyDate;
     const purchaseStrategyBegin = begin.format('YYYY-MM-DD HH:mm:ss')
     const purchaseStrategyEnd = end.format('YYYY-MM-DD HH:mm:ss')
+    const accoutList = sList.map((item) => ({
+      userAccount: item.code
+    }))
+    const smAccountList = smList.map(item => ({ userAccount: item.code }))
     params = {
       ...params,
       ...otherData,
+      sendList: accoutList,
+      submitList: smAccountList,
       purchaseStrategyBegin,
       purchaseStrategyEnd,
       detailList: dataSource.map((item, key) => ({ ...item, lineNo: key + 1 })),
       id: currentId
     }
+
     return params;
   }
   // 格式化标的物保存参数
@@ -164,19 +175,19 @@ function ChangeStrategy({
   // 保存并提交审核
   async function handleBeforeStartFlow() {
     return new Promise(async (resolve, reject) => {
-    const changeParams = await formatChangeReasonPamras();
-    if (!changeParams) {
-      reject(false);
-      return
-    }
-    const { validateFieldsAndScroll } = formRef.current.form;
-    const sourceParams = await validateFieldsAndScroll().then(r => r).catch(err => null);
-    if (!sourceParams) {
-      reject(false)
-      return;
-    }
-    const params = await formatSaveParams(sourceParams);
-    const { success, message: msg, data } = await changePurchaseAndApprove({ ...params, modifyHeader: changeParams });
+      const changeParams = await formatChangeReasonPamras();
+      if (!changeParams) {
+        reject(false);
+        return
+      }
+      const { validateFieldsAndScroll } = formRef.current.form;
+      const sourceParams = await validateFieldsAndScroll().then(r => r).catch(err => null);
+      if (!sourceParams) {
+        reject(false)
+        return;
+      }
+      const params = await formatSaveParams(sourceParams);
+      const { success, message: msg, data } = await changePurchaseAndApprove({ ...params, modifyHeader: changeParams });
       if (success) {
         resolve({
           success: true,
@@ -430,7 +441,7 @@ function ChangeStrategy({
                       message: '请填写变更原因'
                     }
                   ]
-                })(<Input.TextArea maxLength={800}/>)
+                })(<Input.TextArea maxLength={800} />)
               }
             </Form.Item>
           </Col>
