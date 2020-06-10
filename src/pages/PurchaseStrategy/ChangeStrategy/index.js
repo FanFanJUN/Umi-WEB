@@ -57,11 +57,9 @@ function ChangeStrategy({
         header,
         submit,
         invalid,
-        sendList,
         changeVo,
         creatorId,
         detailList,
-        submitList,
         attachment,
         changeable,
         tenantCode,
@@ -80,8 +78,6 @@ function ChangeStrategy({
       const { setFieldsValue } = childrenForm
       const mixinValues = {
         ...initialValues,
-        submitList: submitList.map(item => ({ ...item, code: item.userAccount })),
-        sendList: sendList.map(item => ({ ...item, code: item.userAccount })),
         purchaseStrategyDate: [moment(purchaseStrategyBegin), moment(purchaseStrategyEnd)]
       }
       setInitValues({
@@ -108,8 +104,6 @@ function ChangeStrategy({
     const {
       purchaseStrategyDate,
       files,
-      sendList: sList,
-      submitList: smList,
       ...otherData
     } = val;
     if (!!files) {
@@ -130,15 +124,9 @@ function ChangeStrategy({
     const [begin, end] = purchaseStrategyDate;
     const purchaseStrategyBegin = begin.format('YYYY-MM-DD HH:mm:ss')
     const purchaseStrategyEnd = end.format('YYYY-MM-DD HH:mm:ss')
-    const accoutList = sList.map((item) => ({
-      userAccount: item
-    }))
-    const smAccountList = smList.map(item => ({ userAccount: item }))
     params = {
       ...params,
       ...otherData,
-      sendList: accoutList,
-      submitList: smAccountList,
       purchaseStrategyBegin,
       purchaseStrategyEnd,
       detailList: dataSource.map((item, key) => ({ ...item, lineNo: key + 1 })),

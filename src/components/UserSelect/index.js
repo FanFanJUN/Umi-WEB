@@ -64,8 +64,7 @@ const UserSelect = forwardRef(({
   const [rdk] = readField;
   const [pageInfo, setPageInfo] = useState({ page: 1, rows: 30 });
   const [total, setTotal] = useState(0);
-  const selectedKeys = value.map(item=>item[rdk]);
-  console.log(selectedKeys)
+  const selectedKeys = value.map(item => item[rdk]);
   useEffect(() => {
     if (treeSelectedKeys.length === 0) return
     const [id] = treeSelectedKeys;
@@ -181,9 +180,7 @@ const UserSelect = forwardRef(({
   const handleIncludeChange = (e) => {
     setInclude(e.target.checked)
   }
-  function handleSelectedRow(keys, rows) {
-    // console.log(keys)
-    // setSelectedKeys(keys)
+  function handleSelectedRow(_, rows) {
     const concatRows = [...new Set([...value, ...rows])]
     if (!!setFieldsValue) {
       setFieldsValue({
@@ -202,7 +199,7 @@ const UserSelect = forwardRef(({
     onRowsChange(concatRows)
   }
   function handleCloseTab(item) {
-    const ks = value.filter(i => i[rdk] !== item[rdk]).map(item=>item[rdk]);
+    const ks = value.filter(i => i[rdk] !== item[rdk]).map(item => item[rdk]);
     const fds = value.filter(i => ks.findIndex(item => item === i[rdk]) !== -1)
     // setSelectedKeys(ks)
     onChange(fds)

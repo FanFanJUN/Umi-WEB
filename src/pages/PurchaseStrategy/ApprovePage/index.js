@@ -31,11 +31,11 @@ function ApprovePage() {
         header,
         submit,
         invalid,
-        sendList=[],
+        sendList = [],
         changeVo,
         creatorId,
         detailList,
-        submitList=[],
+        submitList = [],
         attachment,
         changeable,
         tenantCode,
@@ -69,9 +69,8 @@ function ApprovePage() {
     message.error(msg)
   }
   function handleSubmitComplete(res) {
-    console.log(res)
     const { success } = res;
-    if(success) {
+    if (success) {
       closeCurrent()
     }
   }

@@ -66,11 +66,9 @@ function ApprovePage() {
         header,
         submit,
         invalid,
-        sendList=[],
         changeVo,
         creatorId,
         detailList,
-        submitList=[],
         attachment,
         changeable,
         tenantCode,
@@ -90,8 +88,6 @@ function ApprovePage() {
       const { setFieldsValue } = formRef.current.form;
       const mixinValues = {
         ...initialValues,
-        submitList: submitList.map(item => ({ ...item, code: item.userAccount })),
-        sendList: sendList.map(item => ({ ...item, code: item.userAccount })),
         purchaseStrategyDate: [moment(purchaseStrategyBegin), moment(purchaseStrategyEnd)]
       }
       setInitValues({

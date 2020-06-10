@@ -165,8 +165,6 @@ function ApproveEditor() {
     const {
       purchaseStrategyDate,
       files,
-      sendList: sList,
-      submitList: smList,
       ...otherData
     } = val;
     if (!!files) {
@@ -187,15 +185,9 @@ function ApproveEditor() {
     const [begin, end] = purchaseStrategyDate;
     const purchaseStrategyBegin = begin.format('YYYY-MM-DD HH:mm:ss')
     const purchaseStrategyEnd = end.format('YYYY-MM-DD HH:mm:ss')
-    const accoutList = sList.map((item) => ({
-      userAccount: item
-    }))
-    const smAccountList = smList.map(item => ({ userAccount: item }))
     params = {
       ...params,
       ...otherData,
-      sendList: accoutList,
-      submitList: smAccountList,
       purchaseStrategyBegin,
       purchaseStrategyEnd,
       detailList: dataSource.map((item, key) => ({ ...item, lineNo: key + 1 })),
