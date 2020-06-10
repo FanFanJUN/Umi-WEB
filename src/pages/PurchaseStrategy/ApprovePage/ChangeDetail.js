@@ -5,7 +5,7 @@ import {
   WorkFlow
 } from 'suid';
 import { Button, Modal, message, Spin, Row, Input, Form, Col } from 'antd';
-import ChangeForm from '../ChangeForm';
+import ChangeForm from '../DetailLayout';
 import StrategyTable from '../StrategyTable';
 import { ComboAttachment } from '@/components';
 import classnames from 'classnames';
@@ -93,7 +93,8 @@ function ChangeStrategy({
 
       setReasonAttach(reasonAttach)
       setInitValues({
-        attachment
+        attachment,
+        ...mixinValues
       });
       const addIdList = detailList.map(item => ({
         ...item,
@@ -102,7 +103,7 @@ function ChangeStrategy({
       modifySetFieldsValue({
         reason: modifyReason
       })
-      setFieldsValue(mixinValues);
+      // setFieldsValue(mixinValues);
       setDataSource(addIdList);
       setCurrentId(id)
       setCurrentCode(code)

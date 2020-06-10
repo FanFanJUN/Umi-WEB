@@ -54,10 +54,11 @@ function DetailStrategy() {
         purchaseStrategyDate: [moment(purchaseStrategyBegin), moment(purchaseStrategyEnd)]
       }
       setInitValues({
-        attachment
+        attachment,
+        ...mixinValues
       });
       
-      setFieldsValue(mixinValues);
+      // setFieldsValue(mixinValues);
       setDataSource(detailList);
       triggerLoading(false);
       return
