@@ -21,7 +21,7 @@ const importColumns = [
     dataIndex: 'expectedDemandScalePrice'
   },
   {
-    title: '适应范围',
+    title: '需求公司',
     dataIndex: 'adjustScope'
   },
   {
@@ -118,7 +118,7 @@ function StrategyTable({
       dataIndex: 'expectedDemandScalePrice'
     },
     {
-      title: '适应范围',
+      title: '需求公司',
       dataIndex: 'adjustScopeList',
       render(text = []) {
         return (
@@ -274,7 +274,7 @@ function StrategyTable({
     resetFields()
     hideModal()
   }
-  // 查看适应范围
+  // 查看需求公司
   function checkAdjustScopeList(list) {
     const columns = [
       {
@@ -287,7 +287,7 @@ function StrategyTable({
       }
     ]
     Modal.info({
-      title: '适应范围',
+      title: '需求公司',
       content: <Table size='small' bordered columns={columns} dataSource={list} rowKey={({ id })=> id}/>,
       icon: 'exception',
       okText: '关闭',
@@ -378,7 +378,7 @@ function StrategyTable({
       return {
         ...error,
         ...column,
-        message: '未填写适应范围'
+        message: '未填写需求公司'
       }
     }
     if (!purchaseTypeName) {

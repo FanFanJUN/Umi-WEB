@@ -181,7 +181,7 @@ const CommonForm = forwardRef(
             </Item>
           </Col>
           <Col span={12}>
-            <Item {...formLayout} label="适应范围">
+            <Item {...formLayout} label="需求公司">
               {
                 (getFieldDecorator('adjustScopeListCode'),
                 getFieldDecorator('adjustScopeListName', {
@@ -189,13 +189,13 @@ const CommonForm = forwardRef(
                     {
                       type: 'array',
                       required: true,
-                      message: '请选择适应范围',
+                      message: '请选择需求公司',
                     },
                   ],
                 })(
                   <ComboSelect
                     {...corporationProps}
-                    placeholder="选择适应范围"
+                    placeholder="选择需求公司"
                     name="adjustScopeListName"
                     field={['adjustScopeListCode']}
                     form={form}

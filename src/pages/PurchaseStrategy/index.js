@@ -193,7 +193,7 @@ function PurchaseStategy() {
       }
     },
     {
-      title: '适应范围',
+      title: '需求公司',
       type: 'multiple',
       key: 'Q_IN_adjustScope',
       props: corporationProps

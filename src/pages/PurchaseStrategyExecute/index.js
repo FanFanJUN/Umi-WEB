@@ -72,7 +72,7 @@ function PurchaseStrategyExecute() {
     },
     { title: '物料级别', dataIndex: 'materialLevelName' },
     { title: '物料分类', dataIndex: 'materialClassificationName' },
-    { title: '适应范围', dataIndex: 'adjustScope' },
+    { title: '需求公司', dataIndex: 'adjustScope' },
     { title: '策略周期开始日期', dataIndex: 'purchaseStrategyBegin' },
     { title: '策略周期结束日期', dataIndex: 'purchaseStrategyEnd' },
     {
@@ -193,7 +193,7 @@ function PurchaseStrategyExecute() {
       }
     },
     {
-      title: '适应范围',
+      title: '需求公司',
       type: 'multiple',
       key: 'Q_IN_adjustScope',
       props: corporationProps

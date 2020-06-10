@@ -4,7 +4,7 @@
  * @date 2020.4.3
  */
 import React, { useState, forwardRef, useRef, useEffect } from "react";
-import { Col, Row, Tree, Input, Skeleton, Popover, Tag, Checkbox } from "antd";
+import { Col, Row, Tree, Input, Skeleton, Popover, Tag, Checkbox, Table } from "antd";
 import { request } from '@/utils'
 import { baseUrl } from '@/utils/commonUrl'
 import styles from './index.less';
@@ -53,7 +53,7 @@ const UserSelect = forwardRef(({
   const [userData, setUserData] = useState([]);
   const [keyList, setKeyList] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
-  const [selectedKeys, setSelectedKeys] = useState([]);
+  // const [selectedKeys, setSelectedKeys] = useState([]);
   const [initState, setInitState] = useState(false);
   const [visible, triggerVisible] = useState(false);
   const [treeSelectedKeys, setTreeSelectedKyes] = useState([]);
@@ -64,6 +64,8 @@ const UserSelect = forwardRef(({
   const [rdk] = readField;
   const [pageInfo, setPageInfo] = useState({ page: 1, rows: 30 });
   const [total, setTotal] = useState(0);
+  const selectedKeys = value.map(item=>item[rdk]);
+  console.log(selectedKeys)
   useEffect(() => {
     if (treeSelectedKeys.length === 0) return
     const [id] = treeSelectedKeys;
@@ -83,8 +85,8 @@ const UserSelect = forwardRef(({
       const { rows, records } = data;
       setTotal(records)
       setUserData(rows)
-      const ks = value.map(item => item[rdk])
-      setSelectedKeys(ks)
+      // const ks = value.map(item => item[rdk])
+      // setSelectedKeys(ks)
       triggerLoading(false)
     }).catch(_ => triggerLoading(false))
   }, [include, treeSelectedKeys, pageInfo, tableSearchValue])
@@ -179,33 +181,16 @@ const UserSelect = forwardRef(({
   const handleIncludeChange = (e) => {
     setInclude(e.target.checked)
   }
-  const rowOnChange = (keys, rows) => {
-    setSelectedKeys(keys)
-    const names = rows.map(item => item[readName])
-    if (!!setFieldsValue) {
-      setFieldsValue({
-        [name]: names
-      });
-      const fieldValues = readField.map(item => {
-        return rows.map(i => i[item]);
-      })
-      field.forEach((item, k) => {
-        setFieldsValue({
-          [item]: fieldValues[k]
-        })
-      })
-    }
-    setSelectedRows(rows)
-    onRowsChange(rows)
-  }
   function handleSelectedRow(keys, rows) {
-    setSelectedKeys(keys)
+    // console.log(keys)
+    // setSelectedKeys(keys)
+    const concatRows = [...new Set([...value, ...rows])]
     if (!!setFieldsValue) {
       setFieldsValue({
-        [name]: rows
+        [name]: concatRows
       });
       const fieldValues = readField.map(item => {
-        return rows.map(i => i[item]);
+        return concatRows.map(i => i[item]);
       })
       field.forEach((item, k) => {
         setFieldsValue({
@@ -213,14 +198,14 @@ const UserSelect = forwardRef(({
         })
       })
     }
-    onChange(rows)
-    onRowsChange(rows)
+    onChange(concatRows)
+    onRowsChange(concatRows)
   }
   function handleCloseTab(item) {
-    const ks = selectedKeys.filter(i => i !== item[rdk]);
-    setSelectedKeys(ks)
-    const fds = userData.filter(i => ks.findIndex(item => item === i[rdk]) !== -1)
-    handleSelectedRow(ks, fds)
+    const ks = value.filter(i => i[rdk] !== item[rdk]).map(item=>item[rdk]);
+    const fds = value.filter(i => ks.findIndex(item => item === i[rdk]) !== -1)
+    // setSelectedKeys(ks)
+    onChange(fds)
   }
   return (
     <div>
@@ -300,13 +285,9 @@ const UserSelect = forwardRef(({
                     const { current, pageSize } = pagination;
                     setPageInfo({ page: current, rows: pageSize })
                   }}
-                  handleSearch={v => {
-                    console.log(v)
-                  }}
-                  checkbox={true}
+                  allowCancelSelect={false}
                   loading={loading}
                   ref={tableRef}
-                  // searchProperties={['code', 'userName']}
                   selectedRowKeys={selectedKeys}
                   selectedRows={selectedRows}
                   onSelectRow={handleSelectedRow}

@@ -167,7 +167,7 @@ export const materialClassProps = {
   }
 }
 
-// 公司（适应范围）
+// 公司（需求公司）
 export const corporationProps = {
   columns: [
     {
@@ -187,7 +187,7 @@ export const corporationProps = {
     field: ['code']
     // value: 'code'
   },
-  placeholder: '请选择适应范围',
+  placeholder: '请选择需求公司',
   style: {
     width: '100%'
   }
