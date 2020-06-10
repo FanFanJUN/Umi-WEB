@@ -89,7 +89,7 @@ const CommonForm = forwardRef(
         setFieldsValue(fields);
       }
     }, [visible]);
-    const fre = getFieldValue('pricingFrequency') || 'unknow';
+    const fre = getFieldValue('pricingFrequencyCode') || 'unknow';
     const files = getFieldValue('files') || [];
     const cost = getFieldValue('costTarget');
     const costText = getFieldValue('costTargetRemark');
@@ -111,7 +111,7 @@ const CommonForm = forwardRef(
     function handleSubmit() {
       validateFieldsAndScroll((err, val) => {
         if (!err) {
-          onOk({...val, pricingFrequencyCode: val.pricingFrequency });
+          onOk({...val, pricingFrequencyCode: val.pricingFrequencyCode });
         }
       });
     }
@@ -277,7 +277,7 @@ const CommonForm = forwardRef(
           <Col span={12}>
             <Item label="定价频次" {...formLayout}>
               {
-                (getFieldDecorator('pricingFrequency'),
+                (getFieldDecorator('pricingFrequencyCode'),
                 getFieldDecorator('pricingFrequencyName', {
                   rules: [
                     {
@@ -291,7 +291,7 @@ const CommonForm = forwardRef(
                     form={form}
                     name="pricingFrequencyName"
                     afterSelect={() => datePickerRef.current.cleanValues()}
-                    field={['pricingFrequency']}
+                    field={['pricingFrequencyCode']}
                   />,
                 ))
               }
@@ -309,7 +309,7 @@ const CommonForm = forwardRef(
                 },
                 {
                   validator: (_, value = [], cb) => {
-                    const fre = getFieldValue('pricingFrequency') || 'unknow';
+                    const fre = getFieldValue('pricingFrequencyCode') || 'unknow';
                     if (fre === 'Annually' && value.length !== 1) {
                       cb('请选择年度 1 个定价时间');
                       return;

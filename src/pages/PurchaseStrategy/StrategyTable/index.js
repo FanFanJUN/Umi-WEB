@@ -342,13 +342,10 @@ function StrategyTable({
       priceCombineName,
       pricingFrequencyName,
       pricingTime,
-      runningOperation,
-      resourceOperation,
       costTarget,
-      costControlWay,
-      storageControlWay,
       supplierSelectRule,
-      supplierCooperationWay
+      supplierCooperationWay,
+      costTargetRemark
     } = column;
     const timeDisabled = pricingFrequencyName === '按单' || pricingFrequencyName === '按需';
     const error = {
@@ -438,6 +435,13 @@ function StrategyTable({
         ...error,
         ...column,
         message: '未填写供应商合作方式'
+      }
+    }
+    if(!costTargetRemark) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写成本目标说明'
       }
     }
     return {

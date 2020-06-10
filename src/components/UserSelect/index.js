@@ -38,8 +38,8 @@ const UserSelect = forwardRef(({
   wrapperStyle = { width: 800 },
   nodeKey,
   value = [],
-  placeholder='选择人员',
-  alias='',
+  placeholder = '选择人员',
+  alias = '',
   ...props
 }, ref) => {
   const { setFieldsValue } = form;
@@ -48,7 +48,7 @@ const UserSelect = forwardRef(({
   const [searchValue, setSearchValue] = useState('');
   const [loading, triggerLoading] = useState(false);
   const [autoExpandParent, setAutoExpandParent] = useState(false);
-  const [include, setInclude] = useState(false);
+  const [include, setInclude] = useState(true);
   const [expandedKeys, setExpandedKeys] = useState([]);
   const [userData, setUserData] = useState([]);
   const [keyList, setKeyList] = useState([]);
@@ -57,10 +57,13 @@ const UserSelect = forwardRef(({
   const [initState, setInitState] = useState(false);
   const [visible, triggerVisible] = useState(false);
   const [treeSelectedKeys, setTreeSelectedKyes] = useState([]);
+  const [tableSearchValue, setTableSearchValue] = useState({});
   const searchInput = useRef(null)
   const tableRef = useRef(null)
   const { name: readName = 'id', field: readField = ['id'] } = reader;
   const [rdk] = readField;
+  const [pageInfo, setPageInfo] = useState({ page: 1, rows: 30 });
+  const [total, setTotal] = useState(0);
   useEffect(() => {
     if (treeSelectedKeys.length === 0) return
     const [id] = treeSelectedKeys;
@@ -71,21 +74,20 @@ const UserSelect = forwardRef(({
       data: {
         organizationId: id,
         includeSubNode: include,
-        pageInfo: {
-          page: 1,
-          rows: 100000
-        },
+        pageInfo: pageInfo,
         sortOrders: [{ property: "code", direction: "ASC" }],
-        quickSearchProperties: ["code", "user.userName"]
+        quickSearchProperties: ["code", "user.userName"],
+        ...tableSearchValue
       }
     }).then(({ data }) => {
-      const { rows } = data;
+      const { rows, records } = data;
+      setTotal(records)
       setUserData(rows)
-      const ks = value.map(item=>item[rdk])
+      const ks = value.map(item => item[rdk])
       setSelectedKeys(ks)
       triggerLoading(false)
     }).catch(_ => triggerLoading(false))
-  }, [include, treeSelectedKeys])
+  }, [include, treeSelectedKeys, pageInfo, tableSearchValue])
   //网络请求树控件数据（协议分类）
   const getTreeData = () => {
     triggerLoading(true)
@@ -217,7 +219,7 @@ const UserSelect = forwardRef(({
   function handleCloseTab(item) {
     const ks = selectedKeys.filter(i => i !== item[rdk]);
     setSelectedKeys(ks)
-    const fds = userData.filter(i => ks.findIndex(item=> item === i[rdk]) !== -1 )
+    const fds = userData.filter(i => ks.findIndex(item => item === i[rdk]) !== -1)
     handleSelectedRow(ks, fds)
   }
   return (
@@ -281,12 +283,30 @@ const UserSelect = forwardRef(({
                     layout: {
                       leftSpan: 0,
                       rightSpan: 24
-                    }
+                    },
+                    right: <Search onSearch={v => {
+                      setTableSearchValue({
+                        quickSearchValue: v
+                      })
+                    }} disabled={treeSelectedKeys.length === 0} />
+                  }}
+                  showSearch={false}
+                  pagination={{
+                    total: total,
+                    pageSize: pageInfo.rows,
+                    current: pageInfo.page
+                  }}
+                  onChange={(pagination) => {
+                    const { current, pageSize } = pagination;
+                    setPageInfo({ page: current, rows: pageSize })
+                  }}
+                  handleSearch={v => {
+                    console.log(v)
                   }}
                   checkbox={true}
                   loading={loading}
                   ref={tableRef}
-                  searchProperties={['code', 'userName']}
+                  // searchProperties={['code', 'userName']}
                   selectedRowKeys={selectedKeys}
                   selectedRows={selectedRows}
                   onSelectRow={handleSelectedRow}
@@ -304,12 +324,12 @@ const UserSelect = forwardRef(({
           [styles.inputDisabled]: disabled
         })}>
           {
-            value.length === 0 ? <div style={{ color: '#ccc', height: 32, display: 'flex',justifyContent: 'center', alignItems: 'center' }}>{placeholder}</div> : null
+            value.length === 0 ? <div style={{ color: '#ccc', height: 32, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{placeholder}</div> : null
           }
           {
-            value.map((item, index)=><Tag key={`${index}-tab-value`} style={{
+            value.map((item, index) => <Tag key={`${index}-tab-value`} style={{
               margin: 5
-            }} closable={!disabled} onClose={()=> handleCloseTab(item)} visible={true}>{item[readName]}</Tag>)
+            }} closable={!disabled} onClose={() => handleCloseTab(item)} visible={true}>{item[readName]}</Tag>)
           }
         </div>
       </Popover>

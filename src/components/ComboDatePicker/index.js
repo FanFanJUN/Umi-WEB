@@ -80,10 +80,15 @@ const ComboDatePicker = forwardRef(({
     const sqs = nss.map(item=>{
       const y = (ntm + item) > 12 ? nty + 1 : nty;
       const m = (ntm + item) % 12 === 0 ? 12 : (ntm + item) % 12;
-      const tm = `${y}-${m}-${ntd} 00:00:00`;
-      const mtm = moment(tm).format('YYYY-MM-DD HH:mm:ss')
-      return mtm
+      const ftims = {
+        year : y,
+        month: m >= 10 ?  m : `0${m}` ,
+        day: ntd >= 10 ?  ntd : `0${ntd}`
+      }
+      const tm = `${ftims.year}-${ftims.month}-${ftims.day} 00:00:00`;
+      return tm
     })
+    console.log(sqs)
     onChange(sqs)
   }
   const content = (

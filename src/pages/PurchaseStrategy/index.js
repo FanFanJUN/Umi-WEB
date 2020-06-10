@@ -288,7 +288,8 @@ function PurchaseStategy() {
   }
   // 切换仅查看我
   function handleOnlyMeChange(e) {
-    console.log(e)
+    setOnlyMe(e.target.checked)
+    uploadTable()
   }
   // 高级搜索
   function handleAdvnacedSearch(v) {
@@ -477,7 +478,7 @@ function PurchaseStategy() {
                   ignore={true} disabled={multiple || empty || !rowChangeable} className={styles.btn} onClick={handleCheckChangeHistory}>变更历史</Button>
               )
             }
-            <Checkbox onChange={handleOnlyMeChange}>仅我的</Checkbox>
+            <Checkbox onChange={handleOnlyMeChange} checked={onlyMe}>仅我的</Checkbox>
           </>
         }
         right={

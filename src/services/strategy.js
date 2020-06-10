@@ -15,6 +15,11 @@ function createServiceRequest(option) {
     headers,
     data,
     params: method === 'GET' ? data : null
+  }).catch(error=> {
+    return ({
+      ...error,
+      message: '请求异常，请联系管理员'
+    })
   })
 }
 
