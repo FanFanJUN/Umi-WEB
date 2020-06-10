@@ -60,7 +60,6 @@ function ApprovePage() {
       setInitValues({
         attachment
       });
-
       setFieldsValue(mixinValues);
       setDataSource(detailList);
       triggerLoading(false);

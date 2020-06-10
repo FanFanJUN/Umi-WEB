@@ -51,7 +51,8 @@ const FormRef = forwardRef(({
   useImperativeHandle(ref, () => ({
     form
   }));
-  const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
+  const { getFieldsValue, getFieldDecorator, setFieldsValue, getFieldValue } = form;
+  const formValues = getFieldsValue();
   const [createName, setCreateName] = useState("");
   const pcc = getFieldValue('purchaseCompanyCode');
   const { attachment = null } = initialValue;
@@ -76,16 +77,7 @@ const FormRef = forwardRef(({
         <Row>
           <Col span={12}>
             <Item  {...formLayout} label='采购策略名称'>
-              {
-                getFieldDecorator('name', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '采购策略名称不能为空'
-                    }
-                  ]
-                })(<Input disabled={type === "detail"} placeholder='请填写采购策略名称' />)
-              }
+              <span>{formValues.name}</span>
             </Item>
           </Col>
         </Row>

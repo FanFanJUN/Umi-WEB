@@ -1,7 +1,7 @@
 import React, { createRef, useState, useEffect } from 'react';
 import { router } from 'dva';
 import { /*Button, Modal*/ message, Spin } from 'antd';
-import StrategyForm from '../StrategyForm';
+import StrategyForm from '../DetailLayout';
 import StrategyTable from '../StrategyTable';
 import classnames from 'classnames';
 import {
