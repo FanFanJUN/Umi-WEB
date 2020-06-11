@@ -90,7 +90,7 @@ const FormRef = forwardRef(({
           </Col>
         </Row>
         <Row>
-          <Col span={12} offset={12}>
+          <Col span={12}>
             <Row>
               <Col span={16} offset={8}>
                 <span style={{ color: 'red' }}>（提示：自己所属的采购组织）</span>
@@ -99,21 +99,6 @@ const FormRef = forwardRef(({
           </Col>
         </Row>
         <Row>
-          <Col span={12}>
-            <Item label='采购公司' {...formLayout}>
-              {
-                getFieldDecorator('purchaseCompanyCode'),
-                getFieldDecorator('purchaseCompanyName', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '请选择采购公司'
-                    }
-                  ]
-                })(<ComboList disabled={type === "detail"} {...purchaseCompanyProps} name='purchaseCompanyName' field={['purchaseCompanyCode']} form={form} />)
-              }
-            </Item>
-          </Col>
           <Col span={12}>
             <Item label='采购组织' {...formLayout}>
               {
@@ -129,19 +114,32 @@ const FormRef = forwardRef(({
                   <ComboList
                     key={`combo-list-${pcc}`}
                     remotePaging
-                    disabled={type === "detail" || !pcc}
+                    disabled={type === "detail"}
                     {...purchaseOrganizationProps}
-                    store={{
-                      ...purchaseOrganizationProps.store,
-                      params: {
-                        Q_EQ_corporationCode: pcc
-                      }
+                    reader={{
+                      ...purchaseOrganizationProps.reader,
+                      field: ['code', 'corporationCode', 'corporationName']
                     }}
                     name='purchaseOrganizationName'
-                    field={['purchaseOrganizationCode']}
+                    field={['purchaseOrganizationCode', 'purchaseCompanyCode', 'purchaseCompanyName']}
                     form={form}
                   />
                 )
+              }
+            </Item>
+          </Col>
+          <Col span={12}>
+            <Item label='采购公司' {...formLayout}>
+              {
+                getFieldDecorator('purchaseCompanyCode'),
+                getFieldDecorator('purchaseCompanyName', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请选择采购公司'
+                    }
+                  ]
+                })(<ComboList disabled={true} {...purchaseCompanyProps} name='purchaseCompanyName' field={['purchaseCompanyCode']} form={form} />)
               }
             </Item>
           </Col>

@@ -85,7 +85,7 @@ const FormRef = forwardRef(({
           </Col>
         </Row>
         <Row>
-          <Col span={12} offset={12}>
+          <Col span={12} >
             <Row>
               <Col span={16} offset={8}>
                 <span style={{ color: 'red' }}>（提示：自己所属的采购组织）</span>
@@ -94,21 +94,6 @@ const FormRef = forwardRef(({
           </Col>
         </Row>
         <Row>
-          <Col span={12}>
-            <Item label='采购公司' {...formLayout}>
-              {
-                getFieldDecorator('purchaseCompanyCode'),
-                getFieldDecorator('purchaseCompanyName', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '请选择采购公司'
-                    }
-                  ]
-                })(<ComboList remotePaging disabled={true} {...purchaseCompanyProps} name='purchaseCompanyName' field={['purchaseCompanyCode']} form={form} />)
-              }
-            </Item>
-          </Col>
           <Col span={12}>
             <Item label='采购组织' {...formLayout}>
               {
@@ -121,6 +106,21 @@ const FormRef = forwardRef(({
                     }
                   ]
                 })(<ComboList remotePaging disabled={true} {...purchaseOrganizationProps} name='purchaseOrganizationName' field={['purchaseOrganizationCode']} form={form} />)
+              }
+            </Item>
+          </Col>
+          <Col span={12}>
+            <Item label='采购公司' {...formLayout}>
+              {
+                getFieldDecorator('purchaseCompanyCode'),
+                getFieldDecorator('purchaseCompanyName', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请选择采购公司'
+                    }
+                  ]
+                })(<ComboList remotePaging disabled={true} {...purchaseCompanyProps} name='purchaseCompanyName' field={['purchaseCompanyCode']} form={form} />)
               }
             </Item>
           </Col>
