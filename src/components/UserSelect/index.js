@@ -270,6 +270,10 @@ const UserSelect = forwardRef(({
                       setTableSearchValue({
                         quickSearchValue: v
                       })
+                      setPageInfo({
+                        page: 1,
+                        rows: 30
+                      })
                     }} disabled={treeSelectedKeys.length === 0} />
                   }}
                   showSearch={false}
