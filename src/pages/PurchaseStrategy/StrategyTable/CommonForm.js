@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useRef } from 'react';
-import { Modal, Form, Row, Col, Input, Tooltip } from 'antd';
+import { Modal, Form, Row, Col, Input, Tooltip, InputNumber } from 'antd';
 import {
   frequencyProps,
   costTargetProps,
@@ -111,7 +111,7 @@ const CommonForm = forwardRef(
     function handleSubmit() {
       validateFieldsAndScroll((err, val) => {
         if (!err) {
-          onOk({...val, pricingFrequencyCode: val.pricingFrequencyCode });
+          onOk({ ...val, pricingFrequencyCode: val.pricingFrequencyCode });
         }
       });
     }
@@ -135,22 +135,22 @@ const CommonForm = forwardRef(
             <Item label="物料分类" {...formLayout}>
               {
                 (getFieldDecorator('materialClassificationCode'),
-                getFieldDecorator('materialClassificationName', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '请选择物料分类',
-                    },
-                  ],
-                })(
-                  <ComboTree
-                    form={form}
-                    {...materialClassPropsAddParams}
-                    name="materialClassificationName"
-                    field={['materialClassificationCode']}
-                    disabled={mode === 'change' && type === 'editor'}
-                  />,
-                ))
+                  getFieldDecorator('materialClassificationName', {
+                    rules: [
+                      {
+                        required: true,
+                        message: '请选择物料分类',
+                      },
+                    ],
+                  })(
+                    <ComboTree
+                      form={form}
+                      {...materialClassPropsAddParams}
+                      name="materialClassificationName"
+                      field={['materialClassificationCode']}
+                      disabled={mode === 'change' && type === 'editor'}
+                    />,
+                  ))
               }
             </Item>
           </Col>
@@ -163,7 +163,16 @@ const CommonForm = forwardRef(
                     message: '请填写预计需求数量',
                   },
                 ],
-              })(<Input type="number" placeholder="请输入预计需求数量" />)}
+              })(
+                <InputNumber
+                  style={{
+                    width: "100%"
+                  }}
+                  placeholder="请输入预计需求数量"
+                  formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                />
+              )}
             </Item>
           </Col>
         </Row>
@@ -177,30 +186,39 @@ const CommonForm = forwardRef(
                     message: '请填写预计需求规模（万元）',
                   },
                 ],
-              })(<Input placeholder="请输入预计需求规模(万元)" type="number" addonAfter="万元" />)}
+              })(
+                <InputNumber
+                  style={{
+                    width: "100%"
+                  }}
+                  placeholder="请输入预计需求规模(万元)"
+                  formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                />
+              )}
             </Item>
           </Col>
           <Col span={12}>
             <Item {...formLayout} label="需求公司">
               {
                 (getFieldDecorator('adjustScopeListCode'),
-                getFieldDecorator('adjustScopeListName', {
-                  rules: [
-                    {
-                      type: 'array',
-                      required: true,
-                      message: '请选择需求公司',
-                    },
-                  ],
-                })(
-                  <ComboSelect
-                    {...corporationProps}
-                    placeholder="选择需求公司"
-                    name="adjustScopeListName"
-                    field={['adjustScopeListCode']}
-                    form={form}
-                  />,
-                ))
+                  getFieldDecorator('adjustScopeListName', {
+                    rules: [
+                      {
+                        type: 'array',
+                        required: true,
+                        message: '请选择需求公司',
+                      },
+                    ],
+                  })(
+                    <ComboSelect
+                      {...corporationProps}
+                      placeholder="选择需求公司"
+                      name="adjustScopeListName"
+                      field={['adjustScopeListCode']}
+                      form={form}
+                    />,
+                  ))
               }
             </Item>
           </Col>
@@ -210,21 +228,21 @@ const CommonForm = forwardRef(
             <Item label="采购方式" {...formLayout}>
               {
                 (getFieldDecorator('purchaseTypeCode'),
-                getFieldDecorator('purchaseTypeName', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '请选择采购方式',
-                    },
-                  ],
-                })(
-                  <ComboGrid
-                    {...materialClassTypeProps}
-                    name="purchaseTypeName"
-                    field={['purchaseTypeCode']}
-                    form={form}
-                  />,
-                ))
+                  getFieldDecorator('purchaseTypeName', {
+                    rules: [
+                      {
+                        required: true,
+                        message: '请选择采购方式',
+                      },
+                    ],
+                  })(
+                    <ComboGrid
+                      {...materialClassTypeProps}
+                      name="purchaseTypeName"
+                      field={['purchaseTypeCode']}
+                      form={form}
+                    />,
+                  ))
               }
             </Item>
           </Col>
@@ -232,21 +250,21 @@ const CommonForm = forwardRef(
             <Item label="规划供应资源数量" {...formLayout}>
               {
                 (getFieldDecorator('planSupplyResourceTypeCode'),
-                getFieldDecorator('planSupplyResourceTypeName', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '请选择规划供应资源数量',
-                    },
-                  ],
-                })(
-                  <ComboList
-                    form={form}
-                    {...planSupplyResourceAmountProps}
-                    name="planSupplyResourceTypeName"
-                    field={['planSupplyResourceTypeCode']}
-                  />,
-                ))
+                  getFieldDecorator('planSupplyResourceTypeName', {
+                    rules: [
+                      {
+                        required: true,
+                        message: '请选择规划供应资源数量',
+                      },
+                    ],
+                  })(
+                    <ComboList
+                      form={form}
+                      {...planSupplyResourceAmountProps}
+                      name="planSupplyResourceTypeName"
+                      field={['planSupplyResourceTypeCode']}
+                    />,
+                  ))
               }
             </Item>
           </Col>
@@ -256,21 +274,21 @@ const CommonForm = forwardRef(
             <Item label="价格组成" {...formLayout}>
               {
                 (getFieldDecorator('priceCombineCode'),
-                getFieldDecorator('priceCombineName', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '请选择价格组成',
-                    },
-                  ],
-                })(
-                  <ComboList
-                    {...priceCombineProps}
-                    form={form}
-                    name="priceCombineName"
-                    field={['priceCombineCode']}
-                  />,
-                ))
+                  getFieldDecorator('priceCombineName', {
+                    rules: [
+                      {
+                        required: true,
+                        message: '请选择价格组成',
+                      },
+                    ],
+                  })(
+                    <ComboList
+                      {...priceCombineProps}
+                      form={form}
+                      name="priceCombineName"
+                      field={['priceCombineCode']}
+                    />,
+                  ))
               }
             </Item>
           </Col>
@@ -278,22 +296,22 @@ const CommonForm = forwardRef(
             <Item label="定价频次" {...formLayout}>
               {
                 (getFieldDecorator('pricingFrequencyCode'),
-                getFieldDecorator('pricingFrequencyName', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '请选择定价频次',
-                    },
-                  ],
-                })(
-                  <ComboList
-                    {...frequencyProps}
-                    form={form}
-                    name="pricingFrequencyName"
-                    afterSelect={() => datePickerRef.current.cleanValues()}
-                    field={['pricingFrequencyCode']}
-                  />,
-                ))
+                  getFieldDecorator('pricingFrequencyName', {
+                    rules: [
+                      {
+                        required: true,
+                        message: '请选择定价频次',
+                      },
+                    ],
+                  })(
+                    <ComboList
+                      {...frequencyProps}
+                      form={form}
+                      name="pricingFrequencyName"
+                      afterSelect={() => datePickerRef.current.cleanValues()}
+                      field={['pricingFrequencyCode']}
+                    />,
+                  ))
               }
             </Item>
           </Col>
@@ -365,21 +383,21 @@ const CommonForm = forwardRef(
             <Item label="成本目标" labelCol={{ span: 10 }} wrapperCol={{ span: 14 }}>
               {
                 (getFieldDecorator('costTarget'),
-                getFieldDecorator('costTargetName', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '选择成本目标',
-                    },
-                  ],
-                })(
-                  <ComboList
-                    {...costTargetProps}
-                    name="costTargetName"
-                    field={['costTarget']}
-                    form={form}
-                  />,
-                ))
+                  getFieldDecorator('costTargetName', {
+                    rules: [
+                      {
+                        required: true,
+                        message: '选择成本目标',
+                      },
+                    ],
+                  })(
+                    <ComboList
+                      {...costTargetProps}
+                      name="costTargetName"
+                      field={['costTarget']}
+                      form={form}
+                    />,
+                  ))
               }
             </Item>
           </Col>
@@ -387,13 +405,13 @@ const CommonForm = forwardRef(
             <Tooltip title={costText} placement="topLeft">
               <Item labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
                 {!cost ? getFieldDecorator('costTargetRemark', {
-                    rules: [
-                      {
-                        required: true,
-                        message: '请填写成本目标',
-                      },
-                    ],
-                  })(<Input disabled={true} />) : cost === 'DropRatio' ? (
+                  rules: [
+                    {
+                      required: true,
+                      message: '请填写成本目标',
+                    },
+                  ],
+                })(<Input disabled={true} />) : cost === 'DropRatio' ? (
                   getFieldDecorator('costTargetRemark', {
                     rules: [
                       {
@@ -403,15 +421,15 @@ const CommonForm = forwardRef(
                     ],
                   })(<Input disabled={!cost} type="number" suffix={<span>%</span>} />)
                 ) : (
-                  getFieldDecorator('costTargetRemark', {
-                    rules: [
-                      {
-                        required: true,
-                        message: '请填写成本目标',
-                      },
-                    ],
-                  })(<Input disabled={!cost} type="number" suffix={<span>万元</span>} />)
-                )}
+                      getFieldDecorator('costTargetRemark', {
+                        rules: [
+                          {
+                            required: true,
+                            message: '请填写成本目标',
+                          },
+                        ],
+                      })(<Input disabled={!cost} type="number" suffix={<span>万元</span>} />)
+                    )}
               </Item>
             </Tooltip>
           </Col>

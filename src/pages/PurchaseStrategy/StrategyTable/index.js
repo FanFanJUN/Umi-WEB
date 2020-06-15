@@ -1,6 +1,6 @@
 import React, { useState, createRef, useLayoutEffect } from 'react';
 import { ExtTable, DataImport, utils } from 'suid';
-import { Button, Modal, message, Table } from 'antd'
+import { Button, Modal, message, Table, Statistic } from 'antd'
 import CommonForm from './CommonForm';
 import { ComboAttachment, Upload } from '@/components';
 // import { psBaseUrl } from '../../../utils/commonUrl';
@@ -14,11 +14,17 @@ const importColumns = [
   },
   {
     title: '预计需求规模(数量)',
-    dataIndex: 'expectedDemandScaleAmount'
+    dataIndex: 'expectedDemandScaleAmount',
+    render(text) {
+      return <Statistic valueStyle={{ fontSize: 14 }} value={text}/>
+    }
   },
   {
     title: '预计需求规模(数量)',
-    dataIndex: 'expectedDemandScalePrice'
+    dataIndex: 'expectedDemandScalePrice',
+    render(text) {
+      return <Statistic valueStyle={{ fontSize: 14 }} value={text}/>
+    }
   },
   {
     title: '需求公司',
@@ -121,11 +127,17 @@ function StrategyTable({
     },
     {
       title: '预计需求规模（数量）',
-      dataIndex: 'expectedDemandScaleAmount'
+      dataIndex: 'expectedDemandScaleAmount',
+      render(text) {
+        return <Statistic valueStyle={{ fontSize: 14 }} value={text}/>
+      }
     },
     {
       title: '预计需求规模（万元）',
-      dataIndex: 'expectedDemandScalePrice'
+      dataIndex: 'expectedDemandScalePrice',
+      render(text) {
+        return <Statistic valueStyle={{ fontSize: 14 }} value={text}/>
+      }
     },
     {
       title: '需求公司',
