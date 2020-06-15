@@ -113,7 +113,7 @@ function PurchaseStategy() {
       },
       width: 80,
     },
-    { title: '采购策略编号', dataIndex: 'code' },
+    { title: '采购策略编号', dataIndex: 'code', width: 170 },
     { title: '采购策略名称', dataIndex: 'name' },
     { title: '物料级别', dataIndex: 'materialLevelName' },
     { title: '采购公司', dataIndex: 'purchaseCompanyName' },

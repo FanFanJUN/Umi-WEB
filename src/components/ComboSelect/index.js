@@ -125,7 +125,7 @@ const ComboSelect = forwardRef(({
           {
             tabList.map((item, index)=><Tag key={`${index}-tab-value`} style={{
               margin: 5
-            }} closable onClose={()=> handleCloseTab(item)} visible={true}>{item[readName]}</Tag>)
+            }} closable onClose={()=> handleCloseTab(item)} visible={true}>{`${item[rdk]} ${item[readName]}`}</Tag>)
           }
         </div>
       </Popover>
