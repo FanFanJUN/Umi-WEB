@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { ExtTable } from 'suid';
-import { Input, Button, Modal, message } from 'antd';
+import { Input, Button, Modal, message, Statistic } from 'antd';
 import Header from '@/components/Header';
 import AutoSizeLayout from '@/components/AutoSizeLayout';
 import AdvancedForm from '@/components/AdvancedForm';
@@ -78,12 +78,18 @@ function PurchaseStrategyExecute() {
     {
       title: '预计需求规模(数量)',
       dataIndex: 'expectedDemandScaleAmount',
-      width: 180
+      width: 180,
+      render(text) {
+        return <Statistic valueStyle={{ fontSize: 14 }} value={text}/>
+      }
     },
     {
       title: '预计需求规模(万元)',
       dataIndex: 'expectedDemandScalePrice',
-      width: 180
+      width: 180,
+      render(text) {
+        return <Statistic valueStyle={{ fontSize: 14 }} value={text}/>
+      }
     },
     { title: '币种', dataIndex: 'currencyName' },
     {
