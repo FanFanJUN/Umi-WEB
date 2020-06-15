@@ -31,7 +31,7 @@
     "react-fast-compare": "^2.0.4",
     "sei-utils": "^1.0.91",
     "seid": "^1.2.2",
-    "suid": "^1.2.88"
+    "suid": "^1.2.93"
   },
   "devDependencies": {
     "babel-eslint": "^9.0.0",

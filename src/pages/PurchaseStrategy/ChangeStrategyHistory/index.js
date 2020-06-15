@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { message, Modal, Button } from 'antd';
 import { ExtTable, ExtModal, WorkFlow } from 'suid';
 import { router } from 'dva';
@@ -7,6 +7,7 @@ import { closeCurrent } from '@/utils';
 import { removePurchaseStrategyChangeHistory } from '@/services/strategy';
 import { ComboAttachment } from '@/components';
 import classnames from 'classnames';
+import AutoSizeLayout from '../../../components/AutoSizeLayout'
 import styles from './index.less';
 const { StartFlow, FlowHistory } = WorkFlow;
 const detailColumn = [
@@ -31,20 +32,31 @@ const detailColumn = [
     dataIndex: 'changeLater'
   }
 ]
+
+function emitResizeEvent() {
+  if (document.createEvent) {
+    var event = document.createEvent("HTMLEvents");
+    event.initEvent("resize", true, true);
+    window.dispatchEvent(event);
+  } else if (document.createEventObject) {
+    window.fireEvent("onresize");
+  }
+}
+
 function ChangeStrategyHistory() {
   const { query } = router.useLocation();
   const tableRef = useRef(null);
   const [checkId, setCheckId] = useState('');
   const [visible, triggerVisible] = useState(false);
   const [attachId, setAttachId] = useState('');
-  const [historyVisible,triggerHistoryVisible] = useState(false);
+  const [historyVisible, triggerHistoryVisible] = useState(false);
   const [showAttach, triggerShowAttach] = useState(false);
   const [selectedRowKeys, setRowKeys] = useState([]);
   const [selectedRows, setRows] = useState([]);
   const multiple = selectedRowKeys.length > 1;
   const empty = selectedRowKeys.length === 0;
   const [signleRow = {}] = selectedRows;
-  const { flowStatus = "", flowId='' } = signleRow;
+  const { flowStatus = "", flowId = '' } = signleRow;
   const disableSubmit = flowStatus !== 'INIT'
   const LEFT = (
     <>
@@ -77,6 +89,7 @@ function ChangeStrategyHistory() {
         Q_EQ_purchaseStrategyCode: query.code ? query.code : ''
       }
     },
+    remotePaging: true,
     onSelectRow: handleSelectedRows,
     selectedRowKeys: selectedRowKeys,
     ellipsis: false,
@@ -223,12 +236,25 @@ function ChangeStrategyHistory() {
           <Button className={styles.btn} onClick={handleClose}>关闭</Button>
         </div>
       </div>
-      <ExtTable {...tableProps} showSearch={false} allowCancelSelect 
-        ref={tableRef} />
-      <ExtModal
+      <AutoSizeLayout>
+        {
+          (h) =>
+            <ExtTable
+              {...tableProps}
+              height={h}
+              showSearch={false}
+              allowCancelSelect
+              ref={tableRef}
+            />
+        }
+      </AutoSizeLayout>
+      <Modal
         visible={visible}
         footer={null}
         width={`80vw`}
+        bodyStyle={{
+          height: '60vh'
+        }}
         onCancel={hideModal}
         destroyOnClose
         title={
@@ -245,10 +271,11 @@ function ChangeStrategyHistory() {
             }
           }}
           showSearch={false}
+          remotePaging={true}
           columns={detailColumn}
           allowCancelSelect
         />
-      </ExtModal>
+      </Modal>
       <ExtModal
         visible={showAttach}
         footer={null}
@@ -272,7 +299,7 @@ function ChangeStrategyHistory() {
         destroyOnClose
         onCancel={hideHistory}
       >
-        <FlowHistory businessId={flowId} flowMapUrl='flow-web/design/showLook'/>
+        <FlowHistory businessId={flowId} flowMapUrl='flow-web/design/showLook' />
       </ExtModal>
     </div>
   )

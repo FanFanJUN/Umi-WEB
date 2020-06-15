@@ -221,7 +221,7 @@ function ChangeStrategy({
     triggerLoading(true)
     const params = await formatLineParams(val);
     const [localId] = keys;
-    const { data, success, message: msg } = await strategyTableCreateLine(params);
+    const { data, success, message: msg } = await strategyTableCreateLine({ ...params, id: localId });
     if (success) {
       const newSource = dataSource.map((item, key) => {
         if (item.localId === localId) {

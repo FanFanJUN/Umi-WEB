@@ -29,20 +29,37 @@ const importColumns = [
     dataIndex: 'purchaseTypeName'
   },
   {
-    title: '规划供应资源类型名称',
-    dataIndex: 'planSupplyResourceTypeName'
-  },
-  {
-    title: '价格组成',
-    dataIndex: 'priceCombineName'
+    title: '成本目标',
+    dataIndex: 'costTarget'
   },
   {
     title: '定价频次',
     dataIndex: 'pricingFrequencyName'
   },
   {
+    title: '价格组成',
+    dataIndex: 'priceCombineName'
+  },
+  {
+    title: '规划供应资源类型名称',
+    dataIndex: 'planSupplyResourceTypeName'
+  },
+  {
+    title: '规划供应资源数量',
+    dataIndex: 'planSupplyResourceTypeAmount',
+    width: 150
+  },
+  {
     title: '定价时间',
     dataIndex: 'pricingTime'
+  },
+  {
+    title: '供应商选择原则',
+    dataIndex: 'supplierSelectRule'
+  },
+  {
+    title: '供应商合作方式',
+    dataIndex: 'supplierCooperationWay'
   },
   {
     title: '市场运行情况',
@@ -53,8 +70,8 @@ const importColumns = [
     dataIndex: 'resourceOperation'
   },
   {
-    title: '成本目标',
-    dataIndex: 'costTarget'
+    title: '成本目标说明',
+    dataIndex: 'costTargetRemark'
   },
   {
     title: '成本控制方式',
@@ -63,14 +80,6 @@ const importColumns = [
   {
     title: '库存控制方式',
     dataIndex: 'storageControlWay'
-  },
-  {
-    title: '供应商选择原则',
-    dataIndex: 'supplierSelectRule'
-  },
-  {
-    title: '供应商合作方式',
-    dataIndex: 'supplierCooperationWay'
   },
   {
     title: '备注',
@@ -107,7 +116,8 @@ function StrategyTable({
   const columns = [
     {
       title: '物料分类',
-      dataIndex: 'materialClassificationName'
+      dataIndex: 'materialClassificationName',
+      fixed: true
     },
     {
       title: '预计需求规模（数量）',
@@ -133,6 +143,18 @@ function StrategyTable({
       dataIndex: 'purchaseTypeName'
     },
     {
+      title: '成本目标',
+      dataIndex: 'costTargetName'
+    },
+    {
+      title: '定价频次',
+      dataIndex: 'pricingFrequencyName'
+    },
+    {
+      title: '价格组成',
+      dataIndex: 'priceCombineName'
+    },
+    {
       title: '规划供应资源名称',
       dataIndex: 'planSupplyResourceTypeName',
       width: 150
@@ -143,19 +165,19 @@ function StrategyTable({
       width: 150
     },
     {
-      title: '价格组成',
-      dataIndex: 'priceCombineName'
-    },
-    {
-      title: '定价频次',
-      dataIndex: 'pricingFrequencyName'
-    },
-    {
       title: '定价时间',
       dataIndex: 'pricingDateList',
       render(text) {
         return text.map(item => item.date).join('；')
       }
+    },
+    {
+      title: '供应商选择原则',
+      dataIndex: 'supplierSelectRule'
+    },
+    {
+      title: '供应商合作方式',
+      dataIndex: 'supplierCooperationWay'
     },
     {
       title: '市场运行情况',
@@ -164,10 +186,6 @@ function StrategyTable({
     {
       title: '资源保障情况',
       dataIndex: 'resourceOperation'
-    },
-    {
-      title: '成本目标',
-      dataIndex: 'costTargetName'
     },
     {
       title: '成本目标说明',
@@ -188,14 +206,8 @@ function StrategyTable({
       title: '库存控制方式',
       dataIndex: 'storageControlWay'
     },
-    {
-      title: '供应商选择原则',
-      dataIndex: 'supplierSelectRule'
-    },
-    {
-      title: '供应商合作方式',
-      dataIndex: 'supplierCooperationWay'
-    },
+    
+    
     {
       title: '附件',
       dataIndex: 'attachment',

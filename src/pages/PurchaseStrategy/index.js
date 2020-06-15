@@ -26,7 +26,7 @@ import {
 import styles from './index.less';
 import classnames from 'classnames';
 import Modal from 'antd/es/modal';
-// const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 const { Search } = Input
 const { StartFlow, FlowHistory } = WorkFlow;
 const { authAction, storage } = utils;
@@ -140,17 +140,17 @@ function PurchaseStategy() {
   const tableProps = {
     store: {
       url: `${psBaseUrl}/purchaseStrategyHeader/listByPageLocal`,
-      params: { 
+      params: {
         ...searchValue,
-        filters: searchValue.filters ? 
+        filters: searchValue.filters ?
           searchValue.filters.concat([{
             fieldName: 'creatorAccount',
             operator: 'EQ',
-            value: onlyMe? account : undefined
+            value: onlyMe ? account : undefined
           }]) : [{
             fieldName: 'creatorAccount',
             operator: 'EQ',
-            value: onlyMe? account : undefined
+            value: onlyMe ? account : undefined
           }]
       },
       type: 'POST'
@@ -302,12 +302,12 @@ function PurchaseStategy() {
         value: !!isName ? undefined : v[item]
       }
     })
-    const range = filters.find(item=> Array.isArray(item.value));
+    const range = filters.find(item => Array.isArray(item.value));
     const formatRangeValues = (rs) => {
-      if(!rs){
+      if (!rs) {
         return [{ value: undefined }]
       }
-      if(rs.value && rs.value.length > 0) {
+      if (rs.value && rs.value.length > 0) {
         const [begin, end] = rs.value;
         const be = begin.format('YYYY-MM-DD HH:mm:ss')
         const en = end.format('YYYY-MM-DD HH:mm:ss')
@@ -416,29 +416,29 @@ function PurchaseStategy() {
           <>
             {
               authAction(
-                <Button type='primary' ignore={true} key='PURCHASE_CREATE' className={styles.btn} onClick={handleCreate}>新增</Button>
+                <Button type='primary' ignore={DEVELOPER_ENV} key='PURCHASE_CREATE' className={styles.btn} onClick={handleCreate}>新增</Button>
               )
             }
             {
               authAction(
-                <Button ignore={true} key='PURCHASE_EDITOR' disabled={multiple || empty || approvaling || approvalFinish} className={styles.btn} onClick={handleEditor}>编辑</Button>
+                <Button ignore={DEVELOPER_ENV} key='PURCHASE_EDITOR' disabled={multiple || empty || approvaling || approvalFinish} className={styles.btn} onClick={handleEditor}>编辑</Button>
               )
             }
             {
               authAction(
-                <Button ignore={true} key='	
+                <Button ignore={DEVELOPER_ENV} key='	
                 PURCHASE_DELETE' onClick={handleRemoveItem} disabled={empty || approvaling || approvalFinish} className={styles.btn}>删除</Button>
               )
             }
             {
               authAction(
-                <Button ignore={true} key='PURCHASE_DETAIL' disabled={multiple || empty} className={styles.btn} onClick={handleCheckDetail}>明细</Button>
+                <Button ignore={DEVELOPER_ENV} key='PURCHASE_DETAIL' disabled={multiple || empty} className={styles.btn} onClick={handleCheckDetail}>明细</Button>
               )
             }
             {
               authAction(
                 <StartFlow
-                  ignore={true}
+                  ignore={DEVELOPER_ENV}
                   beforeStart={handleBeforeStartFlow}
                   key='PURCHASE_APPROVE'
                   startComplete={handleComplete}
@@ -463,19 +463,19 @@ function PurchaseStategy() {
             {
               authAction(
                 <Button key='PURCHASE_APPROVE_HISTORY'
-                  ignore={true} disabled={multiple || empty || approvalEffect} className={styles.btn} onClick={showHistory}>审核历史</Button>
+                  ignore={DEVELOPER_ENV} disabled={multiple || empty || approvalEffect} className={styles.btn} onClick={showHistory}>审核历史</Button>
               )
             }
             {
               authAction(
                 <Button key='PURCHASE_CHANGE'
-                  ignore={true} disabled={multiple || empty || !takeEffect || approvaling || !approvalFinish} className={styles.btn} onClick={handleChange}>变更</Button>
+                  ignore={DEVELOPER_ENV} disabled={multiple || empty || !takeEffect || approvaling || !approvalFinish} className={styles.btn} onClick={handleChange}>变更</Button>
               )
             }
             {
               authAction(
                 <Button key='PURCHASE_CHANGE_HISTORY'
-                  ignore={true} disabled={multiple || empty || !rowChangeable} className={styles.btn} onClick={handleCheckChangeHistory}>变更历史</Button>
+                  ignore={DEVELOPER_ENV} disabled={multiple || empty || !rowChangeable} className={styles.btn} onClick={handleCheckChangeHistory}>变更历史</Button>
               )
             }
             <Checkbox onChange={handleOnlyMeChange} checked={onlyMe}>仅我的</Checkbox>
@@ -523,6 +523,7 @@ function PurchaseStategy() {
         onCancel={hideHistory}
         footer={null}
         width={'80vw'}
+        title={`审核历史`}
       >
         <FlowHistory businessId={businessId} flowMapUrl='flow-web/design/showLook' />
       </ExtModal>

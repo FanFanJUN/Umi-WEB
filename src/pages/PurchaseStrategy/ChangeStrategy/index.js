@@ -142,7 +142,6 @@ function ChangeStrategy({
       detailList: dataSource.map((item, key) => ({ ...item, lineNo: key + 1 })),
       id: currentId
     }
-
     return params;
   }
   // 格式化标的物保存参数
@@ -204,6 +203,7 @@ function ChangeStrategy({
     })
   }
   async function handleCreateLine(val, hide) {
+    console.log(val)
     const params = await formatLineParams(val);
     const { data, success, message: msg } = await strategyTableCreateLine(params);
     if (success) {
@@ -222,7 +222,7 @@ function ChangeStrategy({
     triggerLoading(true)
     const params = await formatLineParams(val);
     const [localId] = keys;
-    const { data, success, message: msg } = await strategyTableCreateLine(params);
+    const { data, success, message: msg } = await strategyTableCreateLine({ ...params, id: localId });
     if (success) {
       const newSource = dataSource.map((item, key) => {
         if (item.localId === localId) {
