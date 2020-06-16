@@ -4,6 +4,7 @@ import { Input, Button, message, Checkbox } from 'antd';
 import Header from '@/components/Header';
 import AdvancedForm from '@/components/AdvancedForm';
 import AutoSizeLayout from '@/components/AutoSizeLayout';
+import { StartFlow } from 'seid';
 import { Upload } from '@/components';
 import { psBaseUrl } from '@/utils/commonUrl';
 import { openNewTab } from '@/utils';
@@ -28,7 +29,7 @@ import classnames from 'classnames';
 import Modal from 'antd/es/modal';
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 const { Search } = Input
-const { StartFlow, FlowHistory } = WorkFlow;
+const { FlowHistory } = WorkFlow;
 const { authAction, storage } = utils;
 function PurchaseStategy() {
   const headerRef = useRef(null)
@@ -381,13 +382,14 @@ function PurchaseStategy() {
     const [item] = selectedRows;
     const { flowId } = item;
     return new Promise(async (resolve, reject) => {
-      resolve({
-        success: true,
-        message: 'success',
-        data: {
-          businessKey: flowId
-        }
-      })
+      // resolve({
+      //   success: true,
+      //   message: 'success',
+      //   data: {
+      //     businessKey: flowId
+      //   }
+      // })
+      resolve(flowId)
       reject(false)
     })
   }
@@ -437,26 +439,33 @@ function PurchaseStategy() {
             }
             {
               authAction(
+                // <StartFlow
+                //   ignore={DEVELOPER_ENV}
+                //   beforeStart={handleBeforeStartFlow}
+                //   key='PURCHASE_APPROVE'
+                //   startComplete={handleComplete}
+                //   style={{ display: 'inline-flex' }}
+                //   businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyHeader"
+                // >
+                //   {
+                //     (loading) => {
+                //       return (
+                //         <Button
+                //           className={styles.btn}
+                //           loading={loading}
+                //           disabled={multiple || empty || approvaling || approvalFinish} className={styles.btn}
+                //         >提交审核</Button>
+                //       )
+                //     }
+                //   }
+                // </StartFlow>
                 <StartFlow
                   ignore={DEVELOPER_ENV}
-                  beforeStart={handleBeforeStartFlow}
+                  preStart={handleBeforeStartFlow}
                   key='PURCHASE_APPROVE'
-                  startComplete={handleComplete}
-                  style={{ display: 'inline-flex' }}
-                  businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyHeader"
-                >
-                  {
-                    (loading) => {
-                      return (
-                        <Button
-                          className={styles.btn}
-                          loading={loading}
-                          disabled={multiple || empty || approvaling || approvalFinish} className={styles.btn}
-                        >提交审核</Button>
-                      )
-                    }
-                  }
-                </StartFlow>
+                  callBack={handleComplete}
+                  businessModelCode='com.ecmp.srm.ps.entity.PurchaseStrategyHeader'
+                ></StartFlow>
               )
 
             }
