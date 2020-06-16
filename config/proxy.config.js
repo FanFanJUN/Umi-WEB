@@ -43,10 +43,10 @@ export default {
     pathRewrite: { '^/service.api/edm-service': '' },
   },
   // '/service.api/api-gateway/flow-service/defaultFlowBase/startFlowNew'
-  '/service.api/api-gateway': {
-    target: onLineTarget,
-    changeOrigin: true,
-    secure: false,
-    pathRewrite: { '^service.api': '' }
-  }
+  // '/service.api/api-gateway': {
+  //   target: onLineTarget,
+  //   changeOrigin: true,
+  //   secure: false,
+  //   pathRewrite: { '^service.api': '' }
+  // }
 };

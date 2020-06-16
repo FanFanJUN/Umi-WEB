@@ -461,7 +461,8 @@ function PurchaseStategy() {
                 // </StartFlow>
                 <StartFlow
                   ignore={DEVELOPER_ENV}
-                  preStart={handleBeforeStartFlow}
+                  // preStart={handleBeforeStartFlow}
+                  businessKey={businessId}
                   key='PURCHASE_APPROVE'
                   callBack={handleComplete}
                   businessModelCode='com.ecmp.srm.ps.entity.PurchaseStrategyHeader'
