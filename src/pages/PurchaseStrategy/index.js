@@ -524,6 +524,7 @@ function PurchaseStategy() {
         footer={null}
         width={'80vw'}
         title={`审核历史`}
+        destroyOnClose
       >
         <FlowHistory businessId={businessId} flowMapUrl='flow-web/design/showLook' />
       </ExtModal>
