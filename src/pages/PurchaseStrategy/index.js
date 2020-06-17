@@ -365,16 +365,19 @@ function PurchaseStategy() {
   }
   function handleEditor() {
     const [key] = selectedRowKeys;
-    const { id='', src='' }= FRAMEELEMENT;
+    const { id='' }= FRAMEELEMENT;
+    const src='//decmp.changhong.com/react-srm-ps-web/#/purchase/strategy'
     openNewTab(`purchase/strategy/editor?id=${key}&frameElementId=${id}&frameElementSrc=${src}`, '编辑采购策略', false)
   }
   function handleCreate() {
-    const { id='', src='' }= FRAMEELEMENT;
+    const { id='' }= FRAMEELEMENT;
+    const src='//decmp.changhong.com/react-srm-ps-web/#/purchase/strategy'
     openNewTab(`purchase/strategy/create?frameElementId=${id}&frameElementSrc=${src}`, '新增采购策略', false)
   }
   function handleChange() {
     const [key] = selectedRowKeys;
-    const { id='', src='' }= FRAMEELEMENT;
+    const { id='' }= FRAMEELEMENT;
+    const src='//decmp.changhong.com/react-srm-ps-web/#/purchase/strategy'
     openNewTab(`purchase/strategy/change?id=${key}&frameElementId=${id}&frameElementSrc=${src}`, '变更采购策略', false)
   }
   function handleCheckDetail() {
