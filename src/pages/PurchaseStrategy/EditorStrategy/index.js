@@ -305,13 +305,14 @@ function EditorStrategy({
   }
   // 提交审核流程完毕回调
   function handleComplete(info) {
-    const { success, message: msg } = info
-    if (success) {
-      message.success(msg)
-      closeCurrent()
-      return
-    }
-    message.error(msg)
+    closeCurrent()
+    // const { success, message: msg } = info
+    // if (success) {
+    //   closeCurrent()
+    //   message.success(msg)
+    //   return
+    // }
+    // message.error(msg)
   }
   useEffect(() => {
     initFommFieldsValuesAndTableDataSource()
@@ -332,6 +333,7 @@ function EditorStrategy({
               callBack={handleComplete}
               businessKey={businessKey}
               businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyHeader"
+              btuTitile='保存并提交审核'
             >
               {
                 (loading) => {

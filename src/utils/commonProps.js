@@ -306,7 +306,7 @@ export const costTargetProps = {
       name: '降幅比例'
     }, {
       code: 'DropPrice',
-      name: '降金额'
+      name: '降幅金额'
     }
   ],
   reader: {

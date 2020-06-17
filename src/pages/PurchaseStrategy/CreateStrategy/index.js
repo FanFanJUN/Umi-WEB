@@ -234,13 +234,14 @@ function CreateStrategy() {
     setDataSource(filterDataSource);
   }
   function handleComplete(info) {
-    const { success, message: msg } = info
-    if (success) {
-      message.success(msg)
       closeCurrent()
-      return
-    }
-    message.error(msg)
+    // const { success, message: msg } = info
+    // if (success) {
+    //   message.success(msg)
+    //   closeCurrent()
+    //   return
+    // }
+    // message.error(msg)
   }
   function handleBack() {
     Modal.confirm({
@@ -268,6 +269,7 @@ function CreateStrategy() {
             callBack={handleComplete}
             businessKey={businessKey}
             businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyHeader"
+            butTitle="保存并提交审核"
           >
             保存并提交审核
             {/* {

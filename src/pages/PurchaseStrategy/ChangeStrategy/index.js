@@ -312,14 +312,15 @@ function ChangeStrategy({
     })
   }
   function handleComplete(info) {
-    const { success, message: msg } = info;
-    hideModal()
-    if (success) {
       closeCurrent()
-      message.success(msg)
-      return
-    }
-    message.error(msg)
+    // const { success, message: msg } = info;
+    // hideModal()
+    // if (success) {
+    //   closeCurrent()
+    //   message.success(msg)
+    //   return
+    // }
+    // message.error(msg)
   }
   // 批量导入
   async function handleImportData(items) {
