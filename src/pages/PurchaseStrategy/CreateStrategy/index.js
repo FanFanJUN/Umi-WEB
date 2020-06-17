@@ -11,12 +11,14 @@ import {
   validateStrategyTableImportData,
   strategyTableLineRelevanceDocment
 } from '@/services/strategy';
+import { StartFlow } from 'seid';
 import { closeCurrent } from '../../../utils';
 import styles from './index.less';
-const { StartFlow } = WorkFlow;
+// const { StartFlow } = WorkFlow;
 function CreateStrategy() {
   const formRef = createRef()
   const [dataSource, setDataSource] = useState([]);
+  const [businessKey, setBusinessKey] = useState('');
   const [loading, triggerLoading] = useState(false);
   // 格式化vo参数
   async function formatSaveParams(val) {
@@ -87,23 +89,28 @@ function CreateStrategy() {
           const params = await formatSaveParams(val);
           const { success, message: msg, data } = await savePurcahseAndApprove(params);
           if (success) {
-            resolve({
-              success: true,
-              message: msg,
-              data: {
-                businessKey: data.flowId
-              }
-            })
+            // resolve({
+            //   success: true,
+            //   message: msg,
+            //   data: {
+            //     businessKey: data.flowId
+            //   }
+            // })
+            setBusinessKey(data.flowId)
+            resolve(data.flowId)
+            return
           }
-          reject({
-            success: false,
-            message: msg
-          })
+          message.error(msg)
+          // reject({
+          //   success: false,
+          //   message: msg
+          // })
         } else {
-          reject({
-            success: false,
-            message: len === 0 ? '标的物不能为空' : '请完善采购策略基本信息'
-          })
+          // reject({
+          //   success: false,
+          //   message: len === 0 ? '标的物不能为空' : '请完善采购策略基本信息'
+          // })
+          message.error(len === 0 ? '标的物不能为空' : '请完善采购策略基本信息')
         }
       })
     })
@@ -257,11 +264,13 @@ function CreateStrategy() {
           <Button className={styles.btn} onClick={handleSave}>保存</Button>
           <StartFlow
             style={{ display: 'inline-flex' }}
-            beforeStart={handleBeforeStartFlow}
-            startComplete={handleComplete}
+            preStart={handleBeforeStartFlow}
+            callBack={handleComplete}
+            businessKey={businessKey}
             businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyHeader"
           >
-            {
+            保存并提交审核
+            {/* {
               (loading) => {
                 return (
                   <Button
@@ -271,7 +280,7 @@ function CreateStrategy() {
                   >保存并提交审核</Button>
                 )
               }
-            }
+            } */}
           </StartFlow>
         </div>
       </div>

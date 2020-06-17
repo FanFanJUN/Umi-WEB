@@ -460,11 +460,15 @@ function PurchaseStategy() {
                 //   }
                 // </StartFlow>
                 <StartFlow
+                  style={{
+                    marginRight: 6
+                  }}
                   ignore={DEVELOPER_ENV}
                   // preStart={handleBeforeStartFlow}
                   businessKey={businessId}
                   key='PURCHASE_APPROVE'
                   callBack={handleComplete}
+                  disabled={multiple || empty || approvaling || approvalFinish}
                   businessModelCode='com.ecmp.srm.ps.entity.PurchaseStrategyHeader'
                 ></StartFlow>
               )

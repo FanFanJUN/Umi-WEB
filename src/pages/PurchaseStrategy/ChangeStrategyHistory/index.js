@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { message, Modal, Button } from 'antd';
 import { ExtTable, ExtModal, WorkFlow } from 'suid';
 import { router } from 'dva';
@@ -6,10 +6,11 @@ import { psBaseUrl } from '@/utils/commonUrl';
 import { closeCurrent } from '@/utils';
 import { removePurchaseStrategyChangeHistory } from '@/services/strategy';
 import { ComboAttachment } from '@/components';
+import { StartFlow } from 'seid';
 import classnames from 'classnames';
 import AutoSizeLayout from '../../../components/AutoSizeLayout'
 import styles from './index.less';
-const { StartFlow, FlowHistory } = WorkFlow;
+const { FlowHistory } = WorkFlow;
 const detailColumn = [
   {
     title: '操作内容',
@@ -63,8 +64,9 @@ function ChangeStrategyHistory() {
       <Button type='primary' disabled={multiple || empty} className={styles.btn} onClick={showHistory}>审核历史</Button>
       <StartFlow
         beforeStart={handleBeforeStartFlow}
-        startComplete={handleComplete}
-        style={{ display: 'inline-flex' }}
+        callBack={handleComplete}
+        style={{ display: 'inline-flex', marginRight: 6 }}
+        businessKey={flowId}
         businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyModifyHeader"
       >
         {
@@ -191,18 +193,18 @@ function ChangeStrategyHistory() {
   }
   // 启动审核流程
   function handleBeforeStartFlow() {
-    const [item] = selectedRows;
-    const { flowId } = item;
-    return new Promise(async (resolve, reject) => {
-      resolve({
-        success: true,
-        message: 'success',
-        data: {
-          businessKey: flowId
-        }
-      })
-      reject(false)
-    })
+    // const [item] = selectedRows;
+    // const { flowId } = item;
+    // return new Promise(async (resolve, reject) => {
+    //   resolve({
+    //     success: true,
+    //     message: 'success',
+    //     data: {
+    //       businessKey: flowId
+    //     }
+    //   })
+    //   reject(false)
+    // })
   }
   // 删除变更历史
   function handleRemove() {

@@ -18,10 +18,11 @@ import {
   saveStrategyTableImportData,
   strategyTableLineRelevanceDocment
 } from '@/services/strategy';
+import { StartFlow } from 'seid';
 import moment from 'moment';
 import { closeCurrent } from '../../../utils';
 import styles from './index.less';
-const { StartFlow } = WorkFlow;
+// const { StartFlow } = WorkFlow;
 const formLayout = {
   labelCol: {
     span: 8
@@ -40,6 +41,7 @@ function ChangeStrategy({
   const [visible, setVisible] = useState(false);
   const [initValues, setInitValues] = useState({});
   const [loading, triggerLoading] = useState(true);
+  const [businessKey, setBusinessKey] = useState('');
   const [currentId, setCurrentId] = useState('');
   const [currentCode, setCurrentCode] = useState('');
   const [isInvalid, setIsInvalid] = useState('');
@@ -188,18 +190,22 @@ function ChangeStrategy({
       const params = await formatSaveParams(sourceParams);
       const { success, message: msg, data } = await changePurchaseAndApprove({ ...params, modifyHeader: changeParams });
       if (success) {
-        resolve({
-          success: true,
-          message: msg,
-          data: {
-            businessKey: data.flowId
-          }
-        })
+        // resolve({
+        //   success: true,
+        //   message: msg,
+        //   data: {
+        //     businessKey: data.flowId
+        //   }
+        // })
+        resolve(data.flowId)
+        return
       }
-      reject({
-        success: false,
-        message: msg
-      })
+      message.error(msg);
+      return
+      // reject({
+      //   success: false,
+      //   message: msg
+      // })
     })
   }
   async function handleCreateLine(val, hide) {
@@ -411,8 +417,9 @@ function ChangeStrategy({
             <Button onClick={hideModal} className={styles.btn}>取消</Button>
             <StartFlow
               style={{ display: 'inline-flex' }}
-              beforeStart={handleBeforeStartFlow}
-              startComplete={handleComplete}
+              preStart={handleBeforeStartFlow}
+              callBack={handleComplete}
+              businessKey={businessKey}
               businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyModifyHeader"
             >
               {
