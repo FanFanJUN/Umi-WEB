@@ -60,6 +60,11 @@ export function openNewTab(uri, title, closeCurrent = false, id = undefined) {
   return id;
 }
 
+export function getFrameElement() {
+  const f = window.self.frameElement;
+  return !!f ? f : {}
+}
+
 export function openNewTabOther(uri, title, closeCurrent = false, id = undefined, proxy) {
   if (!id) {
     id = getUUID();

@@ -1,6 +1,7 @@
 import React, { createRef, useState } from 'react';
 import { Button, Modal, message, Spin } from 'antd';
 import { utils, WorkFlow } from 'suid';
+import { router } from 'dva';
 import StrategyForm from '../StrategyForm';
 import StrategyTable from '../StrategyTable';
 import classnames from 'classnames';
@@ -20,6 +21,8 @@ function CreateStrategy() {
   const [dataSource, setDataSource] = useState([]);
   const [businessKey, setBusinessKey] = useState('');
   const [loading, triggerLoading] = useState(false);
+  const { query } = router.useLocation();
+  const { frameElementId="", frameElementSrc="" } = query;
   // 格式化vo参数
   async function formatSaveParams(val) {
     let params = {}
@@ -268,6 +271,11 @@ function CreateStrategy() {
             preStart={handleBeforeStartFlow}
             callBack={handleComplete}
             businessKey={businessKey}
+            originStartTab={{
+              title: '采购策略',
+              url: frameElementSrc,
+              id: frameElementId
+            }}
             businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyHeader"
             butTitle="保存并提交审核"
           >

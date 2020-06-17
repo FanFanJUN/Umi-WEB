@@ -37,6 +37,7 @@ function ChangeStrategy({
   const { getFieldDecorator, getFieldValue } = form;
   const formRef = useRef(null);
   const { query } = router.useLocation();
+  const { frameElementId="", frameElementSrc="" } = query;
   const [dataSource, setDataSource] = useState([]);
   const [visible, setVisible] = useState(false);
   const [initValues, setInitValues] = useState({});
@@ -420,6 +421,11 @@ function ChangeStrategy({
               style={{ display: 'inline-flex' }}
               preStart={handleBeforeStartFlow}
               callBack={handleComplete}
+              originStartTab={{
+                title: '采购策略',
+                url: frameElementSrc,
+                id: frameElementId
+              }}
               businessKey={businessKey}
               businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyModifyHeader"
             >

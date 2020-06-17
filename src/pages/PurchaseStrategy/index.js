@@ -7,7 +7,7 @@ import AutoSizeLayout from '@/components/AutoSizeLayout';
 import { StartFlow } from 'seid';
 import { Upload } from '@/components';
 import { psBaseUrl } from '@/utils/commonUrl';
-import { openNewTab } from '@/utils';
+import { openNewTab, getFrameElement } from '@/utils';
 import {
   purchaseCompanyProps,
   purchaseOrganizationProps,
@@ -134,6 +134,7 @@ function PurchaseStategy() {
   /* 按钮禁用状态控制 */
   const takeEffect = rowState === 'Effective';
   const approvalEffect = rowApprovalState === 'Uncommitted';
+  const FRAMEELEMENT = getFrameElement();
   const approvaling = rowApprovalState === "InApproval";
   const multiple = selectedRowKeys.length > 1;
   const empty = selectedRowKeys.length === 0;
@@ -364,14 +365,17 @@ function PurchaseStategy() {
   }
   function handleEditor() {
     const [key] = selectedRowKeys;
-    openNewTab(`purchase/strategy/editor?id=${key}`, '编辑采购策略', false)
+    const { id='', src='' }= FRAMEELEMENT;
+    openNewTab(`purchase/strategy/editor?id=${key}&frameElementId=${id}&frameElementSrc=${src}`, '编辑采购策略', false)
   }
   function handleCreate() {
-    openNewTab('purchase/strategy/create', '新增采购策略', false)
+    const { id='', src='' }= FRAMEELEMENT;
+    openNewTab(`purchase/strategy/create?frameElementId=${id}&frameElementSrc=${src}`, '新增采购策略', false)
   }
   function handleChange() {
     const [key] = selectedRowKeys;
-    openNewTab(`purchase/strategy/change?id=${key}`, '变更采购策略', false)
+    const { id='', src='' }= FRAMEELEMENT;
+    openNewTab(`purchase/strategy/change?id=${key}&frameElementId=${id}&frameElementSrc=${src}`, '变更采购策略', false)
   }
   function handleCheckDetail() {
     const [key] = selectedRowKeys;

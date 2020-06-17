@@ -22,6 +22,7 @@ function EditorStrategy({
 }) {
   const formRef = createRef();
   const { query } = router.useLocation();
+  const { frameElementId="", frameElementSrc="" } = query;
   const [dataSource, setDataSource] = useState([]);
   const [initValues, setInitValues] = useState({});
   const [businessKey, setBusinessKey] = useState('');
@@ -331,6 +332,11 @@ function EditorStrategy({
               style={{ display: 'inline-flex' }}
               preStart={handleBeforeStartFlow}
               callBack={handleComplete}
+              originStartTab={{
+                title: '采购策略',
+                url: frameElementSrc,
+                id: frameElementId
+              }}
               businessKey={businessKey}
               businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyHeader"
               btuTitile='保存并提交审核'
