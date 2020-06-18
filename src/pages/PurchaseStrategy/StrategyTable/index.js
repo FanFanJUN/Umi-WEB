@@ -39,6 +39,10 @@ const importColumns = [
     dataIndex: 'costTarget'
   },
   {
+    title: '成本目标说明',
+    dataIndex: 'costTargetRemark'
+  },
+  {
     title: '定价频次',
     dataIndex: 'pricingFrequencyName'
   },
@@ -74,10 +78,6 @@ const importColumns = [
   {
     title: '资源保障情况',
     dataIndex: 'resourceOperation'
-  },
-  {
-    title: '成本目标说明',
-    dataIndex: 'costTargetRemark'
   },
   {
     title: '成本控制方式',
