@@ -316,7 +316,6 @@ const FormRef = forwardRef(({
             {
               getFieldDecorator('files')(
                 <ComboAttachment
-                  allowPreview={false}
                   allowDelete={type !== 'detail'}
                   showViewType={type !== 'detail'}
                   uploadButton={{
