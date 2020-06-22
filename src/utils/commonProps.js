@@ -52,9 +52,10 @@ export const majorGroupProps = {
 // 采购组织
 export const purchaseOrganizationProps = {
   store: {
-    url: `${baseUrl}/purchaseOrg/listByPage`,
-    params: { Q_EQ_frozen__Boolean: false }
+    url: `${baseUrl}/purchaseOrg/listByPageWithDataAuth`,
+    params: { Q_EQ_frozen__Boolean: 0, S_Code:"desc" }
   },
+  remotePaging: true,
   columns: [{
     title: '代码',
     dataIndex: 'code',

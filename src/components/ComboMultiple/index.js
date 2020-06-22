@@ -20,7 +20,7 @@ const ComboSelect = forwardRef(({
   reader = {},
   disabled = false,
   forExtra = false,
-  value=[]
+  value = []
 }, ref) => {
   const wrapperRef = useRef(null)
   const { name: readName = 'id', field: readField = ['id'] } = reader;
@@ -42,10 +42,10 @@ const ComboSelect = forwardRef(({
   }
   function handleSelectedRow(keys, rows) {
     setSelectedKeys(keys)
-    const names = rows.map(item => item[readName])
+    // const names = rows.map(item => item[readName])
     if (!!setFieldsValue) {
       setFieldsValue({
-        [name]: names
+        [name]: rows
       });
       const fieldValues = readField.map(item => {
         return rows.map(i => i[item]);
@@ -56,7 +56,7 @@ const ComboSelect = forwardRef(({
         })
       })
     }
-    onChange(names)
+    onChange(rows)
     onRowsChange(rows)
   }
   function handleCloseTab(item) {
@@ -69,7 +69,7 @@ const ComboSelect = forwardRef(({
     getDataSource()
   }, [])
   function updateTabList() {
-    if(forExtra) {
+    if (forExtra) {
       const [s] = field;
       const ls = getFieldValue(s) || [];
       const fds = dataSource.filter((item) => {
@@ -131,10 +131,10 @@ const ComboSelect = forwardRef(({
           minHeight: 32
         }}>
           {
-            tabList.length === 0 ? <div style={{ color: '#ccc', height: 32, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{placeholder}</div> : null
+            value.length === 0 ? <div style={{ color: '#ccc', height: 32, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{placeholder}</div> : null
           }
           {
-            tabList.map((item, index) => <Tag key={`${index}-tab-value`} style={{
+            value.map((item, index) => <Tag key={`${index}-tab-value`} style={{
               margin: 5
             }} closable onClose={() => handleCloseTab(item)} visible={true}>{`${item[rdk]} ${item[readName]}`}</Tag>)
           }

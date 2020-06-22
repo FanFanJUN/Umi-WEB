@@ -198,7 +198,7 @@ function PurchaseStategy() {
       title: '需求公司',
       type: 'multiple',
       key: 'Q_IN_adjustScope',
-      props: corporationProps
+      props: {...corporationProps, forExtra: true}
     },
     {
       title: '采购策略名称',
@@ -295,6 +295,7 @@ function PurchaseStategy() {
   }
   // 高级搜索
   function handleAdvnacedSearch(v) {
+    /*
     const keys = Object.keys(v);
     const filters = keys.map((item) => {
       const [_, operator, fieldName, isName] = item.split('_');
@@ -330,13 +331,29 @@ function PurchaseStategy() {
       }
       return [{ value: undefined }]
     }
-    const athoerFields = formatRangeValues(range);
-    const formatFields = filters.concat(athoerFields).filter(item => !!item.value && !Array.isArray(item.value));
+    // const athoerFields = formatRangeValues(range);
+    const formatFields = filters.filter(item => !!item.value && !Array.isArray(item.value));
     setSearchValue({
-      filters: formatFields
+      filters: filters
     })
     uploadTable()
     headerRef.current.hide()
+    */
+    const keys = Object.keys(v);
+    const filters = keys.map((item) => {
+      const [_, operator, fieldName, isName] = item.split('_');
+      return {
+        fieldName,
+        operator,
+        value: !!isName ? undefined : v[item]
+      }
+    }).filter(item => !!item.value)
+    setSearchValue({
+      filters: filters
+    })
+    uploadTable()
+    headerRef.current.hide()
+
   }
   // 删除
   async function removeListItem() {
@@ -365,19 +382,19 @@ function PurchaseStategy() {
   }
   function handleEditor() {
     const [key] = selectedRowKeys;
-    const { id='' }= FRAMEELEMENT;
-    const src='//decmp.changhong.com/react-srm-ps-web/#/purchase/strategy'
+    const { id = '' } = FRAMEELEMENT;
+    const src = '//decmp.changhong.com/react-srm-ps-web/#/purchase/strategy'
     openNewTab(`purchase/strategy/editor?id=${key}&frameElementId=${id}&frameElementSrc=${src}`, '编辑采购策略', false)
   }
   function handleCreate() {
-    const { id='' }= FRAMEELEMENT;
-    const src='//decmp.changhong.com/react-srm-ps-web/#/purchase/strategy'
+    const { id = '' } = FRAMEELEMENT;
+    const src = '//decmp.changhong.com/react-srm-ps-web/#/purchase/strategy'
     openNewTab(`purchase/strategy/create?frameElementId=${id}&frameElementSrc=${src}`, '新增采购策略', false)
   }
   function handleChange() {
     const [key] = selectedRowKeys;
-    const { id='' }= FRAMEELEMENT;
-    const src='//decmp.changhong.com/react-srm-ps-web/#/purchase/strategy'
+    const { id = '' } = FRAMEELEMENT;
+    const src = '//decmp.changhong.com/react-srm-ps-web/#/purchase/strategy'
     openNewTab(`purchase/strategy/change?id=${key}&frameElementId=${id}&frameElementSrc=${src}`, '变更采购策略', false)
   }
   function handleCheckDetail() {

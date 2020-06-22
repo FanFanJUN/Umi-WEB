@@ -8,7 +8,7 @@
 
 import React from 'react';
 import { Button, Row, Col, Form, Input, DatePicker } from 'antd';
-import { ComboSelect, MixinSelect } from '@/components';
+import { ComboSelect, MixinSelect, ComboMultiple } from '@/components';
 import {
   ComboGrid,
   ComboList,
@@ -22,7 +22,7 @@ const Combos = {
   list: ComboList,
   tree: ComboTree,
   searchTable: ComboGrid,
-  multiple: ComboSelect,
+  multiple: ComboMultiple,
   select: MixinSelect,
   selectTree: ComboTree,
   rangePicker: RangePicker

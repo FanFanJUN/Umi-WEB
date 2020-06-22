@@ -7,6 +7,7 @@ import { ComboAttachment, Upload } from '@/components';
 import { getUserAccount, downloadBlobFile } from '../../../utils';
 import { downloadExcelDataImportTemplate } from '../../../services/strategy';
 import styles from './index.less';
+import moment from 'moment';
 const importColumns = [
   {
     title: '物料分类',
@@ -61,7 +62,10 @@ const importColumns = [
   },
   {
     title: '定价时间',
-    dataIndex: 'pricingTime'
+    dataIndex: 'pricingTime',
+    render(text) {
+      return moment(text).format('YYYY-MM')
+    }
   },
   {
     title: '供应商选择原则',
@@ -191,7 +195,7 @@ function StrategyTable({
       title: '定价时间',
       dataIndex: 'pricingDateList',
       render(text) {
-        return text.map(item => item.date).join('；')
+        return text.map(item => moment(item.date).format('YYYY-MM')).join('；')
       }
     },
     {
