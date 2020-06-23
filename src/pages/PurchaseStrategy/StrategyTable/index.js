@@ -16,6 +16,7 @@ const importColumns = [
   {
     title: '预计需求规模(数量)',
     dataIndex: 'expectedDemandScaleAmount',
+    widht: 140,
     render(text) {
       return <Statistic valueStyle={{ fontSize: 14 }} value={text}/>
     }
@@ -23,6 +24,7 @@ const importColumns = [
   {
     title: '预计需求规模(数量)',
     dataIndex: 'expectedDemandScalePrice',
+    widht: 140,
     render(text) {
       return <Statistic valueStyle={{ fontSize: 14 }} value={text}/>
     }
