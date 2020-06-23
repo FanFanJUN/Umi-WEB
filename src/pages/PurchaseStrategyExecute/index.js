@@ -80,7 +80,7 @@ function PurchaseStrategyExecute() {
       dataIndex: 'expectedDemandScaleAmount',
       width: 180,
       render(text) {
-        return <Statistic valueStyle={{ fontSize: 14 }} value={text}/>
+        return <Statistic valueStyle={{ fontSize: 14 }} value={text} />
       }
     },
     {
@@ -88,7 +88,7 @@ function PurchaseStrategyExecute() {
       dataIndex: 'expectedDemandScalePrice',
       width: 180,
       render(text) {
-        return <Statistic valueStyle={{ fontSize: 14 }} value={text}/>
+        return <Statistic valueStyle={{ fontSize: 14 }} value={text} />
       }
     },
     { title: '币种', dataIndex: 'currencyName' },
@@ -133,8 +133,8 @@ function PurchaseStrategyExecute() {
     {
       title: '成本目标说明',
       dataIndex: 'costTargetRemark',
-      render(costTargetRemark,{ costTarget }) {
-        if(!costTargetRemark) {
+      render(costTargetRemark, { costTarget }) {
+        if (!costTargetRemark) {
           return ""
         }
         const suffix = costTarget === 'DropRatio' ? '%' : '万元';
@@ -161,14 +161,14 @@ function PurchaseStrategyExecute() {
       title: '附件',
       dataIndex: 'attachment',
       render: (text) => {
-        return !!text ? <Upload entityId={text} type='show'/> : '无'
+        return !!text ? <Upload entityId={text} type='show' /> : '无'
       }
     }
   ].map(_ => ({ ..._, align: 'center' }))
   const tableProps = {
     store: {
       url: `${psBaseUrl}/purchaseStrategyHeader/findPurchaseStrategyExecuteDetailByPage`,
-      params: {...searchValue, filters: tableFilters },
+      params: { ...searchValue },
       type: 'POST'
     }
   }
@@ -202,7 +202,7 @@ function PurchaseStrategyExecute() {
       title: '需求公司',
       type: 'multiple',
       key: 'Q_IN_adjustScope',
-      props: corporationProps
+      props: {...corporationProps, forExtra: true}
     },
     {
       title: '采购策略名称',
@@ -291,7 +291,50 @@ function PurchaseStrategyExecute() {
   }
   // 高级搜索
   function handleAdvnacedSearch(v) {
+    // const keys = Object.keys(v);
+    // const filters = keys.map((item) => {
+    //   const [_, operator, fieldName, isName] = item.split('_');
+    //   return {
+    //     fieldName,
+    //     operator,
+    //     value: !!isName ? undefined : v[item]
+    //   }
+    // })
+    // const range = filters.find(item=> Array.isArray(item.value));
+    // const formatRangeValues = (rs) => {
+    //   if(!rs){
+    //     return [{ value: undefined }]
+    //   }
+    //   if(rs.value && rs.value.length > 0) {
+    //     const [begin, end] = rs.value;
+    //     const be = begin.format('YYYY-MM-DD HH:mm:ss')
+    //     const en = end.format('YYYY-MM-DD HH:mm:ss')
+    //     return [
+    //       {
+    //         fieldName: 'createdDate',
+    //         operator: 'GE',
+    //         value: be,
+    //         fieldType: 'Date'
+    //       },
+    //       {
+    //         fieldName: 'createdDate',
+    //         operator: 'LE',
+    //         value: en,
+    //         fieldType: 'Date'
+    //       }
+    //     ]
+    //   }
+    //   return [{ value: undefined }]
+    // }
+    // const athoerFields = formatRangeValues(range);
+    // const formatFields = filters.concat(athoerFields).filter(item => !!item.value && !Array.isArray(item.value));
+    // setSearchValue({
+    //   filters: formatFields
+    // })
+    // uploadTable()
+    // headerRef.current.hide()
     const keys = Object.keys(v);
+    console.log(keys)
     const filters = keys.map((item) => {
       const [_, operator, fieldName, isName] = item.split('_');
       return {
@@ -299,37 +342,9 @@ function PurchaseStrategyExecute() {
         operator,
         value: !!isName ? undefined : v[item]
       }
-    })
-    const range = filters.find(item=> Array.isArray(item.value));
-    const formatRangeValues = (rs) => {
-      if(!rs){
-        return [{ value: undefined }]
-      }
-      if(rs.value && rs.value.length > 0) {
-        const [begin, end] = rs.value;
-        const be = begin.format('YYYY-MM-DD HH:mm:ss')
-        const en = end.format('YYYY-MM-DD HH:mm:ss')
-        return [
-          {
-            fieldName: 'createdDate',
-            operator: 'GE',
-            value: be,
-            fieldType: 'Date'
-          },
-          {
-            fieldName: 'createdDate',
-            operator: 'LE',
-            value: en,
-            fieldType: 'Date'
-          }
-        ]
-      }
-      return [{ value: undefined }]
-    }
-    const athoerFields = formatRangeValues(range);
-    const formatFields = filters.concat(athoerFields).filter(item => !!item.value && !Array.isArray(item.value));
+    }).filter(item => !!item.value)
     setSearchValue({
-      filters: formatFields
+      filters: filters
     })
     uploadTable()
     headerRef.current.hide()
@@ -341,7 +356,7 @@ function PurchaseStrategyExecute() {
     message.loading()
     const { success, data, message: msg } = await downloadExcelForChangeParams(searchValue);
     message.destroy()
-    if(success) {
+    if (success) {
       message.success('导出成功')
       downloadBlobFile(data, '采购策略执行明细.xlsx')
       return
@@ -386,17 +401,17 @@ function PurchaseStrategyExecute() {
       <AutoSizeLayout>
         {
           (h) => <ExtTable
-          allowCancelSelect
-          columns={columns}
-          showSearch={false}
-          ref={tableRef}
-          rowKey={(item) => item.id}
-          checkbox={false}
-          height={h}
-          remotePaging={true}
-          ellipsis={false}
-          {...tableProps}
-        />
+            allowCancelSelect
+            columns={columns}
+            showSearch={false}
+            ref={tableRef}
+            rowKey={(item) => item.id}
+            checkbox={false}
+            height={h}
+            remotePaging={true}
+            ellipsis={false}
+            {...tableProps}
+          />
         }
       </AutoSizeLayout>
       <Modal

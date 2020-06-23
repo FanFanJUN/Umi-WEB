@@ -2,7 +2,8 @@ import React, {
   useState,
   forwardRef,
   useRef,
-  useEffect
+  useEffect,
+  useCallback
 } from 'react';
 import { ExtTable } from 'suid';
 import { Popover, Tag } from 'antd';
@@ -29,7 +30,7 @@ const ComboSelect = forwardRef(({
   const [rdk] = readField;
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [dataSource, setDataSource] = useState([]);
-  const [tabList, setTabList] = useState([]);
+  // const [tabList, setTabList] = useState([]);
   const { setFieldsValue, getFieldValue } = form;
   function getDataSource() {
     const { url, params } = store;
@@ -68,24 +69,7 @@ const ComboSelect = forwardRef(({
   useEffect(() => {
     getDataSource()
   }, [])
-  function updateTabList() {
-    if (forExtra) {
-      const [s] = field;
-      const ls = getFieldValue(s) || [];
-      const fds = dataSource.filter((item) => {
-        return ls.findIndex(k => k === item[rdk]) !== -1;
-      })
-      setTabList(fds)
-      return
-    }
-    const fds = dataSource.filter((item) => {
-      return selectedKeys.findIndex(k => k === item[rdk]) !== -1;
-    })
-    setTabList(fds)
-  }
-  useEffect(() => {
-    updateTabList()
-  }, [selectedKeys])
+  const sk = value.map(item => item[rdk])
   return (
     <div
       ref={wrapperRef}
@@ -107,7 +91,7 @@ const ComboSelect = forwardRef(({
               }}
               columns={columns}
               rowKey={(item) => item[fieldKeyCode]}
-              selectedRowKeys={selectedKeys}
+              selectedRowKeys={sk}
               onSelectRow={handleSelectedRow}
               showSearch={true}
               width={400}
