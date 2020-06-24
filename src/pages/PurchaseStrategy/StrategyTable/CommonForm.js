@@ -155,12 +155,12 @@ const CommonForm = forwardRef(
             </Item>
           </Col>
           <Col span={12}>
-            <Item label="预计需求数量" {...formLayout}>
+            <Item label="预计需求规模(数量)" {...formLayout}>
               {getFieldDecorator('expectedDemandScaleAmount', {
                 rules: [
                   {
                     required: true,
-                    message: '请填写预计需求数量',
+                    message: '请填写预计需求规模(数量)',
                   },
                 ],
               })(
@@ -168,7 +168,7 @@ const CommonForm = forwardRef(
                   style={{
                     width: "100%"
                   }}
-                  placeholder="请输入预计需求数量"
+                  placeholder="请输入预计需求规模(数量)"
                   formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                   parser={value => value.replace(/\$\s?|(,*)/g, '')}
                 />
@@ -178,7 +178,7 @@ const CommonForm = forwardRef(
         </Row>
         <Row>
           <Col span={12}>
-            <Item {...formLayout} label="预计需求规模">
+            <Item {...formLayout} label="预计需求规模(万元)">
               {getFieldDecorator('expectedDemandScalePrice', {
                 rules: [
                   {

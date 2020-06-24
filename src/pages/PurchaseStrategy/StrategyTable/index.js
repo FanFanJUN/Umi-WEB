@@ -16,15 +16,15 @@ const importColumns = [
   {
     title: '预计需求规模(数量)',
     dataIndex: 'expectedDemandScaleAmount',
-    widht: 140,
+    widht: 180,
     render(text) {
       return <Statistic valueStyle={{ fontSize: 14 }} value={text}/>
     }
   },
   {
-    title: '预计需求规模(数量)',
+    title: '预计需求规模(万元)',
     dataIndex: 'expectedDemandScalePrice',
-    widht: 140,
+    widht: 180,
     render(text) {
       return <Statistic valueStyle={{ fontSize: 14 }} value={text}/>
     }
@@ -134,6 +134,7 @@ function StrategyTable({
     {
       title: '预计需求规模（数量）',
       dataIndex: 'expectedDemandScaleAmount',
+      width: 180,
       render(text) {
         return <Statistic valueStyle={{ fontSize: 14 }} value={text}/>
       }
@@ -141,6 +142,7 @@ function StrategyTable({
     {
       title: '预计需求规模（万元）',
       dataIndex: 'expectedDemandScalePrice',
+      width: 180,
       render(text) {
         return <Statistic valueStyle={{ fontSize: 14 }} value={text}/>
       }
@@ -394,14 +396,14 @@ function StrategyTable({
       return {
         ...error,
         ...column,
-        message: '未填写预计需求数量'
+        message: '未填写预计需求规模(数量)'
       }
     }
     if (!expectedDemandScalePrice) {
       return {
         ...error,
         ...column,
-        message: '未填写预计需求规模'
+        message: '未填写预计需求规模(万元)'
       }
     }
     if (!adjustScope) {
