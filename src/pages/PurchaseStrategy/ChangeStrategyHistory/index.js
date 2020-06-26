@@ -300,6 +300,7 @@ function ChangeStrategyHistory() {
         footer={null}
         destroyOnClose
         onCancel={hideHistory}
+        width={'80vw'}
       >
         <FlowHistory businessId={flowId} flowMapUrl='flow-web/design/showLook' />
       </ExtModal>
