@@ -84,6 +84,10 @@ function PurchaseStrategyExecute() {
       }
     },
     {
+      title: '计量单位',
+      dataIndex: 'unitName'
+    },
+    {
       title: '预计需求规模(万元)',
       dataIndex: 'expectedDemandScalePrice',
       width: 180,

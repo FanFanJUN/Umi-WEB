@@ -53,7 +53,7 @@ export const majorGroupProps = {
 export const purchaseOrganizationProps = {
   store: {
     url: `${baseUrl}/purchaseOrg/listByPageWithDataAuth`,
-    params: { Q_EQ_frozen__Boolean: 0, S_Code:"desc" }
+    params: { Q_EQ_frozen__Boolean: 0, S_Code: "desc" }
   },
   remotePaging: true,
   columns: [{
@@ -91,6 +91,7 @@ export const currencyProps = {
     },
     type: 'post'
   },
+  // remotePaging: true,
   reader: {
     name: 'name',
     field: ['code'],
@@ -118,7 +119,7 @@ export const proPlanMaterialTypeProps = {
     width: '100%'
   },
   treeNodeProps: (node) => {
-    if(node.nodeLevel === 1) {
+    if (node.nodeLevel === 1) {
       return {
         selectable: false
       }
@@ -160,7 +161,7 @@ export const materialClassProps = {
     width: '100%'
   },
   treeNodeProps: (node) => {
-    if(node.nodeLevel === 0) {
+    if (node.nodeLevel === 0) {
       return {
         selectable: false
       }
@@ -229,30 +230,6 @@ export const frequencyProps = {
       Q_EQ_frozen__Boolean: false
     }
   },
-  // dataSource: [
-  //   {
-  //     code: 'Annually',
-  //     name: '年度'
-  //   }, {
-  //     code: 'SemiAnnually',
-  //     name: '半年'
-  //   }, {
-  //     code: 'Quarterly',
-  //     name: '季度'
-  //   }, {
-  //     code: 'Monthly',
-  //     name: '月度'
-  //   }, {
-  //     code: 'TenDays',
-  //     name: '按旬'
-  //   }, {
-  //     code: 'Order',
-  //     name: '按单'
-  //   }, {
-  //     code: 'Demand',
-  //     name: '按需'
-  //   }
-  // ],
   style: {
     width: '100%'
   },
@@ -344,4 +321,26 @@ export const effectStatusProps = {
   style: {
     width: '100%'
   }
+}
+// 计量单位
+export const unitProps = {
+  remotePaging: true,
+  store: {
+    url: `${commonsUrl}/unit/findByPage`,
+    type: 'post',
+    params: {
+      filters: [{
+        fieldName: 'frozen',
+        value: false,
+        operator: 'EQ'
+      }],
+      // S_Code: 'desc',
+      // Q_EQ_frozen__Boolean: false
+    }
+  },
+  reader: {
+    name: 'name',
+    field: ['code']
+  },
+  placeholder: '选择计量单位'
 }

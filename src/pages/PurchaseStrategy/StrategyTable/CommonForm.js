@@ -1,6 +1,7 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useRef } from 'react';
 import { Modal, Form, Row, Col, Input, Tooltip, InputNumber } from 'antd';
 import {
+  unitProps,
   frequencyProps,
   costTargetProps,
   corporationProps,
@@ -156,23 +157,42 @@ const CommonForm = forwardRef(
           </Col>
           <Col span={12}>
             <Item label="预计需求规模(数量)" {...formLayout}>
-              {getFieldDecorator('expectedDemandScaleAmount', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请填写预计需求规模(数量)',
-                  },
-                ],
-              })(
-                <InputNumber
-                  style={{
-                    width: "100%"
-                  }}
-                  placeholder="请输入预计需求规模(数量)"
-                  formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                  parser={value => value.replace(/\$\s?|(,*)/g, '')}
-                />
-              )}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                {
+                  getFieldDecorator('expectedDemandScaleAmount', {
+                    rules: [
+                      {
+                        required: true,
+                        message: '请填写预计需求规模(数量)',
+                      },
+                    ],
+                  })(
+                    <InputNumber
+                      style={{ flex: 1 }}
+                      placeholder="请输入预计需求规模(数量)"
+                      formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                      parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                    />
+                  )}
+                {
+                  getFieldDecorator('unitCode'),
+                  getFieldDecorator('unitName', {
+                    rules: [
+                      {
+                        required: true,
+                        message: '请选择计量单位'
+                      }
+                    ]
+                  })(<ComboList
+                    style={{ flex: 1 }}
+                    form={form}
+                    {...unitProps}
+                    name='unitName'
+                    field={['unitCode']}
+                    disabled={mode === 'change' && type === 'editor'}
+                  ></ComboList>)
+                }
+              </div>
             </Item>
           </Col>
         </Row>

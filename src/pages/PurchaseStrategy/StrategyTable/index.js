@@ -22,6 +22,10 @@ const importColumns = [
     }
   },
   {
+    title: '计量单位',
+    dataIndex: 'unitName'
+  },
+  {
     title: '预计需求规模(万元)',
     dataIndex: 'expectedDemandScalePrice',
     widht: 180,
@@ -138,6 +142,10 @@ function StrategyTable({
       render(text) {
         return <Statistic valueStyle={{ fontSize: 14 }} value={text}/>
       }
+    },
+    {
+      title: '计量单位',
+      dataIndex: 'unitName'
     },
     {
       title: '预计需求规模（万元）',
@@ -377,7 +385,8 @@ function StrategyTable({
       costTarget,
       supplierSelectRule,
       supplierCooperationWay,
-      costTargetRemark
+      costTargetRemark,
+      unitName
     } = column;
     const timeDisabled = pricingFrequencyName === '按单' || pricingFrequencyName === '按需';
     const error = {
@@ -474,6 +483,13 @@ function StrategyTable({
         ...error,
         ...column,
         message: '未填写成本目标说明'
+      }
+    }
+    if(!unitName) {
+      return {
+        ...error,
+        ...column,
+        message: '未填写计量单位'
       }
     }
     return {
