@@ -242,7 +242,7 @@ function PurchaseStrategyExecute() {
     {
       title: '定价频次',
       type: 'list',
-      key: 'Q_EQ_pricingFrequency',
+      key: 'Q_EQ_pricingFrequencyCode',
       props: frequencyProps
     },
     {
