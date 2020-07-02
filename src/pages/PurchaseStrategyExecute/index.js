@@ -26,6 +26,7 @@ import {
   priceCombineProps
 } from '@/utils/commonProps';
 import styles from './index.less';
+import { authAction } from 'suid/lib/utils';
 const { Search } = Input;
 function PurchaseStrategyExecute() {
   const headerRef = useRef(null)
@@ -206,7 +207,7 @@ function PurchaseStrategyExecute() {
       title: '需求公司',
       type: 'multiple',
       key: 'Q_IN_adjustScope',
-      props: {...corporationProps, forExtra: true}
+      props: { ...corporationProps, forExtra: true }
     },
     {
       title: '采购策略名称',
@@ -375,9 +376,9 @@ function PurchaseStrategyExecute() {
     <>
       <Header
         left={
-          <>
-            <Button onClick={downloadExcelForPamras} className={styles.btn}>导出Excel</Button>
-          </>
+          authAction(
+            <Button key='PURCHASE_EXCUTE_EXPORT' onClick={downloadExcelForPamras} className={styles.btn}>导出Excel</Button>
+          )
         }
         right={
           <>
