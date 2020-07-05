@@ -5,12 +5,11 @@ import { Button, Modal, message, Spin } from 'antd';
 import StrategyForm from '../StrategyForm';
 import StrategyTable from '../StrategyTable';
 import classnames from 'classnames';
-import {
-  getPurchaseStrategyVoByFlowId
-} from '@/services/strategy';
+import { getPurchaseStrategyVoByFlowId } from '@/services/strategy';
 import { closeCurrent } from '@/utils';
 import moment from 'moment';
 import styles from './index.less';
+import { checkToken } from '../../../utils';
 const { Approve } = WorkFlow;
 function ApprovePage() {
   const formRef = createRef();
@@ -55,22 +54,22 @@ function ApprovePage() {
         ...initialValues,
         submitList: submitList.map(item => ({ ...item, code: item.userAccount })),
         sendList: sendList.map(item => ({ ...item, code: item.userAccount })),
-        purchaseStrategyDate: [moment(purchaseStrategyBegin), moment(purchaseStrategyEnd)]
-      }
+        purchaseStrategyDate: [moment(purchaseStrategyBegin), moment(purchaseStrategyEnd)],
+      };
       setInitValues({
-        attachment
+        attachment,
       });
       setFieldsValue(mixinValues);
       setDataSource(detailList);
       triggerLoading(false);
-      return
+      return;
     }
-    message.error(msg)
+    message.error(msg);
   }
   function handleSubmitComplete(res) {
     const { success } = res;
     if (success) {
-      closeCurrent()
+      closeCurrent();
     }
   }
   function handleClose() {
@@ -79,43 +78,37 @@ function ApprovePage() {
       content: '未保存的内容会全部丢失，确认已经保存或者不需要保存吗？',
       onOk: () => closeCurrent(),
       okText: '确定返回',
-      cancelText: '取消'
-    })
+      cancelText: '取消',
+    });
   }
   useEffect(() => {
-    initFommFieldsValuesAndTableDataSource()
-  }, [])
+    initFommFieldsValuesAndTableDataSource();
+    checkToken(query);
+  }, []);
   return (
     <div>
       <div className={classnames([styles.header, styles.flexBetweenStart])}>
-        <span className={styles.title}>
-          采购策略审批
-          </span>
+        <span className={styles.title}>采购策略审批</span>
         <div>
-          <Button className={styles.btn} onClick={handleClose}>关闭</Button>
+          <Button className={styles.btn} onClick={handleClose}>
+            关闭
+          </Button>
         </div>
       </div>
       <Approve
         businessId={businessId}
         taskId={taskId}
         instanceId={instanceId}
-        flowMapUrl='flow-web/design/showLook'
+        flowMapUrl="flow-web/design/showLook"
         submitComplete={handleSubmitComplete}
       >
         <Spin spinning={loading}>
-          <StrategyForm
-            wrappedComponentRef={formRef}
-            initialValue={initValues}
-            type='detail'
-          />
-          <StrategyTable
-            dataSource={dataSource}
-            type="detail"
-          />
+          <StrategyForm wrappedComponentRef={formRef} initialValue={initValues} type="detail" />
+          <StrategyTable dataSource={dataSource} type="detail" />
         </Spin>
       </Approve>
     </div>
-  )
+  );
 }
 
 export default ApprovePage;

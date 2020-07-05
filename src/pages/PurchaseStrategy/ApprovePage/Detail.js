@@ -4,11 +4,10 @@ import { /*Button, Modal*/ message, Spin } from 'antd';
 import StrategyForm from '../DetailLayout';
 import StrategyTable from '../StrategyTable';
 import classnames from 'classnames';
-import {
-  getPurchaseStrategyVoByFlowId
-} from '@/services/strategy';
+import { getPurchaseStrategyVoByFlowId } from '@/services/strategy';
 import moment from 'moment';
 import styles from './index.less';
+import { checkToken } from '../../../utils';
 function DetailStrategy() {
   const formRef = createRef();
   const { query } = router.useLocation();
@@ -53,44 +52,34 @@ function DetailStrategy() {
         submitList: submitList.map(item => item.userAccount),
         sendName: sendList.map(item => item.userName),
         sendList: sendList.map(item => item.userAccount),
-        purchaseStrategyDate: [moment(purchaseStrategyBegin), moment(purchaseStrategyEnd)]
-      }
+        purchaseStrategyDate: [moment(purchaseStrategyBegin), moment(purchaseStrategyEnd)],
+      };
       setInitValues({
         attachment,
-        ...mixinValues
+        ...mixinValues,
       });
-      
+
       // setFieldsValue(mixinValues);
       setDataSource(detailList);
       triggerLoading(false);
-      return
+      return;
     }
-    message.error(msg)
+    message.error(msg);
   }
   useEffect(() => {
-    initFommFieldsValuesAndTableDataSource()
-  }, [])
+    initFommFieldsValuesAndTableDataSource();
+    checkToken(query);
+  }, []);
   return (
     <Spin spinning={loading}>
       <div className={classnames([styles.header, styles.flexBetweenStart])}>
-        <span className={styles.title}>
-          采购策略明细
-        </span>
-        <div>
-          {/* <Button className={styles.btn} onClick={handleBack}>返回</Button> */}
-        </div>
+        <span className={styles.title}>采购策略明细</span>
+        <div>{/* <Button className={styles.btn} onClick={handleBack}>返回</Button> */}</div>
       </div>
-      <StrategyForm
-        wrappedComponentRef={formRef}
-        initialValue={initValues}
-        type='detail'
-      />
-      <StrategyTable
-        dataSource={dataSource}
-        type="detail"
-      />
+      <StrategyForm wrappedComponentRef={formRef} initialValue={initValues} type="detail" />
+      <StrategyTable dataSource={dataSource} type="detail" />
     </Spin>
-  )
+  );
 }
 
 export default DetailStrategy;

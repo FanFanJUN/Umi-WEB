@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { router } from 'dva';
-import {
-  utils,
-  WorkFlow
-} from 'suid';
+import { utils, WorkFlow } from 'suid';
 import { Button, Modal, message, Spin, Row, Input, Form, Col } from 'antd';
 import ChangeForm from '../DetailLayout';
 import StrategyTable from '../StrategyTable';
@@ -15,23 +12,22 @@ import {
   strategyTableCreateLine,
   saveStrategyTableImportData,
   strategyTableLineRelevanceDocment,
-  getPurchaseStrategyChangeVoByFlowId
+  getPurchaseStrategyChangeVoByFlowId,
 } from '@/services/strategy';
 import moment from 'moment';
 import { openNewTab, getUUID, closeCurrent } from '@/utils';
 import styles from './index.less';
+import { checkToken } from '../../../utils';
 const { Approve } = WorkFlow;
 const formLayout = {
   labelCol: {
-    span: 8
+    span: 8,
   },
   wrapperCol: {
-    span: 16
-  }
-}
-function ChangeStrategy({
-  form
-}) {
+    span: 16,
+  },
+};
+function ChangeStrategy({ form }) {
   const { getFieldDecorator, getFieldValue } = form;
   const formRef = useRef(null);
   const { query } = router.useLocation();
@@ -77,7 +73,7 @@ function ChangeStrategy({
         purchaseStrategyBegin,
         ...initialValues
       } = data;
-      const { form: childrenForm } = formRef.current
+      const { form: childrenForm } = formRef.current;
       const { setFieldsValue } = childrenForm;
       const { setFieldsValue: modifySetFieldsValue } = form;
 
@@ -87,61 +83,52 @@ function ChangeStrategy({
         submitList: submitList.map(item => item.userAccount),
         sendName: sendList.map(item => item.userName),
         sendList: sendList.map(item => item.userAccount),
-        purchaseStrategyDate: [moment(purchaseStrategyBegin), moment(purchaseStrategyEnd)]
-      }
+        purchaseStrategyDate: [moment(purchaseStrategyBegin), moment(purchaseStrategyEnd)],
+      };
       const { modifyReason, attachment: reasonAttach } = modifyHeader;
 
-      setReasonAttach(reasonAttach)
+      setReasonAttach(reasonAttach);
       setInitValues({
         attachment,
-        ...mixinValues
+        ...mixinValues,
       });
       const addIdList = detailList.map(item => ({
         ...item,
-        localId: item.id
-      }))
+        localId: item.id,
+      }));
       modifySetFieldsValue({
-        reason: modifyReason
-      })
+        reason: modifyReason,
+      });
       // setFieldsValue(mixinValues);
       setDataSource(addIdList);
-      setCurrentId(id)
-      setCurrentCode(code)
-      setIsInvalid(invalid ? '（作废）' : '')
+      setCurrentId(id);
+      setCurrentCode(code);
+      setIsInvalid(invalid ? '（作废）' : '');
       triggerLoading(false);
-      return
+      return;
     }
     triggerLoading(false);
-    message.error(msg)
+    message.error(msg);
   }
 
   useEffect(() => {
-    initFommFieldsValuesAndTableDataSource()
-  }, [])
+    initFommFieldsValuesAndTableDataSource();
+    checkToken(query);
+  }, []);
   return (
     <div>
       <div className={classnames([styles.header, styles.flexBetweenStart])}>
         <span className={styles.title}>
           变更采购策略：{currentCode} {isInvalid}
         </span>
-        <div>
-
-        </div>
+        <div></div>
       </div>
       <Spin spinning={loading} tip="处理中...">
-        <ChangeForm
-          wrappedComponentRef={formRef}
-          initialValue={initValues}
-          type='detail'
-        />
-        <StrategyTable
-          dataSource={dataSource}
-          type="detail"
-          loading={loading}
-        />
+        <ChangeForm wrappedComponentRef={formRef} initialValue={initValues} type="detail" />
+        <StrategyTable dataSource={dataSource} type="detail" loading={loading} />
       </Spin>
     </div>
-  )
+  );
 }
 
 export default Form.create()(ChangeStrategy);

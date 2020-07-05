@@ -1,23 +1,22 @@
 import React, { createRef, useState, useEffect, useRef } from 'react';
-import { router } from 'dva';
+import { router, useParams, useLocation } from 'dva';
 import { WorkFlow, ExtTable } from 'suid';
 import { Button, Modal, message, Spin, Tabs } from 'antd';
 import { psBaseUrl } from '@/utils/commonUrl';
 import StrategyForm from '../StrategyForm';
 import StrategyTable from '../StrategyTable';
 import classnames from 'classnames';
-import {
-  getPurchaseStrategyChangeVoByFlowId
-} from '@/services/strategy';
-import { Upload } from '../../../components'
+import { getPurchaseStrategyChangeVoByFlowId } from '@/services/strategy';
+import { Upload } from '../../../components';
 import { closeCurrent } from '@/utils';
 import moment from 'moment';
 import styles from './index.less';
+import { checkToken } from '../../../utils';
 const { TabPane } = Tabs;
 const { Approve } = WorkFlow;
 function ApprovePage() {
   const formRef = createRef();
-  const tableRef = useRef(null)
+  const tableRef = useRef(null);
   const { query } = router.useLocation();
   const { id: businessId, taskId, instanceId } = query;
   const [dataSource, setDataSource] = useState([]);
@@ -29,30 +28,30 @@ function ApprovePage() {
   const store = {
     url: `${psBaseUrl}/PurchaseStrategyModifyHistory/listByPage`,
     params: {
-      Q_EQ_changeHistoryId: checkId
-    }
-  }
+      Q_EQ_changeHistoryId: checkId,
+    },
+  };
   const detailColumn = [
     {
       title: '操作内容',
-      dataIndex: 'operation'
+      dataIndex: 'operation',
     },
     {
       title: '对象',
-      dataIndex: 'target'
+      dataIndex: 'target',
     },
     {
       title: '变更字段',
-      dataIndex: 'changeField'
+      dataIndex: 'changeField',
     },
     {
       title: '更改前',
-      dataIndex: 'changeBefore'
+      dataIndex: 'changeBefore',
     },
     {
       title: '更改后',
-      dataIndex: 'changeLater'
-    }
+      dataIndex: 'changeLater',
+    },
   ];
   async function initFommFieldsValuesAndTableDataSource() {
     const { id: flowId } = query;
@@ -70,8 +69,8 @@ function ApprovePage() {
         creatorId,
         detailList,
         attachment,
-        submitList=[],
-        sendList=[],
+        submitList = [],
+        sendList = [],
         changeable,
         tenantCode,
         createdDate,
@@ -92,30 +91,30 @@ function ApprovePage() {
         ...initialValues,
         submitList: submitList.map(item => ({ ...item, code: item.userAccount })),
         sendList: sendList.map(item => ({ ...item, code: item.userAccount })),
-        purchaseStrategyDate: [moment(purchaseStrategyBegin), moment(purchaseStrategyEnd)]
-      }
+        purchaseStrategyDate: [moment(purchaseStrategyBegin), moment(purchaseStrategyEnd)],
+      };
       setInitValues({
-        attachment
+        attachment,
       });
-      setCheckId(modifyId)
-      setReason(modifyReason)
-      setAttachment(attachmentHeader)
+      setCheckId(modifyId);
+      setReason(modifyReason);
+      setAttachment(attachmentHeader);
       setFieldsValue(mixinValues);
       setDataSource(detailList);
       triggerLoading(false);
-      tableRef.current.remoteDataRefresh()
-      return
+      tableRef.current.remoteDataRefresh();
+      return;
     }
-    message.error(msg)
+    message.error(msg);
   }
   function handleComplete(info) {
     const { success, messge: msg } = info;
     if (success) {
-      message.success(msg)
-      closeCurrent()
-      return
+      message.success(msg);
+      closeCurrent();
+      return;
     }
-    message.error(msg)
+    message.error(msg);
   }
   function handleClose() {
     Modal.confirm({
@@ -123,20 +122,21 @@ function ApprovePage() {
       content: '未保存的内容会全部丢失，确认已经保存或者不需要保存吗？',
       onOk: () => closeCurrent(),
       okText: '确定返回',
-      cancelText: '取消'
-    })
+      cancelText: '取消',
+    });
   }
   useEffect(() => {
-    initFommFieldsValuesAndTableDataSource()
-  }, [])
+    initFommFieldsValuesAndTableDataSource();
+    checkToken(query)
+  }, []);
   return (
     <div>
       <div className={classnames([styles.header, styles.flexBetweenStart])}>
-        <span className={styles.title}>
-          采购策略变更
-          </span>
+        <span className={styles.title}>采购策略变更</span>
         <div>
-          <Button className={styles.btn} onClick={handleClose}>关闭</Button>
+          <Button className={styles.btn} onClick={handleClose}>
+            关闭
+          </Button>
         </div>
       </div>
       <Approve
@@ -144,40 +144,44 @@ function ApprovePage() {
         taskId={taskId}
         instanceId={instanceId}
         submitComplete={handleComplete}
-        flowMapUrl='flow-web/design/showLook'
+        flowMapUrl="flow-web/design/showLook"
       >
         <Tabs>
-          <TabPane tab='变更明细' key='changeDetail' forceRender>
+          <TabPane tab="变更明细" key="changeDetail" forceRender>
             <div>
               <div className={styles.lineTitle}>变更信息</div>
-              <div style={{
-                padding: '0 24px',
-                marginBottom: 12
-              }}>
+              <div
+                style={{
+                  padding: '0 24px',
+                  marginBottom: 12,
+                }}
+              >
                 <div>变更原因：{reason}</div>
                 <div>
-                  {
-                    !!headerAttachment ?
-                      <div style={{
+                  {!!headerAttachment ? (
+                    <div
+                      style={{
                         display: 'flex',
                         justifyContent: 'flex-start',
                         alignItems: 'center',
-                        padding: '0 12px'
-                      }}>
-                        <span>附件：</span><Upload entityId={headerAttachment} type='show' />
-                      </div> : null
-                  }
+                        padding: '0 12px',
+                      }}
+                    >
+                      <span>附件：</span>
+                      <Upload entityId={headerAttachment} type="show" />
+                    </div>
+                  ) : null}
                 </div>
               </div>
             </div>
             <div>
-              <div className={styles.lineTitle}>
-                变更明细
-              </div>
-              <div style={{
-                padding: '0 24px',
-                marginBottom: 12
-              }}>
+              <div className={styles.lineTitle}>变更明细</div>
+              <div
+                style={{
+                  padding: '0 24px',
+                  marginBottom: 12,
+                }}
+              >
                 <ExtTable
                   store={store}
                   allowCancelSelect
@@ -189,24 +193,16 @@ function ApprovePage() {
               </div>
             </div>
           </TabPane>
-          <TabPane tab='策略明细' key='detail' forceRender>
+          <TabPane tab="策略明细" key="detail" forceRender>
             <Spin spinning={loading}>
-              <StrategyForm
-                wrappedComponentRef={formRef}
-                initialValue={initValues}
-                type='detail'
-              />
-              <StrategyTable
-                dataSource={dataSource}
-                headerForm={formRef}
-                type="detail"
-              />
+              <StrategyForm wrappedComponentRef={formRef} initialValue={initValues} type="detail" />
+              <StrategyTable dataSource={dataSource} headerForm={formRef} type="detail" />
             </Spin>
           </TabPane>
         </Tabs>
       </Approve>
     </div>
-  )
+  );
 }
 
 export default ApprovePage;

@@ -3,17 +3,48 @@ import * as userAuth from './user';
 import { mainTabAction } from 'sei-utils';
 import { utils } from 'suid';
 import { onLineTarget } from '../../config/proxy.config';
+import request from './request';
 const { getUUID, storage } = utils;
 export function closeCurrent() {
   if (window.self.frameElement) {
     let currentId = window.self.frameElement.id;
-    if (window.top.homeView && (typeof window.top.homeView.getTabPanel) === 'function') {
+    if (window.top.homeView && typeof window.top.homeView.getTabPanel === 'function') {
       window.top.homeView.getTabPanel().close(currentId);
     } else {
       mainTabAction.tabClose(currentId);
     }
   }
 }
+
+const defaultAppCode = [
+  'SRM_RFQ_WEB',
+  'SRM_PO_WEB',
+  'SRM_WA_WEB',
+  'SRM_BAF_WEB',
+  'SRM_BIDDING_WEB',
+  'SRM_PURCHASE_WEB',
+  'SRM_PA_WEB',
+  'SRM_SM_WEB',
+  'SRM_SE_WEB',
+];
+
+export const checkToken = async params => {
+  console.log(params);
+  const { data, success } = await request({
+    url: '/api-gateway/auth-service/checkToken',
+    method: 'get',
+    params: {
+      _s: params?._s,
+      AppCode: defaultAppCode.toString(),
+    },
+  });
+  if (success) {
+    console.log(data);
+    sessionStorage.setItem('Authorization', JSON.stringify(data[0]));
+    sessionStorage.setItem('Right', data[1]);
+    sessionStorage.setItem('_s', params?._s);
+  }
+};
 
 /**
  * 打开新的页签
@@ -29,7 +60,7 @@ export function openNewTab(uri, title, closeCurrent = false, id = undefined) {
   if (closeCurrent) {
     if (window.self.frameElement) {
       let currentId = window.self.frameElement.id;
-      if (window.top.homeView && (typeof window.top.homeView.getTabPanel) === 'function') {
+      if (window.top.homeView && typeof window.top.homeView.getTabPanel === 'function') {
         window.top.homeView.getTabPanel().close(currentId);
       } else {
         mainTabAction.tabClose(currentId);
@@ -37,32 +68,32 @@ export function openNewTab(uri, title, closeCurrent = false, id = undefined) {
     }
   }
   const { protocol, host } = window.location;
-  let url = uri.indexOf(protocol) === 0 ? uri : '//' + host + "/react-srm-ps-web/#/" + uri;
+  let url = uri.indexOf(protocol) === 0 ? uri : '//' + host + '/react-srm-ps-web/#/' + uri;
   let tab = {
     title: title,
     url: url,
-    id: id
+    id: id,
   };
-  if (window.top.homeView && (typeof window.top.homeView.addTab) === 'function') {
+  if (window.top.homeView && typeof window.top.homeView.addTab === 'function') {
     window.top.homeView.addTab(tab);
   } else {
     let newTabData = {
       name: tab.title,
       featureUrl: tab.url,
-      id: tab.id
-    }
+      id: tab.id,
+    };
     if (!window.top.homeView) {
       window.open(url);
       return;
     }
-    mainTabAction.tabOpen(newTabData)
+    mainTabAction.tabOpen(newTabData);
   }
   return id;
 }
 
 export function getFrameElement() {
   const f = window.self.frameElement;
-  return !!f ? f : {}
+  return !!f ? f : {};
 }
 
 export function openNewTabOther(uri, title, closeCurrent = false, id = undefined, proxy) {
@@ -72,28 +103,28 @@ export function openNewTabOther(uri, title, closeCurrent = false, id = undefined
   if (closeCurrent) {
     if (window.self.frameElement) {
       let currentId = window.self.frameElement.id;
-      if (window.top.homeView && (typeof window.top.homeView.getTabPanel) === 'function') {
+      if (window.top.homeView && typeof window.top.homeView.getTabPanel === 'function') {
         window.top.homeView.getTabPanel().close(currentId);
       } else {
         mainTabAction.tabClose(currentId);
       }
     }
   }
-  let url = uri.indexOf('http://') === 0 ? uri : "http://" + window.location.host + proxy + uri;
+  let url = uri.indexOf('http://') === 0 ? uri : 'http://' + window.location.host + proxy + uri;
   let tab = {
     title: title,
     url: url,
-    id: id
+    id: id,
   };
-  if (window.top.homeView && (typeof window.top.homeView.addTab) === 'function') {
+  if (window.top.homeView && typeof window.top.homeView.addTab === 'function') {
     window.top.homeView.addTab(tab);
   } else {
     let newTabData = {
       name: tab.title,
       featureUrl: tab.url,
-      id: tab.id
-    }
-    mainTabAction.tabOpen(newTabData)
+      id: tab.id,
+    };
+    mainTabAction.tabOpen(newTabData);
   }
   return id;
 }
@@ -105,15 +136,15 @@ export function openNewTabOther(uri, title, closeCurrent = false, id = undefined
 export function tabForceCallBack(callBack) {
   let con = window.top.homeView;
   if (con) {
-    let currentId = con.currentTabId
+    let currentId = con.currentTabId;
     if (!window.top.homeView.tabListener[currentId]) {
-      currentId && con.addTabListener(currentId, function (id, win) {
-        callBack()
-      });
+      currentId &&
+        con.addTabListener(currentId, function(id, win) {
+          callBack();
+        });
     }
   }
 }
-
 
 export const leftPad = (str, len, ch) => {
   const cache = [
@@ -126,7 +157,7 @@ export const leftPad = (str, len, ch) => {
     '      ',
     '       ',
     '        ',
-    '         '
+    '         ',
   ];
   str = str + '';
   len = len - str.length;
@@ -142,39 +173,41 @@ export const leftPad = (str, len, ch) => {
     else break;
   }
   return pad + str;
-}
+};
 
 export const getLocationHost = () => {
   const host = window.location.host;
   const isDev = /^localhost/.test(host) || /^192/.test(host);
-  if(isDev) {
-    return onLineTarget
+  if (isDev) {
+    return onLineTarget;
   }
-  return host
-}
+  return host;
+};
 
 export const getUserAccount = () => {
-  const  info = storage.sessionStorage.get('Authorization') || {};
-  const {account=""} = info
-  return account
-}
+  const info = storage.sessionStorage.get('Authorization') || {};
+  const { account = '' } = info;
+  return account;
+};
 
 export const downloadBlobFile = (data, name) => {
-  const blob = new Blob([data])
-    const fileName = name
-    if ('download' in document.createElement('a')) { // 非IE下载
-      const elink = document.createElement('a')
-      elink.download = fileName
-      elink.style.display = 'none'
-      elink.href = URL.createObjectURL(blob)
-      document.body.appendChild(elink)
-      elink.click()
-      URL.revokeObjectURL(elink.href) // 释放URL 对象
-      document.body.removeChild(elink)
-    } else { // IE10+下载
-      navigator.msSaveBlob(blob, fileName)
-    }
-}
+  const blob = new Blob([data]);
+  const fileName = name;
+  if ('download' in document.createElement('a')) {
+    // 非IE下载
+    const elink = document.createElement('a');
+    elink.download = fileName;
+    elink.style.display = 'none';
+    elink.href = URL.createObjectURL(blob);
+    document.body.appendChild(elink);
+    elink.click();
+    URL.revokeObjectURL(elink.href); // 释放URL 对象
+    document.body.removeChild(elink);
+  } else {
+    // IE10+下载
+    navigator.msSaveBlob(blob, fileName);
+  }
+};
 
 export { default as request } from './request';
-export { constants, userAuth as userUtils, };
+export { constants, userAuth as userUtils };

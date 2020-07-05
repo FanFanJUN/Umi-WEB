@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { router } from 'dva';
-import {
-  utils,
-  WorkFlow
-} from 'suid';
+import { utils, WorkFlow } from 'suid';
 import { Button, Modal, message, Spin, Row, Input, Form, Col } from 'antd';
 import ChangeForm from '../ChangeForm';
 import StrategyTable from '../StrategyTable';
@@ -15,23 +12,22 @@ import {
   strategyTableCreateLine,
   saveStrategyTableImportData,
   strategyTableLineRelevanceDocment,
-  getPurchaseStrategyChangeVoByFlowId
+  getPurchaseStrategyChangeVoByFlowId,
 } from '@/services/strategy';
 import moment from 'moment';
 import { openNewTab, getUUID, closeCurrent } from '@/utils';
 import styles from './index.less';
+import { checkToken } from '../../../utils';
 const { Approve } = WorkFlow;
 const formLayout = {
   labelCol: {
-    span: 8
+    span: 8,
   },
   wrapperCol: {
-    span: 16
-  }
-}
-function ChangeStrategy({
-  form
-}) {
+    span: 16,
+  },
+};
+function ChangeStrategy({ form }) {
   const { getFieldDecorator, getFieldValue } = form;
   const formRef = useRef(null);
   const { query } = router.useLocation();
@@ -59,11 +55,11 @@ function ChangeStrategy({
         header,
         submit,
         invalid,
-        sendList=[],
+        sendList = [],
         changeVo,
         creatorId,
         detailList,
-        submitList=[],
+        submitList = [],
         attachment,
         changeable,
         tenantCode,
@@ -79,7 +75,7 @@ function ChangeStrategy({
         purchaseStrategyBegin,
         ...initialValues
       } = data;
-      const { form: childrenForm } = formRef.current
+      const { form: childrenForm } = formRef.current;
       const { setFieldsValue } = childrenForm;
       const { setFieldsValue: modifySetFieldsValue } = form;
 
@@ -87,66 +83,64 @@ function ChangeStrategy({
         ...initialValues,
         submitList: submitList.map(item => ({ ...item, code: item.userAccount })),
         sendList: sendList.map(item => ({ ...item, code: item.userAccount })),
-        purchaseStrategyDate: [moment(purchaseStrategyBegin), moment(purchaseStrategyEnd)]
-      }
+        purchaseStrategyDate: [moment(purchaseStrategyBegin), moment(purchaseStrategyEnd)],
+      };
       const { modifyReason, attachment: reasonAttach } = modifyHeader;
 
-      setReasonAttach(reasonAttach)
+      setReasonAttach(reasonAttach);
       setInitValues({
-        attachment
+        attachment,
       });
       const addIdList = detailList.map(item => ({
         ...item,
-        localId: item.id
-      }))
+        localId: item.id,
+      }));
       modifySetFieldsValue({
-        reason: modifyReason
-      })
+        reason: modifyReason,
+      });
       setFieldsValue(mixinValues);
       setDataSource(addIdList);
-      setCurrentId(id)
-      setCurrentCode(code)
-      setIsInvalid(invalid ? '（作废）' : '')
+      setCurrentId(id);
+      setCurrentCode(code);
+      setIsInvalid(invalid ? '（作废）' : '');
       triggerLoading(false);
-      return
+      return;
     }
     triggerLoading(false);
-    message.error(msg)
+    message.error(msg);
   }
   // 格式化保存Vo表单参数
   async function formatSaveParams(val) {
-    let params = {}
-    const {
-      purchaseStrategyDate,
-      files,
-      ...otherData
-    } = val;
+    let params = {};
+    const { purchaseStrategyDate, files, ...otherData } = val;
     if (!!files) {
-      const filesIds = files.map((item) => {
-        const { id = null } = item;
-        return id
-      }).filter(_ => _);
+      const filesIds = files
+        .map(item => {
+          const { id = null } = item;
+          return id;
+        })
+        .filter(_ => _);
       const headerUUID = utils.getUUID();
       const { success: ses } = await strategyTableLineRelevanceDocment({
         id: headerUUID,
-        docIds: filesIds
-      })
+        docIds: filesIds,
+      });
       params = {
-        attachment: ses ? headerUUID : null
-      }
+        attachment: ses ? headerUUID : null,
+      };
     }
 
     const [begin, end] = purchaseStrategyDate;
-    const purchaseStrategyBegin = begin.format('YYYY-MM-DD HH:mm:ss')
-    const purchaseStrategyEnd = end.format('YYYY-MM-DD HH:mm:ss')
+    const purchaseStrategyBegin = begin.format('YYYY-MM-DD HH:mm:ss');
+    const purchaseStrategyEnd = end.format('YYYY-MM-DD HH:mm:ss');
     params = {
       ...params,
       ...otherData,
       purchaseStrategyBegin,
       purchaseStrategyEnd,
       detailList: dataSource.map((item, key) => ({ ...item, lineNo: key + 1 })),
-      id: currentId
-    }
+      id: currentId,
+    };
     return params;
   }
   // 格式化标的物保存参数
@@ -154,53 +148,56 @@ function ChangeStrategy({
     const { files = [], pricingDateList = [], adjustScopeListCode = [] } = val;
     const [fileInfo = {}] = files;
     const { id = null } = fileInfo;
-    let params = {}
+    let params = {};
     if (!!id) {
       const uuid = utils.getUUID();
       const { success } = await strategyTableLineRelevanceDocment({
         id: uuid,
-        docIds: [id]
-      })
+        docIds: [id],
+      });
       params = {
         ...val,
-        adjustScopeList: adjustScopeListCode.map((item) => ({ code: item })),
+        adjustScopeList: adjustScopeListCode.map(item => ({ code: item })),
         pricingDateList: pricingDateList.map(item => ({ date: item })),
         // docIds: [id]
-        attachment: success ? uuid : null
-      }
+        attachment: success ? uuid : null,
+      };
     } else {
       params = {
         ...val,
-        adjustScopeList: adjustScopeListCode.map((item) => ({ code: item })),
+        adjustScopeList: adjustScopeListCode.map(item => ({ code: item })),
         pricingDateList: pricingDateList.map(item => ({ date: item })),
-      }
+      };
     }
     return params;
   }
   // 保存并提交审核
   async function handleBeforeStartFlow() {
     const changeParams = await formatChangeReasonPamras();
-    if (!changeParams) return
+    if (!changeParams) return;
     const { validateFields } = formRef.current.form;
-    const sourceParams = await validateFields().then(r => r)
-    const params = await formatSaveParams(sourceParams)
-    const { success, message: msg, data } = await changeEditorAndApprove({ ...params, modifyHeader: changeParams });
+    const sourceParams = await validateFields().then(r => r);
+    const params = await formatSaveParams(sourceParams);
+    const { success, message: msg, data } = await changeEditorAndApprove({
+      ...params,
+      modifyHeader: changeParams,
+    });
     return new Promise((resolve, reject) => {
       if (success) {
         resolve({
           success: true,
           message: msg,
           data: {
-            businessKey: data.id
-          }
-        })
-        return
+            businessKey: data.id,
+          },
+        });
+        return;
       }
       resolve({
         success: false,
-        message: msg
-      })
-    })
+        message: msg,
+      });
+    });
   }
   async function handleCreateLine(val, hide) {
     const params = await formatLineParams(val);
@@ -208,111 +205,118 @@ function ChangeStrategy({
     if (success) {
       const newSource = [...dataSource, data].map((item, key) => ({
         ...item,
-        localId: !!item.id ? item.id : `${key}-dataSource`
+        localId: !!item.id ? item.id : `${key}-dataSource`,
       }));
-      setDataSource(newSource)
-      message.success(msg)
-      hide()
-      return
+      setDataSource(newSource);
+      message.success(msg);
+      hide();
+      return;
     }
-    message.error(msg)
+    message.error(msg);
   }
   async function handleEditorLine(val, keys, hide) {
-    triggerLoading(true)
+    triggerLoading(true);
     const params = await formatLineParams(val);
     const [localId] = keys;
-    const { data, success, message: msg } = await strategyTableCreateLine({ ...params, id: localId });
+    const { data, success, message: msg } = await strategyTableCreateLine({
+      ...params,
+      id: localId,
+    });
     if (success) {
       const newSource = dataSource.map((item, key) => {
         if (item.localId === localId) {
           return {
             ...data,
-            localId: !!data.id ? data.id : `${key}-dataSource`
-          }
+            localId: !!data.id ? data.id : `${key}-dataSource`,
+          };
         }
         return {
           ...item,
-          localId: !!item.id ? item.id : `${key}-dataSource`
-        }
+          localId: !!item.id ? item.id : `${key}-dataSource`,
+        };
       });
-      triggerLoading(false)
-      setDataSource(newSource)
-      message.success(msg)
-      hide()
-      return
+      triggerLoading(false);
+      setDataSource(newSource);
+      message.success(msg);
+      hide();
+      return;
     }
-    triggerLoading(false)
-    message.error(msg)
+    triggerLoading(false);
+    message.error(msg);
   }
   // 删除行数据
   function handleRemoveLines(rowKeys = []) {
-    const filterDataSource = dataSource.map(item => {
-      let { localId } = item;
-      let isMatch = rowKeys.find(i => i === localId);
-      if (!!isMatch) {
-        return null
-      }
-      return item
-    }).filter(_ => _)
+    const filterDataSource = dataSource
+      .map(item => {
+        let { localId } = item;
+        let isMatch = rowKeys.find(i => i === localId);
+        if (!!isMatch) {
+          return null;
+        }
+        return item;
+      })
+      .filter(_ => _);
     setDataSource(filterDataSource);
   }
   function showModal() {
-    setVisible(true)
+    setVisible(true);
   }
   function hideModal() {
-    setVisible(false)
+    setVisible(false);
   }
   // 验证变更原因表单并关联变更附件attachment
   async function formatChangeReasonPamras() {
     const { validateFieldsAndScroll } = form;
-    const val = await validateFieldsAndScroll().then(_ => _).catch(err=>null);
-    if(!val) return false;
-    let params = {}
+    const val = await validateFieldsAndScroll()
+      .then(_ => _)
+      .catch(err => null);
+    if (!val) return false;
+    let params = {};
     const { changeFiles = [] } = val;
     const [fileInfo = {}] = changeFiles;
     const { id = null } = fileInfo;
-    const uuid = utils.getUUID()
+    const uuid = utils.getUUID();
     if (!!id) {
       const { success } = await strategyTableLineRelevanceDocment({
         id: uuid,
-        docIds: [id]
-      })
+        docIds: [id],
+      });
       params = {
         modifyReason: val.reason,
-        attachment: success ? uuid : null
-      }
+        attachment: success ? uuid : null,
+      };
     } else {
       params = {
-        modifyReason: val.reason
-      }
+        modifyReason: val.reason,
+      };
     }
-    return params
+    return params;
   }
   function handleComplete(info) {
     const { success, message: msg } = info;
-    hideModal()
+    hideModal();
     if (success) {
-      closeCurrent()
-      message.success(msg)
-      return
+      closeCurrent();
+      message.success(msg);
+      return;
     }
-    message.error(msg)
+    message.error(msg);
   }
   // 批量导入
   async function handleImportData(items) {
-    triggerLoading(true)
+    triggerLoading(true);
     const { success, data, message: msg } = await saveStrategyTableImportData({ ios: items });
-    triggerLoading(false)
+    triggerLoading(false);
     if (success) {
       const newSource = [...dataSource, ...data].map((item, key) => ({
         ...item,
-        localId: !!item.id ? item.id : `${key}-dataSource`
+        localId: !!item.id ? item.id : `${key}-dataSource`,
       }));
-      setDataSource(newSource)
-      message.success(msg)
-      return
+      setDataSource(newSource);
+      message.success(msg);
+      return;
     }
-    message.error(msg)
+    message.error(msg);
   }
   // 标的物行作废
   function handleChangeLineInvalidState(id) {
@@ -324,17 +328,18 @@ function ChangeStrategy({
       onOk: async () => {
         const { success, message: msg } = await changeLineInvalidState(id);
         if (success) {
-          message.success(msg)
-          initFommFieldsValuesAndTableDataSource()
-          return
+          message.success(msg);
+          initFommFieldsValuesAndTableDataSource();
+          return;
         }
-        message.error(msg)
-      }
-    })
+        message.error(msg);
+      },
+    });
   }
   useEffect(() => {
-    initFommFieldsValuesAndTableDataSource()
-  }, [])
+    initFommFieldsValuesAndTableDataSource();
+    checkToken(query);
+  }, []);
   return (
     <div>
       <div className={classnames([styles.header, styles.flexBetweenStart])}>
@@ -351,14 +356,10 @@ function ChangeStrategy({
         instanceId={instanceId}
         beforeSubmit={handleBeforeStartFlow}
         submitComplete={handleComplete}
-        flowMapUrl='flow-web/design/showLook'
+        flowMapUrl="flow-web/design/showLook"
       >
         <Spin spinning={loading} tip="处理中...">
-          <ChangeForm
-            wrappedComponentRef={formRef}
-            initialValue={initValues}
-            type='change'
-          />
+          <ChangeForm wrappedComponentRef={formRef} initialValue={initValues} type="change" />
           <StrategyTable
             onCreateLine={handleCreateLine}
             onRemove={handleRemoveLines}
@@ -371,55 +372,51 @@ function ChangeStrategy({
             headerForm={formRef}
           />
           <Modal
-            title='变更原因'
+            title="变更原因"
             visible={visible}
-            width='70vw'
+            width="70vw"
             onCancel={hideModal}
             okText="提交审核"
-            cancelText='取消'
+            cancelText="取消"
             forceRender
             footer={
               <>
-                <Button onClick={hideModal} className={styles.btn}>取消</Button>
-                <Button
-                  type='primary'
-                  className={styles.btn}
-                  onClick={hideModal}
-                >保存修改</Button>
+                <Button onClick={hideModal} className={styles.btn}>
+                  取消
+                </Button>
+                <Button type="primary" className={styles.btn} onClick={hideModal}>
+                  保存修改
+                </Button>
               </>
             }
           >
             <Row>
               <Col span={18}>
-                <Form.Item label='变更原因' {...formLayout}>
-                  {
-                    getFieldDecorator('reason', {
-                      rules: [
-                        {
-                          required: true,
-                          message: '请填写变更原因'
-                        }
-                      ]
-                    })(<Input.TextArea maxLength={800}/>)
-                  }
+                <Form.Item label="变更原因" {...formLayout}>
+                  {getFieldDecorator('reason', {
+                    rules: [
+                      {
+                        required: true,
+                        message: '请填写变更原因',
+                      },
+                    ],
+                  })(<Input.TextArea maxLength={800} />)}
                 </Form.Item>
               </Col>
             </Row>
             <Row>
               <Col span={18}>
-                <Form.Item label='附件' {...formLayout}>
-                  {
-                    getFieldDecorator('changeFiles')(
-                      <ComboAttachment
-                        attachment={reasonAttach}
-                        allowPreview={false}
-                        maxUploadNum={1}
-                        allowUpload={allowUpload}
-                        serviceHost='/edm-service'
-                        uploadUrl='upload'
-                      />
-                    )
-                  }
+                <Form.Item label="附件" {...formLayout}>
+                  {getFieldDecorator('changeFiles')(
+                    <ComboAttachment
+                      attachment={reasonAttach}
+                      allowPreview={false}
+                      maxUploadNum={1}
+                      allowUpload={allowUpload}
+                      serviceHost="/edm-service"
+                      uploadUrl="upload"
+                    />,
+                  )}
                 </Form.Item>
               </Col>
             </Row>
@@ -427,7 +424,7 @@ function ChangeStrategy({
         </Spin>
       </Approve>
     </div>
-  )
+  );
 }
 
 export default Form.create()(ChangeStrategy);
