@@ -44,11 +44,11 @@ const ComboDatePicker = forwardRef(({
   disabled = false,
   onChange = () => null,
   placeholder = "请选择时间",
-  value=[]
+  value = []
 }, ref) => {
   useImperativeHandle(ref, () => ({ cleanValues }))
   const wrapperRef = useRef(null);
-  const defaultValues = value.map(item=>{
+  const defaultValues = value.map(item => {
     return moment(item);
   })
   const [valueText, setValueText] = useState("");
@@ -58,18 +58,18 @@ const ComboDatePicker = forwardRef(({
     <div className={classnames([styles.flexBetweenCenter, styles.title])} key={`data-picker-${k}-${frequency}`}>
       <div className={styles.number}>{k + 1}</div>
       <div className={styles.time}>
-        <MonthPicker onChange={(date, dateString) => handleItemsChange(date, dateString, k)} value={defaultValues[k]}/>
+        <MonthPicker onChange={(date, dateString) => handleItemsChange(date, dateString, k)} value={defaultValues[k]} />
       </div>
     </div>
   ))
   const handleAutoAllocationTimes = () => {
     const ntm = moment().month();
     const nty = moment().year();
-    const ntd = moment().day();
+    const ntd = 20
     const ys = [1];
     const hy = [1, 6];
-    const qs = [1,4,7,9];
-    const ms = [1,2,3,4,5,6,7,8,9,10,11,12];
+    const qs = [1, 4, 7, 9];
+    const ms = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
     const ss = {
       1: ys,
       2: hy,
@@ -77,18 +77,17 @@ const ComboDatePicker = forwardRef(({
       12: ms
     }
     const nss = ss[num];
-    const sqs = nss.map(item=>{
+    const sqs = nss.map(item => {
       const y = (ntm + item) > 12 ? nty + 1 : nty;
       const m = (ntm + item) % 12 === 0 ? 12 : (ntm + item) % 12;
       const ftims = {
-        year : y,
-        month: m >= 10 ?  m : `0${m}` ,
-        day: ntd >= 10 ?  ntd : `0${ntd}`
+        year: y,
+        month: m >= 10 ? m : `0${m}`,
+        day: ntd >= 10 ? ntd : `0${ntd}`
       }
       const tm = `${ftims.year}-${ftims.month}-${ftims.day} 00:00:00`;
       return tm
     })
-    console.log(sqs)
     onChange(sqs)
   }
   const content = (
@@ -127,7 +126,7 @@ const ComboDatePicker = forwardRef(({
   }
   function handleItemsChange(date, _, key) {
     const vv = [...value];
-    if(!!date) {
+    if (!!date) {
       vv[key] = date.format('YYYY-MM-DD HH:mm:ss')
       onChange(vv)
     }
