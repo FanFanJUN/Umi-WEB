@@ -372,8 +372,7 @@ function PurchaseStategy() {
             }
             {
               authAction(
-                <Button ignore={DEVELOPER_ENV} key='	
-                PURCHASE_DELETE' onClick={handleRemoveItem} disabled={empty || approvaling || approvalFinish} className={styles.btn}>删除</Button>
+                <Button ignore={DEVELOPER_ENV} key='PURCHASE_DELETE' onClick={handleRemoveItem} disabled={empty || approvaling || approvalFinish} className={styles.btn}>删除</Button>
               )
             }
             {
