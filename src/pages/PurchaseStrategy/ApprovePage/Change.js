@@ -1,7 +1,7 @@
 import React, { createRef, useState, useEffect, useRef } from 'react';
-import { router, useParams, useLocation } from 'dva';
+import { router } from 'dva';
 import { WorkFlow, ExtTable } from 'suid';
-import { Button, Modal, message, Spin, Tabs } from 'antd';
+import { Button, Modal, message, Spin, Tabs, Skeleton } from 'antd';
 import { psBaseUrl } from '@/utils/commonUrl';
 import StrategyForm from '../StrategyForm';
 import StrategyTable from '../StrategyTable';
@@ -20,6 +20,7 @@ function ApprovePage() {
   const { query } = router.useLocation();
   const { id: businessId, taskId, instanceId } = query;
   const [dataSource, setDataSource] = useState([]);
+  const [isReady, setIsReady] = useState(false);
   const [initValues, setInitValues] = useState({});
   const [loading, triggerLoading] = useState(true);
   const [checkId, setCheckId] = useState('EMPTY');
@@ -127,7 +128,7 @@ function ApprovePage() {
   }
   useEffect(() => {
     initFommFieldsValuesAndTableDataSource();
-    checkToken(query)
+    checkToken(query, setIsReady)
   }, []);
   return (
     <div>
@@ -139,68 +140,70 @@ function ApprovePage() {
           </Button>
         </div>
       </div>
-      <Approve
-        businessId={businessId}
-        taskId={taskId}
-        instanceId={instanceId}
-        submitComplete={handleComplete}
-        flowMapUrl="flow-web/design/showLook"
-      >
-        <Tabs>
-          <TabPane tab="变更明细" key="changeDetail" forceRender>
-            <div>
-              <div className={styles.lineTitle}>变更信息</div>
-              <div
-                style={{
-                  padding: '0 24px',
-                  marginBottom: 12,
-                }}
-              >
-                <div>变更原因：{reason}</div>
-                <div>
-                  {!!headerAttachment ? (
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'flex-start',
-                        alignItems: 'center',
-                        padding: '0 12px',
-                      }}
-                    >
-                      <span>附件：</span>
-                      <Upload entityId={headerAttachment} type="show" />
-                    </div>
-                  ) : null}
+      {
+        isReady ? <Approve
+          businessId={businessId}
+          taskId={taskId}
+          instanceId={instanceId}
+          submitComplete={handleComplete}
+          flowMapUrl="flow-web/design/showLook"
+        >
+          <Tabs>
+            <TabPane tab="变更明细" key="changeDetail" forceRender>
+              <div>
+                <div className={styles.lineTitle}>变更信息</div>
+                <div
+                  style={{
+                    padding: '0 24px',
+                    marginBottom: 12,
+                  }}
+                >
+                  <div>变更原因：{reason}</div>
+                  <div>
+                    {!!headerAttachment ? (
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'flex-start',
+                          alignItems: 'center',
+                          padding: '0 12px',
+                        }}
+                      >
+                        <span>附件：</span>
+                        <Upload entityId={headerAttachment} type="show" />
+                      </div>
+                    ) : null}
+                  </div>
                 </div>
               </div>
-            </div>
-            <div>
-              <div className={styles.lineTitle}>变更明细</div>
-              <div
-                style={{
-                  padding: '0 24px',
-                  marginBottom: 12,
-                }}
-              >
-                <ExtTable
-                  store={store}
-                  allowCancelSelect
-                  showSearch={false}
-                  columns={detailColumn}
-                  ref={tableRef}
-                  remotePaging
-                />
+              <div>
+                <div className={styles.lineTitle}>变更明细</div>
+                <div
+                  style={{
+                    padding: '0 24px',
+                    marginBottom: 12,
+                  }}
+                >
+                  <ExtTable
+                    store={store}
+                    allowCancelSelect
+                    showSearch={false}
+                    columns={detailColumn}
+                    ref={tableRef}
+                    remotePaging
+                  />
+                </div>
               </div>
-            </div>
-          </TabPane>
-          <TabPane tab="策略明细" key="detail" forceRender>
-            <Spin spinning={loading}>
-              <StrategyForm wrappedComponentRef={formRef} initialValue={initValues} type="detail" />
-              <StrategyTable dataSource={dataSource} headerForm={formRef} type="detail" />
-            </Spin>
-          </TabPane>
-        </Tabs>
-      </Approve>
+            </TabPane>
+            <TabPane tab="策略明细" key="detail" forceRender>
+              <Spin spinning={loading}>
+                <StrategyForm wrappedComponentRef={formRef} initialValue={initValues} type="detail" />
+                <StrategyTable dataSource={dataSource} headerForm={formRef} type="detail" />
+              </Spin>
+            </TabPane>
+          </Tabs>
+        </Approve> : <Skeleton loading={!isReady} active></Skeleton>
+      }
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import React, { createRef, useState, useEffect } from 'react';
 import { router } from 'dva';
 import { WorkFlow, utils } from 'suid';
-import { Button, Modal, message, Spin } from 'antd';
+import { Button, Modal, message, Spin, Skeleton } from 'antd';
 import StrategyForm from '../StrategyForm';
 import StrategyTable from '../StrategyTable';
 import classnames from 'classnames';
@@ -23,6 +23,7 @@ function ApproveEditor() {
   const [currentId, setCurrentId] = useState('');
   const [dataSource, setDataSource] = useState([]);
   const [initValues, setInitValues] = useState({});
+  const [isReady, setIsReady] = useState(false);
   const [loading, triggerLoading] = useState(true);
   const { id: businessId, taskId, instanceId } = query;
   async function initFommFieldsValuesAndTableDataSource() {
@@ -277,7 +278,7 @@ function ApproveEditor() {
   }
   useEffect(() => {
     initFommFieldsValuesAndTableDataSource();
-    checkToken(query);
+    checkToken(query, setIsReady);
   }, []);
   return (
     <div>
@@ -289,7 +290,7 @@ function ApproveEditor() {
           </Button>
         </div>
       </div>
-      <Approve
+      {isReady ? <Approve
         businessId={businessId}
         taskId={taskId}
         instanceId={instanceId}
@@ -309,7 +310,7 @@ function ApproveEditor() {
             headerForm={formRef}
           />
         </Spin>
-      </Approve>
+      </Approve> : <Skeleton loading={!isReady} active></Skeleton>}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { router } from 'dva';
 import { utils, WorkFlow } from 'suid';
-import { Button, Modal, message, Spin, Row, Input, Form, Col } from 'antd';
+import { Button, Modal, message, Spin, Row, Input, Form, Col, Skeleton } from 'antd';
 import ChangeForm from '../ChangeForm';
 import StrategyTable from '../StrategyTable';
 import { ComboAttachment } from '@/components';
@@ -32,6 +32,7 @@ function ChangeStrategy({ form }) {
   const formRef = useRef(null);
   const { query } = router.useLocation();
   const { id: businessId, taskId, instanceId } = query;
+  const [isReady, setIsReady] = useState(false);
   const [dataSource, setDataSource] = useState([]);
   const [reasonAttach, setReasonAttach] = useState('');
   const [visible, setVisible] = useState(false);
@@ -338,7 +339,7 @@ function ChangeStrategy({ form }) {
   }
   useEffect(() => {
     initFommFieldsValuesAndTableDataSource();
-    checkToken(query);
+    checkToken(query, setIsReady);
   }, []);
   return (
     <div>
@@ -350,7 +351,7 @@ function ChangeStrategy({ form }) {
           <Button onClick={showModal}>修改变更原因</Button>
         </div>
       </div>
-      <Approve
+      {isReady ? <Approve
         businessId={businessId}
         taskId={taskId}
         instanceId={instanceId}
@@ -422,7 +423,7 @@ function ChangeStrategy({ form }) {
             </Row>
           </Modal>
         </Spin>
-      </Approve>
+      </Approve> : <Skeleton loading={!isReady} active></Skeleton>}
     </div>
   );
 }

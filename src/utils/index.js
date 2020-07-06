@@ -28,8 +28,8 @@ const defaultAppCode = [
   'SRM_SE_WEB',
 ];
 
-export const checkToken = async params => {
-  console.log(params);
+export const checkToken = async (params, cb) => {
+  !!cb && cb(false)
   const { data, success } = await request({
     url: '/api-gateway/auth-service/checkToken',
     method: 'get',
@@ -38,8 +38,8 @@ export const checkToken = async params => {
       AppCode: defaultAppCode.toString(),
     },
   });
+  !!cb && cb(true)
   if (success) {
-    console.log(data);
     sessionStorage.setItem('Authorization', JSON.stringify(data[0]));
     sessionStorage.setItem('Right', data[1]);
     sessionStorage.setItem('_s', params?._s);
@@ -139,7 +139,7 @@ export function tabForceCallBack(callBack) {
     let currentId = con.currentTabId;
     if (!window.top.homeView.tabListener[currentId]) {
       currentId &&
-        con.addTabListener(currentId, function(id, win) {
+        con.addTabListener(currentId, function (id, win) {
           callBack();
         });
     }

@@ -28,12 +28,12 @@ const formLayout = {
   },
 };
 function ChangeStrategy({ form }) {
-  const { getFieldDecorator, getFieldValue } = form;
+  const { getFieldValue } = form;
+  const [isReady, setIsReady] = useState(false);
   const formRef = useRef(null);
   const { query } = router.useLocation();
   const [dataSource, setDataSource] = useState([]);
   const [reasonAttach, setReasonAttach] = useState('');
-  const [visible, setVisible] = useState(false);
   const [initValues, setInitValues] = useState({});
   const [loading, triggerLoading] = useState(true);
   const [currentId, setCurrentId] = useState('');

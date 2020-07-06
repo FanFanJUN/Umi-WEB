@@ -1,7 +1,7 @@
 import React, { createRef, useState, useEffect } from 'react';
 import { router } from 'dva';
 import { WorkFlow } from 'suid';
-import { Button, Modal, message, Spin } from 'antd';
+import { Button, Modal, message, Spin, Skeleton } from 'antd';
 import StrategyForm from '../StrategyForm';
 import StrategyTable from '../StrategyTable';
 import classnames from 'classnames';
@@ -15,6 +15,7 @@ function ApprovePage() {
   const formRef = createRef();
   const { query } = router.useLocation();
   const [dataSource, setDataSource] = useState([]);
+  const [isReady, setIsReady] = useState(false);
   const [initValues, setInitValues] = useState({});
   const [loading, triggerLoading] = useState(true);
   const { id: businessId, taskId, instanceId } = query;
@@ -83,7 +84,7 @@ function ApprovePage() {
   }
   useEffect(() => {
     initFommFieldsValuesAndTableDataSource();
-    checkToken(query);
+    checkToken(query, setIsReady);
   }, []);
   return (
     <div>
@@ -95,7 +96,7 @@ function ApprovePage() {
           </Button>
         </div>
       </div>
-      <Approve
+      {isReady ? <Approve
         businessId={businessId}
         taskId={taskId}
         instanceId={instanceId}
@@ -106,20 +107,9 @@ function ApprovePage() {
           <StrategyForm wrappedComponentRef={formRef} initialValue={initValues} type="detail" />
           <StrategyTable dataSource={dataSource} type="detail" />
         </Spin>
-      </Approve>
+      </Approve> : <Skeleton loading={!isReady} active></Skeleton>}
     </div>
   );
 }
 
 export default ApprovePage;
-/**
- * taskId=6F360E55-83A4-11EA-97E6-0242C0A84425&
- * instanceId=6ECD3A62-83A4-11EA-97E6-0242C0A84425&
- * id=254A5EE2-8398-11EA-99B7-0242C0A84404&
- * trustState=null&
- * _s=2C07B751-83AF-11EA-8560-0242C0A84410&
- * userId=1D676C93-5F79-11EA-AAAA-0242C0A84410&
- * account=srmadmin&
- * featureId=6F360E55-83A4-11EA-97E6-0242C0A84425&
- * featureCode=undefined
- */
