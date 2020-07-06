@@ -83,9 +83,13 @@ function ApprovePage() {
     });
   }
   useEffect(() => {
-    initFommFieldsValuesAndTableDataSource();
     checkToken(query, setIsReady);
   }, []);
+  useEffect(() => {
+    if (isReady) {
+      initFommFieldsValuesAndTableDataSource();
+    }
+  }, [isReady])
   return (
     <div>
       <div className={classnames([styles.header, styles.flexBetweenStart])}>

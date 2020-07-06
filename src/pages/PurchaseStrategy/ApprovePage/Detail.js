@@ -67,9 +67,13 @@ function DetailStrategy() {
     message.error(msg);
   }
   useEffect(() => {
-    initFommFieldsValuesAndTableDataSource();
     checkToken(query);
   }, []);
+  useEffect(() => {
+    if (isReady) {
+      initFommFieldsValuesAndTableDataSource();
+    }
+  }, [isReady])
   return (
     <Spin spinning={loading}>
       <div className={classnames([styles.header, styles.flexBetweenStart])}>
