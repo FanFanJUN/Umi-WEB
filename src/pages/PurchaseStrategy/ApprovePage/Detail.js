@@ -13,6 +13,7 @@ function DetailStrategy() {
   const { query } = router.useLocation();
   const [dataSource, setDataSource] = useState([]);
   const [initValues, setInitValues] = useState({});
+  const [isReady, setIsReady] = useState(false);
   const [loading, triggerLoading] = useState(true);
   async function initFommFieldsValuesAndTableDataSource() {
     const { id: flowId } = query;
@@ -67,7 +68,7 @@ function DetailStrategy() {
     message.error(msg);
   }
   useEffect(() => {
-    checkToken(query);
+    checkToken(query, setIsReady);
   }, []);
   useEffect(() => {
     if (isReady) {
