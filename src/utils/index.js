@@ -28,6 +28,8 @@ const defaultAppCode = [
   'SRM_SE_WEB',
 ];
 
+export const WAIT = (timeout = 1000) => new Promise((resolve) => { setTimeout(resolve, timeout); })
+
 export const checkToken = async (params, cb) => {
   !!cb && cb(false)
   const { data, success } = await request({
@@ -38,12 +40,13 @@ export const checkToken = async (params, cb) => {
       AppCode: defaultAppCode.toString(),
     },
   });
-  !!cb && cb(true)
   if (success) {
     sessionStorage.setItem('Authorization', JSON.stringify(data[0]));
     sessionStorage.setItem('Right', data[1]);
     sessionStorage.setItem('_s', params?._s);
   }
+  await WAIT()
+  !!cb && cb(true)
 };
 
 /**
