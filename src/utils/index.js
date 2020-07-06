@@ -5,6 +5,29 @@ import { utils } from 'suid';
 import { onLineTarget } from '../../config/proxy.config';
 import request from './request';
 const { getUUID, storage } = utils;
+
+function closeWebPage() {
+  if (navigator.userAgent.indexOf("MSIE") > 0) {
+    if (navigator.userAgent.indexOf("MSIE 6.0") > 0) {
+      window.opener = null;
+      window.close();
+    } else {
+      window.open('', '_top');
+      window.top.close();
+    }
+  }
+  else if (navigator.userAgent.indexOf("Firefox") > 0 || navigator.userAgent.indexOf("Chrome") > 0) {
+    //window.location.href = 'about:blank ';
+    window.location.href = "about:blank";
+    window.close();
+  }
+  else {
+    window.opener = null;
+    window.open('', '_self');
+    window.close();
+  }
+}
+
 export function closeCurrent() {
   if (window.self.frameElement) {
     let currentId = window.self.frameElement.id;
@@ -13,6 +36,8 @@ export function closeCurrent() {
     } else {
       mainTabAction.tabClose(currentId);
     }
+  }else {
+    closeWebPage()
   }
 }
 
