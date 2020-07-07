@@ -126,7 +126,7 @@ function PurchaseStategy() {
       title: '附件',
       dataIndex: 'attachment',
       render: (text) => {
-        return !!text ? <Upload entityId={text} type='show' /> : '无'
+        return <Upload entityId={text} type='show' />
       }
     },
     { title: '创建时间', dataIndex: 'createdDate', width: 200 }
@@ -295,50 +295,6 @@ function PurchaseStategy() {
   }
   // 高级搜索
   function handleAdvnacedSearch(v) {
-    /*
-    const keys = Object.keys(v);
-    const filters = keys.map((item) => {
-      const [_, operator, fieldName, isName] = item.split('_');
-      return {
-        fieldName,
-        operator,
-        value: !!isName ? undefined : v[item]
-      }
-    })
-    const range = filters.find(item => Array.isArray(item.value));
-    const formatRangeValues = (rs) => {
-      if (!rs) {
-        return [{ value: undefined }]
-      }
-      if (rs.value && rs.value.length > 0) {
-        const [begin, end] = rs.value;
-        const be = begin.format('YYYY-MM-DD HH:mm:ss')
-        const en = end.format('YYYY-MM-DD HH:mm:ss')
-        return [
-          {
-            fieldName: 'createdDate',
-            operator: 'GE',
-            value: be,
-            fieldType: 'Date'
-          },
-          {
-            fieldName: 'createdDate',
-            operator: 'LE',
-            value: en,
-            fieldType: 'Date'
-          }
-        ]
-      }
-      return [{ value: undefined }]
-    }
-    // const athoerFields = formatRangeValues(range);
-    const formatFields = filters.filter(item => !!item.value && !Array.isArray(item.value));
-    setSearchValue({
-      filters: filters
-    })
-    uploadTable()
-    headerRef.current.hide()
-    */
     const keys = Object.keys(v);
     const filters = keys.map((item) => {
       const [_, operator, fieldName, isName] = item.split('_');

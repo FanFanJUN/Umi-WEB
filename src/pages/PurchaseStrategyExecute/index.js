@@ -166,7 +166,7 @@ function PurchaseStrategyExecute() {
       title: '附件',
       dataIndex: 'attachment',
       render: (text) => {
-        return !!text ? <Upload entityId={text} type='show' /> : '无'
+        return <Upload entityId={text} type='show' />
       }
     }
   ].map(_ => ({ ..._, align: 'center' }))
