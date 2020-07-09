@@ -30,19 +30,19 @@ const getServerPath = function () {
 }
 
 const getAttacmentHost = function () {
-  const protocol = window.location.protocol;
+  const origin = window.location.origin;
   if(process.env.NODE_ENV !== 'production') {
     return '/edm-service'
   }
-  return `${protocol}//decmp.changhong.com/api-gateway/edm-service`
+  return `${origin}/api-gateway/edm-service`
 }
 
 const getAttacmentInfoHost = function () {
-  const protocol = window.location.protocol;
+  const origin = window.location.origin;
   if(process.env.NODE_ENV !== 'production') {
     return '/edm-service/document/getDocument'
   }
-  return `${protocol}//decmp.changhong.com/api-gateway/edm-service/document/getDocument`
+  return `${origin}/api-gateway/edm-service/document/getDocument`
 }
 
 export const AUTH_SERVER_PATH = '/auth-service'
