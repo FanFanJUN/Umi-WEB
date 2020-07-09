@@ -339,19 +339,19 @@ function PurchaseStategy() {
   function handleEditor() {
     const [key] = selectedRowKeys;
     const { id = '' } = FRAMEELEMENT;
-    const src = '//decmp.changhong.com/react-srm-ps-web/#/purchase/strategy'
-    openNewTab(`purchase/strategy/editor?id=${key}&frameElementId=${id}&frameElementSrc=${src}`, '编辑采购策略', false)
+    const {pathname} = window.location
+    openNewTab(`purchase/strategy/editor?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '编辑采购策略', false)
   }
   function handleCreate() {
     const { id = '' } = FRAMEELEMENT;
-    const src = '//decmp.changhong.com/react-srm-ps-web/#/purchase/strategy'
-    openNewTab(`purchase/strategy/create?frameElementId=${id}&frameElementSrc=${src}`, '新增采购策略', false)
+    const {pathname} = window.location
+    openNewTab(`purchase/strategy/create?frameElementId=${id}&frameElementSrc=${pathname}`, '新增采购策略', false)
   }
   function handleChange() {
+    const {pathname} = window.location
     const [key] = selectedRowKeys;
     const { id = '' } = FRAMEELEMENT;
-    const src = '//decmp.changhong.com/react-srm-ps-web/#/purchase/strategy'
-    openNewTab(`purchase/strategy/change?id=${key}&frameElementId=${id}&frameElementSrc=${src}`, '变更采购策略', false)
+    openNewTab(`purchase/strategy/change?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '变更采购策略', false)
   }
   function handleCheckDetail() {
     const [key] = selectedRowKeys;
