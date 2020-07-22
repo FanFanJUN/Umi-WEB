@@ -50,7 +50,7 @@ const FormRef = forwardRef(({
   useImperativeHandle(ref, () => ({
     form
   }));
-  const { getFieldDecorator } = form;
+  const { getFieldDecorator, getFieldValue } = form;
   const [createName, setCreateName] = useState("")
   const { attachment = null } = initialValue;
   const treeNodeProps = (node) => {
@@ -198,20 +198,68 @@ const FormRef = forwardRef(({
         </Row>
         <Row>
           <Col span={12}>
-            <Item label='策略周期' {...formLayout}>
+            <Item label='策略周期从' {...formLayout}>
               {
-                getFieldDecorator('purchaseStrategyDate', {
+                getFieldDecorator('purchaseStrategyDateBegin', {
                   rules: [
                     {
-                      type: 'array',
+                      type: 'object',
                       required: true,
                       message: '选择策略周期'
+                    },
+                    {
+                      validator: (_, value, cb) => {
+                        const endField = getFieldValue('purchaseStrategyDateEnd')
+                        if (!endField) {
+                          cb()
+                          return
+                        }
+                        const isBefore = value.isBefore(endField)
+                        if (!isBefore) {
+                          cb('周期开始日期不能大于截至日期')
+                          return
+                        }
+                        cb()
+                      }
                     }
                   ]
-                })(<RangePicker disabled={type === "detail"} style={{ width: '100%' }} />)
+                })(<DatePicker disabled={type === "detail"} style={{ width: '100%' }} />)
               }
             </Item>
           </Col>
+          <Col span={12}>
+            <Item label='策略周期至' {...formLayout}>
+              {
+                getFieldDecorator('purchaseStrategyDateEnd', {
+                  rules: [
+                    {
+                      type: 'object',
+                      required: true,
+                      message: '选择策略周期'
+                    },
+                    {
+                      validator: (_, value, cb) => {
+                        const beginField = getFieldValue('purchaseStrategyDateBegin')
+                        if (!beginField) {
+                          cb()
+                          return
+                        }
+                        const isAfter = value.isAfter(beginField)
+                        console.log(isAfter)
+                        if (!isAfter) {
+                          cb('周期截至日期不能小于开始日期')
+                          return
+                        }
+                        cb()
+                      }
+                    }
+                  ]
+                })(<DatePicker disabled={type === "detail"} style={{ width: '100%' }} />)
+              }
+            </Item>
+          </Col>
+        </Row>
+        <Row>
           <Col span={12}>
             <Item label='币种' {...formLayout}>
               {
@@ -227,8 +275,6 @@ const FormRef = forwardRef(({
               }
             </Item>
           </Col>
-        </Row>
-        <Row>
           <Col span={12}>
             <Item label='是否采购小组确认' {...formLayout}>
               {
@@ -246,6 +292,8 @@ const FormRef = forwardRef(({
               }
             </Item>
           </Col>
+        </Row>
+        <Row>
           <Col span={12}>
             <Item label='申请人' {...formLayout}>
               {
@@ -257,8 +305,6 @@ const FormRef = forwardRef(({
               }
             </Item>
           </Col>
-        </Row>
-        <Row>
           <Item label='联系方式' {...formLayoutAlone}>
             {
               getFieldDecorator('phone', {

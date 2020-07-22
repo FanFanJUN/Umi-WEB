@@ -18,7 +18,7 @@ const importColumns = [
     dataIndex: 'expectedDemandScaleAmount',
     widht: 180,
     render(text) {
-      return <Statistic valueStyle={{ fontSize: 14 }} value={text}/>
+      return <Statistic valueStyle={{ fontSize: 14 }} value={text} />
     }
   },
   {
@@ -30,7 +30,7 @@ const importColumns = [
     dataIndex: 'expectedDemandScalePrice',
     widht: 180,
     render(text) {
-      return <Statistic valueStyle={{ fontSize: 14 }} value={text}/>
+      return <Statistic valueStyle={{ fontSize: 14 }} value={text} />
     }
   },
   {
@@ -140,7 +140,7 @@ function StrategyTable({
       dataIndex: 'expectedDemandScaleAmount',
       width: 180,
       render(text) {
-        return <Statistic valueStyle={{ fontSize: 14 }} value={text}/>
+        return <Statistic valueStyle={{ fontSize: 14 }} value={text} />
       }
     },
     {
@@ -152,7 +152,7 @@ function StrategyTable({
       dataIndex: 'expectedDemandScalePrice',
       width: 180,
       render(text) {
-        return <Statistic valueStyle={{ fontSize: 14 }} value={text}/>
+        return <Statistic valueStyle={{ fontSize: 14 }} value={text} />
       }
     },
     {
@@ -160,7 +160,7 @@ function StrategyTable({
       dataIndex: 'adjustScopeList',
       render(text = []) {
         return (
-          <Button type='link' onClick={()=>checkAdjustScopeList(text)}>
+          <Button type='link' onClick={() => checkAdjustScopeList(text)}>
             查看
           </Button>
         )
@@ -177,8 +177,8 @@ function StrategyTable({
     {
       title: '成本目标说明',
       dataIndex: 'costTargetRemark',
-      render(costTargetRemark,{ costTarget }) {
-        if(!costTargetRemark) {
+      render(costTargetRemark, { costTarget }) {
+        if (!costTargetRemark) {
           return ""
         }
         const suffix = costTarget === 'DropRatio' ? '%' : '万元';
@@ -234,17 +234,13 @@ function StrategyTable({
       title: '库存控制方式',
       dataIndex: 'storageControlWay'
     },
-    
-    
+
+
     {
       title: '附件',
       dataIndex: 'attachment',
       render: (text) => {
-        return !!text ? <Upload entityId={text} type='show'/> : '无'
-        return <Button onClick={() => {
-          setAttachId(text)
-          triggerShowAttach(true)
-        }}>查看附件</Button>
+        return !!text ? <Upload entityId={text} type='show' /> : '无'
       }
     },
     {
@@ -285,7 +281,7 @@ function StrategyTable({
   function showModal(t = 'add') {
     const { getFieldValue } = headerForm.current.form;
     const lc = getFieldValue('materialLevelCode');
-    if(!lc) {
+    if (!lc) {
       message.error('请先选择物料级别')
       return
     }
@@ -328,7 +324,7 @@ function StrategyTable({
     ]
     Modal.info({
       title: '需求公司',
-      content: <Table size='small' bordered columns={columns} dataSource={list} rowKey={({ id })=> id}/>,
+      content: <Table size='small' bordered columns={columns} dataSource={list} rowKey={({ id }) => id} />,
       icon: 'exception',
       okText: '关闭',
       width: '60vw',
@@ -338,14 +334,14 @@ function StrategyTable({
   function handleSubmit(val) {
     const { resetFields } = commonFormRef.current.form;
     if (modalType === 'add') {
-      onCreateLine(val, ()=>{
+      onCreateLine(val, () => {
         hideModal()
         resetFields()
       })
       cleanSelectedRecord()
       return
     }
-    onEditor(val, selectedRowKeys, ()=>{
+    onEditor(val, selectedRowKeys, () => {
       hideModal()
       resetFields()
     })
@@ -478,14 +474,14 @@ function StrategyTable({
         message: '未填写供应商合作方式'
       }
     }
-    if(!costTargetRemark) {
+    if (!costTargetRemark) {
       return {
         ...error,
         ...column,
         message: '未填写成本目标说明'
       }
     }
-    if(!unitName) {
+    if (!unitName) {
       return {
         ...error,
         ...column,

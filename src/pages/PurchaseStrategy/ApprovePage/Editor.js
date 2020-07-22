@@ -1,7 +1,7 @@
 import React, { createRef, useState, useEffect } from 'react';
 import { router } from 'dva';
 import { WorkFlow, utils } from 'suid';
-import { Button, Modal, message, Spin, Skeleton } from 'antd';
+import { Button, Modal, message, Spin, Skeleton, Affix } from 'antd';
 import StrategyForm from '../StrategyForm';
 import StrategyTable from '../StrategyTable';
 import classnames from 'classnames';
@@ -15,7 +15,7 @@ import {
 import { closeCurrent } from '@/utils';
 import moment from 'moment';
 import styles from './index.less';
-import { checkToken } from '../../../utils';
+import { checkToken, formatSaveParams } from '../../../utils';
 const { Approve } = WorkFlow;
 function ApproveEditor() {
   const formRef = createRef();
@@ -62,7 +62,8 @@ function ApproveEditor() {
         ...initialValues,
         submitList: submitList.map(item => ({ ...item, code: item.userAccount })),
         sendList: sendList.map(item => ({ ...item, code: item.userAccount })),
-        purchaseStrategyDate: [moment(purchaseStrategyBegin), moment(purchaseStrategyEnd)],
+        purchaseStrategyDateBegin: moment(purchaseStrategyBegin),
+        purchaseStrategyDateEnd: moment(purchaseStrategyEnd)
       };
       setInitValues({
         attachment,
@@ -163,51 +164,6 @@ function ApproveEditor() {
       cancelText: '取消',
     });
   }
-  // 格式化保存Vo表单参数
-  async function formatSaveParams(val) {
-    let params = {};
-    const {
-      purchaseStrategyDate,
-      files,
-      sendList: sList = [],
-      submitList: smList = [],
-      ...otherData
-    } = val;
-    if (!!files) {
-      const filesIds = files
-        .map(item => {
-          const { id = null } = item;
-          return id;
-        })
-        .filter(_ => _);
-      const headerUUID = utils.getUUID();
-      const { success: ses } = await strategyTableLineRelevanceDocment({
-        id: headerUUID,
-        docIds: filesIds,
-      });
-      params = {
-        attachment: ses ? headerUUID : null,
-      };
-    }
-    const [begin, end] = purchaseStrategyDate;
-    const purchaseStrategyBegin = begin.format('YYYY-MM-DD HH:mm:ss');
-    const purchaseStrategyEnd = end.format('YYYY-MM-DD HH:mm:ss');
-    const accoutList = sList.map(item => ({
-      userAccount: item.code,
-    }));
-    const smAccountList = smList.map(item => ({ userAccount: item.code }));
-    params = {
-      ...params,
-      ...otherData,
-      sendList: accoutList,
-      submitList: smAccountList,
-      purchaseStrategyBegin,
-      purchaseStrategyEnd,
-      detailList: dataSource.map((item, key) => ({ ...item, lineNo: key + 1 })),
-      id: currentId,
-    };
-    return params;
-  }
   // 格式化标的物保存参数
   async function formatLineParams(val) {
     const { files = [], pricingDateList = [], adjustScopeListCode = [] } = val;
@@ -242,7 +198,7 @@ function ApproveEditor() {
       validateFieldsAndScroll(async (err, val) => {
         if (!err) {
           triggerLoading(true);
-          const params = await formatSaveParams(val);
+          const params = await formatSaveParams(val, dataSource, currentId);
           const { success, message: msg } = await savePurchaseStrategy(params);
           triggerLoading(false);
           if (success) {
@@ -286,14 +242,16 @@ function ApproveEditor() {
   }, [isReady])
   return (
     <div>
-      <div className={classnames([styles.header, styles.flexBetweenStart])}>
-        <span className={styles.title}>采购策略审批</span>
-        <div>
-          <Button className={styles.btn} onClick={handleClose}>
-            关闭
+      <Affix offsetTop={0}>
+        <div className={classnames([styles.header, styles.flexBetweenStart])}>
+          <span className={styles.title}>采购策略审批</span>
+          <div>
+            <Button className={styles.btn} onClick={handleClose}>
+              关闭
           </Button>
+          </div>
         </div>
-      </div>
+      </Affix>
       {isReady ? <Approve
         businessId={businessId}
         taskId={taskId}

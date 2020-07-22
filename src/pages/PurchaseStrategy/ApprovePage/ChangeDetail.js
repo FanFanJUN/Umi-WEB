@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { router } from 'dva';
-import { utils, WorkFlow } from 'suid';
-import { Button, Modal, message, Spin, Row, Input, Form, Col } from 'antd';
+import { WorkFlow } from 'suid';
+import { message, Spin, Form, Affix } from 'antd';
 import ChangeForm from '../DetailLayout';
 import StrategyTable from '../StrategyTable';
-import { ComboAttachment } from '@/components';
+// import { ComboAttachment } from '@/components';
 import classnames from 'classnames';
 import {
   changeLineInvalidState,
@@ -83,7 +83,8 @@ function ChangeStrategy({ form }) {
         submitList: submitList.map(item => item.userAccount),
         sendName: sendList.map(item => item.userName),
         sendList: sendList.map(item => item.userAccount),
-        purchaseStrategyDate: [moment(purchaseStrategyBegin), moment(purchaseStrategyEnd)],
+        purchaseStrategyDateBegin: moment(purchaseStrategyBegin),
+        purchaseStrategyDateEnd: moment(purchaseStrategyEnd)
       };
       const { modifyReason, attachment: reasonAttach } = modifyHeader;
 
@@ -121,12 +122,14 @@ function ChangeStrategy({ form }) {
   }, [isReady])
   return (
     <div>
-      <div className={classnames([styles.header, styles.flexBetweenStart])}>
-        <span className={styles.title}>
-          变更采购策略：{currentCode} {isInvalid}
-        </span>
-        <div></div>
-      </div>
+      <Affix offsetTop={0}>
+        <div className={classnames([styles.header, styles.flexBetweenStart])}>
+          <span className={styles.title}>
+            变更采购策略：{currentCode} {isInvalid}
+          </span>
+          <div></div>
+        </div>
+      </Affix>
       <Spin spinning={loading} tip="处理中...">
         <ChangeForm wrappedComponentRef={formRef} initialValue={initValues} type="detail" />
         <StrategyTable dataSource={dataSource} type="detail" loading={loading} />

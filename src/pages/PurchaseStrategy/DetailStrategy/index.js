@@ -1,6 +1,6 @@
 import React, { createRef, useState, useEffect } from 'react';
 import { router } from 'dva';
-import { /*Button, Modal*/ message, Spin } from 'antd';
+import { /*Button, Modal*/ message, Spin, Affix } from 'antd';
 import StrategyForm from '../DetailLayout';
 import StrategyTable from '../StrategyTable';
 import classnames from 'classnames';
@@ -30,8 +30,8 @@ function DetailStrategy() {
         creatorId,
         detailList,
         attachment,
-        submitList=[],
-        sendList=[],
+        submitList = [],
+        sendList = [],
         changeable,
         tenantCode,
         createdDate,
@@ -51,13 +51,14 @@ function DetailStrategy() {
         ...initialValues,
         submitList: submitList.map(item => ({ ...item, code: item.userAccount })),
         sendList: sendList.map(item => ({ ...item, code: item.userAccount })),
-        purchaseStrategyDate: [moment(purchaseStrategyBegin), moment(purchaseStrategyEnd)]
+        purchaseStrategyDateBegin: moment(purchaseStrategyBegin).format('YYYY-MM-DD'),
+        purchaseStrategyDateEnd: moment(purchaseStrategyEnd).format('YYYY-MM-DD')
       }
       setInitValues({
         attachment,
         ...mixinValues
       });
-      
+
       // setFieldsValue(mixinValues);
       setDataSource(detailList);
       triggerLoading(false);
@@ -80,14 +81,16 @@ function DetailStrategy() {
   }, [])
   return (
     <Spin spinning={loading}>
-      <div className={classnames([styles.header, styles.flexBetweenStart])}>
-        <span className={styles.title}>
-          采购策略明细
+      <Affix offsetTop={0}>
+        <div className={classnames([styles.header, styles.flexBetweenStart])}>
+          <span className={styles.title}>
+            采购策略明细
         </span>
-        <div>
-          {/* <Button className={styles.btn} onClick={handleBack}>返回</Button> */}
+          <div>
+            {/* <Button className={styles.btn} onClick={handleBack}>返回</Button> */}
+          </div>
         </div>
-      </div>
+      </Affix>
       <StrategyForm
         wrappedComponentRef={formRef}
         initialValue={initValues}

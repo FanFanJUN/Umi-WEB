@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { router } from 'dva';
 import {
-  utils,
-  WorkFlow
+  utils
 } from 'suid';
-import { Button, Modal, message, Spin, Row, Input, Form, Col } from 'antd';
+import { Button, Modal, message, Spin, Row, Input, Form, Col, Affix } from 'antd';
 import ChangeForm from '../ChangeForm';
 import StrategyTable from '../StrategyTable';
 import { ComboAttachment } from '@/components';
@@ -20,7 +19,7 @@ import {
 } from '@/services/strategy';
 import { StartFlow } from 'seid';
 import moment from 'moment';
-import { closeCurrent } from '../../../utils';
+import { closeCurrent, formatSaveParams } from '../../../utils';
 import styles from './index.less';
 // const { StartFlow } = WorkFlow;
 const formLayout = {
@@ -37,7 +36,7 @@ function ChangeStrategy({
   const { getFieldDecorator, getFieldValue } = form;
   const formRef = useRef(null);
   const { query } = router.useLocation();
-  const { frameElementId="", frameElementSrc="" } = query;
+  const { frameElementId = "", frameElementSrc = "" } = query;
   const [dataSource, setDataSource] = useState([]);
   const [visible, setVisible] = useState(false);
   const [initValues, setInitValues] = useState({});
@@ -84,7 +83,8 @@ function ChangeStrategy({
         ...initialValues,
         submitList: submitList.map(item => ({ ...item, code: item.userAccount })),
         sendList: sendList.map(item => ({ ...item, code: item.userAccount })),
-        purchaseStrategyDate: [moment(purchaseStrategyBegin), moment(purchaseStrategyEnd)]
+        purchaseStrategyDateBegin: moment(purchaseStrategyBegin),
+        purchaseStrategyDateEnd: moment(purchaseStrategyEnd)
       }
       setInitValues({
         attachment
@@ -103,49 +103,6 @@ function ChangeStrategy({
     }
     triggerLoading(false);
     message.error(msg)
-  }
-  // 格式化保存Vo表单参数
-  async function formatSaveParams(val) {
-    let params = {}
-    const {
-      purchaseStrategyDate,
-      files,
-      sendList: sList = [],
-      submitList: smList = [],
-      ...otherData
-    } = val;
-    if (!!files) {
-      const filesIds = files.map((item) => {
-        const { id = null } = item;
-        return id
-      }).filter(_ => _);
-      const headerUUID = utils.getUUID();
-      const { success: ses } = await strategyTableLineRelevanceDocment({
-        id: headerUUID,
-        docIds: filesIds
-      })
-      params = {
-        attachment: ses ? headerUUID : null
-      }
-    }
-    const [begin, end] = purchaseStrategyDate;
-    const purchaseStrategyBegin = begin.format('YYYY-MM-DD HH:mm:ss')
-    const purchaseStrategyEnd = end.format('YYYY-MM-DD HH:mm:ss')
-    const accoutList = sList.map((item) => ({
-      userAccount: item.code
-    }))
-    const smAccountList = smList.map(item => ({ userAccount: item.code }))
-    params = {
-      ...params,
-      ...otherData,
-      sendList: accoutList,
-      submitList: smAccountList,
-      purchaseStrategyBegin,
-      purchaseStrategyEnd,
-      detailList: dataSource.map((item, key) => ({ ...item, lineNo: key + 1 })),
-      id: currentId
-    }
-    return params;
   }
   // 格式化标的物保存参数
   async function formatLineParams(val) {
@@ -188,7 +145,7 @@ function ChangeStrategy({
         reject(false)
         return;
       }
-      const params = await formatSaveParams(sourceParams);
+      const params = await formatSaveParams(sourceParams, dataSource, currentId);
       const { success, message: msg, data } = await changePurchaseAndApprove({ ...params, modifyHeader: changeParams });
       if (success) {
         // resolve({
@@ -211,7 +168,6 @@ function ChangeStrategy({
     })
   }
   async function handleCreateLine(val, hide) {
-    console.log(val)
     const params = await formatLineParams(val);
     const { data, success, message: msg } = await strategyTableCreateLine(params);
     if (success) {
@@ -314,7 +270,7 @@ function ChangeStrategy({
     })
   }
   function handleComplete(info) {
-      closeCurrent()
+    closeCurrent()
     // const { success, message: msg } = info;
     // hideModal()
     // if (success) {
@@ -381,16 +337,18 @@ function ChangeStrategy({
   }, [])
   return (
     <Spin spinning={loading} tip="处理中...">
-      <div className={classnames([styles.header, styles.flexBetweenStart])}>
-        <span className={styles.title}>
-          变更采购策略：{currentCode} {isInvalid}
-        </span>
-        <div>
-          <Button className={styles.btn} onClick={handleBack}>返回</Button>
-          <Button className={styles.btn} onClick={handleChangeOwnInvalidState}>作废/取消作废</Button>
-          <Button onClick={showModal} type='primary'>保存并提交审核</Button>
+      <Affix offsetTop={0}>
+        <div className={classnames([styles.header, styles.flexBetweenStart])}>
+          <span className={styles.title}>
+            变更采购策略：{currentCode} {isInvalid}
+          </span>
+          <div>
+            <Button className={styles.btn} onClick={handleBack}>返回</Button>
+            <Button className={styles.btn} onClick={handleChangeOwnInvalidState}>作废/取消作废</Button>
+            <Button onClick={showModal} type='primary'>保存并提交审核</Button>
+          </div>
         </div>
-      </div>
+      </Affix>
       <ChangeForm
         wrappedComponentRef={formRef}
         initialValue={initValues}

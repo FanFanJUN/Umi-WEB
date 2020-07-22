@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { router } from 'dva';
 import { utils, WorkFlow } from 'suid';
-import { Button, Modal, message, Spin, Row, Input, Form, Col, Skeleton } from 'antd';
+import { Button, Modal, message, Spin, Row, Input, Form, Col, Skeleton, Affix } from 'antd';
 import ChangeForm from '../ChangeForm';
 import StrategyTable from '../StrategyTable';
 import { ComboAttachment } from '@/components';
@@ -17,7 +17,7 @@ import {
 import moment from 'moment';
 import { openNewTab, getUUID, closeCurrent } from '@/utils';
 import styles from './index.less';
-import { checkToken } from '../../../utils';
+import { checkToken, formatSaveParams } from '../../../utils';
 const { Approve } = WorkFlow;
 const formLayout = {
   labelCol: {
@@ -84,7 +84,8 @@ function ChangeStrategy({ form }) {
         ...initialValues,
         submitList: submitList.map(item => ({ ...item, code: item.userAccount })),
         sendList: sendList.map(item => ({ ...item, code: item.userAccount })),
-        purchaseStrategyDate: [moment(purchaseStrategyBegin), moment(purchaseStrategyEnd)],
+        purchaseStrategyDateBegin: moment(purchaseStrategyBegin),
+        purchaseStrategyDateEnd: moment(purchaseStrategyEnd)
       };
       const { modifyReason, attachment: reasonAttach } = modifyHeader;
 
@@ -109,40 +110,6 @@ function ChangeStrategy({ form }) {
     }
     triggerLoading(false);
     message.error(msg);
-  }
-  // 格式化保存Vo表单参数
-  async function formatSaveParams(val) {
-    let params = {};
-    const { purchaseStrategyDate, files, ...otherData } = val;
-    if (!!files) {
-      const filesIds = files
-        .map(item => {
-          const { id = null } = item;
-          return id;
-        })
-        .filter(_ => _);
-      const headerUUID = utils.getUUID();
-      const { success: ses } = await strategyTableLineRelevanceDocment({
-        id: headerUUID,
-        docIds: filesIds,
-      });
-      params = {
-        attachment: ses ? headerUUID : null,
-      };
-    }
-
-    const [begin, end] = purchaseStrategyDate;
-    const purchaseStrategyBegin = begin.format('YYYY-MM-DD HH:mm:ss');
-    const purchaseStrategyEnd = end.format('YYYY-MM-DD HH:mm:ss');
-    params = {
-      ...params,
-      ...otherData,
-      purchaseStrategyBegin,
-      purchaseStrategyEnd,
-      detailList: dataSource.map((item, key) => ({ ...item, lineNo: key + 1 })),
-      id: currentId,
-    };
-    return params;
   }
   // 格式化标的物保存参数
   async function formatLineParams(val) {
@@ -178,7 +145,7 @@ function ChangeStrategy({ form }) {
     if (!changeParams) return;
     const { validateFields } = formRef.current.form;
     const sourceParams = await validateFields().then(r => r);
-    const params = await formatSaveParams(sourceParams);
+    const params = await formatSaveParams(sourceParams, dataSource, currentId);
     const { success, message: msg, data } = await changeEditorAndApprove({
       ...params,
       modifyHeader: changeParams,
@@ -347,14 +314,16 @@ function ChangeStrategy({ form }) {
   }, [isReady])
   return (
     <div>
-      <div className={classnames([styles.header, styles.flexBetweenStart])}>
-        <span className={styles.title}>
-          变更采购策略：{currentCode} {isInvalid}
-        </span>
-        <div>
-          <Button onClick={showModal}>修改变更原因</Button>
+      <Affix offsetTop={0}>
+        <div className={classnames([styles.header, styles.flexBetweenStart])}>
+          <span className={styles.title}>
+            变更采购策略：{currentCode} {isInvalid}
+          </span>
+          <div>
+            <Button onClick={showModal}>修改变更原因</Button>
+          </div>
         </div>
-      </div>
+      </Affix>
       {isReady ? <Approve
         businessId={businessId}
         taskId={taskId}

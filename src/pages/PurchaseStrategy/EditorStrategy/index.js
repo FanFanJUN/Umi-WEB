@@ -1,7 +1,7 @@
 import React, { createRef, useState, useEffect } from 'react';
 import { router } from 'dva';
 import { utils, WorkFlow } from 'suid';
-import { Button, Modal, message, Spin } from 'antd';
+import { Button, Modal, message, Spin, Affix } from 'antd';
 import StrategyForm from '../StrategyForm';
 import StrategyTable from '../StrategyTable';
 import classnames from 'classnames';
@@ -14,7 +14,7 @@ import {
 } from '@/services/strategy';
 import moment from 'moment';
 import { StartFlow } from 'seid';
-import { closeCurrent } from '../../../utils';
+import { closeCurrent, formatSaveParams } from '../../../utils';
 import styles from './index.less';
 // const { StartFlow } = WorkFlow;
 function EditorStrategy({
@@ -22,7 +22,7 @@ function EditorStrategy({
 }) {
   const formRef = createRef();
   const { query } = router.useLocation();
-  const { frameElementId="", frameElementSrc="" } = query;
+  const { frameElementId = "", frameElementSrc = "" } = query;
   const [dataSource, setDataSource] = useState([]);
   const [initValues, setInitValues] = useState({});
   const [businessKey, setBusinessKey] = useState('');
@@ -66,7 +66,8 @@ function EditorStrategy({
         ...initialValues,
         submitList: submitList.map(item => ({ ...item, code: item.userAccount })),
         sendList: sendList.map(item => ({ ...item, code: item.userAccount })),
-        purchaseStrategyDate: [moment(purchaseStrategyBegin), moment(purchaseStrategyEnd)]
+        purchaseStrategyDateBegin: moment(purchaseStrategyBegin),
+        purchaseStrategyDateEnd: moment(purchaseStrategyEnd)
       }
       setInitValues({
         attachment
@@ -85,49 +86,6 @@ function EditorStrategy({
     }
     triggerLoading(false);
     message.error(msg)
-  }
-  // 格式化保存Vo表单参数
-  async function formatSaveParams(val) {
-    let params = {}
-    const {
-      purchaseStrategyDate,
-      files,
-      sendList: sList = [],
-      submitList: smList = [],
-      ...otherData
-    } = val;
-    if (!!files) {
-      const filesIds = files.map((item) => {
-        const { id = null } = item;
-        return id
-      }).filter(_ => _);
-      const headerUUID = utils.getUUID();
-      const { success: ses } = await strategyTableLineRelevanceDocment({
-        id: headerUUID,
-        docIds: filesIds
-      })
-      params = {
-        attachment: ses ? headerUUID : null
-      }
-    }
-    const [begin, end] = purchaseStrategyDate;
-    const purchaseStrategyBegin = begin.format('YYYY-MM-DD HH:mm:ss')
-    const purchaseStrategyEnd = end.format('YYYY-MM-DD HH:mm:ss')
-    const accoutList = sList.map((item) => ({
-      userAccount: item.code
-    }))
-    const smAccountList = smList.map(item => ({ userAccount: item.code }))
-    params = {
-      ...params,
-      ...otherData,
-      sendList: accoutList,
-      submitList: smAccountList,
-      purchaseStrategyBegin,
-      purchaseStrategyEnd,
-      detailList: dataSource.map((item, key) => ({ ...item, lineNo: key + 1 })),
-      id: currentId
-    }
-    return params;
   }
   // 格式化标的物保存参数
   async function formatLineParams(val) {
@@ -162,7 +120,7 @@ function EditorStrategy({
     validateFieldsAndScroll(async (err, val) => {
       if (!err) {
         triggerLoading(true)
-        const params = await formatSaveParams(val)
+        const params = await formatSaveParams(val, dataSource, currentId)
         const { success, message: msg, } = await savePurcahseAndApprove(params);
         triggerLoading(false)
         if (success) {
@@ -321,7 +279,7 @@ function EditorStrategy({
   return (
     <Spin spinning={loading} tip="处理中...">
       {
-        mode === 'default' ? <div className={classnames([styles.header, styles.flexBetweenStart])}>
+        mode === 'default' ? <Affix offsetTop={0}><div className={classnames([styles.header, styles.flexBetweenStart])}>
           <span className={styles.title}>
             编辑采购策略: {currentCode} {isInvalid.name}
           </span>
@@ -354,7 +312,7 @@ function EditorStrategy({
               }
             </StartFlow>
           </div>
-        </div> : null
+        </div></Affix> : null
       }
       <StrategyForm
         wrappedComponentRef={formRef}

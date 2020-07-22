@@ -1,6 +1,6 @@
 import React, { createRef, useState } from 'react';
-import { Button, Modal, message, Spin } from 'antd';
-import { utils, WorkFlow } from 'suid';
+import { Button, Modal, message, Spin, Affix } from 'antd';
+import { utils } from 'suid';
 import { router } from 'dva';
 import StrategyForm from '../StrategyForm';
 import StrategyTable from '../StrategyTable';
@@ -9,69 +9,26 @@ import {
   savePurcahseAndApprove,
   strategyTableCreateLine,
   saveStrategyTableImportData,
-  validateStrategyTableImportData,
+  // validateStrategyTableImportData,
   strategyTableLineRelevanceDocment
 } from '@/services/strategy';
 import { StartFlow } from 'seid';
-import { closeCurrent } from '../../../utils';
+import { closeCurrent, formatSaveParams } from '../../../utils';
 import styles from './index.less';
-// const { StartFlow } = WorkFlow;
 function CreateStrategy() {
   const formRef = createRef()
   const [dataSource, setDataSource] = useState([]);
   const [businessKey, setBusinessKey] = useState('');
   const [loading, triggerLoading] = useState(false);
   const { query } = router.useLocation();
-  const { frameElementId="", frameElementSrc="" } = query;
-  // 格式化vo参数
-  async function formatSaveParams(val) {
-    let params = {}
-    const {
-      purchaseStrategyDate,
-      files,
-      sendList: sList = [],
-      submitList: smList = [],
-      ...otherData
-    } = val;
-    if (!!files) {
-      const filesIds = files.map((item) => {
-        const { id = null } = item;
-        return id
-      }).filter(_ => _);
-      const headerUUID = utils.getUUID();
-      const { success: ses } = await strategyTableLineRelevanceDocment({
-        id: headerUUID,
-        docIds: filesIds
-      })
-      params = {
-        attachment: ses ? headerUUID : null
-      }
-    }
-    const [begin, end] = purchaseStrategyDate;
-    const purchaseStrategyBegin = begin.format('YYYY-MM-DD HH:mm:ss')
-    const purchaseStrategyEnd = end.format('YYYY-MM-DD HH:mm:ss')
-    const accoutList = sList.map((item) => ({
-      userAccount: item.code
-    }))
-    const smAccountList = smList.map(item => ({ userAccount: item.code }))
-    params = {
-      ...params,
-      ...otherData,
-      sendList: accoutList,
-      submitList: smAccountList,
-      purchaseStrategyBegin,
-      purchaseStrategyEnd,
-      detailList: dataSource.map((item, key) => ({ ...item, lineNo: key + 1 }))
-    }
-    return params;
-  }
+  const { frameElementId = "", frameElementSrc = "" } = query;
   // 保存
   async function handleSave() {
     const { validateFieldsAndScroll } = formRef.current.form;
     validateFieldsAndScroll(async (err, val) => {
       if (!err) {
         triggerLoading(true)
-        const params = await formatSaveParams(val);
+        const params = await formatSaveParams(val, dataSource);
         const { success, message: msg } = await savePurcahseAndApprove(params)
         triggerLoading(false)
         if (success) {
@@ -237,7 +194,7 @@ function CreateStrategy() {
     setDataSource(filterDataSource);
   }
   function handleComplete(info) {
-      closeCurrent()
+    closeCurrent()
     // const { success, message: msg } = info
     // if (success) {
     //   message.success(msg)
@@ -259,27 +216,28 @@ function CreateStrategy() {
   }
   return (
     <Spin spinning={loading} tip='处理中...'>
-      <div className={classnames([styles.header, styles.flexBetweenStart])}>
-        <span className={styles.title}>
-          新增采购策略
+      <Affix offsetTop={0}>
+        <div className={classnames([styles.header, styles.flexBetweenStart])}>
+          <span className={styles.title}>
+            新增采购策略
         </span>
-        <div>
-          <Button className={styles.btn} onClick={handleBack}>返回</Button>
-          <Button className={styles.btn} onClick={handleSave}>保存</Button>
-          <StartFlow
-            style={{ display: 'inline-flex' }}
-            preStart={handleBeforeStartFlow}
-            callBack={handleComplete}
-            businessKey={businessKey}
-            originStartTab={{
-              title: '采购策略',
-              url: frameElementSrc,
-              id: frameElementId
-            }}
-            businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyHeader"
-            butTitle="保存并提交审核"
-          >
-            保存并提交审核
+          <div>
+            <Button className={styles.btn} onClick={handleBack}>返回</Button>
+            <Button className={styles.btn} onClick={handleSave}>保存</Button>
+            <StartFlow
+              style={{ display: 'inline-flex' }}
+              preStart={handleBeforeStartFlow}
+              callBack={handleComplete}
+              businessKey={businessKey}
+              originStartTab={{
+                title: '采购策略',
+                url: frameElementSrc,
+                id: frameElementId
+              }}
+              businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyHeader"
+              butTitle="保存并提交审核"
+            >
+              保存并提交审核
             {/* {
               (loading) => {
                 return (
@@ -291,9 +249,10 @@ function CreateStrategy() {
                 )
               }
             } */}
-          </StartFlow>
+            </StartFlow>
+          </div>
         </div>
-      </div>
+      </Affix>
       <StrategyForm
         wrappedComponentRef={formRef}
       />

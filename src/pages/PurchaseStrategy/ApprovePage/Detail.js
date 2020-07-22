@@ -1,6 +1,6 @@
 import React, { createRef, useState, useEffect } from 'react';
 import { router } from 'dva';
-import { /*Button, Modal*/ message, Spin } from 'antd';
+import { /*Button, Modal*/ message, Spin, Affix } from 'antd';
 import StrategyForm from '../DetailLayout';
 import StrategyTable from '../StrategyTable';
 import classnames from 'classnames';
@@ -53,7 +53,8 @@ function DetailStrategy() {
         submitList: submitList.map(item => item.userAccount),
         sendName: sendList.map(item => item.userName),
         sendList: sendList.map(item => item.userAccount),
-        purchaseStrategyDate: [moment(purchaseStrategyBegin), moment(purchaseStrategyEnd)],
+        purchaseStrategyDateBegin: moment(purchaseStrategyBegin),
+        purchaseStrategyDateEnd: moment(purchaseStrategyEnd)
       };
       setInitValues({
         attachment,
@@ -77,10 +78,12 @@ function DetailStrategy() {
   }, [isReady])
   return (
     <Spin spinning={loading}>
-      <div className={classnames([styles.header, styles.flexBetweenStart])}>
-        <span className={styles.title}>采购策略明细</span>
-        <div>{/* <Button className={styles.btn} onClick={handleBack}>返回</Button> */}</div>
-      </div>
+      <Affix offsetTop={0}>
+        <div className={classnames([styles.header, styles.flexBetweenStart])}>
+          <span className={styles.title}>采购策略明细</span>
+          <div>{/* <Button className={styles.btn} onClick={handleBack}>返回</Button> */}</div>
+        </div>
+      </Affix>
       <StrategyForm wrappedComponentRef={formRef} initialValue={initValues} type="detail" />
       <StrategyTable dataSource={dataSource} type="detail" />
     </Spin>

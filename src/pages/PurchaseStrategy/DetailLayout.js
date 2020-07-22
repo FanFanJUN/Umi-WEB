@@ -1,21 +1,10 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useState } from 'react';
-import { Form, Row, Input, Col, DatePicker, Radio } from 'antd';
-import { utils, ComboList, ComboTree } from 'suid';
+import { Form, Row, Col, Radio } from 'antd';
+import { utils } from 'suid';
 import styles from './StrategyForm.less';
-import {
-  purchaseCompanyProps,
-  purchaseGroupProps,
-  currencyProps,
-  purchaseOrganizationProps,
-  majorGroupProps,
-  materialLevel,
-  proPlanMaterialTypeProps
-} from '@/utils/commonProps';
-import { UserSelect, ComboAttachment } from '@/components'
-const { RangePicker } = DatePicker;
+import { ComboAttachment } from '@/components'
 const { Item, create } = Form;
 const { Group } = Radio;
-const { TextArea } = Input
 const { storage } = utils
 const formLayout = {
   labelCol: {
@@ -131,12 +120,21 @@ const FormRef = forwardRef(({
         </Row>
         <Row>
           <Col span={12}>
-            <Item label='策略周期' {...formLayout}>
+            <Item label='策略周期从' {...formLayout}>
               {
-                purchaseStrategyDate.map(item => item.format("YYYY-MM-DD")).join('~')
+                initialValue.purchaseStrategyDateBegin
               }
             </Item>
           </Col>
+          <Col span={12}>
+            <Item label='策略周期至' {...formLayout}>
+              {
+                initialValue.purchaseStrategyDateEnd
+              }
+            </Item>
+          </Col>
+        </Row>
+        <Row>
           <Col span={12}>
             <Item label='币种' {...formLayout}>
               {
@@ -144,13 +142,14 @@ const FormRef = forwardRef(({
               }
             </Item>
           </Col>
-        </Row>
-        <Row>
           <Col span={12}>
             <Item label='是否采购小组确认' {...formLayout}>
               <Group value={initialValue.purchaseGroupConfirm} disabled={type === "detail"} options={confirmRadioOptions} />
             </Item>
           </Col>
+
+        </Row>
+        <Row>
           <Col span={12}>
             <Item label='申请人' {...formLayout}>
               {
@@ -158,8 +157,6 @@ const FormRef = forwardRef(({
               }
             </Item>
           </Col>
-        </Row>
-        <Row>
           <Col span={12}>
             <Item label='联系方式' {...formLayout}>
               {

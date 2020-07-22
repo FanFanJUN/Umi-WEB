@@ -1,7 +1,7 @@
 import React, { createRef, useState, useEffect, useRef } from 'react';
 import { router } from 'dva';
 import { WorkFlow, ExtTable } from 'suid';
-import { Button, Modal, message, Spin, Tabs, Skeleton } from 'antd';
+import { Button, Modal, message, Spin, Tabs, Skeleton, Affix } from 'antd';
 import { psBaseUrl } from '@/utils/commonUrl';
 import StrategyForm from '../StrategyForm';
 import StrategyTable from '../StrategyTable';
@@ -92,7 +92,8 @@ function ApprovePage() {
         ...initialValues,
         submitList: submitList.map(item => ({ ...item, code: item.userAccount })),
         sendList: sendList.map(item => ({ ...item, code: item.userAccount })),
-        purchaseStrategyDate: [moment(purchaseStrategyBegin), moment(purchaseStrategyEnd)],
+        purchaseStrategyDateBegin: moment(purchaseStrategyBegin),
+        purchaseStrategyDateEnd: moment(purchaseStrategyEnd)
       };
       setInitValues({
         attachment,
@@ -136,14 +137,16 @@ function ApprovePage() {
   }, [isReady])
   return (
     <div>
-      <div className={classnames([styles.header, styles.flexBetweenStart])}>
-        <span className={styles.title}>采购策略变更</span>
-        <div>
-          <Button className={styles.btn} onClick={handleClose}>
-            关闭
+      <Affix offsetTop={0}>
+        <div className={classnames([styles.header, styles.flexBetweenStart])}>
+          <span className={styles.title}>采购策略变更</span>
+          <div>
+            <Button className={styles.btn} onClick={handleClose}>
+              关闭
           </Button>
+          </div>
         </div>
-      </div>
+      </Affix>
       {
         isReady ? <Approve
           businessId={businessId}
