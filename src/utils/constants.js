@@ -37,6 +37,14 @@ const getAttacmentHost = function () {
   return `${origin}/api-gateway/edm-service`
 }
 
+const getFLOWHost = function () {
+  const origin = window.location.origin;
+  if(process.env.NODE_ENV !== 'production') {
+    return '/flow-service'
+  }
+  return `${origin}/api-gateway/flow-service/`
+}
+
 const getAttacmentInfoHost = function () {
   const origin = window.location.origin;
   if(process.env.NODE_ENV !== 'production') {
@@ -57,6 +65,7 @@ const BASE_URL = getServerPath();
 
 export const ATTACMENT_HOST = getAttacmentHost();
 export const ATTACMENT_INFO_HOST = getAttacmentInfoHost();
+export const FLOW_HOST = getFLOWHost()
 
 const LOGIN_STATUS = {
   "SUCCESS": "success",

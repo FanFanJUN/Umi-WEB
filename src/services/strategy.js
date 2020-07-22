@@ -1,12 +1,17 @@
 import { request } from '@/utils';
 import { psBaseUrl, gatewayUrl, basicUrl } from '@/utils/commonUrl';
+import { FLOW_HOST } from '../utils/constants';
+
 function createServiceRequest(option) {
   const {
     path: url,
     method = "POST",
     headers,
     params: data,
-    base = psBaseUrl
+    base = psBaseUrl,
+    // 处理未按标准post请求处理接收参数的接口
+    // 后端获取参数不是从post请求的body中获取，而是从url params中获取参数的接口将hack设置为true
+    hack = false
   } = option
   const URI = `${base}${url}`
   return request({
@@ -14,8 +19,8 @@ function createServiceRequest(option) {
     method,
     headers,
     data,
-    params: method === 'GET' ? data : null
-  }).catch(error=> {
+    params: method === 'GET' ? data : hack ? data : null
+  }).catch(error => {
     return ({
       ...error,
       message: '请求异常，请联系管理员'
@@ -75,7 +80,7 @@ export const validateStrategyTableImportData = params => createServiceRequest({
 export const saveStrategyTableImportData = params => createServiceRequest({
   path: '/purchaseStrategyDetail/importFromExcel',
   params
-}) 
+})
 
 // 关联创建行附件
 export const strategyTableLineRelevanceDocment = (params) => createServiceRequest({
@@ -162,3 +167,13 @@ export const getUserPhoneNumberForAccount = params => createServiceRequest({
   method: 'GET',
   base: gatewayUrl
 })
+
+// 终止审批流程
+export const stopApproveingOrder = params => {
+  return createServiceRequest({
+    path: `${FLOW_HOST}/flowInstance/checkAndEndByBusinessId`,
+    params,
+    base: gatewayUrl,
+    hack: true
+  })
+}

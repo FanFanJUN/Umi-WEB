@@ -24,7 +24,8 @@ class LoginForm extends PureComponent {
         dispatch({
           type: "global/login",
           payload: {
-            ...user
+            ...user,
+            reqId: '151515'
           }
         });
       }

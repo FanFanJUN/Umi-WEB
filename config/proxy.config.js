@@ -42,11 +42,10 @@ export default {
     secure: false,
     pathRewrite: { '^/service.api/edm-service': '' },
   },
-  // '/service.api/api-gateway/flow-service/defaultFlowBase/startFlowNew'
-  // '/service.api/api-gateway': {
-  //   target: onLineTarget,
-  //   changeOrigin: true,
-  //   secure: false,
-  //   pathRewrite: { '^service.api': '' }
-  // }
+  '/service.api/flow-service': {
+    target: 'https://decmp.changhong.com/api-gateway/flow-service',
+    changeOrigin: true,
+    secure: false,
+    pathRewrite: { '^/service.api/edm-service': '' },
+  }
 };

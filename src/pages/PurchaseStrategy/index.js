@@ -22,6 +22,7 @@ import {
   effectStatusProps
 } from '../../utils/commonProps';
 import {
+  stopApproveingOrder,
   removeStrategyTableItem
 } from '@/services/strategy';
 import styles from './index.less';
@@ -198,7 +199,7 @@ function PurchaseStategy() {
       title: '需求公司',
       type: 'multiple',
       key: 'Q_IN_adjustScope',
-      props: {...corporationProps, forExtra: true}
+      props: { ...corporationProps, forExtra: true }
     },
     {
       title: '采购策略名称',
@@ -339,16 +340,16 @@ function PurchaseStategy() {
   function handleEditor() {
     const [key] = selectedRowKeys;
     const { id = '' } = FRAMEELEMENT;
-    const {pathname} = window.location
+    const { pathname } = window.location
     openNewTab(`purchase/strategy/editor?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '编辑采购策略', false)
   }
   function handleCreate() {
     const { id = '' } = FRAMEELEMENT;
-    const {pathname} = window.location
+    const { pathname } = window.location
     openNewTab(`purchase/strategy/create?frameElementId=${id}&frameElementSrc=${pathname}`, '新增采购策略', false)
   }
   function handleChange() {
-    const {pathname} = window.location
+    const { pathname } = window.location
     const [key] = selectedRowKeys;
     const { id = '' } = FRAMEELEMENT;
     openNewTab(`purchase/strategy/change?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '变更采购策略', false)
@@ -385,6 +386,28 @@ function PurchaseStategy() {
   function hideAttach() {
     setAttachId('')
     triggerShowAttach(false)
+  }
+  function stopApprove() {
+    Modal.confirm({
+      title: '终止审批流程',
+      content: '流程终止后无法恢复，是否继续？',
+      onOk: handleStopApproveRecord,
+      okText: '确定',
+      cancelText: '取消'
+    })
+  }
+  async function handleStopApproveRecord() {
+    const [row] = selectedRows
+    const { id } = row
+    const { success, message: msg } = await stopApproveingOrder({
+      businessId: id
+    })
+    if (success) {
+      message.success(msg)
+      uploadTable()
+      return
+    }
+    message.error(msg)
   }
   function handleCheckChangeHistory() {
     const [row] = selectedRows
@@ -457,6 +480,20 @@ function PurchaseStategy() {
               authAction(
                 <Button key='PURCHASE_APPROVE_HISTORY'
                   ignore={DEVELOPER_ENV} disabled={multiple || empty || approvalEffect} className={styles.btn} onClick={showHistory}>审核历史</Button>
+              )
+            }
+            {
+              authAction(
+                <Button key='PURCHASE_STOP_APPROVE'
+                  ignore={DEVELOPER_ENV}
+                  disabled={multiple || empty || !approvaling}
+                  onClick={stopApprove}
+                  style={{
+                    marginRight: 6
+                  }}
+                >
+                  终止审核
+                </Button>
               )
             }
             {
