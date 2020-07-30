@@ -257,18 +257,6 @@ function StrategyTable({
     },
     align: 'center'
   })
-  console.log(changeColumns)
-  // const changeColumns = [
-  //   {
-  //     title: '是否作废',
-  //     dataIndex: 'invalid',
-  //     render(text) {
-  //       return text ? '是' : '否'
-  //     },
-  //     align: 'center'
-  //   },
-  //   ...columns
-  // ]
   useLayoutEffect(() => {
     if (dataSource.length === 0) {
       cleanSelectedRecord()
@@ -562,7 +550,7 @@ function StrategyTable({
             left: left
           }}
           allowCancelSelect
-          columns={type === 'change' ? changeColumns : columns}
+          columns={(type === 'change' || type === 'detail') ? changeColumns : columns}
           loading={loading}
           showSearch={true}
           searchPlaceHolder='请输入物料分类查询'
