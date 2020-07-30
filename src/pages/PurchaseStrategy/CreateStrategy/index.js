@@ -46,7 +46,7 @@ function CreateStrategy() {
       const { validateFieldsAndScroll } = formRef.current.form;
       validateFieldsAndScroll(async (err, val) => {
         if (!err && dataSource.length !== 0) {
-          const params = await formatSaveParams(val);
+          const params = await formatSaveParams(val, dataSource);
           const { success, message: msg, data } = await savePurcahseAndApprove(params);
           if (success) {
             // resolve({

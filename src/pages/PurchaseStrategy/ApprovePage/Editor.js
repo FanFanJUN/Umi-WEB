@@ -12,10 +12,9 @@ import {
   getPurchaseStrategyVoByFlowId,
   strategyTableLineRelevanceDocment,
 } from '../../../services/strategy';
-import { closeCurrent } from '@/utils';
 import moment from 'moment';
 import styles from './index.less';
-import { checkToken, formatSaveParams } from '../../../utils';
+import { checkToken, formatSaveParams, closeCurrent } from '../../../utils';
 const { Approve } = WorkFlow;
 function ApproveEditor() {
   const formRef = createRef();

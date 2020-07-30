@@ -8,10 +8,9 @@ import StrategyTable from '../StrategyTable';
 import classnames from 'classnames';
 import { getPurchaseStrategyChangeVoByFlowId } from '@/services/strategy';
 import { Upload } from '../../../components';
-import { closeCurrent } from '@/utils';
 import moment from 'moment';
 import styles from './index.less';
-import { checkToken } from '../../../utils';
+import { checkToken, closeCurrent } from '../../../utils';
 const { TabPane } = Tabs;
 const { Approve } = WorkFlow;
 function ApprovePage() {

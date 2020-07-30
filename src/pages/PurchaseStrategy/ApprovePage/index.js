@@ -6,10 +6,9 @@ import StrategyForm from '../StrategyForm';
 import StrategyTable from '../StrategyTable';
 import classnames from 'classnames';
 import { getPurchaseStrategyVoByFlowId } from '@/services/strategy';
-import { closeCurrent } from '@/utils';
 import moment from 'moment';
 import styles from './index.less';
-import { checkToken } from '../../../utils';
+import { checkToken, closeCurrent } from '../../../utils';
 const { Approve } = WorkFlow;
 function ApprovePage() {
   const formRef = createRef();

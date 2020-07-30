@@ -156,7 +156,7 @@ const CommonForm = forwardRef(
             </Item>
           </Col>
           <Col span={12}>
-            <Item label='预计需求规模（数量）' {...formLayout}>
+            <Item label='预计需求规模（数量）' {...formLayout} required>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ flex: 1 }}>
                   <Item style={{ flex: 1 }}>

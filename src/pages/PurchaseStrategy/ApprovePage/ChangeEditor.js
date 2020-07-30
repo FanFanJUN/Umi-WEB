@@ -15,9 +15,8 @@ import {
   getPurchaseStrategyChangeVoByFlowId,
 } from '@/services/strategy';
 import moment from 'moment';
-import { openNewTab, getUUID, closeCurrent } from '@/utils';
 import styles from './index.less';
-import { checkToken, formatSaveParams } from '../../../utils';
+import { checkToken, formatSaveParams, closeCurrent } from '../../../utils';
 const { Approve } = WorkFlow;
 const formLayout = {
   labelCol: {
