@@ -127,7 +127,7 @@ export const ComboAttachment = forwardRef(({
         ref={ref}
         serviceHost={ATTACMENT_HOST}
         customBatchDownloadFileName={true}
-        uploadUrl='file/upload'
+        // uploadUrl='file/upload'
         onDeleteFile={(file) => {
           const [info] = file;
           const { id } = info;

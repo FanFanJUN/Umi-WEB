@@ -298,6 +298,7 @@ function EditorStrategy({
               businessKey={businessKey}
               businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyHeader"
               btuTitile='保存并提交审核'
+              onCancel={closeCurrent}
             >
               {
                 (loading) => {

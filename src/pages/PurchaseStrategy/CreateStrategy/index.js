@@ -49,13 +49,6 @@ function CreateStrategy() {
           const params = await formatSaveParams(val, dataSource);
           const { success, message: msg, data } = await savePurcahseAndApprove(params);
           if (success) {
-            // resolve({
-            //   success: true,
-            //   message: msg,
-            //   data: {
-            //     businessKey: data.flowId
-            //   }
-            // })
             setBusinessKey(data.flowId)
             resolve(data.flowId)
             return
@@ -66,15 +59,16 @@ function CreateStrategy() {
           //   message: msg
           // })
         } else {
-          // reject({
-          //   success: false,
-          //   message: len === 0 ? '标的物不能为空' : '请完善采购策略基本信息'
-          // })
+          reject({
+            success: false,
+            message: len === 0 ? '标的物不能为空' : '请完善采购策略基本信息'
+          })
           message.error(len === 0 ? '标的物不能为空' : '请完善采购策略基本信息')
         }
       })
     })
   }
+
   // 采购策略行创建
   async function handleCreateLine(val, hide) {
     const { files = [], pricingDateList = [], adjustScopeListCode = [] } = val;
@@ -235,10 +229,11 @@ function CreateStrategy() {
                 id: frameElementId
               }}
               businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyHeader"
-              butTitle="保存并提交审核"
+              btuTitile="保存并提交审核"
+              onCancel={closeCurrent}
             >
               保存并提交审核
-            {/* {
+            {
               (loading) => {
                 return (
                   <Button
@@ -248,7 +243,7 @@ function CreateStrategy() {
                   >保存并提交审核</Button>
                 )
               }
-            } */}
+            }
             </StartFlow>
           </div>
         </div>

@@ -66,6 +66,7 @@ function ChangeStrategyHistory() {
         beforeStart={handleBeforeStartFlow}
         callBack={handleComplete}
         style={{ display: 'inline-flex', marginRight: 6 }}
+        disabled={multiple || empty || disableSubmit}
         businessKey={flowId}
         businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyModifyHeader"
       >
