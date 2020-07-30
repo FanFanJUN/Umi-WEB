@@ -54,10 +54,10 @@ function CreateStrategy() {
             return
           }
           message.error(msg)
-          // reject({
-          //   success: false,
-          //   message: msg
-          // })
+          reject({
+            success: false,
+            message: msg
+          })
         } else {
           reject({
             success: false,
@@ -230,7 +230,7 @@ function CreateStrategy() {
               }}
               businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyHeader"
               btuTitile="保存并提交审核"
-              onCancel={closeCurrent}
+              onCancel={()=>closeCurrent()}
             >
               保存并提交审核
             {

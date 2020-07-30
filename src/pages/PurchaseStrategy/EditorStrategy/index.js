@@ -153,15 +153,15 @@ function EditorStrategy({
             return
           }
           message.error(msg)
-          // reject({
-          //   success: false,
-          //   message: msg
-          // })
+          reject({
+            success: false,
+            message: msg
+          })
         } else {
-          // reject({
-          //   success: false,
-          //   message: len === 0 ? '标的物不能为空' : '请完善采购策略基本信息'
-          // })
+          reject({
+            success: false,
+            message: len === 0 ? '标的物不能为空' : '请完善采购策略基本信息'
+          })
           message.error(len === 0 ? '标的物不能为空' : '请完善采购策略基本信息')
         }
       })
@@ -298,7 +298,7 @@ function EditorStrategy({
               businessKey={businessKey}
               businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyHeader"
               btuTitile='保存并提交审核'
-              onCancel={closeCurrent}
+              onCancel={()=>closeCurrent()}
             >
               {
                 (loading) => {
