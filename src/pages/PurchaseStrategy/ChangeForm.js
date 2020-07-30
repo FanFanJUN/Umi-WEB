@@ -305,20 +305,22 @@ const FormRef = forwardRef(({
               }
             </Item>
           </Col>
-          <Item label='联系方式' {...formLayoutAlone}>
-            {
-              getFieldDecorator('phone', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请填写联系方式'
-                  }
-                ]
-              })(
-                <Input disabled={type === "detail"} placeholder='请填写联系方式' />
-              )
-            }
-          </Item>
+          <Col span={12}>
+            <Item label='联系方式' {...formLayoutAlone}>
+              {
+                getFieldDecorator('phone', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请填写联系方式'
+                    }
+                  ]
+                })(
+                  <Input disabled={type === "detail"} placeholder='请填写联系方式' />
+                )
+              }
+            </Item>
+          </Col>
         </Row>
         <Row>
           <Item label='内容简介' {...formLayoutAlone}>
