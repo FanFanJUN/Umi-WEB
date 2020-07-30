@@ -248,17 +248,27 @@ function StrategyTable({
       dataIndex: 'remark'
     }
   ].map(item => ({ ...item, align: 'center' }));
-  const changeColumns = [
-    {
-      title: '是否作废',
-      dataIndex: 'invalid',
-      render(text) {
-        return text ? '是' : '否'
-      },
-      align: 'center'
+  const changeColumns = [...columns]
+  changeColumns.splice(1, 0, {
+    title: '是否作废',
+    dataIndex: 'invalid',
+    render(text) {
+      return text ? '是' : '否'
     },
-    ...columns
-  ]
+    align: 'center'
+  })
+  console.log(changeColumns)
+  // const changeColumns = [
+  //   {
+  //     title: '是否作废',
+  //     dataIndex: 'invalid',
+  //     render(text) {
+  //       return text ? '是' : '否'
+  //     },
+  //     align: 'center'
+  //   },
+  //   ...columns
+  // ]
   useLayoutEffect(() => {
     if (dataSource.length === 0) {
       cleanSelectedRecord()
