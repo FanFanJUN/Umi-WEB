@@ -215,7 +215,7 @@ function CreateStrategy() {
           <span className={styles.title}>
             新增采购策略
         </span>
-          <div>
+          <div className={styles.flexCenter}>
             <Button className={styles.btn} onClick={handleBack}>返回</Button>
             <Button className={styles.btn} onClick={handleSave}>保存</Button>
             <StartFlow

@@ -283,7 +283,7 @@ function EditorStrategy({
           <span className={styles.title}>
             编辑采购策略: {currentCode} {isInvalid.name}
           </span>
-          <div>
+          <div className={styles.flexCenter}>
             <Button className={styles.btn} onClick={handleBack}>返回</Button>
             <Button className={styles.btn} onClick={handleSave}>保存</Button>
             <StartFlow

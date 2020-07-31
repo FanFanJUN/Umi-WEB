@@ -342,7 +342,7 @@ function ChangeStrategy({
           <span className={styles.title}>
             变更采购策略：{currentCode} {isInvalid}
           </span>
-          <div>
+          <div className={styles.flexCenter}>
             <Button className={styles.btn} onClick={handleBack}>返回</Button>
             <Button className={styles.btn} onClick={handleChangeOwnInvalidState}>作废/取消作废</Button>
             <Button onClick={showModal} type='primary'>保存并提交审核</Button>

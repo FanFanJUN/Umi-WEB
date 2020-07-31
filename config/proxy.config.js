@@ -36,6 +36,12 @@ export default {
     secure: false,
     pathRewrite: { '^/service.api': '' },
   },
+  '/api-gateway': {
+    target: `${onLineTarget}/api-gateway`,
+    changeOrigin: true,
+    secure: false,
+    pathRewrite: { '^/api-gateway': '' }
+  },
   '/service.api/edm-service': {
     target: 'https://decmp.changhong.com/api-gateway/edm-service',
     changeOrigin: true,
@@ -47,5 +53,6 @@ export default {
     changeOrigin: true,
     secure: false,
     pathRewrite: { '^/service.api/edm-service': '' },
-  }
+  },
+  
 };

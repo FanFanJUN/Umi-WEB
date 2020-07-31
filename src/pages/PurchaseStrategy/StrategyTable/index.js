@@ -543,26 +543,28 @@ function StrategyTable({
   )
   return (
     <div className={styles.wrapper}>
-      <div className={styles.title}>标的物</div>
-      <div className={styles.content}>
-        <ExtTable
-          toolBar={{
-            left: left
-          }}
-          allowCancelSelect
-          columns={(type === 'change' || type === 'detail') ? changeColumns : columns}
-          loading={loading}
-          showSearch={true}
-          searchPlaceHolder='请输入物料分类查询'
-          searchProperties={['materialClassificationName']}
-          dataSource={dataSource}
-          rowKey={(item) => `${item.localId}`}
-          onSelectRow={handleSelectedRows}
-          selectedRowKeys={selectedRowKeys}
-          checkbox={
-            type !== 'detail' ? { multiSelect: false } : false
-          }
-        />
+      <div className={styles.bgw}>
+        <div className={styles.title}>标的物</div>
+        <div className={styles.content}>
+          <ExtTable
+            toolBar={{
+              left: left
+            }}
+            allowCancelSelect
+            columns={(type === 'change' || type === 'detail') ? changeColumns : columns}
+            loading={loading}
+            showSearch={true}
+            searchPlaceHolder='请输入物料分类查询'
+            searchProperties={['materialClassificationName']}
+            dataSource={dataSource}
+            rowKey={(item) => `${item.localId}`}
+            onSelectRow={handleSelectedRows}
+            selectedRowKeys={selectedRowKeys}
+            checkbox={
+              type !== 'detail' ? { multiSelect: false } : false
+            }
+          />
+        </div>
       </div>
       <CommonForm
         visible={visible}
