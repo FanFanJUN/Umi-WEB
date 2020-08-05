@@ -286,20 +286,31 @@ function ChangeStrategy({ form }) {
     message.error(msg);
   }
   // 标的物行作废
-  function handleChangeLineInvalidState(id) {
+  function handleChangeLineInvalidState(query) {
     Modal.confirm({
       title: '变更作废状态',
       content: '是否确定变更作废状态?',
       okText: '确定',
       cancelText: '取消',
       onOk: async () => {
-        const { success, message: msg } = await changeLineInvalidState(id);
-        if (success) {
-          message.success(msg);
-          initFommFieldsValuesAndTableDataSource();
-          return;
-        }
-        message.error(msg);
+        const [id] = query.ids;
+        const newDatasource = dataSource.map(item=>{
+          if(item.id === id) {
+            return {
+              ...item,
+              invalid: !item.invalid
+            }
+          }
+          return item
+        })
+        setDataSource(newDatasource)
+        // const { success, message: msg } = await changeLineInvalidState(id);
+        // if (success) {
+        //   message.success(msg);
+        //   initFommFieldsValuesAndTableDataSource();
+        //   return;
+        // }
+        // message.error(msg);
       },
     });
   }

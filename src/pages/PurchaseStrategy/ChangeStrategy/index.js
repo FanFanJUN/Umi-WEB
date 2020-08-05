@@ -44,7 +44,7 @@ function ChangeStrategy({
   const [businessKey, setBusinessKey] = useState('');
   const [currentId, setCurrentId] = useState('');
   const [currentCode, setCurrentCode] = useState('');
-  const [isInvalid, setIsInvalid] = useState('');
+  const [isInvalid, setIsInvalid] = useState(false);
   const files = getFieldValue('changeFiles') || [];
   const allowUpload = files.length !== 1;
   async function initFommFieldsValuesAndTableDataSource() {
@@ -97,7 +97,7 @@ function ChangeStrategy({
       setDataSource(addIdList);
       setCurrentId(id)
       setCurrentCode(code)
-      setIsInvalid(invalid ? '（作废）' : '')
+      setIsInvalid(invalid)
       triggerLoading(false);
       return
     }
@@ -146,7 +146,7 @@ function ChangeStrategy({
         return;
       }
       const params = await formatSaveParams(sourceParams, dataSource, currentId);
-      const { success, message: msg, data } = await changePurchaseAndApprove({ ...params, modifyHeader: changeParams });
+      const { success, message: msg, data } = await changePurchaseAndApprove({ ...params, modifyHeader: changeParams, invalid: isInvalid });
       if (success) {
         // resolve({
         //   success: true,
@@ -304,31 +304,43 @@ function ChangeStrategy({
       okText: '确定',
       cancelText: '取消',
       onOk: async () => {
-        const { success, message: msg } = await changeOwnInvalidState(query);
-        if (success) {
-          message.success(msg)
-          initFommFieldsValuesAndTableDataSource()
-          return
-        }
-        message.error(msg)
+        setIsInvalid(!isInvalid)
+        // const { success, message: msg } = await changeOwnInvalidState(query);
+        // if (success) {
+        //   message.success(msg)
+        //   initFommFieldsValuesAndTableDataSource()
+        //   return
+        // }
+        // message.error(msg)
       }
     })
   }
   // 标的物行作废
-  function handleChangeLineInvalidState(id) {
+  function handleChangeLineInvalidState(query) {
     Modal.confirm({
       title: '变更作废状态',
       content: '是否确定变更作废状态?',
       okText: '确定',
       cancelText: '取消',
       onOk: async () => {
-        const { success, message: msg } = await changeLineInvalidState(id);
-        if (success) {
-          message.success(msg)
-          initFommFieldsValuesAndTableDataSource()
-          return
-        }
-        message.error(msg)
+        const [id] = query.ids;
+        const newDataSouce = dataSource.map(item=>{
+          if(item.id === id) {
+            return {
+              ...item,
+              invalid: !item.invalid
+            }
+          }
+          return item
+        })
+        setDataSource(newDataSouce)
+        // const { success, message: msg } = await changeLineInvalidState(id);
+        // if (success) {
+        //   message.success(msg)
+        //   initFommFieldsValuesAndTableDataSource()
+        //   return
+        // }
+        // message.error(msg)
       }
     })
   }
@@ -340,7 +352,7 @@ function ChangeStrategy({
       <Affix offsetTop={0}>
         <div className={classnames([styles.header, styles.flexBetweenStart])}>
           <span className={styles.title}>
-            变更采购策略：{currentCode} {isInvalid}
+            变更采购策略：{currentCode} {isInvalid ? '（作废）' : ''}
           </span>
           <div className={styles.flexCenter}>
             <Button className={styles.btn} onClick={handleBack}>返回</Button>
