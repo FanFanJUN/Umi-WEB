@@ -42,7 +42,7 @@ const getFLOWHost = function () {
   if(process.env.NODE_ENV !== 'production') {
     return '/flow-service'
   }
-  return `/api-gateway/flow-service/`
+  return `/flow-service/`
 }
 
 const getAttacmentInfoHost = function () {
