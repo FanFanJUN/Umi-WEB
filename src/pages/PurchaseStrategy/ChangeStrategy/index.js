@@ -134,13 +134,19 @@ function ChangeStrategy({
   // 保存并提交审核
   async function handleBeforeStartFlow() {
     return new Promise(async (resolve, reject) => {
+      console.log('sdfjsdf')
       const changeParams = await formatChangeReasonPamras();
       if (!changeParams) {
         reject(false);
-        return
+        return false
       }
       const { validateFieldsAndScroll } = formRef.current.form;
-      const sourceParams = await validateFieldsAndScroll().then(r => r).catch(err => null);
+      const sourceParams = await validateFieldsAndScroll().then(r => r).catch(err => {
+        // console.log(`err`,err)
+        message.error('请检查表单是否填写完整')
+        setVisible(!visible)
+        return null
+      });
       if (!sourceParams) {
         reject(false)
         return;
@@ -264,7 +270,7 @@ function ChangeStrategy({
           resolve(params);
         }
         else {
-          reject(false)
+          resolve(false)
         }
       })
     })
@@ -405,12 +411,12 @@ function ChangeStrategy({
               businessModelCode="com.ecmp.srm.ps.entity.PurchaseStrategyModifyHeader"
             >
               {
-                (loading) => {
+                (ld) => {
                   return (
                     <Button
                       type='primary'
                       className={styles.btn}
-                      loading={loading}
+                      loading={ld}
                     >保存并提交审核</Button>
                   )
                 }
