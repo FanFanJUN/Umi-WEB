@@ -398,9 +398,9 @@ function PurchaseStategy() {
   }
   async function handleStopApproveRecord() {
     const [row] = selectedRows
-    const { id } = row
+    const { flowId } = row
     const { success, message: msg } = await stopApproveingOrder({
-      businessId: id
+      businessId: flowId
     })
     if (success) {
       message.success(msg)
