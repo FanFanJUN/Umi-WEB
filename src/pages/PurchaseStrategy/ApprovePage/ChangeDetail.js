@@ -7,26 +7,26 @@ import StrategyTable from '../StrategyTable';
 // import { ComboAttachment } from '@/components';
 import classnames from 'classnames';
 import {
-  changeLineInvalidState,
-  changeEditorAndApprove,
-  strategyTableCreateLine,
-  saveStrategyTableImportData,
-  strategyTableLineRelevanceDocment,
+  // changeLineInvalidState,
+  // changeEditorAndApprove,
+  // strategyTableCreateLine,
+  // saveStrategyTableImportData,
+  // strategyTableLineRelevanceDocment,
   getPurchaseStrategyChangeVoByFlowId,
 } from '@/services/strategy';
 import moment from 'moment';
-import { openNewTab, getUUID, closeCurrent } from '@/utils';
+// import { openNewTab, getUUID, closeCurrent } from '@/utils';
 import styles from './index.less';
 import { checkToken } from '../../../utils';
-const { Approve } = WorkFlow;
-const formLayout = {
-  labelCol: {
-    span: 8,
-  },
-  wrapperCol: {
-    span: 16,
-  },
-};
+// const { Approve } = WorkFlow;
+// const formLayout = {
+//   labelCol: {
+//     span: 8,
+//   },
+//   wrapperCol: {
+//     span: 16,
+//   },
+// };
 function ChangeStrategy({ form }) {
   const { getFieldValue } = form;
   const [isReady, setIsReady] = useState(false);
@@ -39,7 +39,7 @@ function ChangeStrategy({ form }) {
   const [currentId, setCurrentId] = useState('');
   const [currentCode, setCurrentCode] = useState('');
   const [isInvalid, setIsInvalid] = useState('');
-  const files = getFieldValue('changeFiles') || [];
+  // const files = getFieldValue('changeFiles') || [];
   async function initFommFieldsValuesAndTableDataSource() {
     const { id: flowId } = query;
     const { data, success, message: msg } = await getPurchaseStrategyChangeVoByFlowId({ flowId });
@@ -74,7 +74,7 @@ function ChangeStrategy({ form }) {
         ...initialValues
       } = data;
       const { form: childrenForm } = formRef.current;
-      const { setFieldsValue } = childrenForm;
+      // const { setFieldsValue } = childrenForm;
       const { setFieldsValue: modifySetFieldsValue } = form;
 
       const mixinValues = {

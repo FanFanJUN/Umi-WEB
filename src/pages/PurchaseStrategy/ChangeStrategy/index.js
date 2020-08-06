@@ -310,16 +310,26 @@ function ChangeStrategy({
       okText: '确定',
       cancelText: '取消',
       onOk: async () => {
-        const nd = dataSource.map(item=>({ ...item, invalid: !isInvalid }))
-        setIsInvalid(!isInvalid)
-        setDataSource(nd)
-        // const { success, message: msg } = await changeOwnInvalidState(query);
+        if (isInvalid) {
+          const nd = dataSource.map(item => ({ ...item, invalid: !isInvalid }))
+          setIsInvalid(!isInvalid)
+          setDataSource(nd)
+          return
+        }
+        const { success, message: msg } = await changeOwnInvalidState(query);
+        if (success) {
+          const nd = dataSource.map(item => ({ ...item, invalid: !isInvalid }))
+          setIsInvalid(!isInvalid)
+          setDataSource(nd)
+          return
+        }
+
         // if (success) {
         //   message.success(msg)
         //   initFommFieldsValuesAndTableDataSource()
         //   return
         // }
-        // message.error(msg)
+        message.error(msg)
       }
     })
   }
@@ -332,25 +342,44 @@ function ChangeStrategy({
       cancelText: '取消',
       onOk: async () => {
         const [id] = query.ids;
-        const newDataSouce = dataSource.map(item=>{
-          if(item.id === id) {
-            return {
-              ...item,
-              invalid: !item.invalid
+        const { invalid } = dataSource.find((item) => item.id === id);
+        if (invalid) {
+          const newDataSouce = dataSource.map(item => {
+            if (item.id === id) {
+              return {
+                ...item,
+                invalid: !item.invalid
+              }
             }
-          }
-          return item
-        })
-        const allInvaild = newDataSouce.every(item=>item.invalid);
-        setDataSource(newDataSouce)
-        setIsInvalid(allInvaild)
-        // const { success, message: msg } = await changeLineInvalidState(id);
+            return item
+          })
+          const allInvaild = newDataSouce.every(item => item.invalid);
+          setDataSource(newDataSouce)
+          setIsInvalid(allInvaild)
+          return
+        }
+        const { success, message: msg } = await changeLineInvalidState(query);
+        if (success) {
+          const newDataSouce = dataSource.map(item => {
+            if (item.id === id) {
+              return {
+                ...item,
+                invalid: !item.invalid
+              }
+            }
+            return item
+          })
+          const allInvaild = newDataSouce.every(item => item.invalid);
+          setDataSource(newDataSouce)
+          setIsInvalid(allInvaild)
+          return
+        }
         // if (success) {
         //   message.success(msg)
         //   initFommFieldsValuesAndTableDataSource()
         //   return
         // }
-        // message.error(msg)
+        message.error(msg)
       }
     })
   }
