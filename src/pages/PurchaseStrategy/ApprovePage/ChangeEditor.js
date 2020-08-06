@@ -39,7 +39,7 @@ function ChangeStrategy({ form }) {
   const [loading, triggerLoading] = useState(true);
   const [currentId, setCurrentId] = useState('');
   const [currentCode, setCurrentCode] = useState('');
-  const [isInvalid, setIsInvalid] = useState('');
+  const [isInvalid, setIsInvalid] = useState(false);
   const files = getFieldValue('changeFiles') || [];
   const allowUpload = files.length !== 1;
   async function initFommFieldsValuesAndTableDataSource() {
@@ -103,7 +103,7 @@ function ChangeStrategy({ form }) {
       setDataSource(addIdList);
       setCurrentId(id);
       setCurrentCode(code);
-      setIsInvalid(invalid ? '（作废）' : '');
+      setIsInvalid(invalid);
       triggerLoading(false);
       return;
     }
@@ -294,8 +294,8 @@ function ChangeStrategy({ form }) {
       cancelText: '取消',
       onOk: async () => {
         const [id] = query.ids;
-        const newDatasource = dataSource.map(item=>{
-          if(item.id === id) {
+        const newDatasource = dataSource.map(item => {
+          if (item.id === id) {
             return {
               ...item,
               invalid: !item.invalid
@@ -303,7 +303,9 @@ function ChangeStrategy({ form }) {
           }
           return item
         })
+        const allInvaild = newDatasource.every(item => item.invalid);
         setDataSource(newDatasource)
+        setIsInvalid(allInvaild)
         // const { success, message: msg } = await changeLineInvalidState(id);
         // if (success) {
         //   message.success(msg);
@@ -327,7 +329,7 @@ function ChangeStrategy({ form }) {
       <Affix offsetTop={0}>
         <div className={classnames([styles.header, styles.flexBetweenStart])}>
           <span className={styles.title}>
-            变更采购策略：{currentCode} {isInvalid}
+            变更采购策略：{currentCode} {isInvalid ? '（作废）' : ''}
           </span>
           <div>
             <Button onClick={showModal}>修改变更原因</Button>

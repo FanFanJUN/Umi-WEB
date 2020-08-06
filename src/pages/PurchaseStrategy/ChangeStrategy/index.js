@@ -304,7 +304,9 @@ function ChangeStrategy({
       okText: '确定',
       cancelText: '取消',
       onOk: async () => {
+        const nd = dataSource.map(item=>({ ...item, invalid: !isInvalid }))
         setIsInvalid(!isInvalid)
+        setDataSource(nd)
         // const { success, message: msg } = await changeOwnInvalidState(query);
         // if (success) {
         //   message.success(msg)
@@ -333,7 +335,9 @@ function ChangeStrategy({
           }
           return item
         })
+        const allInvaild = newDataSouce.every(item=>item.invalid);
         setDataSource(newDataSouce)
+        setIsInvalid(allInvaild)
         // const { success, message: msg } = await changeLineInvalidState(id);
         // if (success) {
         //   message.success(msg)

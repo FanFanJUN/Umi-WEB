@@ -50,7 +50,7 @@ const getAttacmentInfoHost = function () {
   if(process.env.NODE_ENV !== 'production') {
     return '/edm-service/document/getDocument'
   }
-  return `${origin}/api-gateway/edm-service/document/getDocument`
+  return `/api-gateway/edm-service/document/getDocument`
 }
 
 export const AUTH_SERVER_PATH = '/auth-service'
