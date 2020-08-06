@@ -70,7 +70,10 @@ const importColumns = [
     title: '定价时间',
     dataIndex: 'pricingTime',
     render(text) {
-      return moment(text).format('YYYY-MM')
+      if(!!text) {
+        return moment(text).format('YYYY-MM')
+      }
+      return ""
     }
   },
   {
