@@ -1,5 +1,5 @@
 {
-  "name": "react-srm-ps-web",
-  "entry": "/react-srm-ps-web",
-  "base": "/react-srm-ps-web"
+  "name": "react-srm-sm-web",
+  "entry": "/react-srm-sm-web",
+  "base": "/react-srm-sm-web"
 }

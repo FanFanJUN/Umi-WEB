@@ -38,7 +38,6 @@ const getAttacmentHost = function () {
 }
 
 const getFLOWHost = function () {
-  const origin = window.location.origin;
   if(process.env.NODE_ENV !== 'production') {
     return '/flow-service'
   }
@@ -46,7 +45,6 @@ const getFLOWHost = function () {
 }
 
 const getAttacmentInfoHost = function () {
-  const origin = window.location.origin;
   if(process.env.NODE_ENV !== 'production') {
     return '/edm-service/document/getDocument'
   }
