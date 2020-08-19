@@ -6,7 +6,7 @@ export const rfqBaseUrl = "/srm-rfq-web";
 
 export const purchasePlanBaseUrl = "/srm-pp-web";
 
-export const supplierManagerBaseUrl = "/srm-sm-web";
+export const smBaseUrl = "/srm-sm-web";
 
 export const purchaseApplyBaseUrl = "/srm-pa-web";
 

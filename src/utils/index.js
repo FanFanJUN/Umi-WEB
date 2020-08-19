@@ -1,5 +1,7 @@
 import * as constants from './constants';
 import * as userAuth from './user';
+import * as commonProps from './commonProps';
+import * as commonUrl from './commonUrl';
 import { mainTabAction } from 'sei-utils';
 import { utils } from 'suid';
 import { onLineTarget } from '../../config/proxy.config';
@@ -196,6 +198,11 @@ export const getUserAccount = () => {
   return account;
 };
 
+export const getUserName = () => {
+  const info = storage.sessionStorage.get('Authorization') || {};
+  return info?.userName 
+}
+
 export const downloadBlobFile = (data, name) => {
   const blob = new Blob([data]);
   const fileName = name;
@@ -214,6 +221,5 @@ export const downloadBlobFile = (data, name) => {
     navigator.msSaveBlob(blob, fileName);
   }
 };
-
 export { default as request } from './request';
-export { constants, userAuth as userUtils };
+export { constants, userAuth as userUtils, commonProps, commonUrl };
