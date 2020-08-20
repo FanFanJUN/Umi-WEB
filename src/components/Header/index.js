@@ -25,7 +25,9 @@ const Header = forwardRef(
         position: "relative"
       }}>
         <div className={classnames([styles.wrapper, styles.flexBetweenStart])}>
-          <div>{left}</div>
+          <div className={styles.headerLeftWrapper}>
+            {left}
+          </div>
           <div className={styles.flexBetweenStart}>
             {right}
             {advanced && (

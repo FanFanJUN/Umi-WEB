@@ -8,7 +8,7 @@
 
 import React from 'react';
 import { Button, Row, Col, Form, Input, DatePicker } from 'antd';
-import { ComboSelect, MixinSelect, ComboMultiple } from '@/components';
+import { MixinSelect, ComboMultiple } from '@/components';
 import {
   ComboGrid,
   ComboList,
