@@ -42,6 +42,7 @@ export default function () {
       url: `${smBaseUrl}/api/supplierFinanceViewModifyService/findByPage`,
       params: {
         ...searchValue,
+        quickSearchProperties: ['supplierName', 'supplierCode'],
         sortOrders: [
           {
             property: 'docNumber',
@@ -49,7 +50,7 @@ export default function () {
           }
         ]
       },
-      type: 'post'
+      type: 'POST'
     }
   }
   const headerLeft = <>
@@ -308,6 +309,7 @@ export default function () {
             height={h}
             allowCancelSelect
             showSearch={false}
+            remotePaging
             checkbox={{ multiSelect: false }}
             ref={tableRef}
             rowKey={(item) => item.id}

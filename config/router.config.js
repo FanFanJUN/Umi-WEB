@@ -11,43 +11,36 @@ export default [
   {
     path: '/',
     component: '../layouts/AuthLayout',
-    title:'供应商注册',
+    title: '供应商注册',
     routes: [
 
       { path: '/', redirect: '/dashboard' },
       { path: '/dashboard', component: './Dashboard' },
       {
-        path: '/supplier',
-        //component: '../layouts/AuthLayout',
-        title: '供应商注册配置表',
-        routes: [
-          {
-            path: '/supplier/configure',
-            component: './SupplierConfigure',
-            title: "供应商注册配置表"
-          },
-          {
-            path: '/supplier/configure/create',
-            component: './SupplierConfigure/CreateConfigure',
-            title: "供应商注册配置表新增"
-          },
-          {
-            path: '/supplier/configure/edit',
-            component: './SupplierConfigure/EditConfigure',
-            title: "供应商注册配置表编辑"
-          },
-          {
-            path: '/supplier/configure/detail',
-            component: './SupplierConfigure/DetailConfigure',
-            title: "供应商注册配置表明细"
-          },
-        ]
+        path: '/supplier/configure',
+        component: './SupplierConfigure',
+        title: "供应商注册配置表"
+      },
+      {
+        path: '/supplier/configure/create',
+        component: './SupplierConfigure/CreateConfigure',
+        title: "供应商注册配置表新增"
+      },
+      {
+        path: '/supplier/configure/edit',
+        component: './SupplierConfigure/EditConfigure',
+        title: "供应商注册配置表编辑"
+      },
+      {
+        path: '/supplier/configure/detail',
+        component: './SupplierConfigure/DetailConfigure',
+        title: "供应商注册配置表明细"
       },
       {
         path: '/register',
         //component: '../layouts/BlankLayout.js',
         title: '注册字段配置表',
-        routes:[
+        routes: [
           {
             path: '/register/field',
             component: './RegisterField',
