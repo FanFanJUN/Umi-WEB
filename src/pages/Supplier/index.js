@@ -1,7 +1,8 @@
 import { useRef } from 'react';
 import styles from './index.less';
 import { useState, useEffect } from 'react';
-import { ExtTable, ExtModal, WorkFlow } from 'suid';
+import { ExtTable, WorkFlow } from 'suid';
+import { StartFlow } from 'seid';
 import { Button, Input, message, Modal } from 'antd';
 import { AutoSizeLayout, Header, AdvancedForm } from '../../components';
 import { openNewTab, getFrameElement, commonProps } from '../../utils';
@@ -17,6 +18,7 @@ const minxinSupplierProps = {
   },
   placeholder: '选择供应商'
 };
+const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 const { Search } = Input;
 const { FlowHistoryButton } = WorkFlow;
 export default function () {
@@ -55,7 +57,17 @@ export default function () {
     <Button className={styles.btn} disabled={empty} onClick={handleEditor}>编辑</Button>
     <Button className={styles.btn} disabled={empty} onClick={handleRemoveItem}>删除</Button>
     <Button className={styles.btn} disabled={empty} onClick={handleDetail}>明细</Button>
-    <Button className={styles.btn} disabled={empty || underWay}>提交审核</Button>
+    {/* <Button className={styles.btn} disabled={empty || underWay}>提交审核</Button> */}
+    <StartFlow
+      className={styles.btn}
+      ignore={DEVELOPER_ENV}
+      // preStart={handleBeforeStartFlow}
+      businessKey={flowId}
+      key='PURCHASE_APPROVE'
+      callBack={handleComplete}
+      disabled={empty || underWay}
+      businessModelCode='com.ecmp.srm.sm.entity.SupplierFinanceViewModify'
+    ></StartFlow>
     <Button className={styles.btn} disabled={empty || !underWay} onClick={stopApprove}>终止审核</Button>
     <FlowHistoryButton
       businessId={flowId}
@@ -133,6 +145,10 @@ export default function () {
   function uploadTable() {
     cleanSelectedRecord()
     tableRef.current.remoteDataRefresh()
+  }
+  // 提交审核完成更新列表
+  function handleComplete() {
+    uploadTable()
   }
   // 监听二级路由关闭更新列表
   function listenerParentClose(event) {
@@ -258,7 +274,7 @@ export default function () {
   }
   async function handleStopApproveRecord() {
     const [row] = selectedRows
-    const { flowId } = row
+    const { id: flowId } = row
     const { success, message: msg } = await stopApproveingOrder({
       businessId: flowId
     })
