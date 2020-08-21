@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from 'react';
 import styles from './index.less';
 import CommonForm from '../CommonForm';
-import { Affix, Button, message, Spin } from 'antd';
+import { Affix, message, Spin } from 'antd';
 import { WorkFlow } from 'suid';
 import classnames from 'classnames';
 import { saveViewModify, queryViewModifyDetail } from '../../../services/supplier';
@@ -16,14 +16,14 @@ export default function () {
   const handleSave = async () => {
     const { getAllParams } = formRef.current;
     const { headerFields, dataSource } = await getAllParams();
+    toggleLoading(true)
+    const { success, message: msg } = await saveViewModify({
+      ...headerFields,
+      id,
+      supplierFinanceViewModifyLines: dataSource
+    })
+    toggleLoading(false)
     return new Promise((resolve, reject) => {
-      toggleLoading(true)
-      const { success, message: msg } = await saveViewModify({
-        ...headerFields,
-        id,
-        supplierFinanceViewModifyLines: dataSource
-      })
-      toggleLoading(false)
       if (success) {
         resolve({
           success,
