@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import styles from './index.less';
 import { useState, useEffect } from 'react';
-import { ExtTable, WorkFlow } from 'suid';
+import { ExtTable, WorkFlow, AuthAction, utils } from 'suid';
 import { StartFlow } from 'seid';
 import { Button, Input, message, Modal } from 'antd';
 import { AutoSizeLayout, Header, AdvancedForm } from '../../components';
@@ -9,6 +9,7 @@ import { openNewTab, getFrameElement, commonProps } from '../../utils';
 import { removeViewModify, stopApproveingOrder } from '../../services/supplier';
 import { smBaseUrl } from '../../utils/commonUrl';
 const { supplierProps, flowStatusProps, orgnazationProps } = commonProps;
+const { authAction } = utils;
 const minxinSupplierProps = {
   ...supplierProps,
   reader: {
@@ -54,28 +55,88 @@ export default function () {
     }
   }
   const headerLeft = <>
-    <Button type='primary' onClick={handleCreate} className={styles.btn}>新增</Button>
-    <Button className={styles.btn} disabled={empty} onClick={handleEditor}>编辑</Button>
-    <Button className={styles.btn} disabled={empty} onClick={handleRemoveItem}>删除</Button>
-    <Button className={styles.btn} disabled={empty} onClick={handleDetail}>明细</Button>
-    {/* <Button className={styles.btn} disabled={empty || underWay}>提交审核</Button> */}
-    <StartFlow
-      className={styles.btn}
-      ignore={DEVELOPER_ENV}
-      // preStart={handleBeforeStartFlow}
-      businessKey={flowId}
-      key='PURCHASE_APPROVE'
-      callBack={handleComplete}
-      disabled={empty || underWay}
-      businessModelCode='com.ecmp.srm.sm.entity.SupplierFinanceViewModify'
-    ></StartFlow>
-    <Button className={styles.btn} disabled={empty || !underWay} onClick={stopApprove}>终止审核</Button>
-    <FlowHistoryButton
-      businessId={flowId}
-      flowMapUrl='flow-web/design/showLook'
-    >
-      <Button className={styles.btn} disabled={empty || !underWay}>审核历史</Button>
-    </FlowHistoryButton>
+    {
+      authAction(
+        <Button
+          type='primary'
+          onClick={handleCreate}
+          className={styles.btn}
+          ignore={DEVELOPER_ENV}
+          key='PURCHASE_VIEW_CHANGE_CREATE'
+        >新增</Button>
+      )
+    }
+    {
+      authAction(
+        <Button
+          className={styles.btn}
+          disabled={empty}
+          onClick={handleEditor}
+          ignore={DEVELOPER_ENV}
+          key='PURCHASE_VIEW_CHANGE_EDITOR'
+        >编辑</Button>
+      )
+    }
+    {
+      authAction(
+        <Button
+          className={styles.btn}
+          disabled={empty}
+          onClick={handleRemoveItem}
+          key='PURCHASE_VIEW_CHANGE_REMOVE'
+          ignore={DEVELOPER_ENV}
+        >删除</Button>
+      )
+    }
+    {
+      authAction(
+        <Button
+          className={styles.btn}
+          disabled={empty}
+          onClick={handleDetail}
+          ignore={DEVELOPER_ENV}
+          key='PURCHASE_VIEW_CHANGE_DETAIL'
+        >明细</Button>
+      )
+    }
+    {
+      authAction(
+        <StartFlow
+          className={styles.btn}
+          ignore={DEVELOPER_ENV}
+          // preStart={handleBeforeStartFlow}
+          businessKey={flowId}
+          callBack={handleComplete}
+          disabled={empty || underWay}
+          businessModelCode='com.ecmp.srm.sm.entity.SupplierFinanceViewModify'
+          ignore={DEVELOPER_ENV}
+          key='PURCHASE_VIEW_CHANGE_APPROVE'
+        ></StartFlow>
+      )
+    }
+    {
+      authAction(
+        <Button
+          className={styles.btn}
+          disabled={empty || !underWay}
+          onClick={stopApprove}
+          ignore={DEVELOPER_ENV}
+          key='PURCHASE_VIEW_CHANGE_STOP_APPROVE'
+        >终止审核</Button>
+      )
+    }
+    {
+      authAction(
+        <FlowHistoryButton
+          businessId={flowId}
+          flowMapUrl='flow-web/design/showLook'
+          ignore={DEVELOPER_ENV}
+          key='PURCHASE_VIEW_CHANGE_APPROVE_HISTORY'
+        >
+          <Button className={styles.btn} disabled={empty || !underWay}>审核历史</Button>
+        </FlowHistoryButton>
+      )
+    }
   </>
   const headerRight = <>
     <Search
