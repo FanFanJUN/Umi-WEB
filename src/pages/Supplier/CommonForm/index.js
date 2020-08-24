@@ -1,4 +1,4 @@
-import { useImperativeHandle, forwardRef, useState } from 'react';
+import { useImperativeHandle, forwardRef, useState, useRef } from 'react';
 import { Form, Row, Col, Input, Button, Modal, message } from 'antd';
 import { ComboList, ExtTable, ExtModal, ComboTree } from 'suid';
 import { commonProps, getUserName } from '../../../utils';
@@ -27,6 +27,7 @@ const FormRef = forwardRef(({ form, type = 'create' }, ref) => {
     setHeaderFields,
     setLineDataSource
   }))
+  const modalTableRef = useRef(null);
   const [dataSource, setDataSource] = useState([]);
   const [selectedRowKeys, setRowKeys] = useState([]);
   const [selectedRows, setRows] = useState([]);
@@ -172,6 +173,10 @@ const FormRef = forwardRef(({ form, type = 'create' }, ref) => {
   }
   // 记录弹窗选中项
   const handleModalSelectedRows = (ks, rowItems) => {
+    if(ks.length !== rowItems.length) {
+      // const its = dataSource
+      modalTableRef.current.manualSelectedRows(ks)
+    }
     setModalProps({
       ...modalProps,
       selectedKeys: ks,
@@ -185,7 +190,7 @@ const FormRef = forwardRef(({ form, type = 'create' }, ref) => {
   }
   // 显示新增弹窗
   const showModal = () => {
-    const ks = dataSource.map(item => item.id);
+    const ks = dataSource.map(item => `${item.corporationCode}-${item.purchaseOrgCode}`);
     setModalProps({
       ...modalProps,
       selectedKeys: ks,
@@ -254,7 +259,7 @@ const FormRef = forwardRef(({ form, type = 'create' }, ref) => {
   // 删除选中项
   function handleRemoveSelectedRow() {
     const [key] = selectedRowKeys;
-    const nds = dataSource.filter(item=>item.id !== key)
+    const nds = dataSource.filter(item => item.id !== key)
     setDataSource(nds)
     cleanSelectedRecord()
   }
@@ -344,7 +349,7 @@ const FormRef = forwardRef(({ form, type = 'create' }, ref) => {
                 getFieldDecorator('files')(<ComboAttachment uploadButton={{
                   disabled: type === 'detail'
                 }} allowDelete={type !== 'detail'}
-                  showViewType={type !== 'detail'} customBatchDownloadFileName={true} attachment={attachment}/>)
+                  showViewType={type !== 'detail'} customBatchDownloadFileName={true} attachment={attachment} />)
               }
             </FormItem>
           </Col>
@@ -378,7 +383,7 @@ const FormRef = forwardRef(({ form, type = 'create' }, ref) => {
           dataSource={dataSource}
           showSearch={false}
           checkbox={{ multiSelect: false }}
-          rowKey={(item) => item.id}
+          rowKey={item => `${item.corporationCode}-${item.purchaseOrgCode}`}
           size='small'
           allowCancelSelect
           selectedRowKeys={selectedRowKeys}
@@ -398,7 +403,9 @@ const FormRef = forwardRef(({ form, type = 'create' }, ref) => {
           size='small'
           bordered
           columns={orgColumns}
+          ref={modalTableRef}
           {...modalTableProps}
+          rowKey={item => `${item.corporationCode}-${item.purchaseOrgCode}`}
           selectedRowKeys={modalProps.selectedKeys}
           onSelectRow={handleModalSelectedRows}
           checkbox={{ multiSelect: true }}
