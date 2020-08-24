@@ -70,7 +70,7 @@ export default function () {
       authAction(
         <Button
           className={styles.btn}
-          disabled={empty}
+          disabled={empty || underWay}
           onClick={handleEditor}
           ignore={DEVELOPER_ENV}
           key='PURCHASE_VIEW_CHANGE_EDITOR'
@@ -81,7 +81,7 @@ export default function () {
       authAction(
         <Button
           className={styles.btn}
-          disabled={empty}
+          disabled={empty || underWay}
           onClick={handleRemoveItem}
           key='PURCHASE_VIEW_CHANGE_REMOVE'
           ignore={DEVELOPER_ENV}
