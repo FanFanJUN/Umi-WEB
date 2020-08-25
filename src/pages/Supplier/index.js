@@ -284,7 +284,7 @@ export default function () {
     const [key] = selectedRowKeys;
     const { id = '' } = FRAMELEEMENT;
     const { pathname } = window.location;
-    openNewTab(`supplier/purchase/accounting/editor?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '编辑采购策略', false)
+    openNewTab(`supplier/purchase/accounting/editor?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '编辑采购会计视图变更', false)
   }
   // 处理新增页签打开
   function handleCreate() {
@@ -297,7 +297,7 @@ export default function () {
     const [key] = selectedRowKeys;
     const { id = '' } = FRAMELEEMENT;
     const { pathname } = window.location;
-    openNewTab(`supplier/purchase/accounting/detail?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '编辑采购策略', false)
+    openNewTab(`supplier/purchase/accounting/detail?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '采购会计视图变更明细', false)
   }
   // 删除一行数据
   async function handleRemoveItem() {
