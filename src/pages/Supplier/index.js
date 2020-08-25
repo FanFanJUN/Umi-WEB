@@ -9,7 +9,7 @@ import { openNewTab, getFrameElement, commonProps } from '../../utils';
 import { removeViewModify, stopApproveingOrder } from '../../services/supplier';
 import { smBaseUrl } from '../../utils/commonUrl';
 const { supplierProps, flowStatusProps, orgnazationProps } = commonProps;
-const { authAction } = utils;
+const { authAction, storage } = utils;
 const minxinSupplierProps = {
   ...supplierProps,
   reader: {
@@ -25,6 +25,8 @@ const { FlowHistoryButton } = WorkFlow;
 export default function () {
   const headerRef = useRef(null);
   const tableRef = useRef(null);
+  const authorizations = storage.sessionStorage.get("Authorization");
+  console.log(authorizations)
   const FRAMELEEMENT = getFrameElement();
   const [selectedRowKeys, setRowKeys] = useState([]);
   const [selectedRows, setRows] = useState([]);
@@ -248,14 +250,6 @@ export default function () {
   // 清除选中项
   function cleanSelectedRecord() {
     setRowKeys([])
-  }
-  // 显示审核历史
-  function showHistory() {
-    triggerVisible(true)
-  }
-  // 隐藏审核历史
-  function hideHistory() {
-    triggerVisible(false)
   }
   // 高级查询配置
   const formItems = [

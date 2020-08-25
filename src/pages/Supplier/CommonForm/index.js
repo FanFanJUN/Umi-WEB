@@ -1,5 +1,5 @@
 import { useImperativeHandle, forwardRef, useState, useRef } from 'react';
-import { Form, Row, Col, Input, Button, Modal, message } from 'antd';
+import { Form, Row, Col, Input, Button, Modal, message, notification } from 'antd';
 import { ComboList, ExtTable, ExtModal, ComboTree } from 'suid';
 import { commonProps, getUserName } from '../../../utils';
 import { Header, ComboAttachment } from '../../../components';
@@ -116,7 +116,7 @@ const FormRef = forwardRef(({ form, type = 'create' }, ref) => {
       title: '方案组',
       dataIndex: 'schemeGroupName',
       render(text, _, index) {
-        return <ComboList {...dictProps} value={text} afterSelect={(item) => handleEditorSchemeLineData(item, index)} />
+        return <ComboList {...dictProps} value={text} afterSelect={(item) => handleEditorSchemeLineData(item, index)} allowClear afterClear={item => handleClearSchemeLineData(item, index)} />
       }
     }, {
       title: '币种代码',
@@ -132,6 +132,23 @@ const FormRef = forwardRef(({ form, type = 'create' }, ref) => {
   // 验证并处理返回行数据
   const getDatasource = () => new Promise((resolve, reject) => {
     const isEmpty = dataSource.length === 0;
+    const errors = dataSource.map((item, index)=>{
+      if(!item.payCodition) {
+        return `第${index+1}行数据中，付款条件未选择`
+      }
+      if(!item.currencyCode) {
+        return `第${index+1}行数据中，币种代码未选择`
+      }
+      return null
+    }).filter(i=>!!i)
+    if(errors.length > 0) {
+      notification.error({
+        message: '数据未填写完整',
+        description: errors.map(error=> <div>{error}</div>),
+        duration: null
+      })
+      reject()
+    }
     if (isEmpty) {
       message.error('要变更的会计视图不能为空');
       reject()
@@ -141,6 +158,14 @@ const FormRef = forwardRef(({ form, type = 'create' }, ref) => {
       const formatDataSource = dataSource.map(item => ({
         ...item,
         supplierFinanceViewId: item.id
+      }))
+      resolve(formatDataSource)
+      return
+    }
+    if (type === 'editor') {
+      const formatDataSource = dataSource.map(item => ({
+        ...item,
+        supplierFinanceViewId: item.supplierFinanceViewId ? item.supplierFinanceViewId : item.id
       }))
       resolve(formatDataSource)
       return
@@ -173,7 +198,7 @@ const FormRef = forwardRef(({ form, type = 'create' }, ref) => {
   }
   // 记录弹窗选中项
   const handleModalSelectedRows = (ks, rowItems) => {
-    if(ks.length !== rowItems.length) {
+    if (ks.length !== rowItems.length) {
       // const its = dataSource
       modalTableRef.current.manualSelectedRows(ks)
     }
@@ -185,7 +210,13 @@ const FormRef = forwardRef(({ form, type = 'create' }, ref) => {
   }
   // 弹窗选中后点击确定
   const handleModalClickConfirm = () => {
-    setDataSource(modalProps.selectedRows)
+    const ks = dataSource.map(item => `${item.corporationCode}-${item.purchaseOrgCode}`)
+    const filterSelectedRows = modalProps.selectedRows.filter(item=> {
+      const uuid = `${item.corporationCode}-${item.purchaseOrgCode}`;
+      return ks.findIndex(k=>k === uuid) === -1
+    })
+    const nd = [...dataSource,...filterSelectedRows]
+    setDataSource(nd)
     hideModal()
   }
   // 显示新增弹窗
@@ -227,6 +258,20 @@ const FormRef = forwardRef(({ form, type = 'create' }, ref) => {
           ...d,
           schemeGroupName: item.name,
           schemeGroupCode: item.value
+        }
+      }
+      return d
+    })
+    setDataSource(newData)
+  }
+  // 处理行数据方案组清空
+  const handleClearSchemeLineData = (item, index) => {
+    const newData = dataSource.map((d, k) => {
+      if (k === index) {
+        return {
+          ...d,
+          schemeGroupCode: null,
+          schemeGroupName: null
         }
       }
       return d
@@ -318,7 +363,7 @@ const FormRef = forwardRef(({ form, type = 'create' }, ref) => {
           <Col span={12}>
             <FormItem label='申请人' {...formLayout}>
               {
-                getFieldDecorator('username', {
+                getFieldDecorator('creatorName', {
                   initialValue: getUserName()
                 })(<Input disabled />)
               }
@@ -391,7 +436,7 @@ const FormRef = forwardRef(({ form, type = 'create' }, ref) => {
         />
       </div>
       <ExtModal
-        // destroyOnClose
+        destroyOnClose
         title='选择采购组织'
         onCancel={hideModal}
         visible={modalProps.visible}

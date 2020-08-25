@@ -36,9 +36,6 @@ export default function () {
       message.error(msg)
     })
   }
-  const handleBack = () => {
-    closeCurrent()
-  }
   function handleSubmitComplete(res) {
     const { success } = res;
     if (success) {
@@ -57,11 +54,14 @@ export default function () {
           id,
           name,
           orgId,
+          orgPath,
           priority,
+          creatorId,
           docNumber,
           flowStatus,
           tenantCode,
           workCaption,
+          createdDate,
           businessCode,
           flowStatusRemark,
           supplierFinanceViewModifyLines,
