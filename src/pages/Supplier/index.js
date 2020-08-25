@@ -26,7 +26,7 @@ export default function () {
   const headerRef = useRef(null);
   const tableRef = useRef(null);
   const authorizations = storage.sessionStorage.get("Authorization");
-  console.log(authorizations)
+  const currentUserId = authorizations?.userId;
   const FRAMELEEMENT = getFrameElement();
   const [selectedRowKeys, setRowKeys] = useState([]);
   const [selectedRows, setRows] = useState([]);
@@ -34,11 +34,15 @@ export default function () {
   const [visible, triggerVisible] = useState(false);
   /** 按钮可用性判断变量集合 BEGIN*/
   const [signleRow = {}] = selectedRows;
-  const { flowStatus: signleFlowStatus, id: flowId } = signleRow;
+  const { flowStatus: signleFlowStatus, id: flowId, creatorId } = signleRow;
   // 已提交审核状态
   const underWay = signleFlowStatus !== 'INIT';
+  // 审核完成状态
+  const completed = signleFlowStatus === 'COMPLETED';
   // 未选中数据的状态
   const empty = selectedRowKeys.length === 0;
+  // 是不是自己的单据
+  const isSelf = currentUserId === creatorId;
   /** 按钮可用性判断变量集合 END*/
   const tableProps = {
     store: {
@@ -72,7 +76,7 @@ export default function () {
       authAction(
         <Button
           className={styles.btn}
-          disabled={empty || underWay}
+          disabled={empty || underWay || !isSelf}
           onClick={handleEditor}
           ignore={DEVELOPER_ENV}
           key='PURCHASE_VIEW_CHANGE_EDITOR'
@@ -83,7 +87,7 @@ export default function () {
       authAction(
         <Button
           className={styles.btn}
-          disabled={empty || underWay}
+          disabled={empty || underWay || !isSelf}
           onClick={handleRemoveItem}
           key='PURCHASE_VIEW_CHANGE_REMOVE'
           ignore={DEVELOPER_ENV}
@@ -109,7 +113,7 @@ export default function () {
           // preStart={handleBeforeStartFlow}
           businessKey={flowId}
           callBack={handleComplete}
-          disabled={empty || underWay}
+          disabled={empty || underWay || !isSelf}
           businessModelCode='com.ecmp.srm.sm.entity.SupplierFinanceViewModify'
           ignore={DEVELOPER_ENV}
           key='PURCHASE_VIEW_CHANGE_APPROVE'
@@ -120,7 +124,7 @@ export default function () {
       authAction(
         <Button
           className={styles.btn}
-          disabled={empty || !underWay}
+          disabled={empty || !underWay || !isSelf}
           onClick={stopApprove}
           ignore={DEVELOPER_ENV}
           key='PURCHASE_VIEW_CHANGE_STOP_APPROVE'
