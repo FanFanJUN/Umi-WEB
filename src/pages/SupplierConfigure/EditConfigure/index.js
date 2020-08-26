@@ -5,21 +5,24 @@ import ConfigureForm from '../ConfigureForm'
 import ConfigureTable from '../ConfigureTable'
 import classnames from 'classnames';
 import styles from './index.less';
-import { findStrategyDetailById } from '@/services/supplierConfig';
+import { findSupplierconfigureId,SaveSupplierconfigureService } from '../../../services/supplierConfig';
 import { closeCurrent} from '../../../utils';
 function CreateStrategy() {
   const formRef = createRef()
-  const tableRef = useRef(null);
+  const tabformRef = createRef();
   const [dataSource, setDataSource] = useState([]);
-  const [loading, triggerLoading] = useState(true);
+  const [radioSelect, setradioSelect] = useState([]);
+  const [findData, setfindData] = useState([]);
+  const [loading, triggerLoading] = useState(false);
   const { query } = router.useLocation();
   const { frameElementId = "", frameElementSrc = "", Opertype = "" } = query;
   // 获取详情数据
   async function initConfigurationTable() {
-    const { data, success, message: msg } = await findStrategyDetailById(query);
+    let id = query.id;
+    const { data, success, message: msg } = await findSupplierconfigureId(id);
     if (success) {
       const {
-        detailList,
+        configBodyVos,
         ...initialValues
       } = data;
       const { setFieldsValue } = formRef.current.form;
@@ -27,12 +30,13 @@ function CreateStrategy() {
         ...initialValues
       }
       setFieldsValue(mixinValues);
-      setDataSource(detailList);
+      setDataSource(configBodyVos);
+      setfindData(data);
       triggerLoading(false);
       return
     }
     triggerLoading(false);
-    message.error(msg)
+    message.error(msg) 
   }
   // 编辑配置项
   async function handleEditorLine(val) {
@@ -45,29 +49,56 @@ function CreateStrategy() {
   function handleBack() {
     closeCurrent()
   }
+  // 编辑配置项
+  async function handleEditorLine(val) {
+    console.log(val)
+    setDataSource(val);
+    const params = val;
+    setradioSelect(params)
+  }
+   // 配置码
+   async function handblurcode(val) {
+     console.log(val)
+    setDataSource(val);
+    const params = val;
+    setradioSelect(params)
+  }
+  function getFormValueWithoutChecked() {
+    const { validateFieldsAndScroll } = tabformRef.current.form;
+    validateFieldsAndScroll(async (err, val) => {
+      console.log(val)
+      //setheadfrom(val)
+      //findData(...val)
+    })
+  }
   // 保存
   async function handleSave() {
-    const { validateFieldsAndScroll } = formRef.current.form;
+    //getFormValueWithoutChecked();
+    const { validateFieldsAndScroll } = tabformRef.current.form;
+    let configBodyVos;
+    if (radioSelect === null || '' || []) {
+      configBodyVos = dataSource
+    }else {
+      configBodyVos = radioSelect
+    }
+    console.log(dataSource)
     validateFieldsAndScroll(async (err, val) => {
+      findData.configBodyVos = configBodyVos;
+      console.log(findData)
       let params = {
-        sendList: val,
-        sendList2: dataSource
+        ...val,
+        configBodyVos
       }
-      //setDataSource(params)
-      console.log(err)
-      console.log(val)
+      console.log(params)
       if (!err) {
-        alert(444)
         triggerLoading(true)
-      //   const params = await formatSaveParams(val, dataSource);
-      //   console.log(params)
-      //   // const { success, message: msg } = await savePurcahseAndApprove(params)
-      //   // triggerLoading(false)
-      //   // if (success) {
-      //   //   closeCurrent()
-      //   //   return
-      //   // }
-      //   // message.error(msg)
+        const { success, message: msg } = await SaveSupplierconfigureService(findData)
+        triggerLoading(false)
+        if (success) {
+          closeCurrent()
+          return
+        }
+        message.error(msg)
       }
     })
   }
@@ -94,10 +125,11 @@ function CreateStrategy() {
       />
       <ConfigureTable
         onEditor={handleEditorLine}
+        onBlur={handblurcode}
         dataSource={dataSource}
         type="editor"
         loading={loading}
-        headerForm={formRef}
+        wrappedComponentRef={tabformRef}
       />
     </Spin>
   )

@@ -1,139 +1,195 @@
-import React, { useState, createRef, useLayoutEffect } from 'react';
+import React, { useState, forwardRef, useImperativeHandle, useLayoutEffect, useRef } from 'react';
 import { ExtTable, DataImport, utils } from 'suid';
-import { Button, Modal, message, Table, Radio } from 'antd'
-
+import { Form, Input, Radio, Icon } from 'antd'
 import styles from './index.less';
+const { Item, create } = Form;
 const RadioGroup = Radio.Group;
-const importColumns = [
-  
-]
-function StrategyTable({
+const FormItem = Form.Item;
+
+const tabformRef = forwardRef(({
+  form,
   loading = false,
   dataSource = [],
-  onCreateLine = () => null,
-  onRemove = () => null,
+  onBlured = () => null,
   onEditor = () => null,
-  onImportData = () => null,
-  onInvalidChange = () => null,
   type = 'add',
   headerForm = {}
-}) {
-  // const commonFormRef = createRef();
-  // const [dataSource, setCount] = useState([
-  //   {
-  //     // key:1,
-  //     id:'3300001999040445651',
-  //     state: "SupplierName",
-  //     Suppliercode: "517345",
-  //     Suppliername: "统一社会信用代码",
-  //     // unitName: {
-  //     //   Mustlose: true,
-  //     //   Nomustlose: false,
-  //     //   hide: false,
-  //     //   show: false,
-  //     // },
-  //     unitName: "Mustlose",
-  //     changeable: false,
-  //     details: '基础信息',
-  //     Handler: "智能制造管理员",
-  //     Handlertime:"2020-08-07 14:34:30"
-  //   },
-  //   {
-  //     // key:2,
-  //     id:'3300001990888445652',
-  //     state: "SupplierName12",
-  //     Suppliercode: "545632245",
-  //     Suppliername: "用代码",
-  //     unitName: "Nomustlose",
-  //     changeable: true,
-  //     details: '基础信息',
-  //     Handler: "智能制造管理员",
-  //     Handlertime:"2020-08-07 17:34:30"
-  //   }
-  // ]);
-
-  function onRadio (index) {
+}, ref) => {
+  useImperativeHandle(ref, () => ({
+    form
+  }));
+  const { getFieldDecorator } = form;
+  const tableRef = useRef(null)
+  const [configure, setConfigure] = useState([]);
+  //const { attachment = null } = initialValue;
+  function onRadio(data,index) {
     return (e) => {
-      const copyData = dataSource.slice(0)
-      copyData[index].unitName = e.target.value;
-      //setCount(copyData)
-      onEditor(copyData)
+      const tablereflist = tableRef.current.data;
+      const selectData = tablereflist.slice(0)
+      selectData[index] = data;
+      console.log(selectData)
+      selectData[index].operationCode = e.target.value;
+      let selectindex = e.target.value;
+      let selectName = selectindex;
+      switch (selectName) {
+        case '0':
+          selectName = '必输'
+          break;
+        case '1':
+          selectName = '选输'
+          break;
+        case '2':
+          selectName = '仅显示'
+          break;
+        case '3':
+          selectName = '不显示'
+          break;
+        default:
+      }
+      selectData[index].operationName = selectName;
+      onEditor(selectData)
     }
   }
-
-  const map = {
-    a: 'Mustlose',
-    b: 'Nomustlose',
-    c: 'hide',
-    d: 'show'
+  function onInput(data, index) {
+    return (e) => {
+      const tablereflist = tableRef.current.data;
+      const selectData = tablereflist.slice(0)
+      selectData[index] = data;
+      selectData[index].smSort = e.target.value;
+      onBlured(selectData)
+    }
   }
-  const columns = [
-    {
-      key:'materialClassificationCode',
-      title: '字段代码',
-      dataIndex: 'materialClassificationCode',
-      fixed: true,
-      width: 180,
-    },
-    {
-      key:'materialClassificationName',
-      title: '字段名称',
-      dataIndex: 'materialClassificationName',
-      width: 220,
-    },
-    {
-      //key:'unitName',
-      title: <span><label className="ant-form-item-required" title=""></label>操作</span>,
-      dataIndex: 'state',
-      render(text, data, index) {
-        return (
-          // <Radio.Group value={type === "detail" ? unitName : ''} options={plainOptions} onChange={RadioGroup(index)}></Radio.Group>
-          <div>
-            <RadioGroup value={type === "detail" ? '' : text} onChange={onRadio(index)} disabled={type === "detail"}>
-              <Radio  value={map.a}>必输</Radio>
-              <Radio  value={map.b}>选输</Radio>
-              <Radio  value={map.c}>仅显示</Radio>
-              <Radio  value={map.d}>不显示</Radio>
-            </RadioGroup>
-          </div>
-        )
+  const tableProps = {
+    columns: [
+      {
+        key: 'fieldCode',
+        title: '字段代码',
+        dataIndex: 'fieldCode',
+        fixed: true,
+        width: 180,
+        align: 'center'
       },
-      width: 320
-    },
-    {
-      key:'lastEditorName',
-      title: '信息分类',
-      dataIndex: 'lastEditorName',
-      width: 180
-    }
-  ].map(item => ({ ...item, align: 'center' }));
-  const changeColumns = [...columns]
-  
-  function onChange(e) {
-    console.log('radio checked', e.target.value);
-  }
+      {
+        key: 'fieldName',
+        title: '字段名称',
+        dataIndex: 'fieldName',
+        width: 220,
+        align: 'center'
+      },
+      {
+        //key:'operationCode',
+        title: <span><label className="ant-form-item-required" title=""></label>操作</span>,
+        dataIndex: 'operationCode',
+        align: 'center',
+        render(text, record, index) {
+          return (
+            <FormItem style={{ marginBottom: 0 }}>
+              {
+                getFieldDecorator(`operationCode[${index}]`, {
+                  initialValue: record.operationCode,
+                  rules: [{ required: true, message: '请选择执行操作', whitespace: true }],
+                })(
+                  <RadioGroup onChange={onRadio(record,index)} disabled={type === "detail"}>
+                    <Radio value='0'>必输</Radio>
+                    <Radio value='1'>选输</Radio>
+                    <Radio value='2'>仅显示</Radio>
+                    <Radio value='3'>不显示</Radio>
+                  </RadioGroup>
+                )
+              }
+            </FormItem>
+          )
+        },
+        width: 320
+      },
+      {
+        key: 'smMsgTypeCode',
+        title: '信息分类',
+        dataIndex: 'smMsgTypeCode',
+        width: 180,
+        align: 'center',
+        required: true,
+        render: (text, record, index) => {
+          if (text === '1') {
+            return <div>基本信息</div>;
+          }else if (text === '2') {
+            return <div>帐号信息</div>;
+          }else if (text === '3') {
+            return <div>业务信息</div>;
+          }else if (text === '4') {
+            return <div>供货信息</div>;
+          }else if (text === '5') {
+            return <div>泛虹信息</div>;
+          }else if (text === '6') {
+            return <div>资质信息</div>;
+          }else if (text === '7') {
+            return <div>授权委托人信息</div>;
+          }else if (text === '8') {
+            return <div>银行信息</div>;
+          }else if (text === '9') {
+            return <div>原厂信息</div>;
+          }
+          
+        }
+      },
+      {
+        title: <span><label className="ant-form-item-required" title=""></label>排序码</span>,
+        dataIndex: 'smSort',
+        align: 'center',
+        required: true,
+        render: (text, record, index) => {
+          return <FormItem style={{ marginBottom: 0 }}>
+            {
+              getFieldDecorator(`smSort[${index}]`, {
+                initialValue: record.smSort,
+                rules: [{ required: true, message: '请输入排序码', whitespace: true }],
+              })(
+                <Input
+                  disabled={type === "detail"}
+                  placeholder='请输入排序码'
+                  style={{ width: 180 }}
+                  onChange={onInput(record, index)}
+                />
+              )
+            }
 
+          </FormItem>
+        },
+        width: 220
+      }
+    ],
+    sort: {
+      multiple: true,
+      field: { smMsgTypeCode: 'asc', smSort: 'asc' },
+    },
+  }
+  function handleCheck() {
+    console.log(tableRef.current.data)
+  }
   return (
     <div>
       <div>
         <div>
           <ExtTable
             allowCancelSelect
-            columns={columns}
+            // toolBar={{
+            //   left: <div onClick={handleCheck}>查看</div>
+            // }}
+            //columns={columns}
+            {...tableProps}
             loading={loading}
             showSearch={false}
             dataSource={dataSource}
             checkbox={false}
-            rowKey={(item)=>`row-${item.id}`}
+            ref={tableRef}
+            // onTableRef={(ref)=>}
+            rowKey={(item) => `row-${item.id}`}
           />
-          {/* <Table
-           columns={columns} 
-           dataSource={dataSource} 
-          /> */}
         </div>
       </div>
     </div>
   )
 }
-
+)
+const StrategyTable = create()(tabformRef)
 export default StrategyTable;

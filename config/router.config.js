@@ -37,16 +37,9 @@ export default [
         title: "供应商注册配置表明细"
       },
       {
-        path: '/register',
-        //component: '../layouts/BlankLayout.js',
-        title: '注册字段配置表',
-        routes: [
-          {
-            path: '/register/field',
-            component: './RegisterField',
-            title: "供应商注册字段配置表"
-          },
-        ]
+        path: '/register/field',
+        component: './RegisterField',
+        title: "供应商注册字段配置表"
       },
       { path: '/supplier/purchase/accounting', component: './Supplier', title: '供应商采购会计视图变更' },
       { path: '/supplier/purchase/accounting/create', component: './Supplier/Create', title: '新增供应商采购会计视图变更' },

@@ -1,7 +1,7 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useState } from 'react';
 import { Form, Row, Input, Col, DatePicker, Radio } from 'antd';
 import { utils, ComboList, ComboTree } from 'suid';
-import { purchaseCompanyProps } from '@/utils/commonProps'
+import { purchaseCompanyProps,FieldconfigureList } from '@/utils/commonProps'
 const { Item, create } = Form;
 const { Group } = Radio;
 const formLayout = {
@@ -15,28 +15,28 @@ const formLayout = {
 const confirmRadioOptions = [
   {
     label: '新增',
-    value: 'A'
+    value: '1'
   }, {
     label: '变更',
-    value: 'B'
+    value: '2'
   }, {
     label: '明细',
-    value: 'C'
+    value: '3'
   }
 ]
-const FormRef = forwardRef(({
+const HeadFormRef = forwardRef(({
   form,
   type = "",
   Opertype = null,
   initialValue = {},
-  onChangeMaterialLevel = () => null
+  handcopy = () => null,
+  
 }, ref) => {
   useImperativeHandle(ref, () => ({
     form
   }));
   const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
   const [configure, setConfigure] = useState([]);
-  const pcc = getFieldValue('purchaseCompanyCode');
   const { attachment = null } = initialValue;
   useEffect(() => {
     //   const { userName, userId, mobile } = storage.sessionStorage.get("Authorization");
@@ -44,10 +44,25 @@ const FormRef = forwardRef(({
     //     phone: mobile
     //   })
     //setCreateName(userName)
+    // console.log(type)
+    // if (type === 'add') {
+    //   setFieldsValue({
+    //     configProperty: Opertype
+    //   })
+    // }else if (type === 'copy') {
+    //   setFieldsValue({
+    //     //configProperty: configProperty
+    //   })
+    // }
+    
     setFieldsValue({
-        purchaseGroupConfirm: Opertype
-      }) 
+      configProperty: Opertype
+    })
   }, [])
+  //复制从获取ID
+  function handleCopySelect (item) {
+    handcopy(item.id)
+  }
   return (
     <div >
       <div >
@@ -56,8 +71,7 @@ const FormRef = forwardRef(({
             <Col span={12}>
               <Item label='配置代码' {...formLayout}>
                 {
-                  getFieldDecorator('currencyCode'),
-                  getFieldDecorator('currencyName', {
+                  getFieldDecorator('configCode', {
                     rules: [
                       {
                         required: true,
@@ -71,8 +85,9 @@ const FormRef = forwardRef(({
             <Col span={12}>
               <Item label='供应商分类' {...formLayout}>
                 {
-                  getFieldDecorator('purchaseGroupCode'),
-                  getFieldDecorator('purchaseGroupName', {
+                  getFieldDecorator('supplierCategoryCode'),
+                  getFieldDecorator('supplierCategoryId'),
+                  getFieldDecorator('supplierCategoryName', {
                     rules: [
                       {
                         required: true,
@@ -82,7 +97,7 @@ const FormRef = forwardRef(({
                   })(
                     <ComboList disabled={type === "detail" || type === "editor"} style={{ width: 280 }}
                       {...purchaseCompanyProps} showSearch={false}
-                      name='purchaseGroupName' field={['purchaseGroupCode']} form={form} />
+                      name='supplierCategoryName' field={['supplierCategoryCode','supplierCategoryId']} form={form} />
                   )
                 }
               </Item>
@@ -92,7 +107,7 @@ const FormRef = forwardRef(({
             <Col span={12}>
               <Item label='配置属性' {...formLayout}>
                 {
-                  getFieldDecorator("materialLevelCode", {
+                  getFieldDecorator("configProperty", {
                     rules: [
                       {
                         required: true,
@@ -100,24 +115,19 @@ const FormRef = forwardRef(({
                       }
                     ]
                   })(
-                    <Group
-                      disabled={type === "detail"}
+                    <Group 
+                      disabled={type === "detail" || type === "editor"}
                       options={confirmRadioOptions} />
                   )
                 }
               </Item>
             </Col>
             {
-              type !== 'editor' ? <Col span={12}>
+              type !== 'editor'? <Col span={12}>
                 <Item label='复制从' {...formLayout}>
-                  {
-                    getFieldDecorator('currencyCode2'),
-                    getFieldDecorator('currencyName2', {
-
-                    })(<ComboList remotePaging disabled={type === "detail"} style={{ width: 280 }}
-                      {...purchaseCompanyProps}
-                      name='currencyName2' field={['currencyCode2']} form={form} />)
-                  }
+                  <ComboList remotePaging disabled={type === "detail"} style={{ width: 280 }}
+                      {...FieldconfigureList} showSearch={false} 
+                      form={form} afterSelect={(item) => handleCopySelect(item)} />
                 </Item>
               </Col> : ''
             }
@@ -129,6 +139,6 @@ const FormRef = forwardRef(({
   )
 }
 )
-const CommonForm = create()(FormRef)
+const CommonForm = create()(HeadFormRef)
 
 export default CommonForm

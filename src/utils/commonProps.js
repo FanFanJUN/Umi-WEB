@@ -143,8 +143,8 @@ export const purchaseCompanyProps = {
   },
   reader: {
     name: 'name',
-    field: ['code'],
-    description: 'code'
+    field: ['code','id'],
+    description: ['code']
   },
   placeholder: '请选择供应商分类'
 }
@@ -163,4 +163,19 @@ export const Fieldclassification = {
     width: '100%'
   },
   placeholder: '请选择供应商分类'
+}
+// 供应商配置表复制从
+export const FieldconfigureList = {
+  store: {
+    url: `${supplierManagerBaseUrl}/api/SmSupplierRegConfigService/findByProperty`, 
+    type: 'post'
+  },
+  reader:{
+    name: item => `${item.configCode}-${item.supplierCategoryName}`,
+    field: ['supplierCategoryCode'],
+    description: 'supplierCategoryCode'
+  },
+  style: {
+    width: '67%'
+  }
 }

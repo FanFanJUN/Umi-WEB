@@ -2,10 +2,10 @@ import React, { createRef, useState,useRef,useEffect } from 'react';
 import { Button, Modal, message, Spin, Affix } from 'antd';
 import { router } from 'dva';
 import ConfigureForm from '../ConfigureForm'
-import ConfigureTable from '../ConfigureTable'
+import ConfigureTable from '../OtherTable'
 import classnames from 'classnames';
 import styles from './index.less';
-import {findStrategyDetailById} from '@/services/supplierConfig';
+import { findSupplierconfigureId } from '../../../services/supplierConfig';
 function CreateStrategy() {
   const formRef = createRef()
   const tableRef = useRef(null);
@@ -13,12 +13,13 @@ function CreateStrategy() {
   const [loading, triggerLoading] = useState(true);
   const { query } = router.useLocation();
   const { frameElementId = "", frameElementSrc = "" ,Opertype = ""} = query;
-  //
+  // 详情
   async function initConfigurationTable() {
-    const { data, success, message: msg } = await findStrategyDetailById(query);
+    let id = query.id;
+    const { data, success, message: msg } = await findSupplierconfigureId(id);
     if (success) {
         const {
-            detailList,
+          configBodyVos,
             ...initialValues
           } = data;
         const { setFieldsValue } = formRef.current.form;
@@ -26,46 +27,14 @@ function CreateStrategy() {
           ...initialValues
         }
         setFieldsValue(mixinValues);
-        setDataSource(detailList);
+        setDataSource(configBodyVos);
         triggerLoading(false);
         return
       }
       triggerLoading(false);
       message.error(msg)
   }
-  // 编辑配置项
-  async function handleEditorLine(val) {
-    const params = {
-      sendList2: val,
-    }
-    setDataSource(params)
-  }
 
-  // 保存
-  async function handleSave() {
-    const { validateFieldsAndScroll } = formRef.current.form;
-    validateFieldsAndScroll(async (err, val) => {
-      let params = {
-        sendList: val,
-        sendList2: dataSource
-      }
-      //setDataSource(params)
-      console.log(params)
-      console.log(params)
-      // if (!err) {
-      //   triggerLoading(true)
-      //   const params = await formatSaveParams(val, dataSource);
-      //   console.log(params)
-      //   // const { success, message: msg } = await savePurcahseAndApprove(params)
-      //   // triggerLoading(false)
-      //   // if (success) {
-      //   //   closeCurrent()
-      //   //   return
-      //   // }
-      //   // message.error(msg)
-      // }
-    })
-  }
   useEffect(() => {
     initConfigurationTable() 
   }, []);
@@ -88,7 +57,6 @@ function CreateStrategy() {
         type="detail"
       />
       <ConfigureTable
-        onEditor={handleEditorLine}
         dataSource={dataSource}
         type="detail"
         ref={formRef}

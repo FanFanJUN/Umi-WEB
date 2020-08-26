@@ -6,7 +6,7 @@ import Header from '@/components/Header';
 //import AdvancedForm from '@/components/AdvancedForm';
 import AutoSizeLayout from '@/components/AutoSizeLayout';
 import styles from './index.less';
-import { psBaseUrl,supplierManagerBaseUrl} from '@/utils/commonUrl';
+import { smBaseUrl} from '@/utils/commonUrl';
 import {queryStrategyTableList} from "@/services/supplierConfig"
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 const { Search } = Input
@@ -35,52 +35,78 @@ function SupplierConfigure() {
   const columns = [
     {
       title: '配置代码',
-      dataIndex: 'flowStatus',
+      dataIndex: 'configCode',
       width:180
     },
     {
       title: '供应商分类代码',
-      dataIndex: 'code',
+      dataIndex: 'supplierCategoryCode',
       width:180
     },
     {
       title: '供应商分类名称',
-      dataIndex: 'professionalGroupName',
+      dataIndex: 'supplierCategoryName',
       width:220
     },
     {
       title: '新增',
-      dataIndex: 'invalid',
-      render(invalid) {
-        return <Checkbox
-          defaultChecked={false}
-          defaultValue={invalid}
-          checked={invalid}
-        />
+      dataIndex: 'configCreate',
+      render(text, record, index) {
+        return  <div>
+          {
+            record.configCreate === '1' ? <Checkbox
+              key={index}
+              checked={true}
+            /> : <Checkbox
+            defaultChecked={false}
+            defaultValue={false}
+            checked={false}
+          />
+            
+          }
+        </div>
       },
       width: 80,
     },
     {
       title: '变更',
-      dataIndex: 'changeable',
-      render(changeable) {
-        return <Checkbox
-          defaultChecked={false}
-          defaultValue={changeable}
-          checked={changeable}
-        />
+      dataIndex: 'configChange',
+      render(text, record, index) {
+        return  <div>
+          {
+            record.configChange === '1' ? <Checkbox
+            key={index}
+              checked={true}
+            /> : <Checkbox
+            key={index}
+            defaultChecked={false}
+            defaultValue={false}
+            checked={false}
+          />
+            
+          }
+        </div>
       },
       width: 80,
     },
     { 
       title: '明细', 
-      dataIndex: 'details',
-      render(details) {
-        return <Checkbox
-          defaultChecked={false}
-          defaultValue={details}
-          checked={details}
-        />
+      dataIndex: 'configDetail',
+      render(text, record, index) {
+        return  <div>
+          {
+            record.configDetail === '1' ? <Checkbox
+            key={index}
+              checked={true}
+            /> : <Checkbox
+            key={index}
+            defaultChecked={false}
+            defaultValue={false}
+            checked={false}
+          />
+            
+          }
+        </div>
       },
       width: 80 
     },
@@ -90,36 +116,13 @@ function SupplierConfigure() {
   /* 按钮禁用状态控制 */
   const FRAMEELEMENT = getFrameElement();
   const empty = selectedRowKeys.length === 0;
-  // const dataSource = [
-  //   {
-  //     id:'330000199904044565',
-  //     state: "GYS-0201-001",
-  //     Suppliername: "517345",
-  //     Suppliername: "奥山打法发的发4",
-  //     invalid: true,
-  //     changeable: false,
-  //     details: false,
-  //     Handler: "智能制造管理员",
-  //     Handlertime:"2020-08-07 14:34:30"
-  //   }
-  // ]
-    
+  //const dataSource = []
   const dataSource = {
     store: {
-      url: `${psBaseUrl}/purchaseStrategyHeader/listByPage`,
-      //url: `${supplierManagerBaseUrl}/SmSupplierConfig/listByPage`,
+      url: `${smBaseUrl}/api/SmSupplierRegConfigService/findByProperty`,
       params: {
         ...searchValue,
-        filters: searchValue.filters ?
-          searchValue.filters.concat([{
-            fieldName: 'creatorAccount',
-            operator: 'EQ',
-            value: onlyMe ? account : undefined
-          }]) : [{
-            fieldName: 'creatorAccount',
-            operator: 'EQ',
-            value: onlyMe ? account : undefined
-          }]
+        quickSearchProperties:['supplierCategoryCode','supplierCategoryName']
       },
       type: 'POST'
     }
@@ -128,7 +131,7 @@ function SupplierConfigure() {
   const searchBtnCfg =(
     <>
       <Input
-        placeholder='请输入供应商编号或名称查询'
+        placeholder='请输入供应商分类或名称查询'
         className={styles.btn}
         onChange={SerachValue}
         allowClear
@@ -141,6 +144,7 @@ function SupplierConfigure() {
     window.parent.frames.addEventListener('message', listenerParentClose, false);
     return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
   }, []);
+  
   function listenerParentClose(event) {
     const { data = {} } = event;
     if (data.tabAction === 'close') {
@@ -172,7 +176,7 @@ function SupplierConfigure() {
     const [key] = selectedRowKeys;
     const { id = '' } = FRAMEELEMENT;
     const { pathname } = window.location
-    openNewTab(`supplier/configure/edit?id=${key}&frameElementId=${id}&&Opertype=2&frameElementSrc=${pathname}`, '编辑供应商注册信息配置', false)
+    openNewTab(`supplier/configure/edit?id=${key}&frameElementId=${id}&Opertype=2&frameElementSrc=${pathname}`, '编辑供应商注册信息配置', false)
   }
   // 明细
   function handleCheckDetail() {
@@ -221,12 +225,12 @@ function SupplierConfigure() {
                 <Button ignore={DEVELOPER_ENV} key='' className={styles.btn} onClick={handleCheckDetail} disabled={empty}>明细</Button>
               )
             }
-            {
+            {/* {
               authAction(
                 <Button key=''
                   ignore={DEVELOPER_ENV} className={styles.btn} onClick={handleChange} disabled={empty}>冻结</Button>
               )
-            }
+            } */}
             
           </>
         }
