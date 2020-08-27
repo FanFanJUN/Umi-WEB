@@ -2,8 +2,9 @@ import React, { createRef, useState, useRef, useEffect } from 'react';
 import { Button, Modal, message, Spin, Affix } from 'antd';
 import { router } from 'dva';
 import ConfigureForm from '../ConfigureForm'
-import ConfigureTable from '../ConfigureTable'
-// import CopyTable from '../OtherTable'
+import CopyTwo from '../ConfigureTwo'
+
+import BaseInfo from '../components/BaseInfo'
 import classnames from 'classnames';
 import { 
   findSupplierconfigureService ,
@@ -14,7 +15,7 @@ import styles from './index.less';
 import { closeCurrent } from '../../../utils';
 function CreateStrategy() {
   const HeadFormRef = useRef();
-  const tabformRef = createRef();
+  const TwoFormRef = useRef();
   const [dataSource, setDataSource] = useState([]);
   const [radioSelect, setradioSelect] = useState([]);
   const [fromConfig, setfromConfig] = useState([]);
@@ -27,10 +28,6 @@ function CreateStrategy() {
     let params = {
       frameElementId: "",
       frameElementSrc: "/",
-      pageInfo:{
-        page:1,
-        rows: 100
-      }
     }
     const { data, success, message: msg } = await findSupplierconfigureService(params);
     if (success) {
@@ -51,7 +48,7 @@ function CreateStrategy() {
           operationCode: '0',
           operationName: '必输',
           smTableName: item.smTableName,
-          smSort: index + 1
+          smSort: index
         })
       });
       setDataSource([]);
@@ -75,13 +72,13 @@ function CreateStrategy() {
     setradioSelect(params)
   }
   // 表头表格舒颜验证并获取值
-  async function getFormValueWithoutChecked() {
-    const { validateFieldsAndScroll } = tabformRef.current.form;
-    validateFieldsAndScroll(async (err, val) => {
-      const params = val;
-      setfromConfig(params)
-    })
-  }
+  // async function getFormValueWithoutChecked() {
+  //   const { validateFieldsAndScroll } = tabformRef.current.form;
+  //   validateFieldsAndScroll(async (err, val) => {
+  //     const params = val;
+  //     setfromConfig(params)
+  //   })
+  // }
   // 复制从根据选中的ID查询数据详情
   async function copyEdit(val) {
     let id = val;
@@ -113,32 +110,11 @@ function CreateStrategy() {
   }
   
   // 保存
-  async function handleSave() {
-    getFormValueWithoutChecked();
-    const { validateFieldsAndScroll } = HeadFormRef.current.form;
-    let configBodyVos = radioSelect;
-    validateFieldsAndScroll(async (err, val) => {
-      configBodyVos.map(item=>{
-        delete item.id
-      })
-      let params = {
-        ...val,
-        configBodyVos
-      }
-      console.log(params)
-      if (!err) {
-        triggerLoading(true)
-        const { success, message: msg } = await SaveSupplierconfigureService(params)
-        triggerLoading(false)
-        if (success) {
-          closeCurrent()
-          return
-        }else {
-          message.error(msg)
-        }
-        
-      }
-    })
+  const handleSave = async () => {
+    const { getAllParams } = HeadFormRef.current; 
+    const { gettwoAllParams } = TwoFormRef.current;
+    let headerFields = getAllParams();
+    let twoFields = gettwoAllParams();
   }
   // 获取配置列表项
   useEffect(() => {
@@ -149,29 +125,24 @@ function CreateStrategy() {
       <Affix offsetTop={0}>
         <div className={classnames([styles.header, styles.flexBetweenStart])}>
           <span className={styles.title}>
-            新增供应商注册信息配置
+            供应商编辑
             </span>
           <div className={styles.flexCenter}>
             <Button className={styles.btn} >返回</Button>
+            <Button className={styles.btn} onClick={handleSave}>暂存</Button>
             <Button className={styles.btn} onClick={handleSave}>保存</Button>
           </div>
         </div>
       </Affix>
+      <BaseInfo />
       <ConfigureForm
         Opertype={Opertype}
         wrappedComponentRef={HeadFormRef}
         handcopy={copyEdit}
         type='add'
       />
-      <ConfigureTable
-        onEditor={handleEditorLine}
-        onBlured={handblurcode}
-        //oncopy={handcopyRefresh}
-        dataSource={dataSource}
-        //ref={formRef}
-        type="add"
-        loading={loading}
-        wrappedComponentRef={tabformRef}
+      <CopyTwo
+        wrappedComponentRef={TwoFormRef}
       />
     </Spin>
   )

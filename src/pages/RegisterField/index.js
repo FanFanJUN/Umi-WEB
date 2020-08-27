@@ -21,29 +21,7 @@ function RegisterField({
   const headerRef = useRef(null)
   const tableRef = useRef(null)
   const commonFormRef = createRef();
-  const [selectRowKeys, setRowKeys] = useState([
-    {
-      "id":"2F8130C0-E2C2-11EA-B65A-0242C0A8440C",
-      "creatorName":"智能制造管理员",
-      "createdDate":"2020-08-20 16:50:24",
-      "smMsgTypeCode":"1",
-      "smMsgTypeName":"基本信息",
-      "smTableName":"sem-web",
-      "smFieldCode":"legalPerson",
-      "smFieldName":"法人姓名",
-      "smFieldTypeCode":"0",
-      "smFieldTypeName":"单值",
-      "smExplain":null,
-      "standby1":null,
-      "standby2":null,
-      "standby3":null,
-      "standby4":null,
-      "standby5":null,
-      "frozen":null,
-      "tenantCode":null,
-      "display":null
-  }
-  ]);
+  const [selectRowKeys, setRowKeys] = useState([]);
   const [selectedRows, setRows] = useState([]);
   const [searchValue, setSearchValue] = useState({});
   const [initialValue, setInitialValue] = useState({});
@@ -57,20 +35,35 @@ function RegisterField({
     {
       title: '字段代码',
       dataIndex: 'smFieldCode',
-      width: 180
+      width: 220
     },
     {
       title: '字段名称',
       dataIndex: 'smFieldName',
-      width: 180
+      width: 220
     },
     {
       title: '信息分类',
       dataIndex: 'smMsgTypeName',
-      width: 220
+      width: 160
+    },
+    {
+      title: '表名称',
+      dataIndex: 'smTableName',
+      width: 200
+    },
+    {
+      title: '字段类型',
+      dataIndex: 'smFieldTypeName',
+      width: 120
     },
     { title: '添加人', dataIndex: 'creatorName',width: 180},
     { title: '添加时间', dataIndex: 'createdDate', width: 200 },
+    {
+      title: '备注',
+      dataIndex: 'smExplain',
+      width: 220
+    },
   ].map(_ => ({ ..._, align: 'center' }))
   /* 按钮禁用状态控制 */
   const FRAMEELEMENT = getFrameElement();

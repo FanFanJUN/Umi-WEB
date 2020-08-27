@@ -37,7 +37,7 @@ export default [
         title: "供应商注册配置表明细"
       },
       {
-        path: '/register/field',
+        path: '/supplier/register/field',
         component: './RegisterField',
         title: "供应商注册字段配置表"
       },
@@ -47,6 +47,9 @@ export default [
       { path: '/supplier/purchase/accounting/detail', component: './Supplier/Detail', title: '供应商采购会计视图变更明细' },
       { path: '/supplier/purchase/accounting/approve', component: './Supplier/ApprovePage', title: '供应商采购会计视图变更审批' },
       { path: '/supplier/purchase/accounting/approve/editor', component: './Supplier/ApprovePage/Editor', title: '供应商采购会计视图变更编辑' },
+      /**供应商注册 */
+      { path: '/supplier/supplierRegister/SupplierRegisterListView', component: './supplierRegister/SupplierRegisterListView', title: '供应商注册' },
+      { path: '/supplier/supplierRegister/SupplierEdit/index', component: './supplierRegister/SupplierEdit', title: '供应商编辑' },
       /* add Example
       {
         path: '/path',

@@ -24,7 +24,7 @@ const confirmRadioOptions = [
     value: '3'
   }
 ]
-const HeadFormRef = forwardRef(({
+const TwoFormRef = forwardRef(({
   form,
   type = "",
   Opertype = null,
@@ -33,9 +33,10 @@ const HeadFormRef = forwardRef(({
   
 }, ref) => {
   useImperativeHandle(ref, () => ({
+    gettwoAllParams,
     form
   }));
-  const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
+  const { getFieldDecorator, setFieldsValue, getFieldValue ,validateFieldsAndScroll} = form;
   const [configure, setConfigure] = useState([]);
   const { attachment = null } = initialValue;
   useEffect(() => {
@@ -63,6 +64,10 @@ const HeadFormRef = forwardRef(({
   function handleCopySelect (item) {
     handcopy(item.id)
   }
+  const gettwoAllParams = async () => {
+    const fields = await validateFieldsAndScroll();
+    const { files } = fields;
+  }
   return (
     <div >
       <div >
@@ -83,55 +88,21 @@ const HeadFormRef = forwardRef(({
               </Item>
             </Col>
             <Col span={12}>
-              <Item label='供应商分类' {...formLayout}>
+              <Item label='配置代码' {...formLayout}>
                 {
-                  getFieldDecorator('supplierCategoryCode'),
-                  getFieldDecorator('supplierCategoryId'),
-                  getFieldDecorator('supplierCategoryName', {
+                  getFieldDecorator('configCode', {
                     rules: [
                       {
                         required: true,
-                        message: '请选择供应商分类'
+                        message: '请选择配置代码'
                       }
                     ]
-                  })(
-                    <ComboList disabled={type === "detail" || type === "editor"} style={{ width: 280 }}
-                      {...purchaseCompanyProps} showSearch={false}
-                      name='supplierCategoryName' field={['supplierCategoryCode','supplierCategoryId']} form={form} />
-                  )
+                  })(<Input disabled={type === "detail" || type === "editor"} placeholder='请填写采购策略名称' style={{ width: 280 }} />)
                 }
               </Item>
             </Col>
           </Row>
-          <Row>
-            <Col span={12}>
-              <Item label='配置属性' {...formLayout}>
-                {
-                  getFieldDecorator("configProperty", {
-                    rules: [
-                      {
-                        required: true,
-                        message: '请选择配置属性'
-                      }
-                    ]
-                  })(
-                    <Group 
-                      disabled={type === "detail" || type === "editor"}
-                      options={confirmRadioOptions} />
-                  )
-                }
-              </Item>
-            </Col>
-            {
-              type === 'add'? <Col span={12}>
-                <Item label='复制从' {...formLayout}>
-                  <ComboList remotePaging disabled={type === "detail"} style={{ width: 280 }}
-                      {...FieldconfigureList} showSearch={false} 
-                      form={form} afterSelect={(item) => handleCopySelect(item)} />
-                </Item>
-              </Col> : ''
-            }
-          </Row>
+          
 
         </div>
       </div>
@@ -139,6 +110,6 @@ const HeadFormRef = forwardRef(({
   )
 }
 )
-const CommonForm = create()(HeadFormRef)
+const CommonForm = create()(TwoFormRef)
 
 export default CommonForm

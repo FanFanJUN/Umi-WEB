@@ -65,7 +65,6 @@ const tabformRef = forwardRef(({
         key: 'fieldCode',
         title: '字段代码',
         dataIndex: 'fieldCode',
-        fixed: true,
         width: 180,
         align: 'center'
       },
@@ -110,26 +109,7 @@ const tabformRef = forwardRef(({
         align: 'center',
         required: true,
         render: (text, record, index) => {
-          if (text === '1') {
-            return <div>基本信息</div>;
-          }else if (text === '2') {
-            return <div>帐号信息</div>;
-          }else if (text === '3') {
-            return <div>业务信息</div>;
-          }else if (text === '4') {
-            return <div>供货信息</div>;
-          }else if (text === '5') {
-            return <div>泛虹信息</div>;
-          }else if (text === '6') {
-            return <div>资质信息</div>;
-          }else if (text === '7') {
-            return <div>授权委托人信息</div>;
-          }else if (text === '8') {
-            return <div>银行信息</div>;
-          }else if (text === '9') {
-            return <div>原厂信息</div>;
-          }
-          
+          return <div>{record.smMsgTypeName}</div>;
         }
       },
       {
@@ -180,6 +160,11 @@ const tabformRef = forwardRef(({
             loading={loading}
             showSearch={false}
             dataSource={dataSource}
+            pagination={{
+              hideOnSinglePage: true,
+              disabled: false,
+              pageSize: 100,
+            }}
             checkbox={false}
             ref={tableRef}
             // onTableRef={(ref)=>}
