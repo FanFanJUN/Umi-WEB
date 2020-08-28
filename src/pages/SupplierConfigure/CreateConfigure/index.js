@@ -15,6 +15,7 @@ import { closeCurrent } from '../../../utils';
 function CreateStrategy() {
   const HeadFormRef = useRef();
   const tabformRef = createRef();
+  const sortRef = useRef();
   const [dataSource, setDataSource] = useState([]);
   const [radioSelect, setradioSelect] = useState([]);
   const [fromConfig, setfromConfig] = useState([]);
@@ -38,6 +39,7 @@ function CreateStrategy() {
         rows,
         ...initialValues
       } = data;
+
       let newsort = [];
       rows.map((item,index) => {
         newsort.push({
@@ -56,6 +58,7 @@ function CreateStrategy() {
       });
       setDataSource([]);
       setDataSource(newsort);
+      setradioSelect(newsort);
       triggerLoading(false);
       return
     }
@@ -69,11 +72,23 @@ function CreateStrategy() {
     setradioSelect(params)
   }
   // 排序码
-  async function handblurcode(val) {
+  function handblurcode(val) {
     const params = val;
-    setDataSource(params);
-    setradioSelect(params)
+    setDataSource([]);
+    triggerLoading(true);
+    setTimeout(function() {
+      setDataSource(params);
+      //setradioSelect(params)
+      triggerLoading(false);
+      
+      const { sortTable } = sortRef.current.props.wrappedComponentRef.current;
+      const {sorttabledata}  = sortTable();
+      let asdd = sorttabledata;
+      setradioSelect(asdd)
+      //sortTable();
+    },100)
   }
+  
   // 表头表格舒颜验证并获取值
   async function getFormValueWithoutChecked() {
     const { validateFieldsAndScroll } = tabformRef.current.form;
@@ -82,6 +97,7 @@ function CreateStrategy() {
       setfromConfig(params)
     })
   }
+
   // 复制从根据选中的ID查询数据详情
   async function copyEdit(val) {
     let id = val;
@@ -111,12 +127,24 @@ function CreateStrategy() {
   function againimplement(val) {
     setDataSource(val);
   }
-  
+  function isEmpty(val) {
+    return val === undefined || val === null || val === '' || val === "" || (typeof val === 'string' && val.trim() === '' || val.length === 0)
+  }
   // 保存
   async function handleSave() {
+    // const { sortTable } = sortRef.current.props.wrappedComponentRef.current;
+    // const {sorttabledata}  = sortTable();
+    // setradioSelect(sorttabledata);
+    // setDataSource(sorttabledata);
     getFormValueWithoutChecked();
     const { validateFieldsAndScroll } = HeadFormRef.current.form;
-    let configBodyVos = radioSelect;
+    let configBodyVos;
+    if (isEmpty(radioSelect)) {
+      configBodyVos = dataSource
+    }else {
+      configBodyVos = radioSelect
+    }
+    //let configBodyVos = radioSelect;
     validateFieldsAndScroll(async (err, val) => {
       configBodyVos.map(item=>{
         delete item.id
@@ -168,7 +196,7 @@ function CreateStrategy() {
         onBlured={handblurcode}
         //oncopy={handcopyRefresh}
         dataSource={dataSource}
-        //ref={formRef}
+        ref={sortRef}
         type="add"
         loading={loading}
         wrappedComponentRef={tabformRef}

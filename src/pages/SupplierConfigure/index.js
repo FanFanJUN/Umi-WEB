@@ -116,7 +116,6 @@ function SupplierConfigure() {
   /* 按钮禁用状态控制 */
   const FRAMEELEMENT = getFrameElement();
   const empty = selectedRowKeys.length === 0;
-  //const dataSource = []
   const dataSource = {
     store: {
       url: `${smBaseUrl}/api/SmSupplierRegConfigService/findByProperty`,

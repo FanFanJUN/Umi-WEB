@@ -2,7 +2,7 @@ import React, { createRef, useState,useRef,useEffect } from 'react';
 import { Button, Modal, message, Spin, Affix } from 'antd';
 import { router } from 'dva';
 import ConfigureForm from '../ConfigureForm'
-import ConfigureTable from '../OtherTable'
+import ConfigureTable from '../ConfigureTable'
 import classnames from 'classnames';
 import styles from './index.less';
 import { findSupplierconfigureId } from '../../../services/supplierConfig';

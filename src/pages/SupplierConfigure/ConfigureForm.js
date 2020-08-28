@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useState } from 'react';
-import { Form, Row, Input, Col, DatePicker, Radio } from 'antd';
+import { Form, Row, Input, Col, DatePicker, Radio,Button  } from 'antd';
 import { utils, ComboList, ComboTree } from 'suid';
 import { purchaseCompanyProps,FieldconfigureList } from '@/utils/commonProps'
 const { Item, create } = Form;
@@ -129,6 +129,7 @@ const HeadFormRef = forwardRef(({
                       {...FieldconfigureList} showSearch={false} 
                       form={form} afterSelect={(item) => handleCopySelect(item)} />
                 </Item>
+               
               </Col> : ''
             }
           </Row>

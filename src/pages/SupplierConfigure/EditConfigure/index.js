@@ -8,7 +8,7 @@ import styles from './index.less';
 import { findSupplierconfigureId,SaveSupplierconfigureService } from '../../../services/supplierConfig';
 import { closeCurrent} from '../../../utils';
 function CreateStrategy() {
-  const formRef = createRef()
+  const HeadFormRef = useRef()
   const tabformRef = createRef();
   const [dataSource, setDataSource] = useState([]);
   const [radioSelect, setradioSelect] = useState([]);
@@ -18,19 +18,35 @@ function CreateStrategy() {
   const { frameElementId = "", frameElementSrc = "", Opertype = "" } = query;
   // 获取详情数据
   async function initConfigurationTable() {
+    triggerLoading(true);
     let id = query.id;
     const { data, success, message: msg } = await findSupplierconfigureId(id);
     if (success) {
+      let sortdata = data.configBodyVos.map(item => {
+        return {
+          fieldCode: item.fieldCode,
+          fieldName:item.fieldName,
+          operationCode:item.operationCode,
+          operationName:item.operationName,
+          smMsgTypeCode:item.smMsgTypeCode,
+          smMsgTypeName:item.smMsgTypeName,
+          regConfigId:item.regConfigId,
+          id:item.id,
+          smSort: Number(item.smSort)
+        }
+      })
+      data.configBodyVos = sortdata;
       const {
         configBodyVos,
         ...initialValues
       } = data;
-      const { setFieldsValue } = formRef.current.form;
+      const { setFieldsValue } = HeadFormRef.current.form;
       const mixinValues = {
         ...initialValues
       }
       setFieldsValue(mixinValues);
       setDataSource(configBodyVos);
+      setradioSelect(configBodyVos);
       setfindData(data);
       triggerLoading(false);
       return
@@ -56,12 +72,16 @@ function CreateStrategy() {
     const params = val;
     setradioSelect(params)
   }
-   // 配置码
+   // 排序码
    async function handblurcode(val) {
-     console.log(val)
-    setDataSource(val);
     const params = val;
-    setradioSelect(params)
+    setDataSource([]);
+    triggerLoading(true);
+    setTimeout(function() {
+      setDataSource(params);
+      setradioSelect(params)
+      triggerLoading(false);
+    },100)
   }
   function getFormValueWithoutChecked() {
     const { validateFieldsAndScroll } = tabformRef.current.form;
@@ -71,25 +91,24 @@ function CreateStrategy() {
       //findData(...val)
     })
   }
+  function isEmpty(val) {
+    return val === undefined || val === null || val === '' || val === "" || (typeof val === 'string' && val.trim() === '' || val.length === 0)
+  }
   // 保存
   async function handleSave() {
     //getFormValueWithoutChecked();
-    const { validateFieldsAndScroll } = tabformRef.current.form;
+    const { validateFieldsAndScroll } = HeadFormRef.current.form;
     let configBodyVos;
-    if (radioSelect === null || '' || []) {
+    if (isEmpty(radioSelect)) {
       configBodyVos = dataSource
     }else {
       configBodyVos = radioSelect
     }
-    console.log(dataSource)
     validateFieldsAndScroll(async (err, val) => {
       findData.configBodyVos = configBodyVos;
-      console.log(findData)
-      let params = {
-        ...val,
-        configBodyVos
-      }
-      console.log(params)
+      // let params = {
+      //   configBodyVos
+      // }
       if (!err) {
         triggerLoading(true)
         const { success, message: msg } = await SaveSupplierconfigureService(findData)
@@ -121,11 +140,11 @@ function CreateStrategy() {
       <ConfigureForm
         Opertype={Opertype}
         type="editor"
-        wrappedComponentRef={formRef}
+        wrappedComponentRef={HeadFormRef}
       />
       <ConfigureTable
         onEditor={handleEditorLine}
-        onBlur={handblurcode}
+        onBlured={handblurcode}
         dataSource={dataSource}
         type="editor"
         loading={loading}

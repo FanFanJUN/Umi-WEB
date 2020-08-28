@@ -16,9 +16,10 @@ const tabformRef = forwardRef(({
   headerForm = {}
 }, ref) => {
   useImperativeHandle(ref, () => ({
+    sortTable,
     form
   }));
-  const { getFieldDecorator } = form;
+  const { getFieldDecorator,setFieldsValue } = form;
   const tableRef = useRef(null)
   const [configure, setConfigure] = useState([]);
   //const { attachment = null } = initialValue;
@@ -57,6 +58,13 @@ const tabformRef = forwardRef(({
       selectData[index] = data;
       selectData[index].smSort = e.target.value;
       onBlured(selectData)
+      console.log(65555)
+    }
+  }
+  function sortTable() {
+    const sorttabledata = tableRef.current.data;
+    return {
+      sorttabledata
     }
   }
   const tableProps = {
@@ -122,13 +130,13 @@ const tabformRef = forwardRef(({
             {
               getFieldDecorator(`smSort[${index}]`, {
                 initialValue: record.smSort,
-                rules: [{ required: true, message: '请输入排序码', whitespace: true }],
+                rules: [{ required: true, message: '请输入排序码'}],
               })(
                 <Input
                   disabled={type === "detail"}
                   placeholder='请输入排序码'
                   style={{ width: 180 }}
-                  onChange={onInput(record, index)}
+                  onBlur={onInput(record, index)}
                 />
               )
             }
