@@ -41,10 +41,8 @@ const CommonForm = forwardRef(
             if (type === 'editor' && visible) {
                 const {
                     id,
-                    standby1,
-                    standby2,
-                    standby3,
-                    standby4,
+                    createdDate,
+                    creatorName,
                     ...other
                 } = initialValues;
                 const fields = {
@@ -56,7 +54,6 @@ const CommonForm = forwardRef(
         const title = `新增字段`;
         function handleSubmit() {
             validateFieldsAndScroll((err, val) => {
-                console.log(initialValues)
                 if (!err) {
                     onOk({...initialValues, ...val});
                 }

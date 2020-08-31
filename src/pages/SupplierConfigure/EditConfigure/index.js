@@ -5,34 +5,54 @@ import ConfigureForm from '../ConfigureForm'
 import ConfigureTable from '../ConfigureTable'
 import classnames from 'classnames';
 import styles from './index.less';
-import { findStrategyDetailById } from '@/services/supplierConfig';
+import { findSupplierconfigureId,SaveSupplierconfigureService } from '../../../services/supplierConfig';
 import { closeCurrent} from '../../../utils';
 function CreateStrategy() {
-  const formRef = createRef()
-  const tableRef = useRef(null);
+  const HeadFormRef = useRef()
+  const tabformRef = createRef();
   const [dataSource, setDataSource] = useState([]);
-  const [loading, triggerLoading] = useState(true);
+  const [radioSelect, setradioSelect] = useState([]);
+  const [findData, setfindData] = useState([]);
+  const [loading, triggerLoading] = useState(false);
   const { query } = router.useLocation();
   const { frameElementId = "", frameElementSrc = "", Opertype = "" } = query;
   // 获取详情数据
   async function initConfigurationTable() {
-    const { data, success, message: msg } = await findStrategyDetailById(query);
+    triggerLoading(true);
+    let id = query.id;
+    const { data, success, message: msg } = await findSupplierconfigureId(id);
     if (success) {
+      let sortdata = data.configBodyVos.map(item => {
+        return {
+          fieldCode: item.fieldCode,
+          fieldName:item.fieldName,
+          operationCode:item.operationCode,
+          operationName:item.operationName,
+          smMsgTypeCode:item.smMsgTypeCode,
+          smMsgTypeName:item.smMsgTypeName,
+          regConfigId:item.regConfigId,
+          id:item.id,
+          smSort: Number(item.smSort)
+        }
+      })
+      data.configBodyVos = sortdata;
       const {
-        detailList,
+        configBodyVos,
         ...initialValues
       } = data;
-      const { setFieldsValue } = formRef.current.form;
+      const { setFieldsValue } = HeadFormRef.current.form;
       const mixinValues = {
         ...initialValues
       }
       setFieldsValue(mixinValues);
-      setDataSource(detailList);
+      setDataSource(configBodyVos);
+      setradioSelect(configBodyVos);
+      setfindData(data);
       triggerLoading(false);
       return
     }
     triggerLoading(false);
-    message.error(msg)
+    message.error(msg) 
   }
   // 编辑配置项
   async function handleEditorLine(val) {
@@ -45,29 +65,59 @@ function CreateStrategy() {
   function handleBack() {
     closeCurrent()
   }
+  // 编辑配置项
+  async function handleEditorLine(val) {
+    console.log(val)
+    setDataSource(val);
+    const params = val;
+    setradioSelect(params)
+  }
+   // 排序码
+   async function handblurcode(val) {
+    const params = val;
+    setDataSource([]);
+    triggerLoading(true);
+    setTimeout(function() {
+      setDataSource(params);
+      setradioSelect(params)
+      triggerLoading(false);
+    },100)
+  }
+  function getFormValueWithoutChecked() {
+    const { validateFieldsAndScroll } = tabformRef.current.form;
+    validateFieldsAndScroll(async (err, val) => {
+      console.log(val)
+      //setheadfrom(val)
+      //findData(...val)
+    })
+  }
+  function isEmpty(val) {
+    return val === undefined || val === null || val === '' || val === "" || (typeof val === 'string' && val.trim() === '' || val.length === 0)
+  }
   // 保存
   async function handleSave() {
-    const { validateFieldsAndScroll } = formRef.current.form;
+    //getFormValueWithoutChecked();
+    const { validateFieldsAndScroll } = HeadFormRef.current.form;
+    let configBodyVos;
+    if (isEmpty(radioSelect)) {
+      configBodyVos = dataSource
+    }else {
+      configBodyVos = radioSelect
+    }
     validateFieldsAndScroll(async (err, val) => {
-      let params = {
-        sendList: val,
-        sendList2: dataSource
-      }
-      //setDataSource(params)
-      console.log(err)
-      console.log(val)
+      findData.configBodyVos = configBodyVos;
+      // let params = {
+      //   configBodyVos
+      // }
       if (!err) {
-        alert(444)
         triggerLoading(true)
-      //   const params = await formatSaveParams(val, dataSource);
-      //   console.log(params)
-      //   // const { success, message: msg } = await savePurcahseAndApprove(params)
-      //   // triggerLoading(false)
-      //   // if (success) {
-      //   //   closeCurrent()
-      //   //   return
-      //   // }
-      //   // message.error(msg)
+        const { success, message: msg } = await SaveSupplierconfigureService(findData)
+        triggerLoading(false)
+        if (success) {
+          closeCurrent()
+          return
+        }
+        message.error(msg)
       }
     })
   }
@@ -90,14 +140,15 @@ function CreateStrategy() {
       <ConfigureForm
         Opertype={Opertype}
         type="editor"
-        wrappedComponentRef={formRef}
+        wrappedComponentRef={HeadFormRef}
       />
       <ConfigureTable
         onEditor={handleEditorLine}
+        onBlured={handblurcode}
         dataSource={dataSource}
         type="editor"
         loading={loading}
-        headerForm={formRef}
+        wrappedComponentRef={tabformRef}
       />
     </Spin>
   )

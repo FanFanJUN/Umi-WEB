@@ -27,6 +27,17 @@ function createServiceRequest(option) {
     })
   })
 }
+// 推荐信息
+export const RecommendationList = params => createServiceRequest({
+  path: '/supplierRecommendRequest/getRecommendInfo',
+  params,
+  method: 'GET',
+  hack: true
+})
+
+
+
+
 // 供应商注册字段配置表保存
 // export const SaveSupplierRegister = params =>
 //   request({

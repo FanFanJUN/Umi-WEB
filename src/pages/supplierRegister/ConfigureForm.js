@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useState } from 'react';
-import { Form, Row, Input, Col, DatePicker, Radio,Button  } from 'antd';
+import { Form, Row, Input, Col, DatePicker, Radio } from 'antd';
 import { utils, ComboList, ComboTree } from 'suid';
 import { purchaseCompanyProps,FieldconfigureList } from '@/utils/commonProps'
 const { Item, create } = Form;
@@ -33,9 +33,11 @@ const HeadFormRef = forwardRef(({
   
 }, ref) => {
   useImperativeHandle(ref, () => ({
+    getAllParams,
     form
+    
   }));
-  const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
+  const { getFieldDecorator, setFieldsValue, getFieldValue,validateFieldsAndScroll } = form;
   const [configure, setConfigure] = useState([]);
   const { attachment = null } = initialValue;
   useEffect(() => {
@@ -63,6 +65,11 @@ const HeadFormRef = forwardRef(({
   function handleCopySelect (item) {
     handcopy(item.id)
   }
+  const getAllParams = async () => {
+    const fields = await validateFieldsAndScroll();
+    const { files } = fields;
+    console.log(fields)
+  }
   return (
     <div >
       <div >
@@ -83,22 +90,16 @@ const HeadFormRef = forwardRef(({
               </Item>
             </Col>
             <Col span={12}>
-              <Item label='供应商分类' {...formLayout}>
+              <Item label='配置代码2222' {...formLayout}>
                 {
-                  getFieldDecorator('supplierCategoryCode'),
-                  getFieldDecorator('supplierCategoryId'),
-                  getFieldDecorator('supplierCategoryName', {
+                  getFieldDecorator('configCodeed', {
                     rules: [
                       {
                         required: true,
-                        message: '请选择供应商分类'
+                        message: '请选择配置代码'
                       }
                     ]
-                  })(
-                    <ComboList disabled={type === "detail" || type === "editor"} style={{ width: 280 }}
-                      {...purchaseCompanyProps} showSearch={false}
-                      name='supplierCategoryName' field={['supplierCategoryCode','supplierCategoryId']} form={form} />
-                  )
+                  })(<Input disabled={type === "detail" || type === "editor"} placeholder='请填写采购策略名称' style={{ width: 280 }} />)
                 }
               </Item>
             </Col>
@@ -123,13 +124,12 @@ const HeadFormRef = forwardRef(({
               </Item>
             </Col>
             {
-              type === 'add'? <Col span={12}>
+              type !== 'editor'? <Col span={12}>
                 <Item label='复制从' {...formLayout}>
                   <ComboList remotePaging disabled={type === "detail"} style={{ width: 280 }}
                       {...FieldconfigureList} showSearch={false} 
                       form={form} afterSelect={(item) => handleCopySelect(item)} />
                 </Item>
-               
               </Col> : ''
             }
           </Row>
