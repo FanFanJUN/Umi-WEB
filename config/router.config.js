@@ -61,6 +61,11 @@ export default [
         title: "**页面"
       }
       */
+     {
+       path: '/supplier/recommoend/demand',
+       component: './SupplierRecommendDemand',
+       title: '供应商推荐需求管理'
+     }
     ],
   }
 ];
