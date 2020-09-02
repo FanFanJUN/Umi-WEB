@@ -9,6 +9,15 @@ export default [
     ],
   },
   {
+    path: '/qualitySynergy',
+    component: '../layouts/LoginLayout',
+    title: '环保材料',
+    routes: [
+      { path: '/qualitySynergy/EPMaterial', component: './QualitySynergy/EPMaterial/MaterialManagement', title: '填报环保资料物料' },
+      // { path: '/qualitySynergy/EPMaterial/editForm', component: './QualitySynergy/EPMaterial/MaterialManagement/editForm', title: '填报环保资料物料' },
+    ]
+  },
+  {
     path: '/',
     component: '../layouts/AuthLayout',
     title: '供应商注册',
@@ -58,6 +67,7 @@ export default [
       }
       */
     ],
-  }
+  },
+  
 ];
 
