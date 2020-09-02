@@ -4,14 +4,11 @@ import { closeCurrent } from '../../../../utils';
 import classnames from 'classnames';
 import styles from './index.less';
 import BaseInfo from '../components/edit/baseInfo';
-import SubjectMatterTable from '../components/edit/SubjectMatterTable'
+import SubjectMatterForm from '../components/edit/SubjectMatterForm';
+import SuppliersTable from '../components/edit/suppliersTable';
 export default function () {
     const [loading, toggleLoading] = useState(false);
     const formRef = useRef(null);
-    const handleSave = async () => {
-        const { getAllParams } = formRef.current;
-
-    }
     const handleBack = () => {
         closeCurrent()
     }
@@ -20,10 +17,9 @@ export default function () {
             <Spin spinning={loading}>
                 <Affix>
                     <div className={classnames(styles.fbc, styles.affixHeader)}>
-                        <span className={styles.headTitle}>环保资料物料-新增</span>
+                        <span className={styles.headTitle}>环保资料物料-明细</span>
                         <div>
                             <Button className={styles.btn} onClick={handleBack}>返回</Button>
-                            <Button className={styles.btn} type='primary' onClick={handleSave}>保存</Button>
                         </div>
                     </div>
                 </Affix>
@@ -39,7 +35,15 @@ export default function () {
                     <div className={styles.bgw}>
                         <div className={styles.title}>标的物</div>
                         <div className={styles.content}>
-                            <SubjectMatterTable />
+                            <SubjectMatterForm />
+                        </div>
+                    </div>
+                </div>
+                <div className={styles.wrapper}>
+                    <div className={styles.bgw}>
+                        <div className={styles.title}>分配供应商明细</div>
+                        <div className={styles.content}>
+                            <SuppliersTable />
                         </div>
                     </div>
                 </div>

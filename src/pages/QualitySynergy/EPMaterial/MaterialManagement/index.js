@@ -5,8 +5,11 @@ import { openNewTab, getFrameElement } from '@/utils';
 import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
 import { smBaseUrl } from '@/utils/commonUrl';
-import { materialCode, statusProps, distributionProps, materialStatus, PDMStatus } from '../../commonProps'
-import CheckQualificationModal from '../components/checkQualificationModal'
+import { materialCode, statusProps, distributionProps, materialStatus, PDMStatus } from '../../commonProps';
+import CheckQualificationModal from '../components/checkQualificationModal';
+import DistributeSupplierModal from '../components/distributeSupplierModal';
+import CheckModal from '../components/checkModal';
+import GenerateModal from '../components/generateModal';
 import EditModal from '../components/editModal'
 const { authAction, storage } = utils;
 const { Search } = Input;
@@ -22,14 +25,17 @@ export default function () {
     const tableRef = useRef(null);
     const checkRef = useRef(null);
     const editRef = useRef(null);
+    const supplierRef = useRef(null);
+    const samplingRef = useRef(null);
+    const generateRef = useRef(null);
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [searchValue, setSearchValue] = useState({});
     const [maintainModal, setMaintainModal] = useState(false);//维护环保人员弹框
     const [assignPurchase, setSssignPurchase] = useState(false);//指派战略采购弹框
     const [qualificationModal, setQualificationModal] = useState(false);
+    const FRAMELEEMENT = getFrameElement();
     // 未选中数据的状态
-    const empty = selectedRowKeys.length === 0;
     const tableProps = {
         store: {
             url: `${smBaseUrl}/api/supplierFinanceViewModifyService/findByPage`,
@@ -46,16 +52,16 @@ export default function () {
             type: 'POST'
         }
     }
-    function handleEditor() {
-        console.log('编辑弹框')
-    }
     function redirectToPage(type) {
+        const [key] = selectedRowKeys;
+        const { id = '' } = FRAMELEEMENT;
+        const { pathname } = window.location;
         switch (type) {
             case 'add':
-                openNewTab('AddEnDemandForm?pageState=add', '新增环保资料填报需求', false);
+                openNewTab(`qualitySynergy/EPMaterial/editForm?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '填报环保资料物料-新增', false)
                 break;
             case 'detail':
-                openNewTab('AddEnDemandForm?pageState=detail', '环保资料填报需求明细', false);
+                openNewTab(`qualitySynergy/EPMaterial/detailForm?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '填报环保资料物料-明细', false);
                 break;
             default:
                 break;
@@ -122,6 +128,10 @@ export default function () {
     function maintainSeleteChange(item) {
 
     }
+    // 导出
+    function handleExport() {
+        console.log('导出')
+    }
     // 高级查询配置
     const formItems = [
         { title: '物料代码', key: 'data1', type: 'list', props: materialCode },
@@ -183,7 +193,7 @@ export default function () {
             authAction(<Button
                 className={styles.btn}
                 disabled={false}
-                onClick={() => { editRef.current.setVisible(true) }}
+                onClick={() => { editRef.current.showModal('edit') }}
                 ignore={DEVELOPER_ENV}
                 key='PURCHASE_VIEW_CHANGE_EDITOR'
             >编辑</Button>)
@@ -246,7 +256,7 @@ export default function () {
             authAction(<Button
                 className={styles.btn}
                 disabled={false}
-                onClick={handleDelete}
+                onClick={()=>{supplierRef.current.setVisible(true)}}
                 key='PURCHASE_VIEW_CHANGE_REMOVE'
                 ignore={DEVELOPER_ENV}
             >分配供应商</Button>)
@@ -255,7 +265,7 @@ export default function () {
             authAction(<Button
                 className={styles.btn}
                 disabled={false}
-                onClick={() => {setSssignPurchase(true)}}
+                onClick={() => { setSssignPurchase(true) }}
                 ignore={DEVELOPER_ENV}
                 key='PURCHASE_VIEW_CHANGE_DETAIL'
             >指派战略采购</Button>)
@@ -264,7 +274,7 @@ export default function () {
             authAction(<Button
                 className={styles.btn}
                 disabled={false}
-                onClick={handleDelete}
+                onClick={()=>{console.log('同步PDM')}}
                 key='PURCHASE_VIEW_CHANGE_REMOVE'
                 ignore={DEVELOPER_ENV}
             >同步PDM</Button>)
@@ -273,7 +283,7 @@ export default function () {
             authAction(<Button
                 className={styles.btn}
                 disabled={false}
-                onClick={() => { redirectToPage('detail') }}
+                onClick={()=>{console.log('同步历史')}}
                 ignore={DEVELOPER_ENV}
                 key='PURCHASE_VIEW_CHANGE_DETAIL'
             >同步历史</Button>)
@@ -282,7 +292,7 @@ export default function () {
             authAction(<Button
                 className={styles.btn}
                 disabled={false}
-                onClick={handleDelete}
+                onClick={()=>{samplingRef.current.setVisible(true)}}
                 key='PURCHASE_VIEW_CHANGE_REMOVE'
                 ignore={DEVELOPER_ENV}
             >抽检复核</Button>)
@@ -291,7 +301,7 @@ export default function () {
             authAction(<Button
                 className={styles.btn}
                 disabled={false}
-                onClick={() => { redirectToPage('detail') }}
+                onClick={() => { generateRef.current.setVisible(true) }}
                 ignore={DEVELOPER_ENV}
                 key='PURCHASE_VIEW_CHANGE_DETAIL'
             >生成报表</Button>)
@@ -300,7 +310,7 @@ export default function () {
             authAction(<Button
                 className={styles.btn}
                 disabled={false}
-                onClick={handleDelete}
+                onClick={handleExport}
                 key='PURCHASE_VIEW_CHANGE_REMOVE'
                 ignore={DEVELOPER_ENV}
             >导出</Button>)
@@ -373,8 +383,8 @@ export default function () {
         <ExtModal
             centered
             destroyOnClose
-            onCancel={() => { setSssignPurchase(false)}}
-            onOk={() => { setSssignPurchase(false)}}
+            onCancel={() => { setSssignPurchase(false) }}
+            onOk={() => { setSssignPurchase(false) }}
             visible={assignPurchase}
             title="指派战略采购"
         >
@@ -386,6 +396,11 @@ export default function () {
         </ExtModal>
         {/* 查看供应商资质 */}
         <CheckQualificationModal ref={checkRef} />
-
+        {/* 分配供应商 */}
+        <DistributeSupplierModal wrappedComponentRef={supplierRef} />
+        {/* 抽检复核 */}
+        <CheckModal wrappedComponentRef={samplingRef} />
+        {/* 生成报表 */}
+        <GenerateModal wrappedComponentRef={generateRef} />
     </Fragment>
 }

@@ -9,12 +9,17 @@ const formLayout = {
 };
 const editModal =  forwardRef(({ form }, ref) => {
     useImperativeHandle(ref, () => ({
-        setVisible
+        showModal
     }))
-    const [visible, setVisible] = useState(false)
+    const [visible, setVisible] = useState(false);
+    const [modalType, setModalType] = useState('');
     const { getFieldDecorator } = form;
     function seleteChange(item) {
         console.log('选中', item)
+    }
+    function showModal(type) {
+        setModalType(type);
+        setVisible(true);
     }
     return <Fragment>
         <ExtModal
@@ -23,7 +28,7 @@ const editModal =  forwardRef(({ form }, ref) => {
             visible={visible}
             centered
             width={500}
-            title="编辑"
+            title={modalType === 'add' ? '新增': '编辑'}
         >
             <Form>
                 <Row>
