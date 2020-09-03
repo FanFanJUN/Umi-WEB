@@ -4,7 +4,9 @@ import { Button, Form, Row, Input, Modal, message, DatePicker, InputNumber } fro
 import styles from '../../TechnicalDataSharing/DataSharingList/index.less';
 import { baseUrl, smBaseUrl } from '../../../../utils/commonUrl';
 import { DataImport, ExtTable, ExtModal, utils, ComboList } from 'suid';
-import { materialCode } from '../../commonProps';
+import { BasicUnitList } from '../../../../services/qualitySynergy';
+import moment from 'moment'
+import { exemptionClauseDataInsert, exemptionClauseDataDelete } from '../../commonProps'
 const { authAction } = utils;
 const { create, Item: FormItem } = Form;
 const { confirm } = Modal;
@@ -26,13 +28,13 @@ const ExemptionClause = (props) => {
     const [selectedRow, setSelectedRow] = useState([]);
 
     const columns = [
-        { title: '豁免条款代码', dataIndex: 'name1', width: 200 },
-        { title: '豁免条款物质名称', dataIndex: 'name2', ellipsis: true, },
-        { title: 'CAS.NO', dataIndex: 'name3', ellipsis: true, },
-        { title: '限量', dataIndex: 'name4', ellipsis: true },
-        { title: '基本单位', dataIndex: 'name4', ellipsis: true },
-        { title: '豁免到期日期', dataIndex: 'name4', ellipsis: true },
-        { title: '豁免条款具体内容', dataIndex: 'name4', ellipsis: true },
+        { title: '豁免条款代码', dataIndex: 'exemptionClauseCode', width: 120 },
+        { title: '豁免条款物质名称', dataIndex: 'exemptionClauseMaterialName', ellipsis: true, width: 140 },
+        { title: 'CAS.NO', dataIndex: 'casNo', ellipsis: true, },
+        { title: '限量', dataIndex: 'limitNumber', ellipsis: true },
+        { title: '豁免到期日期', dataIndex: 'exemptionExpireDate', ellipsis: true, width: 180 },
+        { title: '豁免条款具体内容', dataIndex: 'exemptionContent', ellipsis: true, width: 140 },
+        { title: '排序号', dataIndex: 'orderNo', ellipsis: true, width: 140 },
     ]
 
     const buttonClick = (type) => {
@@ -57,8 +59,12 @@ const ExemptionClause = (props) => {
                 } else {
                     confirm({
                         title: '请确认是否删除选中技术资料类别数据',
-                        onOk: () => {
-                            console.log('确认删除', selectedRowKeys);
+                        onOk: async () => {
+                            
+                            const parmas = selectedRowKeys.join();
+                            console.log('确认删除', parmas);
+                            const data = await exemptionClauseDataDelete({ids: parmas});
+                            console.log(data);
                         },
                     });
                 }
@@ -121,10 +127,12 @@ const ExemptionClause = (props) => {
             >导入</Button>)
         }
     </div>
-    function handleOk() {
-        validateFields((errs, values) => {
+    // 编辑/新增
+    const handleOk = async () => {
+        validateFields(async (errs, values) => {
             if (!errs) {
                 console.log(values)
+                const data = await exemptionClauseDataInsert(values)
             }
         })
     }
@@ -132,10 +140,15 @@ const ExemptionClause = (props) => {
         <Fragment>
             <ExtTable
                 columns={columns}
-                //   store={{
-                //     url: `${baseUrl}/limitSubstanceListData/find_by_page`,
-                //     type: 'GET'
-                //   }}
+                store={{
+                    url: `${baseUrl}/exemptionClauseData/findByPage`,
+                    type: 'POST',
+                    params: {
+                        quickSearchProperties: []
+                    }
+                }}
+                remotePaging={true}
+                searchPlaceHolder="请输入豁免条款代码，豁免条款物质名称查询"
                 checkbox={true}
                 selectedRowKeys={selectedRowKeys}
                 onSelectRow={(selectedRowKeys, selectedRows) => {
@@ -145,10 +158,6 @@ const ExemptionClause = (props) => {
                 toolBar={{
                     left: headerLeft
                 }}
-                dataSource={[
-                    { id: 1, name1: 'xxx', name2: 'sdhfj', name3: true, name4: 'sdf' },
-                    { id: 2, name1: 'xxx', name2: 'sdhfj', name3: false, name4: 'sdf' },
-                ]}
             />
             <ExtModal
                 centered
@@ -156,78 +165,84 @@ const ExemptionClause = (props) => {
                 visible={data.visible}
                 onCancel={() => { setData((value) => ({ ...value, visible: false })) }}
                 onOk={() => { handleOk() }}
-                title={data.modalSource ? '编辑' : '新增'}
+                title={data.modalSource ? data.isView ? '明细' : '编辑' : '新增'}
             >
                 <Form>
                     <Row>
                         <FormItem label='豁免条款代码' {...formLayout}>
                             {
-                                getFieldDecorator('name1', {
-                                    initialValue: data.modalSource && data.modalSource.name1,
+                                getFieldDecorator('exemptionClauseCode', {
+                                    initialValue: data.modalSource && data.modalSource.exemptionClauseCode,
                                     rules: [{ required: true, message: '请填写豁免条款代码' }]
-                                })(<Input />)
+                                })(<Input disabled={data.isView}/>)
                             }
                         </FormItem>
                     </Row>
                     <Row>
                         <FormItem label='豁免条款物质名称' {...formLayout}>
                             {
-                                getFieldDecorator('name2', {
-                                    initialValue: data.modalSource && data.modalSource.name2,
+                                getFieldDecorator('exemptionClauseMaterialName', {
+                                    initialValue: data.modalSource && data.modalSource.exemptionClauseMaterialName,
                                     rules: [{ required: true, message: '请填写豁免条款物质名称' }]
-                                })(<Input />)
+                                })(<Input disabled={data.isView}/>)
                             }
                         </FormItem>
                     </Row>
                     <Row>
                         <FormItem label='CAS.NO' {...formLayout}>
                             {
-                                getFieldDecorator('name3', {
-                                    initialValue: data.modalSource && data.modalSource.name3,
+                                getFieldDecorator('casNo', {
+                                    initialValue: data.modalSource && data.modalSource.casNo,
                                     rules: [{ required: true, message: '请填写CAS.NO' }]
-                                })(<Input />)
+                                })(<Input disabled={data.isView} />)
                             }
                         </FormItem>
                     </Row>
                     <Row>
                         <FormItem label='限量' {...formLayout}>
                             {
-                                getFieldDecorator('name4', {
-                                    initialValue: data.modalSource && data.modalSource.name4,
+                                getFieldDecorator('limitNumber', {
+                                    initialValue: data.modalSource && data.modalSource.limitNumber,
                                     rules: [{ required: true, message: '请填写限量' }]
-                                })(<Input />)
-                            }
-                        </FormItem>
-                    </Row>
-                    <Row>
-                        <FormItem label='基本单位' {...formLayout}>
-                            {
-                                getFieldDecorator('name5', {
-                                    initialValue: data.modalSource && data.modalSource.name5,
-                                    rules: [{ required: true, message: '请选择基本单位' }]
-                                })(<ComboList form={form} {...materialCode} name='supplierCode'
-                                    field={['supplierName', 'supplierId']}
-                                    afterSelect={() => { console.log(111) }} />)
+                                })(<InputNumber
+                                    precision={2}
+                                    style={{width: '100%'}}
+                                    step={0.01}
+                                    formatter={value => `${value ? value + '%' : ''}`}
+                                    parser={value => value.replace('%', '')}
+                                    min={0} max={100}
+                                    disabled={data.isView}
+                                />)
                             }
                         </FormItem>
                     </Row>
                     <Row>
                         <FormItem label='豁免到期日期' {...formLayout}>
                             {
-                                getFieldDecorator('name6', {
-                                    initialValue: data.modalSource && data.modalSource.name6,
+                                getFieldDecorator('exemptionExpireDate', {
+                                    initialValue: data.modalSource && moment(data.modalSource.exemptionExpireDate, "YYYY-MM-DD"),
                                     rules: [{ required: true, message: '请填写豁免到期日期' }]
-                                })(<DatePicker style={{ width: '100%' }} />)
+                                })(<DatePicker disabled={data.isView} style={{ width: '100%' }} />)
                             }
                         </FormItem>
                     </Row>
                     <Row>
                         <FormItem label='豁免条款具体内容' {...formLayout}>
                             {
-                                getFieldDecorator('name7', {
-                                    initialValue: data.modalSource && data.modalSource.name7,
+                                getFieldDecorator('exemptionContent', {
+                                    initialValue: data.modalSource && data.modalSource.exemptionContent,
                                     rules: [{ required: true, message: '请填写豁免条款具体内容' }]
-                                })(<Input />)
+                                })(<Input disabled={data.isView} />)
+                            }
+                        </FormItem>
+                    </Row>
+                    <Row>
+                        <FormItem label='排序号' {...formLayout}>
+                            {
+                                getFieldDecorator('orderNo', {
+                                    initialValue: data.modalSource && data.modalSource.orderNo,
+                                    rules: [{ required: true, message: '请填写排序号' }]
+                                })(<Input disabled={data.isView} />)
                             }
                         </FormItem>
                     </Row>
