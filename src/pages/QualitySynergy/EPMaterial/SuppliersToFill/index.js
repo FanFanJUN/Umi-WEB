@@ -2,6 +2,7 @@ import { useEffect, useState, useRef, Fragment } from 'react'
 import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import { Input, Button, message, Modal, Form } from 'antd';
 import { smBaseUrl } from '@/utils/commonUrl';
+import { openNewTab, getFrameElement } from '@/utils';
 import { AutoSizeLayout, Header, AdvancedForm, ComboAttachment } from '@/components';
 import { materialCode, statusProps, distributionProps, materialStatus, PDMStatus } from '../../commonProps';
 import styles from './index.less'
@@ -19,6 +20,7 @@ const SupplierFillList = function (props) {
     const [selectedRows, setRows] = useState([]);
     const [searchValue, setSearchValue] = useState({});
     const [attachment, setAttachment] = useState(null);
+    const FRAMELEEMENT = getFrameElement();
     const tableProps = {
         store: {
             url: `${smBaseUrl}/api/supplierFinanceViewModifyService/findByPage`,
@@ -52,11 +54,28 @@ const SupplierFillList = function (props) {
         { title: '物料标记状态', key: 'data8', type: 'list', props: materialStatus },
         { title: '同步PDM状态', key: 'data9', type: 'list', props: PDMStatus },
     ]
+    // 页面跳转
+    function redirectToPage(type) {
+        const [key] = selectedRowKeys;
+        const { id = '' } = FRAMELEEMENT;
+        const { pathname } = window.location;
+        switch (type) {
+            case 'add':
+                openNewTab(`qualitySynergy/EPMaterial/suppliersFillForm?id=${key}&pageStatus=add&frameElementId=${id}&frameElementSrc=${pathname}`, '填报环保资料物料-新增', false)
+                break;
+            case 'detail':
+                openNewTab(`qualitySynergy/EPMaterial/suppliersFillForm?id=${key}&pageStatus=detail&frameElementId=${id}&frameElementSrc=${pathname}`, '填报环保资料物料-明细', false);
+                break;
+            default:
+                break;
+        }
+    }
     const headerLeft = <>
         {
             authAction(<Button
                 type='primary'
                 className={styles.btn}
+                onClick={()=>{redirectToPage('add')}}
                 ignore={DEVELOPER_ENV}
                 key='PURCHASE_VIEW_CHANGE_CREATE'
             >填报</Button>)
@@ -65,6 +84,7 @@ const SupplierFillList = function (props) {
             authAction(<Button
                 className={styles.btn}
                 disabled={false}
+                onClick={()=>{redirectToPage('detail')}}
                 ignore={DEVELOPER_ENV}
                 key='PURCHASE_VIEW_CHANGE_EDITOR'
             >明细</Button>)
@@ -212,12 +232,12 @@ const SupplierFillList = function (props) {
                     bordered
                     height={h}
                     allowCancelSelect
-                    showSearch={false}
                     remotePaging
                     checkbox={{ multiSelect: false }}
                     ref={tableRef}
                     rowKey={(item) => item.id}
                     size='small'
+                    showSearch= {false}
                     onSelectRow={handleSelectedRows}
                     selectedRowKeys={selectedRowKeys}
                     {...tableProps}

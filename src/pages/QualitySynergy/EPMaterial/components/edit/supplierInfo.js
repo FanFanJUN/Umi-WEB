@@ -4,7 +4,7 @@ import { ComboList } from 'suid';
 import { materialCode } from '../../../commonProps'
 import { getUserName } from '../../../../../utils'
 import { ComboAttachment } from '@/components';
-import moment from 'moment'
+import moment from 'moment';
 const { TextArea } = Input;
 const { create, Item: FormItem } = Form;
 const formLayout = {

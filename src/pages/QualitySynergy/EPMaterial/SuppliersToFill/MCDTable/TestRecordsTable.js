@@ -1,6 +1,7 @@
 import { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment } from 'react';
 import { ExtTable, ExtModal, ScrollBar, ComboList } from 'suid';
-import { Button, DatePicker, Form, Modal, Row, Input, Select } from 'antd'
+import { Button, Col, Form, Modal, Row, Input, Select, InputNumber } from 'antd'
+import { materialCode } from '../../../commonProps';
 import { Upload } from '@/components';
 import { smBaseUrl } from '@/utils/commonUrl';
 import classnames from 'classnames'
@@ -32,17 +33,13 @@ const supplierModal = forwardRef(({ form }, ref) => {
         }
     }
     const columns = [
-        { title: '拆分部位名称', dataIndex: 'turnNumber', align: 'center' },
-        { title: '均质材料名称', dataIndex: 'name1', ellipsis: true, align: 'center' },
-        { title: '测试机构', dataIndex: 'name2', ellipsis: true, align: 'center', },
-        { title: '测试结论', dataIndex: 'name3', ellipsis: true, align: 'center', },
-        { title: '报告编号', dataIndex: 'name4', ellipsis: true, align: 'center', },
-        { title: '报告日期', dataIndex: 'name5', ellipsis: true, align: 'center', },
-        { title: '有效截止日期 ', dataIndex: 'name6', ellipsis: true, align: 'center', },
-        { title: '报告附件', dataIndex: 'name7', ellipsis: true, align: 'center', render:(text)=>{
-            return <Upload entityId={''} />
-        } },
-        { title: '排序', dataIndex: 'name8', ellipsis: true, align: 'center', },
+        { title: '物质代码', dataIndex: 'turnNumber', align: 'center' },
+        { title: '物质名称', dataIndex: 'name1', ellipsis: true, align: 'center' },
+        { title: 'CAS.NO', dataIndex: 'name2', ellipsis: true, align: 'center', },
+        { title: '适用范围', dataIndex: 'name3', ellipsis: true, align: 'center', },
+        { title: '含量', dataIndex: 'name4', ellipsis: true, align: 'center', },
+        { title: '基本单位', dataIndex: 'name5', ellipsis: true, align: 'center', },
+        { title: '符合性 ', dataIndex: 'name6', ellipsis: true, align: 'center', render: (text) => text ? '符合' : '不符合' },
     ];
     // 记录列表选中
     function handleSelectedRows(rowKeys, rows) {
@@ -76,7 +73,7 @@ const supplierModal = forwardRef(({ form }, ref) => {
         <div className={styles.macTitle}>拆分部件</div>
         <div className={classnames(styles.mbt, styles.mtb)}>
             <Button type='primary' className={styles.btn} key="add" onClick={() => { showEditModal('add') }}>新增</Button>
-            <Button className={styles.btn} key="edit" onClick={()=>{showEditModal('edit')}}>编辑</Button>
+            <Button className={styles.btn} key="edit" onClick={() => { showEditModal('edit') }}>编辑</Button>
             <Button className={styles.btn} onClick={handleDelete} key="delete">删除</Button>
             <Button className={styles.btn} key="import">批量导入</Button>
         </div>
@@ -100,11 +97,11 @@ const supplierModal = forwardRef(({ form }, ref) => {
             visible={visible}
             onCancel={() => { setVisible(false) }}
             onOk={() => { handleAdd() }}
-            title={`${modalType==='add'?'新增':'编辑'}拆分部件`}
+            title={`${modalType === 'add' ? '新增' : '编辑'}测试记录表物质`}
         >
             <Form>
                 <Row>
-                    <FormItem label='拆分部件名称' {...formLayout}>
+                    <FormItem label='物质名称' {...formLayout}>
                         {
                             getFieldDecorator('data1', {
                                 initialValue: '',
@@ -114,74 +111,51 @@ const supplierModal = forwardRef(({ form }, ref) => {
                     </FormItem>
                 </Row>
                 <Row>
-                    <FormItem label='均质材料名称' {...formLayout}>
+                    <FormItem label='CAS.NO' {...formLayout}>
                         {
                             getFieldDecorator('data2', {
-                                initialValue: '',
-                                rules: [{ required: true, message: '请填写均质材料名称' }]
-                            })(<Input />)
-                        }
-                    </FormItem>
-                </Row>
-                <Row>
-                    <FormItem label='测试机构' {...formLayout}>
-                        {
-                            getFieldDecorator('data3', {
-                                initialValue: '',
-                                rules: [{ required: true, message: '请填写测试机构名称' }]
-                            })(<Input />)
-                        }
-                    </FormItem>
-                </Row>
-                <Row>
-                    <FormItem label='测试结论' {...formLayout}>
-                        {
-                            getFieldDecorator('data4', {
-                                initialValue: 'pass',
-                                rules: [{ required: true, message: '请选择供应商代码' }]
-                            })(<Select style={{ width: '100%' }}>
-                                <Option value="pass">通过</Option>
-                                <Option value="nopass">不通过</Option>
-                            </Select>)
-                        }
-                    </FormItem>
-                </Row>
-                <Row>
-                    <FormItem label='报告编号' {...formLayout}>
-                        {
-                            getFieldDecorator('data5', {
-                                initialValue: '',
-                                rules: [{ required: true, message: '请输入报告编号' }]
-                            })(<Input />)
-                        }
-                    </FormItem>
-                </Row>
-                <Row>
-                    <FormItem label='报告日期' {...formLayout}>
-                        {
-                            getFieldDecorator('data6', {
-                                initialValue: '',
-                                rules: [{ required: true, message: '请选择报告日期' }]
-                            })(<DatePicker style={{ width: '100%' }} />)
-                        }
-                    </FormItem>
-                </Row>
-                <Row>
-                    <FormItem label='有效截止日期' {...formLayout}>
-                        {
-                            getFieldDecorator('data7', {
                                 initialValue: '',
                             })(<Input disabled />)
                         }
                     </FormItem>
                 </Row>
                 <Row>
-                    <FormItem label='报告附件' {...formLayout}>
+                    <FormItem label='适用范围' {...formLayout}>
                         {
-                            getFieldDecorator('data8', {
+                            getFieldDecorator('data3', {
                                 initialValue: '',
-                                rules: [{ required: true, message: '请请上传技术资料附件' }]
-                            })(<Upload entityId={''} />)
+                                rules: [{ required: true, message: '请选择适用范围' }]
+                            })(<ComboList form={form} {...materialCode} name='supplierCode'
+                                field={['supplierName', 'supplierId']}
+                                afterSelect={() => { console.log(111) }} />)
+                        }
+                    </FormItem>
+                </Row>
+                <Row>
+                    <FormItem label='含量' {...formLayout}>
+                        {
+                            getFieldDecorator('data4', {
+                                initialValue: 'pass',
+                                rules: [{ required: true, message: '请选择供应商代码' }]
+                            })(<Select style={{width: '40%',marginRight:'10px'}}>
+                                <Option value="pass">范围值</Option>
+                                <Option value="nopass">精确值</Option>
+                            </Select>)
+                        }
+                        {
+                            getFieldDecorator('data5', {
+                                initialValue: '',
+                                rules: [{ required: true, message: '请选择供应商代码' }]
+                            })(<InputNumber style={{width: '40%'}} />)
+                        }
+                    </FormItem>
+                </Row>
+                <Row>
+                    <FormItem label='基本单位' {...formLayout}>
+                        {
+                            getFieldDecorator('data6', {
+                                initialValue: '',
+                            })(<Input disabled />)
                         }
                     </FormItem>
                 </Row>
