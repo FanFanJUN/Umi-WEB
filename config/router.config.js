@@ -27,6 +27,7 @@ export default [
       { path: '/qualitySynergy/LimitSuppliesBasicUnit', component: './QualitySynergy/mainData/LimitSuppliesBasicUnit', title: '限用物资基本单位' },
       { path: '/qualitySynergy/TechnicalDataFileTypes', component: './QualitySynergy/mainData/TechnicalDataFileTypes', title: '技术资料文件类别-主数据'},
       { path: '/qualitySynergy/ExemptionClause', component: './QualitySynergy/mainData/ExemptionClause', title: '豁免条款-主数据'},
+      { path: '/qualitySynergy/LimitMaterial', component: './QualitySynergy/mainData/LimitMaterial', title: '环保标准限用物质对应关系-主数据'},
     ]
   },
   {

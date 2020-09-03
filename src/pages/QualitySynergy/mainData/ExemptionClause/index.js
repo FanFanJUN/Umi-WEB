@@ -30,9 +30,9 @@ const ExemptionClause = (props) => {
         { title: '豁免条款物质名称', dataIndex: 'name2', ellipsis: true, },
         { title: 'CAS.NO', dataIndex: 'name3', ellipsis: true, },
         { title: '限量', dataIndex: 'name4', ellipsis: true },
-        { title: '基本单位', dataIndex: 'name5', ellipsis: true },
-        { title: '豁免到期日期', dataIndex: 'name6', ellipsis: true },
-        { title: '豁免条款具体内容', dataIndex: 'name7', ellipsis: true },
+        { title: '基本单位', dataIndex: 'name4', ellipsis: true },
+        { title: '豁免到期日期', dataIndex: 'name4', ellipsis: true },
+        { title: '豁免条款具体内容', dataIndex: 'name4', ellipsis: true },
     ]
 
     const buttonClick = (type) => {
@@ -131,7 +131,6 @@ const ExemptionClause = (props) => {
     return (
         <Fragment>
             <ExtTable
-                Table
                 columns={columns}
                 //   store={{
                 //     url: `${baseUrl}/limitSubstanceListData/find_by_page`,
