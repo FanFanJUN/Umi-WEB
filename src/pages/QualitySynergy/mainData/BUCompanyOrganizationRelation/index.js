@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import { Button, Input } from 'antd';
+import { Button, Input, Form } from 'antd';
 import styles from '../../TechnicalDataSharing/DataSharingList/index.less';
 import { baseUrl, smBaseUrl } from '../../../../utils/commonUrl';
 import { ExtTable, utils } from 'suid';
@@ -7,7 +7,7 @@ const { authAction } = utils;
 
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 
-export default () => {
+const Index = () => {
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
@@ -23,6 +23,7 @@ export default () => {
   ].map(item => ({ ...item, align: 'center' }));
 
   const buttonClick = (type) => {
+    console.log(selectedRowKeys)
     console.log(type)
   }
 
@@ -59,8 +60,11 @@ export default () => {
       <ExtTable
         columns={columns}
         store={{
-          url: `${baseUrl}/limitSubstanceListData/find_by_page`,
-          type: 'GET'
+          url: `${baseUrl}/buCompanyPurchasingOrganization/findByPages`,
+          type: 'GET',
+          params: {
+            keywords: '123'
+          }
         }}
         checkbox={true}
         selectedRowKeys={selectedRowKeys}
@@ -72,3 +76,5 @@ export default () => {
   )
 
 }
+
+export default Form.create()(Index)
