@@ -1,7 +1,9 @@
 import { useEffect, useState, useRef, forwardRef, useImperativeHandle, Fragment } from 'react';
 import { Form, Col, Row, Input, Button } from 'antd';
 import styles from '../index.less'
-import SplitPartsTable from './SplitPartsTable'
+import SplitPartsTable from './SplitPartsTable';
+import MaterialTable from './MaterialTable';
+import TestRecordsTable from './TestRecordsTable';
 const { create, Item: FormItem } = Form;
 const formLayout = {
     labelCol: {
@@ -23,7 +25,7 @@ const MCDForm = forwardRef(({ form }, ref) => {
                     <FormItem label='物料名称' {...formLayout}>
                         {
                             getFieldDecorator('data1',{
-                                rules: [{ required: true}]
+                                rules: [{ required: true, message: '请输入物料名称'}]
                             })(<Input />)
                         }
                     </FormItem>
@@ -32,7 +34,7 @@ const MCDForm = forwardRef(({ form }, ref) => {
                     <FormItem label='型号' {...formLayout}>
                         {
                             getFieldDecorator('creatorName', {
-                                rules: [{ required: true}]
+                                rules: [{ required: true, message: '请输入型号'}]
                             })(<Input />)
                         }
                     </FormItem>
@@ -53,10 +55,17 @@ const MCDForm = forwardRef(({ form }, ref) => {
             </Row>
         </Form>
         <Row>
-            <Col span={12}>
+            <Col span={12} className={styles.rl}>
                 <SplitPartsTable />
             </Col>
-            <Col span={12}></Col>
+            <Col span={12} className={styles.ll}>
+                <Row>
+                    <MaterialTable />
+                </Row>
+                <Row>
+                    <TestRecordsTable />
+                </Row>
+            </Col>
         </Row>
     </Fragment>
 })

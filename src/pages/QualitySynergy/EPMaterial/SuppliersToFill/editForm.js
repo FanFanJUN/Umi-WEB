@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { Affix, Button, message, Spin } from 'antd';
 import { closeCurrent } from '../../../../utils';
+import { router } from 'dva';
 import classnames from 'classnames';
 import styles from './index.less';
 import BaseInfo from '../components/edit/baseInfo';
@@ -11,6 +12,8 @@ export default function () {
     const [loading, toggleLoading] = useState(false);
     const formRef = useRef(null);
     const mcdRef = useRef(null);
+    const { query } = router.useLocation();
+    console.log('url路径', query)
     const handleBack = () => {
         closeCurrent()
     }
@@ -19,7 +22,7 @@ export default function () {
             <Spin spinning={loading}>
                 <Affix>
                     <div className={classnames(styles.fbc, styles.affixHeader)}>
-                        <span className={styles.headTitle}>环保资料物料-明细</span>
+                        <span className={styles.headTitle}>{query.pageStatus === 'add' ? `环保资料填报-xxx` : '环保资料填报明细-xxx'}</span>
                         <div>
                             <Button className={styles.btn} onClick={handleBack}>返回</Button>
                         </div>
