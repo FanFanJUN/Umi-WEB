@@ -39,8 +39,7 @@ export default () => {
     console.log(data, 'data')
   }
 
-
-  const headerLeft = <div>
+  const headerLeft = <div style={{width: '100%', display: 'flex', height: '100%', alignItems:'center'}}>
     {
       authAction(<Button
         type='primary'
@@ -69,6 +68,7 @@ export default () => {
     {
       <AuthAction key="PURCHASE_VIEW_CHANGE_CREATE" ignore>
         <DataImport
+          style={{float: 'none'}}
           tableProps={{ columns }}
           validateFunc={validateItem}
           importData={console.log('data')}
