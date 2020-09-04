@@ -12,6 +12,16 @@ const commonProps = {
   },
 };
 
+// BU与公司采购组织对应关系冻结解冻
+export async function FrostBUCompanyOrganizationRelation(params) {
+  const url = `${baseUrl}/buCompanyPurchasingOrganization/freeze`;
+  return request({
+    url,
+    method: 'POST',
+    params: params,
+  });
+}
+
 // 限用物资适用范围删除
 export async function DeleteLimitSuppliesScope(params) {
   const url = `${baseUrl}/LimitMaterialUnitScopeData/delete`;

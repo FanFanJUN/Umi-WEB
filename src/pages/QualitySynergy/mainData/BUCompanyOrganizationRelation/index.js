@@ -3,7 +3,12 @@ import { Form, Button, message } from 'antd';
 import styles from '../../TechnicalDataSharing/DataSharingList/index.less';
 import { baseUrl, smBaseUrl } from '../../../../utils/commonUrl';
 import {DataImport, ExtTable, utils, AuthAction } from 'suid';
-import { AddTheListOfRestrictedMaterials, EditTheListOfRestrictedMaterials } from '../../commonProps';
+import {
+  AddTheListOfRestrictedMaterials,
+  DeleteLimitSuppliesScope,
+  EditTheListOfRestrictedMaterials, FrostBUCompanyOrganizationRelation, FrostLimitSuppliesScope,
+} from '../../commonProps';
+import EventModal from './component/EventModal';
 const { authAction } = utils;
 
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
@@ -23,57 +28,64 @@ const Index = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   const columns = [
-    { title: 'BU代码', dataIndex: 'limitMaterialCode', width: 200 },
-    { title: 'BU名称', dataIndex: 'limitMaterialName', ellipsis: true, },
-    { title: '公司代码', dataIndex: 'casNo', ellipsis: true, },
-    { title: '公司名称', dataIndex: 'basicUnitCode', ellipsis: true, },
-    { title: '采购组织代码', dataIndex: 'basicUnitName', ellipsis: true, },
-    { title: '采购组织名称', dataIndex: 'recordCheckList', ellipsis: true,width: 300 },
+    { title: 'BU代码', dataIndex: 'buCode', width: 200 },
+    { title: 'BU名称', dataIndex: 'buName', ellipsis: true, },
+    { title: '公司代码', dataIndex: 'corporationCode;', ellipsis: true, },
+    { title: '公司名称', dataIndex: 'corporationName', ellipsis: true, },
+    { title: '采购组织代码', dataIndex: 'purchaseOrgCode', ellipsis: true, },
+    { title: '采购组织名称', dataIndex: 'purchaseOrgName', ellipsis: true,width: 300 },
     { title: '排序号', dataIndex: 'orderNo', ellipsis: true, },
     { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (value) => value ? '是' : '否'},
   ].map(item => ({ ...item, align: 'center' }));
 
   const buttonClick = async (type) => {
-    console.log(selectedRowKeys)
     switch (type) {
       case 'add':
-        setData((value) => ({...value, visible: true,title: '限用物资清单新增', type: 'add'}))
-        break
+        setData((value) => ({ ...value, visible: true, title: 'BU与公司采购组织对应关系新增', type: 'add' }));
+        break;
       case 'edit':
-        setData((value) => ({...value, visible: true,title: '限用物资清单编辑', type: 'edit'}))
-        break
+        setData((value) => ({ ...value, visible: true, title: 'BU与公司采购组织对应关系编辑', type: 'edit' }));
+        break;
+      case 'delete':
+        await deleteData();
+        break;
       case 'frost':
-        await editData(type)
-        break
+        await editData(type);
+        break;
+      case 'thaw':
+        await editData(type);
+        break;
     }
-  }
+  };
 
   const editData = async (type) => {
-    if (type === 'frost') {
-      const data = await EditTheListOfRestrictedMaterials({
-        id: selectRows[selectRows.length - 1].id,
-        frozen: !selectRows[selectRows.length - 1].frozen
-      })
-      if (data.success) {
-        setSelectRows([])
-        setSelectedRowKeys([])
-        tableRef.current.remoteDataRefresh()
-      }
+    const frozen = type === 'frost'
+    const data = await FrostBUCompanyOrganizationRelation({
+      ids: selectedRowKeys.toString(),
+      frozen
+    });
+    if (data.success) {
+      setSelectRows([]);
+      setSelectedRowKeys([]);
+      tableRef.current.remoteDataRefresh();
     }
-  }
+  };
+
+  const deleteData = async () => {
+    const data = await DeleteLimitSuppliesScope({
+      ids: selectedRowKeys.toString(),
+    });
+    if (data.success) {
+      setSelectRows([]);
+      setSelectedRowKeys([]);
+      tableRef.current.remoteDataRefresh();
+    }
+  };
 
   const onSelectRow = (value, rows) => {
     console.log(value, rows)
     setSelectRows(rows)
     setSelectedRowKeys(value)
-  }
-
-  const validateItem = (data) => {
-    console.log(data, 'data')
-  }
-
-  const importData = (value) => {
-    console.log(value, 'value')
   }
 
   const headerLeft = <div style={{width: '100%', display: 'flex', height: '100%', alignItems:'center'}}>
@@ -91,9 +103,18 @@ const Index = () => {
         onClick={() => buttonClick('edit')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        disabled={selectRows.length === 0}
+        disabled={selectedRowKeys.length === 0 || selectedRowKeys.length > 1}
         key='PURCHASE_VIEW_CHANGE_CREATE'
       >编辑</Button>)
+    }
+    {
+      authAction(<Button
+        onClick={() => buttonClick('delete')}
+        className={styles.btn}
+        ignore={DEVELOPER_ENV}
+        disabled={selectRows.length === 0}
+        key='PURCHASE_VIEW_CHANGE_CREATE'
+      >删除</Button>)
     }
     {
       authAction(<Button
@@ -102,7 +123,16 @@ const Index = () => {
         ignore={DEVELOPER_ENV}
         key='PURCHASE_VIEW_CHANGE_CREATE'
         disabled={selectRows.length === 0}
-      >{selectRows.length > 0 && selectRows[selectRows.length - 1].frozen ? '解冻' : '冻结'}</Button>)
+      >冻结</Button>)
+    }
+    {
+      authAction(<Button
+        onClick={() => buttonClick('thaw')}
+        className={styles.btn}
+        ignore={DEVELOPER_ENV}
+        key='PURCHASE_VIEW_CHANGE_CREATE'
+        disabled={selectRows.length === 0}
+      >解冻</Button>)
     }
   </div>
 
@@ -144,13 +174,13 @@ const Index = () => {
         allowCancelSelect={true}
         remotePaging={true}
         checkbox={{
-          multiSelect: false
+          multiSelect: true,
         }}
         ref={tableRef}
         onSelectRow={onSelectRow}
         selectedRowKeys={selectedRowKeys}
         toolBar={{
-          left: headerLeft
+          left: headerLeft,
         }}
       />
       {/*<EventModal*/}
@@ -159,7 +189,7 @@ const Index = () => {
       {/*  type={data.type}*/}
       {/*  data={selectRows[selectRows.length - 1]}*/}
       {/*  onCancel={() => setData((value) => ({...value, visible: false}))}*/}
-      {/*  title='限用物资清单新增'*/}
+      {/*  title='BU与公司采购组织对应关系新增'*/}
       {/*/>*/}
     </Fragment>
   )
