@@ -1,37 +1,55 @@
-import React, { Fragment, useState } from 'react';
-import { Button, Form, Row, Input, Modal, message, Card, Col, Empty, InputNumber } from 'antd';
+import React, { Fragment, useState, useRef } from 'react';
+import { Button, Form, Row, Input, Modal, message, Card, Col, Empty, InputNumber, Radio } from 'antd';
 import { ExtTable, ExtModal, utils, ComboList } from 'suid';
-import { materialCode } from '../../commonProps';
-import { AutoSizeLayout} from '../../../../components'
-import { getUserName } from '../../../../utils'
+import { materialCode,  } from '../../commonProps';
+import { baseUrl } from '../../../../utils/commonUrl';
+import { AutoSizeLayout } from '../../../../components'
+import {
+    addEnvironmentalProtectionData,
+    addEnvironmentStandardLimitMaterialRelation,
+    ESPDeleted,
+    ESPFreeze,
+    ESPMDelete,
+    ESPMFreeze
+} from '../../../../services/qualitySynergy'
+import { getUserName, getUserId, getUserAccount } from '../../../../utils'
 import styles from './index.less'
 import moment from 'moment'
 const { authAction } = utils;
 const { create, Item: FormItem } = Form;
 const { confirm } = Modal;
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const formLayout = {
-    labelCol: { span: 8, },
+    labelCol: { span: 9, },
     wrapperCol: { span: 14, },
 };
 const LimitMaterial = ({ form }) => {
+    // 环保标准
+    const tableRef = useRef(null);
+    const [ESPdata, setESPData] = useState({
+        visible: false,
+        modalSource: '',
+        isView: false
+    });
+    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+    const [selectedRow, setSelectedRow] = useState([]);
+    // 限用物资
+    const tableRightRef = useRef(null);
+    const [selectedRightKeys, setSelectedRightKeys] = useState([]);
+    const [selectedRight, setSelectedRight] = useState([]);
     const [data, setData] = useState({
         visible: false,
         modalSource: '',
         isView: false
-    })
-    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-    const [selectedRow, setSelectedRow] = useState([]);
-    const [selectedRightKeys, setSelectedRightKeys] = useState([]);
-    const [selectedRight, setSelectedRight] = useState([]);
+    });
     const { getFieldDecorator, validateFields } = form;
     const columns = [
-        { title: '环保标准代码', dataIndex: 'name1', width: 200 },
-        { title: '环保标准名称', dataIndex: 'name2', ellipsis: true, },
-        { title: 'REACH环保符合性声明', dataIndex: 'name3', ellipsis: true, },
-        { title: '备注', dataIndex: 'name4', ellipsis: true },
-        { title: '排序号', dataIndex: 'name5', ellipsis: true },
-        { title: '冻结', dataIndex: 'name6', ellipsis: true },
+        { title: '环保标准代码', dataIndex: 'environmentalProtectionCode', width: 80 },
+        { title: '环保标准名称', dataIndex: 'environmentalProtectionName', ellipsis: true, },
+        { title: 'REACH环保符合性声明', dataIndex: 'reach', ellipsis: true, render: (text) => text ? '符合' : '不符合' },
+        { title: '备注', dataIndex: 'note', ellipsis: true },
+        { title: '排序号', dataIndex: 'orderNo', ellipsis: true, width: 80 },
+        { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (text) => text ? '已冻结' : '未冻结' },
     ]
     const rightColums = [
         { title: '限用物质代码', dataIndex: 'name1', width: 200 },
@@ -88,88 +106,206 @@ const LimitMaterial = ({ form }) => {
             >批量导入</Button>)
         }
     </div>
+    const EPStandardHaderLeft = <>
+        {
+            authAction(<Button
+                type='primary'
+                onClick={() => EPSbuttonClick('add')}
+                className={styles.btn}
+                ignore={DEVELOPER_ENV}
+                key='PURCHASE_VIEW_CHANGE_CREATE'
+            >新增</Button>)
+        }
+        {
+            authAction(<Button
+                onClick={() => EPSbuttonClick('edit')}
+                className={styles.btn}
+                ignore={DEVELOPER_ENV}
+                key='PURCHASE_VIEW_CHANGE_CREATE'
+                disabled={selectedRow.length !== 1}
+            >编辑</Button>)
+        }
+        {
+            authAction(<Button
+                onClick={() => EPSbuttonClick('delete')}
+                className={styles.btn}
+                ignore={DEVELOPER_ENV}
+                key='PURCHASE_VIEW_CHANGE_CREATE'
+                disabled={selectedRow.length === 0}
+            >删除</Button>)
+        }
+        {
+            authAction(<Button
+                onClick={() => EPSbuttonClick('freeze')}
+                className={styles.btn}
+                ignore={DEVELOPER_ENV}
+                key='PURCHASE_VIEW_CHANGE_CREATE'
+                disabled={selectedRow.length === 0}
+            >{selectedRow.length > 0 && selectedRow[0].frozen ? '解冻' : '冻结'}</Button>)
+        }
+    </>
+    // 限用物资按钮操作
     const buttonClick = (type) => {
+        console.log('限用物资按钮操作')
         switch (type) {
             case 'add':
                 setData((value) => ({ ...value, visible: true, modalSource: '', isView: false }));
                 break;
             case 'edit':
-                if (checkSlectOne()) {
-                    setData((value) => ({
-                        ...value,
-                        visible: true,
-                        modalSource: selectedRow[0],
-                        isView: type === 'detail'
-                    }));
-                }
+                setData((value) => ({
+                    ...value,
+                    visible: true,
+                    modalSource: selectedRow[0],
+                    isView: type === 'detail'
+                }));
                 break;
             case 'freeze':
-                if (checkSlectOne()) {
-                    confirm({
-                        title: '请确认是否删除选中技术资料类别数据',
-                        onOk: () => {
-                            console.log('确认删除', selectedRowKeys);
-                        },
-                    });
-                }
+                confirm({
+                    title: '请确认是否删除选中技术资料类别数据',
+                    onOk: () => {
+                        console.log('确认删除', selectedRowKeys);
+                    },
+                });
                 break;
             case 'delete':
-                if (selectedRow.length === 0) {
-                    message.warning('至少选择一条数据')
-                } else {
-                    confirm({
-                        title: '请确认是否删除选中技术资料类别数据',
-                        onOk: () => {
-                            console.log('确认删除', selectedRowKeys);
-                        },
-                    });
-                }
+                confirm({
+                    title: '请确认是否删除选中技术资料类别数据',
+                    onOk: () => {
+                        console.log('确认删除', selectedRowKeys);
+                    },
+                });
                 break;
         }
     }
-    function checkSlectOne() {
-        if (selectedRight.length === 0) {
-            message.warning('请选择一条数据');
-            return false;
-        } else if (selectedRight.length > 1) {
-            message.warning('只能选择一条数据');
-            return false;
+    // 环保标准按钮操作
+    const EPSbuttonClick = (type) => {
+        console.log('环保标准按钮操作')
+        switch (type) {
+            case 'add':
+                setESPData((value) => ({
+                    ...value,
+                    visible: true,
+                    modalSource: '',
+                    isView: false
+                }));
+                break;
+            case 'edit':
+                setESPData((value) => ({
+                    ...value,
+                    visible: true,
+                    modalSource: selectedRow[0],
+                    isView: type === 'detail'
+                }));
+                break;
+            case 'freeze':
+                confirm({
+                    title: `请确认是否${selectedRow[0].frozen ? '解冻' : '冻结'}选中环保标准数据`,
+                    onOk: async () => {
+                        const res = await ESPFreeze({
+                            frozen: !selectedRow[0].frozen,
+                            ids: selectedRowKeys.join()
+                        })
+                        if (res.success) {
+                            message.success('冻结成功');
+                            tableRef.current.remoteDataRefresh()
+                        } else {
+                            message.error(res.message)
+                        }
+                    },
+                });
+                break;
+            case 'delete':
+                confirm({
+                    title: '请确认是否删除选中环保标准数据',
+                    onOk: async () => {
+                        const res = await ESPDeleted({ ids: selectedRowKeys.join() });
+                        if (res.success) {
+                            message.success('删除成功');
+                            tableRef.current.remoteDataRefresh()
+                        } else {
+                            message.error(res.message)
+                        }
+                    },
+                });
+                break;
         }
-        return true
     }
+    // 限用物资新增/编辑
     function handleOk() {
-        validateFields((errs, values) => {
-            if (!errs) {
-                console.log(values)
-            }
-        })
+        if (data.isView) {
+            setData((value) => ({ ...value, visible: false }))
+        } else {
+            validateFields(async (errs, values) => {
+                if (!errs) {
+                    values.environmentalProtectionId = selectedRow[0].environmentalProtectionId;
+                    values.environmentalProtectionCode = selectedRow[0].environmentalProtectionCode;
+                    values.environmentalProtectionName = selectedRow[0].environmentalProtectionName;
+                    if (data.modalSource) {
+                        values = { ...data.modalSource, ...values }
+                    }
+                    const res = await addEnvironmentStandardLimitMaterialRelation(values)
+                    if (res.success) {
+                        message.success('操作成功');
+                        setData((value) => ({ ...value, visible: false }))
+                        tableRef.current.remoteDataRefresh()
+                    } else {
+                        message.error(res.message)
+                    }
+                }
+            })
+        }
+    }
+    // 环保标准新增/编辑
+    function handleESPOk() {
+        if (ESPdata.isView) {
+            setESPData((value) => ({ ...value, visible: false }))
+        } else {
+            validateFields(async (errs, values) => {
+                if (!errs) {
+                    values.exemptionExpireDate = moment(values.exemptionExpireDate).format('YYYY-MM-DD');
+                    if (ESPdata.modalSource) {
+                        values = { ...ESPdata.modalSource, ...values }
+                    }
+                    const res = await addEnvironmentalProtectionData(values)
+                    if (res.success) {
+                        message.success('操作成功');
+                        setESPData((value) => ({ ...value, visible: false }))
+                        tableRef.current.remoteDataRefresh()
+                    } else {
+                        message.error(res.message)
+                    }
+                }
+            })
+        }
     }
     return <Fragment>
         <Row className={styles.around}>
-            <Col span={10}>
+            <Col span={11}>
                 <Card
                     title="环保标准"
                     bordered={false}
                 >
                     <ExtTable
                         columns={columns}
-                        //   store={{
-                        //     url: `${baseUrl}/limitSubstanceListData/find_by_page`,
-                        //     type: 'GET'
-                        //   }}
+                        store={{
+                            url: `${baseUrl}/environmentalProtectionData/findByPage`,
+                            type: 'GET',
+                            params: {
+                                quickSearchProperties: []
+                            }
+                        }}
+                        ref={tableRef}
+                        searchPlaceHolder="输入搜索项"
                         checkbox={true}
+                        remotePaging={true}
                         selectedRowKeys={selectedRowKeys}
                         onSelectRow={(selectedRowKeys, selectedRows) => {
                             setSelectedRow(selectedRows)
                             setSelectedRowKeys(selectedRowKeys)
                         }}
-                        checkbox={{
-                            multiSelect: false
+                        toolBar={{
+                            left: EPStandardHaderLeft
                         }}
-                        dataSource={[
-                            { id: 1, name1: 'xxx', name2: 'sdhfj', name3: true, name4: 'sdf' },
-                            { id: 2, name1: 'xxx', name2: 'sdhfj', name3: false, name4: 'sdf' },
-                        ]}
                     />
                 </Card>
             </Col>
@@ -181,11 +317,20 @@ const LimitMaterial = ({ form }) => {
                     className={styles.maxHeight}
                 >
                     {
-                        selectedRowKeys.length === 0 ? <Empty description="请选择左边的环保标准进行操作" className={styles.mt} /> :
+                        selectedRowKeys.length !== 1 ? <Empty description="请选择左边的一条环保标准数据进行操作" className={styles.mt} /> :
                             <div>
                                 <ExtTable
-                                    columns={columns}
+                                    columns={rightColums}
                                     checkbox={true}
+                                    store={{
+                                        url: `${baseUrl}/environmentStandardLimitMaterialRelation/findByPage`,
+                                        type: 'GET',
+                                        params: {
+                                            environmentalProtectionCode: selectedRow[0].environmentalProtectionCode
+                                        }
+                                    }}
+                                    searchPlaceHolder="输入搜索项"
+                                    ref={tableRightRef}
                                     selectedRowKeys={selectedRightKeys}
                                     onSelectRow={(selectedRightKeys, selectedRows) => {
                                         setSelectedRight(selectedRows)
@@ -194,10 +339,6 @@ const LimitMaterial = ({ form }) => {
                                     toolBar={{
                                         left: headerLeft
                                     }}
-                                    dataSource={[
-                                        { id: 1, name1: 'xxx', name2: 'sdhfj', name3: true, name4: 'sdf' },
-                                        { id: 2, name1: 'xxx', name2: 'sdhfj', name3: false, name4: 'sdf' },
-                                    ]}
                                 />
                             </div>
 
@@ -206,7 +347,8 @@ const LimitMaterial = ({ form }) => {
                 </Card>
             </Col>
         </Row>
-        <ExtModal
+        {/* 限用物资新增/编辑弹框 */}
+        {data.visible && <ExtModal
             centered
             destroyOnClose
             visible={data.visible}
@@ -221,20 +363,21 @@ const LimitMaterial = ({ form }) => {
                     <Col span={12}>
                         <FormItem label='限用物质代码' {...formLayout}>
                             {
-                                getFieldDecorator('name1', {
-                                    initialValue: data.modalSource && data.modalSource.name1,
+                                getFieldDecorator('limitMaterialId'),
+                                getFieldDecorator('limitMaterialCode', {
+                                    initialValue: data.modalSource && data.modalSource.limitMaterialCode,
                                     rules: [{ required: true, message: '请选择限用物质代码' }]
                                 })(<ComboList form={form} {...materialCode} name='supplierCode'
-                                field={['supplierName', 'supplierId']}
-                                afterSelect={() => { console.log(111) }} />)
+                                    field={['supplierName', 'supplierId']}
+                                    afterSelect={() => { console.log(111) }} />)
                             }
                         </FormItem>
                     </Col>
                     <Col span={12}>
                         <FormItem label='限用物质名称' {...formLayout}>
                             {
-                                getFieldDecorator('name1', {
-                                    initialValue: data.modalSource && data.modalSource.name1,
+                                getFieldDecorator('limitMaterialName', {
+                                    initialValue: data.modalSource && data.modalSource.limitMaterialName,
                                 })(<Input disabled />)
                             }
                         </FormItem>
@@ -244,8 +387,8 @@ const LimitMaterial = ({ form }) => {
                     <Col span={12}>
                         <FormItem label='CAS.NO' {...formLayout}>
                             {
-                                getFieldDecorator('name2', {
-                                    initialValue: data.modalSource && data.modalSource.name2,
+                                getFieldDecorator('casNo', {
+                                    initialValue: data.modalSource && data.modalSource.casNo,
                                 })(<Input disabled />)
                             }
                         </FormItem>
@@ -253,10 +396,10 @@ const LimitMaterial = ({ form }) => {
                     <Col span={12}>
                         <FormItem label='限量' {...formLayout}>
                             {
-                                getFieldDecorator('name1', {
-                                    initialValue: data.modalSource && data.modalSource.name1,
+                                getFieldDecorator('limitNumber', {
+                                    initialValue: data.modalSource && data.modalSource.limitNumber,
                                     rules: [{ required: true, message: '请填写限量' }]
-                                })(<InputNumber />)
+                                })(<InputNumber style={{width: '100%'}} />)
                             }
                         </FormItem>
                     </Col>
@@ -265,17 +408,19 @@ const LimitMaterial = ({ form }) => {
                     <Col span={12}>
                         <FormItem label='基本单位' {...formLayout}>
                             {
-                                getFieldDecorator('name3', {
-                                    initialValue: data.modalSource && data.modalSource.name3,
+                                getFieldDecorator('basicUnitCode'),
+                                getFieldDecorator('basicUnitName', {
+                                    initialValue: data.modalSource && data.modalSource.basicUnitName,
                                 })(<Input disabled />)
+
                             }
                         </FormItem>
                     </Col>
                     <Col span={12}>
                         <FormItem label='均质材质中的含量(%)' {...formLayout}>
                             {
-                                getFieldDecorator('name1', {
-                                    initialValue: data.modalSource && data.modalSource.name1,
+                                getFieldDecorator('materialWeight', {
+                                    initialValue: data.modalSource && data.modalSource.materialWeight,
                                     rules: [{ required: true, message: '请填写均质材质中的含量' }]
                                 })(<Input />)
                             }
@@ -290,17 +435,17 @@ const LimitMaterial = ({ form }) => {
                                     initialValue: data.modalSource && data.modalSource.name4,
                                     rules: [{ required: true, message: '请选择适用范围' }]
                                 })(<ComboList form={form} {...materialCode} name='supplierCode'
-                                field={['supplierName', 'supplierId']}
-                                afterSelect={() => { console.log(111) }} />)
+                                    field={['supplierName', 'supplierId']}
+                                    afterSelect={() => { console.log(111) }} />)
                             }
                         </FormItem>
                     </Col>
                     <Col span={12}>
                         <FormItem label=' 排序号' {...formLayout}>
                             {
-                                getFieldDecorator('name1', {
-                                    initialValue: data.modalSource && data.modalSource.name1,
-                                })(<InputNumber />)
+                                getFieldDecorator('orderNo', {
+                                    initialValue: data.modalSource && data.modalSource.orderNo,
+                                })(<InputNumber  style={{width: '100%'}}/>)
                             }
                         </FormItem>
                     </Col>
@@ -309,8 +454,10 @@ const LimitMaterial = ({ form }) => {
                     <Col span={12}>
                         <FormItem label='处理人' {...formLayout}>
                             {
-                                getFieldDecorator('name5', {
-                                    initialValue: getUserName(),
+                                getFieldDecorator('conductorId', {initialValue: getUserId()}),
+                                getFieldDecorator('conductorAccount', {initialValue: getUserAccount()}),
+                                getFieldDecorator('conductorName', {
+                                    initialValue: data.modalSource ? data.modalSource.conductorName : getUserName(),
                                 })(<Input disabled />)
                             }
                         </FormItem>
@@ -318,15 +465,83 @@ const LimitMaterial = ({ form }) => {
                     <Col span={12}>
                         <FormItem label=' 处理时间' {...formLayout}>
                             {
-                                getFieldDecorator('name1', {
-                                    initialValue: moment().format('YYYY-MM-DD hh:mm:ss'),
+                                getFieldDecorator('conductorDate', {
+                                    initialValue: data.modalSource ? data.modalSource.conductorDate : moment().format('YYYY-MM-DD'),
                                 })(<Input disabled />)
                             }
                         </FormItem>
                     </Col>
                 </Row>
             </Form>
-        </ExtModal>
+        </ExtModal>}
+        {/* 环保标准新增/编辑弹框 */}
+        {ESPdata.visible && <ExtModal
+            centered
+            destroyOnClose
+            visible={ESPdata.visible}
+            okText="保存"
+            onCancel={() => { setESPData((value) => ({ ...value, visible: false })) }}
+            onOk={() => { handleESPOk() }}
+            title={ESPdata.modalSource ? '编辑环保标准' : '新增环保标准'}
+        >
+            <Form>
+                <Row>
+                    <FormItem label='环保标准代码' {...formLayout}>
+                        {
+                            getFieldDecorator('environmentalProtectionCode', {
+                                initialValue: ESPdata.modalSource && ESPdata.modalSource.environmentalProtectionCode,
+                                rules: [{ required: true, message: '请填写环保标准代码' }]
+                            })(<Input />)
+                        }
+                    </FormItem>
+                </Row>
+                <Row>
+                    <FormItem label='环保标准名称' {...formLayout}>
+                        {
+                            getFieldDecorator('environmentalProtectionName', {
+                                initialValue: ESPdata.modalSource && ESPdata.modalSource.environmentalProtectionName,
+                                rules: [{ required: true, message: '请填写环保标准名称' }]
+                            })(<Input />)
+                        }
+                    </FormItem>
+                </Row>
+
+                <Row>
+                    <FormItem label='REACH环保符合性声明' {...formLayout}>
+                        {
+                            getFieldDecorator('reach', {
+                                initialValue: ESPdata.modalSource ? ESPdata.modalSource.reach : true,
+                                rules: [{ required: true, message: '请填写REACH环保符合性声明' }]
+                            })(<Radio.Group>
+                                <Radio value={true}>符合</Radio>
+                                <Radio value={false}>不符合</Radio>
+                            </Radio.Group>)
+                        }
+                    </FormItem>
+
+                </Row>
+                <Row>
+                    <FormItem label='备注' {...formLayout}>
+                        {
+                            getFieldDecorator('note', {
+                                initialValue: ESPdata.modalSource && ESPdata.modalSource.note,
+                                rules: [{ required: true, message: '请填写限量' }]
+                            })(<Input />)
+                        }
+                    </FormItem>
+                </Row>
+                <Row>
+                    <FormItem label=' 排序号' {...formLayout}>
+                        {
+                            getFieldDecorator('orderNo', {
+                                initialValue: ESPdata.modalSource && ESPdata.modalSource.orderNo,
+                                rules: [{ required: true, message: '请填写限量' }]
+                            })(<InputNumber min={0} style={{ width: '100%' }} />)
+                        }
+                    </FormItem>
+                </Row>
+            </Form>
+        </ExtModal>}
     </Fragment>
 
 }

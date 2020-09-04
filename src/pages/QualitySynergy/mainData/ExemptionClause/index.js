@@ -1,22 +1,23 @@
 
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useRef } from 'react';
 import { Button, Form, Row, Input, Modal, message, DatePicker, InputNumber } from 'antd';
 import styles from '../../TechnicalDataSharing/DataSharingList/index.less';
-import { baseUrl, smBaseUrl } from '../../../../utils/commonUrl';
-import { DataImport, ExtTable, ExtModal, utils, ComboList } from 'suid';
+import { baseUrl } from '../../../../utils/commonUrl';
+import { DataImport, ExtTable, ExtModal, utils, AuthAction } from 'suid';
 import { BasicUnitList } from '../../../../services/qualitySynergy';
 import moment from 'moment'
-import { exemptionClauseDataInsert, exemptionClauseDataDelete } from '../../commonProps'
+import { exemptionClauseDataInsert, exemptionClauseDataDelete } from '../../../../services/qualitySynergy'
 const { authAction } = utils;
+
 const { create, Item: FormItem } = Form;
 const { confirm } = Modal;
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 14, },
 };
 const ExemptionClause = (props) => {
-
+    const tableRef = useRef(null)
     const [data, setData] = useState({
         visible: false,
         modalSource: '',
@@ -44,47 +45,32 @@ const ExemptionClause = (props) => {
                 break;
             case 'edit':
             case 'detail':
-                if (checkSlectOne()) {
-                    setData((value) => ({
-                        ...value,
-                        visible: true,
-                        modalSource: selectedRow[0],
-                        isView: type === 'detail'
-                    }));
-                }
+                setData((value) => ({
+                    ...value,
+                    visible: true,
+                    modalSource: selectedRow[0],
+                    isView: type === 'detail'
+                }));
                 break;
             case 'delete':
-                if (selectedRow.length === 0) {
-                    message.warning('至少选择一条数据')
-                } else {
-                    confirm({
-                        title: '请确认是否删除选中技术资料类别数据',
-                        onOk: async () => {
-                            
-                            const parmas = selectedRowKeys.join();
-                            console.log('确认删除', parmas);
-                            const data = await exemptionClauseDataDelete({ids: parmas});
-                            console.log(data);
-                        },
-                    });
-                }
+                confirm({
+                    title: '请确认是否删除选中豁免条款数据',
+                    onOk: async () => {
+                        const parmas = selectedRowKeys.join();
+                        const res = await exemptionClauseDataDelete({ ids: parmas });
+                        if (data.success) {
+                            message.success('删除成功');
+                            tableRef.current.remoteDataRefresh()
+                        } else {
+                            message.error(res.message)
+                        }
+                    },
+                });
                 break;
         }
     }
 
-    function checkSlectOne() {
-        if (selectedRow.length === 0) {
-            message.warning('请选择一条数据');
-            return false;
-        } else if (selectedRow.length > 1) {
-            message.warning('只能选择一条数据');
-            return false;
-        }
-        return true
-    }
-
-
-    const headerLeft = <div>
+    const headerLeft = <div style={{ width: '100%', display: 'flex', height: '100%', alignItems: 'center' }}>
         {
             authAction(<Button
                 type='primary'
@@ -99,6 +85,7 @@ const ExemptionClause = (props) => {
                 onClick={() => buttonClick('edit')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
+                disabled={selectedRow.length !== 1}
                 key='2'
             >编辑</Button>)
         }
@@ -107,6 +94,7 @@ const ExemptionClause = (props) => {
                 onClick={() => buttonClick('delete')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
+                disabled={selectedRow.length === 0}
                 key='3'
             >删除</Button>)
         }
@@ -115,26 +103,48 @@ const ExemptionClause = (props) => {
                 onClick={() => buttonClick('detail')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
+                disabled={selectedRow.length !== 1}
                 key='4'
             >明细</Button>)
         }
         {
-            authAction(<Button
-                onClick={() => buttonClick('thaw')}
-                className={styles.btn}
-                ignore={DEVELOPER_ENV}
+            authAction(<DataImport
+                style={{ float: 'none' }}
+                tableProps={{ columns }}
+                validateFunc={validateItem}
                 key='5'
-            >导入</Button>)
+                ignore={DEVELOPER_ENV}
+                importData={(value) => console.log(value, 'data')}
+            />)
         }
     </div>
     // 编辑/新增
     const handleOk = async () => {
-        validateFields(async (errs, values) => {
-            if (!errs) {
-                console.log(values)
-                const data = await exemptionClauseDataInsert(values)
-            }
-        })
+        if (data.isView) {
+            setData((value) => ({ ...value, visible: false }))
+        } else {
+            validateFields(async (errs, values) => {
+                if (!errs) {
+                    console.log(values)
+                    values.exemptionExpireDate = moment(values.exemptionExpireDate).format('YYYY-MM-DD');
+                    if (data.modalSource) {
+                        values = {...data.modalSource, ...values}
+                    }
+                    const res = await exemptionClauseDataInsert(values)
+                    if (res.success) {
+                        message.success('操作成功');
+                        setData((value) => ({ ...value, visible: false }))
+                        tableRef.current.remoteDataRefresh()
+                    } else {
+                        message.error(res.message)
+                    }
+                }
+            })
+        }
+        
+    }
+    const validateItem = (data) => {
+        console.log(data, 'data')
     }
     return (
         <Fragment>
@@ -142,14 +152,15 @@ const ExemptionClause = (props) => {
                 columns={columns}
                 store={{
                     url: `${baseUrl}/exemptionClauseData/findByPage`,
-                    type: 'POST',
+                    type: 'GET',
                     params: {
                         quickSearchProperties: []
                     }
                 }}
-                remotePaging={true}
-                searchPlaceHolder="请输入豁免条款代码，豁免条款物质名称查询"
+                ref={tableRef}
                 checkbox={true}
+                remotePaging={true}
+                searchPlaceHolder="输入搜索项"
                 selectedRowKeys={selectedRowKeys}
                 onSelectRow={(selectedRowKeys, selectedRows) => {
                     setSelectedRow(selectedRows)
@@ -174,7 +185,7 @@ const ExemptionClause = (props) => {
                                 getFieldDecorator('exemptionClauseCode', {
                                     initialValue: data.modalSource && data.modalSource.exemptionClauseCode,
                                     rules: [{ required: true, message: '请填写豁免条款代码' }]
-                                })(<Input disabled={data.isView}/>)
+                                })(<Input disabled={data.isView} />)
                             }
                         </FormItem>
                     </Row>
@@ -184,7 +195,7 @@ const ExemptionClause = (props) => {
                                 getFieldDecorator('exemptionClauseMaterialName', {
                                     initialValue: data.modalSource && data.modalSource.exemptionClauseMaterialName,
                                     rules: [{ required: true, message: '请填写豁免条款物质名称' }]
-                                })(<Input disabled={data.isView}/>)
+                                })(<Input disabled={data.isView} />)
                             }
                         </FormItem>
                     </Row>
@@ -206,7 +217,7 @@ const ExemptionClause = (props) => {
                                     rules: [{ required: true, message: '请填写限量' }]
                                 })(<InputNumber
                                     precision={2}
-                                    style={{width: '100%'}}
+                                    style={{ width: '100%' }}
                                     step={0.01}
                                     formatter={value => `${value ? value + '%' : ''}`}
                                     parser={value => value.replace('%', '')}

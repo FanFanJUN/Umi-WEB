@@ -202,6 +202,10 @@ export const getUserName = () => {
   const info = storage.sessionStorage.get('Authorization') || {};
   return info?.userName 
 }
+export const getUserId = () => {
+  const info = storage.sessionStorage.get('Authorization') || {};
+  return info?.userId 
+}
 
 export const downloadBlobFile = (data, name) => {
   const blob = new Blob([data]);
