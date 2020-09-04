@@ -1,10 +1,10 @@
 import React, { Fragment, useRef, useState } from 'react';
-import { Form, Button, Input, Select, Row, Col } from 'antd';
+import { Form, Button, message } from 'antd';
 import styles from '../../TechnicalDataSharing/DataSharingList/index.less';
 import { baseUrl, smBaseUrl } from '../../../../utils/commonUrl';
 import {DataImport, ExtTable, utils, AuthAction } from 'suid';
 import EventModal from './component/EventModal';
-import { EditTheListOfRestrictedMaterials } from '../../commonProps';
+import { AddTheListOfRestrictedMaterials, EditTheListOfRestrictedMaterials } from '../../commonProps';
 const { authAction } = utils;
 
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
@@ -52,8 +52,8 @@ const Index = (props) => {
   const editData = async (type) => {
     if (type === 'frost') {
       const data = await EditTheListOfRestrictedMaterials({
-        id: selectRows[0].id,
-        frozen: !selectRows[0].frozen
+        id: selectRows[selectRows.length - 1].id,
+        frozen: !selectRows[selectRows.length - 1].frozen
       })
       if (data.success) {
         setSelectRows([])
@@ -64,12 +64,17 @@ const Index = (props) => {
   }
 
   const onSelectRow = (value, rows) => {
+    console.log(value, rows)
     setSelectRows(rows)
     setSelectedRowKeys(value)
   }
 
   const validateItem = (data) => {
     console.log(data, 'data')
+  }
+
+  const importData = (value) => {
+    console.log(value, 'value')
   }
 
   const headerLeft = <div style={{width: '100%', display: 'flex', height: '100%', alignItems:'center'}}>
@@ -87,6 +92,7 @@ const Index = (props) => {
         onClick={() => buttonClick('edit')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
+        disabled={selectRows.length === 0}
         key='PURCHASE_VIEW_CHANGE_CREATE'
       >编辑</Button>)
     }
@@ -96,21 +102,43 @@ const Index = (props) => {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='PURCHASE_VIEW_CHANGE_CREATE'
-      >{selectRows.length > 0 && selectRows[0].frozen ? '解冻' : '冻结'}</Button>)
+        disabled={selectRows.length === 0}
+      >{selectRows.length > 0 && selectRows[selectRows.length - 1].frozen ? '解冻' : '冻结'}</Button>)
     }
     {
       <AuthAction key="PURCHASE_VIEW_CHANGE_CREATE" ignore>
         <DataImport
-          style={{float: 'none'}}
           tableProps={{ columns }}
           validateFunc={validateItem}
+          importFunc={importData}
           importData={(value) => console.log(value,'data')}
         />
       </AuthAction>
     }
     </div>
 
-  const handleOk = (value) => {
+  const handleOk = async (value) => {
+    if (data.type === 'add') {
+      AddTheListOfRestrictedMaterials(value).then(res => {
+        if (res.success) {
+          setData((value) => ({...value, visible: false}))
+          tableRef.current.remoteDataRefresh()
+        } else {
+          message.error(res.msg)
+        }
+      })
+    } else {
+      const id = selectRows[selectRows.length - 1].id
+     const params = {...value, id}
+      EditTheListOfRestrictedMaterials(params).then(res => {
+        if (res.success) {
+          setData((value) => ({...value, visible: false}))
+          tableRef.current.remoteDataRefresh()
+        } else {
+          message.error(res.msg)
+        }
+      })
+    }
     console.log(value, 'save')
     }
 
@@ -122,8 +150,10 @@ const Index = (props) => {
           columns={columns}
           store={{
             url: `${baseUrl}/limitSubstanceListData/find_by_page_all`,
-            type: 'GET'
+            type: 'GET',
           }}
+          allowCancelSelect={true}
+          remotePaging={true}
           checkbox={{
             multiSelect: false
           }}
@@ -138,7 +168,7 @@ const Index = (props) => {
           visible={data.visible}
           onOk={handleOk}
           type={data.type}
-          data={selectRows[0]}
+          data={selectRows[selectRows.length - 1]}
           onCancel={() => setData((value) => ({...value, visible: false}))}
           title='限用物资清单新增'
         />

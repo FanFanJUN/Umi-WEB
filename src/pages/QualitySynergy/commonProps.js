@@ -22,19 +22,29 @@ export async function EditTheListOfRestrictedMaterials(params) {
   });
 }
 
+// 限用物资清单新增
+export async function AddTheListOfRestrictedMaterials(params) {
+  const url = `${baseUrl}/limitSubstanceListData/add_limitSubstanceListData`;
+  return request({
+    url,
+    method: 'POST',
+    params: params,
+  });
+}
+
 // 基本单位列表
 export const BasicUnitList = {
   remotePaging: true,
   store: {
     type: 'POST',
-    params: {
-      quickSearch: '',
-    },
     autoLoad: false,
     url: `${baseUrl}/limitMaterialUnitData/findBySearchPage`,
   },
-  rowKey: 'name',
-  reader: { name: item => `${item.name}-${item.remark}` },
+  rowKey: 'basicUnitCode',
+  reader: {
+    name: 'basicUnitName',
+    description: 'basicUnitCode',
+  }
 };
 
 // 物料代码

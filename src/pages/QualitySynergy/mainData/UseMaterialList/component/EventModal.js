@@ -1,33 +1,59 @@
 import React, { useEffect, useState } from 'react';
-import {ComboList, ExtModal } from 'suid';
+import { ComboList, ExtModal } from 'suid';
 import { Checkbox, Col, Form, Input, Row } from 'antd';
 import { BasicUnitList } from '../../../commonProps';
 import { baseUrl } from '../../../../../utils/commonUrl';
 
-const FormItem = Form.Item
+const FormItem = Form.Item;
 
 const formItemLayoutLong = {
-  labelCol: {span: 6},
-  wrapperCol: {span: 18},
-}
+  labelCol: { span: 6 },
+  wrapperCol: { span: 18 },
+};
 
 const EventModal = (props) => {
 
-  const {visible, title, data, type} = props
+  const { visible, title, data, type } = props;
+
+  console.log(data, 'dat的数据');
+
+  const { getFieldDecorator, setFieldsValue } = props.form;
 
   const onCancel = () => {
-    props.onCancel()
-  }
+    props.onCancel();
+  };
 
   const onOk = () => {
     props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        props.onOk(values)
+        props.onOk(values);
       }
-    })
-  }
+    });
+  };
 
-  const {getFieldDecorator} = props.form
+  const SelectChange = (value) => {
+    setFieldsValue({
+      basicUnitCode: value.basicUnitCode,
+      basicUnitName: value.basicUnitName,
+      basicUnitId: value.id
+    });
+  };
+
+  const hideFormItem = (name, initialValue) => (
+    <FormItem>
+      {
+        getFieldDecorator(name, {
+          initialValue: initialValue,
+        })(
+          <Input type={'hidden'}/>,
+        )
+      }
+    </FormItem>
+  );
+
+  const clearSelected = () => {
+    props.form.resetFields();
+  };
 
   return (
     <ExtModal
@@ -36,6 +62,7 @@ const EventModal = (props) => {
       title={title}
       onCancel={onCancel}
       onOk={onOk}
+      afterClose={clearSelected}
     >
       <Form>
         <Row>
@@ -47,11 +74,11 @@ const EventModal = (props) => {
                   rules: [
                     {
                       required: true,
-                      message: '限用物质代码不能为空'
+                      message: '限用物质代码不能为空',
                     },
-                  ]
+                  ],
                 })(
-                  <Input/>
+                  <Input/>,
                 )
               }
             </FormItem>
@@ -64,11 +91,11 @@ const EventModal = (props) => {
                   rules: [
                     {
                       required: true,
-                      message: '限用物质名称不能为空'
+                      message: '限用物质名称不能为空',
                     },
-                  ]
+                  ],
                 })(
-                  <Input/>
+                  <Input/>,
                 )
               }
             </FormItem>
@@ -81,28 +108,35 @@ const EventModal = (props) => {
                   rules: [
                     {
                       required: true,
-                      message: 'CAS.NO不能为空'
+                      message: 'CAS.NO不能为空',
                     },
-                  ]
+                  ],
                 })(
-                  <Input/>
+                  <Input/>,
                 )
               }
             </FormItem>
           </Col>
+          <Col span={0}>
+            {hideFormItem('basicUnitName', type === 'add' ? '' : data.basicUnitName)}
+          </Col>
+          <Col span={0}>
+            {hideFormItem('basicUnitId', type === 'add' ? '' : data.basicUnitId)}
+          </Col>
           <Col span={24}>
             <FormItem {...formItemLayoutLong} label={'基本单位'}>
               {
-                getFieldDecorator('casNo', {
-                  initialValue: type === 'add' ? '' : data.casNo,
+                getFieldDecorator('basicUnitCode', {
+                  initialValue: type === 'add' ? '' : data.basicUnitCode,
                   rules: [
                     {
                       required: true,
-                      message: '基本单位不能为空'
+                      message: '基本单位不能为空',
                     },
-                  ]
+                  ],
                 })(
                   <ComboList
+                    afterSelect={SelectChange}
                     {...BasicUnitList}
                   />,
                 )
@@ -113,16 +147,16 @@ const EventModal = (props) => {
             <FormItem {...formItemLayoutLong} label={'是否测试记录表中检查项'}>
               {
                 getFieldDecorator('recordCheckList', {
-                  initialValue: type === 'add' ? '' : data.recordCheckList,
+                  initialValue: type === 'add' ? false : data.recordCheckList,
                   valuePropName: 'checked',
                   rules: [
                     {
                       required: true,
-                      message: '是否测试记录表中检查项不能为空'
+                      message: '是否测试记录表中检查项不能为空',
                     },
-                  ]
+                  ],
                 })(
-                  <Checkbox />
+                  <Checkbox/>,
                 )
               }
             </FormItem>
@@ -135,11 +169,11 @@ const EventModal = (props) => {
                   rules: [
                     {
                       required: true,
-                      message: '排序号不能为空'
+                      message: '排序号不能为空',
                     },
-                  ]
+                  ],
                 })(
-                  <Input/>
+                  <Input/>,
                 )
               }
             </FormItem>
@@ -156,8 +190,10 @@ EventModal.defaultProps = {
   data: {},
   visible: false,
   title: '',
-  onCancel: () => {},
-  onOk: () => {},
-}
+  onCancel: () => {
+  },
+  onOk: () => {
+  },
+};
 
-export default Form.create()(EventModal)
+export default Form.create()(EventModal);
