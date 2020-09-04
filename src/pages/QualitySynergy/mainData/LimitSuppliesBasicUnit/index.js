@@ -5,7 +5,7 @@ import { baseUrl } from '../../../../utils/commonUrl';
 import { ExtTable, utils } from 'suid';
 import EventModal from './component/EventModal';
 import {
-  AddAndEditBasicMaterials, DeleteBasicMaterials, FrostBasicMaterials,
+  AddAndEditBasicMaterials, AddAndEditLimitSuppliesScope, DeleteBasicMaterials, FrostBasicMaterials,
 } from '../../commonProps';
 
 const { authAction } = utils;
@@ -133,31 +133,22 @@ const Index = () => {
   </div>;
 
   const handleOk = async (value) => {
+    let params = {};
     if (data.type === 'add') {
-      AddAndEditBasicMaterials(value).then(res => {
-        console.log(res);
-        if (res.success) {
-          setData((value) => ({ ...value, visible: false }));
-          tableRef.current.remoteDataRefresh();
-        } else {
-          message.error(res.message);
-        }
-      });
+      params = value;
     } else {
       const id = selectRows[selectRows.length - 1].id;
-      const params = { ...value, id };
-      AddAndEditBasicMaterials(params).then(res => {
-        if (res.success) {
-          setData((value) => ({ ...value, visible: false }));
-          tableRef.current.remoteDataRefresh();
-        } else {
-          message.error(res.message);
-        }
-      });
+      params = { ...value, id };
+    }
+    const response = await AddAndEditBasicMaterials(params);
+    if (response.success) {
+      setData((value) => ({ ...value, visible: false }));
+      tableRef.current.remoteDataRefresh();
+    } else {
+      message.error(response.message);
     }
     console.log(value, 'save');
   };
-
 
   return (
     <Fragment>
@@ -186,7 +177,7 @@ const Index = () => {
         type={data.type}
         data={selectRows[selectRows.length - 1]}
         onCancel={() => setData((value) => ({ ...value, visible: false }))}
-        title='限用物资清单新增'
+        title='限用物资基本单位新增'
       />
     </Fragment>
   );

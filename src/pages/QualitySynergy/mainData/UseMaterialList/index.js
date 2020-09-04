@@ -157,7 +157,7 @@ const Index = () => {
     }
   </div>;
 
-  const handleOk = async (value) => {
+  const handleOk = (value) => {
     if (data.type === 'add') {
       AddTheListOfRestrictedMaterials(value).then(res => {
         if (res.success) {

@@ -15,8 +15,6 @@ const EventModal = (props) => {
 
   const { visible, title, data, type } = props;
 
-  console.log(data, 'dat的数据');
-
   const { getFieldDecorator, setFieldsValue } = props.form;
 
   const onCancel = () => {
