@@ -2,92 +2,116 @@ import React, { Fragment, useRef, useState } from 'react';
 import { Form, Button, message } from 'antd';
 import styles from '../../TechnicalDataSharing/DataSharingList/index.less';
 import { baseUrl, smBaseUrl } from '../../../../utils/commonUrl';
-import {DataImport, ExtTable, utils, AuthAction } from 'suid';
+import { DataImport, ExtTable, utils, AuthAction } from 'suid';
 import EventModal from './component/EventModal';
-import { AddTheListOfRestrictedMaterials, EditTheListOfRestrictedMaterials } from '../../commonProps';
+import {
+  AddTheListOfRestrictedMaterials,
+  EditTheListOfRestrictedMaterials,
+  JudgeTheListOfRestrictedMaterials, SaveTheListOfRestrictedMaterials,
+} from '../../commonProps';
+
 const { authAction } = utils;
 
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+const DEVELOPER_ENV = process.env.NODE_ENV === 'development';
 
 const Index = () => {
 
-  const tableRef = useRef(null)
+  const tableRef = useRef(null);
 
   const [data, setData] = useState({
     visible: false,
     title: '限用物资清单新增',
-    type: 'add'
-  })
+    type: 'add',
+  });
 
   const [selectRows, setSelectRows] = useState([]);
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   const columns = [
-    { title: '限用物质代码', dataIndex: 'limitMaterialCode', width: 200, },
-    { title: '限用物质名称', dataIndex: 'limitMaterialName', ellipsis: true, },
-    { title: 'CAS.NO', dataIndex: 'casNo', ellipsis: true, },
-    { title: '基本单位代码', dataIndex: 'basicUnitCode', ellipsis: true, },
-    { title: '基本单位名称', dataIndex: 'basicUnitName', ellipsis: true, },
-    { title: '是否测试记录表中检查项', dataIndex: 'recordCheckList', ellipsis: true,width: 300, render: (value) => value ? '是' : '否' },
-    { title: '排序号', dataIndex: 'orderNo', ellipsis: true, },
-    { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (value) => value ? '是' : '否'},
+    { title: '限用物质代码', dataIndex: 'limitMaterialCode', width: 200 },
+    { title: '限用物质名称', dataIndex: 'limitMaterialName', ellipsis: true },
+    { title: 'CAS.NO', dataIndex: 'casNo', ellipsis: true },
+    { title: '基本单位代码', dataIndex: 'basicUnitCode', ellipsis: true },
+    { title: '基本单位名称', dataIndex: 'basicUnitName', ellipsis: true },
+    {
+      title: '是否测试记录表中检查项',
+      dataIndex: 'recordCheckList',
+      ellipsis: true,
+      width: 300,
+      render: (value) => value ? '是' : '否',
+    },
+    { title: '排序号', dataIndex: 'orderNo', ellipsis: true },
+    { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (value) => value ? '是' : '否' },
   ].map(item => ({ ...item, align: 'center' }));
 
   const buttonClick = async (type) => {
-    console.log(selectedRowKeys)
     switch (type) {
       case 'add':
-        setData((value) => ({...value, visible: true,title: '限用物资清单新增', type: 'add'}))
-        break
+        setData((value) => ({ ...value, visible: true, title: '限用物资清单新增', type: 'add' }));
+        break;
       case 'edit':
-        setData((value) => ({...value, visible: true,title: '限用物资清单编辑', type: 'edit'}))
-        break
+        setData((value) => ({ ...value, visible: true, title: '限用物资清单编辑', type: 'edit' }));
+        break;
       case 'frost':
-        await editData(type)
-        break
+        await editData(type);
+        break;
     }
-  }
+  };
 
   const editData = async (type) => {
     if (type === 'frost') {
       const data = await EditTheListOfRestrictedMaterials({
         id: selectRows[selectRows.length - 1].id,
-        frozen: !selectRows[selectRows.length - 1].frozen
-      })
+        frozen: !selectRows[selectRows.length - 1].frozen,
+      });
       if (data.success) {
-        setSelectRows([])
-        setSelectedRowKeys([])
-        tableRef.current.remoteDataRefresh()
+        setSelectRows([]);
+        setSelectedRowKeys([]);
+        tableRef.current.remoteDataRefresh();
       }
     }
-  }
+  };
 
   const onSelectRow = (value, rows) => {
-    console.log(value, rows)
-    setSelectRows(rows)
-    setSelectedRowKeys(value)
-  }
+    console.log(value, rows);
+    setSelectRows(rows);
+    setSelectedRowKeys(value);
+  };
 
-  const validateItem = (data) => {
+  const validateItem = async (data) => {
     console.log(data, 'data')
-    return data.map(d => {
-      return {
-        ...d,
-        validate: true,
-        status: '验证通过',
-        statusCode: 'success',
-        message: '验证通过',
-      };
-    });
-  }
+    const response = await JudgeTheListOfRestrictedMaterials(data);
+    console.log(response)
+    return response.data
+    // response.data.map(d => {
+    //   if (!d.importResult) {
+    //     return {
+    //       ...d,
+    //       validate: false,
+    //       status: '验证未通过',
+    //       statusCode: 'failed',
+    //       message: '验证未通过',
+    //     };
+    //   }
+    //   return {
+    //     ...d,
+    //     validate: true,
+    //     status: '验证通过',
+    //     statusCode: 'success',
+    //     message: '验证通过',
+    //   };
+    // });
+  };
 
   const importFunc = (value) => {
-    console.log(value, 'value')
+    console.log(value);
+    SaveTheListOfRestrictedMaterials(data).then(res => {
+      console.log(res);
+    });
+  };
 
-  }
-
-  const headerLeft = <div style={{width: '100%', display: 'flex', height: '100%', alignItems:'center'}}>
+  const headerLeft = <div style={{ width: '100%', display: 'flex', height: '100%', alignItems: 'center' }}>
     {
       authAction(<Button
         type='primary'
@@ -131,66 +155,67 @@ const Index = () => {
         />
       </AuthAction>
     }
-    </div>
+  </div>;
 
   const handleOk = async (value) => {
     if (data.type === 'add') {
       AddTheListOfRestrictedMaterials(value).then(res => {
         if (res.success) {
-          setData((value) => ({...value, visible: false}))
-          tableRef.current.remoteDataRefresh()
+          setData((value) => ({ ...value, visible: false }));
+          tableRef.current.remoteDataRefresh();
         } else {
-          message.error(res.msg)
+          message.error(res.msg);
         }
-      })
+      });
     } else {
-      const id = selectRows[selectRows.length - 1].id
-     const params = {...value, id}
+      const id = selectRows[selectRows.length - 1].id;
+      const params = { ...value, id };
       EditTheListOfRestrictedMaterials(params).then(res => {
         if (res.success) {
-          setData((value) => ({...value, visible: false}))
-          tableRef.current.remoteDataRefresh()
+          setData((value) => ({ ...value, visible: false }));
+          tableRef.current.remoteDataRefresh();
         } else {
-          message.error(res.msg)
+          message.error(res.msg);
         }
-      })
+      });
     }
-    console.log(value, 'save')
-    }
+    console.log(value, 'save');
+  };
 
 
-  return(
+  return (
     <Fragment>
-        <ExtTable
-          rowKey={(v) => v.id}
-          columns={columns}
-          store={{
-            url: `${baseUrl}/limitSubstanceListData/find_by_page_all`,
-            type: 'GET',
-          }}
-          allowCancelSelect={true}
-          remotePaging={true}
-          checkbox={{
-            multiSelect: false
-          }}
-          ref={tableRef}
-          onSelectRow={onSelectRow}
-          selectedRowKeys={selectedRowKeys}
-          toolBar={{
-            left: headerLeft
-          }}
-        />
-        <EventModal
-          visible={data.visible}
-          onOk={handleOk}
-          type={data.type}
-          data={selectRows[selectRows.length - 1]}
-          onCancel={() => setData((value) => ({...value, visible: false}))}
-          title='限用物资清单新增'
-        />
+      <ExtTable
+        rowKey={(v) => v.id}
+        columns={columns}
+        searchPlaceHolder='输入限用物资名称或CAS.NO关键字'
+        store={{
+          url: `${baseUrl}/limitSubstanceListData/find_by_page_all`,
+          type: 'GET',
+        }}
+        allowCancelSelect={true}
+        remotePaging={true}
+        checkbox={{
+          multiSelect: false,
+        }}
+        ref={tableRef}
+        onSelectRow={onSelectRow}
+        selectedRowKeys={selectedRowKeys}
+        toolBar={{
+          left: headerLeft,
+        }}
+      />
+      <EventModal
+        visible={data.visible}
+        onOk={handleOk}
+        type={data.type}
+        data={selectRows[selectRows.length - 1]}
+        onCancel={() => setData((value) => ({ ...value, visible: false }))}
+        title='限用物资清单新增'
+      />
     </Fragment>
-  )
+  );
 
-}
+};
 
-export default Form.create()(Index)
+export default Form.create()(Index);

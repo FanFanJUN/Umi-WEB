@@ -46,15 +46,19 @@ const Index = () => {
         await deleteData();
         break;
       case 'frost':
-        await editData();
+        await editData(type);
+        break;
+      case 'thaw':
+        await editData(type);
         break;
     }
   };
 
-  const editData = async () => {
+  const editData = async (type) => {
+    const operation = type === 'frost'
     const data = await FrostBasicMaterials({
-      ids: selectRows[selectRows.length - 1].id,
-      operation: !selectRows[selectRows.length - 1].frozen,
+      ids: selectedRowKeys.toString(),
+      operation: operation,
     });
     if (data.success) {
       setSelectRows([]);
@@ -114,8 +118,17 @@ const Index = () => {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='PURCHASE_VIEW_CHANGE_CREATE'
-        disabled={selectedRowKeys.length === 0 || selectedRowKeys.length > 1}
-      >{selectRows.length > 0 && selectRows[selectRows.length - 1].frozen ? '解冻' : '冻结'}</Button>)
+        disabled={selectRows.length === 0}
+      >冻结</Button>)
+    }
+    {
+      authAction(<Button
+        onClick={() => buttonClick('thaw')}
+        className={styles.btn}
+        ignore={DEVELOPER_ENV}
+        key='PURCHASE_VIEW_CHANGE_CREATE'
+        disabled={selectRows.length === 0}
+      >解冻</Button>)
     }
   </div>;
 
@@ -152,8 +165,8 @@ const Index = () => {
         rowKey={(v) => v.id}
         columns={columns}
         store={{
-          url: `${baseUrl}//limitMaterialUnitData/findBySearchPage`,
-          type: 'POST',
+          url: `${baseUrl}/limitMaterialUnitData/findBySearchPage`,
+          type: 'GET',
         }}
         allowCancelSelect={true}
         remotePaging={true}

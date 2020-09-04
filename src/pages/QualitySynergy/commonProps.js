@@ -12,6 +12,37 @@ const commonProps = {
   },
 };
 
+// 限用物资适用范围删除
+export async function DeleteLimitSuppliesScope(params) {
+  const url = `${baseUrl}/LimitMaterialUnitScopeData/delete`;
+  return request({
+    url,
+    method: 'get',
+    params: params,
+  });
+}
+
+// 限用物资适用范围新增编辑
+export async function AddAndEditLimitSuppliesScope(params) {
+  const url = `${baseUrl}/LimitMaterialUnitScopeData/addLimitMaterialUnitScopeData`;
+  return request({
+    url,
+    method: 'post',
+    params: params,
+  });
+}
+
+
+// 限用物资适用范围冻结解冻
+export async function FrostLimitSuppliesScope(params) {
+  const url = `${baseUrl}/LimitMaterialUnitScopeData/frozen`;
+  return request({
+    url,
+    method: 'get',
+    params: params,
+  });
+}
+
 // 限用物资清单编辑
 export async function EditTheListOfRestrictedMaterials(params) {
   const url = `${baseUrl}/limitSubstanceListData/update_limitSubstanceListData`;
@@ -19,6 +50,28 @@ export async function EditTheListOfRestrictedMaterials(params) {
     url,
     method: 'POST',
     params: params,
+  });
+}
+
+// 限用物资清单批导验证
+export async function JudgeTheListOfRestrictedMaterials(params) {
+  const url = `${baseUrl}/limitSubstanceListData/importExcel`;
+  console.log()
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+}
+
+// 限用物资清单批导验证
+export async function SaveTheListOfRestrictedMaterials(params) {
+  const url = `${baseUrl}/limitSubstanceListData/add_limitSubstanceListDataList `;
+  console.log()
+  return request({
+    url,
+    method: 'POST',
+    data: params,
   });
 }
 

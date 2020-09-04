@@ -138,11 +138,8 @@ const Index = () => {
         rowKey={(v) => v.id}
         columns={columns}
         store={{
-          url: `${baseUrl}/buCompanyPurchasingOrganization/findByPages`,
+          url: `${baseUrl}/buCompanyPurchasingOrganization/findByPage`,
           type: 'GET',
-          params: {
-            keywords: ''
-          }
         }}
         allowCancelSelect={true}
         remotePaging={true}
