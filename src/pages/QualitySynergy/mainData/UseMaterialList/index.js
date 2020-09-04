@@ -79,35 +79,31 @@ const Index = () => {
     setSelectedRowKeys(value);
   };
 
-  const validateItem = async (data) => {
-    console.log(data, 'data')
-    const response = await JudgeTheListOfRestrictedMaterials(data);
-    console.log(response)
-    return response.data
-    // response.data.map(d => {
-    //   if (!d.importResult) {
-    //     return {
-    //       ...d,
-    //       validate: false,
-    //       status: '验证未通过',
-    //       statusCode: 'failed',
-    //       message: '验证未通过',
-    //     };
-    //   }
-    //   return {
-    //     ...d,
-    //     validate: true,
-    //     status: '验证通过',
-    //     statusCode: 'success',
-    //     message: '验证通过',
-    //   };
-    // });
+  const validateItem = (data) => {
+    return new Promise((resolve, reject) => {
+      JudgeTheListOfRestrictedMaterials(data).then(res => {
+        const response = res.data.map(item => ({
+          ...item,
+          validate: item.importResult,
+          status: item.importResult ? '数据完整' : item.importResultInfo,
+          statusCode: item.importResult ? 'success' : 'error',
+          message: item.importResult ? '成功' : item.importResultInfo
+        }));
+        resolve(response);
+      }).catch(err => {
+        reject(err)
+      })
+    });
   };
 
   const importFunc = (value) => {
     console.log(value);
-    SaveTheListOfRestrictedMaterials(data).then(res => {
-      console.log(res);
+    SaveTheListOfRestrictedMaterials(value).then(res => {
+      if (res.success) {
+        tableRef.current.remoteDataRefresh();
+      } else {
+        message.error(res.msg)
+      }
     });
   };
 
