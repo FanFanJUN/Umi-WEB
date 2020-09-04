@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useRef } from 'react';
 import { Button, Form, Row, Input, Modal, message, Card, Col, Empty, InputNumber, Radio } from 'antd';
 import { ExtTable, ExtModal, utils, ComboList } from 'suid';
-import { materialCode,  } from '../../commonProps';
+import { limitScopeList, limitMaterialList } from '../../commonProps';
 import { baseUrl } from '../../../../utils/commonUrl';
 import { AutoSizeLayout } from '../../../../components'
 import {
@@ -42,7 +42,7 @@ const LimitMaterial = ({ form }) => {
         modalSource: '',
         isView: false
     });
-    const { getFieldDecorator, validateFields } = form;
+    const { getFieldDecorator, setFieldsValue, validateFields } = form;
     const columns = [
         { title: '环保标准代码', dataIndex: 'environmentalProtectionCode', width: 80 },
         { title: '环保标准名称', dataIndex: 'environmentalProtectionName', ellipsis: true, },
@@ -102,6 +102,14 @@ const LimitMaterial = ({ form }) => {
                 onClick={() => buttonClick('thaw')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
+                key='4'
+            >解冻</Button>)
+        }
+        {
+            authAction(<Button
+                onClick={() => buttonClick('thaw')}
+                className={styles.btn}
+                ignore={DEVELOPER_ENV}
                 key='5'
             >批量导入</Button>)
         }
@@ -141,7 +149,16 @@ const LimitMaterial = ({ form }) => {
                 ignore={DEVELOPER_ENV}
                 key='PURCHASE_VIEW_CHANGE_CREATE'
                 disabled={selectedRow.length === 0}
-            >{selectedRow.length > 0 && selectedRow[0].frozen ? '解冻' : '冻结'}</Button>)
+            >冻结</Button>)
+        }
+        {
+            authAction(<Button
+                onClick={() => EPSbuttonClick('thaw')}
+                className={styles.btn}
+                ignore={DEVELOPER_ENV}
+                key='PURCHASE_VIEW_CHANGE_CREATE'
+                disabled={selectedRow.length === 0}
+            >解冻</Button>)
         }
     </>
     // 限用物资按钮操作
@@ -160,6 +177,7 @@ const LimitMaterial = ({ form }) => {
                 }));
                 break;
             case 'freeze':
+            case 'thaw':
                 confirm({
                     title: '请确认是否删除选中技术资料类别数据',
                     onOk: () => {
@@ -198,11 +216,12 @@ const LimitMaterial = ({ form }) => {
                 }));
                 break;
             case 'freeze':
+            case 'thaw':
                 confirm({
-                    title: `请确认是否${selectedRow[0].frozen ? '解冻' : '冻结'}选中环保标准数据`,
+                    title: `请确认是否${type==='thaw' ? '解冻' : '冻结'}选中环保标准数据`,
                     onOk: async () => {
                         const res = await ESPFreeze({
-                            frozen: !selectedRow[0].frozen,
+                            frozen: type === 'freeze',
                             ids: selectedRowKeys.join()
                         })
                         if (res.success) {
@@ -298,10 +317,11 @@ const LimitMaterial = ({ form }) => {
                         searchPlaceHolder="输入搜索项"
                         checkbox={true}
                         remotePaging={true}
+                        allowCancelSelect={true}
                         selectedRowKeys={selectedRowKeys}
                         onSelectRow={(selectedRowKeys, selectedRows) => {
-                            setSelectedRow(selectedRows)
-                            setSelectedRowKeys(selectedRowKeys)
+                            setSelectedRow(selectedRows);
+                            setSelectedRowKeys(selectedRowKeys);
                         }}
                         toolBar={{
                             left: EPStandardHaderLeft
@@ -367,9 +387,12 @@ const LimitMaterial = ({ form }) => {
                                 getFieldDecorator('limitMaterialCode', {
                                     initialValue: data.modalSource && data.modalSource.limitMaterialCode,
                                     rules: [{ required: true, message: '请选择限用物质代码' }]
-                                })(<ComboList form={form} {...materialCode} name='supplierCode'
-                                    field={['supplierName', 'supplierId']}
-                                    afterSelect={() => { console.log(111) }} />)
+                                })(<ComboList
+                                    form={form}
+                                    {...limitMaterialList}
+                                    name='limitMaterialCode'
+                                    field={['limitMaterialName', 'basicUnitCode', 'basicUnitId', 'basicUnitName', 'casNo']}
+                                />)
                             }
                         </FormItem>
                     </Col>
@@ -399,7 +422,7 @@ const LimitMaterial = ({ form }) => {
                                 getFieldDecorator('limitNumber', {
                                     initialValue: data.modalSource && data.modalSource.limitNumber,
                                     rules: [{ required: true, message: '请填写限量' }]
-                                })(<InputNumber style={{width: '100%'}} />)
+                                })(<InputNumber style={{ width: '100%' }} />)
                             }
                         </FormItem>
                     </Col>
@@ -408,6 +431,7 @@ const LimitMaterial = ({ form }) => {
                     <Col span={12}>
                         <FormItem label='基本单位' {...formLayout}>
                             {
+                                getFieldDecorator('basicUnitId'),
                                 getFieldDecorator('basicUnitCode'),
                                 getFieldDecorator('basicUnitName', {
                                     initialValue: data.modalSource && data.modalSource.basicUnitName,
@@ -431,12 +455,15 @@ const LimitMaterial = ({ form }) => {
                     <Col span={12}>
                         <FormItem label='适用范围' {...formLayout}>
                             {
-                                getFieldDecorator('name4', {
-                                    initialValue: data.modalSource && data.modalSource.name4,
+                                getFieldDecorator('practicalRangeId'),
+                                getFieldDecorator('practicalRangeCode'),
+                                getFieldDecorator('practicalRangeName', {
+                                    initialValue: data.modalSource && data.modalSource.practicalRangeName,
                                     rules: [{ required: true, message: '请选择适用范围' }]
-                                })(<ComboList form={form} {...materialCode} name='supplierCode'
-                                    field={['supplierName', 'supplierId']}
-                                    afterSelect={() => { console.log(111) }} />)
+                                })(<ComboList form={form} {...limitScopeList}
+                                    name='practicalRangeName'
+                                    field={['practicalRangeId', 'practicalRangeCode']}
+                                />)
                             }
                         </FormItem>
                     </Col>
@@ -445,7 +472,7 @@ const LimitMaterial = ({ form }) => {
                             {
                                 getFieldDecorator('orderNo', {
                                     initialValue: data.modalSource && data.modalSource.orderNo,
-                                })(<InputNumber  style={{width: '100%'}}/>)
+                                })(<InputNumber style={{ width: '100%' }} />)
                             }
                         </FormItem>
                     </Col>
@@ -454,8 +481,8 @@ const LimitMaterial = ({ form }) => {
                     <Col span={12}>
                         <FormItem label='处理人' {...formLayout}>
                             {
-                                getFieldDecorator('conductorId', {initialValue: getUserId()}),
-                                getFieldDecorator('conductorAccount', {initialValue: getUserAccount()}),
+                                getFieldDecorator('conductorId', { initialValue: getUserId() }),
+                                getFieldDecorator('conductorAccount', { initialValue: getUserAccount() }),
                                 getFieldDecorator('conductorName', {
                                     initialValue: data.modalSource ? data.modalSource.conductorName : getUserName(),
                                 })(<Input disabled />)

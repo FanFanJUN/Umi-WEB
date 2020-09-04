@@ -129,6 +129,39 @@ export const BasicUnitList = {
     description: 'basicUnitCode',
   }
 };
+// 限用物资列表
+export const limitMaterialList = {
+  remotePaging: true,
+  store: {
+    type: 'GET',
+    autoLoad: false,
+    url: `${baseUrl}/limitSubstanceListData/find_by_page_all`,
+  },
+  rowKey: 'limitMaterialCode',
+  reader: {
+    name: 'limitMaterialCode',
+    field: ['limitMaterialName', 'basicUnitCode', 'basicUnitId', 'basicUnitName', 'casNo'],
+    description: 'limitMaterialName',
+  },
+  placeholder: '选择限用物资列表'
+};
+
+// 适用范围
+export const limitScopeList = {
+  remotePaging: true,
+  store: {
+    type: 'GET',
+    autoLoad: false,
+    url: `${baseUrl}/LimitMaterialUnitScopeData/findBySearchPage`,
+  },
+  rowKey: 'scopeCode',
+  reader: {
+    name: 'scopeName',
+    field: ['id', 'scopeCode'],
+    description: 'scopeCode',
+  },
+  placeholder: '选择适用范围'
+};
 
 // 物料代码
 export const materialCode = {

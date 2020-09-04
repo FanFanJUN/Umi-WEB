@@ -55,7 +55,7 @@ export async function addEnvironmentStandardLimitMaterialRelation(params) {
     console.log(url)
     return request({
         url,
-        method: 'GET',
+        method: 'POST',
         params: params,
     });
 }
