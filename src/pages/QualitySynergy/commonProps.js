@@ -32,6 +32,36 @@ export async function AddTheListOfRestrictedMaterials(params) {
   });
 }
 
+// 限用物资基本单位新增和编辑
+export async function AddAndEditBasicMaterials(params) {
+  const url = `${baseUrl}/limitMaterialUnitData/addLimitMaterialUnitData`;
+  return request({
+    url,
+    method: 'POST',
+    params: params,
+  });
+}
+
+// 限用物资基本单位冻结
+export async function FrostBasicMaterials(params) {
+  const url = `${baseUrl}/limitMaterialUnitData/frozen`;
+  return request({
+    url,
+    method: 'get',
+    params: params,
+  });
+}
+
+// 限用物资基本单位删除
+export async function DeleteBasicMaterials(params) {
+  const url = `${baseUrl}/limitMaterialUnitData/delete`;
+  return request({
+    url,
+    method: 'get',
+    params: params,
+  });
+}
+
 // 基本单位列表
 export const BasicUnitList = {
   remotePaging: true,

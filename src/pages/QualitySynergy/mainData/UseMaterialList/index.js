@@ -9,7 +9,7 @@ const { authAction } = utils;
 
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 
-const Index = (props) => {
+const Index = () => {
 
   const tableRef = useRef(null)
 
@@ -24,7 +24,7 @@ const Index = (props) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   const columns = [
-    { title: '限用物质代码', dataIndex: 'limitMaterialCode', width: 200 },
+    { title: '限用物质代码', dataIndex: 'limitMaterialCode', width: 200, },
     { title: '限用物质名称', dataIndex: 'limitMaterialName', ellipsis: true, },
     { title: 'CAS.NO', dataIndex: 'casNo', ellipsis: true, },
     { title: '基本单位代码', dataIndex: 'basicUnitCode', ellipsis: true, },
@@ -71,10 +71,20 @@ const Index = (props) => {
 
   const validateItem = (data) => {
     console.log(data, 'data')
+    return data.map(d => {
+      return {
+        ...d,
+        validate: true,
+        status: '验证通过',
+        statusCode: 'success',
+        message: '验证通过',
+      };
+    });
   }
 
-  const importData = (value) => {
+  const importFunc = (value) => {
     console.log(value, 'value')
+
   }
 
   const headerLeft = <div style={{width: '100%', display: 'flex', height: '100%', alignItems:'center'}}>
@@ -110,8 +120,14 @@ const Index = (props) => {
         <DataImport
           tableProps={{ columns }}
           validateFunc={validateItem}
-          importFunc={importData}
-          importData={(value) => console.log(value,'data')}
+          importFunc={importFunc}
+          templateFileList={[
+            {
+              download: '/templates/主数据-限用物质清单-批导模板.xlsx',
+              fileName: '主数据-限用物质清单-批导模板.xlsx',
+              key: 'UseMaterialList',
+            },
+          ]}
         />
       </AuthAction>
     }
