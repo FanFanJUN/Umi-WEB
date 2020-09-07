@@ -1,6 +1,9 @@
 import React from 'react';
 import styles from './BaseInfo.less';
-import { Col, Form, Modal, Row, Input } from 'antd';
+import { ComboList, ExtModal } from 'suid';
+import { Col, Form, Modal, Row, Input, DatePicker } from 'antd';
+import { BUConfig } from '../../../commonProps';
+import moment from "moment/moment";
 
 const FormItem = Form.Item;
 
@@ -15,7 +18,7 @@ const formLayout = {
 
 const BaseInfo = (props) => {
 
-  const { type } = props;
+  const { type, form, data } = props;
 
   const { getFieldDecorator } = props.form;
 
@@ -28,9 +31,10 @@ const BaseInfo = (props) => {
             <Col span={12}>
               <FormItem label='来源' {...formLayout}>
                 {
-                  getFieldDecorator('configCode', {
+                  getFieldDecorator('source', {
+                    initialValue: type === 'add' ? 'SRM' : data.source,
                   })(
-                    <Input disabled={true} placeholder='请输入来源' style={{ width: 280 }}/>,
+                    <Input disabled={true} placeholder='请输入来源' style={{ width: '100%' }}/>,
                   )
                 }
               </FormItem>
@@ -38,9 +42,10 @@ const BaseInfo = (props) => {
             <Col span={12}>
               <FormItem label='分享需求号' {...formLayout}>
                 {
-                  getFieldDecorator('configCode', {
+                  getFieldDecorator('shareDemanNumber', {
+                    initialValue: type === 'add' ? '' : data.shareDemanNumber,
                   })(
-                    <Input disabled={true} placeholder='请输入分享需求号' style={{ width: 280 }}/>,
+                    <Input disabled={true} placeholder='请输入分享需求号' style={{ width: '100%' }}/>,
                   )
                 }
               </FormItem>
@@ -48,18 +53,25 @@ const BaseInfo = (props) => {
           </Row>
           <Row>
             <Col span={12}>
-              <FormItem label='BU' {...formLayout}>
+              <FormItem {...formLayout} label={'BU'}>
                 {
-                  getFieldDecorator('configCode', {
-                    rules: [
-                      {
-                        required: true,
-                        message: 'BU不能为空',
-                      },
-                    ],
-                  })(
-                    <Input disabled={type === 'detail'} placeholder='请输入BU' style={{ width: 280 }}/>,
-                  )
+                  getFieldDecorator('buCode'),
+                  getFieldDecorator('buId'),
+                  getFieldDecorator('buName', {
+                  initialValue: type === 'add' ? '' : data.buName,
+                  rules: [
+                {
+                  required: true,
+                  message: 'BU不能为空',
+                },
+                  ],
+                })(<ComboList
+                  style={{width: '100%'}}
+                  form={form}
+                  name={'buName'}
+                  field={['buCode', 'buId']}
+                  {...BUConfig}
+                  />)
                 }
               </FormItem>
             </Col>
@@ -68,7 +80,7 @@ const BaseInfo = (props) => {
                 {
                   getFieldDecorator('configCode', {
                   })(
-                    <Input disabled={true} placeholder='请输入申请人' style={{ width: 280 }}/>,
+                    <Input disabled={true} placeholder='请输入申请人' style={{ width: '100' }}/>,
                   )
                 }
               </FormItem>
@@ -78,9 +90,13 @@ const BaseInfo = (props) => {
             <Col span={12}>
               <FormItem label='申请日期' {...formLayout}>
                 {
-                  getFieldDecorator('configCode', {
+                  getFieldDecorator('applyDate', {
+                    initialValue: type === 'add' ? moment(new Date(), 'YYYY-MM-DD') : data.applyDate,
                   })(
-                    <Input disabled={true} placeholder='请输入申请日期' style={{ width: 280 }}/>,
+                    <DatePicker
+                      disabled={true}
+                      style={{width:'100%'}}
+                    />
                   )
                 }
               </FormItem>
@@ -88,7 +104,8 @@ const BaseInfo = (props) => {
             <Col span={12}>
               <FormItem label='申请人联系方式' {...formLayout}>
                 {
-                  getFieldDecorator('configCode', {
+                  getFieldDecorator('applyPeoplePhone', {
+                    initialValue: type === 'add' ? '' : data.applyPeoplePhone,
                     rules: [
                       {
                         required: true,
@@ -96,7 +113,7 @@ const BaseInfo = (props) => {
                       },
                     ],
                   })(
-                    <Input disabled={type === 'detail'} placeholder='请输入申请人联系方式' style={{ width: 280 }}/>,
+                    <Input disabled={type === 'detail'} placeholder='请输入申请人联系方式' style={{ width: '100%' }}/>,
                   )
                 }
               </FormItem>

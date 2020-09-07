@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ComboList, ExtModal } from 'suid';
 import { Checkbox, Col, Form, Input, Row } from 'antd';
-import { BasicUnitList } from '../../../commonProps';
+import { BasicUnitList, BUConfig, CompanyConfig, OrganizationByCompanyCodeConfig } from '../../../commonProps';
 import { baseUrl } from '../../../../../utils/commonUrl';
 
 const FormItem = Form.Item;
@@ -13,9 +13,9 @@ const formItemLayoutLong = {
 
 const EventModal = (props) => {
 
-  const { visible, title, data, type } = props;
+  const { visible, title, data, type, form } = props;
 
-  const { getFieldDecorator, setFieldsValue } = props.form;
+  const { getFieldDecorator, setFieldsValue, getFieldValue } = props.form;
 
   const onCancel = () => {
     props.onCancel();
@@ -33,7 +33,7 @@ const EventModal = (props) => {
     setFieldsValue({
       basicUnitCode: value.basicUnitCode,
       basicUnitName: value.basicUnitName,
-      basicUnitId: value.id
+      basicUnitId: value.id,
     });
   };
 
@@ -48,6 +48,9 @@ const EventModal = (props) => {
       }
     </FormItem>
   );
+
+  console.log(getFieldValue('corporationCode'))
+
 
   const clearSelected = () => {
     props.form.resetFields();
@@ -65,97 +68,73 @@ const EventModal = (props) => {
       <Form>
         <Row>
           <Col span={24}>
-            <FormItem {...formItemLayoutLong} label={'限用物质代码'}>
+            <FormItem {...formItemLayoutLong} label={'BU'}>
               {
-                getFieldDecorator('limitMaterialCode', {
-                  initialValue: type === 'add' ? '' : data.limitMaterialCode,
-                  rules: [
-                    {
-                      required: true,
-                      message: '限用物质代码不能为空',
-                    },
-                  ],
-                })(
-                  <Input/>,
-                )
+                getFieldDecorator('buCode'),
+                getFieldDecorator('buId'),
+                getFieldDecorator('buName', {
+                initialValue: type === 'add' ? '' : data.buName,
+                rules: [
+              {
+                required: true,
+                message: 'BU不能为空',
+              },
+                ],
+              })(<ComboList
+                form={form}
+                name={'buName'}
+                field={['buCode', 'buId']}
+                {...BUConfig}
+                />)
               }
             </FormItem>
           </Col>
           <Col span={24}>
-            <FormItem {...formItemLayoutLong} label={'限用物质名称'}>
+            <FormItem {...formItemLayoutLong} label={'公司'}>
               {
-                getFieldDecorator('limitMaterialName', {
-                  initialValue: type === 'add' ? '' : data.limitMaterialName,
+                getFieldDecorator('corporationCode'),
+                getFieldDecorator('corporationId'),
+                getFieldDecorator('corporationName', {
+                  initialValue: type === 'add' ? '' : data.corporationName,
                   rules: [
                     {
                       required: true,
-                      message: '限用物质名称不能为空',
+                      message: '公司不能为空',
                     },
                   ],
-                })(
-                  <Input/>,
-                )
+                })(<ComboList
+                  form={form}
+                  field={['corporationCode', 'corporationId']}
+                  name={'corporationName'}
+                  {...CompanyConfig}
+                />)
               }
             </FormItem>
           </Col>
           <Col span={24}>
-            <FormItem {...formItemLayoutLong} label={'CAS.NO'}>
+            <FormItem {...formItemLayoutLong} label={'采购组织'}>
               {
-                getFieldDecorator('casNo', {
-                  initialValue: type === 'add' ? '' : data.casNo,
+                getFieldDecorator('purchaseOrgName', {
+                  initialValue: type === 'add' ? '' : data.corporationName,
                   rules: [
                     {
                       required: true,
-                      message: 'CAS.NO不能为空',
+                      message: '采购组织不能为空',
                     },
                   ],
-                })(
-                  <Input/>,
-                )
-              }
-            </FormItem>
-          </Col>
-          <Col span={0}>
-            {hideFormItem('basicUnitName', type === 'add' ? '' : data.basicUnitName)}
-          </Col>
-          <Col span={0}>
-            {hideFormItem('basicUnitId', type === 'add' ? '' : data.basicUnitId)}
-          </Col>
-          <Col span={24}>
-            <FormItem {...formItemLayoutLong} label={'基本单位'}>
-              {
-                getFieldDecorator('basicUnitCode', {
-                  initialValue: type === 'add' ? '' : data.basicUnitCode,
-                  rules: [
-                    {
-                      required: true,
-                      message: '基本单位不能为空',
+                })(<ComboList
+                  form={form}
+                  name={'purchaseOrgName'}
+                  store={{
+                    params: {
+                      companyCode: getFieldValue('corporationCode')
                     },
-                  ],
-                })(
-                  <ComboList
-                    afterSelect={SelectChange}
-                    {...BasicUnitList}
-                  />,
-                )
-              }
-            </FormItem>
-          </Col>
-          <Col span={24}>
-            <FormItem {...formItemLayoutLong} label={'是否测试记录表中检查项'}>
-              {
-                getFieldDecorator('recordCheckList', {
-                  initialValue: type === 'add' ? false : data.recordCheckList,
-                  valuePropName: 'checked',
-                  rules: [
-                    {
-                      required: true,
-                      message: '是否测试记录表中检查项不能为空',
-                    },
-                  ],
-                })(
-                  <Checkbox/>,
-                )
+                    type: 'POST',
+                    autoLoad: false,
+                    url: `${baseUrl}/buCompanyPurchasingOrganization/findPurchaseOrganizationByCompanyCode`,
+                  }}
+                  {...OrganizationByCompanyCodeConfig}
+                />)
               }
             </FormItem>
           </Col>

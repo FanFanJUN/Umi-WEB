@@ -14,10 +14,20 @@ const commonProps = {
 
 // BU与公司采购组织对应关系冻结解冻
 export async function FrostBUCompanyOrganizationRelation(params) {
-  const url = `${baseUrl}/buCompanyPurchasingOrganization/freeze`;
+  const url = `${baseUrl}/buCompanyPurchasingOrganization/whetherDelete`;
   return request({
     url,
     method: 'POST',
+    params: params,
+  });
+}
+
+// BU与公司采购组织对应关系删除
+export async function DeleteBUCompanyOrganizationRelation(params) {
+  const url = `${baseUrl}/LimitMaterialUnitScopeData/delete`;
+  return request({
+    url,
+    method: 'get',
     params: params,
   });
 }
@@ -66,7 +76,7 @@ export async function EditTheListOfRestrictedMaterials(params) {
 // 限用物资清单批导验证
 export async function JudgeTheListOfRestrictedMaterials(params) {
   const url = `${baseUrl}/limitSubstanceListData/importExcel`;
-  console.log()
+  console.log();
   return request({
     url,
     method: 'POST',
@@ -77,7 +87,7 @@ export async function JudgeTheListOfRestrictedMaterials(params) {
 // 限用物资清单批导验证
 export async function SaveTheListOfRestrictedMaterials(params) {
   const url = `${baseUrl}/limitSubstanceListData/add_limitSubstanceListDataList `;
-  console.log()
+  console.log();
   return request({
     url,
     method: 'POST',
@@ -125,6 +135,68 @@ export async function DeleteBasicMaterials(params) {
   });
 }
 
+// 物料代码列表
+export const MaterialConfig = {
+  remotePaging: true,
+  store: {
+    type: 'GET',
+    autoLoad: false,
+    url: `${baseUrl}/materialSrm/listByPage`,
+  },
+  rowKey: 'materialCode',
+  reader: {
+    field: ['id', 'materialDesc'],
+    name: 'materialCode',
+    description: 'materialCode',
+  },
+};
+
+// 组织列表
+export const OrganizationByCompanyCodeConfig = {
+  remotePaging: true,
+  rowKey: 'value',
+  reader: {
+    field: ['value', 'id'],
+    name: 'name',
+    description: 'value',
+  },
+};
+
+// 公司列表
+export const CompanyConfig = {
+  remotePaging: true,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${baseUrl}/buCompanyPurchasingOrganization/findCompany`,
+  },
+  rowKey: 'code',
+  reader: {
+    field: ['code', 'id'],
+    name: 'name',
+    description: 'code',
+  },
+};
+
+// BU列表
+export const BUConfig = {
+  remotePaging: true,
+  store: {
+    params: {
+      dictTypeCode: 'BU',
+    },
+    type: 'GET',
+    autoLoad: false,
+    url: `${baseUrl}/dataDictionaryItem/getDictByTypeCode`,
+  },
+  rowKey: 'value',
+  reader: {
+    field: ['value', 'id'],
+    name: 'name',
+    description: 'value',
+  },
+};
+
 // 基本单位列表
 export const BasicUnitList = {
   remotePaging: true,
@@ -137,7 +209,7 @@ export const BasicUnitList = {
   reader: {
     name: 'basicUnitName',
     description: 'basicUnitCode',
-  }
+  },
 };
 // 限用物资列表
 export const limitMaterialList = {

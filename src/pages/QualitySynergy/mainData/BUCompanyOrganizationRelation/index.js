@@ -2,11 +2,11 @@ import React, { Fragment, useRef, useState } from 'react';
 import { Form, Button, message } from 'antd';
 import styles from '../../TechnicalDataSharing/DataSharingList/index.less';
 import { baseUrl, smBaseUrl } from '../../../../utils/commonUrl';
-import {DataImport, ExtTable, utils, AuthAction } from 'suid';
+import {ExtTable, utils } from 'suid';
 import {
-  AddTheListOfRestrictedMaterials,
+  AddTheListOfRestrictedMaterials, DeleteBUCompanyOrganizationRelation,
   DeleteLimitSuppliesScope,
-  EditTheListOfRestrictedMaterials, FrostBUCompanyOrganizationRelation, FrostLimitSuppliesScope,
+  EditTheListOfRestrictedMaterials, FrostBUCompanyOrganizationRelation,
 } from '../../commonProps';
 import EventModal from './component/EventModal';
 const { authAction } = utils;
@@ -72,7 +72,7 @@ const Index = () => {
   };
 
   const deleteData = async () => {
-    const data = await DeleteLimitSuppliesScope({
+    const data = await DeleteBUCompanyOrganizationRelation({
       ids: selectedRowKeys.toString(),
     });
     if (data.success) {
@@ -183,14 +183,14 @@ const Index = () => {
           left: headerLeft,
         }}
       />
-      {/*<EventModal*/}
-      {/*  visible={data.visible}*/}
-      {/*  onOk={handleOk}*/}
-      {/*  type={data.type}*/}
-      {/*  data={selectRows[selectRows.length - 1]}*/}
-      {/*  onCancel={() => setData((value) => ({...value, visible: false}))}*/}
-      {/*  title='BU与公司采购组织对应关系新增'*/}
-      {/*/>*/}
+      <EventModal
+        visible={data.visible}
+        onOk={handleOk}
+        type={data.type}
+        data={selectRows[selectRows.length - 1]}
+        onCancel={() => setData((value) => ({...value, visible: false}))}
+        title='BU与公司采购组织对应关系新增'
+      />
     </Fragment>
   )
 
