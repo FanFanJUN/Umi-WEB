@@ -22,6 +22,18 @@ const BaseInfo = (props) => {
 
   const { getFieldDecorator } = props.form;
 
+  const hideFormItem = (name, initialValue) => (
+    <FormItem>
+      {
+        getFieldDecorator(name, {
+          initialValue: initialValue,
+        })(
+          <Input type={'hidden'}/>,
+        )
+      }
+    </FormItem>
+  );
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.bgw}>
@@ -51,12 +63,16 @@ const BaseInfo = (props) => {
               </FormItem>
             </Col>
           </Row>
+          <Col span={0}>
+            {hideFormItem('buCode', type === 'add' ? '' : data.buCode)}
+          </Col>
+          <Col span={0}>
+            {hideFormItem('buId', type === 'add' ? '' : data.buId)}
+          </Col>
           <Row>
             <Col span={12}>
               <FormItem {...formLayout} label={'BU'}>
                 {
-                  getFieldDecorator('buCode'),
-                  getFieldDecorator('buId'),
                   getFieldDecorator('buName', {
                   initialValue: type === 'add' ? '' : data.buName,
                   rules: [

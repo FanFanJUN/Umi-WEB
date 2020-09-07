@@ -29,7 +29,7 @@ export async function FrostBUCompanyOrganizationRelation(params) {
   return request({
     url,
     method: 'POST',
-    data: params,
+    params: params,
   });
 }
 

@@ -22,16 +22,30 @@ const MaterialInfo = (props) => {
 
   const { getFieldDecorator, getFieldValue } = props.form;
 
+  const hideFormItem = (name, initialValue) => (
+    <FormItem>
+      {
+        getFieldDecorator(name, {
+          initialValue: initialValue,
+        })(
+          <Input type={'hidden'}/>,
+        )
+      }
+    </FormItem>
+  );
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.bgw}>
         <div className={styles.title}>物料信息</div>
         <div className={styles.content}>
           <Row>
+            <Col span={0}>
+              {hideFormItem('materialId', type === 'add' ? '' : data.materialId)}
+            </Col>
             <Col span={12}>
               <FormItem {...formLayout} label={'物料代码'}>
                 {
-                  getFieldDecorator('materialId'),
                   getFieldDecorator('materialCode', {
                   initialValue: type === 'add' ? '' : data.materialCode,
                 })(<ComboList
@@ -61,11 +75,13 @@ const MaterialInfo = (props) => {
               </FormItem>
             </Col>
           </Row>
+          <Col span={0}>
+            {hideFormItem('materialGroupId', type === 'add' ? '' : data.materialGroupId)}
+          </Col>
           <Row>
             <Col span={12}>
               <FormItem {...formLayout} label={'物料组代码'}>
                 {
-                  getFieldDecorator('materialGroupId'),
                   getFieldDecorator('materialGroupCode', {
                   initialValue: type === 'add' ? '' : data.materialGroupCode,
                   rules: [
