@@ -1,12 +1,12 @@
 import React, { Fragment, useRef, useState } from 'react';
-import { Form, Button, message } from 'antd';
+import { Form, Button, message, Modal } from 'antd';
 import styles from '../../TechnicalDataSharing/DataSharingList/index.less';
 import { baseUrl, smBaseUrl } from '../../../../utils/commonUrl';
 import { DataImport, ExtTable, utils, AuthAction } from 'suid';
 import EventModal from './component/EventModal';
 import {
-  AddTheListOfRestrictedMaterials,
-  EditTheListOfRestrictedMaterials,
+  AddTheListOfRestrictedMaterials, DeleteTheListOfRestrictedMaterials,
+  EditTheListOfRestrictedMaterials, FrostTheListOfRestrictedMaterials,
   JudgeTheListOfRestrictedMaterials, SaveTheListOfRestrictedMaterials,
 } from '../../commonProps';
 
@@ -53,23 +53,48 @@ const Index = () => {
       case 'edit':
         setData((value) => ({ ...value, visible: true, title: '限用物资清单编辑', type: 'edit' }));
         break;
+      case 'delete':
+        await deleteData();
+        break;
       case 'frost':
+        await editData(type);
+        break;
+      case 'thaw':
         await editData(type);
         break;
     }
   };
 
+  const deleteData = async () => {
+    Modal.confirm({
+      title: '删除',
+      content: '是否删除选中过的数据',
+      okText: '是',
+      okType: 'danger',
+      cancelText: '否',
+      async onOk() {
+        const data = await DeleteTheListOfRestrictedMaterials({
+          id: selectedRowKeys.toString(),
+        });
+        if (data.success) {
+          setSelectRows([]);
+          setSelectedRowKeys([]);
+          tableRef.current.remoteDataRefresh();
+        }
+      },
+    });
+  };
+
   const editData = async (type) => {
-    if (type === 'frost') {
-      const data = await EditTheListOfRestrictedMaterials({
-        id: selectRows[selectRows.length - 1].id,
-        frozen: !selectRows[selectRows.length - 1].frozen,
-      });
-      if (data.success) {
-        setSelectRows([]);
-        setSelectedRowKeys([]);
-        tableRef.current.remoteDataRefresh();
-      }
+    const frozen = type === 'frost'
+    const data = await FrostTheListOfRestrictedMaterials({
+      ids: selectedRowKeys.toString(),
+      flag: frozen
+    });
+    if (data.success) {
+      setSelectRows([]);
+      setSelectedRowKeys([]);
+      tableRef.current.remoteDataRefresh();
     }
   };
 
@@ -85,7 +110,7 @@ const Index = () => {
         const response = res.data.map(item => ({
           ...item,
           validate: item.importResult,
-          status: item.importResult ? '数据完整' : item.importResultInfo,
+          status: item.importResult ? '数据完整' : '失败',
           statusCode: item.importResult ? 'success' : 'error',
           message: item.importResult ? '成功' : item.importResultInfo
         }));
@@ -97,7 +122,6 @@ const Index = () => {
   };
 
   const importFunc = (value) => {
-    console.log(value);
     SaveTheListOfRestrictedMaterials(value).then(res => {
       if (res.success) {
         tableRef.current.remoteDataRefresh();
@@ -122,9 +146,18 @@ const Index = () => {
         onClick={() => buttonClick('edit')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        disabled={selectRows.length === 0}
+        disabled={selectedRowKeys.length === 0 || selectedRowKeys.length > 1}
         key='QUALITYSYNERGY_UML_EDIT'
       >编辑</Button>)
+    }
+    {
+      authAction(<Button
+        onClick={() => buttonClick('delete')}
+        className={styles.btn}
+        ignore={DEVELOPER_ENV}
+        disabled={selectRows.length === 0}
+        key='QUALITYSYNERGY_UML_DELETE'
+      >删除</Button>)
     }
     {
       authAction(<Button
@@ -133,12 +166,22 @@ const Index = () => {
         ignore={DEVELOPER_ENV}
         key='QUALITYSYNERGY_UML_FROST'
         disabled={selectRows.length === 0}
-      >{selectRows.length > 0 && selectRows[selectRows.length - 1].frozen ? '解冻' : '冻结'}</Button>)
+      >冻结</Button>)
+    }
+    {
+      authAction(<Button
+        onClick={() => buttonClick('thaw')}
+        className={styles.btn}
+        ignore={DEVELOPER_ENV}
+        key='QUALITYSYNERGY_UML_THAW'
+        disabled={selectRows.length === 0}
+      >解冻</Button>)
     }
     {
       <AuthAction key="QUALITYSYNERGY_UML_IMPORT" ignore>
         <DataImport
           tableProps={{ columns }}
+          validateAll={true}
           validateFunc={validateItem}
           importFunc={importFunc}
           templateFileList={[
@@ -184,15 +227,15 @@ const Index = () => {
       <ExtTable
         rowKey={(v) => v.id}
         columns={columns}
-        searchPlaceHolder='输入限用物资名称或CAS.NO关键字'
         store={{
           url: `${baseUrl}/limitSubstanceListData/find_by_page_all`,
           type: 'POST',
         }}
+        searchPlaceHolder='输入限用物资名称或CAS.NO关键字'
         allowCancelSelect={true}
         remotePaging={true}
         checkbox={{
-          multiSelect: false,
+          multiSelect: true,
         }}
         ref={tableRef}
         onSelectRow={onSelectRow}

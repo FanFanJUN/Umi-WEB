@@ -41,6 +41,20 @@ const EventModal = (props) => {
     props.form.resetFields();
   };
 
+  const hideFormItem = (name, initialValue) => (
+    <FormItem>
+      {
+        getFieldDecorator(name, {
+          initialValue: initialValue,
+        })(
+          <Input type={'hidden'}/>,
+        )
+      }
+    </FormItem>
+  );
+
+  console.log(data)
+
   return (
     <ExtModal
       width={'80vh'}
@@ -52,11 +66,15 @@ const EventModal = (props) => {
     >
       <Form>
         <Row>
+          <Col span={0}>
+            {hideFormItem('buCode', type === 'add' ? '' : data.buCode)}
+          </Col>
+          <Col span={0}>
+            {hideFormItem('buId', type === 'add' ? '' : data.buId)}
+          </Col>
           <Col span={24}>
             <FormItem {...formItemLayoutLong} label={'BU'}>
               {
-                getFieldDecorator('buCode'),
-                getFieldDecorator('buId'),
                 getFieldDecorator('buName', {
                 initialValue: type === 'add' ? '' : data.buName,
                 rules: [
@@ -74,51 +92,63 @@ const EventModal = (props) => {
               }
             </FormItem>
           </Col>
+          <Col span={0}>
+            {hideFormItem('corporationCode', type === 'add' ? '' : data.corporationCode)}
+          </Col>
+          <Col span={0}>
+            {hideFormItem('corporationId', type === 'add' ? '' : data.corporationId)}
+          </Col>
           <Col span={24}>
             <FormItem {...formItemLayoutLong} label={'公司'}>
               {
-                getFieldDecorator('corporationCode'),
-                getFieldDecorator('corporationId'),
                 getFieldDecorator('corporationName', {
-                  initialValue: type === 'add' ? '' : data.corporationName,
-                  rules: [
-                    {
-                      required: true,
-                      message: '公司不能为空',
-                    },
-                  ],
-                })(<ComboList
-                  form={form}
-                  field={['corporationCode', 'corporationId']}
-                  name={'corporationName'}
-                  {...CompanyConfig}
+                initialValue: type === 'add' ? '' : data.corporationName,
+                rules: [
+              {
+                required: true,
+                message: '公司不能为空',
+              },
+                ],
+              })(<ComboList
+                // afterSelect={() => setFieldsValue('')}
+                form={form}
+                field={['corporationCode', 'corporationId']}
+                name={'corporationName'}
+                {...CompanyConfig}
                 />)
               }
             </FormItem>
+          </Col>
+          <Col span={0}>
+            {hideFormItem('purchaseOrgCode', type === 'add' ? '' : data.purchaseOrgCode)}
+          </Col>
+          <Col span={0}>
+            {hideFormItem('purchaseOrgId', type === 'add' ? '' : data.purchaseOrgId)}
           </Col>
           <Col span={24}>
             <FormItem {...formItemLayoutLong} label={'采购组织'}>
               {
                 getFieldDecorator('purchaseOrgName', {
-                  initialValue: type === 'add' ? '' : data.corporationName,
-                  rules: [
-                    {
-                      required: true,
-                      message: '采购组织不能为空',
-                    },
-                  ],
-                })(<ComboList
-                  form={form}
-                  name={'purchaseOrgName'}
-                  store={{
-                    params: {
-                      companyCode: getFieldValue('corporationCode')
-                    },
-                    type: 'GET',
-                    autoLoad: false,
-                    url: `${baseUrl}/buCompanyPurchasingOrganization/findPurchaseOrganizationByCompanyCode`,
-                  }}
-                  {...OrganizationByCompanyCodeConfig}
+                initialValue: type === 'add' ? '' : data.purchaseOrgName,
+                rules: [
+              {
+                required: true,
+                message: '采购组织不能为空',
+              },
+                ],
+              })(<ComboList
+                form={form}
+                field={['purchaseOrgCode', 'purchaseOrgId']}
+                name={'purchaseOrgName'}
+                store={{
+                params: {
+                  companyCode: getFieldValue('corporationCode'),
+                },
+                type: 'GET',
+                autoLoad: false,
+                url: `${baseUrl}/buCompanyPurchasingOrganization/findPurchaseOrganizationByCompanyCode`,
+              }}
+                {...OrganizationByCompanyCodeConfig}
                 />)
               }
             </FormItem>
