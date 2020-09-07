@@ -37,21 +37,6 @@ const EventModal = (props) => {
     });
   };
 
-  const hideFormItem = (name, initialValue) => (
-    <FormItem>
-      {
-        getFieldDecorator(name, {
-          initialValue: initialValue,
-        })(
-          <Input type={'hidden'}/>,
-        )
-      }
-    </FormItem>
-  );
-
-  console.log(getFieldValue('corporationCode'))
-
-
   const clearSelected = () => {
     props.form.resetFields();
   };
@@ -129,7 +114,7 @@ const EventModal = (props) => {
                     params: {
                       companyCode: getFieldValue('corporationCode')
                     },
-                    type: 'POST',
+                    type: 'GET',
                     autoLoad: false,
                     url: `${baseUrl}/buCompanyPurchasingOrganization/findPurchaseOrganizationByCompanyCode`,
                   }}

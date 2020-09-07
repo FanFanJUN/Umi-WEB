@@ -20,12 +20,12 @@ const MaterialInfo = (props) => {
 
   const { type, data, form } = props;
 
-  const { getFieldDecorator } = props.form;
+  const { getFieldDecorator, getFieldValue } = props.form;
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.bgw}>
-        <div className={styles.title}>基本信息</div>
+        <div className={styles.title}>物料信息</div>
         <div className={styles.content}>
           <Row>
             <Col span={12}>
@@ -38,7 +38,7 @@ const MaterialInfo = (props) => {
                   style={{ width: '100%' }}
                   form={form}
                   name={'materialCode'}
-                  field={['materialId', 'materialDesc']}
+                  field={['materialId', 'materialDesc', 'materialGroupCode', 'materialGroupDesc', 'materialGroupId']}
                   {...MaterialConfig}
                   />)
                 }
@@ -55,7 +55,7 @@ const MaterialInfo = (props) => {
                       },
                     ],
                   })(
-                    <Input placeholder='请输入物料描述' style={{ width: '100%' }}/>,
+                    <Input disabled={true} placeholder='请输入物料描述' style={{ width: '100%' }}/>,
                   )
                 }
               </FormItem>
@@ -75,6 +75,7 @@ const MaterialInfo = (props) => {
                 },
                   ],
                 })(<ComboList
+                  disabled={getFieldValue('materialCode') ? true : false}
                   style={{ width: '100%' }}
                   form={form}
                   name={'materialGroupCode'}
@@ -87,7 +88,7 @@ const MaterialInfo = (props) => {
             <Col span={12}>
               <FormItem label='物料组描述' {...formLayout}>
                 {
-                  getFieldDecorator('materialGroupName', {})(
+                  getFieldDecorator('materialGroupDesc', {})(
                     <Input disabled={true} placeholder='请输入物料组描述' style={{ width: '100%' }}/>,
                   )
                 }
@@ -99,7 +100,7 @@ const MaterialInfo = (props) => {
               <FormItem label='战略采购代码' {...formLayout}>
                 {
                   getFieldDecorator('configCode', {})(
-                    <Input disabled={true} placeholder='请输入申请日期' style={{ width: 280 }}/>,
+                    <Input disabled={true} placeholder='请输入战略采购代码' style={{ width: '100%' }}/>,
                   )
                 }
               </FormItem>
@@ -115,7 +116,7 @@ const MaterialInfo = (props) => {
                       },
                     ],
                   })(
-                    <Input disabled={type === 'detail'} placeholder='请输入申请人联系方式' style={{ width: 280 }}/>,
+                    <Input disabled={true} placeholder='请输入战略采购名称' style={{ width: '100%' }}/>,
                   )
                 }
               </FormItem>

@@ -245,6 +245,7 @@ export default function() {
         onCancel={handleModalCancel}
       />
       <TacticAssign
+        type={modalData.type}
         visible={assignData.visible}
         onCancel={() => setAssignData((value) => ({...value, visible: false}))}
       />

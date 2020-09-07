@@ -3,27 +3,22 @@ import styles from './BaseInfo.less';
 import { Col, Form, Modal, Row, Input, Button } from 'antd';
 import { ExtTable } from 'suid';
 import { smBaseUrl } from '../../../../../utils/commonUrl';
+import TechnicalDataModal from './component/TechnicalDataModal';
 
-const FormItem = Form.Item;
-
-const formLayout = {
-  labelCol: {
-    span: 8,
-  },
-  wrapperCol: {
-    span: 16,
-  },
-};
-
-const TechnicalData = () => {
+const TechnicalData = (props) => {
 
   const [searchValue, setSearchValue] = useState({});
 
+  const [data, setData] = useState({
+    visible: false,
+    title: '新增技术资料'
+  })
+
   const columns = [
-    { title: '文件类别', dataIndex: 'turnNumber', width: 350 },
-    { title: '文件版本', dataIndex: 'name1', width: 350, ellipsis: true, },
-    { title: '技术资料附件', dataIndex: 'name2', width: 350, ellipsis: true, },
-    { title: '样品需求日期', dataIndex: 'name3', width: 350, ellipsis: true, },
+    { title: '文件类别', dataIndex: 'fileType', width: 350 },
+    { title: '文件版本', dataIndex: 'fileVersion', width: 350, ellipsis: true, },
+    { title: '技术资料附件', dataIndex: 'technicalDataFileId', width: 350, ellipsis: true, },
+    { title: '样品需求日期', dataIndex: 'sampleRequirementData', width: 350, ellipsis: true, },
   ].map(item => ({...item, align: 'center'}))
 
   const tableProps = {
@@ -51,14 +46,20 @@ const TechnicalData = () => {
 
   }
 
+  const handleBtn = (type) => {
+    if (type === 'add') {
+      setData((value) => ({...value, visible: true, title: '新增技术资料'}))
+    }
+  }
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.bgw}>
-        <div className={styles.title}>基本信息</div>
+        <div className={styles.title}>技术资料</div>
         <div className={styles.content}>
           <div>
-            <Button type='primary'>新增</Button>
-            <Button style={{marginLeft: '5px'}}>编辑</Button>
+            <Button onClick={() => {handleBtn('add')}} type='primary'>新增</Button>
+            <Button onClick={() => {handleBtn('edit')}} style={{marginLeft: '5px'}}>编辑</Button>
             <Button style={{marginLeft: '5px'}}>删除</Button>
           </div>
           <ExtTable
@@ -76,6 +77,12 @@ const TechnicalData = () => {
             {...tableProps}
           />
         </div>
+        <TechnicalDataModal
+          title={data.title}
+          type={props.type}
+          onCancel={() => setData((value) => ({...value, visible: false}))}
+          visible={data.visible}
+        />
       </div>
     </div>
   );

@@ -12,7 +12,7 @@ import {
 
 const { authAction } = utils;
 
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development';
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 
 const Index = () => {
 
@@ -187,7 +187,7 @@ const Index = () => {
         searchPlaceHolder='输入限用物资名称或CAS.NO关键字'
         store={{
           url: `${baseUrl}/limitSubstanceListData/find_by_page_all`,
-          type: 'GET',
+          type: 'POST',
         }}
         allowCancelSelect={true}
         remotePaging={true}

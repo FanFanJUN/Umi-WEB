@@ -145,9 +145,9 @@ export const MaterialConfig = {
   },
   rowKey: 'materialCode',
   reader: {
-    field: ['id', 'materialDesc'],
+    field: ['id', 'materialDesc', 'materialGroupCode', 'materialGroupDesc', 'materialGroupId'],
     name: 'materialCode',
-    description: 'materialCode',
+    description: 'materialDesc',
   },
 };
 
@@ -164,9 +164,9 @@ export const OrganizationByCompanyCodeConfig = {
 
 // 公司列表
 export const CompanyConfig = {
-  remotePaging: true,
+  remotePaging: false,
   store: {
-    type: 'POST',
+    type: 'GET',
     autoLoad: false,
     url: `${baseUrl}/buCompanyPurchasingOrganization/findCompany`,
   },
