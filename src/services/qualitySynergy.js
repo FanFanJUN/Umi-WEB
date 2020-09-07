@@ -21,6 +21,25 @@ export async function exemptionClauseDataDelete(params) {
         params: params,
     });
 }
+// 豁免条款批导验证
+export async function JudgeTheListOfExemptionClause(params) {
+    const url = `${baseUrl}/exemptionClauseData/importExcel`;
+    return request({
+      url,
+      method: 'POST',
+      data: params,
+    });
+  }
+  
+  // 豁免条款批导验证
+  export async function SaveTheListOfExemptionClause(params) {
+    const url = `${baseUrl}/exemptionClauseData/insertImportExcel`;
+    return request({
+      url,
+      method: 'POST',
+      data: params,
+    });
+  }
 
 // 环保标准-新增/编辑
 export async function addEnvironmentalProtectionData(params) {

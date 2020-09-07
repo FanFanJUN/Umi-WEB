@@ -114,7 +114,7 @@ const Index = () => {
         onClick={() => buttonClick('add')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='PURCHASE_VIEW_CHANGE_CREATE'
+        key='QUALITYSYNERGY_UML_ADD'
       >新增</Button>)
     }
     {
@@ -123,7 +123,7 @@ const Index = () => {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={selectRows.length === 0}
-        key='PURCHASE_VIEW_CHANGE_CREATE'
+        key='QUALITYSYNERGY_UML_EDIT'
       >编辑</Button>)
     }
     {
@@ -131,12 +131,12 @@ const Index = () => {
         onClick={() => buttonClick('frost')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='PURCHASE_VIEW_CHANGE_CREATE'
+        key='QUALITYSYNERGY_UML_FROST'
         disabled={selectRows.length === 0}
       >{selectRows.length > 0 && selectRows[selectRows.length - 1].frozen ? '解冻' : '冻结'}</Button>)
     }
     {
-      <AuthAction key="PURCHASE_VIEW_CHANGE_CREATE" ignore>
+      <AuthAction key="QUALITYSYNERGY_UML_IMPORT" ignore>
         <DataImport
           tableProps={{ columns }}
           validateFunc={validateItem}

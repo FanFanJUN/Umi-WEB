@@ -91,7 +91,7 @@ const Index = () => {
         onClick={() => buttonClick('add')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='PURCHASE_VIEW_CHANGE_CREATE'
+        key='QUALITYSYNERGY_LSB_ADD'
       >新增</Button>)
     }
     {
@@ -100,7 +100,7 @@ const Index = () => {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={selectedRowKeys.length === 0 || selectedRowKeys.length > 1}
-        key='PURCHASE_VIEW_CHANGE_CREATE'
+        key='QUALITYSYNERGY_LSB_EDIT'
       >编辑</Button>)
     }
     {
@@ -109,7 +109,7 @@ const Index = () => {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={selectRows.length === 0}
-        key='PURCHASE_VIEW_CHANGE_CREATE'
+        key='QUALITYSYNERGY_LSB_DELETE'
       >删除</Button>)
     }
     {
@@ -117,7 +117,7 @@ const Index = () => {
         onClick={() => buttonClick('frost')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='PURCHASE_VIEW_CHANGE_CREATE'
+        key='QUALITYSYNERGY_LSB_FROST'
         disabled={selectRows.length === 0}
       >冻结</Button>)
     }
@@ -126,7 +126,7 @@ const Index = () => {
         onClick={() => buttonClick('thaw')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='PURCHASE_VIEW_CHANGE_CREATE'
+        key='QUALITYSYNERGY_LSB_THWA'
         disabled={selectRows.length === 0}
       >解冻</Button>)
     }

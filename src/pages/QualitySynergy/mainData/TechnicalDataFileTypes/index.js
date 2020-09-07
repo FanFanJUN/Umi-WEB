@@ -81,7 +81,7 @@ const TechnicalDataFileTypes = (props) => {
                 onClick={() => buttonClick('add')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='1'
+                key='QUALITYSYNERGY_TDP_ADD'
             >新增</Button>)
         }
         {
@@ -89,7 +89,7 @@ const TechnicalDataFileTypes = (props) => {
                 onClick={() => buttonClick('edit')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='2'
+                key='QUALITYSYNERGY_TDP_EDIT'
             >编辑</Button>)
         }
         {
@@ -97,7 +97,7 @@ const TechnicalDataFileTypes = (props) => {
                 onClick={() => buttonClick('delete')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='3'
+                key='QUALITYSYNERGY_TDP_DELETE'
             >删除</Button>)
         }
         {
@@ -105,7 +105,7 @@ const TechnicalDataFileTypes = (props) => {
                 onClick={() => buttonClick('freeze')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='4'
+                key='QUALITYSYNERGY_TDP_FREEZE'
             >冻结</Button>)
         }
         {
@@ -113,7 +113,7 @@ const TechnicalDataFileTypes = (props) => {
                 onClick={() => buttonClick('thaw')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='5'
+                key='QUALITYSYNERGY_TDP_THAW'
             >解冻</Button>)
         }
     </div>

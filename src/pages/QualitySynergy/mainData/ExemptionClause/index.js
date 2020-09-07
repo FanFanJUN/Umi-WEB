@@ -6,7 +6,12 @@ import { baseUrl } from '../../../../utils/commonUrl';
 import { DataImport, ExtTable, ExtModal, utils, AuthAction } from 'suid';
 import { BasicUnitList } from '../../../../services/qualitySynergy';
 import moment from 'moment'
-import { exemptionClauseDataInsert, exemptionClauseDataDelete } from '../../../../services/qualitySynergy'
+import {
+    exemptionClauseDataInsert,
+    exemptionClauseDataDelete,
+    JudgeTheListOfExemptionClause,
+    SaveTheListOfExemptionClause
+} from '../../../../services/qualitySynergy'
 const { authAction } = utils;
 
 const { create, Item: FormItem } = Form;
@@ -69,7 +74,37 @@ const ExemptionClause = (props) => {
                 break;
         }
     }
+    const validateItem = (data) => {
+        console.log('进入验证', data);
+        return new Promise((resolve, reject) => {
+            JudgeTheListOfExemptionClause(data).then(res => {
+                const response = res.data && res.data.map(item => ({
+                    ...item,
+                    validate: item.importResult,
+                    status: item.importResult ? '数据完整' : item.importResultInfo,
+                    statusCode: item.importResult ? 'success' : 'error',
+                    message: item.importResult ? '成功' : item.importResultInfo
+                }));
+                if (!res.success) {
+                    message.error(res.message);
+                }
+                resolve(response);
+            }).catch(err => {
+                reject(err)
+            })
+        });
+    };
 
+    const importFunc = (value) => {
+        console.log(value);
+        SaveTheListOfExemptionClause(value).then(res => {
+            if (res.success) {
+                tableRef.current.remoteDataRefresh();
+            } else {
+                message.error(res.msg)
+            }
+        });
+    };
     const headerLeft = <div style={{ width: '100%', display: 'flex', height: '100%', alignItems: 'center' }}>
         {
             authAction(<Button
@@ -77,7 +112,7 @@ const ExemptionClause = (props) => {
                 onClick={() => buttonClick('add')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='1'
+                key='QUALITYSYNERGY_EC_ADD'
             >新增</Button>)
         }
         {
@@ -86,7 +121,7 @@ const ExemptionClause = (props) => {
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 disabled={selectedRow.length !== 1}
-                key='2'
+                key='QUALITYSYNERGY_EC_EDIT'
             >编辑</Button>)
         }
         {
@@ -95,7 +130,7 @@ const ExemptionClause = (props) => {
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 disabled={selectedRow.length === 0}
-                key='3'
+                key='QUALITYSYNERGY_EC_DELETE'
             >删除</Button>)
         }
         {
@@ -104,17 +139,23 @@ const ExemptionClause = (props) => {
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 disabled={selectedRow.length !== 1}
-                key='4'
+                key='QUALITYSYNERGY_EC_DETAIL'
             >明细</Button>)
         }
         {
             authAction(<DataImport
-                style={{ float: 'none' }}
                 tableProps={{ columns }}
                 validateFunc={validateItem}
-                key='5'
+                importFunc={importFunc}
                 ignore={DEVELOPER_ENV}
-                importData={(value) => console.log(value, 'data')}
+                key='QUALITYSYNERGY_EC_IMPORT'
+                templateFileList={[
+                    {
+                        download: '/templates/主数据-豁免条款-批导模板.xlsx',
+                        fileName: '主数据-豁免条款-批导模板.xlsx',
+                        key: 'UseMaterialList',
+                    },
+                ]}
             />)
         }
     </div>
@@ -128,7 +169,7 @@ const ExemptionClause = (props) => {
                     console.log(values)
                     values.exemptionExpireDate = moment(values.exemptionExpireDate).format('YYYY-MM-DD');
                     if (data.modalSource) {
-                        values = {...data.modalSource, ...values}
+                        values = { ...data.modalSource, ...values }
                     }
                     const res = await exemptionClauseDataInsert(values)
                     if (res.success) {
@@ -141,11 +182,9 @@ const ExemptionClause = (props) => {
                 }
             })
         }
-        
+
     }
-    const validateItem = (data) => {
-        console.log(data, 'data')
-    }
+
     return (
         <Fragment>
             <ExtTable

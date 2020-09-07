@@ -215,14 +215,14 @@ export const BasicUnitList = {
 export const limitMaterialList = {
   remotePaging: true,
   store: {
-    type: 'GET',
+    type: 'POST',
     autoLoad: false,
     url: `${baseUrl}/limitSubstanceListData/find_by_page_all`,
   },
   rowKey: 'limitMaterialCode',
   reader: {
     name: 'limitMaterialCode',
-    field: ['limitMaterialName', 'basicUnitCode', 'basicUnitId', 'basicUnitName', 'casNo'],
+    field: ['id', 'limitMaterialName', 'basicUnitCode', 'basicUnitId', 'basicUnitName', 'casNo'],
     description: 'limitMaterialName',
   },
   placeholder: '选择限用物资列表'
