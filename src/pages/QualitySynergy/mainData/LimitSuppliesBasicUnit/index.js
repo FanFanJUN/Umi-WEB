@@ -1,11 +1,15 @@
 import React, { Fragment, useRef, useState } from 'react';
-import { Form, Button, message } from 'antd';
+import { Form, Button, message, Modal } from 'antd';
 import styles from '../../TechnicalDataSharing/DataSharingList/index.less';
 import { baseUrl } from '../../../../utils/commonUrl';
 import { ExtTable, utils } from 'suid';
 import EventModal from './component/EventModal';
 import {
-  AddAndEditBasicMaterials, AddAndEditLimitSuppliesScope, DeleteBasicMaterials, FrostBasicMaterials,
+  AddAndEditBasicMaterials,
+  AddAndEditLimitSuppliesScope,
+  DeleteBasicMaterials,
+  DeleteBUCompanyOrganizationRelation,
+  FrostBasicMaterials,
 } from '../../commonProps';
 
 const { authAction } = utils;
@@ -68,14 +72,23 @@ const Index = () => {
   };
 
   const deleteData = async () => {
-    const data = await DeleteBasicMaterials({
-      ids: selectedRowKeys.toString(),
+    Modal.confirm({
+      title: '删除',
+      content: '是否删除选中过的数据',
+      okText: '是',
+      okType: 'danger',
+      cancelText: '否',
+      async onOk() {
+        const data = await DeleteBasicMaterials({
+          ids: selectedRowKeys.toString(),
+        });
+        if (data.success) {
+          setSelectRows([]);
+          setSelectedRowKeys([]);
+          tableRef.current.remoteDataRefresh();
+        }
+      },
     });
-    if (data.success) {
-      setSelectRows([]);
-      setSelectedRowKeys([]);
-      tableRef.current.remoteDataRefresh();
-    }
   };
 
   const onSelectRow = (value, rows) => {

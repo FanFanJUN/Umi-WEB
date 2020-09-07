@@ -12,22 +12,33 @@ const commonProps = {
   },
 };
 
-// BU与公司采购组织对应关系冻结解冻
-export async function FrostBUCompanyOrganizationRelation(params) {
-  const url = `${baseUrl}/buCompanyPurchasingOrganization/whetherDelete`;
+
+// BU与公司采购组织对应关系新增
+export async function AddBUCompanyOrganizationRelation(params) {
+  const url = `${baseUrl}/buCompanyPurchasingOrganization/addBuCompanyPurchasingOrganization`;
   return request({
     url,
     method: 'POST',
-    params: params,
+    data: params,
+  });
+}
+
+// BU与公司采购组织对应关系冻结解冻
+export async function FrostBUCompanyOrganizationRelation(params) {
+  const url = `${baseUrl}/buCompanyPurchasingOrganization/frozen`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
   });
 }
 
 // BU与公司采购组织对应关系删除
 export async function DeleteBUCompanyOrganizationRelation(params) {
-  const url = `${baseUrl}/LimitMaterialUnitScopeData/delete`;
+  const url = `${baseUrl}/buCompanyPurchasingOrganization/whetherDelete`;
   return request({
     url,
-    method: 'get',
+    method: 'POST',
     params: params,
   });
 }
@@ -66,6 +77,26 @@ export async function FrostLimitSuppliesScope(params) {
 // 限用物资清单编辑
 export async function EditTheListOfRestrictedMaterials(params) {
   const url = `${baseUrl}/limitSubstanceListData/update_limitSubstanceListData`;
+  return request({
+    url,
+    method: 'POST',
+    params: params,
+  });
+}
+
+// 限用物资清单删除
+export async function DeleteTheListOfRestrictedMaterials(params) {
+  const url = `${baseUrl}/limitSubstanceListData/delete_limitSubstanceListData`;
+  return request({
+    url,
+    method: 'POST',
+    params: params,
+  });
+}
+
+// 限用物资清单解冻冻结
+export async function FrostTheListOfRestrictedMaterials(params) {
+  const url = `${baseUrl}/limitSubstanceListData/batchWhetherFrozen`;
   return request({
     url,
     method: 'POST',
@@ -153,12 +184,12 @@ export const MaterialConfig = {
 
 // 组织列表
 export const OrganizationByCompanyCodeConfig = {
-  remotePaging: true,
-  rowKey: 'value',
+  remotePaging: false,
+  rowKey: 'code',
   reader: {
-    field: ['value', 'id'],
+    field: ['code', 'id'],
     name: 'name',
-    description: 'value',
+    description: 'code',
   },
 };
 
