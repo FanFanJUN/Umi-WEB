@@ -64,7 +64,7 @@ const LimitMaterial = ({ form }) => {
         { title: '处理人', dataIndex: 'name9', ellipsis: true },
         { title: '处理时间', dataIndex: 'name10', ellipsis: true },
     ]
-    const headerLeft = <div>
+    const headerRight = <div>
         {
             authAction(<Button
                 type='primary'
@@ -79,6 +79,7 @@ const LimitMaterial = ({ form }) => {
                 onClick={() => buttonClick('edit')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
+                disabled={selectedRightKeys.length !== 1}
                 key='QUALITYSYNERGY_LM_UML_EDIT'
             >编辑</Button>)
         }
@@ -87,6 +88,7 @@ const LimitMaterial = ({ form }) => {
                 onClick={() => buttonClick('delete')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
+                disabled={selectedRightKeys.length === 0}
                 key='QUALITYSYNERGY_LM_UML_DELETE'
             >删除</Button>)
         }
@@ -95,6 +97,7 @@ const LimitMaterial = ({ form }) => {
                 onClick={() => buttonClick('freeze')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
+                disabled={selectedRightKeys.length === 0}
                 key='QUALITYSYNERGY_LM_UML_FREEZE'
             >冻结</Button>)
         }
@@ -103,6 +106,7 @@ const LimitMaterial = ({ form }) => {
                 onClick={() => buttonClick('thaw')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
+                disabled={selectedRightKeys.length  === 0}
                 key='QUALITYSYNERGY_LM_UML_THAW'
             >解冻</Button>)
         }
@@ -131,7 +135,7 @@ const LimitMaterial = ({ form }) => {
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_EPS_EDIT'
-                disabled={selectedRow.length !== 1}
+                disabled={selectedRowKeys.length !== 1}
             >编辑</Button>)
         }
         {
@@ -140,7 +144,7 @@ const LimitMaterial = ({ form }) => {
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_EPS_DELETE'
-                disabled={selectedRow.length === 0}
+                disabled={selectedRowKeys.length === 0}
             >删除</Button>)
         }
         {
@@ -149,7 +153,7 @@ const LimitMaterial = ({ form }) => {
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_EPS_FREEZE'
-                disabled={selectedRow.length === 0}
+                disabled={selectedRowKeys.length === 0}
             >冻结</Button>)
         }
         {
@@ -158,7 +162,7 @@ const LimitMaterial = ({ form }) => {
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_EPS_THAW'
-                disabled={selectedRow.length === 0}
+                disabled={selectedRowKeys.length === 0}
             >解冻</Button>)
         }
     </>
@@ -173,7 +177,7 @@ const LimitMaterial = ({ form }) => {
                 setData((value) => ({
                     ...value,
                     visible: true,
-                    modalSource: selectedRow[0],
+                    modalSource: selectedRow[selectedRow.length -1],
                     isView: type === 'detail'
                 }));
                 break;
@@ -212,7 +216,7 @@ const LimitMaterial = ({ form }) => {
                 setESPData((value) => ({
                     ...value,
                     visible: true,
-                    modalSource: selectedRow[0],
+                    modalSource: selectedRow[selectedRow.length -1],
                     isView: type === 'detail'
                 }));
                 break;
@@ -257,9 +261,9 @@ const LimitMaterial = ({ form }) => {
         } else {
             validateFields(async (errs, values) => {
                 if (!errs) {
-                    values.environmentalProtectionId = selectedRow[0].id;
-                    values.environmentalProtectionCode = selectedRow[0].environmentalProtectionCode;
-                    values.environmentalProtectionName = selectedRow[0].environmentalProtectionName;
+                    values.environmentalProtectionId = selectedRow[selectedRow.length -1].id;
+                    values.environmentalProtectionCode = selectedRow[selectedRow.length -1].environmentalProtectionCode;
+                    values.environmentalProtectionName = selectedRow[selectedRow.length -1].environmentalProtectionName;
                     delete values.basicUnitId;
                     if (data.modalSource) {
                         values = { ...data.modalSource, ...values }
@@ -348,7 +352,7 @@ const LimitMaterial = ({ form }) => {
                                         url: `${baseUrl}/environmentStandardLimitMaterialRelation/findByPage`,
                                         type: 'GET',
                                         params: {
-                                            environmentalProtectionCode: selectedRow[0].environmentalProtectionCode
+                                            environmentalProtectionCode: selectedRow[selectedRow.length -1].environmentalProtectionCode
                                         }
                                     }}
                                     searchPlaceHolder="输入搜索项"
@@ -359,7 +363,7 @@ const LimitMaterial = ({ form }) => {
                                         setSelectedRightKeys(selectedRightKeys)
                                     }}
                                     toolBar={{
-                                        left: headerLeft
+                                        left: headerRight
                                     }}
                                 />
                             </div>

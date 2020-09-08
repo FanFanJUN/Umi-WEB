@@ -7,8 +7,8 @@ import { baseUrl } from '../../../../../utils/commonUrl';
 const FormItem = Form.Item;
 
 const formItemLayoutLong = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 18 },
+  labelCol: { span: 8 },
+  wrapperCol: { span: 16 },
 };
 
 const EventModal = (props) => {

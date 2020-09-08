@@ -16,7 +16,7 @@ const { authAction } = utils;
 
 const { create, Item: FormItem } = Form;
 const { confirm } = Modal;
-const DEVELOPER_ENV = true;
+const DEVELOPER_ENV = true.toString();
 // const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const formLayout = {
     labelCol: { span: 8, },
@@ -45,7 +45,7 @@ const ExemptionClause = (props) => {
     ]
 
     const buttonClick = (type) => {
-        console.log('当前选中', selectedRow)
+        console.log('当前选中', selectedRow, selectedRowKeys)
         switch (type) {
             case 'add':
                 setData((value) => ({ ...value, visible: true, modalSource: '', isView: false }));
@@ -56,7 +56,7 @@ const ExemptionClause = (props) => {
                 setData((value) => ({
                     ...value,
                     visible: true,
-                    modalSource: selectedRow[0],
+                    modalSource: selectedRow[selectedRow.length -1],
                     isView: type === 'detail'
                 }));
                 break;
@@ -132,7 +132,7 @@ const ExemptionClause = (props) => {
                 onClick={() => buttonClick('edit')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                disabled={selectedRow.length !== 1}
+                disabled={selectedRowKeys.length !== 1}
                 key='QUALITYSYNERGY_EC_EDIT'
             >编辑</Button>)
         }
@@ -141,7 +141,7 @@ const ExemptionClause = (props) => {
                 onClick={() => buttonClick('delete')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                disabled={selectedRow.length === 0}
+                disabled={selectedRowKeys.length === 0}
                 key='QUALITYSYNERGY_EC_DELETE'
             >删除</Button>)
         }
@@ -150,7 +150,7 @@ const ExemptionClause = (props) => {
                 onClick={() => buttonClick('detail')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                disabled={selectedRow.length !== 1}
+                disabled={selectedRowKeys.length !== 1}
                 key='QUALITYSYNERGY_EC_DETAIL'
             >明细</Button>)
         }
@@ -197,9 +197,9 @@ const ExemptionClause = (props) => {
 
     }
     function refresh() {
-        tableRef.current.remoteDataRefresh();
         setSelectedRow([]);
         setSelectedRowKeys([]);
+        tableRef.current.remoteDataRefresh();
     }
 
     return (
@@ -217,6 +217,7 @@ const ExemptionClause = (props) => {
                 ref={tableRef}
                 checkbox={true}
                 remotePaging={true}
+                allowCancelSelect={true}
                 searchPlaceHolder="输入搜索项"
                 selectedRowKeys={selectedRowKeys}
                 onSelectRow={(selectedRowKeys, selectedRows) => {

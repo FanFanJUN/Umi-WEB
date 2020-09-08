@@ -56,7 +56,7 @@ const EnvironmentalProtectionStandard = ({ form }) => {
         setESPData((value) => ({
           ...value,
           visible: true,
-          modalSource: selectedRow[0],
+          modalSource: selectedRow[selectedRow.length - 1],
           isView: type === 'detail'
         }));
         break;
@@ -71,6 +71,8 @@ const EnvironmentalProtectionStandard = ({ form }) => {
             })
             if (res.success) {
               message.success('冻结成功');
+              setSelectedRowKeys([]);
+              setSelectedRow([]);
               tableRef.current.remoteDataRefresh()
             } else {
               message.error(res.message)
@@ -85,6 +87,8 @@ const EnvironmentalProtectionStandard = ({ form }) => {
             const res = await ESPDeleted({ ids: selectedRowKeys.join() });
             if (res.success) {
               message.success('删除成功');
+              setSelectedRowKeys([]);
+              setSelectedRow([]);
               tableRef.current.remoteDataRefresh()
             } else {
               message.error(res.message)
@@ -111,7 +115,7 @@ const EnvironmentalProtectionStandard = ({ form }) => {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='QUALITYSYNERGY_EPS_EDIT'
-        disabled={selectedRow.length !== 1}
+        disabled={setSelectedRowKeys.length !== 1}
       >编辑</Button>)
     }
     {
@@ -120,7 +124,7 @@ const EnvironmentalProtectionStandard = ({ form }) => {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='QUALITYSYNERGY_EPS_DELETE'
-        disabled={selectedRow.length === 0}
+        disabled={setSelectedRowKeys.length === 0}
       >删除</Button>)
     }
     {
@@ -129,7 +133,7 @@ const EnvironmentalProtectionStandard = ({ form }) => {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='QUALITYSYNERGY_EPS_FREEZE'
-        disabled={selectedRow.length === 0}
+        disabled={setSelectedRowKeys.length === 0}
       >冻结</Button>)
     }
     {
@@ -138,7 +142,7 @@ const EnvironmentalProtectionStandard = ({ form }) => {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='QUALITYSYNERGY_EPS_THAW'
-        disabled={selectedRow.length === 0}
+        disabled={setSelectedRowKeys.length === 0}
       >解冻</Button>)
     }
   </>
@@ -157,6 +161,8 @@ const EnvironmentalProtectionStandard = ({ form }) => {
           if (res.success) {
             message.success('操作成功');
             setESPData((value) => ({ ...value, visible: false }))
+            setSelectedRowKeys([]);
+            setSelectedRow([]);
             tableRef.current.remoteDataRefresh()
           } else {
             message.error(res.message)
@@ -178,6 +184,7 @@ const EnvironmentalProtectionStandard = ({ form }) => {
           }
         }}
         checkbox={true}
+        remotePaging={true}
         selectedRowKeys={selectedRowKeys}
         onSelectRow={(selectedRowKeys, selectedRows) => {
           setSelectedRow(selectedRows);
