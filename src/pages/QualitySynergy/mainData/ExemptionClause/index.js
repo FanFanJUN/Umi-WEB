@@ -78,33 +78,48 @@ const ExemptionClause = (props) => {
         }
     }
     const validateItem = (data) => {
-        const listData = data.map(item => {
-            delete item.key
-            item.limitNumber = Number(item.limitNumber).toFixed(2);
-            return item;
+      return new Promise((resolve, reject) => {
+        JudgeTheListOfExemptionClause(data).then(res => {
+          console.log(res)
+          // const response = res
         })
-        return new Promise((resolve, reject) => {
-            JudgeTheListOfExemptionClause(listData).then(res => {
-                let response = [];
-                if(res.success) {
-                    console.log('遍历数据', res)
-                    response = res.data.map((item, index) => ({
-                        ...item,
-                        key: index,
-                        validate: item.importResult,
-                        status: item.importResult ? '数据完整' : item.importResultInfo,
-                        statusCode: item.importResult ? 'success' : 'error',
-                        message: item.importResult ? '成功' : item.importResultInfo
-                    }));
-                } else {
-                    message.error(res.message);
-                }
-                console.log('整合数据response', response)
-                resolve(response);
-            }).catch(err => {
-                reject(err)
-            })
-        });
+      })
+      // return data.map(d => {
+      //   return {
+      //     ...d,
+      //     validate: true,
+      //     status: '验证通过',
+      //     statusCode: 'success',
+      //     message: '验证通过',
+      //   };
+      // })
+        // const listData = data.map(item => {
+        //     delete item.key
+        //     item.limitNumber = Number(item.limitNumber).toFixed(2);
+        //     return item;
+        // })
+        // return new Promise((resolve, reject) => {
+        //     JudgeTheListOfExemptionClause(listData).then(res => {
+        //         let response = [];
+        //         if(res.success) {
+        //             console.log('遍历数据', res)
+        //             response = res.data.map((item, index) => ({
+        //                 ...item,
+        //                 key: index,
+        //                 validate: item.importResult,
+        //                 status: item.importResult ? '数据完整' : item.importResultInfo,
+        //                 statusCode: item.importResult ? 'success' : 'error',
+        //                 message: item.importResult ? '成功' : item.importResultInfo
+        //             }));
+        //         } else {
+        //             message.error(res.message);
+        //         }
+        //         console.log('整合数据response', response)
+        //         resolve(response);
+        //     }).catch(err => {
+        //         reject(err)
+        //     })
+        // });
     };
 
     const importFunc = (value) => {

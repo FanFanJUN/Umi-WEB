@@ -1,4 +1,4 @@
-import React, { useState, useEffect  } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Affix, Button, Spin } from 'antd';
 import classnames from 'classnames';
 import styles from '../../../../Supplier/Editor/index.less';
@@ -10,6 +10,10 @@ import TechnicalData from './TechnicalData';
 
 export default () => {
   const { query } = router.useLocation();
+
+  const baseInfoRef = useRef(null);
+  const materialInfoRef = useRef(null);
+  const technicalDataRef = useRef(null);
 
   const [data, setData] = useState({
     loading: false,
@@ -41,7 +45,9 @@ export default () => {
   }
 
   const handleSave = () => {
-    console.log('保存')
+    const baseInfoData = baseInfoRef.current.getBaseInfoData()
+    const materialInfoData = baseInfoRef.current.getMaterialInfoData()
+    console.log('保存', baseInfoData, materialInfoData)
   }
 
   return (
@@ -58,14 +64,17 @@ export default () => {
           </div>
         </Affix>
         <BaseInfo
+          wrappedComponentRef={baseInfoRef}
           userInfo={data.userInfo}
           type={data.type}
         />
         <MaterialInfo
+          wrappedComponentRef={materialInfoRef}
           type={data.type}
         />
         {
           data.type === 'add' && <TechnicalData
+            wrappedComponentRef={technicalDataRef}
             type={data.type}
           />
         }
