@@ -44,9 +44,11 @@ const ExemptionClause = (props) => {
     ]
 
     const buttonClick = (type) => {
+        console.log('当前选中', selectedRow)
         switch (type) {
             case 'add':
                 setData((value) => ({ ...value, visible: true, modalSource: '', isView: false }));
+                refresh();
                 break;
             case 'edit':
             case 'detail':
@@ -63,9 +65,9 @@ const ExemptionClause = (props) => {
                     onOk: async () => {
                         const parmas = selectedRowKeys.join();
                         const res = await exemptionClauseDataDelete({ ids: parmas });
-                        if (data.success) {
+                        if (res.success) {
                             message.success('删除成功');
-                            tableRef.current.remoteDataRefresh()
+                            refresh();
                         } else {
                             message.error(res.message)
                         }
@@ -75,19 +77,28 @@ const ExemptionClause = (props) => {
         }
     }
     const validateItem = (data) => {
-        console.log('进入验证', data);
+        const listData = data.map(item => {
+            delete item.key
+            item.limitNumber = Number(item.limitNumber).toFixed(2);
+            return item;
+        })
         return new Promise((resolve, reject) => {
-            JudgeTheListOfExemptionClause(data).then(res => {
-                const response = res.data && res.data.map(item => ({
-                    ...item,
-                    validate: item.importResult,
-                    status: item.importResult ? '数据完整' : item.importResultInfo,
-                    statusCode: item.importResult ? 'success' : 'error',
-                    message: item.importResult ? '成功' : item.importResultInfo
-                }));
-                if (!res.success) {
+            JudgeTheListOfExemptionClause(listData).then(res => {
+                let response = [];
+                if(res.success) {
+                    console.log('遍历数据', res)
+                    response = res.data.map((item, index) => ({
+                        ...item,
+                        key: index,
+                        validate: item.importResult,
+                        status: item.importResult ? '数据完整' : item.importResultInfo,
+                        statusCode: item.importResult ? 'success' : 'error',
+                        message: item.importResult ? '成功' : item.importResultInfo
+                    }));
+                } else {
                     message.error(res.message);
                 }
+                console.log('整合数据response', response)
                 resolve(response);
             }).catch(err => {
                 reject(err)
@@ -99,7 +110,7 @@ const ExemptionClause = (props) => {
         console.log(value);
         SaveTheListOfExemptionClause(value).then(res => {
             if (res.success) {
-                tableRef.current.remoteDataRefresh();
+                refresh();
             } else {
                 message.error(res.msg)
             }
@@ -111,7 +122,7 @@ const ExemptionClause = (props) => {
                 type='primary'
                 onClick={() => buttonClick('add')}
                 className={styles.btn}
-                ignore={DEVELOPER_ENV}
+                // ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_EC_ADD'
             >新增</Button>)
         }
@@ -119,7 +130,7 @@ const ExemptionClause = (props) => {
             authAction(<Button
                 onClick={() => buttonClick('edit')}
                 className={styles.btn}
-                ignore={DEVELOPER_ENV}
+                // ignore={DEVELOPER_ENV}
                 disabled={selectedRow.length !== 1}
                 key='QUALITYSYNERGY_EC_EDIT'
             >编辑</Button>)
@@ -128,7 +139,7 @@ const ExemptionClause = (props) => {
             authAction(<Button
                 onClick={() => buttonClick('delete')}
                 className={styles.btn}
-                ignore={DEVELOPER_ENV}
+                // ignore={DEVELOPER_ENV}
                 disabled={selectedRow.length === 0}
                 key='QUALITYSYNERGY_EC_DELETE'
             >删除</Button>)
@@ -137,7 +148,7 @@ const ExemptionClause = (props) => {
             authAction(<Button
                 onClick={() => buttonClick('detail')}
                 className={styles.btn}
-                ignore={DEVELOPER_ENV}
+                // ignore={DEVELOPER_ENV}
                 disabled={selectedRow.length !== 1}
                 key='QUALITYSYNERGY_EC_DETAIL'
             >明细</Button>)
@@ -147,13 +158,14 @@ const ExemptionClause = (props) => {
                 tableProps={{ columns }}
                 validateFunc={validateItem}
                 importFunc={importFunc}
-                ignore={DEVELOPER_ENV}
+                // ignore={DEVELOPER_ENV}
+                validateAll={true}
                 key='QUALITYSYNERGY_EC_IMPORT'
                 templateFileList={[
                     {
                         download: '/templates/主数据-豁免条款-批导模板.xlsx',
                         fileName: '主数据-豁免条款-批导模板.xlsx',
-                        key: 'UseMaterialList',
+                        key: 'ExemptionClause',
                     },
                 ]}
             />)
@@ -162,11 +174,10 @@ const ExemptionClause = (props) => {
     // 编辑/新增
     const handleOk = async () => {
         if (data.isView) {
-            setData((value) => ({ ...value, visible: false }))
+            setData((value) => ({ ...value, visible: false, modalSource: '' }))
         } else {
             validateFields(async (errs, values) => {
                 if (!errs) {
-                    console.log(values)
                     values.exemptionExpireDate = moment(values.exemptionExpireDate).format('YYYY-MM-DD');
                     if (data.modalSource) {
                         values = { ...data.modalSource, ...values }
@@ -174,8 +185,8 @@ const ExemptionClause = (props) => {
                     const res = await exemptionClauseDataInsert(values)
                     if (res.success) {
                         message.success('操作成功');
-                        setData((value) => ({ ...value, visible: false }))
-                        tableRef.current.remoteDataRefresh()
+                        refresh();
+                        setData((value) => ({ ...value, visible: false, modalSource: '' }))
                     } else {
                         message.error(res.message)
                     }
@@ -184,10 +195,16 @@ const ExemptionClause = (props) => {
         }
 
     }
+    function refresh() {
+        tableRef.current.remoteDataRefresh();
+        setSelectedRow([]);
+        setSelectedRowKeys([]);
+    }
 
     return (
         <Fragment>
             <ExtTable
+                rowKey={(v) => v.id}
                 columns={columns}
                 store={{
                     url: `${baseUrl}/exemptionClauseData/findByPage`,
@@ -202,8 +219,8 @@ const ExemptionClause = (props) => {
                 searchPlaceHolder="输入搜索项"
                 selectedRowKeys={selectedRowKeys}
                 onSelectRow={(selectedRowKeys, selectedRows) => {
-                    setSelectedRow(selectedRows)
-                    setSelectedRowKeys(selectedRowKeys)
+                    setSelectedRow(selectedRows);
+                    setSelectedRowKeys(selectedRowKeys);
                 }}
                 toolBar={{
                     left: headerLeft

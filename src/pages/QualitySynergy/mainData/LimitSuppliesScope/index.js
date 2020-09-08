@@ -102,7 +102,7 @@ const Index = () => {
         type='primary'
         onClick={() => buttonClick('add')}
         className={styles.btn}
-        ignore={DEVELOPER_ENV}
+        // ignore={DEVELOPER_ENV}
         key='QUALITYSYNERGY_LSS_ADD'
       >新增</Button>)
     }
@@ -110,7 +110,7 @@ const Index = () => {
       authAction(<Button
         onClick={() => buttonClick('edit')}
         className={styles.btn}
-        ignore={DEVELOPER_ENV}
+        // ignore={DEVELOPER_ENV}
         disabled={selectedRowKeys.length === 0 || selectedRowKeys.length > 1}
         key='QUALITYSYNERGY_LSS_EDIT'
       >编辑</Button>)
@@ -119,7 +119,7 @@ const Index = () => {
       authAction(<Button
         onClick={() => buttonClick('delete')}
         className={styles.btn}
-        ignore={DEVELOPER_ENV}
+        // ignore={DEVELOPER_ENV}
         disabled={selectRows.length === 0}
         key='QUALITYSYNERGY_LSS_DELETE'
       >删除</Button>)
@@ -128,7 +128,7 @@ const Index = () => {
       authAction(<Button
         onClick={() => buttonClick('frost')}
         className={styles.btn}
-        ignore={DEVELOPER_ENV}
+        // ignore={DEVELOPER_ENV}
         key='QUALITYSYNERGY_LSS_FROST'
         disabled={selectRows.length === 0}
       >冻结</Button>)
@@ -137,7 +137,7 @@ const Index = () => {
       authAction(<Button
         onClick={() => buttonClick('thaw')}
         className={styles.btn}
-        ignore={DEVELOPER_ENV}
+        // ignore={DEVELOPER_ENV}
         key='QUALITYSYNERGY_LSS_THAW'
         disabled={selectRows.length === 0}
       >解冻</Button>)

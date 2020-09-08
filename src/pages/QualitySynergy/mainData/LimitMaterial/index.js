@@ -12,7 +12,7 @@ import {
     ESPMDelete,
     ESPMFreeze
 } from '../../../../services/qualitySynergy'
-import { getUserName, getUserId, getUserAccount } from '../../../../utils'
+import { getUserName, getUserId, getUserAccount, getUserTenantCode } from '../../../../utils'
 import styles from './index.less'
 import moment from 'moment'
 const { authAction } = utils;
@@ -69,7 +69,7 @@ const LimitMaterial = ({ form }) => {
                 type='primary'
                 onClick={() => buttonClick('add')}
                 className={styles.btn}
-                ignore={DEVELOPER_ENV}
+                // ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_UML_ADD'
             >新增</Button>)
         }
@@ -77,7 +77,7 @@ const LimitMaterial = ({ form }) => {
             authAction(<Button
                 onClick={() => buttonClick('edit')}
                 className={styles.btn}
-                ignore={DEVELOPER_ENV}
+                // ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_UML_EDIT'
             >编辑</Button>)
         }
@@ -85,7 +85,7 @@ const LimitMaterial = ({ form }) => {
             authAction(<Button
                 onClick={() => buttonClick('delete')}
                 className={styles.btn}
-                ignore={DEVELOPER_ENV}
+                // ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_UML_DELETE'
             >删除</Button>)
         }
@@ -93,7 +93,7 @@ const LimitMaterial = ({ form }) => {
             authAction(<Button
                 onClick={() => buttonClick('freeze')}
                 className={styles.btn}
-                ignore={DEVELOPER_ENV}
+                // ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_UML_FREEZE'
             >冻结</Button>)
         }
@@ -101,7 +101,7 @@ const LimitMaterial = ({ form }) => {
             authAction(<Button
                 onClick={() => buttonClick('thaw')}
                 className={styles.btn}
-                ignore={DEVELOPER_ENV}
+                // ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_UML_THAW'
             >解冻</Button>)
         }
@@ -109,7 +109,7 @@ const LimitMaterial = ({ form }) => {
             authAction(<Button
                 onClick={() => buttonClick('thaw')}
                 className={styles.btn}
-                ignore={DEVELOPER_ENV}
+                // ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_UML_IMPORT'
             >批量导入</Button>)
         }
@@ -120,7 +120,7 @@ const LimitMaterial = ({ form }) => {
                 type='primary'
                 onClick={() => EPSbuttonClick('add')}
                 className={styles.btn}
-                ignore={DEVELOPER_ENV}
+                // ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_EPS_ADD'
             >新增</Button>)
         }
@@ -128,7 +128,7 @@ const LimitMaterial = ({ form }) => {
             authAction(<Button
                 onClick={() => EPSbuttonClick('edit')}
                 className={styles.btn}
-                ignore={DEVELOPER_ENV}
+                // ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_EPS_EDIT'
                 disabled={selectedRow.length !== 1}
             >编辑</Button>)
@@ -137,7 +137,7 @@ const LimitMaterial = ({ form }) => {
             authAction(<Button
                 onClick={() => EPSbuttonClick('delete')}
                 className={styles.btn}
-                ignore={DEVELOPER_ENV}
+                // ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_EPS_DELETE'
                 disabled={selectedRow.length === 0}
             >删除</Button>)
@@ -146,7 +146,7 @@ const LimitMaterial = ({ form }) => {
             authAction(<Button
                 onClick={() => EPSbuttonClick('freeze')}
                 className={styles.btn}
-                ignore={DEVELOPER_ENV}
+                // ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_EPS_FREEZE'
                 disabled={selectedRow.length === 0}
             >冻结</Button>)
@@ -155,7 +155,7 @@ const LimitMaterial = ({ form }) => {
             authAction(<Button
                 onClick={() => EPSbuttonClick('thaw')}
                 className={styles.btn}
-                ignore={DEVELOPER_ENV}
+                // ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_EPS_THAW'
                 disabled={selectedRow.length === 0}
             >解冻</Button>)
@@ -256,9 +256,10 @@ const LimitMaterial = ({ form }) => {
         } else {
             validateFields(async (errs, values) => {
                 if (!errs) {
-                    values.environmentalProtectionId = selectedRow[0].environmentalProtectionId;
+                    values.environmentalProtectionId = selectedRow[0].id;
                     values.environmentalProtectionCode = selectedRow[0].environmentalProtectionCode;
                     values.environmentalProtectionName = selectedRow[0].environmentalProtectionName;
+                    delete values.basicUnitId;
                     if (data.modalSource) {
                         values = { ...data.modalSource, ...values }
                     }
@@ -266,7 +267,7 @@ const LimitMaterial = ({ form }) => {
                     if (res.success) {
                         message.success('操作成功');
                         setData((value) => ({ ...value, visible: false }))
-                        tableRef.current.remoteDataRefresh()
+                        tableRightRef.current.remoteDataRefresh()
                     } else {
                         message.error(res.message)
                     }
@@ -490,6 +491,7 @@ const LimitMaterial = ({ form }) => {
                             {
                                 getFieldDecorator('conductorId', { initialValue: getUserId() }),
                                 getFieldDecorator('conductorAccount', { initialValue: getUserAccount() }),
+                                getFieldDecorator('tenantCode', { initialValue: getUserTenantCode() }),
                                 getFieldDecorator('conductorName', {
                                     initialValue: data.modalSource ? data.modalSource.conductorName : getUserName(),
                                 })(<Input disabled />)
