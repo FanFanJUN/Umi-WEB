@@ -8,6 +8,7 @@ import {
     addTechnicalDataCategory,
     updateTechnicalDataCategory,
     deleteTechnicalDataCategory,
+    frozenTechnicalDataCategory
 } from '../../../../services/qualitySynergy'
 const { authAction } = utils;
 const { create, Item: FormItem } = Form;
@@ -47,10 +48,23 @@ const TechnicalDataFileTypes = (props) => {
                 break;
             case 'thaw':
             case 'freeze':
-                if (checkSlectOne()) {
-                    console.log('冻结', selectedRow[0])
-                }
-
+                confirm({
+                    title: `请确认是否${type==='thaw'?'解冻': '冻结'}选中技术资料类别数据`,
+                    onOk: async () => {
+                        const parmas = selectedRowKeys.join();
+                        const res = await frozenTechnicalDataCategory({ 
+                            ids: parmas,
+                            flag: type === 'freeze'
+                        });
+                        if (res.success) {
+                            message.success('操作成功');
+                            tableRef.current.manualSelectedRows();
+                            tableRef.current.remoteDataRefresh();
+                        } else {
+                            message.error(res.message);
+                        }
+                    },
+                });
                 break;
             case 'delete':
                 if (selectedRow.length === 0) {
@@ -66,7 +80,7 @@ const TechnicalDataFileTypes = (props) => {
                                 tableRef.current.manualSelectedRows();
                                 tableRef.current.remoteDataRefresh();
                             } else {
-                                message.error(res.message)
+                                message.error(res.message);
                             }
                         },
                     });

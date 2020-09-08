@@ -127,3 +127,12 @@ export async function deleteTechnicalDataCategory(params) {
         params: params,
     });
 }
+// 技术资料文件类别-删除
+export async function frozenTechnicalDataCategory(params) {
+    const url = `${baseUrl}/technicalDataCategory/batchWhetherFrozen`;
+    return request({
+        url,
+        method: 'POST',
+        params: params,
+    });
+}

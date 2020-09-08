@@ -448,6 +448,7 @@ const LimitMaterial = ({ form }) => {
                                 getFieldDecorator('basicUnitName'),
                                 getFieldDecorator('basicUnitCode', {
                                     initialValue: data.modalSource && data.modalSource.basicUnitName,
+                                    rules: [{ required: true, message: '请选择基本单位' }]
                                 })(<ComboList
                                     form={form}
                                     {...BasicUnitList}
