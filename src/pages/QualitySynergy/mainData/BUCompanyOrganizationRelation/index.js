@@ -33,7 +33,7 @@ const Index = () => {
   const columns = [
     { title: 'BU代码', dataIndex: 'buCode', width: 200 },
     { title: 'BU名称', dataIndex: 'buName', ellipsis: true },
-    { title: '公司代码', dataIndex: 'corporationCode;', ellipsis: true },
+    { title: '公司代码', dataIndex: 'corporationCode', ellipsis: true },
     { title: '公司名称', dataIndex: 'corporationName', ellipsis: true, width: 300 },
     { title: '采购组织代码', dataIndex: 'purchaseOrgCode', ellipsis: true },
     { title: '采购组织名称', dataIndex: 'purchaseOrgName', ellipsis: true, width: 300 },
@@ -70,6 +70,7 @@ const Index = () => {
     if (data.success) {
       setSelectRows([]);
       setSelectedRowKeys([]);
+      tableRef.current.manualSelectedRows();
       tableRef.current.remoteDataRefresh();
     }
   };
@@ -88,6 +89,7 @@ const Index = () => {
         if (data.success) {
           setSelectRows([]);
           setSelectedRowKeys([]);
+          tableRef.current.manualSelectedRows();
           tableRef.current.remoteDataRefresh();
         }
       },
@@ -155,6 +157,7 @@ const Index = () => {
           setData((value) => ({ ...value, visible: false }));
           setSelectRows([]);
           setSelectedRowKeys([]);
+          tableRef.current.manualSelectedRows();
           tableRef.current.remoteDataRefresh();
         } else {
           message.error(res.message);
@@ -168,6 +171,7 @@ const Index = () => {
           setData((value) => ({ ...value, visible: false }));
           setSelectRows([]);
           setSelectedRowKeys([]);
+          tableRef.current.manualSelectedRows();
           tableRef.current.remoteDataRefresh();
         } else {
           message.error(res.message);
@@ -185,7 +189,7 @@ const Index = () => {
         columns={columns}
         store={{
           url: `${baseUrl}/buCompanyPurchasingOrganization/findByPage`,
-          type: 'GET',
+          type: 'POST',
         }}
         allowCancelSelect={true}
         remotePaging={true}

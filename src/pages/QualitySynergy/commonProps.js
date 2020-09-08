@@ -12,6 +12,16 @@ const commonProps = {
   },
 };
 
+//技术资料分享新增
+export async function AddDataSharingList(params) {
+  const url = `${baseUrl}/api/epTechnicalShareDemandService/insert`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+}
+
 
 // BU与公司采购组织对应关系新增
 export async function AddBUCompanyOrganizationRelation(params) {
