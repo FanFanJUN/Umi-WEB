@@ -3,7 +3,7 @@ import { Affix, Button, Spin } from 'antd';
 import classnames from 'classnames';
 import styles from '../../../../Supplier/Editor/index.less';
 import { router } from 'dva';
-import { closeCurrent } from '../../../../../utils';
+import { closeCurrent, getMobile, getUserAccount, getUserId, getUserName } from '../../../../../utils';
 import BaseInfo from './BaseInfo';
 import MaterialInfo from './MaterialInfo';
 import TechnicalData from './TechnicalData';
@@ -21,7 +21,7 @@ export default () => {
     const { id, pageState } = query;
     switch (pageState) {
       case 'add':
-        // getUser()
+        getUser()
         setData((value) => ({...value, type: pageState, title: '技术资料分享需求-新增'}))
         break
     }
@@ -29,8 +29,10 @@ export default () => {
   }, [])
 
   const getUser = () => {
-
-    console.log('触发')
+    const userId = getUserId()
+    const userName = getUserName()
+    const userMobile = getMobile()
+    console.log(userId, userMobile, userName, 'iser')
   }
 
   const handleBack = () => {

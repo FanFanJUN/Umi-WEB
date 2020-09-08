@@ -200,15 +200,20 @@ export const getUserAccount = () => {
 
 export const getUserName = () => {
   const info = storage.sessionStorage.get('Authorization') || {};
-  return info?.userName 
+  return info?.userName
 }
 export const getUserTenantCode = () => {
   const info = storage.sessionStorage.get('Authorization') || {};
-  return info?.tenantCode 
+  return info?.tenantCode
 }
 export const getUserId = () => {
   const info = storage.sessionStorage.get('Authorization') || {};
-  return info?.userId 
+  return info?.userId
+}
+
+export const getMobile = () => {
+  const info = storage.sessionStorage.get('Authorization') || {};
+  return info?.mobile
 }
 
 export const downloadBlobFile = (data, name) => {
