@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useImperativeHandle } from 'react';
 import styles from './BaseInfo.less';
 import { Col, Form, Modal, Row, Input } from 'antd';
 import moment from 'moment/moment';
@@ -16,11 +16,23 @@ const formLayout = {
   },
 };
 
-const MaterialInfo = (props) => {
+const MaterialInfo = React.forwardRef((props, ref) => {
 
   const { type, data, form } = props;
 
   const { getFieldDecorator, getFieldValue } = props.form;
+
+  useImperativeHandle(ref, () => ({
+    getMaterialInfoData: getMaterialInfoData
+  }))
+
+  const getMaterialInfoData = () => {
+    props.form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        return values
+      }
+    })
+  }
 
   const hideFormItem = (name, initialValue) => (
     <FormItem>
@@ -47,13 +59,13 @@ const MaterialInfo = (props) => {
               <FormItem {...formLayout} label={'物料代码'}>
                 {
                   getFieldDecorator('materialCode', {
-                  initialValue: type === 'add' ? '' : data.materialCode,
-                })(<ComboList
-                  style={{ width: '100%' }}
-                  form={form}
-                  name={'materialCode'}
-                  field={['materialId', 'materialDesc', 'materialGroupCode', 'materialGroupDesc', 'materialGroupId']}
-                  {...MaterialConfig}
+                    initialValue: type === 'add' ? '' : data.materialCode,
+                  })(<ComboList
+                    style={{ width: '100%' }}
+                    form={form}
+                    name={'materialCode'}
+                    field={['materialId', 'materialDesc', 'materialGroupCode', 'materialGroupDesc', 'materialGroupId']}
+                    {...MaterialConfig}
                   />)
                 }
               </FormItem>
@@ -83,20 +95,20 @@ const MaterialInfo = (props) => {
               <FormItem {...formLayout} label={'物料组代码'}>
                 {
                   getFieldDecorator('materialGroupCode', {
-                  initialValue: type === 'add' ? '' : data.materialGroupCode,
-                  rules: [
-                {
-                  required: true,
-                  message: '物料组代码不能为空',
-                },
-                  ],
-                })(<ComboList
-                  disabled={getFieldValue('materialCode') ? true : false}
-                  style={{ width: '100%' }}
-                  form={form}
-                  name={'materialGroupCode'}
-                  field={['materialGroupId']}
-                  {...BUConfig}
+                    initialValue: type === 'add' ? '' : data.materialGroupCode,
+                    rules: [
+                      {
+                        required: true,
+                        message: '物料组代码不能为空',
+                      },
+                    ],
+                  })(<ComboList
+                    disabled={getFieldValue('materialCode') ? true : false}
+                    style={{ width: '100%' }}
+                    form={form}
+                    name={'materialGroupCode'}
+                    field={['materialGroupId']}
+                    {...BUConfig}
                   />)
                 }
               </FormItem>
@@ -148,6 +160,6 @@ const MaterialInfo = (props) => {
     </div>
   );
 
-};
+})
 
 export default Form.create()(MaterialInfo);

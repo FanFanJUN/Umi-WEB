@@ -78,33 +78,21 @@ const ExemptionClause = (props) => {
         }
     }
     const validateItem = (data) => {
-        const listData = data.map(item => {
-            delete item.key
-            item.limitNumber = Number(item.limitNumber).toFixed(2);
-            return item;
+      return new Promise((resolve, reject) => {
+        JudgeTheListOfExemptionClause(data).then(res => {
+          const response = res.data.map((item, index) => ({
+            ...item,
+            key: index,
+            validate: item.importResult,
+            status: item.importResult ? '数据完整' : '失败',
+            statusCode: item.importResult ? 'success' : 'error',
+            message: item.importResult ? '成功' : item.importResultInfo
+          }))
+          resolve(response);
+        }).catch(err => {
+          reject(err)
         })
-        return new Promise((resolve, reject) => {
-            JudgeTheListOfExemptionClause(listData).then(res => {
-                let response = [];
-                if(res.success) {
-                    console.log('遍历数据', res)
-                    response = res.data.map((item, index) => ({
-                        ...item,
-                        key: index,
-                        validate: item.importResult,
-                        status: item.importResult ? '数据完整' : item.importResultInfo,
-                        statusCode: item.importResult ? 'success' : 'error',
-                        message: item.importResult ? '成功' : item.importResultInfo
-                    }));
-                } else {
-                    message.error(res.message);
-                }
-                console.log('整合数据response', response)
-                resolve(response);
-            }).catch(err => {
-                reject(err)
-            })
-        });
+      })
     };
 
     const importFunc = (value) => {
@@ -209,7 +197,7 @@ const ExemptionClause = (props) => {
                 columns={columns}
                 store={{
                     url: `${baseUrl}/exemptionClauseData/findByPage`,
-                    type: 'GET',
+                    type: 'POST',
                     params: {
                         quickSearchProperties: []
                     }
