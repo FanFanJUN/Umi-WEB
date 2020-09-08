@@ -157,6 +157,8 @@ const Index = () => {
     const response = await AddAndEditBasicMaterials(params);
     if (response.success) {
       setData((value) => ({ ...value, visible: false }));
+      setSelectRows([]);
+      setSelectedRowKeys([]);
       tableRef.current.remoteDataRefresh();
     } else {
       message.error(response.message);

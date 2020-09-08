@@ -104,7 +104,9 @@ const MaterialInfo = (props) => {
             <Col span={12}>
               <FormItem label='物料组描述' {...formLayout}>
                 {
-                  getFieldDecorator('materialGroupDesc', {})(
+                  getFieldDecorator('materialGroupDesc', {
+                    initialValue: type === 'add' ? '' : data.materialGroupDesc,
+                  })(
                     <Input disabled={true} placeholder='请输入物料组描述' style={{ width: '100%' }}/>,
                   )
                 }
@@ -115,7 +117,9 @@ const MaterialInfo = (props) => {
             <Col span={12}>
               <FormItem label='战略采购代码' {...formLayout}>
                 {
-                  getFieldDecorator('configCode', {})(
+                  getFieldDecorator('configCode', {
+                    initialValue: type === 'add' ? '123' : data.configCode,
+                  })(
                     <Input disabled={true} placeholder='请输入战略采购代码' style={{ width: '100%' }}/>,
                   )
                 }
@@ -125,6 +129,7 @@ const MaterialInfo = (props) => {
               <FormItem label='战略采购名称' {...formLayout}>
                 {
                   getFieldDecorator('configCode', {
+                    initialValue: type === 'add' ? '123' : data.configCode,
                     rules: [
                       {
                         required: true,

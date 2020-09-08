@@ -17,6 +17,9 @@ const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 
 export default function() {
 
+
+  const tableRef = useRef(null);
+
   const [modalData, setModalData]= useState({
     title: '查看已分配的供应商',
     visible: false,
@@ -25,6 +28,10 @@ export default function() {
 
   const [assignData, setAssignData]= useState({
     visible: false,
+  })
+
+  const [data, setData] = useState({
+    selectedRowKeys: []
   })
 
   const [searchValue, setSearchValue] = useState({});
@@ -202,10 +209,6 @@ export default function() {
     console.log(value, 'value')
   }
 
-  const selectedRowKeys = (value) => {
-    console.log('select', value)
-  }
-
   const handleModalCancel = () => {
     setModalData((value) => ({...value, visible: false}))
   }
@@ -220,24 +223,21 @@ export default function() {
         }
         advanced
       />
-      <AutoSizeLayout>
-        {
-          (h) => <ExtTable
-            columns={columns}
-            bordered
-            height={h}
-            allowCancelSelect
-            showSearch={false}
-            remotePaging
-            checkbox={{ multiSelect: false }}
-            rowKey={(item) => item.id}
-            size='small'
-            onSelectRow={handleSelectedRows}
-            selectedRowKeys={selectedRowKeys}
-            {...tableProps}
-          />
-        }
-      </AutoSizeLayout>
+      <ExtTable
+        style={{marginTop: '10px'}}
+        rowKey={(v) => v.id}
+        bordered
+        allowCancelSelect
+        showSearch={false}
+        remotePaging
+        checkbox={{ multiSelect: false }}
+        size='small'
+        onSelectRow={handleSelectedRows}
+        selectedRowKeys={data.selectedRowKeys}
+        columns={columns}
+        ref={tableRef}
+        dataSource={data.dataSource}
+      />
       <SupplierModal
         type={modalData.type}
         visible={modalData.visible}

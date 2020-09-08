@@ -156,11 +156,12 @@ const Index = () => {
     const response = await AddAndEditLimitSuppliesScope(params);
     if (response.success) {
       setData((value) => ({ ...value, visible: false }));
+      setSelectRows([]);
+      setSelectedRowKeys([]);
       tableRef.current.remoteDataRefresh();
     } else {
       message.error(response.message);
     }
-    console.log(value, 'save');
   };
 
 

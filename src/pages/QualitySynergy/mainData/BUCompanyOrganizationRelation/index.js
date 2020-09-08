@@ -153,6 +153,8 @@ const Index = () => {
       AddBUCompanyOrganizationRelation(value).then(res => {
         if (res.success) {
           setData((value) => ({ ...value, visible: false }));
+          setSelectRows([]);
+          setSelectedRowKeys([]);
           tableRef.current.remoteDataRefresh();
         } else {
           message.error(res.message);
@@ -164,6 +166,8 @@ const Index = () => {
       AddBUCompanyOrganizationRelation(params).then(res => {
         if (res.success) {
           setData((value) => ({ ...value, visible: false }));
+          setSelectRows([]);
+          setSelectedRowKeys([]);
           tableRef.current.remoteDataRefresh();
         } else {
           message.error(res.message);

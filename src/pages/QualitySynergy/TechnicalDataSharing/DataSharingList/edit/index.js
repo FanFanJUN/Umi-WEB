@@ -14,7 +14,8 @@ export default () => {
   const [data, setData] = useState({
     loading: false,
     type: 'add',
-    title: ''
+    title: '',
+    userInfo: {}
   })
 
   useEffect( () => {
@@ -32,7 +33,7 @@ export default () => {
     const userId = getUserId()
     const userName = getUserName()
     const userMobile = getMobile()
-    console.log(userId, userMobile, userName, 'iser')
+    setData((v) => ({...v, userInfo: {userName, userId, userMobile}}))
   }
 
   const handleBack = () => {
@@ -57,13 +58,16 @@ export default () => {
           </div>
         </Affix>
         <BaseInfo
+          userInfo={data.userInfo}
           type={data.type}
         />
         <MaterialInfo
           type={data.type}
         />
         {
-          data.type === 'add' && <TechnicalData/>
+          data.type === 'add' && <TechnicalData
+            type={data.type}
+          />
         }
       </Spin>
     </div>

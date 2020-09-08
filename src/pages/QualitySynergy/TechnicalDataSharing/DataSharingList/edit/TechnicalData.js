@@ -4,12 +4,14 @@ import { Col, Form, Modal, Row, Input, Button } from 'antd';
 import { ExtTable } from 'suid';
 import { baseUrl, smBaseUrl } from '../../../../../utils/commonUrl';
 import TechnicalDataModal from './component/TechnicalDataModal';
+import moment from 'moment/moment';
 
 const TechnicalData = (props) => {
 
   const tableRef = useRef(null);
 
   const [data, setData] = useState({
+    dataSource: [],
     selectRows: [],
     selectedRowKeys: [],
     visible: false,
@@ -20,24 +22,8 @@ const TechnicalData = (props) => {
     { title: '文件类别', dataIndex: 'fileType', width: 350 },
     { title: '文件版本', dataIndex: 'fileVersion', width: 350, ellipsis: true, },
     { title: '技术资料附件', dataIndex: 'technicalDataFileId', width: 350, ellipsis: true, },
-    { title: '样品需求日期', dataIndex: 'sampleRequirementData', width: 350, ellipsis: true, },
+    { title: '样品需求日期', dataIndex: 'sampleRequirementDate', width: 350, ellipsis: true, },
   ].map(item => ({...item, align: 'center'}))
-
-  const tableProps = {
-    store: {
-      url: `${smBaseUrl}/api/supplierFinanceViewModifyService/findByPage`,
-      params: {
-        quickSearchProperties: ['supplierName', 'supplierCode'],
-        sortOrders: [
-          {
-            property: 'docNumber',
-            direction: 'DESC'
-          }
-        ]
-      },
-      type: 'POST'
-    }
-  }
 
   const handleSelectedRows = (value, rows) => {
     console.log(value, rows);
@@ -51,6 +37,10 @@ const TechnicalData = (props) => {
   }
 
   const TechnicalDataAdd = (value) => {
+    value.id = data.dataSource.length + 1
+    console.log(value.sampleRequirementDate)
+    value.sampleRequirementDate = moment(value.sampleRequirementDate).format('YYYY-MM-DD')
+    setData((v) => ({...v, dataSource: [...v.dataSource, value], visible: false}))
     console.log(value, '技术资料新增')
   }
 
@@ -77,7 +67,7 @@ const TechnicalData = (props) => {
             selectedRowKeys={data.selectedRowKeys}
             columns={columns}
             ref={tableRef}
-            {...tableProps}
+            dataSource={data.dataSource}
           />
         </div>
         <TechnicalDataModal

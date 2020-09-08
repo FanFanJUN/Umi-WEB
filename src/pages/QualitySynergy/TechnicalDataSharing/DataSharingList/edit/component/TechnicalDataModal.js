@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Row, Col, Input, DatePicker, Upload, Modal, Icon, Button } from 'antd';
 import { ComboList, ExtModal } from 'suid';
-import { CompanyConfig } from '../../../../commonProps';
+import { CorporationListConfig } from '../../../../commonProps';
 import { baseUrl } from '../../../../../../utils/commonUrl';
 
 const FormItem = Form.Item;
@@ -53,6 +53,7 @@ const TechnicalDataModal = (props) => {
     console.log(value)
   }
 
+
   return(
     <ExtModal
       width={'80vh'}
@@ -79,7 +80,7 @@ const TechnicalDataModal = (props) => {
                 form={form}
                 field={['corporationCode', 'corporationId']}
                 name={'fileType'}
-                {...CompanyConfig}
+                {...CorporationListConfig}
                 />)
               }
             </FormItem>
@@ -103,7 +104,7 @@ const TechnicalDataModal = (props) => {
             <FormItem {...formItemLayoutLong} label={'技术资料附件'}>
               {
                 getFieldDecorator('technicalDataFileId', {
-                  initialValue: type === 'add' ? '' : data.technicalDataFileId,
+                  initialValue: type === 'add' ? '123456' : data.technicalDataFileId,
                   rules: [
                     {
                       required: true,
