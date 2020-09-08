@@ -7,7 +7,8 @@ import { DataImport, ExtTable, ExtModal, utils, AuthAction } from 'suid';
 const { authAction } = utils;
 const { create, Item: FormItem } = Form;
 const { confirm } = Modal;
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+// const DEVELOPER_ENV = process.env.NODE_ENV === 'development';
+const DEVELOPER_ENV = true;
 const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 14, },
@@ -80,7 +81,7 @@ const TechnicalDataFileTypes = (props) => {
                 type='primary'
                 onClick={() => buttonClick('add')}
                 className={styles.btn}
-                // ignore={DEVELOPER_ENV}
+                ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_TDP_ADD'
             >新增</Button>)
         }
@@ -88,7 +89,7 @@ const TechnicalDataFileTypes = (props) => {
             authAction(<Button
                 onClick={() => buttonClick('edit')}
                 className={styles.btn}
-                // ignore={DEVELOPER_ENV}
+                ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_TDP_EDIT'
             >编辑</Button>)
         }
@@ -96,7 +97,7 @@ const TechnicalDataFileTypes = (props) => {
             authAction(<Button
                 onClick={() => buttonClick('delete')}
                 className={styles.btn}
-                // ignore={DEVELOPER_ENV}
+                ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_TDP_DELETE'
             >删除</Button>)
         }
@@ -104,7 +105,7 @@ const TechnicalDataFileTypes = (props) => {
             authAction(<Button
                 onClick={() => buttonClick('freeze')}
                 className={styles.btn}
-                // ignore={DEVELOPER_ENV}
+                ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_TDP_FREEZE'
             >冻结</Button>)
         }
@@ -112,7 +113,7 @@ const TechnicalDataFileTypes = (props) => {
             authAction(<Button
                 onClick={() => buttonClick('thaw')}
                 className={styles.btn}
-                // ignore={DEVELOPER_ENV}
+                ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_TDP_THAW'
             >解冻</Button>)
         }

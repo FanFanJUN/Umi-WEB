@@ -18,7 +18,8 @@ import moment from 'moment'
 const { authAction } = utils;
 const { create, Item: FormItem } = Form;
 const { confirm } = Modal;
-const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
+// const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
+const DEVELOPER_ENV = true;
 const formLayout = {
     labelCol: { span: 9, },
     wrapperCol: { span: 14, },
@@ -69,7 +70,7 @@ const LimitMaterial = ({ form }) => {
                 type='primary'
                 onClick={() => buttonClick('add')}
                 className={styles.btn}
-                // ignore={DEVELOPER_ENV}
+                ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_UML_ADD'
             >新增</Button>)
         }
@@ -77,7 +78,7 @@ const LimitMaterial = ({ form }) => {
             authAction(<Button
                 onClick={() => buttonClick('edit')}
                 className={styles.btn}
-                // ignore={DEVELOPER_ENV}
+                ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_UML_EDIT'
             >编辑</Button>)
         }
@@ -85,7 +86,7 @@ const LimitMaterial = ({ form }) => {
             authAction(<Button
                 onClick={() => buttonClick('delete')}
                 className={styles.btn}
-                // ignore={DEVELOPER_ENV}
+                ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_UML_DELETE'
             >删除</Button>)
         }
@@ -93,7 +94,7 @@ const LimitMaterial = ({ form }) => {
             authAction(<Button
                 onClick={() => buttonClick('freeze')}
                 className={styles.btn}
-                // ignore={DEVELOPER_ENV}
+                ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_UML_FREEZE'
             >冻结</Button>)
         }
@@ -101,7 +102,7 @@ const LimitMaterial = ({ form }) => {
             authAction(<Button
                 onClick={() => buttonClick('thaw')}
                 className={styles.btn}
-                // ignore={DEVELOPER_ENV}
+                ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_UML_THAW'
             >解冻</Button>)
         }
@@ -109,7 +110,7 @@ const LimitMaterial = ({ form }) => {
             authAction(<Button
                 onClick={() => buttonClick('thaw')}
                 className={styles.btn}
-                // ignore={DEVELOPER_ENV}
+                ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_UML_IMPORT'
             >批量导入</Button>)
         }
@@ -120,7 +121,7 @@ const LimitMaterial = ({ form }) => {
                 type='primary'
                 onClick={() => EPSbuttonClick('add')}
                 className={styles.btn}
-                // ignore={DEVELOPER_ENV}
+                ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_EPS_ADD'
             >新增</Button>)
         }
@@ -128,7 +129,7 @@ const LimitMaterial = ({ form }) => {
             authAction(<Button
                 onClick={() => EPSbuttonClick('edit')}
                 className={styles.btn}
-                // ignore={DEVELOPER_ENV}
+                ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_EPS_EDIT'
                 disabled={selectedRow.length !== 1}
             >编辑</Button>)
@@ -137,7 +138,7 @@ const LimitMaterial = ({ form }) => {
             authAction(<Button
                 onClick={() => EPSbuttonClick('delete')}
                 className={styles.btn}
-                // ignore={DEVELOPER_ENV}
+                ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_EPS_DELETE'
                 disabled={selectedRow.length === 0}
             >删除</Button>)
@@ -146,7 +147,7 @@ const LimitMaterial = ({ form }) => {
             authAction(<Button
                 onClick={() => EPSbuttonClick('freeze')}
                 className={styles.btn}
-                // ignore={DEVELOPER_ENV}
+                ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_EPS_FREEZE'
                 disabled={selectedRow.length === 0}
             >冻结</Button>)
@@ -155,7 +156,7 @@ const LimitMaterial = ({ form }) => {
             authAction(<Button
                 onClick={() => EPSbuttonClick('thaw')}
                 className={styles.btn}
-                // ignore={DEVELOPER_ENV}
+                ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_EPS_THAW'
                 disabled={selectedRow.length === 0}
             >解冻</Button>)

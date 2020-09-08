@@ -13,7 +13,8 @@ import EventModal from './component/EventModal';
 
 const { authAction } = utils;
 
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development';
+// const DEVELOPER_ENV = process.env.NODE_ENV === 'development';
+const DEVELOPER_ENV = true;
 
 const Index = () => {
 
@@ -105,7 +106,7 @@ const Index = () => {
         type='primary'
         onClick={() => buttonClick('add')}
         className={styles.btn}
-        // ignore={DEVELOPER_ENV}
+        ignore={DEVELOPER_ENV}
         key='QUALITYSYNERGY_BUCOR_ADD'
       >新增</Button>)
     }
@@ -113,7 +114,7 @@ const Index = () => {
       authAction(<Button
         onClick={() => buttonClick('edit')}
         className={styles.btn}
-        // ignore={DEVELOPER_ENV}
+        ignore={DEVELOPER_ENV}
         disabled={selectedRowKeys.length === 0 || selectedRowKeys.length > 1}
         key='QUALITYSYNERGY_BUCOR_EDIT'
       >编辑</Button>)
@@ -122,7 +123,7 @@ const Index = () => {
       authAction(<Button
         onClick={() => buttonClick('delete')}
         className={styles.btn}
-        // ignore={DEVELOPER_ENV}
+        ignore={DEVELOPER_ENV}
         disabled={selectRows.length === 0}
         key='QUALITYSYNERGY_BUCOR_DELETE'
       >删除</Button>)
@@ -131,7 +132,7 @@ const Index = () => {
       authAction(<Button
         onClick={() => buttonClick('frost')}
         className={styles.btn}
-        // ignore={DEVELOPER_ENV}
+        ignore={DEVELOPER_ENV}
         key='QUALITYSYNERGY_BUCOR_FORST'
         disabled={selectRows.length === 0}
       >冻结</Button>)
@@ -140,7 +141,7 @@ const Index = () => {
       authAction(<Button
         onClick={() => buttonClick('thaw')}
         className={styles.btn}
-        // ignore={DEVELOPER_ENV}
+        ignore={DEVELOPER_ENV}
         key='QUALITYSYNERGY_BUCOR_THAW'
         disabled={selectRows.length === 0}
       >解冻</Button>)

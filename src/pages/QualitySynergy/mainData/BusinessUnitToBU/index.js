@@ -10,7 +10,8 @@ import {
 } from '../../commonProps';
 const { authAction } = utils;
 
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+// const DEVELOPER_ENV = process.env.NODE_ENV === 'development';
+const DEVELOPER_ENV = true;
 
 const Index = () => {
 
@@ -93,7 +94,7 @@ const Index = () => {
         type='primary'
         onClick={() => buttonClick('add')}
         className={styles.btn}
-        // ignore={DEVELOPER_ENV}
+        ignore={DEVELOPER_ENV}
         key='PURCHASE_VIEW_CHANGE_CREATE'
       >新增</Button>)
     }
@@ -101,7 +102,7 @@ const Index = () => {
       authAction(<Button
         onClick={() => buttonClick('edit')}
         className={styles.btn}
-        // ignore={DEVELOPER_ENV}
+        ignore={DEVELOPER_ENV}
         disabled={selectedRowKeys.length === 0 || selectedRowKeys.length > 1}
         key='PURCHASE_VIEW_CHANGE_CREATE'
       >编辑</Button>)
@@ -110,7 +111,7 @@ const Index = () => {
       authAction(<Button
         onClick={() => buttonClick('delete')}
         className={styles.btn}
-        // ignore={DEVELOPER_ENV}
+        ignore={DEVELOPER_ENV}
         disabled={selectRows.length === 0}
         key='PURCHASE_VIEW_CHANGE_CREATE'
       >删除</Button>)
@@ -119,7 +120,7 @@ const Index = () => {
       authAction(<Button
         onClick={() => buttonClick('frost')}
         className={styles.btn}
-        // ignore={DEVELOPER_ENV}
+        ignore={DEVELOPER_ENV}
         key='PURCHASE_VIEW_CHANGE_CREATE'
         disabled={selectRows.length === 0}
       >冻结</Button>)
@@ -128,7 +129,7 @@ const Index = () => {
       authAction(<Button
         onClick={() => buttonClick('thaw')}
         className={styles.btn}
-        // ignore={DEVELOPER_ENV}
+        ignore={DEVELOPER_ENV}
         key='PURCHASE_VIEW_CHANGE_CREATE'
         disabled={selectRows.length === 0}
       >解冻</Button>)

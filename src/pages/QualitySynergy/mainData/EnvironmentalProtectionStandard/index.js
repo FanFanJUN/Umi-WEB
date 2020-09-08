@@ -18,7 +18,8 @@ const { create, Item: FormItem } = Form;
 const { authAction } = utils;
 const { confirm } = Modal;
 
-const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
+// const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
+const DEVELOPER_ENV = true;
 
 const EnvironmentalProtectionStandard = ({ form }) => {
   const tableRef = useRef(null);
@@ -100,7 +101,7 @@ const EnvironmentalProtectionStandard = ({ form }) => {
         type='primary'
         onClick={() => EPSbuttonClick('add')}
         className={styles.btn}
-        // ignore={DEVELOPER_ENV}
+        ignore={DEVELOPER_ENV}
         key='QUALITYSYNERGY_EPS_ADD'
       >新增</Button>)
     }
@@ -108,7 +109,7 @@ const EnvironmentalProtectionStandard = ({ form }) => {
       authAction(<Button
         onClick={() => EPSbuttonClick('edit')}
         className={styles.btn}
-        // ignore={DEVELOPER_ENV}
+        ignore={DEVELOPER_ENV}
         key='QUALITYSYNERGY_EPS_EDIT'
         disabled={selectedRow.length !== 1}
       >编辑</Button>)
@@ -117,7 +118,7 @@ const EnvironmentalProtectionStandard = ({ form }) => {
       authAction(<Button
         onClick={() => EPSbuttonClick('delete')}
         className={styles.btn}
-        // ignore={DEVELOPER_ENV}
+        ignore={DEVELOPER_ENV}
         key='QUALITYSYNERGY_EPS_DELETE'
         disabled={selectedRow.length === 0}
       >删除</Button>)
@@ -126,7 +127,7 @@ const EnvironmentalProtectionStandard = ({ form }) => {
       authAction(<Button
         onClick={() => EPSbuttonClick('freeze')}
         className={styles.btn}
-        // ignore={DEVELOPER_ENV}
+        ignore={DEVELOPER_ENV}
         key='QUALITYSYNERGY_EPS_FREEZE'
         disabled={selectedRow.length === 0}
       >冻结</Button>)
@@ -135,7 +136,7 @@ const EnvironmentalProtectionStandard = ({ form }) => {
       authAction(<Button
         onClick={() => EPSbuttonClick('thaw')}
         className={styles.btn}
-        // ignore={DEVELOPER_ENV}
+        ignore={DEVELOPER_ENV}
         key='QUALITYSYNERGY_EPS_THAW'
         disabled={selectedRow.length === 0}
       >解冻</Button>)

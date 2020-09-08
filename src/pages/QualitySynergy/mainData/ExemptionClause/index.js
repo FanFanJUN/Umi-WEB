@@ -16,7 +16,8 @@ const { authAction } = utils;
 
 const { create, Item: FormItem } = Form;
 const { confirm } = Modal;
-const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
+const DEVELOPER_ENV = true;
+// const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 14, },
@@ -122,7 +123,7 @@ const ExemptionClause = (props) => {
                 type='primary'
                 onClick={() => buttonClick('add')}
                 className={styles.btn}
-                // ignore={DEVELOPER_ENV}
+                ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_EC_ADD'
             >新增</Button>)
         }
@@ -130,7 +131,7 @@ const ExemptionClause = (props) => {
             authAction(<Button
                 onClick={() => buttonClick('edit')}
                 className={styles.btn}
-                // ignore={DEVELOPER_ENV}
+                ignore={DEVELOPER_ENV}
                 disabled={selectedRow.length !== 1}
                 key='QUALITYSYNERGY_EC_EDIT'
             >编辑</Button>)
@@ -139,7 +140,7 @@ const ExemptionClause = (props) => {
             authAction(<Button
                 onClick={() => buttonClick('delete')}
                 className={styles.btn}
-                // ignore={DEVELOPER_ENV}
+                ignore={DEVELOPER_ENV}
                 disabled={selectedRow.length === 0}
                 key='QUALITYSYNERGY_EC_DELETE'
             >删除</Button>)
@@ -148,7 +149,7 @@ const ExemptionClause = (props) => {
             authAction(<Button
                 onClick={() => buttonClick('detail')}
                 className={styles.btn}
-                // ignore={DEVELOPER_ENV}
+                ignore={DEVELOPER_ENV}
                 disabled={selectedRow.length !== 1}
                 key='QUALITYSYNERGY_EC_DETAIL'
             >明细</Button>)
@@ -158,7 +159,7 @@ const ExemptionClause = (props) => {
                 tableProps={{ columns }}
                 validateFunc={validateItem}
                 importFunc={importFunc}
-                // ignore={DEVELOPER_ENV}
+                ignore={DEVELOPER_ENV}
                 validateAll={true}
                 key='QUALITYSYNERGY_EC_IMPORT'
                 templateFileList={[
