@@ -9,6 +9,30 @@ export default [
     ],
   },
   {
+    path: '/qualitySynergy',
+    component: '../layouts/LoginLayout',
+    title: '环保材料',
+    routes: [
+      { path: '/qualitySynergy/EPMaterial', component: './QualitySynergy/EPMaterial/MaterialManagement', title: '填报环保资料物料' },
+      { path: '/qualitySynergy/EPMaterial/editForm', component: './QualitySynergy/EPMaterial/MaterialManagement/editForm', title: '填报环保资料物料-新增' },
+      { path: '/qualitySynergy/EPMaterial/detailForm', component: './QualitySynergy/EPMaterial/MaterialManagement/detailForm', title: '填报环保资料物料-明细' },
+      { path: '/qualitySynergy/EPMaterial/suppliersToFill', component: './QualitySynergy/EPMaterial/SuppliersToFill', title: '环保资料填报' },
+      { path: '/qualitySynergy/EPMaterial/suppliersFillForm', component: './QualitySynergy/EPMaterial/SuppliersToFill/editForm', title: '环保资料填报-填报页面' },
+      { path: '/qualitySynergy/DataSharingList', component: './QualitySynergy/TechnicalDataSharing/DataSharingList', title: '技术资料分享' },
+      { path: '/qualitySynergy/DataSharingAdd', component: './QualitySynergy/TechnicalDataSharing/DataSharingList/edit', title: '技术资料分享新增' },
+      { path: '/qualitySynergy/UseMaterialList', component: './QualitySynergy/mainData/UseMaterialList', title: '限用物资清单-主数据' },
+      { path: '/qualitySynergy/EnvironmentalProtectionStandard', component: './QualitySynergy/mainData/EnvironmentalProtectionStandard', title: '环保标准-主数据' },
+      { path: '/qualitySynergy/LimitSuppliesScope', component: './QualitySynergy/mainData/LimitSuppliesScope', title: '限用物资适用范围-主数据' },
+      { path: '/qualitySynergy/BUCompanyOrganizationRelation', component: './QualitySynergy/mainData/BUCompanyOrganizationRelation', title: 'BU与公司采购组织对应关系-主数据' },
+      { path: '/qualitySynergy/LimitSuppliesBasicUnit', component: './QualitySynergy/mainData/LimitSuppliesBasicUnit', title: '限用物资基本单位-主数据' },
+      { path: '/qualitySynergy/TechnicalDataFileTypes', component: './QualitySynergy/mainData/TechnicalDataFileTypes', title: '技术资料文件类别-主数据'},
+      { path: '/qualitySynergy/ExemptionClause', component: './QualitySynergy/mainData/ExemptionClause', title: '豁免条款-主数据'},
+      { path: '/qualitySynergy/LimitMaterial', component: './QualitySynergy/mainData/LimitMaterial', title: '环保标准限用物质对应关系-主数据'},
+      { path: '/qualitySynergy/BusinessUnitToBU', component: './QualitySynergy/mainData/BusinessUnitToBU', title: '业务单元对BU主数据-主数据'},
+
+    ]
+  },
+  {
     path: '/',
     component: '../layouts/AuthLayout',
     title: '供应商注册',
@@ -73,6 +97,7 @@ export default [
        title: '供应商推荐资料'
      }
     ],
-  }
+  },
+
 ];
 
