@@ -85,7 +85,7 @@ export async function ESPMDelete(params) {
     console.log(url)
     return request({
         url,
-        method: 'GET',
+        method: 'POST',
         params: params,
     });
 }
@@ -95,7 +95,7 @@ export async function ESPMFreeze(params) {
     console.log(url)
     return request({
         url,
-        method: 'GET',
+        method: 'POST',
         params: params,
     });
 }

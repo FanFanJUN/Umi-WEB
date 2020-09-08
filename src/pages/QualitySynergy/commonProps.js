@@ -264,7 +264,7 @@ export const BasicUnitList = {
   },
   rowKey: 'basicUnitCode',
   reader: {
-    name: 'basicUnitName',
+    name: 'basicUnitCode',
     description: 'basicUnitCode',
     field: ['basicUnitId', 'basicUnitName']
   },

@@ -52,16 +52,17 @@ const LimitMaterial = ({ form }) => {
         { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (text) => text ? '已冻结' : '未冻结' },
     ]
     const rightColums = [
-        { title: '限用物质代码', dataIndex: 'name1', width: 200 },
-        { title: '限用物质名称', dataIndex: 'name2', ellipsis: true, },
-        { title: 'CAS.NO', dataIndex: 'name3', ellipsis: true, },
-        { title: '限量', dataIndex: 'name4', ellipsis: true },
-        { title: '基本单位代码', dataIndex: 'name5', ellipsis: true },
-        { title: '均质材质中的含量(%)', dataIndex: 'name6', ellipsis: true },
-        { title: '适用范围名称排序号', dataIndex: 'name7', ellipsis: true },
-        { title: '冻结', dataIndex: 'name8', ellipsis: true },
-        { title: '处理人', dataIndex: 'name9', ellipsis: true },
-        { title: '处理时间', dataIndex: 'name10', ellipsis: true },
+        { title: '限用物质代码', dataIndex: 'limitMaterialCode', width: 80 },
+        { title: '限用物质名称', dataIndex: 'limitMaterialName', ellipsis: true, width: 120 },
+        { title: 'CAS.NO', dataIndex: 'casNo', ellipsis: true, width: 80 },
+        { title: '限量', dataIndex: 'limitNumber', ellipsis: true, width: 80 },
+        { title: '基本单位代码', dataIndex: 'basicUnitCode', ellipsis: true },
+        { title: '均质材质中的含量(%)', dataIndex: 'materialWeight', ellipsis: true },
+        { title: '适用范围名称', dataIndex: 'practicalRangeName', ellipsis: true },
+        { title: '排序号', dataIndex: 'orderNo', ellipsis: true },
+        { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (text) => text ? '已冻结' : '未冻结' },
+        { title: '处理人', dataIndex: 'conductorName', ellipsis: true },
+        { title: '处理时间', dataIndex: 'conductorDate', ellipsis: true },
     ]
     const headerRight = <div>
         {
@@ -78,7 +79,7 @@ const LimitMaterial = ({ form }) => {
                 onClick={() => buttonClick('edit')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                disabled={selectedRightKeys.length !== 1}
+                disabled={selectedRight.length !== 1}
                 key='QUALITYSYNERGY_LM_UML_EDIT'
             >编辑</Button>)
         }
@@ -105,7 +106,7 @@ const LimitMaterial = ({ form }) => {
                 onClick={() => buttonClick('thaw')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                disabled={selectedRightKeys.length  === 0}
+                disabled={selectedRightKeys.length === 0}
                 key='QUALITYSYNERGY_LM_UML_THAW'
             >解冻</Button>)
         }
@@ -173,27 +174,46 @@ const LimitMaterial = ({ form }) => {
                 setData((value) => ({ ...value, visible: true, modalSource: '', isView: false }));
                 break;
             case 'edit':
+                console.log('编辑数据', selectedRight)
                 setData((value) => ({
                     ...value,
                     visible: true,
-                    modalSource: selectedRow[selectedRow.length -1],
+                    modalSource: selectedRight[0],
                     isView: type === 'detail'
                 }));
                 break;
             case 'freeze':
             case 'thaw':
                 confirm({
-                    title: '请确认是否删除选中技术资料类别数据',
-                    onOk: () => {
-                        console.log('确认删除', selectedRowKeys);
+                    title: `请确认是否${type === 'thaw' ? '解冻' : '冻结'}选中限用物资数据`,
+                    onOk: async () => {
+                        const parmas = selectedRowKeys.join();
+                        const res = await ESPMFreeze({
+                            ids: selectedRightKeys.join(),
+                            flag: type === 'freeze'
+                        });
+                        if (res.success) {
+                            message.success('操作成功');
+                            tableRightRef.current.manualSelectedRows();
+                            tableRightRef.current.remoteDataRefresh();
+                        } else {
+                            message.error(res.message);
+                        }
                     },
                 });
                 break;
             case 'delete':
                 confirm({
-                    title: '请确认是否删除选中技术资料类别数据',
-                    onOk: () => {
-                        console.log('确认删除', selectedRowKeys);
+                    title: '请确认是否删除选中限用物资数据',
+                    onOk: async () => {
+                        const res = await ESPMDelete({ ids: selectedRightKeys.join() });
+                        if (res.success) {
+                            message.success('删除成功');
+                            tableRightRef.current.manualSelectedRows();
+                            tableRightRef.current.remoteDataRefresh()
+                        } else {
+                            message.error(res.message)
+                        }
                     },
                 });
                 break;
@@ -215,7 +235,7 @@ const LimitMaterial = ({ form }) => {
                 setESPData((value) => ({
                     ...value,
                     visible: true,
-                    modalSource: selectedRow[selectedRow.length -1],
+                    modalSource: selectedRow[selectedRow.length - 1],
                     isView: type === 'detail'
                 }));
                 break;
@@ -230,7 +250,8 @@ const LimitMaterial = ({ form }) => {
                         })
                         if (res.success) {
                             message.success('冻结成功');
-                            tableRef.current.remoteDataRefresh()
+                            tableRef.current.manualSelectedRows();
+                            tableRef.current.remoteDataRefresh();
                         } else {
                             message.error(res.message)
                         }
@@ -244,7 +265,8 @@ const LimitMaterial = ({ form }) => {
                         const res = await ESPDeleted({ ids: selectedRowKeys.join() });
                         if (res.success) {
                             message.success('删除成功');
-                            tableRef.current.remoteDataRefresh()
+                            tableRef.current.manualSelectedRows();
+                            tableRef.current.remoteDataRefresh();
                         } else {
                             message.error(res.message)
                         }
@@ -260,16 +282,17 @@ const LimitMaterial = ({ form }) => {
         } else {
             validateFields(async (errs, values) => {
                 if (!errs) {
-                    values.environmentalProtectionId = selectedRow[selectedRow.length -1].id;
-                    values.environmentalProtectionCode = selectedRow[selectedRow.length -1].environmentalProtectionCode;
-                    values.environmentalProtectionName = selectedRow[selectedRow.length -1].environmentalProtectionName;
+                    values.environmentalProtectionId = selectedRow[selectedRow.length - 1].id;
+                    values.environmentalProtectionCode = selectedRow[selectedRow.length - 1].environmentalProtectionCode;
+                    values.environmentalProtectionName = selectedRow[selectedRow.length - 1].environmentalProtectionName;
                     if (data.modalSource) {
                         values = { ...data.modalSource, ...values }
                     }
-                    const res = await addEnvironmentStandardLimitMaterialRelation({...values})
+                    const res = await addEnvironmentStandardLimitMaterialRelation({ ...values })
                     if (res.success) {
                         message.success('操作成功');
                         setData((value) => ({ ...value, visible: false }))
+                        tableRightRef.current.manualSelectedRows()
                         tableRightRef.current.remoteDataRefresh()
                     } else {
                         message.error(res.message)
@@ -293,6 +316,7 @@ const LimitMaterial = ({ form }) => {
                     if (res.success) {
                         message.success('操作成功');
                         setESPData((value) => ({ ...value, visible: false }))
+                        tableRef.current.manualSelectedRows()
                         tableRef.current.remoteDataRefresh()
                     } else {
                         message.error(res.message)
@@ -351,13 +375,14 @@ const LimitMaterial = ({ form }) => {
                                         url: `${baseUrl}/environmentStandardLimitMaterialRelation/findByPage`,
                                         type: 'POST',
                                         params: {
-                                            environmentalProtectionCode: selectedRow[selectedRow.length -1].environmentalProtectionCode
+                                            environmentalProtectionCode: selectedRow[selectedRow.length - 1].environmentalProtectionCode
                                         }
                                     }}
                                     searchPlaceHolder="输入搜索项"
                                     ref={tableRightRef}
                                     selectedRowKeys={selectedRightKeys}
                                     onSelectRow={(selectedRightKeys, selectedRows) => {
+                                        console.log('右边选中', selectedRightKeys, selectedRows)
                                         setSelectedRight(selectedRows)
                                         setSelectedRightKeys(selectedRightKeys)
                                     }}
@@ -446,7 +471,7 @@ const LimitMaterial = ({ form }) => {
                                 getFieldDecorator('basicUnitId'),
                                 getFieldDecorator('basicUnitName'),
                                 getFieldDecorator('basicUnitCode', {
-                                    initialValue: data.modalSource && data.modalSource.basicUnitName,
+                                    initialValue: data.modalSource && data.modalSource.basicUnitCode,
                                     rules: [{ required: true, message: '请选择基本单位' }]
                                 })(<ComboList
                                     form={form}
@@ -464,7 +489,11 @@ const LimitMaterial = ({ form }) => {
                                 getFieldDecorator('materialWeight', {
                                     initialValue: data.modalSource && data.modalSource.materialWeight,
                                     rules: [{ required: true, message: '请填写均质材质中的含量' }]
-                                })(<Input precision={8} />)
+                                })(<InputNumber
+                                    precision={8}
+                                    style={{width: '100%'}}
+                                    step={0.00000001}
+                                />)
                             }
                         </FormItem>
                     </Col>
