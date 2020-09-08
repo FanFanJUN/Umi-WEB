@@ -173,7 +173,7 @@ const Index = () => {
         columns={columns}
         store={{
           url: `${baseUrl}/limitMaterialUnitData/findBySearchPage`,
-          type: 'GET',
+          type: 'POST',
         }}
         allowCancelSelect={true}
         remotePaging={true}
