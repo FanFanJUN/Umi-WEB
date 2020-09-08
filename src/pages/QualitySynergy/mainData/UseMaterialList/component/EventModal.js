@@ -147,12 +147,6 @@ const EventModal = (props) => {
                 getFieldDecorator('recordCheckList', {
                   initialValue: type === 'add' ? false : data.recordCheckList,
                   valuePropName: 'checked',
-                  rules: [
-                    {
-                      required: true,
-                      message: '是否测试记录表中检查项不能为空',
-                    },
-                  ],
                 })(
                   <Checkbox/>,
                 )

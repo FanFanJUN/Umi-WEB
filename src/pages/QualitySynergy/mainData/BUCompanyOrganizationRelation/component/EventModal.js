@@ -53,8 +53,6 @@ const EventModal = (props) => {
     </FormItem>
   );
 
-  console.log(data)
-
   return (
     <ExtModal
       width={'80vh'}
