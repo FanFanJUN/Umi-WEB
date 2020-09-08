@@ -70,7 +70,7 @@ const LimitMaterial = ({ form }) => {
                 onClick={() => buttonClick('add')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='QUALITYSYNERGY_UML_ADD'
+                key='QUALITYSYNERGY_LM_UML_ADD'
             >新增</Button>)
         }
         {
@@ -78,7 +78,7 @@ const LimitMaterial = ({ form }) => {
                 onClick={() => buttonClick('edit')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='QUALITYSYNERGY_UML_EDIT'
+                key='QUALITYSYNERGY_LM_UML_EDIT'
             >编辑</Button>)
         }
         {
@@ -86,7 +86,7 @@ const LimitMaterial = ({ form }) => {
                 onClick={() => buttonClick('delete')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='QUALITYSYNERGY_UML_DELETE'
+                key='QUALITYSYNERGY_LM_UML_DELETE'
             >删除</Button>)
         }
         {
@@ -94,7 +94,7 @@ const LimitMaterial = ({ form }) => {
                 onClick={() => buttonClick('freeze')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='QUALITYSYNERGY_UML_FREEZE'
+                key='QUALITYSYNERGY_LM_UML_FREEZE'
             >冻结</Button>)
         }
         {
@@ -102,7 +102,7 @@ const LimitMaterial = ({ form }) => {
                 onClick={() => buttonClick('thaw')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='QUALITYSYNERGY_UML_THAW'
+                key='QUALITYSYNERGY_LM_UML_THAW'
             >解冻</Button>)
         }
         {
@@ -110,7 +110,7 @@ const LimitMaterial = ({ form }) => {
                 onClick={() => buttonClick('thaw')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='QUALITYSYNERGY_UML_IMPORT'
+                key='QUALITYSYNERGY_LM_UML_IMPORT'
             >批量导入</Button>)
         }
     </div>
@@ -121,7 +121,7 @@ const LimitMaterial = ({ form }) => {
                 onClick={() => EPSbuttonClick('add')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='QUALITYSYNERGY_EPS_ADD'
+                key='QUALITYSYNERGY_LM_EPS_ADD'
             >新增</Button>)
         }
         {
@@ -129,7 +129,7 @@ const LimitMaterial = ({ form }) => {
                 onClick={() => EPSbuttonClick('edit')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='QUALITYSYNERGY_EPS_EDIT'
+                key='QUALITYSYNERGY_LM_EPS_EDIT'
                 disabled={selectedRow.length !== 1}
             >编辑</Button>)
         }
@@ -138,7 +138,7 @@ const LimitMaterial = ({ form }) => {
                 onClick={() => EPSbuttonClick('delete')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='QUALITYSYNERGY_EPS_DELETE'
+                key='QUALITYSYNERGY_LM_EPS_DELETE'
                 disabled={selectedRow.length === 0}
             >删除</Button>)
         }
@@ -147,7 +147,7 @@ const LimitMaterial = ({ form }) => {
                 onClick={() => EPSbuttonClick('freeze')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='QUALITYSYNERGY_EPS_FREEZE'
+                key='QUALITYSYNERGY_LM_EPS_FREEZE'
                 disabled={selectedRow.length === 0}
             >冻结</Button>)
         }
@@ -156,7 +156,7 @@ const LimitMaterial = ({ form }) => {
                 onClick={() => EPSbuttonClick('thaw')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='QUALITYSYNERGY_EPS_THAW'
+                key='QUALITYSYNERGY_LM_EPS_THAW'
                 disabled={selectedRow.length === 0}
             >解冻</Button>)
         }
@@ -262,10 +262,7 @@ const LimitMaterial = ({ form }) => {
                     if (data.modalSource) {
                         values = { ...data.modalSource, ...values }
                     }
-                    const list = [];
-                    list.push({...values});
-                    console.log('参数list', list)
-                    const res = await addEnvironmentStandardLimitMaterialRelation({list:list})
+                    const res = await addEnvironmentStandardLimitMaterialRelation({...values})
                     if (res.success) {
                         message.success('操作成功');
                         setData((value) => ({ ...value, visible: false }))
