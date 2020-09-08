@@ -202,6 +202,10 @@ export const getUserName = () => {
   const info = storage.sessionStorage.get('Authorization') || {};
   return info?.userName 
 }
+export const getUserTenantCode = () => {
+  const info = storage.sessionStorage.get('Authorization') || {};
+  return info?.tenantCode 
+}
 export const getUserId = () => {
   const info = storage.sessionStorage.get('Authorization') || {};
   return info?.userId 
