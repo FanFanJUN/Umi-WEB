@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useRef } from 'react';
 import { Button, Form, Row, Input, Modal, message, Card, Col, Empty, InputNumber, Radio } from 'antd';
 import { ExtTable, ExtModal, utils, ComboList } from 'suid';
-import { limitScopeList, limitMaterialList } from '../../commonProps';
+import { limitScopeList, limitMaterialList, BasicUnitList } from '../../commonProps';
 import { baseUrl } from '../../../../utils/commonUrl';
 import { AutoSizeLayout } from '../../../../components'
 import {
@@ -264,7 +264,6 @@ const LimitMaterial = ({ form }) => {
                     values.environmentalProtectionId = selectedRow[selectedRow.length -1].id;
                     values.environmentalProtectionCode = selectedRow[selectedRow.length -1].environmentalProtectionCode;
                     values.environmentalProtectionName = selectedRow[selectedRow.length -1].environmentalProtectionName;
-                    delete values.basicUnitId;
                     if (data.modalSource) {
                         values = { ...data.modalSource, ...values }
                     }
@@ -348,6 +347,7 @@ const LimitMaterial = ({ form }) => {
                                 <ExtTable
                                     columns={rightColums}
                                     checkbox={true}
+                                    remotePaging={true}
                                     store={{
                                         url: `${baseUrl}/environmentStandardLimitMaterialRelation/findByPage`,
                                         type: 'GET',
@@ -397,7 +397,7 @@ const LimitMaterial = ({ form }) => {
                                     form={form}
                                     {...limitMaterialList}
                                     name='limitMaterialCode'
-                                    field={['limitMaterialId', 'limitMaterialName', 'basicUnitCode', 'basicUnitId', 'basicUnitName', 'casNo']}
+                                    field={['limitMaterialId', 'limitMaterialName', 'casNo']}
                                 />)
                             }
                         </FormItem>
@@ -445,10 +445,15 @@ const LimitMaterial = ({ form }) => {
                         <FormItem label='基本单位' {...formLayout}>
                             {
                                 getFieldDecorator('basicUnitId'),
-                                getFieldDecorator('basicUnitCode'),
-                                getFieldDecorator('basicUnitName', {
+                                getFieldDecorator('basicUnitName'),
+                                getFieldDecorator('basicUnitCode', {
                                     initialValue: data.modalSource && data.modalSource.basicUnitName,
-                                })(<Input disabled />)
+                                })(<ComboList
+                                    form={form}
+                                    {...BasicUnitList}
+                                    name='basicUnitCode'
+                                    field={['basicUnitId', 'basicUnitName']}
+                                />)
 
                             }
                         </FormItem>

@@ -99,3 +99,31 @@ export async function ESPMFreeze(params) {
         params: params,
     });
 }
+
+// 技术资料文件类别-新增
+export async function addTechnicalDataCategory(params) {
+    const url = `${baseUrl}/technicalDataCategory/add_technicalDataCategory`;
+    return request({
+        url,
+        method: 'POST',
+        params: params,
+    });
+}
+// 技术资料文件类别-编辑
+export async function updateTechnicalDataCategory(params) {
+    const url = `${baseUrl}/technicalDataCategory/update_technicalDataCategory`;
+    return request({
+        url,
+        method: 'POST',
+        params: params,
+    });
+}
+// 技术资料文件类别-删除
+export async function deleteTechnicalDataCategory(params) {
+    const url = `${baseUrl}/technicalDataCategory/update_technicalDataCategory`;
+    return request({
+        url,
+        method: 'POST',
+        params: params,
+    });
+}

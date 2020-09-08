@@ -256,6 +256,7 @@ export const BasicUnitList = {
   reader: {
     name: 'basicUnitName',
     description: 'basicUnitCode',
+    field: ['basicUnitId', 'basicUnitName']
   },
 };
 // 限用物资列表
@@ -269,7 +270,7 @@ export const limitMaterialList = {
   rowKey: 'limitMaterialCode',
   reader: {
     name: 'limitMaterialCode',
-    field: ['id', 'limitMaterialName', 'basicUnitCode', 'basicUnitId', 'basicUnitName', 'casNo'],
+    field: ['id', 'limitMaterialName', 'casNo'],
     description: 'limitMaterialName',
   },
   placeholder: '选择限用物资列表'
