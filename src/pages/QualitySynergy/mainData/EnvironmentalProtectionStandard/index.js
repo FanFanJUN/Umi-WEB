@@ -18,8 +18,7 @@ const { create, Item: FormItem } = Form;
 const { authAction } = utils;
 const { confirm } = Modal;
 
-// const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
-const DEVELOPER_ENV = true;
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 
 const EnvironmentalProtectionStandard = ({ form }) => {
   const tableRef = useRef(null);

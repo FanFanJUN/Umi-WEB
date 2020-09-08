@@ -18,8 +18,7 @@ import moment from 'moment'
 const { authAction } = utils;
 const { create, Item: FormItem } = Form;
 const { confirm } = Modal;
-// const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
-const DEVELOPER_ENV = true;
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const formLayout = {
     labelCol: { span: 9, },
     wrapperCol: { span: 14, },

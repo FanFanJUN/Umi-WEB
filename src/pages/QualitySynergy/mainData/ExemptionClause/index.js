@@ -4,6 +4,7 @@ import { Button, Form, Row, Input, Modal, message, DatePicker, InputNumber } fro
 import styles from '../../TechnicalDataSharing/DataSharingList/index.less';
 import { baseUrl } from '../../../../utils/commonUrl';
 import { DataImport, ExtTable, ExtModal, utils, AuthAction } from 'suid';
+import { AutoSizeLayout } from '../../../../components'
 import { BasicUnitList } from '../../../../services/qualitySynergy';
 import moment from 'moment'
 import {
@@ -16,8 +17,7 @@ const { authAction } = utils;
 
 const { create, Item: FormItem } = Form;
 const { confirm } = Modal;
-const DEVELOPER_ENV = true.toString();
-// const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 14, },
@@ -199,7 +199,8 @@ const ExemptionClause = (props) => {
 
     return (
         <Fragment>
-            <ExtTable
+            <AutoSizeLayout>
+            {(h) => <ExtTable
                 rowKey={(v) => v.id}
                 columns={columns}
                 store={{
@@ -209,6 +210,7 @@ const ExemptionClause = (props) => {
                         quickSearchProperties: []
                     }
                 }}
+                height={h}
                 ref={tableRef}
                 checkbox={true}
                 remotePaging={true}
@@ -222,7 +224,9 @@ const ExemptionClause = (props) => {
                 toolBar={{
                     left: headerLeft
                 }}
-            />
+            />}
+            </AutoSizeLayout>
+            
             <ExtModal
                 centered
                 destroyOnClose
@@ -305,7 +309,7 @@ const ExemptionClause = (props) => {
                             {
                                 getFieldDecorator('orderNo', {
                                     initialValue: data.modalSource && data.modalSource.orderNo,
-                                    rules: [{ required: true, message: '请填写排序号' }]
+                                    // rules: [{ required: true, message: '请填写排序号' }]
                                 })(<Input disabled={data.isView} />)
                             }
                         </FormItem>
