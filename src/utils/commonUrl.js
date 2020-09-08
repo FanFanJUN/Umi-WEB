@@ -33,6 +33,8 @@ export const pbBaseUrl = '/srm-pb-web';
 export const secondUrl = '/srm-pp-web';
 
 export const gatewayUrl = '/api-gateway';
+
+export const recommendUrl = '/srm-sam-service'
 // export const basicUrl = '/basic-service'
 
 export const commonsUrl = '/api-gateway/srm-commons-data'
