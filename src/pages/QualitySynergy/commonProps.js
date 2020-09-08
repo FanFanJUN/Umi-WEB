@@ -280,7 +280,7 @@ export const limitMaterialList = {
 export const limitScopeList = {
   remotePaging: true,
   store: {
-    type: 'GET',
+    type: 'POST',
     autoLoad: false,
     url: `${baseUrl}/LimitMaterialUnitScopeData/findBySearchPage`,
   },

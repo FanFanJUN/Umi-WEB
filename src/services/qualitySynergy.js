@@ -120,7 +120,7 @@ export async function updateTechnicalDataCategory(params) {
 }
 // 技术资料文件类别-删除
 export async function deleteTechnicalDataCategory(params) {
-    const url = `${baseUrl}/technicalDataCategory/update_technicalDataCategory`;
+    const url = `${baseUrl}/technicalDataCategory/delete_technicalDataCategory`;
     return request({
         url,
         method: 'POST',

@@ -31,12 +31,13 @@ const TechnicalDataFileTypes = (props) => {
 
     const columns = [
         { title: '文件类别代码', dataIndex: 'fileCategoryCode', width: 200 },
-        { title: '文件类别名称', dataIndex: ' fileCategoryName', ellipsis: true, },
+        { title: '文件类别名称', dataIndex: 'fileCategoryName', ellipsis: true, },
         { title: '排序号', dataIndex: 'orderNo', ellipsis: true, },
         { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (text) => text ? '已冻结' : '未冻结' },
     ]
 
     const buttonClick = (type) => {
+        console.log('选中数据', selectedRow)
         switch (type) {
             case 'add':
                 setData((value) => ({ ...value, visible: true, modalSource: '' }));
@@ -59,10 +60,10 @@ const TechnicalDataFileTypes = (props) => {
                         title: '请确认是否删除选中技术资料类别数据',
                         onOk: async () => {
                             const parmas = selectedRowKeys.join();
-                            const res = await deleteTechnicalDataCategory({ ids: parmas });
+                            const res = await deleteTechnicalDataCategory({ id: parmas });
                             if (res.success) {
                                 message.success('删除成功');
-                                tableRef.manualSelectedRows();
+                                tableRef.current.manualSelectedRows();
                                 tableRef.current.remoteDataRefresh();
                             } else {
                                 message.error(res.message)
@@ -101,7 +102,7 @@ const TechnicalDataFileTypes = (props) => {
                 onClick={() => buttonClick('edit')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                disabled={selectedRowKeys !== 1}
+                disabled={selectedRowKeys.length !== 1}
                 key='QUALITYSYNERGY_TDP_EDIT'
             >编辑</Button>)
         }
@@ -110,7 +111,7 @@ const TechnicalDataFileTypes = (props) => {
                 onClick={() => buttonClick('delete')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                disabled={selectedRowKeys === 0}
+                disabled={selectedRowKeys.length === 0}
                 key='QUALITYSYNERGY_TDP_DELETE'
             >删除</Button>)
         }
@@ -119,7 +120,7 @@ const TechnicalDataFileTypes = (props) => {
                 onClick={() => buttonClick('freeze')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                disabled={selectedRowKeys === 0}
+                disabled={selectedRowKeys.length === 0}
                 key='QUALITYSYNERGY_TDP_FREEZE'
             >冻结</Button>)
         }
@@ -128,7 +129,7 @@ const TechnicalDataFileTypes = (props) => {
                 onClick={() => buttonClick('thaw')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                disabled={selectedRowKeys === 0}
+                disabled={selectedRowKeys.length === 0}
                 key='QUALITYSYNERGY_TDP_THAW'
             >解冻</Button>)
         }
@@ -145,7 +146,7 @@ const TechnicalDataFileTypes = (props) => {
                 }
                 if (res.success) {
                     message.success('操作成功');
-                    tableRef.manualSelectedRows();
+                    tableRef.current.manualSelectedRows();
                     tableRef.current.remoteDataRefresh();
                     setData((value) => ({ ...value, visible: false, modalSource: '' }))
                 } else {
@@ -188,7 +189,7 @@ const TechnicalDataFileTypes = (props) => {
                         <FormItem label='文件类别代码' {...formLayout}>
                             {
                                 getFieldDecorator('fileCategoryCode', {
-                                    initialValue: data.modalSource && data.modalSource.name4,
+                                    initialValue: data.modalSource && data.modalSource.fileCategoryCode,
                                     rules: [{ required: true, message: '请填写文件类别代码' }]
                                 })(<Input />)
                             }
@@ -198,7 +199,7 @@ const TechnicalDataFileTypes = (props) => {
                         <FormItem label='文件类别名称' {...formLayout}>
                             {
                                 getFieldDecorator('fileCategoryName', {
-                                    initialValue: data.modalSource && data.modalSource.name1,
+                                    initialValue: data.modalSource && data.modalSource.fileCategoryName,
                                     rules: [{ required: true, message: '请填写文件类别名称' }]
                                 })(<Input />)
                             }
@@ -209,7 +210,7 @@ const TechnicalDataFileTypes = (props) => {
                         <FormItem label='排序号' {...formLayout}>
                             {
                                 getFieldDecorator('orderNo', {
-                                    initialValue: data.modalSource && data.modalSource.name2,
+                                    initialValue: data.modalSource && data.modalSource.orderNo,
                                     rules: [{ required: true, message: '请填写排序号' }]
                                 })(<Input />)
                             }

@@ -185,7 +185,7 @@ const Index = () => {
         columns={columns}
         store={{
           url: `${baseUrl}/buCompanyPurchasingOrganization/findByPage`,
-          type: 'GET',
+          type: 'POST',
         }}
         allowCancelSelect={true}
         remotePaging={true}

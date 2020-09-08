@@ -313,7 +313,7 @@ const LimitMaterial = ({ form }) => {
                         columns={columns}
                         store={{
                             url: `${baseUrl}/environmentalProtectionData/findByPage`,
-                            type: 'GET',
+                            type: 'POST',
                             params: {
                                 quickSearchProperties: []
                             }
@@ -350,7 +350,7 @@ const LimitMaterial = ({ form }) => {
                                     remotePaging={true}
                                     store={{
                                         url: `${baseUrl}/environmentStandardLimitMaterialRelation/findByPage`,
-                                        type: 'GET',
+                                        type: 'POST',
                                         params: {
                                             environmentalProtectionCode: selectedRow[selectedRow.length -1].environmentalProtectionCode
                                         }
