@@ -7,6 +7,7 @@ import { closeCurrent, getMobile, getUserAccount, getUserId, getUserName } from 
 import BaseInfo from './BaseInfo';
 import MaterialInfo from './MaterialInfo';
 import TechnicalData from './TechnicalData';
+import { AddDataSharingList } from '../../../commonProps';
 
 export default () => {
   const { query } = router.useLocation();
@@ -44,10 +45,24 @@ export default () => {
     closeCurrent()
   }
 
-  const handleSave = () => {
-    const baseInfoData = baseInfoRef.current.getBaseInfoData()
-    const materialInfoData = baseInfoRef.current.getMaterialInfoData()
-    console.log('保存', baseInfoData, materialInfoData)
+  const handleSave = async () => {
+    const baseInfoData = await baseInfoRef.current.getBaseInfoData((err, values) => {
+      if (!err) {
+        return values
+      }
+    })
+    const materialInfoData = await materialInfoRef.current.getMaterialInfoData((err, values) => {
+      if (!err) {
+        return values
+      }
+    })
+    const technicalData = technicalDataRef.current.dataSource
+    const data = {...baseInfoData, ...materialInfoData, epTechnicalDataBoList: technicalData}
+    console.log(data)
+    AddDataSharingList(data).then(res => {
+      console.log(res, 'res')
+    })
+    console.log('保存', baseInfoData, materialInfoData, technicalData)
   }
 
   return (

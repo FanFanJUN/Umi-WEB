@@ -1,4 +1,4 @@
-import React, { Fragment, useRef, useState } from 'react';
+import React, { Fragment, useImperativeHandle, useRef, useState } from 'react';
 import styles from './BaseInfo.less';
 import { Col, Form, Modal, Row, Input, Button } from 'antd';
 import { ExtTable } from 'suid';
@@ -6,7 +6,7 @@ import { baseUrl, smBaseUrl } from '../../../../../utils/commonUrl';
 import TechnicalDataModal from './component/TechnicalDataModal';
 import moment from 'moment/moment';
 
-const TechnicalData = (props) => {
+const TechnicalData = React.forwardRef((props, ref) => {
 
   const tableRef = useRef(null);
 
@@ -35,6 +35,10 @@ const TechnicalData = (props) => {
       setData((value) => ({...value, visible: true, title: '新增技术资料'}))
     }
   }
+
+  useImperativeHandle(ref, () => ({
+    dataSource: data.dataSource
+  }))
 
   const TechnicalDataAdd = (value) => {
     value.id = data.dataSource.length + 1
@@ -81,6 +85,6 @@ const TechnicalData = (props) => {
     </div>
   );
 
-};
+})
 
 export default Form.create()(TechnicalData);

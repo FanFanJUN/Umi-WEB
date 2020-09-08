@@ -25,16 +25,8 @@ let BaseInfo = React.forwardRef((props, ref) => {
 
   useImperativeHandle(ref, () => ({
     buCode: props.form.getFieldValue('buCode'),
-    getBaseInfoData: getBaseInfoData
+    getBaseInfoData: props.form.validateFieldsAndScroll
   }))
-
-  const getBaseInfoData = () => {
-    props.form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        return values
-      }
-    })
-  }
 
   const hideFormItem = (name, initialValue) => (
     <FormItem>

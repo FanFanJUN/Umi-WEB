@@ -23,16 +23,8 @@ const MaterialInfo = React.forwardRef((props, ref) => {
   const { getFieldDecorator, getFieldValue } = props.form;
 
   useImperativeHandle(ref, () => ({
-    getMaterialInfoData: getMaterialInfoData
+    getMaterialInfoData: props.form.validateFieldsAndScroll
   }))
-
-  const getMaterialInfoData = () => {
-    props.form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        return values
-      }
-    })
-  }
 
   const hideFormItem = (name, initialValue) => (
     <FormItem>

@@ -67,6 +67,7 @@ const Index = () => {
     if (data.success) {
       setSelectRows([]);
       setSelectedRowKeys([]);
+      tableRef.current.manualSelectedRows();
       tableRef.current.remoteDataRefresh();
     }
   };
@@ -85,6 +86,7 @@ const Index = () => {
         if (data.success) {
           setSelectRows([]);
           setSelectedRowKeys([]);
+          tableRef.current.manualSelectedRows();
           tableRef.current.remoteDataRefresh();
         }
       },
@@ -158,6 +160,7 @@ const Index = () => {
       setData((value) => ({ ...value, visible: false }));
       setSelectRows([]);
       setSelectedRowKeys([]);
+      tableRef.current.manualSelectedRows();
       tableRef.current.remoteDataRefresh();
     } else {
       message.error(response.message);
