@@ -56,7 +56,7 @@ const ExemptionClause = (props) => {
                 setData((value) => ({
                     ...value,
                     visible: true,
-                    modalSource: selectedRow[selectedRow.length -1],
+                    modalSource: selectedRow[selectedRow.length - 1],
                     isView: type === 'detail'
                 }));
                 break;
@@ -78,27 +78,35 @@ const ExemptionClause = (props) => {
         }
     }
     const validateItem = (data) => {
-      return new Promise((resolve, reject) => {
-        JudgeTheListOfExemptionClause(data).then(res => {
-          const response = res.data.map((item, index) => ({
-            ...item,
-            key: index,
-            validate: item.importResult,
-            status: item.importResult ? '数据完整' : '失败',
-            statusCode: item.importResult ? 'success' : 'error',
-            message: item.importResult ? '成功' : item.importResultInfo
-          }))
-          resolve(response);
-        }).catch(err => {
-          reject(err)
+        return new Promise((resolve, reject) => {
+            const dataList = data.map(item => {
+                item.limitNumber = Number(item.limitNumber).toFixed(2)
+                return item;
+            })
+            JudgeTheListOfExemptionClause(dataList).then(res => {
+                const response = res.data.map((item, index) => ({
+                    ...item,
+                    key: index,
+                    validate: item.importResult,
+                    status: item.importResult ? '数据完整' : '失败',
+                    statusCode: item.importResult ? 'success' : 'error',
+                    message: item.importResult ? '成功' : item.importResultInfo
+                }))
+                resolve(response);
+            }).catch(err => {
+                reject(err)
+            })
         })
-      })
     };
 
     const importFunc = (value) => {
-        console.log(value);
+        const dataList = value.map(item => {
+            item.limitNumber = Number(item.limitNumber).toFixed(2)
+            return item;
+        })
         SaveTheListOfExemptionClause(value).then(res => {
             if (res.success) {
+                message.success('导入成功');
                 refresh();
             } else {
                 message.error(res.msg)
@@ -185,8 +193,7 @@ const ExemptionClause = (props) => {
 
     }
     function refresh() {
-        setSelectedRow([]);
-        setSelectedRowKeys([]);
+        tableRef.current.manualSelectedRows();
         tableRef.current.remoteDataRefresh();
     }
 
