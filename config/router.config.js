@@ -58,9 +58,19 @@ export default [
       }
       */
      {
-       path: '/supplier/recommoend/demand',
+       path: '/supplier/recommend/demand',
        component: './SupplierRecommendDemand',
        title: '供应商推荐需求管理'
+     },
+     {
+       path: '/supplier/recommend/demand/create',
+       component: './SupplierRecommendDemand/RecommendDemand',
+       title: '供应商推荐需求'
+     },
+     {
+       path: '/supplier/recommend/data',
+       component: './SupplierRecommendDemand/RecommendData',
+       title: '供应商推荐资料'
      }
     ],
   }

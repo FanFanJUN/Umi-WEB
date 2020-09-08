@@ -1,9 +1,9 @@
-export const localTarget = 'http://10.8.4.121:8088';
+export const localTarget = 'http://decmp.changhong.com';
 export const onLineTarget = 'https://tecmp.changhong.com';
 
 export default {
   '/service.api': {
-    target: onLineTarget,
+    target: localTarget,
     changeOrigin: true,
     secure: false,
     pathRewrite: { '^/service.api': '' },
