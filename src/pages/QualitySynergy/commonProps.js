@@ -193,6 +193,22 @@ export const OrganizationByCompanyCodeConfig = {
   },
 };
 
+// 文件类别列表
+export const CorporationListConfig = {
+  remotePaging: true,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${baseUrl}/technicalDataCategory/find_by_page_all`,
+  },
+  rowKey: 'fileCategoryCode',
+  reader: {
+    field: ['fileCategoryCode', 'id'],
+    name: 'fileCategoryName',
+    description: 'fileCategoryCode',
+  },
+};
+
 // 公司列表
 export const CompanyConfig = {
   remotePaging: false,

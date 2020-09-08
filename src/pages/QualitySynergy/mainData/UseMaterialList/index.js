@@ -33,8 +33,8 @@ const Index = () => {
     { title: '限用物质代码', dataIndex: 'limitMaterialCode', width: 200 },
     { title: '限用物质名称', dataIndex: 'limitMaterialName', ellipsis: true },
     { title: 'CAS.NO', dataIndex: 'casNo', ellipsis: true },
-    { title: '基本单位代码', dataIndex: 'basicUnitCode', ellipsis: true },
-    { title: '基本单位名称', dataIndex: 'basicUnitName', ellipsis: true },
+    // { title: '基本单位代码', dataIndex: 'basicUnitCode', ellipsis: true },
+    // { title: '基本单位名称', dataIndex: 'basicUnitName', ellipsis: true },
     {
       title: '是否测试记录表中检查项',
       dataIndex: 'recordCheckList',
@@ -213,6 +213,8 @@ const Index = () => {
       EditTheListOfRestrictedMaterials(params).then(res => {
         if (res.success) {
           setData((value) => ({ ...value, visible: false }));
+          setSelectRows([]);
+          setSelectedRowKeys([]);
           tableRef.current.remoteDataRefresh();
         } else {
           message.error(res.msg);
