@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { Fragment, useRef, useState } from 'react';
 import styles from './BaseInfo.less';
 import { Col, Form, Modal, Row, Input, Button } from 'antd';
 import { ExtTable } from 'suid';
-import { smBaseUrl } from '../../../../../utils/commonUrl';
+import { baseUrl, smBaseUrl } from '../../../../../utils/commonUrl';
 import TechnicalDataModal from './component/TechnicalDataModal';
 
 const TechnicalData = (props) => {
 
-  const [searchValue, setSearchValue] = useState({});
+  const tableRef = useRef(null);
 
   const [data, setData] = useState({
+    selectRows: [],
+    selectedRowKeys: [],
     visible: false,
     title: '新增技术资料'
   })
@@ -25,7 +27,6 @@ const TechnicalData = (props) => {
     store: {
       url: `${smBaseUrl}/api/supplierFinanceViewModifyService/findByPage`,
       params: {
-        ...searchValue,
         quickSearchProperties: ['supplierName', 'supplierCode'],
         sortOrders: [
           {
@@ -38,18 +39,19 @@ const TechnicalData = (props) => {
     }
   }
 
-  const handleSelectedRows = () => {
-
-  }
-
-  const selectedRowKeys = () => {
-
+  const handleSelectedRows = (value, rows) => {
+    console.log(value, rows);
+    setData((v) => ({...v, selectedRowKeys: value, selectRows: rows}))
   }
 
   const handleBtn = (type) => {
     if (type === 'add') {
       setData((value) => ({...value, visible: true, title: '新增技术资料'}))
     }
+  }
+
+  const TechnicalDataAdd = (value) => {
+    console.log(value, '技术资料新增')
   }
 
   return (
@@ -59,27 +61,29 @@ const TechnicalData = (props) => {
         <div className={styles.content}>
           <div>
             <Button onClick={() => {handleBtn('add')}} type='primary'>新增</Button>
-            <Button onClick={() => {handleBtn('edit')}} style={{marginLeft: '5px'}}>编辑</Button>
-            <Button style={{marginLeft: '5px'}}>删除</Button>
+            <Button disabled={data.selectRows.length !== 1} onClick={() => {handleBtn('edit')}} style={{marginLeft: '5px'}}>编辑</Button>
+            <Button disabled={data.selectedRowKeys.length < 1} style={{marginLeft: '5px'}}>删除</Button>
           </div>
           <ExtTable
             style={{marginTop: '10px'}}
-            columns={columns}
+            rowKey={(v) => v.id}
             bordered
             allowCancelSelect
             showSearch={false}
             remotePaging
             checkbox={{ multiSelect: false }}
-            rowKey={(item) => item.id}
             size='small'
             onSelectRow={handleSelectedRows}
-            selectedRowKeys={selectedRowKeys}
+            selectedRowKeys={data.selectedRowKeys}
+            columns={columns}
+            ref={tableRef}
             {...tableProps}
           />
         </div>
         <TechnicalDataModal
           title={data.title}
           type={props.type}
+          onOk={TechnicalDataAdd}
           onCancel={() => setData((value) => ({...value, visible: false}))}
           visible={data.visible}
         />

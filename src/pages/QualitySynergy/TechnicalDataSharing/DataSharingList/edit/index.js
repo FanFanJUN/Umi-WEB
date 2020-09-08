@@ -13,17 +13,25 @@ export default () => {
 
   const [data, setData] = useState({
     loading: false,
+    type: 'add',
     title: ''
   })
 
-  useEffect(() => {
+  useEffect( () => {
     const { id, pageState } = query;
     switch (pageState) {
       case 'add':
-        setData((value) => ({...value, title: '技术资料分享需求-新增'}))
+        // getUser()
+        setData((value) => ({...value, type: pageState, title: '技术资料分享需求-新增'}))
+        break
     }
     console.log(pageState, 'pageState')
   }, [])
+
+  const getUser = () => {
+
+    console.log('触发')
+  }
 
   const handleBack = () => {
     closeCurrent()
@@ -47,14 +55,14 @@ export default () => {
           </div>
         </Affix>
         <BaseInfo
-          type={'add'}
+          type={data.type}
         />
         <MaterialInfo
-          type={'add'}
+          type={data.type}
         />
-        <TechnicalData
-
-        />
+        {
+          data.type === 'add' && <TechnicalData/>
+        }
       </Spin>
     </div>
   )
