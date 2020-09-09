@@ -22,7 +22,7 @@ const Index = () => {
 
   const [data, setData] = useState({
     visible: false,
-    title: '限用物资清单新增',
+    title: '限用物质清单新增',
     type: 'add',
   });
 

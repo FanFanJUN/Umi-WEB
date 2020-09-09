@@ -50,6 +50,9 @@ export default function() {
       case 'add':
         openNewTab('qualitySynergy/DataSharingAdd?pageState=add', '技术资料分享需求-新增', false);
         break
+      case 'detail':
+        openNewTab('qualitySynergy/DataSharingAdd?pageState=detail', '技术资料分享需求-明细', false);
+        break
       case 'allot':
         setModalData({title: '分配供应商', visible: true, type: 'allot'})
         break
@@ -171,7 +174,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='PURCHASE_VIEW_CHANGE_CREATE'
-        disabled={data.selectedRowKeys.length !== 1}
+        // disabled={data.selectedRowKeys.length !== 1}
       >明细</Button>)
     }
     {

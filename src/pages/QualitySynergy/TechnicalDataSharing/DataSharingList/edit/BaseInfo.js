@@ -17,7 +17,7 @@ const formLayout = {
 };
 
 let BaseInfo = React.forwardRef((props, ref) => {
-  const { dispatch } = props;
+  const { isView } = props;
 
   const { type, form, data, userInfo } = props;
 
@@ -46,7 +46,9 @@ let BaseInfo = React.forwardRef((props, ref) => {
               <FormItem label="来源" {...formLayout}>
                 {getFieldDecorator('source', {
                   initialValue: type === 'add' ? 'SRM' : data.source,
-                })(<Input disabled={true} placeholder="请输入来源" style={{ width: '100%' }} />)}
+                })(
+                  <Input disabled={true} placeholder="请输入来源" style={{ width: '100%' }} />
+                  )}
               </FormItem>
             </Col>
             <Col span={12}>

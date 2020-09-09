@@ -35,7 +35,7 @@ const LimitMaterial = ({ form }) => {
     });
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [selectedRow, setSelectedRow] = useState([]);
-    // 限用物资
+    // 限用物质
     const tableRightRef = useRef(null);
     const [selectedRightKeys, setSelectedRightKeys] = useState([]);
     const [selectedRight, setSelectedRight] = useState([]);
@@ -220,9 +220,9 @@ const LimitMaterial = ({ form }) => {
             >解冻</Button>)
         }
     </>
-    // 限用物资按钮操作
+    // 限用物质按钮操作
     const buttonClick = (type) => {
-        console.log('限用物资按钮操作')
+        console.log('限用物质按钮操作')
         switch (type) {
             case 'add':
                 setData((value) => ({ ...value, visible: true, modalSource: '', isView: false }));
@@ -239,7 +239,7 @@ const LimitMaterial = ({ form }) => {
             case 'freeze':
             case 'thaw':
                 confirm({
-                    title: `请确认是否${type === 'thaw' ? '解冻' : '冻结'}选中限用物资数据`,
+                    title: `请确认是否${type === 'thaw' ? '解冻' : '冻结'}选中限用物质数据`,
                     onOk: async () => {
                         const parmas = selectedRowKeys.join();
                         const res = await ESPMFreeze({
@@ -258,7 +258,7 @@ const LimitMaterial = ({ form }) => {
                 break;
             case 'delete':
                 confirm({
-                    title: '请确认是否删除选中限用物资数据',
+                    title: '请确认是否删除选中限用物质数据',
                     onOk: async () => {
                         const res = await ESPMDelete({ ids: selectedRightKeys.join() });
                         if (res.success) {
@@ -329,7 +329,7 @@ const LimitMaterial = ({ form }) => {
                 break;
         }
     }
-    // 限用物资新增/编辑
+    // 限用物质新增/编辑
     function handleOk() {
         if (data.isView) {
             setData((value) => ({ ...value, visible: false }))
@@ -451,7 +451,7 @@ const LimitMaterial = ({ form }) => {
                 </Card>
             </Col>
         </Row>
-        {/* 限用物资新增/编辑弹框 */}
+        {/* 限用物质新增/编辑弹框 */}
         {data.visible && <ExtModal
             centered
             destroyOnClose

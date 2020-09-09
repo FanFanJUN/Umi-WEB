@@ -99,7 +99,7 @@ const supplierModal = forwardRef(({ form }, ref) => {
             <Form>
                 <Row>
                     <FormItem label='物质名称' {...formLayout}>
-                        {!getFieldValue('data4') ? <Input disabled={true} placeholder="请先选择是否为限用物资" />
+                        {!getFieldValue('data4') ? <Input disabled={true} placeholder="请先选择是否为限用物质" />
                             : getFieldValue('data4') === 'no' ? getFieldDecorator('data1', {
                                 initialValue: '',
                                 rules: [{ required: true, message: '请填写物质名称' }]

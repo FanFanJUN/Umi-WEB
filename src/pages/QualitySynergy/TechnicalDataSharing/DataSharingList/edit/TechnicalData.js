@@ -31,7 +31,7 @@ const TechnicalData = React.forwardRef((props, ref) => {
   })
 
   const columns = [
-    { title: '文件类别', dataIndex: 'fileType', width: 350 },
+    { title: '文件类别', dataIndex: 'fileCategoryName', width: 350 },
     { title: '文件版本', dataIndex: 'fileVersion', width: 350, ellipsis: true, },
     { title: '技术资料附件', dataIndex: 'technicalDataFileId', width: 350, ellipsis: true,render: (v) => <div>查看</div> },
     { title: '样品需求日期', dataIndex: 'sampleRequirementDate', width: 350, ellipsis: true, },
