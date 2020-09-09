@@ -66,8 +66,6 @@ const Index = () => {
       operation: operation,
     });
     if (data.success) {
-      setSelectRows([]);
-      setSelectedRowKeys([]);
       tableRef.current.manualSelectedRows();
       tableRef.current.remoteDataRefresh();
     }
@@ -85,8 +83,6 @@ const Index = () => {
           ids: selectedRowKeys.toString(),
         });
         if (data.success) {
-          setSelectRows([]);
-          setSelectedRowKeys([]);
           tableRef.current.manualSelectedRows();
           tableRef.current.remoteDataRefresh();
         }
@@ -159,8 +155,6 @@ const Index = () => {
     const response = await AddAndEditBasicMaterials(params);
     if (response.success) {
       setData((value) => ({ ...value, visible: false }));
-      setSelectRows([]);
-      setSelectedRowKeys([]);
       tableRef.current.manualSelectedRows();
       tableRef.current.remoteDataRefresh();
     } else {

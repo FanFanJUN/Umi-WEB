@@ -31,8 +31,8 @@ const Index = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   const columns = [
-    { title: 'BU代码', dataIndex: 'buCode', width: 200 },
-    { title: 'BU名称', dataIndex: 'buName', ellipsis: true },
+    { title: '业务单元代码', dataIndex: 'buCode', width: 200 },
+    { title: '业务单元名称', dataIndex: 'buName', ellipsis: true },
     { title: '公司代码', dataIndex: 'corporationCode', ellipsis: true },
     { title: '公司名称', dataIndex: 'corporationName', ellipsis: true, width: 300 },
     { title: '采购组织代码', dataIndex: 'purchaseOrgCode', ellipsis: true },
@@ -68,8 +68,6 @@ const Index = () => {
       frozen,
     });
     if (data.success) {
-      setSelectRows([]);
-      setSelectedRowKeys([]);
       tableRef.current.manualSelectedRows();
       tableRef.current.remoteDataRefresh();
     }
@@ -87,8 +85,6 @@ const Index = () => {
           ids: selectedRowKeys.toString(),
         });
         if (data.success) {
-          setSelectRows([]);
-          setSelectedRowKeys([]);
           tableRef.current.manualSelectedRows();
           tableRef.current.remoteDataRefresh();
         }
@@ -155,8 +151,6 @@ const Index = () => {
       AddBUCompanyOrganizationRelation(value).then(res => {
         if (res.success) {
           setData((value) => ({ ...value, visible: false }));
-          setSelectRows([]);
-          setSelectedRowKeys([]);
           tableRef.current.manualSelectedRows();
           tableRef.current.remoteDataRefresh();
         } else {
@@ -169,8 +163,6 @@ const Index = () => {
       AddBUCompanyOrganizationRelation(params).then(res => {
         if (res.success) {
           setData((value) => ({ ...value, visible: false }));
-          setSelectRows([]);
-          setSelectedRowKeys([]);
           tableRef.current.manualSelectedRows();
           tableRef.current.remoteDataRefresh();
         } else {

@@ -12,6 +12,36 @@ const commonProps = {
   },
 };
 
+//业务模块对业务单元删除
+export async function DeleteBusinessUnitToBUt(params) {
+  const url = `${baseUrl}/bmBuContact/whetherDelete`;
+  return request({
+    url,
+    method: 'POST',
+    params: params,
+  });
+}
+
+//业务模块对业务单元解冻冻结
+export async function FrozenBusinessUnitToBUt(params) {
+  const url = `${baseUrl}/bmBuContact/frozen`;
+  return request({
+    url,
+    method: 'POST',
+    params: params,
+  });
+}
+
+//业务模块对业务单元新增
+export async function AddBusinessUnitToBUt(params) {
+  const url = `${baseUrl}/bmBuContact/addBuCompanyPurchasingOrganization`;
+  return request({
+    url,
+    method: 'POST',
+    params: params,
+  });
+}
+
 //技术资料分享新增
 export async function AddDataSharingList(params) {
   const url = `${smBaseUrl}/api/epTechnicalShareDemandService/insert`;

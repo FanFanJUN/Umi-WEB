@@ -78,8 +78,6 @@ const Index = () => {
           id: selectedRowKeys.toString(),
         });
         if (data.success) {
-          setSelectRows([]);
-          setSelectedRowKeys([]);
           tableRef.current.manualSelectedRows();
           tableRef.current.remoteDataRefresh();
         }
@@ -94,8 +92,6 @@ const Index = () => {
       flag: frozen
     });
     if (data.success) {
-      setSelectRows([]);
-      setSelectedRowKeys([]);
       tableRef.current.manualSelectedRows();
       tableRef.current.remoteDataRefresh();
     }
@@ -215,8 +211,6 @@ const Index = () => {
       EditTheListOfRestrictedMaterials(params).then(res => {
         if (res.success) {
           setData((value) => ({ ...value, visible: false }));
-          setSelectRows([]);
-          setSelectedRowKeys([]);
           tableRef.current.manualSelectedRows();
           tableRef.current.remoteDataRefresh();
         } else {

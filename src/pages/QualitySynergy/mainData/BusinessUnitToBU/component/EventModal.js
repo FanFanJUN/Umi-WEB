@@ -57,6 +57,33 @@ const EventModal = (props) => {
       <Form>
         <Row>
           <Col span={0}>
+            {hideFormItem('corporationCode', type === 'add' ? '' : data.corporationCode)}
+          </Col>
+          <Col span={0}>
+            {hideFormItem('corporationId', type === 'add' ? '' : data.corporationId)}
+          </Col>
+          <Col span={24}>
+            <FormItem {...formItemLayoutLong} label={'业务板块'}>
+              {
+                getFieldDecorator('corporationName', {
+                  initialValue: type === 'add' ? '' : data.corporationName,
+                  rules: [
+                    {
+                      required: true,
+                      message: '公司不能为空',
+                    },
+                  ],
+                })(<ComboList
+                  // afterSelect={() => setFieldsValue('')}
+                  form={form}
+                  field={['corporationCode', 'corporationId']}
+                  name={'corporationName'}
+                  {...CompanyConfig}
+                />)
+              }
+            </FormItem>
+          </Col>
+          <Col span={0}>
             {hideFormItem('buCode', type === 'add' ? '' : data.buCode)}
           </Col>
           <Col span={0}>
@@ -79,87 +106,6 @@ const EventModal = (props) => {
                   field={['buCode', 'buId']}
                   {...BUConfig}
                 />)
-              }
-            </FormItem>
-          </Col>
-          <Col span={0}>
-            {hideFormItem('corporationCode', type === 'add' ? '' : data.corporationCode)}
-          </Col>
-          <Col span={0}>
-            {hideFormItem('corporationId', type === 'add' ? '' : data.corporationId)}
-          </Col>
-          <Col span={24}>
-            <FormItem {...formItemLayoutLong} label={'公司'}>
-              {
-                getFieldDecorator('corporationName', {
-                  initialValue: type === 'add' ? '' : data.corporationName,
-                  rules: [
-                    {
-                      required: true,
-                      message: '公司不能为空',
-                    },
-                  ],
-                })(<ComboList
-                  // afterSelect={() => setFieldsValue('')}
-                  form={form}
-                  field={['corporationCode', 'corporationId']}
-                  name={'corporationName'}
-                  {...CompanyConfig}
-                />)
-              }
-            </FormItem>
-          </Col>
-          <Col span={0}>
-            {hideFormItem('purchaseOrgCode', type === 'add' ? '' : data.purchaseOrgCode)}
-          </Col>
-          <Col span={0}>
-            {hideFormItem('purchaseOrgId', type === 'add' ? '' : data.purchaseOrgId)}
-          </Col>
-          <Col span={24}>
-            <FormItem {...formItemLayoutLong} label={'采购组织'}>
-              {
-                getFieldDecorator('purchaseOrgName', {
-                  initialValue: type === 'add' ? '' : data.purchaseOrgName,
-                  rules: [
-                    {
-                      required: true,
-                      message: '采购组织不能为空',
-                    },
-                  ],
-                })(<ComboList
-                  form={form}
-                  field={['purchaseOrgCode', 'purchaseOrgId']}
-                  name={'purchaseOrgName'}
-                  cascadeParams={{
-                    companyCode: getFieldValue('corporationCode'),
-                  }}
-                  store={{
-                    params: {
-                      companyCode: getFieldValue('corporationCode'),
-                    },
-                    type: 'GET',
-                    autoLoad: false,
-                    url: `${baseUrl}/buCompanyPurchasingOrganization/findPurchaseOrganizationByCompanyCode`,
-                  }}
-                  {...OrganizationByCompanyCodeConfig}
-                />)
-              }
-            </FormItem>
-          </Col>
-          <Col span={24}>
-            <FormItem {...formItemLayoutLong} label={'排序号'}>
-              {
-                getFieldDecorator('orderNo', {
-                  initialValue: type === 'add' ? '' : data.orderNo,
-                  rules: [
-                    {
-                      required: true,
-                      message: '排序号不能为空',
-                    },
-                  ],
-                })(
-                  <Input />,
-                )
               }
             </FormItem>
           </Col>
