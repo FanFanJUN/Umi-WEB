@@ -21,7 +21,7 @@ const Index = () => {
 
   const [data, setData] = useState({
     visible: false,
-    title: '限用物资清单新增',
+    title: '限用物质清单新增',
     type: 'add',
   });
 
@@ -49,10 +49,10 @@ const Index = () => {
   const buttonClick = async (type) => {
     switch (type) {
       case 'add':
-        setData((value) => ({ ...value, visible: true, title: '限用物资清单新增', type: 'add' }));
+        setData((value) => ({ ...value, visible: true, title: '限用物质清单新增', type: 'add' }));
         break;
       case 'edit':
-        setData((value) => ({ ...value, visible: true, title: '限用物资清单编辑', type: 'edit' }));
+        setData((value) => ({ ...value, visible: true, title: '限用物质清单编辑', type: 'edit' }));
         break;
       case 'delete':
         await deleteData();
@@ -234,7 +234,7 @@ const Index = () => {
               url: `${baseUrl}/limitSubstanceListData/find_by_page_all`,
               type: 'POST',
             }}
-            searchPlaceHolder='输入限用物资名称或CAS.NO关键字'
+            searchPlaceHolder='输入限用物质名称或CAS.NO关键字'
             allowCancelSelect={true}
             remotePaging={true}
             checkbox={{
@@ -255,7 +255,7 @@ const Index = () => {
         type={data.type}
         data={selectRows[selectRows.length - 1]}
         onCancel={() => setData((value) => ({ ...value, visible: false }))}
-        title='限用物资清单新增'
+        title='限用物质清单新增'
       />
     </Fragment>
   );

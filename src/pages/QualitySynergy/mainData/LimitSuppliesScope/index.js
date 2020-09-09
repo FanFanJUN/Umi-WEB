@@ -23,7 +23,7 @@ const Index = () => {
 
   const [data, setData] = useState({
     visible: false,
-    title: '限用物资清单新增',
+    title: '限用物质清单新增',
     type: 'add',
   });
 
@@ -41,10 +41,10 @@ const Index = () => {
   const buttonClick = async (type) => {
     switch (type) {
       case 'add':
-        setData((value) => ({ ...value, visible: true, title: '限用物资适用范围新增', type: 'add' }));
+        setData((value) => ({ ...value, visible: true, title: '限用物质适用范围新增', type: 'add' }));
         break;
       case 'edit':
-        setData((value) => ({ ...value, visible: true, title: '限用物资适用范围编辑', type: 'edit' }));
+        setData((value) => ({ ...value, visible: true, title: '限用物质适用范围编辑', type: 'edit' }));
         break;
       case 'delete':
         await deleteData();
@@ -194,7 +194,7 @@ const Index = () => {
         type={data.type}
         data={selectRows[selectRows.length - 1]}
         onCancel={() => setData((value) => ({ ...value, visible: false }))}
-        title='限用物资适用范围新增'
+        title='限用物质适用范围新增'
       />
     </Fragment>
   );
