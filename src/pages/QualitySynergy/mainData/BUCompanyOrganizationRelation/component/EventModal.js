@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { ComboList, ExtModal } from 'suid';
 import { Checkbox, Col, Form, Input, Row } from 'antd';
-import { BasicUnitList, BUConfig, CompanyConfig, OrganizationByCompanyCodeConfig } from '../../../commonProps';
+import {
+  BasicUnitList,
+  BUConfig,
+  BUConfigNoFrost,
+  CompanyConfig,
+  OrganizationByCompanyCodeConfig,
+} from '../../../commonProps';
 import { baseUrl } from '../../../../../utils/commonUrl';
 
 const FormItem = Form.Item;
@@ -77,7 +83,7 @@ const EventModal = (props) => {
                   form={form}
                   name={'buName'}
                   field={['buCode', 'buId']}
-                  {...BUConfig}
+                  {...BUConfigNoFrost}
                 />)
               }
             </FormItem>

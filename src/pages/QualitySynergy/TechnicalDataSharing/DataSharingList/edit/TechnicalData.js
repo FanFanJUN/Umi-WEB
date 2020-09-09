@@ -13,7 +13,17 @@ const TechnicalData = React.forwardRef((props, ref) => {
   const tableRef = useRef(null);
 
   const [data, setData] = useState({
-    dataSource: [],
+    dataSource: [
+      {
+        fileCategoryCode: "1233",
+        fileCategoryId: "6FD7F54E-F1B5-11EA-97A4-0242C0A84412",
+        fileCategoryName: "ZSDJHFIJ33",
+        fileVersion: "v12",
+        id: 1,
+        sampleRequirementDate: "2020-09-13",
+        technicalDataFileId: 'A0CD4CF4F26111EAB7D80242C0A8441D'
+      }
+    ],
     selectRows: [],
     selectedRowKeys: [],
     visible: false,
@@ -23,7 +33,7 @@ const TechnicalData = React.forwardRef((props, ref) => {
   const columns = [
     { title: '文件类别', dataIndex: 'fileType', width: 350 },
     { title: '文件版本', dataIndex: 'fileVersion', width: 350, ellipsis: true, },
-    { title: '技术资料附件', dataIndex: 'technicalDataFileId', width: 350, ellipsis: true,render: (v) => <UploadFile type={'show'} entityId={v} /> },
+    { title: '技术资料附件', dataIndex: 'technicalDataFileId', width: 350, ellipsis: true,render: (v) => <div>查看</div> },
     { title: '样品需求日期', dataIndex: 'sampleRequirementDate', width: 350, ellipsis: true, },
   ].map(item => ({...item, align: 'center'}))
 

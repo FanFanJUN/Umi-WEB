@@ -4,6 +4,7 @@ import { ComboList, ExtModal } from 'suid';
 import { CorporationListConfig } from '../../../../commonProps';
 import { baseUrl } from '../../../../../../utils/commonUrl';
 import UploadFile from '../../../../../../components/Upload';
+import { ComboAttachment } from '../../../../../../components';
 
 const FormItem = Form.Item;
 
@@ -18,7 +19,10 @@ const TechnicalDataModal = (props) => {
 
   const { getFieldDecorator, setFieldsValue, getFieldValue } = props.form;
 
+  const [attachment, setAttachment] = useState(null);
+
   const [data, setData] = useState({
+    technicalDataFileId: [],
     fileList: [],
   });
 
@@ -30,6 +34,8 @@ const TechnicalDataModal = (props) => {
     });
   };
 
+  console.log(data.technicalDataFileId, 'technicalDataFileId');
+
   const onCancel = () => {
     props.onCancel();
   };
@@ -38,22 +44,17 @@ const TechnicalDataModal = (props) => {
     props.form.resetFields();
   };
 
-  //获取请求头
-  const getHeaders = () => {
-    let auth;
-    try {
-      auth = JSON.parse(localStorage.getItem('Authorization'));
-    } catch (e) {
-    }
-    return {
-      'Authorization': auth ? (auth.accessToken ? auth.accessToken : '') : '',
-    };
-  };
-
-  const handleChange = (value) => {
-    console.log(value);
-  };
-
+  const hideFormItem = (name, initialValue) => (
+    <FormItem>
+      {
+        getFieldDecorator(name, {
+          initialValue: initialValue,
+        })(
+          <Input type={'hidden'} />,
+        )
+      }
+    </FormItem>
+  );
 
   return (
     <ExtModal
@@ -67,11 +68,17 @@ const TechnicalDataModal = (props) => {
     >
       <Form>
         <Row>
+          <Col span={0}>
+            {hideFormItem('fileCategoryCode', type === 'add' ? '' : data.fileCategoryCode)}
+          </Col>
+          <Col span={0}>
+            {hideFormItem('fileCategoryId', type === 'add' ? '' : data.fileCategoryId)}
+          </Col>
           <Col span={24}>
             <FormItem {...formItemLayoutLong} label={'文件类别'}>
               {
-                getFieldDecorator('fileType', {
-                  initialValue: type === 'add' ? '' : data.fileType,
+                getFieldDecorator('fileCategoryName', {
+                  initialValue: type === 'add' ? '' : data.fileCategoryName,
                   rules: [
                     {
                       required: true,
@@ -80,8 +87,8 @@ const TechnicalDataModal = (props) => {
                   ],
                 })(<ComboList
                   form={form}
-                  field={['corporationCode', 'corporationId']}
-                  name={'fileType'}
+                  field={['fileCategoryCode', 'fileCategoryId']}
+                  name={'fileCategoryName'}
                   {...CorporationListConfig}
                 />)
               }
@@ -114,10 +121,13 @@ const TechnicalDataModal = (props) => {
                     },
                   ],
                 })(
-                  <UploadFile
-                    type={type === 'detail' ? 'show' : ''}
-                    entityId={data.technicalDataFileId}
-                  />,
+                  <ComboAttachment
+                    uploadButton={{ disabled: type === 'detail' }}
+                    allowDelete={type !== 'detail'}
+                    showViewType={type !== 'detail'}
+
+                    customBatchDownloadFileName={true}
+                    attachment={attachment}/>,
                 )
               }
             </FormItem>

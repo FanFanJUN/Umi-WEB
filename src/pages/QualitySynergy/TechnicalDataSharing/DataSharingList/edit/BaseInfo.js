@@ -2,7 +2,7 @@ import React, { useEffect, useImperativeHandle } from 'react';
 import styles from './BaseInfo.less';
 import { ComboList, ExtModal } from 'suid';
 import { Col, Form, Modal, Row, Input, DatePicker } from 'antd';
-import { BUConfig } from '../../../commonProps';
+import { BUConfig, BUConfigNoFrost } from '../../../commonProps';
 import moment from 'moment/moment';
 
 const FormItem = Form.Item;
@@ -67,13 +67,13 @@ let BaseInfo = React.forwardRef((props, ref) => {
           <Col span={0}>{hideFormItem('buId', type === 'add' ? '' : data.buId)}</Col>
           <Row>
             <Col span={12}>
-              <FormItem {...formLayout} label={'BU'}>
+              <FormItem {...formLayout} label={'基本单位'}>
                 {getFieldDecorator('buName', {
                   initialValue: type === 'add' ? '' : data.buName,
                   rules: [
                     {
                       required: true,
-                      message: 'BU不能为空',
+                      message: '基本单位不能为空',
                     },
                   ],
                 })(
@@ -82,7 +82,7 @@ let BaseInfo = React.forwardRef((props, ref) => {
                     form={form}
                     name={'buName'}
                     field={['buCode', 'buId']}
-                    {...BUConfig}
+                    {...BUConfigNoFrost}
                   />,
                 )}
               </FormItem>
