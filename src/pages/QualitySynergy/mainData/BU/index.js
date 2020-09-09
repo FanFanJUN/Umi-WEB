@@ -49,7 +49,7 @@ const BU = (props) => {
             case 'thaw':
             case 'freeze':
                 confirm({
-                    title: `请确认是否${type==='thaw'?'解冻': '冻结'}选中技术资料类别数据`,
+                    title: `请确认是否${type==='thaw'?'解冻': '冻结'}选中业务单元数据`,
                     onOk: async () => {
                         const parmas = selectedRowKeys.join();
                         const res = await frozenBU({ 
@@ -71,7 +71,7 @@ const BU = (props) => {
                     message.warning('至少选择一条数据')
                 } else {
                     confirm({
-                        title: '请确认是否删除选中技术资料类别数据',
+                        title: '请确认是否删除选中业务单元类别数据',
                         onOk: async () => {
                             const parmas = selectedRowKeys.join();
                             const res = await deleteBU({ ids: parmas });
