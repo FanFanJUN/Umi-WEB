@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 15:52:52
- * @LastEditTime: 2020-09-09 14:55:43
+ * @LastEditTime: 2020-09-09 15:21:21
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/BaseCondition/index.js
  * @Description: 基本情况 Tab
  * @Connect: 1981824361@qq.com
@@ -10,7 +10,6 @@
 import React, { useState, useRef } from 'react';
 import { Form, Button, Spin, PageHeader } from 'antd';
 import styles from '../../DataFillIn/index.less';
-import classnames from 'classnames';
 import BaseInfo from './BaseInfo';
 import AuthPrincipal from './AuthPrincipal';
 import GenQualification from './GenQualification';
