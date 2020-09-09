@@ -17,6 +17,7 @@ export default () => {
   const technicalDataRef = useRef(null);
 
   const [data, setData] = useState({
+    isView: false,
     loading: false,
     type: 'add',
     title: '',
@@ -28,7 +29,11 @@ export default () => {
     switch (pageState) {
       case 'add':
         getUser()
-        setData((value) => ({...value, type: pageState, title: '技术资料分享需求-新增'}))
+        setData((value) => ({...value, type: pageState, title: '技术资料分享需求-新增', isView: false}))
+        break
+      case 'detail':
+        getUser()
+        setData((value) => ({...value, type: pageState, isView: true, title: '技术资料分享需求-明雄'}))
         break
     }
     console.log(pageState, 'pageState')
@@ -79,16 +84,19 @@ export default () => {
           </div>
         </Affix>
         <BaseInfo
+          isView={data.isView}
           wrappedComponentRef={baseInfoRef}
           userInfo={data.userInfo}
           type={data.type}
         />
         <MaterialInfo
+          isView={data.isView}
           wrappedComponentRef={materialInfoRef}
           type={data.type}
         />
         {
           data.type === 'add' && <TechnicalData
+            isView={data.isView}
             wrappedComponentRef={technicalDataRef}
             type={data.type}
           />

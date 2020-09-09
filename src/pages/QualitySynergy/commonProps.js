@@ -1,4 +1,4 @@
-import { smBaseUrl, baseUrl } from '../../utils/commonUrl';
+import { smBaseUrl, baseUrl, recommendUrl } from '../../utils/commonUrl';
 import request from '../../utils/request';
 import React from 'react';
 
@@ -44,7 +44,7 @@ export async function AddBusinessUnitToBUt(params) {
 
 //技术资料分享新增
 export async function AddDataSharingList(params) {
-  const url = `${smBaseUrl}/api/epTechnicalShareDemandService/insert`;
+  const url = `${recommendUrl}/api/epTechnicalShareDemandService/insert`;
   return request({
     url,
     method: 'POST',
