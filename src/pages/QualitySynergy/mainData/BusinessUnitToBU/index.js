@@ -5,8 +5,7 @@ import { baseUrl, smBaseUrl } from '../../../../utils/commonUrl';
 import { ExtTable, utils } from 'suid';
 import EventModal from './component/EventModal';
 import {
-  AddBusinessUnitToBUt, DeleteBusinessUnitToBUt, DeleteTheListOfRestrictedMaterials,
-  EditTheListOfRestrictedMaterials, FrozenBusinessUnitToBUt,
+  AddBusinessUnitToBUt, DeleteBusinessUnitToBUt, FrozenBusinessUnitToBUt,
 } from '../../commonProps';
 import { AutoSizeLayout } from '../../../../components';
 
@@ -29,10 +28,11 @@ const Index = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   const columns = [
-    { title: '业务板块代码', dataIndex: 'bmCode', width: 350 },
-    { title: '业务板块名称', dataIndex: 'bmUnit', ellipsis: true, width: 350 },
-    { title: '业务单元代码', dataIndex: 'bmCode', ellipsis: true, width: 350 },
-    { title: '业务单元名称', dataIndex: 'buName', ellipsis: true, width: 350 },
+    { title: '业务板块代码', dataIndex: 'bmCode', width: 300 },
+    { title: '业务板块名称', dataIndex: 'bmName', ellipsis: true, width: 350 },
+    { title: '业务单元代码', dataIndex: 'buCode', ellipsis: true, width: 300 },
+    { title: '业务单元名称', dataIndex: 'buName', ellipsis: true },
+    { title: '排序号', dataIndex: 'orderNo', ellipsis: true, width: 350 },
     { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (value) => value ? '是' : '否' },
   ].map(item => ({ ...item, align: 'center' }));
 
@@ -148,13 +148,13 @@ const Index = () => {
           setData((value) => ({ ...value, visible: false }));
           tableRef.current.remoteDataRefresh();
         } else {
-          message.error(res.msg);
+          message.error(res.message);
         }
       });
     } else {
       const id = selectRows[selectRows.length - 1].id;
       const params = { ...value, id };
-      EditTheListOfRestrictedMaterials(params).then(res => {
+      AddBusinessUnitToBUt(params).then(res => {
         if (res.success) {
           setData((value) => ({ ...value, visible: false }));
           setSelectRows([]);
@@ -162,7 +162,7 @@ const Index = () => {
           tableRef.current.manualSelectedRows();
           tableRef.current.remoteDataRefresh();
         } else {
-          message.error(res.msg);
+          message.error(res.message);
         }
       });
     }

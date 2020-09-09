@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React  from 'react';
 import { ComboList, ExtModal } from 'suid';
-import { Checkbox, Col, Form, Input, Row } from 'antd';
-import { BasicUnitList, BUConfig, CompanyConfig, OrganizationByCompanyCodeConfig } from '../../../commonProps';
-import { baseUrl } from '../../../../../utils/commonUrl';
+import { Col, Form, Input, Row } from 'antd';
+import {
+  BUConfigNoFrost, BUModelConfig,
+} from '../../../commonProps';
 
 const FormItem = Form.Item;
 
@@ -15,7 +16,7 @@ const EventModal = (props) => {
 
   const { visible, title, data, type, form } = props;
 
-  const { getFieldDecorator, setFieldsValue, getFieldValue } = props.form;
+  const { getFieldDecorator } = props.form;
 
   const onCancel = () => {
     props.onCancel();
@@ -57,16 +58,16 @@ const EventModal = (props) => {
       <Form>
         <Row>
           <Col span={0}>
-            {hideFormItem('corporationCode', type === 'add' ? '' : data.corporationCode)}
+            {hideFormItem('bmCode', type === 'add' ? '' : data.bmCode)}
           </Col>
           <Col span={0}>
-            {hideFormItem('corporationId', type === 'add' ? '' : data.corporationId)}
+            {hideFormItem('bmId', type === 'add' ? '' : data.bmId)}
           </Col>
           <Col span={24}>
             <FormItem {...formItemLayoutLong} label={'业务板块'}>
               {
-                getFieldDecorator('corporationName', {
-                  initialValue: type === 'add' ? '' : data.corporationName,
+                getFieldDecorator('bmName', {
+                  initialValue: type === 'add' ? '' : data.bmName,
                   rules: [
                     {
                       required: true,
@@ -76,9 +77,9 @@ const EventModal = (props) => {
                 })(<ComboList
                   // afterSelect={() => setFieldsValue('')}
                   form={form}
-                  field={['corporationCode', 'corporationId']}
-                  name={'corporationName'}
-                  {...CompanyConfig}
+                  field={['bmCode', 'bmId']}
+                  name={'bmName'}
+                  {...BUModelConfig}
                 />)
               }
             </FormItem>
@@ -104,8 +105,25 @@ const EventModal = (props) => {
                   form={form}
                   name={'buName'}
                   field={['buCode', 'buId']}
-                  {...BUConfig}
+                  {...BUConfigNoFrost}
                 />)
+              }
+            </FormItem>
+          </Col>
+          <Col span={24}>
+            <FormItem {...formItemLayoutLong} label={'排序号'}>
+              {
+                getFieldDecorator('orderNo', {
+                  initialValue: type === 'add' ? '' : data.orderNo,
+                  rules: [
+                    {
+                      required: true,
+                      message: '排序号不能为空',
+                    },
+                  ],
+                })(
+                  <Input />,
+                )
               }
             </FormItem>
           </Col>

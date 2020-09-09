@@ -38,7 +38,7 @@ export async function AddBusinessUnitToBUt(params) {
   return request({
     url,
     method: 'POST',
-    params: params,
+    data: params,
   });
 }
 
@@ -265,6 +265,46 @@ export const CompanyConfig = {
   },
 };
 
+// 业务单元模块列表
+export const BUModelConfig = {
+  remotePaging: false,
+  store: {
+    type: 'GET',
+    autoLoad: false,
+    url: `${baseUrl}/businessUnit/findAllPage`,
+  },
+  rowKey: 'code',
+  reader: {
+    field: ['code', 'id'],
+    name: 'name',
+    description: 'code',
+  },
+  style: {
+    width: '100%',
+  },
+  placeholder: '选择业务单元模块'
+};
+
+// BU列表未冻结
+export const BUConfigNoFrost = {
+  remotePaging: true,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${baseUrl}/bu/findPage`,
+  },
+  rowKey: 'buCode',
+  reader: {
+    field: ['buCode', 'id'],
+    name: 'buName',
+    description: 'buCode',
+  },
+  style: {
+    width: '100%',
+  },
+  placeholder: '选择业务单元'
+};
+
 // BU列表
 export const BUConfig = {
   remotePaging: true,
@@ -282,6 +322,10 @@ export const BUConfig = {
     name: 'name',
     description: 'value',
   },
+  style: {
+    width: '100%',
+  },
+  placeholder: '选择业务单元'
 };
 
 // 基本单位列表
@@ -297,6 +341,9 @@ export const BasicUnitList = {
     name: 'basicUnitCode',
     description: 'basicUnitCode',
     field: ['basicUnitId', 'basicUnitName']
+  },
+  style: {
+    width: '100%',
   },
 };
 // 限用物资列表

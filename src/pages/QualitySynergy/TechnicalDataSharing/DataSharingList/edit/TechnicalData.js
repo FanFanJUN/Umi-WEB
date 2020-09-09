@@ -23,7 +23,7 @@ const TechnicalData = React.forwardRef((props, ref) => {
   const columns = [
     { title: '文件类别', dataIndex: 'fileType', width: 350 },
     { title: '文件版本', dataIndex: 'fileVersion', width: 350, ellipsis: true, },
-    { title: '技术资料附件', dataIndex: 'technicalDataFileId', width: 350, ellipsis: true,render: (v) => <UploadFile type={'show'} entityId={v} /> },
+    { title: '技术资料附件', dataIndex: 'technicalDataFileId', width: 350, ellipsis: true,render: (v) => <a onClick={() => lookFile(v)}>查看</a> },
     { title: '样品需求日期', dataIndex: 'sampleRequirementDate', width: 350, ellipsis: true, },
   ].map(item => ({...item, align: 'center'}))
 
@@ -41,6 +41,10 @@ const TechnicalData = React.forwardRef((props, ref) => {
   useImperativeHandle(ref, () => ({
     dataSource: data.dataSource
   }))
+
+  const lookFile = (v) => {
+    console.log(v)
+  }
 
   const TechnicalDataAdd = (value) => {
     value.id = data.dataSource.length + 1
