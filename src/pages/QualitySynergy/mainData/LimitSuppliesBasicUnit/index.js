@@ -11,6 +11,7 @@ import {
   DeleteBUCompanyOrganizationRelation,
   FrostBasicMaterials,
 } from '../../commonProps';
+import { AutoSizeLayout } from '../../../../components';
 
 const { authAction } = utils;
 
@@ -65,8 +66,6 @@ const Index = () => {
       operation: operation,
     });
     if (data.success) {
-      setSelectRows([]);
-      setSelectedRowKeys([]);
       tableRef.current.manualSelectedRows();
       tableRef.current.remoteDataRefresh();
     }
@@ -84,8 +83,6 @@ const Index = () => {
           ids: selectedRowKeys.toString(),
         });
         if (data.success) {
-          setSelectRows([]);
-          setSelectedRowKeys([]);
           tableRef.current.manualSelectedRows();
           tableRef.current.remoteDataRefresh();
         }
@@ -158,8 +155,6 @@ const Index = () => {
     const response = await AddAndEditBasicMaterials(params);
     if (response.success) {
       setData((value) => ({ ...value, visible: false }));
-      setSelectRows([]);
-      setSelectedRowKeys([]);
       tableRef.current.manualSelectedRows();
       tableRef.current.remoteDataRefresh();
     } else {
@@ -170,25 +165,30 @@ const Index = () => {
 
   return (
     <Fragment>
-      <ExtTable
-        rowKey={(v) => v.id}
-        columns={columns}
-        store={{
-          url: `${baseUrl}/limitMaterialUnitData/findBySearchPage`,
-          type: 'POST',
-        }}
-        allowCancelSelect={true}
-        remotePaging={true}
-        checkbox={{
-          multiSelect: true,
-        }}
-        ref={tableRef}
-        onSelectRow={onSelectRow}
-        selectedRowKeys={selectedRowKeys}
-        toolBar={{
-          left: headerLeft,
-        }}
-      />
+      <AutoSizeLayout>
+        {
+          (h) => <ExtTable
+            rowKey={(v) => v.id}
+            columns={columns}
+            height={h}
+            store={{
+              url: `${baseUrl}/limitMaterialUnitData/findBySearchPage`,
+              type: 'POST',
+            }}
+            allowCancelSelect={true}
+            remotePaging={true}
+            checkbox={{
+              multiSelect: true,
+            }}
+            ref={tableRef}
+            onSelectRow={onSelectRow}
+            selectedRowKeys={selectedRowKeys}
+            toolBar={{
+              left: headerLeft,
+            }}
+          />
+        }
+      </AutoSizeLayout>
       <EventModal
         visible={data.visible}
         onOk={handleOk}

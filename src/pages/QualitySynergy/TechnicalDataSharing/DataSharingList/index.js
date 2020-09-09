@@ -31,7 +31,8 @@ export default function() {
   })
 
   const [data, setData] = useState({
-    selectedRowKeys: []
+    selectedRowKeys: [],
+    selectedRows: []
   })
 
   const [searchValue, setSearchValue] = useState({});
@@ -144,6 +145,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='PURCHASE_VIEW_CHANGE_CREATE'
+        disabled={data.selectedRowKeys.length !== 1}
       >编辑</Button>)
     }
     {
@@ -152,6 +154,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='PURCHASE_VIEW_CHANGE_CREATE'
+        disabled={data.selectedRowKeys.length === 0}
       >删除</Button>)
     }
     {
@@ -160,6 +163,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='PURCHASE_VIEW_CHANGE_CREATE'
+        disabled={data.selectedRowKeys.length !== 1}
       >明细</Button>)
     }
     {
@@ -168,6 +172,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='PURCHASE_VIEW_CHANGE_CREATE'
+        disabled={data.selectedRowKeys.length !== 1}
       >提交</Button>)
     }
     {
@@ -175,6 +180,7 @@ export default function() {
         onClick={() => redirectToPage('recall')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
+        disabled={data.selectedRowKeys.length !== 1}
         key='PURCHASE_VIEW_CHANGE_CREATE'
       >撤回</Button>)
     }
@@ -183,6 +189,7 @@ export default function() {
         onClick={() => redirectToPage('allot')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
+        disabled={data.selectedRowKeys.length !== 1}
         key='PURCHASE_VIEW_CHANGE_CREATE'
       >分配供应商</Button>)
     }
@@ -191,6 +198,7 @@ export default function() {
         onClick={() => redirectToPage('govern')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
+        disabled={data.selectedRowKeys.length !== 1}
         key='PURCHASE_VIEW_CHANGE_CREATE'
       >支配战略采购</Button>)
     }
@@ -205,8 +213,8 @@ export default function() {
     />
   </>
 
-  const handleSelectedRows = (value) => {
-    console.log(value, 'value')
+  const handleSelectedRows = (value, rows) => {
+    setData((v) => ({...v, selectedRowKeys: value, selectedRows: rows}))
   }
 
   const handleModalCancel = () => {
@@ -223,21 +231,26 @@ export default function() {
         }
         advanced
       />
-      <ExtTable
-        style={{marginTop: '10px'}}
-        rowKey={(v) => v.id}
-        bordered
-        allowCancelSelect
-        showSearch={false}
-        remotePaging
-        checkbox={{ multiSelect: false }}
-        size='small'
-        onSelectRow={handleSelectedRows}
-        selectedRowKeys={data.selectedRowKeys}
-        columns={columns}
-        ref={tableRef}
-        dataSource={data.dataSource}
-      />
+      <AutoSizeLayout>
+        {
+          (h) => <ExtTable
+            style={{marginTop: '10px'}}
+            rowKey={(v) => v.id}
+            height={h}
+            bordered
+            allowCancelSelect
+            showSearch={false}
+            remotePaging
+            checkbox={{ multiSelect: false }}
+            size='small'
+            onSelectRow={handleSelectedRows}
+            selectedRowKeys={data.selectedRowKeys}
+            columns={columns}
+            ref={tableRef}
+            dataSource={data.dataSource}
+          />
+        }
+      </AutoSizeLayout>
       <SupplierModal
         type={modalData.type}
         visible={modalData.visible}
