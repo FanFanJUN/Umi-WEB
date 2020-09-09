@@ -96,7 +96,7 @@ const BU = (props) => {
                 onClick={() => buttonClick('add')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='QUALITYSYNERGY_TDP_ADD'
+                key='QUALITYSYNERGY_BU_ADD'
             >新增</Button>)
         }
         {
@@ -105,7 +105,7 @@ const BU = (props) => {
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 disabled={selectedRowKeys.length !== 1}
-                key='QUALITYSYNERGY_TDP_EDIT'
+                key='QUALITYSYNERGY_BU_EDIT'
             >编辑</Button>)
         }
         {
@@ -114,7 +114,7 @@ const BU = (props) => {
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 disabled={selectedRowKeys.length === 0}
-                key='QUALITYSYNERGY_TDP_DELETE'
+                key='QUALITYSYNERGY_BU_DELETE'
             >删除</Button>)
         }
         {
@@ -123,7 +123,7 @@ const BU = (props) => {
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 disabled={selectedRowKeys.length === 0}
-                key='QUALITYSYNERGY_TDP_FREEZE'
+                key='QUALITYSYNERGY_BU_FREEZE'
             >冻结</Button>)
         }
         {
@@ -132,7 +132,7 @@ const BU = (props) => {
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 disabled={selectedRowKeys.length === 0}
-                key='QUALITYSYNERGY_TDP_THAW'
+                key='QUALITYSYNERGY_BU_THAW'
             >解冻</Button>)
         }
     </div>

@@ -100,7 +100,7 @@ const Index = () => {
         onClick={() => buttonClick('add')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='QUALITYSYNERGY_UML_ADD'
+        key='QUALITYSYNERGY_BUTB_ADD'
       >新增</Button>)
     }
     {
@@ -109,7 +109,7 @@ const Index = () => {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={selectedRowKeys.length === 0 || selectedRowKeys.length > 1}
-        key='QUALITYSYNERGY_UML_EDIT'
+        key='QUALITYSYNERGY_BUTB_EDIT'
       >编辑</Button>)
     }
     {
@@ -118,7 +118,7 @@ const Index = () => {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={selectRows.length === 0}
-        key='QUALITYSYNERGY_UML_DELETE'
+        key='QUALITYSYNERGY_BUTB_DELETE'
       >删除</Button>)
     }
     {
@@ -126,7 +126,7 @@ const Index = () => {
         onClick={() => buttonClick('frost')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='QUALITYSYNERGY_UML_FROST'
+        key='QUALITYSYNERGY_BUTB_FROST'
         disabled={selectRows.length === 0}
       >冻结</Button>)
     }
@@ -135,7 +135,7 @@ const Index = () => {
         onClick={() => buttonClick('thaw')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='QUALITYSYNERGY_UML_THAW'
+        key='QUALITYSYNERGY_BUTB_THAW'
         disabled={selectRows.length === 0}
       >解冻</Button>)
     }
