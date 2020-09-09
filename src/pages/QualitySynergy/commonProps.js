@@ -429,3 +429,20 @@ export const PDMStatus = {
   placeholder: '选择物料标记状态',
   ...commonProps,
 };
+
+// 业务单元下拉选择
+export const buList = {
+  remotePaging: true,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${baseUrl}/bu/findByPage`,
+  },
+  rowKey: 'buCode',
+  reader: {
+    name: 'buCode',
+    field: ['buName'],
+    description: 'buName',
+  },
+  placeholder: '选择业务单元'
+};

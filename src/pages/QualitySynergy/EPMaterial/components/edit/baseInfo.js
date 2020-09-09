@@ -1,8 +1,8 @@
 import { useEffect, useState, forwardRef, useImperativeHandle, Fragment } from 'react'
 import { Form, Row, Col, Input, Button, Modal, message, notification } from 'antd';
 import { ComboList } from 'suid';
-import { materialCode } from '../../../commonProps'
-import { getUserName } from '../../../../../utils'
+import { buList } from '../../../commonProps'
+import { getUserName, getMobile } from '../../../../../utils'
 import moment from 'moment'
 const { create, Item: FormItem } = Form;
 const formLayout = {
@@ -32,7 +32,7 @@ const BaseInfo = forwardRef(({ form, type }, ref) => {
         <Col span={12}>
           <FormItem label='来源' {...formLayout}>
             {
-              getFieldDecorator('data1')(<Input disabled />)
+              getFieldDecorator('sourceName')(<Input disabled />)
             }
           </FormItem>
         </Col>
@@ -48,14 +48,19 @@ const BaseInfo = forwardRef(({ form, type }, ref) => {
       </Row>
       <Row>
         <Col span={12}>
-          <FormItem label='BU' {...formLayout}>
+          <FormItem label='业务单元' {...formLayout}>
             {
-              getFieldDecorator('supplierCode', {
+              getFieldDecorator('buCode', {
+                initialValue: '',
                 rules: [{ required: true, message: '请选择供应商代码' }]
               })(
-                <ComboList form={form} {...materialCode} name='supplierCode' field={['supplierId']} afterSelect={() => {
-                  console.log('选择更改')
-                }} />
+                <ComboList
+                  form={form}
+                  disabled
+                  {...buList}
+                  name='buCode'
+                  field={['buName']}
+                />
               )
             }
           </FormItem>
@@ -64,9 +69,9 @@ const BaseInfo = forwardRef(({ form, type }, ref) => {
           <FormItem label='创建人联系方式' {...formLayout}>
             {
               getFieldDecorator('creatorName', {
-                initialValue: '',
+                initialValue: getMobile(),
                 rules: [{ required: true, message: '请选择供应商代码' }]
-              })(<Input />)
+              })(<Input disabled />)
             }
           </FormItem>
         </Col>

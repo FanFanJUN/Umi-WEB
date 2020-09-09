@@ -42,7 +42,7 @@ const formLayout = {
             <FormItem label='供应商名称' {...formLayout}>
               {
                 getFieldDecorator('creatorName', {
-                  initialValue: getUserName()
+                  initialValue:''
                 })(<Input disabled />)
               }
             </FormItem>
@@ -72,7 +72,7 @@ const formLayout = {
             <FormItem label='填报人员' {...formLayout}>
               {
                 getFieldDecorator('dateTime', {
-                  initialValue: '',
+                  initialValue: getUserName(),
                   rules: [{ required: true, message: '请选择供应商代码' }]
                 })(<Input />)
               }
@@ -132,7 +132,7 @@ const formLayout = {
                 getFieldDecorator('dateTime', {
                   initialValue: '',
                   rules: [{ required: true, message: '请选择供应商代码' }]
-                })(<Input disabled />)
+                })(<Input />)
               }
             </FormItem>
           </Col>
