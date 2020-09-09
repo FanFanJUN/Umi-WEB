@@ -30,6 +30,7 @@ export default [
       { path: '/qualitySynergy/ExemptionClause', component: './QualitySynergy/mainData/ExemptionClause', title: '豁免条款-主数据'},
       { path: '/qualitySynergy/LimitMaterial', component: './QualitySynergy/mainData/LimitMaterial', title: '环保标准限用物质对应关系-主数据'},
       { path: '/qualitySynergy/BusinessUnitToBU', component: './QualitySynergy/mainData/BusinessUnitToBU', title: '业务单元对BU主数据-主数据'},
+      { path: '/qualitySynergy/BU', component: './QualitySynergy/mainData/BU', title: 'BU主数据-主数据'},
 
     ]
   },

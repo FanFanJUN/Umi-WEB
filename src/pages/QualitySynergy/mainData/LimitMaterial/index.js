@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useRef } from 'react';
 import { Button, Form, Row, Input, Modal, message, Card, Col, Empty, InputNumber, Radio } from 'antd';
-import { ExtTable, ExtModal, utils, ComboList } from 'suid';
+import { ExtTable, ExtModal, utils, ComboList, DataImport } from 'suid';
 import { limitScopeList, limitMaterialList, BasicUnitList } from '../../commonProps';
 import { baseUrl } from '../../../../utils/commonUrl';
 import { AutoSizeLayout } from '../../../../components'
@@ -10,7 +10,9 @@ import {
     ESPDeleted,
     ESPFreeze,
     ESPMDelete,
-    ESPMFreeze
+    ESPMFreeze,
+    JudgeTheListOfESPM,
+    SaveTheListOfESPM
 } from '../../../../services/qualitySynergy'
 import { getUserName, getUserId, getUserAccount, getUserTenantCode } from '../../../../utils'
 import styles from './index.less'
@@ -64,7 +66,46 @@ const LimitMaterial = ({ form }) => {
         { title: '处理人', dataIndex: 'conductorName', ellipsis: true },
         { title: '处理时间', dataIndex: 'conductorDate', ellipsis: true },
     ]
-    const headerRight = <div>
+    const validateItem = (data) => {
+        return new Promise((resolve, reject) => {
+            const dataList = data.map(item => {
+                item.limitNumber = Number(item.limitNumber).toFixed(2);
+                item.environmentalProtectionCode = selectedRow[selectedRow.length-1].environmentalProtectionCode;
+                return item;
+            })
+            JudgeTheListOfESPM(dataList).then(res => {
+                const response = res.data.map((item, index) => ({
+                    ...item,
+                    key: index,
+                    validate: item.importResult,
+                    status: item.importResult ? '数据完整' : '失败',
+                    statusCode: item.importResult ? 'success' : 'error',
+                    message: item.importResult ? '成功' : item.importResultInfo
+                }))
+                resolve(response);
+            }).catch(err => {
+                reject(err)
+            })
+        })
+    };
+
+    const importFunc = (value) => {
+        const dataList = value.map(item => {
+            item.limitNumber = Number(item.limitNumber).toFixed(2);
+            item.environmentalProtectionCode = selectedRow[selectedRow.length-1].environmentalProtectionCode;
+            return item;
+        })
+        SaveTheListOfESPM(value).then(res => {
+            if (res.success) {
+                message.success('导入成功');
+                tableRightRef.current.manualSelectedRows();
+                tableRightRef.current.remoteDataRefresh();
+            } else {
+                message.error(res.msg)
+            }
+        });
+    };
+    const headerRight = <div style={{display: 'flex', alignItems: 'center'}}>
         {
             authAction(<Button
                 type='primary'
@@ -111,12 +152,21 @@ const LimitMaterial = ({ form }) => {
             >解冻</Button>)
         }
         {
-            authAction(<Button
-                onClick={() => buttonClick('thaw')}
-                className={styles.btn}
+            authAction(<DataImport
+                tableProps={{columns: rightColums}}
+                validateFunc={validateItem}
+                importFunc={importFunc}
                 ignore={DEVELOPER_ENV}
+                validateAll={true}
                 key='QUALITYSYNERGY_LM_UML_IMPORT'
-            >批量导入</Button>)
+                templateFileList={[
+                    {
+                        download: '/templates/主数据-环保标准限用物质对应关系-批导模板.xlsx',
+                        fileName: '主数据-环保标准限用物质对应关系-批导模板.xlsx',
+                        key: 'LimitMaterial',
+                    },
+                ]}
+            />)
         }
     </div>
     const EPStandardHaderLeft = <>
@@ -190,7 +240,7 @@ const LimitMaterial = ({ form }) => {
                         const parmas = selectedRowKeys.join();
                         const res = await ESPMFreeze({
                             ids: selectedRightKeys.join(),
-                            flag: type === 'freeze'
+                            frozen: type === 'freeze'
                         });
                         if (res.success) {
                             message.success('操作成功');
@@ -491,7 +541,7 @@ const LimitMaterial = ({ form }) => {
                                     rules: [{ required: true, message: '请填写均质材质中的含量' }]
                                 })(<InputNumber
                                     precision={8}
-                                    style={{width: '100%'}}
+                                    style={{ width: '100%' }}
                                     step={0.00000001}
                                 />)
                             }
