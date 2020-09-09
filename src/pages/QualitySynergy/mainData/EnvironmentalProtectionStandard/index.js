@@ -177,7 +177,7 @@ const EnvironmentalProtectionStandard = ({ form }) => {
         ref={tableRef}
         store={{
           url: `${baseUrl}/environmentalProtectionData/findByPage`,
-          type: 'GET',
+          type: 'POST',
           params: {
             quickSearchProperties: []
           }

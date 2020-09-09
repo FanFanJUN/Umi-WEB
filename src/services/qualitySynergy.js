@@ -81,7 +81,7 @@ export async function addEnvironmentStandardLimitMaterialRelation(params) {
 
 // 环保标准限用物资-删除
 export async function ESPMDelete(params) {
-    const url = `${baseUrl}/environmentStandardLimitMaterialRelation/deleted`;
+    const url = `${baseUrl}/environmentStandardLimitMaterialRelation/whetherDelete`;
     console.log(url)
     return request({
         url,
@@ -91,7 +91,7 @@ export async function ESPMDelete(params) {
 }
 // 环保标准限用物资-冻结
 export async function ESPMFreeze(params) {
-    const url = `${baseUrl}/environmentStandardLimitMaterialRelation/freeze`;
+    const url = `${baseUrl}/environmentStandardLimitMaterialRelation/frozen`;
     console.log(url)
     return request({
         url,
