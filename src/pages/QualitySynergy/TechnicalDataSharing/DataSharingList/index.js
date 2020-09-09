@@ -4,7 +4,15 @@ import AdvancedForm from '../../../../components/AdvancedForm';
 import { Button, Input } from 'antd';
 import styles from './index.less';
 import { ExtTable, utils } from 'suid';
-import { BUConfig, distributionProps, materialCode, materialStatus, PDMStatus, statusProps } from '../../commonProps';
+import {
+  BUConfig,
+  BUConfigNoFrost,
+  distributionProps,
+  materialCode,
+  materialStatus,
+  PDMStatus,
+  statusProps,
+} from '../../commonProps';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
 import { smBaseUrl } from '../../../../utils/commonUrl';
 import { openNewTab } from '../../../../utils';
@@ -65,7 +73,7 @@ export default function() {
     { title: '物料代码', key: 'data1', type: 'list', props: materialCode },
     { title: '物料组', key: 'data2', type: 'list', props: materialCode },
     { title: '战略采购', key: 'data3', type: 'list', props: materialCode },
-    { title: '业务单元', key: 'data4', type: 'list', props: BUConfig},
+    { title: '业务单元', key: 'data4', type: 'list', props: BUConfigNoFrost},
     { title: '申请人', key: 'data5', props: { placeholder: '输入申请人查询' } },
     { title: '分配供应商状态', key: 'data7', type: 'list', props: distributionProps },
     { title: '状态', key: 'status', type: 'list', props: statusProps },
