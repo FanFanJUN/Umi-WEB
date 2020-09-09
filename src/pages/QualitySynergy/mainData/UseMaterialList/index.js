@@ -9,6 +9,7 @@ import {
   EditTheListOfRestrictedMaterials, FrostTheListOfRestrictedMaterials,
   JudgeTheListOfRestrictedMaterials, SaveTheListOfRestrictedMaterials,
 } from '../../commonProps';
+import { AutoSizeLayout } from '../../../../components';
 
 const { authAction } = utils;
 
@@ -229,26 +230,31 @@ const Index = () => {
 
   return (
     <Fragment>
-      <ExtTable
-        rowKey={(v) => v.id}
-        columns={columns}
-        store={{
-          url: `${baseUrl}/limitSubstanceListData/find_by_page_all`,
-          type: 'POST',
-        }}
-        searchPlaceHolder='输入限用物资名称或CAS.NO关键字'
-        allowCancelSelect={true}
-        remotePaging={true}
-        checkbox={{
-          multiSelect: true,
-        }}
-        ref={tableRef}
-        onSelectRow={onSelectRow}
-        selectedRowKeys={selectedRowKeys}
-        toolBar={{
-          left: headerLeft,
-        }}
-      />
+      <AutoSizeLayout>
+        {
+          (h) => <ExtTable
+            rowKey={(v) => v.id}
+            columns={columns}
+            height={h}
+            store={{
+              url: `${baseUrl}/limitSubstanceListData/find_by_page_all`,
+              type: 'POST',
+            }}
+            searchPlaceHolder='输入限用物资名称或CAS.NO关键字'
+            allowCancelSelect={true}
+            remotePaging={true}
+            checkbox={{
+              multiSelect: true,
+            }}
+            ref={tableRef}
+            onSelectRow={onSelectRow}
+            selectedRowKeys={selectedRowKeys}
+            toolBar={{
+              left: headerLeft,
+            }}
+          />
+        }
+      </AutoSizeLayout>
       <EventModal
         visible={data.visible}
         onOk={handleOk}

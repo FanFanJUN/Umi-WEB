@@ -65,6 +65,7 @@ class UploadFile extends React.Component {
       let fileList = [];
       request.get(baseUrl + '/supplierRegister/getEntityDocumentInfos?entityId=' + encodeURIComponent(this.entityId))
         .then(res => {
+          console.log(res, 'res')
           if (res.success && res.data && res.data.length > 0) {
             res.data.map(item => {
               fileList.push({

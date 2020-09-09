@@ -10,6 +10,7 @@ import {
   EditTheListOfRestrictedMaterials, FrostBUCompanyOrganizationRelation,
 } from '../../commonProps';
 import EventModal from './component/EventModal';
+import { AutoSizeLayout } from '../../../../components';
 
 const { authAction } = utils;
 
@@ -183,25 +184,30 @@ const Index = () => {
 
   return (
     <Fragment>
-      <ExtTable
-        rowKey={(v) => v.id}
-        columns={columns}
-        store={{
-          url: `${baseUrl}/buCompanyPurchasingOrganization/findByPage`,
-          type: 'POST',
-        }}
-        allowCancelSelect={true}
-        remotePaging={true}
-        checkbox={{
-          multiSelect: true,
-        }}
-        ref={tableRef}
-        onSelectRow={onSelectRow}
-        selectedRowKeys={selectedRowKeys}
-        toolBar={{
-          left: headerLeft,
-        }}
-      />
+      <AutoSizeLayout>
+        {
+          (h) =>  <ExtTable
+            rowKey={(v) => v.id}
+            height={h}
+            columns={columns}
+            store={{
+              url: `${baseUrl}/buCompanyPurchasingOrganization/findByPage`,
+              type: 'POST',
+            }}
+            allowCancelSelect={true}
+            remotePaging={true}
+            checkbox={{
+              multiSelect: true,
+            }}
+            ref={tableRef}
+            onSelectRow={onSelectRow}
+            selectedRowKeys={selectedRowKeys}
+            toolBar={{
+              left: headerLeft,
+            }}
+          />
+        }
+      </AutoSizeLayout>
       <EventModal
         visible={data.visible}
         onOk={handleOk}

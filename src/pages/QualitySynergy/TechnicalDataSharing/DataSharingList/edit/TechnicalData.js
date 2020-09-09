@@ -5,6 +5,8 @@ import { ExtTable } from 'suid';
 import { baseUrl, smBaseUrl } from '../../../../../utils/commonUrl';
 import TechnicalDataModal from './component/TechnicalDataModal';
 import moment from 'moment/moment';
+import UploadFile from '../../../../../components/Upload';
+import { AutoSizeLayout } from '../../../../../components';
 
 const TechnicalData = React.forwardRef((props, ref) => {
 
@@ -21,7 +23,7 @@ const TechnicalData = React.forwardRef((props, ref) => {
   const columns = [
     { title: '文件类别', dataIndex: 'fileType', width: 350 },
     { title: '文件版本', dataIndex: 'fileVersion', width: 350, ellipsis: true, },
-    { title: '技术资料附件', dataIndex: 'technicalDataFileId', width: 350, ellipsis: true, },
+    { title: '技术资料附件', dataIndex: 'technicalDataFileId', width: 350, ellipsis: true,render: (v) => <UploadFile type={'show'} entityId={v} /> },
     { title: '样品需求日期', dataIndex: 'sampleRequirementDate', width: 350, ellipsis: true, },
   ].map(item => ({...item, align: 'center'}))
 
@@ -58,21 +60,26 @@ const TechnicalData = React.forwardRef((props, ref) => {
             <Button disabled={data.selectRows.length !== 1} onClick={() => {handleBtn('edit')}} style={{marginLeft: '5px'}}>编辑</Button>
             <Button disabled={data.selectedRowKeys.length < 1} style={{marginLeft: '5px'}}>删除</Button>
           </div>
-          <ExtTable
-            style={{marginTop: '10px'}}
-            rowKey={(v) => v.id}
-            bordered
-            allowCancelSelect
-            showSearch={false}
-            remotePaging
-            checkbox={{ multiSelect: false }}
-            size='small'
-            onSelectRow={handleSelectedRows}
-            selectedRowKeys={data.selectedRowKeys}
-            columns={columns}
-            ref={tableRef}
-            dataSource={data.dataSource}
-          />
+          <AutoSizeLayout>
+            {
+              (h) => <ExtTable
+                style={{marginTop: '10px'}}
+                rowKey={(v) => v.id}
+                height={h}
+                bordered
+                allowCancelSelect
+                showSearch={false}
+                remotePaging
+                checkbox={{ multiSelect: false }}
+                size='small'
+                onSelectRow={handleSelectedRows}
+                selectedRowKeys={data.selectedRowKeys}
+                columns={columns}
+                ref={tableRef}
+                dataSource={data.dataSource}
+              />
+            }
+          </AutoSizeLayout>
         </div>
         <TechnicalDataModal
           title={data.title}

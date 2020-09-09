@@ -14,7 +14,7 @@ const commonProps = {
 
 //技术资料分享新增
 export async function AddDataSharingList(params) {
-  const url = `${baseUrl}/api/epTechnicalShareDemandService/insert`;
+  const url = `${smBaseUrl}/api/epTechnicalShareDemandService/insert`;
   return request({
     url,
     method: 'POST',
