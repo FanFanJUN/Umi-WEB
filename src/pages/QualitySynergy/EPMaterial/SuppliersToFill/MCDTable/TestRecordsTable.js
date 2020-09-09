@@ -24,14 +24,7 @@ const supplierModal = forwardRef(({ form }, ref) => {
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const { getFieldDecorator, validateFields } = form;
-    const tableProps = {
-        store: {
-            url: `${smBaseUrl}/api/supplierFinanceViewModifyService/findByPage`,
-            params: {
-            },
-            type: 'POST'
-        }
-    }
+
     const columns = [
         { title: '物质代码', dataIndex: 'turnNumber', align: 'center' },
         { title: '物质名称', dataIndex: 'name1', ellipsis: true, align: 'center' },
@@ -70,7 +63,7 @@ const supplierModal = forwardRef(({ form }, ref) => {
         setVisible(true)
     }
     return <Fragment>
-        <div className={styles.macTitle}>拆分部件</div>
+        <div className={styles.macTitle}>测试记录表</div>
         <div className={classnames(styles.mbt, styles.mtb)}>
             <Button type='primary' className={styles.btn} key="add" onClick={() => { showEditModal('add') }}>新增</Button>
             <Button className={styles.btn} key="edit" onClick={() => { showEditModal('edit') }}>编辑</Button>
@@ -89,7 +82,9 @@ const supplierModal = forwardRef(({ form }, ref) => {
             size='small'
             onSelectRow={handleSelectedRows}
             selectedRowKeys={selectedRowKeys}
-            {...tableProps}
+            dataSource={[
+                {id: 1}
+            ]}
         />
         <ExtModal
             centered

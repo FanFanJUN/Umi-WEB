@@ -93,9 +93,13 @@ const LimitMaterial = ({ form }) => {
         const dataList = value.map(item => {
             item.limitNumber = Number(item.limitNumber).toFixed(2);
             item.environmentalProtectionCode = selectedRow[selectedRow.length-1].environmentalProtectionCode;
+            item.conductorId = getUserId();
+            item.conductorAccount = getUserAccount();
+            item.tenantCode = getUserTenantCode();
+            item.conductorName = getUserName();
             return item;
         })
-        SaveTheListOfESPM(value).then(res => {
+        SaveTheListOfESPM(dataList).then(res => {
             if (res.success) {
                 message.success('导入成功');
                 tableRightRef.current.manualSelectedRows();
