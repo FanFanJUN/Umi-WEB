@@ -3,6 +3,7 @@ import { Button, Input, Modal, message, Row, InputNumber, Form, Radio } from 'an
 import { ExtTable, ExtModal, utils, ComboList } from 'suid';
 import styles from '../../TechnicalDataSharing/DataSharingList/index.less';
 import { baseUrl, smBaseUrl } from '../../../../utils/commonUrl';
+import { AutoSizeLayout } from '../../../../components'
 import moment from 'moment';
 import {
   addEnvironmentalProtectionData,
@@ -31,9 +32,9 @@ const EnvironmentalProtectionStandard = ({ form }) => {
   const [selectedRow, setSelectedRow] = useState([]);
   const { getFieldDecorator, setFieldsValue, validateFields } = form;
   const columns = [
-    { title: '环保标准代码', dataIndex: 'environmentalProtectionCode', width: 80 },
+    { title: '环保标准代码', dataIndex: 'environmentalProtectionCode', width: 120 },
     { title: '环保标准名称', dataIndex: 'environmentalProtectionName', ellipsis: true, },
-    { title: 'REACH环保符合性声明', dataIndex: 'reach', ellipsis: true, render: (text) => text ? '符合' : '不符合' },
+    { title: 'REACH环保符合性声明', dataIndex: 'reach', ellipsis: true, width: 140, render: (text) => text ? '符合' : '不符合' },
     { title: '备注', dataIndex: 'note', ellipsis: true },
     { title: '排序号', dataIndex: 'orderNo', ellipsis: true, width: 80 },
     { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (text) => text ? '已冻结' : '未冻结' },
@@ -70,8 +71,7 @@ const EnvironmentalProtectionStandard = ({ form }) => {
             })
             if (res.success) {
               message.success('冻结成功');
-              setSelectedRowKeys([]);
-              setSelectedRow([]);
+              tableRef.current.manualSelectedRows();
               tableRef.current.remoteDataRefresh()
             } else {
               message.error(res.message)
@@ -86,8 +86,7 @@ const EnvironmentalProtectionStandard = ({ form }) => {
             const res = await ESPDeleted({ ids: selectedRowKeys.join() });
             if (res.success) {
               message.success('删除成功');
-              setSelectedRowKeys([]);
-              setSelectedRow([]);
+              tableRef.current.manualSelectedRows();
               tableRef.current.remoteDataRefresh()
             } else {
               message.error(res.message)
@@ -114,7 +113,7 @@ const EnvironmentalProtectionStandard = ({ form }) => {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='QUALITYSYNERGY_EPS_EDIT'
-        disabled={setSelectedRowKeys.length !== 1}
+        disabled={selectedRowKeys.length !== 1}
       >编辑</Button>)
     }
     {
@@ -123,7 +122,7 @@ const EnvironmentalProtectionStandard = ({ form }) => {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='QUALITYSYNERGY_EPS_DELETE'
-        disabled={setSelectedRowKeys.length === 0}
+        disabled={selectedRowKeys.length === 0}
       >删除</Button>)
     }
     {
@@ -132,7 +131,7 @@ const EnvironmentalProtectionStandard = ({ form }) => {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='QUALITYSYNERGY_EPS_FREEZE'
-        disabled={setSelectedRowKeys.length === 0}
+        disabled={selectedRowKeys.length === 0}
       >冻结</Button>)
     }
     {
@@ -141,7 +140,7 @@ const EnvironmentalProtectionStandard = ({ form }) => {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='QUALITYSYNERGY_EPS_THAW'
-        disabled={setSelectedRowKeys.length === 0}
+        disabled={selectedRowKeys.length === 0}
       >解冻</Button>)
     }
   </>
@@ -160,9 +159,8 @@ const EnvironmentalProtectionStandard = ({ form }) => {
           if (res.success) {
             message.success('操作成功');
             setESPData((value) => ({ ...value, visible: false }))
-            setSelectedRowKeys([]);
-            setSelectedRow([]);
-            tableRef.current.remoteDataRefresh()
+            tableRef.current.manualSelectedRows();
+            tableRef.current.remoteDataRefresh();
           } else {
             message.error(res.message)
           }
@@ -172,27 +170,31 @@ const EnvironmentalProtectionStandard = ({ form }) => {
   }
   return (
     <Fragment>
-      <ExtTable
-        columns={columns}
-        ref={tableRef}
-        store={{
-          url: `${baseUrl}/environmentalProtectionData/findByPage`,
-          type: 'POST',
-          params: {
-            quickSearchProperties: []
-          }
-        }}
-        checkbox={true}
-        remotePaging={true}
-        selectedRowKeys={selectedRowKeys}
-        onSelectRow={(selectedRowKeys, selectedRows) => {
-          setSelectedRow(selectedRows);
-          setSelectedRowKeys(selectedRowKeys);
-        }}
-        toolBar={{
-          left: headerLeft
-        }}
-      />
+      <AutoSizeLayout>
+        {(h) => <ExtTable
+          columns={columns}
+          ref={tableRef}
+          height={h}
+          store={{
+            url: `${baseUrl}/environmentalProtectionData/findByPage`,
+            type: 'POST',
+            params: {
+              quickSearchProperties: []
+            }
+          }}
+          checkbox={true}
+          remotePaging={true}
+          selectedRowKeys={selectedRowKeys}
+          onSelectRow={(selectedRowKeys, selectedRows) => {
+            setSelectedRow(selectedRows);
+            setSelectedRowKeys(selectedRowKeys);
+          }}
+          toolBar={{
+            left: headerLeft
+          }}
+        />}
+      </AutoSizeLayout>
+
       <ExtModal
         centered
         destroyOnClose

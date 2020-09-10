@@ -2,7 +2,7 @@ import { useEffect, useState, forwardRef, useImperativeHandle, Fragment } from '
 import { Form, Row, Col, Input, Button, Modal, message, notification } from 'antd';
 import { ComboList } from 'suid';
 import { buList } from '../../../commonProps'
-import { getUserName, getMobile } from '../../../../../utils'
+import { getUserName, getMobile, getUserId, getUserAccount } from '../../../../../utils'
 import moment from 'moment'
 const { create, Item: FormItem } = Form;
 const formLayout = {
@@ -14,7 +14,7 @@ const formLayout = {
   },
 };
 
-const BaseInfo = forwardRef(({ form, type }, ref) => {
+const BaseInfo = forwardRef(({ form, isView, setBuCode }, ref) => {
   useImperativeHandle(ref, () => ({
 
   }))
@@ -32,13 +32,17 @@ const BaseInfo = forwardRef(({ form, type }, ref) => {
         <Col span={12}>
           <FormItem label='来源' {...formLayout}>
             {
-              getFieldDecorator('sourceName')(<Input disabled />)
+              getFieldDecorator('sourceName',{
+                initialValue: 'SRM',
+              })(<Input disabled />)
             }
           </FormItem>
         </Col>
         <Col span={12}>
           <FormItem label='创建人' {...formLayout}>
             {
+              getFieldDecorator('applyPersonId', {initialValue: getUserId()}),
+              getFieldDecorator('applyPersonAccount', {initialValue: getUserAccount()}),
               getFieldDecorator('creatorName', {
                 initialValue: getUserName()
               })(<Input disabled />)
@@ -50,16 +54,21 @@ const BaseInfo = forwardRef(({ form, type }, ref) => {
         <Col span={12}>
           <FormItem label='业务单元' {...formLayout}>
             {
+              getFieldDecorator('buId'),
+              getFieldDecorator('buName'),
               getFieldDecorator('buCode', {
                 initialValue: '',
                 rules: [{ required: true, message: '请选择供应商代码' }]
               })(
                 <ComboList
                   form={form}
-                  disabled
+                  disabled={isView}
                   {...buList}
                   name='buCode'
-                  field={['buName']}
+                  field={['buName', 'buId']}
+                  afterSelect={(item)=>{
+                    setBuCode(item.buCode)
+                  }}
                 />
               )
             }
@@ -71,7 +80,7 @@ const BaseInfo = forwardRef(({ form, type }, ref) => {
               getFieldDecorator('creatorName', {
                 initialValue: getMobile(),
                 rules: [{ required: true, message: '请选择供应商代码' }]
-              })(<Input disabled />)
+              })(<Input disabled={isView} />)
             }
           </FormItem>
         </Col>
@@ -83,7 +92,7 @@ const BaseInfo = forwardRef(({ form, type }, ref) => {
             {
               getFieldDecorator('dateTime', {
                 initialValue: moment().format('YYYY-MM-DD')
-              })(<Input disabled />)
+              })(<Input disabled/>)
             }
           </FormItem>
         </Col>

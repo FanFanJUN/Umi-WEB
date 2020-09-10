@@ -1,13 +1,13 @@
 import { useImperativeHandle, forwardRef, useState, useRef, Fragment } from 'react';
 import { Form, Row, Col, Input, Button, Modal, message, notification } from 'antd';
 import { ComboList, ExtTable, ExtModal, ComboTree } from 'suid';
-import { materialCode } from '../../commonProps'
+import { materialCode, MaterialConfig } from '../../commonProps'
 const { create, Item: FormItem } = Form;
 const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 12, },
 };
-const editModal =  forwardRef(({ form }, ref) => {
+const editModal = forwardRef(({ form, initData = {} }, ref) => {
     useImperativeHandle(ref, () => ({
         showModal
     }))
@@ -24,28 +24,35 @@ const editModal =  forwardRef(({ form }, ref) => {
     return <Fragment>
         <ExtModal
             destroyOnClose
-            onCancel={()=>{setVisible(false)}}
+            onCancel={() => { setVisible(false) }}
             visible={visible}
             centered
             width={500}
-            title={modalType === 'add' ? '新增': '编辑'}
+            title={modalType === 'add' ? '新增' : '编辑'}
         >
             <Form>
                 <Row>
                     <FormItem label='物料代码' {...formLayout}>
                         {
-                            getFieldDecorator('supplierName', {
-                                rules: [{ required: true,  message: '不能为空'}]
-                            })(<ComboList form={form} {...materialCode} name='supplierCode' 
-                                field={['supplierName', 'supplierId']} 
-                                afterSelect={seleteChange} />)
+                            getFieldDecorator('materialId'),
+                            getFieldDecorator('materialCode', {
+                                initialValue: '',
+                                rules: [{ required: true, message: '不能为空' }]
+                            })(<ComboList form={form}
+                                {...MaterialConfig}
+                                name='materialCode'
+                                field={['materialId', 'materialName', 'materialGroupCode', 'materialGroupName', 'materialGroupId']}
+                                afterSelect={(item)=>{
+                                    console.log('选中', item)
+                                }} />)
                         }
                     </FormItem>
                 </Row>
                 <Row>
                     <FormItem label='物料描述' {...formLayout}>
                         {
-                            getFieldDecorator('supplierName', {
+                            getFieldDecorator('materialName', {
+                                initialValue: '',
                                 rules: [{ required: true, message: '不能为空' }]
                             })(<Input disabled />)
                         }
@@ -54,7 +61,9 @@ const editModal =  forwardRef(({ form }, ref) => {
                 <Row>
                     <FormItem label='物料组代码' {...formLayout}>
                         {
-                            getFieldDecorator('supplierName', {
+                            getFieldDecorator('materialGroupId'),
+                            getFieldDecorator('materialGroupCode', {
+                                initialValue: '',
                                 rules: [{ required: true, message: '不能为空' }]
                             })(<Input disabled />)
                         }
@@ -63,7 +72,8 @@ const editModal =  forwardRef(({ form }, ref) => {
                 <Row>
                     <FormItem label='物料组名称' {...formLayout}>
                         {
-                            getFieldDecorator('supplierName', {
+                            getFieldDecorator('materialGroupName', {
+                                initialValue: '',
                                 rules: [{ required: true, message: '不能为空' }]
                             })(<Input disabled />)
                         }
@@ -72,21 +82,33 @@ const editModal =  forwardRef(({ form }, ref) => {
                 <Row>
                     <FormItem label='环保标准' {...formLayout}>
                         {
-                            getFieldDecorator('supplierName')(<Input disabled />)
+                            getFieldDecorator('environmentalProtectionId'),
+                            getFieldDecorator('environmentalProtectionCode'),
+                            getFieldDecorator('environmentalProtectionName', {
+                                initialValue: '',
+                            })(<Input disabled />)
                         }
                     </FormItem>
                 </Row>
                 <Row>
                     <FormItem label='战略采购' {...formLayout}>
                         {
-                            getFieldDecorator('supplierName')(<Input disabled />)
+                            getFieldDecorator('strategicPurchaseId'),
+                            getFieldDecorator('strategicPurchaseCode'),
+                            getFieldDecorator('strategicPurchaseName', {
+                                initialValue: '',
+                            })(<Input disabled />)
                         }
                     </FormItem>
                 </Row>
                 <Row>
                     <FormItem label=' 环保管理人员' {...formLayout}>
                         {
-                            getFieldDecorator('supplierName')(<Input disabled />)
+                            getFieldDecorator('environmentAdminId'),
+                            getFieldDecorator('environmentAdminAccount'),
+                            getFieldDecorator('environmentAdminName', {
+                                initialValue: '',
+                            })(<Input disabled />)
                         }
                     </FormItem>
                 </Row>

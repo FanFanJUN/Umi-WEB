@@ -200,33 +200,33 @@ const ExemptionClause = (props) => {
     return (
         <Fragment>
             <AutoSizeLayout>
-            {(h) => <ExtTable
-                rowKey={(v) => v.id}
-                columns={columns}
-                store={{
-                    url: `${baseUrl}/exemptionClauseData/findByPage`,
-                    type: 'POST',
-                    params: {
-                        quickSearchProperties: []
-                    }
-                }}
-                height={h}
-                ref={tableRef}
-                checkbox={true}
-                remotePaging={true}
-                allowCancelSelect={true}
-                searchPlaceHolder="输入搜索项"
-                selectedRowKeys={selectedRowKeys}
-                onSelectRow={(selectedRowKeys, selectedRows) => {
-                    setSelectedRow(selectedRows);
-                    setSelectedRowKeys(selectedRowKeys);
-                }}
-                toolBar={{
-                    left: headerLeft
-                }}
-            />}
+                {(h) => <ExtTable
+                    rowKey={(v) => v.id}
+                    columns={columns}
+                    store={{
+                        url: `${baseUrl}/exemptionClauseData/findByPage`,
+                        type: 'POST',
+                        params: {
+                            quickSearchProperties: []
+                        }
+                    }}
+                    height={h}
+                    ref={tableRef}
+                    checkbox={true}
+                    remotePaging={true}
+                    allowCancelSelect={true}
+                    searchPlaceHolder="输入搜索项"
+                    selectedRowKeys={selectedRowKeys}
+                    onSelectRow={(selectedRowKeys, selectedRows) => {
+                        setSelectedRow(selectedRows);
+                        setSelectedRowKeys(selectedRowKeys);
+                    }}
+                    toolBar={{
+                        left: headerLeft
+                    }}
+                />}
             </AutoSizeLayout>
-            
+
             <ExtModal
                 centered
                 destroyOnClose
