@@ -1,25 +1,39 @@
-import { useImperativeHandle, forwardRef, useState, useRef, Fragment } from 'react';
+import { useImperativeHandle, forwardRef, useState, useRef, Fragment, useEffect } from 'react';
 import { Form, Row, Col, Input, Button, Modal, message, notification } from 'antd';
 import { ComboList, ExtTable, ExtModal, ComboTree } from 'suid';
-import { materialCode, MaterialConfig } from '../../commonProps'
+import { materialCode, MaterialConfig } from '../../commonProps';
+import { findByBuCode } from '../../../../services/qualitySynergy'
 const { create, Item: FormItem } = Form;
 const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 12, },
 };
-const editModal = forwardRef(({ form, initData = {} }, ref) => {
+const editModal = forwardRef(({ form, initData = {}, buCode }, ref) => {
     useImperativeHandle(ref, () => ({
         showModal
     }))
     const [visible, setVisible] = useState(false);
     const [modalType, setModalType] = useState('');
     const { getFieldDecorator } = form;
-    function seleteChange(item) {
-        console.log('选中', item)
-    }
+
+    useEffect(() => {
+        if(!buCode) return;
+        // 根据业务单元找业务板块
+        async function fetchData() {
+            console.log('buCode', buCode)
+            const res = await findByBuCode({ buCode: buCode });
+            console.log(res)
+        }
+        fetchData();
+
+    }, [buCode])
     function showModal(type) {
         setModalType(type);
         setVisible(true);
+    }
+    const handleAfterSelect = async (item) => {
+        // 根据物料组+业务板块找战略采购
+
     }
     return <Fragment>
         <ExtModal
@@ -42,9 +56,7 @@ const editModal = forwardRef(({ form, initData = {} }, ref) => {
                                 {...MaterialConfig}
                                 name='materialCode'
                                 field={['materialId', 'materialName', 'materialGroupCode', 'materialGroupName', 'materialGroupId']}
-                                afterSelect={(item)=>{
-                                    console.log('选中', item)
-                                }} />)
+                                afterSelect={handleAfterSelect} />)
                         }
                     </FormItem>
                 </Row>
@@ -102,7 +114,7 @@ const editModal = forwardRef(({ form, initData = {} }, ref) => {
                     </FormItem>
                 </Row>
                 <Row>
-                    <FormItem label=' 环保管理人员' {...formLayout}>
+                    <FormItem label='环保管理人员' {...formLayout}>
                         {
                             getFieldDecorator('environmentAdminId'),
                             getFieldDecorator('environmentAdminAccount'),

@@ -4,7 +4,7 @@ import EditModal from '../editModal'
 import { Button, message } from 'antd'
 import styles from '../index.less'
 
-export default function ({buCode}) {
+export default function ({ buCode }) {
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [addvisible, setVisible] = useState(false)
@@ -32,14 +32,14 @@ export default function ({buCode}) {
         console.log('删除')
     }
     function handleAdd() {
-        if(!buCode){
+        if (!buCode) {
             message.warning('请先选择业务单元！');
             return;
         }
         editRef.current.showModal('add');
     }
     function handleEdit() {
-        if(selectedRows.length === 0){
+        if (selectedRows.length === 0) {
             message.warning('请先选择数据！');
             return;
         }
@@ -65,11 +65,14 @@ export default function ({buCode}) {
                 size='small'
                 onSelectRow={handleSelectedRows}
                 selectedRowKeys={selectedRowKeys}
-                dataSource={[{id: 1}]}
-                // {...tableProps}
+                dataSource={[{ id: 1 }]}
+            // {...tableProps}
             />
         </div>
         {/* 新增编辑弹框 */}
-        <EditModal wrappedComponentRef={editRef} />
+        <EditModal
+            buCode={buCode}
+            wrappedComponentRef={editRef}
+        />
     </Fragment>
 }
