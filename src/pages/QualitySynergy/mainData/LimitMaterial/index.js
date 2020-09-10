@@ -3,7 +3,7 @@ import { Button, Form, Row, Input, Modal, message, Card, Col, Empty, InputNumber
 import { ExtTable, ExtModal, utils, ComboList, DataImport } from 'suid';
 import { limitScopeList, limitMaterialList, BasicUnitList } from '../../commonProps';
 import { baseUrl } from '../../../../utils/commonUrl';
-import { AutoSizeLayout } from '../../../../components'
+import { AutoSizeLayout } from '../../../../components';
 import {
     addEnvironmentalProtectionData,
     addEnvironmentStandardLimitMaterialRelation,
@@ -70,7 +70,7 @@ const LimitMaterial = ({ form }) => {
         return new Promise((resolve, reject) => {
             const dataList = data.map(item => {
                 item.limitNumber = Number(item.limitNumber).toFixed(2);
-                item.environmentalProtectionCode = selectedRow[selectedRow.length-1].environmentalProtectionCode;
+                item.environmentalProtectionCode = selectedRow[selectedRow.length - 1].environmentalProtectionCode;
                 return item;
             })
             JudgeTheListOfESPM(dataList).then(res => {
@@ -92,7 +92,7 @@ const LimitMaterial = ({ form }) => {
     const importFunc = (value) => {
         const dataList = value.map(item => {
             item.limitNumber = Number(item.limitNumber).toFixed(2);
-            item.environmentalProtectionCode = selectedRow[selectedRow.length-1].environmentalProtectionCode;
+            item.environmentalProtectionCode = selectedRow[selectedRow.length - 1].environmentalProtectionCode;
             item.conductorId = getUserId();
             item.conductorAccount = getUserAccount();
             item.tenantCode = getUserTenantCode();
@@ -109,7 +109,7 @@ const LimitMaterial = ({ form }) => {
             }
         });
     };
-    const headerRight = <div style={{display: 'flex', alignItems: 'center'}}>
+    const headerRight = <div style={{ display: 'flex', alignItems: 'center' }}>
         {
             authAction(<Button
                 type='primary'
@@ -157,7 +157,7 @@ const LimitMaterial = ({ form }) => {
         }
         {
             authAction(<DataImport
-                tableProps={{columns: rightColums}}
+                tableProps={{ columns: rightColums }}
                 validateFunc={validateItem}
                 importFunc={importFunc}
                 ignore={DEVELOPER_ENV}
@@ -386,29 +386,34 @@ const LimitMaterial = ({ form }) => {
                     title="环保标准"
                     bordered={false}
                 >
-                    <ExtTable
-                        columns={columns}
-                        store={{
-                            url: `${baseUrl}/environmentalProtectionData/findByPage`,
-                            type: 'POST',
-                            params: {
-                                quickSearchProperties: []
-                            }
-                        }}
-                        ref={tableRef}
-                        searchPlaceHolder="输入搜索项"
-                        checkbox={true}
-                        remotePaging={true}
-                        allowCancelSelect={true}
-                        selectedRowKeys={selectedRowKeys}
-                        onSelectRow={(selectedRowKeys, selectedRows) => {
-                            setSelectedRow(selectedRows);
-                            setSelectedRowKeys(selectedRowKeys);
-                        }}
-                        toolBar={{
-                            left: EPStandardHaderLeft
-                        }}
-                    />
+                    <AutoSizeLayout>
+                        {
+                            (h) => <ExtTable
+                                columns={columns}
+                                store={{
+                                    url: `${baseUrl}/environmentalProtectionData/findByPage`,
+                                    type: 'POST',
+                                    params: {
+                                        quickSearchProperties: []
+                                    }
+                                }}
+                                height={h}
+                                ref={tableRef}
+                                searchPlaceHolder="输入搜索项"
+                                checkbox={true}
+                                remotePaging={true}
+                                allowCancelSelect={true}
+                                selectedRowKeys={selectedRowKeys}
+                                onSelectRow={(selectedRowKeys, selectedRows) => {
+                                    setSelectedRow(selectedRows);
+                                    setSelectedRowKeys(selectedRowKeys);
+                                }}
+                                toolBar={{
+                                    left: EPStandardHaderLeft
+                                }}
+                            />
+                        }
+                    </AutoSizeLayout>
                 </Card>
             </Col>
             <Col span={13} className={styles.right}>
@@ -421,29 +426,34 @@ const LimitMaterial = ({ form }) => {
                     {
                         selectedRowKeys.length !== 1 ? <Empty description="请选择左边的一条环保标准数据进行操作" className={styles.mt} /> :
                             <div>
-                                <ExtTable
-                                    columns={rightColums}
-                                    checkbox={true}
-                                    remotePaging={true}
-                                    store={{
-                                        url: `${baseUrl}/environmentStandardLimitMaterialRelation/findByPage`,
-                                        type: 'POST',
-                                        params: {
-                                            environmentalProtectionCode: selectedRow[selectedRow.length - 1].environmentalProtectionCode
-                                        }
-                                    }}
-                                    searchPlaceHolder="输入搜索项"
-                                    ref={tableRightRef}
-                                    selectedRowKeys={selectedRightKeys}
-                                    onSelectRow={(selectedRightKeys, selectedRows) => {
-                                        console.log('右边选中', selectedRightKeys, selectedRows)
-                                        setSelectedRight(selectedRows)
-                                        setSelectedRightKeys(selectedRightKeys)
-                                    }}
-                                    toolBar={{
-                                        left: headerRight
-                                    }}
-                                />
+                                <AutoSizeLayout>
+                                    {
+                                        (h) => <ExtTable
+                                            columns={rightColums}
+                                            checkbox={true}
+                                            remotePaging={true}
+                                            store={{
+                                                url: `${baseUrl}/environmentStandardLimitMaterialRelation/findByPage`,
+                                                type: 'POST',
+                                                params: {
+                                                    environmentalProtectionCode: selectedRow[selectedRow.length - 1].environmentalProtectionCode
+                                                }
+                                            }}
+                                            height={h}
+                                            searchPlaceHolder="输入搜索项"
+                                            ref={tableRightRef}
+                                            selectedRowKeys={selectedRightKeys}
+                                            onSelectRow={(selectedRightKeys, selectedRows) => {
+                                                console.log('右边选中', selectedRightKeys, selectedRows)
+                                                setSelectedRight(selectedRows)
+                                                setSelectedRightKeys(selectedRightKeys)
+                                            }}
+                                            toolBar={{
+                                                left: headerRight
+                                            }}
+                                        />
+                                    }
+                                </AutoSizeLayout>
                             </div>
 
                     }

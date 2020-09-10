@@ -3,7 +3,7 @@ import { Button, Input, Modal, message, Row, InputNumber, Form, Radio } from 'an
 import { ExtTable, ExtModal, utils, ComboList } from 'suid';
 import styles from '../../TechnicalDataSharing/DataSharingList/index.less';
 import { baseUrl, smBaseUrl } from '../../../../utils/commonUrl';
-import { AutoSizeLayout } from '../../../../components'
+import { AutoSizeLayout } from '../../../../components';
 import moment from 'moment';
 import {
   addEnvironmentalProtectionData,

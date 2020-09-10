@@ -11,7 +11,7 @@ import {
     deleteBU,
     frozenBU
 } from '../../../../services/qualitySynergy'
-import { get } from 'lodash';
+import { AutoSizeLayout } from '../../../../components';
 const { authAction } = utils;
 const { create, Item: FormItem } = Form;
 const { confirm } = Modal;
@@ -49,10 +49,10 @@ const BU = (props) => {
             case 'thaw':
             case 'freeze':
                 confirm({
-                    title: `请确认是否${type==='thaw'?'解冻': '冻结'}选中业务单元数据`,
+                    title: `请确认是否${type === 'thaw' ? '解冻' : '冻结'}选中业务单元数据`,
                     onOk: async () => {
                         const parmas = selectedRowKeys.join();
-                        const res = await frozenBU({ 
+                        const res = await frozenBU({
                             ids: parmas,
                             frozen: type === 'freeze'
                         });
@@ -160,25 +160,31 @@ const BU = (props) => {
     }
     return (
         <Fragment>
-            <ExtTable
-                Table
-                columns={columns}
-                store={{
-                    url: `${baseUrl}/bu/findByPage`,
-                    type: 'POST'
-                }}
-                ref={tableRef}
-                checkbox={true}
-                remotePaging={true}
-                selectedRowKeys={selectedRowKeys}
-                onSelectRow={(selectedRowKeys, selectedRows) => {
-                    setSelectedRow(selectedRows)
-                    setSelectedRowKeys(selectedRowKeys)
-                }}
-                toolBar={{
-                    left: headerLeft
-                }}
-            />
+            <AutoSizeLayout>
+                {
+                    (h) => <ExtTable
+                        Table
+                        columns={columns}
+                        store={{
+                            url: `${baseUrl}/bu/findByPage`,
+                            type: 'POST'
+                        }}
+                        height={h}
+                        ref={tableRef}
+                        checkbox={true}
+                        remotePaging={true}
+                        selectedRowKeys={selectedRowKeys}
+                        onSelectRow={(selectedRowKeys, selectedRows) => {
+                            setSelectedRow(selectedRows)
+                            setSelectedRowKeys(selectedRowKeys)
+                        }}
+                        toolBar={{
+                            left: headerLeft
+                        }}
+                    />
+                }
+            </AutoSizeLayout>
+
             <ExtModal
                 centered
                 destroyOnClose

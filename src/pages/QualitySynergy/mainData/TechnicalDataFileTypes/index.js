@@ -9,7 +9,8 @@ import {
     updateTechnicalDataCategory,
     deleteTechnicalDataCategory,
     frozenTechnicalDataCategory
-} from '../../../../services/qualitySynergy'
+} from '../../../../services/qualitySynergy';
+import { AutoSizeLayout } from '../../../../components';
 const { authAction } = utils;
 const { create, Item: FormItem } = Form;
 const { confirm } = Modal;
@@ -48,10 +49,10 @@ const TechnicalDataFileTypes = (props) => {
             case 'thaw':
             case 'freeze':
                 confirm({
-                    title: `请确认是否${type==='thaw'?'解冻': '冻结'}选中技术资料类别数据`,
+                    title: `请确认是否${type === 'thaw' ? '解冻' : '冻结'}选中技术资料类别数据`,
                     onOk: async () => {
                         const parmas = selectedRowKeys.join();
-                        const res = await frozenTechnicalDataCategory({ 
+                        const res = await frozenTechnicalDataCategory({
                             ids: parmas,
                             flag: type === 'freeze'
                         });
@@ -170,25 +171,30 @@ const TechnicalDataFileTypes = (props) => {
     }
     return (
         <Fragment>
-            <ExtTable
-                Table
-                columns={columns}
-                store={{
-                    url: `${baseUrl}/technicalDataCategory/find_by_page_all`,
-                    type: 'POST'
-                }}
-                ref={tableRef}
-                checkbox={true}
-                remotePaging={true}
-                selectedRowKeys={selectedRowKeys}
-                onSelectRow={(selectedRowKeys, selectedRows) => {
-                    setSelectedRow(selectedRows)
-                    setSelectedRowKeys(selectedRowKeys)
-                }}
-                toolBar={{
-                    left: headerLeft
-                }}
-            />
+            <AutoSizeLayout>
+                {
+                    (h) => <ExtTable
+                        Table
+                        columns={columns}
+                        store={{
+                            url: `${baseUrl}/technicalDataCategory/find_by_page_all`,
+                            type: 'POST'
+                        }}
+                        height={h}
+                        ref={tableRef}
+                        checkbox={true}
+                        remotePaging={true}
+                        selectedRowKeys={selectedRowKeys}
+                        onSelectRow={(selectedRowKeys, selectedRows) => {
+                            setSelectedRow(selectedRows)
+                            setSelectedRowKeys(selectedRowKeys)
+                        }}
+                        toolBar={{
+                            left: headerLeft
+                        }}
+                    />
+                }
+            </AutoSizeLayout>
             <ExtModal
                 centered
                 destroyOnClose
