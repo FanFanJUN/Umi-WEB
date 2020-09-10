@@ -1,9 +1,10 @@
-import React, { Fragment, useImperativeHandle, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import styles from './BaseInfo.less';
 import { Form, Button } from 'antd';
 import { ExtTable } from 'suid';
 import TechnicalDataModal from './component/TechnicalDataModal';
 import moment from 'moment/moment';
+import Upload from '../../../compoent/Upload';
 
 const TechnicalData = React.forwardRef((props, ref) => {
 
@@ -21,9 +22,16 @@ const TechnicalData = React.forwardRef((props, ref) => {
   const columns = [
     { title: '文件类别', dataIndex: 'fileCategoryName', width: 350 },
     { title: '文件版本', dataIndex: 'fileVersion', width: 350, ellipsis: true, },
-    { title: '技术资料附件', dataIndex: 'technicalDataFileId', width: 350, ellipsis: true,render: (v) => <div>查看</div> },
+    { title: '技术资料附件', dataIndex: 'technicalDataFileIdList', width: 350, ellipsis: true,render: (v) => <Upload type='show' entityId={v}>查看</Upload> },
     { title: '样品需求日期', dataIndex: 'sampleRequirementDate', width: 350, ellipsis: true, },
   ].map(item => ({...item, align: 'center'}))
+
+  useEffect(() => {
+    console.log(props.data)
+    if (props.data) {
+      setData(v => ({...v, dataSource: props.data}))
+    }
+  }, [props.data])
 
   const handleSelectedRows = (value, rows) => {
     setData((v) => ({...v, selectedRowKeys: value, selectRows: rows, type: 'add'}))

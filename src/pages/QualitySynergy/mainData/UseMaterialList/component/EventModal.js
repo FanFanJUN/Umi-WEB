@@ -103,12 +103,6 @@ const EventModal = (props) => {
               {
                 getFieldDecorator('casNo', {
                   initialValue: type === 'add' ? '' : data.casNo,
-                  rules: [
-                    {
-                      required: true,
-                      message: 'CAS.NO不能为空',
-                    },
-                  ],
                 })(
                   <Input/>,
                 )

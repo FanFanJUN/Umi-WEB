@@ -109,8 +109,8 @@ const TechnicalDataModal = (props) => {
           <Col span={24}>
             <FormItem {...formItemLayoutLong} label={'技术资料附件'}>
               {
-                getFieldDecorator('technicalDataFileId', {
-                  initialValue: type === 'add' ? null : fatherData.technicalDataFileId,
+                getFieldDecorator('technicalDataFileIdList', {
+                  initialValue: type === 'add' ? null : fatherData.technicalDataFileIdList,
                   rules: [
                     {
                       required: true,
@@ -118,7 +118,7 @@ const TechnicalDataModal = (props) => {
                     },
                   ],
                 })(
-                  <Upload entityId={type === 'add' ? null : fatherData.technicalDataFileId} />
+                  <Upload entityId={type === 'add' ? null : fatherData.technicalDataFileIdList} />
                 )
               }
             </FormItem>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Affix, Button, Spin } from 'antd';
+import { Affix, Button, message, Spin } from 'antd';
 import classnames from 'classnames';
 import styles from '../../../../Supplier/Editor/index.less';
 import { router } from 'dva';
@@ -7,7 +7,7 @@ import { closeCurrent, getMobile, getUserAccount, getUserId, getUserName } from 
 import BaseInfo from './BaseInfo';
 import MaterialInfo from './MaterialInfo';
 import TechnicalData from './TechnicalData';
-import { AddDataSharingList } from '../../../commonProps';
+import { AddDataSharingList, DataSharingFindOne, UpdateDataSharingList } from '../../../commonProps';
 
 export default () => {
   const { query } = router.useLocation();
@@ -19,6 +19,8 @@ export default () => {
   const [buCode, setBuCode] = useState(undefined)
 
   const [data, setData] = useState({
+    id: '',
+    editDate: {},
     isView: false,
     loading: false,
     type: 'add',
@@ -31,11 +33,15 @@ export default () => {
     switch (pageState) {
       case 'add':
         getUser()
-        setData((value) => ({...value, type: pageState, title: '技术资料分享需求-新增', isView: false}))
+        setData((value) => ({...value, type: pageState, isView: false, title: '技术资料分享需求-新增'}))
+        break
+      case 'edit':
+        findOne(id)
+        setData((value) => ({...value, type: pageState, id, isView: false, title: '技术资料分享需求-编辑'}))
         break
       case 'detail':
-        getUser()
-        setData((value) => ({...value, type: pageState, isView: true, title: '技术资料分享需求-明雄'}))
+        findOne(id)
+        setData((value) => ({...value, type: pageState, isView: true, title: '技术资料分享需求-明细'}))
         break
     }
     console.log(pageState, 'pageState')
@@ -46,6 +52,17 @@ export default () => {
     const userName = getUserName()
     const userMobile = getMobile()
     setData((v) => ({...v, userInfo: {userName, userId, userMobile}}))
+  }
+
+  const findOne = (id) => {
+    DataSharingFindOne({id}).then(res => {
+      console.log(res)
+      if (res.success) {
+        setData(v => ({...v, editDate: res.data}))
+      } else {
+        message.error(res.message)
+      }
+    })
   }
 
   const handleBack = () => {
@@ -64,12 +81,18 @@ export default () => {
       }
     })
     const technicalData = technicalDataRef.current.dataSource
-    const data = {...baseInfoData, ...materialInfoData, epTechnicalDataBoList: technicalData}
-    console.log(data)
-    AddDataSharingList(data).then(res => {
-      console.log(res, 'res')
-    })
-    console.log('保存', baseInfoData, materialInfoData, technicalData)
+    let allData = {...baseInfoData, ...materialInfoData, epTechnicalDataBoList: technicalData}
+    if (data.type === 'add') {
+      AddDataSharingList(allData).then(res => {
+        console.log(res, 'res')
+      })
+    } else {
+      allData.id = data.id
+      UpdateDataSharingList(allData).then(res => {
+        console.log(res)
+      })
+      console.log(allData)
+    }
   }
 
   return (
@@ -86,6 +109,7 @@ export default () => {
           </div>
         </Affix>
         <BaseInfo
+          data={data.editDate}
           isView={data.isView}
           setBuCode={setBuCode}
           wrappedComponentRef={baseInfoRef}
@@ -93,13 +117,15 @@ export default () => {
           type={data.type}
         />
         <MaterialInfo
+          data={data.editDate}
           buCode={buCode}
           isView={data.isView}
           wrappedComponentRef={materialInfoRef}
           type={data.type}
         />
         {
-          data.type === 'add' && <TechnicalData
+          data.type !== 'detail' && <TechnicalData
+            data={data.editDate?.epTechnicalDataVos}
             isView={data.isView}
             wrappedComponentRef={technicalDataRef}
             type={data.type}

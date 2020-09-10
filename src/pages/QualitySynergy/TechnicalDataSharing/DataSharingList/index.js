@@ -14,14 +14,15 @@ import {
   statusProps,
 } from '../../commonProps';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
-import { smBaseUrl } from '../../../../utils/commonUrl';
+import { baseUrl, samBaseUrl, smBaseUrl } from '../../../../utils/commonUrl';
 import { openNewTab } from '../../../../utils';
 import SupplierModal from './component/SupplierModal';
 import TacticAssign  from './component/TacticAssign';
+import EventModal from '../../mainData/BUCompanyOrganizationRelation/component/EventModal';
 const { authAction, storage } = utils;
 const { Search } = Input;
 
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 
 export default function() {
 
@@ -50,8 +51,11 @@ export default function() {
       case 'add':
         openNewTab('qualitySynergy/DataSharingAdd?pageState=add', '技术资料分享需求-新增', false);
         break
+      case 'edit':
+        openNewTab(`qualitySynergy/DataSharingAdd?pageState=edit&id=${data.selectedRowKeys[0]}`, '技术资料分享需求-编辑', false);
+        break
       case 'detail':
-        openNewTab('qualitySynergy/DataSharingAdd?pageState=detail', '技术资料分享需求-明细', false);
+        openNewTab(`qualitySynergy/DataSharingAdd?pageState=detail&id=${data.selectedRowKeys[0]}`, '技术资料分享需求-明细', false);
         break
       case 'allot':
         setModalData({title: '分配供应商', visible: true, type: 'allot'})
@@ -83,57 +87,23 @@ export default function() {
   ]
 
   const columns = [
-    {
-      title: '状态', dataIndex: 'state', width: 80, render: (text) => {
-        switch (text) {
-          case 'draft': return '生效';
-          case 'pre_publish': return '草稿';
-          case 'publish': return '撤回';
-          default: return ''
-        }
-      }
-    },
-    {
-      title: '分配供应商状态', dataIndex: 'inquiryMethodName', width: 160, render: (text) => {
-        switch (text) {
-          case 'draft': return '已分配';
-          case 'pre_publish': return '未分配';
-          default: return ''
-        }
-      }
-    },
-    { title: '来源', dataIndex: 'turnNumber', width: 70 },
-    { title: '分享需求号', dataIndex: 'name1', ellipsis: true, },
-    { title: '物料代码', dataIndex: 'name2', ellipsis: true, },
-    { title: '物料描述', dataIndex: 'name3', ellipsis: true, },
-    { title: '物料组代码', dataIndex: 'name4', ellipsis: true, },
-    { title: '物料组描述', dataIndex: 'name5', ellipsis: true, },
-    { title: '战略采购代码', dataIndex: 'name6', ellipsis: true, },
-    { title: '战略采购名称', dataIndex: 'name7', ellipsis: true, },
-    { title: '供应商', dataIndex: 'name8', ellipsis: true,render: <a onClick={() => visibleSupplier()}>查看</a>},
-    { title: 'BU代码', dataIndex: 'name9', ellipsis: true, },
-    { title: 'BU名称', dataIndex: 'name10', ellipsis: true, },
-    { title: '申请人', dataIndex: 'name11', ellipsis: true, },
-    { title: '申请人联系方式', dataIndex: 'name12', ellipsis: true, },
-    { title: '申请日期', dataIndex: 'name13', ellipsis: true, },
+    { title: '状态', dataIndex: 'state', width: 80 },
+    { title: '分配供应商状态', dataIndex: 'allotSupplierState', width: 160},
+    { title: '来源', dataIndex: 'source', width: 70 },
+    { title: '分享需求号', dataIndex: 'strategicPurchaseId', ellipsis: true,width: 320 },
+    { title: '物料代码', dataIndex: 'materialCode', ellipsis: true,width: 160 },
+    { title: '物料描述', dataIndex: 'materialName', ellipsis: true, },
+    { title: '物料组代码', dataIndex: 'materialGroupCode', ellipsis: true, },
+    { title: '物料组描述', dataIndex: 'materialGroupName', ellipsis: true, },
+    { title: '战略采购代码', dataIndex: 'strategicPurchaseCode', ellipsis: true, },
+    { title: '战略采购名称', dataIndex: 'strategicPurchaseName', ellipsis: true, },
+    { title: '供应商',dataIndex: 'buId', render: () => <a>查看</a>},
+    { title: 'BU代码', dataIndex: 'buCode', ellipsis: true, },
+    { title: 'BU名称', dataIndex: 'buName', ellipsis: true, },
+    { title: '申请人', dataIndex: 'applyPeopleName', ellipsis: true, },
+    { title: '申请人联系方式', dataIndex: 'applyPeoplePhone', ellipsis: true, },
+    { title: '申请日期', dataIndex: 'applyDate', ellipsis: true, width: 160},
   ].map(item => ({ ...item, align: 'center' }));
-
-  const tableProps = {
-    store: {
-      url: `${smBaseUrl}/api/supplierFinanceViewModifyService/findByPage`,
-      params: {
-        ...searchValue,
-        quickSearchProperties: ['supplierName', 'supplierCode'],
-        sortOrders: [
-          {
-            property: 'docNumber',
-            direction: 'DESC'
-          }
-        ]
-      },
-      type: 'POST'
-    }
-  }
 
   const visibleSupplier = () => {
     console.log('查看供应商')
@@ -174,7 +144,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='PURCHASE_VIEW_CHANGE_CREATE'
-        // disabled={data.selectedRowKeys.length !== 1}
+        disabled={data.selectedRowKeys.length !== 1}
       >明细</Button>)
     }
     {
@@ -224,7 +194,8 @@ export default function() {
     />
   </>
 
-  const handleSelectedRows = (value, rows) => {
+  const onSelectRow = (value, rows) => {
+    console.log(value, rows)
     setData((v) => ({...v, selectedRowKeys: value, selectedRows: rows}))
   }
 
@@ -244,21 +215,23 @@ export default function() {
       />
       <AutoSizeLayout>
         {
-          (h) => <ExtTable
-            style={{marginTop: '10px'}}
+          (h) =>  <ExtTable
             rowKey={(v) => v.id}
             height={h}
-            bordered
-            allowCancelSelect
-            showSearch={false}
-            remotePaging
-            checkbox={{ multiSelect: false }}
-            size='small'
-            onSelectRow={handleSelectedRows}
-            selectedRowKeys={data.selectedRowKeys}
             columns={columns}
+            store={{
+              url: `${smBaseUrl}/api/epTechnicalShareDemandService/findByPage`,
+              type: 'POST',
+            }}
+            allowCancelSelect={true}
+            remotePaging={true}
+            checkbox={{
+              multiSelect: true,
+            }}
             ref={tableRef}
-            dataSource={data.dataSource}
+            showSearch={false}
+            onSelectRow={onSelectRow}
+            selectedRowKeys={data.selectedRowKeys}
           />
         }
       </AutoSizeLayout>

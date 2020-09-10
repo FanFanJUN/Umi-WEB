@@ -18,6 +18,38 @@ const commonProps = {
   },
 };
 
+//技术资料分享编辑
+export async function UpdateDataSharingList(params) {
+  const url = `${recommendUrl}/api/epTechnicalShareDemandService/update`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+}
+
+
+//技术资料分享新增
+export async function AddDataSharingList(params) {
+  const url = `${recommendUrl}/api/epTechnicalShareDemandService/insert`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+}
+
+
+//业务模块对业务单元查询单条数据
+export async function DataSharingFindOne(params) {
+  const url = `${smBaseUrl}/api/epTechnicalShareDemandService/findOne`;
+  return request({
+    url,
+    method: 'GET',
+    params,
+  });
+}
+
 //业务模块对业务单元删除
 export async function DeleteBusinessUnitToBUt(params) {
   const url = `${baseUrl}/bmBuContact/whetherDelete`;
@@ -47,17 +79,6 @@ export async function AddBusinessUnitToBUt(params) {
     data: params,
   });
 }
-
-//技术资料分享新增
-export async function AddDataSharingList(params) {
-  const url = `${recommendUrl}/api/epTechnicalShareDemandService/insert`;
-  return request({
-    url,
-    method: 'POST',
-    data: params,
-  });
-}
-
 
 // BU与公司采购组织对应关系新增
 export async function AddBUCompanyOrganizationRelation(params) {
@@ -216,9 +237,9 @@ export async function DeleteBasicMaterials(params) {
 export const MaterialGroupConfig = {
   remotePaging: true,
   store: {
-    type: 'GET',
+    type: 'POST',
     autoLoad: false,
-    url: `${baseUrl}/materialgroup/listByPage`,
+    url: `${baseUrl}/materialgroup/findByPage`,
   },
   rowKey: 'materialGroupCode',
   reader: {
@@ -232,9 +253,9 @@ export const MaterialGroupConfig = {
 export const MaterialConfig = {
   remotePaging: true,
   store: {
-    type: 'GET',
+    type: 'POST',
     autoLoad: false,
-    url: `${baseUrl}/materialSrm/listByPage`,
+    url: `${baseUrl}/materialSrm/findByPage`,
   },
   rowKey: 'materialCode',
   reader: {
