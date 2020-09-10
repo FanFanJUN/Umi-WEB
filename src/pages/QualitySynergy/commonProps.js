@@ -368,13 +368,13 @@ export const BasicUnitList = {
     width: '100%',
   },
 };
-// 限用物质列表
+// 限用物质列表-非冻结
 export const limitMaterialList = {
   remotePaging: true,
   store: {
     type: 'POST',
     autoLoad: false,
-    url: `${baseUrl}/limitSubstanceListData/find_by_page_all`,
+    url: `${baseUrl}/limitSubstanceListData/find_by_page`,
   },
   rowKey: 'limitMaterialCode',
   reader: {
@@ -385,13 +385,16 @@ export const limitMaterialList = {
   placeholder: '选择限用物质列表'
 };
 
-// 适用范围
+// 适用范围-非冻结
 export const limitScopeList = {
   remotePaging: true,
   store: {
     type: 'POST',
     autoLoad: false,
-    url: `${baseUrl}/LimitMaterialUnitScopeData/findBySearchPage`,
+    url: `${baseUrl}/LimitMaterialUnitScopeData/findAllFrozenFalseAndWhetherDeleteFalse`,
+    params: {
+      quickSearchProperties:[]
+    }
   },
   rowKey: 'scopeCode',
   reader: {
