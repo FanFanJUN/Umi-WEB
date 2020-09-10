@@ -165,7 +165,7 @@ const LimitMaterial = ({ form }) => {
                 key='QUALITYSYNERGY_LM_UML_IMPORT'
                 templateFileList={[
                     {
-                        download: '/templates/主数据-环保标准限用物质对应关系-批导模板.xlsx',
+                        download: `${DEVELOPER_ENV==='true'?'':'/react-srm-sm-web'}/templates/主数据-环保标准限用物质对应关系-批导模板.xlsx`,
                         fileName: '主数据-环保标准限用物质对应关系-批导模板.xlsx',
                         key: 'LimitMaterial',
                     },
@@ -405,6 +405,7 @@ const LimitMaterial = ({ form }) => {
                                 allowCancelSelect={true}
                                 selectedRowKeys={selectedRowKeys}
                                 onSelectRow={(selectedRowKeys, selectedRows) => {
+                                    console.log('选中', selectedRows, selectedRowKeys)
                                     setSelectedRow(selectedRows);
                                     setSelectedRowKeys(selectedRowKeys);
                                 }}
@@ -425,36 +426,36 @@ const LimitMaterial = ({ form }) => {
                 >
                     {
                         selectedRowKeys.length !== 1 ? <Empty description="请选择左边的一条环保标准数据进行操作" className={styles.mt} /> :
-                            <div>
-                                <AutoSizeLayout>
-                                    {
-                                        (h) => <ExtTable
-                                            columns={rightColums}
-                                            checkbox={true}
-                                            remotePaging={true}
-                                            store={{
-                                                url: `${baseUrl}/environmentStandardLimitMaterialRelation/findByPage`,
-                                                type: 'POST',
-                                                params: {
-                                                    environmentalProtectionCode: selectedRow[selectedRow.length - 1].environmentalProtectionCode
-                                                }
-                                            }}
-                                            height={h}
-                                            searchPlaceHolder="输入搜索项"
-                                            ref={tableRightRef}
-                                            selectedRowKeys={selectedRightKeys}
-                                            onSelectRow={(selectedRightKeys, selectedRows) => {
-                                                console.log('右边选中', selectedRightKeys, selectedRows)
-                                                setSelectedRight(selectedRows)
-                                                setSelectedRightKeys(selectedRightKeys)
-                                            }}
-                                            toolBar={{
-                                                left: headerRight
-                                            }}
-                                        />
-                                    }
-                                </AutoSizeLayout>
-                            </div>
+                            (selectedRowKeys.length === 1 && selectedRow[0].frozen) ? <Empty description="选中环保标准已冻结，无法进行操作！" className={styles.mt} /> :
+                                <div>
+                                    <AutoSizeLayout>
+                                        {
+                                            (h) => <ExtTable
+                                                columns={rightColums}
+                                                checkbox={true}
+                                                remotePaging={true}
+                                                store={{
+                                                    url: `${baseUrl}/environmentStandardLimitMaterialRelation/findByPage`,
+                                                    type: 'POST',
+                                                    params: {
+                                                        environmentalProtectionCode: selectedRow[selectedRow.length - 1].environmentalProtectionCode
+                                                    }
+                                                }}
+                                                height={h}
+                                                searchPlaceHolder="输入搜索项"
+                                                ref={tableRightRef}
+                                                selectedRowKeys={selectedRightKeys}
+                                                onSelectRow={(selectedRightKeys, selectedRows) => {
+                                                    setSelectedRight(selectedRows)
+                                                    setSelectedRightKeys(selectedRightKeys)
+                                                }}
+                                                toolBar={{
+                                                    left: headerRight
+                                                }}
+                                            />
+                                        }
+                                    </AutoSizeLayout>
+                                </div>
 
                     }
 
@@ -652,8 +653,8 @@ const LimitMaterial = ({ form }) => {
                                 initialValue: ESPdata.modalSource ? ESPdata.modalSource.reach : true,
                                 rules: [{ required: true, message: '请填写REACH环保符合性声明' }]
                             })(<Radio.Group>
-                                <Radio value={true}>符合</Radio>
-                                <Radio value={false}>不符合</Radio>
+                                <Radio value={true}>是</Radio>
+                                <Radio value={false}>否</Radio>
                             </Radio.Group>)
                         }
                     </FormItem>

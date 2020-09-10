@@ -160,7 +160,7 @@ const ExemptionClause = (props) => {
                 key='QUALITYSYNERGY_EC_IMPORT'
                 templateFileList={[
                     {
-                        download: '/react-srm-sm-web/templates/主数据-豁免条款-批导模板.xlsx',
+                        download: `${DEVELOPER_ENV==='true'?'':'/react-srm-sm-web'}/templates/主数据-豁免条款-批导模板.xlsx`,
                         fileName: '主数据-豁免条款-批导模板.xlsx',
                         key: 'ExemptionClause',
                     },
