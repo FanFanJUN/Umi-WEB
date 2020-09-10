@@ -58,7 +58,6 @@ const tabformRef = forwardRef(({
       selectData[index] = data;
       selectData[index].smSort = e.target.value;
       onBlured(selectData)
-      console.log(65555)
     }
   }
   function sortTable() {
@@ -119,6 +118,13 @@ const tabformRef = forwardRef(({
         render: (text, record, index) => {
           return <div>{record.smMsgTypeName}</div>;
         }
+      },
+      {
+        key: 'smFieldTypeName',
+        title: '字段类型',
+        dataIndex: 'smFieldTypeName',
+        width: 100,
+        align: 'center'
       },
       {
         title: <span><label className="ant-form-item-required" title=""></label>排序码</span>,

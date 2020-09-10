@@ -6,6 +6,7 @@ import { mainTabAction } from 'sei-utils';
 import { utils } from 'suid';
 import { onLineTarget } from '../../config/proxy.config';
 import request from './request';
+import moment from "moment";
 const { getUUID, storage } = utils;
 
 export function closeCurrent() {
@@ -260,6 +261,132 @@ export const convertDataToFormData = (data) => {
       }
   });
   return formData;
+}
+// 附件转换
+export const getEntityId = (editData) => {
+  if (!editData || !editData.genCertVos || editData.genCertVos.length <= 0) {
+    return false;
+  }
+
+  let obj = {};
+  editData.genCertVos.forEach((item, index) => {
+    obj[item.qualificationType] = item.id;
+    obj[item.qualificationType + "attachments"] = item.attachments;
+  });
+
+  return obj;
+};
+//身份证校验
+export const checkCardNo = (rule, value, callback) => {
+// 身份证号码为15位或者18位，15位时全为数字，18位前17位为数字，最后一位是校验位，可能为数字或字符X
+  let reg = /^\d{17}(\d|X|x)$/;
+  if (value && !reg.test(value)) {
+    callback('请输入正确格式的身份证号');
+    return false;
+  }
+  callback();
+};
+//数字校验
+export const onlyNumber = (event) => {
+  let value = event.target.value;
+  event.target.value = value.replace(/[^\d]/g, '');
+};
+//验证邮箱（不输入中文）
+export function onMailCheck(rule, value, callback) {
+  let exp = /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/;
+  if (!value || value === "") {
+      callback();
+  }
+  else if (!value.match(exp)) {
+
+      callback("邮箱格式错误！");
+  } else {
+      callback();
+  }
+}
+//小写转大写
+export function toUpperCase( event) {
+  let value = event.target.value;
+  event.target.value = value.toUpperCase();
+}
+export function getLineCode(lineNum) {
+  return (Array(4).join(0) + (lineNum)).slice(-4) + '0';
+}
+export function getMaxLineNum(data) {
+  let maxLineNum = 0;
+  data.forEach(item => {
+    if (item.lineCode) {
+      let str = item.lineCode.substring(0, item.lineCode.length - 1);
+      let lineCodeNum = Number(str);
+      if (lineCodeNum > maxLineNum) {
+        maxLineNum = lineCodeNum;
+      }
+    }
+
+  });
+  return maxLineNum;
+}
+//比较是否三十天内过期
+export const compareData = (date) => {
+  let pass = true;
+  let endDate = new Date(date);
+  let myDate = new Date();
+  let time = 1000 * 3600 * 24 * 30;
+  if (endDate.getTime() - myDate.getTime() < time) {
+    pass = false;
+  }
+  return pass;
+};
+//时间自动加一年
+export const checkDateWithYearAdd = (rule, value, callback) => {
+  if (value) {
+    if (!value.startDate) {
+      callback('请选择开始日期');
+      return false;
+    } else if (value.startDate && !value.endDate) {
+      let _startDate = new Date(value.startDate);
+      let now = new Date();
+      now.setFullYear(now.getFullYear() + 1);
+      value.endDate = moment(now, 'YYYY-MM-DD')
+    } else if (!value.endDate) {
+      callback('请选择结束日期');
+      return false;
+    }
+  }
+  callback();
+};
+export const checkDateWithHalfYear = (rule, value, callback) => {
+  if (value) {
+    if (!value.startDate) {
+      callback('请选择开始日期');
+      return false;
+    } else if (value.startDate && !value.endDate) {
+      let _startDate = new Date(value.startDate);
+      let now = new Date();
+      let endDate = moment((parseInt(now.toString().substring(11, 15)) + 1) + '-06-01');
+      value.endDate = moment(endDate, 'YYYY-MM-DD')
+    } else if (!value.endDate) {
+      callback('请选择结束日期');
+      return false;
+    }
+  }
+  callback();
+};
+export const checkDateWithYearAdd3 = (rule, value, callback) => {
+  if (value) {
+    if (!value.startDate) {
+      
+    } else if (value.startDate && !value.endDate) {
+      let _startDate = new Date(value.startDate);
+      let now = new Date();
+      now.setFullYear(now.getFullYear() + 1);
+      value.endDate = moment(now, 'YYYY-MM-DD')
+    } else if (!value.endDate) {
+      callback('请选择结束日期');
+      return false;
+    }
+  }
+  callback();
 }
 export { default as request } from './request';
 export { constants, userAuth as userUtils, commonProps, commonUrl };

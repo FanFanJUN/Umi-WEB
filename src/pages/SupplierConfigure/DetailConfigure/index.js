@@ -7,22 +7,37 @@ import classnames from 'classnames';
 import styles from './index.less';
 import { findSupplierconfigureId } from '../../../services/supplierConfig';
 function CreateStrategy() {
-  const formRef = createRef()
-  const tableRef = useRef(null);
+  const HeadFormRef = useRef()
+  const tabformRef = createRef();
   const [dataSource, setDataSource] = useState([]);
-  const [loading, triggerLoading] = useState(true);
+  const [loading, triggerLoading] = useState(false);
   const { query } = router.useLocation();
   const { frameElementId = "", frameElementSrc = "" ,Opertype = ""} = query;
   // 详情
   async function initConfigurationTable() {
+    triggerLoading(true);
     let id = query.id;
     const { data, success, message: msg } = await findSupplierconfigureId(id);
     if (success) {
+      let sortdata = data.configBodyVos.map(item => {
+        return {
+          fieldCode: item.fieldCode,
+          fieldName:item.fieldName,
+          operationCode:item.operationCode,
+          operationName:item.operationName,
+          smMsgTypeCode:Number(item.smMsgTypeCode),
+          smMsgTypeName:item.smMsgTypeName,
+          regConfigId:item.regConfigId,
+          id:item.id,
+          smSort: Number(item.smSort)
+        }
+      })
+      data.configBodyVos = sortdata;
         const {
           configBodyVos,
             ...initialValues
           } = data;
-        const { setFieldsValue } = formRef.current.form;
+        const { setFieldsValue } = HeadFormRef.current.form;
         const mixinValues = {
           ...initialValues
         }
@@ -53,13 +68,14 @@ function CreateStrategy() {
       </Affix>
       <ConfigureForm
         Opertype={Opertype}
-        wrappedComponentRef={formRef}
+        wrappedComponentRef={HeadFormRef}
         type="detail"
       />
       <ConfigureTable
         dataSource={dataSource}
         type="detail"
-        ref={formRef}
+        loading={loading}
+        wrappedComponentRef={tabformRef}
       /> 
     </Spin>
   )

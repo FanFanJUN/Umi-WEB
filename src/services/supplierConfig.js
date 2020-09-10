@@ -1,5 +1,5 @@
 import { request } from '@/utils';
-import { smBaseUrl} from '@/utils/commonUrl';
+import { smBaseUrl,baseUrl} from '@/utils/commonUrl';
 import { FLOW_HOST } from '../utils/constants';
 import {convertDataToFormData} from '../utils'
 function createServiceRequest(option) {
