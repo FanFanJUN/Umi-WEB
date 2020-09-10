@@ -16,6 +16,8 @@ export default () => {
   const materialInfoRef = useRef(null);
   const technicalDataRef = useRef(null);
 
+  const [buCode, setBuCode] = useState(undefined)
+
   const [data, setData] = useState({
     isView: false,
     loading: false,
@@ -85,11 +87,13 @@ export default () => {
         </Affix>
         <BaseInfo
           isView={data.isView}
+          setBuCode={setBuCode}
           wrappedComponentRef={baseInfoRef}
           userInfo={data.userInfo}
           type={data.type}
         />
         <MaterialInfo
+          buCode={buCode}
           isView={data.isView}
           wrappedComponentRef={materialInfoRef}
           type={data.type}
