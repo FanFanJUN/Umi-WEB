@@ -24,7 +24,7 @@ function SupplierConfigure() {
   //const [dataSource, setData] = useState([]);
   const [singleRow = {}] = selectedRows;
 
-  const { account } = storage.sessionStorage.get("Authorization");
+  //const { account } = storage.sessionStorage.get("Authorization");
   const {
     state: rowState,
     approvalState: rowApprovalState,

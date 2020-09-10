@@ -28,7 +28,7 @@ function CreateStrategy() {
           fieldName:item.fieldName,
           operationCode:item.operationCode,
           operationName:item.operationName,
-          smMsgTypeCode:item.smMsgTypeCode,
+          smMsgTypeCode:Number(item.smMsgTypeCode),
           smMsgTypeName:item.smMsgTypeName,
           regConfigId:item.regConfigId,
           id:item.id,
