@@ -399,7 +399,7 @@ const LimitMaterial = ({ form }) => {
                                 }}
                                 height={h}
                                 ref={tableRef}
-                                searchPlaceHolder="输入搜索项"
+                                searchPlaceHolder="输入环保标准名称查询"
                                 checkbox={true}
                                 remotePaging={true}
                                 allowCancelSelect={true}
@@ -442,7 +442,7 @@ const LimitMaterial = ({ form }) => {
                                                     }
                                                 }}
                                                 height={h}
-                                                searchPlaceHolder="输入搜索项"
+                                                searchPlaceHolder="输入限用物质名称查询"
                                                 ref={tableRightRef}
                                                 selectedRowKeys={selectedRightKeys}
                                                 onSelectRow={(selectedRightKeys, selectedRows) => {
@@ -466,6 +466,7 @@ const LimitMaterial = ({ form }) => {
         {data.visible && <ExtModal
             centered
             destroyOnClose
+            maskClosable={false}
             visible={data.visible}
             width={1000}
             okText="保存"
@@ -553,7 +554,6 @@ const LimitMaterial = ({ form }) => {
                             {
                                 getFieldDecorator('materialWeight', {
                                     initialValue: data.modalSource && data.modalSource.materialWeight,
-                                    rules: [{ required: true, message: '请填写均质材质中的含量' }]
                                 })(<InputNumber
                                     precision={8}
                                     style={{ width: '100%' }}
@@ -618,6 +618,7 @@ const LimitMaterial = ({ form }) => {
         {ESPdata.visible && <ExtModal
             centered
             destroyOnClose
+            maskClosable={false}
             visible={ESPdata.visible}
             okText="保存"
             onCancel={() => { setESPData((value) => ({ ...value, visible: false })) }}

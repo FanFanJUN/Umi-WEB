@@ -39,7 +39,7 @@ const ExemptionClause = (props) => {
         { title: '豁免条款物质名称', dataIndex: 'exemptionClauseMaterialName', ellipsis: true, width: 140 },
         { title: 'CAS.NO', dataIndex: 'casNo', ellipsis: true, },
         { title: '限量', dataIndex: 'limitNumber', ellipsis: true },
-        { title: '豁免到期日期', dataIndex: 'exemptionExpireDate', ellipsis: true, width: 180 },
+        { title: '豁免到期日期', dataIndex: 'exemptionExpireDate', ellipsis: true, width: 180, render:(text)=>text ? text.slice(0, 10) : ''},
         { title: '豁免条款具体内容', dataIndex: 'exemptionContent', ellipsis: true, width: 140 },
         { title: '排序号', dataIndex: 'orderNo', ellipsis: true, width: 140 },
     ]
@@ -230,6 +230,7 @@ const ExemptionClause = (props) => {
             <ExtModal
                 centered
                 destroyOnClose
+                maskClosable={false}
                 visible={data.visible}
                 onCancel={() => { setData((value) => ({ ...value, visible: false })) }}
                 onOk={() => { handleOk() }}

@@ -198,6 +198,7 @@ const TechnicalDataFileTypes = (props) => {
             <ExtModal
                 centered
                 destroyOnClose
+                maskClosable={false}
                 visible={data.visible}
                 onCancel={() => { setData((value) => ({ ...value, visible: false })) }}
                 onOk={() => { handleOk() }}
