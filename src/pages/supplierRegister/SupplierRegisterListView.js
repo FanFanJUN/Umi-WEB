@@ -33,7 +33,7 @@ function SupplierConfigure() {
     /** 按钮可用性判断变量集合 BEGIN*/
     const [signleRow = {}] = selectedRows;
     const { flowStatus: signleFlowStatus, id: flowId, creatorId } = signleRow;
-    // 已提交审核状态
+    // 已提交审批状态
     const underWay = signleFlowStatus !== 'INIT';
     // 审核完成状态
     const completed = signleFlowStatus === 'COMPLETED';

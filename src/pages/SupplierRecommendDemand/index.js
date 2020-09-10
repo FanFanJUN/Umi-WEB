@@ -6,26 +6,54 @@ import {
 } from 'react';
 import styles from './index.less';
 import { Header, AutoSizeLayout, AdvancedForm } from '../../components'
-import { ExtTable } from 'suid';
-import { Button, Input, Checkbox } from 'antd';
-import { commonProps, commonUrl } from '../../utils';
+import { ExtTable, utils } from 'suid';
+import { Button, Input, Checkbox, Modal, message } from 'antd';
+import { commonProps, commonUrl, openNewTab, getFrameElement } from '../../utils';
+import { removeSupplierRecommendDemand, submitToSupplier } from '../../services/recommend';
+import { stopApproveingOrder } from '../../services/supplier';
 const { Search } = Input;
+const { storage } = utils;
 const { recommendUrl } = commonUrl;
-const { corporationProps, materialClassProps, statusProps } = commonProps
+const { corporationProps, materialClassProps, statusProps, flowStatusProps } = commonProps
 
 export default () => {
   const headerRef = useRef(null);
   const tableRef = useRef(null);
-  const [dataSource, setDataSource] = useState([]);
+  // const [dataSource, setDataSource] = useState([]);
   const [selectedRowKeys, setRowKeys] = useState([]);
   const [selectedRows, setRows] = useState([]);
   const [searchValue, setSearchValue] = useState({});
   const [onlyMe, setOnlyMe] = useState(true);
+  const FRAMELEEMENT = getFrameElement();
+  const [signleRow = {}] = selectedRows;
+  const { account } = storage.sessionStorage.get("Authorization");
+  const { flowStatus: signleFlowStatus, id: flowId } = signleRow;
+  // 已提交审批状态
+  const underWay = signleFlowStatus !== 'INIT';
+  // 审核完成状态
+  const completed = signleFlowStatus === 'COMPLETED';
+  // 填报完成状态
+  const fillComplete = signleFlowStatus === 'FILLED';
+  // 未提交填报状态
+  const fillInit = signleFlowStatus === 'DRAFT'
+  // 未选中数据状态
+  const empty = selectedRowKeys.length === 0;
   const tableProps = {
     store: {
       url: `${recommendUrl}/api/supplierRecommendDemandService/findByPage`,
       params: {
         ...searchValue,
+        filters: searchValue.filters ?
+          searchValue.filters.concat([{
+            fieldName: 'creatorAccount',
+            operator: 'EQ',
+            value: onlyMe ? account : undefined
+          }]) : [{
+            fieldName: 'creatorAccount',
+            operator: 'EQ',
+            value: onlyMe ? account : undefined
+          }],
+        quickSearchProperties: ['supplierName', 'docNumber'],
         sortOrders: [
           {
             property: 'docNumber',
@@ -38,22 +66,23 @@ export default () => {
   }
   const left = (
     <>
-      <Button className={styles.btn} type='primary'>新增</Button>
-      <Button className={styles.btn}>编辑</Button>
-      <Button className={styles.btn}>删除</Button>
-      <Button className={styles.btn}>提交供应商填报</Button>
-      <Button className={styles.btn}>填报信息确认</Button>
-      <Button className={styles.btn}>提交审核</Button>
-      <Button className={styles.btn}>审核历史</Button>
-      <Button className={styles.btn}>审核终止</Button>
+      <Button className={styles.btn} type='primary' onClick={handleCreate}>新增</Button>
+      <Button className={styles.btn} onClick={handleEditor} disabled={empty || underWay}>编辑</Button>
+      <Button className={styles.btn} onClick={handleRemove} disabled={empty || !fillInit}>删除</Button>
+      <Button className={styles.btn} disabled={empty || underWay || !fillInit} onClick={handleSubmitSupplierFillIn}>提交供应商填报</Button>
+      <Button className={styles.btn} disabled={empty || !fillComplete}>填报信息确认</Button>
+      <Button className={styles.btn} disabled={empty || !fillComplete}>提交审核</Button>
+      <Button className={styles.btn} disabled={empty || !fillComplete}>审核历史</Button>
+      <Button className={styles.btn} disabled={empty} onClick={stopApprove}>审核终止</Button>
       <Checkbox className={styles.btn} onChange={handleOnlyMeChange} checked={onlyMe}>仅我的</Checkbox>
     </>
   )
   const right = (
     <>
       <Search
-        placeholder=''
+        placeholder='需求单号或供应商名称'
         allowClear
+        onSearch={handleQuickSerach}
       />
     </>
   )
@@ -63,7 +92,7 @@ export default () => {
       dataIndex: 'supplierRecommendDemandStatusRemark',
     },
     {
-      title: '审核状态',
+      title: '审批状态',
       dataIndex: 'flowStatus',
       render(text) {
         switch (text) {
@@ -104,11 +133,13 @@ export default () => {
     },
     {
       title: '申请公司',
-      dataIndex: 'corporationName'
+      dataIndex: 'corporationName',
+      width: 180
     },
     {
       title: '创建部门',
-      dataIndex: 'orgName'
+      dataIndex: 'orgName',
+      width: 180
     },
     {
       title: '创建人员',
@@ -178,8 +209,47 @@ export default () => {
         ...statusProps,
         placeholder: '选择单据状态'
       }
-    }
+    },
+    {
+      title: '审批状态',
+      key: 'Q_EQ_flowStatus',
+      type: 'list',
+      props: flowStatusProps
+    },
   ];
+  // 处理新增页签打开
+  function handleCreate() {
+    const { id = '' } = FRAMELEEMENT;
+    const { pathname } = window.location;
+    openNewTab(`supplier/recommend/demand/create?frameElementId=${id}&frameElementSrc=${pathname}`, '新增供应商推荐需求', false)
+  }
+  // 处理编辑页签打开
+  function handleEditor() {
+    const [key] = selectedRowKeys;
+    const { id = '' } = FRAMELEEMENT;
+    const { pathname } = window.location;
+    openNewTab(`supplier/recommend/demand/editor?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '编辑供应商推荐需求', false)
+  }
+  // 处理删除
+  async function handleRemove() {
+    const [key] = selectedRowKeys;
+    Modal.confirm({
+      title: '删除供应商推荐需求',
+      content: '删除后无法恢复，确定要删除当前所选数据？',
+      onOk: async () => {
+        const { success, message: msg } = await removeSupplierRecommendDemand({
+          supplierRecommendDemandId: key
+        })
+        if (success) {
+          message.success(msg)
+          uploadTable()
+          return
+        }
+        message.error(msg)
+      }
+    })
+  }
+  // 高级查询
   function handleAdvnacedSearch(v) {
     const keys = Object.keys(v);
     const filters = keys.map((item) => {
@@ -221,6 +291,46 @@ export default () => {
   function uploadTable() {
     cleanSelectedRecord()
     tableRef.current.remoteDataRefresh()
+  }
+  // 终止审核
+  function stopApprove() {
+    Modal.confirm({
+      title: '终止审批流程',
+      content: '流程终止后无法恢复，是否继续？',
+      onOk: handleStopApproveRecord,
+      okText: '确定',
+      cancelText: '取消'
+    })
+  }
+  // 审核终止
+  async function handleStopApproveRecord() {
+    const { success, message: msg } = await stopApproveingOrder({
+      businessId: flowId
+    })
+    if (success) {
+      message.success(msg)
+      uploadTable()
+      return
+    }
+    message.error(msg)
+  }
+  // 提交供应商填报
+  function handleSubmitSupplierFillIn() {
+    Modal.confirm({
+      title: '提交供应商填报',
+      content: '是否提交当前选中数据',
+      onOk: async () => {
+        const { success, message: msg } = await submitToSupplier({
+          supplierRecommendDemandId: flowId
+        })
+        if (success) {
+          message.success(msg)
+          uploadTable()
+          return
+        }
+        message.error(msg)
+      }
+    })
   }
   return (
     <div>

@@ -1,5 +1,5 @@
 import { forwardRef, useImperativeHandle, useState, createRef } from 'react';
-import { Form, Row, Col, Input, Button, Radio, Checkbox, Tree } from 'antd';
+import { Form, Row, Col, Input, Button, Radio, Checkbox, Tree, Modal } from 'antd';
 import { ComboList, ComboTree, ExtTable } from 'suid';
 import { Header, ComboAttachment } from '../../../../components'
 import RecommendCompany from '../RecommendCompany'
@@ -19,7 +19,6 @@ const {
 const { Group: RadioGroup } = Radio;
 const { Group: CheckboxGroup } = Checkbox;
 const { TextArea } = Input;
-const { TreeNode } = Tree;
 const supplierProps_code = {
   ...supplierProps,
   reader: {
@@ -102,13 +101,17 @@ const FormContext = forwardRef(({
   useImperativeHandle(ref, () => ({
     form,
     setFieldsValue,
+    setRecommendCompany,
     resetFields,
+    setAllFormatValues,
     getAllFormatValues
   }))
   const [isAgent, changeAgentState] = useState(false);
   const [recommendCompany, setRecommendCompany] = useState([]);
   const [attachment, setAttachment] = useState(null);
   const [systemView, setSystemView] = useState(null);
+  const [selectedRowKeys, setRowKeys] = useState([]);
+  // const [selectedRows, setRows] = useState([]);
   const recRef = createRef(null);
   const {
     setFieldsValue,
@@ -127,7 +130,19 @@ const FormContext = forwardRef(({
   }
   async function getAllFormatValues() {
     const v = await validateFieldsAndScroll().then(_ => _)
-    return { ...v, supplierRecommendDemandLines: recommendCompany }
+    const { files } = v;
+    console.log(files)
+    const hasFile = Array.isArray(files);
+    return { ...v, supplierRecommendDemandLines: recommendCompany, attachmentIds: hasFile ? files.map(item => item.id) : null }
+  }
+  function setAllFormatValues({
+    fields = {},
+    treeData = []
+  }) {
+    const { attachmentId, ...other } = fields;
+    console.log(attachmentId)
+    setFieldsValue(other)
+    setAttachment(attachmentId)
   }
   function formatViewData(iview) {
     if (iview.children) {
@@ -149,6 +164,24 @@ const FormContext = forwardRef(({
       const treeData = formatViewData(systemView)
       return (<Tree selectable={false} treeData={[treeData]}></Tree>)
     }
+  }
+  function handleSelectedRows(ks) {
+    setRowKeys(ks)
+    // setRows(rs)
+  }
+  function handleRemoveSelectedRows() {
+    Modal.confirm({
+      title: '删除拟推荐公司',
+      content: '确定要删除所选的拟推荐公司？',
+      okText: '确定删除',
+      onOk: () => {
+        const newData = recommendCompany.filter(item => {
+          return !selectedRowKeys.includes(`${item.identifyTypeCode}-${item.purchaseOrgCode}`)
+        })
+        setRecommendCompany(newData)
+      },
+      cancelText: '取消'
+    })
   }
   return (
     <div className={styles.wrapper}>
@@ -412,7 +445,9 @@ const FormContext = forwardRef(({
                       recRef.current.show()
                     }}
                   >新增</Button>
-                  <Button>删除</Button>
+                  <Button
+                    onClick={handleRemoveSelectedRows}
+                  >删除</Button>
                 </>
               }
             ></Header>
@@ -420,7 +455,10 @@ const FormContext = forwardRef(({
               showSearch={false}
               dataSource={recommendCompany}
               columns={recommendColumns}
-              rowKey={item => `${item.code}-${item.corporationCode}`}
+              rowKey={item => `${item.identifyTypeCode}-${item.purchaseOrgCode}`}
+              checkbox={{ multiSelect: true }}
+              selectedRowKeys={selectedRowKeys}
+              onSelectRow={handleSelectedRows}
             ></ExtTable>
           </Col>
         </Row>
@@ -428,8 +466,8 @@ const FormContext = forwardRef(({
           <Col span={24}>
             <FormItem label='评价体系' {...formLayoutAlone}>
               {
-                getFieldDecorator('selfEvlSystemId'),
-                getFieldDecorator('evaluationSystem', {
+                getFieldDecorator('selfMainDataEvlSystemId'),
+                getFieldDecorator('selfMainDataEvlSystemName', {
                   rules: [
                     {
                       required: true,
@@ -439,8 +477,8 @@ const FormContext = forwardRef(({
                 })(
                   <ComboList
                     form={form}
-                    name='evaluationSystem'
-                    field={['selfEvlSystemId']}
+                    name='selfMainDataEvlSystemName'
+                    field={['selfMainDataEvlSystemId']}
                     {...evaluateSystemProps}
                     style={{ width: 350 }}
                     afterSelect={item => setSystemView(item)}

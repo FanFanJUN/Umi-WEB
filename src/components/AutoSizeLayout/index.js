@@ -8,7 +8,7 @@ function AutoSizeLayout({ children, minHeight = 300 }) {
     clearTimeout(timeout)
     timeout = setTimeout(() => {
       const wh = document.body.clientHeight;
-      const h = layoutRef.current.offsetTop;
+      const h = layoutRef.current?.offsetTop;
       const lh = wh - h
       setHeight(lh)
     }, 100)
