@@ -1,9 +1,9 @@
-import React, { useImperativeHandle } from 'react';
+import React, { useEffect, useImperativeHandle } from 'react';
 import styles from './BaseInfo.less';
 import { Col, Form, Modal, Row, Input } from 'antd';
 import moment from 'moment/moment';
 import { ComboList, ExtModal } from 'suid';
-import { BUConfig, MaterialConfig } from '../../../commonProps';
+import { BUConfig, MaterialConfig, MaterialGroupConfig } from '../../../commonProps';
 
 const FormItem = Form.Item;
 
@@ -18,13 +18,20 @@ const formLayout = {
 
 const MaterialInfo = React.forwardRef((props, ref) => {
 
-  const { type, data, form } = props;
+  const { type, data, form, buCode } = props;
 
   const { getFieldDecorator, getFieldValue } = props.form;
 
   useImperativeHandle(ref, () => ({
     getMaterialInfoData: props.form.validateFieldsAndScroll
   }))
+
+  useEffect(() => {
+    console.log(buCode, 'bucode', getFieldValue('materialGroupCode'))
+    if (buCode && getFieldValue('materialGroupCode')) {
+      console.log('触发')
+    }
+  }, [getFieldValue('materialGroupCode'), buCode])
 
   const hideFormItem = (name, initialValue) => (
     <FormItem>
@@ -99,8 +106,8 @@ const MaterialInfo = React.forwardRef((props, ref) => {
                     style={{ width: '100%' }}
                     form={form}
                     name={'materialGroupCode'}
-                    field={['materialGroupId']}
-                    {...BUConfig}
+                    field={['materialGroupId', 'materialGroupDesc']}
+                    {...MaterialGroupConfig}
                   />)
                 }
               </FormItem>
