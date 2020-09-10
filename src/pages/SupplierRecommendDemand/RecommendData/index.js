@@ -1,3 +1,12 @@
+/*
+ * @Author: Li Cai
+ * @LastEditors: Li Cai
+ * @Date: 2020-09-08 14:29:17
+ * @LastEditTime: 2020-09-09 14:38:31
+ * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/index.js
+ * @Description: 
+ * @Connect: 1981824361@qq.com
+ */
 import styles from './index.less'
 import { Tabs, Button, Affix } from 'antd';
 import classnames from 'classnames';
@@ -22,7 +31,7 @@ function RecommendData() {
       </Affix>
       <Tabs renderTabBar={(props, DefaultTabBar) => {
         return <Affix offsetTop={56}><DefaultTabBar {...props} style={{ background: '#fff', padding: '0 24px' }} /></Affix>
-      }}>
+      }} activeKey={'dataFillIn'}>
         <TabPane key='explain' tab='填表说明'>
           <Explain />
         </TabPane>
