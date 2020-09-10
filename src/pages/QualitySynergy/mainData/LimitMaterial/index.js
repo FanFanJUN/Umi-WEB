@@ -109,6 +109,11 @@ const LimitMaterial = ({ form }) => {
             }
         });
     };
+    // 检查传入数据的冻结情况，全冻结返回thaw，全未冻结返回freeze
+    const checkFreeze = (dataList) => {
+        if(!dataList || dataList.length===0) return false;
+        return dataList.every((item)=>item.frozen)?'thaw':dataList.every((item)=>!item.frozen)?'freeze':false
+    }
     const headerRight = <div style={{ display: 'flex', alignItems: 'center' }}>
         {
             authAction(<Button
@@ -142,18 +147,9 @@ const LimitMaterial = ({ form }) => {
                 onClick={() => buttonClick('freeze')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                disabled={selectedRightKeys.length === 0}
+                disabled={checkFreeze(selectedRight) === false}
                 key='QUALITYSYNERGY_LM_UML_FREEZE'
-            >冻结</Button>)
-        }
-        {
-            authAction(<Button
-                onClick={() => buttonClick('thaw')}
-                className={styles.btn}
-                ignore={DEVELOPER_ENV}
-                disabled={selectedRightKeys.length === 0}
-                key='QUALITYSYNERGY_LM_UML_THAW'
-            >解冻</Button>)
+            >{checkFreeze(selectedRight)==='thaw'?'解冻':'冻结'}</Button>)
         }
         {
             authAction(<DataImport
@@ -207,17 +203,8 @@ const LimitMaterial = ({ form }) => {
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_EPS_FREEZE'
-                disabled={selectedRowKeys.length === 0}
-            >冻结</Button>)
-        }
-        {
-            authAction(<Button
-                onClick={() => EPSbuttonClick('thaw')}
-                className={styles.btn}
-                ignore={DEVELOPER_ENV}
-                key='QUALITYSYNERGY_LM_EPS_THAW'
-                disabled={selectedRowKeys.length === 0}
-            >解冻</Button>)
+                disabled={checkFreeze(selectedRow) === false}
+            >{checkFreeze(selectedRow)==='thaw'?'解冻':'冻结'}</Button>)
         }
     </>
     // 限用物质按钮操作
@@ -237,14 +224,13 @@ const LimitMaterial = ({ form }) => {
                 }));
                 break;
             case 'freeze':
-            case 'thaw':
                 confirm({
-                    title: `请确认是否${type === 'thaw' ? '解冻' : '冻结'}选中限用物质数据`,
+                    title: `请确认是否${checkFreeze(selectedRight)==='thaw'?'解冻':'冻结'}选中限用物质数据`,
                     onOk: async () => {
                         const parmas = selectedRowKeys.join();
                         const res = await ESPMFreeze({
                             ids: selectedRightKeys.join(),
-                            frozen: type === 'freeze'
+                            frozen: checkFreeze(selectedRight) === 'freeze'
                         });
                         if (res.success) {
                             message.success('操作成功');
@@ -294,16 +280,15 @@ const LimitMaterial = ({ form }) => {
                 }));
                 break;
             case 'freeze':
-            case 'thaw':
                 confirm({
-                    title: `请确认是否${type === 'thaw' ? '解冻' : '冻结'}选中环保标准数据`,
+                    title: `请确认是否${checkFreeze(selectedRow)==='thaw'?'解冻':'冻结'}选中环保标准数据`,
                     onOk: async () => {
                         const res = await ESPFreeze({
-                            frozen: type === 'freeze',
+                            frozen: checkFreeze(selectedRow) === 'freeze',
                             ids: selectedRowKeys.join()
                         })
                         if (res.success) {
-                            message.success('冻结成功');
+                            message.success('操作成功');
                             tableRef.current.manualSelectedRows();
                             tableRef.current.remoteDataRefresh();
                         } else {

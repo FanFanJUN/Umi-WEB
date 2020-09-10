@@ -36,7 +36,11 @@ const TechnicalDataFileTypes = (props) => {
         { title: '排序号', dataIndex: 'orderNo', ellipsis: true, },
         { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (text) => text ? '已冻结' : '未冻结' },
     ]
-
+    // 检查传入数据的冻结情况，全冻结返回thaw，全未冻结返回freeze
+    const checkFreeze = (dataList) => {
+        if(!dataList || dataList.length===0) return false;
+        return dataList.every((item)=>item.frozen)?'thaw':dataList.every((item)=>!item.frozen)?'freeze':false
+    }
     const buttonClick = (type) => {
         console.log('选中数据', selectedRow)
         switch (type) {
@@ -46,15 +50,14 @@ const TechnicalDataFileTypes = (props) => {
             case 'edit':
                 setData((value) => ({ ...value, visible: true, modalSource: selectedRow[selectedRow.length - 1] }));
                 break;
-            case 'thaw':
             case 'freeze':
                 confirm({
-                    title: `请确认是否${type === 'thaw' ? '解冻' : '冻结'}选中技术资料类别数据`,
+                    title: `请确认是否${checkFreeze(selectedRow)==='thaw'?'解冻':'冻结'}选中技术资料类别数据`,
                     onOk: async () => {
                         const parmas = selectedRowKeys.join();
                         const res = await frozenTechnicalDataCategory({
                             ids: parmas,
-                            flag: type === 'freeze'
+                            flag: checkFreeze(selectedRow) === 'freeze'
                         });
                         if (res.success) {
                             message.success('操作成功');
@@ -89,18 +92,6 @@ const TechnicalDataFileTypes = (props) => {
         }
     }
 
-    function checkSlectOne() {
-        if (selectedRow.length === 0) {
-            message.warning('请选择一条数据');
-            return false;
-        } else if (selectedRow.length > 1) {
-            message.warning('只能选择一条数据');
-            return false;
-        }
-        return true
-    }
-
-
     const headerLeft = <div>
         {
             authAction(<Button
@@ -134,18 +125,9 @@ const TechnicalDataFileTypes = (props) => {
                 onClick={() => buttonClick('freeze')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                disabled={selectedRowKeys.length === 0}
+                disabled={checkFreeze(selectedRow) === false}
                 key='QUALITYSYNERGY_TDP_FREEZE'
-            >冻结</Button>)
-        }
-        {
-            authAction(<Button
-                onClick={() => buttonClick('thaw')}
-                className={styles.btn}
-                ignore={DEVELOPER_ENV}
-                disabled={selectedRowKeys.length === 0}
-                key='QUALITYSYNERGY_TDP_THAW'
-            >解冻</Button>)
+            >{checkFreeze(selectedRow)==='thaw'?'解冻':'冻结'}</Button>)
         }
     </div>
     function handleOk() {

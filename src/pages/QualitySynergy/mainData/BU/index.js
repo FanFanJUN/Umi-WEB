@@ -37,7 +37,11 @@ const BU = (props) => {
         { title: '排序号', dataIndex: 'orderNo', ellipsis: true, },
         { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (text) => text ? '已冻结' : '未冻结' },
     ]
-
+    // 检查传入数据的冻结情况，全冻结返回thaw，全未冻结返回freeze
+    const checkFreeze = (dataList) => {
+        if(!dataList || dataList.length===0) return false;
+        return dataList.every((item)=>item.frozen)?'thaw':dataList.every((item)=>!item.frozen)?'freeze':false
+    }
     const buttonClick = (type) => {
         switch (type) {
             case 'add':
@@ -46,15 +50,14 @@ const BU = (props) => {
             case 'edit':
                 setData((value) => ({ ...value, visible: true, modalSource: selectedRow[selectedRow.length - 1] }));
                 break;
-            case 'thaw':
             case 'freeze':
                 confirm({
-                    title: `请确认是否${type === 'thaw' ? '解冻' : '冻结'}选中业务单元数据`,
+                    title: `请确认是否${checkFreeze(selectedRow)==='thaw'?'解冻':'冻结'}选中业务单元数据`,
                     onOk: async () => {
                         const parmas = selectedRowKeys.join();
                         const res = await frozenBU({
                             ids: parmas,
-                            frozen: type === 'freeze'
+                            frozen: checkFreeze(selectedRow) === 'freeze'
                         });
                         if (res.success) {
                             message.success('操作成功');
@@ -122,18 +125,9 @@ const BU = (props) => {
                 onClick={() => buttonClick('freeze')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                disabled={selectedRowKeys.length === 0}
+                disabled={checkFreeze(selectedRow) === false}
                 key='QUALITYSYNERGY_BU_FREEZE'
-            >冻结</Button>)
-        }
-        {
-            authAction(<Button
-                onClick={() => buttonClick('thaw')}
-                className={styles.btn}
-                ignore={DEVELOPER_ENV}
-                disabled={selectedRowKeys.length === 0}
-                key='QUALITYSYNERGY_BU_THAW'
-            >解冻</Button>)
+            >{checkFreeze(selectedRow)==='thaw'?'解冻':'冻结'}</Button>)
         }
     </div>
     function handleOk() {
