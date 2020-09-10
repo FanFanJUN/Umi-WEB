@@ -184,3 +184,12 @@ export async function frozenBU(params) {
         params: params,
     });
 }
+// 根据业务单元找业务板块
+export async function findByBuCode(params) {
+    const url = `${baseUrl}/bmBuContact/findByBuCode`;
+    return request({
+        url,
+        method: 'POST',
+        params: params,
+    });
+}
