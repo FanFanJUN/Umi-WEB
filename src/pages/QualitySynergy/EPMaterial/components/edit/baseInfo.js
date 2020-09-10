@@ -1,8 +1,8 @@
 import { useEffect, useState, forwardRef, useImperativeHandle, Fragment } from 'react'
 import { Form, Row, Col, Input, Button, Modal, message, notification } from 'antd';
 import { ComboList } from 'suid';
-import { materialCode } from '../../../commonProps'
-import { getUserName } from '../../../../../utils'
+import { buList } from '../../../commonProps'
+import { getUserName, getMobile, getUserId, getUserAccount } from '../../../../../utils'
 import moment from 'moment'
 const { create, Item: FormItem } = Form;
 const formLayout = {
@@ -14,7 +14,7 @@ const formLayout = {
   },
 };
 
-const BaseInfo = forwardRef(({ form, type }, ref) => {
+const BaseInfo = forwardRef(({ form, isView, setBuCode }, ref) => {
   useImperativeHandle(ref, () => ({
 
   }))
@@ -32,13 +32,17 @@ const BaseInfo = forwardRef(({ form, type }, ref) => {
         <Col span={12}>
           <FormItem label='来源' {...formLayout}>
             {
-              getFieldDecorator('data1')(<Input disabled />)
+              getFieldDecorator('sourceName',{
+                initialValue: 'SRM',
+              })(<Input disabled />)
             }
           </FormItem>
         </Col>
         <Col span={12}>
           <FormItem label='创建人' {...formLayout}>
             {
+              getFieldDecorator('applyPersonId', {initialValue: getUserId()}),
+              getFieldDecorator('applyPersonAccount', {initialValue: getUserAccount()}),
               getFieldDecorator('creatorName', {
                 initialValue: getUserName()
               })(<Input disabled />)
@@ -48,14 +52,24 @@ const BaseInfo = forwardRef(({ form, type }, ref) => {
       </Row>
       <Row>
         <Col span={12}>
-          <FormItem label='BU' {...formLayout}>
+          <FormItem label='业务单元' {...formLayout}>
             {
-              getFieldDecorator('supplierCode', {
+              getFieldDecorator('buId'),
+              getFieldDecorator('buName'),
+              getFieldDecorator('buCode', {
+                initialValue: '',
                 rules: [{ required: true, message: '请选择供应商代码' }]
               })(
-                <ComboList form={form} {...materialCode} name='supplierCode' field={['supplierId']} afterSelect={() => {
-                  console.log('选择更改')
-                }} />
+                <ComboList
+                  form={form}
+                  disabled={isView}
+                  {...buList}
+                  name='buCode'
+                  field={['buName', 'buId']}
+                  afterSelect={(item)=>{
+                    setBuCode(item.buCode)
+                  }}
+                />
               )
             }
           </FormItem>
@@ -64,9 +78,9 @@ const BaseInfo = forwardRef(({ form, type }, ref) => {
           <FormItem label='创建人联系方式' {...formLayout}>
             {
               getFieldDecorator('creatorName', {
-                initialValue: '',
+                initialValue: getMobile(),
                 rules: [{ required: true, message: '请选择供应商代码' }]
-              })(<Input />)
+              })(<Input disabled={isView} />)
             }
           </FormItem>
         </Col>
@@ -78,7 +92,7 @@ const BaseInfo = forwardRef(({ form, type }, ref) => {
             {
               getFieldDecorator('dateTime', {
                 initialValue: moment().format('YYYY-MM-DD')
-              })(<Input disabled />)
+              })(<Input disabled/>)
             }
           </FormItem>
         </Col>

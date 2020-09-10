@@ -19,16 +19,18 @@ export default [
       { path: '/qualitySynergy/EPMaterial/suppliersToFill', component: './QualitySynergy/EPMaterial/SuppliersToFill', title: '环保资料填报' },
       { path: '/qualitySynergy/EPMaterial/suppliersFillForm', component: './QualitySynergy/EPMaterial/SuppliersToFill/editForm', title: '环保资料填报-填报页面' },
       { path: '/qualitySynergy/DataSharingList', component: './QualitySynergy/TechnicalDataSharing/DataSharingList', title: '技术资料分享' },
-      { path: '/qualitySynergy/DataSharingAdd', component: './QualitySynergy/TechnicalDataSharing/DataSharingList/edit', title: '技术资料分享新增' },
+      { path: '/qualitySynergy/DataSharingAdd', component: './QualitySynergy/TechnicalDataSharing/DataSharingList/edit', title: '技术资料分享-新增' },
+      { path: '/qualitySynergy/TechnicalInformationDownload', component: './QualitySynergy/TechnicalInformationDownload', title: '技术资料下载'},
       { path: '/qualitySynergy/UseMaterialList', component: './QualitySynergy/mainData/UseMaterialList', title: '限用物资清单-主数据' },
       { path: '/qualitySynergy/EnvironmentalProtectionStandard', component: './QualitySynergy/mainData/EnvironmentalProtectionStandard', title: '环保标准-主数据' },
-      { path: '/qualitySynergy/LimitSuppliesScope', component: './QualitySynergy/mainData/LimitSuppliesScope', title: '限用物资适用范围-主数据' },
-      { path: '/qualitySynergy/BUCompanyOrganizationRelation', component: './QualitySynergy/mainData/BUCompanyOrganizationRelation', title: 'BU与公司采购组织对应关系-主数据' },
-      { path: '/qualitySynergy/LimitSuppliesBasicUnit', component: './QualitySynergy/mainData/LimitSuppliesBasicUnit', title: '限用物资基本单位-主数据' },
+      { path: '/qualitySynergy/LimitSuppliesScope', component: './QualitySynergy/mainData/LimitSuppliesScope', title: '限用物质适用范围-主数据' },
+      { path: '/qualitySynergy/BUCompanyOrganizationRelation', component: './QualitySynergy/mainData/BUCompanyOrganizationRelation', title: '业务单元与公司采购组织对应关系-主数据' },
+      { path: '/qualitySynergy/LimitSuppliesBasicUnit', component: './QualitySynergy/mainData/LimitSuppliesBasicUnit', title: '限用物质基本单位-主数据' },
       { path: '/qualitySynergy/TechnicalDataFileTypes', component: './QualitySynergy/mainData/TechnicalDataFileTypes', title: '技术资料文件类别-主数据'},
       { path: '/qualitySynergy/ExemptionClause', component: './QualitySynergy/mainData/ExemptionClause', title: '豁免条款-主数据'},
       { path: '/qualitySynergy/LimitMaterial', component: './QualitySynergy/mainData/LimitMaterial', title: '环保标准限用物质对应关系-主数据'},
-      { path: '/qualitySynergy/BusinessUnitToBU', component: './QualitySynergy/mainData/BusinessUnitToBU', title: '业务单元对BU主数据-主数据'},
+      { path: '/qualitySynergy/BusinessUnitToBU', component: './QualitySynergy/mainData/BusinessUnitToBU', title: '业务模块对业务单元主数据-主数据'},
+      { path: '/qualitySynergy/BU', component: './QualitySynergy/mainData/BU', title: '业务单元主数据-主数据'},
 
     ]
   },
@@ -74,6 +76,13 @@ export default [
       /**供应商注册 */
       { path: '/supplier/supplierRegister/SupplierRegisterListView', component: './supplierRegister/SupplierRegisterListView', title: '供应商注册' },
       { path: '/supplier/supplierRegister/SupplierEdit/index', component: './supplierRegister/SupplierEdit', title: '供应商编辑' },
+      { path: '/supplier/supplierRegister/SupplierDetail/index', component: './supplierRegister/SupplierDetail', title: '供应商明细' },
+      { path: '/supplier/supplierRegister/ApprovePage/SupplierRegisterApproveEdit', component: './supplierRegister/ApprovePage/index', title: '供应商注册修改审核' },
+      { path: '/supplier/supplierRegister/ApprovePage/SupplierRegisterApprovePage', component: './supplierRegister/ApprovePage/indexpage', title: '供应商注册审核' },
+      { path: '/supplier/supplierRegister/ApprovePage/SupplierRegisterApproveAgentEdit', component: './supplierRegister/ApprovePage/agentpage', title: '供应商注册代理商修改' },
+      { path: '/supplier/supplierRegister/ApprovePage/SupplierRegisterApproveDetail', component: './supplierRegister/ApprovePage/detail', title: '供应商注册明细' },
+      /**供应商变更 */
+      { path: '/supplier/supplierModify/index', component: './supplierModify/index', title: '供应商变更' },
       /* add Example
       {
         path: '/path',

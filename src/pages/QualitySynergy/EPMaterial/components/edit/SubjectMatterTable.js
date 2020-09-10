@@ -1,10 +1,10 @@
-import { useEffect, useState, useRef, Fragment } from 'react'
+import { useEffect, useState, useRef, Fragment } from 'react';
 import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import EditModal from '../editModal'
-import { Button } from 'antd'
+import { Button, message } from 'antd'
 import styles from '../index.less'
 
-export default function () {
+export default function ({buCode}) {
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [addvisible, setVisible] = useState(false)
@@ -31,10 +31,24 @@ export default function () {
     function handleDelete() {
         console.log('删除')
     }
+    function handleAdd() {
+        if(!buCode){
+            message.warning('请先选择业务单元！');
+            return;
+        }
+        editRef.current.showModal('add');
+    }
+    function handleEdit() {
+        if(selectedRows.length === 0){
+            message.warning('请先选择数据！');
+            return;
+        }
+        editRef.current.showModal('edit');
+    }
     return <Fragment>
         <div className={styles.mb}>
-            <Button type='primary' className={styles.btn} onClick={()=>{editRef.current.showModal('add')}}>新增</Button>
-            <Button className={styles.btn} onClick={()=>{editRef.current.showModal('edit')}}>编辑</Button>
+            <Button type='primary' className={styles.btn} onClick={handleAdd}>新增</Button>
+            <Button className={styles.btn} onClick={handleEdit}>编辑</Button>
             <Button className={styles.btn} onClick={handleDelete}>删除</Button>
             <Button className={styles.btn}>批量导入</Button>
         </div>
@@ -51,6 +65,7 @@ export default function () {
                 size='small'
                 onSelectRow={handleSelectedRows}
                 selectedRowKeys={selectedRowKeys}
+                dataSource={[{id: 1}]}
                 // {...tableProps}
             />
         </div>

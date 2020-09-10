@@ -75,27 +75,112 @@ export async function addEnvironmentStandardLimitMaterialRelation(params) {
     return request({
         url,
         method: 'POST',
-        params: params,
+        data: params,
     });
 }
 
 // 环保标准限用物资-删除
 export async function ESPMDelete(params) {
-    const url = `${baseUrl}/environmentStandardLimitMaterialRelation/deleted`;
+    const url = `${baseUrl}/environmentStandardLimitMaterialRelation/whetherDelete`;
     console.log(url)
     return request({
         url,
-        method: 'GET',
+        method: 'POST',
         params: params,
     });
 }
 // 环保标准限用物资-冻结
 export async function ESPMFreeze(params) {
-    const url = `${baseUrl}/environmentStandardLimitMaterialRelation/freeze`;
+    const url = `${baseUrl}/environmentStandardLimitMaterialRelation/frozen`;
     console.log(url)
     return request({
         url,
-        method: 'GET',
+        method: 'POST',
+        params: params,
+    });
+}
+// 环保标准限用物资批导验证
+export async function JudgeTheListOfESPM(params) {
+    const url = `${baseUrl}/environmentStandardLimitMaterialRelation/importData`;
+    return request({
+      url,
+      method: 'POST',
+      data: params,
+    });
+  }
+  
+  // 环保标准限用物资批导保存
+  export async function SaveTheListOfESPM(params) {
+    const url = `${baseUrl}/environmentStandardLimitMaterialRelation/addEnvironmentStandardLimitMaterialRelationList`;
+    return request({
+      url,
+      method: 'POST',
+      data: params,
+    });
+  }
+
+// 技术资料文件类别-新增
+export async function addTechnicalDataCategory(params) {
+    const url = `${baseUrl}/technicalDataCategory/add_technicalDataCategory`;
+    return request({
+        url,
+        method: 'POST',
+        params: params,
+    });
+}
+// 技术资料文件类别-编辑
+export async function updateTechnicalDataCategory(params) {
+    const url = `${baseUrl}/technicalDataCategory/update_technicalDataCategory`;
+    return request({
+        url,
+        method: 'POST',
+        params: params,
+    });
+}
+// 技术资料文件类别-删除
+export async function deleteTechnicalDataCategory(params) {
+    const url = `${baseUrl}/technicalDataCategory/delete_technicalDataCategory`;
+    return request({
+        url,
+        method: 'POST',
+        params: params,
+    });
+}
+// 技术资料文件类别-删除
+export async function frozenTechnicalDataCategory(params) {
+    const url = `${baseUrl}/technicalDataCategory/batchWhetherFrozen`;
+    return request({
+        url,
+        method: 'POST',
+        params: params,
+    });
+}
+
+// 
+// BU-新增
+export async function addBU(params) {
+    const url = `${baseUrl}/bu/addBu`;
+    return request({
+        url,
+        method: 'POST',
+        data: params,
+    });
+}
+// BU-删除
+export async function deleteBU(params) {
+    const url = `${baseUrl}/bu/whetherDelete`;
+    return request({
+        url,
+        method: 'POST',
+        params: params,
+    });
+}
+// BU-冻结
+export async function frozenBU(params) {
+    const url = `${baseUrl}/bu/frozen`;
+    return request({
+        url,
+        method: 'POST',
         params: params,
     });
 }

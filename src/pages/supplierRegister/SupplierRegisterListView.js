@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ExtTable, WorkFlow, ExtModal, utils, ToolBar,ScrollBar } from 'suid';
-import { Input, Button, message, Checkbox } from 'antd';
+import { Input, Button, message, Modal } from 'antd';
 import { openNewTab, getFrameElement } from '@/utils';
 import { StartFlow } from 'seid';
 
@@ -9,7 +9,7 @@ import Header from '@/components/Header';
 import AutoSizeLayout from '@/components/AutoSizeLayout';
 import styles from './index.less';
 import { smBaseUrl } from '@/utils/commonUrl';
-import { RecommendationList } from "@/services/supplierRegister"
+import { RecommendationList ,stopApproveingOrder} from "@/services/supplierRegister"
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 const { Search } = Input
 const { authAction, storage } = utils;
@@ -179,7 +179,13 @@ function SupplierConfigure() {
             url: `${smBaseUrl}/api/supplierSelfService/findVoListByPage`,
             params: {
                 ...searchValue,
-                quickSearchProperties: ['supplierCategoryCode', 'supplierCategoryName']
+                quickSearchProperties: ['supplierName'],
+                sortOrders: [
+                    {
+                      property: 'docNumber',
+                      direction: 'DESC'
+                    }
+                ]
             },
             type: 'POST'
         }
@@ -188,7 +194,7 @@ function SupplierConfigure() {
     const searchBtnCfg = (
         <>
             <Input
-                placeholder='请输入供应商分类或名称查询'
+                placeholder='请输入供应商名称查询'
                 className={styles.btn}
                 onChange={SerachValue}
                 allowClear
@@ -248,24 +254,22 @@ function SupplierConfigure() {
         cleanSelectedRecord()
         tableRef.current.remoteDataRefresh()
     }
-    // 新增
-    function handleCreate() {
-        const { pathname } = window.location
-        openNewTab(`supplier/configure/create?Opertype=1&frameElementSrc=${pathname}`, '新增供应商注册信息配置', false)
-    }
     // 编辑
     function handleEditor() {
-        const [key] = selectedRowKeys;
-        const { id = '' } = FRAMEELEMENT;
-        const { pathname } = window.location
-        openNewTab(`supplier/supplierRegister/SupplierEdit/index?id=${key}&frameElementId=${id}&Opertype=2&frameElementSrc=${pathname}`, '编辑供应商注册信息配置', false)
+        // const [key] = selectedRowKeys;
+        // const { id = '' } = FRAMEELEMENT;
+        // const { pathname } = window.location
+        let categoryid = selectedRows[0].supplier.supplierCategoryId;
+        let id = selectedRows[0].supplierId;
+        openNewTab(`supplier/supplierRegister/SupplierEdit/index?id=${id}&frameElementId=${categoryid}`, '编辑供应商注册信息', false)
+        //openNewTab(`supplier/supplierRegister/SupplierEdit/index?id=${key}&frameElementId=${id}&Opertype=2`, '编辑供应商注册信息', false)
     }
     // 明细
     function handleCheckDetail() {
         const [key] = selectedRowKeys;
-        const { id = '' } = FRAMEELEMENT;
-        const { pathname } = window.location
-        openNewTab(`supplier/configure/detail?id=${key}&frameElementId=${id}&&Opertype=2&frameElementSrc=${pathname}`, '供应商注册信息配置明细', false)
+        let categoryid = selectedRows[0].supplier.supplierCategoryId;
+        let id = selectedRows[0].supplierId;
+        openNewTab(`supplier/supplierRegister/SupplierDetail/index?id=${id}&frameElementId=${categoryid}`, '供应商注册信息明细', false)
     }
     // 冻结
     function handleChange() {
@@ -293,26 +297,26 @@ function SupplierConfigure() {
     }
     // 终止审核
   function stopApprove() {
-    // Modal.confirm({
-    //   title: '终止审批流程',
-    //   content: '流程终止后无法恢复，是否继续？',
-    //   onOk: handleStopApproveRecord,
-    //   okText: '确定',
-    //   cancelText: '取消'
-    // })
+    Modal.confirm({
+      title: '终止审批流程',
+      content: '流程终止后无法恢复，是否继续？',
+      onOk: handleStopApproveRecord,
+      okText: '确定',
+      cancelText: '取消'
+    })
   }
   async function handleStopApproveRecord() {
     const [row] = selectedRows
     const { id: flowId } = row
-    // const { success, message: msg } = await stopApproveingOrder({
-    //   businessId: flowId
-    // })
-    // if (success) {
-    //   message.success(msg)
-    //   uploadTable()
-    //   return
-    // }
-    // message.error(msg)
+    const { success, message: msg } = await stopApproveingOrder({
+      businessId: flowId
+    })
+    if (success) {
+      message.success(msg)
+      uploadTable()
+      return
+    }
+    message.error(msg)
   }
     return (
         <>
@@ -325,7 +329,9 @@ function SupplierConfigure() {
                                     ignore={DEVELOPER_ENV} 
                                     key='' 
                                     className={styles.btn} 
-                                    onClick={handleEditor}>编辑
+                                    onClick={handleEditor}
+                                    disabled={empty}
+                                    >编辑
                                 </Button>
                             )
                         }
@@ -335,8 +341,9 @@ function SupplierConfigure() {
                                     ignore={DEVELOPER_ENV} 
                                     key='' 
                                     className={styles.btn} 
-                                    onClick={handleEditor} 
-                                    disabled={empty}>明细
+                                    onClick={handleCheckDetail} 
+                                    disabled={empty}
+                                    >明细
                                 </Button>
                             )
                         }
@@ -349,7 +356,7 @@ function SupplierConfigure() {
                                     businessKey={flowId}
                                     callBack={handleComplete}
                                     disabled={empty || underWay || !isSelf}
-                                    businessModelCode='com.ecmp.srm.sm.entity.SupplierFinanceViewModify'
+                                    businessModelCode='com.ecmp.srm.sm.entity.SupplierApply'
                                     ignore={DEVELOPER_ENV}
                                     key='PURCHASE_VIEW_CHANGE_APPROVE'
                                 ></StartFlow>

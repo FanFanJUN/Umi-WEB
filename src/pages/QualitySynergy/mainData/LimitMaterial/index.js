@@ -1,16 +1,18 @@
 import React, { Fragment, useState, useRef } from 'react';
 import { Button, Form, Row, Input, Modal, message, Card, Col, Empty, InputNumber, Radio } from 'antd';
-import { ExtTable, ExtModal, utils, ComboList } from 'suid';
-import { limitScopeList, limitMaterialList } from '../../commonProps';
+import { ExtTable, ExtModal, utils, ComboList, DataImport } from 'suid';
+import { limitScopeList, limitMaterialList, BasicUnitList } from '../../commonProps';
 import { baseUrl } from '../../../../utils/commonUrl';
-import { AutoSizeLayout } from '../../../../components'
+import { AutoSizeLayout } from '../../../../components';
 import {
     addEnvironmentalProtectionData,
     addEnvironmentStandardLimitMaterialRelation,
     ESPDeleted,
     ESPFreeze,
     ESPMDelete,
-    ESPMFreeze
+    ESPMFreeze,
+    JudgeTheListOfESPM,
+    SaveTheListOfESPM
 } from '../../../../services/qualitySynergy'
 import { getUserName, getUserId, getUserAccount, getUserTenantCode } from '../../../../utils'
 import styles from './index.less'
@@ -18,8 +20,7 @@ import moment from 'moment'
 const { authAction } = utils;
 const { create, Item: FormItem } = Form;
 const { confirm } = Modal;
-// const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
-const DEVELOPER_ENV = true;
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const formLayout = {
     labelCol: { span: 9, },
     wrapperCol: { span: 14, },
@@ -34,7 +35,7 @@ const LimitMaterial = ({ form }) => {
     });
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [selectedRow, setSelectedRow] = useState([]);
-    // 限用物资
+    // 限用物质
     const tableRightRef = useRef(null);
     const [selectedRightKeys, setSelectedRightKeys] = useState([]);
     const [selectedRight, setSelectedRight] = useState([]);
@@ -53,18 +54,62 @@ const LimitMaterial = ({ form }) => {
         { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (text) => text ? '已冻结' : '未冻结' },
     ]
     const rightColums = [
-        { title: '限用物质代码', dataIndex: 'name1', width: 200 },
-        { title: '限用物质名称', dataIndex: 'name2', ellipsis: true, },
-        { title: 'CAS.NO', dataIndex: 'name3', ellipsis: true, },
-        { title: '限量', dataIndex: 'name4', ellipsis: true },
-        { title: '基本单位代码', dataIndex: 'name5', ellipsis: true },
-        { title: '均质材质中的含量(%)', dataIndex: 'name6', ellipsis: true },
-        { title: '适用范围名称排序号', dataIndex: 'name7', ellipsis: true },
-        { title: '冻结', dataIndex: 'name8', ellipsis: true },
-        { title: '处理人', dataIndex: 'name9', ellipsis: true },
-        { title: '处理时间', dataIndex: 'name10', ellipsis: true },
+        { title: '限用物质代码', dataIndex: 'limitMaterialCode', width: 80 },
+        { title: '限用物质名称', dataIndex: 'limitMaterialName', ellipsis: true, width: 120 },
+        { title: 'CAS.NO', dataIndex: 'casNo', ellipsis: true, width: 80 },
+        { title: '限量', dataIndex: 'limitNumber', ellipsis: true, width: 80 },
+        { title: '基本单位代码', dataIndex: 'basicUnitCode', ellipsis: true },
+        { title: '均质材质中的含量(%)', dataIndex: 'materialWeight', ellipsis: true },
+        { title: '适用范围名称', dataIndex: 'practicalRangeName', ellipsis: true },
+        { title: '排序号', dataIndex: 'orderNo', ellipsis: true },
+        { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (text) => text ? '已冻结' : '未冻结' },
+        { title: '处理人', dataIndex: 'conductorName', ellipsis: true },
+        { title: '处理时间', dataIndex: 'conductorDate', ellipsis: true },
     ]
-    const headerLeft = <div>
+    const validateItem = (data) => {
+        return new Promise((resolve, reject) => {
+            const dataList = data.map(item => {
+                item.limitNumber = Number(item.limitNumber).toFixed(2);
+                item.environmentalProtectionCode = selectedRow[selectedRow.length - 1].environmentalProtectionCode;
+                return item;
+            })
+            JudgeTheListOfESPM(dataList).then(res => {
+                const response = res.data.map((item, index) => ({
+                    ...item,
+                    key: index,
+                    validate: item.importResult,
+                    status: item.importResult ? '数据完整' : '失败',
+                    statusCode: item.importResult ? 'success' : 'error',
+                    message: item.importResult ? '成功' : item.importResultInfo
+                }))
+                resolve(response);
+            }).catch(err => {
+                reject(err)
+            })
+        })
+    };
+
+    const importFunc = (value) => {
+        const dataList = value.map(item => {
+            item.limitNumber = Number(item.limitNumber).toFixed(2);
+            item.environmentalProtectionCode = selectedRow[selectedRow.length - 1].environmentalProtectionCode;
+            item.conductorId = getUserId();
+            item.conductorAccount = getUserAccount();
+            item.tenantCode = getUserTenantCode();
+            item.conductorName = getUserName();
+            return item;
+        })
+        SaveTheListOfESPM(dataList).then(res => {
+            if (res.success) {
+                message.success('导入成功');
+                tableRightRef.current.manualSelectedRows();
+                tableRightRef.current.remoteDataRefresh();
+            } else {
+                message.error(res.msg)
+            }
+        });
+    };
+    const headerRight = <div style={{ display: 'flex', alignItems: 'center' }}>
         {
             authAction(<Button
                 type='primary'
@@ -79,6 +124,7 @@ const LimitMaterial = ({ form }) => {
                 onClick={() => buttonClick('edit')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
+                disabled={selectedRight.length !== 1}
                 key='QUALITYSYNERGY_LM_UML_EDIT'
             >编辑</Button>)
         }
@@ -87,6 +133,7 @@ const LimitMaterial = ({ form }) => {
                 onClick={() => buttonClick('delete')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
+                disabled={selectedRightKeys.length === 0}
                 key='QUALITYSYNERGY_LM_UML_DELETE'
             >删除</Button>)
         }
@@ -95,6 +142,7 @@ const LimitMaterial = ({ form }) => {
                 onClick={() => buttonClick('freeze')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
+                disabled={selectedRightKeys.length === 0}
                 key='QUALITYSYNERGY_LM_UML_FREEZE'
             >冻结</Button>)
         }
@@ -103,16 +151,26 @@ const LimitMaterial = ({ form }) => {
                 onClick={() => buttonClick('thaw')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
+                disabled={selectedRightKeys.length === 0}
                 key='QUALITYSYNERGY_LM_UML_THAW'
             >解冻</Button>)
         }
         {
-            authAction(<Button
-                onClick={() => buttonClick('thaw')}
-                className={styles.btn}
+            authAction(<DataImport
+                tableProps={{ columns: rightColums }}
+                validateFunc={validateItem}
+                importFunc={importFunc}
                 ignore={DEVELOPER_ENV}
+                validateAll={true}
                 key='QUALITYSYNERGY_LM_UML_IMPORT'
-            >批量导入</Button>)
+                templateFileList={[
+                    {
+                        download: '/templates/主数据-环保标准限用物质对应关系-批导模板.xlsx',
+                        fileName: '主数据-环保标准限用物质对应关系-批导模板.xlsx',
+                        key: 'LimitMaterial',
+                    },
+                ]}
+            />)
         }
     </div>
     const EPStandardHaderLeft = <>
@@ -131,7 +189,7 @@ const LimitMaterial = ({ form }) => {
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_EPS_EDIT'
-                disabled={selectedRow.length !== 1}
+                disabled={selectedRowKeys.length !== 1}
             >编辑</Button>)
         }
         {
@@ -140,7 +198,7 @@ const LimitMaterial = ({ form }) => {
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_EPS_DELETE'
-                disabled={selectedRow.length === 0}
+                disabled={selectedRowKeys.length === 0}
             >删除</Button>)
         }
         {
@@ -149,7 +207,7 @@ const LimitMaterial = ({ form }) => {
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_EPS_FREEZE'
-                disabled={selectedRow.length === 0}
+                disabled={selectedRowKeys.length === 0}
             >冻结</Button>)
         }
         {
@@ -158,39 +216,58 @@ const LimitMaterial = ({ form }) => {
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_EPS_THAW'
-                disabled={selectedRow.length === 0}
+                disabled={selectedRowKeys.length === 0}
             >解冻</Button>)
         }
     </>
-    // 限用物资按钮操作
+    // 限用物质按钮操作
     const buttonClick = (type) => {
-        console.log('限用物资按钮操作')
+        console.log('限用物质按钮操作')
         switch (type) {
             case 'add':
                 setData((value) => ({ ...value, visible: true, modalSource: '', isView: false }));
                 break;
             case 'edit':
+                console.log('编辑数据', selectedRight)
                 setData((value) => ({
                     ...value,
                     visible: true,
-                    modalSource: selectedRow[0],
+                    modalSource: selectedRight[0],
                     isView: type === 'detail'
                 }));
                 break;
             case 'freeze':
             case 'thaw':
                 confirm({
-                    title: '请确认是否删除选中技术资料类别数据',
-                    onOk: () => {
-                        console.log('确认删除', selectedRowKeys);
+                    title: `请确认是否${type === 'thaw' ? '解冻' : '冻结'}选中限用物质数据`,
+                    onOk: async () => {
+                        const parmas = selectedRowKeys.join();
+                        const res = await ESPMFreeze({
+                            ids: selectedRightKeys.join(),
+                            frozen: type === 'freeze'
+                        });
+                        if (res.success) {
+                            message.success('操作成功');
+                            tableRightRef.current.manualSelectedRows();
+                            tableRightRef.current.remoteDataRefresh();
+                        } else {
+                            message.error(res.message);
+                        }
                     },
                 });
                 break;
             case 'delete':
                 confirm({
-                    title: '请确认是否删除选中技术资料类别数据',
-                    onOk: () => {
-                        console.log('确认删除', selectedRowKeys);
+                    title: '请确认是否删除选中限用物质数据',
+                    onOk: async () => {
+                        const res = await ESPMDelete({ ids: selectedRightKeys.join() });
+                        if (res.success) {
+                            message.success('删除成功');
+                            tableRightRef.current.manualSelectedRows();
+                            tableRightRef.current.remoteDataRefresh()
+                        } else {
+                            message.error(res.message)
+                        }
                     },
                 });
                 break;
@@ -212,7 +289,7 @@ const LimitMaterial = ({ form }) => {
                 setESPData((value) => ({
                     ...value,
                     visible: true,
-                    modalSource: selectedRow[0],
+                    modalSource: selectedRow[selectedRow.length - 1],
                     isView: type === 'detail'
                 }));
                 break;
@@ -227,7 +304,8 @@ const LimitMaterial = ({ form }) => {
                         })
                         if (res.success) {
                             message.success('冻结成功');
-                            tableRef.current.remoteDataRefresh()
+                            tableRef.current.manualSelectedRows();
+                            tableRef.current.remoteDataRefresh();
                         } else {
                             message.error(res.message)
                         }
@@ -241,7 +319,8 @@ const LimitMaterial = ({ form }) => {
                         const res = await ESPDeleted({ ids: selectedRowKeys.join() });
                         if (res.success) {
                             message.success('删除成功');
-                            tableRef.current.remoteDataRefresh()
+                            tableRef.current.manualSelectedRows();
+                            tableRef.current.remoteDataRefresh();
                         } else {
                             message.error(res.message)
                         }
@@ -250,24 +329,24 @@ const LimitMaterial = ({ form }) => {
                 break;
         }
     }
-    // 限用物资新增/编辑
+    // 限用物质新增/编辑
     function handleOk() {
         if (data.isView) {
             setData((value) => ({ ...value, visible: false }))
         } else {
             validateFields(async (errs, values) => {
                 if (!errs) {
-                    values.environmentalProtectionId = selectedRow[0].id;
-                    values.environmentalProtectionCode = selectedRow[0].environmentalProtectionCode;
-                    values.environmentalProtectionName = selectedRow[0].environmentalProtectionName;
-                    delete values.basicUnitId;
+                    values.environmentalProtectionId = selectedRow[selectedRow.length - 1].id;
+                    values.environmentalProtectionCode = selectedRow[selectedRow.length - 1].environmentalProtectionCode;
+                    values.environmentalProtectionName = selectedRow[selectedRow.length - 1].environmentalProtectionName;
                     if (data.modalSource) {
                         values = { ...data.modalSource, ...values }
                     }
-                    const res = await addEnvironmentStandardLimitMaterialRelation({...values})
+                    const res = await addEnvironmentStandardLimitMaterialRelation({ ...values })
                     if (res.success) {
                         message.success('操作成功');
                         setData((value) => ({ ...value, visible: false }))
+                        tableRightRef.current.manualSelectedRows()
                         tableRightRef.current.remoteDataRefresh()
                     } else {
                         message.error(res.message)
@@ -291,6 +370,7 @@ const LimitMaterial = ({ form }) => {
                     if (res.success) {
                         message.success('操作成功');
                         setESPData((value) => ({ ...value, visible: false }))
+                        tableRef.current.manualSelectedRows()
                         tableRef.current.remoteDataRefresh()
                     } else {
                         message.error(res.message)
@@ -306,29 +386,34 @@ const LimitMaterial = ({ form }) => {
                     title="环保标准"
                     bordered={false}
                 >
-                    <ExtTable
-                        columns={columns}
-                        store={{
-                            url: `${baseUrl}/environmentalProtectionData/findByPage`,
-                            type: 'GET',
-                            params: {
-                                quickSearchProperties: []
-                            }
-                        }}
-                        ref={tableRef}
-                        searchPlaceHolder="输入搜索项"
-                        checkbox={true}
-                        remotePaging={true}
-                        allowCancelSelect={true}
-                        selectedRowKeys={selectedRowKeys}
-                        onSelectRow={(selectedRowKeys, selectedRows) => {
-                            setSelectedRow(selectedRows);
-                            setSelectedRowKeys(selectedRowKeys);
-                        }}
-                        toolBar={{
-                            left: EPStandardHaderLeft
-                        }}
-                    />
+                    <AutoSizeLayout>
+                        {
+                            (h) => <ExtTable
+                                columns={columns}
+                                store={{
+                                    url: `${baseUrl}/environmentalProtectionData/findByPage`,
+                                    type: 'POST',
+                                    params: {
+                                        quickSearchProperties: []
+                                    }
+                                }}
+                                height={h}
+                                ref={tableRef}
+                                searchPlaceHolder="输入搜索项"
+                                checkbox={true}
+                                remotePaging={true}
+                                allowCancelSelect={true}
+                                selectedRowKeys={selectedRowKeys}
+                                onSelectRow={(selectedRowKeys, selectedRows) => {
+                                    setSelectedRow(selectedRows);
+                                    setSelectedRowKeys(selectedRowKeys);
+                                }}
+                                toolBar={{
+                                    left: EPStandardHaderLeft
+                                }}
+                            />
+                        }
+                    </AutoSizeLayout>
                 </Card>
             </Col>
             <Col span={13} className={styles.right}>
@@ -341,27 +426,34 @@ const LimitMaterial = ({ form }) => {
                     {
                         selectedRowKeys.length !== 1 ? <Empty description="请选择左边的一条环保标准数据进行操作" className={styles.mt} /> :
                             <div>
-                                <ExtTable
-                                    columns={rightColums}
-                                    checkbox={true}
-                                    store={{
-                                        url: `${baseUrl}/environmentStandardLimitMaterialRelation/findByPage`,
-                                        type: 'GET',
-                                        params: {
-                                            environmentalProtectionCode: selectedRow[0].environmentalProtectionCode
-                                        }
-                                    }}
-                                    searchPlaceHolder="输入搜索项"
-                                    ref={tableRightRef}
-                                    selectedRowKeys={selectedRightKeys}
-                                    onSelectRow={(selectedRightKeys, selectedRows) => {
-                                        setSelectedRight(selectedRows)
-                                        setSelectedRightKeys(selectedRightKeys)
-                                    }}
-                                    toolBar={{
-                                        left: headerLeft
-                                    }}
-                                />
+                                <AutoSizeLayout>
+                                    {
+                                        (h) => <ExtTable
+                                            columns={rightColums}
+                                            checkbox={true}
+                                            remotePaging={true}
+                                            store={{
+                                                url: `${baseUrl}/environmentStandardLimitMaterialRelation/findByPage`,
+                                                type: 'POST',
+                                                params: {
+                                                    environmentalProtectionCode: selectedRow[selectedRow.length - 1].environmentalProtectionCode
+                                                }
+                                            }}
+                                            height={h}
+                                            searchPlaceHolder="输入搜索项"
+                                            ref={tableRightRef}
+                                            selectedRowKeys={selectedRightKeys}
+                                            onSelectRow={(selectedRightKeys, selectedRows) => {
+                                                console.log('右边选中', selectedRightKeys, selectedRows)
+                                                setSelectedRight(selectedRows)
+                                                setSelectedRightKeys(selectedRightKeys)
+                                            }}
+                                            toolBar={{
+                                                left: headerRight
+                                            }}
+                                        />
+                                    }
+                                </AutoSizeLayout>
                             </div>
 
                     }
@@ -369,7 +461,7 @@ const LimitMaterial = ({ form }) => {
                 </Card>
             </Col>
         </Row>
-        {/* 限用物资新增/编辑弹框 */}
+        {/* 限用物质新增/编辑弹框 */}
         {data.visible && <ExtModal
             centered
             destroyOnClose
@@ -393,7 +485,7 @@ const LimitMaterial = ({ form }) => {
                                     form={form}
                                     {...limitMaterialList}
                                     name='limitMaterialCode'
-                                    field={['limitMaterialId', 'limitMaterialName', 'basicUnitCode', 'basicUnitId', 'basicUnitName', 'casNo']}
+                                    field={['limitMaterialId', 'limitMaterialName', 'casNo']}
                                 />)
                             }
                         </FormItem>
@@ -441,10 +533,16 @@ const LimitMaterial = ({ form }) => {
                         <FormItem label='基本单位' {...formLayout}>
                             {
                                 getFieldDecorator('basicUnitId'),
-                                getFieldDecorator('basicUnitCode'),
-                                getFieldDecorator('basicUnitName', {
-                                    initialValue: data.modalSource && data.modalSource.basicUnitName,
-                                })(<Input disabled />)
+                                getFieldDecorator('basicUnitName'),
+                                getFieldDecorator('basicUnitCode', {
+                                    initialValue: data.modalSource && data.modalSource.basicUnitCode,
+                                    rules: [{ required: true, message: '请选择基本单位' }]
+                                })(<ComboList
+                                    form={form}
+                                    {...BasicUnitList}
+                                    name='basicUnitCode'
+                                    field={['basicUnitId', 'basicUnitName']}
+                                />)
 
                             }
                         </FormItem>
@@ -455,7 +553,11 @@ const LimitMaterial = ({ form }) => {
                                 getFieldDecorator('materialWeight', {
                                     initialValue: data.modalSource && data.modalSource.materialWeight,
                                     rules: [{ required: true, message: '请填写均质材质中的含量' }]
-                                })(<Input precision={8} />)
+                                })(<InputNumber
+                                    precision={8}
+                                    style={{ width: '100%' }}
+                                    step={0.00000001}
+                                />)
                             }
                         </FormItem>
                     </Col>

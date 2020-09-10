@@ -4,7 +4,15 @@ import AdvancedForm from '../../../../components/AdvancedForm';
 import { Button, Input } from 'antd';
 import styles from './index.less';
 import { ExtTable, utils } from 'suid';
-import { distributionProps, materialCode, materialStatus, PDMStatus, statusProps } from '../../commonProps';
+import {
+  BUConfig,
+  BUConfigNoFrost,
+  distributionProps,
+  materialCode,
+  materialStatus,
+  PDMStatus,
+  statusProps,
+} from '../../commonProps';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
 import { smBaseUrl } from '../../../../utils/commonUrl';
 import { openNewTab } from '../../../../utils';
@@ -17,6 +25,9 @@ const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 
 export default function() {
 
+
+  const tableRef = useRef(null);
+
   const [modalData, setModalData]= useState({
     title: '查看已分配的供应商',
     visible: false,
@@ -27,12 +38,20 @@ export default function() {
     visible: false,
   })
 
+  const [data, setData] = useState({
+    selectedRowKeys: [],
+    selectedRows: []
+  })
+
   const [searchValue, setSearchValue] = useState({});
 
   const redirectToPage = (type) => {
     switch (type) {
       case 'add':
         openNewTab('qualitySynergy/DataSharingAdd?pageState=add', '技术资料分享需求-新增', false);
+        break
+      case 'detail':
+        openNewTab('qualitySynergy/DataSharingAdd?pageState=detail', '技术资料分享需求-明细', false);
         break
       case 'allot':
         setModalData({title: '分配供应商', visible: true, type: 'allot'})
@@ -57,10 +76,10 @@ export default function() {
     { title: '物料代码', key: 'data1', type: 'list', props: materialCode },
     { title: '物料组', key: 'data2', type: 'list', props: materialCode },
     { title: '战略采购', key: 'data3', type: 'list', props: materialCode },
-    { title: 'BU', key: 'data4', props: { placeholder: '输入申请人查询' } },
+    { title: '业务单元', key: 'data4', type: 'list', props: BUConfigNoFrost},
     { title: '申请人', key: 'data5', props: { placeholder: '输入申请人查询' } },
     { title: '分配供应商状态', key: 'data7', type: 'list', props: distributionProps },
-    { title: '状态', key: 'data6', type: 'list', props: statusProps },
+    { title: '状态', key: 'status', type: 'list', props: statusProps },
   ]
 
   const columns = [
@@ -137,6 +156,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='PURCHASE_VIEW_CHANGE_CREATE'
+        disabled={data.selectedRowKeys.length !== 1}
       >编辑</Button>)
     }
     {
@@ -145,6 +165,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='PURCHASE_VIEW_CHANGE_CREATE'
+        disabled={data.selectedRowKeys.length === 0}
       >删除</Button>)
     }
     {
@@ -153,6 +174,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='PURCHASE_VIEW_CHANGE_CREATE'
+        // disabled={data.selectedRowKeys.length !== 1}
       >明细</Button>)
     }
     {
@@ -161,6 +183,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='PURCHASE_VIEW_CHANGE_CREATE'
+        disabled={data.selectedRowKeys.length !== 1}
       >提交</Button>)
     }
     {
@@ -168,6 +191,7 @@ export default function() {
         onClick={() => redirectToPage('recall')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
+        disabled={data.selectedRowKeys.length !== 1}
         key='PURCHASE_VIEW_CHANGE_CREATE'
       >撤回</Button>)
     }
@@ -176,6 +200,7 @@ export default function() {
         onClick={() => redirectToPage('allot')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
+        disabled={data.selectedRowKeys.length !== 1}
         key='PURCHASE_VIEW_CHANGE_CREATE'
       >分配供应商</Button>)
     }
@@ -184,6 +209,7 @@ export default function() {
         onClick={() => redirectToPage('govern')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
+        disabled={data.selectedRowKeys.length !== 1}
         key='PURCHASE_VIEW_CHANGE_CREATE'
       >支配战略采购</Button>)
     }
@@ -198,12 +224,8 @@ export default function() {
     />
   </>
 
-  const handleSelectedRows = (value) => {
-    console.log(value, 'value')
-  }
-
-  const selectedRowKeys = (value) => {
-    console.log('select', value)
+  const handleSelectedRows = (value, rows) => {
+    setData((v) => ({...v, selectedRowKeys: value, selectedRows: rows}))
   }
 
   const handleModalCancel = () => {
@@ -223,18 +245,20 @@ export default function() {
       <AutoSizeLayout>
         {
           (h) => <ExtTable
-            columns={columns}
-            bordered
+            style={{marginTop: '10px'}}
+            rowKey={(v) => v.id}
             height={h}
+            bordered
             allowCancelSelect
             showSearch={false}
             remotePaging
             checkbox={{ multiSelect: false }}
-            rowKey={(item) => item.id}
             size='small'
             onSelectRow={handleSelectedRows}
-            selectedRowKeys={selectedRowKeys}
-            {...tableProps}
+            selectedRowKeys={data.selectedRowKeys}
+            columns={columns}
+            ref={tableRef}
+            dataSource={data.dataSource}
           />
         }
       </AutoSizeLayout>

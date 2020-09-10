@@ -143,13 +143,8 @@ const SupplierFillList = function (props) {
         />
     </>
     const columns = [
-        {
-            title: '是否需要填报', dataIndex: 'zsda', width: 80, render: (text) => {
-                return text ? '是' : '否'
-            }
-        },
-        {
-            title: '填报状态', dataIndex: 'df', width: 80, render: (text) => {
+        { title: '是否需要填报', dataIndex: 'needToFill', width: 80, render: (text) => text ? '是' : '否'   },
+        { title: '填报状态', dataIndex: 'effectiveStatus', width: 80, render: (text) => {
                 switch (text) {
                     case 'draft': return '已填报';
                     case 'pre_publish': return '未填报';
@@ -157,21 +152,17 @@ const SupplierFillList = function (props) {
                 }
             }
         },
-        {
-            title: '预警', dataIndex: 'turnNumber', width: 70, render: () => {
-                return <div className={styles.circle}></div>
-            }
-        },
-        { title: '剩余有效（天数）', dataIndex: 'name1', ellipsis: true, },
-        { title: '有效开始日期', dataIndex: 'name2', ellipsis: true, },
-        { title: '有效截止日期', dataIndex: 'name3', ellipsis: true, },
-        { title: '物料代码', dataIndex: 'name4', ellipsis: true, },
-        { title: '物料描述', dataIndex: 'name5', ellipsis: true, },
-        { title: '填报截止日期', dataIndex: 'name6', ellipsis: true, },
-        { title: '物料组', dataIndex: 'name7', ellipsis: true, },
-        { title: '物料组描述', dataIndex: 'name8', ellipsis: true, },
-        { title: '战略采购名称', dataIndex: 'name9', ellipsis: true, },
-        { title: '环保管理人员', dataIndex: 'name10', ellipsis: true, },
+        { title: '预警', dataIndex: 'alarm', width: 70, render: (text) => <div className={styles.circle}></div>},
+        { title: '剩余有效（天数）', dataIndex: 'daysRemaining', ellipsis: true, },
+        { title: '有效开始日期', dataIndex: 'effectiveStartDate', ellipsis: true, },
+        { title: '有效截止日期', dataIndex: 'effectiveEndDate', ellipsis: true, },
+        { title: '物料代码', dataIndex: 'materialCode', ellipsis: true, },
+        { title: '物料描述', dataIndex: 'materialName', ellipsis: true, },
+        { title: '填报截止日期', dataIndex: 'fillEndDate', ellipsis: true, },
+        { title: '物料组', dataIndex: 'materialGroupCode', ellipsis: true, },
+        { title: '物料组描述', dataIndex: 'materialGroupName', ellipsis: true, },
+        { title: '战略采购名称', dataIndex: 'strategicPurchaseName', ellipsis: true, },
+        { title: '环保管理人员', dataIndex: 'environmentAdministratorName', ellipsis: true, },
     ].map(item => ({ ...item, align: 'center' }));
     // 提交 
     const submit = () => {

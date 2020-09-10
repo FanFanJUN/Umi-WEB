@@ -1,4 +1,4 @@
-import { smBaseUrl, baseUrl } from '../../utils/commonUrl';
+import { smBaseUrl, baseUrl, recommendUrl } from '../../utils/commonUrl';
 import request from '../../utils/request';
 import React from 'react';
 
@@ -11,6 +11,46 @@ const commonProps = {
     width: '100%',
   },
 };
+
+//业务模块对业务单元删除
+export async function DeleteBusinessUnitToBUt(params) {
+  const url = `${baseUrl}/bmBuContact/whetherDelete`;
+  return request({
+    url,
+    method: 'POST',
+    params: params,
+  });
+}
+
+//业务模块对业务单元解冻冻结
+export async function FrozenBusinessUnitToBUt(params) {
+  const url = `${baseUrl}/bmBuContact/frozen`;
+  return request({
+    url,
+    method: 'POST',
+    params: params,
+  });
+}
+
+//业务模块对业务单元新增
+export async function AddBusinessUnitToBUt(params) {
+  const url = `${baseUrl}/bmBuContact/addBuCompanyPurchasingOrganization`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+}
+
+//技术资料分享新增
+export async function AddDataSharingList(params) {
+  const url = `${recommendUrl}/api/epTechnicalShareDemandService/insert`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+}
 
 
 // BU与公司采购组织对应关系新增
@@ -43,7 +83,7 @@ export async function DeleteBUCompanyOrganizationRelation(params) {
   });
 }
 
-// 限用物资适用范围删除
+// 限用物质适用范围删除
 export async function DeleteLimitSuppliesScope(params) {
   const url = `${baseUrl}/LimitMaterialUnitScopeData/delete`;
   return request({
@@ -53,7 +93,7 @@ export async function DeleteLimitSuppliesScope(params) {
   });
 }
 
-// 限用物资适用范围新增编辑
+// 限用物质适用范围新增编辑
 export async function AddAndEditLimitSuppliesScope(params) {
   const url = `${baseUrl}/LimitMaterialUnitScopeData/addLimitMaterialUnitScopeData`;
   return request({
@@ -64,7 +104,7 @@ export async function AddAndEditLimitSuppliesScope(params) {
 }
 
 
-// 限用物资适用范围冻结解冻
+// 限用物质适用范围冻结解冻
 export async function FrostLimitSuppliesScope(params) {
   const url = `${baseUrl}/LimitMaterialUnitScopeData/frozen`;
   return request({
@@ -74,7 +114,7 @@ export async function FrostLimitSuppliesScope(params) {
   });
 }
 
-// 限用物资清单编辑
+// 限用物质清单编辑
 export async function EditTheListOfRestrictedMaterials(params) {
   const url = `${baseUrl}/limitSubstanceListData/update_limitSubstanceListData`;
   return request({
@@ -84,7 +124,7 @@ export async function EditTheListOfRestrictedMaterials(params) {
   });
 }
 
-// 限用物资清单删除
+// 限用物质清单删除
 export async function DeleteTheListOfRestrictedMaterials(params) {
   const url = `${baseUrl}/limitSubstanceListData/delete_limitSubstanceListData`;
   return request({
@@ -94,7 +134,7 @@ export async function DeleteTheListOfRestrictedMaterials(params) {
   });
 }
 
-// 限用物资清单解冻冻结
+// 限用物质清单解冻冻结
 export async function FrostTheListOfRestrictedMaterials(params) {
   const url = `${baseUrl}/limitSubstanceListData/batchWhetherFrozen`;
   return request({
@@ -104,7 +144,7 @@ export async function FrostTheListOfRestrictedMaterials(params) {
   });
 }
 
-// 限用物资清单批导验证
+// 限用物质清单批导验证
 export async function JudgeTheListOfRestrictedMaterials(params) {
   const url = `${baseUrl}/limitSubstanceListData/importExcel`;
   console.log();
@@ -115,7 +155,7 @@ export async function JudgeTheListOfRestrictedMaterials(params) {
   });
 }
 
-// 限用物资清单批导验证
+// 限用物质清单批导验证
 export async function SaveTheListOfRestrictedMaterials(params) {
   const url = `${baseUrl}/limitSubstanceListData/add_limitSubstanceListDataList `;
   console.log();
@@ -126,7 +166,7 @@ export async function SaveTheListOfRestrictedMaterials(params) {
   });
 }
 
-// 限用物资清单新增
+// 限用物质清单新增
 export async function AddTheListOfRestrictedMaterials(params) {
   const url = `${baseUrl}/limitSubstanceListData/add_limitSubstanceListData`;
   return request({
@@ -136,7 +176,7 @@ export async function AddTheListOfRestrictedMaterials(params) {
   });
 }
 
-// 限用物资基本单位新增和编辑
+// 限用物质基本单位新增和编辑
 export async function AddAndEditBasicMaterials(params) {
   const url = `${baseUrl}/limitMaterialUnitData/addLimitMaterialUnitData`;
   return request({
@@ -146,7 +186,7 @@ export async function AddAndEditBasicMaterials(params) {
   });
 }
 
-// 限用物资基本单位冻结
+// 限用物质基本单位冻结
 export async function FrostBasicMaterials(params) {
   const url = `${baseUrl}/limitMaterialUnitData/frozen`;
   return request({
@@ -156,7 +196,7 @@ export async function FrostBasicMaterials(params) {
   });
 }
 
-// 限用物资基本单位删除
+// 限用物质基本单位删除
 export async function DeleteBasicMaterials(params) {
   const url = `${baseUrl}/limitMaterialUnitData/delete`;
   return request({
@@ -193,6 +233,22 @@ export const OrganizationByCompanyCodeConfig = {
   },
 };
 
+// 文件类别列表
+export const CorporationListConfig = {
+  remotePaging: true,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${baseUrl}/technicalDataCategory/find_by_page_all`,
+  },
+  rowKey: 'fileCategoryCode',
+  reader: {
+    field: ['fileCategoryCode', 'id'],
+    name: 'fileCategoryName',
+    description: 'fileCategoryCode',
+  },
+};
+
 // 公司列表
 export const CompanyConfig = {
   remotePaging: false,
@@ -207,6 +263,46 @@ export const CompanyConfig = {
     name: 'name',
     description: 'code',
   },
+};
+
+// 业务单元模块列表
+export const BUModelConfig = {
+  remotePaging: false,
+  store: {
+    type: 'GET',
+    autoLoad: false,
+    url: `${baseUrl}/businessUnit/findAllPage`,
+  },
+  rowKey: 'code',
+  reader: {
+    field: ['code', 'id'],
+    name: 'name',
+    description: 'code',
+  },
+  style: {
+    width: '100%',
+  },
+  placeholder: '选择业务单元模块'
+};
+
+// BU列表未冻结
+export const BUConfigNoFrost = {
+  remotePaging: true,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${baseUrl}/bu/findPage`,
+  },
+  rowKey: 'buCode',
+  reader: {
+    field: ['buCode', 'id'],
+    name: 'buName',
+    description: 'buCode',
+  },
+  style: {
+    width: '100%',
+  },
+  placeholder: '选择业务单元'
 };
 
 // BU列表
@@ -226,6 +322,10 @@ export const BUConfig = {
     name: 'name',
     description: 'value',
   },
+  style: {
+    width: '100%',
+  },
+  placeholder: '选择业务单元'
 };
 
 // 基本单位列表
@@ -238,11 +338,15 @@ export const BasicUnitList = {
   },
   rowKey: 'basicUnitCode',
   reader: {
-    name: 'basicUnitName',
+    name: 'basicUnitCode',
     description: 'basicUnitCode',
+    field: ['basicUnitId', 'basicUnitName']
+  },
+  style: {
+    width: '100%',
   },
 };
-// 限用物资列表
+// 限用物质列表
 export const limitMaterialList = {
   remotePaging: true,
   store: {
@@ -253,17 +357,17 @@ export const limitMaterialList = {
   rowKey: 'limitMaterialCode',
   reader: {
     name: 'limitMaterialCode',
-    field: ['id', 'limitMaterialName', 'basicUnitCode', 'basicUnitId', 'basicUnitName', 'casNo'],
+    field: ['id', 'limitMaterialName', 'casNo'],
     description: 'limitMaterialName',
   },
-  placeholder: '选择限用物资列表'
+  placeholder: '选择限用物质列表'
 };
 
 // 适用范围
 export const limitScopeList = {
   remotePaging: true,
   store: {
-    type: 'GET',
+    type: 'POST',
     autoLoad: false,
     url: `${baseUrl}/LimitMaterialUnitScopeData/findBySearchPage`,
   },
@@ -371,4 +475,21 @@ export const PDMStatus = {
   ],
   placeholder: '选择物料标记状态',
   ...commonProps,
+};
+
+// 业务单元下拉选择
+export const buList = {
+  remotePaging: true,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${baseUrl}/bu/findByPage`,
+  },
+  rowKey: 'buCode',
+  reader: {
+    name: 'buCode',
+    field: ['buName', 'buId'],
+    description: 'buName',
+  },
+  placeholder: '选择业务单元'
 };

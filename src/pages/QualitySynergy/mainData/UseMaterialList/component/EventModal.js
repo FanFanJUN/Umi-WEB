@@ -7,8 +7,8 @@ import { baseUrl } from '../../../../../utils/commonUrl';
 const FormItem = Form.Item;
 
 const formItemLayoutLong = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 18 },
+  labelCol: { span: 8 },
+  wrapperCol: { span: 16 },
 };
 
 const EventModal = (props) => {
@@ -115,32 +115,32 @@ const EventModal = (props) => {
               }
             </FormItem>
           </Col>
-          <Col span={0}>
-            {hideFormItem('basicUnitName', type === 'add' ? '' : data.basicUnitName)}
-          </Col>
-          <Col span={0}>
-            {hideFormItem('basicUnitId', type === 'add' ? '' : data.basicUnitId)}
-          </Col>
-          <Col span={24}>
-            <FormItem {...formItemLayoutLong} label={'基本单位'}>
-              {
-                getFieldDecorator('basicUnitCode', {
-                  initialValue: type === 'add' ? '' : data.basicUnitCode,
-                  rules: [
-                    {
-                      required: true,
-                      message: '基本单位不能为空',
-                    },
-                  ],
-                })(
-                  <ComboList
-                    afterSelect={SelectChange}
-                    {...BasicUnitList}
-                  />,
-                )
-              }
-            </FormItem>
-          </Col>
+          {/*<Col span={0}>*/}
+          {/*  {hideFormItem('basicUnitName', type === 'add' ? '' : data.basicUnitName)}*/}
+          {/*</Col>*/}
+          {/*<Col span={0}>*/}
+          {/*  {hideFormItem('basicUnitId', type === 'add' ? '' : data.basicUnitId)}*/}
+          {/*</Col>*/}
+          {/*<Col span={24}>*/}
+          {/*  <FormItem {...formItemLayoutLong} label={'基本单位'}>*/}
+          {/*    {*/}
+          {/*      getFieldDecorator('basicUnitCode', {*/}
+          {/*        initialValue: type === 'add' ? '' : data.basicUnitCode,*/}
+          {/*        rules: [*/}
+          {/*          {*/}
+          {/*            required: true,*/}
+          {/*            message: '基本单位不能为空',*/}
+          {/*          },*/}
+          {/*        ],*/}
+          {/*      })(*/}
+          {/*        <ComboList*/}
+          {/*          afterSelect={SelectChange}*/}
+          {/*          {...BasicUnitList}*/}
+          {/*        />,*/}
+          {/*      )*/}
+          {/*    }*/}
+          {/*  </FormItem>*/}
+          {/*</Col>*/}
           <Col span={24}>
             <FormItem {...formItemLayoutLong} label={'是否测试记录表中检查项'}>
               {

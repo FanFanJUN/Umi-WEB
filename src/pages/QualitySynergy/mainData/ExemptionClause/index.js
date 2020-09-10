@@ -4,6 +4,7 @@ import { Button, Form, Row, Input, Modal, message, DatePicker, InputNumber } fro
 import styles from '../../TechnicalDataSharing/DataSharingList/index.less';
 import { baseUrl } from '../../../../utils/commonUrl';
 import { DataImport, ExtTable, ExtModal, utils, AuthAction } from 'suid';
+import { AutoSizeLayout } from '../../../../components'
 import { BasicUnitList } from '../../../../services/qualitySynergy';
 import moment from 'moment'
 import {
@@ -16,8 +17,7 @@ const { authAction } = utils;
 
 const { create, Item: FormItem } = Form;
 const { confirm } = Modal;
-const DEVELOPER_ENV = true;
-// const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 14, },
@@ -45,7 +45,7 @@ const ExemptionClause = (props) => {
     ]
 
     const buttonClick = (type) => {
-        console.log('当前选中', selectedRow)
+        console.log('当前选中', selectedRow, selectedRowKeys)
         switch (type) {
             case 'add':
                 setData((value) => ({ ...value, visible: true, modalSource: '', isView: false }));
@@ -56,7 +56,7 @@ const ExemptionClause = (props) => {
                 setData((value) => ({
                     ...value,
                     visible: true,
-                    modalSource: selectedRow[0],
+                    modalSource: selectedRow[selectedRow.length - 1],
                     isView: type === 'detail'
                 }));
                 break;
@@ -78,39 +78,35 @@ const ExemptionClause = (props) => {
         }
     }
     const validateItem = (data) => {
-        const listData = data.map(item => {
-            delete item.key
-            item.limitNumber = Number(item.limitNumber).toFixed(2);
-            return item;
-        })
         return new Promise((resolve, reject) => {
-            JudgeTheListOfExemptionClause(listData).then(res => {
-                let response = [];
-                if(res.success) {
-                    console.log('遍历数据', res)
-                    response = res.data.map((item, index) => ({
-                        ...item,
-                        key: index,
-                        validate: item.importResult,
-                        status: item.importResult ? '数据完整' : item.importResultInfo,
-                        statusCode: item.importResult ? 'success' : 'error',
-                        message: item.importResult ? '成功' : item.importResultInfo
-                    }));
-                } else {
-                    message.error(res.message);
-                }
-                console.log('整合数据response', response)
+            const dataList = data.map(item => {
+                item.limitNumber = Number(item.limitNumber).toFixed(2)
+                return item;
+            })
+            JudgeTheListOfExemptionClause(dataList).then(res => {
+                const response = res.data.map((item, index) => ({
+                    ...item,
+                    key: index,
+                    validate: item.importResult,
+                    status: item.importResult ? '数据完整' : '失败',
+                    statusCode: item.importResult ? 'success' : 'error',
+                    message: item.importResult ? '成功' : item.importResultInfo
+                }))
                 resolve(response);
             }).catch(err => {
                 reject(err)
             })
-        });
+        })
     };
 
     const importFunc = (value) => {
-        console.log(value);
+        const dataList = value.map(item => {
+            item.limitNumber = Number(item.limitNumber).toFixed(2)
+            return item;
+        })
         SaveTheListOfExemptionClause(value).then(res => {
             if (res.success) {
+                message.success('导入成功');
                 refresh();
             } else {
                 message.error(res.msg)
@@ -132,7 +128,7 @@ const ExemptionClause = (props) => {
                 onClick={() => buttonClick('edit')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                disabled={selectedRow.length !== 1}
+                disabled={selectedRowKeys.length !== 1}
                 key='QUALITYSYNERGY_EC_EDIT'
             >编辑</Button>)
         }
@@ -141,7 +137,7 @@ const ExemptionClause = (props) => {
                 onClick={() => buttonClick('delete')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                disabled={selectedRow.length === 0}
+                disabled={selectedRowKeys.length === 0}
                 key='QUALITYSYNERGY_EC_DELETE'
             >删除</Button>)
         }
@@ -150,7 +146,7 @@ const ExemptionClause = (props) => {
                 onClick={() => buttonClick('detail')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                disabled={selectedRow.length !== 1}
+                disabled={selectedRowKeys.length !== 1}
                 key='QUALITYSYNERGY_EC_DETAIL'
             >明细</Button>)
         }
@@ -197,36 +193,40 @@ const ExemptionClause = (props) => {
 
     }
     function refresh() {
+        tableRef.current.manualSelectedRows();
         tableRef.current.remoteDataRefresh();
-        setSelectedRow([]);
-        setSelectedRowKeys([]);
     }
 
     return (
         <Fragment>
-            <ExtTable
-                rowKey={(v) => v.id}
-                columns={columns}
-                store={{
-                    url: `${baseUrl}/exemptionClauseData/findByPage`,
-                    type: 'GET',
-                    params: {
-                        quickSearchProperties: []
-                    }
-                }}
-                ref={tableRef}
-                checkbox={true}
-                remotePaging={true}
-                searchPlaceHolder="输入搜索项"
-                selectedRowKeys={selectedRowKeys}
-                onSelectRow={(selectedRowKeys, selectedRows) => {
-                    setSelectedRow(selectedRows);
-                    setSelectedRowKeys(selectedRowKeys);
-                }}
-                toolBar={{
-                    left: headerLeft
-                }}
-            />
+            <AutoSizeLayout>
+                {(h) => <ExtTable
+                    rowKey={(v) => v.id}
+                    columns={columns}
+                    store={{
+                        url: `${baseUrl}/exemptionClauseData/findByPage`,
+                        type: 'POST',
+                        params: {
+                            quickSearchProperties: []
+                        }
+                    }}
+                    height={h}
+                    ref={tableRef}
+                    checkbox={true}
+                    remotePaging={true}
+                    allowCancelSelect={true}
+                    searchPlaceHolder="输入搜索项"
+                    selectedRowKeys={selectedRowKeys}
+                    onSelectRow={(selectedRowKeys, selectedRows) => {
+                        setSelectedRow(selectedRows);
+                        setSelectedRowKeys(selectedRowKeys);
+                    }}
+                    toolBar={{
+                        left: headerLeft
+                    }}
+                />}
+            </AutoSizeLayout>
+
             <ExtModal
                 centered
                 destroyOnClose
@@ -309,7 +309,7 @@ const ExemptionClause = (props) => {
                             {
                                 getFieldDecorator('orderNo', {
                                     initialValue: data.modalSource && data.modalSource.orderNo,
-                                    rules: [{ required: true, message: '请填写排序号' }]
+                                    // rules: [{ required: true, message: '请填写排序号' }]
                                 })(<Input disabled={data.isView} />)
                             }
                         </FormItem>

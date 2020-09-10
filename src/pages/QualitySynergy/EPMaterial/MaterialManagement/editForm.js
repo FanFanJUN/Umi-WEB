@@ -4,10 +4,14 @@ import { closeCurrent } from '../../../../utils';
 import classnames from 'classnames';
 import styles from './index.less';
 import BaseInfo from '../components/edit/baseInfo';
-import SubjectMatterTable from '../components/edit/SubjectMatterTable'
+import SubjectMatterTable from '../components/edit/SubjectMatterTable';
+import { router } from 'dva';
 export default function () {
     const [loading, toggleLoading] = useState(false);
+    const [buCode, setBuCode] = useState('')
     const formRef = useRef(null);
+    const { query } = router.useLocation();
+    console.log('url路径', query);
     const handleSave = async () => {
         const { getAllParams } = formRef.current;
 
@@ -31,7 +35,7 @@ export default function () {
                     <div className={styles.bgw}>
                         <div className={styles.title}>基本信息</div>
                         <div className={styles.content}>
-                            <BaseInfo wrappedComponentRef={formRef} />
+                            <BaseInfo wrappedComponentRef={formRef} setBuCode={setBuCode} />
                         </div>
                     </div>
                 </div>
@@ -39,7 +43,8 @@ export default function () {
                     <div className={styles.bgw}>
                         <div className={styles.title}>标的物</div>
                         <div className={styles.content}>
-                            <SubjectMatterTable />
+                            <SubjectMatterTable 
+                            buCode={buCode} />
                         </div>
                     </div>
                 </div>

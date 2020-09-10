@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Row, Col, Input, DatePicker, Upload, Modal, Icon, Button } from 'antd';
 import { ComboList, ExtModal } from 'suid';
-import { CompanyConfig } from '../../../../commonProps';
+import { CorporationListConfig } from '../../../../commonProps';
 import { baseUrl } from '../../../../../../utils/commonUrl';
+import UploadFile from '../../../../../../components/Upload';
+import { ComboAttachment } from '../../../../../../components';
 
 const FormItem = Form.Item;
 
@@ -13,13 +15,16 @@ const formItemLayoutLong = {
 
 const TechnicalDataModal = (props) => {
 
-  const {visible, type, title, form} = props
+  const { visible, type, title, form } = props;
 
   const { getFieldDecorator, setFieldsValue, getFieldValue } = props.form;
 
+  const [attachment, setAttachment] = useState(null);
+
   const [data, setData] = useState({
-    fileList: []
-  })
+    technicalDataFileId: [],
+    fileList: [],
+  });
 
   const onOk = () => {
     props.form.validateFieldsAndScroll((err, values) => {
@@ -27,35 +32,34 @@ const TechnicalDataModal = (props) => {
         props.onOk(values);
       }
     });
-  }
+  };
+
+  console.log(data.technicalDataFileId, 'technicalDataFileId');
 
   const onCancel = () => {
-    props.onCancel()
-  }
+    props.onCancel();
+  };
 
   const clearSelected = () => {
     props.form.resetFields();
   };
 
-  //获取请求头
-  const getHeaders = () => {
-    let auth;
-    try {
-      auth = JSON.parse(localStorage.getItem('Authorization'));
-    } catch (e) {
-    }
-    return {
-      'Authorization': auth ? (auth.accessToken ? auth.accessToken : '') : ''
-    }
-  }
+  const hideFormItem = (name, initialValue) => (
+    <FormItem>
+      {
+        getFieldDecorator(name, {
+          initialValue: initialValue,
+        })(
+          <Input type={'hidden'} />,
+        )
+      }
+    </FormItem>
+  );
 
-  const handleChange = (value) => {
-    console.log(value)
-  }
-
-  return(
+  return (
     <ExtModal
       width={'80vh'}
+      maskClosable={false}
       visible={visible}
       title={title}
       onCancel={onCancel}
@@ -64,22 +68,28 @@ const TechnicalDataModal = (props) => {
     >
       <Form>
         <Row>
+          <Col span={0}>
+            {hideFormItem('fileCategoryCode', type === 'add' ? '' : data.fileCategoryCode)}
+          </Col>
+          <Col span={0}>
+            {hideFormItem('fileCategoryId', type === 'add' ? '' : data.fileCategoryId)}
+          </Col>
           <Col span={24}>
             <FormItem {...formItemLayoutLong} label={'文件类别'}>
               {
-                getFieldDecorator('fileType', {
-                initialValue: type === 'add' ? '' : data.fileType,
-                rules: [
-              {
-                required: true,
-                message: '文件类别不能为空',
-              },
-                ],
-              })(<ComboList
-                form={form}
-                field={['corporationCode', 'corporationId']}
-                name={'fileType'}
-                {...CompanyConfig}
+                getFieldDecorator('fileCategoryName', {
+                  initialValue: type === 'add' ? '' : data.fileCategoryName,
+                  rules: [
+                    {
+                      required: true,
+                      message: '文件类别不能为空',
+                    },
+                  ],
+                })(<ComboList
+                  form={form}
+                  field={['fileCategoryCode', 'fileCategoryId']}
+                  name={'fileCategoryName'}
+                  {...CorporationListConfig}
                 />)
               }
             </FormItem>
@@ -95,7 +105,7 @@ const TechnicalDataModal = (props) => {
                       message: '文件版本不能为空',
                     },
                   ],
-                })(<Input />)
+                })(<Input/>)
               }
             </FormItem>
           </Col>
@@ -111,17 +121,13 @@ const TechnicalDataModal = (props) => {
                     },
                   ],
                 })(
-                  <Upload
-                    name="fileUpload"
-                    showUploadList={false}
-                    fileList={data.fileList}
-                    action={baseUrl + "/supplierRegister/uploadNoAuth"}
-                    headers={getHeaders()}
-                    onChange={handleChange}
-                    style={{ width: '100%' }}
-                  >
-                    {type !== 'detail' && <Button type='dashed'><Icon type="plus" />选择文件</Button>}
-                  </Upload>
+                  <ComboAttachment
+                    uploadButton={{ disabled: type === 'detail' }}
+                    allowDelete={type !== 'detail'}
+                    showViewType={type !== 'detail'}
+
+                    customBatchDownloadFileName={true}
+                    attachment={attachment}/>,
                 )
               }
             </FormItem>
@@ -137,14 +143,14 @@ const TechnicalDataModal = (props) => {
                       message: '样品需求日期不能为空',
                     },
                   ],
-                })(<DatePicker style={{width: '100%'}} />)
+                })(<DatePicker style={{ width: '100%' }}/>)
               }
             </FormItem>
           </Col>
         </Row>
       </Form>
     </ExtModal>
-  )
-}
+  );
+};
 
-export default Form.create()(TechnicalDataModal)
+export default Form.create()(TechnicalDataModal);

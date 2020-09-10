@@ -11,11 +11,11 @@ import {
   DeleteLimitSuppliesScope,
   FrostLimitSuppliesScope,
 } from '../../commonProps';
+import { AutoSizeLayout } from '../../../../components';
 
 const { authAction } = utils;
 
-// const DEVELOPER_ENV = process.env.NODE_ENV === 'development';
-const DEVELOPER_ENV = true;
+const DEVELOPER_ENV = process.env.NODE_ENV === 'development';
 
 const Index = () => {
 
@@ -23,7 +23,7 @@ const Index = () => {
 
   const [data, setData] = useState({
     visible: false,
-    title: '限用物资清单新增',
+    title: '限用物质清单新增',
     type: 'add',
   });
 
@@ -41,10 +41,10 @@ const Index = () => {
   const buttonClick = async (type) => {
     switch (type) {
       case 'add':
-        setData((value) => ({ ...value, visible: true, title: '限用物资适用范围新增', type: 'add' }));
+        setData((value) => ({ ...value, visible: true, title: '限用物质适用范围新增', type: 'add' }));
         break;
       case 'edit':
-        setData((value) => ({ ...value, visible: true, title: '限用物资适用范围编辑', type: 'edit' }));
+        setData((value) => ({ ...value, visible: true, title: '限用物质适用范围编辑', type: 'edit' }));
         break;
       case 'delete':
         await deleteData();
@@ -65,8 +65,7 @@ const Index = () => {
       operation: operation,
     });
     if (data.success) {
-      setSelectRows([]);
-      setSelectedRowKeys([]);
+      tableRef.current.manualSelectedRows();
       tableRef.current.remoteDataRefresh();
     }
   };
@@ -83,8 +82,7 @@ const Index = () => {
           ids: selectedRowKeys.toString(),
         });
         if (data.success) {
-          setSelectRows([]);
-          setSelectedRowKeys([]);
+          tableRef.current.manualSelectedRows();
           tableRef.current.remoteDataRefresh();
         }
       },
@@ -156,42 +154,47 @@ const Index = () => {
     const response = await AddAndEditLimitSuppliesScope(params);
     if (response.success) {
       setData((value) => ({ ...value, visible: false }));
+      tableRef.current.manualSelectedRows();
       tableRef.current.remoteDataRefresh();
     } else {
       message.error(response.message);
     }
-    console.log(value, 'save');
   };
 
 
   return (
     <Fragment>
-      <ExtTable
-        rowKey={(v) => v.id}
-        columns={columns}
-        store={{
-          url: `${baseUrl}/LimitMaterialUnitScopeData/findBySearchPage`,
-          type: 'GET',
-        }}
-        allowCancelSelect={true}
-        remotePaging={true}
-        checkbox={{
-          multiSelect: true,
-        }}
-        ref={tableRef}
-        onSelectRow={onSelectRow}
-        selectedRowKeys={selectedRowKeys}
-        toolBar={{
-          left: headerLeft,
-        }}
-      />
+      <AutoSizeLayout>
+        {
+          (h) => <ExtTable
+            rowKey={(v) => v.id}
+            columns={columns}
+            height={h}
+            store={{
+              url: `${baseUrl}/LimitMaterialUnitScopeData/findBySearchPage`,
+              type: 'POST',
+            }}
+            allowCancelSelect={true}
+            remotePaging={true}
+            checkbox={{
+              multiSelect: true,
+            }}
+            ref={tableRef}
+            onSelectRow={onSelectRow}
+            selectedRowKeys={selectedRowKeys}
+            toolBar={{
+              left: headerLeft,
+            }}
+          />
+        }
+      </AutoSizeLayout>
       <EventModal
         visible={data.visible}
         onOk={handleOk}
         type={data.type}
         data={selectRows[selectRows.length - 1]}
         onCancel={() => setData((value) => ({ ...value, visible: false }))}
-        title='限用物资适用范围新增'
+        title='限用物质适用范围新增'
       />
     </Fragment>
   );

@@ -1,8 +1,8 @@
 /*
  * @Author: Eason 
  * @Date: 2020-02-21 18:03:16 
- * @Last Modified by: Eason
- * @Last Modified time: 2020-03-20 14:34:10
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2020-09-07 13:36:56
  */
 import { base } from '../../public/app.config.json';
 
@@ -59,7 +59,7 @@ const APP_BASE = base;
 /** 站点的地址，用于获取本站点的静态资源如json文件，xls数据导入模板等等 */
 const LOCAL_PATH = process.env.NODE_ENV !== 'production' ? '..' : `../${APP_BASE}`;
 
-const BASE_URL = getServerPath();
+export const BASE_URL = getServerPath();
 
 export const ATTACMENT_HOST = getAttacmentHost();
 export const ATTACMENT_INFO_HOST = getAttacmentInfoHost();

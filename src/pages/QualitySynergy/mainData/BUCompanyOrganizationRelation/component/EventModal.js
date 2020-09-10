@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { ComboList, ExtModal } from 'suid';
 import { Checkbox, Col, Form, Input, Row } from 'antd';
-import { BasicUnitList, BUConfig, CompanyConfig, OrganizationByCompanyCodeConfig } from '../../../commonProps';
+import {
+  BasicUnitList,
+  BUConfig,
+  BUConfigNoFrost,
+  CompanyConfig,
+  OrganizationByCompanyCodeConfig,
+} from '../../../commonProps';
 import { baseUrl } from '../../../../../utils/commonUrl';
 
 const FormItem = Form.Item;
@@ -29,14 +35,6 @@ const EventModal = (props) => {
     });
   };
 
-  const SelectChange = (value) => {
-    setFieldsValue({
-      basicUnitCode: value.basicUnitCode,
-      basicUnitName: value.basicUnitName,
-      basicUnitId: value.id,
-    });
-  };
-
   const clearSelected = () => {
     props.form.resetFields();
   };
@@ -47,7 +45,7 @@ const EventModal = (props) => {
         getFieldDecorator(name, {
           initialValue: initialValue,
         })(
-          <Input type={'hidden'}/>,
+          <Input type={'hidden'} />,
         )
       }
     </FormItem>
@@ -71,21 +69,21 @@ const EventModal = (props) => {
             {hideFormItem('buId', type === 'add' ? '' : data.buId)}
           </Col>
           <Col span={24}>
-            <FormItem {...formItemLayoutLong} label={'BU'}>
+            <FormItem {...formItemLayoutLong} label={'业务单元'}>
               {
                 getFieldDecorator('buName', {
-                initialValue: type === 'add' ? '' : data.buName,
-                rules: [
-              {
-                required: true,
-                message: 'BU不能为空',
-              },
-                ],
-              })(<ComboList
-                form={form}
-                name={'buName'}
-                field={['buCode', 'buId']}
-                {...BUConfig}
+                  initialValue: type === 'add' ? '' : data.buName,
+                  rules: [
+                    {
+                      required: true,
+                      message: 'BU不能为空',
+                    },
+                  ],
+                })(<ComboList
+                  form={form}
+                  name={'buName'}
+                  field={['buCode', 'buId']}
+                  {...BUConfigNoFrost}
                 />)
               }
             </FormItem>
@@ -100,19 +98,19 @@ const EventModal = (props) => {
             <FormItem {...formItemLayoutLong} label={'公司'}>
               {
                 getFieldDecorator('corporationName', {
-                initialValue: type === 'add' ? '' : data.corporationName,
-                rules: [
-              {
-                required: true,
-                message: '公司不能为空',
-              },
-                ],
-              })(<ComboList
-                // afterSelect={() => setFieldsValue('')}
-                form={form}
-                field={['corporationCode', 'corporationId']}
-                name={'corporationName'}
-                {...CompanyConfig}
+                  initialValue: type === 'add' ? '' : data.corporationName,
+                  rules: [
+                    {
+                      required: true,
+                      message: '公司不能为空',
+                    },
+                  ],
+                })(<ComboList
+                  // afterSelect={() => setFieldsValue('')}
+                  form={form}
+                  field={['corporationCode', 'corporationId']}
+                  name={'corporationName'}
+                  {...CompanyConfig}
                 />)
               }
             </FormItem>
@@ -127,26 +125,29 @@ const EventModal = (props) => {
             <FormItem {...formItemLayoutLong} label={'采购组织'}>
               {
                 getFieldDecorator('purchaseOrgName', {
-                initialValue: type === 'add' ? '' : data.purchaseOrgName,
-                rules: [
-              {
-                required: true,
-                message: '采购组织不能为空',
-              },
-                ],
-              })(<ComboList
-                form={form}
-                field={['purchaseOrgCode', 'purchaseOrgId']}
-                name={'purchaseOrgName'}
-                store={{
-                params: {
-                  companyCode: getFieldValue('corporationCode'),
-                },
-                type: 'GET',
-                autoLoad: false,
-                url: `${baseUrl}/buCompanyPurchasingOrganization/findPurchaseOrganizationByCompanyCode`,
-              }}
-                {...OrganizationByCompanyCodeConfig}
+                  initialValue: type === 'add' ? '' : data.purchaseOrgName,
+                  rules: [
+                    {
+                      required: true,
+                      message: '采购组织不能为空',
+                    },
+                  ],
+                })(<ComboList
+                  form={form}
+                  field={['purchaseOrgCode', 'purchaseOrgId']}
+                  name={'purchaseOrgName'}
+                  cascadeParams={{
+                    companyCode: getFieldValue('corporationCode'),
+                  }}
+                  store={{
+                    params: {
+                      companyCode: getFieldValue('corporationCode'),
+                    },
+                    type: 'GET',
+                    autoLoad: false,
+                    url: `${baseUrl}/buCompanyPurchasingOrganization/findPurchaseOrganizationByCompanyCode`,
+                  }}
+                  {...OrganizationByCompanyCodeConfig}
                 />)
               }
             </FormItem>
@@ -163,7 +164,7 @@ const EventModal = (props) => {
                     },
                   ],
                 })(
-                  <Input/>,
+                  <Input />,
                 )
               }
             </FormItem>

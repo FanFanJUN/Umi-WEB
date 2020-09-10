@@ -4,7 +4,7 @@ import styles from './index.less';
 import { openNewTab, getFrameElement } from '@/utils';
 import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
-import { smBaseUrl } from '@/utils/commonUrl';
+import { baseUrl } from '@/utils/commonUrl';
 import { materialCode, statusProps, distributionProps, materialStatus, PDMStatus } from '../../commonProps';
 import CheckQualificationModal from '../components/checkQualificationModal';
 import DistributeSupplierModal from '../components/distributeSupplierModal';
@@ -38,16 +38,11 @@ export default function () {
     // 未选中数据的状态
     const tableProps = {
         store: {
-            url: `${smBaseUrl}/api/supplierFinanceViewModifyService/findByPage`,
+            // url: `/srm-sm-web/api/epDemandService/findByPage`,
+            url: `${baseUrl}/epDemandService/findByPage`,
             params: {
                 ...searchValue,
-                quickSearchProperties: ['supplierName', 'supplierCode'],
-                sortOrders: [
-                    {
-                        property: 'docNumber',
-                        direction: 'DESC'
-                    }
-                ]
+                quickSearchProperties: [],
             },
             type: 'POST'
         }
@@ -146,17 +141,16 @@ export default function () {
     ]
     const columns = [
         {
-            title: '状态', dataIndex: 'state', width: 80, render: (text) => {
+            title: '状态', dataIndex: 'effectiveStatus', width: 80, render: (text) => {
                 switch (text) {
                     case 'draft': return '生效';
                     case 'pre_publish': return '草稿';
-                    case 'publish': return '撤回';
                     default: return ''
                 }
             }
         },
         {
-            title: '分配供应商状态', dataIndex: 'inquiryMethodName', width: 80, render: (text) => {
+            title: '分配供应商状态', dataIndex: 'allotSupplierState', width: 80, render: (text) => {
                 switch (text) {
                     case 'draft': return '已分配';
                     case 'pre_publish': return '未分配';
@@ -164,20 +158,39 @@ export default function () {
                 }
             }
         },
-        { title: '来源', dataIndex: 'turnNumber', width: 70 },
-        { title: '物料代码', dataIndex: 'name1', ellipsis: true, },
-        { title: '物料描述', dataIndex: 'name2', ellipsis: true, },
-        { title: '物料组代码', dataIndex: 'name3', ellipsis: true, },
-        { title: '物料组描述', dataIndex: 'name4', ellipsis: true, },
-        { title: '战略采购代码', dataIndex: 'name5', ellipsis: true, },
-        { title: '战略采购名称', dataIndex: 'name6', ellipsis: true, },
-        { title: '供应商', dataIndex: 'name7', ellipsis: true, },
-        { title: '环保管理人员', dataIndex: 'name8', ellipsis: true, },
-        { title: '申请人', dataIndex: 'name9', ellipsis: true, },
-        { title: '申请人联系方式', dataIndex: 'name10', ellipsis: true, },
-        { title: '申请人', dataIndex: 'name11', ellipsis: true, },
+        {
+            title: '物料标记状态', dataIndex: 'materialMarkStatus', width: 80, render: (text) => {
+                switch (text) {
+                    case 'draft': return '存在符合的供应商';
+                    case 'pre_publish': return '不存在符合的供应商';
+                    default: return ''
+                }
+            }
+        },
+        {
+            title: '同步PDM状态', dataIndex: 'syncStatus', width: 80, render: (text) => {
+                switch (text) {
+                    case 'draft': return '同步成功';
+                    case 'pre_publish': return '同步失败';
+                    default: return ''
+                }
+            }
+        },
+        { title: '冻结', dataIndex: 'frozen', width: 70 },
+        { title: '物料代码', dataIndex: 'materialCode', ellipsis: true, },
+        { title: '物料描述', dataIndex: 'materialName', ellipsis: true, },
+        { title: '物料组代码', dataIndex: 'materialGroupCode', ellipsis: true, },
+        { title: '物料组描述', dataIndex: 'materialGroupName', ellipsis: true, },
+        { title: '环保标准', dataIndex: 'environmentalProtectionName', ellipsis: true, },
+        { title: '战略采购代码', dataIndex: 'strategicPurchaseCode', ellipsis: true, },
+        { title: '战略采购名称', dataIndex: 'strategicPurchaseName', ellipsis: true, },
+        { title: '供应商', dataIndex: 'list', ellipsis: true, },
+        { title: '环保管理人员', dataIndex: 'environmentAdminName', ellipsis: true, },
+        { title: '创建人', dataIndex: 'applyPersonName', ellipsis: true, },
+        { title: '创建人联系方式', dataIndex: 'applyPersonPhone', ellipsis: true, },
         { title: '申请日期', dataIndex: 'name12', ellipsis: true, },
-        { title: '物料标记状态', dataIndex: 'name13', ellipsis: true, },
+        { title: '来源', dataIndex: 'sourceName', ellipsis: true, },
+        { title: '物料标记状态是否变化', dataIndex: 'name13', ellipsis: true, },
     ].map(item => ({ ...item, align: 'center' }));
     const headerLeft = <>
         {
@@ -256,7 +269,7 @@ export default function () {
             authAction(<Button
                 className={styles.btn}
                 disabled={false}
-                onClick={()=>{supplierRef.current.setVisible(true)}}
+                onClick={() => { supplierRef.current.setVisible(true) }}
                 key='PURCHASE_VIEW_CHANGE_REMOVE'
                 ignore={DEVELOPER_ENV}
             >分配供应商</Button>)
@@ -274,7 +287,7 @@ export default function () {
             authAction(<Button
                 className={styles.btn}
                 disabled={false}
-                onClick={()=>{console.log('同步PDM')}}
+                onClick={() => { console.log('同步PDM') }}
                 key='PURCHASE_VIEW_CHANGE_REMOVE'
                 ignore={DEVELOPER_ENV}
             >同步PDM</Button>)
@@ -283,7 +296,7 @@ export default function () {
             authAction(<Button
                 className={styles.btn}
                 disabled={false}
-                onClick={()=>{console.log('同步历史')}}
+                onClick={() => { console.log('同步历史') }}
                 ignore={DEVELOPER_ENV}
                 key='PURCHASE_VIEW_CHANGE_DETAIL'
             >同步历史</Button>)
@@ -292,7 +305,7 @@ export default function () {
             authAction(<Button
                 className={styles.btn}
                 disabled={false}
-                onClick={()=>{samplingRef.current.setVisible(true)}}
+                onClick={() => { samplingRef.current.setVisible(true) }}
                 key='PURCHASE_VIEW_CHANGE_REMOVE'
                 ignore={DEVELOPER_ENV}
             >抽检复核</Button>)
