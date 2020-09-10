@@ -97,16 +97,31 @@ export default [
      },
      {
        path: '/supplier/recommend/demand/create',
-       component: './SupplierRecommendDemand/RecommendDemand',
-       title: '供应商推荐需求'
+       component: './SupplierRecommendDemand/CreateRecommendDemand',
+       title: '新增供应商推荐需求'
+      },
+      {
+        path: '/supplier/recommend/demand/editor',
+        component: './SupplierRecommendDemand/EditorRecommendDemand',
+        title: '编辑供应商推荐需求'
      },
      {
-       path: '/supplier/recommend/data',
+       path: '/supplier/recommend/fillIn/data',
        component: './SupplierRecommendDemand/RecommendData',
-       title: '供应商推荐资料'
+       title: '推荐资料填报'
+     },
+     {
+       path: '/supplier/suvery/information',
+       component: './SupplierRecommendDemand/RecommendDataTable',
+       title: '供应商调查信息'
+     },
+    //  企业社会责任调查表选项主数据
+     {
+      path: '/csr/config',
+      component: './CSRConfig',
+      title: '企业社会责任'
      }
     ],
   },
-
 ];
 

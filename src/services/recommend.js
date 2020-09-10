@@ -32,3 +32,27 @@ export const saveSupplierRecommendDemand = params => createServiceRequest({
   path: '/api/supplierRecommendDemandService/saveSupplierRecommendDemand',
   params
 })
+
+// 查询推荐需求明细
+export const querySupplierRecommendDemand = params => createServiceRequest({
+  path: '/api/supplierRecommendDemandService/findSupplierRecommendDemandById',
+  params,
+  method: 'GET',
+  hack: true
+})
+
+// 删除推荐需求
+export const removeSupplierRecommendDemand = params => createServiceRequest({
+  path: '/api/supplierRecommendDemandService/deleteSupplierRecommendDemand',
+  params,
+  method: 'DELETE',
+  hack: true
+})
+
+// 提交供应商填报
+export const submitToSupplier = params => createServiceRequest({
+  path: '/api/supplierRecommendDemandService/submitToSupplier',
+  params,
+  method: 'POST',
+  hack: true
+})

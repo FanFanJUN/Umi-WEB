@@ -204,7 +204,7 @@ export const dictProps = {
   }
 }
 
-// 审核状态枚举
+// 审批状态枚举
 export const flowStatusProps = {
   dataSource: [
     {
@@ -224,7 +224,7 @@ export const flowStatusProps = {
     name: 'name',
     field: ['code']
   },
-  placeholder: '选择审核状态',
+  placeholder: '选择审批状态',
   style: {
     width: '100%'
   }

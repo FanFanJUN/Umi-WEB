@@ -35,7 +35,7 @@ export default function () {
   /** 按钮可用性判断变量集合 BEGIN*/
   const [signleRow = {}] = selectedRows;
   const { flowStatus: signleFlowStatus, id: flowId, creatorId } = signleRow;
-  // 已提交审核状态
+  // 已提交审批状态
   const underWay = signleFlowStatus !== 'INIT';
   // 审核完成状态
   const completed = signleFlowStatus === 'COMPLETED';
@@ -154,7 +154,7 @@ export default function () {
   </>
   const columns = [
     {
-      title: '审核状态',
+      title: '审批状态',
       dataIndex: 'flowStatus',
       render(text) {
         switch (text) {
@@ -271,7 +271,7 @@ export default function () {
       props: minxinSupplierProps
     },
     {
-      title: '审核状态',
+      title: '审批状态',
       key: 'Q_EQ_flowStatus',
       type: 'list',
       props: flowStatusProps

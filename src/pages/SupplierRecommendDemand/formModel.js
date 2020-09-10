@@ -12,3 +12,5 @@ export const reducers = (state, action) => {
       }
   }
 }
+
+export const effects = (dispatch, payload) => {}

@@ -2,6 +2,10 @@ import { smBaseUrl, baseUrl, recommendUrl } from '../../utils/commonUrl';
 import request from '../../utils/request';
 import React from 'react';
 
+export const getRandom = num => {
+  return Math.floor((Math.random()+Math.floor(Math.random()*9+1))*Math.pow(10,num-1));
+}
+
 const commonProps = {
   reader: {
     name: 'name',
@@ -428,6 +432,22 @@ export const statusProps = {
     },
   ],
   placeholder: '选择状态',
+  ...commonProps,
+};
+
+// 分配供应商状态
+export const DownloadStatus = {
+  dataSource: [
+    {
+      code: 'INIT',
+      name: '已下载',
+    },
+    {
+      code: 'INPROCESS',
+      name: '未下载',
+    },
+  ],
+  placeholder: '选择下载状态',
   ...commonProps,
 };
 
