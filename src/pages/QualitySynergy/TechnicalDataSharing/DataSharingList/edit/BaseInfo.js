@@ -23,8 +23,13 @@ let BaseInfo = React.forwardRef((props, ref) => {
 
   const { getFieldDecorator, setFieldsValue } = props.form;
 
+  useEffect(() => {
+    if (props.form.getFieldValue('buCode')) {
+      props.setBuCode(props.form.getFieldValue('buCode'))
+    }
+  }, [props.form.getFieldValue('buCode')])
+
   useImperativeHandle(ref, () => ({
-    buCode: props.form.getFieldValue('buCode'),
     getBaseInfoData: props.form.validateFieldsAndScroll
   }))
 

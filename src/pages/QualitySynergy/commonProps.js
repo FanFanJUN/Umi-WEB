@@ -6,6 +6,8 @@ export const getRandom = num => {
   return Math.floor((Math.random()+Math.floor(Math.random()*9+1))*Math.pow(10,num-1));
 }
 
+
+
 const commonProps = {
   reader: {
     name: 'name',
@@ -209,6 +211,22 @@ export async function DeleteBasicMaterials(params) {
     params: params,
   });
 }
+
+// 物料组列表
+export const MaterialGroupConfig = {
+  remotePaging: true,
+  store: {
+    type: 'GET',
+    autoLoad: false,
+    url: `${baseUrl}/materialgroup/listByPage`,
+  },
+  rowKey: 'materialGroupCode',
+  reader: {
+    field: ['id','materialGroupDesc'],
+    name: 'materialGroupCode',
+    description: 'materialGroupDesc',
+  },
+};
 
 // 物料代码列表
 export const MaterialConfig = {

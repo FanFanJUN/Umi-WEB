@@ -185,7 +185,7 @@ const Index = () => {
           importFunc={importFunc}
           templateFileList={[
             {
-              download: '/templates/主数据-限用物质清单-批导模板.xlsx',
+              download: `${(process.env.NODE_ENV === 'development') ? '/' : '/react-srm-sm-web/'}templates/主数据-限用物质清单-批导模板.xlsx`,
               fileName: '主数据-限用物质清单-批导模板.xlsx',
               key: 'UseMaterialList',
             },
@@ -202,7 +202,7 @@ const Index = () => {
           setData((value) => ({ ...value, visible: false }));
           tableRef.current.remoteDataRefresh();
         } else {
-          message.error(res.msg);
+          message.error(res.message);
         }
       });
     } else {
@@ -214,7 +214,7 @@ const Index = () => {
           tableRef.current.manualSelectedRows();
           tableRef.current.remoteDataRefresh();
         } else {
-          message.error(res.msg);
+          message.error(res.message);
         }
       });
     }
