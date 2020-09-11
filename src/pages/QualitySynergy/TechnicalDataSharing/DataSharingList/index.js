@@ -8,7 +8,7 @@ import {
   BUConfig,
   BUConfigNoFrost,
   distributionProps,
-  materialCode,
+  materialCode, MaterialConfig, MaterialGroupConfig,
   materialStatus,
   PDMStatus,
   statusProps,
@@ -77,12 +77,12 @@ export default function() {
 
   // 高级查询配置
   const formItems = [
-    { title: '物料代码', key: 'data1', type: 'list', props: materialCode },
-    { title: '物料组', key: 'data2', type: 'list', props: materialCode },
-    { title: '战略采购', key: 'data3', type: 'list', props: materialCode },
-    { title: '业务单元', key: 'data4', type: 'list', props: BUConfigNoFrost},
-    { title: '申请人', key: 'data5', props: { placeholder: '输入申请人查询' } },
-    { title: '分配供应商状态', key: 'data7', type: 'list', props: distributionProps },
+    { title: '物料代码', key: 'materialCode', type: 'list', props: MaterialConfig },
+    { title: '物料组', key: 'materialGroupCode', type: 'list', props: MaterialGroupConfig },
+    { title: '战略采购', key: 'strategicPurchaseCode', type: 'list', props: materialCode },
+    { title: '业务单元', key: 'buCode', type: 'list', props: BUConfigNoFrost},
+    { title: '申请人', key: 'applyPeopleName', props: { placeholder: '输入申请人查询' } },
+    { title: '分配供应商状态', key: 'allotSupplierState', type: 'list', props: distributionProps },
     { title: '状态', key: 'status', type: 'list', props: statusProps },
   ]
 

@@ -121,7 +121,7 @@ const Index = () => {
       if (res.success) {
         tableRef.current.remoteDataRefresh();
       } else {
-        message.error(res.msg)
+        message.error(res.message)
       }
     });
   };

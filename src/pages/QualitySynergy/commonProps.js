@@ -256,6 +256,10 @@ export const MaterialGroupConfig = {
     name: 'materialGroupCode',
     description: 'materialGroupDesc',
   },
+  placeholder: '选择物料组',
+  style: {
+    width: '100%',
+  },
 };
 
 // 物料代码列表
@@ -272,6 +276,28 @@ export const MaterialConfig = {
     name: 'materialCode',
     description: 'materialDesc',
   },
+  placeholder: '选择物料',
+  style: {
+    width: '100%',
+  },
+};
+
+// 物料代码
+export const materialCode = {
+  store: {
+    url: `${smBaseUrl}/api/supplierService/findByPage`,
+    type: 'post',
+  },
+  style: {
+    width: '100%',
+  },
+  reader: {
+    name: 'code',
+    field: ['name', 'id'],
+    description: 'name',
+  },
+  remotePaging: true,
+  placeholder: '选择供应商',
 };
 
 // 组织列表
@@ -433,41 +459,6 @@ export const limitScopeList = {
     description: 'scopeCode',
   },
   placeholder: '选择适用范围',
-};
-
-// 物料代码
-export const materialCode = {
-  store: {
-    url: `${smBaseUrl}/api/supplierService/findByPage`,
-    params: {
-      Q_EQ_frozen__Boolean: false,
-      filters: [
-        {
-          fieldName: 'supplierStatus',
-          fieldType: 'Integer',
-          operator: 'EQ',
-          value: 0,
-        },
-        {
-          fieldName: 'code',
-          fieldType: 'String',
-          operator: 'EQ',
-          value: 'NONULL',
-        },
-      ],
-    },
-    type: 'post',
-  },
-  style: {
-    width: '100%',
-  },
-  reader: {
-    name: 'code',
-    field: ['name', 'id'],
-    description: 'name',
-  },
-  remotePaging: true,
-  placeholder: '选择供应商',
 };
 
 // 状态
