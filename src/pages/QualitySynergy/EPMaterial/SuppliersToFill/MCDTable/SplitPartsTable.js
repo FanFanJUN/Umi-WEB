@@ -101,7 +101,7 @@ const supplierModal = forwardRef(({ form }, ref) => {
                 <Row>
                     <FormItem label='拆分部件名称' {...formLayout}>
                         {
-                            getFieldDecorator('data1', {
+                            getFieldDecorator('splitPartsName', {
                                 initialValue: '',
                                 rules: [{ required: true, message: '请填写拆分部件名称' }]
                             })(<Input />)
@@ -111,7 +111,7 @@ const supplierModal = forwardRef(({ form }, ref) => {
                 <Row>
                     <FormItem label='均质材料名称' {...formLayout}>
                         {
-                            getFieldDecorator('data2', {
+                            getFieldDecorator('homogeneousMaterialName', {
                                 initialValue: '',
                                 rules: [{ required: true, message: '请填写均质材料名称' }]
                             })(<Input />)
@@ -121,7 +121,7 @@ const supplierModal = forwardRef(({ form }, ref) => {
                 <Row>
                     <FormItem label='测试机构' {...formLayout}>
                         {
-                            getFieldDecorator('data3', {
+                            getFieldDecorator('testOrganization', {
                                 initialValue: '',
                                 rules: [{ required: true, message: '请填写测试机构名称' }]
                             })(<Input />)
@@ -131,12 +131,12 @@ const supplierModal = forwardRef(({ form }, ref) => {
                 <Row>
                     <FormItem label='测试结论' {...formLayout}>
                         {
-                            getFieldDecorator('data4', {
-                                initialValue: 'pass',
+                            getFieldDecorator('reportResult', {
+                                initialValue: 'true',
                                 rules: [{ required: true, message: '请选择供应商代码' }]
                             })(<Select style={{ width: '100%' }}>
-                                <Option value="pass">通过</Option>
-                                <Option value="nopass">不通过</Option>
+                                <Option value="true">通过</Option>
+                                <Option value="false">不通过</Option>
                             </Select>)
                         }
                     </FormItem>
@@ -144,7 +144,7 @@ const supplierModal = forwardRef(({ form }, ref) => {
                 <Row>
                     <FormItem label='报告编号' {...formLayout}>
                         {
-                            getFieldDecorator('data5', {
+                            getFieldDecorator('reportNumber', {
                                 initialValue: '',
                                 rules: [{ required: true, message: '请输入报告编号' }]
                             })(<Input />)
@@ -154,7 +154,7 @@ const supplierModal = forwardRef(({ form }, ref) => {
                 <Row>
                     <FormItem label='报告日期' {...formLayout}>
                         {
-                            getFieldDecorator('data6', {
+                            getFieldDecorator('reportDate', {
                                 initialValue: '',
                                 rules: [{ required: true, message: '请选择报告日期' }]
                             })(<DatePicker style={{ width: '100%' }} />)
@@ -164,7 +164,7 @@ const supplierModal = forwardRef(({ form }, ref) => {
                 <Row>
                     <FormItem label='有效截止日期' {...formLayout}>
                         {
-                            getFieldDecorator('data7', {
+                            getFieldDecorator('effectiveEndDate', {
                                 initialValue: '',
                             })(<Input disabled />)
                         }
@@ -173,7 +173,7 @@ const supplierModal = forwardRef(({ form }, ref) => {
                 <Row>
                     <FormItem label='报告附件' {...formLayout}>
                         {
-                            getFieldDecorator('data8', {
+                            getFieldDecorator('testReportAttachmentId', {
                                 initialValue: '',
                                 rules: [{ required: true, message: '请请上传技术资料附件' }]
                             })(<Upload entityId={''} />)

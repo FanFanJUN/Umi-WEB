@@ -211,3 +211,33 @@ export async function epDemandFrozen(params) {
         data: params,
     });
 }
+// 填报环保资料物料-删除
+export async function epDemandDelete(params) {
+    const url = `${supplierManagerBaseUrl}/api/epDemandService/whetherDelete`;
+    return request({
+        url,
+        method: 'POST',
+        data: params,
+    });
+}
+
+// 供应商-填报环保资料-获取填报数据
+export async function supplerFindVoById(params) {
+    const url = `${supplierManagerBaseUrl}/api/epDataFillService/findVoById`;
+    console.log(params)
+    return request({
+        url,
+        method: 'GET',
+        params: params,
+    });
+}
+
+// 供应商-填报环保资料-填报
+export async function epDemandUpdate(params) {
+    const url = `${supplierManagerBaseUrl}/api/epDataFillService/update`;
+    return request({
+        url,
+        method: 'POST',
+        data: params,
+    });
+}

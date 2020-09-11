@@ -11,7 +11,7 @@ import DistributeSupplierModal from '../components/distributeSupplierModal';
 import CheckModal from '../components/checkModal';
 import GenerateModal from '../components/generateModal';
 import EditModal from '../components/editModal';
-import { epDemandFrozen } from '../../../../services/qualitySynergy'
+import { epDemandFrozen, epDemandDelete } from '../../../../services/qualitySynergy'
 const { authAction, storage } = utils;
 const { Search } = Input;
 const { confirm } = Modal;
@@ -66,7 +66,15 @@ export default function () {
             title: '删除',
             content: '请确认是否冻结该填报环保资料物料',
             onOk: async () => {
-                console.log('确定删除')
+                const res = await epDemandDelete({
+                    ids: selectedRowKeys.join(),
+                })
+                if(res.statusCode === 200) {
+                    refresh();
+                    message.success('删除成功');
+                } else {
+                    message.error(res.message)
+                }
             }
         })
     }
@@ -80,8 +88,18 @@ export default function () {
                     ids: selectedRowKeys.join(),
                     isFrozen: true
                 })
+                if(res.statusCode === 200) {
+                    refresh();
+                    message.success('操作成功');
+                } else {
+                    message.error(res.message)
+                }
             },
         });
+    }
+    const refresh = () => {
+        tableRef.current.manualSelectedRows();
+        tableRef.current.remoteDataRefresh();
     }
     // 提交 
     const submit = () => {
@@ -163,7 +181,7 @@ export default function () {
             }
         },
         {
-            title: '分配供应商状态', dataIndex: 'allotSupplierState', width: 80, render: (text) => {
+            title: '分配供应商状态', dataIndex: 'allotSupplierState', width: 120, render: (text) => {
                 switch (text) {
                     case 'draft': return '已分配';
                     case 'pre_publish': return '未分配';
@@ -172,7 +190,7 @@ export default function () {
             }
         },
         {
-            title: '物料标记状态', dataIndex: 'materialMarkStatus', width: 80, render: (text) => {
+            title: '物料标记状态', dataIndex: 'materialMarkStatus', width: 120, render: (text) => {
                 switch (text) {
                     case 'draft': return '存在符合的供应商';
                     case 'pre_publish': return '不存在符合的供应商';
@@ -181,7 +199,7 @@ export default function () {
             }
         },
         {
-            title: '同步PDM状态', dataIndex: 'syncStatus', width: 80, render: (text) => {
+            title: '同步PDM状态', dataIndex: 'syncStatus', width: 120, render: (text) => {
                 switch (text) {
                     case 'draft': return '同步成功';
                     case 'pre_publish': return '同步失败';
@@ -203,7 +221,8 @@ export default function () {
         { title: '创建人联系方式', dataIndex: 'applyPersonPhone', ellipsis: true, },
         { title: '申请日期', dataIndex: 'name12', ellipsis: true, },
         { title: '来源', dataIndex: 'sourceName', ellipsis: true, },
-        { title: '物料标记状态是否变化', dataIndex: 'name13', ellipsis: true, },
+        { title: '物料标记状态是否变化', dataIndex: 'name13',width: 140, ellipsis: true, },
+        { dataIndex: 'name13',width: 20, ellipsis: true, },
     ].map(item => ({ ...item, align: 'center' }));
     const headerLeft = <>
         {

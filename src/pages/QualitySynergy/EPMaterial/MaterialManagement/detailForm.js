@@ -12,6 +12,7 @@ export default function () {
     const [loading, toggleLoading] = useState(false);
     const formRef = useRef(null);
     const { query } = router.useLocation();
+    const [originData, setOriginData] = useState({})
     const handleBack = () => {
         closeCurrent()
     }
@@ -19,6 +20,11 @@ export default function () {
         async function fetchData() {
             toggleLoading(true);
             const res = await findVoById({id: query.id});
+            if(res.success) {
+                res.data && setOriginData(res.data[0])
+            } else {
+                message.error(res.message);
+            }
             toggleLoading(false);
         }
         fetchData();
@@ -30,7 +36,7 @@ export default function () {
                     <div className={classnames(styles.fbc, styles.affixHeader)}>
                         <span className={styles.headTitle}>环保资料物料-明细</span>
                         <div>
-                            <Button className={styles.btn} onClick={handleBack}>返回</Button>
+                            <Button className={styles.btn} onClick={handleBack} >返回</Button>
                         </div>
                     </div>
                 </Affix>
@@ -38,7 +44,7 @@ export default function () {
                     <div className={styles.bgw}>
                         <div className={styles.title}>基本信息</div>
                         <div className={styles.content}>
-                            <BaseInfo wrappedComponentRef={formRef} isView={true} />
+                            <BaseInfo wrappedComponentRef={formRef} isView={true} originData={originData}/>
                         </div>
                     </div>
                 </div>
@@ -46,7 +52,7 @@ export default function () {
                     <div className={styles.bgw}>
                         <div className={styles.title}>标的物</div>
                         <div className={styles.content}>
-                            <SubjectMatterForm />
+                            <SubjectMatterForm originData={originData}/>
                         </div>
                     </div>
                 </div>

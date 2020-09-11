@@ -1,11 +1,14 @@
 import { useEffect, useState, useRef, Fragment } from 'react'
 import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import { Input, Button, message, Modal, Form } from 'antd';
-import { smBaseUrl } from '@/utils/commonUrl';
+import { supplierManagerBaseUrl } from '@/utils/commonUrl';
 import { openNewTab, getFrameElement } from '@/utils';
 import { AutoSizeLayout, Header, AdvancedForm, ComboAttachment } from '@/components';
 import { materialCode, statusProps, distributionProps, materialStatus, PDMStatus } from '../../commonProps';
 import styles from './index.less'
+import {
+    epDemandUpdate
+} from '../../../../services/qualitySynergy'
 const { authAction, storage } = utils;
 const { create, Item: FormItem } = Form;
 const { Search } = Input;
@@ -21,22 +24,6 @@ const SupplierFillList = function (props) {
     const [searchValue, setSearchValue] = useState({});
     const [attachment, setAttachment] = useState(null);
     const FRAMELEEMENT = getFrameElement();
-    const tableProps = {
-        store: {
-            url: `${smBaseUrl}/api/supplierFinanceViewModifyService/findByPage`,
-            params: {
-                ...searchValue,
-                quickSearchProperties: ['supplierName', 'supplierCode'],
-                sortOrders: [
-                    {
-                        property: 'docNumber',
-                        direction: 'DESC'
-                    }
-                ]
-            },
-            type: 'POST'
-        }
-    }
     const {
         getFieldDecorator,
         getFieldValue,
@@ -231,7 +218,13 @@ const SupplierFillList = function (props) {
                     showSearch= {false}
                     onSelectRow={handleSelectedRows}
                     selectedRowKeys={selectedRowKeys}
-                    {...tableProps}
+                    store = {{
+                        url: `${supplierManagerBaseUrl}/api/epDataFillService/findByPage`,
+                        type: 'POST',
+                        params: {
+                            // ...searchValue,
+                        },
+                    }}
                 />
             }
         </AutoSizeLayout>
