@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-09 15:28:52
- * @LastEditTime: 2020-09-10 18:41:29
+ * @LastEditTime: 2020-09-11 09:18:28
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/SellCondition/SalesProfit.js
  * @Description: 销售收入及利润 Table
  * @Connect: 1981824361@qq.com
@@ -12,7 +12,7 @@ import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import { Button, Divider, Form } from 'antd';
 import moment from 'moment';
 import styles from '../../DataFillIn/index.less';
-import Edit from '../Common/EditTable';
+import EditTable from '../Common/EditTable';
 
 let data = [];
 for (let i = 0; i < 5; i++) {
@@ -81,7 +81,7 @@ const SalesProfit = (props)=> {
             <Button type='primary' className={styles.btn} onClick={() => { editRef.current.showModal('add') }}>新增</Button>
             {/* <Button className={styles.btn} onClick={handleDelete} type="danger">删除</Button> */}
         </div>
-        <Edit
+        <EditTable
            dataSource = {dataSource}
            columns={columns}
            rowKey='name1'
