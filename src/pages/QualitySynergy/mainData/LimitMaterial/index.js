@@ -48,7 +48,7 @@ const LimitMaterial = ({ form }) => {
     const columns = [
         { title: '环保标准代码', dataIndex: 'environmentalProtectionCode', width: 80 },
         { title: '环保标准名称', dataIndex: 'environmentalProtectionName', ellipsis: true, },
-        { title: 'REACH环保符合性声明', dataIndex: 'reach', ellipsis: true, render: (text) => text ? '符合' : '不符合' },
+        { title: 'REACH环保符合性声明', dataIndex: 'reach', ellipsis: true, render: (text) => text ? '是' : '否' },
         { title: '备注', dataIndex: 'note', ellipsis: true },
         { title: '排序号', dataIndex: 'orderNo', ellipsis: true, width: 80 },
         { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (text) => text ? '已冻结' : '未冻结' },

@@ -1,4 +1,4 @@
-import { smBaseUrl, baseUrl } from '../utils/commonUrl';
+import { supplierManagerBaseUrl, baseUrl } from '../utils/commonUrl';
 import request from '../utils/request';
 
 
@@ -190,6 +190,15 @@ export async function findByBuCode(params) {
     return request({
         url,
         method: 'POST',
+        params: params,
+    });
+}
+// 填报环保资料物料-明细
+export async function findVoById(params) {
+    const url = `${supplierManagerBaseUrl}/api/epDemandService/findVoById`;
+    return request({
+        url,
+        method: 'GET',
         params: params,
     });
 }

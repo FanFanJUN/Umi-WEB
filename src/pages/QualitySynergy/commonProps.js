@@ -266,12 +266,35 @@ export const MaterialConfig = {
     autoLoad: false,
     url: `${baseUrl}/materialSrm/findByPage`,
   },
+  style: {
+    width: '100%',
+  },
   rowKey: 'materialCode',
   reader: {
     field: ['id', 'materialDesc', 'materialGroupCode', 'materialGroupDesc', 'materialGroupId'],
     name: 'materialCode',
     description: 'materialDesc',
   },
+  placeholder: '选择物料代码',
+};
+// 物料代码列表--携带有环保标准，战略采购数据
+export const MaterialAllConfig = {
+  remotePaging: true,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${baseUrl}/api/epDemandSupplierService/findByList`,
+  },
+  style: {
+    width: '100%',
+  },
+  rowKey: 'materialCode',
+  reader: {
+    field: ['id', 'materialDesc', 'materialGroupCode', 'materialGroupDesc', 'materialGroupId'],
+    name: 'materialCode',
+    description: 'materialDesc',
+  },
+  placeholder: '选择物料代码',
 };
 
 // 组织列表

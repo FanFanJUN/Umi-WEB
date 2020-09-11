@@ -1,7 +1,7 @@
 import { useImperativeHandle, forwardRef, useState, useRef, Fragment, useEffect } from 'react';
 import { Form, Row, Col, Input, Button, Modal, message, notification } from 'antd';
 import { ComboList, ExtTable, ExtModal, ComboTree } from 'suid';
-import { materialCode, MaterialConfig } from '../../commonProps';
+import { materialCode, MaterialAllConfig } from '../../commonProps';
 import { findByBuCode } from '../../../../services/qualitySynergy'
 const { create, Item: FormItem } = Form;
 const formLayout = {
@@ -20,7 +20,6 @@ const editModal = forwardRef(({ form, initData = {}, buCode }, ref) => {
         if(!buCode) return;
         // 根据业务单元找业务板块
         async function fetchData() {
-            console.log('buCode', buCode)
             const res = await findByBuCode({ buCode: buCode });
             console.log(res)
         }
@@ -53,7 +52,7 @@ const editModal = forwardRef(({ form, initData = {}, buCode }, ref) => {
                                 initialValue: '',
                                 rules: [{ required: true, message: '不能为空' }]
                             })(<ComboList form={form}
-                                {...MaterialConfig}
+                                {...MaterialAllConfig}
                                 name='materialCode'
                                 field={['materialId', 'materialName', 'materialGroupCode', 'materialGroupName', 'materialGroupId']}
                                 afterSelect={handleAfterSelect} />)

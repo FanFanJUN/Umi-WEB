@@ -4,18 +4,18 @@ import styles from './index.less';
 import { openNewTab, getFrameElement } from '@/utils';
 import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
-import { baseUrl } from '@/utils/commonUrl';
-import { materialCode, statusProps, distributionProps, materialStatus, PDMStatus } from '../../commonProps';
+import { supplierManagerBaseUrl } from '@/utils/commonUrl';
+import { materialCode,MaterialConfig, statusProps, distributionProps, materialStatus, PDMStatus } from '../../commonProps';
 import CheckQualificationModal from '../components/checkQualificationModal';
 import DistributeSupplierModal from '../components/distributeSupplierModal';
 import CheckModal from '../components/checkModal';
 import GenerateModal from '../components/generateModal';
-import EditModal from '../components/editModal'
+import EditModal from '../components/editModal';
 const { authAction, storage } = utils;
 const { Search } = Input;
 const { confirm } = Modal;
 const { create, Item: FormItem } = Form;
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 12, },
@@ -28,6 +28,7 @@ export default function () {
     const supplierRef = useRef(null);
     const samplingRef = useRef(null);
     const generateRef = useRef(null);
+    const [buttonStatus, setButtonStatus] = useState({})
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [searchValue, setSearchValue] = useState({});
@@ -35,18 +36,6 @@ export default function () {
     const [assignPurchase, setSssignPurchase] = useState(false);//指派战略采购弹框
     const [qualificationModal, setQualificationModal] = useState(false);
     const FRAMELEEMENT = getFrameElement();
-    // 未选中数据的状态
-    const tableProps = {
-        store: {
-            // url: `/srm-sm-web/api/epDemandService/findByPage`,
-            url: `${baseUrl}/epDemandService/findByPage`,
-            params: {
-                ...searchValue,
-                quickSearchProperties: [],
-            },
-            type: 'POST'
-        }
-    }
     function redirectToPage(type) {
         const [key] = selectedRowKeys;
         const { id = '' } = FRAMELEEMENT;
@@ -56,11 +45,19 @@ export default function () {
                 openNewTab(`qualitySynergy/EPMaterial/editForm?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '填报环保资料物料-新增', false)
                 break;
             case 'detail':
+                if(!checkOneSelect()) return;
                 openNewTab(`qualitySynergy/EPMaterial/detailForm?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '填报环保资料物料-明细', false);
                 break;
             default:
                 break;
         }
+    }
+    function checkOneSelect() {
+        if (selectedRows.length===0) {
+            message.warning('请先选择数据');
+            return false;
+        } 
+        return true;
     }
     // 删除
     function handleDelete(v) {
@@ -101,11 +98,6 @@ export default function () {
             onCancel() { },
         });
     }
-    // 记录列表选中
-    function handleSelectedRows(rowKeys, rows) {
-        setRowKeys(rowKeys);
-        setRows(rows);
-    }
     // 处理快速查询
     function handleQuickSearch(v) {
         console.log(v)
@@ -127,17 +119,33 @@ export default function () {
     function handleExport() {
         console.log('导出')
     }
+    // 按钮是否禁用
+    function buttonCheck(rows) {
+        if(rows.length===1){
+            setButtonStatus({
+                detail: false
+            })
+        } else if (rows.length===0) {
+            setButtonStatus({
+                detail: false
+            })
+        } else {
+            setButtonStatus({
+                detail: true
+            })
+        }
+    }
     // 高级查询配置
     const formItems = [
-        { title: '物料代码', key: 'data1', type: 'list', props: materialCode },
-        { title: '物料组', key: 'data2', type: 'list', props: materialCode },
-        { title: '战略采购', key: 'data3', type: 'list', props: materialCode },
-        { title: '环保管理人员', key: 'data4', props: { placeholder: '输入申请人查询' } },
-        { title: '申请人', key: 'data5', props: { placeholder: '输入申请人查询' } },
-        { title: '状态', key: 'data6', type: 'list', props: statusProps },
-        { title: '分配供应商状态', key: 'data7', type: 'list', props: distributionProps },
-        { title: '物料标记状态', key: 'data8', type: 'list', props: materialStatus },
-        { title: '同步PDM状态', key: 'data9', type: 'list', props: PDMStatus },
+        { title: '物料代码', key: 'materialCode', type: 'list', props: MaterialConfig },
+        { title: '物料组', key: 'materialGroupCode', type: 'list', props: materialCode },
+        { title: '战略采购', key: 'strategicPurchaseCode', type: 'list', props: materialCode },
+        { title: '环保管理人员', key: 'environmentAdminName', props: { placeholder: '输入申请人查询' } },
+        { title: '申请人', key: 'applyPersonName', props: { placeholder: '输入申请人查询' } },
+        { title: '状态', key: 'effectiveStatus', type: 'list', props: statusProps },
+        { title: '分配供应商状态', key: 'allotSupplierState', type: 'list', props: distributionProps },
+        { title: '物料标记状态', key: 'materialMarkStatus', type: 'list', props: materialStatus },
+        { title: '同步PDM状态', key: 'syncStatus', type: 'list', props: PDMStatus },
     ]
     const columns = [
         {
@@ -176,7 +184,7 @@ export default function () {
                 }
             }
         },
-        { title: '冻结', dataIndex: 'frozen', width: 70 },
+        { title: '冻结', dataIndex: 'frozen', width: 70, render: (text)=>text?'已冻结':'未冻结'},
         { title: '物料代码', dataIndex: 'materialCode', ellipsis: true, },
         { title: '物料描述', dataIndex: 'materialName', ellipsis: true, },
         { title: '物料组代码', dataIndex: 'materialGroupCode', ellipsis: true, },
@@ -241,9 +249,9 @@ export default function () {
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={false}
                 onClick={() => { redirectToPage('detail') }}
                 ignore={DEVELOPER_ENV}
+                disabled={buttonStatus.detail}
                 key='PURCHASE_VIEW_CHANGE_DETAIL'
             >明细</Button>)
         }
@@ -364,14 +372,25 @@ export default function () {
                     height={h}
                     allowCancelSelect
                     showSearch={false}
-                    remotePaging
+                    remotePaging={true}
                     checkbox={{ multiSelect: false }}
                     ref={tableRef}
                     rowKey={(item) => item.id}
                     size='small'
-                    onSelectRow={handleSelectedRows}
+                    onSelectRow={(rowKeys, rows) => {
+                        setRowKeys(rowKeys);
+                        setRows(rows);
+                        buttonCheck(rows)
+                    }}
                     selectedRowKeys={selectedRowKeys}
-                    {...tableProps}
+                    store={{
+                        url: `${supplierManagerBaseUrl}/api/epDemandService/findByPage`,
+                        params: {
+                            ...searchValue,
+                            quickSearchProperties: [],
+                        },
+                        type: 'POST'
+                    }}
                 />
             }
         </AutoSizeLayout>
