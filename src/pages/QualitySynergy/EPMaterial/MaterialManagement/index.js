@@ -11,6 +11,7 @@ import DistributeSupplierModal from '../components/distributeSupplierModal';
 import CheckModal from '../components/checkModal';
 import GenerateModal from '../components/generateModal';
 import EditModal from '../components/editModal';
+import { epDemandFrozen } from '../../../../services/qualitySynergy'
 const { authAction, storage } = utils;
 const { Search } = Input;
 const { confirm } = Modal;
@@ -71,10 +72,14 @@ export default function () {
     }
     // 冻结
     const handleFreeze = () => {
+        if(!checkOneSelect()) return;
         confirm({
-            title: '请确认是否冻结该填报环保资料物料',
-            onOk: () => {
-                console.log('确认删除');
+            title: '请确认是否冻结选中填报环保资料物料',
+            onOk: async () => {
+                const res = await epDemandFrozen({
+                    ids: selectedRowKeys.join(),
+                    isFrozen: true
+                })
             },
         });
     }

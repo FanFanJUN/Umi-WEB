@@ -198,7 +198,16 @@ export async function findVoById(params) {
     const url = `${supplierManagerBaseUrl}/api/epDemandService/findVoById`;
     return request({
         url,
-        method: 'GET',
-        params: params,
+        method: 'POST',
+        data: params,
+    });
+}
+// 填报环保资料物料-冻结
+export async function epDemandFrozen(params) {
+    const url = `${supplierManagerBaseUrl}/api/epDemandService/frozen`;
+    return request({
+        url,
+        method: 'POST',
+        data: params,
     });
 }
