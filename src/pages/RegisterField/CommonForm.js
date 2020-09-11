@@ -178,6 +178,27 @@ const CommonForm = forwardRef(
                         </Item>
                     </Col>
                     <Col span={12}>
+                        <Item {...formLayout} label="排序码">
+                            {getFieldDecorator('standby1', {
+                                rules: [
+                                    {
+                                        required: true,
+                                        message: '请请输入排序码',
+                                    },
+                                ],
+                            })(
+                                <Input
+                                    style={{
+                                        width: "100%"
+                                    }}
+                                    placeholder="请输入排序码"
+                                />
+                            )}
+                        </Item>
+                    </Col>
+                </Row>
+                <Row>
+                <Col span={12}>
                         <Item {...formLayout} label="备注">
                             {getFieldDecorator('smExplain', {
                                 // rules: [

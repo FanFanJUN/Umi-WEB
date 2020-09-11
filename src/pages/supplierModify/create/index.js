@@ -1,25 +1,27 @@
 import React, { createRef, useState, useRef, useEffect } from 'react';
 import { Button, Modal, message, Spin, Affix } from 'antd';
 import { router } from 'dva';
-import BaseInfo from '../components/BaseInfo'
-import Account from '../components/Account'
-import Authorizedclient from '../components/Authorizedclient'
-import Businessinfo from '../components/Businessinfo'
-import Bank from '../components/Bank'
-import SupplyRange from "../components/SupplyRange"
-import AgentInfo from '../components/AgentInfo'
-import QualificationCommon from '../components/QualificationCommon'
-import QualificationProfessional from '../components/QualificationProfessional'
+import BaseInfo from '../../supplierRegister/components/BaseInfo'
+import Account from '../../supplierRegister/components/Account'
+import Authorizedclient from '../../supplierRegister/components/Authorizedclient'
+import Businessinfo from '../../supplierRegister/components/Businessinfo'
+import Bank from '../../supplierRegister/components/Bank'
+import SupplyRange from "../../supplierRegister/components/SupplyRange"
+import AgentInfo from '../../supplierRegister/components/AgentInfo'
+import QualificationCommon from '../../supplierRegister/components/QualificationCommon'
+import QualificationProfessional from '../../supplierRegister/components/QualificationProfessional'
+import ReasonAndStartFlowModal from '../commons/ReasonAndStartFlowModal'
 import classnames from 'classnames';
 import {
-  findSupplierconfigureId,
-  TemporarySupplierRegister,
-  SupplierconfigureDetail,
-  saveSupplierRegister,
-  SaveSupplierconfigureService
+  SaveSupplierconfigureService,
+  SupplierconfigureDetail
 } from '@/services/supplierRegister';
-import {offlistChineseProvinces,offlistCityByProvince,offlistAreaByCity } from "../../../services/supplierConfig"
-import styles from '../components/index.less';
+import {
+    TemporarySupplierRegister,
+    checkExistUnfinishedValidity,
+    saveSupplierRegister
+} from '@/services/SupplierModifyService'
+import styles from '../../supplierRegister/components/index.less';
 import { closeCurrent } from '../../../utils';
 
 function CreateStrategy() {
@@ -32,12 +34,14 @@ function CreateStrategy() {
   const Agentformef = useRef(null);
   const QualificationRef = useRef(null);
   const QualispecialRef = useRef(null);
+  const getModelRef = useRef(null)
   const [baseinfo, setbaseinfo] = useState([]);
   const [accountinfo, setaccountinfo] = useState([]);
   const [businesshide, setbusinesshide] = useState([]);
   const [initialValue, setInitialValue] = useState({});
   const [wholeData, setwholeData] = useState([]);
   const [editData, setEditData] = useState([]);
+  const [againdata, setAgaindata] = useState([]);
   const [loading, triggerLoading] = useState(false);
   const [accountVo, setaccountVo] = useState(false);
   const [configure, setConfigure] = useState([]);
@@ -45,31 +49,35 @@ function CreateStrategy() {
   const { query } = router.useLocation();
   const { frameElementId, frameElementSrc = "", Opertype = "" } = query;
   let typeId = query.frameElementId;
-  async function initConfigurationTable() {
-
+  async function initsupplierDetai() {
     triggerLoading(true);
-    let params = {catgroyid:typeId,property:1};
-    const { data, success, message: msg } = await SaveSupplierconfigureService(params);
+    let id = query.id;
+    const { data, success, message: msg } = await SupplierconfigureDetail({supplierId:id});
+    if (success) {
+        let suppliertype = data.supplierInfoVo.supplierVo.supplierCategory.id
+        initConfigurationTable(suppliertype)
+        setTimeout(() => {
+          setInitialValue(data.supplierInfoVo)
+          setEditData(data.supplierInfoVo)
+          setwholeData(data)
+          setAgaindata(againdata)
+          triggerLoading(false);
+        }, 100);
+    }else {
+      triggerLoading(false);
+      message.error(msg)
+    }
+
+    // 配置表
+    async function initConfigurationTable(typeId) {
+      triggerLoading(true);
+      let params = {catgroyid:typeId,property:1};
+      const { data, success, message: msg } = await SaveSupplierconfigureService(params);
       if (success) {
         let datalist  = data.configBodyVos;
         setConfigure(datalist)
         triggerLoading(false);
         configurelist(datalist)
-      }else {
-        triggerLoading(false);
-        message.error(msg)
-      }
-
-    initsupplierDetai(); // 供应商详情
-    async function initsupplierDetai() {
-      triggerLoading(true);
-      let id = query.id;
-      const { data, success, message: msg } = await SupplierconfigureDetail({ supplierId: id });
-      if (success) {
-        setInitialValue(data.supplierInfoVo)
-        setEditData(data.supplierInfoVo)
-        setwholeData(data)
-        triggerLoading(false);
       }else {
         triggerLoading(false);
         message.error(msg)
@@ -107,6 +115,7 @@ function CreateStrategy() {
   }
   // 暂存
   async function handleTemporary() {
+   
     const { getTemporaryBaseInfo } = BaseinfoRef.current; // 基本信息
     let baseVal = getTemporaryBaseInfo();
     //let accountVal = ObtainAccount();
@@ -166,15 +175,25 @@ function CreateStrategy() {
       proCertVos: proCertVos ? proCertVos.proCertVos : ''
     }
     if (baseVal) {
+        console.log(wholeData)
       if (baseVal.supplierVo.companyCode) {
-        wholeData.companyCode = baseVal.supplierVo.companyCode
-        wholeData.companyName = baseVal.supplierVo.companyName 
+        againdata.companyCode = baseVal.supplierVo.companyCode
+        if (baseVal.supplierVo.companyName === baseVal.supplierVo.companyCode) {
+            againdata.companyName = wholeData.companyName
+        }else {
+            againdata.companyName = baseVal.supplierVo.companyName
+        }
+        
       }
     }
-    if (wholeData) {
-      wholeData.supplierInfoVo = supplierInfoVo;
+    if (againdata) {
+        againdata.supplierInfoVo = supplierInfoVo;
     }
-    let saveData = wholeData;
+    //如果为新增  拼加一个供应商ID在头上
+    againdata.supplierId = againdata.supplierId || query.id;
+    againdata.againdata = '0';
+    let saveData = {...againdata};
+    console.log(saveData)
     triggerLoading(true)
     const { success, message: msg } = await TemporarySupplierRegister(saveData);
     if (success) {
@@ -201,9 +220,11 @@ function CreateStrategy() {
     const accountVal = getAccountinfo();
     if (!accountVal) {
       message.error('请将供应商账号信息填写完全！');
-      return false;
+      return;
+    }else {
+      return accountVal;
     }
-    return accountVal;
+    
   }
   //  // 授权委托人
   function ObtainAuthor() {
@@ -310,6 +331,12 @@ function CreateStrategy() {
       message.error('请将供应商基本信息填写完全！');
       return false;
     }
+    // const { getAccountinfo } = AccountRef.current; //帐号
+    // const accountVal = getAccountinfo();
+    // if (!accountVal) {
+    //   message.error('请将供应商账号信息填写完全！');
+    //   return;
+    // }
     let accountVal = saveAccount();
     let authorizedClientVal,businessInfoVal,bankVal,rangeVal,
     agentVal,qualifications,proCertVos;
@@ -337,14 +364,16 @@ function CreateStrategy() {
       }
     })
    
-    let enclosurelist = [],automaticdata,automaticincome,automThreeYear,rangeValinfo;
+    let enclosurelist = [],automaticdata,automaticincome,automThreeYear,rangeValinfo,setupaccout;
+    if (accountVal && accountVal.supplierVo) {
+      setupaccout = accountVal
+    }
     if (baseVal && baseVal.genCertVos) {
       enclosurelist= {...enclosurelist,...baseVal.genCertVos[0]}
     }
     if (qualifications) {
       enclosurelist = [enclosurelist, ...qualifications.proCertVos];
     }
-    console.log(enclosurelist)
     if (businessInfoVal && businessInfoVal.supplierVo) {
       automaticdata = businessInfoVal.supplierVo
     }
@@ -358,7 +387,7 @@ function CreateStrategy() {
       rangeValinfo = rangeVal.extendVo
     }
     let supplierInfoVo = {
-      supplierVo: { ...baseVal.supplierVo, ...accountVal.supplierVo ,...automaticdata},
+      supplierVo: { ...baseVal.supplierVo, ...setupaccout ,...automaticdata},
       extendVo: { ...baseVal.extendVo, ...automThreeYear, ...rangeValinfo },
       contactVos: authorizedClientVal,
       genCertVos: enclosurelist,
@@ -369,18 +398,34 @@ function CreateStrategy() {
     }
     if (baseVal) {
       if (baseVal.supplierVo.companyCode) {
-        wholeData.companyCode = baseVal.supplierVo.companyCode
-        wholeData.companyName = baseVal.supplierVo.companyName
+        againdata.companyCode = baseVal.supplierVo.companyCode
+        if (baseVal.supplierVo.companyName === baseVal.supplierVo.companyCode) {
+            againdata.companyName = wholeData.companyName
+        }else {
+            againdata.companyName = baseVal.supplierVo.companyName
+        }
+        
       }
     }
-    
-    if (wholeData) {
-      wholeData.supplierInfoVo = supplierInfoVo;
+    if (againdata) {
+        againdata.supplierInfoVo = supplierInfoVo;
     }
-    let saveData = wholeData;
-    console.log(saveData)
+    //如果为新增  拼加一个供应商ID在头上
+    againdata.supplierId = againdata.supplierId || query.id;
+    againdata.againdata = '1';
+    //let saveData = {...againdata};
+    setAgaindata(againdata)
+    //let saveData = againdata;
+    console.log(getModelRef.current)
+    getModelRef.current.handleModalVisible(true);
+  }
+  async function createSave(val) {
+    
+    console.log(val)
+    let params = {...againdata,...val};
+    console.log(params)
     triggerLoading(true)
-    const { success, message: msg } = await saveSupplierRegister(saveData);
+    const { success, message: msg } = await TemporarySupplierRegister(params);
     if (success) {
       message.success(msg);
       triggerLoading(false)
@@ -391,13 +436,9 @@ function CreateStrategy() {
     }
     triggerLoading(false)
   }
-  function ficationtype(id){
-    typeId = id;
-    initConfigurationTable();
-  }
   // 获取配置列表项
   useEffect(() => {
-    initConfigurationTable(); // 获取配置
+    initsupplierDetai(); // 详情
 
   }, []);
   // 返回
@@ -409,7 +450,7 @@ function CreateStrategy() {
       <Affix offsetTop={0}>
         <div className={classnames([styles.header, styles.flexBetweenStart])}>
           <span className={styles.title}>
-            供应商编辑
+            供应商变更新增编辑
             </span>
           <div className={styles.flexCenter}>
             <Button className={styles.btn} onClick={handleBack}>返回</Button>
@@ -437,7 +478,7 @@ function CreateStrategy() {
                       editformData={editData}
                       wholeData={wholeData}
                       wrappedComponentRef={BaseinfoRef}
-                      onClickfication={ficationtype}
+                      change={true}
                     />
                   </div>
                 </div>
@@ -561,6 +602,12 @@ function CreateStrategy() {
             }
           })
         }
+        <ReasonAndStartFlowModal
+          editData={editData}
+          disabled={true}
+          ReaModelOk={createSave} 
+          wrappedComponentRef={getModelRef}
+        />
       </div>
     </Spin>
   )
