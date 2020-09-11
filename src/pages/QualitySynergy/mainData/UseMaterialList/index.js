@@ -159,7 +159,7 @@ const Index = () => {
         onClick={() => buttonClick('frost')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='QUALITYSYNERGY_LSB_FROST'
+        key='QUALITYSYNERGY_UML_FROST'
         disabled={selectRows.length === 0 || judgeButtonDisabled(selectRows)}
       >{selectRows[0]?.frozen ? '解冻' : '冻结'}</Button>)
     }
