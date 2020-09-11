@@ -1,25 +1,27 @@
 import React, { createRef, useState, useRef, useEffect } from 'react';
 import { Button, Modal, message, Spin, Affix } from 'antd';
 import { router } from 'dva';
-import BaseInfo from '../components/BaseInfo'
-import Account from '../components/Account'
-import Authorizedclient from '../components/Authorizedclient'
-import Businessinfo from '../components/Businessinfo'
-import Bank from '../components/Bank'
-import SupplyRange from "../components/SupplyRange"
-import AgentInfo from '../components/AgentInfo'
-import QualificationCommon from '../components/QualificationCommon'
-import QualificationProfessional from '../components/QualificationProfessional'
+import BaseInfo from '../../supplierRegister/components/BaseInfo'
+import Account from '../../supplierRegister/components/Account'
+import Authorizedclient from '../../supplierRegister/components/Authorizedclient'
+import Businessinfo from '../../supplierRegister/components/Businessinfo'
+import Bank from '../../supplierRegister/components/Bank'
+import SupplyRange from "../../supplierRegister/components/SupplyRange"
+import AgentInfo from '../../supplierRegister/components/AgentInfo'
+import QualificationCommon from '../../supplierRegister/components/QualificationCommon'
+import QualificationProfessional from '../../supplierRegister/components/QualificationProfessional'
+import ReasonAndStartFlowModal from '../commons/ReasonAndStartFlowModal'
 import classnames from 'classnames';
 import {
-  findSupplierconfigureId,
-  TemporarySupplierRegister,
   SupplierconfigureDetail,
-  saveSupplierRegister,
   SaveSupplierconfigureService
 } from '@/services/supplierRegister';
-import {offlistChineseProvinces,offlistCityByProvince,offlistAreaByCity } from "../../../services/supplierConfig"
-import styles from '../components/index.less';
+import {
+  findByRequestIdForModify,
+  TemporarySupplierRegister,
+  saveSupplierRegister
+} from '@/services/SupplierModifyService'
+import styles from '../../supplierRegister/components/index.less';
 import { closeCurrent } from '../../../utils';
 
 function CreateStrategy() {
@@ -32,21 +34,40 @@ function CreateStrategy() {
   const Agentformef = useRef(null);
   const QualificationRef = useRef(null);
   const QualispecialRef = useRef(null);
+  const getModelRef = useRef(null);
   const [baseinfo, setbaseinfo] = useState([]);
   const [accountinfo, setaccountinfo] = useState([]);
   const [businesshide, setbusinesshide] = useState([]);
   const [initialValue, setInitialValue] = useState({});
   const [wholeData, setwholeData] = useState([]);
   const [editData, setEditData] = useState([]);
+  const [Reasonchange, setReasonchange] = useState(false);
   const [loading, triggerLoading] = useState(false);
   const [accountVo, setaccountVo] = useState(false);
   const [configure, setConfigure] = useState([]);
 
   const { query } = router.useLocation();
-  const { frameElementId, frameElementSrc = "", Opertype = "" } = query;
-  let typeId = query.frameElementId;
-  async function initConfigurationTable() {
-
+  // 变更详情
+  async function initsupplierDetai() {
+    triggerLoading(true);
+    let id = query.id;
+    const { data, success, message: msg } = await findByRequestIdForModify({id:id});
+    if (success) {
+        let suppliertype = data.supplierApplyVo.supplierInfoVo.supplierVo.supplierCategory.id
+        initConfigurationTable(suppliertype)
+        setTimeout(() => {
+          setInitialValue(data.supplierApplyVo.supplierInfoVo)
+          setEditData(data.supplierApplyVo.supplierInfoVo)
+          setReasonchange(data.supplierApplyVo)
+          setwholeData(data.supplierApplyVo)
+          triggerLoading(false);
+        }, 100); 
+    }else {
+      triggerLoading(false);
+      message.error(msg)
+    }
+  }
+  async function initConfigurationTable(typeId) {
     triggerLoading(true);
     let params = {catgroyid:typeId,property:1};
     const { data, success, message: msg } = await SaveSupplierconfigureService(params);
@@ -59,22 +80,6 @@ function CreateStrategy() {
         triggerLoading(false);
         message.error(msg)
       }
-
-    initsupplierDetai(); // 供应商详情
-    async function initsupplierDetai() {
-      triggerLoading(true);
-      let id = query.id;
-      const { data, success, message: msg } = await SupplierconfigureDetail({ supplierId: id });
-      if (success) {
-        setInitialValue(data.supplierInfoVo)
-        setEditData(data.supplierInfoVo)
-        setwholeData(data)
-        triggerLoading(false);
-      }else {
-        triggerLoading(false);
-        message.error(msg)
-      }
-    }
   }
   function configurelist(configure) {
     let handlebase = [],handleaccount = [],handbusiness = [];
@@ -168,13 +173,20 @@ function CreateStrategy() {
     if (baseVal) {
       if (baseVal.supplierVo.companyCode) {
         wholeData.companyCode = baseVal.supplierVo.companyCode
-        wholeData.companyName = baseVal.supplierVo.companyName 
+        if (baseVal.supplierVo.companyName === baseVal.supplierVo.companyCode) {
+          wholeData.companyName = wholeData.companyName
+        }else {
+          wholeData.companyName = baseVal.supplierVo.companyName
+        }
+        
       }
     }
     if (wholeData) {
       wholeData.supplierInfoVo = supplierInfoVo;
     }
+    wholeData.againdata = '0';
     let saveData = wholeData;
+    console.log(saveData)
     triggerLoading(true)
     const { success, message: msg } = await TemporarySupplierRegister(saveData);
     if (success) {
@@ -370,17 +382,38 @@ function CreateStrategy() {
     if (baseVal) {
       if (baseVal.supplierVo.companyCode) {
         wholeData.companyCode = baseVal.supplierVo.companyCode
-        wholeData.companyName = baseVal.supplierVo.companyName
+        if (baseVal.supplierVo.companyName === baseVal.supplierVo.companyCode) {
+          wholeData.companyName = wholeData.companyName
+        }else {
+          wholeData.companyName = baseVal.supplierVo.companyName
+        }
+        
       }
     }
     
     if (wholeData) {
       wholeData.supplierInfoVo = supplierInfoVo;
     }
-    let saveData = wholeData;
-    console.log(saveData)
+    setwholeData(wholeData)
+    getModelRef.current.handleModalVisible(true);
+    // let saveData = wholeData;
+    // console.log(saveData)
+    // triggerLoading(true)
+    // const { success, message: msg } = await saveSupplierRegister(saveData);
+    // if (success) {
+    //   message.success(msg);
+    //   triggerLoading(false)
+    //   closeCurrent()
+    //   return
+    // }else {
+    //   message.error(msg);
+    // }
+    // triggerLoading(false)
+  }
+  async function createSave(val) {
+    let params = {...wholeData,...val};
     triggerLoading(true)
-    const { success, message: msg } = await saveSupplierRegister(saveData);
+    const { success, message: msg } = await TemporarySupplierRegister(params);
     if (success) {
       message.success(msg);
       triggerLoading(false)
@@ -391,13 +424,9 @@ function CreateStrategy() {
     }
     triggerLoading(false)
   }
-  function ficationtype(id){
-    typeId = id;
-    initConfigurationTable();
-  }
   // 获取配置列表项
   useEffect(() => {
-    initConfigurationTable(); // 获取配置
+    initsupplierDetai(); // 获取详情
 
   }, []);
   // 返回
@@ -437,7 +466,6 @@ function CreateStrategy() {
                       editformData={editData}
                       wholeData={wholeData}
                       wrappedComponentRef={BaseinfoRef}
-                      onClickfication={ficationtype}
                     />
                   </div>
                 </div>
@@ -561,6 +589,12 @@ function CreateStrategy() {
             }
           })
         }
+        <ReasonAndStartFlowModal
+          editData={Reasonchange}
+          disabled={true}
+          ReaModelOk={createSave} 
+          wrappedComponentRef={getModelRef}
+        />
       </div>
     </Spin>
   )

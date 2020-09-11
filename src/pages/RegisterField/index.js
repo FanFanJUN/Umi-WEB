@@ -1,23 +1,32 @@
-import React, { useState, useRef, useEffect, createRef } from 'react';
+import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle, createRef } from 'react';
 import { ExtTable, WorkFlow, ExtModal, utils, ToolBar } from 'suid';
-import { Input, Button, message, Checkbox, Modal } from 'antd';
+import { Input, Button, message, Checkbox, Modal, Form } from 'antd';
 import { openNewTab, getFrameElement } from '@/utils';
 import Header from '@/components/Header';
 //import AdvancedForm from '@/components/AdvancedForm';
 import AutoSizeLayout from '@/components/AutoSizeLayout';
 import styles from './index.less';
 import CommonForm from './CommonForm'
-import {smBaseUrl } from '@/utils/commonUrl';
-import { SaveSupplierRegister,DetailSupplierRegister } from "@/services/supplierConfig"
+import { smBaseUrl } from '@/utils/commonUrl';
+import { SaveSupplierRegister, DetailSupplierRegister } from "@/services/supplierConfig"
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 const { Search } = Input
+const FormItem = Form.Item;
+const { Item, create } = Form;
 const { authAction, storage } = utils;
-function RegisterField({
-  //loading = false,
-  type = 'add',
-  onCreateLine = () => null,
+
+const tabformRef = forwardRef(({
+  form,
+  onBlured = () => null,
   onEditor = () => null,
-}) {
+  type = 'add',
+  headerForm = {}
+}, ref) => {
+  useImperativeHandle(ref, () => ({
+    sortTable,
+    form
+  }));
+  const { getFieldDecorator, setFieldsValue } = form;
   const headerRef = useRef(null)
   const tableRef = useRef(null)
   const commonFormRef = createRef();
@@ -31,40 +40,7 @@ function RegisterField({
   const [loading, triggerLoading] = useState(false);
   const [attachId, setAttachId] = useState('')
   const { account } = storage.sessionStorage.get("Authorization");
-  const columns = [
-    {
-      title: '字段代码',
-      dataIndex: 'smFieldCode',
-      width: 220
-    },
-    {
-      title: '字段名称',
-      dataIndex: 'smFieldName',
-      width: 220
-    },
-    {
-      title: '信息分类',
-      dataIndex: 'smMsgTypeName',
-      width: 160
-    },
-    {
-      title: '表名称',
-      dataIndex: 'smTableName',
-      width: 200
-    },
-    {
-      title: '字段类型',
-      dataIndex: 'smFieldTypeName',
-      width: 120
-    },
-    { title: '添加人', dataIndex: 'creatorName',width: 180},
-    { title: '添加时间', dataIndex: 'createdDate', width: 200 },
-    {
-      title: '备注',
-      dataIndex: 'smExplain',
-      width: 220
-    },
-  ].map(_ => ({ ..._, align: 'center' }))
+  //const { attachment = null } = initialValue;
   /* 按钮禁用状态控制 */
   const FRAMEELEMENT = getFrameElement();
   const empty = selectRowKeys.length === 0;
@@ -73,10 +49,26 @@ function RegisterField({
       url: `${smBaseUrl}/api/SmSupplierConfigService/findByPage`,
       params: {
         ...searchValue,
-        quickSearchProperties:['smFieldCode','smFieldName']
+        pageInfo:{page:1,rows:100},
+        quickSearchProperties: ['smFieldCode', 'smFieldName']
       },
       type: 'POST'
     },
+  }
+  function onInput(data, index) {
+    return (e) => {
+      const tablereflist = tableRef.current.data;
+      const selectData = tablereflist.slice(0)
+      selectData[index] = data;
+      selectData[index].smSort = e.target.value;
+      onBlured(selectData)
+    }
+  }
+  function sortTable() {
+    const sorttabledata = tableRef.current.data;
+    return {
+      sorttabledata
+    }
   }
   // 右侧搜索
   const searchBtnCfg = (
@@ -90,7 +82,54 @@ function RegisterField({
       <Button type='primary' onClick={handleQuickSerach}>查询</Button>
     </>
   )
-
+  const tableProps = {
+    columns: [
+      {
+        title: '字段代码',
+        dataIndex: 'smFieldCode',
+        width: 220
+      },
+      {
+        title: '字段名称',
+        dataIndex: 'smFieldName',
+        width: 220
+      },
+      {
+        title: '信息分类',
+        dataIndex: 'smMsgTypeName',
+        width: 160
+      },
+      {
+        title: '表名称',
+        dataIndex: 'smTableName',
+        width: 200
+      },
+      {
+        title: '字段类型',
+        dataIndex: 'smFieldTypeName',
+        width: 120
+      },
+      { title: '添加人', dataIndex: 'creatorName', width: 180 },
+      { title: '添加时间', dataIndex: 'createdDate', width: 200 },
+      {
+        title: '排序码',
+        dataIndex: 'standby1',
+        width: 220
+      },
+      {
+        title: '备注',
+        dataIndex: 'smExplain',
+        width: 220
+      },
+    ],
+    sort: {
+      multiple: false,
+      field: { standby1 : 'asc' },
+    },
+  }
+  function handleCheck() {
+    console.log(tableRef.current.data)
+  }
   useEffect(() => {
     window.parent.frames.addEventListener('message', listenerParentClose, false);
     return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
@@ -120,8 +159,15 @@ function RegisterField({
   // 新增或编辑
   function showModal(t = 'add') {
     if (t === 'editor') {
-      const [v] = selectRowKeys;
-      const [row] = selectedRows;
+      let RegFild;
+      if (selectedRows.length > 1) {
+        RegFild = selectedRows.splice(1);
+      }else {
+        RegFild = selectedRows
+      }
+      // const [v] = selectRowKeys;
+      // const [row] = selectedRows;
+      const [row] = RegFild;
       setInitialValue({ ...row })
     }
     setVisible(true)
@@ -194,7 +240,6 @@ function RegisterField({
       }
     })
   }
-
   return (
     <>
       <Header
@@ -225,7 +270,7 @@ function RegisterField({
       <AutoSizeLayout>
         {
           (height) => <ExtTable
-            columns={columns}
+            {...tableProps}
             showSearch={false}
             ref={tableRef}
             rowKey={(item) => item.id}
@@ -233,9 +278,9 @@ function RegisterField({
               multiSelect: false
             }}
             allowCancelSelect={true}
+            remotePaging={true}
             size='small'
             height={height}
-            remotePaging={true}
             ellipsis={false}
             onSelectRow={handleSelectedRows}
             selectedRowKeys={selectRowKeys}
@@ -264,10 +309,11 @@ function RegisterField({
           }
         ></Modal>
       </div>
-      
+
 
     </>
   )
 }
-
-export default RegisterField
+)
+const StrategyTable = create()(tabformRef)
+export default StrategyTable;
