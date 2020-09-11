@@ -2,14 +2,14 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 14:29:17
- * @LastEditTime: 2020-09-11 17:58:37
+ * @LastEditTime: 2020-09-11 18:15:29
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/index.js
  * @Description: 资料填报 Tabs
  * @Connect: 1981824361@qq.com
  */
 import React, { useState, Fragment } from 'react';
 import styles from './index.less';
-import { Tabs, Checkbox } from 'antd';
+import { Tabs, Checkbox, BackTop, Tooltip } from 'antd';
 import {
   BaseCondition, SellCondition, ResearchAbility, QualityAbility,
   ManagerAbility, ManufactureAbility, HdssControll, DWC, Other, QuotationAndGPCA,
@@ -119,6 +119,9 @@ function DataFillIn({
 
   return (
     <div>
+     <Tooltip title="返回顶部保存信息">
+      <BackTop visibilityHeight={400} />
+      </Tooltip>
       <Tabs tabPosition='left' onChange={(activeKey) => handleChange(activeKey)}>
         {/* 基本情况 */}
         <TabPane key='baseCondition' tab={baseConditionTab}>
