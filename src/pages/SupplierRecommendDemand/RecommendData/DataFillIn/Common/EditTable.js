@@ -2,14 +2,15 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-10 10:57:33
- * @LastEditTime: 2020-09-10 18:46:02
+ * @LastEditTime: 2020-09-11 16:36:35
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/common/EditTable.js
  * @Description:  函数式可编辑行 Table组件
  * @Connect: 1981824361@qq.com
  */
 import React, { useState, useRef, Fragment } from 'react';
-import { Input, InputNumber, Popconfirm, Form, Divider } from 'antd';
+import { Input, InputNumber, Popconfirm, Form, Divider, Button } from 'antd';
 import { ExtTable } from 'suid';
+import PropTypes from 'prop-types';
 import AutoSizeLayout from '../../../../supplierRegister/SupplierAutoLayout';
 
 
@@ -63,10 +64,11 @@ const EditableCell = (params) => {
 
 const EditableTable = (props) => {
 
-    const { form, dataSource, columns, rowKey, isEditTable=false } = props;
+    const { form, dataSource, columns, rowKey, isEditTable=false, isToolBar=false } = props;
 
     const [editingKey, setEditingKey] = useState('');
-
+    const { propsData, setPropsData} = useState(dataSource);
+    console.log(propsData);
     const tableRef = useRef(null);
 
     function isEditing(record) {
@@ -170,12 +172,17 @@ const EditableTable = (props) => {
         });
     }
 
+    function handleAdd() {
+
+    }
+
     return (
         <EditableContext.Provider value={props.form}>
             <AutoSizeLayout>
                 {(h) => <ExtTable
                     bordered
-                    dataSource={dataSource}
+                    // height={h}
+                    dataSource={propsData}
                     columns={mergeColumns}
                     //   pagination={{
                     //     onChange: this.cancel,
@@ -184,6 +191,18 @@ const EditableTable = (props) => {
                     showSearch={false}
                     rowKey={rowKey}
                     remotePaging={true}
+                    pagination={{
+                        // pageSizeOptions: ['5','10', '15'],
+                        defaultPageSize: 5,
+                        showQuickJumper: true
+                    }}
+                    toolBar={isToolBar?{
+                        left: (
+                          <Button type="primary" onClick={() => handleAdd()}>
+                            新增
+                          </Button>
+                        ),
+                      }: null}
                 />}
             </AutoSizeLayout>
         </EditableContext.Provider>
@@ -191,5 +210,19 @@ const EditableTable = (props) => {
 }
 
 const EditableFormTable = Form.create()(EditableTable);
+
+// const { form, dataSource, columns, rowKey, isEditTable=false, isToolBar=false } = props;
+EditableTable.protoType={
+    //数据源
+    dataSource:PropTypes.array,
+    //列
+    columns:PropTypes.array,
+    //列表唯一key
+    rowKey:PropTypes.any,
+    //Tables是否需要operation  编辑行  删除选项
+    isEditTable:PropTypes.bool,
+    //是否显示工具栏（新增||删除 ReactNode）
+    isToolBar:PropTypes.bool,
+  }
 
 export default EditableFormTable;

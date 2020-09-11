@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:58:26
- * @LastEditTime: 2020-09-11 09:48:40
+ * @LastEditTime: 2020-09-11 18:00:58
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/DWC/index.js
  * @Description: 合作意愿 Tab
  * @Connect: 1981824361@qq.com
@@ -43,6 +43,13 @@ const DWC = (props) => {
 
     const { getFieldDecorator, setFieldsValue } = props.form;
 
+    function handleSave() {
+        form.validateFieldsAndScroll((error, value)=>{
+            console.log(value);
+            if(error) return;
+        })
+    }
+
     return (
         <div>
             <Spin spinning={data.loading}>
@@ -53,7 +60,7 @@ const DWC = (props) => {
                     }}
                     title="合作意愿"
                     extra={[
-                        <Button key="save" type="primary" style={{ marginRight: '12px' }}>
+                        <Button key="save" type="primary" style={{ marginRight: '12px' }} onClick={()=>handleSave()}>
                             保存
                         </Button>,
                     ]}

@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-09 13:29:41
- * @LastEditTime: 2020-09-09 13:44:22
+ * @LastEditTime: 2020-09-11 16:16:05
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/BaseCondition/GenQualification.js
  * @Description: 通用资质 Table
  * @Connect: 1981824361@qq.com
@@ -10,6 +10,7 @@
 import { useEffect, useState, useRef, Fragment } from 'react'
 import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import { Button } from 'antd';
+import EditableFormTable from '../common/EditTable';
 
 export default function () {
     const [selectedRowKeys, setRowKeys] = useState([]);
@@ -41,7 +42,7 @@ export default function () {
             <Button className={styles.btn}>批量导入</Button>
         </div> */}
         <div>
-            <ExtTable
+            <EditableFormTable
                 columns={columns}
                 bordered
                 allowCancelSelect

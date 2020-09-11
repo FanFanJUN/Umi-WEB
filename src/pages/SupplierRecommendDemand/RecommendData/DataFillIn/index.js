@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 14:29:17
- * @LastEditTime: 2020-09-10 16:50:09
+ * @LastEditTime: 2020-09-11 17:58:37
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/index.js
  * @Description: 资料填报 Tabs
  * @Connect: 1981824361@qq.com
@@ -10,8 +10,10 @@
 import React, { useState, Fragment } from 'react';
 import styles from './index.less';
 import { Tabs, Checkbox } from 'antd';
-import { BaseCondition, SellCondition, ResearchAbility, QualityAbility,
-   ManagerAbility, ManufactureAbility, HdssControll, DWC, Other, QuotationAndGPCA, } from './Tabs';
+import {
+  BaseCondition, SellCondition, ResearchAbility, QualityAbility,
+  ManagerAbility, ManufactureAbility, HdssControll, DWC, Other, QuotationAndGPCA,
+} from './Tabs';
 
 const { TabPane } = Tabs;
 
@@ -110,9 +112,6 @@ function DataFillIn({
       <Checkbox checked={true} />
     </div>
   )
-  {/* const TabPanes = [
-    {key: 'baseCondition', tab: baseConditionTab, app: <BaseCondition params ={{}} /> }
-  ] */}
 
   function handleChange(activeKey) {
     setActivityKey(() => (activeKey));
@@ -120,45 +119,45 @@ function DataFillIn({
 
   return (
     <div>
-      <Tabs tabPosition='left' onChange={(activeKey) => handleChange(activeKey)} activityKey={activityKey}>
+      <Tabs tabPosition='left' onChange={(activeKey) => handleChange(activeKey)}>
         {/* 基本情况 */}
         <TabPane key='baseCondition' tab={baseConditionTab}>
-          {activityKey === 'baseCondition' ? <BaseCondition params="初始化"/> : <Fragment />}
+          <BaseCondition />
         </TabPane>
 
         {/* 销售情况 */}
         <TabPane key='sellCondition' tab={sellConditionTab}>
-          {activityKey === 'sellCondition' ? <SellCondition /> : <Fragment />}
+          <SellCondition />
         </TabPane>
 
         {/* 研发能力 */}
         <TabPane key='researchAbility' tab={researchAbilityTab}>
-          {activityKey === 'researchAbility' ? <ResearchAbility /> : <Fragment />}
+          <ResearchAbility />
         </TabPane>
 
         {/* 质量能力 */}
         <TabPane key='qualityAbility' tab={qualityAbilityTab}>
-          {activityKey === 'qualityAbility' ? <QualityAbility /> : <Fragment />}
+          <QualityAbility />
         </TabPane>
 
         {/* 供应链管理能力 */}
         <TabPane key='managerAbility' tab={managerAbilityTab}>
-          {activityKey === 'managerAbility' ? <ManagerAbility /> : <Fragment />}
+          <ManagerAbility />
         </TabPane>
 
         {/* 制造能力 */}
         <TabPane key='manufactureAbility' tab={manufactureAbilityTab}>
-          {activityKey === 'manufactureAbility' ? <ManufactureAbility /> : <Fragment />}
+          <ManufactureAbility />
         </TabPane>
 
         {/* 产品有害物质管控 */}
         <TabPane key='hdssControll' tab={hdssControllTab}>
-          {activityKey === 'hdssControll' ? <HdssControll /> : <Fragment />}
+          <HdssControll />
         </TabPane>
 
         {/* 合作意愿 */}
         <TabPane key='DWC' tab={DWCTab}>
-          {activityKey === 'DWC' ? <DWC /> : <Fragment />}
+          <DWC />
         </TabPane>
 
         {/* 企业社会责任 */}
@@ -173,12 +172,12 @@ function DataFillIn({
 
         {/* 其他附加资料 */}
         <TabPane key='other' tab={otherTab}>
-          {activityKey === 'other' ? <Other /> : <Fragment />}
+          <Other />
         </TabPane>
 
         {/* 报价单及成分分析表 */}
         <TabPane key='quotationAndGPCA' tab={quotationAndGPCATab}>
-          {activityKey === 'quotationAndGPCA' ? <QuotationAndGPCA /> : <Fragment />}
+          <QuotationAndGPCA />
         </TabPane>
       </Tabs>
     </div>

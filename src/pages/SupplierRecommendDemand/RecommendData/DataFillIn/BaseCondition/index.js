@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 15:52:52
- * @LastEditTime: 2020-09-09 15:21:21
+ * @LastEditTime: 2020-09-11 17:40:19
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/BaseCondition/index.js
  * @Description: 基本情况 Tab
  * @Connect: 1981824361@qq.com
@@ -23,8 +23,15 @@ const BaseCondition = (props) => {
         title: '基本情况',
         userInfo: {}
     });
-    const baseInfoRef = useRef(null);
+    const getFormRef = useRef();
 
+    function handleSave () {
+        const formRef = getFormRef.current.form;
+        formRef.validateFieldsAndScroll((error, value)=>{
+            console.log(value);
+            if(error) return;
+        })
+    }
     return (
         <div>
             <Spin spinning={data.loading}>
@@ -35,13 +42,13 @@ const BaseCondition = (props) => {
                     }}
                     title="基本概况"
                     extra={[
-                        <Button key="save" type="primary" style={{marginRight: '12px'}}>
+                        <Button key="save" type="primary" style={{ marginRight: '12px' }} onClick={()=>handleSave()}>
                             保存
                         </Button>,
                     ]}
                 >
                     <BaseInfo
-                        wrappedComponentRef={baseInfoRef}
+                        wrappedComponentRef={getFormRef}
                         userInfo={data.userInfo}
                         type={data.type}
                     />

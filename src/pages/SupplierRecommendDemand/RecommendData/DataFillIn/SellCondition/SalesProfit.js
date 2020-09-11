@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-09 15:28:52
- * @LastEditTime: 2020-09-11 09:18:28
+ * @LastEditTime: 2020-09-11 16:37:57
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/SellCondition/SalesProfit.js
  * @Description: 销售收入及利润 Table
  * @Connect: 1981824361@qq.com
@@ -77,16 +77,16 @@ const SalesProfit = (props)=> {
       setDataSource(newData);
     }
     return <Fragment>
-        <div className={styles.mb}>
+        {/* <div className={styles.mb}>
             <Button type='primary' className={styles.btn} onClick={() => { editRef.current.showModal('add') }}>新增</Button>
-            {/* <Button className={styles.btn} onClick={handleDelete} type="danger">删除</Button> */}
-        </div>
+        </div> */}
         <EditTable
            dataSource = {dataSource}
            columns={columns}
            rowKey='name1'
            setNewData={setNewData}
            isEditTable
+           isToolBar
             // bordered
             // allowCancelSelect
             // showSearch={false}

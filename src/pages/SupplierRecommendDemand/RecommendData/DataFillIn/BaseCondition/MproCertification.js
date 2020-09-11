@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-09 13:47:57
- * @LastEditTime: 2020-09-09 14:02:58
+ * @LastEditTime: 2020-09-11 17:24:52
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/BaseCondition/MproCertification.js
  * @Description: 管理体系及产品认证
  * @Connect: 1981824361@qq.com
@@ -12,6 +12,7 @@ import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import { Button, Divider } from 'antd';
 import moment from 'moment';
 import styles from '../../DataFillIn/index.less';
+import EditableFormTable from '../common/EditTable';
 
 export default function () {
     const [selectedRowKeys, setRowKeys] = useState([]);
@@ -74,7 +75,7 @@ export default function () {
         </div> */}
         <div>
             <Divider>管理体系</Divider>
-            <ExtTable
+            <EditableFormTable
                 columns={columnsForMan}
                 bordered
                 allowCancelSelect
@@ -89,11 +90,11 @@ export default function () {
             // {...tableProps}
             />
             <Divider>产品认证</Divider>
-            <div className={styles.mb}>
+            {/* <div className={styles.mb}>
                 <Button type='primary' className={styles.btn} onClick={() => { editRef.current.showModal('add') }}>新增</Button>
                 <Button className={styles.btn} onClick={handleDelete} type="danger">删除</Button>
-            </div>
-            <ExtTable
+            </div> */}
+            <EditableFormTable
                 columns={columnsForPro}
                 bordered
                 allowCancelSelect
@@ -105,14 +106,16 @@ export default function () {
                 size='small'
                 onSelectRow={handleSelectedRows}
                 selectedRowKeys={selectedRowKeys}
+                isEditTable
+                isToolBar
             // {...tableProps}
             />
             <Divider>其他认证</Divider>
-            <div className={styles.mb}>
+            {/* <div className={styles.mb}>
                 <Button type='primary' className={styles.btn} onClick={() => { editRef.current.showModal('add') }}>新增</Button>
                 <Button className={styles.btn} onClick={handleDelete} type="danger">删除</Button>
-            </div>
-            <ExtTable
+            </div> */}
+            <EditableFormTable
                 columns={columnsForPro}
                 bordered
                 allowCancelSelect
@@ -124,7 +127,10 @@ export default function () {
                 size='small'
                 onSelectRow={handleSelectedRows}
                 selectedRowKeys={selectedRowKeys}
-            // {...tableProps}
+                // {...tableProps}
+                isEditTable
+                isToolBar
+                dataSource={[]}
             />
         </div>
     </Fragment>

@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-09 11:25:57
- * @LastEditTime: 2020-09-09 11:45:13
+ * @LastEditTime: 2020-09-11 16:15:34
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/BaseCondition/AuthPrincipal.js
  * @Description: 授权委托人 Table
  * @Connect: 1981824361@qq.com
@@ -10,6 +10,7 @@
 import { useEffect, useState, useRef, Fragment } from 'react'
 import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import { Button } from 'antd';
+import EditableFormTable from '../common/EditTable';
 
 export default function () {
     const [selectedRowKeys, setRowKeys] = useState([]);
@@ -42,7 +43,7 @@ export default function () {
             <Button className={styles.btn}>批量导入</Button>
         </div> */}
         <div>
-            <ExtTable
+            <EditableFormTable
                 columns={columns}
                 bordered
                 allowCancelSelect
@@ -50,7 +51,7 @@ export default function () {
                 remotePaging
                 checkbox={{ multiSelect: false }}
                 ref={tableRef}
-                rowKey={(item) => item.id}
+                rowKey={(item) => item.name1}
                 size='small'
                 onSelectRow={handleSelectedRows}
                 selectedRowKeys={selectedRowKeys}
