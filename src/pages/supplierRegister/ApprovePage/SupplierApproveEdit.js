@@ -281,7 +281,7 @@ const SupplierEditRef = forwardRef(({
                 </div>
               );
             }
-            if (item.operationCode !== '3' && item.fieldCode === 'enterpriseProfile') {
+            if (item.operationCode !== '3' && item.fieldCode === 'businessScope') {
               return (
                 <div className={styles.bgw}>
 

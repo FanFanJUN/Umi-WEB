@@ -127,24 +127,23 @@ function CreateStrategy() {
 
       </Affix>
       <div className={styles.wrapper}>
-        <div className={styles.bgw}>
-            <div className={styles.title}>基本信息</div>
-            <div >
-              <BaseinfiDetail
-                
-                editformData={editData}
-                baseinfo={baseinfo}
-                wrappedComponentRef={BaseinfoRef}
-              />
-            </div>
-          </div>
           {
           configure.map((item, index) => {
-            // if (item.smMsgTypeCode !== '3' && item.fieldCode === 'supplierCategoryName') {
-            //   return (
+            if (item.smMsgTypeCode !== '3' && item.fieldCode === 'name') {
+              return (
+                <div className={styles.bgw}>
+                  <div className={styles.title}>基本信息</div>
+                  <div >
+                  <BaseinfiDetail
                 
-            //   )
-            // } 
+                      editformData={editData}
+                      baseinfo={baseinfo}
+                      wrappedComponentRef={BaseinfoRef}
+                    />
+                  </div>
+                </div>
+              )
+            } 
             if (item.operationCode !== '3' && item.fieldCode === 'mobile') {
               return (
                 <div className={styles.bgw}>
@@ -178,7 +177,7 @@ function CreateStrategy() {
                 </div>
               );
             }
-            if (item.operationCode !== '3' && item.fieldCode === 'enterpriseProfile') {
+            if (item.operationCode !== '3' && item.fieldCode === 'businessScope') {
               return (
                 <div className={styles.bgw}>
 

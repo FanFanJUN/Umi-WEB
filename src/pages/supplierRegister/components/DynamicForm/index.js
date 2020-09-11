@@ -76,7 +76,8 @@ const CommonconfigRef = forwardRef(({
   editData = [],
   wholeData = [],
   selectfication = () => null,
-  approve
+  approve,
+  change
 }, ref) => {
   useImperativeHandle(ref, () => ({
     setHeaderFields,
@@ -101,7 +102,6 @@ const CommonconfigRef = forwardRef(({
   // 设置表单参数
   function setHeaderFields(fields) {
     const { attachmentId = null, ...fs } = fields;
-    // setAttachment(attachmentId)
     setFieldsValue(fs)
   }
   //注册地址同步办公地址
@@ -249,7 +249,7 @@ const CommonconfigRef = forwardRef(({
                             rules: [{ required: item.verifi === '0', message: '请选择供应商分类', whitespace: true }],
                           })(
                             <ComboTree
-                              disabled={approve === true}
+                              disabled={approve === true || change === true}
                               {...purchaseCompanyPropsreg}
                               form={form} showSearch={false}
                               name='supplierVo.supplierCategoryName'
@@ -275,6 +275,7 @@ const CommonconfigRef = forwardRef(({
                           rules: [{ required: item.verifi === '0', message: "请输入供应商名称！", }]
                         })(
                           <Input
+                            disabled={change === true}
                             onBlur={handleCheckName}
                             maxLength={40}
                             placeholder={'请输入供应商名称'} />
@@ -352,7 +353,7 @@ const CommonconfigRef = forwardRef(({
                         {
                           isView ?
                             <span>{editData && editData.supplierVo && editData.supplierVo.enterpriseProperty ? editData.supplierVo.enterpriseProperty.name : ''}</span> :
-                            getFieldDecorator('supplierVo.enterprisePropertyId'),
+                          getFieldDecorator('supplierVo.enterprisePropertyId'),
                           getFieldDecorator('supplierVo.enterprisePropertyName', {
                             initialValue: editData && editData.supplierVo ? editData.supplierVo.enterprisePropertyId : '',
                             rules: [{ required: item.verifi === '0', message: '请选择企业性质', whitespace: true }],

@@ -17,7 +17,8 @@ const BaseinfoRef = forwardRef(({
 	initialValues = {},
 	onClickfication = () => null,
 	onChangeMaterialLevel = () => null,
-	approve
+	approve,
+	change
 }, ref) => {
 	useImperativeHandle(ref, () => ({
 		getBaseInfo,
@@ -182,6 +183,7 @@ const BaseinfoRef = forwardRef(({
 				formItems={fieldsList}
 				selectfication={ficationInfo}
 				approve={approve}
+				change={change}
 			/>
 		</div>
 	)
