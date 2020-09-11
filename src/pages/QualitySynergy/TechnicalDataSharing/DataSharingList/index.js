@@ -5,21 +5,17 @@ import { Button, Input } from 'antd';
 import styles from './index.less';
 import { ExtTable, utils } from 'suid';
 import {
-  BUConfig,
   BUConfigNoFrost,
   distributionProps,
   materialCode, MaterialConfig, MaterialGroupConfig,
-  materialStatus,
-  PDMStatus,
-  statusProps,
+  statusProps, StrategicPurchaseConfig,
 } from '../../commonProps';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
-import { baseUrl, samBaseUrl, smBaseUrl } from '../../../../utils/commonUrl';
+import { smBaseUrl } from '../../../../utils/commonUrl';
 import { openNewTab } from '../../../../utils';
 import SupplierModal from './component/SupplierModal';
 import TacticAssign  from './component/TacticAssign';
-import EventModal from '../../mainData/BUCompanyOrganizationRelation/component/EventModal';
-const { authAction, storage } = utils;
+const { authAction } = utils;
 const { Search } = Input;
 
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
@@ -72,6 +68,9 @@ export default function() {
 
   // 高级查询搜索
   const handleAdvancedSearch = (value) => {
+    value.materialCode = value.materialCode_name
+    value.materialGroupCode = value.materialGroupCode_name
+    value.strategicPurchaseCode = value.strategicPurchaseCode_name
     console.log(value, '高级查询')
   }
 
@@ -79,7 +78,7 @@ export default function() {
   const formItems = [
     { title: '物料代码', key: 'materialCode', type: 'list', props: MaterialConfig },
     { title: '物料组', key: 'materialGroupCode', type: 'list', props: MaterialGroupConfig },
-    { title: '战略采购', key: 'strategicPurchaseCode', type: 'list', props: materialCode },
+    { title: '战略采购', key: 'strategicPurchaseCode', type: 'list', props: StrategicPurchaseConfig },
     { title: '业务单元', key: 'buCode', type: 'list', props: BUConfigNoFrost},
     { title: '申请人', key: 'applyPeopleName', props: { placeholder: '输入申请人查询' } },
     { title: '分配供应商状态', key: 'allotSupplierState', type: 'list', props: distributionProps },

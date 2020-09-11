@@ -59,6 +59,7 @@ const EventModal = (props) => {
       visible={visible}
       title={title}
       onCancel={onCancel}
+      maskClosable={false}
       onOk={onOk}
       afterClose={clearSelected}
     >

@@ -242,6 +242,25 @@ export async function DeleteBasicMaterials(params) {
   });
 }
 
+// 战略采购列表
+export const StrategicPurchaseConfig = {
+  remotePaging: true,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${baseUrl}/purchaseGroup/findByPagesAll`,
+  },
+  rowKey: 'name',
+  reader: {
+    name: 'code',
+    description: 'name',
+  },
+  placeholder: '选择战略采购',
+  style: {
+    width: '100%',
+  },
+};
+
 // 物料组列表
 export const MaterialGroupConfig = {
   remotePaging: true,
@@ -324,7 +343,7 @@ export const materialCode = {
 
 // 组织列表
 export const OrganizationByCompanyCodeConfig = {
-  remotePaging: false,
+  remotePaging: true,
   rowKey: 'code',
   reader: {
     field: ['code', 'id'],

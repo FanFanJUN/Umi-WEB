@@ -74,13 +74,13 @@ let BaseInfo = React.forwardRef((props, ref) => {
           <Col span={0}>{hideFormItem('buId', type === 'add' ? '' : data.buId)}</Col>
           <Row>
             <Col span={12}>
-              <FormItem {...formLayout} label={'基本单位'}>
+              <FormItem {...formLayout} label={'业务单元'}>
                 {isView ? <span>{data.buName}</span> : getFieldDecorator('buName', {
                   initialValue: type === 'add' ? '' : data.buName,
                   rules: [
                     {
                       required: true,
-                      message: '基本单位不能为空',
+                      message: '业务单元不能为空',
                     },
                   ],
                 })(

@@ -58,6 +58,7 @@ const EventModal = (props) => {
       title={title}
       onCancel={onCancel}
       onOk={onOk}
+      maskClosable={false}
       afterClose={clearSelected}
     >
       <Form>
@@ -137,15 +138,15 @@ const EventModal = (props) => {
                   field={['purchaseOrgCode', 'purchaseOrgId']}
                   name={'purchaseOrgName'}
                   cascadeParams={{
-                    companyCode: getFieldValue('corporationCode'),
+                    Q_EQ_corporationCode: getFieldValue('corporationCode'),
                   }}
                   store={{
                     params: {
-                      companyCode: getFieldValue('corporationCode'),
+                      Q_EQ_corporationCode: getFieldValue('corporationCode'),
                     },
                     type: 'GET',
                     autoLoad: false,
-                    url: `${baseUrl}/buCompanyPurchasingOrganization/findPurchaseOrganizationByCompanyCode`,
+                    url: `${baseUrl}/purchaseOrg/listByPage`,
                   }}
                   {...OrganizationByCompanyCodeConfig}
                 />)
