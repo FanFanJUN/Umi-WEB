@@ -1,12 +1,12 @@
 import React, { Fragment, useRef, useState } from 'react';
 import { Form, Button, message, Modal } from 'antd';
 import styles from '../../TechnicalDataSharing/DataSharingList/index.less';
-import { baseUrl, smBaseUrl } from '../../../../utils/commonUrl';
+import { baseUrl } from '../../../../utils/commonUrl';
 import { DataImport, ExtTable, utils, AuthAction } from 'suid';
 import EventModal from './component/EventModal';
 import {
   AddTheListOfRestrictedMaterials, DeleteTheListOfRestrictedMaterials,
-  EditTheListOfRestrictedMaterials, FrostTheListOfRestrictedMaterials,
+  EditTheListOfRestrictedMaterials, FrostTheListOfRestrictedMaterials, judgeButtonDisabled,
   JudgeTheListOfRestrictedMaterials, SaveTheListOfRestrictedMaterials,
 } from '../../commonProps';
 import { AutoSizeLayout } from '../../../../components';
@@ -58,10 +58,7 @@ const Index = () => {
         await deleteData();
         break;
       case 'frost':
-        await editData(type);
-        break;
-      case 'thaw':
-        await editData(type);
+        await editData();
         break;
     }
   };
@@ -85,11 +82,10 @@ const Index = () => {
     });
   };
 
-  const editData = async (type) => {
-    const frozen = type === 'frost'
+  const editData = async () => {
     const data = await FrostTheListOfRestrictedMaterials({
       ids: selectedRowKeys.toString(),
-      flag: frozen
+      flag: !selectRows[0]?.frozen,
     });
     if (data.success) {
       tableRef.current.manualSelectedRows();
@@ -163,18 +159,9 @@ const Index = () => {
         onClick={() => buttonClick('frost')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='QUALITYSYNERGY_UML_FROST'
-        disabled={selectRows.length === 0}
-      >冻结</Button>)
-    }
-    {
-      authAction(<Button
-        onClick={() => buttonClick('thaw')}
-        className={styles.btn}
-        ignore={DEVELOPER_ENV}
-        key='QUALITYSYNERGY_UML_THAW'
-        disabled={selectRows.length === 0}
-      >解冻</Button>)
+        key='QUALITYSYNERGY_LSB_FROST'
+        disabled={selectRows.length === 0 || judgeButtonDisabled(selectRows)}
+      >{selectRows[0]?.frozen ? '解冻' : '冻结'}</Button>)
     }
     {
       <AuthAction key="QUALITYSYNERGY_UML_IMPORT" ignore>

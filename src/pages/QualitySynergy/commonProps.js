@@ -2,11 +2,20 @@ import { smBaseUrl, baseUrl, recommendUrl } from '../../utils/commonUrl';
 import request from '../../utils/request';
 import React from 'react';
 
+// 生成随机数
 export const getRandom = num => {
-  return Math.floor((Math.random()+Math.floor(Math.random()*9+1))*Math.pow(10,num-1));
-}
+  return Math.floor((Math.random() + Math.floor(Math.random() * 9 + 1)) * Math.pow(10, num - 1));
+};
 
-
+// 判断解冻按钮是否禁用
+export const judgeButtonDisabled = (value) => {
+  if (value?.length !== 0) {
+    const frozen = value[0].frozen
+    return !value.every(item => {
+      return item.frozen === frozen
+    });
+  }
+};
 
 const commonProps = {
   reader: {
@@ -243,7 +252,7 @@ export const MaterialGroupConfig = {
   },
   rowKey: 'materialGroupCode',
   reader: {
-    field: ['id','materialGroupDesc'],
+    field: ['id', 'materialGroupDesc'],
     name: 'materialGroupCode',
     description: 'materialGroupDesc',
   },
@@ -325,7 +334,7 @@ export const BUModelConfig = {
   style: {
     width: '100%',
   },
-  placeholder: '选择业务单元模块'
+  placeholder: '选择业务单元模块',
 };
 
 // BU列表未冻结
@@ -345,7 +354,7 @@ export const BUConfigNoFrost = {
   style: {
     width: '100%',
   },
-  placeholder: '选择业务单元'
+  placeholder: '选择业务单元',
 };
 
 // BU列表
@@ -368,7 +377,7 @@ export const BUConfig = {
   style: {
     width: '100%',
   },
-  placeholder: '选择业务单元'
+  placeholder: '选择业务单元',
 };
 
 // 基本单位列表
@@ -383,7 +392,7 @@ export const BasicUnitList = {
   reader: {
     name: 'basicUnitCode',
     description: 'basicUnitCode',
-    field: ['basicUnitId', 'basicUnitName']
+    field: ['basicUnitId', 'basicUnitName'],
   },
   style: {
     width: '100%',
@@ -403,7 +412,7 @@ export const limitMaterialList = {
     field: ['id', 'limitMaterialName', 'casNo'],
     description: 'limitMaterialName',
   },
-  placeholder: '选择限用物质列表'
+  placeholder: '选择限用物质列表',
 };
 
 // 适用范围-非冻结
@@ -414,8 +423,8 @@ export const limitScopeList = {
     autoLoad: false,
     url: `${baseUrl}/LimitMaterialUnitScopeData/findAllFrozenFalseAndWhetherDeleteFalse`,
     params: {
-      quickSearchProperties:[]
-    }
+      quickSearchProperties: [],
+    },
   },
   rowKey: 'scopeCode',
   reader: {
@@ -423,7 +432,7 @@ export const limitScopeList = {
     field: ['id', 'scopeCode'],
     description: 'scopeCode',
   },
-  placeholder: '选择适用范围'
+  placeholder: '选择适用范围',
 };
 
 // 物料代码
@@ -553,5 +562,5 @@ export const buList = {
     field: ['buName', 'buId'],
     description: 'buName',
   },
-  placeholder: '选择业务单元'
+  placeholder: '选择业务单元',
 };
