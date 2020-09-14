@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-09 10:16:41
- * @LastEditTime: 2020-09-14 11:41:32
+ * @LastEditTime: 2020-09-14 18:55:04
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/BaseCondition/BaseInfo.js
  * @Description:  基本概况
  * @Connect: 1981824361@qq.com
@@ -36,15 +36,14 @@ const formLayoutCol = {
 };
 
 
-const BaseInfo = (props, ref) => {
+const BaseInfo = ({form, baseInfo: data, type}, ref) => {
 
-  const { form, baseInfo: data, type } = props;
 
-  const { getFieldDecorator, setFieldsValue } = props.form;
+  const { getFieldDecorator, setFieldsValue } = form;
 
-  useImperativeHandle(ref, () => ({
-    form,
-  }));
+  // useImperativeHandle(ref, () => ({
+  //   form,
+  // }));
 
   const hideFormItem = (name, initialValue) => (
     <div style={{ display: 'none' }}>
@@ -353,4 +352,4 @@ const BaseInfo = (props, ref) => {
   );
 };
 
-export default Form.create()(forwardRef(BaseInfo));
+export default BaseInfo;

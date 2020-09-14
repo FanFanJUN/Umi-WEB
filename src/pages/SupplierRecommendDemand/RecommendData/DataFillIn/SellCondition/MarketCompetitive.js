@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-09 16:16:44
- * @LastEditTime: 2020-09-14 16:59:00
+ * @LastEditTime: 2020-09-14 18:56:03
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/SellCondition/MarketCompetitive.js
  * @Description: 市场地位及竞争状况
  * @Connect: 1981824361@qq.com
@@ -31,10 +31,6 @@ const MarketCompetitive = React.forwardRef(({form, data, type}, ref) => {
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [addvisible, setVisible] = useState(false)
-
-    useImperativeHandle(ref, () => ({
-        MarketCompetitiveForm: form,
-    }));
 
     const tableRef = useRef(null);
     const editRef = useRef(null);
@@ -126,10 +122,10 @@ const MarketCompetitive = React.forwardRef(({form, data, type}, ref) => {
             // {...tableProps}
             />
             <Divider>主要竞争对手排名</Divider>
-            <div className={styles.mb}>
+            {/* <div className={styles.mb}>
                 <Button type='primary' className={styles.btn} onClick={() => { editRef.current.showModal('add') }}>新增</Button>
                 <Button className={styles.btn} onClick={handleDelete} type="danger">删除</Button>
-            </div>
+            </div> */}
             <EditableFormTable
                 columns={columnsForRank}
                 bordered

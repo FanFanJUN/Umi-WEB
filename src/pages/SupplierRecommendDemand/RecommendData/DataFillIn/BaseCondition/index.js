@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 15:52:52
- * @LastEditTime: 2020-09-14 18:09:58
+ * @LastEditTime: 2020-09-14 18:52:51
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/BaseCondition/index.js
  * @Description: 基本情况 Tab
  * @Connect: 1981824361@qq.com
@@ -18,12 +18,12 @@ import { router } from 'dva';
 import { findrBaseInfoById, saveBaseInfo } from '../../../../../services/dataFillInApi';
 import { filterEmptyFileds } from '../CommonUtil/utils';
 
-const BaseCondition = ({ baseParam: { id, type } }) => {
+const BaseCondition = ({ baseParam: { id, type }, form }) => {
 
     const [data, setData] = useState({});
     const [loading, setLoading] = useState(false);
 
-    const getFormRef = useRef();
+    // const getFormRef = useRef();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -39,8 +39,8 @@ const BaseCondition = ({ baseParam: { id, type } }) => {
     }, []);
 
     function handleSave() {
-        const formRef = getFormRef.current.form;
-        formRef.validateFieldsAndScroll((error, value) => {
+        // const formRef = getFormRef.current.form;
+        form.validateFieldsAndScroll((error, value) => {
             console.log(value);
             if (error) return;
             const saveParams = {
@@ -74,7 +74,8 @@ const BaseCondition = ({ baseParam: { id, type } }) => {
                     ] : null}
                 >
                     <BaseInfo
-                        wrappedComponentRef={getFormRef}
+                        // wrappedComponentRef={getFormRef}
+                        form={form}
                         baseInfo={data}
                         type={type}
                     />

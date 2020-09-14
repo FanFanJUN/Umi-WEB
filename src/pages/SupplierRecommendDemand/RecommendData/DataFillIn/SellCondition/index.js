@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:34:49
- * @LastEditTime: 2020-09-14 17:04:29
+ * @LastEditTime: 2020-09-14 18:53:20
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/SellCondition/index.js
  * @Description: 销售情况 Tab
  * @Connect: 1981824361@qq.com
@@ -19,8 +19,6 @@ const SellCondition = ({ baseParam: { id, type }, form }) => {
     const [data, setData] = useState({});
     const [loading, setLoading] = useState(false);
 
-    const getFormRef = useRef();
-
     useEffect(() => {
         const fetchData = async () => {
             const res = await findSalesSituationById({ supplierRecommendDemandId: id });
@@ -35,9 +33,7 @@ const SellCondition = ({ baseParam: { id, type }, form }) => {
     }, []);
 
     function handleSave() {
-        console.log(getFormRef);
-        const formRef = getFormRef.current.customerForm;
-        formRef.validateFieldsAndScroll((error, value) => {
+        form.validateFieldsAndScroll((error, value) => {
             console.log(value);
             if (error) return;
             const saveParams = {
@@ -53,7 +49,7 @@ const SellCondition = ({ baseParam: { id, type }, form }) => {
                     message.error(res.message);
                 }
             });
-        })
+        });
     }
 
     return (
@@ -83,7 +79,7 @@ const SellCondition = ({ baseParam: { id, type }, form }) => {
                         <div className={styles.bgw}>
                             <div className={styles.title}>客户</div>
                             <div className={styles.content}>
-                                <Customer type={type} data={data} form={form} wrappedComponentRef={getFormRef} />
+                                <Customer type={type} data={data} form={form}  />
                             </div>
                         </div>
                     </div>
@@ -91,7 +87,7 @@ const SellCondition = ({ baseParam: { id, type }, form }) => {
                         <div className={styles.bgw}>
                             <div className={styles.title}>市场地位及竞争状况</div>
                             <div className={styles.content}>
-                                <MarketCompetitive type={type} data={data} form={form} />
+                                <MarketCompetitive type={type} data={data} form={form}  />
                             </div>
                         </div>
                     </div>

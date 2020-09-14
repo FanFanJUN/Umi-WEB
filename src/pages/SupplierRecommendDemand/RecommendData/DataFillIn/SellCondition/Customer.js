@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-09 15:36:50
- * @LastEditTime: 2020-09-14 16:58:42
+ * @LastEditTime: 2020-09-14 18:54:25
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/SellCondition/Customer.js
  * @Description: 客户相关
  * @Connect: 1981824361@qq.com
@@ -32,10 +32,6 @@ const Customer = React.forwardRef(({ form, type, data }, ref) => {
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [addvisible, setVisible] = useState(false)
-
-    useImperativeHandle(ref, () => ({
-        customerForm: form,
-    }));
 
     const tableRef = useRef(null);
     const editRef = useRef(null);
