@@ -4,7 +4,7 @@ import styles from './index.less';
 import { openNewTab, getFrameElement } from '@/utils';
 import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
-import { supplierManagerBaseUrl } from '@/utils/commonUrl';
+import { recommendUrl } from '@/utils/commonUrl';
 import { materialCode,MaterialConfig, statusProps, distributionProps, materialStatus, PDMStatus } from '../../commonProps';
 import CheckQualificationModal from '../components/checkQualificationModal';
 import DistributeSupplierModal from '../components/distributeSupplierModal';
@@ -43,7 +43,7 @@ export default function () {
         const { pathname } = window.location;
         switch (type) {
             case 'add':
-                openNewTab(`qualitySynergy/EPMaterial/editForm?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '填报环保资料物料-新增', false)
+                openNewTab(`qualitySynergy/EPMaterial/editForm?frameElementId=${id}&frameElementSrc=${pathname}`, '填报环保资料物料-新增', false)
                 break;
             case 'detail':
                 if(!checkOneSelect()) return;
@@ -222,7 +222,7 @@ export default function () {
         { title: '申请日期', dataIndex: 'name12', ellipsis: true, },
         { title: '来源', dataIndex: 'sourceName', ellipsis: true, },
         { title: '物料标记状态是否变化', dataIndex: 'name13',width: 140, ellipsis: true, },
-        { dataIndex: 'name13',width: 20, ellipsis: true, },
+        { dataIndex: 'name14',width: 20, ellipsis: true, },
     ].map(item => ({ ...item, align: 'center' }));
     const headerLeft = <>
         {
@@ -408,7 +408,7 @@ export default function () {
                     }}
                     selectedRowKeys={selectedRowKeys}
                     store={{
-                        url: `${supplierManagerBaseUrl}/api/epDemandService/findByPage`,
+                        url: `${recommendUrl}/api/epDemandService/findByPage`,
                         params: {
                             ...searchValue,
                             quickSearchProperties: [],

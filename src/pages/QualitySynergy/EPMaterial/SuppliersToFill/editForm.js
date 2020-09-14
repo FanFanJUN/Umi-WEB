@@ -15,16 +15,14 @@ export default function () {
     const formRef = useRef(null);
     const mcdRef = useRef(null);
     const { query } = router.useLocation();
-    console.log('url路径', query)
     const handleBack = () => {
-        closeCurrent()
+        closeCurrent();
     }
     const handleSave = (publish) => {
-
     }
     useEffect(() => {
         (async function () {
-            toggleLoading(true);
+            // toggleLoading(true);
             const res = await supplerFindVoById({ id: query.id });
             if(res.success) {
                 setOriginData(res.data)

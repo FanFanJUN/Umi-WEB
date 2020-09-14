@@ -1,13 +1,18 @@
-import { useEffect, useState, useRef, Fragment } from 'react';
+import { useEffect, useState, useRef, Fragment, useImperativeHandle, forwardRef } from 'react';
 import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
+import {Form} from 'antd'
 import EditModal from '../editModal'
 import { Button, message } from 'antd'
 import styles from '../index.less'
-
-export default function ({ buCode }) {
+const { create, Item: FormItem } = Form;
+const SubjectMatterTable = forwardRef(({buCode}, ref)=>{
+    useImperativeHandle(ref, ()=>({
+        getTableList
+    }))
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
-    const [addvisible, setVisible] = useState(false)
+    const [addvisible, setVisible] = useState(false);
+    const [dataSource, setDataSource] = useState([])
     const tableRef = useRef(null);
     const editRef = useRef(null);
     const columns = [
@@ -22,6 +27,9 @@ export default function ({ buCode }) {
         { title: '环保管理人员员工编号', dataIndex: 'name9', ellipsis: true, },
         { title: '环保管理人员', dataIndex: 'name10', ellipsis: true, },
     ].map(item => ({ ...item, align: 'center' }));
+    function getTableList() {
+        return dataSource;
+    }
     // 行选中
     function handleSelectedRows(rowKeys, rows) {
         setRowKeys(rowKeys);
@@ -45,6 +53,26 @@ export default function ({ buCode }) {
         }
         editRef.current.showModal('edit');
     }
+    function handleTableTada(type, obj) {
+        console.log(type, obj)
+        let newList = [];
+        if(type === 'add') {
+            // newList = dataSource.concat([])
+        } else if(type === 'edit') {
+            newList = dataSource.map(item => {
+                if(item.lineNum===obj.lineNum){
+                    return obj;
+                } 
+                return item;
+            })
+        } else {
+            newList = dataSource.filter(item => {
+                return !selectedRowKeys.includes(item.lineNum);
+            })
+        }
+        console.log('newList', newList)
+        setDataSource(newList);
+    }
     return <Fragment>
         <div className={styles.mb}>
             <Button type='primary' className={styles.btn} onClick={handleAdd}>新增</Button>
@@ -65,14 +93,15 @@ export default function ({ buCode }) {
                 size='small'
                 onSelectRow={handleSelectedRows}
                 selectedRowKeys={selectedRowKeys}
-                dataSource={[{ id: 1 }]}
-            // {...tableProps}
+                dataSource={dataSource}
             />
         </div>
         {/* 新增编辑弹框 */}
         <EditModal
             buCode={buCode}
             wrappedComponentRef={editRef}
+            handleTableTada={handleTableTada}
         />
     </Fragment>
-}
+})
+export default create()(SubjectMatterTable)

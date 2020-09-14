@@ -20,6 +20,7 @@ const supplierModal = forwardRef(({ form }, ref) => {
     const tableRef = useRef(null);
     const [visible, setVisible] = useState(false);
     const [modalType, setModalType] = useState('');
+    const [dataSource, setDataSource] = useState([]);
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const { getFieldDecorator, validateFields } = form;
@@ -85,9 +86,7 @@ const supplierModal = forwardRef(({ form }, ref) => {
             size='small'
             onSelectRow={handleSelectedRows}
             selectedRowKeys={selectedRowKeys}
-            dataSource={[
-                {id: 1}
-            ]}
+            dataSource={dataSource}
         />
         <ExtModal
             centered

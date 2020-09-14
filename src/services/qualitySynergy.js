@@ -1,4 +1,4 @@
-import { supplierManagerBaseUrl, baseUrl } from '../utils/commonUrl';
+import { supplierManagerBaseUrl, baseUrl, recommendUrl } from '../utils/commonUrl';
 import request from '../utils/request';
 
 
@@ -193,6 +193,15 @@ export async function findByBuCode(params) {
         params: params,
     });
 }
+// 根据业务板块+物料组找战略采购
+export async function sapMaterialGroupMapPurchaseGroup(params) {
+    const url = `${baseUrl}/sapMaterialGroupMapPurchaseGroup/listByPage`;
+    return request({
+        url,
+        method: 'GET',
+        params: params,
+    });
+}
 // 填报环保资料物料-明细
 export async function findVoById(params) {
     const url = `${supplierManagerBaseUrl}/api/epDemandService/findVoById`;
@@ -204,16 +213,36 @@ export async function findVoById(params) {
 }
 // 填报环保资料物料-冻结
 export async function epDemandFrozen(params) {
-    const url = `${supplierManagerBaseUrl}/api/epDemandService/frozen`;
+    const url = `${supplierManagerBaseUrl}/api/epDemandService/isFrozen`;
     return request({
         url,
-        method: 'POST',
-        data: params,
+        method: 'GET',
+        params: params,
     });
 }
 // 填报环保资料物料-删除
 export async function epDemandDelete(params) {
     const url = `${supplierManagerBaseUrl}/api/epDemandService/whetherDelete`;
+    return request({
+        url,
+        method: 'GET',
+        params: params,
+    });
+}
+// 填报环保资料物料-新增-保存并提交
+export async function submitAndSave(params) {
+    const url = `${recommendUrl}/api/epDemandService/submitAndSave`;
+    console.log(params)
+    return request({
+        url,
+        method: 'GET',
+        params: params,
+    });
+}
+// 填报环保资料物料-新增-保存
+export async function addEpDemandList(params) {
+    const url = `${recommendUrl}/api/epDemandService/addEpDemandList`;
+    console.log(params)
     return request({
         url,
         method: 'POST',
@@ -223,7 +252,7 @@ export async function epDemandDelete(params) {
 
 // 供应商-填报环保资料-获取填报数据
 export async function supplerFindVoById(params) {
-    const url = `${supplierManagerBaseUrl}/api/epDataFillService/findVoById`;
+    const url = `${recommendUrl}/api/epDataFillService/findVoById`;
     console.log(params)
     return request({
         url,
@@ -234,7 +263,7 @@ export async function supplerFindVoById(params) {
 
 // 供应商-填报环保资料-填报
 export async function epDemandUpdate(params) {
-    const url = `${supplierManagerBaseUrl}/api/epDataFillService/update`;
+    const url = `${recommendUrl}/api/epDataFillService/update`;
     return request({
         url,
         method: 'POST',

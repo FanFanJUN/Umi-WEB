@@ -1,6 +1,7 @@
 import { smBaseUrl, baseUrl, recommendUrl } from '../../utils/commonUrl';
 import request from '../../utils/request';
 import React from 'react';
+import { commonUrl } from '../../utils';
 
 // 生成随机数
 export const getRandom = num => {
@@ -349,6 +350,31 @@ export const MaterialAllConfig = {
     description: 'materialDesc',
   },
   placeholder: '选择物料代码',
+};
+// 物料代码列表--填报环保资料物料-新增标的物
+export const MaterialFindByPage = {
+  remotePaging: true,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${recommendUrl}/api/epDemandService/findByList`,
+    params: {
+      quickSearchProperties: []
+    }
+  },
+  style: {
+    width: '100%',
+  },
+  rowKey: 'materialCode',
+  reader: {
+    field: ['id', 'materialDesc', 'materialGroupCode', 'materialGroupDesc', 'materialGroupId'],
+    name: 'materialCode',
+    description: 'materialDesc',
+  },
+  placeholder: '选择物料代码',
+  style: {
+    width: '100%',
+  },
 };
 
 // 物料代码

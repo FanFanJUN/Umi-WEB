@@ -195,7 +195,6 @@ export const getLocationHost = () => {
 
 export const getUserAccount = () => {
   const info = storage.sessionStorage.get('Authorization') || {};
-  console.log(info)
   const { account = '' } = info;
   return account;
 };
