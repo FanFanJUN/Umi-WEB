@@ -23,7 +23,7 @@ const TechnicalDataModal = (props) => {
       if (!err) {
         if (type === 'add') {
           // 构造一个随机数Id
-          values.id = getRandom().toString()
+          values.id = getRandom(10).toString()
         } else {
           values.id = fatherData.id
         }

@@ -5,7 +5,7 @@ import { Button, Input } from 'antd';
 import styles from './index.less';
 import { ExtTable, utils } from 'suid';
 import {
-  BUConfigNoFrost,
+  BUConfigNoFrost, BUConfigNoFrostHighSearch,
   distributionProps,
   materialCode, MaterialConfig, MaterialGroupConfig,
   statusProps, StrategicPurchaseConfig,
@@ -71,6 +71,7 @@ export default function() {
     value.materialCode = value.materialCode_name
     value.materialGroupCode = value.materialGroupCode_name
     value.strategicPurchaseCode = value.strategicPurchaseCode_name
+    value.buCode = value.buCode_name
     console.log(value, '高级查询')
   }
 
@@ -79,7 +80,7 @@ export default function() {
     { title: '物料代码', key: 'materialCode', type: 'list', props: MaterialConfig },
     { title: '物料组', key: 'materialGroupCode', type: 'list', props: MaterialGroupConfig },
     { title: '战略采购', key: 'strategicPurchaseCode', type: 'list', props: StrategicPurchaseConfig },
-    { title: '业务单元', key: 'buCode', type: 'list', props: BUConfigNoFrost},
+    { title: '业务单元', key: 'buCode', type: 'list', props: BUConfigNoFrostHighSearch},
     { title: '申请人', key: 'applyPeopleName', props: { placeholder: '输入申请人查询' } },
     { title: '分配供应商状态', key: 'allotSupplierState', type: 'list', props: distributionProps },
     { title: '状态', key: 'status', type: 'list', props: statusProps },

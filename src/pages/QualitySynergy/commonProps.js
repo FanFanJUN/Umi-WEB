@@ -318,9 +318,6 @@ export const MaterialAllConfig = {
     description: 'materialDesc',
   },
   placeholder: '选择物料代码',
-  style: {
-    width: '100%',
-  },
 };
 
 // 物料代码
@@ -402,6 +399,26 @@ export const BUModelConfig = {
     width: '100%',
   },
   placeholder: '选择业务单元模块',
+};
+
+// BU列表未冻结高级查询
+export const BUConfigNoFrostHighSearch = {
+  remotePaging: true,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${baseUrl}/bu/findPage`,
+  },
+  rowKey: 'buCode',
+  reader: {
+    field: ['buCode', 'id'],
+    name: 'buCode',
+    description: 'buName',
+  },
+  style: {
+    width: '100%',
+  },
+  placeholder: '选择业务单元',
 };
 
 // BU列表未冻结
