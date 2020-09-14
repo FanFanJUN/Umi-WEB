@@ -1,9 +1,10 @@
 import { useEffect, useState, useRef, Fragment, useImperativeHandle, forwardRef } from 'react';
-import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
+import { ExtTable, ComboList, utils, ToolBar, ScrollBar } from 'suid';
 import {Form} from 'antd'
-import EditModal from '../editModal'
-import { Button, message } from 'antd'
+import EditModal from '../editModal';
+import { Button, message, Modal } from 'antd'
 import styles from '../index.less'
+const { confirm } = Modal;
 const { create, Item: FormItem } = Form;
 const SubjectMatterTable = forwardRef(({buCode}, ref)=>{
     useImperativeHandle(ref, ()=>({
@@ -16,28 +17,19 @@ const SubjectMatterTable = forwardRef(({buCode}, ref)=>{
     const tableRef = useRef(null);
     const editRef = useRef(null);
     const columns = [
-        { title: '物料代码', dataIndex: 'name1', ellipsis: true, },
-        { title: '物料描述', dataIndex: 'name2', ellipsis: true, },
-        { title: '物料组代码', dataIndex: 'name3', ellipsis: true, },
-        { title: '物料组描述', dataIndex: 'name4', ellipsis: true, },
-        { title: '环保标准代码', dataIndex: 'name5', ellipsis: true, },
-        { title: '环保标准名称', dataIndex: 'name6', ellipsis: true, },
-        { title: '战略采购代码', dataIndex: 'name7', ellipsis: true, },
-        { title: '战略采购名称', dataIndex: 'name8', ellipsis: true, },
-        { title: '环保管理人员员工编号', dataIndex: 'name9', ellipsis: true, },
-        { title: '环保管理人员', dataIndex: 'name10', ellipsis: true, },
+        { title: '物料代码', dataIndex: 'materialCode', ellipsis: true, },
+        { title: '物料描述', dataIndex: 'materialName', ellipsis: true, },
+        { title: '物料组代码', dataIndex: 'materialGroupCode', ellipsis: true, },
+        { title: '物料组描述', dataIndex: 'materialGroupName', ellipsis: true, },
+        { title: '环保标准代码', dataIndex: 'environmentalProtectionCode', ellipsis: true, },
+        { title: '环保标准名称', dataIndex: 'environmentalProtectionName', ellipsis: true, },
+        { title: '战略采购代码', dataIndex: 'strategicPurchaseCode', ellipsis: true, },
+        { title: '战略采购名称', dataIndex: 'strategicPurchaseName', ellipsis: true, },
+        { title: '环保管理人员员工编号', dataIndex: 'environmentAdminAccount', width: 160, ellipsis: true, },
+        { title: '环保管理人员', dataIndex: 'environmentAdminName', ellipsis: true, },
     ].map(item => ({ ...item, align: 'center' }));
     function getTableList() {
         return dataSource;
-    }
-    // 行选中
-    function handleSelectedRows(rowKeys, rows) {
-        setRowKeys(rowKeys);
-        setRows(rows);
-    }
-    // 删除
-    function handleDelete() {
-        console.log('删除')
     }
     function handleAdd() {
         if (!buCode) {
@@ -54,10 +46,16 @@ const SubjectMatterTable = forwardRef(({buCode}, ref)=>{
         editRef.current.showModal('edit');
     }
     function handleTableTada(type, obj) {
-        console.log(type, obj)
+        console.log('更新表格数据', type, obj)
         let newList = [];
         if(type === 'add') {
-            // newList = dataSource.concat([])
+            [...newList] = dataSource;
+            newList.push({
+                ...obj,
+                lineNum: dataSource.length + 1
+            })
+            setDataSource(newList);
+            tableRef.current.manualSelectedRows();
         } else if(type === 'edit') {
             newList = dataSource.map(item => {
                 if(item.lineNum===obj.lineNum){
@@ -65,19 +63,27 @@ const SubjectMatterTable = forwardRef(({buCode}, ref)=>{
                 } 
                 return item;
             })
+            setDataSource(newList);
+            tableRef.current.manualSelectedRows();
         } else {
-            newList = dataSource.filter(item => {
-                return !selectedRowKeys.includes(item.lineNum);
+            confirm({
+                title: '删除',
+                content: '请确认删除选中数据',
+                onOk: () => {
+                    newList = dataSource.filter(item => {
+                        return !selectedRowKeys.includes(item.lineNum);
+                    })
+                    setDataSource(newList);
+                    tableRef.current.manualSelectedRows();
+                }
             })
         }
-        console.log('newList', newList)
-        setDataSource(newList);
     }
     return <Fragment>
         <div className={styles.mb}>
             <Button type='primary' className={styles.btn} onClick={handleAdd}>新增</Button>
             <Button className={styles.btn} onClick={handleEdit}>编辑</Button>
-            <Button className={styles.btn} onClick={handleDelete}>删除</Button>
+            <Button className={styles.btn} onClick={()=>{handleTableTada('delete')}}>删除</Button>
             <Button className={styles.btn}>批量导入</Button>
         </div>
         <div>
@@ -89,9 +95,14 @@ const SubjectMatterTable = forwardRef(({buCode}, ref)=>{
                 remotePaging
                 checkbox={{ multiSelect: false }}
                 ref={tableRef}
+                checkbox={true}
                 rowKey={(item) => item.id}
                 size='small'
-                onSelectRow={handleSelectedRows}
+                rowKey="lineNum"
+                onSelectRow={(rowKeys, rows) => {
+                    setRowKeys(rowKeys);
+                    setRows(rows);
+                }}
                 selectedRowKeys={selectedRowKeys}
                 dataSource={dataSource}
             />
@@ -99,6 +110,7 @@ const SubjectMatterTable = forwardRef(({buCode}, ref)=>{
         {/* 新增编辑弹框 */}
         <EditModal
             buCode={buCode}
+            initData={selectedRows[0]}
             wrappedComponentRef={editRef}
             handleTableTada={handleTableTada}
         />

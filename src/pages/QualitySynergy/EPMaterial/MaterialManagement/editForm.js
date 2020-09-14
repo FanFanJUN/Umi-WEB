@@ -14,21 +14,24 @@ export default function () {
     const tableRef = useRef(null);
     const { query } = router.useLocation();
     const handleSave = async (nowPublish) => {
-        let originData = {}
         const { validateFieldsAndScroll } = formRef.current;
         validateFieldsAndScroll(async (err, values) => {
             console.log(values)
             if (!err) {
-                originData = { ...values }
                 let res = {};
+                let dataSource = tableRef.current.getTableList();
+                dataSource = dataSource.map(item => {
+                    return {
+                        ...values,
+                        ...item
+                    }
+                })
                 if(nowPublish) {
-                    console.log(1)
                     // 保存并提交
-                    res = await submitAndSave(originData);
+                    res = await submitAndSave(dataSource);
                 } else {
-                    console.log(2)
                     // 仅保存
-                    res = await addEpDemandList(originData);
+                    res = await addEpDemandList(dataSource);
                 }
                 console.log(res)
             }

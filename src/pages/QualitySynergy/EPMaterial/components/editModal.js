@@ -2,18 +2,19 @@ import { useImperativeHandle, forwardRef, useState, useRef, Fragment, useEffect 
 import { Form, Row, Col, Input, Button, Modal, message, notification } from 'antd';
 import { ComboList, ExtTable, ExtModal, ComboTree } from 'suid';
 import { MaterialConfig, MaterialAllConfig } from '../../commonProps';
-import { findByBuCode, sapMaterialGroupMapPurchaseGroup } from '../../../../services/qualitySynergy'
+import { findByBuCode, sapMaterialGroupMapPurchaseGroup, epsFindByCode } from '../../../../services/qualitySynergy'
 const { create, Item: FormItem } = Form;
 const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 12, },
 };
-const editModal = forwardRef(({ form, initData = {}, buCode, handleTableTada }, ref) => {
+const editModal = forwardRef(({ form, initData, buCode, handleTableTada }, ref) => {
     useImperativeHandle(ref, () => ({
         showModal
     }))
     const [visible, setVisible] = useState(false);
-    const [bmCode, setBmCode] = useState('')
+    const [bmCode, setBmCode] = useState('');
+    const [loading, setLoading] = useState(false);
     const [modalType, setModalType] = useState('');
     const { getFieldDecorator, setFieldsValue, validateFields } = form;
 
@@ -33,29 +34,48 @@ const editModal = forwardRef(({ form, initData = {}, buCode, handleTableTada }, 
         setModalType(type);
         setVisible(true);
     }
-    const handleAfterSelect = async (item) => {
+    const handleAfterSelect = (item) => {
+        setLoading(true);
+        let tag = true;
         // 根据物料组+业务板块找战略采购
-        const res = await sapMaterialGroupMapPurchaseGroup({
+        sapMaterialGroupMapPurchaseGroup({
             Q_EQ_materialGroupCode: item.materialGroupCode,
             Q_EQ_businessUnit: bmCode
+        }).then(res => {
+            if(res.success && res.data && res.data.records === 1) {
+                setFieldsValue({
+                    strategicPurchaseCode: res.data.rows[0].purchaseGroupCode,
+                    strategicPurchaseName: res.data.rows[0].purchaseGroupName,
+                    loading: tag && false
+                })
+            } else {
+                message.warning('未查询到相关战略采购数据，请检查！');
+            }
         })
-        if(res.success && res.data && res.data.records === 1) {
-            setFieldsValue({
-                strategicPurchaseCode: res.data.rows[0].purchaseGroupCode,
-                strategicPurchaseName: res.data.rows[0].purchaseGroupName
-            })
-        } else {
-            message.warning('未查询到相关战略采购数据，请检查！');
-        }
+        
         // 根据物料描述取环保标准
-
+        const code = item.materialDesc ? item.materialDesc.split('-')[0] : ''
+        epsFindByCode({ code }).then(espRes => {
+            if(espRes.success) {
+                console.log(222)
+                setFieldsValue({
+                    environmentalProtectionId: espRes.data.id,
+                    environmentalProtectionCode: espRes.data.environmentalProtectionCode,
+                    environmentalProtectionName: espRes.data.environmentalProtectionName,
+                    loading: tag && false
+                })
+            } else {
+                message.warning('未查询到相关环保标准，请检查！');
+            }
+        })
     }
     const handleOk = () => {
         validateFields((err, values)=>{
             if(!err) {
-                console.log(1111)
                 let type = initData ? 'edit' : 'add'
-                handleTableTada(type, {...values})
+                let obj = initData ? {...initData, ...values} : {...values}
+                handleTableTada(type, obj);
+                setVisible(false);
             }
         })
     }
@@ -65,6 +85,7 @@ const editModal = forwardRef(({ form, initData = {}, buCode, handleTableTada }, 
             onCancel={() => { setVisible(false) }}
             onOk={handleOk}
             visible={visible}
+            loading={loading}
             centered
             width={500}
             title={modalType === 'add' ? '新增' : '编辑'}
@@ -73,9 +94,9 @@ const editModal = forwardRef(({ form, initData = {}, buCode, handleTableTada }, 
                 <Row>
                     <FormItem label='物料代码' {...formLayout}>
                         {
-                            getFieldDecorator('materialId'),
+                            getFieldDecorator('materialId', {initialValue: initData && initData.materialId}),
                             getFieldDecorator('materialCode', {
-                                initialValue: '',
+                                initialValue: initData && initData.materialCode,
                                 rules: [{ required: true, message: '不能为空' }]
                             })(<ComboList form={form}
                                 {...MaterialConfig}
@@ -89,7 +110,7 @@ const editModal = forwardRef(({ form, initData = {}, buCode, handleTableTada }, 
                     <FormItem label='物料描述' {...formLayout}>
                         {
                             getFieldDecorator('materialName', {
-                                initialValue: '',
+                                initialValue: initData && initData.materialName,
                                 rules: [{ required: true, message: '不能为空' }]
                             })(<Input disabled />)
                         }
@@ -98,9 +119,9 @@ const editModal = forwardRef(({ form, initData = {}, buCode, handleTableTada }, 
                 <Row>
                     <FormItem label='物料组代码' {...formLayout}>
                         {
-                            getFieldDecorator('materialGroupId'),
+                            getFieldDecorator('materialGroupId', {initialValue: initData && initData.materialGroupId}),
                             getFieldDecorator('materialGroupCode', {
-                                initialValue: '',
+                                initialValue: initData && initData.materialGroupCode,
                                 rules: [{ required: true, message: '不能为空' }]
                             })(<Input disabled />)
                         }
@@ -110,7 +131,7 @@ const editModal = forwardRef(({ form, initData = {}, buCode, handleTableTada }, 
                     <FormItem label='物料组名称' {...formLayout}>
                         {
                             getFieldDecorator('materialGroupName', {
-                                initialValue: '',
+                                initialValue: initData && initData.materialGroupName,
                                 rules: [{ required: true, message: '不能为空' }]
                             })(<Input disabled />)
                         }
@@ -119,10 +140,10 @@ const editModal = forwardRef(({ form, initData = {}, buCode, handleTableTada }, 
                 <Row>
                     <FormItem label='环保标准' {...formLayout}>
                         {
-                            getFieldDecorator('environmentalProtectionId', {initialValue: '6310466F-F19A-11EA-B8FC-0242C0A84412'}),
-                            getFieldDecorator('environmentalProtectionCode', {initialValue: 'R'}),
+                            getFieldDecorator('environmentalProtectionId', {initialValue: initData && initData.environmentalProtectionId}),
+                            getFieldDecorator('environmentalProtectionCode', {initialValue: initData && initData.environmentalProtectionCode}),
                             getFieldDecorator('environmentalProtectionName', {
-                                initialValue: 'R环保属性有害物料管控标准',
+                                initialValue: initData && initData.environmentalProtectionName,
                             })(<Input disabled />)
                         }
                     </FormItem>
@@ -130,10 +151,10 @@ const editModal = forwardRef(({ form, initData = {}, buCode, handleTableTada }, 
                 <Row>
                     <FormItem label='战略采购' {...formLayout}>
                         {
-                            getFieldDecorator('strategicPurchaseId'),
-                            getFieldDecorator('strategicPurchaseCode'),
+                            getFieldDecorator('strategicPurchaseId', {initialValue: initData && initData.strategicPurchaseId}),
+                            getFieldDecorator('strategicPurchaseCode', {initialValue: initData && initData.strategicPurchaseCode}),
                             getFieldDecorator('strategicPurchaseName', {
-                                initialValue: '',
+                                initialValue: initData && initData.strategicPurchaseName,
                             })(<Input disabled />)
                         }
                     </FormItem>
@@ -141,10 +162,10 @@ const editModal = forwardRef(({ form, initData = {}, buCode, handleTableTada }, 
                 <Row>
                     <FormItem label='环保管理人员' {...formLayout}>
                         {
-                            getFieldDecorator('environmentAdminId'),
-                            getFieldDecorator('environmentAdminAccount'),
+                            getFieldDecorator('environmentAdminId', {initialValue: initData && initData.environmentAdminId}),
+                            getFieldDecorator('environmentAdminAccount', {initialValue: initData && initData.environmentAdminAccount}),
                             getFieldDecorator('environmentAdminName', {
-                                initialValue: '',
+                                initialValue: initData && initData.environmentAdminName,
                             })(<Input disabled />)
                         }
                     </FormItem>

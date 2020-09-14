@@ -202,6 +202,15 @@ export async function sapMaterialGroupMapPurchaseGroup(params) {
         params: params,
     });
 }
+// 根据环境标准查环境标准数据
+export async function epsFindByCode(params) {
+    const url = `${baseUrl}/environmentalProtectionData/findByCode`;
+    return request({
+        url,
+        method: 'POST',
+        params: params,
+    });
+}
 // 填报环保资料物料-明细
 export async function findVoById(params) {
     const url = `${supplierManagerBaseUrl}/api/epDemandService/findVoById`;

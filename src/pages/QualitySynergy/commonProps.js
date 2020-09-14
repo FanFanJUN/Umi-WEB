@@ -665,7 +665,7 @@ export const buList = {
   rowKey: 'buCode',
   reader: {
     name: 'buCode',
-    field: ['buName', 'buId'],
+    field: ['buName', 'id'],
     description: 'buName',
   },
   placeholder: '选择业务单元',
