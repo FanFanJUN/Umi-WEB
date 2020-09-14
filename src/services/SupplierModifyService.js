@@ -89,3 +89,12 @@ export const findSupplierModifyHistroyList = (params) => {
     method: 'POST',
   })
 };
+ // 变更审批供应商流程保存
+ export const saveLietInFlow = params => {
+  return request({
+   //headers:{'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+   url: `${smBaseUrl}/supplierAgentBackups/saveAgentBackupInFlow`,
+   data: convertDataToFormData(params),
+   method: 'POST',
+ })
+}

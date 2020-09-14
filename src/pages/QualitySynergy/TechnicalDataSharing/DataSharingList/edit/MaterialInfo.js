@@ -112,7 +112,7 @@ const MaterialInfo = React.forwardRef((props, ref) => {
                     style={{ width: '100%' }}
                     form={form}
                     name={'materialGroupCode'}
-                    field={['materialGroupId', 'materialGroupDesc']}
+                    field={['materialGroupId', 'materialGroupName']}
                     {...MaterialGroupConfig}
                   />)
                 }

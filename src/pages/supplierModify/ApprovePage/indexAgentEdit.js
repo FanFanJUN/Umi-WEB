@@ -6,7 +6,8 @@ import ModifyHistoryDetail from '../commons/ModifyHistoryDetail'
 import ModifyAgentEdit from '../commons/ModifyAgentEdit'
 import {
     findByRequestIdForModify,
-    findSupplierModifyHistroyList
+    findSupplierModifyHistroyList,
+    saveLietInFlow
   } from '@/services/SupplierModifyService'
   import {
     SaveSupplierconfigureService
@@ -991,20 +992,21 @@ function SupplierApproveInfo() {
             if (wholeData) {
                 wholeData.supplierApplyVo.supplierInfoVo.supplierAgents = agentVal;
             }
-            // const { success, message: msg } = await saveSupplierRegister(saveData)
-            // triggerLoading(false)
-            // return new Promise((resolve, reject) => {
-            //     if (success) {
-            //         resolve({
-            //         success,
-            //         message: msg
-            //         })
-            //         message.success(msg)
-            //         return;
-            //     }
-            //     reject(false)
-            //     message.error(msg)
-            // })
+            let saveData = wholeData;
+            const { success, message: msg } = await saveLietInFlow({supplierApplyJson: JSON.stringify(saveData)})
+            triggerLoading(false)
+            return new Promise((resolve, reject) => {
+                if (success) {
+                    resolve({
+                    success,
+                    message: msg
+                    })
+                    message.success(msg)
+                    return;
+                }
+                reject(false)
+                message.error(msg)
+            })
         }
     }
     function handleSubmitComplete(res) {

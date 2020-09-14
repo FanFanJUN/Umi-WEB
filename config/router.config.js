@@ -87,9 +87,9 @@ export default [
       { path: '/supplier/supplierModify/Edit/index', component: './supplierModify/Edit/index', title: '供应商变更编辑' },
       { path: '/supplier/supplierModify/details/index', component: './supplierModify/details/index', title: '供应商变更明细' },
       { path: '/supplier/supplierModify/ApprovePage/SupplierModifyApproveEdit', component: './supplierModify/ApprovePage/indexEdit', title: '供应商变更修改审核' },
-      { path: '/supplier/supplierModify/ApprovePage/SupplierModifyApprovePage', component: './supplierModify/ApprovePage/indexPage', title: '供应商变更审核' },
+      { path: '/supplier/supplierModify/ApprovePage/SupplierModifyApprovePage', component: './supplierModify/ApprovePage/indexpage', title: '供应商变更审核' },
       { path: '/supplier/supplierModify/ApprovePage/SupplierModifyApproveAgentEdit', component: './supplierModify/ApprovePage/indexAgentEdit', title: '供应商变更代理商审核' },
-      { path: '/supplier/supplierModify/ApprovePage/SupplierModifyApproveDetail', component: './supplierModify/details/index', title: '供应商变更流程明细' },
+      { path: '/supplier/supplierModify/ApprovePage/SupplierModifyApproveDetail', component: './supplierModify/ApprovePage/indexDetail', title: '供应商变更流程明细' },
       /* add Example
       {
         path: '/path',

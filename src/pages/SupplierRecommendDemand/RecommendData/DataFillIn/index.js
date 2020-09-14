@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 14:29:17
- * @LastEditTime: 2020-09-11 18:15:29
+ * @LastEditTime: 2020-09-14 15:40:23
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/index.js
  * @Description: 资料填报 Tabs
  * @Connect: 1981824361@qq.com
@@ -14,11 +14,12 @@ import {
   BaseCondition, SellCondition, ResearchAbility, QualityAbility,
   ManagerAbility, ManufactureAbility, HdssControll, DWC, Other, QuotationAndGPCA,
 } from './Tabs';
+import { router } from 'dva';
 
 const { TabPane } = Tabs;
 
 function DataFillIn({
-  type = 'create',
+  type = 'add',
   id = null
 }) {
   const [activityKey, setActivityKey] = useState('baseCondition');
@@ -114,23 +115,23 @@ function DataFillIn({
   )
 
   function handleChange(activeKey) {
-    setActivityKey(() => (activeKey));
+    // setActivityKey(() => (activeKey));
   }
 
   return (
     <div>
-     <Tooltip title="返回顶部保存信息">
-      <BackTop visibilityHeight={400} />
+      <Tooltip title="返回顶部保存信息">
+        <BackTop visibilityHeight={400} />
       </Tooltip>
       <Tabs tabPosition='left' onChange={(activeKey) => handleChange(activeKey)}>
         {/* 基本情况 */}
         <TabPane key='baseCondition' tab={baseConditionTab}>
-          <BaseCondition />
+          <BaseCondition baseParam={{ id, type }} />
         </TabPane>
 
         {/* 销售情况 */}
         <TabPane key='sellCondition' tab={sellConditionTab}>
-          <SellCondition />
+          <SellCondition baseParam={{ id, type }} />
         </TabPane>
 
         {/* 研发能力 */}

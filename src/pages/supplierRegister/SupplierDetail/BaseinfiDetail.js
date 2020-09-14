@@ -59,7 +59,7 @@ const BaseinfoRef = forwardRef(({
 	return (
 		<div>
 			<DetailForm
-                //isView={false}
+                isView={isView}
                 editData={editData}
                 formItems={fieldsList}
             />

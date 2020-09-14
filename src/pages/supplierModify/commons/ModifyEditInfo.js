@@ -235,7 +235,7 @@ const SupplierEditRef = forwardRef(({
                       initialValue={initialValue}
                       editData={editData}
                       wrappedComponentRef={AccountRef}
-                      isView={true}
+                      isView={false}
                     />
                   </div>
                 </div>

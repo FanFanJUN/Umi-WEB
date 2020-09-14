@@ -277,10 +277,10 @@ function SupplierConfigure() {
     }
     // 提交审核验证
     async function handleBeforeStartFlow() {
-        const { success, message: msg } = await checkExistUnfinishedValidity({ requestId: selectedRows[0].id });
+        const {success, message: msg } = await checkExistUnfinishedValidity({ requestId: selectedRows[0].id });
         if (success) {
             message.success(msg)
-            signleRow.flowId = selectedRows[0].id
+
             return true;
         }else {
             message.error(msg)
@@ -356,14 +356,13 @@ function SupplierConfigure() {
                                 <StartFlow
                                     className={styles.btn}
                                     ignore={DEVELOPER_ENV}
-                                    preStart={handleBeforeStartFlow}
+                                    needConfirm={handleBeforeStartFlow}
                                     businessKey={flowId}
                                     callBack={handleComplete}
                                     disabled={empty || underWay || !isSelf}
                                     businessModelCode='com.ecmp.srm.sm.entity.SupplierModify'
-                                    ignore={DEVELOPER_ENV}
-                                    key='PURCHASE_VIEW_CHANGE_APPROVE'
-                                ></StartFlow>
+                                    //key='PURCHASE_VIEW_CHANGE_APPROVE'
+                                >提交审核</StartFlow>
                             )
                         }
                         {
@@ -396,7 +395,7 @@ function SupplierConfigure() {
                                     key='' 
                                     className={styles.btn} 
                                     onClick={handleCheckDetail} 
-                                    disabled={empty || !underWay || !completed}
+                                    disabled={empty}
                                     >变更明细
                                 </Button>
                             )

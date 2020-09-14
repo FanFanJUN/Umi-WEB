@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:58:13
- * @LastEditTime: 2020-09-11 13:30:58
+ * @LastEditTime: 2020-09-14 18:11:05
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/Other/index.js
  * @Description: 其他附加资料
  * @Connect: 1981824361@qq.com
@@ -10,8 +10,8 @@
 import React, { useState } from 'react';
 import { Form, Button, Spin, PageHeader, Radio, Row, Col, Input, InputNumber, Divider } from 'antd';
 import styles from '../../DataFillIn/index.less';
-import EditableFormTable from '../Common/EditTable';
-import UploadFile from '../Common/UploadFile';
+import EditableFormTable from '../CommonUtil/EditTable';
+import UploadFile from '../CommonUtil/UploadFile';
 
 
 const InputGroup = Input.Group;

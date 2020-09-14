@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-09-14 11:07:43
- * @LastEditTime: 2020-09-14 11:12:13
+ * @LastEditTime: 2020-09-14 15:50:21
  * @Description: 工具s
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/Common/utils.js
  */
@@ -79,4 +79,19 @@ export function isEmptyObject(object) {
         return true;
     }
     return false;
+}
+
+/**
+ * @description 随机id
+ * @author LC@1981824361
+ * @date 2020-09-14
+ * @export
+ * @returns 
+ */
+export function guid() {
+    return 'xxxx-xxxx-xxxx-xxxx-xxxx'.replace(/[xy]/g, (c) => {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
 }

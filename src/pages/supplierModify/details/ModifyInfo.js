@@ -44,7 +44,6 @@ const SupplierEditRef = forwardRef(({
   const [accountVo, setaccountVo] = useState(false);
   const [configure, setConfigure] = useState([ ]);
   useEffect(() => {
-    
     setInitialValue(wholeData.supplierInfoVo)
     setEditData(wholeData.supplierInfoVo)
     configurelist(configuredata)
@@ -221,8 +220,10 @@ const SupplierEditRef = forwardRef(({
                       wholeData={wholeData}
                     /> */}
                     <BaseinfiDetail
+                      initialValues={editData}
                       editformData={editData}
                       baseinfo={baseinfo}
+                      isView={true}
                       wrappedComponentRef={BaseinfoRef}
                     />
                   </div>

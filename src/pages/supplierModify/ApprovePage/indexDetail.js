@@ -1,20 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ExtTable, WorkFlow, ExtModal, utils, ToolBar,ScrollBar } from 'suid';
+import { ExtTable, WorkFlow, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import { router } from 'dva';
-import { message,Tabs} from 'antd';
+import { message, Tabs } from 'antd';
 import ModifyHistoryDetail from '../commons/ModifyHistoryDetail'
 import ModifyInfo from '../details/ModifyInfo'
 import {
     findByRequestIdForModify,
     findSupplierModifyHistroyList,
     TemporarySupplierRegister
-  } from '@/services/SupplierModifyService'
-  import {
+} from '@/services/SupplierModifyService'
+import {
     SaveSupplierconfigureService
-  } from '@/services/supplierRegister';
-  import { closeCurrent } from '../../../utils/index';
-  import styles from '../index.less';
-  const TabPane = Tabs.TabPane;
+} from '@/services/supplierRegister';
+import { closeCurrent } from '../../../utils/index';
+import styles from '../index.less';
+const TabPane = Tabs.TabPane;
 function SupplierApproveInfo() {
     const saveformRef = useRef(null)
     const { query } = router.useLocation();
@@ -26,7 +26,7 @@ function SupplierApproveInfo() {
     const [editData, setEditData] = useState([]);
     const [saveData, setSaveData] = useState([]);
     useEffect(() => {
-        initsupplierDetai(); 
+        initsupplierDetai();
     }, []);
     // 供应商变更详情
     async function initsupplierDetai() {
@@ -59,10 +59,9 @@ function SupplierApproveInfo() {
             message.error(msg)
         }
     }
-    const handleSave = async (approved) => {
+    const handleSave = async () => {
         triggerLoading(true)
         let params = wholeData
-        console.log(params)
         const { success, message: msg } = await TemporarySupplierRegister(params)
         triggerLoading(false)
         return new Promise((resolve, reject) => {
@@ -76,11 +75,12 @@ function SupplierApproveInfo() {
         })
     }
     function handleSubmitComplete(res) {
+        console.log(res)
         const { success } = res;
         if (success) {
-          closeCurrent();
+            closeCurrent();
         }
-      }
+    }
     return (
         <WorkFlow.Approve
             businessId={id}
@@ -89,17 +89,17 @@ function SupplierApproveInfo() {
             flowMapUrl="flow-web/design/showLook"
             submitComplete={handleSubmitComplete}
             beforeSubmit={handleSave}
-            >
+        >
             <div className={styles.wrapper}>
                 <Tabs className={styles.tabcolor}>
                     <TabPane forceRender tab="变更列表" key="1">
-                    <ModifyHistoryDetail
-                        editData={wholeData}
+                        <ModifyHistoryDetail
+                            editData={wholeData}
                         //lineDataSource={lineDataSource}
                         />
                     </TabPane>
                     <TabPane forceRender tab="基本信息" key="2">
-                        <ModifyInfo  
+                        <ModifyInfo
                             wholeData={wholeData}
                             configuredata={configuredata}
                             wrappedComponentRef={saveformRef}

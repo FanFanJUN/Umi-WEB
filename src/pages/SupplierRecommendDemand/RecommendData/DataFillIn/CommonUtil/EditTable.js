@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-10 10:57:33
- * @LastEditTime: 2020-09-14 14:52:58
+ * @LastEditTime: 2020-09-14 15:35:09
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/common/EditTable.js
  * @Description:  函数式可编辑行 Table组件
  * @Connect: 1981824361@qq.com
@@ -10,7 +10,7 @@
 import React, { useState, useRef, Fragment } from 'react';
 import { Input, InputNumber, Popconfirm, Form, Divider, Button } from 'antd';
 import { ExtTable } from 'suid';
-import PropTypes from 'prop-types';
+import PropTypes, { any } from 'prop-types';
 import AutoSizeLayout from '../../../../supplierRegister/SupplierAutoLayout';
 
 
@@ -221,6 +221,8 @@ EditableTable.protoType={
     isEditTable:PropTypes.bool,
     //是否显示工具栏（新增||删除 ReactNode）
     isToolBar:PropTypes.bool,
+    // 页面处于编辑||详细
+    type: PropTypes.any,
   }
 
 export default EditableFormTable;

@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-09 15:28:52
- * @LastEditTime: 2020-09-11 16:37:57
+ * @LastEditTime: 2020-09-14 15:59:34
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/SellCondition/SalesProfit.js
  * @Description: 销售收入及利润 Table
  * @Connect: 1981824361@qq.com
@@ -12,7 +12,7 @@ import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import { Button, Divider, Form } from 'antd';
 import moment from 'moment';
 import styles from '../../DataFillIn/index.less';
-import EditTable from '../Common/EditTable';
+import EditTable from '../CommonUtil/EditTable';
 
 let data = [];
 for (let i = 0; i < 5; i++) {
@@ -35,28 +35,28 @@ const SalesProfit = (props)=> {
     const columns = [
         {
             "title": "年度",
-            "dataIndex": "name1",
+            "dataIndex": "year",
             "ellipsis": true,
             "editable": true,
             "inputType": 'InputNumber',
         },
         {
             "title": "销售金额",
-            "dataIndex": "name2",
+            "dataIndex": "salesAmount",
             "ellipsis": true,
             "editable": true,
             "inputType": 'InputNumber',
         },
         {
             "title": "利润",
-            "dataIndex": "name3",
+            "dataIndex": "profit",
             "ellipsis": true,
             "editable": true,
             "inputType": 'InputNumber',
         },
         {
             "title": "币种",
-            "dataIndex": "name4",
+            "dataIndex": "currencyName",
             "ellipsis": true,
             "editable": true,
             "inputType": 'Input',

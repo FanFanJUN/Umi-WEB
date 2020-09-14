@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:58:22
- * @LastEditTime: 2020-09-11 11:33:37
+ * @LastEditTime: 2020-09-14 18:11:27
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/HdssControll/index.js
  * @Description: 产品有害物质管控 tab
  * @Connect: 1981824361@qq.com
@@ -10,8 +10,8 @@
 import React, { useState } from 'react';
 import { Form, Button, Spin, PageHeader, Radio, Row, Col, Input, InputNumber, Divider } from 'antd';
 import styles from '../../DataFillIn/index.less';
-import EditableFormTable from '../Common/EditTable';
-import UploadFile from '../Common/UploadFile';
+import EditableFormTable from '../CommonUtil/EditTable';
+import UploadFile from '../CommonUtil/UploadFile';
 
 
 const InputGroup = Input.Group;

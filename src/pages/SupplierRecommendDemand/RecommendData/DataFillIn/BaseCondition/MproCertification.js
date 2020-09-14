@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-09 13:47:57
- * @LastEditTime: 2020-09-14 14:56:15
+ * @LastEditTime: 2020-09-14 18:09:49
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/BaseCondition/MproCertification.js
  * @Description: 管理体系及产品认证
  * @Connect: 1981824361@qq.com
@@ -12,9 +12,9 @@ import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import { Button, Divider } from 'antd';
 import moment from 'moment';
 import styles from '../../DataFillIn/index.less';
-import EditableFormTable from '../common/EditTable';
+import EditableFormTable from '../CommonUtil/EditTable';
 
-export default function () {
+const  MproCertification = ({type})=> {
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [addvisible, setVisible] = useState(false)
@@ -107,7 +107,7 @@ export default function () {
                 onSelectRow={handleSelectedRows}
                 selectedRowKeys={selectedRowKeys}
                 isEditTable
-                isToolBar
+                isToolBar={type === 'add'}
             // {...tableProps}
             />
             <Divider>其他认证</Divider>
@@ -128,9 +128,11 @@ export default function () {
                 onSelectRow={handleSelectedRows}
                 selectedRowKeys={selectedRowKeys}
                 isEditTable
-                isToolBar
+                isToolBar={type === 'add'}
                 dataSource={[{id: '1'}]}
             />
         </div>
     </Fragment>
 }
+
+export default MproCertification;
