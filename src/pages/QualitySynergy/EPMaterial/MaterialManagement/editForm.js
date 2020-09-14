@@ -5,14 +5,15 @@ import classnames from 'classnames';
 import styles from './index.less';
 import BaseInfo from '../components/edit/baseInfo';
 import SubjectMatterTable from '../components/edit/SubjectMatterTable';
-import { router } from 'dva';
 import { submitAndSave, addEpDemandList } from '../../../../services/qualitySynergy'
 export default function () {
     const [loading, toggleLoading] = useState(false);
     const [buCode, setBuCode] = useState('')
     const formRef = useRef(null);
     const tableRef = useRef(null);
-    const { query } = router.useLocation();
+    const handleBack = () => {
+        closeCurrent()
+    }
     const handleSave = async (nowPublish) => {
         const { validateFieldsAndScroll } = formRef.current;
         validateFieldsAndScroll(async (err, values) => {
@@ -33,12 +34,14 @@ export default function () {
                     // 仅保存
                     res = await addEpDemandList(dataSource);
                 }
-                console.log(res)
+               if(res.success) {
+                   message.success(nowPublish? '保存并提交成功' : '保存成功');
+                   handleBack();
+               } else {
+                   message.error(res.message);
+               }
             }
         })
-    }
-    const handleBack = () => {
-        closeCurrent()
     }
     return (
         <div>

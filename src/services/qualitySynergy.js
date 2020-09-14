@@ -213,56 +213,80 @@ export async function epsFindByCode(params) {
 }
 // 填报环保资料物料-明细
 export async function findVoById(params) {
-    const url = `${supplierManagerBaseUrl}/api/epDemandService/findVoById`;
+    const url = `${recommendUrl}/api/epDemandService/findVoById`;
     return request({
         url,
         method: 'POST',
         data: params,
-    });
-}
-// 填报环保资料物料-冻结
-export async function epDemandFrozen(params) {
-    const url = `${supplierManagerBaseUrl}/api/epDemandService/isFrozen`;
-    return request({
-        url,
-        method: 'GET',
-        params: params,
-    });
-}
-// 填报环保资料物料-删除
-export async function epDemandDelete(params) {
-    const url = `${supplierManagerBaseUrl}/api/epDemandService/whetherDelete`;
-    return request({
-        url,
-        method: 'GET',
-        params: params,
     });
 }
 // 填报环保资料物料-新增-保存并提交
 export async function submitAndSave(params) {
     const url = `${recommendUrl}/api/epDemandService/submitAndSave`;
-    console.log(params)
+    return request({
+        url,
+        method: 'POST',
+        data: params,
+    });
+}
+// 填报环保资料物料-新增-保存
+export async function addEpDemandList(params) {
+    const url = `${recommendUrl}/api/epDemandService/addEpDemandList`;
+    return request({
+        url,
+        method: 'POST',
+        data: params,
+    });
+}
+// 填报环保资料物料-编辑
+export async function editEpDemand(params) {
+    const url = `${recommendUrl}/api/epDemandService/editEpDemand`;
+    return request({
+        url,
+        method: 'POST',
+        data: params,
+    });
+}
+// 填报环保资料物料-删除
+export async function epWhetherDelete(params) {
+    const url = `${recommendUrl}/api/epDemandService/whetherDelete`;
     return request({
         url,
         method: 'GET',
         params: params,
     });
 }
-// 填报环保资料物料-新增-保存
-export async function addEpDemandList(params) {
-    const url = `${recommendUrl}/api/epDemandService/addEpDemandList`;
-    console.log(params)
+// 填报环保资料物料-冻结
+export async function epFrozen(params) {
+    const url = `${recommendUrl}/api/epDemandService/frozen`;
     return request({
         url,
-        method: 'POST',
-        data: params,
+        method: 'GET',
+        params: params,
+    });
+}
+// 填报环保资料物料-提交
+export async function epSubmit(params) {
+    const url = `${recommendUrl}/api/epDemandService/submit`;
+    return request({
+        url,
+        method: 'GET',
+        params: params,
+    });
+}
+// 填报环保资料物料-撤回
+export async function epWithdraw(params) {
+    const url = `${recommendUrl}/api/epDemandService/withdraw`;
+    return request({
+        url,
+        method: 'GET',
+        params: params,
     });
 }
 
 // 供应商-填报环保资料-获取填报数据
 export async function supplerFindVoById(params) {
     const url = `${recommendUrl}/api/epDataFillService/findVoById`;
-    console.log(params)
     return request({
         url,
         method: 'GET',
