@@ -50,31 +50,27 @@ function SupplierApproveInfo() {
         
       }
     const handleSave = async (approved) => {
-      if (approved.approved === false) {
-        closeCurrent();
-      }else {
-        triggerLoading(true)
-        const { saveAgent } = AgentformRef.current;
-        let agentVal = saveAgent()
-        if (wholeData) {
-            wholeData.supplierInfoVo.supplierAgents = agentVal;
-        }
-        let saveData = wholeData;
-        const { success, message: msg } = await saveLietInFlow({supplierApplyJson: JSON.stringify(saveData)})
-        triggerLoading(false)
-        return new Promise((resolve, reject) => {
-            if (success) {
-                resolve({
-                success,
-                message: msg
-                })
-                message.success(msg)
-                return;
-            }
-            reject(false)
-            message.error(msg)
-        })
+      triggerLoading(true)
+      const { saveAgent } = AgentformRef.current;
+      let agentVal = saveAgent()
+      if (wholeData) {
+          wholeData.supplierInfoVo.supplierAgents = agentVal;
       }
+      let saveData = wholeData;
+      const { success, message: msg } = await saveLietInFlow({supplierApplyJson: JSON.stringify(saveData)})
+      triggerLoading(false)
+      return new Promise((resolve, reject) => {
+          if (success) {
+              resolve({
+              success,
+              message: msg
+              })
+              message.success(msg)
+              return;
+          }
+          reject(false)
+          message.error(msg)
+      })
     }
     function handleSubmitComplete(res) {
         const { success } = res;

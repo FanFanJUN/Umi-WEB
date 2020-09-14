@@ -135,7 +135,7 @@ function CreateStrategy() {
                   <div className={styles.title}>基本信息</div>
                   <div >
                   <BaseinfiDetail
-                
+                      isView={true}
                       editformData={editData}
                       baseinfo={baseinfo}
                       wrappedComponentRef={BaseinfoRef}

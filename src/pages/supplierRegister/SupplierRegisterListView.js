@@ -33,7 +33,7 @@ function SupplierConfigure() {
     /** 按钮可用性判断变量集合 BEGIN*/
     const [signleRow = {}] = selectedRows;
     const { flowStatus: signleFlowStatus, id: flowId, creatorId } = signleRow;
-    // 已提交审批状态
+    // 已提交审核状态
     const underWay = signleFlowStatus !== 'INIT';
     // 审核完成状态
     const completed = signleFlowStatus === 'COMPLETED';
@@ -41,6 +41,8 @@ function SupplierConfigure() {
     const empty = selectedRowKeys.length === 0;
     // 是不是自己的单据
     const isSelf = currentUserId === creatorId;
+    // 删除草稿
+    const isdelete = signleFlowStatus === 'INIT'
 
     
     const {
@@ -381,7 +383,7 @@ function SupplierConfigure() {
                                     ignore={DEVELOPER_ENV}
                                     key='PURCHASE_VIEW_CHANGE_APPROVE_HISTORY'
                                 >
-                                    <Button className={styles.btn} disabled={empty || !underWay}>审核历史</Button>
+                                    <Button className={styles.btn} disabled={empty || !underWay || !completed}>审核历史</Button>
                                 </FlowHistoryButton>
                             )
                         }
