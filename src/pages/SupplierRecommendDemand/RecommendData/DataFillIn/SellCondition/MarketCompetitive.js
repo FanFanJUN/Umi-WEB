@@ -2,17 +2,18 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-09 16:16:44
- * @LastEditTime: 2020-09-09 16:32:48
- * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/SellCondition/MarketCompetitive.JS
+ * @LastEditTime: 2020-09-14 16:59:00
+ * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/SellCondition/MarketCompetitive.js
  * @Description: 市场地位及竞争状况
  * @Connect: 1981824361@qq.com
  */
 import React from 'react';
-import { useEffect, useState, useRef, Fragment } from 'react';
+import { useEffect, useState, useRef, Fragment, useImperativeHandle } from 'react';
 import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar, } from 'suid';
 import { Button, Divider, Form, InputNumber, Row, Col, Input, Radio } from 'antd';
 import moment from 'moment';
 import styles from '../../DataFillIn/index.less';
+import EditableFormTable from '../CommonUtil/EditTable';
 
 const FormItem = Form.Item;
 const formLayout = {
@@ -24,28 +25,32 @@ const formLayout = {
     },
 };
 
-const MarketCompetitive = React.forwardRef((props, ref) => {
-    const { form } = props;
+const MarketCompetitive = React.forwardRef(({form, data, type}, ref) => {
     const { getFieldDecorator, setFieldsValue } = form;
 
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [addvisible, setVisible] = useState(false)
+
+    useImperativeHandle(ref, () => ({
+        MarketCompetitiveForm: form,
+    }));
+
     const tableRef = useRef(null);
     const editRef = useRef(null);
     const columnsForMarket = [
-        { title: '产品', dataIndex: 'name1', ellipsis: true, },
-        { title: '年产值', dataIndex: 'name2', ellipsis: true, },
-        { title: '币种', dataIndex: 'name3', ellipsis: true, },
-        { title: '市场占有率', dataIndex: 'name4', ellipsis: true, },
+        { title: '产品', dataIndex: 'product', ellipsis: true, },
+        { title: '年产值', dataIndex: 'yearAnnualValue', ellipsis: true, },
+        { title: '币种', dataIndex: 'currencyName', ellipsis: true, },
+        { title: '市场占有率', dataIndex: 'marketShare', ellipsis: true, },
     ].map(item => ({ ...item, align: 'center' }));
     const columnsForRank = [
-        { title: '产品', dataIndex: 'name1', ellipsis: true, },
-        { title: '竞争对手', dataIndex: 'name2', ellipsis: true, },
-        { title: '年销售额', dataIndex: 'name3', ellipsis: true, },
-        { title: '币种', dataIndex: 'name4', ellipsis: true, },
-        { title: '年销量', dataIndex: 'name4', ellipsis: true, },
-        { title: '市场占有率', dataIndex: 'name4', ellipsis: true, },
+        { title: '产品', dataIndex: 'product', ellipsis: true, },
+        { title: '竞争对手', dataIndex: 'competitor', ellipsis: true, },
+        { title: '年销售额', dataIndex: 'annualTurnover', ellipsis: true, },
+        { title: '币种', dataIndex: 'currencyName', ellipsis: true, },
+        { title: '年销量', dataIndex: 'annualSales', ellipsis: true, },
+        { title: '市场占有率', dataIndex: 'marketShare', ellipsis: true, },
     ].map(item => ({ ...item, align: 'center' }));
 
     const FormInfo = () => {
@@ -55,7 +60,7 @@ const MarketCompetitive = React.forwardRef((props, ref) => {
                     <Col span={24}>
                         <FormItem label="行业知名度" {...formLayout}>
                             {getFieldDecorator('source', {
-                                initialValue: '',
+                                initialValue: type === 'add' ? '' : data.industryVisibility,
                             })(<Radio.Group value={'2'}>
                                 <Radio value={1}>行业内的国际知名企业</Radio>
                                 <Radio value={2}>行业内国际知名企业在中国的合资企业</Radio>
@@ -68,8 +73,8 @@ const MarketCompetitive = React.forwardRef((props, ref) => {
                 <Row>
                     <Col span={24}>
                         <FormItem label="企业的主要竞争优势" {...formLayout}>
-                            {getFieldDecorator('source', {
-                                initialValue: '',
+                            {getFieldDecorator('competitiveEdge', {
+                                initialValue: type === 'add' ? '' : data.competitiveEdge,
                                 rules: [
                                     {
                                       required: true,
@@ -106,7 +111,7 @@ const MarketCompetitive = React.forwardRef((props, ref) => {
                 <Button type='primary' className={styles.btn} onClick={() => { editRef.current.showModal('add') }}>新增</Button>
                 <Button className={styles.btn} onClick={handleDelete} type="danger">删除</Button>
             </div> */}
-            <ExtTable
+            <EditableFormTable
                 columns={columnsForMarket}
                 bordered
                 allowCancelSelect
@@ -125,7 +130,7 @@ const MarketCompetitive = React.forwardRef((props, ref) => {
                 <Button type='primary' className={styles.btn} onClick={() => { editRef.current.showModal('add') }}>新增</Button>
                 <Button className={styles.btn} onClick={handleDelete} type="danger">删除</Button>
             </div>
-            <ExtTable
+            <EditableFormTable
                 columns={columnsForRank}
                 bordered
                 allowCancelSelect
@@ -137,10 +142,10 @@ const MarketCompetitive = React.forwardRef((props, ref) => {
                 size='small'
                 onSelectRow={handleSelectedRows}
                 selectedRowKeys={selectedRowKeys}
-            // {...tableProps}
+                isToolBar={type === 'add'}
             />
         </div>
     </Fragment>
 })
 
-export default Form.create()(MarketCompetitive);
+export default MarketCompetitive;

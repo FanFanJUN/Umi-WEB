@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-09 11:25:57
- * @LastEditTime: 2020-09-14 14:55:23
+ * @LastEditTime: 2020-09-14 18:09:37
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/BaseCondition/AuthPrincipal.js
  * @Description: 授权委托人 Table
  * @Connect: 1981824361@qq.com
@@ -10,7 +10,7 @@
 import { useEffect, useState, useRef, Fragment } from 'react'
 import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import { Button } from 'antd';
-import EditableFormTable from '../Common/EditTable';
+import EditableFormTable from '../CommonUtil/EditTable';
 
 export default function () {
     const [selectedRowKeys, setRowKeys] = useState([]);

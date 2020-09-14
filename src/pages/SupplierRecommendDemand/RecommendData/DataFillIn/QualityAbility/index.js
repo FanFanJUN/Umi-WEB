@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:58:10
- * @LastEditTime: 2020-09-11 14:35:50
+ * @LastEditTime: 2020-09-14 18:10:55
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/QualityAbility/index.js
  * @Description: 质量能力
  * @Connect: 1981824361@qq.com
@@ -10,8 +10,8 @@
 import React, { useState } from 'react';
 import { Form, Button, Spin, PageHeader, Row, Col, Divider, Radio, Input } from 'antd';
 import styles from '../../DataFillIn/index.less';
-import EditableFormTable from '../Common/EditTable';
-import UploadFile from '../Common/UploadFile';
+import EditableFormTable from '../CommonUtil/EditTable';
+import UploadFile from '../CommonUtil/UploadFile';
 
 const FormItem = Form.Item;
 const formLayout = {

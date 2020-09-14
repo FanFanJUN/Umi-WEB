@@ -10,7 +10,7 @@
 import React, { useState, useRef } from 'react';
 import { Form, Button, Spin, PageHeader, Radio, Row } from 'antd';
 import styles from '../../DataFillIn/index.less';
-import EditTable from '../Common/EditTable';
+import EditTable from '../CommonUtil/EditTable';
 
 const QuotationAndGPCA = (props) => {
 

@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 15:52:52
- * @LastEditTime: 2020-09-14 15:01:38
+ * @LastEditTime: 2020-09-14 18:09:58
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/BaseCondition/index.js
  * @Description: 基本情况 Tab
  * @Connect: 1981824361@qq.com
@@ -16,19 +16,18 @@ import GenQualification from './GenQualification';
 import MproCertification from './MproCertification';
 import { router } from 'dva';
 import { findrBaseInfoById, saveBaseInfo } from '../../../../../services/dataFillInApi';
-import { filterEmptyFileds } from '../Common/utils';
+import { filterEmptyFileds } from '../CommonUtil/utils';
 
-const BaseCondition = (props) => {
+const BaseCondition = ({ baseParam: { id, type } }) => {
 
     const [data, setData] = useState({});
     const [loading, setLoading] = useState(false);
 
-    const { query } = router.useLocation();
     const getFormRef = useRef();
 
     useEffect(() => {
         const fetchData = async () => {
-            const res = await findrBaseInfoById({ supplierRecommendDemandId: query.id });
+            const res = await findrBaseInfoById({ supplierRecommendDemandId: id });
             if (res.success) {
                 res.data && setData(res.data);
             } else {
@@ -50,13 +49,13 @@ const BaseCondition = (props) => {
                 supplierContacts: data.supplierContacts,
                 managementSystems: data.managementSystems,
             };
-           saveBaseInfo(filterEmptyFileds(saveParams)).then((res)=>{
-               if(res && res.success) {
-                   message.success('保存基本情况成功')
-               } else {
-                   message.error(res.message);
-               }
-           })
+            saveBaseInfo(filterEmptyFileds(saveParams)).then((res) => {
+                if (res && res.success) {
+                    message.success('保存基本情况成功')
+                } else {
+                    message.error(res.message);
+                }
+            })
         })
     }
     return (
@@ -68,22 +67,22 @@ const BaseCondition = (props) => {
                         padding: '0px'
                     }}
                     title="基本概况"
-                    extra={[
+                    extra={type === 'add' ? [
                         <Button key="save" type="primary" style={{ marginRight: '12px' }} onClick={() => handleSave()}>
                             保存
                         </Button>,
-                    ]}
+                    ] : null}
                 >
                     <BaseInfo
                         wrappedComponentRef={getFormRef}
                         baseInfo={data}
-                        type={query && query.type || 'add'}
+                        type={type}
                     />
                     <div className={styles.wrapper}>
                         <div className={styles.bgw}>
                             <div className={styles.title}>授权委托人</div>
                             <div className={styles.content}>
-                            <AuthPrincipal tableData={data.supplierContacts} />
+                                <AuthPrincipal tableData={data.supplierContacts} />
                             </div>
                         </div>
                     </div>
@@ -91,7 +90,7 @@ const BaseCondition = (props) => {
                         <div className={styles.bgw}>
                             <div className={styles.title}>通用资质</div>
                             <div className={styles.content}>
-                                <GenQualification tableData={data.supplierCertificates}/>
+                                <GenQualification tableData={data.supplierCertificates} />
                             </div>
                         </div>
                     </div>
@@ -99,7 +98,7 @@ const BaseCondition = (props) => {
                         <div className={styles.bgw}>
                             <div className={styles.title}>管理体系及产品认证</div>
                             <div className={styles.content}>
-                                <MproCertification data={data}/>
+                                <MproCertification data={data} type={type} />
                             </div>
                         </div>
                     </div>

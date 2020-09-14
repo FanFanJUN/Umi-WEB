@@ -10,8 +10,8 @@
 import React, { useState, useRef } from 'react';
 import { Form, Button, Spin, PageHeader, Row, Col, Divider, Radio, Input, InputNumber } from 'antd';
 import styles from '../../DataFillIn/index.less';
-import UploadFile from '../Common/UploadFile';
-import EditableFormTable from '../Common/EditTable';
+import UploadFile from '../CommonUtil/UploadFile';
+import EditableFormTable from '../CommonUtil/EditTable';
 
 const FormItem = Form.Item;
 const formLayout = {
