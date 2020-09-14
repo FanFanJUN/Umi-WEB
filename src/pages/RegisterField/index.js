@@ -8,7 +8,7 @@ import AutoSizeLayout from '@/components/AutoSizeLayout';
 import styles from './index.less';
 import CommonForm from './CommonForm'
 import { smBaseUrl } from '@/utils/commonUrl';
-import { SaveSupplierRegister, DetailSupplierRegister } from "@/services/supplierConfig"
+import { infoSuppliermaster,SaveSupplierRegister, DetailSupplierRegister } from "@/services/supplierConfig"
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 const { Search } = Input
 const FormItem = Form.Item;
@@ -39,6 +39,7 @@ const tabformRef = forwardRef(({
   const [visible, setVisible] = useState(false);
   const [loading, triggerLoading] = useState(false);
   const [attachId, setAttachId] = useState('')
+  const [sortdata, setSortdata] =  useState([])
   const { account } = storage.sessionStorage.get("Authorization");
   //const { attachment = null } = initialValue;
   /* 按钮禁用状态控制 */
@@ -54,6 +55,9 @@ const tabformRef = forwardRef(({
       },
       type: 'POST'
     },
+  }
+  function initdata(data) {
+    return data;
   }
   function onInput(data, index) {
     return (e) => {
@@ -124,7 +128,7 @@ const tabformRef = forwardRef(({
     ],
     sort: {
       multiple: false,
-      field: { standby1 : 'asc' },
+      field: {standby1 : 'asc' },
     },
   }
   function handleCheck() {
@@ -134,6 +138,15 @@ const tabformRef = forwardRef(({
     window.parent.frames.addEventListener('message', listenerParentClose, false);
     return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
   }, []);
+  // 列表
+  // async function inifmasterdata() {
+  //   triggerLoading(true)
+  //   const { data,success, message: msg } = await infoSuppliermaster();
+  //   if (success) {
+  //     setdataSource(data)
+  //     triggerLoading(false)
+  //   }
+  // }
   // 数据刷新
   function listenerParentClose(event) {
     const { data = {} } = event;
@@ -285,7 +298,7 @@ const tabformRef = forwardRef(({
             onSelectRow={handleSelectedRows}
             selectedRowKeys={selectRowKeys}
             //dataSource={dataSource}
-            {...dataSource}
+            {...initdata(dataSource)}
           />
         }
       </AutoSizeLayout>

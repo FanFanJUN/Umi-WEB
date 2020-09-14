@@ -330,7 +330,7 @@ function SupplierConfigure() {
                                     key='' 
                                     className={styles.btn} 
                                     onClick={handleEditor}
-                                    disabled={empty}
+                                    disabled={empty || underWay || !isSelf}
                                     >编辑
                                 </Button>
                             )

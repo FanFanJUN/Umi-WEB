@@ -27,6 +27,11 @@ function createServiceRequest(option) {
     })
   })
 }
+// 主数据列表查询
+export const infoSuppliermaster = params => createServiceRequest({
+  path: '/api/SmSupplierConfigService/findByPage',
+  params
+})
 // 供应商注册字段配置表保存
 // export const SaveSupplierRegister = params =>
 //   request({

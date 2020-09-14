@@ -46,7 +46,6 @@ function CreateStrategy() {
   const { frameElementId, frameElementSrc = "", Opertype = "" } = query;
   let typeId = query.frameElementId;
   async function initConfigurationTable() {
-
     triggerLoading(true);
     let params = {catgroyid:typeId,property:1};
     const { data, success, message: msg } = await SaveSupplierconfigureService(params);
@@ -61,19 +60,19 @@ function CreateStrategy() {
       }
 
     initsupplierDetai(); // 供应商详情
-    async function initsupplierDetai() {
-      triggerLoading(true);
-      let id = query.id;
-      const { data, success, message: msg } = await SupplierconfigureDetail({ supplierId: id });
-      if (success) {
-        setInitialValue(data.supplierInfoVo)
-        setEditData(data.supplierInfoVo)
-        setwholeData(data)
-        triggerLoading(false);
-      }else {
-        triggerLoading(false);
-        message.error(msg)
-      }
+  }
+  async function initsupplierDetai() {
+    triggerLoading(true);
+    let id = query.id;
+    const { data, success, message: msg } = await SupplierconfigureDetail({ supplierId: id });
+    if (success) {
+      setEditData(data.supplierInfoVo)
+      setwholeData(data)     
+      setInitialValue(data.supplierInfoVo)
+      triggerLoading(false);
+    }else {
+      triggerLoading(false);
+      message.error(msg)
     }
   }
   function configurelist(configure) {
@@ -107,16 +106,22 @@ function CreateStrategy() {
   }
   // 暂存
   async function handleTemporary() {
-    const { getTemporaryBaseInfo } = BaseinfoRef.current; // 基本信息
-    let baseVal = getTemporaryBaseInfo();
-    //let accountVal = ObtainAccount();
-    let authorizedClientVal,businessInfoVal,bankVal,
+   
+    //
+    let baseVal,accountVal,authorizedClientVal,businessInfoVal,bankVal,
     rangeVal,agentVal,qualifications,proCertVos;
     configure.map(item => {
+      if (item.operationCode !== '3' && item.fieldCode === 'name') {
+        const { getTemporaryBaseInfo } = BaseinfoRef.current; // 基本信息
+        baseVal = getTemporaryBaseInfo();
+
+      }else if (item.operationCode !== '3' && item.fieldCode === 'mobile') {
+        accountVal = ObtainAccount();
+      }
       if (item.operationCode !== '3' && item.fieldCode === 'contactVos') {
         authorizedClientVal = ObtainAuthor();
       }
-      if (item.operationCode !== '3' && item.fieldCode === 'supplierRecentIncomes') {
+      if (item.operationCode !== '3' && item.fieldCode === 'businessScope') {
         businessInfoVal = ObtainBusines()
       }
       if (item.operationCode !== '3' && item.fieldCode === 'bankInfoVos') {
@@ -135,9 +140,19 @@ function CreateStrategy() {
         proCertVos = ObtionpurposeTemporary() || '';
       }
     })
-    let enclosurelist = [],automaticdata,automaticincome,automThreeYear,rangeValinfo;
+    let enclosurelist = [],basedata,baseexten,accountData,
+    automaticdata,automaticincome,automThreeYear,rangeValinfo;
+    if (baseVal && baseVal.supplierVo) {
+      basedata = baseVal.supplierVo
+    }
+    if (baseVal && baseVal.extendVo) {
+      baseexten = baseVal.extendVo
+    }
     if (baseVal && baseVal.genCertVos) {
       enclosurelist= {...enclosurelist,...baseVal.genCertVos[0]}
+    }
+    if (accountVal && accountVal.supplierVo) {
+      accountData = accountVal.supplierVo
     }
     if (qualifications) {
       enclosurelist = [enclosurelist, ...qualifications.proCertVos];
@@ -156,8 +171,8 @@ function CreateStrategy() {
     }
 
     let supplierInfoVo = {
-      supplierVo: { ...baseVal.supplierVo, ...automaticdata},
-      extendVo: { ...baseVal.extendVo, ...automThreeYear, ...rangeValinfo },
+      supplierVo: { ...basedata, ...accountData ,...automaticdata},
+      extendVo: { ...baseexten, ...automThreeYear, ...rangeValinfo },
       contactVos: authorizedClientVal,
       genCertVos: enclosurelist,
       bankInfoVos: bankVal,
@@ -195,70 +210,31 @@ function CreateStrategy() {
     }
     return accountVal;
   }
-  // 帐号保存表单
-  function saveAccount() {
-    const { getAccountinfo } = AccountRef.current; //帐号
-    const accountVal = getAccountinfo();
-    if (!accountVal) {
-      message.error('请将供应商账号信息填写完全！');
-      return false;
-    }
-    return accountVal;
-  }
   //  // 授权委托人
   function ObtainAuthor() {
     const { authorTemporary } = AuthorizeRef.current; 
     const authorizedClientVal = authorTemporary();
     return authorizedClientVal;
   }
-  function saveAuthor() {
-    const { getAuthorfrom } = AuthorizeRef.current; // 授权委托人
-    const authorizedClientVal = getAuthorfrom();
-    if (!authorizedClientVal) {
-      message.error('请将授权委托人信息填写完全！');
-      return false;
-    }
-    return authorizedClientVal;
-  }
+
   // 业务信息
   function ObtainBusines() {
     const { businerTemporary } = BusinessRef.current; //业务信息
     const businessInfoVal = businerTemporary();
     return businessInfoVal;
   }
-  function saveBusines() {
-    const { getALLbusinCheck } = BusinessRef.current; //业务信息
-    const businessInfoVal = getALLbusinCheck();
-    if (!businessInfoVal) {
-      message.error('请将业务信息填写完全！');
-      return false;
-    }
-    return businessInfoVal;
-  }
+
   // 银行
   function ObtainBank() {
     const { bankTemporary } = Bankformef.current; //银行信息
     const bankVal = bankTemporary()
     return bankVal;
   }
-  function saveBank() {
-    const { getbankform } = Bankformef.current; //银行信息
-    const bankVal = getbankform()
-    if (!bankVal) {
-      message.error('请将银行相关信息填写完全！');
-      return false;
-    }
-    return bankVal;
-  }
+
   // //供应商范围
   function ObtianSupply() {
     const { SupplierTemporary } = SupplyRangeRef.current; //供应商范围
     const rangeVal = SupplierTemporary()
-    return rangeVal;
-  }
-  function saveSupply() {
-    const { getSupplierRange } = SupplyRangeRef.current; //供应商范围
-    const rangeVal = getSupplierRange()
     return rangeVal;
   }
   // 代理商
@@ -267,28 +243,10 @@ function CreateStrategy() {
     const agentVal = agentTemporary()
     return agentVal;
   }
-  function saveAgent() {
-    const { getAgentform } = Agentformef.current; // 代理商
-    let agentVal = getAgentform()
-    if (!agentVal) {
-      message.error('请将代理商信息填写完全！');
-      return false;
-    }
-    return agentVal;
-  }
   // 通用资质
   function ObtionqualificationsInfo() {
     const { qualicaTemporary } = QualificationRef.current; // 通用资质
     let qualifications = qualicaTemporary()
-    return qualifications;
-  }
-  function savequalificationsInfo() {
-    const { getqualificationsInfo } = QualificationRef.current; // 通用资质
-    let qualifications = getqualificationsInfo()
-    if (!qualifications) {
-      message.error('请将通用资质信息填写完全！');
-      return false;
-    }
     return qualifications;
   }
   // 专用资质
@@ -297,54 +255,91 @@ function CreateStrategy() {
     let proCertVos = purposeTemporary() || [];
     return proCertVos;
   }
-  function savespecialpurpose() {
-    const { getspecialpurpose } = QualispecialRef.current; // 专用资质
-    let proCertVos = getspecialpurpose() || [];
-    return proCertVos;
-  }
+
   // 保存
   async function handleSave() {
-    const { getBaseInfo } = BaseinfoRef.current; // 基本信息
-    const baseVal = getBaseInfo();
-    if (!baseVal) {
-      message.error('请将供应商基本信息填写完全！');
-      return false;
-    }
-    let accountVal = saveAccount();
-    let authorizedClientVal,businessInfoVal,bankVal,rangeVal,
+    //triggerLoading(true)
+    let baseVal,accountVal,authorizedClientVal,businessInfoVal,bankVal,rangeVal,
     agentVal,qualifications,proCertVos;
-    configure.map(item => {
-      if (item.operationCode !== '3' && item.fieldCode === 'contactVos') {
-        authorizedClientVal = saveAuthor()
+    for(let item of configure){
+      if (item.operationCode !== '3' && item.fieldCode === 'name') {
+        const { getBaseInfo } = BaseinfoRef.current; // 基本信息
+        baseVal = getBaseInfo();
+        if (!baseVal) {
+          message.error('请将供应商基本信息填写完全！');
+          return false;
+        }
+      }else if (item.operationCode !== '3' && item.fieldCode === 'mobile') {
+        const { getAccountinfo } = AccountRef.current; //帐号
+        accountVal = getAccountinfo();
+        if (!accountVal) {
+          message.error('请将供应商账号信息填写完全！');
+          return false;
+        }
       }
-      if (item.operationCode !== '3' && item.fieldCode === 'supplierRecentIncomes') {
-        businessInfoVal = saveBusines()
-      } 
+      if (item.operationCode !== '3' && item.fieldCode === 'contactVos') {
+        const { getAuthorfrom } = AuthorizeRef.current; // 授权委托人
+        authorizedClientVal = getAuthorfrom();
+        if (!authorizedClientVal) {
+          message.error('请将授权委托人信息填写完全！');
+          return false;
+        }
+      }
+      if (item.operationCode !== '3' && item.fieldCode === 'businessScope') {
+        const { getALLbusinCheck } = BusinessRef.current; //业务信息
+        businessInfoVal = getALLbusinCheck();
+        if (!businessInfoVal) {
+          message.error('请将业务信息填写完全！');
+          return false;
+        }
+      }
       if (item.operationCode !== '3' && item.fieldCode === 'bankInfoVos') {
-        bankVal = saveBank() 
+        const { getbankform } = Bankformef.current; //银行信息
+        bankVal = getbankform()
+        if (!bankVal) {
+          message.error('请将银行相关信息填写完全！');
+          return false;
+        }
       }
       if (item.operationCode !== '3' && item.fieldCode === 'ScopeOfSupply') {
-        rangeVal = saveSupply()
+        const { getSupplierRange } = SupplyRangeRef.current; //供应商范围
+        rangeVal = getSupplierRange()
       }
       if (item.operationCode !== '3' && item.fieldCode === 'supplierAgents') {
-        agentVal = saveAgent()
+        const { getAgentform } = Agentformef.current; // 代理商
+        agentVal = getAgentform()
+        if (!agentVal) {
+          message.error('请将代理商信息填写完全！');
+          return false;
+        }
       }
       if (item.operationCode !== '3' && item.fieldCode === 'genCertVos') {
-        qualifications = savequalificationsInfo();
+        const { getqualificationsInfo } = QualificationRef.current; // 通用资质
+        qualifications = getqualificationsInfo()
+        if (!qualifications) {
+          message.error('请将通用资质信息填写完全！');
+          return false;
+        }
       }
       if (item.operationCode !== '3' && item.fieldCode === 'proCertVos') {
-        proCertVos = savespecialpurpose()
+        const { getspecialpurpose } = QualispecialRef.current; // 专用资质
+        proCertVos = getspecialpurpose() || [];
       }
-    })
-   
-    let enclosurelist = [],automaticdata,automaticincome,automThreeYear,rangeValinfo;
+    }
+    let enclosurelist = [],basedata,accountData,baseexten,automaticdata,automaticincome,
+    automThreeYear,rangeValinfo;
+    if (baseVal && baseVal.supplierVo) {
+      basedata = baseVal.supplierVo
+    }
+    if (baseVal && baseVal.extendVo) {
+      baseexten = baseVal.extendVo
+    }
     if (baseVal && baseVal.genCertVos) {
       enclosurelist= {...enclosurelist,...baseVal.genCertVos[0]}
     }
-    if (qualifications) {
-      enclosurelist = [enclosurelist, ...qualifications.proCertVos];
+    if (accountVal && accountVal.supplierVo) {
+      accountData = accountVal.supplierVo
     }
-    console.log(enclosurelist)
     if (businessInfoVal && businessInfoVal.supplierVo) {
       automaticdata = businessInfoVal.supplierVo
     }
@@ -358,8 +353,8 @@ function CreateStrategy() {
       rangeValinfo = rangeVal.extendVo
     }
     let supplierInfoVo = {
-      supplierVo: { ...baseVal.supplierVo, ...accountVal.supplierVo ,...automaticdata},
-      extendVo: { ...baseVal.extendVo, ...automThreeYear, ...rangeValinfo },
+      supplierVo: { ...basedata, ...accountData ,...automaticdata},
+      extendVo: { ...baseexten, ...automThreeYear, ...rangeValinfo },
       contactVos: authorizedClientVal,
       genCertVos: enclosurelist,
       bankInfoVos: bankVal,
@@ -379,7 +374,7 @@ function CreateStrategy() {
     }
     let saveData = wholeData;
     console.log(saveData)
-    triggerLoading(true)
+    
     const { success, message: msg } = await saveSupplierRegister(saveData);
     if (success) {
       message.success(msg);
@@ -421,9 +416,6 @@ function CreateStrategy() {
       </Affix>
 
       <div className={styles.wrapper}>
-      
-          
-                
         {
           configure.map((item, index) => {
             if (item.smMsgTypeCode !== '3' && item.fieldCode === 'name') {
