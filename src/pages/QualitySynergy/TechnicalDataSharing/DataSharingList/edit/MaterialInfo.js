@@ -3,7 +3,7 @@ import styles from './BaseInfo.less';
 import { Col, Form, Modal, Row, Input } from 'antd';
 import moment from 'moment/moment';
 import { ComboList, ExtModal } from 'suid';
-import { BUConfig, MaterialConfig, MaterialGroupConfig } from '../../../commonProps';
+import { BUConfig, MaterialConfig, MaterialGroupConfig, FindTacticByBuCodeAndGroupCode } from '../../../commonProps';
 
 const FormItem = Form.Item;
 
@@ -29,7 +29,12 @@ const MaterialInfo = React.forwardRef((props, ref) => {
   useEffect(() => {
     console.log(buCode, 'bucode', getFieldValue('materialGroupCode'))
     if (buCode && getFieldValue('materialGroupCode')) {
-      console.log('触发')
+      FindTacticByBuCodeAndGroupCode({
+        materialGroupCode: getFieldValue('materialGroupCode'),
+        buCode: buCode
+      }).then(res => {
+        console.log(res, 'res触发')
+      })
     }
   }, [getFieldValue('materialGroupCode'), buCode])
 

@@ -43,14 +43,18 @@ const TechnicalData = React.forwardRef((props, ref) => {
     } else if (type === 'edit') {
       setData((value) => ({...value, type: 'edit', visible: true, title: '编辑技术资料'}))
     } else {
+      let deleteArr = []
       let newData = JSON.parse(JSON.stringify(data.dataSource))
       data.dataSource.map((item, index) => {
         data.selectedRowKeys.map(data => {
           if (item.id === data) {
+            newData[index].whetherDelete = true
+            deleteArr.push(newData[index])
             newData.splice(index, 1)
           }
         })
       })
+      props.setDeleteArr(deleteArr)
       setData(v => ({...v, dataSource: newData}))
       tableRef.current.manualSelectedRows();
     }
@@ -62,6 +66,7 @@ const TechnicalData = React.forwardRef((props, ref) => {
 
   const TechnicalDataAddAndEdit = (value) => {
     let newData = JSON.parse(JSON.stringify(data.dataSource))
+    value.whetherDelete = false
     value.sampleRequirementDate = moment(value.sampleRequirementDate).format('YYYY-MM-DD')
     if (data.type === 'add') {
       newData.push(value)
@@ -90,7 +95,7 @@ const TechnicalData = React.forwardRef((props, ref) => {
           </div>
           <ExtTable
             style={{marginTop: '10px'}}
-            rowKey={(v) => v.id}
+            rowKey={(v) => v.lineNumber}
             bordered
             allowCancelSelect
             showSearch={false}
