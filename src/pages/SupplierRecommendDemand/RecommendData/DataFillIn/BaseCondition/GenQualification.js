@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-09 13:29:41
- * @LastEditTime: 2020-09-11 16:16:05
+ * @LastEditTime: 2020-09-14 13:52:34
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/BaseCondition/GenQualification.js
  * @Description: 通用资质 Table
  * @Connect: 1981824361@qq.com
@@ -11,6 +11,7 @@ import { useEffect, useState, useRef, Fragment } from 'react'
 import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import { Button } from 'antd';
 import EditableFormTable from '../common/EditTable';
+import moment from 'moment';
 
 export default function () {
     const [selectedRowKeys, setRowKeys] = useState([]);
@@ -19,11 +20,13 @@ export default function () {
     const tableRef = useRef(null);
     const editRef = useRef(null);
     const columns = [
-        { title: '资质文件类型', dataIndex: 'name1', ellipsis: true, },
-        { title: '证照编号', dataIndex: 'name2', ellipsis: true, },
-        { title: '发证机构', dataIndex: 'name3', ellipsis: true, },
-        { title: '有效期', dataIndex: 'name4', ellipsis: true, },
-        { title: '附件', dataIndex: 'name5', ellipsis: true, },
+        { title: '资质文件类型', dataIndex: 'qualificationName', ellipsis: true, },
+        { title: '证照编号', dataIndex: 'certificateNo', ellipsis: true, },
+        { title: '发证机构', dataIndex: 'institution', ellipsis: true, },
+        { title: '有效期', dataIndex: 'date', ellipsis: true, render: function (text, record) {
+            return record.startDate && `${moment(record.startDate).format('YYYY-MM-DD')} ~ ${moment(record.endDate).format('YYYY-MM-DD')}`;
+        } },
+        { title: '附件', dataIndex: 'attachments', ellipsis: true, },
     ].map(item => ({ ...item, align: 'center' }));
     // 行选中
     function handleSelectedRows(rowKeys, rows) {

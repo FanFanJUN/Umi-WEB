@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:53:17
- * @LastEditTime: 2020-09-11 10:50:56
+ * @LastEditTime: 2020-09-14 11:46:10
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/ResearchAbility/index.js
  * @Description: 研发能力 Tab
  * @Connect: 1981824361@qq.com

@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-10 10:57:33
- * @LastEditTime: 2020-09-11 16:36:35
+ * @LastEditTime: 2020-09-14 14:52:58
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/common/EditTable.js
  * @Description:  函数式可编辑行 Table组件
  * @Connect: 1981824361@qq.com
@@ -67,8 +67,6 @@ const EditableTable = (props) => {
     const { form, dataSource, columns, rowKey, isEditTable=false, isToolBar=false } = props;
 
     const [editingKey, setEditingKey] = useState('');
-    const { propsData, setPropsData} = useState(dataSource);
-    console.log(propsData);
     const tableRef = useRef(null);
 
     function isEditing(record) {
@@ -182,7 +180,7 @@ const EditableTable = (props) => {
                 {(h) => <ExtTable
                     bordered
                     // height={h}
-                    dataSource={propsData}
+                    dataSource={dataSource}
                     columns={mergeColumns}
                     //   pagination={{
                     //     onChange: this.cancel,
