@@ -16,7 +16,8 @@ const formLayout = {
 
 const BaseInfo = forwardRef(({ form, isView, setBuCode, originData={} }, ref) => {
   useImperativeHandle(ref, () => ({
-
+    getFormInfo,
+    validateFieldsAndScroll
   }))
   const [attachment, setAttachment] = useState(null);
   const {
@@ -25,7 +26,16 @@ const BaseInfo = forwardRef(({ form, isView, setBuCode, originData={} }, ref) =>
     setFieldsValue,
     validateFieldsAndScroll
   } = form;
-
+  const getFormInfo = ()=>{
+    const baseInfo = {}
+    validateFieldsAndScroll((err, values)=>{
+      console.log(values, err)
+      if(!err) {
+        baseInfo = {...values}
+      }
+    })
+    return baseInfo;
+  }
   return <Fragment>
     <Form>
       <Row>
@@ -79,7 +89,7 @@ const BaseInfo = forwardRef(({ form, isView, setBuCode, originData={} }, ref) =>
             {
               getFieldDecorator('applyPersonPhone', {
                 initialValue: isView ? originData.applyPersonPhone : getMobile(),
-                rules: [{ required: true, message: '请选择供应商代码' }]
+                rules: [{ required: true, message: '请输入创建人联系方式'}]
               })(<Input disabled={isView} />)
             }
           </FormItem>
