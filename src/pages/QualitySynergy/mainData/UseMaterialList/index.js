@@ -242,7 +242,7 @@ const Index = () => {
         type={data.type}
         data={selectRows[selectRows.length - 1]}
         onCancel={() => setData((value) => ({ ...value, visible: false }))}
-        title='限用物质清单新增'
+        title={data.title}
       />
     </Fragment>
   );
