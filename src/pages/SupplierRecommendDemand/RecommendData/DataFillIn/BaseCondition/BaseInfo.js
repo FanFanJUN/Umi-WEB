@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-09 10:16:41
- * @LastEditTime: 2020-09-11 17:46:05
+ * @LastEditTime: 2020-09-14 11:41:32
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/BaseCondition/BaseInfo.js
  * @Description:  基本概况
  * @Connect: 1981824361@qq.com
@@ -38,20 +38,22 @@ const formLayoutCol = {
 
 const BaseInfo = (props, ref) => {
 
-  const { type, form, data, userInfo } = props;
+  const { form, baseInfo: data, type } = props;
 
   const { getFieldDecorator, setFieldsValue } = props.form;
 
   useImperativeHandle(ref, () => ({
     form,
-  }))
+  }));
 
   const hideFormItem = (name, initialValue) => (
-    <FormItem>
-      {getFieldDecorator(name, {
-        initialValue: initialValue,
-      })(<Input type={'hidden'} />)}
-    </FormItem>
+    <div style={{ display: 'none' }}>
+      <FormItem>
+        {getFieldDecorator(name, {
+          initialValue: initialValue,
+        })(<Input type={'hidden'} />)}
+      </FormItem>
+    </div>
   );
 
   return (
@@ -63,14 +65,15 @@ const BaseInfo = (props, ref) => {
             <Row>
               <Col span={12}>
                 <FormItem label="供应商名称" {...formLayout}>
-                  {getFieldDecorator('source', {
-                    initialValue: type === 'add' ? 'SRM' : data.source,
-                  })(<Input disabled={true} placeholder="请输入来源" style={{ width: '100%' }} />)}
+                  {getFieldDecorator('supplierName', {
+                    initialValue: data && data.supplierName,
+                  })(<Input disabled style={{ width: '100%' }} />)}
                 </FormItem>
               </Col>
               <Col span={12}>
                 <FormItem label="成立时间" {...formLayout}>
-                  {getFieldDecorator('shareDemanNumber', {
+                  {getFieldDecorator('setUpTime', {
+                    initialValue: type === 'add' ? '' : data.setUpTime,
                     rules: [
                       {
                         required: true,
@@ -83,12 +86,12 @@ const BaseInfo = (props, ref) => {
                 </FormItem>
               </Col>
             </Row>
-            <Col span={0}>{hideFormItem('buCode', type === 'add' ? '' : data.buCode)}</Col>
-            <Col span={0}>{hideFormItem('buId', type === 'add' ? '' : data.buId)}</Col>
+            {/* <Col span={0}>{hideFormItem('buCode', type === 'add' ? '' : data.buCode)}</Col>
+            <Col span={0}>{hideFormItem('buId', type === 'add' ? '' : data.buId)}</Col> */}
             <Row>
               <Col span={12}>
                 <FormItem {...formLayout} label={'企业性质'}>
-                  {getFieldDecorator('buName', {
+                  {getFieldDecorator('enterpriceProperty', {
                     initialValue: '',
                     rules: [
                       {
@@ -101,19 +104,10 @@ const BaseInfo = (props, ref) => {
                   )}
                 </FormItem>
               </Col>
-              <Col span={0}>
-                {hideFormItem('applyPeopleId', type === 'add' ? userInfo.userId : data.applyPeopleId)}
-              </Col>
-              <Col span={0}>
-                {hideFormItem(
-                  'applyPeopleAccount',
-                  type === 'add' ? userInfo.userMobile : data.applyPeopleAccount,
-                )}
-              </Col>
               <Col span={12}>
                 <FormItem label="注册资金" {...formLayout}>
-                  {getFieldDecorator('applyPeopleName', {
-                    initialValue: type === 'add' ? userInfo.userName : data.applyPeopleName,
+                  {getFieldDecorator('registeredFund', {
+                    initialValue: data && data.applyPeopleName,
                     rules: [
                       {
                         required: true,
@@ -127,7 +121,7 @@ const BaseInfo = (props, ref) => {
             <Row>
               <Col span={24}>
                 <FormItem label="供应商注册地址" {...formLayoutCol}>
-                  {getFieldDecorator('applyDate', {
+                  {getFieldDecorator('compatAddress', {
                     initialValue: type === 'add' ? moment(new Date(), 'YYYY-MM-DD') : data.applyDate,
                     rules: [
                       {
@@ -136,31 +130,31 @@ const BaseInfo = (props, ref) => {
                       },
                     ],
                   })(<InputGroup compact>
-                    <Input style={{ width: '20%' }} defaultValue="中华人民共和国" disabled />
-                    <Input style={{ width: '30%' }} defaultValue="四川省" disabled />
-                    <Input style={{ width: '10%' }} defaultValue="内江市" disabled />
-                    <Input style={{ width: '40%' }} defaultValue="xxxxxxxxx" disabled />
+                    <Input style={{ width: '20%' }} defaultValue={data.countryName} disabled />
+                    <Input style={{ width: '30%' }} defaultValue={data.provinceName} disabled />
+                    <Input style={{ width: '10%' }} defaultValue={data.cityName} disabled />
+                    <Input style={{ width: '40%' }} defaultValue={data.detailedAddress} disabled />
                   </InputGroup>)}
                 </FormItem>
               </Col>
+              {hideFormItem('countryCode', data.countryCode)}
+              {hideFormItem('provinceCode', data.provinceCode)}
+              {hideFormItem('cityCode', data.cityCode)}
             </Row>
             <Row>
               <Col span={12}>
                 <FormItem label="网址" {...formLayout}>
-                  {getFieldDecorator('applyDate', {
-                    initialValue: type === 'add' ? moment(new Date(), 'YYYY-MM-DD') : data.applyDate,
+                  {getFieldDecorator('webSite', {
+                    initialValue: data.webSite,
                   })(<Input addonBefore="Http://" disabled={true} style={{ width: '100%' }} />)}
                 </FormItem>
               </Col>
               <Col span={12}>
                 <FormItem label="电话号码" {...formLayout}>
-                  {getFieldDecorator('applyPeoplePhone', {
-                    initialValue: type === 'add' ? userInfo.userMobile : data.applyPeoplePhone,
+                  {getFieldDecorator('phoneNumber', {
+                    initialValue: data.phoneNumber,
                   })(
-                    <InputGroup compact>
-                      <Input style={{ width: '20%' }} defaultValue="0571" disabled />
-                      <Input style={{ width: '80%' }} defaultValue="26888888" disabled />
-                    </InputGroup>,
+                    <Input disabled />,
                   )}
                 </FormItem>
               </Col>
@@ -168,8 +162,8 @@ const BaseInfo = (props, ref) => {
             <Row>
               <Col span={12}>
                 <FormItem label="邮政编码" {...formLayout}>
-                  {getFieldDecorator('applyDate', {
-                    initialValue: type === 'add' ? moment(new Date(), 'YYYY-MM-DD') : data.applyDate,
+                  {getFieldDecorator('postalCode', {
+                    initialValue: data.postalCode,
                     rules: [
                       {
                         required: true,
@@ -181,8 +175,8 @@ const BaseInfo = (props, ref) => {
               </Col>
               <Col span={12}>
                 <FormItem label="企业邮箱" {...formLayout}>
-                  {getFieldDecorator('applyPeoplePhoneww', {
-                    initialValue: type === 'add' ? userInfo.userMobile : data.applyPeoplePhone,
+                  {getFieldDecorator('email', {
+                    initialValue: type === 'add' ? '' : data.email,
                     rules: [
                       {
                         required: true,
@@ -198,8 +192,8 @@ const BaseInfo = (props, ref) => {
             <Row>
               <Col span={12}>
                 <FormItem label="法定代表人" {...formLayout}>
-                  {getFieldDecorator('applyDate', {
-                    initialValue: type === 'add' ? moment(new Date(), 'YYYY-MM-DD') : data.applyDate,
+                  {getFieldDecorator('legalRepresentative', {
+                    initialValue: type === 'add' ? '' : data.legalRepresentative,
                     rules: [
                       {
                         required: true,
@@ -211,8 +205,8 @@ const BaseInfo = (props, ref) => {
               </Col>
               <Col span={12}>
                 <FormItem label="销售公司名称" {...formLayout}>
-                  {getFieldDecorator('applyPeoplePhone', {
-                    initialValue: type === 'add' ? userInfo.userMobile : data.applyPeoplePhone,
+                  {getFieldDecorator('salesCompanyName', {
+                    initialValue: type === 'add' ? '' : data.salesCompanyName,
                     rules: [
                       {
                         required: true,
@@ -220,29 +214,16 @@ const BaseInfo = (props, ref) => {
                       },
                     ],
                   })(
-                    <Input placeholder='请输入销售公司名称' />
+                    <Input placeholder='可以与企业、销售分公司、代理商同名' disabled={true}/>
                   )}
                 </FormItem>
               </Col>
             </Row>
             <Row>
               <Col span={12}>
-                <FormItem label="实际产能" {...formLayout}>
-                  {getFieldDecorator('applyDate', {
-                    initialValue: type === 'add' ? moment(new Date(), 'YYYY-MM-DD') : data.applyDate,
-                    rules: [
-                      {
-                        required: true,
-                        message: '实际产能不能为空',
-                      },
-                    ],
-                  })(<InputNumber placeholder='请输入实际产能' style={{ width: '100%' }} />)}
-                </FormItem>
-              </Col>
-              <Col span={12}>
                 <FormItem label="设计产能" {...formLayout}>
-                  {getFieldDecorator('applyPeoplePhone', {
-                    initialValue: type === 'add' ? userInfo.userMobile : data.applyPeoplePhone,
+                  {getFieldDecorator('designCapability', {
+                    initialValue: type === 'add' ? '' : data.designCapability,
                     rules: [
                       {
                         required: true,
@@ -254,19 +235,32 @@ const BaseInfo = (props, ref) => {
                   )}
                 </FormItem>
               </Col>
+              <Col span={12}>
+                <FormItem label="实际产能" {...formLayout}>
+                  {getFieldDecorator('actualCapacity', {
+                    initialValue: type === 'add' ? '' : data.actualCapacity,
+                    rules: [
+                      {
+                        required: true,
+                        message: '实际产能不能为空',
+                      },
+                    ],
+                  })(<InputNumber placeholder='请输入实际产能' style={{ width: '100%' }} />)}
+                </FormItem>
+              </Col>
             </Row>
             <Row>
               <Col span={12}>
                 <FormItem label="公司总人数" {...formLayout}>
-                  {getFieldDecorator('applyDate', {
-                    initialValue: type === 'add' ? moment(new Date(), 'YYYY-MM-DD') : data.applyDate,
+                  {getFieldDecorator('headCount', {
+                    initialValue: type === 'add' ? '' : data.headCount,
                   })(<InputNumber placeholder='请输入公司总人数' style={{ width: '100%' }} />)}
                 </FormItem>
               </Col>
               <Col span={12}>
                 <FormItem label="本科以上学历" {...formLayout}>
-                  {getFieldDecorator('applyPeoplePhone', {
-                    initialValue: type === 'add' ? userInfo.userMobile : data.applyPeoplePhone,
+                  {getFieldDecorator('bachelorDegree', {
+                    initialValue: type === 'add' ? '' : data.bachelorDegree,
                   })(
                     <InputNumber placeholder='请输入本科以上学历人数' style={{ width: '100%' }} />
                   )}
@@ -276,15 +270,15 @@ const BaseInfo = (props, ref) => {
             <Row>
               <Col span={12}>
                 <FormItem label="大专" {...formLayout}>
-                  {getFieldDecorator('applyDate', {
-                    initialValue: type === 'add' ? moment(new Date(), 'YYYY-MM-DD') : data.applyDate,
+                  {getFieldDecorator('juniorCollege', {
+                    initialValue: type === 'add' ? '' : data.juniorCollege,
                   })(<InputNumber placeholder='请输入大专人数' style={{ width: '100%' }} />)}
                 </FormItem>
               </Col>
               <Col span={12}>
                 <FormItem label="中专及以下" {...formLayout}>
-                  {getFieldDecorator('applyPeoplePhone', {
-                    initialValue: type === 'add' ? userInfo.userMobile : data.applyPeoplePhone,
+                  {getFieldDecorator('technicalSecondary', {
+                    initialValue: type === 'add' ? '' : data.technicalSecondary,
                   })(
                     <InputNumber placeholder='请输入中专及以下人数' style={{ width: '100%' }} />
                   )}
@@ -294,15 +288,15 @@ const BaseInfo = (props, ref) => {
             <Row>
               <Col span={12}>
                 <FormItem label="管理人员" {...formLayout}>
-                  {getFieldDecorator('applyDate', {
-                    initialValue: type === 'add' ? moment(new Date(), 'YYYY-MM-DD') : data.applyDate,
+                  {getFieldDecorator('manager', {
+                    initialValue: type === 'add' ? '' : data.manager,
                   })(<InputNumber placeholder='请输入管理人员人数' style={{ width: '100%' }} />)}
                 </FormItem>
               </Col>
               <Col span={12}>
                 <FormItem label="销售人员" {...formLayout}>
-                  {getFieldDecorator('applyPeoplePhone', {
-                    initialValue: type === 'add' ? userInfo.userMobile : data.applyPeoplePhone,
+                  {getFieldDecorator('salesman', {
+                    initialValue: type === 'add' ? '' : data.salesman,
                   })(
                     <InputNumber placeholder='请输入销售人员人数' style={{ width: '100%' }} />
                   )}
@@ -312,15 +306,15 @@ const BaseInfo = (props, ref) => {
             <Row>
               <Col span={12}>
                 <FormItem label="质量控制" {...formLayout}>
-                  {getFieldDecorator('applyDate', {
-                    initialValue: type === 'add' ? moment(new Date(), 'YYYY-MM-DD') : data.applyDate,
+                  {getFieldDecorator('qualityControl', {
+                    initialValue: type === 'add' ? '' : data.qualityControl,
                   })(<InputNumber placeholder='请输入质量控制人数' style={{ width: '100%' }} />)}
                 </FormItem>
               </Col>
               <Col span={12}>
                 <FormItem label="技术人员" {...formLayout}>
-                  {getFieldDecorator('applyPeoplePhone', {
-                    initialValue: type === 'add' ? userInfo.userMobile : data.applyPeoplePhone,
+                  {getFieldDecorator('technicist', {
+                    initialValue: type === 'add' ? '' : data.technicist,
                   })(
                     <InputNumber placeholder='请输入技术人员人数' style={{ width: '100%' }} />
                   )}
@@ -330,15 +324,15 @@ const BaseInfo = (props, ref) => {
             <Row>
               <Col span={12}>
                 <FormItem label="客服人员" {...formLayout}>
-                  {getFieldDecorator('applyDate', {
-                    initialValue: type === 'add' ? moment(new Date(), 'YYYY-MM-DD') : data.applyDate,
+                  {getFieldDecorator('supportStaff', {
+                    initialValue: type === 'add' ? '' : data.supportStaff,
                   })(<InputNumber placeholder='请输入客服人员人数' style={{ width: '100%' }} />)}
                 </FormItem>
               </Col>
               <Col span={12}>
                 <FormItem label="其他" {...formLayout}>
-                  {getFieldDecorator('applyDate', {
-                    initialValue: type === 'add' ? moment(new Date(), 'YYYY-MM-DD') : data.applyDate,
+                  {getFieldDecorator('otherStaff', {
+                    initialValue: type === 'add' ? '' : data.otherStaff,
                   })(<InputNumber style={{ width: '100%' }} />)}
                 </FormItem>
               </Col>
@@ -346,9 +340,9 @@ const BaseInfo = (props, ref) => {
             <Row>
               <Col span={12}>
                 <FormItem label="现有产能利用率" {...formLayout}>
-                  {getFieldDecorator('applyDate', {
-                    initialValue: type === 'add' ? moment(new Date(), 'YYYY-MM-DD') : data.applyDate,
-                  })(<Input placeholder='请输入客服人员人数' style={{ width: '100%' }} addonAfter='%' />)}
+                  {getFieldDecorator('actualCapacityFactor', {
+                    initialValue: data.actualCapacityFactor,
+                  })(<Input placeholder='请输入现有产能利用率' style={{ width: '100%' }} addonAfter='%'  disabled/>)}
                 </FormItem>
               </Col>
             </Row>

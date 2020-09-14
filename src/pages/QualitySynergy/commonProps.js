@@ -28,6 +28,37 @@ const commonProps = {
   },
 };
 
+// 根据buCode和物料组代码查战略采购code和name
+export const FindTacticByBuCodeAndGroupCode = async params => {
+  const url = `${baseUrl}/bmBuContact/findByBuCodeAndMaterialGroupCode`;
+  return request({
+    url,
+    method: 'POST',
+    params: params,
+  });
+}
+
+
+// 根据分享需求号获取供应商
+export const FindSupplierByDemandNumber = async params => {
+  const url = `${recommendUrl}/api/epTechnicalShareDemandService/findSupplier`;
+  return request({
+    url,
+    method: 'GET',
+    data: params,
+  });
+}
+
+//技术资料分享删除
+export async function DeleteDataSharingList(params) {
+  const url = `${recommendUrl}/api/epTechnicalShareDemandService/delete`;
+  return request({
+    url,
+    method: 'GET',
+    params: params,
+  });
+}
+
 //技术资料分享编辑
 export async function UpdateDataSharingList(params) {
   const url = `${recommendUrl}/api/epTechnicalShareDemandService/update`;
@@ -52,7 +83,7 @@ export async function AddDataSharingList(params) {
 
 //业务模块对业务单元查询单条数据
 export async function DataSharingFindOne(params) {
-  const url = `${smBaseUrl}/api/epTechnicalShareDemandService/findOne`;
+  const url = `${recommendUrl}/api/epTechnicalShareDemandService/findOne`;
   return request({
     url,
     method: 'GET',
@@ -319,9 +350,6 @@ export const MaterialAllConfig = {
     description: 'materialDesc',
   },
   placeholder: '选择物料代码',
-  style: {
-    width: '100%',
-  },
 };
 // 物料代码列表--填报环保资料物料-新增标的物
 export const MaterialFindByPage = {
@@ -430,6 +458,26 @@ export const BUModelConfig = {
   placeholder: '选择业务单元模块',
 };
 
+// BU列表未冻结高级查询
+export const BUConfigNoFrostHighSearch = {
+  remotePaging: true,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${baseUrl}/bu/findPage`,
+  },
+  rowKey: 'buCode',
+  reader: {
+    field: ['buCode', 'id'],
+    name: 'buCode',
+    description: 'buName',
+  },
+  style: {
+    width: '100%',
+  },
+  placeholder: '选择业务单元',
+};
+
 // BU列表未冻结
 export const BUConfigNoFrost = {
   remotePaging: true,
@@ -532,11 +580,11 @@ export const limitScopeList = {
 export const statusProps = {
   dataSource: [
     {
-      code: 'INIT',
+      code: '草稿',
       name: '草稿',
     },
     {
-      code: 'INPROCESS',
+      code: '生效',
       name: '生效',
     },
   ],
@@ -548,11 +596,11 @@ export const statusProps = {
 export const DownloadStatus = {
   dataSource: [
     {
-      code: 'INIT',
+      code: '已下载',
       name: '已下载',
     },
     {
-      code: 'INPROCESS',
+      code: '未下载',
       name: '未下载',
     },
   ],
@@ -564,11 +612,11 @@ export const DownloadStatus = {
 export const distributionProps = {
   dataSource: [
     {
-      code: 'INIT',
+      code: '已分配',
       name: '已分配',
     },
     {
-      code: 'INPROCESS',
+      code: '未分配',
       name: '未分配',
     },
   ],

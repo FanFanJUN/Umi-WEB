@@ -22,7 +22,7 @@ const SupplierEditRef = forwardRef(({
   configuredata
 }, ref) => {
   useImperativeHandle(ref, () => ({
-    handleSave,
+    saveAgent,
     form
   }));
   const BaseinfoRef = useRef(null);
@@ -81,124 +81,14 @@ const SupplierEditRef = forwardRef(({
     setbusinesshide(handbusiness)
   }
   // 保存
-  function handleSave() {
-    let baseVal,accountVal,authorizedClientVal,businessInfoVal,bankVal,rangeVal,
-    agentVal,qualifications,proCertVos;
-    for(let item of configure){
-      if (item.operationCode !== '3' && item.fieldCode === 'name') {
-        const { getBaseInfo } = BaseinfoRef.current; // 基本信息
-        baseVal = getBaseInfo();
-        if (!baseVal) {
-          message.error('请将供应商基本信息填写完全！');
-          return false;
-        }
-      }else if (item.operationCode !== '3' && item.fieldCode === 'mobile') {
-        const { getAccountinfo } = AccountRef.current; //帐号
-        accountVal = getAccountinfo();
-        if (!accountVal) {
-          message.error('请将供应商账号信息填写完全！');
-          return false;
-        }
-      }
-      if (item.operationCode !== '3' && item.fieldCode === 'contactVos') {
-        const { getAuthorfrom } = AuthorizeRef.current; // 授权委托人
-        authorizedClientVal = getAuthorfrom();
-        if (!authorizedClientVal) {
-          message.error('请将授权委托人信息填写完全！');
-          return false;
-        }
-      }
-      if (item.operationCode !== '3' && item.fieldCode === 'businessScope') {
-        const { getALLbusinCheck } = BusinessRef.current; //业务信息
-        businessInfoVal = getALLbusinCheck();
-        if (!businessInfoVal) {
-          message.error('请将业务信息填写完全！');
-          return false;
-        }
-      }
-      if (item.operationCode !== '3' && item.fieldCode === 'bankInfoVos') {
-        const { getbankform } = Bankformef.current; //银行信息
-        bankVal = getbankform()
-        if (!bankVal) {
-          message.error('请将银行相关信息填写完全！');
-          return false;
-        }
-      }
-      if (item.operationCode !== '3' && item.fieldCode === 'ScopeOfSupply') {
-        const { getSupplierRange } = SupplyRangeRef.current; //供应商范围
-        rangeVal = getSupplierRange()
-      }
-      if (item.operationCode !== '3' && item.fieldCode === 'supplierAgents') {
-        const { getAgentform } = Agentformef.current; // 代理商
-        agentVal = getAgentform()
-        if (!agentVal) {
-          message.error('请将代理商信息填写完全！');
-          return false;
-        }
-      }
-      if (item.operationCode !== '3' && item.fieldCode === 'genCertVos') {
-        const { getqualificationsInfo } = QualificationRef.current; // 通用资质
-        qualifications = getqualificationsInfo()
-        if (!qualifications) {
-          message.error('请将通用资质信息填写完全！');
-          return false;
-        }
-      }
-      if (item.operationCode !== '3' && item.fieldCode === 'proCertVos') {
-        const { getspecialpurpose } = QualispecialRef.current; // 专用资质
-        proCertVos = getspecialpurpose() || [];
-      }
+  function saveAgent() {
+    const { getAgentform } = Agentformef.current; // 代理商
+    let agentVal = getAgentform()
+    if (!agentVal) {
+      message.error('请将代理商信息填写完全！');
+      return false;
     }
-    let enclosurelist = [],basedata,accountData,baseexten,automaticdata,automaticincome,
-    automThreeYear,rangeValinfo;
-    if (baseVal && baseVal.supplierVo) {
-      basedata = baseVal.supplierVo
-    }
-    if (baseVal && baseVal.extendVo) {
-      baseexten = baseVal.extendVo
-    }
-    if (baseVal && baseVal.genCertVos) {
-      enclosurelist= {...enclosurelist,...baseVal.genCertVos[0]}
-    }
-    if (accountVal && accountVal.supplierVo) {
-      accountData = accountVal.supplierVo
-    }
-    if (qualifications) {
-      enclosurelist = [enclosurelist, ...qualifications.proCertVos];
-    }
-    if (businessInfoVal && businessInfoVal.supplierVo) {
-      automaticdata = businessInfoVal.supplierVo
-    }
-    if (businessInfoVal&&businessInfoVal.supplierRecentIncomes) {
-      automaticincome = businessInfoVal.supplierRecentIncomes
-    }
-    if (businessInfoVal &&businessInfoVal.extendVo) {
-      automThreeYear = businessInfoVal.extendVo
-    }
-    if (rangeVal && rangeVal.extendVo) {
-      rangeValinfo = rangeVal.extendVo
-    }
-    let supplierInfoVo = {
-      supplierVo: { ...basedata, ...accountData ,...automaticdata},
-      extendVo: { ...baseexten, ...automThreeYear, ...rangeValinfo },
-      contactVos: authorizedClientVal,
-      genCertVos: enclosurelist,
-      bankInfoVos: bankVal,
-      supplierRecentIncomes: automaticincome,
-      supplierAgents: agentVal,
-      proCertVos: proCertVos ? proCertVos.proCertVos : ''
-    }
-    if (baseVal) {
-      if (baseVal.supplierVo.companyCode) {
-        wholeData.companyCode = baseVal.supplierVo.companyCode
-        wholeData.companyName = baseVal.supplierVo.companyName
-      }
-    }
-    
-    if (wholeData) {
-      wholeData.supplierInfoVo = supplierInfoVo;
-    }
-    return wholeData;
+    return agentVal;
   }
   return (
     <Spin spinning={loading} tip='处理中...'>
@@ -319,8 +209,7 @@ const SupplierEditRef = forwardRef(({
                     <AgentInfo
                       editData={editData}
                       wrappedComponentRef={Agentformef}
-                      agenthead={false}
-                      headerInfo={true}
+                      agenthead={true}
                     />
                   </div>
                 </div>

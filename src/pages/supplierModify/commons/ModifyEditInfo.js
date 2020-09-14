@@ -1,7 +1,7 @@
 import React, { forwardRef,useImperativeHandle, useState, useRef, useEffect } from 'react';
 import { Form,Button, Modal, message, Spin, Affix } from 'antd';
 import { router } from 'dva';
-import BaseinfiDetail from '../../supplierRegister/SupplierDetail/BaseinfiDetail'
+import BaseInfo from '../../supplierRegister/components/BaseInfo'
 import Account from '../../supplierRegister/components/Account'
 import Authorizedclient from '../../supplierRegister/components/Authorizedclient'
 import Businessinfo from '../../supplierRegister/components/Businessinfo'
@@ -211,7 +211,7 @@ const SupplierEditRef = forwardRef(({
                 <div className={styles.bgw}>
                   <div className={styles.title}>基本信息</div>
                   <div >
-                    {/* <BaseInfo
+                    <BaseInfo
                       baseinfo={baseinfo}
                       initialValues={editData}
                       editformData={editData}
@@ -219,11 +219,6 @@ const SupplierEditRef = forwardRef(({
                       approve={true}
                       change={true}
                       wholeData={wholeData}
-                    /> */}
-                    <BaseinfiDetail
-                      editformData={editData}
-                      baseinfo={baseinfo}
-                      wrappedComponentRef={BaseinfoRef}
                     />
                   </div>
                 </div>
@@ -256,7 +251,7 @@ const SupplierEditRef = forwardRef(({
                       initialValue={initialValue}
                       editformData={editData}
                       wrappedComponentRef={AuthorizeRef}
-                      isView={true}
+                      isView={false}
                     />
                   </div>
                 </div>
@@ -272,7 +267,7 @@ const SupplierEditRef = forwardRef(({
                       businesshide={businesshide}
                       editformData={editData}
                       wrappedComponentRef={BusinessRef}
-                      isView={true}
+                      isView={false}
                     />
                   </div>
                 </div>
@@ -287,8 +282,8 @@ const SupplierEditRef = forwardRef(({
                     <Bank
                       editData={editData}
                       wrappedComponentRef={Bankformef}
-                      isView={true}
-                      headerInfo={true}
+                      isView={false}
+                      headerInfo={false}
                     />
                   </div>
                 </div>
@@ -304,7 +299,7 @@ const SupplierEditRef = forwardRef(({
                       editData={editData}
                       isView={undefined}
                       wrappedComponentRef={SupplyRangeRef}
-                      isView={true}
+                      isView={false}
                     />
                   </div>
                 </div>
@@ -320,7 +315,6 @@ const SupplierEditRef = forwardRef(({
                       editData={editData}
                       wrappedComponentRef={Agentformef}
                       agenthead={false}
-                      headerInfo={true}
                     />
                   </div>
                 </div>
@@ -335,7 +329,7 @@ const SupplierEditRef = forwardRef(({
                     <QualificationCommon
                       editData={editData}
                       wrappedComponentRef={QualificationRef}
-                      isView={true}
+                      isView={false}
                     />
                   </div>
                 </div>
@@ -349,7 +343,7 @@ const SupplierEditRef = forwardRef(({
                   <div>
                     <QualificationProfessional
                       wrappedComponentRef={QualispecialRef}
-                      isView={true}
+                      isView={false}
                     />
                   </div>
                 </div>

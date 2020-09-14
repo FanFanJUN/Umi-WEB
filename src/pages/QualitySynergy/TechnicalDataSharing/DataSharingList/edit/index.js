@@ -7,7 +7,8 @@ import { closeCurrent, getMobile, getUserAccount, getUserId, getUserName } from 
 import BaseInfo from './BaseInfo';
 import MaterialInfo from './MaterialInfo';
 import TechnicalData from './TechnicalData';
-import { AddDataSharingList, DataSharingFindOne, UpdateDataSharingList } from '../../../commonProps';
+import { AddDataSharingList, DataSharingFindOne, getRandom, UpdateDataSharingList } from '../../../commonProps';
+import SupplierData from './SupplierData';
 
 export default () => {
   const { query } = router.useLocation();
@@ -17,6 +18,8 @@ export default () => {
   const technicalDataRef = useRef(null);
 
   const [buCode, setBuCode] = useState(undefined)
+
+  const [deleteArr, setDeleteArr] = useState([])
 
   const [data, setData] = useState({
     id: '',
@@ -58,6 +61,8 @@ export default () => {
     DataSharingFindOne({id}).then(res => {
       console.log(res)
       if (res.success) {
+        res.data.epTechnicalDataVos = res.data.epTechnicalDataVos.map(item => ({...item, lineNumber: getRandom(10).toString()}))
+        console.log(res.data)
         setData(v => ({...v, editDate: res.data}))
       } else {
         message.error(res.message)
@@ -84,12 +89,34 @@ export default () => {
     let allData = {...baseInfoData, ...materialInfoData, epTechnicalDataBoList: technicalData}
     if (data.type === 'add') {
       AddDataSharingList(allData).then(res => {
-        console.log(res, 'res')
+        if (res.success) {
+          message.success(res.message)
+          closeCurrent()
+        } else {
+          message.error(res.message)
+        }
       })
     } else {
       allData.id = data.id
+      allData.state = data.state
+      allData.allotSupplierState = data.allotSupplierState
+      allData.epTechnicalDataBoList.map(item => {
+        if (item.id) {
+          item.technicalDataFileIdList = item.technicalDataFileIdList.map(items => {
+            if (items.id) {
+              return item.id
+            }
+          })
+        }
+      })
+      allData.epTechnicalDataBoList = [...allData.epTechnicalDataBoList, ...deleteArr]
       UpdateDataSharingList(allData).then(res => {
-        console.log(res)
+        if (res.success) {
+          message.success(res.message)
+          closeCurrent()
+        } else {
+          message.error(res.message)
+        }
       })
       console.log(allData)
     }
@@ -101,11 +128,13 @@ export default () => {
         <Affix>
           <div className={classnames(styles.fbc, styles.affixHeader)}>
             <span>{data.title}</span>
-            <div>
-              <Button className={styles.btn} onClick={handleBack}>返回</Button>
-              <Button className={styles.btn} onClick={handleSave}>保存</Button>
-              <Button className={styles.btn} type='primary' onClick={handleSave}>保存并提交</Button>
-            </div>
+            {
+              data.type !== 'detail' && <div>
+                <Button className={styles.btn} onClick={handleBack}>返回</Button>
+                <Button className={styles.btn} onClick={handleSave}>保存</Button>
+                <Button className={styles.btn} type='primary' onClick={handleSave}>保存并提交</Button>
+              </div>
+            }
           </div>
         </Affix>
         <BaseInfo
@@ -127,8 +156,14 @@ export default () => {
           data.type !== 'detail' && <TechnicalData
             data={data.editDate?.epTechnicalDataVos}
             isView={data.isView}
+            setDeleteArr={setDeleteArr}
             wrappedComponentRef={technicalDataRef}
             type={data.type}
+          />
+        }
+        {
+          data.type === 'detail' && <SupplierData
+            data={data.editDate?.epTechnicalSupplierVos}
           />
         }
       </Spin>

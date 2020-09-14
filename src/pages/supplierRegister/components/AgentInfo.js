@@ -75,6 +75,7 @@ const Agentformef = forwardRef(({
       title: '原厂地址',
       align: 'center',
       dataIndex: 'originalAddress',
+      width:200
     },
     {
       title: '营业执照',
@@ -187,8 +188,15 @@ const Agentformef = forwardRef(({
   }
   // 编辑
   function handleEdit() {
+    let newsagent;
+    if (selectedRows.length > 1) {
+      newsagent = selectedRows.splice(1);
+    }else {
+      newsagent = selectedRows
+    }
+    setDataSource(newsagent) 
     setEdit(true)
-    const [row] = selectedRows;
+    const [row] = newsagent;
     setInitialValue({ ...row })
     agentModelRef.current.handleModalVisible(true);
   }

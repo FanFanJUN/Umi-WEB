@@ -91,7 +91,6 @@ const BankbaseRef = forwardRef(({
                 return item;
             })
         };
-        console.log(initData)
         initData = initData.length > 0 ? initData[0] : null;
         setInitData(initData);
         setFieldsValue(initData);
@@ -175,7 +174,7 @@ const BankbaseRef = forwardRef(({
                                 )}
                     </FormItem>
                 </Col>
-                {/* <Col span={8}>
+                <Col span={8}>
                     <FormItem
                         label={"省"}
                         {...formItemLayout}
@@ -197,7 +196,7 @@ const BankbaseRef = forwardRef(({
                                     />
                                 )}
                     </FormItem>
-                </Col> */}
+                </Col>
                 <Col span={8}>
                     <FormItem
                         label={"市"}

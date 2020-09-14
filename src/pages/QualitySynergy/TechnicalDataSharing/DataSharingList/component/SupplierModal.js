@@ -1,93 +1,148 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import{Form, Button, DatePicker, Modal, Col } from 'antd';
-import styles from './SupplierModal.less'
-import { ExtTable } from 'suid';
-import { smBaseUrl } from '../../../../../utils/commonUrl';
+import { Form, Button, DatePicker, Modal, Col, message } from 'antd';
+import styles from './SupplierModal.less';
+import { ExtModal, ExtTable } from 'suid';
+import { recommendUrl, smBaseUrl, supplierManagerBaseUrl } from '../../../../../utils/commonUrl';
+import { FindSupplierByDemandNumber } from '../../../commonProps';
+import AutoSizeLayout from '../../../../../components/AutoSizeLayout';
 
 const FormItem = Form.Item;
 
 const formItemLayoutLong = {
-  labelCol: {span: 10},
-  wrapperCol: {span: 14},
+  labelCol: { span: 10 },
+  wrapperCol: { span: 14 },
 };
 
 const SupplierModal = (props) => {
   const { visible, title, type } = props;
 
+  const [supplierData, setSupplierData] = useState({
+    selectedRowKeys: [],
+    selectedRows: [],
+  });
+
   const [data, setData] = useState({
+    sourceData: [],
     show: false,
-    timeVisible: false
+    type: 'supplier',
+    ModalVisible: false,
   });
 
   const [endTime, setEndTime] = useState(null);
 
-  const [searchValue, setSearchValue] = useState({});
-
   useEffect(() => {
     if (type === 'allot') {
-      setData((value) => ({...value, show: true}))
+      setData((value) => ({ ...value, show: true }));
     } else {
-      setData((value) => ({...value, show: false}))
+      getDataSource();
+      setData((value) => ({ ...value, show: false }));
     }
   }, [visible]);
 
+  const supplierColumns = [
+    { title: '供应商代码', dataIndex: 'code', width: 250 },
+    { title: '供应商名称', dataIndex: 'name', ellipsis: true, width: 250 },
+  ].map(item => ({ ...item, align: 'center' }));
+
   const columns = [
     { title: '来源', dataIndex: 'turnNumber', width: 70 },
-    { title: '分享需求号', dataIndex: 'name1', ellipsis: true, },
-    { title: '物料代码', dataIndex: 'name2', ellipsis: true, },
-    { title: '物料描述', dataIndex: 'name3', ellipsis: true, },
-    { title: '物料组代码', dataIndex: 'name4', ellipsis: true, },
-  ].map(item => ({...item, align: 'center'}))
+    { title: '分享需求号', dataIndex: 'name1', ellipsis: true, width: 150 },
+    { title: '物料代码', dataIndex: 'name2', ellipsis: true, width: 150 },
+    { title: '物料描述', dataIndex: 'name3', ellipsis: true, width: 250 },
+    { title: '物料组代码', dataIndex: 'name4', ellipsis: true, width: 150 },
+  ].map(item => ({ ...item, align: 'center' }));
+
+  const getDataSource = () => {
+    FindSupplierByDemandNumber({
+      shareDemanNumber: props.shareDemanNumber,
+    }).then(res => {
+      if (res.success) {
+        setData(v => ({ ...v, sourceData: res.data?.rows }));
+      } else {
+        message.error(res.message);
+      }
+    });
+  };
 
   const handleOk = () => {
     console.log('ok');
   };
 
   const handleCancel = () => {
-    setData((value) => ({...value, show: false}))
+    setData((value) => ({ ...value, show: false }));
     props.onCancel();
   };
 
   const handleSelectedRows = (value) => {
-    console.log(value)
-  }
+    console.log(value);
+  };
 
   const selectedRowKeys = (value) => {
-    console.log(value, 'select')
-  }
+    console.log(value, 'select');
+  };
 
+  const handleTimeEdit = () => {
+    setData((value) => ({ ...value, type: 'time', ModalVisible: true }));
+  };
 
-  const tableProps = {
-    store: {
-      url: `${smBaseUrl}/api/supplierFinanceViewModifyService/findByPage`,
-      params: {
-        ...searchValue,
-        quickSearchProperties: ['supplierName', 'supplierCode'],
-        sortOrders: [
-          {
-            property: 'docNumber',
-            direction: 'DESC'
-          }
-        ]
-      },
-      type: 'POST'
-    }
-  }
-
-  const handleTimeEdit= () => {
-    setData((value) => ({...value, timeVisible: true}))
-  }
+  const handleAddSupplier = () => {
+    setData((value) => ({ ...value, type: 'supplier', ModalVisible: true }));
+  };
 
   const timeModalCancel = () => {
-    setData((value) => ({...value, timeVisible: false}))
-  }
+    setData((value) => ({ ...value, ModalVisible: false }));
+  };
 
-  const {getFieldDecorator} = props.form;
+  const TimeAdd = () => {
+    return <Form>
+      <Col span={24}>
+        <FormItem
+          {...formItemLayoutLong}
+          label="编辑资料下载截止日期"
+        >
+          {
+            getFieldDecorator('endTime', {
+              initialValue: null,
+              rules: [{ required: true, message: '资料下载截止日期不能为空' }],
+            })(
+              <DatePicker style={{ width1: '100%' }}/>,
+            )
+          }
+        </FormItem>
+      </Col>
+    </Form>;
+  };
+
+  const onSupplierSelectRow = (value) => {
+    console.log(value);
+  };
+
+  const SupplierAdd = () => {
+    return <ExtTable
+      height={'500px'}
+      rowKey={(v) => v.id}
+      columns={supplierColumns}
+      store={{
+        url: `${supplierManagerBaseUrl}/api/supplierService/findSupplierVoByPage`,
+        type: 'POST',
+      }}
+      allowCancelSelect={true}
+      remotePaging={true}
+      checkbox={{
+        multiSelect: true,
+      }}
+      onSelectRow={onSupplierSelectRow}
+      selectedRowKeys={supplierData.selectedRowKeys}
+    />
+
+  };
+
+  const { getFieldDecorator } = props.form;
 
   return (
-    <Modal
+    <ExtModal
       maskClosable={false}
-      width={'100vh'}
+      width={'150vh'}
       visible={visible}
       title={title}
       onOk={handleOk}
@@ -95,7 +150,7 @@ const SupplierModal = (props) => {
     >
       {
         data.show && <div>
-          <Button className={styles.btn} type='primary'>新增</Button>
+          <Button className={styles.btn} onClick={handleAddSupplier} type='primary'>新增</Button>
           <Button className={styles.btn} onClick={handleTimeEdit}>编辑资料下载日期</Button>
           <Button className={styles.btn}>删除</Button>
           <Button className={styles.btn}>保存</Button>
@@ -108,6 +163,7 @@ const SupplierModal = (props) => {
         columns={columns}
         bordered
         allowCancelSelect
+        dataSource={data.sourceData}
         showSearch={false}
         remotePaging
         checkbox={{ multiSelect: false }}
@@ -115,41 +171,28 @@ const SupplierModal = (props) => {
         size='small'
         onSelectRow={handleSelectedRows}
         selectedRowKeys={selectedRowKeys}
-        {...tableProps}
       />
-      <Modal
+      <ExtModal
+        width={'80vh'}
+        height={'500px'}
         maskClosable={false}
-        title='编辑资料下载截止日期'
-        visible={data.timeVisible}
+        title={data.type === 'time' ? '编辑资料下载截止日期' : '新增供应商'}
+        visible={data.ModalVisible}
+
         onCancel={timeModalCancel}
       >
-        <div style={{height: '50px'}}>
-          <Form>
-            <Col span={24}>
-              <FormItem
-                {...formItemLayoutLong}
-                label="编辑资料下载截止日期"
-              >
-                {
-                  getFieldDecorator("endTime", {
-                    initialValue: null,
-                    rules: [{required: true, message: '资料下载截止日期不能为空'}]
-                  })(
-                    <DatePicker style={{width1: '100%'}} />
-                  )
-                }
-              </FormItem>
-            </Col>
-          </Form>
+        <div style={data.type === 'time' ? { height: '50px' } : {height: '500px'}}>
+          {data.type === 'time' ? TimeAdd() : SupplierAdd()}
         </div>
-      </Modal>
-    </Modal>
+      </ExtModal>
+    </ExtModal>
   );
 
 };
 
 SupplierModal.defaultPorps = {
   type: 'view',
+  shareDemanNumber: '',
   title: '',
   visible: false,
   onCancel: () => {

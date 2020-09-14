@@ -42,11 +42,39 @@ function CreateStrategy() {
 
       let newsort = [];
       rows.map((item,index) => {
+        let ranksort;
+        if (item.smMsgTypeCode === '1') {
+          ranksort = 1;
+        }else if (item.smMsgTypeCode === '2') {
+          ranksort = 2;
+        }else if (item.smMsgTypeCode === '3') {
+          ranksort = 4;
+        }else if (item.smMsgTypeCode === '4') {
+          ranksort = 5;
+        }else if (item.smMsgTypeCode === '5') {
+          ranksort = 5;
+        }else if (item.smMsgTypeCode === '6') {
+          ranksort = 7;
+        }else if (item.smMsgTypeCode === '7') {
+          ranksort = 6;
+        }else if (item.smMsgTypeCode === '8') {
+          ranksort = 3;
+        }else if (item.smMsgTypeCode === '9') {
+          ranksort = 9;
+        }else if (item.smMsgTypeCode === '10') {
+          ranksort = 10;
+        }else if (item.smMsgTypeCode === '11') {
+          ranksort = 11;
+        }else if (item.smMsgTypeCode === '12') {
+          ranksort = 12;
+        }else if (item.smMsgTypeCode === '13') {
+          ranksort = 8;
+        }
         newsort.push({
           id: item.id,
           creatorName: item.creatorName,
           createdDate: item.createdDate,
-          smMsgTypeCode: Number(item.smMsgTypeCode),
+          smMsgTypeCode: Number(ranksort),
           smMsgTypeName:  item.smMsgTypeName,
           smFieldTypeCode: item.smFieldTypeCode,
           smFieldTypeName: item.smFieldTypeName,
