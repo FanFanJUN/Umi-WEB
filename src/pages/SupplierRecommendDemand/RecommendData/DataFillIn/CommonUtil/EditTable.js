@@ -2,19 +2,21 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-10 10:57:33
- * @LastEditTime: 2020-09-14 15:35:09
- * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/common/EditTable.js
+ * @LastEditTime: 2020-09-15 16:20:23
+ * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/CommonUtil/EditTable.js
  * @Description:  函数式可编辑行 Table组件
  * @Connect: 1981824361@qq.com
  */
 import React, { useState, useRef, Fragment } from 'react';
-import { Input, InputNumber, Popconfirm, Form, Divider, Button } from 'antd';
+import { Input, InputNumber, Popconfirm, Form, Divider, Button, DatePicker, Select, message, Alert } from 'antd';
 import { ExtTable } from 'suid';
 import PropTypes, { any } from 'prop-types';
 import AutoSizeLayout from '../../../../supplierRegister/SupplierAutoLayout';
+import { guid } from './utils';
 
 
 const EditableContext = React.createContext();
+const { Option } = Select;
 
 const EditableCell = (params) => {
     const {
@@ -25,7 +27,7 @@ const EditableCell = (params) => {
             inputType,
             record,
             form,
-         }
+        }
     } = params;
 
     // 编辑样式
@@ -33,8 +35,20 @@ const EditableCell = (params) => {
         switch (inputType) {
             case 'InputNumber':
                 return <InputNumber />
+            case 'DatePicker':
+                return <DatePicker />
+            case 'Select':
+                return <Select
+                    showSearch
+                    style={{ width: 200 }}
+                    placeholder="Select a person"
+                    optionFilterProp="children"
+                >
+                    <Option value="1">是</Option>
+                    <Option value="2">否</Option>
+                </Select>
             default:
-                return <Input/>;
+                return <Input />;
         }
     };
 
@@ -64,9 +78,11 @@ const EditableCell = (params) => {
 
 const EditableTable = (props) => {
 
-    const { form, dataSource, columns, rowKey, isEditTable=false, isToolBar=false } = props;
+    const { form, dataSource, columns, rowKey, isEditTable = false, isToolBar = false, setNewData } = props;
 
+    console.log(dataSource);
     const [editingKey, setEditingKey] = useState('');
+    const [buttonDisabled, setButtonDisabled] = useState(false);
     const tableRef = useRef(null);
 
     function isEditing(record) {
@@ -82,12 +98,17 @@ const EditableTable = (props) => {
     }
 
     function deleteRow(key) {
-        console.log(key);
+        const newArray = dataSource.filter(item => {
+            return item[rowKey] !== editingKey;
+        });
+        setNewData(newArray);
+        setButtonDisabled(false);
+        setEditingKey('');
     }
 
-    const finalCol =(record)=>{
-       const editable = isEditing(record);
-       return editable ? (
+    const finalCol = (record) => {
+        const editable = isEditing(record);
+        return editable ? (
             <span>
                 <EditableContext.Consumer>
                     {form => (
@@ -99,9 +120,12 @@ const EditableTable = (props) => {
                         </a>
                     )}
                 </EditableContext.Consumer>
-                <Popconfirm title="确定取消？" onConfirm={() => cancel(record[rowKey])}>
-                    <a>取消</a>
-                </Popconfirm>
+                {buttonDisabled ?
+                    <a style={{ color: 'red' }} key='deteteKey' onClick={() => deleteRow(record[rowKey])}>删除</a>
+                    :
+                    <Popconfirm title="确定取消？" onConfirm={() => cancel(record[rowKey])}>
+                        <a key='cancel'>取消</a>
+                    </Popconfirm>}
             </span>
         ) : (
                 <Fragment>
@@ -110,22 +134,22 @@ const EditableTable = (props) => {
                     </a>
                     <Divider type="vertical" />
                     <Popconfirm title="确定删除？" onConfirm={() => deleteRow(record[rowKey])}>
-                        <a disabled={editingKey !== ''} key='delete' style={{ color: 'red' }}>
+                        <a disabled={editingKey !== ''} key='delete' style={editingKey !== '' ? { color: 'rgba(0, 0, 0, 0.25)' } : { color: 'red' }}>
                             删除
                         </a>
                     </Popconfirm>
                 </Fragment>
             );
-    } 
+    }
 
-    const secCol = isEditTable? [...columns, {
+    const secCol = isEditTable ? [{
         title: '操作',
         dataIndex: 'operation',
         render: (text, record) => {
-            
+
             return finalCol(record);
         },
-    }].map(item => ({ ...item, align: 'center' })) : columns;
+    }, ...columns,].map(item => ({ ...item, align: 'center' })) : columns;
 
     const mergeColumns = secCol.map(col => {
         if (!col.editable) {
@@ -151,27 +175,38 @@ const EditableTable = (props) => {
             if (error) {
                 return;
             }
-            const newData = [...dataSource];
-            const index = newData.findIndex(item => key === item[rowKey]);
-            console.log(index);
-            if (index > -1) {
-                const item = newData[index];
-                newData.splice(index, 1, {
-                    ...item,
-                    ...row,
-                });
-                setEditingKey('');
-                props.setNewData(newData);
-            } else {
-                newData.push(row);
-                setEditingKey('');
-                props.setNewData(newData);
-            }
+            console.log(row);
+            // const newData = [...dataSource];
+            // const index = newData.findIndex(item => key === item[rowKey]);
+            // console.log(index);
+            // if (index > -1) {
+            //     const item = newData[index];
+            //     newData.splice(index, 1, {
+            //         ...item,
+            //         ...row,
+            //     });
+            setEditingKey('');
+            setButtonDisabled(false);
+            //     props.setNewData(newData);
+            // } else {
+            //     newData.push(row);
+            //     setEditingKey('');
+            //     props.setNewData(newData);
+            // }
         });
     }
 
     function handleAdd() {
-
+        // 注意 一定要实现深拷贝 不然父组件状态不会更新
+        // const newArray = JSON.parse(JSON.stringify(dataSource));
+        const newArray = dataSource.map(item => {
+            return item;
+        });
+        // newArray.push({ id: guid() });
+        const id = guid();
+        setNewData([{ id, patentsAwardsCertificate: guid() }, ...newArray]);
+        setEditingKey(id); // 新增处于编辑行
+        setButtonDisabled(true); // 未保存无法操作
     }
 
     return (
@@ -194,13 +229,13 @@ const EditableTable = (props) => {
                         defaultPageSize: 5,
                         showQuickJumper: true
                     }}
-                    toolBar={isToolBar?{
+                    toolBar={isToolBar ? {
                         left: (
-                          <Button type="primary" onClick={() => handleAdd()}>
-                            新增
-                          </Button>
+                            <Button type="primary" onClick={handleAdd} disabled={buttonDisabled}>
+                                新增
+                            </Button>
                         ),
-                      }: null}
+                    } : null}
                 />}
             </AutoSizeLayout>
         </EditableContext.Provider>
@@ -210,19 +245,19 @@ const EditableTable = (props) => {
 const EditableFormTable = Form.create()(EditableTable);
 
 // const { form, dataSource, columns, rowKey, isEditTable=false, isToolBar=false } = props;
-EditableTable.protoType={
+EditableTable.protoType = {
     //数据源
-    dataSource:PropTypes.array,
+    dataSource: PropTypes.array,
     //列
-    columns:PropTypes.array,
+    columns: PropTypes.array,
     //列表唯一key
-    rowKey:PropTypes.any,
+    rowKey: PropTypes.any,
     //Tables是否需要operation  编辑行  删除选项
-    isEditTable:PropTypes.bool,
+    isEditTable: PropTypes.bool,
     //是否显示工具栏（新增||删除 ReactNode）
-    isToolBar:PropTypes.bool,
+    isToolBar: PropTypes.bool,
     // 页面处于编辑||详细
     type: PropTypes.any,
-  }
+}
 
 export default EditableFormTable;

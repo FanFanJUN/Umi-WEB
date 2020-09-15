@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 14:29:17
- * @LastEditTime: 2020-09-14 15:40:23
+ * @LastEditTime: 2020-09-15 09:30:34
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/index.js
  * @Description: 资料填报 Tabs
  * @Connect: 1981824361@qq.com
@@ -130,12 +130,12 @@ function DataFillIn({
       <Tabs tabPosition='left' onChange={(activeKey) => handleChange(activeKey)}>
         {/* 基本情况 */}
         <TabPane key='baseCondition' tab={baseConditionTab}>
-          <BaseCondition baseParam={{ id, type }} />
+          <BaseCondition />
         </TabPane>
 
         {/* 销售情况 */}
         <TabPane key='sellCondition' tab={sellConditionTab}>
-          <SellCondition baseParam={{ id, type }} />
+          <SellCondition />
         </TabPane>
 
         {/* 研发能力 */}
