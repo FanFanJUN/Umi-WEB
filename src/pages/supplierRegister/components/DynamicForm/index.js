@@ -239,7 +239,7 @@ const CommonconfigRef = forwardRef(({
                       style={{ display: item.verifi === '3' ? 'none' : 'block' }}
                     >
                       <FormItem style={{ width: '100%', marginBottom: 10 }}
-                        label={item.title} {...formItemLayout} >
+                        label="供应商分类" {...formItemLayout} >
                         {
                           isView ?
                             <span>{editData && editData.supplierVo && editData.supplierVo.supplierCategory ? editData.supplierVo.supplierCategory.code + ' ' + editData.supplierVo.supplierCategory.name : ''}</span> :
@@ -266,7 +266,7 @@ const CommonconfigRef = forwardRef(({
                     style={{ display: item.verifi === '3' ? 'none' : 'block' }}
                   >
                     <FormItem style={{ width: '100%', marginBottom: 10 }}
-                      label={item.title} {...formItemLayout} >
+                      label={'供应商名称'} {...formItemLayout} >
                       {isView ?
                         <span>{editData && editData.supplierVo && editData.supplierVo.name ? editData && editData.supplierVo && editData.supplierVo.name : ''}</span> :
                         getFieldDecorator('supplierVo.name', {
@@ -285,7 +285,7 @@ const CommonconfigRef = forwardRef(({
                   {item.key === 'abbreviation' ? <Col span={8}>
                     <FormItem
                       {...formItemLayout}
-                      label={item.title}
+                      label={'简称'}
                       style={{ width: '100%', marginBottom: 10 }}
                     >
                       {isView ? <span>{editData && editData.extendVo ? editData.extendVo.searchCondition : ''}</span> :
@@ -305,7 +305,7 @@ const CommonconfigRef = forwardRef(({
                   {item.key === 'creditCode' ? <Col span={8}>
                     <FormItem
                       {...formItemLayout}
-                      label={item.title}
+                      label={'统一社会信用代码'}
                       style={{ width: '100%', marginBottom: 10 }}
                     >
                       {isView ? <span>{editData && editData.supplierVo && editData.supplierVo.creditCode ? editData && editData.supplierVo && editData.supplierVo.creditCode : ''}</span> :

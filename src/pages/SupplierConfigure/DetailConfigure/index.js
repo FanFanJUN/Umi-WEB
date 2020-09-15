@@ -19,48 +19,6 @@ function CreateStrategy() {
     let id = query.id;
     const { data, success, message: msg } = await findSupplierconfigureId(id);
     if (success) {
-      let sortdata = data.configBodyVos.map(item => {
-        let ranksort;
-        if (item.smMsgTypeCode === '1') {
-          ranksort = 1;
-        }else if (item.smMsgTypeCode === '2') {
-          ranksort = 2;
-        }else if (item.smMsgTypeCode === '3') {
-          ranksort = 4;
-        }else if (item.smMsgTypeCode === '4') {
-          ranksort = 5;
-        }else if (item.smMsgTypeCode === '5') {
-          ranksort = 5;
-        }else if (item.smMsgTypeCode === '6') {
-          ranksort = 7;
-        }else if (item.smMsgTypeCode === '7') {
-          ranksort = 6;
-        }else if (item.smMsgTypeCode === '8') {
-          ranksort = 3;
-        }else if (item.smMsgTypeCode === '9') {
-          ranksort = 9;
-        }else if (item.smMsgTypeCode === '10') {
-          ranksort = 10;
-        }else if (item.smMsgTypeCode === '11') {
-          ranksort = 11;
-        }else if (item.smMsgTypeCode === '12') {
-          ranksort = 12;
-        }else if (item.smMsgTypeCode === '13') {
-          ranksort = 8;
-        }
-        return {
-          fieldCode: item.fieldCode,
-          fieldName:item.fieldName,
-          operationCode:item.operationCode,
-          operationName:item.operationName,
-          smMsgTypeCode:Number(ranksort),
-          smMsgTypeName:item.smMsgTypeName,
-          regConfigId:item.regConfigId,
-          id:item.id,
-          smSort: Number(item.smSort)
-        }
-      })
-      data.configBodyVos = sortdata;
         const {
           configBodyVos,
             ...initialValues

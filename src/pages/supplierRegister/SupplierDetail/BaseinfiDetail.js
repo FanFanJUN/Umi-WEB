@@ -24,6 +24,7 @@ const BaseinfoRef = forwardRef(({
 	baseinfo = [],
 	editformData = {},
 	initialValues = {},
+	companyData = {},
 	onChangeMaterialLevel = () => null
 }, ref) => {
 	useImperativeHandle(ref, () => ({
@@ -60,7 +61,8 @@ const BaseinfoRef = forwardRef(({
 		<div>
 			<DetailForm
                 isView={isView}
-                editData={editData}
+				editData={editData}
+				companyData={companyData}
                 formItems={fieldsList}
             />
 		</div>

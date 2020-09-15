@@ -349,7 +349,7 @@ export const Fieldclassification = {
   },
   reader:{
     name: 'name',
-    field: ['rank'],
+    field: ['value','rank'],
     description: 'rank'
   },
   style: {
@@ -369,7 +369,7 @@ export const FieldconfigureList = {
     description: 'supplierCategoryCode'
   },
   style: {
-    width: '67%'
+    width: '100%'
   }
 }
 

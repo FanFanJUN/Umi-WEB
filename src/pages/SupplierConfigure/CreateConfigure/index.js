@@ -31,7 +31,9 @@ function CreateStrategy() {
       pageInfo:{
         page:1,
         rows: 100
-      }
+      },
+      //SearchOrder:[{'rank':'asc'},{'smSort':'asc'}]
+      //SearchOrder:[{"property":"rank","direction":"Direction.ASC"},{"property":"smSort","direction":"Direction.ASC"}]
     }
     const { data, success, message: msg } = await findSupplierconfigureService(params);
     if (success) {
@@ -42,39 +44,11 @@ function CreateStrategy() {
 
       let newsort = [];
       rows.map((item,index) => {
-        let ranksort;
-        if (item.smMsgTypeCode === '1') {
-          ranksort = 1;
-        }else if (item.smMsgTypeCode === '2') {
-          ranksort = 2;
-        }else if (item.smMsgTypeCode === '3') {
-          ranksort = 4;
-        }else if (item.smMsgTypeCode === '4') {
-          ranksort = 5;
-        }else if (item.smMsgTypeCode === '5') {
-          ranksort = 5;
-        }else if (item.smMsgTypeCode === '6') {
-          ranksort = 7;
-        }else if (item.smMsgTypeCode === '7') {
-          ranksort = 6;
-        }else if (item.smMsgTypeCode === '8') {
-          ranksort = 3;
-        }else if (item.smMsgTypeCode === '9') {
-          ranksort = 9;
-        }else if (item.smMsgTypeCode === '10') {
-          ranksort = 10;
-        }else if (item.smMsgTypeCode === '11') {
-          ranksort = 11;
-        }else if (item.smMsgTypeCode === '12') {
-          ranksort = 12;
-        }else if (item.smMsgTypeCode === '13') {
-          ranksort = 8;
-        }
         newsort.push({
           id: item.id,
           creatorName: item.creatorName,
           createdDate: item.createdDate,
-          smMsgTypeCode: Number(ranksort),
+          smMsgTypeCode: item.smMsgTypeCode,
           smMsgTypeName:  item.smMsgTypeName,
           smFieldTypeCode: item.smFieldTypeCode,
           smFieldTypeName: item.smFieldTypeName,
@@ -162,19 +136,9 @@ function CreateStrategy() {
   }
   // 保存
   async function handleSave() {
-    // const { sortTable } = sortRef.current.props.wrappedComponentRef.current;
-    // const {sorttabledata}  = sortTable();
-    // setradioSelect(sorttabledata);
-    // setDataSource(sorttabledata);
     getFormValueWithoutChecked();
     const { validateFieldsAndScroll } = HeadFormRef.current.form;
-    let configBodyVos;
-    if (isEmpty(radioSelect)) {
-      configBodyVos = dataSource
-    }else {
-      configBodyVos = radioSelect
-    }
-    //let configBodyVos = radioSelect;
+    let configBodyVos = tabformRef.current.sortTable();
     validateFieldsAndScroll(async (err, val) => {
       configBodyVos.map(item=>{
         delete item.id

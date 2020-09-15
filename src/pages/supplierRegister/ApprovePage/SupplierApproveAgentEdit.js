@@ -107,6 +107,7 @@ const SupplierAgentRef = forwardRef(({
                       editformData={editData}
                       baseinfo={baseinfo}
                       wrappedComponentRef={BaseinfoRef}
+                      isView={true}
                     />
                   </div>
                 </div>

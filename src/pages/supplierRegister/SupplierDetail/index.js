@@ -138,6 +138,7 @@ function CreateStrategy() {
                       isView={true}
                       editformData={editData}
                       baseinfo={baseinfo}
+                      companyData={wholeData}
                       wrappedComponentRef={BaseinfoRef}
                     />
                   </div>

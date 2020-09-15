@@ -59,55 +59,24 @@ function SupplierApproveInfo() {
             message.error(msg)
         }
     }
-    const handleSave = async () => {
-        triggerLoading(true)
-        let params = wholeData
-        const { success, message: msg } = await TemporarySupplierRegister(params)
-        triggerLoading(false)
-        return new Promise((resolve, reject) => {
-            if (success) {
-                resolve({success, message: msg})
-                message.success(msg)
-                return;
-            }
-            reject(false)
-            message.error(msg)
-        })
-    }
-    function handleSubmitComplete(res) {
-        console.log(res)
-        const { success } = res;
-        if (success) {
-            closeCurrent();
-        }
-    }
     return (
-        <WorkFlow.Approve
-            businessId={id}
-            taskId={taskId}
-            instanceId={instanceId}
-            flowMapUrl="flow-web/design/showLook"
-            submitComplete={handleSubmitComplete}
-            beforeSubmit={handleSave}
-        >
-            <div className={styles.wrapper}>
-                <Tabs className={styles.tabcolor}>
-                    <TabPane forceRender tab="变更列表" key="1">
-                        <ModifyHistoryDetail
-                            editData={wholeData}
-                        //lineDataSource={lineDataSource}
-                        />
-                    </TabPane>
-                    <TabPane forceRender tab="基本信息" key="2">
-                        <ModifyInfo
-                            wholeData={wholeData}
-                            configuredata={configuredata}
-                            wrappedComponentRef={saveformRef}
-                        />
-                    </TabPane>
-                </Tabs>
-            </div>
-        </WorkFlow.Approve>
+        <div className={styles.wrapper}>
+            <Tabs className={styles.tabcolor}>
+                <TabPane forceRender tab="变更列表" key="1">
+                    <ModifyHistoryDetail
+                        editData={wholeData}
+                    //lineDataSource={lineDataSource}
+                    />
+                </TabPane>
+                <TabPane forceRender tab="基本信息" key="2">
+                    <ModifyInfo
+                        wholeData={wholeData}
+                        configuredata={configuredata}
+                        wrappedComponentRef={saveformRef}
+                    />
+                </TabPane>
+            </Tabs>
+        </div>
     )
 }
 

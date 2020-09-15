@@ -66,7 +66,6 @@ function SupplierApproveInfo() {
             return false
         }else {
             let params = {...wholeData,...saveData};
-            console.log(params)
             const { success, message: msg } = await TemporarySupplierRegister(params)
             triggerLoading(false)
             return new Promise((resolve, reject) => {

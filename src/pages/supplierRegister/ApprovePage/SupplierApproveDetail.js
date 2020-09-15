@@ -104,7 +104,9 @@ const SupplierAgentRef = forwardRef(({
                   <div className={styles.title}>基本信息</div>
                   <div >
                     <BaseinfiDetail
+                      isView={true}
                       editformData={editData}
+                      companyData={wholeData}
                       baseinfo={baseinfo}
                       wrappedComponentRef={BaseinfoRef}
                     />

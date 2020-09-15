@@ -223,6 +223,7 @@ const SupplierEditRef = forwardRef(({
                       initialValues={editData}
                       editformData={editData}
                       baseinfo={baseinfo}
+                      companyData={wholeData}
                       isView={true}
                       wrappedComponentRef={BaseinfoRef}
                     />
