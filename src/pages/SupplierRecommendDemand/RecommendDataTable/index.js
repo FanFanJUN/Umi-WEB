@@ -65,7 +65,7 @@ function RecommendDataTable() {
       multiSelect: false
     },
     ellipsis: false,
-    rowKey: item => item.id,
+    // rowKey: (_, index) => `tree-recommend-damend-${index}`,
     selectedRowKeys: selectedRowKeys,
     onSelectRow: handleSelectedRows,
     allowCancelSelect: true
@@ -91,10 +91,11 @@ function RecommendDataTable() {
     const { id = '' } = FRAMELEEMENT;
     const [key] = selectedRowKeys;
     const { pathname } = window.location;
-    openNewTab(`supplier/recommend/fillIn/data?id=${key}frameElementId=${id}&frameElementSrc=${pathname}`, '推荐资料填报', false)
+    openNewTab(`supplier/recommend/fillIn/data?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '推荐资料填报', false)
   }
   // 记录列表选中项
   function handleSelectedRows(rowKeys, rows) {
+    console.log(rowKeys, rows)
     setRowKeys(rowKeys);
     setRows(rows)
   }

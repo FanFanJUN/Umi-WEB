@@ -37,8 +37,7 @@ export const saveSupplierRecommendDemand = params => createServiceRequest({
 export const querySupplierRecommendDemand = params => createServiceRequest({
   path: '/api/supplierRecommendDemandService/findSupplierRecommendDemandById',
   params,
-  method: 'GET',
-  hack: true
+  method: 'GET'
 })
 
 // 删除推荐需求
@@ -55,4 +54,48 @@ export const submitToSupplier = params => createServiceRequest({
   params,
   method: 'POST',
   hack: true
+})
+
+// 企业社会责任及企业生产环境表单主数据
+// 保存
+export const saveCsrConfig = params => createServiceRequest({
+  path: '/api/csrConfigService/save',
+  params,
+  method: 'POST',
+  // hack: true
+})
+// 删除
+export const removeCsrConfig = params => createServiceRequest({
+  path: '/api/csrConfigService/delete',
+  params,
+  method: 'DELETE',
+  hack: true
+})
+
+// 填表状态获取
+export const queryGlobalState = params => createServiceRequest({
+  path: '/api/reportingStatusService/findReportingStatusByRecommendDemandId',
+  params,
+  method: 'GET'
+})
+
+// 自评表获取
+export const querySelfAssessment = params => createServiceRequest({
+  path: '/api/samSupplierEvlSystemService/findSelfEvlRules',
+  params,
+  method: 'GET'
+})
+
+// 自评评分保存
+export const saveSelfAssessment = params => createServiceRequest({
+  path: '/api/samSupplierEvlSystemService/saveSelfEvlRuleScore',
+  params,
+  method: 'POST'
+})
+
+// 填报状态获取
+export const queryDataFillStatus = params => createServiceRequest({
+  path: '/api/reportingStatusService/findReportingStatusByRecommendDemandId',
+  params,
+  method: 'GET'
 })

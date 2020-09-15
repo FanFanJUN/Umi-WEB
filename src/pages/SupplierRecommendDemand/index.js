@@ -26,7 +26,7 @@ export default () => {
   const [onlyMe, setOnlyMe] = useState(true);
   const FRAMELEEMENT = getFrameElement();
   const [signleRow = {}] = selectedRows;
-  const { account } = storage.sessionStorage.get("Authorization");
+  const { account } = storage.sessionStorage.get("Authorization") || {};
   const { flowStatus: signleFlowStatus, id: flowId } = signleRow;
   // 已提交审批状态
   const underWay = signleFlowStatus !== 'INIT';
