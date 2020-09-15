@@ -67,13 +67,12 @@ const LimitMaterial = ({ form }) => {
         { title: '处理时间', dataIndex: 'conductorDate', ellipsis: true },
     ]
     const validateItem = (data) => {
+        console.log(data)
         return new Promise((resolve, reject) => {
             const dataList = data.map(item => {
-                if (item.limitNumber){
-                    if(item.limitNumber.indexOf('%')!==-1){
-                        item.limitNumber = item.limitNumber.split('%')[0];
-                    }
-                    item.limitNumber = Number(item.limitNumber).toFixed(2)
+                // 避免均质材质中的含量存在%号
+                if(item.materialWeight && item.materialWeight.toString().indexOf('%')!==-1){
+                    item.materialWeight = item.materialWeight.split('%')[0];
                 }
                 item.environmentalProtectionCode = selectedRow[selectedRow.length - 1].environmentalProtectionCode;
                 return item;

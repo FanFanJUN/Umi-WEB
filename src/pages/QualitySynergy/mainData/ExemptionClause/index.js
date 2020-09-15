@@ -92,8 +92,9 @@ const ExemptionClause = (props) => {
     const validateItem = (data) => {
         return new Promise((resolve, reject) => {
             const dataList = data.map(item => {
+                // 避免限量存在%，并给两位小数
                 if (item.limitNumber){
-                    if(item.limitNumber.indexOf('%')!==-1){
+                    if(item.limitNumber.toString().indexOf('%')!==-1){
                         item.limitNumber = item.limitNumber.split('%')[0];
                     }
                     item.limitNumber = Number(item.limitNumber).toFixed(2)
