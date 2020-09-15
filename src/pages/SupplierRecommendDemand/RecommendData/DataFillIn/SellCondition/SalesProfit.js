@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-09 15:28:52
- * @LastEditTime: 2020-09-15 16:36:27
+ * @LastEditTime: 2020-09-15 18:34:08
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/SellCondition/SalesProfit.js
  * @Description: 销售收入及利润 Table
  * @Connect: 1981824361@qq.com
@@ -40,6 +40,7 @@ const SalesProfit = (props) => {
             "ellipsis": true,
             "editable": true,
             "inputType": 'InputNumber',
+             required: false
         },
         {
             "title": "销售金额",

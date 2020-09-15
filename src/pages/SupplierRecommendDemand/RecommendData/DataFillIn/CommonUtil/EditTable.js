@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-10 10:57:33
- * @LastEditTime: 2020-09-15 17:45:35
+ * @LastEditTime: 2020-09-15 18:32:38
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/CommonUtil/EditTable.js
  * @Description:  函数式可编辑行 Table组件
  * @Connect: 1981824361@qq.com
@@ -28,6 +28,7 @@ const EditableCell = (params) => {
             inputType,
             record,
             form,
+            required,
         }
     } = params;
 
@@ -49,7 +50,7 @@ const EditableCell = (params) => {
                     <Option value="2">否</Option>
                 </Select>
                 case 'UploadFile':
-                    return <UploadFile />    
+                return <UploadFile />
             default:
                 return <Input />;
         }
@@ -61,10 +62,11 @@ const EditableCell = (params) => {
         return (
             editing ? (
                 <Form.Item style={{ margin: 0 }}>
+                <span style={{color: 'red', display: required? '': 'none'}}>*</span>
                     {getFieldDecorator(dataIndex, {
                         rules: [
                             {
-                                required: true,
+                                required,
                                 message: `请输入${title}!`,
                             },
                         ],
@@ -169,6 +171,7 @@ const EditableTable = (props) => {
                     title: col.title,
                     editing: isEditing(record),
                     form,
+                    required: !(col.required === false)
                 }} />
             }
         };
@@ -209,9 +212,8 @@ const EditableTable = (props) => {
         });
         // newArray.push({ id: guid() });
         const id = guid();
-        const newData = isEmptyArray(newArray) ? 
-        [{ id, patentsAwardsCertificate: guid() }] : [{ id, patentsAwardsCertificate: guid() }, ...newArray];
-
+        const newData = isEmptyArray(newArray) ?
+            [{ id, patentsAwardsCertificate: guid() }] : [{ id, patentsAwardsCertificate: guid() }, ...newArray];
         setNewData(newData);
         setEditingKey(id); // 新增处于编辑行
         setButtonDisabled(true); // 未保存无法操作
