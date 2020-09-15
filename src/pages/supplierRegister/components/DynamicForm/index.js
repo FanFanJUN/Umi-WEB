@@ -221,6 +221,16 @@ const CommonconfigRef = forwardRef(({
       });
     }
   }
+  function deleteSelect(record) {
+    console.log(record)
+    if (record) {
+     // setcompanycode(record.code)
+      form.setFieldsValue({
+        'supplierVo.workName': record.name,
+        //'supplierVo.name': record.name
+      });
+    }
+  }
   return (
     <Row type="flex">
       {
@@ -707,8 +717,30 @@ const CommonconfigRef = forwardRef(({
                               <SearchTable
                                 onChange={FactoryChange}
                                 config={oddcompanyOrgConfigByCode}
-                                selectChange={this.deleteSelect}
+                                selectChange={deleteSelect}
                                 params={{ corporationCode: companycode }}
+                              />
+                            )
+                        }
+                      </FormItem>
+                    </Col> : null
+                  }
+                  {
+                    item.key === 'workName' ? <Col span={8} style={{display:'none'}} >
+                      <FormItem
+                        {...formItemLayout}
+                        label={'泛虹工厂'}
+                      >
+                        {
+                          isView ?
+                            <span>{editData && editData.supplierVo ? editData.supplierVo.workName : ''}</span> :
+                            getFieldDecorator('supplierVo.workName', {
+                              initialValue: editData && editData.supplierVo ? editData.supplierVo.workName : '',
+                              rules: [{ required: item.verifi === '0', message: '请选择泛虹工厂', whitespace: true }],
+                            })(
+                              <SearchTable
+                                onChange={FactoryChange}
+                                config={oddcompanyOrgConfigByCode}
                               />
                             )
                         }

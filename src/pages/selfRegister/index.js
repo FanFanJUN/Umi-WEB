@@ -35,7 +35,8 @@ export default function () {
     }
     // 提交
     async function supplierPayment() {
-
+        const { getAccountinfo } = BassAccounRef.current; //银行信息
+        let bankVal = getAccountinfo()
     }
     return (
         <Wrapper>

@@ -34,13 +34,20 @@ const BaseAccountRef = forwardRef(({
   function getAccountinfo() {
     // const valus = form.validateFieldsAndScroll();
     // return valus;
-    let result = false;
-    form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        result = values;
-      }
-    });
-    return result;
+    // let result = false;
+    // form.validateFieldsAndScroll((err, values) => {
+    //   if (!err) {
+    //     result = values;
+    //   }
+    // });
+    // return result;
+    if (defaultActiveKey[0] === '1') {
+        const { getOrganizinfo } = OrganRef.current; //组织用户
+        let bankVal = getOrganizinfo()
+    }else {
+        
+    }
+    
   }
   function tabClickHandler(params) {
     setdefaultActiveKey(params)

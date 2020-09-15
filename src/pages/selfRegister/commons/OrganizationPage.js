@@ -22,7 +22,7 @@ const OrganizatRef = forwardRef(({
     approve
 }, ref) => {
     useImperativeHandle(ref, () => ({
-        getAccountinfo,
+        getOrganizinfo,
         form
     }));
     const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
@@ -41,7 +41,7 @@ const OrganizatRef = forwardRef(({
         // })
     }, [])
     // 表单
-    function getAccountinfo() {
+    function getOrganizinfo() {
         let result = false;
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
@@ -123,7 +123,7 @@ const OrganizatRef = forwardRef(({
                             getFieldDecorator('mobile', {
                                 initialValue: '',
                                 rules: [{
-                                    required: true,
+                                    required: true, message: '手机不能为空'
                                 }],
                             })(
                                 <Input
