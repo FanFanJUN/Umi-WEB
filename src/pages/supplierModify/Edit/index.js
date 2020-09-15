@@ -51,38 +51,38 @@ function CreateStrategy() {
   async function initsupplierDetai() {
     triggerLoading(true);
     let id = query.id;
-    const { data, success, message: msg } = await findByRequestIdForModify({id:id});
+    const { data, success, message: msg } = await findByRequestIdForModify({ id: id });
     if (success) {
-        let suppliertype = data.supplierApplyVo.supplierInfoVo.supplierVo.supplierCategory.id
-        initConfigurationTable(suppliertype)
-        setTimeout(() => {
-          setInitialValue(data.supplierApplyVo.supplierInfoVo)
-          setEditData(data.supplierApplyVo.supplierInfoVo)
-          setReasonchange(data.supplierApplyVo)
-          setwholeData(data.supplierApplyVo)
-          triggerLoading(false);
-        }, 100); 
-    }else {
+      let suppliertype = data.supplierApplyVo.supplierInfoVo.supplierVo.supplierCategory.id
+      initConfigurationTable(suppliertype)
+      setTimeout(() => {
+        setInitialValue(data.supplierApplyVo.supplierInfoVo)
+        setEditData(data.supplierApplyVo.supplierInfoVo)
+        setReasonchange(data.supplierApplyVo)
+        setwholeData(data.supplierApplyVo)
+        triggerLoading(false);
+      }, 200);
+    } else {
       triggerLoading(false);
       message.error(msg)
     }
   }
   async function initConfigurationTable(typeId) {
     triggerLoading(true);
-    let params = {catgroyid:typeId,property:1};
+    let params = { catgroyid: typeId, property: 1 };
     const { data, success, message: msg } = await SaveSupplierconfigureService(params);
-      if (success) {
-        let datalist  = data.configBodyVos;
-        setConfigure(datalist)
-        triggerLoading(false);
-        configurelist(datalist)
-      }else {
-        triggerLoading(false);
-        message.error(msg)
-      }
+    if (success) {
+      let datalist = data.configBodyVos;
+      setConfigure(datalist)
+      triggerLoading(false);
+      configurelist(datalist)
+    } else {
+      triggerLoading(false);
+      message.error(msg)
+    }
   }
   function configurelist(configure) {
-    let handlebase = [],handleaccount = [],handbusiness = [];
+    let handlebase = [], handleaccount = [], handbusiness = [];
     configure.map(item => {
       if (item.smMsgTypeCode === '1') {
         handlebase.push({
@@ -112,14 +112,14 @@ function CreateStrategy() {
   }
   // 暂存
   async function handleTemporary() {
-    let baseVal,accountVal,authorizedClientVal,businessInfoVal,bankVal,
-    rangeVal,agentVal,qualifications,proCertVos;
+    let baseVal, accountVal, authorizedClientVal, businessInfoVal, bankVal,
+      rangeVal, agentVal, qualifications, proCertVos;
     configure.map(item => {
       if (item.operationCode !== '3' && item.fieldCode === 'name') {
         const { getTemporaryBaseInfo } = BaseinfoRef.current; // 基本信息
         baseVal = getTemporaryBaseInfo();
 
-      }else if (item.operationCode !== '3' && item.fieldCode === 'mobile') {
+      } else if (item.operationCode !== '3' && item.fieldCode === 'mobile') {
         accountVal = ObtainAccount();
       }
       if (item.operationCode !== '3' && item.fieldCode === 'contactVos') {
@@ -144,16 +144,18 @@ function CreateStrategy() {
         proCertVos = ObtionpurposeTemporary() || '';
       }
     })
-    let enclosurelist = [],basedata,baseexten,accountData,
-    automaticdata,automaticincome,automThreeYear,rangeValinfo;
+    let enclosurelist = [], basedata, baseexten, accountData,
+      automaticdata, automaticincome, automThreeYear, rangeValinfo;
     if (baseVal && baseVal.supplierVo) {
+      baseVal.supplierVo.id = editData.supplierVo.id;
+      baseVal.extendVo.id = editData.extendVo.id;
       basedata = baseVal.supplierVo
     }
     if (baseVal && baseVal.extendVo) {
       baseexten = baseVal.extendVo
     }
     if (baseVal && baseVal.genCertVos) {
-      enclosurelist= {...enclosurelist,...baseVal.genCertVos[0]}
+      enclosurelist = { ...enclosurelist, ...baseVal.genCertVos[0] }
     }
     if (accountVal && accountVal.supplierVo) {
       accountData = accountVal.supplierVo
@@ -164,10 +166,10 @@ function CreateStrategy() {
     if (businessInfoVal && businessInfoVal.supplierVo) {
       automaticdata = businessInfoVal.supplierVo
     }
-    if (businessInfoVal&&businessInfoVal.supplierRecentIncomes) {
+    if (businessInfoVal && businessInfoVal.supplierRecentIncomes) {
       automaticincome = businessInfoVal.supplierRecentIncomes
     }
-    if (businessInfoVal &&businessInfoVal.extendVo) {
+    if (businessInfoVal && businessInfoVal.extendVo) {
       automThreeYear = businessInfoVal.extendVo
     }
     if (rangeVal && rangeVal.extendVo) {
@@ -175,7 +177,7 @@ function CreateStrategy() {
     }
 
     let supplierInfoVo = {
-      supplierVo: { ...basedata, ...accountData ,...automaticdata},
+      supplierVo: { ...basedata, ...accountData, ...automaticdata },
       extendVo: { ...baseexten, ...automThreeYear, ...rangeValinfo },
       contactVos: authorizedClientVal,
       genCertVos: enclosurelist,
@@ -189,10 +191,10 @@ function CreateStrategy() {
         wholeData.companyCode = baseVal.supplierVo.companyCode
         if (baseVal.supplierVo.companyName === baseVal.supplierVo.companyCode) {
           wholeData.companyName = wholeData.companyName
-        }else {
+        } else {
           wholeData.companyName = baseVal.supplierVo.companyName
         }
-        
+
       }
     }
     if (wholeData) {
@@ -200,7 +202,6 @@ function CreateStrategy() {
     }
     wholeData.againdata = '0';
     let saveData = wholeData;
-    console.log(saveData)
     triggerLoading(true)
     const { success, message: msg } = await TemporarySupplierRegister(saveData);
     if (success) {
@@ -223,7 +224,7 @@ function CreateStrategy() {
   }
   //  // 授权委托人
   function ObtainAuthor() {
-    const { authorTemporary } = AuthorizeRef.current; 
+    const { authorTemporary } = AuthorizeRef.current;
     const authorizedClientVal = authorTemporary();
     return authorizedClientVal;
   }
@@ -266,9 +267,9 @@ function CreateStrategy() {
   }
   // 保存
   async function handleSave() {
-    let baseVal,accountVal,authorizedClientVal,businessInfoVal,bankVal,rangeVal,
-    agentVal,qualifications,proCertVos;
-    for(let item of configure){
+    let baseVal, accountVal, authorizedClientVal, businessInfoVal, bankVal, rangeVal,
+      agentVal, qualifications, proCertVos;
+    for (let item of configure) {
       if (item.operationCode !== '3' && item.fieldCode === 'name') {
         const { getBaseInfo } = BaseinfoRef.current; // 基本信息
         baseVal = getBaseInfo();
@@ -276,7 +277,7 @@ function CreateStrategy() {
           message.error('请将供应商基本信息填写完全！');
           return false;
         }
-      }else if (item.operationCode !== '3' && item.fieldCode === 'mobile') {
+      } else if (item.operationCode !== '3' && item.fieldCode === 'mobile') {
         const { getAccountinfo } = AccountRef.current; //帐号
         accountVal = getAccountinfo();
         if (!accountVal) {
@@ -333,17 +334,19 @@ function CreateStrategy() {
         proCertVos = getspecialpurpose() || [];
       }
     }
-   
-    let enclosurelist = [],basedata,accountData,baseexten,automaticdata,automaticincome,
-    automThreeYear,rangeValinfo;
+
+    let enclosurelist = [], basedata, accountData, baseexten, automaticdata, automaticincome,
+      automThreeYear, rangeValinfo;
     if (baseVal && baseVal.supplierVo) {
+      baseVal.supplierVo.id = editData.supplierVo.id;
+      baseVal.extendVo.id = editData.extendVo.id;
       basedata = baseVal.supplierVo
     }
     if (baseVal && baseVal.extendVo) {
       baseexten = baseVal.extendVo
     }
     if (baseVal && baseVal.genCertVos) {
-      enclosurelist= {...enclosurelist,...baseVal.genCertVos[0]}
+      enclosurelist = { ...enclosurelist, ...baseVal.genCertVos[0] }
     }
     if (accountVal && accountVal.supplierVo) {
       accountData = accountVal.supplierVo
@@ -351,21 +354,20 @@ function CreateStrategy() {
     if (qualifications) {
       enclosurelist = [enclosurelist, ...qualifications.proCertVos];
     }
-    console.log(enclosurelist)
     if (businessInfoVal && businessInfoVal.supplierVo) {
       automaticdata = businessInfoVal.supplierVo
     }
-    if (businessInfoVal&&businessInfoVal.supplierRecentIncomes) {
+    if (businessInfoVal && businessInfoVal.supplierRecentIncomes) {
       automaticincome = businessInfoVal.supplierRecentIncomes
     }
-    if (businessInfoVal &&businessInfoVal.extendVo) {
+    if (businessInfoVal && businessInfoVal.extendVo) {
       automThreeYear = businessInfoVal.extendVo
     }
     if (rangeVal && rangeVal.extendVo) {
       rangeValinfo = rangeVal.extendVo
     }
     let supplierInfoVo = {
-      supplierVo: { ...basedata, ...accountData ,...automaticdata},
+      supplierVo: { ...basedata, ...accountData, ...automaticdata },
       extendVo: { ...baseexten, ...automThreeYear, ...rangeValinfo },
       contactVos: authorizedClientVal,
       genCertVos: enclosurelist,
@@ -379,13 +381,13 @@ function CreateStrategy() {
         wholeData.companyCode = baseVal.supplierVo.companyCode
         if (baseVal.supplierVo.companyName === baseVal.supplierVo.companyCode) {
           wholeData.companyName = wholeData.companyName
-        }else {
+        } else {
           wholeData.companyName = baseVal.supplierVo.companyName
         }
-        
+
       }
     }
-    
+
     if (wholeData) {
       wholeData.supplierInfoVo = supplierInfoVo;
     }
@@ -406,7 +408,7 @@ function CreateStrategy() {
     // triggerLoading(false)
   }
   async function createSave(val) {
-    let params = {...wholeData,...val};
+    let params = { ...wholeData, ...val };
     triggerLoading(true)
     const { success, message: msg } = await TemporarySupplierRegister(params);
     if (success) {
@@ -414,7 +416,7 @@ function CreateStrategy() {
       triggerLoading(false)
       closeCurrent()
       return
-    }else {
+    } else {
       message.error(msg);
     }
     triggerLoading(false)
@@ -445,9 +447,9 @@ function CreateStrategy() {
       </Affix>
 
       <div className={styles.wrapper}>
-      
-          
-                
+
+
+
         {
           configure.map((item, index) => {
             if (item.smMsgTypeCode !== '3' && item.fieldCode === 'name') {
@@ -465,7 +467,7 @@ function CreateStrategy() {
                   </div>
                 </div>
               )
-            } 
+            }
             if (item.operationCode !== '3' && item.fieldCode === 'mobile') {
               return (
                 <div className={styles.bgw}>
@@ -587,7 +589,7 @@ function CreateStrategy() {
         <ReasonAndStartFlowModal
           editData={Reasonchange}
           disabled={true}
-          ReaModelOk={createSave} 
+          ReaModelOk={createSave}
           wrappedComponentRef={getModelRef}
         />
       </div>

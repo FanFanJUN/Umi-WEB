@@ -2,15 +2,18 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:53:17
- * @LastEditTime: 2020-09-14 18:10:43
+ * @LastEditTime: 2020-09-15 16:47:09
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/ResearchAbility/index.js
  * @Description: 研发能力 Tab
  * @Connect: 1981824361@qq.com
  */
-import React, { useState } from 'react';
-import { Form, Button, Spin, PageHeader, Radio, Row, Col, Input, InputNumber, Divider } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Form, Button, Spin, PageHeader, Radio, Row, Col, Input, InputNumber, Divider, message } from 'antd';
 import styles from '../../DataFillIn/index.less';
 import EditableFormTable from '../CommonUtil/EditTable';
+import { router } from 'dva';
+import moment from 'moment';
+import { findRdCapabilityById, requestGetApi, requestPostApi } from '../../../../../services/dataFillInApi';
 
 const InputGroup = Input.Group;
 const FormItem = Form.Item;
@@ -31,55 +34,67 @@ const formLayoutCol = {
     },
 };
 
-const ResearchAbility = (props) => {
+const ResearchAbility = ({ form }) => {
 
-    const [data, setData] = useState({
-        loading: false,
-        type: 'add',
-        title: '基本情况',
-        userInfo: {}
-    });
+    const [data, setData] = useState({});
+    const [dataOrigin, setDataOrigin] = useState([{ id: '1' }]);
+    const [loading, setLoading] = useState(false);
 
-    const { form } = props;
+    const { query: { id, type = 'add' } } = router.useLocation();
 
-    const { getFieldDecorator, setFieldsValue } = props.form;
+    const { getFieldDecorator, setFieldsValue } = form;
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const res = await requestGetApi({ supplierRecommendDemandId: id, tabKey: 'researchAbilityTab' });
+            if (res.success) {
+                res.data && setData(res.data);
+            } else {
+                message.error(res.message);
+            }
+            setLoading(false);
+        };
+        fetchData();
+    }, []);
 
     // 专利/获奖情况
     const columns = [
         {
             "title": "专利号/获奖证书",
-            "dataIndex": "name1",
+            "dataIndex": "patentsAwardsCertificate",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
         },
         {
             "title": "成果说明",
-            "dataIndex": "name2",
+            "dataIndex": "resultDescription",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
+            "inputType": 'Input',
         },
         {
             "title": "时间",
-            "dataIndex": "name3",
+            "dataIndex": "date",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
+            "inputType": 'DatePicker',
+            render: (text, context) => {
+                return text && moment(text).format('YYYY-MM-DD');
+            }
         },
         {
             "title": "专利所有者",
-            "dataIndex": "name4",
+            "dataIndex": "possessor",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'Input',
         },
         {
             "title": "是否涉及提供给长虹的产品",
-            "dataIndex": "name4",
+            "dataIndex": "involveChanghong",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'Input',
+            "inputType": 'Select',
+            "width": 168
         }
     ];
 
@@ -87,52 +102,53 @@ const ResearchAbility = (props) => {
     const columnsForFinish = [
         {
             "title": "产品名称",
-            "dataIndex": "name1",
+            "dataIndex": "productName",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
         },
         {
             "title": "产品特点",
-            "dataIndex": "name2",
+            "dataIndex": "productFeature",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
         },
         {
             "title": "新品销售金额",
-            "dataIndex": "name3",
+            "dataIndex": "salesPrice",
             "ellipsis": true,
             "editable": true,
             "inputType": 'InputNumber',
         },
         {
             "title": "总销售金额",
-            "dataIndex": "name4",
+            "dataIndex": "totalSalesMoney",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'Input',
+            "inputType": 'InputNumber',
         },
         {
             "title": "币种",
-            "dataIndex": "name4",
+            "dataIndex": "currencyName",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'Input',
+            "inputType": 'Select',
         },
         {
             "title": "获奖情况",
-            "dataIndex": "name4",
+            "dataIndex": "awardSituation",
             "ellipsis": true,
             "editable": true,
             "inputType": 'Input',
         },
         {
             "title": "设计定型日期",
-            "dataIndex": "name4",
+            "dataIndex": "designFinalizeDate",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'Input',
+            "inputType": 'DatePicker',
+            render: function (text, context) {
+                return text && moment(text).format('YYYY-MM-DD');
+            }
         }
     ];
 
@@ -140,85 +156,101 @@ const ResearchAbility = (props) => {
     const columnsForProcess = [
         {
             "title": "项目名称",
-            "dataIndex": "name1",
+            "dataIndex": "projectName",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
         },
         {
             "title": "项目内容",
-            "dataIndex": "name2",
+            "dataIndex": "projectContent",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
         },
         {
             "title": "项目人员构成",
-            "dataIndex": "name3",
+            "dataIndex": "projectStaff",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
         },
         {
             "title": "时间安排",
-            "dataIndex": "name4",
+            "dataIndex": "datePlan",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'Input',
         },
         {
             "title": "项目成果",
-            "dataIndex": "name4",
+            "dataIndex": "projectResult",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'Input',
         }
     ];
     // 
     const columnsForProSta = [
         {
             "title": "使用标准名称/编号",
-            "dataIndex": "name1",
+            "dataIndex": "standardName",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
         },
         {
             "title": "国家/行业标准名称、编号",
-            "dataIndex": "name2",
+            "dataIndex": "countryIndustryStandard",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
         },
         {
             "title": "先进指标",
-            "dataIndex": "name3",
+            "dataIndex": "advancedIndicator",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
         },
         {
             "title": "低于国家/行业标准的指标",
-            "dataIndex": "name4",
+            "dataIndex": "lowerIndicator",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'Input',
         },
     ];
+
+    function setNewData(newData) {
+        setDataOrigin(newData);
+    }
+
+    function handleSave() {
+        form.validateFieldsAndScroll((error, value) => {
+            console.log(value);
+            if (error) return;
+            const saveParams = {
+                ...value,
+                supplierCertificates: data.supplierCertificates,
+                supplierContacts: data.supplierContacts,
+                managementSystems: data.managementSystems,
+            };
+            requestPostApi({key: 'researchAbilityTab'}).then((res) => {
+                if (res && res.success) {
+                    message.success('保存研发能力成功');
+                } else {
+                    message.error(res.message);
+                }
+            });
+        });
+    }
+
     return (
         <div>
-            <Spin spinning={data.loading}>
+            <Spin spinning={loading}>
                 <PageHeader
                     ghost={false}
                     style={{
                         padding: '0px'
                     }}
                     title="研发能力"
-                    extra={[
-                        <Button key="save" type="primary" style={{ marginRight: '12px' }}>
+                    extra={type === 'add' ? [
+                        <Button key="save" type="primary" style={{ marginRight: '12px' }} onClick={handleSave}>
                             保存
                         </Button>,
-                    ]}
+                    ] : null}
                 >
                     <div className={styles.wrapper}>
                         <div className={styles.bgw}>
@@ -227,8 +259,8 @@ const ResearchAbility = (props) => {
                                 <Row>
                                     <Col span={12}>
                                         <FormItem label="自主技术开发能力" {...formLayout}>
-                                            {getFieldDecorator('source', {
-                                                initialValue: '',
+                                            {getFieldDecorator('selfRdCapability', {
+                                                initialValue: type === 'add' ? 1 : data.selfRdCapability,
                                                 rules: [
                                                     {
                                                         required: true,
@@ -236,22 +268,23 @@ const ResearchAbility = (props) => {
                                                     },
                                                 ],
                                             })(
-                                                <Radio.Group value={'1'}>
+                                                <Radio.Group>
                                                     <Radio value={1}>完全具备</Radio>
                                                     <Radio value={2}>基本具备</Radio>
-                                                    <Radio value={2}>不具备</Radio>
+                                                    <Radio value={3}>不具备</Radio>
                                                 </Radio.Group>)}
                                         </FormItem>
                                     </Col>
                                     <Col span={12}>
                                         <FormItem label="说明" {...formLayout}>
-                                            {getFieldDecorator('shareDemanNumber', {
-                                                // rules: [
-                                                //     {
-                                                //         required: true,
-                                                //         message: '成立时间不能为空',
-                                                //     },
-                                                // ],
+                                            {getFieldDecorator('selfRdCapabilityRemark', {
+                                                initialValue: type === 'add' ? '' : data.selfRdCapabilityRemark,
+                                                rules: [
+                                                    {
+                                                        required: true,
+                                                        message: '说明不能为空',
+                                                    },
+                                                ],
                                             })(
                                                 <Input.TextArea></Input.TextArea>
                                             )}
@@ -265,16 +298,13 @@ const ResearchAbility = (props) => {
                         <div className={styles.bgw}>
                             <div className={styles.title}>专利/获奖情况</div>
                             <div className={styles.content}>
-                                <div className={styles.mb}>
-                                    <Button type='primary' className={styles.btn} onClick={() => { }}>新增</Button>
-                                    {/* <Button className={styles.btn} onClick={handleDelete} type="danger">删除</Button> */}
-                                </div>
                                 <EditableFormTable
-                                    dataSource={[]}
+                                    dataSource={dataOrigin}
                                     columns={columns}
-                                    rowKey='name1'
-                                    // setNewData={setNewData}
+                                    rowKey='id'
+                                    setNewData={setNewData}
                                     isEditTable
+                                    isToolBar={type === 'add'}
                                 />
                             </div>
                         </div>
@@ -286,8 +316,8 @@ const ResearchAbility = (props) => {
                                 <Row>
                                     <Col span={24}>
                                         <FormItem label="是否愿意为客户的技术开发提供技术支持" {...formLayout}>
-                                            {getFieldDecorator('source', {
-                                                initialValue: '',
+                                            {getFieldDecorator('canTechnicalSupport', {
+                                                initialValue: type === 'add' ? 1 : data.canTechnicalSupport,
                                                 // rules: [
                                                 //     {
                                                 //         required: true,
@@ -295,7 +325,7 @@ const ResearchAbility = (props) => {
                                                 //     },
                                                 // ],
                                             })(
-                                                <Radio.Group value={'1'}>
+                                                <Radio.Group>
                                                     <Radio value={1}>是</Radio>
                                                     <Radio value={2}>否</Radio>
                                                 </Radio.Group>)}
@@ -305,8 +335,8 @@ const ResearchAbility = (props) => {
                                 <Row>
                                     <Col span={24}>
                                         <FormItem label="前一年新产品的个数占总产品个数的比重" {...formLayout}>
-                                            {getFieldDecorator('source', {
-                                                initialValue: '',
+                                            {getFieldDecorator('numberRate', {
+                                                initialValue: type === 'add' ? '' : data.numberRate,
                                                 // rules: [
                                                 //     {
                                                 //         required: true,
@@ -315,11 +345,10 @@ const ResearchAbility = (props) => {
                                                 // ],
                                             })(
                                                 <InputNumber
-                                                    defaultValue={100}
                                                     min={0}
                                                     max={100}
                                                     formatter={value => `${value}%`}
-                                                    parser={value => value.replace('%', '')}
+                                                    parser={value => value && value.replace('%', '')}
                                                     // onChange={onChange}
                                                     style={{ width: '50%' }}
                                                 />)}
@@ -330,8 +359,8 @@ const ResearchAbility = (props) => {
                                 <Row>
                                     <Col span={24}>
                                         <FormItem label="前一年新产品的销售额占总销售额的比重" {...formLayout}>
-                                            {getFieldDecorator('source', {
-                                                initialValue: '',
+                                            {getFieldDecorator('saleMoneyRate', {
+                                                initialValue: type === 'add' ? '' : data.saleMoneyRate,
                                                 // rules: [
                                                 //     {
                                                 //         required: true,
@@ -340,11 +369,10 @@ const ResearchAbility = (props) => {
                                                 // ],
                                             })(
                                                 <InputNumber
-                                                    defaultValue={100}
                                                     min={0}
                                                     max={100}
                                                     formatter={value => `${value}%`}
-                                                    parser={value => value.replace('%', '')}
+                                                    parser={value => value && value.replace('%', '')}
                                                     style={{ width: '50%' }}
                                                 // onChange={onChange}
                                                 />)}
@@ -354,27 +382,30 @@ const ResearchAbility = (props) => {
                                 <Row>
                                     <Col span={24}>
                                         <FormItem label="样品开发周期" {...formLayout}>
-                                            {getFieldDecorator('source', {
-                                                initialValue: '',
-                                                // rules: [
-                                                //     {
-                                                //         required: true,
-                                                //         message: '自主技术开发能力不能为空',
-                                                //     },
-                                                // ],
+                                            {getFieldDecorator('devMaxCycle', {
+                                                initialValue: type === 'add' ? '' : data.devMaxCycle,
                                             })(
-                                                <InputGroup compact>
-                                                    <span>最长 <InputNumber style={{ width: '30%' }} defaultValue="0571" />天 </span>
-                                                    <span>平均 <InputNumber style={{ width: '30%' }} defaultValue="26888888" />天</span>
-                                                    <span>最快 <InputNumber style={{ width: '30%' }} defaultValue="26888888" />天</span>
-                                                </InputGroup>)}
+                                                <span>最长 <InputNumber style={{ width: '20%' }} />天 </span>
+                                            )}
+                                            &nbsp;&nbsp;&nbsp;
+                                            {getFieldDecorator('devAverageCycle', {
+                                                initialValue: type === 'add' ? '' : data.devAverageCycle,
+                                            })(
+                                                <span>最长 <InputNumber style={{ width: '20%' }} />天 </span>
+                                            )}
+                                            &nbsp;&nbsp;&nbsp;
+                                            {getFieldDecorator('devMinCycle', {
+                                                initialValue: type === 'add' ? '' : data.devMinCycle,
+                                            })(
+                                                <span>平均 <InputNumber style={{ width: '20%' }} />天 </span>
+                                            )}
                                         </FormItem>
                                     </Col>
                                 </Row>
                                 <EditableFormTable
                                     dataSource={[]}
                                     columns={columnsForFinish}
-                                    rowKey='name1'
+                                    rowKey='id'
                                     // setNewData={setNewData}
                                     isEditTable
                                 />
@@ -382,7 +413,7 @@ const ResearchAbility = (props) => {
                                 <EditableFormTable
                                     dataSource={[]}
                                     columns={columnsForProcess}
-                                    rowKey='name1'
+                                    rowKey='id'
                                     // setNewData={setNewData}
                                     isEditTable
                                 />
@@ -395,8 +426,8 @@ const ResearchAbility = (props) => {
                             <div className={styles.content}>
                                 <EditableFormTable
                                     dataSource={[]}
-                                    columns={columnsForProcess}
-                                    rowKey='name1'
+                                    columns={columnsForProSta}
+                                    rowKey='id'
                                     // setNewData={setNewData}
                                     isEditTable
                                 />
@@ -405,7 +436,7 @@ const ResearchAbility = (props) => {
                     </div>
                 </PageHeader>
             </Spin>
-        </div>
+        </div >
     )
 };
 

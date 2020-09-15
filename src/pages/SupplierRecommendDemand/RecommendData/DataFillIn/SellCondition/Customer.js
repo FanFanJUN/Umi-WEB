@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-09 15:36:50
- * @LastEditTime: 2020-09-14 18:54:25
+ * @LastEditTime: 2020-09-15 09:45:12
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/SellCondition/Customer.js
  * @Description: 客户相关
  * @Connect: 1981824361@qq.com
@@ -90,7 +90,7 @@ const Customer = React.forwardRef(({ form, type, data }, ref) => {
                 </Col>
                 <Col span={12}>
                     <FormItem label="其中最大客户所占销售额（%）" {...formLayout}>
-                        {getFieldDecorator('shareDemanNumber', {
+                        {getFieldDecorator('maxCustomerRate', {
                             initialValue: type === 'add' ? '' : data.shareDemanNumber,
                         })(
                             <Input style={{ width: '100%' }} />,

@@ -32,7 +32,7 @@ function SupplierConfigure() {
     const [singleRow = {}] = selectedRows;
     /** 按钮可用性判断变量集合 BEGIN*/
     const [signleRow = {}] = selectedRows;
-    const { flowStatus: signleFlowStatus, id: flowId, creatorId } = signleRow;
+    const { flowStatus: signleFlowStatus, id: flowId, creatorId ,saveStatus: typeStatus} = signleRow;
     // 已提交审核状态
     const underWay = signleFlowStatus !== 'INIT';
     // 审核完成状态
@@ -41,10 +41,8 @@ function SupplierConfigure() {
     const empty = selectedRowKeys.length === 0;
     // 是不是自己的单据
     const isSelf = currentUserId === creatorId;
-    // 删除草稿
-    const isdelete = signleFlowStatus === 'INIT'
-
-    
+    // 提交审核
+    const Toexamine = signleFlowStatus === 'INIT' && typeStatus === 1;
     const {
         state: rowState,
         approvalState: rowApprovalState,
@@ -63,9 +61,11 @@ function SupplierConfigure() {
             dataIndex: 'flowStatus',
             width: 100,
             render: function(text, record, row) {
-                if (text === 'INIT') {
+                if (text === 'INIT' && record.saveStatus === 0) {
                     return <div>草稿</div>;
-                } else if (text === 'INPROCESS') {
+                } else if (text === 'INIT' && record.saveStatus === 1) {
+                    return <div>已保存</div>;
+                }else if (text === 'INPROCESS') {
                     return <div>审批中</div>;
                 } else if (text === 'COMPLETED') {
                     return <div>审批完成</div>;
@@ -332,7 +332,7 @@ function SupplierConfigure() {
                                     key='' 
                                     className={styles.btn} 
                                     onClick={handleEditor}
-                                    disabled={empty || underWay || !isSelf}
+                                    //disabled={empty || underWay || !isSelf}
                                     >编辑
                                 </Button>
                             )
@@ -357,7 +357,7 @@ function SupplierConfigure() {
                                     // preStart={handleBeforeStartFlow}
                                     businessKey={flowId}
                                     callBack={handleComplete}
-                                    disabled={empty || underWay || !isSelf}
+                                    disabled={empty || underWay || !isSelf || !Toexamine}
                                     businessModelCode='com.ecmp.srm.sm.entity.SupplierApply'
                                     ignore={DEVELOPER_ENV}
                                     key='PURCHASE_VIEW_CHANGE_APPROVE'
@@ -429,7 +429,7 @@ function SupplierConfigure() {
                 >
                 <ScrollBar>
                     <ExtTable
-                        loading={true}
+                        //loading={true}
                         showSearch={false}
                         dataSource={recommen}
                         {...tableProps} 

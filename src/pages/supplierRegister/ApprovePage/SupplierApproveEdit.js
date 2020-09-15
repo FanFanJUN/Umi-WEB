@@ -155,6 +155,8 @@ const SupplierEditRef = forwardRef(({
     let enclosurelist = [],basedata,accountData,baseexten,automaticdata,automaticincome,
     automThreeYear,rangeValinfo;
     if (baseVal && baseVal.supplierVo) {
+      baseVal.supplierVo.id = editData.supplierVo.id;
+      baseVal.extendVo.id = editData.extendVo.id;
       basedata = baseVal.supplierVo
     }
     if (baseVal && baseVal.extendVo) {

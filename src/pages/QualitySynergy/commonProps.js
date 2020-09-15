@@ -18,6 +18,19 @@ export const judgeButtonDisabled = (value) => {
   }
 };
 
+// 判断
+export const judge = (arr, key, value) => {
+  if (arr?.length > 0) {
+    return arr.every(item => item[key] === value);
+  } else {
+    return true;
+  }
+};
+
+export const generateLineNumber = (index) => {
+  return (index < 10 ? '00' + index * 10 : index < 100 ? '0' + index*10 : index * 10).toString()
+}
+
 const commonProps = {
   reader: {
     name: 'name',
@@ -361,9 +374,6 @@ export const MaterialFindByPage = {
     params: {
       quickSearchProperties: []
     }
-  },
-  style: {
-    width: '100%',
   },
   rowKey: 'materialCode',
   reader: {

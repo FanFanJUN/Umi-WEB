@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:34:49
- * @LastEditTime: 2020-09-14 18:53:20
+ * @LastEditTime: 2020-09-15 17:04:46
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/SellCondition/index.js
  * @Description: 销售情况 Tab
  * @Connect: 1981824361@qq.com
@@ -14,10 +14,13 @@ import SalesProfit from './SalesProfit';
 import Customer from './Customer';
 import MarketCompetitive from './MarketCompetitive';
 import { findSalesSituationById, saveSupplierSalesSituation } from '../../../../../services/dataFillInApi';
+import { router } from 'dva';
 
-const SellCondition = ({ baseParam: { id, type }, form }) => {
+const SellCondition = ({ form }) => {
     const [data, setData] = useState({});
     const [loading, setLoading] = useState(false);
+
+    const { query: { id, type = 'add' } } = router.useLocation();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -79,7 +82,7 @@ const SellCondition = ({ baseParam: { id, type }, form }) => {
                         <div className={styles.bgw}>
                             <div className={styles.title}>客户</div>
                             <div className={styles.content}>
-                                <Customer type={type} data={data} form={form}  />
+                                <Customer type={type} data={data} form={form} />
                             </div>
                         </div>
                     </div>
@@ -87,7 +90,7 @@ const SellCondition = ({ baseParam: { id, type }, form }) => {
                         <div className={styles.bgw}>
                             <div className={styles.title}>市场地位及竞争状况</div>
                             <div className={styles.content}>
-                                <MarketCompetitive type={type} data={data} form={form}  />
+                                <MarketCompetitive type={type} data={data} form={form} />
                             </div>
                         </div>
                     </div>

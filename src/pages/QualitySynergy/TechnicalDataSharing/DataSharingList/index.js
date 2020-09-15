@@ -6,7 +6,7 @@ import styles from './index.less';
 import { ExtTable, utils } from 'suid';
 import {
   BUConfigNoFrostHighSearch, DeleteDataSharingList,
-  distributionProps,
+  distributionProps, judge,
   materialCode, MaterialConfig, MaterialGroupConfig,
   statusProps, StrategicPurchaseConfig,
 } from '../../commonProps';
@@ -30,7 +30,7 @@ export default function() {
     title: '查看已分配的供应商',
     visible: false,
     type: 'vies',
-    shareDemanNumber: ''
+    shareDemanNumber: '',
   });
 
   const [assignData, setAssignData] = useState({
@@ -56,7 +56,7 @@ export default function() {
         openNewTab(`qualitySynergy/DataSharingAdd?pageState=detail&id=${data.selectedRowKeys[0]}`, '技术资料分享需求-明细', false);
         break;
       case 'delete':
-        deleteList()
+        deleteList();
         break;
       case 'allot':
         setModalData({ title: '分配供应商', visible: true, type: 'allot' });
@@ -68,7 +68,7 @@ export default function() {
   };
 
   const handleQuickSearch = (value) => {
-    setData(v => ({...v, quickSearchValue: value}))
+    setData(v => ({ ...v, quickSearchValue: value }));
     tableRef.current.remoteDataRefresh();
     console.log(value, 'value');
   };
@@ -77,26 +77,26 @@ export default function() {
   const deleteList = () => {
     Modal.confirm({
       title: '删除',
-      content:'是否删除选中的数据',
+      content: '是否删除选中的数据',
       okText: '是',
       okType: 'danger',
       cancelText: '否',
       onOk: () => {
         DeleteDataSharingList({
-          ids: data.selectedRowKeys.toString()
+          ids: data.selectedRowKeys.toString(),
         }).then(res => {
           if (res.success) {
-            message.success(res.message)
+            message.success(res.message);
             tableRef.current.manualSelectedRows();
             tableRef.current.remoteDataRefresh();
 
           } else {
-            message.error(res.message)
+            message.error(res.message);
           }
-        })
-      }
-    })
-  }
+        });
+      },
+    });
+  };
 
   // 高级查询搜索
   const handleAdvancedSearch = (value) => {
@@ -104,12 +104,12 @@ export default function() {
     value.materialGroupCode = value.materialGroupCode_name;
     value.strategicPurchaseCode = value.strategicPurchaseCode_name;
     value.buCode = value.buCode_name;
-    delete value.materialCode_name
-    delete value.materialGroupCode_name
-    delete value.strategicPurchaseCode_name
-    delete value.buCode_name
-    delete value.state_name
-    delete value.allotSupplierState_name
+    delete value.materialCode_name;
+    delete value.materialGroupCode_name;
+    delete value.strategicPurchaseCode_name;
+    delete value.buCode_name;
+    delete value.state_name;
+    delete value.allotSupplierState_name;
     setData(v => ({ ...v, epTechnicalShareDemandSearchBo: value }));
     tableRef.current.remoteDataRefresh();
     console.log(value, '高级查询');
@@ -137,7 +137,11 @@ export default function() {
     { title: '物料组描述', dataIndex: 'materialGroupName', ellipsis: true },
     { title: '战略采购代码', dataIndex: 'strategicPurchaseCode', ellipsis: true },
     { title: '战略采购名称', dataIndex: 'strategicPurchaseName', ellipsis: true },
-    { title: '供应商', dataIndex: 'buId', render: (v, data) => <a onClick={() => handleSeesSupplier(data.shareDemanNumber)}>查看</a> },
+    {
+      title: '供应商',
+      dataIndex: 'buId',
+      render: (v, data) => <a onClick={() => handleSeesSupplier(data.shareDemanNumber)}>查看</a>,
+    },
     { title: 'BU代码', dataIndex: 'buCode', ellipsis: true },
     { title: 'BU名称', dataIndex: 'buName', ellipsis: true },
     { title: '申请人', dataIndex: 'applyPeopleName', ellipsis: true },
@@ -148,7 +152,6 @@ export default function() {
   const visibleSupplier = () => {
     console.log('查看供应商');
   };
-
 
   const headerLeft = <>
     {
@@ -166,7 +169,9 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='PURCHASE_VIEW_CHANGE_CREATE'
-        disabled={data.selectedRowKeys.length !== 1 || data.selectedRows[0]?.source !== 'SRM'}
+        disabled={
+          data.selectedRowKeys.length !== 1 || data.selectedRows[0]?.source !== 'SRM' ||
+          data.selectedRows[0]?.state === '生效' || data.selectedRows[0]?.allotSupplierState === '已分配'}
       >编辑</Button>)
     }
     {
@@ -210,7 +215,12 @@ export default function() {
         onClick={() => redirectToPage('allot')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        disabled={data.selectedRowKeys.length === 0}
+        disabled={
+          data.selectedRowKeys.length === 0 ||
+          !judge(data.selectedRows, 'allotSupplierState', '未分配') ||
+          judge(data.selectedRows, 'strategicPurchaseCode', '') ||
+          !judge(data.selectedRows, 'strategicPurchaseCode', data.selectedRows[0]?.strategicPurchaseCode)
+        }
         key='PURCHASE_VIEW_CHANGE_CREATE'
       >分配供应商</Button>)
     }
@@ -219,7 +229,7 @@ export default function() {
         onClick={() => redirectToPage('govern')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        disabled={data.selectedRowKeys.length !== 1}
+        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'strategicPurchaseCode', '')}
         key='PURCHASE_VIEW_CHANGE_CREATE'
       >支配战略采购</Button>)
     }
@@ -244,8 +254,8 @@ export default function() {
   };
 
   const handleSeesSupplier = (shareDemanNumber) => {
-    setModalData(v => ({...v, visible: true, shareDemanNumber}))
-  }
+    setModalData(v => ({ ...v, visible: true, shareDemanNumber }));
+  };
 
   return (
     <Fragment>
@@ -266,7 +276,7 @@ export default function() {
             store={{
               params: {
                 quickSearchValue: data.quickSearchValue,
-                ...data.epTechnicalShareDemandSearchBo
+                ...data.epTechnicalShareDemandSearchBo,
               },
               url: `${recommendUrl}/api/epTechnicalShareDemandService/findByPage`,
               type: 'POST',
@@ -285,6 +295,7 @@ export default function() {
       </AutoSizeLayout>
       <SupplierModal
         {...modalData}
+        selectedRows={data.selectedRows}
         onCancel={handleModalCancel}
       />
       <TacticAssign

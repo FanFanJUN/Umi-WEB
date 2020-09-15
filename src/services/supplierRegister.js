@@ -47,10 +47,10 @@ export const RecommendationList = params => createServiceRequest({
 //     data: convertDataToFormData(params),
 //     responseType: 'blob'
 //   })
-export const SaveSupplierRegister = params => createServiceRequest({
-  path: '/api/SmSupplierConfigService/saveSmSupplierConfig',
-  params
-})
+// export const SaveSupplierRegister = params => createServiceRequest({
+//   path: '/api/SmSupplierConfigService/saveSmSupplierConfig',
+//   params
+// })
 // 供应商注册字段配置表删除
 export const DetailSupplierRegister = params =>
   request({

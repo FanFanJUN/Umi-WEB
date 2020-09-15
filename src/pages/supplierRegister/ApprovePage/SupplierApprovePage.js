@@ -47,7 +47,6 @@ const SupplierAgentRef = forwardRef(({
   const [accountVo, setaccountVo] = useState(false);
   const [configure, setConfigure] = useState([ ]);
   useEffect(() => {
-    
     setInitialValue(wholeData.supplierInfoVo)
     setEditData(wholeData.supplierInfoVo)
     configurelist(configuredata)
@@ -105,8 +104,10 @@ const SupplierAgentRef = forwardRef(({
                   <div >
                     <BaseinfiDetail
                       editformData={editData}
+                      companyData={wholeData}
                       baseinfo={baseinfo}
                       wrappedComponentRef={BaseinfoRef}
+                      isView={true}
                     />
                   </div>
                 </div>
