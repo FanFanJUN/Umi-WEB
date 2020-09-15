@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-09 15:28:52
- * @LastEditTime: 2020-09-14 15:59:34
+ * @LastEditTime: 2020-09-15 16:36:27
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/SellCondition/SalesProfit.js
  * @Description: 销售收入及利润 Table
  * @Connect: 1981824361@qq.com
@@ -16,15 +16,16 @@ import EditTable from '../CommonUtil/EditTable';
 
 let data = [];
 for (let i = 0; i < 5; i++) {
-  data.push({ 
-    name1: i.toString(),
-    name2: i+1000,
-    name3: 32,
-    name4: 'RMB',
-  });
+    data.push({
+        id: i.toString(),
+        year: i + 56,
+        salesAmount: i + 1000,
+        profit: 32,
+        currencyName: 'RMB',
+    });
 }
 
-const SalesProfit = (props)=> {
+const SalesProfit = (props) => {
     const { form } = props;
     const [dataSource, setDataSource] = useState(data);
     const [selectedRowKeys, setRowKeys] = useState([]);
@@ -62,43 +63,22 @@ const SalesProfit = (props)=> {
             "inputType": 'Input',
         }
     ];
-    // 行选中
-    function handleSelectedRows(rowKeys, rows) {
-        setRowKeys(rowKeys);
-        setRows(rows);
-    }
-    // 删除
-    function handleDelete() {
-        console.log('删除')
-    }
 
     function setNewData(newData) {
-      console.log(newData);
-      setDataSource(newData);
+        console.log(newData);
+        setDataSource(newData);
     }
     return <Fragment>
         {/* <div className={styles.mb}>
             <Button type='primary' className={styles.btn} onClick={() => { editRef.current.showModal('add') }}>新增</Button>
         </div> */}
         <EditTable
-           dataSource = {dataSource}
-           columns={columns}
-           rowKey='name1'
-           setNewData={setNewData}
-           isEditTable
-           isToolBar
-            // bordered
-            // allowCancelSelect
-            // showSearch={false}
-            // remotePaging
-            // checkbox={{ multiSelect: false }}
-            // ref={tableRef}
-            // rowKey={(item) => item.name1}
-            // size='small'
-            // onSelectRow={handleSelectedRows}
-            // selectedRowKeys={selectedRowKeys}
-            // data={data}
-            // components={components}
+            dataSource={dataSource}
+            columns={columns}
+            rowKey='id'
+            setNewData={setNewData}
+            isEditTable
+            isToolBar
         />
     </Fragment>
 }

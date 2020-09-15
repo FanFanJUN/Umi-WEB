@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:53:17
- * @LastEditTime: 2020-09-15 14:59:26
+ * @LastEditTime: 2020-09-15 16:47:09
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/ResearchAbility/index.js
  * @Description: 研发能力 Tab
  * @Connect: 1981824361@qq.com
@@ -317,7 +317,7 @@ const ResearchAbility = ({ form }) => {
                                     <Col span={24}>
                                         <FormItem label="是否愿意为客户的技术开发提供技术支持" {...formLayout}>
                                             {getFieldDecorator('canTechnicalSupport', {
-                                                initialValue: type === 'add' ? '' : data.canTechnicalSupport,
+                                                initialValue: type === 'add' ? 1 : data.canTechnicalSupport,
                                                 // rules: [
                                                 //     {
                                                 //         required: true,
@@ -345,11 +345,10 @@ const ResearchAbility = ({ form }) => {
                                                 // ],
                                             })(
                                                 <InputNumber
-                                                    defaultValue={100}
                                                     min={0}
                                                     max={100}
                                                     formatter={value => `${value}%`}
-                                                    parser={value => value.replace('%', '')}
+                                                    parser={value => value && value.replace('%', '')}
                                                     // onChange={onChange}
                                                     style={{ width: '50%' }}
                                                 />)}
@@ -370,11 +369,10 @@ const ResearchAbility = ({ form }) => {
                                                 // ],
                                             })(
                                                 <InputNumber
-                                                    defaultValue={100}
                                                     min={0}
                                                     max={100}
                                                     formatter={value => `${value}%`}
-                                                    parser={value => value.replace('%', '')}
+                                                    parser={value => value && value.replace('%', '')}
                                                     style={{ width: '50%' }}
                                                 // onChange={onChange}
                                                 />)}

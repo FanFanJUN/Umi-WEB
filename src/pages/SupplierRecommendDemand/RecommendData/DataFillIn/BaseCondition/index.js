@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 15:52:52
- * @LastEditTime: 2020-09-15 09:31:40
+ * @LastEditTime: 2020-09-15 17:05:32
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/BaseCondition/index.js
  * @Description: 基本情况 Tab
  * @Connect: 1981824361@qq.com

@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-10 10:57:33
- * @LastEditTime: 2020-09-15 16:20:23
+ * @LastEditTime: 2020-09-15 17:45:35
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/CommonUtil/EditTable.js
  * @Description:  函数式可编辑行 Table组件
  * @Connect: 1981824361@qq.com
@@ -12,7 +12,8 @@ import { Input, InputNumber, Popconfirm, Form, Divider, Button, DatePicker, Sele
 import { ExtTable } from 'suid';
 import PropTypes, { any } from 'prop-types';
 import AutoSizeLayout from '../../../../supplierRegister/SupplierAutoLayout';
-import { guid } from './utils';
+import { guid, isEmptyArray } from './utils';
+import UploadFile from './UploadFile';
 
 
 const EditableContext = React.createContext();
@@ -47,6 +48,8 @@ const EditableCell = (params) => {
                     <Option value="1">是</Option>
                     <Option value="2">否</Option>
                 </Select>
+                case 'UploadFile':
+                    return <UploadFile />    
             default:
                 return <Input />;
         }
@@ -54,6 +57,7 @@ const EditableCell = (params) => {
 
     const { getFieldDecorator } = form;
     const renderCell = () => {
+        console.log(editing);
         return (
             editing ? (
                 <Form.Item style={{ margin: 0 }}>
@@ -176,23 +180,24 @@ const EditableTable = (props) => {
                 return;
             }
             console.log(row);
-            // const newData = [...dataSource];
-            // const index = newData.findIndex(item => key === item[rowKey]);
-            // console.log(index);
-            // if (index > -1) {
-            //     const item = newData[index];
-            //     newData.splice(index, 1, {
-            //         ...item,
-            //         ...row,
-            //     });
-            setEditingKey('');
-            setButtonDisabled(false);
-            //     props.setNewData(newData);
-            // } else {
-            //     newData.push(row);
-            //     setEditingKey('');
-            //     props.setNewData(newData);
-            // }
+            const newData = [...dataSource];
+            const index = newData.findIndex(item => key === item[rowKey]);
+            console.log(index);
+            if (index > -1) {
+                const item = newData[index];
+                newData.splice(index, 1, {
+                    ...item,
+                    ...row,
+                });
+                setEditingKey('');
+                setButtonDisabled(false);
+                props.setNewData(newData);
+            } else {
+                newData.push(row);
+                setEditingKey('');
+                setButtonDisabled(false);
+                props.setNewData(newData);
+            }
         });
     }
 
@@ -204,7 +209,10 @@ const EditableTable = (props) => {
         });
         // newArray.push({ id: guid() });
         const id = guid();
-        setNewData([{ id, patentsAwardsCertificate: guid() }, ...newArray]);
+        const newData = isEmptyArray(newArray) ? 
+        [{ id, patentsAwardsCertificate: guid() }] : [{ id, patentsAwardsCertificate: guid() }, ...newArray];
+
+        setNewData(newData);
         setEditingKey(id); // 新增处于编辑行
         setButtonDisabled(true); // 未保存无法操作
     }
@@ -251,7 +259,7 @@ EditableTable.protoType = {
     //列
     columns: PropTypes.array,
     //列表唯一key
-    rowKey: PropTypes.any,
+    rowKey: PropTypes.string,
     //Tables是否需要operation  编辑行  删除选项
     isEditTable: PropTypes.bool,
     //是否显示工具栏（新增||删除 ReactNode）
