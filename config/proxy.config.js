@@ -1,4 +1,4 @@
-export const localTarget = 'http://tecmp.changhong.com';
+export const localTarget = 'http://decmp.changhong.com';
 export const onLineTarget = 'https://tecmp.changhong.com';
 
 export default {
