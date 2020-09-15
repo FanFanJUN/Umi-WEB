@@ -126,7 +126,7 @@ const ExemptionClause = (props) => {
                 message.success('导入成功');
                 refresh();
             } else {
-                message.error(res.msg)
+                message.error(res.message)
             }
         });
     };

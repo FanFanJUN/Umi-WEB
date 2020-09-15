@@ -18,6 +18,14 @@ const MCDForm = forwardRef(({ form, originData }, ref) => {
 
     })
     const { getFieldDecorator } = form;
+    const [selectedSplitData, setSelectedSpilt] = useState({})
+    const [splitDataList, setSplitDataList] = useState(originData.epDataFillSplitPartsVoList ? originData.epDataFillSplitPartsVoList : []);
+    useEffect(()=>{
+        setSplitDataList(originData.epDataFillSplitPartsVoList ? originData.epDataFillSplitPartsVoList : [])
+    }, [originData])
+    function handleSplitDataList() {
+
+    }
     return <Fragment>
         <Form className={styles.bl}>
             <Row>
@@ -56,14 +64,14 @@ const MCDForm = forwardRef(({ form, originData }, ref) => {
         </Form>
         <Row>
             <Col span={12} className={styles.rl}>
-                <SplitPartsTable />
+                <SplitPartsTable dataList={splitDataList} setSelectedSpilt={setSelectedSpilt}/>
             </Col>
             <Col span={12} className={styles.ll}>
                 <Row>
-                    <MaterialTable />
+                    <MaterialTable dataList={splitDataList} selectedSplitData={selectedSplitData} />
                 </Row>
                 <Row>
-                    <TestRecordsTable />
+                    <TestRecordsTable dataList={splitDataList} selectedSplitData={selectedSplitData} />
                 </Row>
             </Col>
         </Row>

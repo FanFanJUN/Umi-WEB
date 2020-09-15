@@ -1,7 +1,7 @@
 import { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment } from 'react';
 import { ExtTable, ExtModal, ScrollBar, ComboList } from 'suid';
 import { Button, DatePicker, Form, Modal, Row, Input, Select } from 'antd';
-import { materialCode } from '../../../commonProps';
+import { limitMaterialList, limitScopeList, exemptionClauseDataList } from '../../../commonProps';
 import { Upload } from '@/components';
 import { smBaseUrl } from '@/utils/commonUrl';
 import classnames from 'classnames'
@@ -14,7 +14,7 @@ const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 14, },
 };
-const supplierModal = forwardRef(({ form }, ref) => {
+const supplierModal = forwardRef(({ form, selectedSplitData }, ref) => {
     useImperativeHandle(ref, () => ({
         setVisible
     }))
@@ -28,7 +28,7 @@ const supplierModal = forwardRef(({ form }, ref) => {
     const columns = [
         { title: '物质代码', dataIndex: 'turnNumber', align: 'center' },
         { title: '物质名称', dataIndex: 'name1', ellipsis: true, align: 'center' },
-        { title: '是否限用物质', dataIndex: 'name2', ellipsis: true, align: 'center', render:(text)=>{return text?'是':'否'}},
+        { title: '是否限用物质', dataIndex: 'name2', ellipsis: true, align: 'center', render: (text) => { return text ? '是' : '否' } },
         { title: 'CAS.NO', dataIndex: 'name3', ellipsis: true, align: 'center', },
         { title: '适用范围', dataIndex: 'name4', ellipsis: true, align: 'center', },
         { title: '物质重量(mg)', dataIndex: 'name5', ellipsis: true, align: 'center', },
@@ -84,9 +84,7 @@ const supplierModal = forwardRef(({ form }, ref) => {
             size='small'
             onSelectRow={handleSelectedRows}
             selectedRowKeys={selectedRowKeys}
-            dataSource={[
-                {id: 1}
-            ]}
+            dataSource={selectedSplitData.voList}
         />
         <ExtModal
             centered
@@ -99,30 +97,32 @@ const supplierModal = forwardRef(({ form }, ref) => {
             <Form>
                 <Row>
                     <FormItem label='物质名称' {...formLayout}>
-                        {!getFieldValue('data4') ? <Input disabled={true} placeholder="请先选择是否为限用物质" />
-                            : getFieldValue('data4') === 'no' ? getFieldDecorator('data1', {
+                        {!getFieldValue('isRestricted') ? <Input disabled={true} placeholder="请先选择是否为限用物质" />
+                            : getFieldValue('isRestricted') === '0' ? getFieldDecorator('substanceName', {
                                 initialValue: '',
                                 rules: [{ required: true, message: '请填写物质名称' }]
                             })(<Input placeholder="请输入" />)
-                                : getFieldDecorator('data1', {
+                                : getFieldDecorator('substanceName', {
                                     initialValue: '',
                                     rules: [{ required: true, message: '请选择物质名称' }]
-                                })(<ComboList form={form} {...materialCode} name='supplierCode'
-                                    field={['supplierName', 'supplierId']}
+                                })(<ComboList form={form}
+                                    {...limitMaterialList}
+                                    name='substanceName'
+                                    // field={['supplierName', 'supplierId']}
                                     placeholder="请选择"
-                                    afterSelect={() => { console.log(111) }} />)
+                                />)
                         }
                     </FormItem>
                 </Row>
                 <Row>
                     <FormItem label='是否限用物质' {...formLayout}>
                         {
-                            getFieldDecorator('data4', {
+                            getFieldDecorator('isRestricted', {
                                 initialValue: '',
                                 rules: [{ required: true, message: '请选择' }]
                             })(<Select style={{ width: '100%' }}>
-                                <Option value="yes">是</Option>
-                                <Option value="no">否</Option>
+                                <Option value="1">是</Option>
+                                <Option value="0">否</Option>
                             </Select>)
                         }
                     </FormItem>
@@ -130,7 +130,7 @@ const supplierModal = forwardRef(({ form }, ref) => {
                 <Row>
                     <FormItem label='CAS.NO' {...formLayout}>
                         {
-                            getFieldDecorator('data2', {
+                            getFieldDecorator('casNo', {
                                 initialValue: '',
                             })(<Input />)
                         }
@@ -139,12 +139,16 @@ const supplierModal = forwardRef(({ form }, ref) => {
                 <Row>
                     <FormItem label='适用范围' {...formLayout}>
                         {
-                            getFieldDecorator('data3', {
+                            getFieldDecorator('practicalRangeId'),
+                            getFieldDecorator('practicalRangeCode'),
+                            getFieldDecorator('practicalRangeName', {
                                 initialValue: '',
                                 rules: [{ required: true, message: '请选择适用范围' }]
-                            })(<ComboList form={form} {...materialCode} name='supplierCode'
-                                field={['supplierName', 'supplierId']}
-                                afterSelect={() => { console.log(111) }} />)
+                            })(<ComboList
+                                form={form}
+                                {...limitScopeList}
+                                name='supplierCode'
+                                field={['practicalRangeId', 'practicalRangeCode']} />)
                         }
                     </FormItem>
                 </Row>
@@ -152,7 +156,7 @@ const supplierModal = forwardRef(({ form }, ref) => {
                 <Row>
                     <FormItem label='物质重量(mg)' {...formLayout}>
                         {
-                            getFieldDecorator('data5', {
+                            getFieldDecorator('scopeApplication', {
                                 initialValue: '',
                                 rules: [{ required: true, message: '请填入物质重量(mg)' }]
                             })(<Input />)
@@ -162,7 +166,7 @@ const supplierModal = forwardRef(({ form }, ref) => {
                 <Row>
                     <FormItem label='均质材料中的含量(%)' {...formLayout}>
                         {
-                            getFieldDecorator('data6', {
+                            getFieldDecorator('materialWeight', {
                                 initialValue: '',
                                 rules: [{ required: true, message: '请填入均质材料中的含量' }]
                             })(<Input />)
@@ -172,11 +176,16 @@ const supplierModal = forwardRef(({ form }, ref) => {
                 <Row>
                     <FormItem label='豁免条款' {...formLayout}>
                         {
-                            getFieldDecorator('data7', {
+                            getFieldDecorator('exemptionClauseId'),
+                            getFieldDecorator('exemptionClauseCode'),
+                            getFieldDecorator('exemptionClause', {
                                 initialValue: '',
-                            })(<ComboList form={form} {...materialCode} name='supplierCode'
-                                field={['supplierName', 'supplierId']}
-                                afterSelect={() => { console.log(111) }} />)
+                            })(<ComboList
+                                form={form}
+                                {...exemptionClauseDataList}
+                                name='supplierCode'
+                                field={['exemptionClauseId', 'exemptionClauseCode']}
+                            />)
                         }
                     </FormItem>
                 </Row>

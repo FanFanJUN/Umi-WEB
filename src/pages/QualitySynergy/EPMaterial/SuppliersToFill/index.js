@@ -127,7 +127,7 @@ const SupplierFillList = function (props) {
     </>
     const headerRight = <>
         <Search
-            placeholder='供应商代码或名称'
+            placeholder='请输入物料代码或描述查询'
             className={styles.btn}
             onSearch={handleQuickSearch}
             allowClear

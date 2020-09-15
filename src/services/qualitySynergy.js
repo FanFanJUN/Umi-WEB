@@ -1,4 +1,4 @@
-import { supplierManagerBaseUrl, baseUrl, recommendUrl } from '../utils/commonUrl';
+import { basicServiceUrl, baseUrl, recommendUrl } from '../utils/commonUrl';
 import request from '../utils/request';
 
 
@@ -25,21 +25,21 @@ export async function exemptionClauseDataDelete(params) {
 export async function JudgeTheListOfExemptionClause(params) {
     const url = `${baseUrl}/exemptionClauseData/importExcel`;
     return request({
-      url,
-      method: 'POST',
-      data: params,
+        url,
+        method: 'POST',
+        data: params,
     });
-  }
-  
-  // 豁免条款批导验证
-  export async function SaveTheListOfExemptionClause(params) {
+}
+
+// 豁免条款批导验证
+export async function SaveTheListOfExemptionClause(params) {
     const url = `${baseUrl}/exemptionClauseData/insertImportExcel`;
     return request({
-      url,
-      method: 'POST',
-      data: params,
+        url,
+        method: 'POST',
+        data: params,
     });
-  }
+}
 
 // 环保标准-新增/编辑
 export async function addEnvironmentalProtectionData(params) {
@@ -103,21 +103,21 @@ export async function ESPMFreeze(params) {
 export async function JudgeTheListOfESPM(params) {
     const url = `${baseUrl}/environmentStandardLimitMaterialRelation/importData`;
     return request({
-      url,
-      method: 'POST',
-      data: params,
+        url,
+        method: 'POST',
+        data: params,
     });
-  }
-  
-  // 环保标准限用物资批导保存
-  export async function SaveTheListOfESPM(params) {
+}
+
+// 环保标准限用物资批导保存
+export async function SaveTheListOfESPM(params) {
     const url = `${baseUrl}/environmentStandardLimitMaterialRelation/addEnvironmentStandardLimitMaterialRelationList`;
     return request({
-      url,
-      method: 'POST',
-      data: params,
+        url,
+        method: 'POST',
+        data: params,
     });
-  }
+}
 
 // 技术资料文件类别-新增
 export async function addTechnicalDataCategory(params) {
@@ -283,6 +283,34 @@ export async function epWithdraw(params) {
         params: params,
     });
 }
+// 填报环保资料物料-分配供应商-保存
+export async function addDemandSupplier(params) {
+    const url = `${recommendUrl}/api/epDemandSupplierService/addDemandSupplier`;
+    return request({
+        url,
+        method: 'POST',
+        data: params,
+    });
+}
+// 填报环保资料物料-分配供应商-保存
+export async function submitAndReleaseDemandSupplier(params) {
+    const url = `${recommendUrl}/api/epDemandSupplierService/submitAndReleaseDemandSupplier`;
+    return request({
+        url,
+        method: 'POST',
+        data: params,
+    });
+}
+// 填报环保资料物料-分配供应商-暂停/取消暂停
+export async function supplierIsPause(params) {
+    const url = `${recommendUrl}/api/epDemandSupplierService/isPause`;
+    return request({
+        url,
+        method: 'POST',
+        data: params,
+    });
+}
+
 
 // 供应商-填报环保资料-获取填报数据
 export async function supplerFindVoById(params) {
@@ -301,5 +329,13 @@ export async function epDemandUpdate(params) {
         url,
         method: 'POST',
         data: params,
+    });
+}
+// 查询组织机构
+export async function findOrgTreeWithoutFrozen(params) {
+    const url = `/api-gateway/basic-service/organization/findOrgTreeWithoutFrozen`;
+    return request({
+        url,
+        method: 'GET',
     });
 }

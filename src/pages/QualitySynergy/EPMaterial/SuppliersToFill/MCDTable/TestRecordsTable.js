@@ -1,7 +1,7 @@
 import { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment } from 'react';
 import { ExtTable, ExtModal, ScrollBar, ComboList } from 'suid';
 import { Button, Col, Form, Modal, Row, Input, Select, InputNumber } from 'antd'
-import { materialCode } from '../../../commonProps';
+import { materialCode, findByIsRecordCheckListTrue } from '../../../commonProps';
 import { Upload } from '@/components';
 import { smBaseUrl } from '@/utils/commonUrl';
 import classnames from 'classnames'
@@ -14,7 +14,7 @@ const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 14, },
 };
-const supplierModal = forwardRef(({ form }, ref) => {
+const supplierModal = forwardRef(({ form, selectedSplitData }, ref) => {
     useImperativeHandle(ref, () => ({
         setVisible
     }))
@@ -26,13 +26,13 @@ const supplierModal = forwardRef(({ form }, ref) => {
     const { getFieldDecorator, validateFields } = form;
 
     const columns = [
-        { title: '物质代码', dataIndex: 'turnNumber', align: 'center' },
-        { title: '物质名称', dataIndex: 'name1', ellipsis: true, align: 'center' },
-        { title: 'CAS.NO', dataIndex: 'name2', ellipsis: true, align: 'center', },
-        { title: '适用范围', dataIndex: 'name3', ellipsis: true, align: 'center', },
-        { title: '含量', dataIndex: 'name4', ellipsis: true, align: 'center', },
-        { title: '基本单位', dataIndex: 'name5', ellipsis: true, align: 'center', },
-        { title: '符合性 ', dataIndex: 'name6', ellipsis: true, align: 'center', render: (text) => text ? '符合' : '不符合' },
+        { title: '物质代码', dataIndex: 'materialCode', align: 'center' },
+        { title: '物质名称', dataIndex: 'materialName', ellipsis: true, align: 'center' },
+        { title: 'CAS.NO', dataIndex: 'casNo', ellipsis: true, align: 'center', },
+        { title: '适用范围', dataIndex: 'scopeApplicationCode', ellipsis: true, align: 'center', },
+        { title: '含量', dataIndex: 'content', ellipsis: true, align: 'center', },
+        { title: '基本单位', dataIndex: 'unitName', ellipsis: true, align: 'center', },
+        { title: '符合性 ', dataIndex: 'compliance', ellipsis: true, align: 'center', render: (text) => text ? '符合' : '不符合' },
     ];
     // 记录列表选中
     function handleSelectedRows(rowKeys, rows) {
@@ -82,9 +82,7 @@ const supplierModal = forwardRef(({ form }, ref) => {
             size='small'
             onSelectRow={handleSelectedRows}
             selectedRowKeys={selectedRowKeys}
-            dataSource={[
-                {id: 1}
-            ]}
+            dataSource={selectedSplitData.testLogVoList}
         />
         <ExtModal
             centered
@@ -98,17 +96,23 @@ const supplierModal = forwardRef(({ form }, ref) => {
                 <Row>
                     <FormItem label='物质名称' {...formLayout}>
                         {
-                            getFieldDecorator('data1', {
+                            getFieldDecorator('materialId'),
+                            getFieldDecorator('materialCode'),
+                            getFieldDecorator('materialName', {
                                 initialValue: '',
                                 rules: [{ required: true, message: '请填写拆分部件名称' }]
-                            })(<Input />)
+                            })(<ComboList form={form}
+                                {...findByIsRecordCheckListTrue}
+                                name='materialName'
+                                field={['materialId', 'materialCode', 'casNo']}
+                            />)
                         }
                     </FormItem>
                 </Row>
                 <Row>
                     <FormItem label='CAS.NO' {...formLayout}>
                         {
-                            getFieldDecorator('data2', {
+                            getFieldDecorator('casNo', {
                                 initialValue: '',
                             })(<Input disabled />)
                         }
@@ -132,7 +136,7 @@ const supplierModal = forwardRef(({ form }, ref) => {
                             getFieldDecorator('data4', {
                                 initialValue: 'pass',
                                 rules: [{ required: true, message: '请选择供应商代码' }]
-                            })(<Select style={{width: '40%',marginRight:'10px'}}>
+                            })(<Select style={{ width: '40%', marginRight: '10px' }}>
                                 <Option value="pass">范围值</Option>
                                 <Option value="nopass">精确值</Option>
                             </Select>)
@@ -141,7 +145,7 @@ const supplierModal = forwardRef(({ form }, ref) => {
                             getFieldDecorator('data5', {
                                 initialValue: '',
                                 rules: [{ required: true, message: '请选择供应商代码' }]
-                            })(<InputNumber style={{width: '40%'}} />)
+                            })(<InputNumber style={{ width: '40%' }} />)
                         }
                     </FormItem>
                 </Row>

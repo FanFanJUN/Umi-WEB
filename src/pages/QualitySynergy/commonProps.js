@@ -1,4 +1,4 @@
-import { smBaseUrl, baseUrl, recommendUrl } from '../../utils/commonUrl';
+import { smBaseUrl, baseUrl, recommendUrl, basicServiceUrl } from '../../utils/commonUrl';
 import request from '../../utils/request';
 import React from 'react';
 import { commonUrl } from '../../utils';
@@ -555,6 +555,22 @@ export const limitMaterialList = {
   },
   placeholder: '选择限用物质列表',
 };
+// 限用物质列表-查询是否测试记录表中检查项为是的数据
+export const findByIsRecordCheckListTrue = {
+  remotePaging: true,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${baseUrl}/limitSubstanceListData/findByIsRecordCheckListTrue`,
+  },
+  rowKey: 'limitMaterialCode',
+  reader: {
+    name: 'limitMaterialName',
+    field: ['id', 'limitMaterialCode', 'casNo'],
+    description: 'limitMaterialCode',
+  },
+  placeholder: '选择限用物质列表',
+};
 
 // 适用范围-非冻结
 export const limitScopeList = {
@@ -575,7 +591,25 @@ export const limitScopeList = {
   },
   placeholder: '选择适用范围',
 };
-
+// 豁免条款-下拉
+export const exemptionClauseDataList = {
+  remotePaging: true,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${baseUrl}/exemptionClauseData/findByPage`,
+    params: {
+      quickSearchProperties: [],
+    },
+  },
+  rowKey: 'exemptionClauseCode',
+  reader: {
+    name: 'exemptionClauseMaterialName',
+    field: ['id', 'exemptionClauseCode'],
+    description: 'exemptionClauseCode',
+  },
+  placeholder: '选择豁免条款',
+};
 // 状态
 export const statusProps = {
   dataSource: [
@@ -669,4 +703,26 @@ export const buList = {
     description: 'buName',
   },
   placeholder: '选择业务单元',
+};
+// 组织机构人员下拉列表
+export const allPersonList = {
+  remotePaging: true,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `/api-gateway/basic-service/employee/findByUserQueryParam`,
+    params: {
+      includeFrozen: false,
+      includeSubNode: true,
+      quickSearchProperties: ["code", "user.userName"],
+      sortOrders: [{property: "code", direction: "ASC"}]
+    }
+  },
+  rowKey: 'code',
+  reader: {
+    name: 'userName',
+    field: ['id', 'code'],
+    description: 'code',
+  },
+  placeholder: '选择环保管理人员',
 };

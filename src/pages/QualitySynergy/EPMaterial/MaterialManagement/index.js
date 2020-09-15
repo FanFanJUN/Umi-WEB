@@ -5,13 +5,13 @@ import { openNewTab, getFrameElement } from '@/utils';
 import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
 import { recommendUrl } from '@/utils/commonUrl';
-import { materialCode, MaterialConfig, statusProps, distributionProps, materialStatus, PDMStatus } from '../../commonProps';
+import { materialCode, MaterialConfig, statusProps, distributionProps, materialStatus, PDMStatus, allPersonList } from '../../commonProps';
 import CheckQualificationModal from '../components/checkQualificationModal';
 import DistributeSupplierModal from '../components/distributeSupplierModal';
 import CheckModal from '../components/checkModal';
 import GenerateModal from '../components/generateModal';
 import EditModal from '../components/editModal';
-import {  epWhetherDelete, editEpDemand, epFrozen, epSubmit, epWithdraw } from '../../../../services/qualitySynergy'
+import { epWhetherDelete, editEpDemand, epFrozen, epSubmit, epWithdraw, findOrgTreeWithoutFrozen } from '../../../../services/qualitySynergy'
 const { authAction, storage } = utils;
 const { Search } = Input;
 const { confirm } = Modal;
@@ -21,7 +21,7 @@ const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 12, },
 };
-export default function () {
+export default create()(function ({ form }) {
     const headerRef = useRef(null)
     const tableRef = useRef(null);
     const checkRef = useRef(null);
@@ -29,6 +29,7 @@ export default function () {
     const supplierRef = useRef(null);
     const samplingRef = useRef(null);
     const generateRef = useRef(null);
+    const [OrgId, setOrgId] = useState('');
     const [buttonStatus, setButtonStatus] = useState({})
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
@@ -37,6 +38,14 @@ export default function () {
     const [assignPurchase, setSssignPurchase] = useState(false);//指派战略采购弹框
     const [qualificationModal, setQualificationModal] = useState(false);
     const FRAMELEEMENT = getFrameElement();
+    const { getFieldDecorator, setFieldsValue, validateFields } = form;
+    useEffect(() => {
+        findOrgTreeWithoutFrozen().then(res => {
+            if (res.success) {
+                setOrgId(res.data[0].id);
+            }
+        })
+    }, [])
     function redirectToPage(type) {
         const [key] = selectedRowKeys;
         const { id = '' } = FRAMELEEMENT;
@@ -63,6 +72,10 @@ export default function () {
     }
     // 删除
     function handleDelete(v) {
+        if (selectedRows[0].effectiveStatus !== 'DRAFT' || selectedRows[0].sourceName !== 'SRM') {
+            message.warning('只能删除来源为SRM且状态为草稿的环保资料物料！');
+            return;
+        }
         confirm({
             title: '删除',
             content: '请确认是否冻结该填报环保资料物料',
@@ -123,6 +136,10 @@ export default function () {
     }
     // 撤回
     const withdraw = () => {
+        if (!selectedRows[0].allotSupplierState || selectedRows[0].allotSupplierState !== 'ALLOT_NOT') {
+            message.warning('只能撤回未分配供应商的数据');
+            return;
+        }
         confirm({
             title: '是否撤回环保资料填报需求？',
             onOk: async () => {
@@ -152,9 +169,20 @@ export default function () {
         console.log('高级查询', v)
         // const keys = Object.keys(v);
     }
-    // 环保管理人员选择
     function maintainSeleteChange(item) {
-
+        if (!item) {
+            message.warning('请选择环保管理人员!');
+        }
+        console.log(item)
+    }
+    // 管理人员选择
+    function handleManagerSelect() {
+        validateFields((err, values) => {
+            console.log(values)
+            if (!err) {
+                setMaintainModal(false)
+            }
+        })
     }
     // 导出
     function handleExport() {
@@ -177,7 +205,9 @@ export default function () {
     function buttonCheck(rows) {
         if (rows.length === 1) {
             setButtonStatus({
-                detail: false
+                detail: false,
+                submit: rows[0].effectiveStatus === 'EFFECT',
+                withdraw: rows[0].effectiveStatus === 'DRAFT'
             })
         } else if (rows.length === 0) {
             setButtonStatus({
@@ -185,7 +215,16 @@ export default function () {
             })
         } else {
             setButtonStatus({
-                detail: true
+                detail: true,
+                detail: true,
+                delete: true,
+                withdraw: true,
+                distribute: true,
+                submit: (() => {
+                    return !rows.every(item => {
+                        return item.effectiveStatus === 'DRAFT'
+                    })
+                })(),
             })
         }
     }
@@ -214,7 +253,7 @@ export default function () {
         {
             title: '分配供应商状态', dataIndex: 'allotSupplierState', width: 120, render: (text) => {
                 switch (text) {
-                    case ' ALLOT_END': return '存在符合的供应商';
+                    case 'ALLOT_END': return '存在符合的供应商';
                     case 'ALLOT_NOT': return '未分配';
                     default: return ''
                 }
@@ -268,7 +307,7 @@ export default function () {
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={false}
+                disabled={buttonStatus.detail}
                 onClick={() => { checkOneSelect() && editRef.current.showModal('edit') }}
                 ignore={DEVELOPER_ENV}
                 key='PURCHASE_VIEW_CHANGE_EDITOR'
@@ -277,8 +316,8 @@ export default function () {
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={false}
-                onClick={handleDelete}
+                disabled={buttonStatus.delete}
+                onClick={() => { checkOneSelect() && handleDelete() }}
                 key='PURCHASE_VIEW_CHANGE_REMOVE'
                 ignore={DEVELOPER_ENV}
             >删除</Button>)
@@ -296,7 +335,7 @@ export default function () {
             authAction(<Button
                 className={styles.btn}
                 disabled={false}
-                onClick={() => { setMaintainModal(true) }}
+                onClick={() => { checkOneSelect() && setMaintainModal(true) }}
                 key='PURCHASE_VIEW_CHANGE_REMOVE'
                 ignore={DEVELOPER_ENV}
             >维护环保管理人员</Button>)
@@ -304,7 +343,7 @@ export default function () {
         {
             authAction(<Button
                 className={styles.btn}
-                onClick={() => { redirectToPage('detail') }}
+                onClick={() => { checkOneSelect() && redirectToPage('detail') }}
                 ignore={DEVELOPER_ENV}
                 disabled={buttonStatus.detail}
                 key='PURCHASE_VIEW_CHANGE_DETAIL'
@@ -313,7 +352,7 @@ export default function () {
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={false}
+                disabled={buttonStatus.submit}
                 onClick={submit}
                 key='PURCHASE_VIEW_CHANGE_REMOVE'
                 ignore={DEVELOPER_ENV}
@@ -322,7 +361,7 @@ export default function () {
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={false}
+                disabled={buttonStatus.withdraw}
                 onClick={withdraw}
                 ignore={DEVELOPER_ENV}
                 key='PURCHASE_VIEW_CHANGE_DETAIL'
@@ -331,8 +370,8 @@ export default function () {
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={false}
-                onClick={() => { supplierRef.current.setVisible(true) }}
+                disabled={buttonStatus.distribute}
+                onClick={() => { checkOneSelect() && supplierRef.current.setVisible(true) }}
                 key='PURCHASE_VIEW_CHANGE_REMOVE'
                 ignore={DEVELOPER_ENV}
             >分配供应商</Button>)
@@ -403,7 +442,7 @@ export default function () {
     </>
     const headerRight = <>
         <Search
-            placeholder='供应商代码或名称'
+            placeholder='请输入物料代码和物料组代码查询'
             className={styles.btn}
             onSearch={handleQuickSearch}
             allowClear
@@ -431,6 +470,7 @@ export default function () {
                     checkbox={{ multiSelect: false }}
                     ref={tableRef}
                     rowKey={(item) => item.id}
+                    checkbox={true}
                     size='small'
                     onSelectRow={(rowKeys, rows) => {
                         setRowKeys(rowKeys);
@@ -456,20 +496,33 @@ export default function () {
             handleTableTada={handleTableTada}
         />
         {/* 维护环保管理人员 */}
-        <ExtModal
+        {maintainModal && <ExtModal
             centered
             destroyOnClose
             onCancel={() => { setMaintainModal(false) }}
-            onOk={() => { setMaintainModal(false) }}
+            // onOk={() => { setMaintainModal(false) }}
+            onOk={handleManagerSelect}
             visible={maintainModal}
             title="维护环保管理人员"
         >
-            <FormItem label='环保管理人员' {...formLayout}>
-                <ComboList {...materialCode} name='supplierCode'
-                    field={['supplierName', 'supplierId']}
-                    afterSelect={maintainSeleteChange} />
+            <FormItem label={<font><span style={{ color: 'red' }}>*</span>环保管理人员</font>} {...formLayout}>
+                {
+                    getFieldDecorator('environmentAdminId', { initialValue: selectedRows[0] && selectedRows[0].environmentAdminId }),
+                    getFieldDecorator('environmentAdminAccount', { initialValue: selectedRows[0] && selectedRows[0].environmentAdminAccount }),
+                    getFieldDecorator('environmentAdminName', {
+                        initialValue: selectedRows[0] && selectedRows[0].environmentAdminName,
+                        rules: [{ required: true, message: '不能为空' }]
+                    })(<ComboList
+                        style={{ width: '100%' }}
+                        {...allPersonList}
+                        name='environmentAdminName'
+                        field={['environmentAdminId', 'environmentAdminAccount']}
+                        cascadeParams={{ organizationId: OrgId }}
+                    />)
+                }
+
             </FormItem>
-        </ExtModal>
+        </ExtModal>}
         {/* 指派战略采购 */}
         <ExtModal
             centered
@@ -488,10 +541,10 @@ export default function () {
         {/* 查看供应商资质 */}
         <CheckQualificationModal ref={checkRef} />
         {/* 分配供应商 */}
-        <DistributeSupplierModal wrappedComponentRef={supplierRef} />
+        <DistributeSupplierModal wrappedComponentRef={supplierRef} demanNumber={selectedRows[0] && selectedRows[0].demanNumber} />
         {/* 抽检复核 */}
         <CheckModal wrappedComponentRef={samplingRef} />
         {/* 生成报表 */}
         <GenerateModal wrappedComponentRef={generateRef} />
     </Fragment>
-}
+})

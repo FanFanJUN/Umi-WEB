@@ -13,27 +13,27 @@ const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 14, },
 };
-const supplierModal = forwardRef(({ form }, ref) => {
+const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt }, ref) => {
+    console.log(dataList)
     useImperativeHandle(ref, () => ({
         setVisible
     }))
     const tableRef = useRef(null);
     const [visible, setVisible] = useState(false);
     const [modalType, setModalType] = useState('');
-    const [dataSource, setDataSource] = useState([]);
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const { getFieldDecorator, validateFields } = form;
     
     const columns = [
-        { title: '拆分部位名称', dataIndex: 'turnNumber', align: 'center' },
-        { title: '均质材料名称', dataIndex: 'name1', ellipsis: true, align: 'center' },
-        { title: '测试机构', dataIndex: 'name2', ellipsis: true, align: 'center', },
-        { title: '测试结论', dataIndex: 'name3', ellipsis: true, align: 'center', },
-        { title: '报告编号', dataIndex: 'name4', ellipsis: true, align: 'center', },
-        { title: '报告日期', dataIndex: 'name5', ellipsis: true, align: 'center', },
-        { title: '有效截止日期 ', dataIndex: 'name6', ellipsis: true, align: 'center', },
-        { title: '报告附件', dataIndex: 'name7', ellipsis: true, align: 'center', render:(text)=>{
+        { title: '拆分部位名称', dataIndex: 'splitPartsName', align: 'center' },
+        { title: '均质材料名称', dataIndex: 'homogeneousMaterialName', ellipsis: true, align: 'center' },
+        { title: '测试机构', dataIndex: 'testOrganization', ellipsis: true, align: 'center', },
+        { title: '测试结论', dataIndex: 'Boolean reportResult', ellipsis: true, align: 'center', },
+        { title: '报告编号', dataIndex: 'reportNumber', ellipsis: true, align: 'center', },
+        { title: '报告日期', dataIndex: 'reportDate', ellipsis: true, align: 'center', },
+        { title: '有效截止日期 ', dataIndex: 'effectiveEndDate', ellipsis: true, align: 'center', },
+        { title: '报告附件', dataIndex: 'testReportAttachmentId', ellipsis: true, align: 'center', render:(text)=>{
             return <Upload entityId={''} />
         } },
         { title: '排序', dataIndex: 'name8', ellipsis: true, align: 'center', },
@@ -42,9 +42,10 @@ const supplierModal = forwardRef(({ form }, ref) => {
     function handleSelectedRows(rowKeys, rows) {
         setRowKeys(rowKeys);
         setRows(rows);
+        setSelectedSpilt(rows[0]);
     }
     // 删除
-    function handleDelete(v) {
+    function handleDelete() {
         confirm({
             title: '删除',
             content: '请确认是否删除选中拆分部件',
@@ -70,7 +71,7 @@ const supplierModal = forwardRef(({ form }, ref) => {
         <div className={styles.macTitle}>拆分部件</div>
         <div className={classnames(styles.mbt, styles.mtb)}>
             <Button type='primary' className={styles.btn} key="add" onClick={() => { showEditModal('add') }}>新增</Button>
-            <Button className={styles.btn} key="edit" onClick={()=>{showEditModal('edit')}}>编辑</Button>
+            <Button className={styles.btn} key="edit" onClick={()=>{showEditModal('edit')}} disabled={selectedRowKeys.length >1}>编辑</Button>
             <Button className={styles.btn} onClick={handleDelete} key="delete">删除</Button>
             <Button className={styles.btn} key="import">批量导入</Button>
         </div>
@@ -86,7 +87,7 @@ const supplierModal = forwardRef(({ form }, ref) => {
             size='small'
             onSelectRow={handleSelectedRows}
             selectedRowKeys={selectedRowKeys}
-            dataSource={dataSource}
+            dataSource={dataList}
         />
         <ExtModal
             centered
@@ -101,7 +102,7 @@ const supplierModal = forwardRef(({ form }, ref) => {
                     <FormItem label='拆分部件名称' {...formLayout}>
                         {
                             getFieldDecorator('splitPartsName', {
-                                initialValue: '',
+                                initialValue: modalType==='edit' ? selectedRows[0].splitPartsName : '',
                                 rules: [{ required: true, message: '请填写拆分部件名称' }]
                             })(<Input />)
                         }
@@ -111,7 +112,7 @@ const supplierModal = forwardRef(({ form }, ref) => {
                     <FormItem label='均质材料名称' {...formLayout}>
                         {
                             getFieldDecorator('homogeneousMaterialName', {
-                                initialValue: '',
+                                initialValue: modalType==='edit' ? selectedRows[0].homogeneousMaterialName : '',
                                 rules: [{ required: true, message: '请填写均质材料名称' }]
                             })(<Input />)
                         }
@@ -121,7 +122,7 @@ const supplierModal = forwardRef(({ form }, ref) => {
                     <FormItem label='测试机构' {...formLayout}>
                         {
                             getFieldDecorator('testOrganization', {
-                                initialValue: '',
+                                initialValue: modalType==='edit' ? selectedRows[0].testOrganization : '',
                                 rules: [{ required: true, message: '请填写测试机构名称' }]
                             })(<Input />)
                         }
@@ -131,7 +132,7 @@ const supplierModal = forwardRef(({ form }, ref) => {
                     <FormItem label='测试结论' {...formLayout}>
                         {
                             getFieldDecorator('reportResult', {
-                                initialValue: 'true',
+                                initialValue: modalType==='edit' ? selectedRows[0].reportResult : '',
                                 rules: [{ required: true, message: '请选择供应商代码' }]
                             })(<Select style={{ width: '100%' }}>
                                 <Option value="true">通过</Option>
@@ -144,7 +145,7 @@ const supplierModal = forwardRef(({ form }, ref) => {
                     <FormItem label='报告编号' {...formLayout}>
                         {
                             getFieldDecorator('reportNumber', {
-                                initialValue: '',
+                                initialValue: modalType==='edit' ? selectedRows[0].reportNumber : '',
                                 rules: [{ required: true, message: '请输入报告编号' }]
                             })(<Input />)
                         }
@@ -154,7 +155,7 @@ const supplierModal = forwardRef(({ form }, ref) => {
                     <FormItem label='报告日期' {...formLayout}>
                         {
                             getFieldDecorator('reportDate', {
-                                initialValue: '',
+                                initialValue: modalType==='edit' ? moment(selectedRows[0].reportDate) : '',
                                 rules: [{ required: true, message: '请选择报告日期' }]
                             })(<DatePicker style={{ width: '100%' }} />)
                         }
@@ -164,7 +165,7 @@ const supplierModal = forwardRef(({ form }, ref) => {
                     <FormItem label='有效截止日期' {...formLayout}>
                         {
                             getFieldDecorator('effectiveEndDate', {
-                                initialValue: '',
+                                initialValue: modalType==='edit' ? selectedRows[0].effectiveEndDate : '',
                             })(<Input disabled />)
                         }
                     </FormItem>
@@ -173,9 +174,9 @@ const supplierModal = forwardRef(({ form }, ref) => {
                     <FormItem label='报告附件' {...formLayout}>
                         {
                             getFieldDecorator('testReportAttachmentId', {
-                                initialValue: '',
+                                initialValue: modalType==='edit' ? selectedRows[0].reportResult : '',
                                 rules: [{ required: true, message: '请请上传技术资料附件' }]
-                            })(<Upload entityId={''} />)
+                            })(<Upload entityId={modalType==='edit' ? selectedRows[0].testReportAttachmentId : ''} />)
                         }
                     </FormItem>
                 </Row>
