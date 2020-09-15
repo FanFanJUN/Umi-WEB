@@ -93,6 +93,9 @@ const ExemptionClause = (props) => {
         return new Promise((resolve, reject) => {
             const dataList = data.map(item => {
                 if (item.limitNumber){
+                    if(item.limitNumber.indexOf('%')!==-1){
+                        item.limitNumber = item.limitNumber.split('%')[0];
+                    }
                     item.limitNumber = Number(item.limitNumber).toFixed(2)
                 } else {
                     delete item.limitNumber;

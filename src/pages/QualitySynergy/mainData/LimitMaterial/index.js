@@ -69,7 +69,12 @@ const LimitMaterial = ({ form }) => {
     const validateItem = (data) => {
         return new Promise((resolve, reject) => {
             const dataList = data.map(item => {
-                item.limitNumber = Number(item.limitNumber).toFixed(2);
+                if (item.limitNumber){
+                    if(item.limitNumber.indexOf('%')!==-1){
+                        item.limitNumber = item.limitNumber.split('%')[0];
+                    }
+                    item.limitNumber = Number(item.limitNumber).toFixed(2)
+                }
                 item.environmentalProtectionCode = selectedRow[selectedRow.length - 1].environmentalProtectionCode;
                 return item;
             })
