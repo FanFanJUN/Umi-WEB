@@ -98,8 +98,8 @@ export default () => {
       })
     } else {
       allData.id = data.id
-      allData.state = data.state
-      allData.allotSupplierState = data.allotSupplierState
+      allData.state = '草稿'
+      allData.allotSupplierState = '未分配'
       allData.epTechnicalDataBoList.map(item => {
         if (item.id) {
           item.technicalDataFileIdList = item.technicalDataFileIdList.map(items => {
