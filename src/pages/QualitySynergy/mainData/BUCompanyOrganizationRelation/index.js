@@ -7,7 +7,7 @@ import {
   AddBUCompanyOrganizationRelation,
   AddTheListOfRestrictedMaterials, DeleteBUCompanyOrganizationRelation,
   DeleteLimitSuppliesScope, DeleteTheListOfRestrictedMaterials,
-  EditTheListOfRestrictedMaterials, FrostBUCompanyOrganizationRelation,
+  EditTheListOfRestrictedMaterials, FrostBUCompanyOrganizationRelation, judgeButtonDisabled,
 } from '../../commonProps';
 import EventModal from './component/EventModal';
 import { AutoSizeLayout } from '../../../../components';
@@ -53,19 +53,15 @@ const Index = () => {
         await deleteData();
         break;
       case 'frost':
-        await editData(type);
-        break;
-      case 'thaw':
-        await editData(type);
+        await editData();
         break;
     }
   };
 
-  const editData = async (type) => {
-    const frozen = type === 'frost';
+  const editData = async () => {
     const data = await FrostBUCompanyOrganizationRelation({
       ids: selectedRowKeys.toString(),
-      frozen,
+      frozen: !selectRows[0]?.frozen,
     });
     if (data.success) {
       tableRef.current.manualSelectedRows();
@@ -132,17 +128,8 @@ const Index = () => {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='QUALITYSYNERGY_BUCOR_FORST'
-        disabled={selectRows.length === 0}
-      >冻结</Button>)
-    }
-    {
-      authAction(<Button
-        onClick={() => buttonClick('thaw')}
-        className={styles.btn}
-        ignore={DEVELOPER_ENV}
-        key='QUALITYSYNERGY_BUCOR_THAW'
-        disabled={selectRows.length === 0}
-      >解冻</Button>)
+        disabled={selectRows.length === 0 || judgeButtonDisabled(selectRows)}
+      >{selectRows[0]?.frozen ? '解冻' : '冻结'}</Button>)
     }
   </div>;
 

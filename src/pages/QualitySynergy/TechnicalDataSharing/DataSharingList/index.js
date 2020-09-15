@@ -1,143 +1,153 @@
 import React, { useState, useRef, useEffect, Fragment } from 'react';
 import Header from '../../../../components/Header';
 import AdvancedForm from '../../../../components/AdvancedForm';
-import { Button, Input } from 'antd';
+import { Button, Input, message, Modal } from 'antd';
 import styles from './index.less';
 import { ExtTable, utils } from 'suid';
 import {
-  BUConfig,
-  BUConfigNoFrost,
+  BUConfigNoFrostHighSearch, DeleteDataSharingList,
   distributionProps,
-  materialCode,
-  materialStatus,
-  PDMStatus,
-  statusProps,
+  materialCode, MaterialConfig, MaterialGroupConfig,
+  statusProps, StrategicPurchaseConfig,
 } from '../../commonProps';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
-import { smBaseUrl } from '../../../../utils/commonUrl';
+import { recommendUrl, smBaseUrl } from '../../../../utils/commonUrl';
 import { openNewTab } from '../../../../utils';
 import SupplierModal from './component/SupplierModal';
-import TacticAssign  from './component/TacticAssign';
-const { authAction, storage } = utils;
+import TacticAssign from './component/TacticAssign';
+
+const { authAction } = utils;
 const { Search } = Input;
 
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 
 export default function() {
 
 
   const tableRef = useRef(null);
 
-  const [modalData, setModalData]= useState({
+  const [modalData, setModalData] = useState({
     title: '查看已分配的供应商',
     visible: false,
-    type: 'vies'
-  })
+    type: 'vies',
+    shareDemanNumber: ''
+  });
 
-  const [assignData, setAssignData]= useState({
+  const [assignData, setAssignData] = useState({
     visible: false,
-  })
+  });
 
   const [data, setData] = useState({
+    quickSearchValue: '',
+    epTechnicalShareDemandSearchBo: {},
     selectedRowKeys: [],
-    selectedRows: []
-  })
-
-  const [searchValue, setSearchValue] = useState({});
+    selectedRows: [],
+  });
 
   const redirectToPage = (type) => {
     switch (type) {
       case 'add':
         openNewTab('qualitySynergy/DataSharingAdd?pageState=add', '技术资料分享需求-新增', false);
-        break
+        break;
+      case 'edit':
+        openNewTab(`qualitySynergy/DataSharingAdd?pageState=edit&id=${data.selectedRowKeys[0]}`, '技术资料分享需求-编辑', false);
+        break;
       case 'detail':
-        openNewTab('qualitySynergy/DataSharingAdd?pageState=detail', '技术资料分享需求-明细', false);
-        break
+        openNewTab(`qualitySynergy/DataSharingAdd?pageState=detail&id=${data.selectedRowKeys[0]}`, '技术资料分享需求-明细', false);
+        break;
+      case 'delete':
+        deleteList()
+        break;
       case 'allot':
-        setModalData({title: '分配供应商', visible: true, type: 'allot'})
-        break
+        setModalData({ title: '分配供应商', visible: true, type: 'allot' });
+        break;
       case 'govern':
-        setAssignData((value) => ({...value, visible: true}))
-        break
+        setAssignData((value) => ({ ...value, visible: true }));
+        break;
     }
-  }
+  };
 
   const handleQuickSearch = (value) => {
-    console.log(value, 'value')
+    setData(v => ({...v, quickSearchValue: value}))
+    tableRef.current.remoteDataRefresh();
+    console.log(value, 'value');
+  };
+
+  // 删除
+  const deleteList = () => {
+    Modal.confirm({
+      title: '删除',
+      content:'是否删除选中的数据',
+      okText: '是',
+      okType: 'danger',
+      cancelText: '否',
+      onOk: () => {
+        DeleteDataSharingList({
+          ids: data.selectedRowKeys.toString()
+        }).then(res => {
+          if (res.success) {
+            message.success(res.message)
+            tableRef.current.manualSelectedRows();
+            tableRef.current.remoteDataRefresh();
+
+          } else {
+            message.error(res.message)
+          }
+        })
+      }
+    })
   }
 
   // 高级查询搜索
   const handleAdvancedSearch = (value) => {
-    console.log(value, '高级查询')
-  }
+    value.materialCode = value.materialCode_name;
+    value.materialGroupCode = value.materialGroupCode_name;
+    value.strategicPurchaseCode = value.strategicPurchaseCode_name;
+    value.buCode = value.buCode_name;
+    delete value.materialCode_name
+    delete value.materialGroupCode_name
+    delete value.strategicPurchaseCode_name
+    delete value.buCode_name
+    delete value.state_name
+    delete value.allotSupplierState_name
+    setData(v => ({ ...v, epTechnicalShareDemandSearchBo: value }));
+    tableRef.current.remoteDataRefresh();
+    console.log(value, '高级查询');
+  };
 
   // 高级查询配置
   const formItems = [
-    { title: '物料代码', key: 'data1', type: 'list', props: materialCode },
-    { title: '物料组', key: 'data2', type: 'list', props: materialCode },
-    { title: '战略采购', key: 'data3', type: 'list', props: materialCode },
-    { title: '业务单元', key: 'data4', type: 'list', props: BUConfigNoFrost},
-    { title: '申请人', key: 'data5', props: { placeholder: '输入申请人查询' } },
-    { title: '分配供应商状态', key: 'data7', type: 'list', props: distributionProps },
-    { title: '状态', key: 'status', type: 'list', props: statusProps },
-  ]
+    { title: '物料代码', key: 'materialCode', type: 'list', props: MaterialConfig },
+    { title: '物料组', key: 'materialGroupCode', type: 'list', props: MaterialGroupConfig },
+    { title: '战略采购', key: 'strategicPurchaseCode', type: 'list', props: StrategicPurchaseConfig },
+    { title: '业务单元', key: 'buCode', type: 'list', props: BUConfigNoFrostHighSearch },
+    { title: '申请人', key: 'applyPeopleName', props: { placeholder: '输入申请人查询' } },
+    { title: '分配供应商状态', key: 'allotSupplierState', type: 'list', props: distributionProps },
+    { title: '状态', key: 'state', type: 'list', props: statusProps },
+  ];
 
   const columns = [
-    {
-      title: '状态', dataIndex: 'state', width: 80, render: (text) => {
-        switch (text) {
-          case 'draft': return '生效';
-          case 'pre_publish': return '草稿';
-          case 'publish': return '撤回';
-          default: return ''
-        }
-      }
-    },
-    {
-      title: '分配供应商状态', dataIndex: 'inquiryMethodName', width: 160, render: (text) => {
-        switch (text) {
-          case 'draft': return '已分配';
-          case 'pre_publish': return '未分配';
-          default: return ''
-        }
-      }
-    },
-    { title: '来源', dataIndex: 'turnNumber', width: 70 },
-    { title: '分享需求号', dataIndex: 'name1', ellipsis: true, },
-    { title: '物料代码', dataIndex: 'name2', ellipsis: true, },
-    { title: '物料描述', dataIndex: 'name3', ellipsis: true, },
-    { title: '物料组代码', dataIndex: 'name4', ellipsis: true, },
-    { title: '物料组描述', dataIndex: 'name5', ellipsis: true, },
-    { title: '战略采购代码', dataIndex: 'name6', ellipsis: true, },
-    { title: '战略采购名称', dataIndex: 'name7', ellipsis: true, },
-    { title: '供应商', dataIndex: 'name8', ellipsis: true,render: <a onClick={() => visibleSupplier()}>查看</a>},
-    { title: 'BU代码', dataIndex: 'name9', ellipsis: true, },
-    { title: 'BU名称', dataIndex: 'name10', ellipsis: true, },
-    { title: '申请人', dataIndex: 'name11', ellipsis: true, },
-    { title: '申请人联系方式', dataIndex: 'name12', ellipsis: true, },
-    { title: '申请日期', dataIndex: 'name13', ellipsis: true, },
+    { title: '状态', dataIndex: 'state', width: 80 },
+    { title: '分配供应商状态', dataIndex: 'allotSupplierState', width: 160 },
+    { title: '来源', dataIndex: 'source', width: 70 },
+    { title: '分享需求号', dataIndex: 'shareDemanNumber', ellipsis: true, width: 150 },
+    { title: '物料代码', dataIndex: 'materialCode', ellipsis: true, width: 160 },
+    { title: '物料描述', dataIndex: 'materialName', ellipsis: true },
+    { title: '物料组代码', dataIndex: 'materialGroupCode', ellipsis: true },
+    { title: '物料组描述', dataIndex: 'materialGroupName', ellipsis: true },
+    { title: '战略采购代码', dataIndex: 'strategicPurchaseCode', ellipsis: true },
+    { title: '战略采购名称', dataIndex: 'strategicPurchaseName', ellipsis: true },
+    { title: '供应商', dataIndex: 'buId', render: (v, data) => <a onClick={() => handleSeesSupplier(data.shareDemanNumber)}>查看</a> },
+    { title: 'BU代码', dataIndex: 'buCode', ellipsis: true },
+    { title: 'BU名称', dataIndex: 'buName', ellipsis: true },
+    { title: '申请人', dataIndex: 'applyPeopleName', ellipsis: true },
+    { title: '申请人联系方式', dataIndex: 'applyPeoplePhone', ellipsis: true },
+    { title: '申请日期', dataIndex: 'applyDate', ellipsis: true, width: 160 },
   ].map(item => ({ ...item, align: 'center' }));
 
-  const tableProps = {
-    store: {
-      url: `${smBaseUrl}/api/supplierFinanceViewModifyService/findByPage`,
-      params: {
-        ...searchValue,
-        quickSearchProperties: ['supplierName', 'supplierCode'],
-        sortOrders: [
-          {
-            property: 'docNumber',
-            direction: 'DESC'
-          }
-        ]
-      },
-      type: 'POST'
-    }
-  }
-
   const visibleSupplier = () => {
-    console.log('查看供应商')
-  }
+    console.log('查看供应商');
+  };
 
 
   const headerLeft = <>
@@ -156,7 +166,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='PURCHASE_VIEW_CHANGE_CREATE'
-        disabled={data.selectedRowKeys.length !== 1}
+        disabled={data.selectedRowKeys.length !== 1 || data.selectedRows[0]?.source !== 'SRM'}
       >编辑</Button>)
     }
     {
@@ -174,7 +184,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='PURCHASE_VIEW_CHANGE_CREATE'
-        // disabled={data.selectedRowKeys.length !== 1}
+        disabled={data.selectedRowKeys.length !== 1}
       >明细</Button>)
     }
     {
@@ -200,7 +210,7 @@ export default function() {
         onClick={() => redirectToPage('allot')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        disabled={data.selectedRowKeys.length !== 1}
+        disabled={data.selectedRowKeys.length === 0}
         key='PURCHASE_VIEW_CHANGE_CREATE'
       >分配供应商</Button>)
     }
@@ -213,23 +223,28 @@ export default function() {
         key='PURCHASE_VIEW_CHANGE_CREATE'
       >支配战略采购</Button>)
     }
-  </>
+  </>;
 
   const headerRight = <>
     <Search
-      placeholder='供应商代码或名称'
+      placeholder='物料代码和物料描述'
       className={styles.btn}
       onSearch={handleQuickSearch}
       allowClear
     />
-  </>
+  </>;
 
-  const handleSelectedRows = (value, rows) => {
-    setData((v) => ({...v, selectedRowKeys: value, selectedRows: rows}))
-  }
+  const onSelectRow = (value, rows) => {
+    console.log(value, rows);
+    setData((v) => ({ ...v, selectedRowKeys: value, selectedRows: rows }));
+  };
 
   const handleModalCancel = () => {
-    setModalData((value) => ({...value, visible: false}))
+    setModalData((value) => ({ ...value, visible: false }));
+  };
+
+  const handleSeesSupplier = (shareDemanNumber) => {
+    setModalData(v => ({...v, visible: true, shareDemanNumber}))
   }
 
   return (
@@ -238,41 +253,45 @@ export default function() {
         left={headerLeft}
         right={headerRight}
         content={
-          <AdvancedForm formItems={formItems} onOk={handleAdvancedSearch} />
+          <AdvancedForm formItems={formItems} onOk={handleAdvancedSearch}/>
         }
         advanced
       />
       <AutoSizeLayout>
         {
           (h) => <ExtTable
-            style={{marginTop: '10px'}}
             rowKey={(v) => v.id}
             height={h}
-            bordered
-            allowCancelSelect
-            showSearch={false}
-            remotePaging
-            checkbox={{ multiSelect: false }}
-            size='small'
-            onSelectRow={handleSelectedRows}
-            selectedRowKeys={data.selectedRowKeys}
             columns={columns}
+            store={{
+              params: {
+                quickSearchValue: data.quickSearchValue,
+                ...data.epTechnicalShareDemandSearchBo
+              },
+              url: `${recommendUrl}/api/epTechnicalShareDemandService/findByPage`,
+              type: 'POST',
+            }}
+            allowCancelSelect={true}
+            remotePaging={true}
+            checkbox={{
+              multiSelect: true,
+            }}
             ref={tableRef}
-            dataSource={data.dataSource}
+            showSearch={false}
+            onSelectRow={onSelectRow}
+            selectedRowKeys={data.selectedRowKeys}
           />
         }
       </AutoSizeLayout>
       <SupplierModal
-        type={modalData.type}
-        visible={modalData.visible}
-        title={modalData.title}
+        {...modalData}
         onCancel={handleModalCancel}
       />
       <TacticAssign
         type={modalData.type}
         visible={assignData.visible}
-        onCancel={() => setAssignData((value) => ({...value, visible: false}))}
+        onCancel={() => setAssignData((value) => ({ ...value, visible: false }))}
       />
     </Fragment>
-  )
+  );
 }

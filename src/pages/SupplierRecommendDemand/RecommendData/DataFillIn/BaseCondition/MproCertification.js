@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-09 13:47:57
- * @LastEditTime: 2020-09-09 14:02:58
+ * @LastEditTime: 2020-09-14 18:09:49
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/BaseCondition/MproCertification.js
  * @Description: 管理体系及产品认证
  * @Connect: 1981824361@qq.com
@@ -12,46 +12,47 @@ import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import { Button, Divider } from 'antd';
 import moment from 'moment';
 import styles from '../../DataFillIn/index.less';
+import EditableFormTable from '../CommonUtil/EditTable';
 
-export default function () {
+const  MproCertification = ({type})=> {
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [addvisible, setVisible] = useState(false)
     const tableRef = useRef(null);
     const editRef = useRef(null);
     const columnsForMan = [
-        { title: '管理体系', dataIndex: 'name1', ellipsis: true, },
-        { title: '执行标准', dataIndex: 'name2', ellipsis: true, },
-        { title: '证照编号', dataIndex: 'name3', ellipsis: true, },
-        { title: '发证机构', dataIndex: 'name4', ellipsis: true, },
+        { title: '管理体系', dataIndex: 'certificateName', ellipsis: true, },
+        { title: '执行标准', dataIndex: 'executiveStandard', ellipsis: true, },
+        { title: '证照编号', dataIndex: 'certificateNumber', ellipsis: true, },
+        { title: '发证机构', dataIndex: 'certifyingAuthority', ellipsis: true, },
         {
-            title: '首次获证时间', dataIndex: 'name5', ellipsis: true, render: (text) => {
+            title: '首次获证时间', dataIndex: 'firstObtainTime', ellipsis: true, render: (text) => {
                 return text && moment(text).format('YYYY-MM-DD');
             }
         },
-        { title: '有效期间', dataIndex: 'name4', ellipsis: true, },
-        { title: '附件', dataIndex: 'name4', ellipsis: true, },
+        { title: '有效期间', dataIndex: 'validDate', ellipsis: true, },
+        { title: '附件', dataIndex: 'attachmentIds', ellipsis: true, },
         {
-            title: '计划取得时间', dataIndex: 'name5', ellipsis: true, render: (text) => {
+            title: '计划取得时间', dataIndex: 'planObtainTime', ellipsis: true, render: (text) => {
                 return text && moment(text).format('YYYY-MM-DD');
             }
         },
     ].map(item => ({ ...item, align: 'center' }));
     const columnsForPro = [
-        { title: '产品', dataIndex: 'name1', ellipsis: true, },
-        { title: '体系', dataIndex: 'name2', ellipsis: true, },
-        { title: '证照执行标准', dataIndex: 'name3', ellipsis: true, },
-        { title: '证照编号', dataIndex: 'name4', ellipsis: true, },
-        { title: '发证机构', dataIndex: 'name4', ellipsis: true, },
+        { title: '产品', dataIndex: 'productName', ellipsis: true, },
+        { title: '认证类型', dataIndex: 'certificateName', ellipsis: true, },
+        { title: '执行标准', dataIndex: 'executiveStandard', ellipsis: true, },
+        { title: '证照编号', dataIndex: 'certificateNumber', ellipsis: true, },
+        { title: '发证机构', dataIndex: 'certifyingAuthority', ellipsis: true, },
         {
-            title: '首次获证时间', dataIndex: 'name5', ellipsis: true, render: (text) => {
+            title: '首次获证时间', dataIndex: 'firstObtainTime', ellipsis: true, render: (text) => {
                 return text && moment(text).format('YYYY-MM-DD');
             }
         },
-        { title: '最新年审', dataIndex: 'name4', ellipsis: true, },
+        { title: '最新年审', dataIndex: 'newestAnnualReview', ellipsis: true, },
         { title: '附件', dataIndex: 'name4', ellipsis: true, },
         {
-            title: '计划取得时间', dataIndex: 'name5', ellipsis: true, render: (text) => {
+            title: '计划取得时间', dataIndex: 'planObtainTime', ellipsis: true, render: (text) => {
                 return text && moment(text).format('YYYY-MM-DD');
             }
         },
@@ -74,7 +75,7 @@ export default function () {
         </div> */}
         <div>
             <Divider>管理体系</Divider>
-            <ExtTable
+            <EditableFormTable
                 columns={columnsForMan}
                 bordered
                 allowCancelSelect
@@ -89,11 +90,11 @@ export default function () {
             // {...tableProps}
             />
             <Divider>产品认证</Divider>
-            <div className={styles.mb}>
+            {/* <div className={styles.mb}>
                 <Button type='primary' className={styles.btn} onClick={() => { editRef.current.showModal('add') }}>新增</Button>
                 <Button className={styles.btn} onClick={handleDelete} type="danger">删除</Button>
-            </div>
-            <ExtTable
+            </div> */}
+            <EditableFormTable
                 columns={columnsForPro}
                 bordered
                 allowCancelSelect
@@ -105,14 +106,16 @@ export default function () {
                 size='small'
                 onSelectRow={handleSelectedRows}
                 selectedRowKeys={selectedRowKeys}
+                isEditTable
+                isToolBar={type === 'add'}
             // {...tableProps}
             />
             <Divider>其他认证</Divider>
-            <div className={styles.mb}>
+            {/* <div className={styles.mb}>
                 <Button type='primary' className={styles.btn} onClick={() => { editRef.current.showModal('add') }}>新增</Button>
                 <Button className={styles.btn} onClick={handleDelete} type="danger">删除</Button>
-            </div>
-            <ExtTable
+            </div> */}
+            <EditableFormTable
                 columns={columnsForPro}
                 bordered
                 allowCancelSelect
@@ -124,8 +127,12 @@ export default function () {
                 size='small'
                 onSelectRow={handleSelectedRows}
                 selectedRowKeys={selectedRowKeys}
-            // {...tableProps}
+                isEditTable
+                isToolBar={type === 'add'}
+                dataSource={[{id: '1'}]}
             />
         </div>
     </Fragment>
 }
+
+export default MproCertification;

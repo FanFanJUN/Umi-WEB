@@ -23,8 +23,13 @@ let BaseInfo = React.forwardRef((props, ref) => {
 
   const { getFieldDecorator, setFieldsValue } = props.form;
 
+  useEffect(() => {
+    if (props.form.getFieldValue('buCode')) {
+      props.setBuCode(props.form.getFieldValue('buCode'))
+    }
+  }, [props.form.getFieldValue('buCode')])
+
   useImperativeHandle(ref, () => ({
-    buCode: props.form.getFieldValue('buCode'),
     getBaseInfoData: props.form.validateFieldsAndScroll
   }))
 
@@ -44,16 +49,16 @@ let BaseInfo = React.forwardRef((props, ref) => {
           <Row>
             <Col span={12}>
               <FormItem label="来源" {...formLayout}>
-                {getFieldDecorator('source', {
+                {isView ? <span>{data.source}</span> : getFieldDecorator('source', {
                   initialValue: type === 'add' ? 'SRM' : data.source,
                 })(
                   <Input disabled={true} placeholder="请输入来源" style={{ width: '100%' }} />
-                  )}
+                )}
               </FormItem>
             </Col>
             <Col span={12}>
               <FormItem label="分享需求号" {...formLayout}>
-                {getFieldDecorator('shareDemanNumber', {
+                {isView ? <span>{data.shareDemanNumber}</span> : getFieldDecorator('shareDemanNumber', {
                   initialValue: type === 'add' ? '' : data.shareDemanNumber,
                 })(
                   <Input
@@ -69,13 +74,13 @@ let BaseInfo = React.forwardRef((props, ref) => {
           <Col span={0}>{hideFormItem('buId', type === 'add' ? '' : data.buId)}</Col>
           <Row>
             <Col span={12}>
-              <FormItem {...formLayout} label={'基本单位'}>
-                {getFieldDecorator('buName', {
+              <FormItem {...formLayout} label={'业务单元'}>
+                {isView ? <span>{data.buName}</span> : getFieldDecorator('buName', {
                   initialValue: type === 'add' ? '' : data.buName,
                   rules: [
                     {
                       required: true,
-                      message: '基本单位不能为空',
+                      message: '业务单元不能为空',
                     },
                   ],
                 })(
@@ -100,7 +105,7 @@ let BaseInfo = React.forwardRef((props, ref) => {
             </Col>
             <Col span={12}>
               <FormItem label="申请人" {...formLayout}>
-                {getFieldDecorator('applyPeopleName', {
+                {isView ? <span>{data.applyPeopleName}</span> : getFieldDecorator('applyPeopleName', {
                   initialValue: type === 'add' ? userInfo.userName : data.applyPeopleName,
                 })(<Input disabled={true} placeholder="请输入申请人" style={{ width: '100' }} />)}
               </FormItem>
@@ -109,14 +114,14 @@ let BaseInfo = React.forwardRef((props, ref) => {
           <Row>
             <Col span={12}>
               <FormItem label="申请日期" {...formLayout}>
-                {getFieldDecorator('applyDate', {
-                  initialValue: type === 'add' ? moment(new Date(), 'YYYY-MM-DD') : data.applyDate,
+                {isView ? <span>{data.applyDate}</span> : getFieldDecorator('applyDate', {
+                  initialValue: type === 'add' ? moment(new Date(), 'YYYY-MM-DD') : moment(data.applyDate),
                 })(<DatePicker disabled={true} style={{ width: '100%' }} />)}
               </FormItem>
             </Col>
             <Col span={12}>
               <FormItem label="申请人联系方式" {...formLayout}>
-                {getFieldDecorator('applyPeoplePhone', {
+                {isView ? <span>{data.applyPeoplePhone}</span> : getFieldDecorator('applyPeoplePhone', {
                   initialValue: type === 'add' ? userInfo.userMobile : data.applyPeoplePhone,
                   rules: [
                     {

@@ -1,3 +1,12 @@
+/*
+ * @Author: Li Cai
+ * @LastEditors: Li Cai
+ * @Date: 2020-09-08 14:29:17
+ * @LastEditTime: 2020-09-11 15:22:44
+ * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/index.js
+ * @Description: 
+ * @Connect: 1981824361@qq.com
+ */
 import { useEffect, useState } from 'react';
 import styles from './index.less'
 import { Tabs, Button, Affix, Checkbox } from 'antd';

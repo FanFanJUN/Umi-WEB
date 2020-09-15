@@ -1,29 +1,18 @@
-import React, { Fragment, useImperativeHandle, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import styles from './BaseInfo.less';
-import { Col, Form, Modal, Row, Input, Button } from 'antd';
+import { Form, Button } from 'antd';
 import { ExtTable } from 'suid';
-import { baseUrl, smBaseUrl } from '../../../../../utils/commonUrl';
 import TechnicalDataModal from './component/TechnicalDataModal';
 import moment from 'moment/moment';
-import UploadFile from '../../../../../components/Upload';
-import { AutoSizeLayout } from '../../../../../components';
+import Upload from '../../../compoent/Upload';
 
 const TechnicalData = React.forwardRef((props, ref) => {
 
   const tableRef = useRef(null);
 
   const [data, setData] = useState({
-    dataSource: [
-      {
-        fileCategoryCode: "1233",
-        fileCategoryId: "6FD7F54E-F1B5-11EA-97A4-0242C0A84412",
-        fileCategoryName: "ZSDJHFIJ33",
-        fileVersion: "v12",
-        id: 1,
-        sampleRequirementDate: "2020-09-13",
-        technicalDataFileId: 'A0CD4CF4F26111EAB7D80242C0A8441D'
-      }
-    ],
+    type: 'add',
+    dataSource: [],
     selectRows: [],
     selectedRowKeys: [],
     visible: false,
@@ -33,18 +22,41 @@ const TechnicalData = React.forwardRef((props, ref) => {
   const columns = [
     { title: '文件类别', dataIndex: 'fileCategoryName', width: 350 },
     { title: '文件版本', dataIndex: 'fileVersion', width: 350, ellipsis: true, },
-    { title: '技术资料附件', dataIndex: 'technicalDataFileId', width: 350, ellipsis: true,render: (v) => <div>查看</div> },
+    { title: '技术资料附件', dataIndex: 'technicalDataFileIdList', width: 350, ellipsis: true,render: (v) => <Upload type='show' entityId={v}>查看</Upload> },
     { title: '样品需求日期', dataIndex: 'sampleRequirementDate', width: 350, ellipsis: true, },
   ].map(item => ({...item, align: 'center'}))
 
+  useEffect(() => {
+    console.log(props.data)
+    if (props.data) {
+      setData(v => ({...v, dataSource: props.data}))
+    }
+  }, [props.data])
+
   const handleSelectedRows = (value, rows) => {
-    console.log(value, rows);
-    setData((v) => ({...v, selectedRowKeys: value, selectRows: rows}))
+    setData((v) => ({...v, selectedRowKeys: value, selectRows: rows, type: 'add'}))
   }
 
   const handleBtn = (type) => {
     if (type === 'add') {
-      setData((value) => ({...value, visible: true, title: '新增技术资料'}))
+      setData((value) => ({...value, type: 'add', visible: true, title: '新增技术资料'}))
+    } else if (type === 'edit') {
+      setData((value) => ({...value, type: 'edit', visible: true, title: '编辑技术资料'}))
+    } else {
+      let deleteArr = []
+      let newData = JSON.parse(JSON.stringify(data.dataSource))
+      data.dataSource.map((item, index) => {
+        data.selectedRowKeys.map(data => {
+          if (item.id === data) {
+            newData[index].whetherDelete = true
+            deleteArr.push(newData[index])
+            newData.splice(index, 1)
+          }
+        })
+      })
+      props.setDeleteArr(deleteArr)
+      setData(v => ({...v, dataSource: newData}))
+      tableRef.current.manualSelectedRows();
     }
   }
 
@@ -52,12 +64,23 @@ const TechnicalData = React.forwardRef((props, ref) => {
     dataSource: data.dataSource
   }))
 
-  const TechnicalDataAdd = (value) => {
-    value.id = data.dataSource.length + 1
-    console.log(value.sampleRequirementDate)
+  const TechnicalDataAddAndEdit = (value) => {
+    let newData = JSON.parse(JSON.stringify(data.dataSource))
+    value.whetherDelete = false
     value.sampleRequirementDate = moment(value.sampleRequirementDate).format('YYYY-MM-DD')
-    setData((v) => ({...v, dataSource: [...v.dataSource, value], visible: false}))
-    console.log(value, '技术资料新增')
+    if (data.type === 'add') {
+      newData.push(value)
+    } else {
+      data.dataSource.map((item, index) => {
+        console.log(value, '1')
+        if(item.id === value.id) {
+          newData[index] = value
+          console.log(newData[index], '2')
+        }
+      })
+    }
+    setData((v) => ({...v, dataSource: newData, visible: false}))
+    tableRef.current.manualSelectedRows();
   }
 
   return (
@@ -68,33 +91,29 @@ const TechnicalData = React.forwardRef((props, ref) => {
           <div>
             <Button onClick={() => {handleBtn('add')}} type='primary'>新增</Button>
             <Button disabled={data.selectRows.length !== 1} onClick={() => {handleBtn('edit')}} style={{marginLeft: '5px'}}>编辑</Button>
-            <Button disabled={data.selectedRowKeys.length < 1} style={{marginLeft: '5px'}}>删除</Button>
+            <Button disabled={data.selectedRowKeys.length < 1} onClick={() => {handleBtn('delete')}} style={{marginLeft: '5px'}}>删除</Button>
           </div>
-          <AutoSizeLayout>
-            {
-              (h) => <ExtTable
-                style={{marginTop: '10px'}}
-                rowKey={(v) => v.id}
-                height={h}
-                bordered
-                allowCancelSelect
-                showSearch={false}
-                remotePaging
-                checkbox={{ multiSelect: false }}
-                size='small'
-                onSelectRow={handleSelectedRows}
-                selectedRowKeys={data.selectedRowKeys}
-                columns={columns}
-                ref={tableRef}
-                dataSource={data.dataSource}
-              />
-            }
-          </AutoSizeLayout>
+          <ExtTable
+            style={{marginTop: '10px'}}
+            rowKey={(v) => v.lineNumber}
+            bordered
+            allowCancelSelect
+            showSearch={false}
+            remotePaging
+            checkbox={{ multiSelect: false }}
+            size='small'
+            onSelectRow={handleSelectedRows}
+            selectedRowKeys={data.selectedRowKeys}
+            columns={columns}
+            ref={tableRef}
+            dataSource={data.dataSource}
+          />
         </div>
         <TechnicalDataModal
           title={data.title}
-          type={props.type}
-          onOk={TechnicalDataAdd}
+          type={data.type}
+          fatherData={data.selectRows[0]}
+          onOk={TechnicalDataAddAndEdit}
           onCancel={() => setData((value) => ({...value, visible: false}))}
           visible={data.visible}
         />

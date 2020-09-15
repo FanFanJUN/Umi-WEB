@@ -48,7 +48,7 @@ const LimitMaterial = ({ form }) => {
     const columns = [
         { title: '环保标准代码', dataIndex: 'environmentalProtectionCode', width: 80 },
         { title: '环保标准名称', dataIndex: 'environmentalProtectionName', ellipsis: true, },
-        { title: 'REACH环保符合性声明', dataIndex: 'reach', ellipsis: true, render: (text) => text ? '符合' : '不符合' },
+        { title: 'REACH环保符合性声明', dataIndex: 'reach', ellipsis: true, render: (text) => text ? '是' : '否' },
         { title: '备注', dataIndex: 'note', ellipsis: true },
         { title: '排序号', dataIndex: 'orderNo', ellipsis: true, width: 80 },
         { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (text) => text ? '已冻结' : '未冻结' },
@@ -109,6 +109,11 @@ const LimitMaterial = ({ form }) => {
             }
         });
     };
+    // 检查传入数据的冻结情况，全冻结返回thaw，全未冻结返回freeze
+    const checkFreeze = (dataList) => {
+        if(!dataList || dataList.length===0) return false;
+        return dataList.every((item)=>item.frozen)?'thaw':dataList.every((item)=>!item.frozen)?'freeze':false
+    }
     const headerRight = <div style={{ display: 'flex', alignItems: 'center' }}>
         {
             authAction(<Button
@@ -142,18 +147,9 @@ const LimitMaterial = ({ form }) => {
                 onClick={() => buttonClick('freeze')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                disabled={selectedRightKeys.length === 0}
+                disabled={checkFreeze(selectedRight) === false}
                 key='QUALITYSYNERGY_LM_UML_FREEZE'
-            >冻结</Button>)
-        }
-        {
-            authAction(<Button
-                onClick={() => buttonClick('thaw')}
-                className={styles.btn}
-                ignore={DEVELOPER_ENV}
-                disabled={selectedRightKeys.length === 0}
-                key='QUALITYSYNERGY_LM_UML_THAW'
-            >解冻</Button>)
+            >{checkFreeze(selectedRight)==='thaw'?'解冻':'冻结'}</Button>)
         }
         {
             authAction(<DataImport
@@ -165,7 +161,7 @@ const LimitMaterial = ({ form }) => {
                 key='QUALITYSYNERGY_LM_UML_IMPORT'
                 templateFileList={[
                     {
-                        download: '/templates/主数据-环保标准限用物质对应关系-批导模板.xlsx',
+                        download: `${DEVELOPER_ENV==='true'?'':'/react-srm-sm-web'}/templates/主数据-环保标准限用物质对应关系-批导模板.xlsx`,
                         fileName: '主数据-环保标准限用物质对应关系-批导模板.xlsx',
                         key: 'LimitMaterial',
                     },
@@ -207,17 +203,8 @@ const LimitMaterial = ({ form }) => {
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_LM_EPS_FREEZE'
-                disabled={selectedRowKeys.length === 0}
-            >冻结</Button>)
-        }
-        {
-            authAction(<Button
-                onClick={() => EPSbuttonClick('thaw')}
-                className={styles.btn}
-                ignore={DEVELOPER_ENV}
-                key='QUALITYSYNERGY_LM_EPS_THAW'
-                disabled={selectedRowKeys.length === 0}
-            >解冻</Button>)
+                disabled={checkFreeze(selectedRow) === false}
+            >{checkFreeze(selectedRow)==='thaw'?'解冻':'冻结'}</Button>)
         }
     </>
     // 限用物质按钮操作
@@ -237,14 +224,13 @@ const LimitMaterial = ({ form }) => {
                 }));
                 break;
             case 'freeze':
-            case 'thaw':
                 confirm({
-                    title: `请确认是否${type === 'thaw' ? '解冻' : '冻结'}选中限用物质数据`,
+                    title: `请确认是否${checkFreeze(selectedRight)==='thaw'?'解冻':'冻结'}选中限用物质数据`,
                     onOk: async () => {
                         const parmas = selectedRowKeys.join();
                         const res = await ESPMFreeze({
                             ids: selectedRightKeys.join(),
-                            frozen: type === 'freeze'
+                            frozen: checkFreeze(selectedRight) === 'freeze'
                         });
                         if (res.success) {
                             message.success('操作成功');
@@ -294,16 +280,15 @@ const LimitMaterial = ({ form }) => {
                 }));
                 break;
             case 'freeze':
-            case 'thaw':
                 confirm({
-                    title: `请确认是否${type === 'thaw' ? '解冻' : '冻结'}选中环保标准数据`,
+                    title: `请确认是否${checkFreeze(selectedRow)==='thaw'?'解冻':'冻结'}选中环保标准数据`,
                     onOk: async () => {
                         const res = await ESPFreeze({
-                            frozen: type === 'freeze',
+                            frozen: checkFreeze(selectedRow) === 'freeze',
                             ids: selectedRowKeys.join()
                         })
                         if (res.success) {
-                            message.success('冻结成功');
+                            message.success('操作成功');
                             tableRef.current.manualSelectedRows();
                             tableRef.current.remoteDataRefresh();
                         } else {
@@ -399,12 +384,13 @@ const LimitMaterial = ({ form }) => {
                                 }}
                                 height={h}
                                 ref={tableRef}
-                                searchPlaceHolder="输入搜索项"
+                                searchPlaceHolder="输入环保标准名称查询"
                                 checkbox={true}
                                 remotePaging={true}
                                 allowCancelSelect={true}
                                 selectedRowKeys={selectedRowKeys}
                                 onSelectRow={(selectedRowKeys, selectedRows) => {
+                                    console.log('选中', selectedRows, selectedRowKeys)
                                     setSelectedRow(selectedRows);
                                     setSelectedRowKeys(selectedRowKeys);
                                 }}
@@ -425,36 +411,36 @@ const LimitMaterial = ({ form }) => {
                 >
                     {
                         selectedRowKeys.length !== 1 ? <Empty description="请选择左边的一条环保标准数据进行操作" className={styles.mt} /> :
-                            <div>
-                                <AutoSizeLayout>
-                                    {
-                                        (h) => <ExtTable
-                                            columns={rightColums}
-                                            checkbox={true}
-                                            remotePaging={true}
-                                            store={{
-                                                url: `${baseUrl}/environmentStandardLimitMaterialRelation/findByPage`,
-                                                type: 'POST',
-                                                params: {
-                                                    environmentalProtectionCode: selectedRow[selectedRow.length - 1].environmentalProtectionCode
-                                                }
-                                            }}
-                                            height={h}
-                                            searchPlaceHolder="输入搜索项"
-                                            ref={tableRightRef}
-                                            selectedRowKeys={selectedRightKeys}
-                                            onSelectRow={(selectedRightKeys, selectedRows) => {
-                                                console.log('右边选中', selectedRightKeys, selectedRows)
-                                                setSelectedRight(selectedRows)
-                                                setSelectedRightKeys(selectedRightKeys)
-                                            }}
-                                            toolBar={{
-                                                left: headerRight
-                                            }}
-                                        />
-                                    }
-                                </AutoSizeLayout>
-                            </div>
+                            (selectedRowKeys.length === 1 && selectedRow[0].frozen) ? <Empty description="选中环保标准已冻结，无法进行操作！" className={styles.mt} /> :
+                                <div>
+                                    <AutoSizeLayout>
+                                        {
+                                            (h) => <ExtTable
+                                                columns={rightColums}
+                                                checkbox={true}
+                                                remotePaging={true}
+                                                store={{
+                                                    url: `${baseUrl}/environmentStandardLimitMaterialRelation/findByPage`,
+                                                    type: 'POST',
+                                                    params: {
+                                                        environmentalProtectionCode: selectedRow[selectedRow.length - 1].environmentalProtectionCode
+                                                    }
+                                                }}
+                                                height={h}
+                                                searchPlaceHolder="输入限用物质名称查询"
+                                                ref={tableRightRef}
+                                                selectedRowKeys={selectedRightKeys}
+                                                onSelectRow={(selectedRightKeys, selectedRows) => {
+                                                    setSelectedRight(selectedRows)
+                                                    setSelectedRightKeys(selectedRightKeys)
+                                                }}
+                                                toolBar={{
+                                                    left: headerRight
+                                                }}
+                                            />
+                                        }
+                                    </AutoSizeLayout>
+                                </div>
 
                     }
 
@@ -465,6 +451,7 @@ const LimitMaterial = ({ form }) => {
         {data.visible && <ExtModal
             centered
             destroyOnClose
+            maskClosable={false}
             visible={data.visible}
             width={1000}
             okText="保存"
@@ -552,7 +539,6 @@ const LimitMaterial = ({ form }) => {
                             {
                                 getFieldDecorator('materialWeight', {
                                     initialValue: data.modalSource && data.modalSource.materialWeight,
-                                    rules: [{ required: true, message: '请填写均质材质中的含量' }]
                                 })(<InputNumber
                                     precision={8}
                                     style={{ width: '100%' }}
@@ -617,6 +603,7 @@ const LimitMaterial = ({ form }) => {
         {ESPdata.visible && <ExtModal
             centered
             destroyOnClose
+            maskClosable={false}
             visible={ESPdata.visible}
             okText="保存"
             onCancel={() => { setESPData((value) => ({ ...value, visible: false })) }}
@@ -652,8 +639,8 @@ const LimitMaterial = ({ form }) => {
                                 initialValue: ESPdata.modalSource ? ESPdata.modalSource.reach : true,
                                 rules: [{ required: true, message: '请填写REACH环保符合性声明' }]
                             })(<Radio.Group>
-                                <Radio value={true}>符合</Radio>
-                                <Radio value={false}>不符合</Radio>
+                                <Radio value={true}>是</Radio>
+                                <Radio value={false}>否</Radio>
                             </Radio.Group>)
                         }
                     </FormItem>

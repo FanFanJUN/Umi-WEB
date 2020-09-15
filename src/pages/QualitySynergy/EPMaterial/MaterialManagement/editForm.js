@@ -5,19 +5,43 @@ import classnames from 'classnames';
 import styles from './index.less';
 import BaseInfo from '../components/edit/baseInfo';
 import SubjectMatterTable from '../components/edit/SubjectMatterTable';
-import { router } from 'dva';
+import { submitAndSave, addEpDemandList } from '../../../../services/qualitySynergy'
 export default function () {
     const [loading, toggleLoading] = useState(false);
     const [buCode, setBuCode] = useState('')
     const formRef = useRef(null);
-    const { query } = router.useLocation();
-    console.log('url路径', query);
-    const handleSave = async () => {
-        const { getAllParams } = formRef.current;
-
-    }
+    const tableRef = useRef(null);
     const handleBack = () => {
         closeCurrent()
+    }
+    const handleSave = async (nowPublish) => {
+        const { validateFieldsAndScroll } = formRef.current;
+        validateFieldsAndScroll(async (err, values) => {
+            console.log(values)
+            if (!err) {
+                let res = {};
+                let dataSource = tableRef.current.getTableList();
+                dataSource = dataSource.map(item => {
+                    return {
+                        ...values,
+                        ...item
+                    }
+                })
+                if(nowPublish) {
+                    // 保存并提交
+                    res = await submitAndSave(dataSource);
+                } else {
+                    // 仅保存
+                    res = await addEpDemandList(dataSource);
+                }
+               if(res.success) {
+                   message.success(nowPublish? '保存并提交成功' : '保存成功');
+                   handleBack();
+               } else {
+                   message.error(res.message);
+               }
+            }
+        })
     }
     return (
         <div>
@@ -26,8 +50,9 @@ export default function () {
                     <div className={classnames(styles.fbc, styles.affixHeader)}>
                         <span className={styles.headTitle}>环保资料物料-新增</span>
                         <div>
-                            <Button className={styles.btn} onClick={handleBack}>返回</Button>
-                            <Button className={styles.btn} type='primary' onClick={handleSave}>保存</Button>
+                            <Button className={styles.btn} key="back" onClick={handleBack}>返回</Button>
+                            <Button className={styles.btn} key="save" onClick={()=>{handleSave()}}>保存</Button>
+                            <Button className={styles.btn} key="publish" type='primary' onClick={()=>{handleSave(true)}}>保存并提交</Button>
                         </div>
                     </div>
                 </Affix>
@@ -43,8 +68,9 @@ export default function () {
                     <div className={styles.bgw}>
                         <div className={styles.title}>标的物</div>
                         <div className={styles.content}>
-                            <SubjectMatterTable 
-                            buCode={buCode} />
+                            <SubjectMatterTable
+                                wrappedComponentRef={tableRef}
+                                buCode={buCode} />
                         </div>
                     </div>
                 </div>

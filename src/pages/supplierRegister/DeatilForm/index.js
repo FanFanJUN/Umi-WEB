@@ -218,7 +218,7 @@ const CommonconfigRef = forwardRef(({
                 </Col> : null
                 }
                 {
-                  item.key === 'qualificationType' ? <Col span={24}>
+                  item.key === 'qualificationTypeNetWork' ? <Col span={24}>
                      <FormItem
                       {...formItemLayout}
                       label={'入网须知附件'}
@@ -230,12 +230,12 @@ const CommonconfigRef = forwardRef(({
                           <UploadFile
                             maxSize={10}
                             title={'附件上传'}
-                            type={isView ? '' : 'show'}
+                            type={isView ? 'show' : ''}
                             accessType={['pdf', 'jpg', 'png']}
                             warning={'仅支持pdf,jpg,png格式，文件大小不超过10M'}
                             entityId={entityIdObj ? entityIdObj['入网须知'] : null}/>
                           )
-                      } {isView && <a href='/srm-se-web/供应商入网须知.docx'>模板下载</a>}
+                      } {!isView && <a href='/srm-se-web/供应商入网须知.docx'>模板下载</a>}
                     </FormItem>
                     </Col> : null
                 }
@@ -352,7 +352,7 @@ const CommonconfigRef = forwardRef(({
                        <UploadFile
                         maxSize={10}
                         title={'附件上传'}
-                        type={isView ? '' : 'show'}
+                        type={isView ? 'show' : ''}
                         accessType={['pdf', 'jpg', 'png']}
                         warning={'仅支持pdf,jpg,png格式，文件大小不超过10M'}
                         entityId={entityIdObj ? entityIdObj['注册登记证书'] : null}/>
@@ -374,12 +374,12 @@ const CommonconfigRef = forwardRef(({
                           <UploadFile
                             maxSize={10}
                             title={'附件上传'}
-                            type={isView ? '' : 'show'}
+                            type={isView ? 'show' : ''}
                             accessType={['pdf', 'jpg', 'png']}
                             warning={'仅支持pdf,jpg,png格式，文件大小不超过10M'}
                             entityId={entityIdObj ? entityIdObj['授权委托书'] : null}/>
                           )
-                      } {isView && <a href='/srm-se-web/供应商法定代表人授权委托书.docx'>模板下载</a>}
+                      } {!isView && <a href='/srm-se-web/供应商法定代表人授权委托书.docx'>模板下载</a>}
                     </FormItem>
                     </Col> : null
                 }

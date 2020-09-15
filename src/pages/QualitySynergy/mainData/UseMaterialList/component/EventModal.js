@@ -59,6 +59,7 @@ const EventModal = (props) => {
       visible={visible}
       title={title}
       onCancel={onCancel}
+      maskClosable={false}
       onOk={onOk}
       afterClose={clearSelected}
     >
@@ -103,12 +104,6 @@ const EventModal = (props) => {
               {
                 getFieldDecorator('casNo', {
                   initialValue: type === 'add' ? '' : data.casNo,
-                  rules: [
-                    {
-                      required: true,
-                      message: 'CAS.NO不能为空',
-                    },
-                  ],
                 })(
                   <Input/>,
                 )

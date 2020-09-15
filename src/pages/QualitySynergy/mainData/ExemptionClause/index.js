@@ -1,6 +1,6 @@
 
 import React, { Fragment, useState, useRef } from 'react';
-import { Button, Form, Row, Input, Modal, message, DatePicker, InputNumber } from 'antd';
+import { Button, Form, Row, Input, Modal, message, DatePicker, InputNumber, Select } from 'antd';
 import styles from '../../TechnicalDataSharing/DataSharingList/index.less';
 import { baseUrl } from '../../../../utils/commonUrl';
 import { DataImport, ExtTable, ExtModal, utils, AuthAction } from 'suid';
@@ -30,7 +30,7 @@ const ExemptionClause = (props) => {
         isView: false
     })
     const { form } = props;
-    const { getFieldDecorator, validateFields } = form;
+    const { getFieldDecorator, validateFields, getFieldValue } = form;
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [selectedRow, setSelectedRow] = useState([]);
 
@@ -38,8 +38,20 @@ const ExemptionClause = (props) => {
         { title: '豁免条款代码', dataIndex: 'exemptionClauseCode', width: 120 },
         { title: '豁免条款物质名称', dataIndex: 'exemptionClauseMaterialName', ellipsis: true, width: 140 },
         { title: 'CAS.NO', dataIndex: 'casNo', ellipsis: true, },
-        { title: '限量', dataIndex: 'limitNumber', ellipsis: true },
-        { title: '豁免到期日期', dataIndex: 'exemptionExpireDate', ellipsis: true, width: 180 },
+        { title: '限量(%)', dataIndex: 'limitNumber', ellipsis: true },
+        { title: '比较标识', dataIndex: 'limitNumberMaxSign', ellipsis: true, render:(text)=>{
+            switch(text){
+                case 'true':
+                case true:
+                    return '最高值';
+                case 'false':
+                case false:
+                    return '最低值';
+                default:
+                    return '';
+            }
+        } },
+        { title: '豁免到期日期', dataIndex: 'exemptionExpireDate', ellipsis: true, width: 180, render: (text) => text ? text.slice(0, 10) : '' },
         { title: '豁免条款具体内容', dataIndex: 'exemptionContent', ellipsis: true, width: 140 },
         { title: '排序号', dataIndex: 'orderNo', ellipsis: true, width: 140 },
     ]
@@ -80,7 +92,11 @@ const ExemptionClause = (props) => {
     const validateItem = (data) => {
         return new Promise((resolve, reject) => {
             const dataList = data.map(item => {
-                item.limitNumber = Number(item.limitNumber).toFixed(2)
+                if (item.limitNumber){
+                    item.limitNumber = Number(item.limitNumber).toFixed(2)
+                } else {
+                    delete item.limitNumberMaxSign
+                }
                 return item;
             })
             JudgeTheListOfExemptionClause(dataList).then(res => {
@@ -100,10 +116,6 @@ const ExemptionClause = (props) => {
     };
 
     const importFunc = (value) => {
-        const dataList = value.map(item => {
-            item.limitNumber = Number(item.limitNumber).toFixed(2)
-            return item;
-        })
         SaveTheListOfExemptionClause(value).then(res => {
             if (res.success) {
                 message.success('导入成功');
@@ -113,7 +125,7 @@ const ExemptionClause = (props) => {
             }
         });
     };
-    const headerLeft = <div style={{ width: '100%', display: 'flex', height: '100%', alignItems: 'center' }}>
+    const headerLeft = <div style={{ width: '100%', display: 'flex', height: '100%', alignItems: 'center'}}>
         {
             authAction(<Button
                 type='primary'
@@ -160,7 +172,7 @@ const ExemptionClause = (props) => {
                 key='QUALITYSYNERGY_EC_IMPORT'
                 templateFileList={[
                     {
-                        download: '/templates/主数据-豁免条款-批导模板.xlsx',
+                        download: `${DEVELOPER_ENV === 'true' ? '' : '/react-srm-sm-web'}/templates/主数据-豁免条款-批导模板.xlsx`,
                         fileName: '主数据-豁免条款-批导模板.xlsx',
                         key: 'ExemptionClause',
                     },
@@ -178,6 +190,10 @@ const ExemptionClause = (props) => {
                     values.exemptionExpireDate = moment(values.exemptionExpireDate).format('YYYY-MM-DD');
                     if (data.modalSource) {
                         values = { ...data.modalSource, ...values }
+                    }
+                    if(!values.limitNumber){
+                        delete values.limitNumber;
+                        delete values.limitNumberMaxSign;
                     }
                     const res = await exemptionClauseDataInsert(values)
                     if (res.success) {
@@ -230,6 +246,7 @@ const ExemptionClause = (props) => {
             <ExtModal
                 centered
                 destroyOnClose
+                maskClosable={false}
                 visible={data.visible}
                 onCancel={() => { setData((value) => ({ ...value, visible: false })) }}
                 onOk={() => { handleOk() }}
@@ -261,7 +278,7 @@ const ExemptionClause = (props) => {
                             {
                                 getFieldDecorator('casNo', {
                                     initialValue: data.modalSource && data.modalSource.casNo,
-                                    rules: [{ required: true, message: '请填写CAS.NO' }]
+                                    // rules: [{ required: true, message: '请填写CAS.NO' }]
                                 })(<Input disabled={data.isView} />)
                             }
                         </FormItem>
@@ -271,7 +288,7 @@ const ExemptionClause = (props) => {
                             {
                                 getFieldDecorator('limitNumber', {
                                     initialValue: data.modalSource && data.modalSource.limitNumber,
-                                    rules: [{ required: true, message: '请填写限量' }]
+                                    // rules: [{ required: true, message: '请填写限量' }]
                                 })(<InputNumber
                                     precision={2}
                                     style={{ width: '100%' }}
@@ -285,10 +302,23 @@ const ExemptionClause = (props) => {
                         </FormItem>
                     </Row>
                     <Row>
+                        <FormItem label='比较标识' {...formLayout}>
+                            {
+                                getFieldDecorator('limitNumberMaxSign', {
+                                    initialValue: data.modalSource && (data.modalSource.limitNumberMaxSign).toString(),
+                                    rules: [{ required: (!!getFieldValue('limitNumber')&&getFieldValue('limitNumber')!=0), message: '请选择比较标识' }]
+                                })(<Select style={{ width: '100%' }} allowClear>
+                                    <Select.Option value="true">最高值</Select.Option>
+                                    <Select.Option value="false">最低值</Select.Option>
+                                </Select>)
+                            }
+                        </FormItem>
+                    </Row>
+                    <Row>
                         <FormItem label='豁免到期日期' {...formLayout}>
                             {
                                 getFieldDecorator('exemptionExpireDate', {
-                                    initialValue: data.modalSource && moment(data.modalSource.exemptionExpireDate, "YYYY-MM-DD"),
+                                    initialValue: data.modalSource ? moment(data.modalSource.exemptionExpireDate, "YYYY-MM-DD") : '',
                                     rules: [{ required: true, message: '请填写豁免到期日期' }]
                                 })(<DatePicker disabled={data.isView} style={{ width: '100%' }} />)
                             }
@@ -309,8 +339,8 @@ const ExemptionClause = (props) => {
                             {
                                 getFieldDecorator('orderNo', {
                                     initialValue: data.modalSource && data.modalSource.orderNo,
-                                    // rules: [{ required: true, message: '请填写排序号' }]
-                                })(<Input disabled={data.isView} />)
+                                    rules: [{ required: true, message: '请填写排序号' }]
+                                })(<InputNumber disabled={data.isView} min={0} max={99999} style={{ width: '100%' }}/>)
                             }
                         </FormItem>
                     </Row>

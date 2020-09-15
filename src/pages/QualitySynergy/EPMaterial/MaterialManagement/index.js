@@ -4,18 +4,19 @@ import styles from './index.less';
 import { openNewTab, getFrameElement } from '@/utils';
 import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
-import { baseUrl } from '@/utils/commonUrl';
-import { materialCode, statusProps, distributionProps, materialStatus, PDMStatus } from '../../commonProps';
+import { recommendUrl } from '@/utils/commonUrl';
+import { materialCode, MaterialConfig, statusProps, distributionProps, materialStatus, PDMStatus } from '../../commonProps';
 import CheckQualificationModal from '../components/checkQualificationModal';
 import DistributeSupplierModal from '../components/distributeSupplierModal';
 import CheckModal from '../components/checkModal';
 import GenerateModal from '../components/generateModal';
-import EditModal from '../components/editModal'
+import EditModal from '../components/editModal';
+import {  epWhetherDelete, editEpDemand, epFrozen, epSubmit, epWithdraw } from '../../../../services/qualitySynergy'
 const { authAction, storage } = utils;
 const { Search } = Input;
 const { confirm } = Modal;
 const { create, Item: FormItem } = Form;
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 12, },
@@ -28,6 +29,7 @@ export default function () {
     const supplierRef = useRef(null);
     const samplingRef = useRef(null);
     const generateRef = useRef(null);
+    const [buttonStatus, setButtonStatus] = useState({})
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [searchValue, setSearchValue] = useState({});
@@ -35,32 +37,29 @@ export default function () {
     const [assignPurchase, setSssignPurchase] = useState(false);//指派战略采购弹框
     const [qualificationModal, setQualificationModal] = useState(false);
     const FRAMELEEMENT = getFrameElement();
-    // 未选中数据的状态
-    const tableProps = {
-        store: {
-            // url: `/srm-sm-web/api/epDemandService/findByPage`,
-            url: `${baseUrl}/epDemandService/findByPage`,
-            params: {
-                ...searchValue,
-                quickSearchProperties: [],
-            },
-            type: 'POST'
-        }
-    }
     function redirectToPage(type) {
         const [key] = selectedRowKeys;
         const { id = '' } = FRAMELEEMENT;
         const { pathname } = window.location;
         switch (type) {
             case 'add':
-                openNewTab(`qualitySynergy/EPMaterial/editForm?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '填报环保资料物料-新增', false)
+                openNewTab(`qualitySynergy/EPMaterial/editForm?frameElementId=${id}&frameElementSrc=${pathname}`, '填报环保资料物料-新增', false)
                 break;
             case 'detail':
+                if (!checkOneSelect()) return;
                 openNewTab(`qualitySynergy/EPMaterial/detailForm?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '填报环保资料物料-明细', false);
                 break;
             default:
                 break;
         }
+    }
+    // 选中一行
+    function checkOneSelect() {
+        if (selectedRows.length === 0) {
+            message.warning('请先选择数据');
+            return false;
+        }
+        return true;
     }
     // 删除
     function handleDelete(v) {
@@ -68,25 +67,56 @@ export default function () {
             title: '删除',
             content: '请确认是否冻结该填报环保资料物料',
             onOk: async () => {
-                console.log('确定删除')
+                const res = await epWhetherDelete({
+                    ids: selectedRowKeys.join(),
+                })
+                if (res.statusCode === 200) {
+                    refresh();
+                    message.success('删除成功');
+                } else {
+                    message.error(res.message)
+                }
             }
         })
     }
     // 冻结
     const handleFreeze = () => {
+        if (!checkOneSelect()) return;
         confirm({
-            title: '请确认是否冻结该填报环保资料物料',
-            onOk: () => {
-                console.log('确认删除');
+            title: '请确认是否冻结选中填报环保资料物料',
+            onOk: async () => {
+                const res = await epFrozen({
+                    ids: selectedRowKeys.join(),
+                    isFrozen: true
+                })
+                if (res.statusCode === 200) {
+                    refresh();
+                    message.success('操作成功');
+                } else {
+                    message.error(res.message)
+                }
             },
         });
+    }
+    // 清空选中/刷新表格数据
+    const refresh = () => {
+        tableRef.current.manualSelectedRows();
+        tableRef.current.remoteDataRefresh();
     }
     // 提交 
     const submit = () => {
         confirm({
             title: '是否提交环保资料填报需求？',
-            onOk: () => {
-                console.log('确认删除');
+            onOk: async () => {
+                const res = await epSubmit({
+                    ids: selectedRowKeys.join(),
+                })
+                if (res.statusCode === 200) {
+                    refresh();
+                    message.success('操作成功');
+                } else {
+                    message.error(res.message)
+                }
             },
             onCancel() { },
         });
@@ -95,16 +125,19 @@ export default function () {
     const withdraw = () => {
         confirm({
             title: '是否撤回环保资料填报需求？',
-            onOk: () => {
-                console.log('确认撤回');
+            onOk: async () => {
+                const res = await epWithdraw({
+                    id: selectedRowKeys[0],
+                })
+                if (res.statusCode === 200) {
+                    refresh();
+                    message.success('操作成功');
+                } else {
+                    message.error(res.message)
+                }
             },
             onCancel() { },
         });
-    }
-    // 记录列表选中
-    function handleSelectedRows(rowKeys, rows) {
-        setRowKeys(rowKeys);
-        setRows(rows);
     }
     // 处理快速查询
     function handleQuickSearch(v) {
@@ -127,48 +160,77 @@ export default function () {
     function handleExport() {
         console.log('导出')
     }
+    // 编辑弹框处理
+    function handleTableTada(type, obj) {
+        let params = { ...selectedRows[0], ...obj };
+        editEpDemand(params).then(res => {
+            console.log(res)
+            if (res.success) {
+                refresh();
+                message.success('编辑成功');
+            } else {
+                message.error(res.message);
+            }
+        })
+    }
+    // 按钮是否禁用
+    function buttonCheck(rows) {
+        if (rows.length === 1) {
+            setButtonStatus({
+                detail: false
+            })
+        } else if (rows.length === 0) {
+            setButtonStatus({
+                detail: false
+            })
+        } else {
+            setButtonStatus({
+                detail: true
+            })
+        }
+    }
     // 高级查询配置
     const formItems = [
-        { title: '物料代码', key: 'data1', type: 'list', props: materialCode },
-        { title: '物料组', key: 'data2', type: 'list', props: materialCode },
-        { title: '战略采购', key: 'data3', type: 'list', props: materialCode },
-        { title: '环保管理人员', key: 'data4', props: { placeholder: '输入申请人查询' } },
-        { title: '申请人', key: 'data5', props: { placeholder: '输入申请人查询' } },
-        { title: '状态', key: 'data6', type: 'list', props: statusProps },
-        { title: '分配供应商状态', key: 'data7', type: 'list', props: distributionProps },
-        { title: '物料标记状态', key: 'data8', type: 'list', props: materialStatus },
-        { title: '同步PDM状态', key: 'data9', type: 'list', props: PDMStatus },
+        { title: '物料代码', key: 'materialCode', type: 'list', props: MaterialConfig },
+        { title: '物料组', key: 'materialGroupCode', type: 'list', props: materialCode },
+        { title: '战略采购', key: 'strategicPurchaseCode', type: 'list', props: materialCode },
+        { title: '环保管理人员', key: 'environmentAdminName', props: { placeholder: '输入申请人查询' } },
+        { title: '申请人', key: 'applyPersonName', props: { placeholder: '输入申请人查询' } },
+        { title: '状态', key: 'effectiveStatus', type: 'list', props: statusProps },
+        { title: '分配供应商状态', key: 'allotSupplierState', type: 'list', props: distributionProps },
+        { title: '物料标记状态', key: 'materialMarkStatus', type: 'list', props: materialStatus },
+        { title: '同步PDM状态', key: 'syncStatus', type: 'list', props: PDMStatus },
     ]
     const columns = [
         {
             title: '状态', dataIndex: 'effectiveStatus', width: 80, render: (text) => {
                 switch (text) {
-                    case 'draft': return '生效';
-                    case 'pre_publish': return '草稿';
+                    case 'DRAFT': return '草稿';
+                    case 'EFFECT': return '生效';
                     default: return ''
                 }
             }
         },
         {
-            title: '分配供应商状态', dataIndex: 'allotSupplierState', width: 80, render: (text) => {
+            title: '分配供应商状态', dataIndex: 'allotSupplierState', width: 120, render: (text) => {
                 switch (text) {
-                    case 'draft': return '已分配';
-                    case 'pre_publish': return '未分配';
+                    case ' ALLOT_END': return '存在符合的供应商';
+                    case 'ALLOT_NOT': return '未分配';
                     default: return ''
                 }
             }
         },
         {
-            title: '物料标记状态', dataIndex: 'materialMarkStatus', width: 80, render: (text) => {
+            title: '物料标记状态', dataIndex: 'materialMarkStatus', width: 120, render: (text) => {
                 switch (text) {
-                    case 'draft': return '存在符合的供应商';
-                    case 'pre_publish': return '不存在符合的供应商';
+                    case 'EXIST_CONFORM_SUPPLIER': return '存在符合的供应商';
+                    case 'DIS_EXIST_CONFORM_SUPPLIER': return '不存在符合的供应商';
                     default: return ''
                 }
             }
         },
         {
-            title: '同步PDM状态', dataIndex: 'syncStatus', width: 80, render: (text) => {
+            title: '同步PDM状态', dataIndex: 'syncStatus', width: 120, render: (text) => {
                 switch (text) {
                     case 'draft': return '同步成功';
                     case 'pre_publish': return '同步失败';
@@ -176,7 +238,7 @@ export default function () {
                 }
             }
         },
-        { title: '冻结', dataIndex: 'frozen', width: 70 },
+        { title: '冻结', dataIndex: 'frozen', width: 70, render: (text) => text ? '已冻结' : '未冻结' },
         { title: '物料代码', dataIndex: 'materialCode', ellipsis: true, },
         { title: '物料描述', dataIndex: 'materialName', ellipsis: true, },
         { title: '物料组代码', dataIndex: 'materialGroupCode', ellipsis: true, },
@@ -190,7 +252,8 @@ export default function () {
         { title: '创建人联系方式', dataIndex: 'applyPersonPhone', ellipsis: true, },
         { title: '申请日期', dataIndex: 'name12', ellipsis: true, },
         { title: '来源', dataIndex: 'sourceName', ellipsis: true, },
-        { title: '物料标记状态是否变化', dataIndex: 'name13', ellipsis: true, },
+        { title: '物料标记状态是否变化', dataIndex: 'name13', width: 140, ellipsis: true, },
+        { dataIndex: 'name14', width: 20, ellipsis: true, },
     ].map(item => ({ ...item, align: 'center' }));
     const headerLeft = <>
         {
@@ -206,7 +269,7 @@ export default function () {
             authAction(<Button
                 className={styles.btn}
                 disabled={false}
-                onClick={() => { editRef.current.showModal('edit') }}
+                onClick={() => { checkOneSelect() && editRef.current.showModal('edit') }}
                 ignore={DEVELOPER_ENV}
                 key='PURCHASE_VIEW_CHANGE_EDITOR'
             >编辑</Button>)
@@ -236,14 +299,14 @@ export default function () {
                 onClick={() => { setMaintainModal(true) }}
                 key='PURCHASE_VIEW_CHANGE_REMOVE'
                 ignore={DEVELOPER_ENV}
-            >维护环保管理冻结人员</Button>)
+            >维护环保管理人员</Button>)
         }
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={false}
                 onClick={() => { redirectToPage('detail') }}
                 ignore={DEVELOPER_ENV}
+                disabled={buttonStatus.detail}
                 key='PURCHASE_VIEW_CHANGE_DETAIL'
             >明细</Button>)
         }
@@ -364,19 +427,34 @@ export default function () {
                     height={h}
                     allowCancelSelect
                     showSearch={false}
-                    remotePaging
+                    remotePaging={true}
                     checkbox={{ multiSelect: false }}
                     ref={tableRef}
                     rowKey={(item) => item.id}
                     size='small'
-                    onSelectRow={handleSelectedRows}
+                    onSelectRow={(rowKeys, rows) => {
+                        setRowKeys(rowKeys);
+                        setRows(rows);
+                        buttonCheck(rows)
+                    }}
                     selectedRowKeys={selectedRowKeys}
-                    {...tableProps}
+                    store={{
+                        url: `${recommendUrl}/api/epDemandService/findByPage`,
+                        params: {
+                            ...searchValue,
+                            quickSearchProperties: [],
+                        },
+                        type: 'POST'
+                    }}
                 />
             }
         </AutoSizeLayout>
         {/* 编辑弹框 */}
-        <EditModal wrappedComponentRef={editRef} />
+        <EditModal
+            wrappedComponentRef={editRef}
+            initData={selectedRows[0]}
+            handleTableTada={handleTableTada}
+        />
         {/* 维护环保管理人员 */}
         <ExtModal
             centered

@@ -106,9 +106,6 @@ const EventModal = (props) => {
               }
             </FormItem>
           </Col>
-          <Col span={0}>
-            {hideFormItem('frozen', type === 'add' ? '' : data.frozen)}
-          </Col>
         </Row>
       </Form>
     </ExtModal>

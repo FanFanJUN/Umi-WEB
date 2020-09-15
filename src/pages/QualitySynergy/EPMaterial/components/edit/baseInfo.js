@@ -14,9 +14,10 @@ const formLayout = {
   },
 };
 
-const BaseInfo = forwardRef(({ form, isView, setBuCode }, ref) => {
+const BaseInfo = forwardRef(({ form, isView, setBuCode, originData={} }, ref) => {
   useImperativeHandle(ref, () => ({
-
+    getFormInfo,
+    validateFieldsAndScroll
   }))
   const [attachment, setAttachment] = useState(null);
   const {
@@ -25,7 +26,16 @@ const BaseInfo = forwardRef(({ form, isView, setBuCode }, ref) => {
     setFieldsValue,
     validateFieldsAndScroll
   } = form;
-
+  const getFormInfo = ()=>{
+    const baseInfo = {}
+    validateFieldsAndScroll((err, values)=>{
+      console.log(values, err)
+      if(!err) {
+        baseInfo = {...values}
+      }
+    })
+    return baseInfo;
+  }
   return <Fragment>
     <Form>
       <Row>
@@ -33,7 +43,7 @@ const BaseInfo = forwardRef(({ form, isView, setBuCode }, ref) => {
           <FormItem label='来源' {...formLayout}>
             {
               getFieldDecorator('sourceName',{
-                initialValue: 'SRM',
+                initialValue: isView? originData.sourceName : 'SRM',
               })(<Input disabled />)
             }
           </FormItem>
@@ -43,8 +53,8 @@ const BaseInfo = forwardRef(({ form, isView, setBuCode }, ref) => {
             {
               getFieldDecorator('applyPersonId', {initialValue: getUserId()}),
               getFieldDecorator('applyPersonAccount', {initialValue: getUserAccount()}),
-              getFieldDecorator('creatorName', {
-                initialValue: getUserName()
+              getFieldDecorator('applyPersonName', {
+                initialValue: isView? originData.applyPersonName : getUserName()
               })(<Input disabled />)
             }
           </FormItem>
@@ -57,7 +67,7 @@ const BaseInfo = forwardRef(({ form, isView, setBuCode }, ref) => {
               getFieldDecorator('buId'),
               getFieldDecorator('buName'),
               getFieldDecorator('buCode', {
-                initialValue: '',
+                initialValue: isView ? originData.buCode : '',
                 rules: [{ required: true, message: '请选择供应商代码' }]
               })(
                 <ComboList
@@ -77,9 +87,9 @@ const BaseInfo = forwardRef(({ form, isView, setBuCode }, ref) => {
         <Col span={12}>
           <FormItem label='创建人联系方式' {...formLayout}>
             {
-              getFieldDecorator('creatorName', {
-                initialValue: getMobile(),
-                rules: [{ required: true, message: '请选择供应商代码' }]
+              getFieldDecorator('applyPersonPhone', {
+                initialValue: isView ? originData.applyPersonPhone : getMobile(),
+                rules: [{ required: true, message: '请输入创建人联系方式'}]
               })(<Input disabled={isView} />)
             }
           </FormItem>
@@ -91,7 +101,7 @@ const BaseInfo = forwardRef(({ form, isView, setBuCode }, ref) => {
           <FormItem label='申请日期' {...formLayout}>
             {
               getFieldDecorator('dateTime', {
-                initialValue: moment().format('YYYY-MM-DD')
+                initialValue: isView ? originData.dateTime : moment().format('YYYY-MM-DD')
               })(<Input disabled/>)
             }
           </FormItem>

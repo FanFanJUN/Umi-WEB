@@ -28,10 +28,73 @@ function createServiceRequest(option) {
     })
   })
 }
-// 推荐信息
-export const RecommendationList = params => createServiceRequest({
-  path: '/supplierRecommendRequest/getRecommendInfo',
-  params,
-  method: 'GET',
-  hack: true
+// 变更新增列表
+
+export const findCanChooseSupplier = (params) => {
+    return request({
+      headers:{'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+      url: `${smBaseUrl}/supplierModify/findCanChooseSupplier`,
+      params,
+      method: 'POST',
+    })
+  };
+// 删除
+export const deleteSupplierModify = (params) => {
+    return request({
+      headers:{'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+      url: `${smBaseUrl}/supplierModify/deleteSupplierModify`,
+      params,
+      method: 'POST',
+    })
+  };
+// 供应商变更暂存
+export const TemporarySupplierRegister = params => createServiceRequest({
+    path: '/api/supplierChangeService/saveRequest',
+    params
 })
+// 供应商变更保存效验
+// export const checkExistUnfinishedValidity = (params) => {
+//     return request({
+//       headers:{'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+//       url: `${smBaseUrl}/api/supplierChangeService/checkExistUnfinished`,
+//       params,
+//       method: 'POST',
+//     })
+//   };
+  export const checkExistUnfinishedValidity = params => createServiceRequest({
+    path: '/api/supplierChangeService/checkExistUnfinished',
+    params,
+    method: 'GET',
+})
+// // 供应商变更保存
+// export const saveSupplierRegister = params => createServiceRequest({
+//     path: '/api/supplierChangeService/saveSupplierModify',
+//     params
+// })
+// 查询供应商变更信息明细  
+export const findByRequestIdForModify = (params) => {
+  return request({
+    headers:{'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+    url: `${smBaseUrl}/supplierModify/findByRequestId`,
+    params,
+    method: 'POST',
+  })
+};
+// 变更明细 
+export const findSupplierModifyHistroyList = (params) => {
+  return request({
+    headers:{'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+    url: `${smBaseUrl}/supplierModifyHistroy/findSupplierModifyHistroyList`,
+    params,
+    method: 'POST',
+  })
+};
+ // 变更审批供应商流程保存
+ export const saveLietInFlow = params => {
+  return request({
+   //headers:{'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+   url: `${smBaseUrl}/supplierAgentBackups/saveAgentBackupInFlow`,
+   data: convertDataToFormData(params),
+   method: 'POST',
+ })
+}

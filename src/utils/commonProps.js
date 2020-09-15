@@ -752,3 +752,18 @@ export const SupplierConfigWithName = {
   key: 'name',
   text: 'name',
 };
+// 注册供应商分类
+export const purchaseCompanyPropsreg = {
+  store: {
+    url: `${supplierManagerBaseUrl}/supplierRegister/getSupplierCategoryTree`, 
+  },
+  reader: {
+    name: 'name',
+    field: ['code','id'],
+    description: ['code']
+  },
+  placeholder: '请选择供应商分类',
+  style: {
+    width: '100%'
+  },
+}

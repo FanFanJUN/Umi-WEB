@@ -1,6 +1,22 @@
 import { smBaseUrl, baseUrl, recommendUrl } from '../../utils/commonUrl';
 import request from '../../utils/request';
 import React from 'react';
+import { commonUrl } from '../../utils';
+
+// 生成随机数
+export const getRandom = num => {
+  return Math.floor((Math.random() + Math.floor(Math.random() * 9 + 1)) * Math.pow(10, num - 1));
+};
+
+// 判断解冻按钮是否禁用
+export const judgeButtonDisabled = (value) => {
+  if (value?.length !== 0) {
+    const frozen = value[0].frozen
+    return !value.every(item => {
+      return item.frozen === frozen
+    });
+  }
+};
 
 const commonProps = {
   reader: {
@@ -11,6 +27,69 @@ const commonProps = {
     width: '100%',
   },
 };
+
+// 根据buCode和物料组代码查战略采购code和name
+export const FindTacticByBuCodeAndGroupCode = async params => {
+  const url = `${baseUrl}/bmBuContact/findByBuCodeAndMaterialGroupCode`;
+  return request({
+    url,
+    method: 'POST',
+    params: params,
+  });
+}
+
+
+// 根据分享需求号获取供应商
+export const FindSupplierByDemandNumber = async params => {
+  const url = `${recommendUrl}/api/epTechnicalShareDemandService/findSupplier`;
+  return request({
+    url,
+    method: 'GET',
+    data: params,
+  });
+}
+
+//技术资料分享删除
+export async function DeleteDataSharingList(params) {
+  const url = `${recommendUrl}/api/epTechnicalShareDemandService/delete`;
+  return request({
+    url,
+    method: 'GET',
+    params: params,
+  });
+}
+
+//技术资料分享编辑
+export async function UpdateDataSharingList(params) {
+  const url = `${recommendUrl}/api/epTechnicalShareDemandService/update`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+}
+
+
+//技术资料分享新增
+export async function AddDataSharingList(params) {
+  const url = `${recommendUrl}/api/epTechnicalShareDemandService/insert`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+}
+
+
+//业务模块对业务单元查询单条数据
+export async function DataSharingFindOne(params) {
+  const url = `${recommendUrl}/api/epTechnicalShareDemandService/findOne`;
+  return request({
+    url,
+    method: 'GET',
+    params,
+  });
+}
 
 //业务模块对业务单元删除
 export async function DeleteBusinessUnitToBUt(params) {
@@ -41,17 +120,6 @@ export async function AddBusinessUnitToBUt(params) {
     data: params,
   });
 }
-
-//技术资料分享新增
-export async function AddDataSharingList(params) {
-  const url = `${recommendUrl}/api/epTechnicalShareDemandService/insert`;
-  return request({
-    url,
-    method: 'POST',
-    data: params,
-  });
-}
-
 
 // BU与公司采购组织对应关系新增
 export async function AddBUCompanyOrganizationRelation(params) {
@@ -206,13 +274,55 @@ export async function DeleteBasicMaterials(params) {
   });
 }
 
+// 战略采购列表
+export const StrategicPurchaseConfig = {
+  remotePaging: true,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${baseUrl}/purchaseGroup/findByPagesAll`,
+  },
+  rowKey: 'name',
+  reader: {
+    name: 'code',
+    description: 'name',
+  },
+  placeholder: '选择战略采购',
+  style: {
+    width: '100%',
+  },
+};
+
+// 物料组列表
+export const MaterialGroupConfig = {
+  remotePaging: true,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${baseUrl}/materialgroup/findByPage`,
+  },
+  rowKey: 'materialGroupCode',
+  reader: {
+    field: ['id', 'materialGroupDesc'],
+    name: 'materialGroupCode',
+    description: 'materialGroupDesc',
+  },
+  placeholder: '选择物料组',
+  style: {
+    width: '100%',
+  },
+};
+
 // 物料代码列表
 export const MaterialConfig = {
   remotePaging: true,
   store: {
-    type: 'GET',
+    type: 'POST',
     autoLoad: false,
-    url: `${baseUrl}/materialSrm/listByPage`,
+    url: `${baseUrl}/materialSrm/findByPage`,
+  },
+  style: {
+    width: '100%',
   },
   rowKey: 'materialCode',
   reader: {
@@ -220,11 +330,74 @@ export const MaterialConfig = {
     name: 'materialCode',
     description: 'materialDesc',
   },
+  placeholder: '选择物料代码',
+};
+// 物料代码列表--携带有环保标准，战略采购数据
+export const MaterialAllConfig = {
+  remotePaging: true,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${baseUrl}/api/epDemandSupplierService/findByList`,
+  },
+  style: {
+    width: '100%',
+  },
+  rowKey: 'materialCode',
+  reader: {
+    field: ['id', 'materialDesc', 'materialGroupCode', 'materialGroupDesc', 'materialGroupId'],
+    name: 'materialCode',
+    description: 'materialDesc',
+  },
+  placeholder: '选择物料代码',
+};
+// 物料代码列表--填报环保资料物料-新增标的物
+export const MaterialFindByPage = {
+  remotePaging: true,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${recommendUrl}/api/epDemandService/findByList`,
+    params: {
+      quickSearchProperties: []
+    }
+  },
+  style: {
+    width: '100%',
+  },
+  rowKey: 'materialCode',
+  reader: {
+    field: ['id', 'materialDesc', 'materialGroupCode', 'materialGroupDesc', 'materialGroupId'],
+    name: 'materialCode',
+    description: 'materialDesc',
+  },
+  placeholder: '选择物料代码',
+  style: {
+    width: '100%',
+  },
+};
+
+// 物料代码
+export const materialCode = {
+  store: {
+    url: `${smBaseUrl}/api/supplierService/findByPage`,
+    type: 'post',
+  },
+  style: {
+    width: '100%',
+  },
+  reader: {
+    name: 'code',
+    field: ['name', 'id'],
+    description: 'name',
+  },
+  remotePaging: true,
+  placeholder: '选择供应商',
 };
 
 // 组织列表
 export const OrganizationByCompanyCodeConfig = {
-  remotePaging: false,
+  remotePaging: true,
   rowKey: 'code',
   reader: {
     field: ['code', 'id'],
@@ -282,7 +455,27 @@ export const BUModelConfig = {
   style: {
     width: '100%',
   },
-  placeholder: '选择业务单元模块'
+  placeholder: '选择业务单元模块',
+};
+
+// BU列表未冻结高级查询
+export const BUConfigNoFrostHighSearch = {
+  remotePaging: true,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${baseUrl}/bu/findPage`,
+  },
+  rowKey: 'buCode',
+  reader: {
+    field: ['buCode', 'id'],
+    name: 'buCode',
+    description: 'buName',
+  },
+  style: {
+    width: '100%',
+  },
+  placeholder: '选择业务单元',
 };
 
 // BU列表未冻结
@@ -302,7 +495,7 @@ export const BUConfigNoFrost = {
   style: {
     width: '100%',
   },
-  placeholder: '选择业务单元'
+  placeholder: '选择业务单元',
 };
 
 // BU列表
@@ -325,7 +518,7 @@ export const BUConfig = {
   style: {
     width: '100%',
   },
-  placeholder: '选择业务单元'
+  placeholder: '选择业务单元',
 };
 
 // 基本单位列表
@@ -340,19 +533,19 @@ export const BasicUnitList = {
   reader: {
     name: 'basicUnitCode',
     description: 'basicUnitCode',
-    field: ['basicUnitId', 'basicUnitName']
+    field: ['basicUnitId', 'basicUnitName'],
   },
   style: {
     width: '100%',
   },
 };
-// 限用物质列表
+// 限用物质列表-非冻结
 export const limitMaterialList = {
   remotePaging: true,
   store: {
     type: 'POST',
     autoLoad: false,
-    url: `${baseUrl}/limitSubstanceListData/find_by_page_all`,
+    url: `${baseUrl}/limitSubstanceListData/find_by_page`,
   },
   rowKey: 'limitMaterialCode',
   reader: {
@@ -360,16 +553,19 @@ export const limitMaterialList = {
     field: ['id', 'limitMaterialName', 'casNo'],
     description: 'limitMaterialName',
   },
-  placeholder: '选择限用物质列表'
+  placeholder: '选择限用物质列表',
 };
 
-// 适用范围
+// 适用范围-非冻结
 export const limitScopeList = {
   remotePaging: true,
   store: {
     type: 'POST',
     autoLoad: false,
-    url: `${baseUrl}/LimitMaterialUnitScopeData/findBySearchPage`,
+    url: `${baseUrl}/LimitMaterialUnitScopeData/findAllFrozenFalseAndWhetherDeleteFalse`,
+    params: {
+      quickSearchProperties: [],
+    },
   },
   rowKey: 'scopeCode',
   reader: {
@@ -377,53 +573,18 @@ export const limitScopeList = {
     field: ['id', 'scopeCode'],
     description: 'scopeCode',
   },
-  placeholder: '选择适用范围'
-};
-
-// 物料代码
-export const materialCode = {
-  store: {
-    url: `${smBaseUrl}/api/supplierService/findByPage`,
-    params: {
-      Q_EQ_frozen__Boolean: false,
-      filters: [
-        {
-          fieldName: 'supplierStatus',
-          fieldType: 'Integer',
-          operator: 'EQ',
-          value: 0,
-        },
-        {
-          fieldName: 'code',
-          fieldType: 'String',
-          operator: 'EQ',
-          value: 'NONULL',
-        },
-      ],
-    },
-    type: 'post',
-  },
-  style: {
-    width: '100%',
-  },
-  reader: {
-    name: 'code',
-    field: ['name', 'id'],
-    description: 'name',
-  },
-  remotePaging: true,
-  placeholder: '选择供应商',
+  placeholder: '选择适用范围',
 };
 
 // 状态
 export const statusProps = {
   dataSource: [
     {
-      code: 'INIT',
+      code: '草稿',
       name: '草稿',
     },
     {
-      code: 'INPROCESS',
+      code: '生效',
       name: '生效',
     },
   ],
@@ -432,14 +593,30 @@ export const statusProps = {
 };
 
 // 分配供应商状态
+export const DownloadStatus = {
+  dataSource: [
+    {
+      code: '已下载',
+      name: '已下载',
+    },
+    {
+      code: '未下载',
+      name: '未下载',
+    },
+  ],
+  placeholder: '选择下载状态',
+  ...commonProps,
+};
+
+// 分配供应商状态
 export const distributionProps = {
   dataSource: [
     {
-      code: 'INIT',
+      code: '已分配',
       name: '已分配',
     },
     {
-      code: 'INPROCESS',
+      code: '未分配',
       name: '未分配',
     },
   ],
@@ -488,8 +665,8 @@ export const buList = {
   rowKey: 'buCode',
   reader: {
     name: 'buCode',
-    field: ['buName', 'buId'],
+    field: ['buName', 'id'],
     description: 'buName',
   },
-  placeholder: '选择业务单元'
+  placeholder: '选择业务单元',
 };

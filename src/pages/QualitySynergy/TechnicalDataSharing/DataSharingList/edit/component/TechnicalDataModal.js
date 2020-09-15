@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Row, Col, Input, DatePicker, Upload, Modal, Icon, Button } from 'antd';
+import { Form, Row, Col, Input, DatePicker } from 'antd';
+import Upload from '../../../../compoent/Upload';
 import { ComboList, ExtModal } from 'suid';
-import { CorporationListConfig } from '../../../../commonProps';
-import { baseUrl } from '../../../../../../utils/commonUrl';
-import UploadFile from '../../../../../../components/Upload';
-import { ComboAttachment } from '../../../../../../components';
+import moment from 'moment';
+import { CorporationListConfig, getRandom } from '../../../../commonProps';
 
 const FormItem = Form.Item;
 
@@ -15,26 +14,23 @@ const formItemLayoutLong = {
 
 const TechnicalDataModal = (props) => {
 
-  const { visible, type, title, form } = props;
+  const { visible, type, title, form, fatherData } = props;
 
-  const { getFieldDecorator, setFieldsValue, getFieldValue } = props.form;
-
-  const [attachment, setAttachment] = useState(null);
-
-  const [data, setData] = useState({
-    technicalDataFileId: [],
-    fileList: [],
-  });
+  const { getFieldDecorator } = props.form;
 
   const onOk = () => {
     props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
+        if (type === 'add') {
+          // 构造一个随机数Id
+          values.lineNumber = getRandom(10).toString()
+        } else {
+          values.lineNumber = fatherData.lineNumber
+        }
         props.onOk(values);
       }
     });
   };
-
-  console.log(data.technicalDataFileId, 'technicalDataFileId');
 
   const onCancel = () => {
     props.onCancel();
@@ -50,7 +46,7 @@ const TechnicalDataModal = (props) => {
         getFieldDecorator(name, {
           initialValue: initialValue,
         })(
-          <Input type={'hidden'} />,
+          <Input type={'hidden'}/>,
         )
       }
     </FormItem>
@@ -64,21 +60,22 @@ const TechnicalDataModal = (props) => {
       title={title}
       onCancel={onCancel}
       onOk={onOk}
+      destroyOnClose={true}
       afterClose={clearSelected}
     >
       <Form>
         <Row>
           <Col span={0}>
-            {hideFormItem('fileCategoryCode', type === 'add' ? '' : data.fileCategoryCode)}
+            {hideFormItem('fileCategoryCode', type === 'add' ? '' : fatherData.fileCategoryCode)}
           </Col>
           <Col span={0}>
-            {hideFormItem('fileCategoryId', type === 'add' ? '' : data.fileCategoryId)}
+            {hideFormItem('fileCategoryId', type === 'add' ? '' : fatherData.fileCategoryId)}
           </Col>
           <Col span={24}>
             <FormItem {...formItemLayoutLong} label={'文件类别'}>
               {
                 getFieldDecorator('fileCategoryName', {
-                  initialValue: type === 'add' ? '' : data.fileCategoryName,
+                  initialValue: type === 'add' ? '' : fatherData.fileCategoryName,
                   rules: [
                     {
                       required: true,
@@ -98,7 +95,7 @@ const TechnicalDataModal = (props) => {
             <FormItem {...formItemLayoutLong} label={'文件版本'}>
               {
                 getFieldDecorator('fileVersion', {
-                  initialValue: type === 'add' ? '' : data.fileVersion,
+                  initialValue: type === 'add' ? '' : fatherData.fileVersion,
                   rules: [
                     {
                       required: true,
@@ -112,8 +109,8 @@ const TechnicalDataModal = (props) => {
           <Col span={24}>
             <FormItem {...formItemLayoutLong} label={'技术资料附件'}>
               {
-                getFieldDecorator('technicalDataFileId', {
-                  initialValue: type === 'add' ? '' : data.technicalDataFileId,
+                getFieldDecorator('technicalDataFileIdList', {
+                  initialValue: type === 'add' ? null : fatherData.technicalDataFileIdList,
                   rules: [
                     {
                       required: true,
@@ -121,13 +118,7 @@ const TechnicalDataModal = (props) => {
                     },
                   ],
                 })(
-                  <ComboAttachment
-                    uploadButton={{ disabled: type === 'detail' }}
-                    allowDelete={type !== 'detail'}
-                    showViewType={type !== 'detail'}
-
-                    customBatchDownloadFileName={true}
-                    attachment={attachment}/>,
+                  <Upload entityId={type === 'add' ? null : fatherData.technicalDataFileIdList} />
                 )
               }
             </FormItem>
@@ -136,7 +127,7 @@ const TechnicalDataModal = (props) => {
             <FormItem {...formItemLayoutLong} label={'样品需求日期'}>
               {
                 getFieldDecorator('sampleRequirementDate', {
-                  initialValue: type === 'add' ? null : data.sampleRequirementDate,
+                  initialValue: type === 'add' ? null : moment(fatherData.sampleRequirementDate),
                   rules: [
                     {
                       required: true,

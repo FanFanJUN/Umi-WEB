@@ -198,6 +198,7 @@ const EnvironmentalProtectionStandard = ({ form }) => {
       <ExtModal
         centered
         destroyOnClose
+        maskClosable={false}
         visible={ESPdata.visible}
         okText="保存"
         onCancel={() => { setESPData((value) => ({ ...value, visible: false })) }}

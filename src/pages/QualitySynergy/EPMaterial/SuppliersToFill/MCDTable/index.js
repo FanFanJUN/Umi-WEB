@@ -13,7 +13,7 @@ const formLayout = {
         span: 16,
     },
 };
-const MCDForm = forwardRef(({ form }, ref) => {
+const MCDForm = forwardRef(({ form, originData }, ref) => {
     useImperativeHandle(ref, () => {
 
     })
@@ -42,8 +42,8 @@ const MCDForm = forwardRef(({ form }, ref) => {
                 <Col span={6}>
                     <FormItem label='长虹编码' {...formLayout}>
                         {
-                            getFieldDecorator('creatorName', {
-                                initialValue: '',
+                            getFieldDecorator('materialCode', {
+                                initialValue: originData.materialCode,
                                 rules: [{ required: true}]
                             })(<Input disabled />)
                         }

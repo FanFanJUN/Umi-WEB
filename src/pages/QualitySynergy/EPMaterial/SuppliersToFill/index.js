@@ -1,16 +1,19 @@
 import { useEffect, useState, useRef, Fragment } from 'react'
 import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import { Input, Button, message, Modal, Form } from 'antd';
-import { smBaseUrl } from '@/utils/commonUrl';
+import { supplierManagerBaseUrl, recommendUrl } from '@/utils/commonUrl';
 import { openNewTab, getFrameElement } from '@/utils';
 import { AutoSizeLayout, Header, AdvancedForm, ComboAttachment } from '@/components';
 import { materialCode, statusProps, distributionProps, materialStatus, PDMStatus } from '../../commonProps';
 import styles from './index.less'
+import {
+    epDemandUpdate
+} from '../../../../services/qualitySynergy'
 const { authAction, storage } = utils;
 const { create, Item: FormItem } = Form;
 const { Search } = Input;
 const { confirm } = Modal;
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const SupplierFillList = function (props) {
     const headerRef = useRef(null)
     const tableRef = useRef(null);
@@ -21,22 +24,6 @@ const SupplierFillList = function (props) {
     const [searchValue, setSearchValue] = useState({});
     const [attachment, setAttachment] = useState(null);
     const FRAMELEEMENT = getFrameElement();
-    const tableProps = {
-        store: {
-            url: `${smBaseUrl}/api/supplierFinanceViewModifyService/findByPage`,
-            params: {
-                ...searchValue,
-                quickSearchProperties: ['supplierName', 'supplierCode'],
-                sortOrders: [
-                    {
-                        property: 'docNumber',
-                        direction: 'DESC'
-                    }
-                ]
-            },
-            type: 'POST'
-        }
-    }
     const {
         getFieldDecorator,
         getFieldValue,
@@ -56,6 +43,10 @@ const SupplierFillList = function (props) {
     ]
     // 页面跳转
     function redirectToPage(type) {
+        if(selectedRowKeys.length === 0) {
+            message.warning('请选择数据');
+            return;
+        }
         const [key] = selectedRowKeys;
         const { id = '' } = FRAMELEEMENT;
         const { pathname } = window.location;
@@ -143,7 +134,7 @@ const SupplierFillList = function (props) {
         />
     </>
     const columns = [
-        { title: '是否需要填报', dataIndex: 'needToFill', width: 80, render: (text) => text ? '是' : '否'   },
+        { title: '是否需要填报', dataIndex: 'needToFill', width: 110, render: (text) => text ? '是' : '否'   },
         { title: '填报状态', dataIndex: 'effectiveStatus', width: 80, render: (text) => {
                 switch (text) {
                     case 'draft': return '已填报';
@@ -153,7 +144,7 @@ const SupplierFillList = function (props) {
             }
         },
         { title: '预警', dataIndex: 'alarm', width: 70, render: (text) => <div className={styles.circle}></div>},
-        { title: '剩余有效（天数）', dataIndex: 'daysRemaining', ellipsis: true, },
+        { title: '剩余有效(天数)', dataIndex: 'daysRemaining', ellipsis: true, width: 120 },
         { title: '有效开始日期', dataIndex: 'effectiveStartDate', ellipsis: true, },
         { title: '有效截止日期', dataIndex: 'effectiveEndDate', ellipsis: true, },
         { title: '物料代码', dataIndex: 'materialCode', ellipsis: true, },
@@ -231,7 +222,13 @@ const SupplierFillList = function (props) {
                     showSearch= {false}
                     onSelectRow={handleSelectedRows}
                     selectedRowKeys={selectedRowKeys}
-                    {...tableProps}
+                    store = {{
+                        url: `${recommendUrl}/api/epDataFillService/findByPage`,
+                        type: 'POST',
+                        params: {
+                            // ...searchValue,
+                        },
+                    }}
                 />
             }
         </AutoSizeLayout>

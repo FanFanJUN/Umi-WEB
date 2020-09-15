@@ -144,7 +144,7 @@ const Bankformef = forwardRef(({
           // console.log(lineCode)
           // console.log(keys)
         }
-        setDataSource(bankInfoVos)
+        setDataSource(bankInfoVos) 
       } 
     }
 
@@ -152,8 +152,8 @@ const Bankformef = forwardRef(({
   // 记录列表选中
   function handleSelectedRows(rowKeys, rows) {
     setRowKeys(rowKeys);
-    setRows(rows);
-    
+    setRows(rows); ;
+     
   }
   // 清除选中项
   function cleanSelectedRecord() {
@@ -169,9 +169,15 @@ const Bankformef = forwardRef(({
   }
   // 编辑
   function handleEdit() {
-    console.log(selectedRows)
+    let newsbank;
+    if (selectedRows.length > 1) {
+      newsbank = selectedRows.splice(1);
+    }else {
+      newsbank = selectedRows
+    }
+    setDataSource(newsbank) 
     setEdit(true)
-    const [row] = selectedRows;
+    const [row] = newsbank;
     setInitialValue({ ...row })
     BankInfoRef.current.handleModalVisible(true);
   }

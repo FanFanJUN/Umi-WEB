@@ -375,7 +375,7 @@ export const checkDateWithHalfYear = (rule, value, callback) => {
 export const checkDateWithYearAdd3 = (rule, value, callback) => {
   if (value) {
     if (!value.startDate) {
-      
+
     } else if (value.startDate && !value.endDate) {
       let _startDate = new Date(value.startDate);
       let now = new Date();

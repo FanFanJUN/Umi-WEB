@@ -40,6 +40,7 @@ const BankbaseRef = forwardRef(({
     const { getFieldDecorator, validateFieldsAndScroll, getFieldValue, setFieldsValue } = form;
     const [bankcodeTab, setBankcode] = useState([]);
     const [initData, setInitData] = useState([]);
+    const [countryId, setcountryId] = useState([]);
     useEffect(() => {
         const {
             id,
@@ -48,15 +49,17 @@ const BankbaseRef = forwardRef(({
         const fields = {
             ...other
         }
-        setFieldsValue(fields);
+        
         let initData = [], editData = [];
         editData.push(fields);
         if (editData && editData.length > 0) {
             initData = editData.map((item, index) => {
+               
                 item.country = {
                     key: item.countryId || item.country && item.country.key || "",
                     label: item.countryName || item.country && item.country.label || ""
                 };
+                setcountryId(item.country.key);
                 if (item.province || item.provinceName || item.provinceId) {
                     item.province = {
                         key: item.provinceId || item.province && item.province.key || ""
@@ -90,6 +93,7 @@ const BankbaseRef = forwardRef(({
         };
         initData = initData.length > 0 ? initData[0] : null;
         setInitData(initData);
+        setFieldsValue(initData);
     }, []);
     // async function BankcodeConfigTable() {
     //     let params = {code:'BANK_CODE','Q_EQ_frozen__bool':'0'}
@@ -116,8 +120,9 @@ const BankbaseRef = forwardRef(({
                 let obj = {};
                 Object.keys(values).forEach((key) => {
                 if (key === "country") {
+                    console.log(countryId)
                     obj[key + "Name"] = values[key].label;
-                    obj[key + "Id"] = values[key].key;
+                    obj[key + "Id"] = values[key].key  || countryId;
                 } else if (key === "province" && values.province) {
                     obj[key + "Name"] = values[key].label;
                     obj[key + "Id"] = values[key].key;
@@ -134,8 +139,10 @@ const BankbaseRef = forwardRef(({
                     obj[key] = values[key] || null;
                 }
                 obj[key] = values[key] || null;
+                obj.country = countryId;
                 });
                 result = obj;
+                console.log(obj)
             }
         })
         return result;
