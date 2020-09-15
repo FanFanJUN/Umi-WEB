@@ -150,6 +150,8 @@ function CreateStrategy() {
     let enclosurelist = [], basedata, baseexten, accountData,
       automaticdata, automaticincome, automThreeYear, rangeValinfo;
     if (baseVal && baseVal.supplierVo) {
+      baseVal.supplierVo.id = wholeData.supplierInfoVo.supplierVo.id;
+      baseVal.extendVo.id = wholeData.supplierInfoVo.extendVo.id;
       basedata = baseVal.supplierVo
     }
     if (baseVal && baseVal.extendVo) {
@@ -336,6 +338,8 @@ function CreateStrategy() {
     let enclosurelist = [], basedata, accountData, baseexten, automaticdata, automaticincome,
       automThreeYear, rangeValinfo;
     if (baseVal && baseVal.supplierVo) {
+      baseVal.supplierVo.id = wholeData.supplierInfoVo.supplierVo.id;
+      baseVal.extendVo.id = wholeData.supplierInfoVo.extendVo.id;
       basedata = baseVal.supplierVo
     }
     if (baseVal && baseVal.extendVo) {
@@ -383,13 +387,12 @@ function CreateStrategy() {
       wholeData.supplierInfoVo = supplierInfoVo;
     }
     let saveData = wholeData;
-    console.log(saveData)
-
+    triggerLoading(true)
     const { success, message: msg } = await saveSupplierRegister(saveData);
     if (success) {
       message.success(msg);
       triggerLoading(false)
-      closeCurrent()
+      //closeCurrent()
       return
     } else {
       message.error(msg);

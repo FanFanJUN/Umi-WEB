@@ -147,6 +147,8 @@ function CreateStrategy() {
     let enclosurelist = [], basedata, baseexten, accountData,
       automaticdata, automaticincome, automThreeYear, rangeValinfo;
     if (baseVal && baseVal.supplierVo) {
+      baseVal.supplierVo.id = editData.supplierVo.id;
+      baseVal.extendVo.id = editData.extendVo.id;
       basedata = baseVal.supplierVo
     }
     if (baseVal && baseVal.extendVo) {
@@ -200,7 +202,6 @@ function CreateStrategy() {
     }
     wholeData.againdata = '0';
     let saveData = wholeData;
-    console.log(saveData)
     triggerLoading(true)
     const { success, message: msg } = await TemporarySupplierRegister(saveData);
     if (success) {
@@ -337,6 +338,8 @@ function CreateStrategy() {
     let enclosurelist = [], basedata, accountData, baseexten, automaticdata, automaticincome,
       automThreeYear, rangeValinfo;
     if (baseVal && baseVal.supplierVo) {
+      baseVal.supplierVo.id = editData.supplierVo.id;
+      baseVal.extendVo.id = editData.extendVo.id;
       basedata = baseVal.supplierVo
     }
     if (baseVal && baseVal.extendVo) {
@@ -351,7 +354,6 @@ function CreateStrategy() {
     if (qualifications) {
       enclosurelist = [enclosurelist, ...qualifications.proCertVos];
     }
-    console.log(enclosurelist)
     if (businessInfoVal && businessInfoVal.supplierVo) {
       automaticdata = businessInfoVal.supplierVo
     }

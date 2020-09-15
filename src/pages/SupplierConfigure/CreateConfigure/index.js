@@ -56,6 +56,7 @@ function CreateStrategy() {
           fieldName: item.smFieldName,
           operationCode: '0',
           operationName: '必输',
+          rank: item.rank,
           smTableName: item.smTableName,
           smSort: index + 1
         })

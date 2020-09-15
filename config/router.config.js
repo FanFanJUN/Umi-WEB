@@ -90,6 +90,8 @@ export default [
       { path: '/supplier/supplierModify/ApprovePage/SupplierModifyApprovePage', component: './supplierModify/ApprovePage/indexpage', title: '供应商变更审核' },
       { path: '/supplier/supplierModify/ApprovePage/SupplierModifyApproveAgentEdit', component: './supplierModify/ApprovePage/indexAgentEdit', title: '供应商变更代理商审核' },
       { path: '/supplier/supplierModify/ApprovePage/SupplierModifyApproveDetail', component: './supplierModify/ApprovePage/indexDetail', title: '供应商变更流程明细' },
+      /**供应商自主注册 */
+      { path: '/supplier/selfRegister/index', component: './selfRegister/index', title: '供应商自主注册' },
       /* add Example
       {
         path: '/path',

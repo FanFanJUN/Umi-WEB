@@ -84,27 +84,19 @@ function CreateStrategy() {
   // 保存
   async function handleSave() {
     const { validateFieldsAndScroll } = HeadFormRef.current.form;
-    //let configBodyVos;
-    //const {sortTable} = 
     let configBodyVos = tabformRef.current.sortTable();
-    // if (isEmpty(radioSelect)) {
-    //   configBodyVos = dataSource
-    // }else {
-    //   configBodyVos = radioSelect
-    // }
-    console.log(configBodyVos)
     validateFieldsAndScroll(async (err, val) => {
-      // findData.configBodyVos = configBodyVos;
-      // if (!err) {
-      //   triggerLoading(true)
-      //   const { success, message: msg } = await SaveSupplierconfigureService(findData)
-      //   triggerLoading(false)
-      //   if (success) {
-      //     closeCurrent()
-      //     return
-      //   }
-      //   message.error(msg)
-      // }
+      findData.configBodyVos = configBodyVos;
+      if (!err) {
+        triggerLoading(true)
+        const { success, message: msg } = await SaveSupplierconfigureService(findData)
+        triggerLoading(false)
+        if (success) {
+          closeCurrent()
+          return
+        }
+        message.error(msg)
+      }
     })
   }
   useEffect(() => {
