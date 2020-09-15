@@ -95,7 +95,8 @@ const ExemptionClause = (props) => {
                 if (item.limitNumber){
                     item.limitNumber = Number(item.limitNumber).toFixed(2)
                 } else {
-                    delete item.limitNumberMaxSign
+                    delete item.limitNumber;
+                    delete item.limitNumberMaxSign;
                 }
                 return item;
             })
