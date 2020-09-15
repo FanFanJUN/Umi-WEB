@@ -2,6 +2,7 @@ import { smBaseUrl, baseUrl, recommendUrl } from '../../utils/commonUrl';
 import request from '../../utils/request';
 import React from 'react';
 import { commonUrl } from '../../utils';
+import { ComboList } from 'suid';
 
 // 生成随机数
 export const getRandom = num => {
@@ -11,25 +12,33 @@ export const getRandom = num => {
 // 判断解冻按钮是否禁用
 export const judgeButtonDisabled = (value) => {
   if (value?.length !== 0) {
-    const frozen = value[0].frozen
+    const frozen = value[0].frozen;
     return !value.every(item => {
-      return item.frozen === frozen
+      return item.frozen === frozen;
     });
   }
 };
 
 // 判断
-export const judge = (arr, key, value) => {
-  if (arr?.length > 0) {
-    return arr.every(item => item[key] === value);
+export const judge = (arr, key, value = undefined) => {
+  if (value !== undefined) {
+    if (arr?.length > 0) {
+      return arr.every(item => item[key] === value);
+    } else {
+      return true;
+    }
   } else {
-    return true;
+    if (arr?.length > 0) {
+      return arr.every(item => item[key] !== '');
+    } else {
+      return true;
+    }
   }
 };
 
 export const generateLineNumber = (index) => {
-  return (index < 10 ? '00' + index * 10 : index < 100 ? '0' + index*10 : index * 10).toString()
-}
+  return (index < 10 ? '00' + index * 10 : index < 100 ? '0' + index * 10 : index * 10).toString();
+};
 
 const commonProps = {
   reader: {
@@ -49,8 +58,7 @@ export const FindTacticByBuCodeAndGroupCode = async params => {
     method: 'POST',
     params: params,
   });
-}
-
+};
 
 // 根据分享需求号获取供应商
 export const FindSupplierByDemandNumber = async params => {
@@ -59,6 +67,26 @@ export const FindSupplierByDemandNumber = async params => {
     url,
     method: 'GET',
     data: params,
+  });
+};
+
+//技术资料分享战略指派
+export async function StrategyAssignedDataSharingList(params) {
+  const url = `${recommendUrl}/api/epTechnicalShareDemandService/designateStrategy`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+}
+
+//技术资料分享提交
+export async function SubmitDataSharingList(params) {
+  const url = `${recommendUrl}/api/epTechnicalShareDemandService/submit`;
+  return request({
+    url,
+    method: 'GET',
+    params: params,
   });
 }
 
@@ -326,6 +354,26 @@ export const MaterialGroupConfig = {
   },
 };
 
+// 战略采购列表
+export const StrategicPurchasingAll = {
+  remotePaging: true,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${baseUrl}/purchaseGroup/findByPagesAll`,
+  },
+  style: {
+    width: '100%',
+  },
+  rowKey: 'code',
+  reader: {
+    field: ['code', 'id'],
+    name: 'name',
+    description: 'code',
+  },
+  placeholder: '选择物料代码',
+};
+
 // 物料代码列表
 export const MaterialConfig = {
   remotePaging: true,
@@ -372,8 +420,8 @@ export const MaterialFindByPage = {
     autoLoad: false,
     url: `${recommendUrl}/api/epDemandService/findByList`,
     params: {
-      quickSearchProperties: []
-    }
+      quickSearchProperties: [],
+    },
   },
   rowKey: 'materialCode',
   reader: {
@@ -585,6 +633,23 @@ export const limitScopeList = {
   },
   placeholder: '选择适用范围',
 };
+
+// 下载状态
+export const downloadStatusProps = {
+  dataSource: [
+    {
+      code: '未下载',
+      name: '未下载',
+    },
+    {
+      code: '已下载',
+      name: '已下载',
+    },
+  ],
+  placeholder: '选择状态',
+  ...commonProps,
+};
+
 
 // 状态
 export const statusProps = {

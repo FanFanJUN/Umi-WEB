@@ -8,7 +8,7 @@ import {
   BUConfigNoFrostHighSearch, DeleteDataSharingList,
   distributionProps, judge,
   materialCode, MaterialConfig, MaterialGroupConfig,
-  statusProps, StrategicPurchaseConfig,
+  statusProps, StrategicPurchaseConfig, SubmitDataSharingList,
 } from '../../commonProps';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
 import { recommendUrl, smBaseUrl } from '../../../../utils/commonUrl';
@@ -58,6 +58,9 @@ export default function() {
       case 'delete':
         deleteList();
         break;
+      case 'submit':
+        submitOrRecall('submit');
+        break;
       case 'allot':
         setModalData({ title: '分配供应商', visible: true, type: 'allot' });
         break;
@@ -71,6 +74,25 @@ export default function() {
     setData(v => ({ ...v, quickSearchValue: value }));
     tableRef.current.remoteDataRefresh();
     console.log(value, 'value');
+  };
+
+
+  const submitOrRecall = (type) => {
+    if (type === 'submit') {
+      SubmitDataSharingList({
+        ids: data.selectedRowKeys.toString(),
+      }).then(res => {
+        if (res.success) {
+          message.success('提交成功');
+          tableRef.current.manualSelectedRows();
+          tableRef.current.remoteDataRefresh();
+        } else {
+          message.error(res.message);
+        }
+      });
+    } else {
+
+    }
   };
 
   // 删除
@@ -130,18 +152,18 @@ export default function() {
     { title: '状态', dataIndex: 'state', width: 80 },
     { title: '分配供应商状态', dataIndex: 'allotSupplierState', width: 160 },
     { title: '来源', dataIndex: 'source', width: 70 },
-    { title: '分享需求号', dataIndex: 'shareDemanNumber', ellipsis: true, width: 150 },
-    { title: '物料代码', dataIndex: 'materialCode', ellipsis: true, width: 160 },
+    { title: '分享需求号', dataIndex: 'shareDemanNumber', ellipsis: true, width: 120 },
+    { title: '物料代码', dataIndex: 'materialCode', ellipsis: true, width: 120 },
     { title: '物料描述', dataIndex: 'materialName', ellipsis: true },
     { title: '物料组代码', dataIndex: 'materialGroupCode', ellipsis: true },
     { title: '物料组描述', dataIndex: 'materialGroupName', ellipsis: true },
     { title: '战略采购代码', dataIndex: 'strategicPurchaseCode', ellipsis: true },
     { title: '战略采购名称', dataIndex: 'strategicPurchaseName', ellipsis: true },
-    {
-      title: '供应商',
-      dataIndex: 'buId',
-      render: (v, data) => <a onClick={() => handleSeesSupplier(data.shareDemanNumber)}>查看</a>,
-    },
+    // {
+    //   title: '供应商',
+    //   dataIndex: 'buId',
+    //   render: (v, data) => <a onClick={() => handleSeesSupplier(data.shareDemanNumber)}>查看</a>,
+    // },
     { title: 'BU代码', dataIndex: 'buCode', ellipsis: true },
     { title: 'BU名称', dataIndex: 'buName', ellipsis: true },
     { title: '申请人', dataIndex: 'applyPeopleName', ellipsis: true },
@@ -198,7 +220,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='PURCHASE_VIEW_CHANGE_CREATE'
-        disabled={data.selectedRowKeys.length !== 1}
+        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', '草稿') || !judge(data.selectedRows, 'strategicPurchaseCode')}
       >提交</Button>)
     }
     {
@@ -206,7 +228,7 @@ export default function() {
         onClick={() => redirectToPage('recall')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        disabled={data.selectedRowKeys.length !== 1}
+        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', '生效') || !judge(data.selectedRows, 'allotSupplierState', '未分配')}
         key='PURCHASE_VIEW_CHANGE_CREATE'
       >撤回</Button>)
     }
@@ -219,7 +241,8 @@ export default function() {
           data.selectedRowKeys.length === 0 ||
           !judge(data.selectedRows, 'allotSupplierState', '未分配') ||
           judge(data.selectedRows, 'strategicPurchaseCode', '') ||
-          !judge(data.selectedRows, 'strategicPurchaseCode', data.selectedRows[0]?.strategicPurchaseCode)
+          !judge(data.selectedRows, 'strategicPurchaseCode', data.selectedRows[0]?.strategicPurchaseCode) ||
+          !judge(data.selectedRows, 'state', '生效')
         }
         key='PURCHASE_VIEW_CHANGE_CREATE'
       >分配供应商</Button>)
@@ -300,6 +323,8 @@ export default function() {
       />
       <TacticAssign
         type={modalData.type}
+        selectedRowKeys={data.selectedRowKeys}
+        tableRef={tableRef}
         visible={assignData.visible}
         onCancel={() => setAssignData((value) => ({ ...value, visible: false }))}
       />
