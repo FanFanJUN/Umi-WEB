@@ -4,7 +4,7 @@ import { Button, DatePicker, Form, Modal, message, Input } from 'antd'
 import { materialCode } from '../../commonProps';
 import { smBaseUrl, supplierManagerBaseUrl } from '@/utils/commonUrl';
 import { getUserName, getMobile, getUserId, getUserAccount } from '../../../../utils';
-import { addDemandSupplier, submitAndReleaseDemandSupplier, supplierIsPause } from '../../../../services/qualitySynergy'
+import { addDemandSupplier, submitAndReleaseDemandSupplier, supplierIsPause, findByPageOfSupplier } from '../../../../services/qualitySynergy'
 import styles from './index.less'
 import moment from 'moment';
 const { Search } = Input;
@@ -18,6 +18,7 @@ const supplierModal = forwardRef(({ form, demanNumber }, ref) => {
     useImperativeHandle(ref, () => ({
         setVisible
     }))
+    
     const tableRef = useRef(null);
     const supplierTableRef = useRef(null);
     const [visible, setVisible] = useState(false);
@@ -29,6 +30,24 @@ const supplierModal = forwardRef(({ form, demanNumber }, ref) => {
     const [supplierSelectedRowKeys, setSupplierSelectedRowKeys] = useState([]);
     const [dataSource, setDataSource] = useState([]);
     const { getFieldDecorator, validateFields } = form;
+    useEffect(()=>{
+        if(visible === true) {
+            (async function(){
+                const res = await findByPageOfSupplier({demanNumber: 'ED-2020-001'});
+                if (res.statusCode === 200) {
+                    let dataList = res.data.rows.map(item => {
+                        return {
+                            ...item,
+                            rowKey: item.id
+                        }
+                    })
+                    setDataSource(dataList);
+                } else {
+                    message.error(res.message);
+                }
+            })()
+        }
+    }, [visible])
     const columns = [
         {
             title: '是否暂停', dataIndex: 'suspend', align: 'center', render: (text) => {
@@ -89,7 +108,10 @@ const supplierModal = forwardRef(({ form, demanNumber }, ref) => {
     }
     // 暂停/取消暂停
     async function handleSuspended() {
-       const res = await supplierIsPause({id: selectedRowKeys[0]});
+       const res = await supplierIsPause({
+           id: selectedRowKeys[0],
+           isPause: selectedRowKeys[0].suspend === 0
+        });
         console.log(res);
     }
     // 新增
@@ -101,7 +123,7 @@ const supplierModal = forwardRef(({ form, demanNumber }, ref) => {
         let addList = [];
         supplierSelected.forEach((item, index) => {
             addList.push({
-                id: dataSource.length + index + 1,
+                rowKey: dataSource.length + index + 1,
                 supplierId: item.id,
                 supplierCode: item.code,
                 supplierName: item.name,
@@ -128,7 +150,7 @@ const supplierModal = forwardRef(({ form, demanNumber }, ref) => {
             res = await addDemandSupplier(dataSource);
         }
         if (res.statusCode === 200) {
-            message.suceess('操作成功');
+            message.success('操作成功');
         } else {
             message.error(res.message);
         }
@@ -156,7 +178,7 @@ const supplierModal = forwardRef(({ form, demanNumber }, ref) => {
                 <Button className={styles.btn} onClick={handleDelete} key="delete">删除</Button>
                 <Button className={styles.btn} onClick={() => { handleSuspended() }} key="suspend" disabled={selectedRows.length > 1}>{(selectedRows.length > 1||selectedRows.length===0) ? '暂停/取消暂停' : selectedRows[0].suspend===1? '取消暂停' : '暂停'}</Button>
                 <Button className={styles.btn} onClick={() => { handlePublish(true) }}>发布</Button>
-                {/* <Button className={styles.btn} onClick={() => { handleSave(false) }}>保存并发布</Button> */}
+                <Button className={styles.btn} onClick={() => { handleSave(false) }}>保存并发布</Button>
                 <Button className={styles.btn} onClick={() => { handlePublish() }}>取消发布</Button>
             </div>
             <ScrollBar>
@@ -168,7 +190,7 @@ const supplierModal = forwardRef(({ form, demanNumber }, ref) => {
                     remotePaging
                     // checkbox={{ multiSelect: false }}
                     ref={tableRef}
-                    rowKey={(item) => item.id}
+                    rowKey={(item) => item.rowKey}
                     size='small'
                     checkbox={true}
                     onSelectRow={handleSelectedRows}

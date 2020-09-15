@@ -283,6 +283,15 @@ export async function epWithdraw(params) {
         params: params,
     });
 }
+// 填报环保资料物料-分配供应商-根据填报物料行号查询分配供应商
+export async function findByPageOfSupplier(params) {
+    const url = `${recommendUrl}/api/epDemandSupplierService/findByPage`;
+    return request({
+        url,
+        method: 'POST',
+        data: params,
+    });
+}
 // 填报环保资料物料-分配供应商-保存
 export async function addDemandSupplier(params) {
     const url = `${recommendUrl}/api/epDemandSupplierService/addDemandSupplier`;
