@@ -2,21 +2,18 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-09 10:16:41
- * @LastEditTime: 2020-09-14 18:55:04
+ * @LastEditTime: 2020-09-16 15:56:21
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/BaseCondition/BaseInfo.js
  * @Description:  基本概况
  * @Connect: 1981824361@qq.com
  */
-import React, { useEffect, useImperativeHandle, forwardRef, useRef } from 'react';
+import React, { useEffect, useImperativeHandle, forwardRef, useRef, useState } from 'react';
 import styles from '../../DataFillIn/index.less';
-import { ComboList, ExtModal } from 'suid';
 import { Col, Form, Button, Row, Input, DatePicker, InputNumber, Affix, PageHeader } from 'antd';
-// import { BUConfig } from '../../../commonProps';
 import moment from 'moment/moment';
-import classnames from 'classnames';
+import { hideFormItem, checkNull } from '../CommonUtil/utils';
 
 const FormItem = Form.Item;
-const InputGroup = Input.Group;
 
 const formLayout = {
   labelCol: {
@@ -36,24 +33,17 @@ const formLayoutCol = {
 };
 
 
-const BaseInfo = ({form, baseInfo: data, type}, ref) => {
+const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
 
+  const [designCapability, setdesignCapability] = useState('');
+  const [actualCapacity, setactualCapacity] = useState('');
 
-  const { getFieldDecorator, setFieldsValue } = form;
+  const { getFieldDecorator, setFieldsValue, getFieldValue, resetFields } = form;
 
   // useImperativeHandle(ref, () => ({
   //   form,
   // }));
-
-  const hideFormItem = (name, initialValue) => (
-    <div style={{ display: 'none' }}>
-      <FormItem>
-        {getFieldDecorator(name, {
-          initialValue: initialValue,
-        })(<Input type={'hidden'} />)}
-      </FormItem>
-    </div>
-  );
+  const HideFormItem = hideFormItem(getFieldDecorator);
 
   return (
     <div className={styles.wrapper}>
@@ -72,7 +62,7 @@ const BaseInfo = ({form, baseInfo: data, type}, ref) => {
               <Col span={12}>
                 <FormItem label="成立时间" {...formLayout}>
                   {getFieldDecorator('setUpTime', {
-                    initialValue: type === 'add' ? '' : data.setUpTime,
+                    initialValue: type === 'add' ? '' : data.setUpTime && moment(data.setUpTime),
                     rules: [
                       {
                         required: true,
@@ -91,7 +81,7 @@ const BaseInfo = ({form, baseInfo: data, type}, ref) => {
               <Col span={12}>
                 <FormItem {...formLayout} label={'企业性质'}>
                   {getFieldDecorator('enterpriceProperty', {
-                    initialValue: '',
+                    initialValue: data.enterpriceProperty,
                     rules: [
                       {
                         required: true,
@@ -106,34 +96,55 @@ const BaseInfo = ({form, baseInfo: data, type}, ref) => {
               <Col span={12}>
                 <FormItem label="注册资金" {...formLayout}>
                   {getFieldDecorator('registeredFund', {
-                    initialValue: data && data.applyPeopleName,
+                    initialValue: data.registeredFund,
                     rules: [
                       {
                         required: true,
                         message: '注册资金不能为空',
                       },
                     ],
-                  })(<Input disabled />)}
+                  })(<Input disabled style={{ width: '100%' }} addonAfter="万 RMB" />)}
                 </FormItem>
               </Col>
             </Row>
             <Row>
               <Col span={24}>
                 <FormItem label="供应商注册地址" {...formLayoutCol}>
-                  {getFieldDecorator('compatAddress', {
-                    initialValue: type === 'add' ? moment(new Date(), 'YYYY-MM-DD') : data.applyDate,
+                  {getFieldDecorator('countryName', {
+                    initialValue: data.countryName,
                     rules: [
                       {
                         required: true,
                         message: '供应商注册地址不能为空',
                       },
                     ],
-                  })(<InputGroup compact>
-                    <Input style={{ width: '20%' }} defaultValue={data.countryName} disabled />
-                    <Input style={{ width: '30%' }} defaultValue={data.provinceName} disabled />
-                    <Input style={{ width: '10%' }} defaultValue={data.cityName} disabled />
-                    <Input style={{ width: '40%' }} defaultValue={data.detailedAddress} disabled />
-                  </InputGroup>)}
+                  })(
+                    <Input style={{ width: '10%' }} disabled />
+                  )}
+                  {HideFormItem('countryCode', data.countryCode)}
+                  {getFieldDecorator('provinceName', {
+                    initialValue: data.provinceName,
+                  })(
+                    <Input style={{ width: '15%' }} disabled />
+                  )}
+                  {HideFormItem('provinceCode', data.provinceCode)}
+                  {getFieldDecorator('cityName', {
+                    initialValue: data.cityName,
+                  })(
+                    <Input style={{ width: '15%' }} disabled />
+                  )}
+                  {HideFormItem('cityCode', data.cityCode)}
+                  {getFieldDecorator('districtName', {
+                    initialValue: data.districtName,
+                  })(
+                    <Input style={{ width: '20%' }} disabled />
+                  )}
+                  {HideFormItem('districtCode', data.districtCode)}
+                  {getFieldDecorator('detailedAddress', {
+                    initialValue: data.detailedAddress,
+                  })(
+                    <Input style={{ width: '40%' }} disabled />
+                  )}
                 </FormItem>
               </Col>
               {hideFormItem('countryCode', data.countryCode)}
@@ -213,7 +224,7 @@ const BaseInfo = ({form, baseInfo: data, type}, ref) => {
                       },
                     ],
                   })(
-                    <Input placeholder='可以与企业、销售分公司、代理商同名' disabled={true}/>
+                    <Input placeholder='可以与企业、销售分公司、代理商同名' />
                   )}
                 </FormItem>
               </Col>
@@ -238,6 +249,7 @@ const BaseInfo = ({form, baseInfo: data, type}, ref) => {
                 <FormItem label="实际产能" {...formLayout}>
                   {getFieldDecorator('actualCapacity', {
                     initialValue: type === 'add' ? '' : data.actualCapacity,
+                    validateFirst: true,
                     rules: [
                       {
                         required: true,
@@ -248,6 +260,15 @@ const BaseInfo = ({form, baseInfo: data, type}, ref) => {
                 </FormItem>
               </Col>
             </Row>
+            {type !== 'add' && <Row>
+              <Col span={12}>
+                <FormItem label="现有产能利用率" {...formLayout}>
+                  {getFieldDecorator('actualCapacityFactor', {
+                    initialValue: (data.actualCapacityFactor*100),
+                  })(<Input style={{ width: '100%' }} addonAfter='%' disabled />)}
+                </FormItem>
+              </Col>
+            </Row>}
             <Row>
               <Col span={12}>
                 <FormItem label="公司总人数" {...formLayout}>
@@ -333,15 +354,6 @@ const BaseInfo = ({form, baseInfo: data, type}, ref) => {
                   {getFieldDecorator('otherStaff', {
                     initialValue: type === 'add' ? '' : data.otherStaff,
                   })(<InputNumber style={{ width: '100%' }} />)}
-                </FormItem>
-              </Col>
-            </Row>
-            <Row>
-              <Col span={12}>
-                <FormItem label="现有产能利用率" {...formLayout}>
-                  {getFieldDecorator('actualCapacityFactor', {
-                    initialValue: data.actualCapacityFactor,
-                  })(<Input placeholder='请输入现有产能利用率' style={{ width: '100%' }} addonAfter='%'  disabled/>)}
                 </FormItem>
               </Col>
             </Row>

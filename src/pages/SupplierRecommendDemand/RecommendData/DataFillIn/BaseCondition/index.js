@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 15:52:52
- * @LastEditTime: 2020-09-15 17:05:32
+ * @LastEditTime: 2020-09-16 16:27:17
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/BaseCondition/index.js
  * @Description: 基本情况 Tab
  * @Connect: 1981824361@qq.com
@@ -28,7 +28,7 @@ const BaseCondition = ({ form }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const res = await findrBaseInfoById({ supplierRecommendDemandId: id });
+            const res = await findrBaseInfoById({ supplierRecommendDemandId: '676800B6-F19D-11EA-9F88-0242C0A8442E' });
             if (res.success) {
                 res.data && setData(res.data);
             } else {
@@ -49,6 +49,8 @@ const BaseCondition = ({ form }) => {
                 supplierCertificates: data.supplierCertificates,
                 supplierContacts: data.supplierContacts,
                 managementSystems: data.managementSystems,
+                recommendDemandId: id || '676800B6-F19D-11EA-9F88-0242C0A8442E',
+                actualCapacityFactor: (value.designCapability / value.actualCapacity).toFixed(2), // 现有产能利用率 设计产能/实际产能
             };
             saveBaseInfo(filterEmptyFileds(saveParams)).then((res) => {
                 if (res && res.success) {
