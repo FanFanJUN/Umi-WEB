@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-09-14 10:40:21
- * @LastEditTime: 2020-09-16 11:43:53
+ * @LastEditTime: 2020-09-16 17:54:38
  * @Description: 资料填报Api接口
  * @FilePath: /srm-sm-web/src/services/dataFillInApi.js
  */
@@ -84,6 +84,14 @@ export async function requestGetApi(params) {
         case 'hdssControllTab':
             requestApi = '/harmfulControlService/findHarmfulControlByRecommendDemandId';
             break;
+        // 合作意愿
+        case 'DWCTab':
+            requestApi = '/cooperativeWillingnessService/findSupplierBaseInfoByRecommendDemandId';
+            break;
+        // 其他附加资料
+        case 'otherTab':
+            requestApi = '/otherFileService/findOtherFileByRecommendDemandId';
+            break;
         default:
             break;
     }
@@ -113,6 +121,14 @@ export async function requestPostApi(params) {
         // 产品有害物质管控
         case 'hdssControllTab':
             requestApi = '/harmfulControlService/saveHarmfulControl';
+            break;
+        // 合作意愿
+        case 'DWCTab':
+            requestApi = '/cooperativeWillingnessService/saveCooperativeWillingness';
+            break;
+        // 其他附加资料
+        case 'otherTab':
+            requestApi = '/otherFileService/saveOtherFile';
             break;
         default:
             break;

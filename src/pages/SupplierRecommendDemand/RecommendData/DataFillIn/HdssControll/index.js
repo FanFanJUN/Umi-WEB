@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:58:22
- * @LastEditTime: 2020-09-16 17:25:31
+ * @LastEditTime: 2020-09-16 18:25:22
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/HdssControll/index.js
  * @Description: 产品有害物质管控 tab
  * @Connect: 1981824361@qq.com
@@ -227,7 +227,7 @@ const HdssControll = ({ form }) => {
                                                 initialValue: type === 'add' ? '' : data.attachmentIds,
                                             })(<UploadFile
                                                 showColor={type !== 'add' ? true : false}
-                                                type={type !== 'add'}
+                                                type={type === 'add' ? '' : 'show'}
                                                 entityId={data.attachmentIds} />)}
                                         </FormItem>
                                     </Col>

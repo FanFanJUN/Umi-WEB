@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 15:52:52
- * @LastEditTime: 2020-09-16 16:27:17
+ * @LastEditTime: 2020-09-16 17:58:55
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/BaseCondition/index.js
  * @Description: 基本情况 Tab
  * @Connect: 1981824361@qq.com
@@ -23,7 +23,6 @@ const BaseCondition = ({ form }) => {
     const [data, setData] = useState({});
     const [loading, setLoading] = useState(false);
 
-    // const getFormRef = useRef();
     const { query: { id, type = 'add' } } = router.useLocation();
 
     useEffect(() => {
@@ -40,7 +39,6 @@ const BaseCondition = ({ form }) => {
     }, []);
 
     function handleSave() {
-        // const formRef = getFormRef.current.form;
         form.validateFieldsAndScroll((error, value) => {
             console.log(value);
             if (error) return;

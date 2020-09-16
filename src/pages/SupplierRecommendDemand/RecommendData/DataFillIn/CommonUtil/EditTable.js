@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-10 10:57:33
- * @LastEditTime: 2020-09-16 17:17:26
+ * @LastEditTime: 2020-09-16 18:38:25
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/CommonUtil/EditTable.js
  * @Description:  函数式可编辑行 Table组件
  * @Connect: 1981824361@qq.com
@@ -14,6 +14,8 @@ import PropTypes, { any } from 'prop-types';
 import AutoSizeLayout from '../../../../supplierRegister/SupplierAutoLayout';
 import { guid, isEmptyArray } from './utils';
 import UploadFile from './UploadFile';
+import SelectWithService from '../../../../supplierRegister/components/SelectWithService';
+import { currencyListConfigWithoutAuth } from '../../../../../utils/commonProps';
 
 
 const EditableContext = React.createContext();
@@ -57,6 +59,13 @@ const EditableCell = (params) => {
                 return <Input.TextArea disabled={inputDisabled} />
             case 'hideForm':
                 return <Input type={"hidden"} />
+            case 'selectwithService':
+                return <SelectWithService
+                    labelInValue={true}
+                    placeholder={"请选择市"}
+                    config={currencyListConfigWithoutAuth}
+                // params={{ provinceId: getFieldValue("province") ? getFieldValue("province").key : "" }}
+                />
             default:
                 return <Input disabled={inputDisabled} />;
         }
@@ -90,7 +99,7 @@ const EditableCell = (params) => {
 
 const EditableTable = (props) => {
 
-    const { form, dataSource, columns, rowKey, isEditTable = false, isToolBar = false, setNewData, 
+    const { form, dataSource, columns, rowKey, isEditTable = false, isToolBar = false, setNewData,
         recommendDemandId = '676800B6-F19D-11EA-9F88-0242C0A8442E' } = props;
 
     console.log(dataSource);
