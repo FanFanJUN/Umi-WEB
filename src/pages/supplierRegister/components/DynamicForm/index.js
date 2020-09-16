@@ -260,7 +260,7 @@ const CommonconfigRef = forwardRef(({
                           })(
                             <ComboTree
                               
-                              disabled={approve === true || change === true || item.verifi === '2'}
+                              disabled={item.verifi === '2'}
                               {...purchaseCompanyPropsreg}
                               form={form} showSearch={false}
                               name='supplierVo.supplierCategoryName'
@@ -286,7 +286,7 @@ const CommonconfigRef = forwardRef(({
                           rules: [{ required: item.verifi === '0', message: "请输入供应商名称！", }]
                         })(
                           <Input
-                            disabled={change === true || item.verifi === '2'}
+                            disabled={item.verifi === '2'}
                             onBlur={handleCheckName}
                             maxLength={40}
                             placeholder={'请输入供应商名称'} />
@@ -775,8 +775,8 @@ const CommonconfigRef = forwardRef(({
                       >
                         {
                           isView ? <span>{editData && editData.extendVo ? editData.extendVo.countryName : ''}</span> :
-                           getFieldDecorator("countryId"),
-                            getFieldDecorator("countryName", {
+                           getFieldDecorator("extendVo.countryId"),
+                            getFieldDecorator("extendVo.countryName", {
                               // initialValue: editData ? {
                               //   label: editData.extendVo.countryName
                               //   , key: editData.extendVo.countryId
@@ -790,8 +790,8 @@ const CommonconfigRef = forwardRef(({
                               disabled={item.verifi === '2'}
                                 {...countryListConfig}
                                 form={form} showSearch={false}
-                                name="countryName"
-                                field={["countryId"]}
+                                name="extendVo.countryName"
+                                field={["extendVo.countryId"]}
                               />,
                             )}
                       </FormItem>

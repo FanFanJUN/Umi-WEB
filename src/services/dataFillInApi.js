@@ -3,13 +3,12 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-09-14 10:40:21
- * @LastEditTime: 2020-09-15 16:11:44
+ * @LastEditTime: 2020-09-16 17:54:38
  * @Description: 资料填报Api接口
  * @FilePath: /srm-sm-web/src/services/dataFillInApi.js
  */
-import { supplierManagerBaseUrl, baseUrl } from '../utils/commonUrl';
+import { recommendUrl, baseUrl } from '../utils/commonUrl';
 import request from '../utils/request';
-
 
 /**
  * @description: 基本情况 查询 
@@ -17,11 +16,11 @@ import request from '../utils/request';
  * @return {type} 
  */
 export async function findrBaseInfoById(params) {
-    const url = `${supplierManagerBaseUrl}/samSupplierBaseInfoService/findSupplierBaseInfoByRecommendDemandId`;
+    const url = `${recommendUrl}/api/samSupplierBaseInfoService/findSupplierBaseInfoByRecommendDemandId`;
     return request({
         url,
         method: 'GET',
-        data: params,
+        params,
     });
 }
 
@@ -31,7 +30,7 @@ export async function findrBaseInfoById(params) {
  * @return {type} 
  */
 export async function saveBaseInfo(params) {
-    const url = `${supplierManagerBaseUrl}/samSupplierBaseInfoService/saveSupplierBaseInfo`;
+    const url = `${recommendUrl}/api/samSupplierBaseInfoService/saveSupplierBaseInfo`;
     return request({
         url,
         method: 'POST',
@@ -45,11 +44,11 @@ export async function saveBaseInfo(params) {
  * @return {type} 
  */
 export async function findSalesSituationById(params) {
-    const url = `${supplierManagerBaseUrl}/supplierSalesSituationService/findSupplierSalesSituationByRecommendDemandId`;
+    const url = `${recommendUrl}/api/supplierSalesSituationService/findSupplierSalesSituationByRecommendDemandId`;
     return request({
         url,
         method: 'GET',
-        data: params,
+        params,
     });
 }
 /**
@@ -58,7 +57,7 @@ export async function findSalesSituationById(params) {
  * @return {type} 
  */
 export async function saveSupplierSalesSituation(params) {
-    const url = `${supplierManagerBaseUrl}/supplierSalesSituationService/saveSupplierSalesSituation`;
+    const url = `${recommendUrl}/api/supplierSalesSituationService/saveSupplierSalesSituation`;
     return request({
         url,
         method: 'POST',
@@ -77,15 +76,30 @@ export async function requestGetApi(params) {
         case 'researchAbilityTab':
             requestApi = '/rdCapabilityService/findRdCapabilityByRecommendDemandId';
             break;
-
+        // 报价单及成分分析表
+        case 'quotationAndGPCATab':
+            requestApi = '/costAnalysisService/findCostAnalysisByRecommendDemandId';
+            break;
+        // 产品有害物质管控
+        case 'hdssControllTab':
+            requestApi = '/harmfulControlService/findHarmfulControlByRecommendDemandId';
+            break;
+        // 合作意愿
+        case 'DWCTab':
+            requestApi = '/cooperativeWillingnessService/findSupplierBaseInfoByRecommendDemandId';
+            break;
+        // 其他附加资料
+        case 'otherTab':
+            requestApi = '/otherFileService/findOtherFileByRecommendDemandId';
+            break;
         default:
             break;
     }
-    const url = `${supplierManagerBaseUrl}${requestApi}`;
+    const url = `${recommendUrl}/api${requestApi}`;
     return request({
         url,
         method: 'GET',
-        data: params,
+        params,
     });
 }
 /**
@@ -100,13 +114,26 @@ export async function requestPostApi(params) {
         case 'researchAbilityTab':
             requestApi = '/rdCapabilityService/saveRdCapability';
             break;
+        // 报价单及成分分析表
         case 'quotationAndGPCATab':
             requestApi = '/costAnalysisService/saveCostAnalysis';
+            break;
+        // 产品有害物质管控
+        case 'hdssControllTab':
+            requestApi = '/harmfulControlService/saveHarmfulControl';
+            break;
+        // 合作意愿
+        case 'DWCTab':
+            requestApi = '/cooperativeWillingnessService/saveCooperativeWillingness';
+            break;
+        // 其他附加资料
+        case 'otherTab':
+            requestApi = '/otherFileService/saveOtherFile';
             break;
         default:
             break;
     }
-    const url = `${supplierManagerBaseUrl}${requestApi}`;
+    const url = `${recommendUrl}/api${requestApi}`;
     return request({
         url,
         method: 'POST',

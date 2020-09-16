@@ -98,3 +98,8 @@ export const findSupplierModifyHistroyList = (params) => {
    method: 'POST',
  })
 }
+// 选择可变更的供应商列表
+export const findCanModifySupplierList = params => createServiceRequest({
+  path: '/supplierModify/findCanChooseSupplier',
+  params
+})

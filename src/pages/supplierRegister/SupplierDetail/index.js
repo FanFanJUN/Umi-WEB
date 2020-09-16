@@ -43,7 +43,7 @@ function CreateStrategy() {
   let typeId = query.frameElementId;
   async function initConfigurationTable() {
     triggerLoading(true);
-    let params = {catgroyid:typeId,property:1}
+    let params = {catgroyid:typeId,property:3}
     const { data, success, message: msg } = await SaveSupplierconfigureService(params);
       if (success) {
         let datalist  = data.configBodyVos;
@@ -92,7 +92,7 @@ function CreateStrategy() {
           verifi: item.operationCode
         })
       }
-      if (item.smMsgTypeCode === '3') {
+      if (item.smMsgTypeCode === '5') {
         handbusiness.push({
           title: item.fieldName,
           key: item.fieldCode,

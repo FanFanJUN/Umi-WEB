@@ -77,7 +77,7 @@ const OrganizatRef = forwardRef(({
     return (
         <Form>
             <Row>
-                <Col span={10}>
+                <Col span={15}>
                     <FormItem
                         {...formItemLayout}
                         label={'个人名称+手机号'}
@@ -100,7 +100,7 @@ const OrganizatRef = forwardRef(({
                 </Col>
             </Row>
             <Row>
-                <Col span={10}>
+                <Col span={15}>
                     <FormItem
                         {...formItemLayout}
                         label={'身份证号'}
@@ -124,7 +124,7 @@ const OrganizatRef = forwardRef(({
                 </Col>
             </Row>
             <Row>
-                <Col span={10}>
+                <Col span={15}>
                     <FormItem
                         {...formItemLayout}
                         label={'所在省份'}
@@ -145,7 +145,7 @@ const OrganizatRef = forwardRef(({
                 </Col>
             </Row>
             <Row>
-                <Col span={10}>
+                <Col span={15}>
                     <FormItem
                         {...formItemLayout}
                         label={'手机'}

@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:34:49
- * @LastEditTime: 2020-09-15 17:04:46
+ * @LastEditTime: 2020-09-16 13:49:00
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/SellCondition/index.js
  * @Description: 销售情况 Tab
  * @Connect: 1981824361@qq.com
@@ -20,7 +20,7 @@ const SellCondition = ({ form }) => {
     const [data, setData] = useState({});
     const [loading, setLoading] = useState(false);
 
-    const { query: { id, type = 'add' } } = router.useLocation();
+    const { query: { id = '676800B6-F19D-11EA-9F88-0242C0A8442E', type = 'add' } } = router.useLocation();
 
     useEffect(() => {
         const fetchData = async () => {

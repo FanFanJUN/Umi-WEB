@@ -43,7 +43,7 @@ export const supplierManagerBaseUrl = "/srm-sm-web";
 // /api-gateway/srm-commons-data/currency/findByPage
 
 
-export const host = window._srmHost
+export const host = ""
 
 // 老组件分页
 export const defaultPageSize = 15

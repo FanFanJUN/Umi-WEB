@@ -58,7 +58,7 @@ const BaseAccountRef = forwardRef(({
     setdefaultActiveKey(params)
   }
   return (
-    <div style={{display: hidden ? "none" : "block"}}>
+    <div style={{display: hidden ? "none" : "block",textAlign:'center'}}>
         <Tabs className="tabstext" onTabClick={(params)=>tabClickHandler(params)}>
             <TabPane forceRender tab="组织用户" key="1">
               <OrganizationPage

@@ -5,6 +5,7 @@ import { Form, Row, Input, Col, message, Radio } from 'antd';
 import { utils, ExtTable } from 'suid';
 import { router } from 'dva';
 import UploadFile from '../../../components/Upload/index'
+import { smBaseUrl } from '@/utils/commonUrl';
 import styles from '../index.less';
 import {
     findSupplierModifyHistroyList
@@ -28,19 +29,17 @@ const HistoryfoRef = forwardRef(({
         form
     }));
     const { getFieldDecorator, setFieldsValue, getFieldValue, validateFieldsAndScroll } = form;
-    const [dataSource, setDataSource] = useState([]);
+    //const [dataSource, setDataSource] = useState([]);
     const [loading, triggerLoading] = useState(false);
     useEffect(() => {
-        initSupplierModifyHistroyList()
+        //initSupplierModifyHistroyList()
     }, []);
     // 变更列表明细
     const { query } = router.useLocation();
-    async function initSupplierModifyHistroyList() {
-        const { data, success, message: msg } = await findSupplierModifyHistroyList({ requestId: query.id });
-        if (success) {
-            setDataSource(data)
-        }else {
-        message.error(msg)
+    const dataSource = {
+        store: {
+            url: `${smBaseUrl}/supplierModifyHistroy/findSupplierModifyHistroyList?requestId=` + query.id,
+            type: 'POST'
         }
     }
     const lineColumns = [
@@ -95,8 +94,8 @@ const HistoryfoRef = forwardRef(({
                         size='small'
                         remotePaging={true}
                         ellipsis={false}
-                        dataSource={dataSource}
-                        //{...dataSource}
+                        //dataSource={dataSource}
+                        {...dataSource}
                     />
                 </div>
             </div>

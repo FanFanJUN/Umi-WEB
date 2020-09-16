@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ExtTable, WorkFlow, ExtModal, utils, ToolBar,ScrollBar } from 'suid';
 import { Input, Button, message, Modal } from 'antd';
-import { openNewTab, getFrameElement } from '@/utils';
+import { openNewTab, getFrameElement ,isEmpty} from '@/utils';
 import { StartFlow } from 'seid';
 import UploadFile from '../../components/Upload/index'
 import Header from '@/components/Header';
@@ -10,7 +10,7 @@ import AutoSizeLayout from '@/components/AutoSizeLayout';
 import styles from './index.less';
 import { smBaseUrl } from '@/utils/commonUrl';
 import { RecommendationList ,stopApproveingOrder} from "@/services/supplierRegister"
-import {deleteSupplierModify,checkExistUnfinishedValidity} from '@/services/SupplierModifyService'
+import {deleteSupplierModify,checkExistUnfinishedValidity,findCanModifySupplierList} from '@/services/SupplierModifyService'
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 const { Search } = Input
 const confirm = Modal.confirm;
@@ -199,7 +199,7 @@ function SupplierConfigure() {
 
     useEffect(() => {
         window.parent.frames.addEventListener('message', listenerParentClose, false);
-        return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
+        return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
     }, []);
     
     function listenerParentClose(event) {
@@ -210,8 +210,18 @@ function SupplierConfigure() {
     }
     // 新增供应商
     async function AddModel() {
-        getModelRef.current.handleModalVisible(true);
-        //openNewTab(`supplier/supplierModify/details/index`, '编辑供应商注册信息', false)
+        if (authorizations.userType !== 'Supplier') {
+            getModelRef.current.handleModalVisible(true);
+            return;
+        }else {
+            const {data,success, message: msg } = await findCanModifySupplierList();
+            if (success) {
+                let id = data.rows[0].supplierId;
+                openNewTab(`supplier/supplierModify/create/index?id=${id}`, '供应商变更新建变更单', false)
+            }else {
+                message.error(msg)
+            }
+        }
     }
     // 记录列表选中
     function handleSelectedRows(rowKeys, rows) {
@@ -266,9 +276,16 @@ function SupplierConfigure() {
     }
     // 查询
     function handleQuickSerach() {
+        let search;
+        if(Object.keys(searchValue).length == 0){
+            search = ""
+        }else {
+            search = searchValue
+        }
         setSearchValue({
-            quickSearchValue: searchValue
+            quickSearchValue: search
         })
+        console.log(searchValue)
         uploadTable();
     }
     // 提交审核完成更新列表
@@ -411,7 +428,7 @@ function SupplierConfigure() {
             <AutoSizeLayout>
                 {
                     (height) => <ExtTable
-                        columns={columns}
+                        columns={authorizations.userType === 'Supplier' ? supplierColumns : columns}
                         showSearch={false}
                         ref={tableRef}
                         rowKey={(item) => item.id}
