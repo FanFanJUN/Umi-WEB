@@ -93,7 +93,7 @@ const BusinessRef = forwardRef(({
         <Form>
             {
                 businesshide.map((item, index) => {
-                    if (item.verifi === '0' || item.verifi === '1') {
+                    if (item.verifi === '0' || item.verifi === '1' || item.verifi === '2') {
                         return (
                             <>
                                 {item.key === "enterpriseProfile" ? <Row>
@@ -114,7 +114,9 @@ const BusinessRef = forwardRef(({
                                                     initialValue: editData && editData.supplierVo ? editData.supplierVo.enterpriseProfile : '',
                                                     rules: [{ required: true, message: "请输入企业简介", whitespace: true }]
                                                 })(
-                                                    <Input.TextArea maxLength={250}
+                                                    <Input.TextArea 
+                                                    disabled={item.verifi === '2'}
+                                                    maxLength={250}
                                                         placeholder={"请输入企业简介,主要应包括人数、地址、经营范围、拟准入产品生产能力、资质等信息。"} />
                                                 )
                                         }
@@ -138,7 +140,7 @@ const BusinessRef = forwardRef(({
                                                     initialValue: editData && editData.supplierVo ? editData.supplierVo.businessScope : '',
                                                     rules: [{ required: true, message: "经营范围", whitespace: true }]
                                                 })(
-                                                    <Input.TextArea maxLength={250} placeholder={"请输入经营范围"} />
+                                                    <Input.TextArea disabled={item.verifi === '2'} maxLength={250} placeholder={"请输入经营范围"} />
                                                 )
                                         }
                                     </FormItem>
@@ -150,6 +152,7 @@ const BusinessRef = forwardRef(({
                                     >
                                         {
                                             <MainClient
+                                                disabled={item.verifi === '2'}
                                                 isView={isView}
                                                 editData={editData}
                                                 wrappedComponentRef={MainClientRef} />
@@ -163,6 +166,7 @@ const BusinessRef = forwardRef(({
                                     >
                                         {
                                             <ThreeYearIncome
+                                            disabled={item.verifi === '2'}
                                                 isView={isView}
                                                 editData={editData}
                                                 wrappedComponentRef={ThreeYearRef} />

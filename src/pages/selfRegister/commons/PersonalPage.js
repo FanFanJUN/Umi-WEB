@@ -22,7 +22,7 @@ const OrganizatRef = forwardRef(({
     approve
 }, ref) => {
     useImperativeHandle(ref, () => ({
-        getAccountinfo,
+        getpersoninfo,
         form
     }));
     const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
@@ -41,9 +41,7 @@ const OrganizatRef = forwardRef(({
         // })
     }, [])
     // 表单
-    function getAccountinfo() {
-        // const valus = form.validateFieldsAndScroll();
-        // return valus;
+    function getpersoninfo() {
         let result = false;
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
@@ -67,6 +65,13 @@ const OrganizatRef = forwardRef(({
             } else {
                 message.error('供应商名称已存在，请重新输入');
             }
+        }
+    }
+    function creditCodeChange(event) {
+        let value = event.target.value;
+        event.target.value = value.toUpperCase();
+        if (value && value.match('^[A-Z0-9]{18}$')) {
+           
         }
     }
     return (
@@ -101,14 +106,15 @@ const OrganizatRef = forwardRef(({
                         label={'身份证号'}
                     >
                         {
-                            getFieldDecorator('name', {
+                            getFieldDecorator('creditCode', {
                                 initialValue: '',
                                 rules: [{ required: true, message: '请输入身份证号' },
-                                //{ validator: this.checkName },
+                                { pattern: '^[A-Z0-9]{18}$', message: '只能是18位英文和数字' }
                                 ],
                             })(
                                 <Input
-                                    //onChange={this.supplierNameChange}
+                                    onChange={creditCodeChange}
+                                    maxLength={18}
                                     onBlur={handleCheckName}
                                     placeholder={'请输入身份证号'}
                                 />,

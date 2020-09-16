@@ -62,7 +62,7 @@ class UploadFile extends React.Component {
         if (this.entityId) {
             let completeUploadFile = [];
             let fileList = [];
-            request.get(baseUrl + '/supplierRegister/getEntityDocumentInfos?entityId=' + encodeURIComponent(this.entityId))
+            request.get(`${baseUrl}/supplierRegister/getEntityDocumentInfos?entityId=` + encodeURIComponent(this.entityId))
                 .then(res => {
                     if (res.success && res.data && res.data.length > 0) {
                         res.data.map(item => {
@@ -288,7 +288,7 @@ class UploadFile extends React.Component {
                         beforeUpload={this.beforeUpload}
                         showUploadList={false}
                         fileList={this.state.fileList}
-                        action= {BASE_URL + `${baseUrl}/supplierRegister/uploadNoAuth`}
+                        action= {`${BASE_URL}${baseUrl}/supplierRegister/uploadNoAuth`}
                         headers={this.getHeaders()}
                         onChange={this.handleChange}
                         style={{width: '100%'}}

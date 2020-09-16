@@ -16,10 +16,7 @@ const tipsLayout = {
 const OrganizatRef = forwardRef(({
     isView,
     form,
-    editData = [],
-    initialValue = {},
-    accountinfo = [],
-    approve
+    accounts=[],
 }, ref) => {
     useImperativeHandle(ref, () => ({
         getOrganizinfo,
@@ -30,15 +27,6 @@ const OrganizatRef = forwardRef(({
     const [configure, setConfigure] = useState([]);
     //const { attachment = null } = initialValues;
     useEffect(() => {
-        // let fieldsListed = []
-        // accountinfo.map(item => {
-        //   fieldsListed.push({
-        //     title: item.title,
-        //     key: item.key,
-        //     verifi: item.verifi,
-        //     type: 'input',
-        //   })
-        // })
     }, [])
     // 表单
     function getOrganizinfo() {
@@ -121,13 +109,13 @@ const OrganizatRef = forwardRef(({
                     >
                         {
                             getFieldDecorator('mobile', {
-                                initialValue: '',
+                                initialValue: accounts && accounts.mobile,
                                 rules: [{
                                     required: true, message: '手机不能为空'
                                 }],
                             })(
                                 <Input
-                                disabled={true}
+                                    disabled={true}
                                     maxLength={11}
                                     placeholder={'请输入手机号'} />,
                             )
@@ -143,7 +131,7 @@ const OrganizatRef = forwardRef(({
                     >
                         {
                             getFieldDecorator('email', {
-                                initialValue: '',
+                                initialValue: accounts && accounts.email,
                                 rules: [
                                     //{ validator: onMailCheck, message: '请输入正确格式的电子邮箱！', whitespace: true },
                                     { required: true, message: '请输入电子邮箱' }

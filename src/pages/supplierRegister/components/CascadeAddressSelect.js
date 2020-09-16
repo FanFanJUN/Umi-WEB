@@ -25,7 +25,8 @@ class CascadeAddressSelect extends Component {
       city: value.city,
       area: value.area,
       street: value.street,
-      id:''
+      id:'',
+      disabled:value.disabled
     };
   }
 
@@ -68,7 +69,7 @@ class CascadeAddressSelect extends Component {
 
 
   render() {
-    const {size, placeholder, provinceConfig, cityConfig, areaConfig,isView} = this.props;
+    const {size, placeholder, provinceConfig, cityConfig, areaConfig,isView,disabled} = this.props;
     const {province, city, area,street} = this.state;
     const provinceId = province ? province.key : null;
     const Id = city ? city.key : null;
@@ -82,6 +83,8 @@ class CascadeAddressSelect extends Component {
             placeholder={"请选择省"}
             style={{width: '14%', marginRight: "1%"}}
             onChange={this.handleProvinceChange}
+            disabled={disabled === '2'}
+
           />
           <SelectWithService
             labelInValue={true}
@@ -92,6 +95,7 @@ class CascadeAddressSelect extends Component {
             placeholder={"请选择城市"}
             style={{width: '14%', marginRight: "1%"}}
             onChange={this.handleCityChange}
+            disabled={disabled === '2'}
           />
            <SelectWithService
               labelInValue={true}
@@ -102,6 +106,7 @@ class CascadeAddressSelect extends Component {
               placeholder={"请选择区县"}
               style={{width: '15%', marginRight: "1%"}}
               onChange={this.handleAreaChange}
+              disabled={disabled === '2'}
             />
             {/* {
               isView === true &&
@@ -123,6 +128,7 @@ class CascadeAddressSelect extends Component {
             onChange={this.handleStreetChange}
             style={{width: '54%'}}
             placeholder={placeholder || "详细地址"}
+            disabled={disabled === '2'}
           />
       </span>
     );
