@@ -21,6 +21,15 @@ export async function exemptionClauseDataDelete(params) {
         params: params,
     });
 }
+// 豁免条款-删除
+export async function exemptionClauseDataFrozen(params) {
+    const url = `${baseUrl}/exemptionClauseData/frozen`;
+    return request({
+        url,
+        method: 'GET',
+        params: params,
+    });
+}
 // 豁免条款批导验证
 export async function JudgeTheListOfExemptionClause(params) {
     const url = `${baseUrl}/exemptionClauseData/importExcel`;
