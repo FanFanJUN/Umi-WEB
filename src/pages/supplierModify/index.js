@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ExtTable, WorkFlow, ExtModal, utils, ToolBar,ScrollBar } from 'suid';
 import { Input, Button, message, Modal } from 'antd';
-import { openNewTab, getFrameElement } from '@/utils';
+import { openNewTab, getFrameElement ,isEmpty} from '@/utils';
 import { StartFlow } from 'seid';
 import UploadFile from '../../components/Upload/index'
 import Header from '@/components/Header';
@@ -266,9 +266,16 @@ function SupplierConfigure() {
     }
     // 查询
     function handleQuickSerach() {
+        let search;
+        if(Object.keys(searchValue).length == 0){
+            search = ""
+        }else {
+            search = searchValue
+        }
         setSearchValue({
-            quickSearchValue: searchValue
+            quickSearchValue: search
         })
+        console.log(searchValue)
         uploadTable();
     }
     // 提交审核完成更新列表

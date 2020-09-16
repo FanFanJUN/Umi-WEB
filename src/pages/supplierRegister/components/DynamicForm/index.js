@@ -775,8 +775,8 @@ const CommonconfigRef = forwardRef(({
                       >
                         {
                           isView ? <span>{editData && editData.extendVo ? editData.extendVo.countryName : ''}</span> :
-                           getFieldDecorator("countryId"),
-                            getFieldDecorator("countryName", {
+                           getFieldDecorator("extendVo.countryId"),
+                            getFieldDecorator("extendVo.countryName", {
                               // initialValue: editData ? {
                               //   label: editData.extendVo.countryName
                               //   , key: editData.extendVo.countryId
@@ -790,8 +790,8 @@ const CommonconfigRef = forwardRef(({
                               disabled={item.verifi === '2'}
                                 {...countryListConfig}
                                 form={form} showSearch={false}
-                                name="countryName"
-                                field={["countryId"]}
+                                name="extendVo.countryName"
+                                field={["extendVo.countryId"]}
                               />,
                             )}
                       </FormItem>

@@ -88,12 +88,13 @@ function CreateStrategy() {
     validateFieldsAndScroll(async (err, val) => {
       findData.configBodyVos = configBodyVos;
       findData.configCode = val.configCode;
+      console.log(findData)
       if (!err) {
         triggerLoading(true)
         const { success, message: msg } = await SaveSupplierconfigureService(findData)
         triggerLoading(false)
         if (success) {
-          closeCurrent()
+          //closeCurrent()
           return
         }
         message.error(msg)
