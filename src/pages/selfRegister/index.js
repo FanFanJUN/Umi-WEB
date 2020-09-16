@@ -46,6 +46,12 @@ export default function () {
         const { getAccountinfo } = BassAccounRef.current;
         let resultData = getAccountinfo()
         triggerLoading(true)
+        resultData.account ='';
+        resultData.pwd ='';
+        resultData.repeatPwd ='';
+        resultData.creditCode ='';
+        resultData.code ='';
+        resultData.mobilecode ='';
         const { success, message: msg } = await saveRegistVo({registrationInformationVo: JSON.stringify(resultData)})
         if (success) {
            // window.location.replace(host + psmBaseUrl + `/RegisterSuccessModal?account= ${resultData.account} &pwd=${resultData.pwd}&name=${resultData.name}`);

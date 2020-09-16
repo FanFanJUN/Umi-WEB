@@ -260,7 +260,7 @@ const CommonconfigRef = forwardRef(({
                           })(
                             <ComboTree
                               
-                              disabled={approve === true || change === true || item.verifi === '2'}
+                              disabled={item.verifi === '2'}
                               {...purchaseCompanyPropsreg}
                               form={form} showSearch={false}
                               name='supplierVo.supplierCategoryName'
@@ -286,7 +286,7 @@ const CommonconfigRef = forwardRef(({
                           rules: [{ required: item.verifi === '0', message: "请输入供应商名称！", }]
                         })(
                           <Input
-                            disabled={change === true || item.verifi === '2'}
+                            disabled={item.verifi === '2'}
                             onBlur={handleCheckName}
                             maxLength={40}
                             placeholder={'请输入供应商名称'} />
