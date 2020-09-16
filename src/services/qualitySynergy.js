@@ -375,6 +375,33 @@ export async function epDemandUpdate(params) {
         data: params,
     });
 }
+// 供应商-填报环保资料-提交
+export async function epDemandSubmit(params) {
+    const url = `${recommendUrl}/api/epDataFillService/submit`;
+    return request({
+        url,
+        method: 'GET',
+        params: params,
+    });
+}
+// 供应商-填报环保资料-撤回
+export async function epDemandRecall(params) {
+    const url = `${recommendUrl}/api/epDataFillService/recall`;
+    return request({
+        url,
+        method: 'GET',
+        params: params,
+    });
+}
+// 供应商-填报环保资料-撤回
+export async function epDemandCopyAll(params) {
+    const url = `${recommendUrl}/api/epDataFillService/copyAll`;
+    return request({
+        url,
+        method: 'GET',
+        params: params,
+    });
+}
 // 查询组织机构
 export async function findOrgTreeWithoutFrozen(params) {
     const url = `/api-gateway/basic-service/organization/findOrgTreeWithoutFrozen`;

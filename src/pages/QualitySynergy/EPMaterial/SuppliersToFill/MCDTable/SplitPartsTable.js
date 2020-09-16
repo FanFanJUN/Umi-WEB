@@ -64,7 +64,8 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
             if (!errors) {
                 console.log('编辑拆分表', values)
                 values.reportDate = moment(values.reportDate).format('YYYY-MM-DD');
-                // values.testReportAttachmentId = values.testReportAttachmentId.join();
+                values.uploadAttachmentIds = values.testReportAttachmentId;
+                values.testReportAttachmentId = values.testReportAttachmentId ? values.testReportAttachmentId.join() : '';
                 let newList = [].concat(dataList);
                 if(modalType==='edit') {
                     newList = newList.map(item => {
@@ -203,7 +204,7 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
                         {
                             getFieldDecorator('testReportAttachmentId', {
                                 initialValue: modalType==='edit' ? selectedRows[0].testReportAttachmentId : '',
-                                // rules: [{ required: true, message: '请上传报告附件' }]
+                                rules: [{ required: true, message: '请上传报告附件' }]
                             })(<Upload entityId={modalType==='edit' ? selectedRows[0].testReportAttachmentId : ''} />)
                         }
                     </FormItem>

@@ -3,7 +3,7 @@ import { Form, Row, Col, Input, Button, Modal, message, notification } from 'ant
 import { ComboList } from 'suid';
 import { materialCode } from '../../../commonProps'
 import { getUserName, getMobile, getUserEmail } from '../../../../../utils'
-import { ComboAttachment } from '@/components';
+import { Upload } from '@/components';
 import moment from 'moment';
 const { TextArea } = Input;
 const { create, Item: FormItem } = Form;
@@ -16,7 +16,7 @@ const formLayout = {
   },
 };
 
-const BaseInfo = forwardRef(({ form, originData }, ref) => {
+const BaseInfo = forwardRef(({ form, originData={} }, ref) => {
 
   const [attachment, setAttachment] = useState(null);
   const {
@@ -35,7 +35,7 @@ const BaseInfo = forwardRef(({ form, originData }, ref) => {
           <FormItem label=' 供应商代码' {...formLayout}>
             {
               getFieldDecorator('supplierCode', {
-                initialValue: originData && originData.supplierCode,
+                initialValue: originData.supplierCode,
               })(<Input disabled />)
             }
           </FormItem>
@@ -44,7 +44,7 @@ const BaseInfo = forwardRef(({ form, originData }, ref) => {
           <FormItem label='供应商名称' {...formLayout}>
             {
               getFieldDecorator('supplierName', {
-                initialValue: originData && originData.supplierName,
+                initialValue: originData.supplierName,
               })(<Input disabled />)
             }
           </FormItem>
@@ -55,7 +55,7 @@ const BaseInfo = forwardRef(({ form, originData }, ref) => {
           <FormItem label='填报截止日期' {...formLayout}>
             {
               getFieldDecorator('fillEndDate', {
-                initialValue: originData && originData.fillEndDate,
+                initialValue: originData.fillEndDate,
               })(<Input disabled />)
             }
           </FormItem>
@@ -64,7 +64,7 @@ const BaseInfo = forwardRef(({ form, originData }, ref) => {
           <FormItem label='填报日期' {...formLayout}>
             {
               getFieldDecorator('fillDate', {
-                initialValue: moment().format('YYYY-MM-DD'),
+                initialValue: originData.fillDate ?  moment(originData.fillDate) : moment().format('YYYY-MM-DD'),
                 rules: [{ required: true, message: '请选择供应商代码' }]
               })(<Input disabled />)
             }
@@ -76,7 +76,7 @@ const BaseInfo = forwardRef(({ form, originData }, ref) => {
           <FormItem label='填报人员' {...formLayout}>
             {
               getFieldDecorator('fillPeopleName', {
-                initialValue: getUserName(),
+                initialValue: originData.fillPeopleName ? originData.fillPeopleName : getUserName(),
                 rules: [{ required: true, message: '请输入填报人员' }]
               })(<Input />)
             }
@@ -86,7 +86,7 @@ const BaseInfo = forwardRef(({ form, originData }, ref) => {
           <FormItem label='填报部门' {...formLayout}>
             {
               getFieldDecorator('fillDeptName', {
-                initialValue: '',
+                initialValue: originData.fillDeptName,
                 rules: [{ required: true, message: '请输入填报部门' }]
               })(<Input />)
             }
@@ -98,7 +98,7 @@ const BaseInfo = forwardRef(({ form, originData }, ref) => {
           <FormItem label='电话' {...formLayout}>
             {
               getFieldDecorator('fillPeoplePhone', {
-                initialValue: getMobile(),
+                initialValue: originData.fillPeoplePhone ? originData.fillPeoplePhone : getMobile(),
                 rules: [{ required: true, message: '请输入电话' }]
               })(<Input />)
             }
@@ -108,7 +108,7 @@ const BaseInfo = forwardRef(({ form, originData }, ref) => {
           <FormItem label='邮箱' {...formLayout}>
             {
               getFieldDecorator('fillPeopleEmail', {
-                initialValue: getUserEmail(),
+                initialValue: originData.fillPeopleEmail ? originData.fillPeopleEmail : getUserEmail(),
                 rules: [{ required: true, message: '请输入邮箱' }]
               })(<Input />)
             }
@@ -120,13 +120,9 @@ const BaseInfo = forwardRef(({ form, originData }, ref) => {
           <FormItem label='REACH环保符合性声明' {...formLayout}>
             {
               getFieldDecorator('reachEnvironmentId', {
-                initialValue: ''
-              })(<ComboAttachment
-                uploadButton={{ disabled: false }}
-                allowDelete={false}
-                showViewType={true}
-                customBatchDownloadFileName={false}
-                attachment={attachment} />)
+                initialValue: '',
+                rules: [{ required: true, message: '请上传报告附件' }]
+              })(<Upload entityId={originData ? originData.reachEnvironmentId : ''} />)
             }
           </FormItem>
         </Col>
@@ -134,7 +130,7 @@ const BaseInfo = forwardRef(({ form, originData }, ref) => {
           <FormItem label='传真' {...formLayout}>
             {
               getFieldDecorator('fillPeopleFax', {
-                initialValue: '',
+                initialValue: originData.fillPeopleEmail,
                 rules: [{ required: true, message: '请选择供应商代码' }]
               })(<Input />)
             }

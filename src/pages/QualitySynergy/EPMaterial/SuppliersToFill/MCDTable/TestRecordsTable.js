@@ -148,8 +148,8 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                 <Row>
                     <FormItem label='物质名称' {...formLayout}>
                         {
-                            getFieldDecorator('materialId'),
-                            getFieldDecorator('materialCode'),
+                            getFieldDecorator('materialId', {initialValue: modalType === 'edit' ? selectedRows[0].materialId : ''}),
+                            getFieldDecorator('materialCode', {initialValue: modalType === 'edit' ? selectedRows[0].materialCode : ''}),
                             getFieldDecorator('materialName', {
                                 initialValue: modalType === 'edit' ? selectedRows[0].materialName : '',
                                 rules: [{ required: true, message: '请填写拆分部件名称' }]
@@ -177,8 +177,8 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                 <Row>
                     <FormItem label='适用范围' {...formLayout}>
                         {
-                            getFieldDecorator('scopeApplicationId'),
-                            getFieldDecorator('scopeApplicationCode'),
+                            getFieldDecorator('scopeApplicationId', {initialValue: modalType === 'edit' ? selectedRows[0].scopeApplicationId : ''}),
+                            getFieldDecorator('scopeApplicationCode', {initialValue: modalType === 'edit' ? selectedRows[0].scopeApplicationCode : ''}),
                             getFieldDecorator('scopeApplicationName', {
                                 initialValue: modalType === 'edit' ? selectedRows[0].scopeApplicationName : '',
                                 rules: [{ required: true, message: '请选择适用范围' }]
@@ -216,7 +216,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                 <Row>
                     <FormItem label='基本单位' {...formLayout}>
                         {
-                            getFieldDecorator('unitCode'),
+                            getFieldDecorator('unitCode', {initialValue: modalType === 'edit' ? selectedRows[0].unitCode : ''}),
                             getFieldDecorator('unitName', {
                                 initialValue: modalType === 'edit' ? selectedRows[0].unitCode : '',
                             })(<Input disabled />)

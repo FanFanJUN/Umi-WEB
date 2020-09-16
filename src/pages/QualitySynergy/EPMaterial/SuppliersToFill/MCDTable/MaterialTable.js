@@ -131,8 +131,8 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                 <Row>
                     <FormItem label='物质代码' {...formLayout}>
                         {
-                            getFieldDecorator('substanceId'),
-                            getFieldDecorator('substanceName'),
+                            getFieldDecorator('substanceId', {initialValue: modalType === 'edit' ? selectedRows[0].substanceId : ''}),
+                            getFieldDecorator('substanceName', {initialValue: modalType === 'edit' ? selectedRows[0].substanceName : ''}),
                             (!getFieldValue('isRestricted') && modalType === 'add') ? <Input disabled={true} placeholder="请先选择是否为限用物质" />
                                 : getFieldValue('isRestricted') === '0' ? getFieldDecorator('substanceCode', {
                                     initialValue: modalType === 'edit' ? selectedRows[0].substanceCode : '',
@@ -175,8 +175,8 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                 <Row>
                     <FormItem label='适用范围' {...formLayout}>
                         {
-                            getFieldDecorator('practicalRangeId'),
-                            getFieldDecorator('practicalRangeCode'),
+                            getFieldDecorator('practicalRangeId', {initialValue: modalType === 'edit' ? selectedRows[0].practicalRangeId : ''}),
+                            getFieldDecorator('practicalRangeCode', {initialValue: modalType === 'edit' ? selectedRows[0].practicalRangeCode : ''}),
                             getFieldDecorator('practicalRangeName', {
                                 initialValue: modalType === 'edit' ? selectedRows[0].practicalRangeName : '',
                                 rules: [{ required: true, message: '请选择适用范围' }]
@@ -212,8 +212,8 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                 <Row>
                     <FormItem label='豁免条款' {...formLayout}>
                         {
-                            getFieldDecorator('exemptionClauseId'),
-                            getFieldDecorator('exemptionClauseCode'),
+                            getFieldDecorator('exemptionClauseId', {initialValue: modalType === 'edit' ? selectedRows[0].exemptionClauseId : '',}),
+                            getFieldDecorator('exemptionClauseCode', {initialValue: modalType === 'edit' ? selectedRows[0].exemptionClauseCode : '',}),
                             getFieldDecorator('exemptionClause', {
                                 initialValue: modalType === 'edit' ? selectedRows[0].exemptionClause : '',
                             })(<ComboList

@@ -225,8 +225,8 @@ export default create()(function ({ form }) {
     function handleTableTada(type, obj) {
         let params = { ...selectedRows[0], ...obj };
         editEpDemand(params).then(res => {
-            console.log(res)
-            if (res.success) {
+            console.log(res);
+            if (res.statusCode === 200) {
                 refresh();
                 message.success('编辑成功');
             } else {
@@ -515,7 +515,7 @@ export default create()(function ({ form }) {
                     }}
                     selectedRowKeys={selectedRowKeys}
                     store={{
-                        url: `${recommendUrl}/api/epDemandService/findByPages`,
+                        url: `${recommendUrl}/api/epDemandService/findByPage`,
                         params: {
                             ...searchValue,
                             quickSearchProperties: [],

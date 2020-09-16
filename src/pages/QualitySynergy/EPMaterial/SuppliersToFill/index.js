@@ -7,7 +7,10 @@ import { AutoSizeLayout, Header, AdvancedForm, ComboAttachment } from '@/compone
 import { materialCode, MaterialConfig, StrategicPurchaseConfig, distributionProps, materialStatus, PDMStatus } from '../../commonProps';
 import styles from './index.less'
 import {
-    epDemandUpdate
+    epDemandUpdate,
+    epDemandSubmit,
+    epDemandRecall,
+    epDemandCopyAll
 } from '../../../../services/qualitySynergy';
 const { authAction, storage } = utils;
 const { create, Item: FormItem } = Form;
@@ -80,7 +83,7 @@ const SupplierFillList = function (props) {
             authAction(<Button
                 className={styles.btn}
                 disabled={false}
-                onClick={()=>{submit()}}
+                onClick={()=>{handleButton('submit')}}
                 key='PURCHASE_VIEW_CHANGE_REMOVE'
                 ignore={DEVELOPER_ENV}
             >提交</Button>)
@@ -89,7 +92,7 @@ const SupplierFillList = function (props) {
             authAction(<Button
                 className={styles.btn}
                 disabled={false}
-                onClick={()=>{withdraw()}}
+                onClick={()=>{handleButton('withdraw')}}
                 ignore={DEVELOPER_ENV}
                 key='PURCHASE_VIEW_CHANGE_DETAIL'
             >撤回</Button>)
@@ -151,25 +154,28 @@ const SupplierFillList = function (props) {
         { title: '战略采购名称', dataIndex: 'strategicPurchaseName', ellipsis: true, },
         { title: '环保管理人员', dataIndex: 'environmentAdministratorName', ellipsis: true, },
     ].map(item => ({ ...item, align: 'center' }));
-    // 提交 
-    const submit = () => {
-        confirm({
-            title: '请确认是否提交环保资料填报数据',
-            onOk: () => {
-                console.log('确认删除');
-            },
-            onCancel() { },
-        });
-    }
-    // 撤回
-    const withdraw = () => {
-        confirm({
-            title: '是否撤回已提交的环保资料填报数据',
-            onOk: () => {
-                console.log('确认撤回');
-            },
-            onCancel() { },
-        });
+    const handleButton = async (type) => {
+        let res = {}, id = selectedRowKeys[0]
+        switch(type){
+            case 'submit':
+                res = await epDemandSubmit({id});
+                break;
+            case 'withdraw':
+                res = await epDemandRecall({id});
+                break;
+            case 'copy':
+                res = await epDemandCopyAll({id});
+                break;
+            default:
+                break;
+        }
+        if(res.statusCode === 200) {
+            refresh();
+            message.success('操作成功');
+        } else {
+            message.error(res.message);
+        }
+        
     }
     // 快捷查询
     function handleQuickSearch() {
@@ -188,6 +194,11 @@ const SupplierFillList = function (props) {
     // 确定复制
     function handleCopyOk() {
 
+    }
+    // 清空选中/刷新表格数据
+    const refresh = () => {
+        tableRef.current.manualSelectedRows();
+        tableRef.current.remoteDataRefresh();
     }
     // 上传确认
     function handleUploadOk() {

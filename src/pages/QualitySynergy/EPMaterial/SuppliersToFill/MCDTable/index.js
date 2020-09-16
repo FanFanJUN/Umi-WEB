@@ -65,6 +65,7 @@ const MCDForm = forwardRef(({ form, originData }, ref) => {
                     <FormItem label='物料名称' {...formLayout}>
                         {
                             getFieldDecorator('mcdMaterialName', {
+                                initialValue: originData.mcdMaterialName,
                                 rules: [{ required: true, message: '请输入物料名称' }]
                             })(<Input />)
                         }
@@ -74,6 +75,7 @@ const MCDForm = forwardRef(({ form, originData }, ref) => {
                     <FormItem label='型号' {...formLayout}>
                         {
                             getFieldDecorator('mcdModel', {
+                                initialValue: originData.mcdModel,
                                 rules: [{ required: true, message: '请输入型号' }]
                             })(<Input />)
                         }
