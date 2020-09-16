@@ -87,6 +87,7 @@ function CreateStrategy() {
     let configBodyVos = tabformRef.current.sortTable();
     validateFieldsAndScroll(async (err, val) => {
       findData.configBodyVos = configBodyVos;
+      findData.configCode = val.configCode;
       if (!err) {
         triggerLoading(true)
         const { success, message: msg } = await SaveSupplierconfigureService(findData)
