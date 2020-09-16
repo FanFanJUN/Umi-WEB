@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:58:22
- * @LastEditTime: 2020-09-16 17:18:00
+ * @LastEditTime: 2020-09-16 17:25:31
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/HdssControll/index.js
  * @Description: 产品有害物质管控 tab
  * @Connect: 1981824361@qq.com
@@ -15,7 +15,6 @@ import UploadFile from '../CommonUtil/UploadFile';
 import { router } from 'dva';
 import { requestGetApi, requestPostApi } from '../../../../../services/dataFillInApi';
 import { filterEmptyFileds, checkNull, isEmptyArray } from '../CommonUtil/utils';
-import './index.css';
 
 const InputGroup = Input.Group;
 const FormItem = Form.Item;
