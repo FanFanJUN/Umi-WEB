@@ -13,10 +13,10 @@ const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 14, },
 };
-const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt }, ref) => {
-    console.log(dataList)
+const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDataList }, ref) => {
     useImperativeHandle(ref, () => ({
-        setVisible
+        setVisible,
+        setRowKeys
     }))
     const tableRef = useRef(null);
     const [visible, setVisible] = useState(false);
@@ -29,28 +29,32 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt }, ref) => 
         { title: '拆分部位名称', dataIndex: 'splitPartsName', align: 'center' },
         { title: '均质材料名称', dataIndex: 'homogeneousMaterialName', ellipsis: true, align: 'center' },
         { title: '测试机构', dataIndex: 'testOrganization', ellipsis: true, align: 'center', },
-        { title: '测试结论', dataIndex: 'Boolean reportResult', ellipsis: true, align: 'center', },
+        { title: '测试结论', dataIndex: 'reportResult', ellipsis: true, align: 'center', render: (text)=>text=='true'?'通过':'不通过'},
         { title: '报告编号', dataIndex: 'reportNumber', ellipsis: true, align: 'center', },
         { title: '报告日期', dataIndex: 'reportDate', ellipsis: true, align: 'center', },
         { title: '有效截止日期 ', dataIndex: 'effectiveEndDate', ellipsis: true, align: 'center', },
         { title: '报告附件', dataIndex: 'testReportAttachmentId', ellipsis: true, align: 'center', render:(text)=>{
-            return <Upload entityId={''} />
+            return <Upload entityId={text} type="show" />
         } },
         { title: '排序', dataIndex: 'name8', ellipsis: true, align: 'center', },
     ];
     // 记录列表选中
     function handleSelectedRows(rowKeys, rows) {
+        console.log('拆分部件选中', rows);
         setRowKeys(rowKeys);
         setRows(rows);
-        setSelectedSpilt(rows[0]);
+        setSelectedSpilt(rows.length === 1 ? rows[0] : {});
     }
     // 删除
     function handleDelete() {
         confirm({
             title: '删除',
             content: '请确认是否删除选中拆分部件',
-            onOk: async () => {
-                console.log('确定删除')
+            onOk: () => {
+                let newList = dataList.filter(item => !(selectedRowKeys.includes(item.rowKey)));
+                newList = newList.map((item, index) => ({...item, rowKey: index}));
+                setSplitDataList(newList);
+                tableRef.current.manualSelectedRows();
             }
         })
     }
@@ -58,21 +62,44 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt }, ref) => 
     function handleAdd() {
         validateFields((errors, values) => {
             if (!errors) {
-                console.log(values)
+                console.log('编辑拆分表', values)
+                values.reportDate = moment(values.reportDate).format('YYYY-MM-DD');
+                // values.testReportAttachmentId = values.testReportAttachmentId.join();
+                let newList = [].concat(dataList);
+                if(modalType==='edit') {
+                    newList = newList.map(item => {
+                        if(item.rowKey === selectedRows[0].rowKey) {
+                            return {
+                                ...selectedRows[0],
+                                ...values
+                            }
+                        } else {
+                            return item;
+                        }
+                    })
+                } else {
+                    values.rowKey = dataList.length;
+                    values.voList = [];
+                    values.testLogVoList = [];
+                    newList.push({...values});
+                }
+                setSplitDataList(newList);
+                setVisible(false);
+                tableRef.current.manualSelectedRows();
             }
         });
     }
     // 新增/编辑弹框
     function showEditModal(type) {
-        setModalType(type)
-        setVisible(true)
+        setModalType(type);
+        setVisible(true);
     }
     return <Fragment>
         <div className={styles.macTitle}>拆分部件</div>
         <div className={classnames(styles.mbt, styles.mtb)}>
             <Button type='primary' className={styles.btn} key="add" onClick={() => { showEditModal('add') }}>新增</Button>
-            <Button className={styles.btn} key="edit" onClick={()=>{showEditModal('edit')}} disabled={selectedRowKeys.length >1}>编辑</Button>
-            <Button className={styles.btn} onClick={handleDelete} key="delete">删除</Button>
+            <Button className={styles.btn} key="edit" onClick={()=>{showEditModal('edit')}} disabled={!(selectedRowKeys.length === 1)}>编辑</Button>
+            <Button className={styles.btn} onClick={()=>{handleDelete()}} key="delete" disabled={(selectedRowKeys.length === 0)}>删除</Button>
             <Button className={styles.btn} key="import">批量导入</Button>
         </div>
         <ExtTable
@@ -83,13 +110,14 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt }, ref) => 
             remotePaging
             checkbox={{ multiSelect: false }}
             ref={tableRef}
-            rowKey={(item) => item.id}
+            checkbox={true}
+            rowKey={(item) => item.rowKey}
             size='small'
             onSelectRow={handleSelectedRows}
             selectedRowKeys={selectedRowKeys}
             dataSource={dataList}
         />
-        <ExtModal
+        {visible && <ExtModal
             centered
             destroyOnClose
             visible={visible}
@@ -174,14 +202,14 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt }, ref) => 
                     <FormItem label='报告附件' {...formLayout}>
                         {
                             getFieldDecorator('testReportAttachmentId', {
-                                initialValue: modalType==='edit' ? selectedRows[0].reportResult : '',
-                                rules: [{ required: true, message: '请请上传技术资料附件' }]
+                                initialValue: modalType==='edit' ? selectedRows[0].testReportAttachmentId : '',
+                                // rules: [{ required: true, message: '请上传报告附件' }]
                             })(<Upload entityId={modalType==='edit' ? selectedRows[0].testReportAttachmentId : ''} />)
                         }
                     </FormItem>
                 </Row>
             </Form>
-        </ExtModal>
+        </ExtModal>}
     </Fragment>
 })
 

@@ -5,13 +5,16 @@ import { openNewTab, getFrameElement } from '@/utils';
 import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
 import { recommendUrl } from '@/utils/commonUrl';
-import { materialCode, MaterialConfig, statusProps, distributionProps, materialStatus, PDMStatus, allPersonList } from '../../commonProps';
+import {
+    materialCode, MaterialConfig, MaterialGroupConfig, StrategicPurchaseConfig,
+    statusProps, distributionProps, materialStatus, PDMStatus, allPersonList
+} from '../../commonProps';
 import CheckQualificationModal from '../components/checkQualificationModal';
 import DistributeSupplierModal from '../components/distributeSupplierModal';
 import CheckModal from '../components/checkModal';
 import GenerateModal from '../components/generateModal';
 import EditModal from '../components/editModal';
-import { epWhetherDelete, editEpDemand, epFrozen, epSubmit, epWithdraw, findOrgTreeWithoutFrozen } from '../../../../services/qualitySynergy'
+import { epWhetherDelete, editEpDemand, epFrozen, epSubmit, epWithdraw, findOrgTreeWithoutFrozen, allotStrategicPurchase } from '../../../../services/qualitySynergy'
 const { authAction, storage } = utils;
 const { Search } = Input;
 const { confirm } = Modal;
@@ -157,30 +160,60 @@ export default create()(function ({ form }) {
         });
     }
     // 处理快速查询
-    function handleQuickSearch(v) {
-        console.log(v)
-        setSearchValue({
-            quickSearchValue: v
-        })
+    function handleQuickSearch(value) {
+        setSearchValue(v => ({ ...v, quickSearchValue: value }));
+        tableRef.current.remoteDataRefresh();
         // uploadTable()
     }
     // 处理高级搜索
-    function handleAdvnacedSearch(v) {
-        console.log('高级查询', v)
-        // const keys = Object.keys(v);
+    function handleAdvnacedSearch(value) {
+        value.materialCode = value.materialCode_name;
+        value.materialGroupCode = value.materialGroupCode_name;
+        value.strategicPurchaseCode = value.strategicPurchaseCode_name;
+        delete value.materialCode_name;
+        delete value.materialGroupCode_name;
+        delete value.strategicPurchaseCode_name;
+        setSearchValue(v => ({ ...v, ...value }));
+        tableRef.current.remoteDataRefresh();
     }
-    function maintainSeleteChange(item) {
-        if (!item) {
-            message.warning('请选择环保管理人员!');
-        }
-        console.log(item)
-    }
-    // 管理人员选择
-    function handleManagerSelect() {
+    // 指派战略采购
+    function maintainSeleteChange() {
         validateFields((err, values) => {
             console.log(values)
             if (!err) {
-                setMaintainModal(false)
+                const { strategicPurchaseId, strategicPurchaseName, strategicPurchaseCode } = values;
+                allotStrategicPurchase({
+                    ids: selectedRowKeys.join(),
+                    strategicPurchaseId,
+                    strategicPurchaseName,
+                    strategicPurchaseCode
+                }).then(res => {
+                    if (res.success) {
+                        refresh();
+                        message.success('操作成功');
+                    } else {
+                        message.error(res.message);
+                    }
+                })
+                setSssignPurchase(false);
+            }
+        })
+    }
+    // 维护环保管理人员
+    function handleManagerSelect() {
+        validateFields((err, values) => {
+            if (!err) {
+                const { environmentAdminAccount, environmentAdminId, environmentAdminName } = values;
+                let params = { ...selectedRows[0], environmentAdminAccount, environmentAdminId, environmentAdminName };
+                editEpDemand(params).then(res => {
+                    if (res.success) {
+                        refresh();
+                        message.success('操作成功');
+                    } else {
+                        message.error(res.message);
+                    }
+                })
+                setMaintainModal(false);
             }
         })
     }
@@ -231,8 +264,8 @@ export default create()(function ({ form }) {
     // 高级查询配置
     const formItems = [
         { title: '物料代码', key: 'materialCode', type: 'list', props: MaterialConfig },
-        { title: '物料组', key: 'materialGroupCode', type: 'list', props: materialCode },
-        { title: '战略采购', key: 'strategicPurchaseCode', type: 'list', props: materialCode },
+        { title: '物料组', key: 'materialGroupCode', type: 'list', props: MaterialGroupConfig },
+        { title: '战略采购', key: 'strategicPurchaseCode', type: 'list', props: StrategicPurchaseConfig },
         { title: '环保管理人员', key: 'environmentAdminName', props: { placeholder: '输入申请人查询' } },
         { title: '申请人', key: 'applyPersonName', props: { placeholder: '输入申请人查询' } },
         { title: '状态', key: 'effectiveStatus', type: 'list', props: statusProps },
@@ -335,7 +368,10 @@ export default create()(function ({ form }) {
             authAction(<Button
                 className={styles.btn}
                 disabled={false}
-                onClick={() => { checkOneSelect() && setMaintainModal(true) }}
+                onClick={() => {
+                    // checkOneSelect() && 
+                    setMaintainModal(true)
+                }}
                 key='PURCHASE_VIEW_CHANGE_REMOVE'
                 ignore={DEVELOPER_ENV}
             >维护环保管理人员</Button>)
@@ -380,7 +416,7 @@ export default create()(function ({ form }) {
             authAction(<Button
                 className={styles.btn}
                 disabled={false}
-                onClick={() => { setSssignPurchase(true) }}
+                onClick={() => { checkOneSelect() && setSssignPurchase(true) }}
                 ignore={DEVELOPER_ENV}
                 key='PURCHASE_VIEW_CHANGE_DETAIL'
             >指派战略采购</Button>)
@@ -479,7 +515,7 @@ export default create()(function ({ form }) {
                     }}
                     selectedRowKeys={selectedRowKeys}
                     store={{
-                        url: `${recommendUrl}/api/epDemandService/findByPage`,
+                        url: `${recommendUrl}/api/epDemandService/findByPages`,
                         params: {
                             ...searchValue,
                             quickSearchProperties: [],
@@ -500,12 +536,11 @@ export default create()(function ({ form }) {
             centered
             destroyOnClose
             onCancel={() => { setMaintainModal(false) }}
-            // onOk={() => { setMaintainModal(false) }}
             onOk={handleManagerSelect}
             visible={maintainModal}
             title="维护环保管理人员"
         >
-            <FormItem label={<font><span style={{ color: 'red' }}>*</span>环保管理人员</font>} {...formLayout}>
+            <FormItem label='环保管理人员' {...formLayout}>
                 {
                     getFieldDecorator('environmentAdminId', { initialValue: selectedRows[0] && selectedRows[0].environmentAdminId }),
                     getFieldDecorator('environmentAdminAccount', { initialValue: selectedRows[0] && selectedRows[0].environmentAdminAccount }),
@@ -513,6 +548,7 @@ export default create()(function ({ form }) {
                         initialValue: selectedRows[0] && selectedRows[0].environmentAdminName,
                         rules: [{ required: true, message: '不能为空' }]
                     })(<ComboList
+                        form={form}
                         style={{ width: '100%' }}
                         {...allPersonList}
                         name='environmentAdminName'
@@ -524,20 +560,30 @@ export default create()(function ({ form }) {
             </FormItem>
         </ExtModal>}
         {/* 指派战略采购 */}
-        <ExtModal
+        {assignPurchase && <ExtModal
             centered
             destroyOnClose
             onCancel={() => { setSssignPurchase(false) }}
-            onOk={() => { setSssignPurchase(false) }}
+            onOk={maintainSeleteChange}
             visible={assignPurchase}
             title="指派战略采购"
         >
             <FormItem label='战略采购' {...formLayout}>
-                <ComboList {...materialCode} name='supplierCode'
-                    field={['supplierName', 'supplierId']}
-                    afterSelect={maintainSeleteChange} />
+                {
+                    getFieldDecorator('strategicPurchaseId', { initialValue: selectedRows[0] && selectedRows[0].environmentAdminId }),
+                    getFieldDecorator('strategicPurchaseName', { initialValue: selectedRows[0] && selectedRows[0].environmentAdminAccount }),
+                    getFieldDecorator('strategicPurchaseCode', {
+                        initialValue: selectedRows[0] && selectedRows[0].strategicPurchaseCode,
+                        rules: [{ required: true, message: '不能为空' }]
+                    })(<ComboList
+                        form={form}
+                        {...StrategicPurchaseConfig}
+                        name='supplierCode'
+                        field={['strategicPurchaseId', 'strategicPurchaseName']}
+                    />)
+                }
             </FormItem>
-        </ExtModal>
+        </ExtModal>}
         {/* 查看供应商资质 */}
         <CheckQualificationModal ref={checkRef} />
         {/* 分配供应商 */}

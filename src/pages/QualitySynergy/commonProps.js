@@ -298,6 +298,7 @@ export const StrategicPurchaseConfig = {
   rowKey: 'name',
   reader: {
     name: 'code',
+    field: ['id', 'name'],
     description: 'name',
   },
   placeholder: '选择战略采购',
@@ -624,11 +625,11 @@ export const exemptionClauseDataList = {
 export const statusProps = {
   dataSource: [
     {
-      code: '草稿',
+      code: 'DRAFT',
       name: '草稿',
     },
     {
-      code: '生效',
+      code: 'EFFECT',
       name: '生效',
     },
   ],
@@ -656,11 +657,11 @@ export const DownloadStatus = {
 export const distributionProps = {
   dataSource: [
     {
-      code: '已分配',
-      name: '已分配',
+      code: 'ALLOT_END',
+      name: '存在符合的供应商',
     },
     {
-      code: '未分配',
+      code: 'ALLOT_NOT',
       name: '未分配',
     },
   ],
@@ -671,22 +672,22 @@ export const distributionProps = {
 export const materialStatus = {
   dataSource: [
     {
-      code: 'INIT',
+      code: 'EXIST_CONFORM_SUPPLIER',
       name: '存在符合的供应商',
     },
     {
-      code: 'INPROCESS',
+      code: 'DIS_EXIST_CONFORM_SUPPLIER',
       name: '不存在符合的供应商',
     },
   ],
   placeholder: '选择物料标记状态',
   ...commonProps,
 };
-// 物料标记状态
+// 同步PDM状态
 export const PDMStatus = {
   dataSource: [
     {
-      code: 'INIT',
+      code: 'draft',
       name: '同步成功',
     },
     {
@@ -694,7 +695,7 @@ export const PDMStatus = {
       name: '同步失败',
     },
   ],
-  placeholder: '选择物料标记状态',
+  placeholder: '选择同步PDM状态',
   ...commonProps,
 };
 

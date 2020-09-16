@@ -14,17 +14,49 @@ const formLayout = {
     },
 };
 const MCDForm = forwardRef(({ form, originData }, ref) => {
-    useImperativeHandle(ref, () => {
-
-    })
-    const { getFieldDecorator } = form;
+    useImperativeHandle(ref, () => ({
+        getSplitDataList
+    }))
+    const splitRef = useRef(null)
+    const { getFieldDecorator, validateFields } = form;
     const [selectedSplitData, setSelectedSpilt] = useState({})
     const [splitDataList, setSplitDataList] = useState(originData.epDataFillSplitPartsVoList ? originData.epDataFillSplitPartsVoList : []);
-    useEffect(()=>{
-        setSplitDataList(originData.epDataFillSplitPartsVoList ? originData.epDataFillSplitPartsVoList : [])
-    }, [originData])
-    function handleSplitDataList() {
-
+    useEffect(() => {
+        let dataList = originData.epDataFillSplitPartsVoList ? originData.epDataFillSplitPartsVoList.map((item, index) => ({ ...item, rowKey: index })) : []
+        setSplitDataList(dataList);
+    }, [originData]);
+    // 参数为某一条拆分部件数据,根据rowKey替换
+    function handleSplitDataList(dataObj) {
+        console.log('设置表格数据', dataObj);
+        let newList = splitDataList.map(item => {
+            return item.rowKey === dataObj.rowKey ? {...item, ...dataObj} : item;
+        })
+        setSplitDataList(newList);
+        splitRef.current.setRowKeys([dataObj.rowKey])
+        // console.log('splitRef', splitRef)
+    }
+    function getSplitDataList() {
+        let backData = {}
+        validateFields((errors, values) => {
+            if (!errors) {
+                console.log(values)
+                let saveList = splitDataList.map(item => {
+                    let newObj = {
+                        ...item,
+                        epDataFillTestLogBoList: item.testLogVoList,
+                        materialConstituentBoList: item.voList
+                    }
+                    delete newObj.testLogVoList
+                    delete newObj.voList
+                    return newObj;
+                })
+                backData = {
+                    ...values,
+                    epDataFillSplitPartsVoList: saveList
+                }
+            }
+        })
+        return backData;
     }
     return <Fragment>
         <Form className={styles.bl}>
@@ -32,8 +64,8 @@ const MCDForm = forwardRef(({ form, originData }, ref) => {
                 <Col span={6}>
                     <FormItem label='物料名称' {...formLayout}>
                         {
-                            getFieldDecorator('data1',{
-                                rules: [{ required: true, message: '请输入物料名称'}]
+                            getFieldDecorator('mcdMaterialName', {
+                                rules: [{ required: true, message: '请输入物料名称' }]
                             })(<Input />)
                         }
                     </FormItem>
@@ -41,8 +73,8 @@ const MCDForm = forwardRef(({ form, originData }, ref) => {
                 <Col span={6}>
                     <FormItem label='型号' {...formLayout}>
                         {
-                            getFieldDecorator('creatorName', {
-                                rules: [{ required: true, message: '请输入型号'}]
+                            getFieldDecorator('mcdModel', {
+                                rules: [{ required: true, message: '请输入型号' }]
                             })(<Input />)
                         }
                     </FormItem>
@@ -50,9 +82,9 @@ const MCDForm = forwardRef(({ form, originData }, ref) => {
                 <Col span={6}>
                     <FormItem label='长虹编码' {...formLayout}>
                         {
-                            getFieldDecorator('materialCode', {
+                            getFieldDecorator('mcdChCode', {
                                 initialValue: originData.materialCode,
-                                rules: [{ required: true}]
+                                rules: [{ required: true }]
                             })(<Input disabled />)
                         }
                     </FormItem>
@@ -64,14 +96,19 @@ const MCDForm = forwardRef(({ form, originData }, ref) => {
         </Form>
         <Row>
             <Col span={12} className={styles.rl}>
-                <SplitPartsTable dataList={splitDataList} setSelectedSpilt={setSelectedSpilt}/>
+                <SplitPartsTable wrappedComponentRef={splitRef} dataList={splitDataList} setSelectedSpilt={setSelectedSpilt} setSplitDataList={setSplitDataList} />
             </Col>
             <Col span={12} className={styles.ll}>
                 <Row>
-                    <MaterialTable dataList={splitDataList} selectedSplitData={selectedSplitData} />
+                    <MaterialTable dataList={splitDataList} selectedSplitData={selectedSplitData} handleSplitDataList={handleSplitDataList} />
                 </Row>
                 <Row>
-                    <TestRecordsTable dataList={splitDataList} selectedSplitData={selectedSplitData} />
+                    <TestRecordsTable
+                        dataList={splitDataList}
+                        selectedSplitData={selectedSplitData}
+                        handleSplitDataList={handleSplitDataList}
+                        environmentalProtectionCode={originData.environmentalProtectionCode}
+                    />
                 </Row>
             </Col>
         </Row>

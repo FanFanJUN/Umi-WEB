@@ -274,6 +274,15 @@ export async function epSubmit(params) {
         params: params,
     });
 }
+// 填报环保资料物料-指派战略采购
+export async function allotStrategicPurchase(params) {
+    const url = `${recommendUrl}/api/epDemandService/allotStrategicPurchase`;
+    return request({
+        url,
+        method: 'POST',
+        data: params,
+    });
+}
 // 填报环保资料物料-撤回
 export async function epWithdraw(params) {
     const url = `${recommendUrl}/api/epDemandService/withdraw`;
@@ -319,7 +328,24 @@ export async function supplierIsPause(params) {
         data: params,
     });
 }
-
+// 填报环保资料物料-分配供应商-编辑填报截止日期
+export async function editDemandSupplier(params) {
+    const url = `${recommendUrl}/api/epDemandSupplierService/editDemandSupplier`;
+    return request({
+        url,
+        method: 'POST',
+        data: params,
+    });
+}
+// 填报环保资料物料-分配供应商-删除
+export async function deleteSupplier(params) {
+    const url = `${recommendUrl}/api/epDemandSupplierService/deleted`;
+    return request({
+        url,
+        method: 'GET',
+        params: params,
+    });
+}
 
 // 供应商-填报环保资料-获取填报数据
 export async function supplerFindVoById(params) {
@@ -346,5 +372,15 @@ export async function findOrgTreeWithoutFrozen(params) {
     return request({
         url,
         method: 'GET',
+    });
+}
+
+// 根据环境标准查环境标准数据
+export async function findByProtectionCodeAndMaterialCodeAndRangeCode(params) {
+    const url = `${baseUrl}/environmentStandardLimitMaterialRelation/findByProtectionCodeAndMaterialCodeAndRangeCode`;
+    return request({
+        url,
+        method: 'POST',
+        data: params,
     });
 }

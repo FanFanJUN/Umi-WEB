@@ -1,7 +1,8 @@
 import { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment } from 'react';
 import { ExtTable, ExtModal, ScrollBar, ComboList } from 'suid';
 import { Button, Col, Form, Modal, Row, Input, Select, InputNumber } from 'antd'
-import { materialCode, findByIsRecordCheckListTrue } from '../../../commonProps';
+import { limitScopeList, findByIsRecordCheckListTrue } from '../../../commonProps';
+import { findByProtectionCodeAndMaterialCodeAndRangeCode } from '../../../../../services/qualitySynergy'
 import { Upload } from '@/components';
 import { smBaseUrl } from '@/utils/commonUrl';
 import classnames from 'classnames'
@@ -14,7 +15,7 @@ const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 14, },
 };
-const supplierModal = forwardRef(({ form, selectedSplitData }, ref) => {
+const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList, environmentalProtectionCode }, ref) => {
     useImperativeHandle(ref, () => ({
         setVisible
     }))
@@ -23,13 +24,19 @@ const supplierModal = forwardRef(({ form, selectedSplitData }, ref) => {
     const [modalType, setModalType] = useState('');
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
-    const { getFieldDecorator, validateFields } = form;
-
+    const [dataSource, setDataSource] = useState([]);
+    const { getFieldDecorator, validateFields, getFieldValue, setFieldsValue, } = form;
+    useEffect(() => {
+        setDataSource(selectedSplitData.testLogVoList ? selectedSplitData.testLogVoList.map((item, index) => ({ ...item, rowKey: index })) : []);
+        if (!selectedSplitData.testLogVoList || selectedSplitData.testLogVoList.length === 0) {
+            tableRef.current.manualSelectedRows();
+        }
+    }, [selectedSplitData])
     const columns = [
         { title: '物质代码', dataIndex: 'materialCode', align: 'center' },
         { title: '物质名称', dataIndex: 'materialName', ellipsis: true, align: 'center' },
         { title: 'CAS.NO', dataIndex: 'casNo', ellipsis: true, align: 'center', },
-        { title: '适用范围', dataIndex: 'scopeApplicationCode', ellipsis: true, align: 'center', },
+        { title: '适用范围', dataIndex: 'scopeApplicationName', ellipsis: true, align: 'center', },
         { title: '含量', dataIndex: 'content', ellipsis: true, align: 'center', },
         { title: '基本单位', dataIndex: 'unitName', ellipsis: true, align: 'center', },
         { title: '符合性 ', dataIndex: 'compliance', ellipsis: true, align: 'center', render: (text) => text ? '符合' : '不符合' },
@@ -44,8 +51,14 @@ const supplierModal = forwardRef(({ form, selectedSplitData }, ref) => {
         confirm({
             title: '删除',
             content: '请确认是否删除选中拆分部件',
-            onOk: async () => {
-                console.log('确定删除')
+            onOk: () => {
+                let newList = dataSource.filter(item => !(selectedRowKeys.includes(item.rowKey)));
+                newList = newList.map((item, index) => ({ ...item, rowKey: index }));
+                handleSplitDataList({
+                    rowKey: selectedSplitData.rowKey,
+                    testLogVoList: newList
+                })
+                tableRef.current.manualSelectedRows();
             }
         })
     }
@@ -54,6 +67,21 @@ const supplierModal = forwardRef(({ form, selectedSplitData }, ref) => {
         validateFields((errors, values) => {
             if (!errors) {
                 console.log(values)
+                let newList = [].concat(dataSource);
+                if (modalType === 'add') {
+                    newList.push({ ...values, rowKey: dataSource.length });
+                } else {
+                    newList = newList.map(item => {
+                        return item.rowKey === selectedRows[0].rowKey ? { ...selectedRows[0], ...values } : item
+                    })
+                }
+                setDataSource(newList);
+                handleSplitDataList({
+                    rowKey: selectedSplitData.rowKey,
+                    testLogVoList: newList
+                })
+                setVisible(false);
+                tableRef.current.manualSelectedRows();
             }
         });
     }
@@ -62,13 +90,36 @@ const supplierModal = forwardRef(({ form, selectedSplitData }, ref) => {
         setModalType(type)
         setVisible(true)
     }
+    async function getUnit(materialCode, scopeApplicationCode) {
+        console.log(materialCode, scopeApplicationCode, environmentalProtectionCode)
+        if (!materialCode || !scopeApplicationCode) return;
+        const res = await findByProtectionCodeAndMaterialCodeAndRangeCode({
+            protectionCode: environmentalProtectionCode,
+            materialCode: materialCode,
+            rangeCode: scopeApplicationCode
+        })
+        if (res.statusCode === 200 && res.data) {
+            setFieldsValue({
+                unitCode: res.data.basicUnitCode,
+                unitName: res.data.basicUnitName,
+            })
+        }
+    }
     return <Fragment>
         <div className={styles.macTitle}>测试记录表</div>
         <div className={classnames(styles.mbt, styles.mtb)}>
-            <Button type='primary' className={styles.btn} key="add" onClick={() => { showEditModal('add') }}>新增</Button>
-            <Button className={styles.btn} key="edit" onClick={() => { showEditModal('edit') }}>编辑</Button>
-            <Button className={styles.btn} onClick={handleDelete} key="delete">删除</Button>
-            <Button className={styles.btn} key="import">批量导入</Button>
+            <Button type='primary' className={styles.btn} key="add" onClick={() => { showEditModal('add') }}
+                disabled={(!selectedSplitData.testLogVoList)}
+            >新增</Button>
+            <Button className={styles.btn} key="edit" onClick={() => { showEditModal('edit') }}
+                disabled={!(selectedRowKeys.length === 1)}
+            >编辑</Button>
+            <Button className={styles.btn} onClick={handleDelete} key="delete"
+                disabled={(selectedRowKeys.length === 0)}
+            >删除</Button>
+            <Button className={styles.btn} key="import"
+                disabled={(!selectedSplitData.testLogVoList)}
+            >批量导入</Button>
         </div>
         <ExtTable
             columns={columns}
@@ -78,13 +129,14 @@ const supplierModal = forwardRef(({ form, selectedSplitData }, ref) => {
             remotePaging
             checkbox={{ multiSelect: false }}
             ref={tableRef}
-            rowKey={(item) => item.id}
+            checkbox={true}
+            rowKey={(item) => item.rowKey}
             size='small'
             onSelectRow={handleSelectedRows}
             selectedRowKeys={selectedRowKeys}
-            dataSource={selectedSplitData.testLogVoList}
+            dataSource={dataSource}
         />
-        <ExtModal
+        {visible && <ExtModal
             centered
             destroyOnClose
             visible={visible}
@@ -99,12 +151,16 @@ const supplierModal = forwardRef(({ form, selectedSplitData }, ref) => {
                             getFieldDecorator('materialId'),
                             getFieldDecorator('materialCode'),
                             getFieldDecorator('materialName', {
-                                initialValue: '',
+                                initialValue: modalType === 'edit' ? selectedRows[0].materialName : '',
                                 rules: [{ required: true, message: '请填写拆分部件名称' }]
                             })(<ComboList form={form}
                                 {...findByIsRecordCheckListTrue}
                                 name='materialName'
                                 field={['materialId', 'materialCode', 'casNo']}
+                                afterSelect={(item) => {
+                                    let scopeApplicationCode = getFieldValue('scopeApplicationCode');;
+                                    getUnit(item.limitMaterialCode, scopeApplicationCode)
+                                }}
                             />)
                         }
                     </FormItem>
@@ -113,7 +169,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData }, ref) => {
                     <FormItem label='CAS.NO' {...formLayout}>
                         {
                             getFieldDecorator('casNo', {
-                                initialValue: '',
+                                initialValue: modalType === 'edit' ? selectedRows[0].casNo : '',
                             })(<Input disabled />)
                         }
                     </FormItem>
@@ -121,30 +177,38 @@ const supplierModal = forwardRef(({ form, selectedSplitData }, ref) => {
                 <Row>
                     <FormItem label='适用范围' {...formLayout}>
                         {
-                            getFieldDecorator('data3', {
-                                initialValue: '',
+                            getFieldDecorator('scopeApplicationId'),
+                            getFieldDecorator('scopeApplicationCode'),
+                            getFieldDecorator('scopeApplicationName', {
+                                initialValue: modalType === 'edit' ? selectedRows[0].scopeApplicationName : '',
                                 rules: [{ required: true, message: '请选择适用范围' }]
-                            })(<ComboList form={form} {...materialCode} name='supplierCode'
-                                field={['supplierName', 'supplierId']}
-                                afterSelect={() => { console.log(111) }} />)
+                            })(<ComboList form={form}
+                                {...limitScopeList}
+                                name='scopeApplicationName'
+                                field={['scopeApplicationId', 'scopeApplicationCode']}
+                                afterSelect={(item) => {
+                                    let materialCode = getFieldValue('materialCode');;
+                                    getUnit(materialCode, item.scopeCode)
+                                }}
+                            />)
                         }
                     </FormItem>
                 </Row>
                 <Row>
                     <FormItem label='含量' {...formLayout}>
                         {
-                            getFieldDecorator('data4', {
-                                initialValue: 'pass',
-                                rules: [{ required: true, message: '请选择供应商代码' }]
+                            getFieldDecorator('contentType', {
+                                initialValue: modalType === 'edit' ? selectedRows[0].contentType : '',
+                                rules: [{ required: true, message: '请选择含量类型' }]
                             })(<Select style={{ width: '40%', marginRight: '10px' }}>
-                                <Option value="pass">范围值</Option>
-                                <Option value="nopass">精确值</Option>
+                                <Option value="RANGE_VALUE">范围值</Option>
+                                <Option value="DEFINITE_VALUE">精确值</Option>
                             </Select>)
                         }
                         {
-                            getFieldDecorator('data5', {
-                                initialValue: '',
-                                rules: [{ required: true, message: '请选择供应商代码' }]
+                            getFieldDecorator('content', {
+                                initialValue: modalType === 'edit' ? selectedRows[0].content : '',
+                                rules: [{ required: true, message: '请输入' }]
                             })(<InputNumber style={{ width: '40%' }} />)
                         }
                     </FormItem>
@@ -152,14 +216,15 @@ const supplierModal = forwardRef(({ form, selectedSplitData }, ref) => {
                 <Row>
                     <FormItem label='基本单位' {...formLayout}>
                         {
-                            getFieldDecorator('data6', {
-                                initialValue: '',
+                            getFieldDecorator('unitCode'),
+                            getFieldDecorator('unitName', {
+                                initialValue: modalType === 'edit' ? selectedRows[0].unitCode : '',
                             })(<Input disabled />)
                         }
                     </FormItem>
                 </Row>
             </Form>
-        </ExtModal>
+        </ExtModal>}
     </Fragment>
 })
 

@@ -4,11 +4,11 @@ import { Input, Button, message, Modal, Form } from 'antd';
 import { supplierManagerBaseUrl, recommendUrl } from '@/utils/commonUrl';
 import { openNewTab, getFrameElement } from '@/utils';
 import { AutoSizeLayout, Header, AdvancedForm, ComboAttachment } from '@/components';
-import { materialCode, statusProps, distributionProps, materialStatus, PDMStatus } from '../../commonProps';
+import { materialCode, MaterialConfig, StrategicPurchaseConfig, distributionProps, materialStatus, PDMStatus } from '../../commonProps';
 import styles from './index.less'
 import {
     epDemandUpdate
-} from '../../../../services/qualitySynergy'
+} from '../../../../services/qualitySynergy';
 const { authAction, storage } = utils;
 const { create, Item: FormItem } = Form;
 const { Search } = Input;
@@ -31,15 +31,11 @@ const SupplierFillList = function (props) {
     } = props.form;
     // 高级查询配置
     const formItems = [
-        { title: '物料代码', key: 'data1', type: 'list', props: materialCode },
-        { title: '物料组', key: 'data2', type: 'list', props: materialCode },
-        { title: '战略采购', key: 'data3', type: 'list', props: materialCode },
-        { title: '环保管理人员', key: 'data4', props: { placeholder: '输入申请人查询' } },
-        { title: '申请人', key: 'data5', props: { placeholder: '输入申请人查询' } },
-        { title: '状态', key: 'data6', type: 'list', props: statusProps },
-        { title: '分配供应商状态', key: 'data7', type: 'list', props: distributionProps },
-        { title: '物料标记状态', key: 'data8', type: 'list', props: materialStatus },
-        { title: '同步PDM状态', key: 'data9', type: 'list', props: PDMStatus },
+        { title: '物料代码', key: 'data1', type: 'list', props: MaterialConfig },
+        { title: '战略采购', key: 'data3', type: 'list', props: StrategicPurchaseConfig },
+        { title: '环保管理人员', key: 'data4', props: { placeholder: '输入环保管理人员查询' } },
+        { title: '是否需要填报', key: 'data7', type: 'list', props: distributionProps },
+        { title: '填报状态', key: 'data8', type: 'list', props: materialStatus },
     ]
     // 页面跳转
     function redirectToPage(type) {

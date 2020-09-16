@@ -4,7 +4,13 @@ import { Button, DatePicker, Form, Modal, message, Input } from 'antd'
 import { materialCode } from '../../commonProps';
 import { smBaseUrl, supplierManagerBaseUrl } from '@/utils/commonUrl';
 import { getUserName, getMobile, getUserId, getUserAccount } from '../../../../utils';
-import { addDemandSupplier, submitAndReleaseDemandSupplier, supplierIsPause, findByPageOfSupplier } from '../../../../services/qualitySynergy'
+import { addDemandSupplier, 
+    submitAndReleaseDemandSupplier, 
+    supplierIsPause, 
+    findByPageOfSupplier,
+    editDemandSupplier,
+    deleteSupplier
+} from '../../../../services/qualitySynergy'
 import styles from './index.less'
 import moment from 'moment';
 const { Search } = Input;
@@ -90,8 +96,21 @@ const supplierModal = forwardRef(({ form, demanNumber }, ref) => {
     function handleEditDate() {
         validateFields((err, fieldsValue) => {
             if (!err) {
-                let endDate = `${moment(fieldsValue.endDate).format('YYYY-MM-DD HH:mm')}:00`
-                console.log('时间选中', endDate)
+                let endDate = moment(fieldsValue.endDate).format('YYYY-MM-DD')
+                let list = selectedRows.map(item => {
+                    return {
+                        ...item,
+                        fillEndDate: endDate
+                    }
+                })
+                editDemandSupplier(list).then(res => {
+                    if(res.statusCode === 200) {
+                        message.success('操作成功');
+                        tableRef.current.remoteDataRefresh();
+                    } else {
+                        message.error(res.message)
+                    }
+                })
                 setEditDateVisible(false)
             }
         });
@@ -102,7 +121,15 @@ const supplierModal = forwardRef(({ form, demanNumber }, ref) => {
             title: '删除',
             content: '请确认是否删除选中供应商',
             onOk: async () => {
-                console.log('确定删除')
+                const res = deleteSupplier({
+                    id: selectedRowKeys[0]
+                });
+                if(res.statusCode === 200) {
+                    message.success('删除成功');
+                    tableRef.current.remoteDataRefresh();
+                }else {
+                    message.error(res.message);
+                }
             }
         })
     }
@@ -151,6 +178,7 @@ const supplierModal = forwardRef(({ form, demanNumber }, ref) => {
         }
         if (res.statusCode === 200) {
             message.success('操作成功');
+            tableRef.current.remoteDataRefresh();
         } else {
             message.error(res.message);
         }
@@ -160,6 +188,12 @@ const supplierModal = forwardRef(({ form, demanNumber }, ref) => {
     }
     function handleQuickSearch(v) {
         console.log(v)
+    }
+    function checkSameBatch() {
+        if(selectedRows.length < 2)return false;
+        let allotBatch = selectedRows[0].allotBatch;
+        let tag = selectedRows.every(item => item.allotBatch === allotBatch );
+        return !tag;
     }
     return <Fragment>
         <ExtModal
@@ -174,8 +208,10 @@ const supplierModal = forwardRef(({ form, demanNumber }, ref) => {
         >
             <div className={styles.mbt}>
                 <Button type='primary' className={styles.btn} onClick={() => { setAddVisible(true) }} key="add">新增</Button>
-                <Button className={styles.btn} onClick={() => { checkOneSelect() && setEditDateVisible(true) }} key="edit">编辑填报截止日期</Button>
-                <Button className={styles.btn} onClick={handleDelete} key="delete">删除</Button>
+                <Button className={styles.btn} 
+                    disabled={checkSameBatch()}
+                    onClick={() => { !checkSameBatch() && setEditDateVisible(true) }} key="edit">编辑填报截止日期</Button>
+                <Button className={styles.btn} onClick={()=>{checkOneSelect() && handleDelete()}} key="delete" >删除</Button>
                 <Button className={styles.btn} onClick={() => { handleSuspended() }} key="suspend" disabled={selectedRows.length > 1}>{(selectedRows.length > 1||selectedRows.length===0) ? '暂停/取消暂停' : selectedRows[0].suspend===1? '取消暂停' : '暂停'}</Button>
                 <Button className={styles.btn} onClick={() => { handlePublish(true) }}>发布</Button>
                 <Button className={styles.btn} onClick={() => { handleSave(false) }}>保存并发布</Button>
