@@ -14,7 +14,7 @@ import DistributeSupplierModal from '../components/distributeSupplierModal';
 import CheckModal from '../components/checkModal';
 import GenerateModal from '../components/generateModal';
 import EditModal from '../components/editModal';
-import { epWhetherDelete, editEpDemand, epFrozen, epSubmit, epWithdraw, findOrgTreeWithoutFrozen, allotStrategicPurchase } from '../../../../services/qualitySynergy'
+import { epWhetherDelete, editEpDemand, epFrozen, epSubmit, epWithdraw, findOrgTreeWithoutFrozen, allotStrategicPurchase, syncPdm } from '../../../../services/qualitySynergy'
 const { authAction, storage } = utils;
 const { Search } = Input;
 const { confirm } = Modal;
@@ -234,6 +234,10 @@ export default create()(function ({ form }) {
             }
         })
     }
+    // 同步pdm
+    function handleSyncPdm() {
+        
+    }
     // 按钮是否禁用
     function buttonCheck(rows) {
         if (rows.length === 1) {
@@ -425,7 +429,7 @@ export default create()(function ({ form }) {
             authAction(<Button
                 className={styles.btn}
                 disabled={false}
-                onClick={() => { console.log('同步PDM') }}
+                onClick={() => {handleSyncPdm()}}
                 key='PURCHASE_VIEW_CHANGE_REMOVE'
                 ignore={DEVELOPER_ENV}
             >同步PDM</Button>)

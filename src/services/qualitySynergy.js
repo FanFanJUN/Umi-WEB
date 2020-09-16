@@ -355,6 +355,15 @@ export async function deleteSupplier(params) {
         params: params,
     });
 }
+// 填报环保资料物料-分配供应商-删除
+export async function syncPdm(params) {
+    const url = `${recommendUrl}/api/epDemandSupplierService/syncPdm`;
+    return request({
+        url,
+        method: 'POST',
+        data: params,
+    });
+}
 
 // 供应商-填报环保资料-获取填报数据
 export async function supplerFindVoById(params) {
