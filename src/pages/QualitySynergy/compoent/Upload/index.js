@@ -321,7 +321,7 @@ class UploadFile extends React.Component {
             beforeUpload={this.beforeUpload}
             showUploadList={false}
             fileList={this.state.fileList}
-            action={'/service.api' + baseUrl + "/supplierRegister/uploadNoAuth"}
+            action={process.env.NODE_ENV === 'production' ? onLineTarget : '/service.api' + baseUrl + "/supplierRegister/uploadNoAuth"}
             headers={this.getHeaders()}
             onChange={this.handleChange}
             style={{width: '100%'}}
