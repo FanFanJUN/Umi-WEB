@@ -19,9 +19,13 @@ export const judgeButtonDisabled = (value) => {
 };
 
 // 判断
-export const judge = (arr, key, value) => {
-  if (arr?.length > 0) {
-    return arr.every(item => item[key] === value);
+export const judge = (arr, key, value = undefined) => {
+  if (value !== undefined) {
+    if (arr?.length > 0) {
+      return arr.every(item => item[key] === value);
+    } else {
+      return true;
+    }
   } else {
     return true;
   }
@@ -59,6 +63,26 @@ export const FindSupplierByDemandNumber = async params => {
     url,
     method: 'GET',
     data: params,
+  });
+};
+
+//技术资料分享战略指派
+export async function StrategyAssignedDataSharingList(params) {
+  const url = `${recommendUrl}/api/epTechnicalShareDemandService/designateStrategy`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+}
+
+//技术资料分享提交
+export async function SubmitDataSharingList(params) {
+  const url = `${recommendUrl}/api/epTechnicalShareDemandService/submit`;
+  return request({
+    url,
+    method: 'GET',
+    params: params,
   });
 }
 

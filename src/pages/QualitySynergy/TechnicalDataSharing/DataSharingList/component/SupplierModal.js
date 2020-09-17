@@ -95,10 +95,8 @@ const SupplierModal = (props) => {
   const handleDelete = () => {
     Modal.confirm({
       title: '删除',
-      content: '是否删除选中过的数据',
-      okText: '是',
-      okType: 'danger',
-      cancelText: '否',
+      okText: '是否删除选中的数据',
+      type: 'error',
       onOk: () => {
         const {selectedRowKeys} = data
         if (data.sourceData) {
