@@ -447,3 +447,12 @@ export async function findByProtectionCodeAndMaterialCodeAndRangeCode(params) {
         data: params,
     });
 }
+// 批导拆分部件验证
+export async function splitCheckImport(params) {
+    const url = `${recommendUrl}/api/epDataFillSplitPartsService/checkImport`;
+    return request({
+        url,
+        method: 'POST',
+        data: params,
+    });
+}
