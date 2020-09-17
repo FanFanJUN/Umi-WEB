@@ -33,6 +33,7 @@ const OrganizatRef = forwardRef(({
         let result = false;
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
+                values.supplierType = '1';
                 result = values;
             }
         });
@@ -56,7 +57,7 @@ const OrganizatRef = forwardRef(({
         }
     }
     return (
-        <Form>
+        <Form style={{paddingTop:'50px'}}>
             <Row>
                 <Col span={15}>
                     <FormItem

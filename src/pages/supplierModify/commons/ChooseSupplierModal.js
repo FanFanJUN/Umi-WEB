@@ -84,8 +84,14 @@ const getAgentregRef = forwardRef(({
     }
     // 查询
     function handleQuickSerach() {
+        let search;
+        if(Object.keys(searchValue).length == 0){
+            search = ""
+        }else {
+            search = searchValue
+        }
         setSearchValue({
-            quickSearchValue: searchValue
+            quickSearchValue: search
         })
         uploadTable();
     }
@@ -126,6 +132,7 @@ const getAgentregRef = forwardRef(({
     const searchBtnCfg = (
         <>
             <Input
+                style={{width:260}}
                 placeholder='请输入供应商代码或名称查询'
                 className={styles.btn}
                 onChange={SerachValue}

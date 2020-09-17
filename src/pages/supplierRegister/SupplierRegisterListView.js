@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ExtTable, WorkFlow, ExtModal, utils, ToolBar,ScrollBar } from 'suid';
-import { Input, Button, message, Modal } from 'antd';
+import { ExtTable, WorkFlow, ExtModal, utils, ComboList,ScrollBar } from 'suid';
+import { Input, Button, message, Modal,Form } from 'antd';
 import { openNewTab, getFrameElement } from '@/utils';
+import SearchTable from './components/SearchTable'
 import { StartFlow } from 'seid';
 
 import Header from '@/components/Header';
@@ -10,6 +11,7 @@ import AutoSizeLayout from '@/components/AutoSizeLayout';
 import styles from './index.less';
 import { smBaseUrl } from '@/utils/commonUrl';
 import { RecommendationList ,stopApproveingOrder} from "@/services/supplierRegister"
+import {oddcorporationSupplierConfig,corporationSupplierConfig} from '../../utils/commonProps'
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 const { Search } = Input
 const { authAction, storage } = utils;
@@ -181,7 +183,7 @@ function SupplierConfigure() {
             url: `${smBaseUrl}/api/supplierSelfService/findVoListByPage`,
             params: {
                 ...searchValue,
-                quickSearchProperties: ['supplierName'],
+                quickSearchProperties: ['companyName','supplierName'],
                 sortOrders: [
                     {
                       property: 'docNumber',
@@ -192,10 +194,29 @@ function SupplierConfigure() {
             type: 'POST'
         }
     }
+    // 泛虹公司
+    function cooperationChange(record) {
+        console.log(record)
+        setSearchValue({
+            quickSearchValue: record.name
+        })
+        uploadTable();
+    }
     // 右侧搜索
     const searchBtnCfg = (
         <>
+            <ComboList
+                style={{ width: 280 }}
+                {...corporationSupplierConfig}
+                afterSelect={cooperationChange}
+                rowKey="code"
+                showSearch={false}
+                reader={{
+                    name: 'name',
+                }}
+            />
             <Input
+                style={{ width: 280 }}
                 placeholder='请输入供应商名称查询'
                 className={styles.btn}
                 onChange={SerachValue}
@@ -325,7 +346,7 @@ function SupplierConfigure() {
             <Header
                 left={
                     <>
-                        {
+                        {/* {
                             authAction(
                                 <Button type='primary' 
                                     ignore={DEVELOPER_ENV} 
@@ -336,7 +357,7 @@ function SupplierConfigure() {
                                     >编辑
                                 </Button>
                             )
-                        }
+                        } */}
                         {
                             authAction(
                                 <Button 
@@ -349,7 +370,7 @@ function SupplierConfigure() {
                                 </Button>
                             )
                         }
-                        {
+                        {/* {
                             authAction(
                                 <StartFlow
                                     className={styles.btn}
@@ -363,8 +384,8 @@ function SupplierConfigure() {
                                     key='PURCHASE_VIEW_CHANGE_APPROVE'
                                 ></StartFlow>
                             )
-                        }
-                        {
+                        } */}
+                        {/* {
                             authAction(
                                 <Button
                                     className={styles.btn}
@@ -374,7 +395,7 @@ function SupplierConfigure() {
                                     key='PURCHASE_VIEW_CHANGE_STOP_APPROVE'
                                 >终止审核</Button>
                             )
-                        }
+                        } */}
                         {
                             authAction(
                                 <FlowHistoryButton

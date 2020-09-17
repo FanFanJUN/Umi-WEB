@@ -336,7 +336,7 @@ function SupplierConfigure() {
                             authAction(
                                 <Button type='primary' 
                                     ignore={DEVELOPER_ENV} 
-                                    key='' 
+                                    key='SRM-SM-SUPPLIERMODEL_ADD' 
                                     className={styles.btn} 
                                     onClick={AddModel}
                                     //disabled={empty}
@@ -348,7 +348,7 @@ function SupplierConfigure() {
                             authAction(
                                 <Button 
                                     ignore={DEVELOPER_ENV} 
-                                    key='' 
+                                    key='SRM-SM-SUPPLIERMODEL_EDIT' 
                                     className={styles.btn} 
                                     onClick={handleCheckEdit} 
                                     disabled={empty || underWay || !isSelf}
@@ -360,7 +360,7 @@ function SupplierConfigure() {
                             authAction(
                                 <Button 
                                     ignore={DEVELOPER_ENV} 
-                                    key='' 
+                                    key='SRM-SM-SUPPLIERMODEL_DELETE' 
                                     className={styles.btn} 
                                     onClick={handleDelete} 
                                     disabled={empty || underWay || !isSelf}
@@ -378,7 +378,7 @@ function SupplierConfigure() {
                                     callBack={handleComplete}
                                     disabled={empty || underWay || !isSelf}
                                     businessModelCode='com.ecmp.srm.sm.entity.SupplierModify'
-                                    //key='PURCHASE_VIEW_CHANGE_APPROVE'
+                                    key='SRM-SM-SUPPLIERMODEL_EXAMINE'
                                 >提交审核</StartFlow>
                             )
                         }
@@ -389,7 +389,7 @@ function SupplierConfigure() {
                                     disabled={empty || !underWay || !isSelf}
                                     onClick={stopApprove}
                                     ignore={DEVELOPER_ENV}
-                                    key='PURCHASE_VIEW_CHANGE_STOP_APPROVE'
+                                    key='SRM-SM-SUPPLIERMODEL_STOP_APPROVAL'
                                 >终止审核</Button>
                             )
                         }
@@ -399,7 +399,7 @@ function SupplierConfigure() {
                                     businessId={flowId}
                                     flowMapUrl='flow-web/design/showLook'
                                     ignore={DEVELOPER_ENV}
-                                    key='PURCHASE_VIEW_CHANGE_APPROVE_HISTORY'
+                                    key='SRM-SM-SUPPLIERMODEL_HISTORY'
                                 >
                                     <Button className={styles.btn} disabled={empty || !underWay || !completed}>审核历史</Button>
                                 </FlowHistoryButton>
@@ -409,7 +409,7 @@ function SupplierConfigure() {
                             authAction(
                                 <Button 
                                     ignore={DEVELOPER_ENV} 
-                                    key='' 
+                                    key='SRM-SM-SUPPLIERMODEL_DETAILED' 
                                     className={styles.btn} 
                                     onClick={handleCheckDetail} 
                                     disabled={empty}
