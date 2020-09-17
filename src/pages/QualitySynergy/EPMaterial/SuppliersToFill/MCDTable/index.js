@@ -32,7 +32,7 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
             return item.rowKey === dataObj.rowKey ? {...item, ...dataObj} : item;
         })
         setSplitDataList(newList);
-        splitRef.current.setRowKeys([dataObj.rowKey])
+        splitRef.current.setRowKeys([dataObj.rowKey]);
         // console.log('splitRef', splitRef)
     }
     function getSplitDataList() {

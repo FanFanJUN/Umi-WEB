@@ -456,3 +456,12 @@ export async function splitCheckImport(params) {
         data: params,
     });
 }
+// 测试记录表批导验证
+export async function testRecordCheckImport(params) {
+    const url = `${recommendUrl}/api/epDataFillTestLogService/checkImport`;
+    return request({
+        url,
+        method: 'POST',
+        data: params,
+    });
+}

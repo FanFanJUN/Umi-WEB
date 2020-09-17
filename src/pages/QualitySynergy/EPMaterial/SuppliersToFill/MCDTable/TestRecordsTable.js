@@ -1,5 +1,5 @@
 import { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment } from 'react';
-import { ExtTable, ExtModal, ScrollBar, ComboList } from 'suid';
+import { ExtTable, ExtModal, DataImport, ComboList } from 'suid';
 import { Button, Col, Form, Modal, Row, Input, Select, InputNumber } from 'antd'
 import { limitScopeList, findByIsRecordCheckListTrue } from '../../../commonProps';
 import { findByProtectionCodeAndMaterialCodeAndRangeCode } from '../../../../../services/qualitySynergy'
@@ -8,6 +8,8 @@ import { smBaseUrl } from '@/utils/commonUrl';
 import classnames from 'classnames'
 import styles from '../index.less'
 import moment from 'moment';
+import { testRecordCheckImport } from '../../../../../services/qualitySynergy';
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const { confirm } = Modal;
 const { create, Item: FormItem } = Form;
 const { Option } = Select;
@@ -91,7 +93,6 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
         setVisible(true)
     }
     async function getUnit(materialCode, scopeApplicationCode) {
-        console.log(materialCode, scopeApplicationCode, environmentalProtectionCode)
         if (!materialCode || !scopeApplicationCode) return;
         const res = await findByProtectionCodeAndMaterialCodeAndRangeCode({
             protectionCode: environmentalProtectionCode,
@@ -105,10 +106,49 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
             })
         }
     }
+    const validateItem = (data) => {
+        return new Promise((resolve, reject) => {
+            let sendList = data.map(item => ({ ...item, code: environmentalProtectionCode }))
+            testRecordCheckImport(sendList).then(res => {
+                const response = res.data.map((item, index) => ({
+                    ...item,
+                    key: index,
+                    validate: item.importStatus,
+                    status: item.importStatus ? '数据完整' : '失败',
+                    statusCode: item.importStatus ? 'success' : 'error',
+                    message: item.importStatus ? '成功' : item.failInfo
+                }))
+                resolve(response);
+            }).catch(err => {
+                reject(err)
+            })
+        })
+    };
+
+    const importFunc = (value) => {
+        let newList = [].concat(dataSource);
+        value.forEach((addItem, index) => {
+            delete addItem.status;
+            delete addItem.statusCode;
+            delete addItem.message;
+            delete addItem.validate;
+            addItem.rowKey = dataSource.length + index;
+            newList.push(addItem);
+        })
+        newList = newList.map((item, index) => ({ ...item, rowKey: index }));
+        setDataSource(newList);
+        handleSplitDataList({
+            rowKey: selectedSplitData.rowKey,
+            testLogVoList: newList
+        })
+        tableRef.current.manualSelectedRows();
+        // setSplitDataList(newList);
+        // tableRef.current.manualSelectedRows();
+    };
     return <Fragment>
         <div className={styles.macTitle}>测试记录表</div>
         <div className={classnames({
-            [styles.mbt]: true, 
+            [styles.mbt]: true,
             [styles.mtb]: true,
             [styles.hidden]: !!isView
         })}>
@@ -121,9 +161,22 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
             <Button className={styles.btn} onClick={handleDelete} key="delete"
                 disabled={(selectedRowKeys.length === 0)}
             >删除</Button>
-            <Button className={styles.btn} key="import"
-                disabled={(!selectedSplitData.testLogVoList)}
-            >批量导入</Button>
+            {selectedSplitData.testLogVoList && <DataImport
+                tableProps={{ columns }}
+                validateFunc={validateItem}
+                importFunc={importFunc}
+                className={styles.btn}
+                ignore={DEVELOPER_ENV}
+                validateAll={true}
+                key='import'
+                templateFileList={[
+                    {
+                        download: `${DEVELOPER_ENV === 'true' ? '' : '/react-srm-sm-web'}/templates/测试记录表批导模板V1.0.xlsx`,
+                        fileName: '测试记录表批导模板V1.0.xlsx',
+                        key: 'ExemptionClause',
+                    },
+                ]}
+            />}
         </div>
         <ExtTable
             columns={columns}
@@ -152,8 +205,8 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                 <Row>
                     <FormItem label='物质名称' {...formLayout}>
                         {
-                            getFieldDecorator('materialId', {initialValue: modalType === 'edit' ? selectedRows[0].materialId : ''}),
-                            getFieldDecorator('materialCode', {initialValue: modalType === 'edit' ? selectedRows[0].materialCode : ''}),
+                            getFieldDecorator('materialId', { initialValue: modalType === 'edit' ? selectedRows[0].materialId : '' }),
+                            getFieldDecorator('materialCode', { initialValue: modalType === 'edit' ? selectedRows[0].materialCode : '' }),
                             getFieldDecorator('materialName', {
                                 initialValue: modalType === 'edit' ? selectedRows[0].materialName : '',
                                 rules: [{ required: true, message: '请填写拆分部件名称' }]
@@ -181,8 +234,8 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                 <Row>
                     <FormItem label='适用范围' {...formLayout}>
                         {
-                            getFieldDecorator('scopeApplicationId', {initialValue: modalType === 'edit' ? selectedRows[0].scopeApplicationId : ''}),
-                            getFieldDecorator('scopeApplicationCode', {initialValue: modalType === 'edit' ? selectedRows[0].scopeApplicationCode : ''}),
+                            getFieldDecorator('scopeApplicationId', { initialValue: modalType === 'edit' ? selectedRows[0].scopeApplicationId : '' }),
+                            getFieldDecorator('scopeApplicationCode', { initialValue: modalType === 'edit' ? selectedRows[0].scopeApplicationCode : '' }),
                             getFieldDecorator('scopeApplicationName', {
                                 initialValue: modalType === 'edit' ? selectedRows[0].scopeApplicationName : '',
                                 rules: [{ required: true, message: '请选择适用范围' }]
@@ -220,7 +273,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                 <Row>
                     <FormItem label='基本单位' {...formLayout}>
                         {
-                            getFieldDecorator('unitCode', {initialValue: modalType === 'edit' ? selectedRows[0].unitCode : ''}),
+                            getFieldDecorator('unitCode', { initialValue: modalType === 'edit' ? selectedRows[0].unitCode : '' }),
                             getFieldDecorator('unitName', {
                                 initialValue: modalType === 'edit' ? selectedRows[0].unitCode : '',
                             })(<Input disabled />)

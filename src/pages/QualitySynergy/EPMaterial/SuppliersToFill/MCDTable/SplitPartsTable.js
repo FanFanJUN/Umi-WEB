@@ -18,7 +18,8 @@ const formLayout = {
 const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDataList, isView }, ref) => {
     useImperativeHandle(ref, () => ({
         setVisible,
-        setRowKeys
+        setRowKeys,
+        setRows
     }))
     const tableRef = useRef(null);
     const [visible, setVisible] = useState(false);
@@ -64,7 +65,6 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
     function handleAdd() {
         validateFields((errors, values) => {
             if (!errors) {
-                console.log('编辑拆分表', values)
                 values.reportDate = moment(values.reportDate).format('YYYY-MM-DD');
                 values.uploadAttachmentIds = values.testReportAttachmentId;
                 values.testReportAttachmentId = values.testReportAttachmentId ? values.testReportAttachmentId.join() : '';
@@ -103,10 +103,10 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
                 const response = res.data.map((item, index) => ({
                     ...item,
                     key: index,
-                    validate: item.reportResult,
-                    status: item.reportResult ? '数据完整' : '失败',
-                    statusCode: item.reportResult ? 'success' : 'error',
-                    message: item.reportResult ? '成功' : item.failInfo
+                    validate: item.importStatus,
+                    status: item.importStatus ? '数据完整' : '失败',
+                    statusCode: item.importStatus ? 'success' : 'error',
+                    message: item.importStatus ? '成功' : item.failInfo
                 }))
                 resolve(response);
             }).catch(err => {
@@ -127,7 +127,6 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
         })
         newList = newList.map((item, index) => ({...item, rowKey: index}));
         setSplitDataList(newList);
-        console.log('批导之后的数据', newList)
         tableRef.current.manualSelectedRows();
     };
     return <Fragment>

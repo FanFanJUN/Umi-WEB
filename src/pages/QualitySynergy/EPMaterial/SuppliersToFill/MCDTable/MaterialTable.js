@@ -138,7 +138,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                             getFieldDecorator('substanceId', {initialValue: modalType === 'edit' ? selectedRows[0].substanceId : ''}),
                             getFieldDecorator('substanceName', {initialValue: modalType === 'edit' ? selectedRows[0].substanceName : ''}),
                             (!getFieldValue('isRestricted') && modalType === 'add') ? <Input disabled={true} placeholder="请先选择是否为限用物质" />
-                                : getFieldValue('isRestricted') === '0' ? getFieldDecorator('substanceCode', {
+                                : getFieldValue('isRestricted') === 'false' ? getFieldDecorator('substanceCode', {
                                     initialValue: modalType === 'edit' ? selectedRows[0].substanceCode : '',
                                     rules: [{ required: true, message: '请填写物质名称' }]
                                 })(<Input placeholder="请输入" />)
@@ -158,7 +158,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                     <FormItem label='是否限用物质' {...formLayout}>
                         {
                             getFieldDecorator('isRestricted', {
-                                initialValue: modalType === 'edit' ? selectedRows[0].isRestricted : '',
+                                initialValue: modalType === 'edit' ? selectedRows[0].isRestricted&&selectedRows[0].isRestricted.toString() : '',
                                 rules: [{ required: true, message: '请选择' }]
                             })(<Select style={{ width: '100%' }}>
                                 <Option value="true">是</Option>
