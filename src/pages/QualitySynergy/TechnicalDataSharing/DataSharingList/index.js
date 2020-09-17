@@ -5,13 +5,19 @@ import { Button, Input, message, Modal } from 'antd';
 import styles from './index.less';
 import { ExtTable, utils } from 'suid';
 import {
-  BUConfigNoFrostHighSearch, DeleteDataSharingList,
-  distributionProps, judge,
-  materialCode, MaterialConfig, MaterialGroupConfig,
-  statusProps, StrategicPurchaseConfig, SubmitDataSharingList,
+  BUConfigNoFrostHighSearch,
+  DeleteDataSharingList,
+  judge,
+  materialCode,
+  MaterialConfig,
+  MaterialGroupConfig,
+  ShareDistributionProps,
+  ShareStatusProps,
+  StrategicPurchaseConfig,
+  SubmitDataSharingList,
 } from '../../commonProps';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
-import { recommendUrl, smBaseUrl } from '../../../../utils/commonUrl';
+import { recommendUrl } from '../../../../utils/commonUrl';
 import { openNewTab } from '../../../../utils';
 import SupplierModal from './component/SupplierModal';
 import TacticAssign from './component/TacticAssign';
@@ -122,10 +128,13 @@ export default function() {
 
   // 高级查询搜索
   const handleAdvancedSearch = (value) => {
+    console.log(value, '高级查询');
     value.materialCode = value.materialCode_name;
     value.materialGroupCode = value.materialGroupCode_name;
     value.strategicPurchaseCode = value.strategicPurchaseCode_name;
     value.buCode = value.buCode_name;
+    value.state = value.state_name;
+    value.allotSupplierState = value.allotSupplierState_name;
     delete value.materialCode_name;
     delete value.materialGroupCode_name;
     delete value.strategicPurchaseCode_name;
@@ -134,7 +143,6 @@ export default function() {
     delete value.allotSupplierState_name;
     setData(v => ({ ...v, epTechnicalShareDemandSearchBo: value }));
     tableRef.current.remoteDataRefresh();
-    console.log(value, '高级查询');
   };
 
   // 高级查询配置
@@ -144,8 +152,8 @@ export default function() {
     { title: '战略采购', key: 'strategicPurchaseCode', type: 'list', props: StrategicPurchaseConfig },
     { title: '业务单元', key: 'buCode', type: 'list', props: BUConfigNoFrostHighSearch },
     { title: '申请人', key: 'applyPeopleName', props: { placeholder: '输入申请人查询' } },
-    { title: '分配供应商状态', key: 'allotSupplierState', type: 'list', props: distributionProps },
-    { title: '状态', key: 'state', type: 'list', props: statusProps },
+    { title: '分配供应商状态', key: 'allotSupplierState', type: 'list', props: ShareDistributionProps },
+    { title: '状态', key: 'state', type: 'list', props: ShareStatusProps },
   ];
 
   const columns = [
@@ -159,11 +167,11 @@ export default function() {
     { title: '物料组描述', dataIndex: 'materialGroupName', ellipsis: true },
     { title: '战略采购代码', dataIndex: 'strategicPurchaseCode', ellipsis: true },
     { title: '战略采购名称', dataIndex: 'strategicPurchaseName', ellipsis: true },
-    {
-      title: '供应商',
-      dataIndex: 'buId',
-      render: (v, data) => <a onClick={() => handleSeesSupplier(data.shareDemanNumber)}>查看</a>,
-    },
+    // {
+    //   title: '供应商',
+    //   dataIndex: 'buId',
+    //   render: (v, data) => <a onClick={() => handleSeesSupplier(data.shareDemanNumber)}>查看</a>,
+    // },
     { title: 'BU代码', dataIndex: 'buCode', ellipsis: true },
     { title: 'BU名称', dataIndex: 'buName', ellipsis: true },
     { title: '申请人', dataIndex: 'applyPeopleName', ellipsis: true },
@@ -239,7 +247,6 @@ export default function() {
         ignore={DEVELOPER_ENV}
         disabled={
           data.selectedRowKeys.length === 0 ||
-          !judge(data.selectedRows, 'allotSupplierState', '未分配') ||
           judge(data.selectedRows, 'strategicPurchaseCode', '') ||
           !judge(data.selectedRows, 'strategicPurchaseCode', data.selectedRows[0]?.strategicPurchaseCode) ||
           !judge(data.selectedRows, 'state', '生效') || (judge(data.selectedRows, 'allotSupplierState', '已分配') ? data.selectedRowKeys > 1 : false)

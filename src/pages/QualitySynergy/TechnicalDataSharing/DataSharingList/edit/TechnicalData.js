@@ -35,6 +35,7 @@ const TechnicalData = React.forwardRef((props, ref) => {
   }, [props.data])
 
   const handleSelectedRows = (value, rows) => {
+    console.log(rows, 'rows')
     setData((v) => ({...v, selectedRowKeys: value, selectRows: rows, type: 'add'}))
   }
 
@@ -68,14 +69,13 @@ const TechnicalData = React.forwardRef((props, ref) => {
   const TechnicalDataAddAndEdit = (value) => {
     let newData = JSON.parse(JSON.stringify(data.dataSource))
     value.whetherDelete = false
-    value.id = getRandom(10)
     value.sampleRequirementDate = moment(value.sampleRequirementDate).format('YYYY-MM-DD')
     if (data.type === 'add') {
       newData.push(value)
     } else {
       data.dataSource.map((item, index) => {
         console.log(value, '1')
-        if(item.id === value.id) {
+        if(item.lineNumber === value.lineNumber) {
           newData[index] = value
           console.log(newData[index], '2')
         }
