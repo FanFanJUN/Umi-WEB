@@ -71,7 +71,7 @@ function CreateStrategy() {
     // 配置表
     async function initConfigurationTable(typeId) {
       triggerLoading(true);
-      let params = {catgroyid:typeId,property:1};
+      let params = {catgroyid:typeId,property:2};
       const { data, success, message: msg } = await SaveSupplierconfigureService(params);
       if (success) {
         let datalist  = data.configBodyVos;

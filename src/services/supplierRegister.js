@@ -134,15 +134,15 @@ export const SupplierconfigureDetail = params =>
 // };
 //中国省份
 export const listChineseProvinces = () => {
-  return httpUtils.post(`${BASE_URL}/srm-baf-web/supplierRegister/listChineseProvinces`);
+  return httpUtils.post(`/srm-baf-web/supplierRegister/listChineseProvinces`);
 };
 //市
 export const listCityByProvince = (params) => {
-  return httpUtils.post(`${BASE_URL}/srm-baf-web/supplierRegister/listCityByProvince`, params);
+  return httpUtils.post(`/srm-baf-web/supplierRegister/listCityByProvince`, params);
 };
 //县
 export const listAreaByCity = (params) => {
-  return httpUtils.post(`${BASE_URL}/srm-baf-web/supplierRegister/listCityByProvince`, params);
+  return httpUtils.post(`/srm-baf-web/supplierRegister/listCityByProvince`, params);
 };
 // 币种  
 export const getAllCurrencyWithoutAuth = () => {
@@ -252,15 +252,15 @@ export const stopApproveingOrder = params =>createServiceRequest({
 })
 // 老的泛虹公司
 export async function oddgetAllCorporation(params = {}) {
-  return httpUtils.post(`${BASE_URL}/srm-baf-web/basic/listAllCorporation`);
+  return httpUtils.post(`/srm-baf-web/basic/listAllCorporation`);
 }
 // 供应商公司查询工厂
 export const getCompanyFactory = (params = {}) => {
-  return httpUtils.post(`${BASE_URL}/srm-baf-web/factory/findByCorporationCode`,params)
+  return httpUtils.post(`/srm-baf-web/factory/findByCorporationCode`,params)
 }
 //查询供应商
 export const getNormalSuppliers = (params = {}) => {
-  return httpUtils.post(`${BASE_URL}/srm-baf-web/supplier/findNormalSuppliers`, params,true);
+  return httpUtils.post(`/srm-baf-web/supplier/findNormalSuppliers`, params,true);
 };
 ///审批流程根据id查信息
 export const findApplySupplierInfoVo = params =>
@@ -297,3 +297,8 @@ export const saveRegistVo = params => {
    method: 'POST',
  })
 }
+// 统一社会信用代码重复检查
+export const checkCreditCode = params => createServiceRequest({
+  path: '/supplierRegister/checkCreditCode',
+  params
+})
