@@ -38,7 +38,7 @@ export default function() {
     delete value.strategicPurchaseCode_name;
     delete value.buCode_name;
     delete value.state_name;
-    setData(v => ({ ...v, EpTechnicalShareDemandSearchBo: value }));
+    setData(v => ({ ...v, epTechnicalShareDemandSearchBo: value }));
     tableRef.current.remoteDataRefresh();
   }
 
