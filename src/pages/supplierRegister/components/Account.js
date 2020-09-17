@@ -76,7 +76,7 @@ const AccountRef = forwardRef(({
                           rules: [{ required: true, message: '请输入手机', whitespace: true }],
                         })(
                           <Input
-                            disabled={true || item.verifi === '2'}
+                            disabled={item.verifi === '2'}
                             maxLength={20}
                             onChange={onlyNumber}
                           />,
@@ -101,7 +101,7 @@ const AccountRef = forwardRef(({
                           rules: [{ required: true, message: '请输入手机', whitespace: true }],
                         })(
                           <Input
-                            disabled={approve === true || item.verifi === '2'}
+                            disabled={item.verifi === '2'}
                             maxLength={20}
                             onChange={onlyNumber}
                             placeholder={"请输入手机号"}
@@ -127,7 +127,7 @@ const AccountRef = forwardRef(({
                           { required: true, message: '请输入邮件地址!' },]
                         })(
                           <Input
-                            disabled={approve === true || item.verifi === '2'}
+                            disabled={item.verifi === '2'}
                             onChange={toUpperCase}
                             maxLength={50}
                             placeholder={"请输入邮件地址"} />
