@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { ExtTable, ExtModal, ScrollBar } from 'suid';
 import { Upload } from '@/components';
-import { supplierManagerBaseUrl } from '@/utils/commonUrl';
+import { recommendUrl } from '@/utils/commonUrl';
 
 class EnvironmentProDemandList extends Component {
     constructor(props) {
@@ -48,9 +48,10 @@ class EnvironmentProDemandList extends Component {
                     <ExtTable
                         loading={loading}
                         showSearch={true}
+                        searchPlaceHolder="请输入供应商代码或名称查询"
                         columns={this.columns}
                         store={{
-                            url: `${supplierManagerBaseUrl}/api/epSupplierAptitudeService/findByPage`,
+                            url: `${recommendUrl}/api/epSupplierAptitudeService/findByPage`,
                             type: 'POST',
                         }}
                     />
