@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-10 10:57:33
- * @LastEditTime: 2020-09-17 17:06:58
+ * @LastEditTime: 2020-09-17 17:41:39
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/CommonUtil/EditTable.js
  * @Description:  函数式可编辑行 Table组件
  * @Connect: 1981824361@qq.com
@@ -281,7 +281,7 @@ const EditableTable = (props) => {
                 {(h) => <ExtTable
                     bordered
                     // height={h}
-                    dataSource={dataSource}
+                    dataSource={dataSource || []}
                     columns={mergeColumns}
                     //   pagination={{
                     //     onChange: this.cancel,

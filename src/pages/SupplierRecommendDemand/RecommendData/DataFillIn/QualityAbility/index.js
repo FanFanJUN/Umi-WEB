@@ -2,16 +2,19 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:58:10
- * @LastEditTime: 2020-09-14 18:10:55
+ * @LastEditTime: 2020-09-17 17:29:12
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/QualityAbility/index.js
  * @Description: 质量能力
  * @Connect: 1981824361@qq.com
  */
-import React, { useState } from 'react';
-import { Form, Button, Spin, PageHeader, Row, Col, Divider, Radio, Input } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Form, Button, Spin, PageHeader, Row, Col, Divider, Radio, Input, message } from 'antd';
 import styles from '../../DataFillIn/index.less';
 import EditableFormTable from '../CommonUtil/EditTable';
 import UploadFile from '../CommonUtil/UploadFile';
+import { router } from 'dva';
+import { requestGetApi, requestPostApi } from '../../../../../services/dataFillInApi';
+import { filterEmptyFileds } from '../CommonUtil/utils';
 
 const FormItem = Form.Item;
 const formLayout = {
@@ -23,18 +26,30 @@ const formLayout = {
     },
 };
 
-const QualityAbility = (props) => {
+const QualityAbility = ({form}) => {
 
-    const [data, setData] = useState({
-        loading: false,
-        type: 'add',
-        title: '基本情况',
-        userInfo: {}
-    });
+    const [data, setData] = useState({});
+    const [loading, setLoading] = useState(false);
 
-    const { form } = props;
+    const { query: { id, type = 'add' } } = router.useLocation();
 
-    const { getFieldDecorator, setFieldsValue } = props.form;
+    const { getFieldDecorator, getFieldValue } = form;
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const res = await requestGetApi({ supplierRecommendDemandId: id, tabKey: 'qualityAbilityTab' });
+            if (res.success) {
+                res.data && setData(res.data);
+                // setTableTata(data.environmentalTestingEquipments);
+            } else {
+                message.error(res.message);
+            }
+            setLoading(false);
+        };
+        if (type !== 'add') {
+            fetchData();
+        }
+    }, []);
 
     // 重点控制工序
     const columnsForKeyControl = [
@@ -255,6 +270,37 @@ const QualityAbility = (props) => {
         },
     ];
 
+    function handleSave() {
+        if (getFieldValue('haveEnvironmentalTestingEquipment')) {
+            // if (isEmptyArray(tableTata)) {
+            //     message.info('列表至少填写一条设备信息！');
+            //     return;
+            // }
+        }
+        form.validateFieldsAndScroll((error, value) => {
+            console.log(value);
+            if (error) return;
+            const saveParams = {
+                ...value,
+                tabKey: 'qualityAbilityTab',
+                rohsFileId: value.rohsFileId ? (value.rohsFileId)[0] : null,
+                recommendDemandId: id || '676800B6-F19D-11EA-9F88-0242C0A8442E',
+                // environmentalTestingEquipments: tableTata || [],
+            };
+            requestPostApi(filterEmptyFileds(saveParams)).then((res) => {
+                if (res && res.success) {
+                    message.success('保存数据成功');
+                } else {
+                    message.error(res.message);
+                }
+            })
+        })
+    }
+
+    function setNewData(newData) {
+        // setTableTata(newData);
+    }
+
     return (
         <div>
             <Spin spinning={data.loading}>
@@ -265,7 +311,7 @@ const QualityAbility = (props) => {
                     }}
                     title="质量控制"
                     extra={[
-                        <Button key="save" type="primary" style={{ marginRight: '12px' }}>
+                        <Button key="save" type="primary" style={{ marginRight: '12px' }} onClick={() => handleSave()}>
                             保存
                         </Button>,
                     ]}
