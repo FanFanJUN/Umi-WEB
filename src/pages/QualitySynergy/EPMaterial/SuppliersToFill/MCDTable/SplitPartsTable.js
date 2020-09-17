@@ -103,10 +103,10 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
                 const response = res.data.map((item, index) => ({
                     ...item,
                     key: index,
-                    validate: item.importResult,
-                    status: item.importResult ? '数据完整' : '失败',
-                    statusCode: item.importResult ? 'success' : 'error',
-                    message: item.importResult ? '成功' : item.importResultInfo
+                    validate: item.reportResult,
+                    status: item.reportResult ? '数据完整' : '失败',
+                    statusCode: item.reportResult ? 'success' : 'error',
+                    message: item.reportResult ? '成功' : item.failInfo
                 }))
                 resolve(response);
             }).catch(err => {
@@ -116,14 +116,19 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
     };
 
     const importFunc = (value) => {
-        // SaveTheListOfExemptionClause(value).then(res => {
-        //     if (res.success) {
-        //         message.success('导入成功');
-        //         refresh();
-        //     } else {
-        //         message.error(res.message)
-        //     }
-        // });
+        let newList = [].concat(dataList);
+        value.forEach((addItem, index) => {
+            delete addItem.status;
+            delete addItem.statusCode;
+            delete addItem.message;
+            delete addItem.validate;
+            addItem.rowKey = dataList.length + index;
+            newList.push(addItem);
+        })
+        newList = newList.map((item, index) => ({...item, rowKey: index}));
+        setSplitDataList(newList);
+        console.log('批导之后的数据', newList)
+        tableRef.current.manualSelectedRows();
     };
     return <Fragment>
         <div className={styles.macTitle}>拆分部件</div>
