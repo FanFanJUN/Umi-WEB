@@ -7,6 +7,7 @@ import '../../../../components/Upload/upload.css';
 import * as fileIcon from '../../../../components/Upload/fileIcon';
 import { onLineTarget } from '../../../../../config/proxy.config';
 import { BASE_URL } from '../../../../utils/constants';
+import { getFrameElement } from '../../../../utils';
 
 const host = process.env.NODE_ENV === 'production' ? '' : onLineTarget;
 
@@ -26,7 +27,7 @@ class UploadFile extends React.Component {
   }
 
   componentDidMount() {
-    console.log(window.location,  window.top, window.self,'window')
+    console.log(window.location,  window.top, window.self, getFrameElement(), 'window')
     this.updateFile(this.props.entityId);
   }
 
@@ -333,7 +334,7 @@ class UploadFile extends React.Component {
             beforeUpload={this.beforeUpload}
             showUploadList={false}
             fileList={this.state.fileList}
-            action={'http://localhost:8000' + BASE_URL + baseUrl + "/supplierRegister/uploadNoAuth"}
+            action={window.location.origin + BASE_URL + baseUrl + "/supplierRegister/uploadNoAuth"}
             headers={this.getHeaders()}
             onChange={this.handleChange}
             style={{ width: '100%' }}
