@@ -100,6 +100,7 @@ const Index = () => {
   };
 
   const validateItem = (data) => {
+    data = data.map(item => ({...item, recordCheckList: item.recordCheckList === '是'}))
     return new Promise((resolve, reject) => {
       JudgeTheListOfRestrictedMaterials(data).then(res => {
         const response = res.data.map(item => ({

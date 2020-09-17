@@ -292,7 +292,7 @@ export const saveSupplierApply = params => {
 // 保存自主注册账号信息
 export const saveRegistVo = params => {
   return request({
-   url: `${smBaseUrl}/supplierRegister/saveRegistVo`,
+   url: `${smBaseUrl}/supplierSelf/saveRegistVo`,
    data: convertDataToFormData(params),
    method: 'POST',
  })
@@ -300,5 +300,6 @@ export const saveRegistVo = params => {
 // 统一社会信用代码重复检查
 export const checkCreditCode = params => createServiceRequest({
   path: '/supplierRegister/checkCreditCode',
-  params
+  params,
+  hack: true
 })

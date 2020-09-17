@@ -3,7 +3,7 @@ import { Form, Button, DatePicker, Modal, Col, message } from 'antd';
 import styles from './SupplierModal.less';
 import { ExtModal, ExtTable } from 'suid';
 import { supplierManagerBaseUrl } from '../../../../../utils/commonUrl';
-import { FindSupplierByDemandNumber, generateLineNumber, judge } from '../../../commonProps';
+import { DistributionSupplierSave, FindSupplierByDemandNumber, generateLineNumber, judge } from '../../../commonProps';
 import moment from 'moment/moment';
 
 const FormItem = Form.Item;
@@ -24,6 +24,7 @@ const SupplierModal = (props) => {
   });
 
   const [data, setData] = useState({
+    deleteArr: [],
     selectedRowKeys: [],
     selectedRows: [],
     sourceData: [],
@@ -34,9 +35,11 @@ const SupplierModal = (props) => {
 
   useEffect(() => {
     if (type === 'allot') {
+      if (props.selectedRows[0]?.allotSupplierState === '已分配') {
+        getDataSource();
+      }
       setData((value) => ({ ...value, show: true }));
     } else {
-      getDataSource();
       setData((value) => ({ ...value, show: false }));
     }
   }, [visible]);
@@ -48,7 +51,7 @@ const SupplierModal = (props) => {
 
   const columns = [
     { title: '行号', dataIndex: 'lineNumber', width: 70 },
-    { title: '是否发布', dataIndex: 'publish', width: 150, render: (v) => v === '0' ? '草稿' : '已发布'},
+    { title: '是否发布', dataIndex: 'publish', width: 150, render: (v) => v ? '已发布' : '草稿'},
     { title: '供应商代码', dataIndex: 'supplierCode', ellipsis: true, width: 200 },
     { title: '供应商名称', dataIndex: 'supplierName', ellipsis: true, width: 200 },
     { title: '分配日期', dataIndex: 'allotDate', ellipsis: true, width: 200 },
@@ -57,19 +60,17 @@ const SupplierModal = (props) => {
   ].map(item => ({ ...item, align: 'center' }));
 
   const getDataSource = () => {
+    console.log(props.selectedRows[0].shareDemanNumber, 'props.selectedRows[0].shareDemanNumber')
     FindSupplierByDemandNumber({
-      shareDemanNumber: props.shareDemanNumber,
+      shareDemanNumber: props.selectedRows[0].shareDemanNumber,
     }).then(res => {
       if (res.success) {
-        setData(v => ({ ...v, sourceData: res.data?.rows }));
+        res.data = res.data.map((item, index) => ({...item, lineNumber: generateLineNumber(index + 1)}))
+        setData(v => ({ ...v, sourceData: res.data }));
       } else {
         message.error(res.message);
       }
     });
-  };
-
-  const handleOk = () => {
-    console.log('ok');
   };
 
   const handleCancel = () => {
@@ -93,7 +94,9 @@ const SupplierModal = (props) => {
   const handleDelete = () => {
     Modal.confirm({
       title: '删除',
-      okText: '是否删除选中的数据',
+      content:"请确认删除选中的数据!",
+      cancelText: '取消',
+      okText: '确定',
       type: 'error',
       onOk: () => {
         const {selectedRowKeys} = data
@@ -107,7 +110,6 @@ const SupplierModal = (props) => {
                   data.whetherDelete = true
                   deleteArr.push(data)
                 }
-                console.log(item)
                 newSourceData.splice(index, 1)
               }
             })
@@ -197,6 +199,7 @@ const SupplierModal = (props) => {
     })
     console.log(newSourceData, 'newSourceData')
     setData(v => ({...v, sourceData: newSourceData}))
+    console.log(data.sourceData, 'sourceData')
     modalCancel()
   }
 
@@ -206,7 +209,7 @@ const SupplierModal = (props) => {
     newSourceData.map(item => {
       data.selectedRowKeys.map(data => {
         if (data === item.lineNumber) {
-          item.isRelease = type
+          item.publish = type
         }
       })
     })
@@ -215,56 +218,75 @@ const SupplierModal = (props) => {
 
   // 保存供应商
   const saveSupplier = () => {
-
+    if (judge(data.selectedRows, 'downloadAbortDate') && data.sourceData.length > 0) {
+      Modal.confirm({
+        title: '保存',
+        okText: '确定',
+        content: '请确认保存所有供应商!',
+        cancelText: '取消',
+        onOk: () => {
+          const ids = props.selectedRows.map(item => item.id)
+          let arr = [...data.sourceData, ...data.deleteArr]
+          arr = arr.map(item => ({...item, technicalLineNumber: item.lineNumber}))
+          DistributionSupplierSave({
+            ids: ids,
+            epTechnicalSupplierBos: arr
+          }).then(res => {
+            if (res.success) {
+              message.success(res.message)
+              handleCancel()
+            } else {
+              message.error(res.message)
+            }
+          })
+        }
+      })
+    }
   }
 
   //新增供应商确定按钮 ok为确定 continue为确认并继续
   const supplierAddOk = (type) => {
     let arr = []
-    let line = 1
-    if (data.sourceData) {
-      data.sourceData.map((item, index) => {
-        supplierData.selectedRows.map(data => {
-          if (item.supplierId === data.id) {
-            arr.push({...item, lineNumber: generateLineNumber(line) })
-          } else {
-            arr.push({
-              supplierCode: item.code,
-              supplierId: item.id,
-              supplierName: item.name,
-              lineNumber: generateLineNumber(line),
-              whetherDelete: 0,
-              allotDate: moment(new Date()).format( 'YYYY-MM-DD'),
-              allotPeopleName: props.selectedRows[0].strategicPurchaseName,
-              allotPeopleCode: props.selectedRows[0].strategicPurchaseCode,
-              allotPeopleId: props.selectedRows[0].strategicPurchaseId,
-              downloadAbortDate: ''
-            })
-          }
-          line++
-        })
+    if (data.sourceData && data.sourceData.length > 0) {
+      supplierData.selectedRows.map(item => {
+        if (!data.sourceData.some(data => data.supplierId === item.id)) {
+          arr.push({
+            supplierCode: item.code,
+            supplierId: item.id,
+            supplierName: item.name,
+            whetherDelete: false,
+            publish: false,
+            allotDate: moment(new Date()).format('YYYY-MM-DD'),
+            allotPeopleName: props.selectedRows[0].strategicPurchaseName,
+            allotPeopleCode: props.selectedRows[0].strategicPurchaseCode,
+            allotPeopleId: props.selectedRows[0].strategicPurchaseId,
+            downloadAbortDate: '',
+          });
+        }
       })
     } else {
-      supplierData.selectedRows.map((item, index) => {
+      supplierData.selectedRows.map((item) => {
         arr.push({
           supplierCode: item.code,
           supplierId: item.id,
           supplierName: item.name,
-          lineNumber: generateLineNumber(index + 1),
-          whetherDelete: 0,
-          allotDate: moment(new Date()).format( 'YYYY-MM-DD'),
+          whetherDelete: false,
+          publish: false,
+          allotDate: moment(new Date()).format('YYYY-MM-DD'),
           allotPeopleName: props.selectedRows[0].strategicPurchaseName,
           allotPeopleCode: props.selectedRows[0].strategicPurchaseCode,
           allotPeopleId: props.selectedRows[0].strategicPurchaseId,
-          downloadAbortDate: ''
-        })
-      })
+          downloadAbortDate: '',
+        });
+      });
     }
+    arr = [...data.sourceData, ...arr]
+    arr = arr.map((item, index) => ({...item, lineNumber: generateLineNumber(index + 1)}))
     tableRef.current.manualSelectedRows();
     if (type === 'ok') {
       modalCancel()
     }
-    setData(v => ({...v, sourceData: [...arr]}))
+    setData(v => ({...v, sourceData: arr}))
   }
 
   return (
@@ -274,7 +296,6 @@ const SupplierModal = (props) => {
       visible={visible}
       title={title}
       destroyOnClose={true}
-      onOk={handleOk}
       footer={null}
       onCancel={handleCancel}
     >
@@ -286,8 +307,8 @@ const SupplierModal = (props) => {
           <Button className={styles.btn} disabled={data.selectedRowKeys?.length === 0 ||
           !judge(data.selectedRows, 'downloadAbortDate')
           } onClick={() => changeReleaseStatus(true)}>发布</Button>
-          <Button disabled={data.selectedRowKeys?.length === 0 || !judge(data.selectedRows, 'publish', '1')} onClick={() => changeReleaseStatus(false)}>取消发布</Button>
-          <Button className={styles.btn} disabled={data.selectedRowKeys?.length === 0} onClick={saveSupplier}>保存</Button>
+          <Button className={styles.btn} disabled={data.selectedRowKeys?.length === 0 || !judge(data.selectedRows, 'publish', '1')} onClick={() => changeReleaseStatus(false)}>取消发布</Button>
+          <Button disabled={!judge(data.sourceData, 'downloadAbortDate')} onClick={saveSupplier}>保存</Button>
         </div>
       }
       <ExtTable

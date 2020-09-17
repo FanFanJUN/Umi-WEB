@@ -45,6 +45,7 @@ const OrganizatRef = forwardRef(({
         let result = false;
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
+                values.supplierType = '0';
                 result = values;
             }
         });
@@ -61,19 +62,12 @@ const OrganizatRef = forwardRef(({
         if (creditCode && creditCode.match('^[A-Z0-9]{18}$')) {
             const {data,success, message: msg } = await checkCreditCode({creditCode,id});
             if (success) {
-
+                if (data) {
+                    message.error('社会信用代码已存在，请重新输入');
+                }else {
+                    message.success('社会信用代码可以使用');
+                }
             }
-            // checkCreditCode({ creditCode, id })
-            //     .then((res) => {
-            //         this.setState({ loading: false });
-            //         if (res.data) {
-            //             message.error('社会信用代码已存在，请重新输入');
-
-            //         } else {
-            //             message.success('社会信用代码可以使用');
-            //         }
-            //     })
-            //     .catch((err) => this.setState({ loading: false }));
 
         } else {
             message.error('请输入统一社会信用代码');
@@ -87,7 +81,7 @@ const OrganizatRef = forwardRef(({
         }
     }
     return (
-        <Form>
+        <Form style={{paddingTop:'50px'}}>
             <Row>
                 <Col span={15}>
                     <FormItem

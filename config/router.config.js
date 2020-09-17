@@ -92,6 +92,8 @@ export default [
       { path: '/supplier/supplierModify/ApprovePage/SupplierModifyApproveDetail', component: './supplierModify/ApprovePage/indexDetail', title: '供应商变更流程明细' },
       /**供应商自主注册 */
       { path: '/supplier/selfRegister/index', component: './selfRegister/index', title: '供应商自主注册' },
+      /**我的注册信息 */
+      { path: '/supplier/selfRegister/OutSideRegisterListView', component: './selfRegister/OutSideRegisterListView', title: '我的注册信息' },
       /* add Example
       {
         path: '/path',

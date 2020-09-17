@@ -5,6 +5,7 @@ import { ExtTable } from 'suid';
 import TechnicalDataModal from './component/TechnicalDataModal';
 import moment from 'moment/moment';
 import Upload from '../../../compoent/Upload';
+import { getRandom } from '../../../commonProps';
 
 const TechnicalData = React.forwardRef((props, ref) => {
 
@@ -34,6 +35,7 @@ const TechnicalData = React.forwardRef((props, ref) => {
   }, [props.data])
 
   const handleSelectedRows = (value, rows) => {
+    console.log(rows, 'rows')
     setData((v) => ({...v, selectedRowKeys: value, selectRows: rows, type: 'add'}))
   }
 
@@ -73,7 +75,7 @@ const TechnicalData = React.forwardRef((props, ref) => {
     } else {
       data.dataSource.map((item, index) => {
         console.log(value, '1')
-        if(item.id === value.id) {
+        if(item.lineNumber === value.lineNumber) {
           newData[index] = value
           console.log(newData[index], '2')
         }

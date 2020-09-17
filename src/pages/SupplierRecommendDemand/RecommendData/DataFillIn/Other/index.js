@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:58:13
- * @LastEditTime: 2020-09-16 18:25:31
+ * @LastEditTime: 2020-09-17 10:41:40
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/Other/index.js
  * @Description: 其他附加资料
  * @Connect: 1981824361@qq.com
@@ -96,7 +96,7 @@ const Other = ({ form }) => {
             "dataIndex": "currencyName",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'Select',
+            "inputType": 'selectwithService',
         },
         {
             "title": "出资比例",
@@ -238,7 +238,7 @@ const Other = ({ form }) => {
                             <div className={styles.title}>组织机构</div>
                             <div className={styles.content}>
                                 <Row>
-                                    <Col span={12}>
+                                    <Col span={24}>
                                         <FormItem label="组织机构" {...formLayout}>
                                             {getFieldDecorator('organization', {
                                                 initialValue: type === 'add' ? '' : data.organization,
@@ -264,7 +264,7 @@ const Other = ({ form }) => {
                             <div className={styles.title}>股权构成及见证材料</div>
                             <div className={styles.content}>
                                 <Row>
-                                    <Col span={12}>
+                                    <Col span={24}>
                                         <FormItem label="工商局加盖公章的验资报告" {...formLayout}>
                                             {getFieldDecorator('capitalVerificationReportFileIds', {
                                                 initialValue: type === 'add' ? '' : data.capitalVerificationReportFileIds,

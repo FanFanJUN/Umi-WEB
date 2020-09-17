@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:34:49
- * @LastEditTime: 2020-09-16 13:49:00
+ * @LastEditTime: 2020-09-17 14:18:33
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/SellCondition/index.js
  * @Description: 销售情况 Tab
  * @Connect: 1981824361@qq.com
@@ -15,18 +15,26 @@ import Customer from './Customer';
 import MarketCompetitive from './MarketCompetitive';
 import { findSalesSituationById, saveSupplierSalesSituation } from '../../../../../services/dataFillInApi';
 import { router } from 'dva';
+import { filterEmptyFileds } from '../CommonUtil/utils';
 
 const SellCondition = ({ form }) => {
     const [data, setData] = useState({});
+    const [supplierSalesProceeds, setsupplierSalesProceeds] = useState([]); // 销售收入及利润
+    const [changhongSaleInfos, setchanghongSaleInfos] = useState([]);
+    const [mainCustomers, setmainCustomers] = useState([]);
+    const [supplierOrderInfos, setsupplierOrderInfos] = useState([]);
+    const [threeYearPlans, setthreeYearPlans] = useState([]);
+
     const [loading, setLoading] = useState(false);
 
-    const { query: { id = '676800B6-F19D-11EA-9F88-0242C0A8442E', type = 'add' } } = router.useLocation();
+    const { query: { id, type = 'add' } } = router.useLocation();
 
     useEffect(() => {
         const fetchData = async () => {
-            const res = await findSalesSituationById({ supplierRecommendDemandId: id });
+            const res = await findSalesSituationById({ supplierRecommendDemandId: id || '676800B6-F19D-11EA-9F88-0242C0A8442E' });
             if (res.success) {
                 res.data && setData(res.data);
+                setsupplierSalesProceeds(data.supplierSalesProceeds || []);
             } else {
                 message.error(res.message);
             }
@@ -44,8 +52,12 @@ const SellCondition = ({ form }) => {
                 supplierCertificates: data.supplierCertificates,
                 supplierContacts: data.supplierContacts,
                 managementSystems: data.managementSystems,
+                changhongSaleInfos: changhongSaleInfos || [],
+                mainCustomers: mainCustomers || [],
+                supplierOrderInfos: supplierOrderInfos || [],
+                threeYearPlans: threeYearPlans || []
             };
-            saveSupplierSalesSituation({}).then((res) => {
+            saveSupplierSalesSituation(filterEmptyFileds(saveParams)).then((res) => {
                 if (res && res.success) {
                     message.success('保存销售情况成功');
                 } else {
@@ -53,6 +65,25 @@ const SellCondition = ({ form }) => {
                 }
             });
         });
+    }
+
+    function setTableData(newData, type) {
+        switch (type) {
+            case 'changhongSaleInfos':
+                setchanghongSaleInfos(newData);
+                break;
+            case 'mainCustomers':
+                setmainCustomers(newData);
+                break;
+            case 'supplierOrderInfos':
+                setsupplierOrderInfos(newData);
+                break;
+            case 'threeYearPlans':
+                setthreeYearPlans(newData);
+                break;
+            default:
+                break;
+        }
     }
 
     return (
@@ -74,7 +105,7 @@ const SellCondition = ({ form }) => {
                         <div className={styles.bgw}>
                             <div className={styles.title}>销售收入及利润</div>
                             <div className={styles.content}>
-                                <SalesProfit />
+                                <SalesProfit type={type} data={supplierSalesProceeds} setTableData={setTableData} />
                             </div>
                         </div>
                     </div>
@@ -82,7 +113,7 @@ const SellCondition = ({ form }) => {
                         <div className={styles.bgw}>
                             <div className={styles.title}>客户</div>
                             <div className={styles.content}>
-                                <Customer type={type} data={data} form={form} />
+                                <Customer type={type} data={data} form={form} setTableData={setTableData} />
                             </div>
                         </div>
                     </div>
@@ -90,7 +121,7 @@ const SellCondition = ({ form }) => {
                         <div className={styles.bgw}>
                             <div className={styles.title}>市场地位及竞争状况</div>
                             <div className={styles.content}>
-                                <MarketCompetitive type={type} data={data} form={form} />
+                                <MarketCompetitive type={type} data={data} form={form} setTableData={setTableData} />
                             </div>
                         </div>
                     </div>

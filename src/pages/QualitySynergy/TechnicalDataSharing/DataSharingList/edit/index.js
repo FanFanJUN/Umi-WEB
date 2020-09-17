@@ -7,7 +7,13 @@ import { closeCurrent, getMobile, getUserAccount, getUserId, getUserName } from 
 import BaseInfo from './BaseInfo';
 import MaterialInfo from './MaterialInfo';
 import TechnicalData from './TechnicalData';
-import { AddDataSharingList, DataSharingFindOne, getRandom, UpdateDataSharingList } from '../../../commonProps';
+import {
+  AddDataSharingList,
+  DataSharingFindOne,
+  generateLineNumber,
+  getRandom,
+  UpdateDataSharingList,
+} from '../../../commonProps';
 import SupplierData from './SupplierData';
 
 export default () => {
@@ -63,6 +69,7 @@ export default () => {
       if (res.success) {
         res.data.epTechnicalDataVos = res.data.epTechnicalDataVos.map(item => ({...item, lineNumber: getRandom(10).toString()}))
         console.log(res.data)
+        res.data.technicalDataAndSupplierVos = res.data.technicalDataAndSupplierVos.map((item, index) => ({...item, technicalLineNumber: generateLineNumber(index + 1)}))
         setData(v => ({...v, editDate: res.data}))
       } else {
         message.error(res.message)
@@ -163,7 +170,7 @@ export default () => {
         }
         {
           data.type === 'detail' && <SupplierData
-            data={data.editDate?.epTechnicalSupplierVos}
+            data={data.editDate?.technicalDataAndSupplierVos}
           />
         }
       </Spin>

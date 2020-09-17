@@ -13,7 +13,7 @@ const SupplierData = (props) => {
     { title: '分配日期', dataIndex: 'allotDate', width: 160 },
     { title: '分配人', dataIndex: 'allotPeopleName', ellipsis: true, width: 150 },
     { title: '资料下载截止日期', dataIndex: 'downloadAbortDate', ellipsis: true, width: 160 },
-    { title: '下载状态', dataIndex: 'fileDownloadState', width: 160 },
+    { title: '下载状态', dataIndex: 'fileDownloadState', width: 160, render: (v) => v ? "已下载" : '未下载' },
     { title: '下载日期', dataIndex: 'fileDownloadDate', ellipsis: true, width: 150 },
   ].map(item => ({ ...item, align: 'center' }));
 
