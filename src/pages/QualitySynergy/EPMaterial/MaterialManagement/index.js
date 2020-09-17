@@ -235,8 +235,15 @@ export default create()(function ({ form }) {
         })
     }
     // 同步pdm
-    function handleSyncPdm() {
-        
+    async function handleSyncPdm() {
+        if(!checkOneSelect())return;
+        const res = await syncPdm({id: selectedRowKeys[0]});
+        if(res.statusCode === 200) {
+            message.success('同步成功');
+            refresh();
+        } else {
+            message.error(res.message);
+        }
     }
     // 按钮是否禁用
     function buttonCheck(rows) {
