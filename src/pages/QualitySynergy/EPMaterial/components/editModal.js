@@ -1,8 +1,8 @@
 import { useImperativeHandle, forwardRef, useState, useRef, Fragment, useEffect } from 'react';
 import { Form, Row, Col, Input, Button, Modal, message, Spin } from 'antd';
 import { ComboList, ExtTable, ExtModal, ComboTree } from 'suid';
-import { MaterialConfig, MaterialAllConfig } from '../../commonProps';
-import { findByBuCode, sapMaterialGroupMapPurchaseGroup, epsFindByCode } from '../../../../services/qualitySynergy'
+import { MaterialConfig, allPersonList } from '../../commonProps';
+import { findByBuCode, sapMaterialGroupMapPurchaseGroup, epsFindByCode, findOrgTreeWithoutFrozen } from '../../../../services/qualitySynergy';
 const { create, Item: FormItem } = Form;
 const formLayout = {
     labelCol: { span: 8, },
@@ -16,6 +16,7 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada }, ref) 
     const [bmCode, setBmCode] = useState('');
     const [loading, setLoading] = useState(false);
     const [modalType, setModalType] = useState('');
+    const [OrgId, setOrgId] = useState('');
     const { getFieldDecorator, setFieldsValue, validateFields } = form;
 
     useEffect(() => {
@@ -28,7 +29,11 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada }, ref) 
             }
         }
         fetchData();
-
+        findOrgTreeWithoutFrozen().then(res => {
+            if(res.success) {
+                setOrgId(res.data[0].id);
+            }
+        })
     }, [buCode])
     function showModal(type) {
         setModalType(type);
@@ -169,7 +174,12 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada }, ref) 
                             getFieldDecorator('environmentAdminAccount', { initialValue: initData && initData.environmentAdminAccount }),
                             getFieldDecorator('environmentAdminName', {
                                 initialValue: initData && initData.environmentAdminName,
-                            })(<Input disabled />)
+                            })(<ComboList form={form}
+                                {...allPersonList}
+                                cascadeParams={{organizationId: OrgId}}
+                                name='environmentAdminName'
+                                field={['environmentAdminId', 'environmentAdminAccount']}
+                            />)
                         }
                     </FormItem>
                 </Row>

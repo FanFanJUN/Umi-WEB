@@ -71,7 +71,7 @@ function CreateStrategy() {
   }
   // 配置
   async function initConfigurationTable(typeId) {
-    triggerLoading(true);
+   triggerLoading(true);
     let params = { catgroyid: typeId, property: 1 };
     const { data, success, message: msg } = await SaveSupplierconfigureService(params);
     if (success) {
@@ -101,7 +101,7 @@ function CreateStrategy() {
           verifi: item.operationCode
         })
       }
-      if (item.smMsgTypeCode === '3') {
+      if (item.smMsgTypeCode === '5') {
         handbusiness.push({
           title: item.fieldName,
           key: item.fieldCode,

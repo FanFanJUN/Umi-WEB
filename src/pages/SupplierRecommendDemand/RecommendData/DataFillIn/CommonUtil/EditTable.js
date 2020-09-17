@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-10 10:57:33
- * @LastEditTime: 2020-09-15 17:45:35
+ * @LastEditTime: 2020-09-16 18:38:25
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/CommonUtil/EditTable.js
  * @Description:  函数式可编辑行 Table组件
  * @Connect: 1981824361@qq.com
@@ -14,6 +14,8 @@ import PropTypes, { any } from 'prop-types';
 import AutoSizeLayout from '../../../../supplierRegister/SupplierAutoLayout';
 import { guid, isEmptyArray } from './utils';
 import UploadFile from './UploadFile';
+import SelectWithService from '../../../../supplierRegister/components/SelectWithService';
+import { currencyListConfigWithoutAuth } from '../../../../../utils/commonProps';
 
 
 const EditableContext = React.createContext();
@@ -28,6 +30,9 @@ const EditableCell = (params) => {
             inputType,
             record,
             form,
+            required,
+            inputDisabled,
+            inputDefaultValue,
         }
     } = params;
 
@@ -35,7 +40,7 @@ const EditableCell = (params) => {
     const getInput = () => {
         switch (inputType) {
             case 'InputNumber':
-                return <InputNumber />
+                return <InputNumber disabled={inputDisabled} />
             case 'DatePicker':
                 return <DatePicker />
             case 'Select':
@@ -48,10 +53,21 @@ const EditableCell = (params) => {
                     <Option value="1">是</Option>
                     <Option value="2">否</Option>
                 </Select>
-                case 'UploadFile':
-                    return <UploadFile />    
+            case 'UploadFile':
+                return <UploadFile />
+            case 'TextArea':
+                return <Input.TextArea disabled={inputDisabled} />
+            case 'hideForm':
+                return <Input type={"hidden"} />
+            case 'selectwithService':
+                return <SelectWithService
+                    labelInValue={true}
+                    placeholder={"请选择市"}
+                    config={currencyListConfigWithoutAuth}
+                // params={{ provinceId: getFieldValue("province") ? getFieldValue("province").key : "" }}
+                />
             default:
-                return <Input />;
+                return <Input disabled={inputDisabled} />;
         }
     };
 
@@ -61,14 +77,15 @@ const EditableCell = (params) => {
         return (
             editing ? (
                 <Form.Item style={{ margin: 0 }}>
+                    <span style={{ color: 'red', display: required ? '' : 'none' }}>*</span>
                     {getFieldDecorator(dataIndex, {
                         rules: [
                             {
-                                required: true,
+                                required,
                                 message: `请输入${title}!`,
                             },
                         ],
-                        initialValue: record[dataIndex],
+                        initialValue: record[dataIndex] || inputDefaultValue,
                     })(getInput())}
                 </Form.Item>
             ) : (
@@ -82,7 +99,8 @@ const EditableCell = (params) => {
 
 const EditableTable = (props) => {
 
-    const { form, dataSource, columns, rowKey, isEditTable = false, isToolBar = false, setNewData } = props;
+    const { form, dataSource, columns, rowKey, isEditTable = false, isToolBar = false, setNewData,
+        recommendDemandId = '676800B6-F19D-11EA-9F88-0242C0A8442E' } = props;
 
     console.log(dataSource);
     const [editingKey, setEditingKey] = useState('');
@@ -169,6 +187,9 @@ const EditableTable = (props) => {
                     title: col.title,
                     editing: isEditing(record),
                     form,
+                    required: !(col.required === false),
+                    inputDisabled: col.inputDisabled,
+                    inputDefaultValue: col.inputDefaultValue,
                 }} />
             }
         };
@@ -209,9 +230,8 @@ const EditableTable = (props) => {
         });
         // newArray.push({ id: guid() });
         const id = guid();
-        const newData = isEmptyArray(newArray) ? 
-        [{ id, patentsAwardsCertificate: guid() }] : [{ id, patentsAwardsCertificate: guid() }, ...newArray];
-
+        const newData = isEmptyArray(newArray) ?
+            [{ id, guid: guid(), recommendDemandId }] : [{ id, guid: guid(), recommendDemandId }, ...newArray];
         setNewData(newData);
         setEditingKey(id); // 新增处于编辑行
         setButtonDisabled(true); // 未保存无法操作

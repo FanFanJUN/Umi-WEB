@@ -211,6 +211,10 @@ export const getUserId = () => {
   const info = storage.sessionStorage.get('Authorization') || {};
   return info?.userId
 }
+export const getUserEmail = () => {
+  const info = storage.sessionStorage.get('Authorization') || {};
+  return info?.email
+}
 
 export const getMobile = () => {
   const info = storage.sessionStorage.get('Authorization') || {};

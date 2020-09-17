@@ -6,11 +6,11 @@ import AutoSizeLayout from '../SupplierAutoLayout';
 import { checkCardNo, onlyNumber, onMailCheck, toUpperCase, getLineCode, getMaxLineNum } from '@/utils/index'
 import { listPositionConfig } from '@/utils/commonProps'
 import { dataTransfer2 } from '../CommonUtils'
-import { commonUrl } from '../../../utils';
+import { isEmpty } from '../../../utils/index';
 const { create } = Form;
 const FormItem = Form.Item;
 let keys = 0;
-let lineCode = 1;
+let lineCode = 0;
 const AuthorizeRef = forwardRef(({
     form,
     initialValue = {},
@@ -27,7 +27,7 @@ const AuthorizeRef = forwardRef(({
     const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
     const [configure, setConfigure] = useState([]);
     const [dataSource, setDataSource] = useState([]);
-    //const [keys, setKeys] = useState(0);
+    const [posited, setposited] = useState(0);
     //const [lineCode, setLineCode] = useState(1);
     
     useEffect(() => {
@@ -36,10 +36,14 @@ const AuthorizeRef = forwardRef(({
         lineCode ++;
         let editData = editformData;
         if (editData && editData.contactVos && editData.contactVos.length > 0) {
-            initData = editData.contactVos.map((item, index) => ({ keyId: index, ...item }));
+            let positioned = editData.contactVos[0].position;
+            setposited(positioned)
+            initData = editData.contactVos.map((item, index) => ({keyId: index, ...item }));
             let maxLineNum = getMaxLineNum(editData.contactVos);
+            console.log(maxLineNum)
             lineCode = maxLineNum + 1;
             keys = initData.length - 1;
+            
         }
         setDataSource(initData)
     }, [editformData])
@@ -280,10 +284,12 @@ const AuthorizeRef = forwardRef(({
         let result = {};
         form.validateFieldsAndScroll((err, values) => {
             if (values) {
+                if (isEmpty(values.position[0])) {
+                    values.position[0] = posited
+                }
                 result = dataTransfer2(dataSource, values);
             }
         })
-        console.log(result)
         return result;
     }
     // 获取表单值
@@ -291,6 +297,9 @@ const AuthorizeRef = forwardRef(({
         let result = false;
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
+                if (isEmpty(values.position[0])) {
+                    values.position[0] = posited
+                }
                 result = dataTransfer2(dataSource, values);
             }
         })

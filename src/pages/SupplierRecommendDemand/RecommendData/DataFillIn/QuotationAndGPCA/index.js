@@ -2,17 +2,18 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:58:07
- * @LastEditTime: 2020-09-15 16:18:37
+ * @LastEditTime: 2020-09-16 14:20:15
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/QuotationAndGPCA/index.js
  * @Description: 报价单及成分分析表 Tab
  * @Connect: 1981824361@qq.com
  */
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Form, Button, Spin, PageHeader, Radio, Row, message } from 'antd';
 import styles from '../../DataFillIn/index.less';
 import EditTable from '../CommonUtil/EditTable';
 import { router } from 'dva';
-import { requestPostApi } from '../../../../../services/dataFillInApi';
+import { requestPostApi, requestGetApi } from '../../../../../services/dataFillInApi';
+import { filterEmptyFileds } from '../CommonUtil/utils';
 
 const QuotationAndGPCA = (props) => {
 
@@ -22,6 +23,21 @@ const QuotationAndGPCA = (props) => {
     const [supplyCostStructure, setSupplyCostStructure] = useState(true);
 
     const { query: { id, type = 'add' } } = router.useLocation();
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const res = await requestGetApi({ supplierRecommendDemandId: id, tabKey: 'quotationAndGPCATab' });
+            if (res.success) {
+                res.data && setData(res.data);
+            } else {
+                message.error(res.message);
+            }
+            setLoading(false);
+        };
+        if (type !== 'add') {
+            fetchData();
+        }
+    }, []);
 
     const columns = [
         {
@@ -100,11 +116,11 @@ const QuotationAndGPCA = (props) => {
 
     function handleSave() {
         const saveParams = {
-            supplierCertificates: data.supplierCertificates,
-            supplierContacts: data.supplierContacts,
-            managementSystems: data.managementSystems,
+            recommendDemandId: id,
+            key: 'quotationAndGPCATab',
+            supplyCostStructure
         };
-        requestPostApi({ key: 'quotationAndGPCATab' }).then((res) => {
+        requestPostApi(filterEmptyFileds(saveParams)).then((res) => {
             if (res && res.success) {
                 message.success('保存数据成功');
             } else {
@@ -134,7 +150,7 @@ const QuotationAndGPCA = (props) => {
                 >
                     <div className={styles.wrapper}>
                         <div className={styles.bgw}>
-                            <div className={styles.title}>授权委托人</div>
+                            <div className={styles.title}>报价单及成分分析表</div>
                             <div className={styles.content}>
                                 <Row style={{ marginBottom: '10px' }}>
                                     <span style={{ marginRight: '18px' }}>能够且愿意向长虹提供完整的成本结构:</span>

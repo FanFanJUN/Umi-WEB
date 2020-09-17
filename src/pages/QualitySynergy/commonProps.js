@@ -1,8 +1,7 @@
-import { smBaseUrl, baseUrl, recommendUrl } from '../../utils/commonUrl';
+import { smBaseUrl, baseUrl, recommendUrl, basicServiceUrl } from '../../utils/commonUrl';
 import request from '../../utils/request';
 import React from 'react';
 import { commonUrl } from '../../utils';
-import { ComboList } from 'suid';
 
 // 生成随机数
 export const getRandom = num => {
@@ -12,33 +11,25 @@ export const getRandom = num => {
 // 判断解冻按钮是否禁用
 export const judgeButtonDisabled = (value) => {
   if (value?.length !== 0) {
-    const frozen = value[0].frozen;
+    const frozen = value[0].frozen
     return !value.every(item => {
-      return item.frozen === frozen;
+      return item.frozen === frozen
     });
   }
 };
 
 // 判断
-export const judge = (arr, key, value = undefined) => {
-  if (value !== undefined) {
-    if (arr?.length > 0) {
-      return arr.every(item => item[key] === value);
-    } else {
-      return true;
-    }
+export const judge = (arr, key, value) => {
+  if (arr?.length > 0) {
+    return arr.every(item => item[key] === value);
   } else {
-    if (arr?.length > 0) {
-      return arr.every(item => item[key] !== '');
-    } else {
-      return true;
-    }
+    return true;
   }
 };
 
 export const generateLineNumber = (index) => {
-  return (index < 10 ? '00' + index * 10 : index < 100 ? '0' + index * 10 : index * 10).toString();
-};
+  return (index < 10 ? '00' + index * 10 : index < 100 ? '0' + index*10 : index * 10).toString()
+}
 
 const commonProps = {
   reader: {
@@ -58,7 +49,8 @@ export const FindTacticByBuCodeAndGroupCode = async params => {
     method: 'POST',
     params: params,
   });
-};
+}
+
 
 // 根据分享需求号获取供应商
 export const FindSupplierByDemandNumber = async params => {
@@ -67,26 +59,6 @@ export const FindSupplierByDemandNumber = async params => {
     url,
     method: 'GET',
     data: params,
-  });
-};
-
-//技术资料分享战略指派
-export async function StrategyAssignedDataSharingList(params) {
-  const url = `${recommendUrl}/api/epTechnicalShareDemandService/designateStrategy`;
-  return request({
-    url,
-    method: 'POST',
-    data: params,
-  });
-}
-
-//技术资料分享提交
-export async function SubmitDataSharingList(params) {
-  const url = `${recommendUrl}/api/epTechnicalShareDemandService/submit`;
-  return request({
-    url,
-    method: 'GET',
-    params: params,
   });
 }
 
@@ -326,6 +298,7 @@ export const StrategicPurchaseConfig = {
   rowKey: 'name',
   reader: {
     name: 'code',
+    field: ['id', 'name'],
     description: 'name',
   },
   placeholder: '选择战略采购',
@@ -352,26 +325,6 @@ export const MaterialGroupConfig = {
   style: {
     width: '100%',
   },
-};
-
-// 战略采购列表
-export const StrategicPurchasingAll = {
-  remotePaging: true,
-  store: {
-    type: 'POST',
-    autoLoad: false,
-    url: `${baseUrl}/purchaseGroup/findByPagesAll`,
-  },
-  style: {
-    width: '100%',
-  },
-  rowKey: 'code',
-  reader: {
-    field: ['code', 'id'],
-    name: 'name',
-    description: 'code',
-  },
-  placeholder: '选择物料代码',
 };
 
 // 物料代码列表
@@ -420,8 +373,8 @@ export const MaterialFindByPage = {
     autoLoad: false,
     url: `${recommendUrl}/api/epDemandService/findByList`,
     params: {
-      quickSearchProperties: [],
-    },
+      quickSearchProperties: []
+    }
   },
   rowKey: 'materialCode',
   reader: {
@@ -613,6 +566,22 @@ export const limitMaterialList = {
   },
   placeholder: '选择限用物质列表',
 };
+// 限用物质列表-查询是否测试记录表中检查项为是的数据
+export const findByIsRecordCheckListTrue = {
+  remotePaging: true,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${baseUrl}/limitSubstanceListData/findByIsRecordCheckListTrue`,
+  },
+  rowKey: 'limitMaterialCode',
+  reader: {
+    name: 'limitMaterialName',
+    field: ['id', 'limitMaterialCode', 'casNo'],
+    description: 'limitMaterialCode',
+  },
+  placeholder: '选择限用物质列表',
+};
 
 // 适用范围-非冻结
 export const limitScopeList = {
@@ -633,33 +602,34 @@ export const limitScopeList = {
   },
   placeholder: '选择适用范围',
 };
-
-// 下载状态
-export const downloadStatusProps = {
-  dataSource: [
-    {
-      code: '未下载',
-      name: '未下载',
+// 豁免条款-下拉
+export const exemptionClauseDataList = {
+  remotePaging: true,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${baseUrl}/exemptionClauseData/findByPage`,
+    params: {
+      quickSearchProperties: [],
     },
-    {
-      code: '已下载',
-      name: '已下载',
-    },
-  ],
-  placeholder: '选择状态',
-  ...commonProps,
+  },
+  rowKey: 'exemptionClauseCode',
+  reader: {
+    name: 'exemptionClauseMaterialName',
+    field: ['id', 'exemptionClauseCode'],
+    description: 'exemptionClauseCode',
+  },
+  placeholder: '选择豁免条款',
 };
-
-
 // 状态
 export const statusProps = {
   dataSource: [
     {
-      code: '草稿',
+      code: 'DRAFT',
       name: '草稿',
     },
     {
-      code: '生效',
+      code: 'EFFECT',
       name: '生效',
     },
   ],
@@ -687,11 +657,11 @@ export const DownloadStatus = {
 export const distributionProps = {
   dataSource: [
     {
-      code: '已分配',
-      name: '已分配',
+      code: 'ALLOT_END',
+      name: '存在符合的供应商',
     },
     {
-      code: '未分配',
+      code: 'ALLOT_NOT',
       name: '未分配',
     },
   ],
@@ -702,22 +672,22 @@ export const distributionProps = {
 export const materialStatus = {
   dataSource: [
     {
-      code: 'INIT',
+      code: 'EXIST_CONFORM_SUPPLIER',
       name: '存在符合的供应商',
     },
     {
-      code: 'INPROCESS',
+      code: 'DIS_EXIST_CONFORM_SUPPLIER',
       name: '不存在符合的供应商',
     },
   ],
   placeholder: '选择物料标记状态',
   ...commonProps,
 };
-// 物料标记状态
+// 同步PDM状态
 export const PDMStatus = {
   dataSource: [
     {
-      code: 'INIT',
+      code: 'draft',
       name: '同步成功',
     },
     {
@@ -725,7 +695,7 @@ export const PDMStatus = {
       name: '同步失败',
     },
   ],
-  placeholder: '选择物料标记状态',
+  placeholder: '选择同步PDM状态',
   ...commonProps,
 };
 
@@ -744,4 +714,26 @@ export const buList = {
     description: 'buName',
   },
   placeholder: '选择业务单元',
+};
+// 组织机构人员下拉列表
+export const allPersonList = {
+  remotePaging: true,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `/api-gateway/basic-service/employee/findByUserQueryParam`,
+    params: {
+      includeFrozen: false,
+      includeSubNode: true,
+      quickSearchProperties: ["code", "user.userName"],
+      sortOrders: [{property: "code", direction: "ASC"}]
+    }
+  },
+  rowKey: 'code',
+  reader: {
+    name: 'userName',
+    field: ['id', 'code'],
+    description: 'code',
+  },
+  placeholder: '选择环保管理人员',
 };

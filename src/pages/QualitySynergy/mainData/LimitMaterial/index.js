@@ -109,7 +109,7 @@ const LimitMaterial = ({ form }) => {
                 tableRightRef.current.manualSelectedRows();
                 tableRightRef.current.remoteDataRefresh();
             } else {
-                message.error(res.msg)
+                message.error(res.message)
             }
         });
     };
@@ -661,7 +661,7 @@ const LimitMaterial = ({ form }) => {
                     </FormItem>
                 </Row>
                 <Row>
-                    <FormItem label=' 排序号' {...formLayout}>
+                    <FormItem label='排序号' {...formLayout}>
                         {
                             getFieldDecorator('orderNo', {
                                 initialValue: ESPdata.modalSource && ESPdata.modalSource.orderNo,

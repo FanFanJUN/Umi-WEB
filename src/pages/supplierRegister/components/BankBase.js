@@ -166,7 +166,7 @@ const BankbaseRef = forwardRef(({
                                     }]
                                 })(
                                     <SelectWithService
-                                        disabled={true}
+                                        //disabled={true}
                                         labelInValue={true}
                                         placeholder={"请选择国家"}
                                         config={BankCountryListConfig}

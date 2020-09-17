@@ -11,7 +11,8 @@ import {
     exemptionClauseDataInsert,
     exemptionClauseDataDelete,
     JudgeTheListOfExemptionClause,
-    SaveTheListOfExemptionClause
+    SaveTheListOfExemptionClause,
+    exemptionClauseDataFrozen
 } from '../../../../services/qualitySynergy'
 const { authAction } = utils;
 
@@ -39,23 +40,30 @@ const ExemptionClause = (props) => {
         { title: '豁免条款物质名称', dataIndex: 'exemptionClauseMaterialName', ellipsis: true, width: 140 },
         { title: 'CAS.NO', dataIndex: 'casNo', ellipsis: true, },
         { title: '限量(%)', dataIndex: 'limitNumber', ellipsis: true },
-        { title: '比较标识', dataIndex: 'limitNumberMaxSign', ellipsis: true, render:(text)=>{
-            switch(text){
-                case 'true':
-                case true:
-                    return '最高值';
-                case 'false':
-                case false:
-                    return '最低值';
-                default:
-                    return '';
+        {
+            title: '比较标识', dataIndex: 'limitNumberMaxSign', ellipsis: true, render: (text) => {
+                switch (text) {
+                    case 'true':
+                    case true:
+                        return '最高值';
+                    case 'false':
+                    case false:
+                        return '最低值';
+                    default:
+                        return '';
+                }
             }
-        } },
+        },
         { title: '豁免到期日期', dataIndex: 'exemptionExpireDate', ellipsis: true, width: 180, render: (text) => text ? text.slice(0, 10) : '' },
         { title: '豁免条款具体内容', dataIndex: 'exemptionContent', ellipsis: true, width: 140 },
         { title: '排序号', dataIndex: 'orderNo', ellipsis: true, width: 140 },
+        { title: '冻结', dataIndex: 'frozen', ellipsis: true, width: 140, render: (text)=>text?'已冻结':'未冻结'},
     ]
-
+    // 检查传入数据的冻结情况，全冻结返回thaw，全未冻结返回freeze
+    const checkFreeze = (dataList) => {
+        if (!dataList || dataList.length === 0) return false;
+        return dataList.every((item) => item.frozen) ? 'thaw' : dataList.every((item) => !item.frozen) ? 'freeze' : false
+    }
     const buttonClick = (type) => {
         console.log('当前选中', selectedRow, selectedRowKeys)
         switch (type) {
@@ -71,6 +79,25 @@ const ExemptionClause = (props) => {
                     modalSource: selectedRow[selectedRow.length - 1],
                     isView: type === 'detail'
                 }));
+                break;
+            case 'freeze':
+                confirm({
+                    title: `请确认是否${checkFreeze(selectedRow) === 'thaw' ? '解冻' : '冻结'}豁免条款数据`,
+                    onOk: async () => {
+                        const parmas = selectedRowKeys.join();
+                        const res = await exemptionClauseDataFrozen({
+                            ids: parmas,
+                            operation: checkFreeze(selectedRow) === 'freeze'
+                        });
+                        if (res.success) {
+                            message.success('操作成功');
+                            tableRef.current.manualSelectedRows();
+                            tableRef.current.remoteDataRefresh();
+                        } else {
+                            message.error(res.message);
+                        }
+                    },
+                });
                 break;
             case 'delete':
                 confirm({
@@ -93,8 +120,8 @@ const ExemptionClause = (props) => {
         return new Promise((resolve, reject) => {
             const dataList = data.map(item => {
                 // 避免限量存在%，并给两位小数
-                if (item.limitNumber){
-                    if(item.limitNumber.toString().indexOf('%')!==-1){
+                if (item.limitNumber) {
+                    if (item.limitNumber.toString().indexOf('%') !== -1) {
                         item.limitNumber = item.limitNumber.split('%')[0];
                     }
                     item.limitNumber = Number(item.limitNumber).toFixed(2)
@@ -126,11 +153,11 @@ const ExemptionClause = (props) => {
                 message.success('导入成功');
                 refresh();
             } else {
-                message.error(res.msg)
+                message.error(res.message)
             }
         });
     };
-    const headerLeft = <div style={{ width: '100%', display: 'flex', height: '100%', alignItems: 'center'}}>
+    const headerLeft = <div style={{ width: '100%', display: 'flex', height: '100%', alignItems: 'center' }}>
         {
             authAction(<Button
                 type='primary'
@@ -160,12 +187,12 @@ const ExemptionClause = (props) => {
         }
         {
             authAction(<Button
-                onClick={() => buttonClick('detail')}
+                onClick={() => buttonClick('freeze')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                disabled={selectedRowKeys.length !== 1}
+                disabled={checkFreeze(selectedRow) === false}
                 key='QUALITYSYNERGY_EC_DETAIL'
-            >明细</Button>)
+            >{checkFreeze(selectedRow) === 'thaw' ? '解冻' : '冻结'}</Button>)
         }
         {
             authAction(<DataImport
@@ -196,7 +223,7 @@ const ExemptionClause = (props) => {
                     if (data.modalSource) {
                         values = { ...data.modalSource, ...values }
                     }
-                    if(!values.limitNumber){
+                    if (!values.limitNumber) {
                         delete values.limitNumber;
                         delete values.limitNumberMaxSign;
                     }
@@ -311,7 +338,7 @@ const ExemptionClause = (props) => {
                             {
                                 getFieldDecorator('limitNumberMaxSign', {
                                     initialValue: data.modalSource && (data.modalSource.limitNumberMaxSign).toString(),
-                                    rules: [{ required: (!!getFieldValue('limitNumber')&&getFieldValue('limitNumber')!=0), message: '请选择比较标识' }]
+                                    rules: [{ required: (!!getFieldValue('limitNumber') && getFieldValue('limitNumber') != 0), message: '请选择比较标识' }]
                                 })(<Select style={{ width: '100%' }} allowClear>
                                     <Select.Option value="true">最高值</Select.Option>
                                     <Select.Option value="false">最低值</Select.Option>
@@ -345,7 +372,7 @@ const ExemptionClause = (props) => {
                                 getFieldDecorator('orderNo', {
                                     initialValue: data.modalSource && data.modalSource.orderNo,
                                     rules: [{ required: true, message: '请填写排序号' }]
-                                })(<InputNumber disabled={data.isView} min={0} max={99999} style={{ width: '100%' }}/>)
+                                })(<InputNumber disabled={data.isView} min={0} max={99999} style={{ width: '100%' }} />)
                             }
                         </FormItem>
                     </Row>

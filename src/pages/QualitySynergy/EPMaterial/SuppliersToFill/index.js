@@ -4,11 +4,15 @@ import { Input, Button, message, Modal, Form } from 'antd';
 import { supplierManagerBaseUrl, recommendUrl } from '@/utils/commonUrl';
 import { openNewTab, getFrameElement } from '@/utils';
 import { AutoSizeLayout, Header, AdvancedForm, ComboAttachment } from '@/components';
-import { materialCode, statusProps, distributionProps, materialStatus, PDMStatus } from '../../commonProps';
+import fillingHistory from '../components/fillingHistory'
+import { limitMaterialList, MaterialConfig, StrategicPurchaseConfig, distributionProps, materialStatus, PDMStatus } from '../../commonProps';
 import styles from './index.less'
 import {
-    epDemandUpdate
-} from '../../../../services/qualitySynergy'
+    epDemandUpdate,
+    epDemandSubmit,
+    epDemandRecall,
+    epDemandCopyAll
+} from '../../../../services/qualitySynergy';
 const { authAction, storage } = utils;
 const { create, Item: FormItem } = Form;
 const { Search } = Input;
@@ -17,12 +21,14 @@ const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const SupplierFillList = function (props) {
     const headerRef = useRef(null)
     const tableRef = useRef(null);
+    const samplingRef = useRef(null);
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [copyVisible, setCopyVisible] = useState(false);
     const [uploadVisible, setUploadVisible] = useState(false);
     const [selectedRows, setRows] = useState([]);
     const [searchValue, setSearchValue] = useState({});
     const [attachment, setAttachment] = useState(null);
+    const [materialObj, setMaterialObj] = useState({})
     const FRAMELEEMENT = getFrameElement();
     const {
         getFieldDecorator,
@@ -31,19 +37,15 @@ const SupplierFillList = function (props) {
     } = props.form;
     // 高级查询配置
     const formItems = [
-        { title: '物料代码', key: 'data1', type: 'list', props: materialCode },
-        { title: '物料组', key: 'data2', type: 'list', props: materialCode },
-        { title: '战略采购', key: 'data3', type: 'list', props: materialCode },
-        { title: '环保管理人员', key: 'data4', props: { placeholder: '输入申请人查询' } },
-        { title: '申请人', key: 'data5', props: { placeholder: '输入申请人查询' } },
-        { title: '状态', key: 'data6', type: 'list', props: statusProps },
-        { title: '分配供应商状态', key: 'data7', type: 'list', props: distributionProps },
-        { title: '物料标记状态', key: 'data8', type: 'list', props: materialStatus },
-        { title: '同步PDM状态', key: 'data9', type: 'list', props: PDMStatus },
+        { title: '物料代码', key: 'data1', type: 'list', props: MaterialConfig },
+        { title: '战略采购', key: 'data3', type: 'list', props: StrategicPurchaseConfig },
+        { title: '环保管理人员', key: 'data4', props: { placeholder: '输入环保管理人员查询' } },
+        { title: '是否需要填报', key: 'data7', type: 'list', props: distributionProps },
+        { title: '填报状态', key: 'data8', type: 'list', props: materialStatus },
     ]
     // 页面跳转
     function redirectToPage(type) {
-        if(selectedRowKeys.length === 0) {
+        if (selectedRowKeys.length === 0) {
             message.warning('请选择数据');
             return;
         }
@@ -66,7 +68,7 @@ const SupplierFillList = function (props) {
             authAction(<Button
                 type='primary'
                 className={styles.btn}
-                onClick={()=>{redirectToPage('add')}}
+                onClick={() => { redirectToPage('add') }}
                 ignore={DEVELOPER_ENV}
                 key='PURCHASE_VIEW_CHANGE_CREATE'
             >填报</Button>)
@@ -75,7 +77,7 @@ const SupplierFillList = function (props) {
             authAction(<Button
                 className={styles.btn}
                 disabled={false}
-                onClick={()=>{redirectToPage('detail')}}
+                onClick={() => { redirectToPage('detail') }}
                 ignore={DEVELOPER_ENV}
                 key='PURCHASE_VIEW_CHANGE_EDITOR'
             >明细</Button>)
@@ -84,7 +86,7 @@ const SupplierFillList = function (props) {
             authAction(<Button
                 className={styles.btn}
                 disabled={false}
-                onClick={()=>{submit()}}
+                onClick={() => { handleButton('submit') }}
                 key='PURCHASE_VIEW_CHANGE_REMOVE'
                 ignore={DEVELOPER_ENV}
             >提交</Button>)
@@ -93,7 +95,7 @@ const SupplierFillList = function (props) {
             authAction(<Button
                 className={styles.btn}
                 disabled={false}
-                onClick={()=>{withdraw()}}
+                onClick={() => { handleButton('withdraw') }}
                 ignore={DEVELOPER_ENV}
                 key='PURCHASE_VIEW_CHANGE_DETAIL'
             >撤回</Button>)
@@ -112,6 +114,10 @@ const SupplierFillList = function (props) {
                 className={styles.btn}
                 disabled={false}
                 ignore={DEVELOPER_ENV}
+                onClick={() => {
+                    console.log(samplingRef.current)
+                    // samplingRef.current.setVisible(true);
+                }}
                 key='PURCHASE_VIEW_CHANGE_DETAIL'
             >填报历史</Button>)
         }
@@ -127,26 +133,27 @@ const SupplierFillList = function (props) {
     </>
     const headerRight = <>
         <Search
-            placeholder='供应商代码或名称'
+            placeholder='请输入物料代码或描述查询'
             className={styles.btn}
             onSearch={handleQuickSearch}
             allowClear
         />
     </>
     const columns = [
-        { title: '是否需要填报', dataIndex: 'needToFill', width: 110, render: (text) => text ? '是' : '否'   },
-        { title: '填报状态', dataIndex: 'effectiveStatus', width: 80, render: (text) => {
+        { title: '是否需要填报', dataIndex: 'needToFill', width: 110, render: (text) => text ? '是' : '否' },
+        {
+            title: '填报状态', dataIndex: 'effectiveStatus', width: 80, render: (text) => {
                 switch (text) {
-                    case 'draft': return '已填报';
-                    case 'pre_publish': return '未填报';
+                    case 'NOTCOMPLETED': return '未填报';
+                    case 'COMPLETED': return '已填报';
                     default: return '未填报'
                 }
             }
         },
-        { title: '预警', dataIndex: 'alarm', width: 70, render: (text) => <div className={styles.circle}></div>},
+        { title: '预警', dataIndex: 'alarm', width: 70, render: (text) => <div className={styles.circle}></div> },
         { title: '剩余有效(天数)', dataIndex: 'daysRemaining', ellipsis: true, width: 120 },
-        { title: '有效开始日期', dataIndex: 'effectiveStartDate', ellipsis: true, },
-        { title: '有效截止日期', dataIndex: 'effectiveEndDate', ellipsis: true, },
+        { title: '有效开始日期', dataIndex: 'effectiveStartDate', ellipsis: true, render:(text)=>text?text.slice(0, 10) : ''},
+        { title: '有效截止日期', dataIndex: 'effectiveEndDate', ellipsis: true, render:(text)=>text?text.slice(0, 10) : ''},
         { title: '物料代码', dataIndex: 'materialCode', ellipsis: true, },
         { title: '物料描述', dataIndex: 'materialName', ellipsis: true, },
         { title: '填报截止日期', dataIndex: 'fillEndDate', ellipsis: true, },
@@ -155,25 +162,29 @@ const SupplierFillList = function (props) {
         { title: '战略采购名称', dataIndex: 'strategicPurchaseName', ellipsis: true, },
         { title: '环保管理人员', dataIndex: 'environmentAdministratorName', ellipsis: true, },
     ].map(item => ({ ...item, align: 'center' }));
-    // 提交 
-    const submit = () => {
-        confirm({
-            title: '请确认是否提交环保资料填报数据',
-            onOk: () => {
-                console.log('确认删除');
-            },
-            onCancel() { },
-        });
-    }
-    // 撤回
-    const withdraw = () => {
-        confirm({
-            title: '是否撤回已提交的环保资料填报数据',
-            onOk: () => {
-                console.log('确认撤回');
-            },
-            onCancel() { },
-        });
+    const handleButton = async (type) => {
+        let res = {}, id = selectedRowKeys[0]
+        switch (type) {
+            case 'submit':
+                res = await epDemandSubmit({ id });
+                break;
+            case 'withdraw':
+                res = await epDemandRecall({ id });
+                break;
+            case 'copy':
+                const { } = materialObj;
+                res = await epDemandCopyAll({ id });
+                break;
+            default:
+                break;
+        }
+        if (res.statusCode === 200) {
+            refresh();
+            message.success('操作成功');
+        } else {
+            message.error(res.message);
+        }
+
     }
     // 快捷查询
     function handleQuickSearch() {
@@ -192,6 +203,11 @@ const SupplierFillList = function (props) {
     // 确定复制
     function handleCopyOk() {
 
+    }
+    // 清空选中/刷新表格数据
+    const refresh = () => {
+        tableRef.current.manualSelectedRows();
+        tableRef.current.remoteDataRefresh();
     }
     // 上传确认
     function handleUploadOk() {
@@ -219,10 +235,10 @@ const SupplierFillList = function (props) {
                     ref={tableRef}
                     rowKey={(item) => item.id}
                     size='small'
-                    showSearch= {false}
+                    showSearch={false}
                     onSelectRow={handleSelectedRows}
                     selectedRowKeys={selectedRowKeys}
-                    store = {{
+                    store={{
                         url: `${recommendUrl}/api/epDataFillService/findByPage`,
                         type: 'POST',
                         params: {
@@ -233,22 +249,27 @@ const SupplierFillList = function (props) {
             }
         </AutoSizeLayout>
         {/* 复制 */}
-        <ExtModal
+        {copyVisible && <ExtModal
             centered
             destroyOnClose
             onCancel={() => { setCopyVisible(false) }}
-            onOk={() => { handleCopyOk() }}
+            onOk={() => { handleButton('copy') }}
             visible={copyVisible}
             title="复制已填报物料的环保资料"
         >
             <FormItem label='从物料代码复制' labelCol={{ span: 8 }} wrapperCol={{ span: 12 }}>
-                <ComboList {...materialCode} name='supplierCode'
-                    field={['supplierName', 'supplierId']}
-                    afterSelect={() => { console.log('选中') }} />
+                <ComboList
+                    {...limitMaterialList}
+                    style={{width: '100%'}}
+                    name='supplierCode'
+                    afterSelect={(item) => {
+                        console.log(item)
+                        setMaterialObj(item)
+                    }} />
             </FormItem>
-        </ExtModal>
+        </ExtModal>}
         {/* 上传资质文件 */}
-        <ExtModal
+        {uploadVisible && <ExtModal
             centered
             destroyOnClose
             onCancel={() => { setUploadVisible(false) }}
@@ -260,15 +281,16 @@ const SupplierFillList = function (props) {
                 {
                     getFieldDecorator('files', {
                         rules: [{ required: true, message: '请上传文件' }]
-                    })(<ComboAttachment 
-                        uploadButton={{ disabled: false }} 
+                    })(<ComboAttachment
+                        uploadButton={{ disabled: false }}
                         allowDelete={false}
-                        showViewType={true} 
-                        customBatchDownloadFileName={true} 
+                        showViewType={true}
+                        customBatchDownloadFileName={true}
                         attachment={attachment} />)
                 }
             </FormItem>
-        </ExtModal>
+        </ExtModal>}
+        <fillingHistory wrappedComponentRef={samplingRef}  />
     </Fragment>
 }
 

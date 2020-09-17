@@ -71,7 +71,7 @@ function CreateStrategy() {
     // 配置表
     async function initConfigurationTable(typeId) {
       triggerLoading(true);
-      let params = {catgroyid:typeId,property:1};
+      let params = {catgroyid:typeId,property:2};
       const { data, success, message: msg } = await SaveSupplierconfigureService(params);
       if (success) {
         let datalist  = data.configBodyVos;
@@ -101,7 +101,7 @@ function CreateStrategy() {
           verifi: item.operationCode
         })
       }
-      if (item.smMsgTypeCode === '3') {
+      if (item.smMsgTypeCode === '5') {
         handbusiness.push({
           title: item.fieldName,
           key: item.fieldCode,
@@ -201,6 +201,7 @@ function CreateStrategy() {
     if (againdata) {
         againdata.supplierInfoVo = supplierInfoVo;
     }
+    console.log(againdata)
     //如果为新增  拼加一个供应商ID在头上
     againdata.supplierId = againdata.supplierId || query.id;
     againdata.againdata = '0';
@@ -431,7 +432,7 @@ function CreateStrategy() {
       <Affix offsetTop={0}>
         <div className={classnames([styles.header, styles.flexBetweenStart])}>
           <span className={styles.title}>
-            供应商变更新增编辑
+            供应商变更新增变更单
             </span>
           <div className={styles.flexCenter}>
             <Button className={styles.btn} onClick={handleBack}>返回</Button>

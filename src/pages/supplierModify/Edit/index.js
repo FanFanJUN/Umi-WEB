@@ -69,7 +69,7 @@ function CreateStrategy() {
   }
   async function initConfigurationTable(typeId) {
     triggerLoading(true);
-    let params = { catgroyid: typeId, property: 1 };
+    let params = { catgroyid: typeId, property: 2 };
     const { data, success, message: msg } = await SaveSupplierconfigureService(params);
     if (success) {
       let datalist = data.configBodyVos;
@@ -98,7 +98,7 @@ function CreateStrategy() {
           verifi: item.operationCode
         })
       }
-      if (item.smMsgTypeCode === '3') {
+      if (item.smMsgTypeCode === '5') {
         handbusiness.push({
           title: item.fieldName,
           key: item.fieldCode,
@@ -301,7 +301,7 @@ function CreateStrategy() {
           return false;
         }
       }
-      if (item.operationCode !== '3' && item.fieldCode === 'bankInfoVos') {
+      if (item.operationCode !== '3'  && item.fieldCode === 'bankInfoVos') {
         const { getbankform } = Bankformef.current; //银行信息
         bankVal = getbankform()
         if (!bankVal) {
@@ -321,7 +321,7 @@ function CreateStrategy() {
           return false;
         }
       }
-      if (item.operationCode !== '3' && item.fieldCode === 'genCertVos') {
+      if (item.operationCode !== '3'  && item.fieldCode === 'genCertVos') {
         const { getqualificationsInfo } = QualificationRef.current; // 通用资质
         qualifications = getqualificationsInfo()
         if (!qualifications) {
@@ -329,7 +329,7 @@ function CreateStrategy() {
           return false;
         }
       }
-      if (item.operationCode !== '3' && item.fieldCode === 'proCertVos') {
+      if (item.operationCode !== '3'  && item.fieldCode === 'proCertVos') {
         const { getspecialpurpose } = QualispecialRef.current; // 专用资质
         proCertVos = getspecialpurpose() || [];
       }
@@ -393,19 +393,19 @@ function CreateStrategy() {
     }
     setwholeData(wholeData)
     getModelRef.current.handleModalVisible(true);
-    // let saveData = wholeData;
-    // console.log(saveData)
-    // triggerLoading(true)
-    // const { success, message: msg } = await saveSupplierRegister(saveData);
-    // if (success) {
-    //   message.success(msg);
-    //   triggerLoading(false)
-    //   closeCurrent()
-    //   return
-    // }else {
-    //   message.error(msg);
-    // }
-    // triggerLoading(false)
+    let saveData = wholeData;
+    console.log(saveData)
+    triggerLoading(true)
+    const { success, message: msg } = await saveSupplierRegister(saveData);
+    if (success) {
+      message.success(msg);
+      triggerLoading(false)
+      closeCurrent()
+      return
+    }else {
+      message.error(msg);
+    }
+    triggerLoading(false)
   }
   async function createSave(val) {
     let params = { ...wholeData, ...val };
@@ -435,7 +435,7 @@ function CreateStrategy() {
       <Affix offsetTop={0}>
         <div className={classnames([styles.header, styles.flexBetweenStart])}>
           <span className={styles.title}>
-            供应商编辑
+            供应商变更编辑
             </span>
           <div className={styles.flexCenter}>
             <Button className={styles.btn} onClick={handleBack}>返回</Button>

@@ -1,16 +1,24 @@
 import { useState, useEffect ,useRef} from 'react';
 import { Button, message, Steps, Row, Checkbox } from "antd";
+import { router } from 'dva';
 import RegistrationAgreement from './commons/RegistrationAgreement'
 import BaseAccountInfo from './commons/BaseAccountInfo'
+import {saveRegistVo} from '../../services/supplierRegister'
 import { Wrapper } from './style'
+
 const Step = Steps.Step;
-let current = 0
 export default function () {
+    const { query } = router.useLocation();
     const BassAccounRef = useRef(null);
     const [current, setcurrent] = useState(0);
     const [checked, setchecked] = useState(false);
+    const [loading, triggerLoading] = useState(false);
+    const [accounts, setaccounts] = useState(false);
     useEffect(() => {
-
+        let organ = {};
+        organ.mobile = query.mobile;
+        organ.email = query.email;
+        setaccounts(organ)
     }, []);
     //上一步
     function handlePre() {
@@ -35,7 +43,21 @@ export default function () {
     }
     // 提交
     async function supplierPayment() {
-
+        const { getAccountinfo } = BassAccounRef.current;
+        let resultData = getAccountinfo()
+        triggerLoading(true)
+        resultData.account ='';
+        resultData.pwd ='';
+        resultData.repeatPwd ='';
+        resultData.creditCode ='';
+        resultData.code ='';
+        resultData.mobilecode ='';
+        const { success, message: msg } = await saveRegistVo({registrationInformationVo: JSON.stringify(resultData)})
+        if (success) {
+           // window.location.replace(host + psmBaseUrl + `/RegisterSuccessModal?account= ${resultData.account} &pwd=${resultData.pwd}&name=${resultData.name}`);
+          } else {
+            message.error(msg);
+          }
     }
     return (
         <Wrapper>
@@ -51,6 +73,7 @@ export default function () {
                 />
                 <BaseAccountInfo
                     hidden={current !== 1}
+                    accounts={accounts}
                     wrappedComponentRef={BassAccounRef}
                 />
             </article>

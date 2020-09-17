@@ -121,7 +121,13 @@ function SupplierConfigure() {
       url: `${smBaseUrl}/api/SmSupplierRegConfigService/findByProperty`,
       params: {
         ...searchValue,
-        quickSearchProperties:['supplierCategoryCode','supplierCategoryName']
+        quickSearchProperties:['supplierCategoryCode','supplierCategoryName'],
+        sortOrders: [
+          {
+            property: 'configCode',
+            direction: 'DESC'
+          }
+        ]
       },
       type: 'POST'
     }

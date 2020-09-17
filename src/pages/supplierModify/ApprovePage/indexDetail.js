@@ -48,7 +48,7 @@ function SupplierApproveInfo() {
     // 类型配置表
     async function initConfigurationTable(typeId) {
         triggerLoading(true);
-        let params = { catgroyid: typeId, property: 1 };
+        let params = { catgroyid: typeId, property: 3 };
         const { data, success, message: msg } = await SaveSupplierconfigureService(params);
         if (success) {
             let datalist = data.configBodyVos;

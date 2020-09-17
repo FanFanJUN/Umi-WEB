@@ -17,6 +17,7 @@ const formLayout = {
 const BaseAccountRef = forwardRef(({
     hidden,
     form,
+    accounts = {},
 }, ref) => {
   useImperativeHandle(ref, () => ({
     getAccountinfo,
@@ -32,29 +33,42 @@ const BaseAccountRef = forwardRef(({
   }, [])
   // 表单
   function getAccountinfo() {
-    // const valus = form.validateFieldsAndScroll();
-    // return valus;
-    let result = false;
-    form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        result = values;
+    if (defaultActiveKey[0] === 1) {
+        const { getOrganizinfo } = OrganRef.current; //组织用户
+        let organData = getOrganizinfo()
+        if (!organData) {
+          message.error('请先完成表单填写！');
+          return false;
+        }else {
+          return organData
+        }
+    }else {
+      const { getpersoninfo } = PersonRef.current; //个人用户
+      let personaData = getpersoninfo()
+      if (!personaData) {
+        message.error('请先完成表单填写！');
+        return false;
+      } else {
+        return personaData
       }
-    });
-    return result;
+    }
+    
   }
   function tabClickHandler(params) {
     setdefaultActiveKey(params)
   }
   return (
-    <div style={{display: hidden ? "none" : "block"}}>
+    <div style={{display: hidden ? "none" : "block",textAlign:'center'}}>
         <Tabs className="tabstext" onTabClick={(params)=>tabClickHandler(params)}>
             <TabPane forceRender tab="组织用户" key="1">
               <OrganizationPage
+                accounts={accounts}
                  wrappedComponentRef={OrganRef}
               />
             </TabPane>
             <TabPane forceRender tab="个人用户" key="2">
               <PersonalPage 
+                accounts={accounts}
                  wrappedComponentRef={PersonRef}
               />
             </TabPane>

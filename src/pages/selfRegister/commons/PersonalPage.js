@@ -1,7 +1,7 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useState } from 'react';
 import { Form, Row, Input, Col, message, Radio, Button } from 'antd';
 import SearchTable from '../../supplierRegister/components/SearchTable'
-import { checkSupplierName } from '../../../services/supplierRegister'
+import { checkCreditCode } from '../../../services/supplierRegister'
 import {chineseProvinceTableConfig} from '../../../utils/commonProps'
 const { create } = Form;
 const FormItem = Form.Item;
@@ -22,7 +22,7 @@ const OrganizatRef = forwardRef(({
     approve
 }, ref) => {
     useImperativeHandle(ref, () => ({
-        getAccountinfo,
+        getpersoninfo,
         form
     }));
     const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
@@ -41,9 +41,7 @@ const OrganizatRef = forwardRef(({
         // })
     }, [])
     // 表单
-    function getAccountinfo() {
-        // const valus = form.validateFieldsAndScroll();
-        // return valus;
+    function getpersoninfo() {
         let result = false;
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
@@ -54,25 +52,44 @@ const OrganizatRef = forwardRef(({
     }
     //检查供应商名称
     async function handleCheckName() {
-        const name = form.getFieldValue('name');
-        if (name.indexOf(' ') !== -1) {
-            message.error('供应商名称不允许存在空格，请重新输入');
-            this.setChecks('checkSupplierNameResult', false);
+        const creditCode = form.getFieldValue('creditCode');
+        if (creditCode.indexOf(' ') !== -1) {
+            message.error('社会信用代码不允许存在空格，请重新输入');
             return false;
         }
-        if (name) {
-            const { success, message: msg } = await checkSupplierName({ supplierName: name, supplierId: '' });
+        let id = '';
+        if (creditCode && creditCode.match('^[A-Z0-9]{18}$')) {
+            const {data,success, message: msg } = await checkCreditCode({creditCode,id});
             if (success) {
-                message.success('供应商名称可以使用');
-            } else {
-                message.error('供应商名称已存在，请重新输入');
+
             }
+            // checkCreditCode({ creditCode, id })
+            //     .then((res) => {
+            //         this.setState({ loading: false });
+            //         if (res.data) {
+            //             message.error('社会信用代码已存在，请重新输入');
+
+            //         } else {
+            //             message.success('社会信用代码可以使用');
+            //         }
+            //     })
+            //     .catch((err) => this.setState({ loading: false }));
+
+        } else {
+            message.error('请输入统一社会信用代码');
+        }
+    }
+    function creditCodeChange(event) {
+        let value = event.target.value;
+        event.target.value = value.toUpperCase();
+        if (value && value.match('^[A-Z0-9]{18}$')) {
+           
         }
     }
     return (
         <Form>
             <Row>
-                <Col span={10}>
+                <Col span={15}>
                     <FormItem
                         {...formItemLayout}
                         label={'个人名称+手机号'}
@@ -95,20 +112,21 @@ const OrganizatRef = forwardRef(({
                 </Col>
             </Row>
             <Row>
-                <Col span={10}>
+                <Col span={15}>
                     <FormItem
                         {...formItemLayout}
                         label={'身份证号'}
                     >
                         {
-                            getFieldDecorator('name', {
+                            getFieldDecorator('creditCode', {
                                 initialValue: '',
                                 rules: [{ required: true, message: '请输入身份证号' },
-                                //{ validator: this.checkName },
+                                { pattern: '^[A-Z0-9]{18}$', message: '只能是18位英文和数字' }
                                 ],
                             })(
                                 <Input
-                                    //onChange={this.supplierNameChange}
+                                    onChange={creditCodeChange}
+                                    maxLength={18}
                                     onBlur={handleCheckName}
                                     placeholder={'请输入身份证号'}
                                 />,
@@ -118,7 +136,7 @@ const OrganizatRef = forwardRef(({
                 </Col>
             </Row>
             <Row>
-                <Col span={10}>
+                <Col span={15}>
                     <FormItem
                         {...formItemLayout}
                         label={'所在省份'}
@@ -139,7 +157,7 @@ const OrganizatRef = forwardRef(({
                 </Col>
             </Row>
             <Row>
-                <Col span={10}>
+                <Col span={15}>
                     <FormItem
                         {...formItemLayout}
                         label={'手机'}

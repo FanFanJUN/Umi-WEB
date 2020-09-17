@@ -183,6 +183,9 @@ const Agentformef = forwardRef(({
   }
    // 新增
    function showModal() {
+    let rowselect = [];
+    setRows(rowselect);
+    setInitialValue(rowselect)
     setEdit(false)
     agentModelRef.current.handleModalVisible(true)
   }

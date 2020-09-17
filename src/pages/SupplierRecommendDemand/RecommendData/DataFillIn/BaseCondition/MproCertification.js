@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-09 13:47:57
- * @LastEditTime: 2020-09-15 17:41:43
+ * @LastEditTime: 2020-09-16 16:51:49
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/BaseCondition/MproCertification.js
  * @Description: 管理体系及产品认证
  * @Connect: 1981824361@qq.com
@@ -23,6 +23,7 @@ const MproCertification = ({ type, data }) => {
 
     const columnsForMan = [
         { title: '管理体系', dataIndex: 'certificateName', ellipsis: true, },
+        { title: '认证类型', dataIndex: 'certificateInfoType', ellipsis: true, editable: true },
         { title: '执行标准', dataIndex: 'executiveStandard', ellipsis: true, },
         { title: '证照编号', dataIndex: 'certificateNumber', ellipsis: true, },
         { title: '发证机构', dataIndex: 'certifyingAuthority', ellipsis: true, },
@@ -42,7 +43,8 @@ const MproCertification = ({ type, data }) => {
 
     const columnsForPro = [
         { title: '产品', dataIndex: 'productName', ellipsis: true, editable: true },
-        { title: '认证类型', dataIndex: 'certificateName', ellipsis: true, editable: true },
+        { title: '认证类型', dataIndex: 'certificateInfoType', ellipsis: true, 
+        editable: true, inputDisabled: true, inputDefaultValue: 'PRODUCT_CERTIFICATION' },
         { title: '执行标准', dataIndex: 'executiveStandard', ellipsis: true, editable: true },
         { title: '证照编号', dataIndex: 'certificateNumber', ellipsis: true, editable: true },
         { title: '发证机构', dataIndex: 'certifyingAuthority', ellipsis: true, editable: true },
@@ -52,7 +54,28 @@ const MproCertification = ({ type, data }) => {
             }, inputType: 'DatePicker', editable: true
         },
         { title: '最新年审', dataIndex: 'newestAnnualReview', ellipsis: true, editable: true },
-        { title: '附件', dataIndex: 'name4', ellipsis: true, editable: true, inputType: 'UploadFile' },
+        { title: '附件', dataIndex: 'attachmentIds', ellipsis: true, editable: true, inputType: 'UploadFile' },
+        {
+            title: '计划取得时间', dataIndex: 'planObtainTime', ellipsis: true, render: (text) => {
+                return text && moment(text).format('YYYY-MM-DD');
+            }, inputType: 'DatePicker', editable: true
+        },
+    ].map(item => ({ ...item, align: 'center' }));
+
+    const columnsForOther = [
+        { title: '产品', dataIndex: 'productName', ellipsis: true, editable: true },
+        { title: '认证类型', dataIndex: 'certificateInfoType', ellipsis: true, 
+        editable: true, inputDisabled: true, inputDefaultValue: 'OTHER_CERTIFICATION' },
+        { title: '执行标准', dataIndex: 'executiveStandard', ellipsis: true, editable: true },
+        { title: '证照编号', dataIndex: 'certificateNumber', ellipsis: true, editable: true },
+        { title: '发证机构', dataIndex: 'certifyingAuthority', ellipsis: true, editable: true },
+        {
+            title: '首次获证时间', dataIndex: 'firstObtainTime', ellipsis: true, render: (text) => {
+                return text && moment(text).format('YYYY-MM-DD');
+            }, inputType: 'DatePicker', editable: true
+        },
+        { title: '最新年审', dataIndex: 'newestAnnualReview', ellipsis: true, editable: true },
+        { title: '附件', dataIndex: 'attachmentIds', ellipsis: true, editable: true, inputType: 'UploadFile' },
         {
             title: '计划取得时间', dataIndex: 'planObtainTime', ellipsis: true, render: (text) => {
                 return text && moment(text).format('YYYY-MM-DD');
@@ -86,10 +109,6 @@ const MproCertification = ({ type, data }) => {
                 size='small'
             />
             <Divider>产品认证</Divider>
-            {/* <div className={styles.mb}>
-                <Button type='primary' className={styles.btn} onClick={() => { editRef.current.showModal('add') }}>新增</Button>
-                <Button className={styles.btn} onClick={handleDelete} type="danger">删除</Button>
-            </div> */}
             <EditableFormTable
                 columns={columnsForPro}
                 bordered
@@ -104,12 +123,8 @@ const MproCertification = ({ type, data }) => {
                 dataSource={proData}
             />
             <Divider>其他认证</Divider>
-            {/* <div className={styles.mb}>
-                <Button type='primary' className={styles.btn} onClick={() => { editRef.current.showModal('add') }}>新增</Button>
-                <Button className={styles.btn} onClick={handleDelete} type="danger">删除</Button>
-            </div> */}
             <EditableFormTable
-                columns={columnsForPro}
+                columns={columnsForOther}
                 bordered
                 allowCancelSelect
                 showSearch={false}

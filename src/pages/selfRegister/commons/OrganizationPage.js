@@ -16,13 +16,10 @@ const tipsLayout = {
 const OrganizatRef = forwardRef(({
     isView,
     form,
-    editData = [],
-    initialValue = {},
-    accountinfo = [],
-    approve
+    accounts=[],
 }, ref) => {
     useImperativeHandle(ref, () => ({
-        getAccountinfo,
+        getOrganizinfo,
         form
     }));
     const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
@@ -30,18 +27,9 @@ const OrganizatRef = forwardRef(({
     const [configure, setConfigure] = useState([]);
     //const { attachment = null } = initialValues;
     useEffect(() => {
-        // let fieldsListed = []
-        // accountinfo.map(item => {
-        //   fieldsListed.push({
-        //     title: item.title,
-        //     key: item.key,
-        //     verifi: item.verifi,
-        //     type: 'input',
-        //   })
-        // })
     }, [])
     // 表单
-    function getAccountinfo() {
+    function getOrganizinfo() {
         let result = false;
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
@@ -70,7 +58,7 @@ const OrganizatRef = forwardRef(({
     return (
         <Form>
             <Row>
-                <Col span={10}>
+                <Col span={15}>
                     <FormItem
                         {...formItemLayout}
                         label={'组织全称'}
@@ -93,7 +81,7 @@ const OrganizatRef = forwardRef(({
                 </Col>
             </Row>
             <Row>
-                <Col span={10}>
+                <Col span={15}>
                     <FormItem
                         {...formItemLayout}
                         label={'所在省份'}
@@ -114,20 +102,20 @@ const OrganizatRef = forwardRef(({
                 </Col>
             </Row>
             <Row>
-                <Col span={10}>
+                <Col span={15}>
                     <FormItem
                         {...formItemLayout}
                         label={'手机'}
                     >
                         {
                             getFieldDecorator('mobile', {
-                                initialValue: '',
+                                initialValue: accounts && accounts.mobile,
                                 rules: [{
-                                    required: true,
+                                    required: true, message: '手机不能为空'
                                 }],
                             })(
                                 <Input
-                                disabled={true}
+                                    disabled={true}
                                     maxLength={11}
                                     placeholder={'请输入手机号'} />,
                             )
@@ -136,14 +124,14 @@ const OrganizatRef = forwardRef(({
                 </Col>
             </Row>
             <Row>
-                <Col span={10}>
+                <Col span={15}>
                     <FormItem
                         {...formItemLayout}
                         label={'电子邮箱'}
                     >
                         {
                             getFieldDecorator('email', {
-                                initialValue: '',
+                                initialValue: accounts && accounts.email,
                                 rules: [
                                     //{ validator: onMailCheck, message: '请输入正确格式的电子邮箱！', whitespace: true },
                                     { required: true, message: '请输入电子邮箱' }

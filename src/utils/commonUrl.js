@@ -35,7 +35,7 @@ export const secondUrl = '/srm-pp-web';
 export const gatewayUrl = '/api-gateway';
 
 export const recommendUrl = '/srm-sam-service'
-// export const basicUrl = '/basic-service'
+export const basicServiceUrl = '/basic-service'
 
 export const commonsUrl = '/api-gateway/srm-commons-data'
 
@@ -43,7 +43,7 @@ export const supplierManagerBaseUrl = "/srm-sm-web";
 // /api-gateway/srm-commons-data/currency/findByPage
 
 
-export const host = window._srmHost
+export const host = ""
 
 // 老组件分页
 export const defaultPageSize = 15

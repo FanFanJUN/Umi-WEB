@@ -6,6 +6,7 @@
 import React, {Component} from 'react';
 import { InputNumber,Input} from 'antd';
 import SelectWithService from "./SelectWithService";
+import { values } from 'lodash';
 class PriceInput extends Component {
   static getDerivedStateFromProps(nextProps) {
     if ('value' in nextProps) {
@@ -23,6 +24,7 @@ class PriceInput extends Component {
     this.state = {
       number: value.number ,
       currency: value.currency,
+      disabled: value.disabled
     };
   }
 
@@ -60,7 +62,7 @@ class PriceInput extends Component {
   }
 
   render() {
-    const {size,placeholder,currencyConfig,initValue,max,unit} = this.props;
+    const {size,placeholder,currencyConfig,initValue,max,unit,disabled} = this.props;
     const {number,currency} = this.state;
     return (
       <span>
@@ -75,6 +77,7 @@ class PriceInput extends Component {
                   precision={2}
                   min={0}
                   max={max?max:9999999999999999999}
+                  disabled={disabled === '2'}
                 />
         {/*万元单位*/}
         {unit==="10000"&&<Input  style={{width: '16%',marginLeft: "-1%",marginRight: "1%",textAlign:"left"}} value="万"/>}
@@ -86,6 +89,7 @@ class PriceInput extends Component {
           placeholder={"请选择币种"}
           style={{width: '42%'}}
           onChange={this.handleCurrencyChange}
+          disabled={disabled === '2'}
         />
             </span>
     );

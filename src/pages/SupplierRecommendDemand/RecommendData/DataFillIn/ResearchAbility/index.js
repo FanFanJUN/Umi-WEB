@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:53:17
- * @LastEditTime: 2020-09-15 16:47:09
+ * @LastEditTime: 2020-09-16 11:16:55
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/ResearchAbility/index.js
  * @Description: 研发能力 Tab
  * @Connect: 1981824361@qq.com
@@ -46,7 +46,7 @@ const ResearchAbility = ({ form }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const res = await requestGetApi({ supplierRecommendDemandId: id, tabKey: 'researchAbilityTab' });
+            const res = await requestGetApi({ supplierRecommendDemandId: '1', tabKey: 'researchAbilityTab' });
             if (res.success) {
                 res.data && setData(res.data);
             } else {
