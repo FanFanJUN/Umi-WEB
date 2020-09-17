@@ -3,6 +3,7 @@ import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import { Input, Button, message, Modal, Form } from 'antd';
 import { supplierManagerBaseUrl, recommendUrl } from '@/utils/commonUrl';
 import { openNewTab, getFrameElement } from '@/utils';
+import classnames from 'classnames';
 import { AutoSizeLayout, Header, AdvancedForm, ComboAttachment } from '@/components';
 import fillingHistory from '../components/fillingHistory'
 import { limitMaterialList, MaterialConfig, StrategicPurchaseConfig, distributionProps, materialStatus, PDMStatus } from '../../commonProps';
@@ -21,7 +22,7 @@ const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const SupplierFillList = function (props) {
     const headerRef = useRef(null)
     const tableRef = useRef(null);
-    const samplingRef = useRef(null);
+    const historyRef = useRef(null);
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [copyVisible, setCopyVisible] = useState(false);
     const [uploadVisible, setUploadVisible] = useState(false);
@@ -68,9 +69,10 @@ const SupplierFillList = function (props) {
             authAction(<Button
                 type='primary'
                 className={styles.btn}
+                disabled={(selectedRows.length !== 1 || selectedRows[0].effectiveStatus === 'COMPLETED')}
                 onClick={() => { redirectToPage('add') }}
                 ignore={DEVELOPER_ENV}
-                key='PURCHASE_VIEW_CHANGE_CREATE'
+                key='QUALITYSYNERGY_SUPPLIERFILL_FILL'
             >填报</Button>)
         }
         {
@@ -79,7 +81,7 @@ const SupplierFillList = function (props) {
                 disabled={false}
                 onClick={() => { redirectToPage('detail') }}
                 ignore={DEVELOPER_ENV}
-                key='PURCHASE_VIEW_CHANGE_EDITOR'
+                key='QUALITYSYNERGY_SUPPLIERFILL_DETAIL'
             >明细</Button>)
         }
         {
@@ -87,7 +89,7 @@ const SupplierFillList = function (props) {
                 className={styles.btn}
                 disabled={false}
                 onClick={() => { handleButton('submit') }}
-                key='PURCHASE_VIEW_CHANGE_REMOVE'
+                key='QUALITYSYNERGY_SUPPLIERFILL_SUBMIT'
                 ignore={DEVELOPER_ENV}
             >提交</Button>)
         }
@@ -97,7 +99,7 @@ const SupplierFillList = function (props) {
                 disabled={false}
                 onClick={() => { handleButton('withdraw') }}
                 ignore={DEVELOPER_ENV}
-                key='PURCHASE_VIEW_CHANGE_DETAIL'
+                key='QUALITYSYNERGY_SUPPLIERFILL_WITHDEAW'
             >撤回</Button>)
         }
         {
@@ -105,7 +107,7 @@ const SupplierFillList = function (props) {
                 className={styles.btn}
                 disabled={false}
                 onClick={() => { setCopyVisible(true) }}
-                key='PURCHASE_VIEW_CHANGE_REMOVE'
+                key='QUALITYSYNERGY_SUPPLIERFILL_COPY'
                 ignore={DEVELOPER_ENV}
             >复制</Button>)
         }
@@ -115,10 +117,10 @@ const SupplierFillList = function (props) {
                 disabled={false}
                 ignore={DEVELOPER_ENV}
                 onClick={() => {
-                    console.log(samplingRef.current)
-                    // samplingRef.current.setVisible(true);
+                    console.log(historyRef)
+                    // historyRef.current.setVisible(true);
                 }}
-                key='PURCHASE_VIEW_CHANGE_DETAIL'
+                key='QUALITYSYNERGY_SUPPLIERFILL_HISTORY'
             >填报历史</Button>)
         }
         {
@@ -126,7 +128,7 @@ const SupplierFillList = function (props) {
                 className={styles.btn}
                 disabled={false}
                 onClick={() => { setUploadVisible(true) }}
-                key='PURCHASE_VIEW_CHANGE_REMOVE'
+                key='QUALITYSYNERGY_SUPPLIERFILL_UPLOAD'
                 ignore={DEVELOPER_ENV}
             >上传资质文件</Button>)
         }
@@ -150,10 +152,17 @@ const SupplierFillList = function (props) {
                 }
             }
         },
-        { title: '预警', dataIndex: 'alarm', width: 70, render: (text) => <div className={styles.circle}></div> },
+        {
+            title: '预警', dataIndex: 'alarm', width: 70, render: (text) => <div className={classnames({
+                [styles.circle]: true,
+                [styles.red]: (text === 'A'),
+                [styles.yellow]: (text === 'B'),
+                [styles.green]: (text === 'C'),
+            })}></div>
+        },
         { title: '剩余有效(天数)', dataIndex: 'daysRemaining', ellipsis: true, width: 120 },
-        { title: '有效开始日期', dataIndex: 'effectiveStartDate', ellipsis: true, render:(text)=>text?text.slice(0, 10) : ''},
-        { title: '有效截止日期', dataIndex: 'effectiveEndDate', ellipsis: true, render:(text)=>text?text.slice(0, 10) : ''},
+        { title: '有效开始日期', dataIndex: 'effectiveStartDate', ellipsis: true, render: (text) => text ? text.slice(0, 10) : '' },
+        { title: '有效截止日期', dataIndex: 'effectiveEndDate', ellipsis: true, render: (text) => text ? text.slice(0, 10) : '' },
         { title: '物料代码', dataIndex: 'materialCode', ellipsis: true, },
         { title: '物料描述', dataIndex: 'materialName', ellipsis: true, },
         { title: '填报截止日期', dataIndex: 'fillEndDate', ellipsis: true, },
@@ -260,7 +269,7 @@ const SupplierFillList = function (props) {
             <FormItem label='从物料代码复制' labelCol={{ span: 8 }} wrapperCol={{ span: 12 }}>
                 <ComboList
                     {...limitMaterialList}
-                    style={{width: '100%'}}
+                    style={{ width: '100%' }}
                     name='supplierCode'
                     afterSelect={(item) => {
                         console.log(item)
@@ -290,7 +299,7 @@ const SupplierFillList = function (props) {
                 }
             </FormItem>
         </ExtModal>}
-        <fillingHistory wrappedComponentRef={samplingRef}  />
+        <fillingHistory wrappedComponentRef={historyRef} />
     </Fragment>
 }
 

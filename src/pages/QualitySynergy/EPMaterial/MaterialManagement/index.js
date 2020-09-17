@@ -179,11 +179,10 @@ export default create()(function ({ form }) {
     // 指派战略采购
     function maintainSeleteChange() {
         validateFields((err, values) => {
-            console.log(values)
             if (!err) {
                 const { strategicPurchaseId, strategicPurchaseName, strategicPurchaseCode } = values;
                 allotStrategicPurchase({
-                    ids: selectedRowKeys.join(),
+                    demandIds: selectedRowKeys.join(),
                     strategicPurchaseId,
                     strategicPurchaseName,
                     strategicPurchaseCode
@@ -236,9 +235,9 @@ export default create()(function ({ form }) {
     }
     // 同步pdm
     async function handleSyncPdm() {
-        if(!checkOneSelect())return;
-        const res = await syncPdm({id: selectedRowKeys[0]});
-        if(res.statusCode === 200) {
+        if (!checkOneSelect()) return;
+        const res = await syncPdm({...selectedRows[0]});
+        if (res.statusCode === 200) {
             message.success('同步成功');
             refresh();
         } else {
@@ -345,7 +344,7 @@ export default create()(function ({ form }) {
                 onClick={() => { redirectToPage('add') }}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='PURCHASE_VIEW_CHANGE_CREATE'
+                key='QUALITYSYNERGY_MATERIAL_MANAGEMENT_ADD'
             >新增</Button>)
         }
         {
@@ -354,7 +353,7 @@ export default create()(function ({ form }) {
                 disabled={buttonStatus.detail}
                 onClick={() => { checkOneSelect() && editRef.current.showModal('edit') }}
                 ignore={DEVELOPER_ENV}
-                key='PURCHASE_VIEW_CHANGE_EDITOR'
+                key='QUALITYSYNERGY_MATERIAL_MANAGEMENT_EDIT'
             >编辑</Button>)
         }
         {
@@ -362,7 +361,7 @@ export default create()(function ({ form }) {
                 className={styles.btn}
                 disabled={buttonStatus.delete}
                 onClick={() => { checkOneSelect() && handleDelete() }}
-                key='PURCHASE_VIEW_CHANGE_REMOVE'
+                key='QUALITYSYNERGY_MATERIAL_MANAGEMENT_DELETE'
                 ignore={DEVELOPER_ENV}
             >删除</Button>)
         }
@@ -372,7 +371,7 @@ export default create()(function ({ form }) {
                 disabled={false}
                 onClick={handleFreeze}
                 ignore={DEVELOPER_ENV}
-                key='PURCHASE_VIEW_CHANGE_DETAIL'
+                key='QUALITYSYNERGY_MATERIAL_MANAGEMENT_FROZEN'
             >冻结</Button>)
         }
         {
@@ -383,7 +382,7 @@ export default create()(function ({ form }) {
                     // checkOneSelect() && 
                     setMaintainModal(true)
                 }}
-                key='PURCHASE_VIEW_CHANGE_REMOVE'
+                key='QUALITYSYNERGY_MATERIAL_MANAGEMENT_PERSON'
                 ignore={DEVELOPER_ENV}
             >维护环保管理人员</Button>)
         }
@@ -393,7 +392,7 @@ export default create()(function ({ form }) {
                 onClick={() => { checkOneSelect() && redirectToPage('detail') }}
                 ignore={DEVELOPER_ENV}
                 disabled={buttonStatus.detail}
-                key='PURCHASE_VIEW_CHANGE_DETAIL'
+                key='QUALITYSYNERGY_MATERIAL_MANAGEMENT_DETAIL'
             >明细</Button>)
         }
         {
@@ -401,7 +400,7 @@ export default create()(function ({ form }) {
                 className={styles.btn}
                 disabled={buttonStatus.submit}
                 onClick={submit}
-                key='PURCHASE_VIEW_CHANGE_REMOVE'
+                key='QUALITYSYNERGY_MATERIAL_MANAGEMENT_SUBMIT'
                 ignore={DEVELOPER_ENV}
             >提交</Button>)
         }
@@ -411,7 +410,7 @@ export default create()(function ({ form }) {
                 disabled={buttonStatus.withdraw}
                 onClick={withdraw}
                 ignore={DEVELOPER_ENV}
-                key='PURCHASE_VIEW_CHANGE_DETAIL'
+                key='QUALITYSYNERGY_MATERIAL_MANAGEMENT_TITHDRAW'
             >撤回</Button>)
         }
         {
@@ -419,7 +418,7 @@ export default create()(function ({ form }) {
                 className={styles.btn}
                 disabled={buttonStatus.distribute}
                 onClick={() => { checkOneSelect() && supplierRef.current.setVisible(true) }}
-                key='PURCHASE_VIEW_CHANGE_REMOVE'
+                key='QUALITYSYNERGY_MATERIAL_MANAGEMENT_SUPPLIER'
                 ignore={DEVELOPER_ENV}
             >分配供应商</Button>)
         }
@@ -429,15 +428,15 @@ export default create()(function ({ form }) {
                 disabled={false}
                 onClick={() => { checkOneSelect() && setSssignPurchase(true) }}
                 ignore={DEVELOPER_ENV}
-                key='PURCHASE_VIEW_CHANGE_DETAIL'
+                key='QUALITYSYNERGY_MATERIAL_MANAGEMENT_DESIGN'
             >指派战略采购</Button>)
         }
         {
             authAction(<Button
                 className={styles.btn}
                 disabled={false}
-                onClick={() => {handleSyncPdm()}}
-                key='PURCHASE_VIEW_CHANGE_REMOVE'
+                onClick={() => { handleSyncPdm() }}
+                key='QUALITYSYNERGY_MATERIAL_MANAGEMENT_PDM'
                 ignore={DEVELOPER_ENV}
             >同步PDM</Button>)
         }
@@ -447,7 +446,7 @@ export default create()(function ({ form }) {
                 disabled={false}
                 onClick={() => { console.log('同步历史') }}
                 ignore={DEVELOPER_ENV}
-                key='PURCHASE_VIEW_CHANGE_DETAIL'
+                key='QUALITYSYNERGY_MATERIAL_MANAGEMENT_HISTORY'
             >同步历史</Button>)
         }
         {
@@ -455,7 +454,7 @@ export default create()(function ({ form }) {
                 className={styles.btn}
                 disabled={false}
                 onClick={() => { samplingRef.current.setVisible(true) }}
-                key='PURCHASE_VIEW_CHANGE_REMOVE'
+                key='QUALITYSYNERGY_MATERIAL_MANAGEMENT_RECHECK'
                 ignore={DEVELOPER_ENV}
             >抽检复核</Button>)
         }
@@ -465,7 +464,7 @@ export default create()(function ({ form }) {
                 disabled={false}
                 onClick={() => { generateRef.current.setVisible(true) }}
                 ignore={DEVELOPER_ENV}
-                key='PURCHASE_VIEW_CHANGE_DETAIL'
+                key='QUALITYSYNERGY_MATERIAL_MANAGEMENT_GENERATE'
             >生成报表</Button>)
         }
         {
@@ -473,7 +472,7 @@ export default create()(function ({ form }) {
                 className={styles.btn}
                 disabled={false}
                 onClick={handleExport}
-                key='PURCHASE_VIEW_CHANGE_REMOVE'
+                key='QUALITYSYNERGY_MATERIAL_MANAGEMENT_EXPORT'
                 ignore={DEVELOPER_ENV}
             >导出</Button>)
         }
@@ -483,7 +482,7 @@ export default create()(function ({ form }) {
                 disabled={false}
                 onClick={() => { checkRef.current.showModal() }}
                 ignore={DEVELOPER_ENV}
-                key='PURCHASE_VIEW_CHANGE_DETAIL'
+                key='QUALITYSYNERGY_MATERIAL_MANAGEMENT_VIEW'
             >查看供应商资质</Button>)
         }
     </>
@@ -589,7 +588,7 @@ export default create()(function ({ form }) {
                     })(<ComboList
                         form={form}
                         {...StrategicPurchaseConfig}
-                        name='supplierCode'
+                        name='strategicPurchaseCode'
                         field={['strategicPurchaseId', 'strategicPurchaseName']}
                     />)
                 }
