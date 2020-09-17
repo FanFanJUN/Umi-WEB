@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-10 10:57:33
- * @LastEditTime: 2020-09-17 14:08:45
+ * @LastEditTime: 2020-09-17 17:06:58
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/CommonUtil/EditTable.js
  * @Description:  函数式可编辑行 Table组件
  * @Connect: 1981824361@qq.com
@@ -12,10 +12,10 @@ import { Input, InputNumber, Popconfirm, Form, Divider, Button, DatePicker, Sele
 import { ExtTable, ComboList } from 'suid';
 import PropTypes, { any } from 'prop-types';
 import AutoSizeLayout from '../../../../supplierRegister/SupplierAutoLayout';
-import { guid, isEmptyArray } from './utils';
+import { guid, isEmptyArray, checkNull } from './utils';
 import UploadFile from './UploadFile';
 import { currencyProps } from '../../../../../utils/commonProps';
-
+import moment from 'moment';
 
 const EditableContext = React.createContext();
 const { Option } = Select;
@@ -44,10 +44,8 @@ const EditableCell = (params) => {
                 return <DatePicker />
             case 'Select':
                 return <Select
-                    showSearch
-                    // style={{ width: 200 }}
+                    style={{ width: 150 }}
                     placeholder="请选择"
-                    optionFilterProp="children"
                 >
                     <Option value={true}>是</Option>
                     <Option value={false}>否</Option>
@@ -78,6 +76,36 @@ const EditableCell = (params) => {
         }
     };
 
+    // 有编辑状态  不处于编辑中 col 显示值
+    const getRecordData = () => {
+        const a = record[dataIndex];
+        if (inputType === 'Select') {
+            if (a === true) {
+                return '是';
+            }
+            if (a === false) {
+                return '否';
+            }
+            return a;
+        } else if (inputType === 'DatePicker') {
+            return a && moment(a).format('YYYY-MM-DD');
+        }else {
+            return record[dataIndex];
+        }
+    }
+
+    // 有编辑状态  处于编辑中col 默认值
+    const getInit = () => {
+        if (inputDefaultValue) {
+            return inputDefaultValue;
+        } else {
+            if (inputType === 'DatePicker') {
+                return moment(record[dataIndex]);
+            }
+            return record[dataIndex];
+        }
+    }
+
     const { getFieldDecorator } = form;
     const renderCell = () => {
         console.log(editing);
@@ -92,11 +120,12 @@ const EditableCell = (params) => {
                                 message: `请输入${title}!`,
                             },
                         ],
-                        initialValue: record[dataIndex] || inputDefaultValue,
+                        // initialValue有false
+                        initialValue: getInit(),
                     })(getInput())}
                 </Form.Item>
             ) : (
-                    <div style={{ textAlign: 'center' }}>{record[dataIndex]}</div>
+                    <div style={{ textAlign: 'center' }}>{getRecordData()}</div>
                 )
         );
     };
@@ -126,11 +155,11 @@ const EditableTable = (props) => {
         setEditingKey(key);
     }
 
-    function deleteRow(key) {
-        const newArray = dataSource.filter(item => {
-            return item[rowKey] !== editingKey;
+    function deleteRow(key, type) {
+       const newArray = dataSource.filter(item => {
+            return item[rowKey] !== key;
         });
-        setNewData(newArray);
+        setNewData(newArray, tableType);
         setButtonDisabled(false);
         setEditingKey('');
     }
@@ -150,7 +179,7 @@ const EditableTable = (props) => {
                     )}
                 </EditableContext.Consumer>
                 {buttonDisabled ?
-                    <a style={{ color: 'red' }} key='deteteKey' onClick={() => deleteRow(record[rowKey])}>删除</a>
+                    <a style={{ color: 'red' }} key='deteteKey' onClick={() => deleteRow(record[rowKey], 'editDelete')}>删除</a>
                     :
                     <Popconfirm title="确定取消？" onConfirm={() => cancel(record[rowKey])}>
                         <a key='cancel'>取消</a>
@@ -162,7 +191,7 @@ const EditableTable = (props) => {
                         编辑
                     </a>
                     <Divider type="vertical" />
-                    <Popconfirm title="确定删除？" onConfirm={() => deleteRow(record[rowKey])}>
+                    <Popconfirm title="确定删除？" onConfirm={() => deleteRow(record[rowKey], 'delete')}>
                         <a disabled={editingKey !== ''} key='delete' style={editingKey !== '' ? { color: 'rgba(0, 0, 0, 0.25)' } : { color: 'red' }}>
                             删除
                         </a>
@@ -221,12 +250,12 @@ const EditableTable = (props) => {
                 });
                 setEditingKey('');
                 setButtonDisabled(false);
-                props.setNewData(newData);
+                props.setNewData(newData, tableType);
             } else {
                 newData.push(row);
                 setEditingKey('');
                 setButtonDisabled(false);
-                props.setNewData(newData);
+                props.setNewData(newData, tableType);
             }
         });
     }

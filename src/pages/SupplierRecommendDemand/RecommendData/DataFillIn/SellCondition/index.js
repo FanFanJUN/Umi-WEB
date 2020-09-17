@@ -55,7 +55,8 @@ const SellCondition = ({ form }) => {
                 changhongSaleInfos: changhongSaleInfos || [],
                 mainCustomers: mainCustomers || [],
                 supplierOrderInfos: supplierOrderInfos || [],
-                threeYearPlans: threeYearPlans || []
+                threeYearPlans: threeYearPlans || [],
+                recommendDemandId: id || '676800B6-F19D-11EA-9F88-0242C0A8442E',
             };
             saveSupplierSalesSituation(filterEmptyFileds(saveParams)).then((res) => {
                 if (res && res.success) {
