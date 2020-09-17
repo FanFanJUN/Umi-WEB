@@ -261,7 +261,7 @@ export default function() {
         ignore={DEVELOPER_ENV}
         disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'strategicPurchaseCode', null)}
         key='TECHNICAL_DATA_SHARING_GOVERN'
-      >支配战略采购</Button>)
+      >指派战略采购</Button>)
     }
   </>;
 
