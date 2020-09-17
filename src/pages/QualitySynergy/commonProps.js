@@ -2,6 +2,63 @@ import { smBaseUrl, baseUrl, recommendUrl, basicServiceUrl } from '../../utils/c
 import request from '../../utils/request';
 import React from 'react';
 import { commonUrl } from '../../utils';
+const commonProps = {
+  reader: {
+    name: 'name',
+    field: ['code'],
+  },
+  style: {
+    width: '100%',
+  },
+};
+
+// 技术资料状态
+export const ShareStatusProps = {
+  dataSource: [
+    {
+      code: '草稿',
+      name: '草稿',
+    },
+    {
+      code: '生效',
+      name: '生效',
+    },
+  ],
+  placeholder: '选择状态',
+  ...commonProps,
+};
+
+// 技术资料下载状态
+export const ShareDownloadStatus = {
+  dataSource: [
+    {
+      code: '已下载',
+      name: '已下载',
+    },
+    {
+      code: '未下载',
+      name: '未下载',
+    },
+  ],
+  placeholder: '选择下载状态',
+  ...commonProps,
+};
+
+// 技术资料分配供应商状态
+export const ShareDistributionProps = {
+  dataSource: [
+    {
+      code: '已分配',
+      name: '已分配',
+    },
+    {
+      code: '未分配',
+      name: '未分配',
+    },
+  ],
+  placeholder: '选择分配供应商状态',
+  ...commonProps,
+};
 
 // 生成随机数
 export const getRandom = num => {
@@ -39,15 +96,6 @@ export const generateLineNumber = (index) => {
   return (index < 10 ? '00' + index * 10 : index < 100 ? '0' + index*10 : index * 10).toString()
 }
 
-const commonProps = {
-  reader: {
-    name: 'name',
-    field: ['code'],
-  },
-  style: {
-    width: '100%',
-  },
-};
 
 // 根据buCode和物料组代码查战略采购code和name
 export const FindTacticByBuCodeAndGroupCode = async params => {
@@ -66,9 +114,19 @@ export const FindSupplierByDemandNumber = async params => {
   return request({
     url,
     method: 'GET',
-    data: params,
+    params: params,
   });
 };
+
+// 分配供应商保存按钮
+export const DistributionSupplierSave = async params => {
+  const url = `${recommendUrl}/api/epTechnicalShareDemandService/allocationSupplier`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+}
 
 //技术资料分享战略指派
 export async function StrategyAssignedDataSharingList(params) {

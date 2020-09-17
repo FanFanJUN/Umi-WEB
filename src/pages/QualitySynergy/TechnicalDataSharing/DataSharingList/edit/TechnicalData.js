@@ -5,6 +5,7 @@ import { ExtTable } from 'suid';
 import TechnicalDataModal from './component/TechnicalDataModal';
 import moment from 'moment/moment';
 import Upload from '../../../compoent/Upload';
+import { getRandom } from '../../../commonProps';
 
 const TechnicalData = React.forwardRef((props, ref) => {
 
@@ -67,6 +68,7 @@ const TechnicalData = React.forwardRef((props, ref) => {
   const TechnicalDataAddAndEdit = (value) => {
     let newData = JSON.parse(JSON.stringify(data.dataSource))
     value.whetherDelete = false
+    value.id = getRandom(10)
     value.sampleRequirementDate = moment(value.sampleRequirementDate).format('YYYY-MM-DD')
     if (data.type === 'add') {
       newData.push(value)

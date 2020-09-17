@@ -4,7 +4,15 @@ import AdvancedForm from '../../../components/AdvancedForm';
 import { Input, Checkbox } from 'antd';
 import styles from '../TechnicalDataSharing/DataSharingList/index.less';
 import { ExtTable, utils } from 'suid';
-import { BUConfigNoFrostHighSearch, downloadStatusProps, materialCode, MaterialConfig, MaterialGroupConfig, StrategicPurchaseConfig, } from '../commonProps';
+import {
+  BUConfigNoFrostHighSearch,
+  downloadStatusProps,
+  materialCode,
+  MaterialConfig,
+  MaterialGroupConfig,
+  ShareDownloadStatus,
+  StrategicPurchaseConfig,
+} from '../commonProps';
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl, smBaseUrl } from '../../../utils/commonUrl';
 import Upload from '../compoent/Upload';
@@ -49,7 +57,7 @@ export default function() {
     { title: '战略采购', key: 'strategicPurchaseCode', type: 'list', props: StrategicPurchaseConfig },
     { title: '业务单元', key: 'buCode', type: 'list', props: BUConfigNoFrostHighSearch },
     { title: '申请人', key: 'applyPeopleName', props: { placeholder: '输入申请人查询' } },
-    { title: '状态', key: 'state', type: 'list', props: downloadStatusProps },
+    { title: '状态', key: 'state', type: 'list', props: ShareDownloadStatus },
   ]
 
   const columns = [
