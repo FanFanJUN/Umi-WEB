@@ -27,7 +27,11 @@ export const judge = (arr, key, value = undefined) => {
       return true;
     }
   } else {
-    return true;
+    if (arr?.length > 0) {
+      return arr.every(item => item[key] !== '');
+    } else {
+      return true;
+    }
   }
 };
 

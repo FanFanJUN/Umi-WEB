@@ -159,11 +159,11 @@ export default function() {
     { title: '物料组描述', dataIndex: 'materialGroupName', ellipsis: true },
     { title: '战略采购代码', dataIndex: 'strategicPurchaseCode', ellipsis: true },
     { title: '战略采购名称', dataIndex: 'strategicPurchaseName', ellipsis: true },
-    // {
-    //   title: '供应商',
-    //   dataIndex: 'buId',
-    //   render: (v, data) => <a onClick={() => handleSeesSupplier(data.shareDemanNumber)}>查看</a>,
-    // },
+    {
+      title: '供应商',
+      dataIndex: 'buId',
+      render: (v, data) => <a onClick={() => handleSeesSupplier(data.shareDemanNumber)}>查看</a>,
+    },
     { title: 'BU代码', dataIndex: 'buCode', ellipsis: true },
     { title: 'BU名称', dataIndex: 'buName', ellipsis: true },
     { title: '申请人', dataIndex: 'applyPeopleName', ellipsis: true },
@@ -182,7 +182,7 @@ export default function() {
         onClick={() => redirectToPage('add')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='PURCHASE_VIEW_CHANGE_CREATE'
+        key='TECHNICAL_DATA_SHARING_ADD'
       >新增</Button>)
     }
     {
@@ -190,7 +190,7 @@ export default function() {
         onClick={() => redirectToPage('edit')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='PURCHASE_VIEW_CHANGE_CREATE'
+        key='TECHNICAL_DATA_SHARING_EDIT'
         disabled={
           data.selectedRowKeys.length !== 1 || data.selectedRows[0]?.source !== 'SRM' ||
           data.selectedRows[0]?.state === '生效' || data.selectedRows[0]?.allotSupplierState === '已分配'}
@@ -201,7 +201,7 @@ export default function() {
         onClick={() => redirectToPage('delete')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='PURCHASE_VIEW_CHANGE_CREATE'
+        key='TECHNICAL_DATA_SHARING_DELETE'
         disabled={data.selectedRowKeys.length === 0}
       >删除</Button>)
     }
@@ -210,7 +210,7 @@ export default function() {
         onClick={() => redirectToPage('detail')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='PURCHASE_VIEW_CHANGE_CREATE'
+        key='TECHNICAL_DATA_SHARING_DETAIL'
         disabled={data.selectedRowKeys.length !== 1}
       >明细</Button>)
     }
@@ -219,7 +219,7 @@ export default function() {
         onClick={() => redirectToPage('submit')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='PURCHASE_VIEW_CHANGE_CREATE'
+        key='TECHNICAL_DATA_SHARING_SUBMIT'
         disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', '草稿') || !judge(data.selectedRows, 'strategicPurchaseCode')}
       >提交</Button>)
     }
@@ -229,7 +229,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', '生效') || !judge(data.selectedRows, 'allotSupplierState', '未分配')}
-        key='PURCHASE_VIEW_CHANGE_CREATE'
+        key='TECHNICAL_DATA_SHARING_UNDO'
       >撤回</Button>)
     }
     {
@@ -242,9 +242,9 @@ export default function() {
           !judge(data.selectedRows, 'allotSupplierState', '未分配') ||
           judge(data.selectedRows, 'strategicPurchaseCode', '') ||
           !judge(data.selectedRows, 'strategicPurchaseCode', data.selectedRows[0]?.strategicPurchaseCode) ||
-          !judge(data.selectedRows, 'state', '生效')
+          !judge(data.selectedRows, 'state', '生效') || (judge(data.selectedRows, 'allotSupplierState', '已分配') ? data.selectedRowKeys > 1 : false)
         }
-        key='PURCHASE_VIEW_CHANGE_CREATE'
+        key='TECHNICAL_DATA_SHARING_ALLOT'
       >分配供应商</Button>)
     }
     {
@@ -253,7 +253,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'strategicPurchaseCode', '')}
-        key='PURCHASE_VIEW_CHANGE_CREATE'
+        key='TECHNICAL_DATA_SHARING_GOVERN'
       >支配战略采购</Button>)
     }
   </>;
