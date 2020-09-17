@@ -355,9 +355,9 @@ export async function deleteSupplier(params) {
         params: params,
     });
 }
-// 填报环保资料物料-分配供应商-删除
+// 填报环保资料物料-分配供应商-同步pdm
 export async function syncPdm(params) {
-    const url = `${recommendUrl}/api/epDemandSupplierService/syncPdm`;
+    const url = `${recommendUrl}/api/epDemandService/syncPdm`;
     return request({
         url,
         method: 'GET',
