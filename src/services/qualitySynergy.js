@@ -319,15 +319,6 @@ export async function addDemandSupplier(params) {
         data: params,
     });
 }
-// 填报环保资料物料-分配供应商-保存
-export async function submitAndReleaseDemandSupplier(params) {
-    const url = `${recommendUrl}/api/epDemandSupplierService/submitAndReleaseDemandSupplier`;
-    return request({
-        url,
-        method: 'POST',
-        data: params,
-    });
-}
 // 填报环保资料物料-分配供应商-暂停/取消暂停
 export async function supplierIsPause(params) {
     const url = `${recommendUrl}/api/epDemandSupplierService/isPause`;
@@ -349,6 +340,24 @@ export async function editDemandSupplier(params) {
 // 填报环保资料物料-分配供应商-删除
 export async function deleteSupplier(params) {
     const url = `${recommendUrl}/api/epDemandSupplierService/deleted`;
+    return request({
+        url,
+        method: 'GET',
+        params: params,
+    });
+}
+// 填报环保资料物料-分配供应商-发布
+export async function releaseSupplier(params) {
+    const url = `${recommendUrl}/api/epDemandSupplierService/release`;
+    return request({
+        url,
+        method: 'GET',
+        params: params,
+    });
+}
+// 填报环保资料物料-分配供应商-取消发布
+export async function cancelReleaseSupplier(params) {
+    const url = `${recommendUrl}/api/epDemandSupplierService/cancelRelease`;
     return request({
         url,
         method: 'GET',
@@ -409,6 +418,15 @@ export async function epDemandCopyAll(params) {
         url,
         method: 'GET',
         params: params,
+    });
+}
+// 供应商-填报环保资料-上传资质文件
+export async function uploadFile(params) {
+    const url = `${recommendUrl}/api/epSupplierAptitudeService/insert`;
+    return request({
+        url,
+        method: 'POST',
+        data: params,
     });
 }
 // 查询组织机构

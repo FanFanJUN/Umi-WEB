@@ -1,14 +1,14 @@
 import { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment } from 'react';
 import { ExtTable, ExtModal, ScrollBar, ComboList } from 'suid';
 import { Button, Input, Form, Modal, Radio } from 'antd'
-import { smBaseUrl } from '@/utils/commonUrl';
+import { recommendUrl } from '@/utils/commonUrl';
 const { create, Item: FormItem } = Form;
 const { TextArea } = Input;
 const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 14, },
 };
-const checkModal = forwardRef(({ form }, ref) => {
+const checkModal = forwardRef(({ form, selectedRow={} }, ref) => {
     useImperativeHandle(ref, () => ({
         setVisible
     }))
@@ -17,15 +17,7 @@ const checkModal = forwardRef(({ form }, ref) => {
     const [checkVisible, setCheckVisible] = useState(false);
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
-    const { getFieldDecorator, validateFields, getFieldValue } = form
-    const tableProps = {
-        store: {
-            url: `${smBaseUrl}/api/supplierFinanceViewModifyService/findByPage`,
-            params: {
-            },
-            type: 'POST'
-        }
-    }
+    const { getFieldDecorator, validateFields, getFieldValue } = form;
     const columns = [
         {
             title: '提交状态', dataIndex: 'turnNumber', width: 70, align: 'center', render: (text) => {
@@ -85,7 +77,13 @@ const checkModal = forwardRef(({ form }, ref) => {
                 size='small'
                 onSelectRow={handleSelectedRows}
                 selectedRowKeys={selectedRowKeys}
-                {...tableProps}
+                store={{
+                    url: `${recommendUrl}/api/epDataFillService/findAllByPage`,
+                    params: {
+                        id: selectedRow.id
+                    },
+                    type: 'POST'
+                }}
             />
         </ExtModal>
         <ExtModal

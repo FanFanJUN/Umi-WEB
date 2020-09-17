@@ -98,7 +98,7 @@ const BaseInfo = forwardRef(({ form, isView, setBuCode, originData={} }, ref) =>
       <Row>
 
         <Col span={12}>
-          <FormItem label='申请日期' {...formLayout}>
+          <FormItem label='创建日期' {...formLayout}>
             {
               getFieldDecorator('dateTime', {
                 initialValue: isView ? originData.dateTime : moment().format('YYYY-MM-DD')

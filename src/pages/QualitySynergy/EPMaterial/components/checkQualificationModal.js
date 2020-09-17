@@ -32,7 +32,6 @@ class EnvironmentProDemandList extends Component {
     }
     render() {
         const { dataList, loading, visible } = this.state;
-        // const { visible, hidden } = this.props;
         return <Fragment>
             <ExtModal
                 destroyOnClose

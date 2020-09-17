@@ -1,11 +1,12 @@
 import { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment } from 'react';
-import { ExtTable, ExtModal, ScrollBar, ComboList } from 'suid';
+import { ExtTable, ExtModal, DataImport, ComboList } from 'suid';
 import { Button, DatePicker, Form, Modal, Row, Input, Select } from 'antd'
 import { Upload } from '@/components';
 import { smBaseUrl } from '@/utils/commonUrl';
 import classnames from 'classnames'
 import styles from '../index.less'
 import moment from 'moment';
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const { confirm } = Modal;
 const { create, Item: FormItem } = Form;
 const { Option } = Select;
@@ -95,6 +96,47 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
         setModalType(type);
         setVisible(true);
     }
+    const validateItem = (data) => {
+        return new Promise((resolve, reject) => {
+            const dataList = data.map(item => {
+                // 避免限量存在%，并给两位小数
+                if (item.limitNumber) {
+                    if (item.limitNumber.toString().indexOf('%') !== -1) {
+                        item.limitNumber = item.limitNumber.split('%')[0];
+                    }
+                    item.limitNumber = Number(item.limitNumber).toFixed(2)
+                } else {
+                    delete item.limitNumber;
+                    delete item.limitNumberMaxSign;
+                }
+                return item;
+            })
+            // JudgeTheListOfExemptionClause(dataList).then(res => {
+            //     const response = res.data.map((item, index) => ({
+            //         ...item,
+            //         key: index,
+            //         validate: item.importResult,
+            //         status: item.importResult ? '数据完整' : '失败',
+            //         statusCode: item.importResult ? 'success' : 'error',
+            //         message: item.importResult ? '成功' : item.importResultInfo
+            //     }))
+            //     resolve(response);
+            // }).catch(err => {
+            //     reject(err)
+            // })
+        })
+    };
+
+    const importFunc = (value) => {
+        // SaveTheListOfExemptionClause(value).then(res => {
+        //     if (res.success) {
+        //         message.success('导入成功');
+        //         refresh();
+        //     } else {
+        //         message.error(res.message)
+        //     }
+        // });
+    };
     return <Fragment>
         <div className={styles.macTitle}>拆分部件</div>
         <div className={classnames({
@@ -106,6 +148,21 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
             <Button className={styles.btn} key="edit" onClick={()=>{showEditModal('edit')}} disabled={!(selectedRowKeys.length === 1)}>编辑</Button>
             <Button className={styles.btn} onClick={()=>{handleDelete()}} key="delete" disabled={(selectedRowKeys.length === 0)}>删除</Button>
             <Button className={styles.btn} key="import">批量导入</Button>
+            {/* <DataImport
+                tableProps={{ columns }}
+                validateFunc={validateItem}
+                importFunc={importFunc}
+                ignore={DEVELOPER_ENV}
+                validateAll={true}
+                key='QUALITYSYNERGY_EC_IMPORT'
+                templateFileList={[
+                    {
+                        download: `${DEVELOPER_ENV === 'true' ? '' : '/react-srm-sm-web'}/templates/主数据-豁免条款-批导模板.xlsx`,
+                        fileName: '主数据-豁免条款-批导模板.xlsx',
+                        key: 'ExemptionClause',
+                    },
+                ]}
+            /> */}
         </div>
         <ExtTable
             columns={columns}

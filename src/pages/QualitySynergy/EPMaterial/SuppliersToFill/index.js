@@ -2,9 +2,9 @@ import { useEffect, useState, useRef, Fragment } from 'react'
 import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import { Input, Button, message, Modal, Form } from 'antd';
 import { supplierManagerBaseUrl, recommendUrl } from '@/utils/commonUrl';
-import { openNewTab, getFrameElement } from '@/utils';
+import { openNewTab, getFrameElement, getUserName, getUserId, getUserAccount } from '@/utils';
 import classnames from 'classnames';
-import { AutoSizeLayout, Header, AdvancedForm, ComboAttachment } from '@/components';
+import { AutoSizeLayout, Header, AdvancedForm, Upload} from '@/components';
 import FillingHistory from '../components/fillingHistory'
 import { findMaterialCode, MaterialConfig, StrategicPurchaseConfig, needToFillList, fillStatusList, allPersonList } from '../../commonProps';
 import styles from './index.less'
@@ -12,14 +12,15 @@ import {
     epDemandUpdate,
     epDemandSubmit,
     epDemandRecall,
-    epDemandCopyAll
+    epDemandCopyAll,
+    uploadFile
 } from '../../../../services/qualitySynergy';
 const { authAction, storage } = utils;
 const { create, Item: FormItem } = Form;
 const { Search } = Input;
 const { confirm } = Modal;
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
-const SupplierFillList = function (props) {
+const SupplierFillList = function ({form}) {
     const headerRef = useRef(null)
     const tableRef = useRef(null);
     const historyRef = useRef(null);
@@ -35,7 +36,8 @@ const SupplierFillList = function (props) {
         getFieldDecorator,
         getFieldValue,
         setFieldsValue,
-    } = props.form;
+        validateFields
+    } = form;
     // 高级查询配置
     const formItems = [
         { title: '物料代码', key: 'materialCode', type: 'list', props: MaterialConfig },
@@ -165,6 +167,7 @@ const SupplierFillList = function (props) {
         { title: '物料代码', dataIndex: 'materialCode', ellipsis: true, },
         { title: '物料描述', dataIndex: 'materialName', ellipsis: true, },
         { title: '填报截止日期', dataIndex: 'fillEndDate', ellipsis: true, render: (text) => text ? text.slice(0, 10) : ''},
+        { title: '分配日期', dataIndex: 'distributionDate', ellipsis: true, render: (text) => text ? text.slice(0, 10) : ''},
         { title: '物料组', dataIndex: 'materialGroupCode', ellipsis: true, },
         { title: '物料组描述', dataIndex: 'materialGroupName', ellipsis: true, },
         { title: '战略采购名称', dataIndex: 'strategicPurchaseName', ellipsis: true, },
@@ -215,10 +218,6 @@ const SupplierFillList = function (props) {
         setRowKeys(rowKeys);
         setRows(rows);
     }
-    // 确定复制
-    function handleCopyOk() {
-
-    }
     // 清空选中/刷新表格数据
     const refresh = () => {
         tableRef.current.manualSelectedRows();
@@ -226,7 +225,25 @@ const SupplierFillList = function (props) {
     }
     // 上传确认
     function handleUploadOk() {
-
+        validateFields((error, values)=>{
+            const { files } = values;
+            if(!error) {
+                uploadFile({
+                    aptitudeFileId: files ? files.join() : '',
+                    supplierName: getUserName(),
+                    supplierCode: getUserAccount(),
+                    supplierId: getUserId()
+                }).then(res => {
+                    if(res.statusCode === 200) {
+                        message.success('上传成功');
+                        setUploadVisible(false);
+                    } else {
+                        message.error(res.message)
+                    }
+                })
+            }
+        })
+        
     }
     return <Fragment>
         <Header
@@ -296,12 +313,7 @@ const SupplierFillList = function (props) {
                 {
                     getFieldDecorator('files', {
                         rules: [{ required: true, message: '请上传文件' }]
-                    })(<ComboAttachment
-                        uploadButton={{ disabled: false }}
-                        allowDelete={false}
-                        showViewType={true}
-                        customBatchDownloadFileName={true}
-                        attachment={attachment} />)
+                    })(<Upload entityId={''} />)
                 }
             </FormItem>
         </ExtModal>}
