@@ -12,8 +12,7 @@ const SubjectMatterTable = forwardRef(({buCode}, ref)=>{
     }))
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
-    const [addvisible, setVisible] = useState(false);
-    const [dataSource, setDataSource] = useState([])
+    const [dataSource, setDataSource] = useState([]);
     const tableRef = useRef(null);
     const editRef = useRef(null);
     const columns = [

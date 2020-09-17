@@ -20,25 +20,45 @@ const checkModal = forwardRef(({ form, selectedRow={} }, ref) => {
     const { getFieldDecorator, validateFields, getFieldValue } = form;
     const columns = [
         {
-            title: '提交状态', dataIndex: 'turnNumber', width: 70, align: 'center', render: (text) => {
-                return text ? '是' : '否'
+            title: '提交状态', dataIndex: 'submitStatus', width: 70, align: 'center', render: (text) => {
+                switch(text){
+                    case "SUBMITTED": return '已提交';
+                    case "NOTSUBMITTED": return '未提交';
+                    default: return '';
+                }
             }
         },
         {
-            title: '符合性检查', dataIndex: 'name1', ellipsis: true, align: 'center', render: (text) => {
-                return text ? '是' : '否'
+            title: '符合性检查', dataIndex: 'compliance', ellipsis: true, align: 'center', render: (text) => {
+                switch(text){
+                    case "FIT": return '符合';
+                    case "NOTFIT": return '不符合';
+                    default: return '';
+                }
             }
         },
-        { title: '复核状态', dataIndex: 'name2', ellipsis: true, align: 'center', },
-        { title: '复核意见', dataIndex: 'name3', ellipsis: true, align: 'center', },
-        { title: '环保资料是否有效', dataIndex: 'name4', ellipsis: true, align: 'center', },
-        { title: '供应商代码', dataIndex: 'name5', ellipsis: true, align: 'center', },
-        { title: '供应商名称 ', dataIndex: 'name6', ellipsis: true, align: 'center', },
-        { title: '填报编号', dataIndex: 'name7', ellipsis: true, align: 'center', },
-        { title: '有效开始日期', dataIndex: 'name7', ellipsis: true, align: 'center', },
-        { title: '有效截止日期', dataIndex: 'name7', ellipsis: true, align: 'center', },
-        { title: '分配批次', dataIndex: 'name7', ellipsis: true, align: 'center', },
-        { title: '详情', dataIndex: 'name7', ellipsis: true, align: 'center', },
+        { title: '复核状态', dataIndex: 'reviewResults', ellipsis: true, align: 'center', render: (text) => {
+            switch(text){
+                case "NOPASS": return '复核不通过';
+                case "PASS": return '复核通过';
+                default: return '';
+            }
+        }},
+        { title: '复核意见', dataIndex: 'reviewResultComments', ellipsis: true, align: 'center', },
+        { title: '环保资料是否有效', dataIndex: 'effective', ellipsis: true, width: 140, align: 'center', render: (text)=>{
+            switch(text){
+                case "INVALID": return '无效';
+                case "VALID": return '有效';
+                default: return '';
+            }
+        }},
+        { title: '供应商代码', dataIndex: 'supplierCode', ellipsis: true, align: 'center', },
+        { title: '供应商名称 ', dataIndex: 'supplierName', ellipsis: true, align: 'center', },
+        { title: '填报编号', dataIndex: 'fillNumber', ellipsis: true, align: 'center', },
+        { title: '有效开始日期', dataIndex: 'effectiveStartDate', ellipsis: true, align: 'center', },
+        { title: '有效截止日期', dataIndex: 'effectiveEndDate', ellipsis: true, align: 'center', },
+        { title: '分配批次', dataIndex: 'batch', ellipsis: true, align: 'center', },
+        // { title: '详情', dataIndex: 'name7', ellipsis: true, align: 'center', },
     ];
     // 复核确定
     function handleOk() {
