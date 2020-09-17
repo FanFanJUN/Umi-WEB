@@ -10,6 +10,7 @@ const commonProps = {
   style: {
     width: '100%',
   },
+  placeholder: '请选择'
 };
 
 // 技术资料状态
@@ -95,17 +96,6 @@ export const judge = (arr, key, value = undefined) => {
 export const generateLineNumber = (index) => {
   return (index < 10 ? '00' + index * 10 : index < 100 ? '0' + index * 10 : index * 10).toString()
 }
-
-const commonProps = {
-  reader: {
-    name: 'name',
-    field: ['code'],
-  },
-  style: {
-    width: '100%',
-  },
-  placeholder: '请选择'
-};
 
 // 根据buCode和物料组代码查战略采购code和name
 export const FindTacticByBuCodeAndGroupCode = async params => {
