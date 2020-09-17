@@ -1,3 +1,6 @@
+/*
+* create by chenjianyu
+* */
 import React from 'react';
 import {Upload, Icon, Button, List, Avatar, Skeleton, Modal,message, Tooltip} from 'antd';
 import PropTypes from 'prop-types';
@@ -5,7 +8,6 @@ import request from '../../../../utils/request';
 import { baseUrl } from '../../../../utils/commonUrl';
 import '../../../../components/Upload/upload.css'
 import * as fileIcon from '../../../../components/Upload/fileIcon'
-import { BASE_URL } from '../../../../utils/constants';
 import { onLineTarget } from '../../../../../config/proxy.config';
 
 const host = process.env.NODE_ENV === 'production' ? '' : onLineTarget;
@@ -321,7 +323,13 @@ class UploadFile extends React.Component {
             beforeUpload={this.beforeUpload}
             showUploadList={false}
             fileList={this.state.fileList}
-            action={process.env.NODE_ENV === 'production' ? onLineTarget : '/service.api' + baseUrl + "/supplierRegister/uploadNoAuth"}
+            // action={ process.env.NODE_ENV === 'production' ?  onLineTarget : '/service.api' + baseUrl + "/supplierRegister/uploadNoAuth"}
+            action={(file) => new Promise((resolve, reject) => {resolve(request(baseUrl + "/supplierRegister/uploadNoAuth", {
+              method: 'POST',
+              data: {
+                fileUpload: file
+              }
+            }))})}
             headers={this.getHeaders()}
             onChange={this.handleChange}
             style={{width: '100%'}}
