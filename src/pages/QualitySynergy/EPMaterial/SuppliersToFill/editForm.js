@@ -92,7 +92,7 @@ export default function () {
                     <div className={styles.bgw}>
                         <div className={styles.title}>供应商信息</div>
                         <div className={styles.content}>
-                            <SupplierInfo wrappedComponentRef={supplierRef} originData={originData} />
+                            <SupplierInfo wrappedComponentRef={supplierRef} originData={originData} isView={query.pageStatus === 'detail'}/>
                         </div>
                     </div>
                 </div>
@@ -108,7 +108,7 @@ export default function () {
                     <div className={styles.bgw}>
                         <div className={styles.title}>MCD表</div>
                         <div className={styles.content}>
-                            <MCDTable wrappedComponentRef={mcdRef} originData={originData} />
+                            <MCDTable wrappedComponentRef={mcdRef} originData={originData} isView={query.pageStatus === 'detail'}/>
                         </div>
                     </div>
                 </div>

@@ -21,7 +21,7 @@ export default function () {
             toggleLoading(true);
             const res = await findVoById({id: query.id});
             if(res.success) {
-                res.data && setOriginData(res.data[0])
+                res.data && setOriginData(res.data)
             } else {
                 message.error(res.message);
             }

@@ -360,8 +360,8 @@ export async function syncPdm(params) {
     const url = `${recommendUrl}/api/epDemandSupplierService/syncPdm`;
     return request({
         url,
-        method: 'POST',
-        data: params,
+        method: 'GET',
+        params: params,
     });
 }
 

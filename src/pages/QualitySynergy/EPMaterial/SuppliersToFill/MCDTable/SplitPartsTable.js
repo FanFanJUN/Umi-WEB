@@ -13,7 +13,7 @@ const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 14, },
 };
-const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDataList }, ref) => {
+const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDataList, isView }, ref) => {
     useImperativeHandle(ref, () => ({
         setVisible,
         setRowKeys
@@ -97,7 +97,11 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
     }
     return <Fragment>
         <div className={styles.macTitle}>拆分部件</div>
-        <div className={classnames(styles.mbt, styles.mtb)}>
+        <div className={classnames({
+            [styles.mbt]: true, 
+            [styles.mtb]: true,
+            [styles.hidden]: !!isView
+        })}>
             <Button type='primary' className={styles.btn} key="add" onClick={() => { showEditModal('add') }}>新增</Button>
             <Button className={styles.btn} key="edit" onClick={()=>{showEditModal('edit')}} disabled={!(selectedRowKeys.length === 1)}>编辑</Button>
             <Button className={styles.btn} onClick={()=>{handleDelete()}} key="delete" disabled={(selectedRowKeys.length === 0)}>删除</Button>

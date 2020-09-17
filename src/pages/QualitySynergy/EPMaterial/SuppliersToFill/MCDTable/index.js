@@ -13,7 +13,7 @@ const formLayout = {
         span: 16,
     },
 };
-const MCDForm = forwardRef(({ form, originData }, ref) => {
+const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
     useImperativeHandle(ref, () => ({
         getSplitDataList
     }))
@@ -67,7 +67,7 @@ const MCDForm = forwardRef(({ form, originData }, ref) => {
                             getFieldDecorator('mcdMaterialName', {
                                 initialValue: originData.mcdMaterialName,
                                 rules: [{ required: true, message: '请输入物料名称' }]
-                            })(<Input />)
+                            })(<Input disabled={isView}/>)
                         }
                     </FormItem>
                 </Col>
@@ -77,7 +77,7 @@ const MCDForm = forwardRef(({ form, originData }, ref) => {
                             getFieldDecorator('mcdModel', {
                                 initialValue: originData.mcdModel,
                                 rules: [{ required: true, message: '请输入型号' }]
-                            })(<Input />)
+                            })(<Input disabled={isView}/>)
                         }
                     </FormItem>
                 </Col>
@@ -98,11 +98,11 @@ const MCDForm = forwardRef(({ form, originData }, ref) => {
         </Form>
         <Row>
             <Col span={12} className={styles.rl}>
-                <SplitPartsTable wrappedComponentRef={splitRef} dataList={splitDataList} setSelectedSpilt={setSelectedSpilt} setSplitDataList={setSplitDataList} />
+                <SplitPartsTable wrappedComponentRef={splitRef} dataList={splitDataList} setSelectedSpilt={setSelectedSpilt} setSplitDataList={setSplitDataList} isView={isView} />
             </Col>
             <Col span={12} className={styles.ll}>
                 <Row>
-                    <MaterialTable dataList={splitDataList} selectedSplitData={selectedSplitData} handleSplitDataList={handleSplitDataList} />
+                    <MaterialTable dataList={splitDataList} selectedSplitData={selectedSplitData} handleSplitDataList={handleSplitDataList} isView={isView}/>
                 </Row>
                 <Row>
                     <TestRecordsTable
@@ -110,6 +110,7 @@ const MCDForm = forwardRef(({ form, originData }, ref) => {
                         selectedSplitData={selectedSplitData}
                         handleSplitDataList={handleSplitDataList}
                         environmentalProtectionCode={originData.environmentalProtectionCode}
+                        isView={isView}
                     />
                 </Row>
             </Col>

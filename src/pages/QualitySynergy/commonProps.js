@@ -36,7 +36,7 @@ export const judge = (arr, key, value = undefined) => {
 };
 
 export const generateLineNumber = (index) => {
-  return (index < 10 ? '00' + index * 10 : index < 100 ? '0' + index*10 : index * 10).toString()
+  return (index < 10 ? '00' + index * 10 : index < 100 ? '0' + index * 10 : index * 10).toString()
 }
 
 const commonProps = {
@@ -47,6 +47,7 @@ const commonProps = {
   style: {
     width: '100%',
   },
+  placeholder: '请选择'
 };
 
 // 根据buCode和物料组代码查战略采购code和name
@@ -726,7 +727,22 @@ export const PDMStatus = {
   placeholder: '选择同步PDM状态',
   ...commonProps,
 };
-
+// 是否需要填报
+export const needToFillList = {
+  dataSource: [
+    { code: 'yes', name: '是', },
+    { code: 'no', name: '否', },
+  ],
+  ...commonProps,
+};
+// 填报状态
+export const fillStatusList = {
+  dataSource: [
+    { code: 'NOTCOMPLETED', name: '未填报', },
+    { code: 'COMPLETED', name: '已填报', }
+  ],
+  ...commonProps,
+};
 // 业务单元下拉选择
 export const buList = {
   remotePaging: true,
@@ -754,7 +770,7 @@ export const allPersonList = {
       includeFrozen: false,
       includeSubNode: true,
       quickSearchProperties: ["code", "user.userName"],
-      sortOrders: [{property: "code", direction: "ASC"}]
+      sortOrders: [{ property: "code", direction: "ASC" }]
     }
   },
   rowKey: 'code',
@@ -764,4 +780,22 @@ export const allPersonList = {
     description: 'code',
   },
   placeholder: '选择环保管理人员',
+};
+// 环保资料填报-列表-复制-物料代码
+export const findMaterialCode = {
+  remotePaging: true,
+  store: {
+    type: 'GET',
+    autoLoad: false,
+    url: `${recommendUrl}/api/epDataFillService/findMaterialCode`,
+    params: {
+    }
+  },
+  rowKey: 'code',
+  reader: {
+    name: 'userName',
+    field: ['id', 'code'],
+    description: 'code',
+  },
+  placeholder: '选择物料代码',
 };

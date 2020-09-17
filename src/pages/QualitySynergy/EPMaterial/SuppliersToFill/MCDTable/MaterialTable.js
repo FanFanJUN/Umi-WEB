@@ -14,7 +14,7 @@ const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 14, },
 };
-const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList }, ref) => {
+const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList, isView }, ref) => {
     useImperativeHandle(ref, () => ({
         setVisible
     }))
@@ -94,7 +94,11 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
     }
     return <Fragment>
         <div className={styles.macTitle}>材料成分表</div>
-        <div className={classnames(styles.mbt, styles.mtb)}>
+        <div className={classnames({
+            [styles.mbt]: true, 
+            [styles.mtb]: true,
+            [styles.hidden]: !!isView
+            })}>
             <Button type='primary' className={styles.btn} key="add" onClick={() => { showEditModal('add') }}
                 disabled={(!selectedSplitData.testLogVoList)}>新增</Button>
             <Button className={styles.btn} key="edit" onClick={() => { showEditModal('edit') }}

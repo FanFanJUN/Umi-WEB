@@ -14,6 +14,7 @@ import DistributeSupplierModal from '../components/distributeSupplierModal';
 import CheckModal from '../components/checkModal';
 import GenerateModal from '../components/generateModal';
 import EditModal from '../components/editModal';
+import SyncHistory from '../components/syncHistory'
 import { epWhetherDelete, editEpDemand, epFrozen, epSubmit, epWithdraw, findOrgTreeWithoutFrozen, allotStrategicPurchase, syncPdm } from '../../../../services/qualitySynergy'
 const { authAction, storage } = utils;
 const { Search } = Input;
@@ -32,6 +33,7 @@ export default create()(function ({ form }) {
     const supplierRef = useRef(null);
     const samplingRef = useRef(null);
     const generateRef = useRef(null);
+    const historyRef = useRef(null);
     const [OrgId, setOrgId] = useState('');
     const [buttonStatus, setButtonStatus] = useState({})
     const [selectedRowKeys, setRowKeys] = useState([]);
@@ -174,6 +176,7 @@ export default create()(function ({ form }) {
         delete value.materialGroupCode_name;
         delete value.strategicPurchaseCode_name;
         setSearchValue(v => ({ ...v, ...value }));
+        headerRef.current.hide();
         tableRef.current.remoteDataRefresh();
     }
     // 指派战略采购
@@ -236,7 +239,7 @@ export default create()(function ({ form }) {
     // 同步pdm
     async function handleSyncPdm() {
         if (!checkOneSelect()) return;
-        const res = await syncPdm({...selectedRows[0]});
+        const res = await syncPdm({id: selectedRowKeys[0]});
         if (res.statusCode === 200) {
             message.success('同步成功');
             refresh();
@@ -249,12 +252,14 @@ export default create()(function ({ form }) {
         if (rows.length === 1) {
             setButtonStatus({
                 detail: false,
+                sync: false,
                 submit: rows[0].effectiveStatus === 'EFFECT',
                 withdraw: rows[0].effectiveStatus === 'DRAFT'
             })
         } else if (rows.length === 0) {
             setButtonStatus({
-                detail: false
+                detail: false,
+                sync: false,
             })
         } else {
             setButtonStatus({
@@ -263,6 +268,7 @@ export default create()(function ({ form }) {
                 delete: true,
                 withdraw: true,
                 distribute: true,
+                sync: true,
                 submit: (() => {
                     return !rows.every(item => {
                         return item.effectiveStatus === 'DRAFT'
@@ -443,8 +449,8 @@ export default create()(function ({ form }) {
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={false}
-                onClick={() => { console.log('同步历史') }}
+                disabled={buttonStatus.sync}
+                onClick={() => { checkOneSelect() && historyRef.current.setVisible(true) }}
                 ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_MATERIAL_MANAGEMENT_HISTORY'
             >同步历史</Button>)
@@ -602,5 +608,7 @@ export default create()(function ({ form }) {
         <CheckModal wrappedComponentRef={samplingRef} />
         {/* 生成报表 */}
         <GenerateModal wrappedComponentRef={generateRef} />
+        {/* 同步历史 */}
+        <SyncHistory wrappedComponentRef={historyRef} id={selectedRowKeys[0]}/>
     </Fragment>
 })

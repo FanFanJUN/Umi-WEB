@@ -16,7 +16,7 @@ const formLayout = {
   },
 };
 
-const BaseInfo = forwardRef(({ form, originData={} }, ref) => {
+const BaseInfo = forwardRef(({ form, originData={}, isView }, ref) => {
 
   const [attachment, setAttachment] = useState(null);
   const {
@@ -78,7 +78,7 @@ const BaseInfo = forwardRef(({ form, originData={} }, ref) => {
               getFieldDecorator('fillPeopleName', {
                 initialValue: originData.fillPeopleName ? originData.fillPeopleName : getUserName(),
                 rules: [{ required: true, message: '请输入填报人员' }]
-              })(<Input />)
+              })(<Input disabled={isView}/>)
             }
           </FormItem>
         </Col>
@@ -88,7 +88,7 @@ const BaseInfo = forwardRef(({ form, originData={} }, ref) => {
               getFieldDecorator('fillDeptName', {
                 initialValue: originData.fillDeptName,
                 rules: [{ required: true, message: '请输入填报部门' }]
-              })(<Input />)
+              })(<Input disabled={isView}/>)
             }
           </FormItem>
         </Col>
@@ -100,7 +100,7 @@ const BaseInfo = forwardRef(({ form, originData={} }, ref) => {
               getFieldDecorator('fillPeoplePhone', {
                 initialValue: originData.fillPeoplePhone ? originData.fillPeoplePhone : getMobile(),
                 rules: [{ required: true, message: '请输入电话' }]
-              })(<Input />)
+              })(<Input disabled={isView}/>)
             }
           </FormItem>
         </Col>
@@ -110,7 +110,7 @@ const BaseInfo = forwardRef(({ form, originData={} }, ref) => {
               getFieldDecorator('fillPeopleEmail', {
                 initialValue: originData.fillPeopleEmail ? originData.fillPeopleEmail : getUserEmail(),
                 rules: [{ required: true, message: '请输入邮箱' }]
-              })(<Input />)
+              })(<Input disabled={isView}/>)
             }
           </FormItem>
         </Col>
@@ -122,7 +122,7 @@ const BaseInfo = forwardRef(({ form, originData={} }, ref) => {
               getFieldDecorator('reachEnvironmentId', {
                 initialValue: '',
                 rules: [{ required: true, message: '请上传报告附件' }]
-              })(<Upload entityId={originData ? originData.reachEnvironmentId : ''} />)
+              })(<Upload entityId={originData ? originData.reachEnvironmentId : ''} type={isView?'show':''}/>)
             }
           </FormItem>
         </Col>
@@ -132,7 +132,7 @@ const BaseInfo = forwardRef(({ form, originData={} }, ref) => {
               getFieldDecorator('fillPeopleFax', {
                 initialValue: originData.fillPeopleEmail,
                 rules: [{ required: true, message: '请选择供应商代码' }]
-              })(<Input />)
+              })(<Input disabled={isView}/>)
             }
           </FormItem>
         </Col>
@@ -143,7 +143,7 @@ const BaseInfo = forwardRef(({ form, originData={} }, ref) => {
             {
               getFieldDecorator('dateTime', {
                 initialValue: ''
-              })(<TextArea rows={6} maxLength={500} />)
+              })(<TextArea rows={6} maxLength={500} disabled={isView}/>)
             }
           </FormItem>
         </Col>

@@ -5,8 +5,8 @@ import { supplierManagerBaseUrl, recommendUrl } from '@/utils/commonUrl';
 import { openNewTab, getFrameElement } from '@/utils';
 import classnames from 'classnames';
 import { AutoSizeLayout, Header, AdvancedForm, ComboAttachment } from '@/components';
-import fillingHistory from '../components/fillingHistory'
-import { limitMaterialList, MaterialConfig, StrategicPurchaseConfig, distributionProps, materialStatus, PDMStatus } from '../../commonProps';
+import FillingHistory from '../components/fillingHistory'
+import { findMaterialCode, MaterialConfig, StrategicPurchaseConfig, needToFillList, fillStatusList, allPersonList } from '../../commonProps';
 import styles from './index.less'
 import {
     epDemandUpdate,
@@ -38,11 +38,11 @@ const SupplierFillList = function (props) {
     } = props.form;
     // 高级查询配置
     const formItems = [
-        { title: '物料代码', key: 'data1', type: 'list', props: MaterialConfig },
-        { title: '战略采购', key: 'data3', type: 'list', props: StrategicPurchaseConfig },
-        { title: '环保管理人员', key: 'data4', props: { placeholder: '输入环保管理人员查询' } },
-        { title: '是否需要填报', key: 'data7', type: 'list', props: distributionProps },
-        { title: '填报状态', key: 'data8', type: 'list', props: materialStatus },
+        { title: '物料代码', key: 'materialCode', type: 'list', props: MaterialConfig },
+        { title: '战略采购', key: 'strategicPurchaseCode', type: 'list', props: StrategicPurchaseConfig },
+        { title: '环保管理人员', key: 'environmentAdministratorName', props: { placeholder: '输入环保管理人员查询' } },
+        { title: '是否需要填报', key: 'needToFill', type: 'list', props: needToFillList},
+        { title: '填报状态', key: 'effectiveStatus', type: 'list', props: fillStatusList},
     ]
     // 页面跳转
     function redirectToPage(type) {
@@ -78,7 +78,7 @@ const SupplierFillList = function (props) {
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={false}
+                disabled={selectedRowKeys.length!==1}
                 onClick={() => { redirectToPage('detail') }}
                 ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_SUPPLIERFILL_DETAIL'
@@ -87,7 +87,7 @@ const SupplierFillList = function (props) {
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={false}
+                disabled={selectedRowKeys.length!==1}
                 onClick={() => { handleButton('submit') }}
                 key='QUALITYSYNERGY_SUPPLIERFILL_SUBMIT'
                 ignore={DEVELOPER_ENV}
@@ -96,7 +96,7 @@ const SupplierFillList = function (props) {
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={false}
+                disabled={selectedRowKeys.length!==1}
                 onClick={() => { handleButton('withdraw') }}
                 ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_SUPPLIERFILL_WITHDEAW'
@@ -105,7 +105,7 @@ const SupplierFillList = function (props) {
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={false}
+                disabled={selectedRowKeys.length!==1}
                 onClick={() => { setCopyVisible(true) }}
                 key='QUALITYSYNERGY_SUPPLIERFILL_COPY'
                 ignore={DEVELOPER_ENV}
@@ -114,11 +114,10 @@ const SupplierFillList = function (props) {
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={false}
+                disabled={selectedRowKeys.length!==1}
                 ignore={DEVELOPER_ENV}
                 onClick={() => {
-                    console.log(historyRef)
-                    // historyRef.current.setVisible(true);
+                    historyRef.current.setVisible(true);
                 }}
                 key='QUALITYSYNERGY_SUPPLIERFILL_HISTORY'
             >填报历史</Button>)
@@ -165,7 +164,7 @@ const SupplierFillList = function (props) {
         { title: '有效截止日期', dataIndex: 'effectiveEndDate', ellipsis: true, render: (text) => text ? text.slice(0, 10) : '' },
         { title: '物料代码', dataIndex: 'materialCode', ellipsis: true, },
         { title: '物料描述', dataIndex: 'materialName', ellipsis: true, },
-        { title: '填报截止日期', dataIndex: 'fillEndDate', ellipsis: true, },
+        { title: '填报截止日期', dataIndex: 'fillEndDate', ellipsis: true, render: (text) => text ? text.slice(0, 10) : ''},
         { title: '物料组', dataIndex: 'materialGroupCode', ellipsis: true, },
         { title: '物料组描述', dataIndex: 'materialGroupName', ellipsis: true, },
         { title: '战略采购名称', dataIndex: 'strategicPurchaseName', ellipsis: true, },
@@ -196,13 +195,20 @@ const SupplierFillList = function (props) {
 
     }
     // 快捷查询
-    function handleQuickSearch() {
-
+    function handleQuickSearch(value) {
+        setSearchValue(v => ({ ...v, quickSearchValue: value }));
+        tableRef.current.remoteDataRefresh();
     }
     // 处理高级搜索
-    function handleAdvnacedSearch(v) {
-        console.log('高级查询', v)
-        // const keys = Object.keys(v);
+    function handleAdvnacedSearch(value) {
+        value.materialCode = value.materialCode_name;
+        value.strategicPurchaseCode = value.strategicPurchaseCode_name;
+        delete value.materialCode_name;
+        delete value.materialGroupCode_name;
+        delete value.strategicPurchaseCode_name;
+        setSearchValue(v => ({ ...v, ...value }));
+        headerRef.current.hide();
+        tableRef.current.remoteDataRefresh();
     }
     // 记录列表选中
     function handleSelectedRows(rowKeys, rows) {
@@ -251,7 +257,7 @@ const SupplierFillList = function (props) {
                         url: `${recommendUrl}/api/epDataFillService/findByPage`,
                         type: 'POST',
                         params: {
-                            // ...searchValue,
+                            ...searchValue,
                         },
                     }}
                 />
@@ -268,7 +274,7 @@ const SupplierFillList = function (props) {
         >
             <FormItem label='从物料代码复制' labelCol={{ span: 8 }} wrapperCol={{ span: 12 }}>
                 <ComboList
-                    {...limitMaterialList}
+                    {...findMaterialCode}
                     style={{ width: '100%' }}
                     name='supplierCode'
                     afterSelect={(item) => {
@@ -299,7 +305,8 @@ const SupplierFillList = function (props) {
                 }
             </FormItem>
         </ExtModal>}
-        <fillingHistory wrappedComponentRef={historyRef} />
+        {/* 填报历史 */}F
+        <FillingHistory wrappedComponentRef={historyRef} id={selectedRowKeys[0]} />
     </Fragment>
 }
 

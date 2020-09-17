@@ -25,7 +25,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [dataSource, setDataSource] = useState([]);
-    const { getFieldDecorator, validateFields, getFieldValue, setFieldsValue, } = form;
+    const { getFieldDecorator, validateFields, getFieldValue, setFieldsValue, isView } = form;
     useEffect(() => {
         setDataSource(selectedSplitData.testLogVoList ? selectedSplitData.testLogVoList.map((item, index) => ({ ...item, rowKey: index })) : []);
         if (!selectedSplitData.testLogVoList || selectedSplitData.testLogVoList.length === 0) {
@@ -107,7 +107,11 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
     }
     return <Fragment>
         <div className={styles.macTitle}>测试记录表</div>
-        <div className={classnames(styles.mbt, styles.mtb)}>
+        <div className={classnames({
+            [styles.mbt]: true, 
+            [styles.mtb]: true,
+            [styles.hidden]: !!isView
+        })}>
             <Button type='primary' className={styles.btn} key="add" onClick={() => { showEditModal('add') }}
                 disabled={(!selectedSplitData.testLogVoList)}
             >新增</Button>

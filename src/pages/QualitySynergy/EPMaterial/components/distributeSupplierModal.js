@@ -41,10 +41,10 @@ const supplierModal = forwardRef(({ form, demanNumber }, ref) => {
             (async function(){
                 const res = await findByPageOfSupplier({demanNumber: 'ED-2020-001'});
                 if (res.statusCode === 200) {
-                    let dataList = res.data.rows.map(item => {
+                    let dataList = res.data.rows.map((item, index) => {
                         return {
                             ...item,
-                            rowKey: item.id
+                            rowKey: index
                         }
                     })
                     setDataSource(dataList);
@@ -55,16 +55,8 @@ const supplierModal = forwardRef(({ form, demanNumber }, ref) => {
         }
     }, [visible])
     const columns = [
-        {
-            title: '是否暂停', dataIndex: 'suspend', align: 'center', render: (text) => {
-                return text===1 ? '是' : '否'
-            }
-        },
-        {
-            title: '是否发布', dataIndex: 'publish', ellipsis: true, align: 'center', render: (text) => {
-                return text===1 ? '是' : '否'
-            }
-        },
+        { title: '是否暂停', dataIndex: 'suspend', align: 'center', render: (text) => text ? '是' : '否'},
+        { title: '是否发布', dataIndex: 'publish', ellipsis: true, align: 'center', render: (text) => text=='true' ? '是' : '否'},
         { title: '供应商代码', dataIndex: 'supplierCode', ellipsis: true, align: 'center', },
         { title: '供应商名称', dataIndex: 'supplierName', ellipsis: true, align: 'center', },
         { title: '填报截止日期', dataIndex: 'fillEndDate', ellipsis: true, align: 'center', },
@@ -87,30 +79,19 @@ const supplierModal = forwardRef(({ form, demanNumber }, ref) => {
         }
         return true;
     }
-    // 记录列表选中
-    function handleSelectedRows(rowKeys, rows) {
-        setRowKeys(rowKeys);
-        setRows(rows);
-    }
     // 编辑填报截止日期
     function handleEditDate() {
         validateFields((err, fieldsValue) => {
             if (!err) {
                 let endDate = moment(fieldsValue.endDate).format('YYYY-MM-DD')
-                let list = selectedRows.map(item => {
-                    return {
+                let newList = dataSource.map(item => {
+                    return (selectedRowKeys.includes(item.rowKey)) ? {
                         ...item,
                         fillEndDate: endDate
-                    }
+                    } : item
                 })
-                editDemandSupplier(list).then(res => {
-                    if(res.statusCode === 200) {
-                        message.success('操作成功');
-                        tableRef.current.remoteDataRefresh();
-                    } else {
-                        message.error(res.message)
-                    }
-                })
+                setDataSource(newList);
+                tableRef.current.manualSelectedRows();
                 setEditDateVisible(false)
             }
         });
@@ -120,26 +101,27 @@ const supplierModal = forwardRef(({ form, demanNumber }, ref) => {
         confirm({
             title: '删除',
             content: '请确认是否删除选中供应商',
-            onOk: async () => {
-                const res = deleteSupplier({
-                    id: selectedRowKeys[0]
+            onOk: () => {
+                let newList = dataSource.filter(item => {
+                    return !(selectedRowKeys.includes(item.rowKey))
                 });
-                if(res.statusCode === 200) {
-                    message.success('删除成功');
-                    tableRef.current.remoteDataRefresh();
-                }else {
-                    message.error(res.message);
-                }
+                newList.map((item, index)=>({...item, rowKey: index}))
+                setDataSource(newList);
+                tableRef.current.manualSelectedRows();
             }
         })
     }
     // 暂停/取消暂停
-    async function handleSuspended() {
-       const res = await supplierIsPause({
-           id: selectedRowKeys[0],
-           isPause: selectedRowKeys[0].suspend === 0
+    function handleSuspended() {
+        let newList = dataSource.map(item => {
+            return (selectedRowKeys.includes(item.rowKey)) ? {
+                ...item,
+                suspend: !item.suspend
+            } : item
         });
-        console.log(res);
+        newList.map((item, index)=>({...item, rowKey: index}))
+        setDataSource(newList);
+        tableRef.current.manualSelectedRows();
     }
     // 新增
     function handleAdd(tag) {
@@ -150,7 +132,7 @@ const supplierModal = forwardRef(({ form, demanNumber }, ref) => {
         let addList = [];
         supplierSelected.forEach((item, index) => {
             addList.push({
-                rowKey: dataSource.length + index + 1,
+                rowKey: dataSource.length + index,
                 supplierId: item.id,
                 supplierCode: item.code,
                 supplierName: item.name,
@@ -186,6 +168,11 @@ const supplierModal = forwardRef(({ form, demanNumber }, ref) => {
     function handlePublish() {
 
     }
+    // 检查状态是否全部为true-1/false-2；不全相同或未选中数据则返回false
+    const checkAllSameStatus = (key) => {
+        if (!selectedRows || selectedRows.length === 0 || !key) return false;
+        return selectedRows.every((item) => item[key]) ? 1 : selectedRows.every((item) => !item[key]) ? 2 : false
+    }
     function handleQuickSearch(v) {
         console.log(v)
     }
@@ -212,10 +199,10 @@ const supplierModal = forwardRef(({ form, demanNumber }, ref) => {
                     disabled={checkSameBatch()}
                     onClick={() => { !checkSameBatch() && setEditDateVisible(true) }} key="edit">编辑填报截止日期</Button>
                 <Button className={styles.btn} onClick={()=>{checkOneSelect() && handleDelete()}} key="delete" >删除</Button>
-                <Button className={styles.btn} onClick={() => { handleSuspended() }} key="suspend" disabled={selectedRows.length > 1}>{(selectedRows.length > 1||selectedRows.length===0) ? '暂停/取消暂停' : selectedRows[0].suspend===1? '取消暂停' : '暂停'}</Button>
+                <Button className={styles.btn} onClick={() => { handleSuspended() }} key="suspend" disabled={checkAllSameStatus('suspend') === false}>{checkAllSameStatus('suspend') === 1 ? '取消暂停' : checkAllSameStatus('suspend') === 2 ? '暂停' : '暂停/取消暂停'}</Button>
                 <Button className={styles.btn} onClick={() => { handlePublish(true) }}>发布</Button>
-                <Button className={styles.btn} onClick={() => { handleSave(false) }}>保存并发布</Button>
-                <Button className={styles.btn} onClick={() => { handlePublish() }}>取消发布</Button>
+                <Button className={styles.btn} onClick={() => { handlePublish(false) }}>取消发布</Button>
+                <Button className={styles.btn} onClick={() => { handleSave() }}>保存</Button>
             </div>
             <ScrollBar>
                 <ExtTable
@@ -229,7 +216,11 @@ const supplierModal = forwardRef(({ form, demanNumber }, ref) => {
                     rowKey={(item) => item.rowKey}
                     size='small'
                     checkbox={true}
-                    onSelectRow={handleSelectedRows}
+                    onSelectRow={(rowKeys, rows)=>{
+                        console.log(rows)
+                        setRowKeys(rowKeys);
+                        setRows(rows);
+                    }}
                     selectedRowKeys={selectedRowKeys}
                     dataSource={dataSource}
                 />
@@ -281,7 +272,7 @@ const supplierModal = forwardRef(({ form, demanNumber }, ref) => {
                     setSupplierSelectedRowKeys(rowKeys);
                     setSupplierSelected(rows);
                 }}
-                selectedRowKeys={selectedRowKeys}
+                selectedRowKeys={supplierSelectedRowKeys}
                 store={{
                     url: `${supplierManagerBaseUrl}/api/supplierService/findSupplierVoByPage`,
                     type: 'POST',
