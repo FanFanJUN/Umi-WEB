@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:58:13
- * @LastEditTime: 2020-09-17 10:41:40
+ * @LastEditTime: 2020-09-17 17:11:48
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/Other/index.js
  * @Description: 其他附加资料
  * @Connect: 1981824361@qq.com
@@ -103,7 +103,7 @@ const Other = ({ form }) => {
             "dataIndex": "capitalKey",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'Input',
+            "inputType": 'percentInput',
         },
         {
             "title": "出资方式",

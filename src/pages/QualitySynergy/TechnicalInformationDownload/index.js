@@ -1,7 +1,7 @@
 import React, { useState, useRef, Fragment } from 'react';
 import Header from '../../../components/Header';
 import AdvancedForm from '../../../components/AdvancedForm';
-import { Input, Checkbox } from 'antd';
+import { Input, Checkbox, message } from 'antd';
 import styles from '../TechnicalDataSharing/DataSharingList/index.less';
 import { ExtTable, utils } from 'suid';
 import {
@@ -11,7 +11,7 @@ import {
   MaterialConfig,
   MaterialGroupConfig,
   ShareDownloadStatus,
-  StrategicPurchaseConfig,
+  StrategicPurchaseConfig, UpdateShareDownLoadState,
 } from '../commonProps';
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl, smBaseUrl } from '../../../utils/commonUrl';
@@ -72,7 +72,7 @@ export default function() {
     { title: '物料组描述', dataIndex: 'materialGroupName', ellipsis: true, },
     { title: '文件类别', dataIndex: 'fileCategoryName', ellipsis: true, },
     { title: '文件版本', dataIndex: 'fileVersion', ellipsis: true, },
-    { title: '技术资料附件', dataIndex: 'technicalDataFileIdList', width: 120, render: (v) => <Upload type='show' entityId={v} />},
+    { title: '技术资料附件', dataIndex: 'technicalDataFileIdList', width: 120, render: (v, data) => <Upload type='show' entityId={v} downloadClick={() => changeDownloadStatus(data.id)}/>},
     { title: '样品需求日期', dataIndex: 'sampleRequirementDate', ellipsis: true, },
     { title: '战略采购名称', dataIndex: 'strategicPurchaseName', ellipsis: true, },
     { title: '业务单元名称', dataIndex: 'buName', ellipsis: true, },
@@ -84,6 +84,19 @@ export default function() {
   const onChange = (e) => {
     setData(v => ({...v, checked: e.target.checked}))
     console.log(e)
+  }
+
+  const changeDownloadStatus = (id) => {
+    UpdateShareDownLoadState({
+      epTechnicalSupplierId: id
+    }).then(res => {
+      if (res.success) {
+        tableRef.current.remoteDataRefresh();
+        message.success(res.message)
+      } else {
+        message.error(res.message)
+      }
+    })
   }
 
   const headerRight = <div style={{display: 'flex', alignItems: 'center'}}>

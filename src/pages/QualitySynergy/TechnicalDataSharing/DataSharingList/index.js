@@ -247,7 +247,7 @@ export default function() {
         ignore={DEVELOPER_ENV}
         disabled={
           data.selectedRowKeys.length === 0 ||
-          judge(data.selectedRows, 'strategicPurchaseCode', '') ||
+          judge(data.selectedRows, 'strategicPurchaseCode', null) ||
           !judge(data.selectedRows, 'strategicPurchaseCode', data.selectedRows[0]?.strategicPurchaseCode) ||
           !judge(data.selectedRows, 'state', '生效') || (judge(data.selectedRows, 'allotSupplierState', '已分配') ? data.selectedRowKeys > 1 : false)
         }
@@ -259,9 +259,9 @@ export default function() {
         onClick={() => redirectToPage('govern')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'strategicPurchaseCode', '')}
+        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'strategicPurchaseCode', null)}
         key='TECHNICAL_DATA_SHARING_GOVERN'
-      >支配战略采购</Button>)
+      >指派战略采购</Button>)
     }
   </>;
 

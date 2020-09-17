@@ -11,7 +11,7 @@ import {
   AddDataSharingList,
   DataSharingFindOne,
   generateLineNumber,
-  getRandom,
+  getRandom, SubmitDataSharingList,
   UpdateDataSharingList,
 } from '../../../commonProps';
 import SupplierData from './SupplierData';
@@ -81,7 +81,7 @@ export default () => {
     closeCurrent()
   }
 
-  const handleSave = async () => {
+  const handleSave = async (type) => {
     const baseInfoData = await baseInfoRef.current.getBaseInfoData((err, values) => {
       if (!err) {
         return values
@@ -95,14 +95,24 @@ export default () => {
     const technicalData = technicalDataRef.current.dataSource
     let allData = {...baseInfoData, ...materialInfoData, epTechnicalDataBoList: technicalData}
     if (data.type === 'add') {
-      AddDataSharingList(allData).then(res => {
-        if (res.success) {
-          message.success(res.message)
-          closeCurrent()
+      const saveResult = await AddDataSharingList(allData)
+      if (saveResult.success) {
+        // 如果保存并提交
+        if (type === 'addSave') {
+          const submitResult = await SubmitDataSharingList({ ids: saveResult.data })
+          if (submitResult.success) {
+            message.success(submitResult.message)
+            closeCurrent()
+          } else {
+            message.error(submitResult.message)
+          }
         } else {
-          message.error(res.message)
+          message.success(saveResult.message)
+          closeCurrent()
         }
-      })
+      } else {
+        message.error(saveResult.message)
+      }
     } else {
       allData.id = data.id
       allData.state = '草稿'
@@ -138,8 +148,8 @@ export default () => {
             {
               data.type !== 'detail' && <div>
                 <Button className={styles.btn} onClick={handleBack}>返回</Button>
-                <Button className={styles.btn} onClick={handleSave}>保存</Button>
-                <Button className={styles.btn} type='primary' onClick={handleSave}>保存并提交</Button>
+                <Button className={styles.btn} onClick={() => handleSave('add')}>保存</Button>
+                <Button className={styles.btn} type='primary' onClick={() => handleSave('addSave')}>保存并提交</Button>
               </div>
             }
           </div>

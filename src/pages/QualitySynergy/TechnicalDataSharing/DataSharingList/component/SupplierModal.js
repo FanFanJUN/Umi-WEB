@@ -307,7 +307,7 @@ const SupplierModal = (props) => {
           <Button className={styles.btn} disabled={data.selectedRowKeys?.length === 0 ||
           !judge(data.selectedRows, 'downloadAbortDate')
           } onClick={() => changeReleaseStatus(true)}>发布</Button>
-          <Button className={styles.btn} disabled={data.selectedRowKeys?.length === 0 || !judge(data.selectedRows, 'publish', '1')} onClick={() => changeReleaseStatus(false)}>取消发布</Button>
+          <Button className={styles.btn} disabled={data.selectedRowKeys?.length === 0 || !judge(data.selectedRows, 'publish', true)} onClick={() => changeReleaseStatus(false)}>取消发布</Button>
           <Button disabled={!judge(data.sourceData, 'downloadAbortDate')} onClick={saveSupplier}>保存</Button>
         </div>
       }
