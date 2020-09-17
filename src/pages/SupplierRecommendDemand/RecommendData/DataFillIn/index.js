@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 14:29:17
- * @LastEditTime: 2020-09-15 09:30:34
+ * @LastEditTime: 2020-09-17 10:24:10
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/index.js
  * @Description: 资料填报 Tabs
  * @Connect: 1981824361@qq.com
@@ -124,7 +124,7 @@ function DataFillIn({
 
   return (
     <div>
-      <Tooltip title="返回顶部保存信息">
+      <Tooltip title="返回顶部">
         <BackTop visibilityHeight={400} />
       </Tooltip>
       <Tabs tabPosition='left' onChange={(activeKey) => handleChange(activeKey)}>

@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 15:52:52
- * @LastEditTime: 2020-09-16 17:58:55
+ * @LastEditTime: 2020-09-17 13:55:45
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/BaseCondition/index.js
  * @Description: 基本情况 Tab
  * @Connect: 1981824361@qq.com
@@ -22,7 +22,8 @@ const BaseCondition = ({ form }) => {
 
     const [data, setData] = useState({});
     const [loading, setLoading] = useState(false);
-
+    const [proData, setProData] = useState([]);
+    const [otherData, setOtherData] = useState([]);
     const { query: { id, type = 'add' } } = router.useLocation();
 
     useEffect(() => {
@@ -49,6 +50,8 @@ const BaseCondition = ({ form }) => {
                 managementSystems: data.managementSystems,
                 recommendDemandId: id || '676800B6-F19D-11EA-9F88-0242C0A8442E',
                 actualCapacityFactor: (value.designCapability / value.actualCapacity).toFixed(2), // 现有产能利用率 设计产能/实际产能
+                productCertifications: proData || [],
+                otherCertifications: otherData || [],
             };
             saveBaseInfo(filterEmptyFileds(saveParams)).then((res) => {
                 if (res && res.success) {
@@ -59,6 +62,15 @@ const BaseCondition = ({ form }) => {
             })
         })
     }
+
+    function setTableData(newData , type) {
+        if(type === 'pro') {
+            setProData(newData);
+        } else {
+            setOtherData(newData);
+        }
+    }
+
     return (
         <div>
             <Spin spinning={loading}>
@@ -100,7 +112,7 @@ const BaseCondition = ({ form }) => {
                         <div className={styles.bgw}>
                             <div className={styles.title}>管理体系及产品认证</div>
                             <div className={styles.content}>
-                                <MproCertification data={data} type={type} />
+                                <MproCertification data={data} type={type} setTableData={setTableData}/>
                             </div>
                         </div>
                     </div>

@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:58:22
- * @LastEditTime: 2020-09-16 18:25:22
+ * @LastEditTime: 2020-09-17 10:16:12
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/HdssControll/index.js
  * @Description: 产品有害物质管控 tab
  * @Connect: 1981824361@qq.com
@@ -71,7 +71,6 @@ const HdssControll = ({ form }) => {
             "dataIndex": "testingItem",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'Input',
         },
         {
             "title": "备注",
@@ -133,7 +132,7 @@ const HdssControll = ({ form }) => {
                             <div className={styles.title}>产品有害物质管控</div>
                             <div className={styles.content}>
                                 <Row>
-                                    <Col span={12}>
+                                    <Col span={24}>
                                         <FormItem label="有无自有环保检测设备" {...formLayout}>
                                             {getFieldDecorator('haveEnvironmentalTestingEquipment', {
                                                 initialValue: type === 'add' ? true : data.haveEnvironmentalTestingEquipment,

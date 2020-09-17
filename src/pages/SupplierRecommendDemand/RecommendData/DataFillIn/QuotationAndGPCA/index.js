@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:58:07
- * @LastEditTime: 2020-09-16 14:20:15
+ * @LastEditTime: 2020-09-17 10:21:30
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/QuotationAndGPCA/index.js
  * @Description: 报价单及成分分析表 Tab
  * @Connect: 1981824361@qq.com
@@ -164,7 +164,7 @@ const QuotationAndGPCA = (props) => {
                                     columns={columns}
                                     rowKey='id'
                                     setNewData={setNewData}
-                                    isEditTable
+                                    isEditTable={type === 'add'}
                                     isToolBar={type === 'add'}
                                 />
                             </div>

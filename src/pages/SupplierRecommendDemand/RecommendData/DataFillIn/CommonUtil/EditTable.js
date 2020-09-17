@@ -2,20 +2,19 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-10 10:57:33
- * @LastEditTime: 2020-09-16 18:38:25
+ * @LastEditTime: 2020-09-17 14:08:45
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/CommonUtil/EditTable.js
  * @Description:  函数式可编辑行 Table组件
  * @Connect: 1981824361@qq.com
  */
 import React, { useState, useRef, Fragment } from 'react';
 import { Input, InputNumber, Popconfirm, Form, Divider, Button, DatePicker, Select, message, Alert } from 'antd';
-import { ExtTable } from 'suid';
+import { ExtTable, ComboList } from 'suid';
 import PropTypes, { any } from 'prop-types';
 import AutoSizeLayout from '../../../../supplierRegister/SupplierAutoLayout';
 import { guid, isEmptyArray } from './utils';
 import UploadFile from './UploadFile';
-import SelectWithService from '../../../../supplierRegister/components/SelectWithService';
-import { currencyListConfigWithoutAuth } from '../../../../../utils/commonProps';
+import { currencyProps } from '../../../../../utils/commonProps';
 
 
 const EditableContext = React.createContext();
@@ -40,18 +39,18 @@ const EditableCell = (params) => {
     const getInput = () => {
         switch (inputType) {
             case 'InputNumber':
-                return <InputNumber disabled={inputDisabled} />
+                return <InputNumber disabled={inputDisabled} min={0} />
             case 'DatePicker':
                 return <DatePicker />
             case 'Select':
                 return <Select
                     showSearch
-                    style={{ width: 200 }}
-                    placeholder="Select a person"
+                    // style={{ width: 200 }}
+                    placeholder="请选择"
                     optionFilterProp="children"
                 >
-                    <Option value="1">是</Option>
-                    <Option value="2">否</Option>
+                    <Option value={true}>是</Option>
+                    <Option value={false}>否</Option>
                 </Select>
             case 'UploadFile':
                 return <UploadFile />
@@ -60,12 +59,20 @@ const EditableCell = (params) => {
             case 'hideForm':
                 return <Input type={"hidden"} />
             case 'selectwithService':
-                return <SelectWithService
-                    labelInValue={true}
-                    placeholder={"请选择市"}
-                    config={currencyListConfigWithoutAuth}
-                // params={{ provinceId: getFieldValue("province") ? getFieldValue("province").key : "" }}
+                return <ComboList
+                    form={form}
+                    {...currencyProps}
+                    name='buCode'
+                    field={['buName', 'buId']}
+                    afterSelect={(item) => {
+                        //   setBuCode(item.buCode)
+                    }}
                 />
+            case 'percentInput':
+                return <InputNumber min={0}
+                    max={100}
+                    formatter={value => `${value}%`}
+                    parser={value => value.replace('%', '')} />
             default:
                 return <Input disabled={inputDisabled} />;
         }
@@ -100,7 +107,7 @@ const EditableCell = (params) => {
 const EditableTable = (props) => {
 
     const { form, dataSource, columns, rowKey, isEditTable = false, isToolBar = false, setNewData,
-        recommendDemandId = '676800B6-F19D-11EA-9F88-0242C0A8442E' } = props;
+        recommendDemandId = '676800B6-F19D-11EA-9F88-0242C0A8442E', tableType } = props;
 
     console.log(dataSource);
     const [editingKey, setEditingKey] = useState('');
@@ -167,6 +174,7 @@ const EditableTable = (props) => {
     const secCol = isEditTable ? [{
         title: '操作',
         dataIndex: 'operation',
+        editable: false,
         render: (text, record) => {
 
             return finalCol(record);
@@ -174,7 +182,8 @@ const EditableTable = (props) => {
     }, ...columns,].map(item => ({ ...item, align: 'center' })) : columns;
 
     const mergeColumns = secCol.map(col => {
-        if (!col.editable) {
+        const editable = col.editable === undefined ? true : col.editable; // 默认可编辑
+        if (!editable) {
             return col;
         }
         return {
@@ -182,12 +191,12 @@ const EditableTable = (props) => {
             render: (text, record) => {
                 return <EditableCell params={{
                     record,
-                    inputType: col.inputType,
+                    inputType: col.inputType, // 默认Input
                     dataIndex: col.dataIndex,
                     title: col.title,
                     editing: isEditing(record),
                     form,
-                    required: !(col.required === false),
+                    required: !(col.required === false), // 默认必输
                     inputDisabled: col.inputDisabled,
                     inputDefaultValue: col.inputDefaultValue,
                 }} />
@@ -232,7 +241,7 @@ const EditableTable = (props) => {
         const id = guid();
         const newData = isEmptyArray(newArray) ?
             [{ id, guid: guid(), recommendDemandId }] : [{ id, guid: guid(), recommendDemandId }, ...newArray];
-        setNewData(newData);
+        setNewData(newData, tableType); // 新增数据 + 所属哪个Table
         setEditingKey(id); // 新增处于编辑行
         setButtonDisabled(true); // 未保存无法操作
     }
@@ -286,6 +295,8 @@ EditableTable.protoType = {
     isToolBar: PropTypes.bool,
     // 页面处于编辑||详细
     type: PropTypes.any,
+    // 页面所属 TABLE 标志
+    tableType: PropTypes.string,
 }
 
 export default EditableFormTable;

@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-09 13:47:57
- * @LastEditTime: 2020-09-16 16:51:49
+ * @LastEditTime: 2020-09-17 14:19:09
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/BaseCondition/MproCertification.js
  * @Description: 管理体系及产品认证
  * @Connect: 1981824361@qq.com
@@ -13,11 +13,10 @@ import { Button, Divider } from 'antd';
 import moment from 'moment';
 import EditableFormTable from '../CommonUtil/EditTable';
 
-const MproCertification = ({ type, data }) => {
-    const [selectedRowKeys, setRowKeys] = useState([]);
-    const [selectedRows, setRows] = useState([]);
-    const [proData, setProData] = useState([]);
-    const [otherData, setOtherData] = useState([]);
+const MproCertification = ({ type, data, setTableData }) => {
+
+    const [proData, setProData] = useState(data.productCertifications);
+    const [otherData, setOtherData] = useState(data.productCertifications);
 
     const tableRef = useRef(null);
 
@@ -43,8 +42,10 @@ const MproCertification = ({ type, data }) => {
 
     const columnsForPro = [
         { title: '产品', dataIndex: 'productName', ellipsis: true, editable: true },
-        { title: '认证类型', dataIndex: 'certificateInfoType', ellipsis: true, 
-        editable: true, inputDisabled: true, inputDefaultValue: 'PRODUCT_CERTIFICATION' },
+        {
+            title: '认证类型', dataIndex: 'certificateInfoType', ellipsis: true,
+            editable: true, inputDisabled: true, inputDefaultValue: 'PRODUCT_CERTIFICATION'
+        },
         { title: '执行标准', dataIndex: 'executiveStandard', ellipsis: true, editable: true },
         { title: '证照编号', dataIndex: 'certificateNumber', ellipsis: true, editable: true },
         { title: '发证机构', dataIndex: 'certifyingAuthority', ellipsis: true, editable: true },
@@ -64,8 +65,10 @@ const MproCertification = ({ type, data }) => {
 
     const columnsForOther = [
         { title: '产品', dataIndex: 'productName', ellipsis: true, editable: true },
-        { title: '认证类型', dataIndex: 'certificateInfoType', ellipsis: true, 
-        editable: true, inputDisabled: true, inputDefaultValue: 'OTHER_CERTIFICATION' },
+        {
+            title: '认证类型', dataIndex: 'certificateInfoType', ellipsis: true,
+            editable: true, inputDisabled: true, inputDefaultValue: 'OTHER_CERTIFICATION'
+        },
         { title: '执行标准', dataIndex: 'executiveStandard', ellipsis: true, editable: true },
         { title: '证照编号', dataIndex: 'certificateNumber', ellipsis: true, editable: true },
         { title: '发证机构', dataIndex: 'certifyingAuthority', ellipsis: true, editable: true },
@@ -85,18 +88,15 @@ const MproCertification = ({ type, data }) => {
 
     function setProNewData(newData) {
         setProData(newData);
+        setTableData(newData, 'pro');
     }
 
     function setOtherNewData(newData) {
         setOtherData(newData);
+        setTableData(newData, 'other');
     }
+    
     return <Fragment>
-        {/* <div className={styles.mb}>
-            <Button type='primary' className={styles.btn} onClick={()=>{editRef.current.showModal('add')}}>新增</Button>
-            <Button className={styles.btn} onClick={()=>{editRef.current.showModal('edit')}}>编辑</Button>
-            <Button className={styles.btn} onClick={handleDelete}>删除</Button>
-            <Button className={styles.btn}>批量导入</Button>
-        </div> */}
         <div>
             <Divider>管理体系</Divider>
             <EditableFormTable
@@ -120,7 +120,7 @@ const MproCertification = ({ type, data }) => {
                 isEditTable
                 isToolBar={type === 'add'}
                 setNewData={setProNewData}
-                dataSource={proData}
+                dataSource={proData || []}
             />
             <Divider>其他认证</Divider>
             <EditableFormTable
@@ -133,7 +133,7 @@ const MproCertification = ({ type, data }) => {
                 size='small'
                 isEditTable
                 isToolBar={type === 'add'}
-                dataSource={otherData}
+                dataSource={otherData || []}
                 setNewData={setOtherNewData}
             />
         </div>
