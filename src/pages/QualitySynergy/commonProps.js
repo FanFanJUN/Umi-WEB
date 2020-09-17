@@ -413,6 +413,26 @@ export const MaterialGroupConfig = {
   },
 };
 
+// 战略采购列表
+export const StrategicPurchasingAll = {
+  remotePaging: true,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${baseUrl}/purchaseGroup/findByPagesAll`,
+  },
+  style: {
+    width: '100%',
+  },
+  rowKey: 'code',
+  reader: {
+    field: ['code', 'id'],
+    name: 'name',
+    description: 'code',
+  },
+  placeholder: '选择物料代码',
+};
+
 // 物料代码列表
 export const MaterialConfig = {
   remotePaging: true,
