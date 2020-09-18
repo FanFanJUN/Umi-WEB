@@ -2,13 +2,13 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-10 10:57:33
- * @LastEditTime: 2020-09-18 10:52:44
+ * @LastEditTime: 2020-09-18 15:12:49
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/CommonUtil/EditTable.js
  * @Description:  函数式可编辑行 Table组件
  * @Connect: 1981824361@qq.com
  */
 import React, { useState, useRef, Fragment } from 'react';
-import { Input, InputNumber, Popconfirm, Form, Divider, Button, DatePicker, Select, message, Alert } from 'antd';
+import { Input, InputNumber, Popconfirm, Form, Divider, Button, DatePicker, Select, message, Alert, Row, Col } from 'antd';
 import { ExtTable, ComboList, ComboGrid } from 'suid';
 import PropTypes, { any } from 'prop-types';
 import AutoSizeLayout from '../../../../supplierRegister/SupplierAutoLayout';
@@ -109,7 +109,7 @@ const EditableCell = (params) => {
         return (
             editing ? (
                 <Form.Item style={{ margin: 0 }}>
-                    <span style={{ color: 'red', display: required ? '' : 'none' }}>*</span>
+                    <span style={{ color: 'red', display: required ? '' : 'none', float: inputType === 'UploadFile' ? 'left' : null }}>*</span>
                     {getFieldDecorator(dataIndex, {
                         rules: [
                             {

@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-09-14 10:40:21
- * @LastEditTime: 2020-09-16 17:54:38
+ * @LastEditTime: 2020-09-18 13:30:57
  * @Description: 资料填报Api接口
  * @FilePath: /srm-sm-web/src/services/dataFillInApi.js
  */
@@ -92,6 +92,14 @@ export async function requestGetApi(params) {
         case 'otherTab':
             requestApi = '/otherFileService/findOtherFileByRecommendDemandId';
             break;
+        // 供应链管理能力 
+        case 'managerAbilityTab':
+            requestApi = '/supplyChainCapabilityService/findSupplyChainCapabilityByRecommendDemandId';
+            break;
+        // 质量能力
+        case 'qualityAbilityTab':
+            requestApi = '/qualityControlService/findQualityControlByRecommendDemandId';
+            break;
         default:
             break;
     }
@@ -129,6 +137,14 @@ export async function requestPostApi(params) {
         // 其他附加资料
         case 'otherTab':
             requestApi = '/otherFileService/saveOtherFile';
+            break;
+        // 供应链管理能力
+        case 'managerAbilityTab':
+            requestApi = '/supplyChainCapabilityService/saveSupplyChainCapability';
+            break;
+        // 质量能力
+        case 'qualityAbilityTab':
+            requestApi = '/qualityControlService/saveQualityControl';
             break;
         default:
             break;

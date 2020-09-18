@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:34:49
- * @LastEditTime: 2020-09-17 14:18:33
+ * @LastEditTime: 2020-09-18 14:43:49
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/SellCondition/index.js
  * @Description: 销售情况 Tab
  * @Connect: 1981824361@qq.com
@@ -24,6 +24,7 @@ const SellCondition = ({ form }) => {
     const [mainCustomers, setmainCustomers] = useState([]);
     const [supplierOrderInfos, setsupplierOrderInfos] = useState([]);
     const [threeYearPlans, setthreeYearPlans] = useState([]);
+    const [supplierMajorCompetitors, setsupplierMajorCompetitors] = useState();
 
     const [loading, setLoading] = useState(false);
 
@@ -57,6 +58,7 @@ const SellCondition = ({ form }) => {
                 supplierOrderInfos: supplierOrderInfos || [],
                 threeYearPlans: threeYearPlans || [],
                 recommendDemandId: id || '676800B6-F19D-11EA-9F88-0242C0A8442E',
+                supplierMajorCompetitors: supplierMajorCompetitors || [],
             };
             saveSupplierSalesSituation(filterEmptyFileds(saveParams)).then((res) => {
                 if (res && res.success) {
@@ -81,6 +83,9 @@ const SellCondition = ({ form }) => {
                 break;
             case 'threeYearPlans':
                 setthreeYearPlans(newData);
+                break;
+            case 'supplierMajorCompetitors':
+                setsupplierMajorCompetitors(newData);
                 break;
             default:
                 break;
