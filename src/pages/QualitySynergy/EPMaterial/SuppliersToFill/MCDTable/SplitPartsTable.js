@@ -19,7 +19,7 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
     useImperativeHandle(ref, () => ({
         setVisible,
         setRowKeys,
-        setRows
+        setRows,
     }))
     const tableRef = useRef(null);
     const [visible, setVisible] = useState(false);
@@ -41,13 +41,6 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
         } },
         { title: '排序', dataIndex: 'name8', ellipsis: true, align: 'center', },
     ];
-    // 记录列表选中
-    function handleSelectedRows(rowKeys, rows) {
-        console.log('拆分部件选中', rows);
-        setRowKeys(rowKeys);
-        setRows(rows);
-        setSelectedSpilt(rows.length === 1 ? rows[0] : {});
-    }
     // 删除
     function handleDelete() {
         confirm({
@@ -73,7 +66,7 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
                     newList = newList.map(item => {
                         if(item.rowKey === selectedRows[0].rowKey) {
                             return {
-                                ...selectedRows[0],
+                                ...item,
                                 ...values
                             }
                         } else {
@@ -166,7 +159,12 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
             checkbox={true}
             rowKey={(item) => item.rowKey}
             size='small'
-            onSelectRow={handleSelectedRows}
+            onSelectRow={(rowKeys, rows) => {
+                console.log('拆分部件选中', rows);
+                setRowKeys(rowKeys);
+                setRows(rows);
+                setSelectedSpilt(rows.length === 1 ? rows[0] : {});
+            }}
             selectedRowKeys={selectedRowKeys}
             dataSource={dataList}
         />

@@ -381,7 +381,15 @@ export async function syncPdm(params) {
         params: params,
     });
 }
-
+// 填报环保资料物料-抽检复核
+export async function checkReview(params) {
+    const url = `${recommendUrl}/api/epDataFillService/checkReview`;
+    return request({
+        url,
+        method: 'POST',
+        data: params,
+    });
+}
 // 供应商-填报环保资料-获取填报数据
 export async function supplerFindVoById(params) {
     const url = `${recommendUrl}/api/epDataFillService/findVoById`;

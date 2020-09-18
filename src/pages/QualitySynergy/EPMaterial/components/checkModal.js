@@ -1,7 +1,9 @@
 import { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment } from 'react';
-import { ExtTable, ExtModal, ScrollBar, ComboList } from 'suid';
+import { ExtTable, ExtModal, message, ComboList } from 'suid';
 import { Button, Input, Form, Modal, Radio } from 'antd'
 import { recommendUrl } from '@/utils/commonUrl';
+import{ checkReview } from '../../../../services/qualitySynergy';
+import { values } from 'lodash';
 const { create, Item: FormItem } = Form;
 const { TextArea } = Input;
 const formLayout = {
@@ -33,6 +35,7 @@ const checkModal = forwardRef(({ form, selectedRow={} }, ref) => {
                 switch(text){
                     case "FIT": return '符合';
                     case "NOTFIT": return '不符合';
+                    case "NOTCOMPLETED": return '复核不符合';
                     default: return '';
                 }
             }
@@ -58,13 +61,27 @@ const checkModal = forwardRef(({ form, selectedRow={} }, ref) => {
         { title: '有效开始日期', dataIndex: 'effectiveStartDate', ellipsis: true, align: 'center', },
         { title: '有效截止日期', dataIndex: 'effectiveEndDate', ellipsis: true, align: 'center', },
         { title: '分配批次', dataIndex: 'batch', ellipsis: true, align: 'center', },
-        // { title: '详情', dataIndex: 'name7', ellipsis: true, align: 'center', },
     ];
     // 复核确定
     function handleOk() {
         validateFields((err, fieldsValue)=>{
             if (!err) {
-                console.log(fieldsValue)
+                let dataList = selectedRows.map(item => {
+                    return {
+                        id: item.id,
+                        ...fieldsValue
+                    }
+                })
+                checkReview(dataList).then(res => {
+                    setCheckVisible(false);
+                    if(res.statusCode === 200) {
+                        message.success('操作成功');
+                        tableRef.current.manualSelectedRows();
+                        tableRef.current.remoteDataRefresh();
+                    } else {
+                        message.error(res.message);
+                    }
+                })
             }
         })
     }
@@ -73,13 +90,21 @@ const checkModal = forwardRef(({ form, selectedRow={} }, ref) => {
         setRowKeys(rowKeys);
         setRows(rows);
     }
+    function checkOneSelect() {
+        if (selectedRows.length === 0) {
+            message.warning('至少选中一条数据');
+            return false;
+        }
+        return true;
+    }
     return <Fragment>
         <ExtModal
             destroyOnClose
             cancelText="退出"
-            onCancel={() => { setVisible(false); }}
-            onOk={() => { setCheckVisible(true) }}
+            onCancel={() => { tableRef.current.manualSelectedRows(); setVisible(false); }}
+            onOk={() => { checkOneSelect() && setCheckVisible(true) }}
             okText="复核"
+            maskClosable={false}
             visible={visible}
             centered
             width={1100}
@@ -98,48 +123,50 @@ const checkModal = forwardRef(({ form, selectedRow={} }, ref) => {
                 onSelectRow={handleSelectedRows}
                 selectedRowKeys={selectedRowKeys}
                 store={{
-                    url: `${recommendUrl}/api/epDataFillService/findAllByPage`,
+                    url: `${recommendUrl}/api/epDataFillService/findPageByCode`,
                     params: {
-                        id: selectedRow.id
+                        materialCode: selectedRow.materialCode
+                        // materialCode: '810045822'
                     },
                     type: 'POST'
                 }}
             />
         </ExtModal>
-        <ExtModal
+        {checkVisible && <ExtModal
             destroyOnClose
             cancelText="退出"
             onCancel={() => { setCheckVisible(false); }}
-            onOk={handleOk}
+            onOk={()=>{handleOk()}}
+            maskClosable={false}
             okText="复核"
             visible={checkVisible}
             centered
-            zIndex={1001}
+            zIndex={1100}
             width={600}
             title="复核"
         >
             <Form>
                 <FormItem label='复核结果' labelCol={{ span: 4 }} wrapperCol={{ span: 18 }}>
                     {
-                        getFieldDecorator('pass',{
-                            initialValue: 1,
+                        getFieldDecorator('reviewResults',{
+                            initialValue: 'PASS',
                         })(
                             <Radio.Group>
-                                <Radio value={1}>通过</Radio>
-                                <Radio value={2}>不通过</Radio>
+                                <Radio value="PASS">通过</Radio>
+                                <Radio value="NOPASS">不通过</Radio>
                             </Radio.Group>
                         )
                     }
                 </FormItem>
                 <FormItem label='复核意见' labelCol={{ span: 4 }} wrapperCol={{ span: 18 }}>
                     {
-                        getFieldDecorator('text', {
-                            rules: getFieldValue('pass') === 1 ? [] : [{ required: true, message: '请输入复核意见' }],
+                        getFieldDecorator('reviewResultComments', {
+                            rules: [{ required: getFieldValue('reviewResults') === "NOPASS", message: '请输入复核意见' }],
                         })(<TextArea />)
                     }
                 </FormItem>
             </Form>
-        </ExtModal>
+        </ExtModal>}
     </Fragment>
 })
 

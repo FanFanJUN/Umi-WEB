@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, Fragment } from 'react';
 import { Input, Button, message, Modal, Form } from 'antd';
 import styles from './index.less';
-import { openNewTab, getFrameElement } from '@/utils';
+import { openNewTab, getFrameElement, getUserAccount } from '@/utils';
 import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar, DataExport } from 'suid';
 import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
 import { recommendUrl } from '@/utils/commonUrl';
@@ -45,12 +45,27 @@ export default create()(function ({ form }) {
     const generateRef = useRef(null);
     const historyRef = useRef(null);
     const [OrgId, setOrgId] = useState('');
-    const [buttonStatus, setButtonStatus] = useState({});
+    // 按钮禁用控制
+    const [buttonStatus, setButtonStatus] = useState({
+        detail: true,
+        delete: true,
+        frozen: true,
+        maint: true,
+        detail: true,
+        submit: true,
+        withdraw: true,
+        distribute: true,
+        assign: true,
+        pdm: true,
+        sync: true,
+        check: true,
+        generate: true,
+    });
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [searchValue, setSearchValue] = useState({});
     const [maintainModal, setMaintainModal] = useState(false);//维护环保人员弹框
-    const [assignPurchase, setSssignPurchase] = useState(false);//指派战略采购弹框
+    const [assignPurchase, setAssignPurchase] = useState(false);//指派战略采购弹框
     const [qualificationModal, setQualificationModal] = useState(false);
     const FRAMELEEMENT = getFrameElement();
     const { getFieldDecorator, setFieldsValue, validateFields } = form;
@@ -113,7 +128,6 @@ export default create()(function ({ form }) {
 
     // 冻结
     const handleFreeze = () => {
-        if (!checkOneSelect()) return;
         confirm({
             title: '请确认是否冻结选中填报环保资料物料',
             onOk: async () => {
@@ -257,7 +271,7 @@ export default create()(function ({ form }) {
                         message.error(res.message);
                     }
                 });
-                setSssignPurchase(false);
+                setAssignPurchase(false);
             }
         });
     }
@@ -280,12 +294,6 @@ export default create()(function ({ form }) {
             }
         });
     }
-
-    // 导出
-    function handleExport() {
-        console.log('导出');
-    }
-
     // 编辑弹框处理
     function handleTableTada(type, obj) {
         let params = { ...selectedRows[0], ...obj };
@@ -299,10 +307,8 @@ export default create()(function ({ form }) {
             }
         });
     }
-
     // 同步pdm
     async function handleSyncPdm() {
-        if (!checkOneSelect()) return;
         const res = await syncPdm({ id: selectedRowKeys[0] });
         if (res.statusCode === 200) {
             message.success('同步成功');
@@ -318,23 +324,45 @@ export default create()(function ({ form }) {
             setButtonStatus({
                 detail: false,
                 sync: false,
+                delete: !(rows[0].effectiveStatus === 'DRAFT' && rows[0].sourceName === 'SRM'),
                 submit: rows[0].effectiveStatus === 'EFFECT',
-                withdraw: rows[0].effectiveStatus === 'DRAFT',
+                withdraw: !(rows[0].effectiveStatus === 'EFFECT'&&rows[0].allotSupplierState === 'ALLOT_NOT'),
+                distribute: rows[0].applyPersonCode === getUserAccount(),
             });
         } else if (rows.length === 0) {
             setButtonStatus({
-                detail: false,
-                sync: false,
+                detail: true,
+                delete: true,
+                frozen: true,
+                maint: true,
+                detail: true,
+                submit: true,
+                withdraw: true,
+                distribute: true,
+                assign: true,
+                pdm: true,
+                sync: true,
+                check: true,
+                generate: true,
             });
         } else {
             setButtonStatus({
-                detail: true,
                 detail: true,
                 delete: true,
                 withdraw: true,
                 distribute: true,
                 sync: true,
+                pdm: true,
+                check: true,
+                assign: (() => {
+                    // 物料组相同
+                    let { materialGroupCode } = rows[0]
+                    return !rows.every(item => {
+                        return item.materialGroupCode === materialGroupCode;
+                    });
+                })(),
                 submit: (() => {
+                    // 状态均为草稿
                     return !rows.every(item => {
                         return item.effectiveStatus === 'DRAFT';
                     });
@@ -410,7 +438,7 @@ export default create()(function ({ form }) {
         { title: '环保标准', dataIndex: 'environmentalProtectionName', ellipsis: true },
         { title: '战略采购代码', dataIndex: 'strategicPurchaseCode', ellipsis: true },
         { title: '战略采购名称', dataIndex: 'strategicPurchaseName', ellipsis: true },
-        { title: '供应商', dataIndex: 'list', ellipsis: true },
+        { title: '供应商', dataIndex: 'list', ellipsis: true, render: (text) => <a href="#">查看</a> },
         { title: '环保管理人员', dataIndex: 'environmentAdminName', ellipsis: true },
         { title: '创建人', dataIndex: 'applyPersonName', ellipsis: true },
         { title: '创建人联系方式', dataIndex: 'applyPersonPhone', ellipsis: true },
@@ -435,9 +463,7 @@ export default create()(function ({ form }) {
             authAction(<Button
                 className={styles.btn}
                 disabled={buttonStatus.detail}
-                onClick={() => {
-                    checkOneSelect() && editRef.current.showModal('edit');
-                }}
+                onClick={() => {editRef.current.showModal('edit');}}
                 ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_MATERIAL_EDIT'
             >编辑</Button>)
@@ -446,9 +472,7 @@ export default create()(function ({ form }) {
             authAction(<Button
                 className={styles.btn}
                 disabled={buttonStatus.delete}
-                onClick={() => {
-                    checkOneSelect() && handleDelete();
-                }}
+                onClick={() => { handleDelete(); }}
                 key='QUALITYSYNERGY_MATERIAL_DELETE'
                 ignore={DEVELOPER_ENV}
             >删除</Button>)
@@ -456,7 +480,7 @@ export default create()(function ({ form }) {
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={false}
+                disabled={buttonStatus.frozen}
                 onClick={handleFreeze}
                 ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_MATERIAL_FROZEN'
@@ -465,11 +489,8 @@ export default create()(function ({ form }) {
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={false}
-                onClick={() => {
-                    // checkOneSelect() &&
-                    setMaintainModal(true);
-                }}
+                disabled={buttonStatus.maint}
+                onClick={() => {setMaintainModal(true);}}
                 key='QUALITYSYNERGY_MATERIAL_PERSON'
                 ignore={DEVELOPER_ENV}
             >维护环保管理人员</Button>)
@@ -477,9 +498,7 @@ export default create()(function ({ form }) {
         {
             authAction(<Button
                 className={styles.btn}
-                onClick={() => {
-                    checkOneSelect() && redirectToPage('detail');
-                }}
+                onClick={() => { redirectToPage('detail'); }}
                 ignore={DEVELOPER_ENV}
                 disabled={buttonStatus.detail}
                 key='QUALITYSYNERGY_MATERIAL_DETAIL'
@@ -507,9 +526,7 @@ export default create()(function ({ form }) {
             authAction(<Button
                 className={styles.btn}
                 disabled={buttonStatus.distribute}
-                onClick={() => {
-                    checkOneSelect() && supplierRef.current.setVisible(true);
-                }}
+                onClick={() => { supplierRef.current.setVisible(true); }}
                 key='QUALITYSYNERGY_MATERIAL_SUPPLIER'
                 ignore={DEVELOPER_ENV}
             >分配供应商</Button>)
@@ -518,9 +535,8 @@ export default create()(function ({ form }) {
             authAction(<Button
                 className={styles.btn}
                 disabled={false}
-                onClick={() => {
-                    checkOneSelect() && setSssignPurchase(true);
-                }}
+                onClick={() => { setAssignPurchase(true); }}
+                disabled={buttonStatus.assign}
                 ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_MATERIAL_DESIGN'
             >指派战略采购</Button>)
@@ -528,7 +544,7 @@ export default create()(function ({ form }) {
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={false}
+                disabled={buttonStatus.pdm}
                 onClick={() => {
                     handleSyncPdm();
                 }}
@@ -550,10 +566,8 @@ export default create()(function ({ form }) {
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={false}
-                onClick={() => {
-                    samplingRef.current.setVisible(true);
-                }}
+                disabled={buttonStatus.check}
+                onClick={() => { samplingRef.current.setVisible(true); }}
                 key='QUALITYSYNERGY_MATERIAL_RECHECK'
                 ignore={DEVELOPER_ENV}
             >抽检复核</Button>)
@@ -561,7 +575,7 @@ export default create()(function ({ form }) {
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={false}
+                disabled={buttonStatus.generate}
                 onClick={() => {
                     generateRef.current.setVisible(true);
                 }}
@@ -572,7 +586,6 @@ export default create()(function ({ form }) {
         {
             authAction(<DataExport.Button
                 className={styles.btn}
-                disabled={false}
                 // onClick={handleExport}
                 requestParams={requestParams}
                 explainResponse={explainResponse}
@@ -583,7 +596,6 @@ export default create()(function ({ form }) {
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={false}
                 onClick={() => {
                     checkRef.current.showModal();
                 }}
@@ -682,7 +694,7 @@ export default create()(function ({ form }) {
             centered
             destroyOnClose
             onCancel={() => {
-                setSssignPurchase(false);
+                setAssignPurchase(false);
             }}
             onOk={maintainSeleteChange}
             visible={assignPurchase}
@@ -707,9 +719,9 @@ export default create()(function ({ form }) {
         {/* 查看供应商资质 */}
         <CheckQualificationModal ref={checkRef} />
         {/* 分配供应商 */}
-        <DistributeSupplierModal wrappedComponentRef={supplierRef} selectedRow={selectedRows[0]}/>
+        <DistributeSupplierModal wrappedComponentRef={supplierRef} selectedRow={selectedRows[0]} />
         {/* 抽检复核 */}
-        <CheckModal wrappedComponentRef={samplingRef} selectedRow={selectedRows[0]}/>
+        <CheckModal wrappedComponentRef={samplingRef} selectedRow={selectedRows[0]} />
         {/* 生成报表 */}
         <GenerateModal wrappedComponentRef={generateRef} />
         {/* 同步历史 */}

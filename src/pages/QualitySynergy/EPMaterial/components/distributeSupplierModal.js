@@ -36,6 +36,8 @@ const supplierModal = forwardRef(({ form, selectedRow }, ref) => {
     const [supplierSelected, setSupplierSelected] = useState([]);
     const [supplierSelectedRowKeys, setSupplierSelectedRowKeys] = useState([]);
     const [dataSource, setDataSource] = useState([]);
+    const [deleteList, setDeleteList] = useState([]);
+    const [supplierCodes, setSuplierCodes] = useState([]);
     const [editTag, setEditTag] = useState(false); // 编辑标记
     const { getFieldDecorator, validateFields } = form;
     useEffect(() => {
@@ -44,12 +46,12 @@ const supplierModal = forwardRef(({ form, selectedRow }, ref) => {
         }
     }, [visible])
     const columns = [
-        { title: '是否暂停', dataIndex: 'suspend', align: 'center', render: (text) => text ? '是' : '否' },
-        { title: '是否发布', dataIndex: 'publish', ellipsis: true, align: 'center', render: (text) => text == 'true' ? '是' : '否' },
+        { title: '是否暂停', dataIndex: 'suspend', align: 'center', width: 80, render: (text) => text ? '是' : '否' },
+        { title: '是否发布', dataIndex: 'publish', width: 80, align: 'center', render: (text) => text == 'true' ? '是' : '否' },
         { title: '供应商代码', dataIndex: 'supplierCode', ellipsis: true, align: 'center', },
         { title: '供应商名称', dataIndex: 'supplierName', ellipsis: true, align: 'center', },
-        { title: '填报截止日期', dataIndex: 'fillEndDate', ellipsis: true, align: 'center', render: (text) => text ? text.slice(0, 10) : ''},
-        { title: '分配日期', dataIndex: 'allotDate', ellipsis: true, align: 'center', render: (text) => text ? text.slice(0, 10) : ''},
+        { title: '填报截止日期', dataIndex: 'fillEndDate', ellipsis: true, align: 'center', render: (text) => text ? text.slice(0, 10) : '' },
+        { title: '分配日期', dataIndex: 'allotDate', ellipsis: true, align: 'center', render: (text) => text ? text.slice(0, 10) : '' },
         { title: '分配批次 ', dataIndex: 'allotBatch', ellipsis: true, align: 'center', },
         { title: '分配人', dataIndex: 'allotPeopleName', ellipsis: true, align: 'center', },
     ];
@@ -60,20 +62,21 @@ const supplierModal = forwardRef(({ form, selectedRow }, ref) => {
     async function getData() {
         const res = await findByPageOfSupplier({ demandNumber: selectedRow.demandNumber });
         if (res.statusCode === 200) {
-            let dataList = res.data.rows.map((item, index) => {
-                return {
-                    ...item,
-                    rowKey: index
-                }
-            })
-            setDataSource(dataList);
-            tableRef.current.manualSelectedRows();
+            if (res.data && res.data.rows) {
+                let suppliers = []
+                let dataList = res.data.rows.map((item, index) => {
+                    suppliers.push(item.supplierCode);
+                    return {
+                        ...item,
+                        rowKey: index
+                    }
+                })
+                setSuplierCodes(suppliers);
+                setDataSource(dataList);
+            }
         } else {
             message.error(res.message);
         }
-    }
-    function handleOk() {
-
     }
     // 编辑填报截止日期
     function handleEditDate() {
@@ -123,21 +126,28 @@ const supplierModal = forwardRef(({ form, selectedRow }, ref) => {
             return;
         }
         let addList = [];
+        let suppliers = [];
         supplierSelected.forEach((item, index) => {
-            addList.push({
-                rowKey: dataSource.length + index,
-                supplierId: item.id,
-                supplierCode: item.code,
-                supplierName: item.name,
-                publish: 0,
-                suspend: 0,
-                demandNumber: selectedRow.demandNumber,
-                allotPeopleId: getUserId(),
-                allotPeopleAccount: getUserAccount(),
-                allotPeopleName: getUserName()
-            })
+            if(!supplierCodes.includes(item.code)) {
+                suppliers.push(item.code);
+                addList.push({
+                    rowKey: dataSource.length + index,
+                    supplierId: item.id,
+                    supplierCode: item.code,
+                    supplierName: item.name,
+                    publish: 0,
+                    suspend: 0,
+                    allotDate: moment().format('YYYY-MM-DD'),
+                    demandNumber: selectedRow.demandNumber,
+                    allotPeopleId: getUserId(),
+                    allotPeopleAccount: getUserAccount(),
+                    allotPeopleName: getUserName()
+                })
+            }
         })
+        suppliers = supplierCodes.concat(suppliers);
         addList = dataSource.concat(addList);
+        setSuplierCodes(suppliers);
         setDataSource(addList);
         setEditTag(true);
         supplierTableRef.current.manualSelectedRows();
@@ -148,7 +158,8 @@ const supplierModal = forwardRef(({ form, selectedRow }, ref) => {
     // 保存
     async function handleSave() {
         let res = {};
-        res = await addDemandSupplier(dataSource);
+        let saveData = { ...selectedRow, demandSupplierBoList: dataSource }
+        res = await addDemandSupplier(saveData);
         if (res.statusCode === 200) {
             message.success('操作成功');
             setEditTag(false);
@@ -158,7 +169,7 @@ const supplierModal = forwardRef(({ form, selectedRow }, ref) => {
         }
     }
     // 发布/取消发布
-    async function handlePublish(tag) {
+    function handlePublish(tag) {
         let newList = dataSource.map(item => {
             return (selectedRowKeys.includes(item.rowKey)) ? {
                 ...item,
@@ -185,13 +196,14 @@ const supplierModal = forwardRef(({ form, selectedRow }, ref) => {
         return !tag;
     }
     function handleCancel() {
-        console.log('点击退出', editTag)
-        if(editTag) {
+        if (editTag) {
             Modal.confirm({
                 title: '退出',
                 content: '界面编辑还未保存，确认是否退出',
                 onOk: () => {
+                    tableRef.current.manualSelectedRows();
                     setVisible(false);
+                    setEditTag(false);
                 },
             })
         } else {
@@ -200,9 +212,9 @@ const supplierModal = forwardRef(({ form, selectedRow }, ref) => {
     }
     return <Fragment>
         <ExtModal
-            destroyOnClose
-            onCancel={()=>{handleCancel()}}
-            onOk={()=>{handleSave()}}
+            destroyOnClose={true}
+            onCancel={() => { handleCancel() }}
+            onOk={() => { handleSave() }}
             okText="保存"
             visible={visible}
             centered
