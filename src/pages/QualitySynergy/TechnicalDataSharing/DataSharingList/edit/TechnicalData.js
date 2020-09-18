@@ -90,11 +90,13 @@ const TechnicalData = React.forwardRef((props, ref) => {
       <div className={styles.bgw}>
         <div className={styles.title}>技术资料</div>
         <div className={styles.content}>
-          <div>
-            <Button onClick={() => {handleBtn('add')}} type='primary'>新增</Button>
-            <Button disabled={data.selectRows.length !== 1} onClick={() => {handleBtn('edit')}} style={{marginLeft: '5px'}}>编辑</Button>
-            <Button disabled={data.selectedRowKeys.length < 1} onClick={() => {handleBtn('delete')}} style={{marginLeft: '5px'}}>删除</Button>
-          </div>
+          {
+            !props.isView && <div>
+              <Button onClick={() => {handleBtn('add')}} type='primary'>新增</Button>
+              <Button disabled={data.selectRows.length !== 1} onClick={() => {handleBtn('edit')}} style={{marginLeft: '5px'}}>编辑</Button>
+              <Button disabled={data.selectedRowKeys.length < 1} onClick={() => {handleBtn('delete')}} style={{marginLeft: '5px'}}>删除</Button>
+            </div>
+          }
           <ExtTable
             style={{marginTop: '10px'}}
             rowKey={(v) => v.lineNumber}
