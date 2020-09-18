@@ -2,19 +2,19 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-10 10:57:33
- * @LastEditTime: 2020-09-17 17:41:39
+ * @LastEditTime: 2020-09-18 10:52:44
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/CommonUtil/EditTable.js
  * @Description:  函数式可编辑行 Table组件
  * @Connect: 1981824361@qq.com
  */
 import React, { useState, useRef, Fragment } from 'react';
 import { Input, InputNumber, Popconfirm, Form, Divider, Button, DatePicker, Select, message, Alert } from 'antd';
-import { ExtTable, ComboList } from 'suid';
+import { ExtTable, ComboList, ComboGrid } from 'suid';
 import PropTypes, { any } from 'prop-types';
 import AutoSizeLayout from '../../../../supplierRegister/SupplierAutoLayout';
-import { guid, isEmptyArray, checkNull } from './utils';
+import { guid, isEmptyArray, checkNull, hideFormItem } from './utils';
 import UploadFile from './UploadFile';
-import { currencyProps } from '../../../../../utils/commonProps';
+import { currencyTableProps } from '../../../../../utils/commonProps';
 import moment from 'moment';
 
 const EditableContext = React.createContext();
@@ -34,6 +34,12 @@ const EditableCell = (params) => {
             inputDefaultValue,
         }
     } = params;
+    const { getFieldDecorator } = form;
+    const HideFormItem = hideFormItem(getFieldDecorator);
+
+    function afterSelect(val) {
+        form.setFieldsValue({ currencyCode: val.code });
+    }
 
     // 编辑样式
     const getInput = () => {
@@ -57,15 +63,7 @@ const EditableCell = (params) => {
             case 'hideForm':
                 return <Input type={"hidden"} />
             case 'selectwithService':
-                return <ComboList
-                    form={form}
-                    {...currencyProps}
-                    name='buCode'
-                    field={['buName', 'buId']}
-                    afterSelect={(item) => {
-                        //   setBuCode(item.buCode)
-                    }}
-                />
+                return <ComboGrid {...currencyTableProps} form={form} afterSelect={afterSelect} />
             case 'percentInput':
                 return <InputNumber min={0}
                     max={100}
@@ -89,7 +87,7 @@ const EditableCell = (params) => {
             return a;
         } else if (inputType === 'DatePicker') {
             return a && moment(a).format('YYYY-MM-DD');
-        }else {
+        } else {
             return record[dataIndex];
         }
     }
@@ -106,7 +104,6 @@ const EditableCell = (params) => {
         }
     }
 
-    const { getFieldDecorator } = form;
     const renderCell = () => {
         console.log(editing);
         return (
@@ -123,6 +120,7 @@ const EditableCell = (params) => {
                         // initialValue有false
                         initialValue: getInit(),
                     })(getInput())}
+                    {dataIndex === 'currencyName' ? HideFormItem('currencyCode', record.currencyCode) : null}
                 </Form.Item>
             ) : (
                     <div style={{ textAlign: 'center' }}>{getRecordData()}</div>
@@ -156,7 +154,7 @@ const EditableTable = (props) => {
     }
 
     function deleteRow(key, type) {
-       const newArray = dataSource.filter(item => {
+        const newArray = dataSource.filter(item => {
             return item[rowKey] !== key;
         });
         setNewData(newArray, tableType);

@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:58:16
- * @LastEditTime: 2020-09-17 17:57:44
+ * @LastEditTime: 2020-09-18 09:41:05
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/ManufactureAbility/index.js
  * @Description: 制造能力 Tab
  * @Connect: 1981824361@qq.com
@@ -129,12 +129,12 @@ const ManufactureAbility = ({ form }) => {
             "ellipsis": true,
             "inputType": 'Input',
         },
-        {
-            "title": "产品直通率",
-            "dataIndex": "offSeasonMonth",
-            "ellipsis": true,
-            "inputType": 'Input',
-        },
+        // {
+        //     "title": "产品直通率",
+        //     "dataIndex": "offSeasonMonth",
+        //     "ellipsis": true,
+        //     "inputType": 'Input',
+        // },
         {
             "title": "旺季月份",
             "dataIndex": "offSeasonMonth",
