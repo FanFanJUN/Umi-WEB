@@ -71,6 +71,7 @@ function AdvancedForm({
                 >
                   <FormItem style={{ width: '100%' }} label={item.title} {...formLayout}>
                     {
+                      getFieldDecorator(`${item.key}`),
                       getFieldDecorator(`${item.key}_name`)(
                         <Item
                           form={form}

@@ -119,6 +119,7 @@ class UploadFile extends React.Component {
                     item.thumbUrl = window._previewUrl  + item.response[0]
                 }
             })
+            console.log(fileList)
             this.setState({fileList, completeUploadFile});
         } else {
             this.handleRemove(file)

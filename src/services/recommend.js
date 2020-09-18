@@ -99,3 +99,64 @@ export const queryDataFillStatus = params => createServiceRequest({
   params,
   method: 'GET'
 })
+
+// 企业社会责任填报主数据获取
+export const queryCSRorEPEData = params => createServiceRequest({
+  path: '/api/csrProductionEnvironmentService/findCsrProductionEnvironmentByRecommendDemandId',
+  params,
+  method: 'POST',
+  hack: true
+})
+
+// 保存企业社会责任填报
+export const saveCSRorEPEData = params => createServiceRequest({
+  path: '/api/csrProductionEnvironmentService/saveCsrProductionEnvironment',
+  params,
+  method: 'POST'
+})
+
+// 保存意见
+export const saveOpinion = params => createServiceRequest({
+  path: '/api/fillingOpinionService/save',
+  params,
+  method: 'POST'
+})
+
+// 删除意见
+export const removeOpinion = params => createServiceRequest({
+  path: '/api/fillingOpinionService/delete',
+  params,
+  method: 'DELETE',
+  hack: true
+})
+
+// 提交意见
+export const submitOpinion = params => createServiceRequest({
+  path: '/api/fillingOpinionService/submitOpinion',
+  params,
+  method: 'POST',
+  hack: true
+})
+
+// 保存评审小组确定的评价体系
+export const queryTeamConfirm = params => createServiceRequest({
+  path: '/api/samSupplierEvlSystemService/saveRecommendDemandSystemTree',
+  params,
+  method: 'POST',
+  hack: true
+})
+
+
+// 保存分配评审人
+export const saveTeamConfrim = params => createServiceRequest({
+  path: '/api/samSupplierEvlSystemService/saveRuleJurors',
+  params,
+  method: 'POST'
+})
+
+// 查询已分配评审人的评价体系
+export const queryTeamConfirmHistoryList = params => createServiceRequest({
+  path: '/api/samSupplierEvlSystemService/findReviewEvlRuleVoByRecommendDemandId',
+  params,
+  method: 'GET'
+})

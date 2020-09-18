@@ -17,7 +17,8 @@ const { Item } = Form
 
 function SelfAssessment({
   form,
-  updateGlobalStatus
+  updateGlobalStatus = () => null,
+  type = 'create'
 }) {
   const [dataSource, setDataSource] = useState([]);
   const [loading, toggleLoading] = useState(false);
@@ -50,6 +51,9 @@ function SelfAssessment({
       title: '得分',
       dataIndex: 'score',
       render(text, record) {
+        if (type === 'detail') {
+          return text
+        }
         if (!!record.ruleId) {
           return <Item style={{ marginBottom: 0 }}>
             {
@@ -102,7 +106,7 @@ function SelfAssessment({
     })
     return kes
   }
-  const headerExtra = [
+  const headerExtra = type === 'detail' ? [] : [
     <Button key='header-save' type='primary' onClick={handleSave} loading={confirmLoading}>保存</Button>
   ];
   useEffect(() => {
@@ -129,9 +133,11 @@ function SelfAssessment({
         title='自我评价'
         extra={headerExtra}
       />
-      <Header
-        left={left}
-      />
+      {
+        type === 'detail' ? null : <Header
+          left={left}
+        />
+      }
       <Table
         loading={loading}
         dataSource={dataSource}

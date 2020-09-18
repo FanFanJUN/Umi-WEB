@@ -89,9 +89,12 @@ function RecommendData() {
           </div>
         </div>
       </Affix>
-      <Tabs renderTabBar={(props, DefaultTabBar) => {
-        return <Affix offsetTop={56}><DefaultTabBar {...props} style={{ background: '#fff', padding: '0 24px' }} /></Affix>
-      }} defaultActiveKey='selfAssessment'>
+      <Tabs
+        renderTabBar={(props, DefaultTabBar) => {
+          return <Affix offsetTop={56}><DefaultTabBar {...props} style={{ background: '#fff', padding: '0 24px' }} /></Affix>
+        }}
+        defaultActiveKey='dataFillIn'
+      >
         <TabPane key='explain' tab='填表说明'>
           <Explain />
         </TabPane>

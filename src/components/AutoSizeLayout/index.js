@@ -10,6 +10,7 @@ function AutoSizeLayout({ children, minHeight = 300 }) {
       const wh = document.body.clientHeight;
       const h = layoutRef.current?.offsetTop;
       const lh = wh - h
+      console.log(lh)
       setHeight(lh)
     }, 100)
   }

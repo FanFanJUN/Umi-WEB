@@ -14,6 +14,8 @@ import {
   BaseCondition, SellCondition, ResearchAbility, QualityAbility,
   ManagerAbility, ManufactureAbility, HdssControll, DWC, Other, QuotationAndGPCA,
 } from './Tabs';
+import CSRQuestionnaire from './CSRQuestionnaire';
+import EPEQuestionnaire from './EPEQuestionnaire'
 import { router } from 'dva';
 
 const { TabPane } = Tabs;
@@ -26,7 +28,7 @@ function DataFillIn({
   // 所有表单填报状态
   status = {}
 }) {
-  const [activityKey, setActivityKey] = useState('baseCondition');
+  const [activityKey, setActivityKey] = useState('EPE');
   const baseConditionTab = (
     <div className={styles.fec}>
       <div className={styles.tabText}>基本情况</div>
@@ -119,7 +121,7 @@ function DataFillIn({
   )
 
   function handleChange(activeKey) {
-    // setActivityKey(() => (activeKey));
+    setActivityKey(activeKey);
   }
 
   return (
@@ -127,7 +129,7 @@ function DataFillIn({
       <Tooltip title="返回顶部保存信息">
         <BackTop visibilityHeight={400} />
       </Tooltip>
-      <Tabs tabPosition='left' onChange={(activeKey) => handleChange(activeKey)}>
+      <Tabs tabPosition='left' activeKey={activityKey} onChange={(activeKey) => handleChange(activeKey)}>
         {/* 基本情况 */}
         <TabPane key='baseCondition' tab={baseConditionTab}>
           <BaseCondition updateGlobalStatus={updateGlobalStatus} baseParam={{ id, type }} />
@@ -170,12 +172,12 @@ function DataFillIn({
 
         {/* 企业社会责任 */}
         <TabPane key='CSR' tab={CSRTab}>
-
+          <CSRQuestionnaire updateGlobalStatus={updateGlobalStatus} />
         </TabPane>
 
         {/* 企业生产环境情况 */}
         <TabPane key='EPE' tab={EPETab}>
-
+          <EPEQuestionnaire updateGlobalStatus={updateGlobalStatus} />
         </TabPane>
 
         {/* 其他附加资料 */}
