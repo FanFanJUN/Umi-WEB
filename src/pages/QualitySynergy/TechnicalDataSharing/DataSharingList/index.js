@@ -281,11 +281,16 @@ export default function() {
 
   const handleModalCancel = () => {
     setModalData((value) => ({ ...value, visible: false }));
+    tableRef.current.remoteDataRefresh();
   };
 
   const handleSeesSupplier = (shareDemanNumber) => {
     setModalData(v => ({ ...v, visible: true, shareDemanNumber }));
   };
+
+  const tacticCancel = () => {
+    setAssignData((value) => ({ ...value, visible: false }))
+  }
 
   return (
     <Fragment>
@@ -331,9 +336,8 @@ export default function() {
       <TacticAssign
         type={modalData.type}
         selectedRowKeys={data.selectedRowKeys}
-        tableRef={tableRef}
         visible={assignData.visible}
-        onCancel={() => setAssignData((value) => ({ ...value, visible: false }))}
+        onCancel={tacticCancel}
       />
     </Fragment>
   );

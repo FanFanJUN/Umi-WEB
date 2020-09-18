@@ -31,7 +31,6 @@ const TacticAssign = (props) => {
       }).then(res => {
         if (res.success) {
           props.form.resetFields();
-          props.tableRef.current.remoteDataRefresh()
           props.onCancel()
         } else {
           message.error(res.message)

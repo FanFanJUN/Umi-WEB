@@ -212,6 +212,7 @@ class UploadFile extends React.Component {
   };
 
   getAction = (item) => {
+    console.log(item, 'item')
     if (item.status === 'uploading') {
       return null;
     }
