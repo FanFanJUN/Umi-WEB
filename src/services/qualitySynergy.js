@@ -312,7 +312,7 @@ export async function findByPageOfSupplier(params) {
 }
 // 填报环保资料物料-分配供应商-保存
 export async function addDemandSupplier(params) {
-    const url = `${recommendUrl}/api/epDemandSupplierService/addDemandSupplier`;
+    const url = `${recommendUrl}/api/epDemandSupplierService/saveDemandSupplierList`;
     return request({
         url,
         method: 'POST',
