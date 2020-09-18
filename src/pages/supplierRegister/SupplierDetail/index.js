@@ -43,7 +43,7 @@ function CreateStrategy() {
   let typeId = query.frameElementId;
   async function initConfigurationTable() {
     triggerLoading(true);
-    let params = {catgroyid:typeId,property:1}
+    let params = {catgroyid:typeId,property:3}
     const { data, success, message: msg } = await SaveSupplierconfigureService(params);
       if (success) {
         let datalist  = data.configBodyVos;
@@ -92,7 +92,7 @@ function CreateStrategy() {
           verifi: item.operationCode
         })
       }
-      if (item.smMsgTypeCode === '3') {
+      if (item.smMsgTypeCode === '5') {
         handbusiness.push({
           title: item.fieldName,
           key: item.fieldCode,
@@ -138,6 +138,7 @@ function CreateStrategy() {
                       isView={true}
                       editformData={editData}
                       baseinfo={baseinfo}
+                      companyData={wholeData}
                       wrappedComponentRef={BaseinfoRef}
                     />
                   </div>
@@ -263,6 +264,7 @@ function CreateStrategy() {
                   <div className={styles.title}>供应商专用资质</div>
                   <div>
                     <QualificationProfessional
+                      editData={editData}
                       wrappedComponentRef={QualispecialRef}
                       isView={true}
                     />

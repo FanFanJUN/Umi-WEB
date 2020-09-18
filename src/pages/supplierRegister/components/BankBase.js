@@ -34,6 +34,7 @@ const BankbaseRef = forwardRef(({
     loading }, ref,) => {
 
     useImperativeHandle(ref, () => ({
+        handleModalVisible,
         getFormValue,
         form
     }));
@@ -41,6 +42,7 @@ const BankbaseRef = forwardRef(({
     const [bankcodeTab, setBankcode] = useState([]);
     const [initData, setInitData] = useState([]);
     const [countryId, setcountryId] = useState([]);
+    const [visible, setvisible] = useState(false);
     useEffect(() => {
         const {
             id,
@@ -86,11 +88,12 @@ const BankbaseRef = forwardRef(({
                 delete item.provinceName;
                 delete item.regionId;
                 delete item.regionName;
-                delete item.paymentCode;
-                delete item.paymentName;
+                // delete item.paymentCode;
+                // delete item.paymentName;
                 return item;
             })
         };
+        console.log(initData)
         initData = initData.length > 0 ? initData[0] : null;
         setInitData(initData);
         setFieldsValue(initData);
@@ -103,6 +106,9 @@ const BankbaseRef = forwardRef(({
     //         setBankcode(data)
     //     }
     // }
+    function handleModalVisible(flag) {
+        setvisible(!!flag)
+      }
     function handleSubmit() {
         let addbanklist = form.validateFieldsAndScroll;
         return addbanklist;
@@ -166,7 +172,7 @@ const BankbaseRef = forwardRef(({
                                     }]
                                 })(
                                     <SelectWithService
-                                        disabled={true}
+                                        //disabled={true}
                                         labelInValue={true}
                                         placeholder={"请选择国家"}
                                         config={BankCountryListConfig}
@@ -353,8 +359,8 @@ const BankbaseRef = forwardRef(({
                     >
                         {
                             isView ? <span></span> :
-                                getFieldDecorator("paymentCode",
-                                    getFieldDecorator('paymentName'), {
+                                    getFieldDecorator("paymentName",
+                                    getFieldDecorator('paymentCode'), {
                                     initialValue: "",
                                     rules: [{ required: true, message: '请选择银行控制代码!' }]
                                 })(

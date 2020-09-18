@@ -71,7 +71,7 @@ const SupplierAgentRef = forwardRef(({
           verifi: item.operationCode
         })
       }
-      if (item.smMsgTypeCode === '3') {
+      if (item.smMsgTypeCode === '5') {
         handbusiness.push({
           title: item.fieldName,
           key: item.fieldCode,
@@ -107,6 +107,7 @@ const SupplierAgentRef = forwardRef(({
                       editformData={editData}
                       baseinfo={baseinfo}
                       wrappedComponentRef={BaseinfoRef}
+                      isView={true}
                     />
                   </div>
                 </div>
@@ -230,6 +231,7 @@ const SupplierAgentRef = forwardRef(({
                   <div className={styles.title}>供应商专用资质</div>
                   <div>
                     <QualificationProfessional
+                      editData={editData}
                       wrappedComponentRef={QualispecialRef}
                       isView={true}
                     />

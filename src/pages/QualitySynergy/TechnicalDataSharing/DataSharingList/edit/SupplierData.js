@@ -10,10 +10,11 @@ const SupplierData = (props) => {
     { title: '文件版本', dataIndex: 'fileVersion', width: 160 },
     { title: '供应商代码', dataIndex: 'supplierCode', ellipsis: true, width: 150 },
     { title: '供应商名称', dataIndex: 'supplierName', ellipsis: true, width: 160 },
+    { title: '状态', dataIndex: 'publish', width: 80, render: v => v ? '已发布' : '草稿' },
     { title: '分配日期', dataIndex: 'allotDate', width: 160 },
     { title: '分配人', dataIndex: 'allotPeopleName', ellipsis: true, width: 150 },
     { title: '资料下载截止日期', dataIndex: 'downloadAbortDate', ellipsis: true, width: 160 },
-    { title: '下载状态', dataIndex: 'fileDownloadState', width: 160 },
+    { title: '下载状态', dataIndex: 'fileDownloadState', width: 160, render: (v) => v ? "已下载" : '未下载' },
     { title: '下载日期', dataIndex: 'fileDownloadDate', ellipsis: true, width: 150 },
   ].map(item => ({ ...item, align: 'center' }));
 

@@ -21,7 +21,7 @@ export default function () {
             toggleLoading(true);
             const res = await findVoById({id: query.id});
             if(res.success) {
-                res.data && setOriginData(res.data[0])
+                res.data && setOriginData(res.data)
             } else {
                 message.error(res.message);
             }
@@ -34,7 +34,7 @@ export default function () {
             <Spin spinning={loading}>
                 <Affix>
                     <div className={classnames(styles.fbc, styles.affixHeader)}>
-                        <span className={styles.headTitle}>环保资料物料-明细</span>
+                        <span className={styles.headTitle}>{`环保资料物料明细-${originData.demandNumber}`}</span>
                         <div>
                             <Button className={styles.btn} onClick={handleBack} >返回</Button>
                         </div>
@@ -60,7 +60,7 @@ export default function () {
                     <div className={styles.bgw}>
                         <div className={styles.title}>分配供应商明细</div>
                         <div className={styles.content}>
-                            <SuppliersTable />
+                            <SuppliersTable originData={originData}/>
                         </div>
                     </div>
                 </div>

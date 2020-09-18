@@ -221,12 +221,22 @@ const CommonconfigRef = forwardRef(({
       });
     }
   }
+  function deleteSelect(record) {
+    console.log(record)
+    if (record) {
+     // setcompanycode(record.code)
+      form.setFieldsValue({
+        'supplierVo.workName': record.name,
+        //'supplierVo.name': record.name
+      });
+    }
+  }
   return (
     <Row type="flex">
       {
         formItems.map((item, index) => {
           //const Item = Combos[item.type] || Input;
-          if (!!item.type && item.verifi === '0' || !!item.type && item.verifi === '1') {
+          if (!!item.type && item.verifi === '0' || !!item.type && item.verifi === '1' || !!item.type && item.verifi === '2') {
             if (item.key !== 'registerProvinceCode' || item.key !== 'registerProvinceId') {
               return (
                 <>
@@ -239,7 +249,7 @@ const CommonconfigRef = forwardRef(({
                       style={{ display: item.verifi === '3' ? 'none' : 'block' }}
                     >
                       <FormItem style={{ width: '100%', marginBottom: 10 }}
-                        label={item.title} {...formItemLayout} >
+                        label="供应商分类" {...formItemLayout} >
                         {
                           isView ?
                             <span>{editData && editData.supplierVo && editData.supplierVo.supplierCategory ? editData.supplierVo.supplierCategory.code + ' ' + editData.supplierVo.supplierCategory.name : ''}</span> :
@@ -249,7 +259,8 @@ const CommonconfigRef = forwardRef(({
                             rules: [{ required: item.verifi === '0', message: '请选择供应商分类', whitespace: true }],
                           })(
                             <ComboTree
-                              disabled={approve === true || change === true}
+                              
+                              disabled={item.verifi === '2'}
                               {...purchaseCompanyPropsreg}
                               form={form} showSearch={false}
                               name='supplierVo.supplierCategoryName'
@@ -266,7 +277,7 @@ const CommonconfigRef = forwardRef(({
                     style={{ display: item.verifi === '3' ? 'none' : 'block' }}
                   >
                     <FormItem style={{ width: '100%', marginBottom: 10 }}
-                      label={item.title} {...formItemLayout} >
+                      label={'供应商名称'} {...formItemLayout} >
                       {isView ?
                         <span>{editData && editData.supplierVo && editData.supplierVo.name ? editData && editData.supplierVo && editData.supplierVo.name : ''}</span> :
                         getFieldDecorator('supplierVo.name', {
@@ -275,7 +286,7 @@ const CommonconfigRef = forwardRef(({
                           rules: [{ required: item.verifi === '0', message: "请输入供应商名称！", }]
                         })(
                           <Input
-                            disabled={change === true}
+                            disabled={item.verifi === '2'}
                             onBlur={handleCheckName}
                             maxLength={40}
                             placeholder={'请输入供应商名称'} />
@@ -285,7 +296,7 @@ const CommonconfigRef = forwardRef(({
                   {item.key === 'abbreviation' ? <Col span={8}>
                     <FormItem
                       {...formItemLayout}
-                      label={item.title}
+                      label={'简称'}
                       style={{ width: '100%', marginBottom: 10 }}
                     >
                       {isView ? <span>{editData && editData.extendVo ? editData.extendVo.searchCondition : ''}</span> :
@@ -297,6 +308,7 @@ const CommonconfigRef = forwardRef(({
                           ]
                         })(
                           <Input
+                            disabled={item.verifi === '2'}
                             maxLength={10}
                             placeholder={'请输入简称'} />
                         )}
@@ -305,7 +317,7 @@ const CommonconfigRef = forwardRef(({
                   {item.key === 'creditCode' ? <Col span={8}>
                     <FormItem
                       {...formItemLayout}
-                      label={item.title}
+                      label={'统一社会信用代码'}
                       style={{ width: '100%', marginBottom: 10 }}
                     >
                       {isView ? <span>{editData && editData.supplierVo && editData.supplierVo.creditCode ? editData && editData.supplierVo && editData.supplierVo.creditCode : ''}</span> :
@@ -316,6 +328,7 @@ const CommonconfigRef = forwardRef(({
                           { pattern: "^[A-Z0-9]{18}$", message: "只能是18位大写英文和数字" }]
                         })(
                           <Input
+                            disabled={item.verifi === '2'}
                             onBlur={handleCheckCreditCode}
                             maxLength={18}
                             placeholder={'请输入统一社会信用代码'} />
@@ -336,6 +349,7 @@ const CommonconfigRef = forwardRef(({
                               rules: [{ required: item.verifi === '0', message: '请输入法人姓名', whitespace: true }],
                             })(
                               <Input
+                                disabled={item.verifi === '2'}
                                 maxLength={40}
                                 placeholder={'请输入法人姓名'} />,
                             )
@@ -359,6 +373,7 @@ const CommonconfigRef = forwardRef(({
                             rules: [{ required: item.verifi === '0', message: '请选择企业性质', whitespace: true }],
                           })(
                             <ComboList
+                              disabled={item.verifi === '2'}
                               {...enterprisePropertyConfig}
                               form={form} showSearch={false}
                               name='supplierVo.enterprisePropertyName'
@@ -384,6 +399,7 @@ const CommonconfigRef = forwardRef(({
                             rules: [{ required: item.verifi === '0', message: '请选择纳税人类别', whitespace: true }],
                           })(
                             <ComboList
+                            disabled={item.verifi === '2'}
                               {...listAllTaxpayersCategory}
                               form={form} showSearch={false}
                               name='supplierVo.taxpayersCategoryName'
@@ -408,6 +424,7 @@ const CommonconfigRef = forwardRef(({
                               rules: [{ required: item.verifi === '0', message: '请填写所属集团', whitespace: true }],
                             })(
                               <Input
+                              disabled={item.verifi === '2'}
                                 maxLength={30}
                                 placeholder={'若无，则填写本单位名称'}
                               />,
@@ -431,6 +448,7 @@ const CommonconfigRef = forwardRef(({
                             rules: [{ required: item.verifi === '0', message: '请选择业务标的物', whitespace: true }],
                           })(
                             <ComboList
+                            disabled={item.verifi === '2'}
                               {...industryConfig}
                               form={form} showSearch={false}
                               name='supplierVo.belongIndustryName'
@@ -463,6 +481,7 @@ const CommonconfigRef = forwardRef(({
                               }, { validator: checkPrice },],
                             })(
                               <PriceInput
+                              disabled={item.verifi}
                                 max={10000000000}
                                 initValue={true}
                                 placeholder={'请输入注册资金'}
@@ -491,6 +510,7 @@ const CommonconfigRef = forwardRef(({
                               ],
                             })(
                               <Input
+                              disabled={item.verifi === '2'}
                                 maxLength={6}
                                 placeholder={'请输入邮编'} />,
                             )
@@ -515,6 +535,7 @@ const CommonconfigRef = forwardRef(({
                               ],
                             })(
                               <Input
+                              disabled={item.verifi === '2'}
                                 maxLength={40}
                                 placeholder={'请输入传真'} />,
                             )
@@ -538,6 +559,7 @@ const CommonconfigRef = forwardRef(({
                               ],
                             })(
                               <Input
+                              disabled={item.verifi === '2'}
                                 onChange={onlyNumber}
                                 // maxLength={11}
                                 placeholder={'请输入联系电话'} />,
@@ -586,6 +608,7 @@ const CommonconfigRef = forwardRef(({
                               rules: [{ required: item.verifi === '0' }, { pattern: "^[A-Z0-9]*$", message: "只能是大写英文和数字" }]
                             })(
                               <Input
+                              disabled={item.verifi === '2'}
                                 onChange={toUpperCase}
                                 maxLength={30} />
                             )
@@ -608,6 +631,7 @@ const CommonconfigRef = forwardRef(({
                               rules: [{ required: item.verifi === '0', message: '请选择海关企业信用状况', whitespace: true }],
                             })(
                               <ComboList
+                              disabled={item.verifi === '2'}
                                 {...customsEnterpriseAll}
                                 form={form} showSearch={false}
                                 name='supplierVo.customsEnterprisesEreditStatusName'
@@ -632,7 +656,9 @@ const CommonconfigRef = forwardRef(({
                                 { required: item.verifi === '0' },
                                 { pattern: "^([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$", message: "请填写正确网址" }]
                             })(
-                              <Input />,
+                              <Input 
+                                disabled={item.verifi === '2'}
+                              />,
                             )
                         }
                       </FormItem>
@@ -652,6 +678,7 @@ const CommonconfigRef = forwardRef(({
                               rules: [{ required: item.verifi === '0', message: '请选择泛虹公司', whitespace: true }],
                             })(
                               <SearchTable
+                              disabled={item.verifi === '2'}
                                 onChange={RainbowChange}
                                 config={oddcorporationSupplierConfig}
                                 placeholder="请选择公司"
@@ -683,6 +710,7 @@ const CommonconfigRef = forwardRef(({
                              rules: [{required: true, message: '请选择泛虹公司', whitespace: true}],
                            })(
                              <SearchTable
+                              disabled={item.verifi === '2'}
                                 onChange={RainbowChange}
                                config={oddcorporationSupplierConfig}
                              />
@@ -705,10 +733,34 @@ const CommonconfigRef = forwardRef(({
                               rules: [{ required: item.verifi === '0', message: '请选择泛虹工厂', whitespace: true }],
                             })(
                               <SearchTable
+                              disabled={item.verifi === '2'}
                                 onChange={FactoryChange}
                                 config={oddcompanyOrgConfigByCode}
-                                selectChange={this.deleteSelect}
+                                selectChange={deleteSelect}
                                 params={{ corporationCode: companycode }}
+                              />
+                            )
+                        }
+                      </FormItem>
+                    </Col> : null
+                  }
+                  {
+                    item.key === 'workName' ? <Col span={8} style={{display:'none'}} >
+                      <FormItem
+                        {...formItemLayout}
+                        label={'泛虹工厂'}
+                      >
+                        {
+                          isView ?
+                            <span>{editData && editData.supplierVo ? editData.supplierVo.workName : ''}</span> :
+                            getFieldDecorator('supplierVo.workName', {
+                              initialValue: editData && editData.supplierVo ? editData.supplierVo.workName : '',
+                              rules: [{ required: item.verifi === '0', message: '请选择泛虹工厂', whitespace: true }],
+                            })(
+                              <SearchTable
+                              disabled={item.verifi === '2'}
+                                onChange={FactoryChange}
+                                config={oddcompanyOrgConfigByCode}
                               />
                             )
                         }
@@ -723,8 +775,8 @@ const CommonconfigRef = forwardRef(({
                       >
                         {
                           isView ? <span>{editData && editData.extendVo ? editData.extendVo.countryName : ''}</span> :
-                           getFieldDecorator("countryId"),
-                            getFieldDecorator("countryName", {
+                           getFieldDecorator("extendVo.countryId"),
+                            getFieldDecorator("extendVo.countryName", {
                               // initialValue: editData ? {
                               //   label: editData.extendVo.countryName
                               //   , key: editData.extendVo.countryId
@@ -735,10 +787,11 @@ const CommonconfigRef = forwardRef(({
                               }]
                             })(
                               <ComboList
+                              disabled={item.verifi === '2'}
                                 {...countryListConfig}
                                 form={form} showSearch={false}
-                                name="countryName"
-                                field={["countryId"]}
+                                name="extendVo.countryName"
+                                field={["extendVo.countryId"]}
                               />,
                             )}
                       </FormItem>
@@ -761,6 +814,7 @@ const CommonconfigRef = forwardRef(({
                               }]
                             })(
                               <Input
+                              disabled={item.verifi === '2'}
                                 maxLength={200}
                                 placeholder={"请输入供应商英文名称"} />
                             )
@@ -780,6 +834,7 @@ const CommonconfigRef = forwardRef(({
                             rules: [{ required: item.verifi === '0', message: "请输入地址", whitespace: !isView }]
                           })(
                             <Input
+                            disabled={item.verifi === '2'}
                               maxLength={35}
                               placeholder={"请输入地址"} />
                           )
@@ -800,6 +855,7 @@ const CommonconfigRef = forwardRef(({
                               rules: [{ required: item.verifi === '0', message: "请输入英文地址", whitespace: true }]
                             })(
                               <Input
+                              disabled={item.verifi === '2'}
                                 maxLength={35}
                                 placeholder={"请输入英文地址"} />
                             )
@@ -821,6 +877,7 @@ const CommonconfigRef = forwardRef(({
                             rules: [{ required: item.verifi === '0', message: "请输入邓白氏码", whitespace: true }]
                           })(
                             <Input
+                            disabled={item.verifi === '2'}
                               maxLength={9}
                               onChange={creditCodeChange}
                               placeholder={'请输入邓白氏码'} />
@@ -894,6 +951,7 @@ const CommonconfigRef = forwardRef(({
                               rules: [{ required: item.verifi === '0', message: "请选择公司", whitespace: true }]
                             })(
                               <SearchTable
+                              disabled={item.verifi === '2'}
                                 onChange={(value, record) => cooperationChange(value, record)}
                                 config={oddcorporationSupplierConfig}
                                 placeholder="请选择公司"
@@ -917,6 +975,7 @@ const CommonconfigRef = forwardRef(({
                               rules: [{ required: item.verifi === '0', message: "请选择公司", whitespace: true }]
                             })(
                               <SearchTable
+                              disabled={item.verifi === '2'}
                                 onChange={cooperationChange}
                                 config={oddcorporationSupplierConfig}
                                 placeholder="请选择公司"
@@ -959,6 +1018,7 @@ const CommonconfigRef = forwardRef(({
                             }, { validator: checkAddress },],
                           })(
                             <CascadeAddressSelect
+                            disabled={item.verifi}
                               onChange={registerChange}
                               provinceConfig={chineseProvinceTableConfig}
                               cityConfig={cityListConfig}
@@ -1003,8 +1063,9 @@ const CommonconfigRef = forwardRef(({
                             }, { validator: checkAddress },],
                           })(
                             <CascadeAddressSelect
+                              disabled={item.verifi}
                               provinceConfig={chineseProvinceTableConfig}
-                              cityConfig={cityListConfig}
+                              cityConfig={cityListConfig} 
                               areaConfig={areaListConfig}
                               isView={true}
                             />,

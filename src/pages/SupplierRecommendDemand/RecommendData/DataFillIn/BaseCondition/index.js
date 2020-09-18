@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 15:52:52
- * @LastEditTime: 2020-09-14 18:52:51
+ * @LastEditTime: 2020-09-18 15:41:33
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/BaseCondition/index.js
  * @Description: 基本情况 Tab
  * @Connect: 1981824361@qq.com
@@ -18,16 +18,17 @@ import { router } from 'dva';
 import { findrBaseInfoById, saveBaseInfo } from '../../../../../services/dataFillInApi';
 import { filterEmptyFileds } from '../CommonUtil/utils';
 
-const BaseCondition = ({ baseParam: { id, type }, form }) => {
+const BaseCondition = ({ form, updateGlobalStatus }) => {
 
     const [data, setData] = useState({});
     const [loading, setLoading] = useState(false);
-
-    // const getFormRef = useRef();
+    const [proData, setProData] = useState([]);
+    const [otherData, setOtherData] = useState([]);
+    const { query: { id, type = 'add' } } = router.useLocation();
 
     useEffect(() => {
         const fetchData = async () => {
-            const res = await findrBaseInfoById({ supplierRecommendDemandId: id });
+            const res = await findrBaseInfoById({ supplierRecommendDemandId: '676800B6-F19D-11EA-9F88-0242C0A8442E' });
             if (res.success) {
                 res.data && setData(res.data);
             } else {
@@ -39,7 +40,6 @@ const BaseCondition = ({ baseParam: { id, type }, form }) => {
     }, []);
 
     function handleSave() {
-        // const formRef = getFormRef.current.form;
         form.validateFieldsAndScroll((error, value) => {
             console.log(value);
             if (error) return;
@@ -48,16 +48,30 @@ const BaseCondition = ({ baseParam: { id, type }, form }) => {
                 supplierCertificates: data.supplierCertificates,
                 supplierContacts: data.supplierContacts,
                 managementSystems: data.managementSystems,
+                recommendDemandId: id || '676800B6-F19D-11EA-9F88-0242C0A8442E',
+                actualCapacityFactor: (value.designCapability / value.actualCapacity).toFixed(2), // 现有产能利用率 设计产能/实际产能
+                productCertifications: proData || [],
+                otherCertifications: otherData || [],
             };
             saveBaseInfo(filterEmptyFileds(saveParams)).then((res) => {
                 if (res && res.success) {
-                    message.success('保存基本情况成功')
+                    message.success('保存基本情况成功');
+                    updateGlobalStatus();
                 } else {
                     message.error(res.message);
                 }
             })
         })
     }
+
+    function setTableData(newData , type) {
+        if(type === 'pro') {
+            setProData(newData);
+        } else {
+            setOtherData(newData);
+        }
+    }
+
     return (
         <div>
             <Spin spinning={loading}>
@@ -99,7 +113,7 @@ const BaseCondition = ({ baseParam: { id, type }, form }) => {
                         <div className={styles.bgw}>
                             <div className={styles.title}>管理体系及产品认证</div>
                             <div className={styles.content}>
-                                <MproCertification data={data} type={type} />
+                                <MproCertification data={data} type={type} setTableData={setTableData}/>
                             </div>
                         </div>
                     </div>

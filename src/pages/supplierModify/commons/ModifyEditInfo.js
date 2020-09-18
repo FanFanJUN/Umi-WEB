@@ -68,7 +68,7 @@ const SupplierEditRef = forwardRef(({
           verifi: item.operationCode
         })
       }
-      if (item.smMsgTypeCode === '3') {
+      if (item.smMsgTypeCode === '5') {
         handbusiness.push({
           title: item.fieldName,
           key: item.fieldCode,
@@ -152,6 +152,8 @@ const SupplierEditRef = forwardRef(({
     let enclosurelist = [],basedata,accountData,baseexten,automaticdata,automaticincome,
     automThreeYear,rangeValinfo;
     if (baseVal && baseVal.supplierVo) {
+      baseVal.supplierVo.id = editData.supplierVo.id;
+      baseVal.extendVo.id = editData.extendVo.id;
       basedata = baseVal.supplierVo
     }
     if (baseVal && baseVal.extendVo) {
@@ -342,6 +344,7 @@ const SupplierEditRef = forwardRef(({
                   <div className={styles.title}>供应商专用资质</div>
                   <div>
                     <QualificationProfessional
+                      editData={editData}
                       wrappedComponentRef={QualispecialRef}
                       isView={false}
                     />

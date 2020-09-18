@@ -1,11 +1,14 @@
 import React from 'react';
-import {Upload, Icon, Button, List, Avatar, Skeleton, Modal, message} from 'antd';
-import { baseUrl,host } from '../../utils/commonUrl';
-import { BASE_URL } from '../../utils/constants';
-import request from '../../utils/request';
+import {Upload, Icon, Button, List, Avatar, Skeleton, Modal,message, Tooltip} from 'antd';
 import PropTypes from 'prop-types';
-// import './upload.css'
+import request from '../../utils/request';
+import { baseUrl} from '../../utils/commonUrl';
+import './upload.css'
 import * as fileIcon from "./fileIcon";
+import { BASE_URL,ATTACMENT_HOST } from '../../utils/constants';
+import { onLineTarget } from '../../../config/proxy.config';
+
+const host = process.env.NODE_ENV === 'production' ? '' : onLineTarget;
 
 class UploadFile extends React.Component {
 
@@ -52,7 +55,8 @@ class UploadFile extends React.Component {
         //图片格式显示系统的预览
         if (fileName.toLocaleLowerCase().includes('png') || fileName.toLocaleLowerCase().includes('jpg') || fileName.toLocaleLowerCase().includes('gif')
             || fileName.toLocaleLowerCase().includes('jpeg')) {
-            return window._previewUrl + id;
+            //return window._previewUrl + id;
+            return host + baseUrl + '/supplierRegister/preview?docId=' + id;
         }
         return fileIcon.defaultIcon
     }
@@ -62,7 +66,7 @@ class UploadFile extends React.Component {
         if (this.entityId) {
             let completeUploadFile = [];
             let fileList = [];
-            request.get(baseUrl + '/supplierRegister/getEntityDocumentInfos?entityId=' + encodeURIComponent(this.entityId))
+            request.get(`${baseUrl}/supplierRegister/getEntityDocumentInfos?entityId=` + encodeURIComponent(this.entityId))
                 .then(res => {
                     if (res.success && res.data && res.data.length > 0) {
                         res.data.map(item => {
@@ -72,7 +76,7 @@ class UploadFile extends React.Component {
                                 status: 'done', // 状态有：uploading done error removed
                                 response: [item.id], // 服务端响应内容
                                 url: host + baseUrl + '/supplierRegister/download?docId=' + encodeURIComponent(item.id), // 下载链接额外的 HTML 属性
-                                thumbUrl: window._previewUrl + encodeURIComponent(item.id),
+                                thumbUrl: `${ATTACMENT_HOST}/preview?docId=`+ encodeURIComponent(item.id),
                                 uploadedTime: item.uploadedTime,
                                 uploadUserName: item.uploadUserName
                             });
@@ -116,7 +120,7 @@ class UploadFile extends React.Component {
             fileList.map(item => {
                 if (item.status === 'done') {
                     item.url = host + baseUrl + '/supplierRegister/download?docId=' + item.response[0]
-                    item.thumbUrl = window._previewUrl  + item.response[0]
+                    item.thumbUrl = `${ATTACMENT_HOST}/preview?docId=` + item.response[0]
                 }
             })
             console.log(fileList)
@@ -289,7 +293,7 @@ class UploadFile extends React.Component {
                         beforeUpload={this.beforeUpload}
                         showUploadList={false}
                         fileList={this.state.fileList}
-                        action= {BASE_URL + `${baseUrl}/supplierRegister/uploadNoAuth`}
+                        action= {`/srm-baf-web/supplierRegister/uploadNoAuth`}
                         headers={this.getHeaders()}
                         onChange={this.handleChange}
                         style={{width: '100%'}}

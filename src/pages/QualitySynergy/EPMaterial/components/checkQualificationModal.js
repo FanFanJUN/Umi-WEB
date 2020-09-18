@@ -1,32 +1,37 @@
 import React, { Component, Fragment } from 'react';
 import { ExtTable, ExtModal, ScrollBar } from 'suid';
+import { Upload } from '@/components';
+import { recommendUrl } from '@/utils/commonUrl';
 
 class EnvironmentProDemandList extends Component {
     constructor(props) {
         super(props)
-        this.state={
-            dataList: [{id: 1}],
+        this.state = {
+            dataList: [{ id: 1 }],
             loading: false
         }
         this.columns = [
             { title: '行号', dataIndex: 'name', ellipsis: true, align: 'center' },
-            { title: '供应商代码', dataIndex: 'name1', ellipsis: true, align: 'center' },
-            { title: '供应商名称', dataIndex: 'name2', ellipsis: true, align: 'center', width: 120},
-            { title: '供应商资质文件', dataIndex: 'name3', ellipsis: true, align: 'center'},
+            { title: '供应商代码', dataIndex: 'supplierCode', ellipsis: true, align: 'center' },
+            { title: '供应商名称', dataIndex: 'supplierName', ellipsis: true, align: 'center', width: 120 },
+            {
+                title: '供应商资质文件', dataIndex: 'aptitudeFileId', ellipsis: true, align: 'center', render: (text) => {
+                    return <Upload entityId={text} type="show" />
+                }
+            },
         ]
     }
     componentDidMount() {
         this.props.onRef && this.props.onRef(this);
     }
     showModal = () => {
-        this.setState({visible: true})
+        this.setState({ visible: true })
     }
     hiddenModal = () => {
-        this.setState({visible: false})
+        this.setState({ visible: false })
     }
     render() {
         const { dataList, loading, visible } = this.state;
-        // const { visible, hidden } = this.props;
         return <Fragment>
             <ExtModal
                 destroyOnClose
@@ -42,8 +47,12 @@ class EnvironmentProDemandList extends Component {
                     <ExtTable
                         loading={loading}
                         showSearch={true}
-                        dataSource={dataList}
+                        searchPlaceHolder="请输入供应商代码或名称查询"
                         columns={this.columns}
+                        store={{
+                            url: `${recommendUrl}/api/epSupplierAptitudeService/findByPage`,
+                            type: 'POST',
+                        }}
                     />
                 </ScrollBar>
             </ExtModal>

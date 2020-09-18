@@ -1,6 +1,6 @@
 import React, { useEffect, useImperativeHandle } from 'react';
 import styles from './BaseInfo.less';
-import { Col, Form, Modal, Row, Input } from 'antd';
+import { Col, Form, Modal, Row, Input, message } from 'antd';
 import moment from 'moment/moment';
 import { ComboList, ExtModal } from 'suid';
 import { BUConfig, MaterialConfig, MaterialGroupConfig, FindTacticByBuCodeAndGroupCode } from '../../../commonProps';
@@ -20,20 +20,30 @@ const MaterialInfo = React.forwardRef((props, ref) => {
 
   const { type, data, form, buCode, isView } = props;
 
-  const { getFieldDecorator, getFieldValue } = props.form;
+  const { getFieldDecorator, getFieldValue, setFieldsValue } = props.form;
 
   useImperativeHandle(ref, () => ({
     getMaterialInfoData: props.form.validateFieldsAndScroll
   }))
 
   useEffect(() => {
-    console.log(buCode, 'bucode', getFieldValue('materialGroupCode'))
+    // console.log(buCode, 'bucode', getFieldValue('materialGroupCode'), getFieldValue('materialGroupName'))
     if (buCode && getFieldValue('materialGroupCode')) {
       FindTacticByBuCodeAndGroupCode({
         materialGroupCode: getFieldValue('materialGroupCode'),
         buCode: buCode
       }).then(res => {
-        console.log(res, 'res触发')
+        if (res.success) {
+          if (res.data) {
+            setFieldsValue({
+              strategicPurchaseId: res.data.id,
+              strategicPurchaseName: res.data.name,
+              strategicPurchaseCode: res.data.code
+            })
+          }
+        } else {
+          message.error(res.message)
+        }
       })
     }
   }, [getFieldValue('materialGroupCode'), buCode])
@@ -65,6 +75,7 @@ const MaterialInfo = React.forwardRef((props, ref) => {
                  isView ? <span>{data.materialCode}</span> :  getFieldDecorator('materialCode', {
                    initialValue: type === 'add' ? '' : data.materialCode,
                  })(<ComboList
+                   allowClear={true}
                    style={{ width: '100%' }}
                    form={form}
                    name={'materialCode'}
@@ -86,7 +97,7 @@ const MaterialInfo = React.forwardRef((props, ref) => {
                       },
                     ],
                   })(
-                    <Input disabled={true} placeholder='请输入物料描述' style={{ width: '100%' }}/>,
+                    <Input disabled={getFieldValue('materialCode') ? true : false} placeholder='请输入物料描述' style={{ width: '100%' }}/>,
                   )
                 }
               </FormItem>
@@ -108,6 +119,7 @@ const MaterialInfo = React.forwardRef((props, ref) => {
                       },
                     ],
                   })(<ComboList
+                    allowClear={true}
                     disabled={getFieldValue('materialCode') ? true : false}
                     style={{ width: '100%' }}
                     form={form}
@@ -138,7 +150,7 @@ const MaterialInfo = React.forwardRef((props, ref) => {
               <FormItem label='战略采购代码' {...formLayout}>
                 {
                   isView ? <span>{data.strategicPurchaseCode}</span> :getFieldDecorator('strategicPurchaseCode', {
-                    initialValue: type === 'add' ? '123' : data.strategicPurchaseCode,
+                    initialValue: type === 'add' ? '' : data.strategicPurchaseCode,
                   })(
                     <Input disabled={true} placeholder='请输入战略采购代码' style={{ width: '100%' }}/>,
                   )
@@ -149,13 +161,7 @@ const MaterialInfo = React.forwardRef((props, ref) => {
               <FormItem label='战略采购名称' {...formLayout}>
                 {
                   isView ? <span>{data.strategicPurchaseName}</span> :getFieldDecorator('strategicPurchaseName', {
-                    initialValue: type === 'add' ? '123' : data.strategicPurchaseName,
-                    rules: [
-                      {
-                        required: true,
-                        message: '申请人联系方式不能为空',
-                      },
-                    ],
+                    initialValue: type === 'add' ? '' : data.strategicPurchaseName,
                   })(
                     <Input disabled={true} placeholder='请输入战略采购名称' style={{ width: '100%' }}/>,
                   )

@@ -1,5 +1,12 @@
-import React from 'react';
-import { Col, DatePicker, Form, Modal, Select } from 'antd';
+import React, { Fragment } from 'react';
+import { Col, DatePicker, Form, Input, message, Modal, Row, Select } from 'antd';
+import { ComboList } from 'suid';
+import { baseUrl } from '../../../../../utils/commonUrl';
+import {
+  OrganizationByCompanyCodeConfig,
+  StrategicPurchasingAll,
+  StrategyAssignedDataSharingList,
+} from '../../../commonProps';
 
 const FormItem = Form.Item
 
@@ -10,17 +17,46 @@ const TacticAssign = (props) => {
     wrapperCol: {span: 20},
   };
 
-  const {visible} = props
+  const {visible, form, selectedRowKeys} = props
+  const {getFieldDecorator, getFieldValue} = props.form;
+
 
   const handleOk = () => {
-
+    if (getFieldValue('strategicPurchaseCode')) {
+      StrategyAssignedDataSharingList({
+        ids: selectedRowKeys.toString(),
+        strategicPurchaseCode: getFieldValue('strategicPurchaseCode'),
+        strategicPurchaseId: getFieldValue('strategicPurchaseId'),
+        strategicPurchaseName: getFieldValue('strategicPurchaseName'),
+      }).then(res => {
+        if (res.success) {
+          props.form.resetFields();
+          props.onCancel()
+        } else {
+          message.error(res.message)
+        }
+      })
+    } else {
+      message.error('请选择战略指派')
+    }
   }
 
   const handleCancel = () => {
+    props.form.resetFields();
     props.onCancel()
   }
 
-  const {getFieldDecorator} = props.form;
+  const hideFormItem = (name, initialValue) => (
+    <FormItem>
+      {
+        getFieldDecorator(name, {
+          initialValue: initialValue,
+        })(
+          <Input type={'hidden'} />,
+        )
+      }
+    </FormItem>
+  );
 
   return(
     <Modal
@@ -31,21 +67,22 @@ const TacticAssign = (props) => {
     >
       <div style={{height: '50px'}}>
         <Form>
+          <Col span={0}>
+            {hideFormItem('strategicPurchaseCode')}
+          </Col>
+          <Col span={0}>
+            {hideFormItem('strategicPurchaseId')}
+          </Col>
           <Col span={24}>
-            <FormItem
-              {...formItemLayoutLong}
-              label="战略采购"
-            >
+            <FormItem {...formItemLayoutLong} label={'战略采购'}>
               {
-                getFieldDecorator("strategicPurchasing", {
-                  initialValue: '1',
-                })(
-                  <Select style={{width: '100%'}}>
-                    <Select.Option value='1'>test</Select.Option>
-                    <Select.Option value='2'>2</Select.Option>
-                    <Select.Option value='3'>3</Select.Option>
-                  </Select>
-                )
+                getFieldDecorator('strategicPurchaseName', {
+                })(<ComboList
+                  form={form}
+                  field={['strategicPurchaseCode', 'strategicPurchaseId']}
+                  name={'strategicPurchaseName'}
+                  {...StrategicPurchasingAll}
+                />)
               }
             </FormItem>
           </Col>

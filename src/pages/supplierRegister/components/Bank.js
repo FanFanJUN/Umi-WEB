@@ -1,7 +1,7 @@
 import React, { forwardRef, useState, useRef, useEffect, useImperativeHandle } from 'react';
 import { ExtTable, WorkFlow, ExtModal, utils, ToolBar } from 'suid';
 import { Form, Button, message, Checkbox, Modal } from 'antd';
-import { openNewTab, getFrameElement } from '@/utils';
+import { openNewTab, getFrameElement ,isEmpty} from '@/utils';
 import Header from '@/components/Header';
 //import AdvancedForm from '@/components/AdvancedForm';
 import AutoSizeLayout from '../SupplierAutoLayout';
@@ -103,7 +103,7 @@ const Bankformef = forwardRef(({
       align: 'center',
       width: 220,
     }, {
-      title: '支付方式',
+      title: '银行控制代码',
       dataIndex: 'paymentName',
       align: 'center',
       width: 120,
@@ -138,6 +138,12 @@ const Bankformef = forwardRef(({
         bankInfoVos.forEach(item => item.key = keys++);
         //设置行号，取（最大值+1）为当前行号
         if (bankInfoVos.length > 0) {
+          if (!isEmpty(bankInfoVos)) {
+            console.log(bankInfoVos)
+            bankInfoVos.forEach(item => {
+              item.lineCode = getLineCode(lineCode++)
+            })
+          }
           let maxLineCode = getMaxLineNum(bankInfoVos);
           lineCode = maxLineCode ++;
           // keys = keys ++
@@ -163,7 +169,9 @@ const Bankformef = forwardRef(({
   }
   // 新增
   function showModal() {
-    
+    let rowselect = [];
+    setRows(rowselect);
+    setInitialValue(rowselect)
     setEdit(false)
     BankInfoRef.current.handleModalVisible(true)
   }
@@ -175,7 +183,8 @@ const Bankformef = forwardRef(({
     }else {
       newsbank = selectedRows
     }
-    setDataSource(newsbank) 
+    //setDataSource(newsbank) 
+    console.log(newsbank)
     setEdit(true)
     const [row] = newsbank;
     setInitialValue({ ...row })
@@ -199,6 +208,7 @@ const Bankformef = forwardRef(({
       if (item.key === val.key) {
         const copyData = dataSource.slice(0)
         copyData[index] = val;
+        console.log()
         setDataSource(copyData)
         setRows(copyData)
       }
@@ -240,10 +250,10 @@ const Bankformef = forwardRef(({
       cleanSelectedRecord();
       //setRows(formData)
       //this.setState({selectedRows: [formData]})
-    } else {
+    } else { 
       //生成行号
+      dataSource.length === 0 ? '' : lineCode++;
       formData.lineCode = getLineCode(lineCode);
-      lineCode++;
       formData.key = keys++;
       const newData = [...dataSource, formData];
       setDataSource(newData)

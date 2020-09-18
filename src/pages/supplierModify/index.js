@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ExtTable, WorkFlow, ExtModal, utils, ToolBar,ScrollBar } from 'suid';
 import { Input, Button, message, Modal } from 'antd';
-import { openNewTab, getFrameElement } from '@/utils';
+import { openNewTab, getFrameElement ,isEmpty} from '@/utils';
 import { StartFlow } from 'seid';
 import UploadFile from '../../components/Upload/index'
 import Header from '@/components/Header';
@@ -10,7 +10,7 @@ import AutoSizeLayout from '@/components/AutoSizeLayout';
 import styles from './index.less';
 import { smBaseUrl } from '@/utils/commonUrl';
 import { RecommendationList ,stopApproveingOrder} from "@/services/supplierRegister"
-import {deleteSupplierModify,checkExistUnfinishedValidity} from '@/services/SupplierModifyService'
+import {deleteSupplierModify,checkExistUnfinishedValidity,findCanModifySupplierList} from '@/services/SupplierModifyService'
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 const { Search } = Input
 const confirm = Modal.confirm;
@@ -25,7 +25,7 @@ function SupplierConfigure() {
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [onlyMe, setOnlyMe] = useState(true);
     const [selectedRows, setRows] = useState([]);
-    const [searchValue, setSearchValue] = useState({});
+    const [searchValue, setSearchValue] = useState('');
     const [visible, setVisible] = useState(false);
     const [recommen, setrecommen] = useState([]);
     const [loading, triggerLoading] = useState(false);
@@ -172,7 +172,7 @@ function SupplierConfigure() {
         store: {
             url: `${smBaseUrl}/api/supplierModifyService/findRequestByPage`,
             params: {
-                ...searchValue,
+                quickSearchValue: searchValue,
                 quickSearchProperties: ['supplierName'],
                 sortOrders: [
                     {
@@ -199,7 +199,7 @@ function SupplierConfigure() {
 
     useEffect(() => {
         window.parent.frames.addEventListener('message', listenerParentClose, false);
-        return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
+        return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
     }, []);
     
     function listenerParentClose(event) {
@@ -210,8 +210,18 @@ function SupplierConfigure() {
     }
     // 新增供应商
     async function AddModel() {
-        getModelRef.current.handleModalVisible(true);
-        //openNewTab(`supplier/supplierModify/details/index`, '编辑供应商注册信息', false)
+        if (authorizations.userType !== 'Supplier') {
+            getModelRef.current.handleModalVisible(true);
+            return;
+        }else {
+            const {data,success, message: msg } = await findCanModifySupplierList();
+            if (success) {
+                let id = data.rows[0].supplierId;
+                openNewTab(`supplier/supplierModify/create/index?id=${id}`, '供应商变更新建变更单', false)
+            }else {
+                message.error(msg)
+            }
+        }
     }
     // 记录列表选中
     function handleSelectedRows(rowKeys, rows) {
@@ -252,6 +262,7 @@ function SupplierConfigure() {
     function handleCheckEdit() {
        // const [key] = selectedRowKeys;
         let id = selectedRows[0].id;
+        //let id = '';
         openNewTab(`supplier/supplierModify/Edit/index?id=${id}`, '供应商变更编辑', false)
     }
     // 明细
@@ -266,9 +277,9 @@ function SupplierConfigure() {
     }
     // 查询
     function handleQuickSerach() {
-        setSearchValue({
-            quickSearchValue: searchValue
-        })
+        let search = "";
+        setSearchValue(search);
+        setSearchValue(searchValue)
         uploadTable();
     }
     // 提交审核完成更新列表
@@ -319,7 +330,7 @@ function SupplierConfigure() {
                             authAction(
                                 <Button type='primary' 
                                     ignore={DEVELOPER_ENV} 
-                                    key='' 
+                                    key='SRM-SM-SUPPLIERMODEL_ADD' 
                                     className={styles.btn} 
                                     onClick={AddModel}
                                     //disabled={empty}
@@ -331,7 +342,7 @@ function SupplierConfigure() {
                             authAction(
                                 <Button 
                                     ignore={DEVELOPER_ENV} 
-                                    key='' 
+                                    key='SRM-SM-SUPPLIERMODEL_EDIT' 
                                     className={styles.btn} 
                                     onClick={handleCheckEdit} 
                                     disabled={empty || underWay || !isSelf}
@@ -343,7 +354,7 @@ function SupplierConfigure() {
                             authAction(
                                 <Button 
                                     ignore={DEVELOPER_ENV} 
-                                    key='' 
+                                    key='SRM-SM-SUPPLIERMODEL_DELETE' 
                                     className={styles.btn} 
                                     onClick={handleDelete} 
                                     disabled={empty || underWay || !isSelf}
@@ -361,7 +372,7 @@ function SupplierConfigure() {
                                     callBack={handleComplete}
                                     disabled={empty || underWay || !isSelf}
                                     businessModelCode='com.ecmp.srm.sm.entity.SupplierModify'
-                                    //key='PURCHASE_VIEW_CHANGE_APPROVE'
+                                    key='SRM-SM-SUPPLIERMODEL_EXAMINE'
                                 >提交审核</StartFlow>
                             )
                         }
@@ -372,7 +383,7 @@ function SupplierConfigure() {
                                     disabled={empty || !underWay || !isSelf}
                                     onClick={stopApprove}
                                     ignore={DEVELOPER_ENV}
-                                    key='PURCHASE_VIEW_CHANGE_STOP_APPROVE'
+                                    key='SRM-SM-SUPPLIERMODEL_STOP_APPROVAL'
                                 >终止审核</Button>
                             )
                         }
@@ -382,7 +393,7 @@ function SupplierConfigure() {
                                     businessId={flowId}
                                     flowMapUrl='flow-web/design/showLook'
                                     ignore={DEVELOPER_ENV}
-                                    key='PURCHASE_VIEW_CHANGE_APPROVE_HISTORY'
+                                    key='SRM-SM-SUPPLIERMODEL_HISTORY'
                                 >
                                     <Button className={styles.btn} disabled={empty || !underWay || !completed}>审核历史</Button>
                                 </FlowHistoryButton>
@@ -392,7 +403,7 @@ function SupplierConfigure() {
                             authAction(
                                 <Button 
                                     ignore={DEVELOPER_ENV} 
-                                    key='' 
+                                    key='SRM-SM-SUPPLIERMODEL_DETAILED' 
                                     className={styles.btn} 
                                     onClick={handleCheckDetail} 
                                     disabled={empty}
@@ -411,6 +422,7 @@ function SupplierConfigure() {
             <AutoSizeLayout>
                 {
                     (height) => <ExtTable
+                        //columns={authorizations.userType === 'Supplier' ? supplierColumns : columns}
                         columns={columns}
                         showSearch={false}
                         ref={tableRef}

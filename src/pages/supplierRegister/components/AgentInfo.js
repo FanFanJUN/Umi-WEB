@@ -183,18 +183,23 @@ const Agentformef = forwardRef(({
   }
    // 新增
    function showModal() {
+    let rowselect = [];
+    setRows(rowselect);
+    setInitialValue(rowselect)
     setEdit(false)
     agentModelRef.current.handleModalVisible(true)
   }
   // 编辑
   function handleEdit() {
+    console.log(selectedRows)
     let newsagent;
     if (selectedRows.length > 1) {
       newsagent = selectedRows.splice(1);
     }else {
       newsagent = selectedRows
     }
-    setDataSource(newsagent) 
+    console.log(newsagent)
+    //setDataSource(newsagent) 
     setEdit(true)
     const [row] = newsagent;
     setInitialValue({ ...row })

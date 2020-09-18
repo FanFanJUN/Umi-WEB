@@ -75,10 +75,10 @@ const HeadFormRef = forwardRef(({
                     rules: [
                       {
                         required: true,
-                        message: '请选择配置代码'
+                        message: '请填写配置代码'
                       }
                     ]
-                  })(<Input disabled={type === "detail"} placeholder='请填写采购策略名称' />)
+                  })(<Input disabled={type === "detail"} placeholder='请填写配置代码' />)
                 }
               </Item>
             </Col>

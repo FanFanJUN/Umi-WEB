@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ExtTable, WorkFlow, ExtModal, utils, ToolBar,ScrollBar } from 'suid';
-import { Input, Button, message, Modal } from 'antd';
+import { ExtTable, WorkFlow, ExtModal, utils, ComboList,ScrollBar } from 'suid';
+import { Input, Button, message, Modal,Form } from 'antd';
 import { openNewTab, getFrameElement } from '@/utils';
+import SearchTable from './components/SearchTable'
 import { StartFlow } from 'seid';
 
 import Header from '@/components/Header';
@@ -10,6 +11,7 @@ import AutoSizeLayout from '@/components/AutoSizeLayout';
 import styles from './index.less';
 import { smBaseUrl } from '@/utils/commonUrl';
 import { RecommendationList ,stopApproveingOrder} from "@/services/supplierRegister"
+import {oddcorporationSupplierConfig,corporationSupplierConfig} from '../../utils/commonProps'
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 const { Search } = Input
 const { authAction, storage } = utils;
@@ -32,7 +34,7 @@ function SupplierConfigure() {
     const [singleRow = {}] = selectedRows;
     /** 按钮可用性判断变量集合 BEGIN*/
     const [signleRow = {}] = selectedRows;
-    const { flowStatus: signleFlowStatus, id: flowId, creatorId } = signleRow;
+    const { flowStatus: signleFlowStatus, id: flowId, creatorId ,saveStatus: typeStatus} = signleRow;
     // 已提交审核状态
     const underWay = signleFlowStatus !== 'INIT';
     // 审核完成状态
@@ -41,10 +43,8 @@ function SupplierConfigure() {
     const empty = selectedRowKeys.length === 0;
     // 是不是自己的单据
     const isSelf = currentUserId === creatorId;
-    // 删除草稿
-    const isdelete = signleFlowStatus === 'INIT'
-
-    
+    // 提交审核
+    const Toexamine = signleFlowStatus === 'INIT' && typeStatus === 1;
     const {
         state: rowState,
         approvalState: rowApprovalState,
@@ -63,9 +63,11 @@ function SupplierConfigure() {
             dataIndex: 'flowStatus',
             width: 100,
             render: function(text, record, row) {
-                if (text === 'INIT') {
+                if (text === 'INIT' && record.saveStatus === 0) {
                     return <div>草稿</div>;
-                } else if (text === 'INPROCESS') {
+                } else if (text === 'INIT' && record.saveStatus === 1) {
+                    return <div>已保存</div>;
+                }else if (text === 'INPROCESS') {
                     return <div>审批中</div>;
                 } else if (text === 'COMPLETED') {
                     return <div>审批完成</div>;
@@ -181,7 +183,7 @@ function SupplierConfigure() {
             url: `${smBaseUrl}/api/supplierSelfService/findVoListByPage`,
             params: {
                 ...searchValue,
-                quickSearchProperties: ['supplierName'],
+                quickSearchProperties: ['companyName','supplierName'],
                 sortOrders: [
                     {
                       property: 'docNumber',
@@ -192,10 +194,29 @@ function SupplierConfigure() {
             type: 'POST'
         }
     }
+    // 泛虹公司
+    function cooperationChange(record) {
+        console.log(record)
+        setSearchValue({
+            quickSearchValue: record.name
+        })
+        uploadTable();
+    }
     // 右侧搜索
     const searchBtnCfg = (
         <>
+            <ComboList
+                style={{ width: 280 }}
+                {...corporationSupplierConfig}
+                afterSelect={cooperationChange}
+                rowKey="code"
+                showSearch={false}
+                reader={{
+                    name: 'name',
+                }}
+            />
             <Input
+                style={{ width: 280 }}
                 placeholder='请输入供应商名称查询'
                 className={styles.btn}
                 onChange={SerachValue}
@@ -325,7 +346,7 @@ function SupplierConfigure() {
             <Header
                 left={
                     <>
-                        {
+                        {/* {
                             authAction(
                                 <Button type='primary' 
                                     ignore={DEVELOPER_ENV} 
@@ -336,7 +357,7 @@ function SupplierConfigure() {
                                     >编辑
                                 </Button>
                             )
-                        }
+                        } */}
                         {
                             authAction(
                                 <Button 
@@ -349,7 +370,7 @@ function SupplierConfigure() {
                                 </Button>
                             )
                         }
-                        {
+                        {/* {
                             authAction(
                                 <StartFlow
                                     className={styles.btn}
@@ -357,14 +378,14 @@ function SupplierConfigure() {
                                     // preStart={handleBeforeStartFlow}
                                     businessKey={flowId}
                                     callBack={handleComplete}
-                                    disabled={empty || underWay || !isSelf}
+                                    disabled={empty || underWay || !isSelf || !Toexamine}
                                     businessModelCode='com.ecmp.srm.sm.entity.SupplierApply'
                                     ignore={DEVELOPER_ENV}
                                     key='PURCHASE_VIEW_CHANGE_APPROVE'
                                 ></StartFlow>
                             )
-                        }
-                        {
+                        } */}
+                        {/* {
                             authAction(
                                 <Button
                                     className={styles.btn}
@@ -374,7 +395,7 @@ function SupplierConfigure() {
                                     key='PURCHASE_VIEW_CHANGE_STOP_APPROVE'
                                 >终止审核</Button>
                             )
-                        }
+                        } */}
                         {
                             authAction(
                                 <FlowHistoryButton
@@ -429,7 +450,7 @@ function SupplierConfigure() {
                 >
                 <ScrollBar>
                     <ExtTable
-                        loading={true}
+                        //loading={true}
                         showSearch={false}
                         dataSource={recommen}
                         {...tableProps} 

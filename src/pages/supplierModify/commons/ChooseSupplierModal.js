@@ -15,31 +15,50 @@ const getAgentregRef = forwardRef(({
         handleModalVisible,
         form 
     }));
+    const tableRef = useRef(null)
     const headerRef = useRef(null)
     const { getFieldDecorator, validateFieldsAndScroll, getFieldValue, setFieldsValue } = form;
     const [loading, triggerLoading] = useState(false);
-    const [searchValue, setSearchValue] = useState({});
+    const [searchValue, setSearchValue] = useState('');
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [visible, setvisible] = useState(false);
-    const [dataSource, setData] = useState([]);
+    const [current, setcurrent] = useState([]);
+    //const [dataSource, setData] = useState([]);
     useEffect(() => {
-        getSupplierlist()
+        //getSupplierlist()
     }, []);
-    // 供应商
-    async function getSupplierlist() {
-        let params = {page:1,rows:30,'S_createdDate':'desc'};
-        triggerLoading(true)
-        const { data,success, message: msg } = await findCanChooseSupplier(params);
-        if (success) {
-            setData(data)
-            triggerLoading(false)
-            return
-        }else {
-            message.error(msg);
+    //let current = 1;
+    const dataSource = {
+        store: {
+            url: `${smBaseUrl}/api/supplierModifyService/findCanChooseSupplier`,
+            params: {
+                quickSearchValue: searchValue,
+                quickSearchProperties: ['name'],
+                sortOrders: [
+                    {
+                        property: 'name',
+                        direction: 'DESC'
+                    }
+                ]
+            },
+            type: 'POST'
         }
-        triggerLoading(false)
     }
+    // 供应商
+    // async function getSupplierlist() {
+    //     let params = {page:1,rows:30,'S_createdDate':'desc'};
+    //     triggerLoading(true)
+    //     const { data,success, message: msg } = await findCanChooseSupplier(params);
+    //     if (success) {
+    //         setData(data)
+    //         triggerLoading(false)
+    //         return
+    //     }else {
+    //         message.error(msg);
+    //     }
+    //     triggerLoading(false)
+    // }
     function handleModalVisible (flag) {
         setvisible(!!flag)
     };
@@ -56,7 +75,7 @@ const getAgentregRef = forwardRef(({
             handleModalVisible(false);
             // let categoryid = selectedRows[0].supplier.supplierCategoryId;
             let id = selectedRows[0].supplierId;
-            openNewTab(`supplier/supplierModify/create/index?id=${id}`, '编辑供应商注册信息', false)
+            openNewTab(`supplier/supplierModify/create/index?id=${id}`, '供应商变更新建变更单', false)
           }
     }
     // 输入框值
@@ -65,10 +84,21 @@ const getAgentregRef = forwardRef(({
     }
     // 查询
     function handleQuickSerach() {
-        setSearchValue({
-            quickSearchValue: searchValue
-        })
-        //uploadTable();
+        let search = "";
+        setSearchValue(search);
+        setSearchValue(searchValue)
+        uploadTable();
+    }
+    function uploadTable() {
+        cleanSelectedRecord()
+        tableRef.current.remoteDataRefresh()
+    }
+    // 清除选中项
+    function cleanSelectedRecord() {
+        setRowKeys([])
+    }
+    function pageChange(val) {
+        setcurrent(val.current)
     }
     const columns = [
         {
@@ -96,6 +126,7 @@ const getAgentregRef = forwardRef(({
     const searchBtnCfg = (
         <>
             <Input
+                style={{width:260}}
                 placeholder='请输入供应商代码或名称查询'
                 className={styles.btn}
                 onChange={SerachValue}
@@ -127,6 +158,7 @@ const getAgentregRef = forwardRef(({
             <ExtTable
                 columns={columns}
                 showSearch={false}
+                ref={tableRef}
                 rowKey={(item) => item.supplierId}
                 checkbox={{
                     multiSelect: false
@@ -137,7 +169,9 @@ const getAgentregRef = forwardRef(({
                 ellipsis={false}
                 onSelectRow={handleSelectedRows}
                 selectedRowKeys={selectedRowKeys}
-                dataSource={dataSource.rows}
+                onChange={pageChange}
+                //dataSource={dataSource}
+                {...dataSource}
             />
       </Modal>
     );

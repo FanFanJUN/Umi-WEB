@@ -1,12 +1,12 @@
 import React from 'react';
-import {Upload, Icon, Button, List, Avatar, Skeleton, Modal,message, Tooltip} from 'antd';
+import { Upload, Icon, Button, List, Avatar, Skeleton, Modal, message, Tooltip } from 'antd';
 import PropTypes from 'prop-types';
 import request from '../../../../utils/request';
 import { baseUrl } from '../../../../utils/commonUrl';
-import '../../../../components/Upload/upload.css'
-import * as fileIcon from '../../../../components/Upload/fileIcon'
-import { BASE_URL } from '../../../../utils/constants';
+import '../../../../components/Upload/upload.css';
+import * as fileIcon from '../../../../components/Upload/fileIcon';
 import { onLineTarget } from '../../../../../config/proxy.config';
+import { BASE_URL } from '../../../../utils/constants';
 
 const host = process.env.NODE_ENV === 'production' ? '' : onLineTarget;
 
@@ -22,21 +22,20 @@ class UploadFile extends React.Component {
       completeUploadFile: [],
     };
 
-    this.entityId = props.entityId
+    this.entityId = props.entityId;
   }
 
-
   componentDidMount() {
-    this.updateFile(this.props.entityId)
+    this.updateFile(this.props.entityId);
   }
 
 
   componentWillReceiveProps(nextProps) {
     if ((nextProps.entityId && nextProps.entityId !== this.props.entityId)
       || nextProps.refresh) {
-      this.entityId = nextProps.entityId
-      this.updateFile(nextProps.entityId)
-    }else if(!nextProps.entityId && this.props.entityId){
+      this.entityId = nextProps.entityId;
+      this.updateFile(nextProps.entityId);
+    } else if (!nextProps.entityId && this.props.entityId) {
       this.entityId = '';
       this.updateFile();
     }
@@ -59,16 +58,17 @@ class UploadFile extends React.Component {
     //图片格式显示系统的预览
     if (fileName.toLocaleLowerCase().includes('png') || fileName.toLocaleLowerCase().includes('jpg') || fileName.toLocaleLowerCase().includes('gif')
       || fileName.toLocaleLowerCase().includes('jpeg')) {
+      console.log('触发')
       return host + baseUrl + '/supplierRegister/preview?docId=' + id;
     }
-    return fileIcon.defaultIcon
+    return fileIcon.defaultIcon;
   }
 
   //从后台获取附件信息
   updateFile = (value) => {
     let fileList = [];
     let completeUploadFile = [];
-    if(value&&value.length>0&&value[0]&&value[0].id){
+    if (value && value.length > 0 && value[0] && value[0].id) {
       value.map(item => {
         fileList.push({
           uid: item.id,      // 文件唯一标识，建议设置为负数，防止和内部产生的 id 冲突
@@ -77,84 +77,88 @@ class UploadFile extends React.Component {
           response: [item.id], // 服务端响应内容
           url: host + baseUrl + '/supplierRegister/download?docId=' + item.id, // 下载链接额外的 HTML 属性
           thumbUrl: window._previewUrl + item.id,
-          uploadedTime:item.uploadedTime,
-          uploadUserName:item.uploadUserName
+          uploadedTime: item.uploadedTime,
+          uploadUserName: item.uploadUserName,
         });
         completeUploadFile.push(item.id);
-      })
-      this.setState({fileList, completeUploadFile})
+      });
+      this.setState({ fileList, completeUploadFile });
       if (this.props.onChange) {
-        this.props.onChange(completeUploadFile.length === 0 ? null : completeUploadFile)
+        this.props.onChange(completeUploadFile.length === 0 ? null : completeUploadFile);
       }
-    }else if(value&&value.length>0&&value[0]&&!value[0].id){  // 只有附件 idList 的情况
-      value.map(valueItem=>{request.get(baseUrl + '/getDocumentByRefIdOrDocId?paramId=' + valueItem)
-        .then(res => {
-          if (res.success && res.data && res.data[0] && res.data[0].id) {
-            res.data.map((item,index)=>{
-              fileList.push({
-                uid: res.data[index].id, // 文件唯一标识，建议设置为负数，防止和内部产生的 id 冲突
-                name: res.data[index].fileName, // 文件名
-                status: 'done', // 状态有：uploading done error removed
-                response: [res.data[index].id], // 服务端响应内容
-                url: host + baseUrl + '/supplierRegister/download?docId=' + res.data[index].id, // 下载链接额外的 HTML 属性
-                thumbUrl: window._previewUrl + res.data[index].id,
-                uploadedTime:res.data[index].uploadedTime,
-                uploadUserName:res.data[index].uploadUserName
+    } else if (value && value.length > 0 && value[0] && !value[0].id) {  // 只有附件 idList 的情况
+      value.map(valueItem => {
+        request.get(baseUrl + '/getDocumentByRefIdOrDocId?paramId=' + valueItem)
+          .then(res => {
+            if (res.success && res.data && res.data[0] && res.data[0].id) {
+              res.data.map((item, index) => {
+                fileList.push({
+                  uid: res.data[index].id, // 文件唯一标识，建议设置为负数，防止和内部产生的 id 冲突
+                  name: res.data[index].fileName, // 文件名
+                  status: 'done', // 状态有：uploading done error removed
+                  response: [res.data[index].id], // 服务端响应内容
+                  url: host + baseUrl + '/supplierRegister/download?docId=' + res.data[index].id, // 下载链接额外的 HTML 属性
+                  thumbUrl: window._previewUrl + res.data[index].id,
+                  uploadedTime: res.data[index].uploadedTime,
+                  uploadUserName: res.data[index].uploadUserName,
+                });
+                completeUploadFile.push(res.data[index].id);
               });
-              completeUploadFile.push(res.data[index].id);
-            });
-            this.setState({fileList, completeUploadFile})
-            if (this.props.onChange) {
-              this.props.onChange(completeUploadFile.length === 0 ? null : completeUploadFile)
+              this.setState({ fileList, completeUploadFile });
+              if (this.props.onChange) {
+                this.props.onChange(completeUploadFile.length === 0 ? null : completeUploadFile);
+              }
+            } else {
+              this.setState({ completeUploadFile: [], fileList: [] });
             }
-          } else {
-            this.setState({completeUploadFile: [], fileList: []})
-          }
-        })})
+          });
+      });
+    } else {
+      this.setState({ completeUploadFile: [], fileList: [] });
     }
-    else {
-      this.setState({completeUploadFile: [], fileList: []})
-    }
-  }
+  };
 
-  handleChange = ({file, fileList}) => {
-    if(!file.error){
+  handleChange = ({ file, fileList }) => {
+    console.log(file, fileList, 'test');
+    if (!file.error) {
       let completeUploadFile = this.state.completeUploadFile;
       let index = -1;
       if (file.status === 'done') {
+        console.log(file, 'xxxxxxxxxxx');
         completeUploadFile.push(file.response[0]);
         if (this.props.onChange) {
-          this.props.onChange(completeUploadFile.length === 0 ? null : completeUploadFile)
+          this.props.onChange(completeUploadFile.length === 0 ? null : completeUploadFile);
         }
         if (this.props.fileOnChange) {
-          this.props.fileOnChange(completeUploadFile)
+          this.props.fileOnChange(completeUploadFile);
         }
       }
       if (file.status === 'removed' && file.response && (index = completeUploadFile.indexOf(file.response[0])) !== -1) {
         completeUploadFile.splice(index, 1);
         if (this.props.onChange) {
-          this.props.onChange(completeUploadFile.length === 0 ? null : completeUploadFile)
+          this.props.onChange(completeUploadFile.length === 0 ? null : completeUploadFile);
         }
         if (this.props.fileOnChange) {
-          this.props.fileOnChange(completeUploadFile)
+          this.props.fileOnChange(completeUploadFile);
         }
       }
       fileList.map(item => {
+        console.log(origin, 'item');
         if (item.status === 'done') {
-          item.url = host + baseUrl + '/supplierRegister/download?docId=' + item.response[0]
-          item.thumbUrl = window._previewUrl + item.response[0]
+          item.url = host + baseUrl + '/supplierRegister/download?docId=' + item.response[0];
+          item.thumbUrl = `${origin}/api-gateway/edm-service/preview` + '?docId=' + item.response[0];
         }
-      })
-      this.setState({fileList, completeUploadFile});
-    }else{
-      this.handleRemove(file)
-      message.warn("最大可以传 50M 文件")
+      });
+      this.setState({ fileList, completeUploadFile });
+    } else {
+      this.handleRemove(file);
+      message.warn('最大可以传 50M 文件');
     }
-  }
+  };
 
   //删除文件
   handleRemove = file => {
-    const { fileList,completeUploadFile} = this.state;
+    const { fileList, completeUploadFile } = this.state;
     let index = -1;
     const list = fileList.filter(item => file.uid !== item.uid);
     this.setState({
@@ -163,31 +167,31 @@ class UploadFile extends React.Component {
     if ((index = completeUploadFile.indexOf(file.response[0])) !== -1) {
       completeUploadFile.splice(index, 1);
       if (this.props.onChange) {
-        this.props.onChange(completeUploadFile.length === 0 ? null : completeUploadFile)
+        this.props.onChange(completeUploadFile.length === 0 ? null : completeUploadFile);
       }
       if (this.props.fileOnChange) {
-        this.props.fileOnChange(completeUploadFile)
+        this.props.fileOnChange(completeUploadFile);
       }
     }
   };
 
   handleModalVisible = (show) => {
-    this.setState({modalVisible: show})
-  }
-  onCancel = () =>{
+    this.setState({ modalVisible: show });
+  };
+  onCancel = () => {
     if (this.props.callBack) {
       this.updateFile();
-      this.setState({modalVisible: false})
+      this.setState({ modalVisible: false });
     } else {
-      this.setState({modalVisible: false})
+      this.setState({ modalVisible: false });
     }
-  }
+  };
   handleOk = (show) => {
     if (this.props.callBack) {
-      this.props.callBack(this.state.completeUploadFile)
+      this.props.callBack(this.state.completeUploadFile);
     }
-    this.setState({modalVisible: show})
-  }
+    this.setState({ modalVisible: show });
+  };
   //获取请求头
   getHeaders = () => {
     let auth;
@@ -196,94 +200,96 @@ class UploadFile extends React.Component {
     } catch (e) {
     }
     return {
-      'Authorization': auth ? (auth.accessToken ? auth.accessToken : '') : ''
-    }
-  }
+      'Authorization': auth ? (auth.accessToken ? auth.accessToken : '') : '',
+    };
+  };
 
   hasFooter = () => {
     if (!this.props.enableFooter) {
       return null;
     }
-  }
+  };
 
   getAction = (item) => {
-    if(item.status === 'uploading'){
+    console.log(item, 'item')
+    if (item.status === 'uploading') {
       return null;
     }
     let actions = [];
-    if(this.props.showPreview !== false
-      && (item.name.toLocaleLowerCase().includes("doc")||item.name.toLocaleLowerCase().includes("pdf")
-        ||item.name.toLocaleLowerCase().includes("docx")||item.name.toLocaleLowerCase().includes("jpg")
-        ||item.name.toLocaleLowerCase().includes("png"))){
-      actions.push(<a target="_blank" href={item.thumbUrl}>预览</a>)
+    if (this.props.showPreview !== false
+      && (item.name.toLocaleLowerCase().includes('doc') || item.name.toLocaleLowerCase().includes('pdf')
+        || item.name.toLocaleLowerCase().includes('docx') || item.name.toLocaleLowerCase().includes('jpg')
+        || item.name.toLocaleLowerCase().includes('png'))) {
+      actions.push(<a target="_blank" href={item.thumbUrl}>预览</a>);
     }
-    if(this.props.download !== false){
-      actions.push(<a target="_blank" href={item.url}>下载</a>)
+    if (this.props.download !== false) {
+      actions.push(<a target="_blank" href={item.url} onClick={this.props.downloadClick}>下载</a>);
     }
-    if(this.props.type !== 'show' && !this.props.disabled){
-      actions.push(<a target="_blank" onClick={() => this.handleRemove(item)}>删除</a>)
-    };
+    if (this.props.type !== 'show' && !this.props.disabled) {
+      actions.push(<a target="_blank" onClick={() => this.handleRemove(item)}>删除</a>);
+    }
+    ;
     return actions;
-  }
+  };
 
   getItemName = (item) => {
     let showName = '';
-    if(item.name && item.name.length > 21) {
-      showName = <span>{item.name.substr(0,21)}<br/>{item.name.substr(21,item.name.length)}</span>
+    if (item.name && item.name.length > 21) {
+      showName = <span>{item.name.substr(0, 21)}<br/>{item.name.substr(21, item.name.length)}</span>;
     } else {
       showName = item.name;
     }
     return showName;
-  }
+  };
 
-  uploadCard = fileList =>{
-    return fileList.length>0?<List
+  uploadCard = fileList => {
+    return fileList.length > 0 ? <List
       itemLayout="horizontal"
       dataSource={fileList}
       renderItem={item => (
         <List.Item actions={this.getAction(item)}>
           <Skeleton avatar title={false} loading={item.status === 'uploading'} active>
-            {item.status === 'done'?<List.Item.Meta
-              avatar={<Avatar src={this.getIcon(item.name,item.response[0])}/>}
+            {item.status === 'done' ? <List.Item.Meta
+              avatar={<Avatar src={this.getIcon(item.name, item.response[0])}/>}
               // title={this.getItemName(item)}
-              title={<span style={{wordBreak: "break-all"}}>{item.name}</span>}
-              description={item.uploadedTime?`上传时间：${item.uploadedTime}`:null}
-            />:null}
+              title={<span style={{ wordBreak: 'break-all' }}>{item.name}</span>}
+              description={item.uploadedTime ? `上传时间：${item.uploadedTime}` : null}
+            /> : null}
           </Skeleton>
         </List.Item>
       )
       }
-    />:null
-  }
+    /> : null;
+  };
 
-  beforeUpload = (file, fileList) =>(
-    new Promise((resolve, reject)=>{
-      if(this.props.accessType && this.props.accessType instanceof Array){
+  beforeUpload = (file, fileList) => (
+    new Promise((resolve, reject) => {
+      if (this.props.accessType && this.props.accessType instanceof Array) {
         let flag = false;
         this.props.accessType.map(item => {
-          if(file.name.toLocaleLowerCase().includes(item)){
-            flag=true;
+          if (file.name.toLocaleLowerCase().includes(item)) {
+            flag = true;
           }
-        })
-        if(!flag){
-          message.warn(`只能上传:${this.props.accessType}`)
-          reject(file,fileList)
+        });
+        if (!flag) {
+          message.warn(`只能上传:${this.props.accessType}`);
+          reject(file, fileList);
         }
       }
-      if(file.size===0){
-        message.warn("不能上传空文件")
-        reject(file,fileList)
-      }else{
-        let maxSize =  this.props.maxSize||10
-        if(maxSize > file.size/1024/1024){
-          resolve(file,fileList)
-        }else{
-          message.warn("最大上传文件大小为:"+maxSize+"MB")
-          reject(file,fileList)
+      if (file.size === 0) {
+        message.warn('不能上传空文件');
+        reject(file, fileList);
+      } else {
+        let maxSize = this.props.maxSize || 10;
+        if (maxSize > file.size / 1024 / 1024) {
+          resolve(file, fileList);
+        } else {
+          message.warn('最大上传文件大小为:' + maxSize + 'MB');
+          reject(file, fileList);
         }
       }
     })
-  )
+  );
 
 
   render() {
@@ -293,15 +299,22 @@ class UploadFile extends React.Component {
 
     return (
       <div className={'upload-style'} style={this.props.style}>
-        {this.props.type !== 'show'?
+        {this.props.type !== 'show' ?
           <Button disabled={this.props.disabled} onClick={() => this.handleModalVisible(true)}>
             {this.props.showIcon === false ? null : <Icon type="upload"/>}
             {this.props.title ? this.props.title : '附件'}
-          </Button> :null}
+          </Button> : null}
         <Tooltip title="点击查看">
-                    <span style={this.props.type === 'show'?{fontSize: '20px', cursor: 'pointer'}: {cursor: 'pointer'}} onClick={() => this.handleModalVisible(true)}>
+                    <span style={this.props.type === 'show' ? {
+                      fontSize: '20px',
+                      cursor: 'pointer',
+                    } : { cursor: 'pointer' }} onClick={() => this.handleModalVisible(true)}>
                         <Icon type="paper-clip"/>
-                        <span style={this.state.completeUploadFile.length!==0&&this.props.type === 'show'&&this.props.showColor?{backgroundColor: 'yellow', padding: '0 5px'}:{}}>
+                        <span
+                          style={this.state.completeUploadFile.length !== 0 && this.props.type === 'show' && this.props.showColor ? {
+                            backgroundColor: 'yellow',
+                            padding: '0 5px',
+                          } : {}}>
                             {this.state.completeUploadFile.length}
                         </span>
                     </span>
@@ -321,10 +334,10 @@ class UploadFile extends React.Component {
             beforeUpload={this.beforeUpload}
             showUploadList={false}
             fileList={this.state.fileList}
-            action={BASE_URL + baseUrl + "/supplierRegister/uploadNoAuth"}
+            action={window.location.origin + BASE_URL + baseUrl + "/supplierRegister/uploadNoAuth"}
             headers={this.getHeaders()}
             onChange={this.handleChange}
-            style={{width: '100%'}}
+            style={{ width: '100%' }}
           >
             {this.state.fileList.length >= 10 || this.props.type === 'show' || this.props.disabled ? null : uploadButton}
           </Upload>
@@ -333,37 +346,41 @@ class UploadFile extends React.Component {
           </ul>
         </Modal>
       </div>
-    )
+    );
   }
 }
 
-UploadFile.protoType={
-  //单据 id,根据这个 id 获取附件明细
-  entityId:PropTypes.string,
-  //上传成功和删除成功时回调，返回 docId 数组
-  onChange:PropTypes.func,
-  //同 onChange,formItem包裹时用，应该可以直接用 onChange代替
-  fileOnChange:PropTypes.func,
-  //当需要确认按钮时点击确认时回调
-  callBack:PropTypes.func,
-  //是否展示预览按钮，默认展示
-  showPreview:PropTypes.bool,
-  //是否展示下载按钮，默认展示
-  download:PropTypes.bool,
-  //展示模式，当模式为 show 时，不显示上传按钮和删除按钮
-  type:PropTypes.string,
-  //是否启用确认按钮
-  enableFooter:PropTypes.bool,
-  //接收文件类型，如：['pdf','doc']
-  accessType:PropTypes.array,
-  //最大上传文件大小，以 MB 为单位
-  maxSize:PropTypes.number,
-  //组件样式
-  style:PropTypes.object,
-  //禁用，默认同 show 模式
-  disabled:PropTypes.bool,
-  //按钮标题
-  title:PropTypes.string
+UploadFile.defaultProps = {
+  downloadClick: () => {}
 }
+
+UploadFile.protoType = {
+  //单据 id,根据这个 id 获取附件明细
+  entityId: PropTypes.string,
+  //上传成功和删除成功时回调，返回 docId 数组
+  onChange: PropTypes.func,
+  //同 onChange,formItem包裹时用，应该可以直接用 onChange代替
+  fileOnChange: PropTypes.func,
+  //当需要确认按钮时点击确认时回调
+  callBack: PropTypes.func,
+  //是否展示预览按钮，默认展示
+  showPreview: PropTypes.bool,
+  //是否展示下载按钮，默认展示
+  download: PropTypes.bool,
+  //展示模式，当模式为 show 时，不显示上传按钮和删除按钮
+  type: PropTypes.string,
+  //是否启用确认按钮
+  enableFooter: PropTypes.bool,
+  //接收文件类型，如：['pdf','doc']
+  accessType: PropTypes.array,
+  //最大上传文件大小，以 MB 为单位
+  maxSize: PropTypes.number,
+  //组件样式
+  style: PropTypes.object,
+  //禁用，默认同 show 模式
+  disabled: PropTypes.bool,
+  //按钮标题
+  title: PropTypes.string,
+};
 
 export default UploadFile;

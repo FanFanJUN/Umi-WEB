@@ -5,6 +5,7 @@ import { ExtTable } from 'suid';
 import TechnicalDataModal from './component/TechnicalDataModal';
 import moment from 'moment/moment';
 import Upload from '../../../compoent/Upload';
+import { getRandom } from '../../../commonProps';
 
 const TechnicalData = React.forwardRef((props, ref) => {
 
@@ -34,6 +35,7 @@ const TechnicalData = React.forwardRef((props, ref) => {
   }, [props.data])
 
   const handleSelectedRows = (value, rows) => {
+    console.log(rows, 'rows')
     setData((v) => ({...v, selectedRowKeys: value, selectRows: rows, type: 'add'}))
   }
 
@@ -73,7 +75,7 @@ const TechnicalData = React.forwardRef((props, ref) => {
     } else {
       data.dataSource.map((item, index) => {
         console.log(value, '1')
-        if(item.id === value.id) {
+        if(item.lineNumber === value.lineNumber) {
           newData[index] = value
           console.log(newData[index], '2')
         }
@@ -88,11 +90,13 @@ const TechnicalData = React.forwardRef((props, ref) => {
       <div className={styles.bgw}>
         <div className={styles.title}>技术资料</div>
         <div className={styles.content}>
-          <div>
-            <Button onClick={() => {handleBtn('add')}} type='primary'>新增</Button>
-            <Button disabled={data.selectRows.length !== 1} onClick={() => {handleBtn('edit')}} style={{marginLeft: '5px'}}>编辑</Button>
-            <Button disabled={data.selectedRowKeys.length < 1} onClick={() => {handleBtn('delete')}} style={{marginLeft: '5px'}}>删除</Button>
-          </div>
+          {
+            !props.isView && <div>
+              <Button onClick={() => {handleBtn('add')}} type='primary'>新增</Button>
+              <Button disabled={data.selectRows.length !== 1} onClick={() => {handleBtn('edit')}} style={{marginLeft: '5px'}}>编辑</Button>
+              <Button disabled={data.selectedRowKeys.length < 1} onClick={() => {handleBtn('delete')}} style={{marginLeft: '5px'}}>删除</Button>
+            </div>
+          }
           <ExtTable
             style={{marginTop: '10px'}}
             rowKey={(v) => v.lineNumber}

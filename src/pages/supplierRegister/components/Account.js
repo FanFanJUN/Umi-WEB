@@ -56,9 +56,34 @@ const AccountRef = forwardRef(({
     <Row>
       {
         accountinfo.map((item, index) => {
-          if (item.verifi === '0' || item.verifi === '1') {
+          if (item.verifi === '0' || item.verifi === '1' || item.verifi === '2') {
             return (
               <>
+                {item.key === "account" ? <Col
+                  span={8}
+                >
+                  <FormItem style={{ width: '100%', marginBottom: 10 }}
+                    label='帐号' {...formLayout} >
+                    {
+                      isView ?
+                        <span>{editData && editData.supplierVo && editData.supplierVo.accountVo
+                          && editData.supplierVo.accountVo.account
+                          ? editData.supplierVo.accountVo.account : ''}</span> :
+                        getFieldDecorator('supplierVo.accountVo.account', {
+                          initialValue: editData && editData.supplierVo && editData.supplierVo.accountVo
+                            && editData.supplierVo.accountVo.account
+                            ? editData.supplierVo.accountVo.account : '',
+                          rules: [{ required: true, message: '请输入手机', whitespace: true }],
+                        })(
+                          <Input
+                            disabled={item.verifi === '2'}
+                            maxLength={20}
+                            onChange={onlyNumber}
+                          />,
+                        )
+                    }
+                  </FormItem>
+                </Col> : null}
                 {item.key === "mobile" ? <Col
                   span={8}
                 >
@@ -76,7 +101,7 @@ const AccountRef = forwardRef(({
                           rules: [{ required: true, message: '请输入手机', whitespace: true }],
                         })(
                           <Input
-                            disabled={approve === true}
+                            disabled={item.verifi === '2'}
                             maxLength={20}
                             onChange={onlyNumber}
                             placeholder={"请输入手机号"}
@@ -102,7 +127,7 @@ const AccountRef = forwardRef(({
                           { required: true, message: '请输入邮件地址!' },]
                         })(
                           <Input
-                            disabled={approve === true}
+                            disabled={item.verifi === '2'}
                             onChange={toUpperCase}
                             maxLength={50}
                             placeholder={"请输入邮件地址"} />

@@ -50,6 +50,7 @@ const getAgentregRef = forwardRef(({
         let sedinitData = initData.length > 0 ? initData[0] : null;
         //let originalCode = initData.length > 0 && initData[0].originalCode ? initData[0].originalCode : ''
         let originalCode = initData.length > 0 && initData[0].newOriginalCode ? initData[0].newOriginalCode : ''
+        console.log(initData)
         setInitData(sedinitData)
         setoriginalCode(originalCode)
     }

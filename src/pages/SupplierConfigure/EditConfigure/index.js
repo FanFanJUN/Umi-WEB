@@ -10,6 +10,7 @@ import { closeCurrent} from '../../../utils';
 function CreateStrategy() {
   const HeadFormRef = useRef()
   const tabformRef = createRef();
+  const sortRef = useRef();
   const [dataSource, setDataSource] = useState([]);
   const [radioSelect, setradioSelect] = useState([]);
   const [findData, setfindData] = useState([]);
@@ -22,48 +23,6 @@ function CreateStrategy() {
     let id = query.id;
     const { data, success, message: msg } = await findSupplierconfigureId(id);
     if (success) {
-      let sortdata = data.configBodyVos.map(item => {
-        let ranksort;
-        if (item.smMsgTypeCode === '1') {
-          ranksort = 1;
-        }else if (item.smMsgTypeCode === '2') {
-          ranksort = 2;
-        }else if (item.smMsgTypeCode === '3') {
-          ranksort = 4;
-        }else if (item.smMsgTypeCode === '4') {
-          ranksort = 5;
-        }else if (item.smMsgTypeCode === '5') {
-          ranksort = 5;
-        }else if (item.smMsgTypeCode === '6') {
-          ranksort = 7;
-        }else if (item.smMsgTypeCode === '7') {
-          ranksort = 6;
-        }else if (item.smMsgTypeCode === '8') {
-          ranksort = 3;
-        }else if (item.smMsgTypeCode === '9') {
-          ranksort = 9;
-        }else if (item.smMsgTypeCode === '10') {
-          ranksort = 10;
-        }else if (item.smMsgTypeCode === '11') {
-          ranksort = 11;
-        }else if (item.smMsgTypeCode === '12') {
-          ranksort = 12;
-        }else if (item.smMsgTypeCode === '13') {
-          ranksort = 8;
-        }
-        return {
-          fieldCode: item.fieldCode,
-          fieldName:item.fieldName,
-          operationCode:item.operationCode,
-          operationName:item.operationName,
-          smMsgTypeCode:Number(ranksort),
-          smMsgTypeName:item.smMsgTypeName,
-          regConfigId:item.regConfigId,
-          id:item.id,
-          smSort: Number(item.smSort)
-        }
-      })
-      data.configBodyVos = sortdata;
       const {
         configBodyVos,
         ...initialValues
@@ -124,25 +83,18 @@ function CreateStrategy() {
   }
   // 保存
   async function handleSave() {
-    //getFormValueWithoutChecked();
     const { validateFieldsAndScroll } = HeadFormRef.current.form;
-    let configBodyVos;
-    if (isEmpty(radioSelect)) {
-      configBodyVos = dataSource
-    }else {
-      configBodyVos = radioSelect
-    }
+    let configBodyVos = tabformRef.current.sortTable();
     validateFieldsAndScroll(async (err, val) => {
       findData.configBodyVos = configBodyVos;
-      // let params = {
-      //   configBodyVos
-      // }
+      findData.configCode = val.configCode;
+      console.log(findData)
       if (!err) {
         triggerLoading(true)
         const { success, message: msg } = await SaveSupplierconfigureService(findData)
         triggerLoading(false)
         if (success) {
-          closeCurrent()
+          //closeCurrent()
           return
         }
         message.error(msg)
@@ -174,6 +126,7 @@ function CreateStrategy() {
         onEditor={handleEditorLine}
         onBlured={handblurcode}
         dataSource={dataSource}
+        ref={sortRef}
         type="editor"
         loading={loading}
         wrappedComponentRef={tabformRef}

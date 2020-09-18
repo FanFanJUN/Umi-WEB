@@ -3,18 +3,19 @@ import { Form, Icon, Input, Col, message, Radio, Button } from 'antd';
 import { utils, ExtTable, ComboList } from 'suid';
 import moment from 'moment';
 import { AddButtonWrapper } from './style'
-import { compareData, getLineCode,checkDateWithYearAdd } from '@/utils/index'
+import { compareData, getLineCode,checkDateWithYearAdd,getMaxLineNum } from '@/utils/index'
 import RangeDatePicker from './RangeDatePicker'
-// import {ComboAttachment } from '@/components';
-import UploadFile from '../../../components/UploadFile';
+import UploadFile from '../../../components/Upload/index'
 import {dataTransfer} from '../CommonUtils'
 const { create } = Form;
 const FormItem = Form.Item;
-
+let lineCode = 1;
+let keys = 1;
 const QualispecialRef = forwardRef(({
     form,
     initialValue = {},
     isView = false,
+    editData = {},
     isOverseas = null
 }, ref) => {
     useImperativeHandle(ref, () => ({
@@ -26,28 +27,37 @@ const QualispecialRef = forwardRef(({
     const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
     const [configure, setConfigure] = useState([]);
     const [dataSource, setDataSource] = useState([]);
-    const [keys, setKey] = useState(-1);
-    const [lineCode, setLineCode] = useState(1);
+    //const [keys, setKey] = useState(-1);
+    //const [lineCode, setLineCode] = useState(1);
     const { attachment = null } = initialValue;
 
     useEffect(() => {
         // let initData = [{ keyId: keys, lineCode: getLineCode(lineCode) }];
         // setLineCode(lineCode + 1);
         // setDataSource(initData)
-    }, [])
+        let initData = [];
+        if (editData && editData.proCertVos && editData.proCertVos.length > 0) {
+          initData = editData.proCertVos.map((item, index) => ({key: index, ...item}));
+          let maxLineNum = getMaxLineNum(initData);
+          lineCode = maxLineNum + 1;
+          keys = initData.length - 1;
+        }
+        setDataSource(initData)
+    }, [editData])
 
     const tableProps = [
         {
             title: '操作',
             align: 'center',
+            dataIndex:'operation',
             width: 100,
             render: (text, record, index) => {
               return <div>
                 {
-                  dataSource.length > 1 ? <Icon
+                  dataSource.length > 0 ? <Icon
                     type={'delete'}
                     title={'删除'}
-                    onClick={() => handleDelete(record.keyId)}
+                    onClick={() => handleDelete(record.key)}
                   /> : null
                 }
               </div>;
@@ -207,15 +217,22 @@ const QualispecialRef = forwardRef(({
     ].map(item => ({ ...item, align: 'center' }))
     // 新增
     function handleAdd() {
-        const newData = [...dataSource, {key: setKey(keys + 1), lineCode: getLineCode(lineCode)}];
-        setLineCode(lineCode + 1)
+      console.log(keys + 1)
+        const newData = [...dataSource, {key: keys ++, lineCode: getLineCode(lineCode)}];
+        //setLineCode(lineCode + 1)
+        lineCode++;
+        console.log(newData)
         setDataSource(newData)
+        
     };
     //删除
     function handleDelete(key) {
+      console.log(key)
         //const { dataSource } = this.state;
-        const newData = dataSource.filter((item) => item.keyId !== key);
-        setLineCode(lineCode - 1);
+        const newData = dataSource.filter((item) => item.key !== key);
+        //setLineCode(lineCode - 1);
+        lineCode = lineCode - 1;
+        keys = keys -1;
         for (let i = 0; i < newData.length; i++) {
             newData[i].lineCode = getLineCode(i + 1);
         }
@@ -223,7 +240,7 @@ const QualispecialRef = forwardRef(({
     };
     //校验名称
     function setQualificationName(e) {
-        for (let i = 0; i <= this.keys; i++) {
+        for (let i = 0; i <= keys; i++) {
             let key = `qualificationName_p[${i}]`;
             if (form.getFieldValue(key) === e.target.value && i !== parseInt(e.target.name)) {
               message.error("与现有的资质文件名称重复，请重新填入！");
@@ -274,7 +291,7 @@ const QualispecialRef = forwardRef(({
                             pageSize: 100,
                         }}
                         checkbox={false}
-                        rowKey={(item) => `row-${item.id}`}
+                        rowKey={(item) => `row-${item.key}`}
                     />
                     <AddButtonWrapper>
                         <Button hidden={isView} icon={'plus'} type="dashed" style={{ width: '50%',marginBottom:'10px' }}

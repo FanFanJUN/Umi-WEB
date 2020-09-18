@@ -152,7 +152,7 @@ export const currencyProps = {
     url: `${baseUrl}/currency/listByPage`,
     params: {
       Q_EQ_frozen__bool: 0
-    }
+    },
   },
   remotePaging: true,
   style: {
@@ -163,6 +163,42 @@ export const currencyProps = {
     description: 'name'
   },
   width: 220
+}
+// 币种列表
+export const currencyTableProps = {
+  rowKey: 'id',
+  store: {
+    url: `${baseUrl}/api/currencyService/findByPage`,
+    autoLoad: false,
+    params: {
+      Q_EQ_frozen__bool: 0
+    },
+    type: 'POST'
+  },
+  searchProperties : ['code', 'name'],
+  columns: [
+    {
+      title: '币种代码',
+      width: 80,
+      dataIndex: 'code',
+    },
+    {
+      title: '币种名称',
+      width: 200,
+      dataIndex: 'name',
+    },
+  ],
+  style: {
+    width: '100%'
+  },
+  reader: {
+    name: 'name',
+  },
+  // height: 150,
+  width: 220,
+  remotePaging: true,
+  searchPlaceHolder:'请输入查询关键字',
+  name: 'currencyName'
 }
 
 // 付款条件
@@ -349,7 +385,7 @@ export const Fieldclassification = {
   },
   reader:{
     name: 'name',
-    field: ['rank'],
+    field: ['value','rank'],
     description: 'rank'
   },
   style: {
@@ -369,7 +405,7 @@ export const FieldconfigureList = {
     description: 'supplierCategoryCode'
   },
   style: {
-    width: '67%'
+    width: '100%'
   }
 }
 

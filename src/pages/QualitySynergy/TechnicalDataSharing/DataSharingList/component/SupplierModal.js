@@ -1,10 +1,10 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { Form, Button, DatePicker, Modal, Col, message } from 'antd';
 import styles from './SupplierModal.less';
 import { ExtModal, ExtTable } from 'suid';
-import { recommendUrl, smBaseUrl, supplierManagerBaseUrl } from '../../../../../utils/commonUrl';
-import { FindSupplierByDemandNumber } from '../../../commonProps';
-import AutoSizeLayout from '../../../../../components/AutoSizeLayout';
+import { supplierManagerBaseUrl } from '../../../../../utils/commonUrl';
+import { DistributionSupplierSave, FindSupplierByDemandNumber, generateLineNumber, judge } from '../../../commonProps';
+import moment from 'moment/moment';
 
 const FormItem = Form.Item;
 
@@ -14,6 +14,9 @@ const formItemLayoutLong = {
 };
 
 const SupplierModal = (props) => {
+  const tableRef = useRef(null);
+  const supplierTable = useRef(null);
+  const { getFieldDecorator, getFieldValue } = props.form;
   const { visible, title, type } = props;
 
   const [supplierData, setSupplierData] = useState({
@@ -21,20 +24,24 @@ const SupplierModal = (props) => {
     selectedRows: [],
   });
 
+  const [sourceData, setSourceData] = useState([]);
+
   const [data, setData] = useState({
+    deleteArr: [],
+    selectedRowKeys: [],
+    selectedRows: [],
     sourceData: [],
     show: false,
     type: 'supplier',
     ModalVisible: false,
   });
 
-  const [endTime, setEndTime] = useState(null);
-
   useEffect(() => {
     if (type === 'allot') {
+      setSourceData([]);
       setData((value) => ({ ...value, show: true }));
-    } else {
       getDataSource();
+    } else {
       setData((value) => ({ ...value, show: false }));
     }
   }, [visible]);
@@ -45,40 +52,88 @@ const SupplierModal = (props) => {
   ].map(item => ({ ...item, align: 'center' }));
 
   const columns = [
-    { title: '来源', dataIndex: 'turnNumber', width: 70 },
-    { title: '分享需求号', dataIndex: 'name1', ellipsis: true, width: 150 },
-    { title: '物料代码', dataIndex: 'name2', ellipsis: true, width: 150 },
-    { title: '物料描述', dataIndex: 'name3', ellipsis: true, width: 250 },
-    { title: '物料组代码', dataIndex: 'name4', ellipsis: true, width: 150 },
+    { title: '行号', dataIndex: 'lineNumber', width: 70 },
+    { title: '是否发布', dataIndex: 'publish', width: 150, render: (v) => v ? '已发布' : '草稿' },
+    { title: '供应商代码', dataIndex: 'supplierCode', ellipsis: true, width: 200 },
+    { title: '供应商名称', dataIndex: 'supplierName', ellipsis: true, width: 200 },
+    { title: '分配日期', dataIndex: 'allotDate', ellipsis: true, width: 200 },
+    { title: '分配人', dataIndex: 'allotPeopleName', ellipsis: true, width: 150 },
+    { title: '资料下载截止日期', dataIndex: 'downloadAbortDate', ellipsis: true, width: 200 },
   ].map(item => ({ ...item, align: 'center' }));
 
   const getDataSource = () => {
+    console.log(props.selectedRows[0].shareDemanNumber, 'props.selectedRows[0].shareDemanNumber');
     FindSupplierByDemandNumber({
-      shareDemanNumber: props.shareDemanNumber,
+      shareDemanNumber: props.selectedRows[0].shareDemanNumber,
     }).then(res => {
       if (res.success) {
-        setData(v => ({ ...v, sourceData: res.data?.rows }));
+        res.data = res.data.map((item, index) => ({ ...item, lineNumber: generateLineNumber(index + 1) }));
+        setSourceData(res.data);
       } else {
         message.error(res.message);
       }
     });
   };
 
-  const handleOk = () => {
-    console.log('ok');
-  };
-
   const handleCancel = () => {
-    setData((value) => ({ ...value, show: false }));
+    tableRef.current.manualSelectedRows();
+    setSupplierData({
+      selectedRowKeys: [],
+      selectedRows: [],
+    });
+    setSourceData([]);
+    setData({
+      deleteArr: [],
+      selectedRowKeys: [],
+      selectedRows: [],
+      show: false,
+      type: 'supplier',
+      ModalVisible: false,
+    });
     props.onCancel();
   };
 
-  const handleSelectedRows = (value) => {
-    console.log(value);
+  // 分配供应商的删除
+  const handleDelete = () => {
+    Modal.confirm({
+      title: '删除',
+      content: '请确认删除选中的数据!',
+      cancelText: '取消',
+      okText: '确定',
+      type: 'error',
+      onOk: () => {
+        const { selectedRowKeys } = data;
+        let deleteArr = [];
+        if (sourceData) {
+          let newSourceData = sourceData.slice();
+          selectedRowKeys.map(item => {
+            newSourceData.map((data, index) => {
+              if (item === data.supplierId) {
+                if (data.id) {
+                  data.whetherDelete = true;
+                  deleteArr.push(data);
+                }
+                newSourceData.splice(index, 1);
+              }
+            });
+          });
+          newSourceData = newSourceData.map((item, index) => ({
+            ...item,
+            lineNumber: generateLineNumber(index + 1),
+          }));
+          tableRef.current.manualSelectedRows();
+          setSourceData(newSourceData);
+          setData(v => ({ ...v, deleteArr }));
+          console.log(deleteArr, 'deleteArr')
+        } else {
+          message.error('请选择要删除的数据!');
+        }
+      },
+    });
   };
 
-  const selectedRowKeys = (value) => {
-    console.log(value, 'select');
+  const handleSelectedRows = (selectedKeys, rows) => {
+    setData(v => ({ ...v, selectedRows: rows, selectedRowKeys: selectedKeys }));
   };
 
   const handleTimeEdit = () => {
@@ -89,7 +144,7 @@ const SupplierModal = (props) => {
     setData((value) => ({ ...value, type: 'supplier', ModalVisible: true }));
   };
 
-  const timeModalCancel = () => {
+  const modalCancel = () => {
     setData((value) => ({ ...value, ModalVisible: false }));
   };
 
@@ -113,13 +168,14 @@ const SupplierModal = (props) => {
     </Form>;
   };
 
-  const onSupplierSelectRow = (value) => {
-    console.log(value);
+  const onSupplierSelectRow = (selectedKeys, rows) => {
+    setSupplierData(v => ({ ...v, selectedRows: rows, selectedRowKeys: selectedKeys }));
   };
 
   const SupplierAdd = () => {
     return <ExtTable
       height={'500px'}
+      ref={supplierTable}
       rowKey={(v) => v.id}
       columns={supplierColumns}
       store={{
@@ -133,11 +189,114 @@ const SupplierModal = (props) => {
       }}
       onSelectRow={onSupplierSelectRow}
       selectedRowKeys={supplierData.selectedRowKeys}
-    />
-
+    />;
   };
 
-  const { getFieldDecorator } = props.form;
+  // 添加截止日期
+  const addEndTime = () => {
+    const endTime = moment(getFieldValue('endTime')).format('YYYY-MM-DD');
+    console.log(sourceData);
+    let newSourceData = sourceData.slice();
+    newSourceData.map((item, index) => {
+      data.selectedRowKeys.map(data => {
+        if (data === item.supplierId) {
+          item.downloadAbortDate = endTime;
+        }
+      });
+    });
+    console.log(newSourceData, 'newSourceData');
+    tableRef.current.manualSelectedRows();
+    setSourceData(newSourceData);
+    modalCancel();
+  };
+
+  // 改变供应商发布状态
+  const changeReleaseStatus = (type) => {
+    let newSourceData = sourceData.slice();
+    newSourceData.map(item => {
+      data.selectedRowKeys.map(data => {
+        if (data === item.supplierId) {
+          item.publish = type;
+        }
+      });
+    });
+    console.log(newSourceData);
+    tableRef.current.manualSelectedRows();
+    setSourceData(newSourceData);
+  };
+
+  // 保存供应商
+  const saveSupplier = () => {
+    console.log(data.deleteArr, '    console.log(data.deleteArr)\n')
+    if (sourceData.length > 0) {
+      Modal.confirm({
+        title: '保存',
+        okText: '确定',
+        content: '请确认保存所有供应商!',
+        cancelText: '取消',
+        onOk: () => {
+          const ids = props.selectedRows.map(item => item.id);
+          let arr = [...sourceData, ...data.deleteArr];
+          arr = arr.map(item => ({ ...item, technicalLineNumber: item.lineNumber }));
+          DistributionSupplierSave({
+            ids: ids,
+            epTechnicalSupplierBos: arr,
+          }).then(res => {
+            if (res.success) {
+              message.success(res.message);
+              handleCancel();
+              props.tableRefresh();
+            } else {
+              message.error(res.message);
+            }
+          });
+        },
+      });
+    } else {
+      message.error('至少有一个供应商');
+    }
+  };
+
+  const duplicateRemoval = (arr, key) => {
+    let obj = {};
+    arr = arr.reduce(function(item, next) {
+      obj[next[key]] ? '' : obj[next[key]] = item.push(next);
+      return item;
+    }, []);
+    return arr;  //去重后返回的数组
+  };
+
+  //新增供应商确定按钮 ok为确定 continue为确认并继续
+  const supplierAddOk = (type) => {
+    let arr = [];
+    supplierData.selectedRows.map(item => {
+      arr.push({
+        supplierCode: item.code,
+        supplierId: item.id,
+        supplierName: item.name,
+        whetherDelete: false,
+        publish: false,
+        allotDate: moment(new Date()).format('YYYY-MM-DD'),
+        allotPeopleName: props.selectedRows[0].strategicPurchaseName,
+        allotPeopleCode: props.selectedRows[0].strategicPurchaseCode,
+        allotPeopleId: props.selectedRows[0].strategicPurchaseId,
+        downloadAbortDate: '',
+      });
+    });
+    arr = [...sourceData, ...arr];
+    // 根据supplierId去重
+    arr = duplicateRemoval(arr, 'supplierId');
+    arr = arr.map((item, index) => ({ ...item, lineNumber: generateLineNumber(index + 1) }));
+    console.log(arr);
+    if (type === 'ok') {
+      supplierTable.current.manualSelectedRows();
+      modalCancel();
+    }
+    tableRef.current.manualSelectedRows();
+    if (JSON.stringify(arr) !== JSON.stringify(sourceData)) {
+      setSourceData(arr);
+    }
+  };
 
   return (
     <ExtModal
@@ -145,17 +304,25 @@ const SupplierModal = (props) => {
       width={'150vh'}
       visible={visible}
       title={title}
-      onOk={handleOk}
+      destroyOnClose={true}
+      footer={null}
       onCancel={handleCancel}
     >
       {
         data.show && <div>
           <Button className={styles.btn} onClick={handleAddSupplier} type='primary'>新增</Button>
-          <Button className={styles.btn} onClick={handleTimeEdit}>编辑资料下载日期</Button>
-          <Button className={styles.btn}>删除</Button>
-          <Button className={styles.btn}>保存</Button>
-          <Button className={styles.btn}>保存并发布</Button>
-          <Button>取消发布</Button>
+          <Button className={styles.btn} onClick={handleTimeEdit}
+                  disabled={data.selectedRowKeys?.length === 0 || !judge(data.selectedRows, 'publish', false)}>编辑资料下载日期</Button>
+          <Button className={styles.btn} onClick={handleDelete}
+                  disabled={data.selectedRowKeys?.length === 0 || !judge(data.selectedRows, 'publish', false)}>删除</Button>
+          <Button className={styles.btn} disabled={data.selectedRowKeys?.length === 0 ||
+          !judge(data.selectedRows, 'downloadAbortDate') || !judge(data.selectedRows, 'publish', false)
+          } onClick={() => changeReleaseStatus(true)}>发布</Button>
+          <Button className={styles.btn}
+                  disabled={data.selectedRowKeys?.length === 0 || !judge(data.selectedRows, 'downloadAbortDate') || !judge(data.selectedRows, 'publish', true)}
+                  onClick={() => changeReleaseStatus(false)}>取消发布</Button>
+          <Button className={styles.btn} disabled={!judge(sourceData, 'downloadAbortDate')}
+                  onClick={saveSupplier}>保存</Button>
         </div>
       }
       <ExtTable
@@ -163,14 +330,15 @@ const SupplierModal = (props) => {
         columns={columns}
         bordered
         allowCancelSelect
-        dataSource={data.sourceData}
+        ref={tableRef}
+        dataSource={sourceData}
         showSearch={false}
         remotePaging
-        checkbox={{ multiSelect: false }}
-        rowKey={(item) => item.id}
+        checkbox={{ multiSelect: true }}
+        rowKey={(item) => item.supplierId}
         size='small'
         onSelectRow={handleSelectedRows}
-        selectedRowKeys={selectedRowKeys}
+        selectedRowKeys={data.selectedRowKeys}
       />
       <ExtModal
         width={'80vh'}
@@ -178,10 +346,20 @@ const SupplierModal = (props) => {
         maskClosable={false}
         title={data.type === 'time' ? '编辑资料下载截止日期' : '新增供应商'}
         visible={data.ModalVisible}
-
-        onCancel={timeModalCancel}
+        footer={data.type === 'supplier' ? [
+          <Button key='cancel' onClick={() => {
+            modalCancel();
+            supplierTable.current.manualSelectedRows();
+          }}>取消</Button>,
+          <Button key='ok' type='primary' onClick={() => supplierAddOk('ok')}>确定</Button>,
+          <Button key='okAndRun' type='primary' onClick={() => supplierAddOk('continue')}>确定并继续</Button>,
+        ] : [
+          <Button key='cancel' onClick={modalCancel}>取消</Button>,
+          <Button key='ok' type='primary' onClick={addEndTime}>确定</Button>,
+        ]}
+        onCancel={modalCancel}
       >
-        <div style={data.type === 'time' ? { height: '50px' } : {height: '500px'}}>
+        <div style={data.type === 'time' ? { height: '50px' } : { height: '500px' }}>
           {data.type === 'time' ? TimeAdd() : SupplierAdd()}
         </div>
       </ExtModal>
@@ -192,6 +370,7 @@ const SupplierModal = (props) => {
 
 SupplierModal.defaultPorps = {
   type: 'view',
+  selectedRows: [],
   shareDemanNumber: '',
   title: '',
   visible: false,

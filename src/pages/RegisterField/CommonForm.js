@@ -116,6 +116,7 @@ const CommonForm = forwardRef(
                         <Item label="信息分类" {...formLayout}>
                             {
                                 getFieldDecorator('smMsgTypeCode'),
+                                getFieldDecorator('rank'),
                                 getFieldDecorator('smMsgTypeName', {
                                   rules: [
                                     {
@@ -123,7 +124,12 @@ const CommonForm = forwardRef(
                                       message: '请选择信息分类'
                                     }
                                   ]
-                                })(<ComboList remotePaging showSearch={false} {...Fieldclassification} name='smMsgTypeName' field={['smMsgTypeCode']} form={form} />)
+                                })(
+                                <ComboList remotePaging showSearch={false} 
+                                    {...Fieldclassification} 
+                                    name='smMsgTypeName' 
+                                    field={['smMsgTypeCode','rank']} form={form} 
+                                />)
                             }
                         </Item>
                     </Col>
@@ -179,7 +185,7 @@ const CommonForm = forwardRef(
                     </Col>
                     <Col span={12}>
                         <Item {...formLayout} label="排序码">
-                            {getFieldDecorator('standby1', {
+                            {getFieldDecorator('sort', {
                                 rules: [
                                     {
                                         required: true,

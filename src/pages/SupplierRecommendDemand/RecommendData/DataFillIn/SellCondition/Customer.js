@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-09 15:36:50
- * @LastEditTime: 2020-09-14 18:54:25
+ * @LastEditTime: 2020-09-17 14:15:35
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/SellCondition/Customer.js
  * @Description: 客户相关
  * @Connect: 1981824361@qq.com
@@ -26,21 +26,31 @@ const formLayout = {
     },
 };
 
-const Customer = React.forwardRef(({ form, type, data }, ref) => {
-    const { getFieldDecorator, setFieldsValue } = form;
+const formLayout2 = {
+    labelCol: {
+        span: 10,
+    },
+    wrapperCol: {
+        span: 14,
+    },
+};
 
-    const [selectedRowKeys, setRowKeys] = useState([]);
-    const [selectedRows, setRows] = useState([]);
-    const [addvisible, setVisible] = useState(false)
+const Customer = React.forwardRef(({ form, type, data, setTableData }, ref) => {
+    const { getFieldDecorator, setFieldsValue } = form;
+    const [changhongSaleInfos, setchanghongSaleInfos] = useState(data.changhongSaleInfos);
+    const [mainCustomers, setmainCustomers] = useState(data.mainCustomers);
+    const [exportSituations, setexportSituations] = useState(data.exportSituations);
+    const [supplierOrderInfos, setsupplierOrderInfos] = useState(data.supplierOrderInfos);
+    const [threeYearPlans, setthreeYearPlans] = useState(data.threeYearPlans);
 
     const tableRef = useRef(null);
-    const editRef = useRef(null);
+
     const columnsForGroup = [
         { title: '供货BU名称', dataIndex: 'buName', ellipsis: true, },
         { title: '配件名称', dataIndex: 'paretsName', ellipsis: true, },
-        { title: '单价', dataIndex: 'unitPrice', ellipsis: true, },
-        { title: '年供货量', dataIndex: 'annualOutput', ellipsis: true, },
-        { title: '占该BU该配件比例', dataIndex: 'buRate', ellipsis: true, },
+        { title: '单价', dataIndex: 'unitPrice', ellipsis: true, inputType: 'InputNumber' },
+        { title: '年供货量', dataIndex: 'annualOutput', ellipsis: true, inputType: 'InputNumber' },
+        { title: '占该BU该配件比例', dataIndex: 'buRate', ellipsis: true, inputType: 'percentInput', width: 203 },
     ].map(item => ({ ...item, align: 'center' }));
 
     const columnsForMajorcustomers = [
@@ -56,7 +66,7 @@ const Customer = React.forwardRef(({ form, type, data }, ref) => {
         { title: '企业在该客户的销售额', dataIndex: 'salesName', ellipsis: true, },
         // { title: '币种', dataIndex: 'name4', ellipsis: true, },
         { title: '企业占该客户同类物资采购份额', dataIndex: 'customerPurchaseRate', ellipsis: true, },
-        { title: '客户采购额占企业总体销售比例', dataIndex: 'customerSaleRate', ellipsis: true, },
+        { title: '客户采购额占企业总体销售比例', dataIndex: 'customerSaleRate', ellipsis: true, inputType: 'percentInput' },
         { title: '客户地理分布', dataIndex: 'geographical', ellipsis: true, },
     ].map(item => ({ ...item, align: 'center' }));
 
@@ -68,13 +78,13 @@ const Customer = React.forwardRef(({ form, type, data }, ref) => {
     const columnsForOrder = [
         { title: '客户', dataIndex: 'customer', ellipsis: true, },
         { title: '订单或合同', dataIndex: 'orderContract', ellipsis: true, },
-        { title: '关键件/重要件', dataIndex: 'importantPart', ellipsis: true, },
-        { title: '应用经验证明材料', dataIndex: 'applicationExperienceFileId', ellipsis: true, },
+        { title: '关键件/重要件', dataIndex: 'importantPart', ellipsis: true, inputType: 'Select' },
+        { title: '应用经验证明材料', dataIndex: 'applicationExperienceFileIds', ellipsis: true, inputType: 'UploadFile' },
     ].map(item => ({ ...item, align: 'center' }));
 
     const columnsForDevPlan = [
         { title: '项目（方案）', dataIndex: 'project', ellipsis: true, },
-        { title: '项目描述', dataIndex: 'projectDescription', ellipsis: true, },
+        { title: '项目描述', dataIndex: 'projectDescription', ellipsis: true, inputType: 'TextArea' },
         { title: '证据', dataIndex: 'proof', ellipsis: true, },
     ].map(item => ({ ...item, align: 'center' }));
 
@@ -82,15 +92,15 @@ const Customer = React.forwardRef(({ form, type, data }, ref) => {
         return (
             <Row>
                 <Col span={12}>
-                    <FormItem label="现在所有客户数量（个）" {...formLayout}>
+                    <FormItem label="现在所有客户数量（个）" {...formLayout2}>
                         {getFieldDecorator('customersNumber', {
                             initialValue: type === 'add' ? '' : data.customersNumber,
                         })(<InputNumber placeholder="请输入现在所有客户数量" style={{ width: '100%' }} />)}
                     </FormItem>
                 </Col>
                 <Col span={12}>
-                    <FormItem label="其中最大客户所占销售额（%）" {...formLayout}>
-                        {getFieldDecorator('shareDemanNumber', {
+                    <FormItem label="其中最大客户所占销售额(%)" {...formLayout2}>
+                        {getFieldDecorator('maxCustomerRate', {
                             initialValue: type === 'add' ? '' : data.shareDemanNumber,
                         })(
                             <Input style={{ width: '100%' }} />,
@@ -113,64 +123,66 @@ const Customer = React.forwardRef(({ form, type, data }, ref) => {
                 </Col>
                 <Col span={12}>
                     <FormItem label="资料" {...formLayout}>
-                        {getFieldDecorator('situationAttachmentId', {
+                        {getFieldDecorator('situationAttachmentIds', {
                         })(
-                            <UploadFile style={{ width: '100%' }} />,
+                            <UploadFile style={{ width: '100%' }}
+                                showColor={type !== 'add' ? true : false}
+                                type={type === 'add' ? '' : 'show'}
+                                entityId={data.situationAttachmentIds} />,
                         )}
                     </FormItem>
                 </Col>
             </Row>
         )
     }
-    // 行选中
-    function handleSelectedRows(rowKeys, rows) {
-        setRowKeys(rowKeys);
-        setRows(rows);
+
+    function setNewData(newData, type) {
+        switch (type) {
+            case 'changhongSaleInfos':
+                setchanghongSaleInfos(newData);
+                break;
+            case 'mainCustomers':
+                setmainCustomers(newData);
+                break;
+            case 'supplierOrderInfos':
+                setsupplierOrderInfos(newData);
+                break;
+            case 'threeYearPlans':
+                setthreeYearPlans(newData);
+                break;
+            default:
+                break;
+        }
+        setTableData(newData, type);
     }
-    // 删除
-    function handleDelete() {
-        console.log('删除')
-    }
+
     return <Fragment>
-        {/* <div className={styles.mb}>
-            <Button type='primary' className={styles.btn} onClick={()=>{editRef.current.showModal('add')}}>新增</Button>
-            <Button className={styles.btn} onClick={()=>{editRef.current.showModal('edit')}}>编辑</Button>
-            <Button className={styles.btn} onClick={handleDelete}>删除</Button>
-            <Button className={styles.btn}>批量导入</Button>
-        </div> */}
         <div>
             <Divider>总体情况</Divider>
             <OverallSit />
             <Divider>长虹集团</Divider>
             <EditableFormTable
                 columns={columnsForGroup}
-                bordered
-                allowCancelSelect
-                showSearch={false}
-                remotePaging
-                checkbox={{ multiSelect: false }}
                 ref={tableRef}
-                rowKey={(item) => item.id}
+                rowKey='id'
                 size='small'
-                onSelectRow={handleSelectedRows}
-                selectedRowKeys={selectedRowKeys}
                 isToolBar={type === 'add'}
-            // {...tableProps}
+                isEditTable={type === 'add'}
+                dataSource={changhongSaleInfos || []}
+                setNewData={setNewData}
+                tableType='changhongSaleInfos'
             />
             <Divider>其他主要客户情况</Divider>
             <EditableFormTable
                 columns={columnsForMajorcustomers}
                 bordered
-                allowCancelSelect
-                showSearch={false}
-                remotePaging
-                checkbox={{ multiSelect: false }}
                 ref={tableRef}
-                rowKey={(item) => item.id}
-                size='small'
-                onSelectRow={handleSelectedRows}
-                selectedRowKeys={selectedRowKeys}
+                rowKey='id'
                 isToolBar={type === 'add'}
+                isEditTable={type === 'add'}
+                dataSource={mainCustomers || []}
+                setNewData={setNewData}
+                tableType='mainCustomers'
             />
             <Divider>出口情况</Divider>
             <ExtTable
@@ -181,11 +193,9 @@ const Customer = React.forwardRef(({ form, type, data }, ref) => {
                 remotePaging
                 checkbox={{ multiSelect: false }}
                 ref={tableRef}
-                rowKey={(item) => item.id}
-                size='small'
-                onSelectRow={handleSelectedRows}
-                selectedRowKeys={selectedRowKeys}
-            // {...tableProps}
+                rowKey='id'
+                dataSource={exportSituations || []}
+                tableType='exportSituations'
             />
             <Divider>客户合作情况介绍和资料</Divider>
             <CustermerInfo />
@@ -193,31 +203,26 @@ const Customer = React.forwardRef(({ form, type, data }, ref) => {
             <EditableFormTable
                 columns={columnsForOrder}
                 bordered
-                allowCancelSelect
-                showSearch={false}
-                remotePaging
                 checkbox={{ multiSelect: false }}
                 ref={tableRef}
-                rowKey={(item) => item.id}
-                size='small'
-                onSelectRow={handleSelectedRows}
-                selectedRowKeys={selectedRowKeys}
+                rowKey='id'
                 isToolBar={type === 'add'}
+                isEditTable={type === 'add'}
+                dataSource={supplierOrderInfos || []}
+                setNewData={setNewData}
+                tableType='supplierOrderInfos'
             />
             <Divider>未来三年发展规划</Divider>
-            <ExtTable
+            <EditableFormTable
                 columns={columnsForDevPlan}
                 bordered
-                allowCancelSelect
-                showSearch={false}
-                remotePaging
-                checkbox={{ multiSelect: false }}
                 ref={tableRef}
-                rowKey={(item) => item.id}
-                size='small'
-                onSelectRow={handleSelectedRows}
-                selectedRowKeys={selectedRowKeys}
+                rowKey='id'
                 isToolBar={type === 'add'}
+                isEditTable={type === 'add'}
+                dataSource={threeYearPlans || []}
+                setNewData={setNewData}
+                tableType='threeYearPlans'
             />
         </div>
     </Fragment>

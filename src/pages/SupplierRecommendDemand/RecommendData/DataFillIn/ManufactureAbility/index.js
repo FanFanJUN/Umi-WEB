@@ -2,16 +2,19 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:58:16
- * @LastEditTime: 2020-09-14 18:11:15
+ * @LastEditTime: 2020-09-18 15:44:02
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/ManufactureAbility/index.js
  * @Description: 制造能力 Tab
  * @Connect: 1981824361@qq.com
  */
-import React, { useState } from 'react';
-import { Form, Button, Spin, PageHeader, Row, Col } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Form, Button, Spin, PageHeader, Row, Col, message } from 'antd';
 import styles from '../../DataFillIn/index.less';
 import EditableFormTable from '../CommonUtil/EditTable';
 import UploadFile from '../CommonUtil/UploadFile';
+import { router } from 'dva';
+import { requestGetApi, requestPostApi } from '../../../../../services/dataFillInApi';
+import { filterEmptyFileds } from '../CommonUtil/utils';
 
 const FormItem = Form.Item;
 const formLayout = {
@@ -23,62 +26,74 @@ const formLayout = {
     },
 };
 
-const ManufactureAbility = (props) => {
+const ManufactureAbility = ({ form, updateGlobalStatus }) => {
 
-    const [data, setData] = useState({
-        loading: false,
-        type: 'add',
-        title: '基本情况',
-        userInfo: {}
-    });
+    const [data, setData] = useState({});
+    const [productionCapacities, setproductionCapacities] = useState([]);
+    const [keyProductEquipments, setkeyProductEquipments] = useState([]);
+    const [technologyEquipments, settechnologyEquipments] = useState([]);
+    const [loading, setLoading] = useState(false);
 
-    const { form } = props;
+    const { query: { id, type = 'add' } } = router.useLocation();
 
-    const { getFieldDecorator, setFieldsValue } = props.form;
+    const { getFieldDecorator, getFieldValue } = form;
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const res = await requestGetApi({ supplierRecommendDemandId: id, tabKey: 'manufactureAbilityTab' });
+            if (res.success) {
+                res.data && setData(res.data);
+                setproductionCapacities(res.data.productionCapacities);
+                setkeyProductEquipments(res.data.keyProductEquipments);
+                settechnologyEquipments(res.data.technologyEquipments);
+            } else {
+                message.error(res.message);
+            }
+            setLoading(false);
+        };
+        fetchData();
+    }, []);
 
     // 生产能力
     const columnsForProCapacity = [
         {
             "title": "名称",
-            "dataIndex": "name1",
+            "dataIndex": "name",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
         },
         {
             "title": "规格型号",
-            "dataIndex": "name2",
+            "dataIndex": "modelBrand",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
         },
         {
             "title": "计量单位",
-            "dataIndex": "name3",
+            "dataIndex": "unit",
+            "ellipsis": true,
+            "editable": true,
+        },
+        {
+            "title": "月最大产量",
+            "dataIndex": "monthMaxYield",
             "ellipsis": true,
             "editable": true,
             "inputType": 'InputNumber',
         },
         {
-            "title": "月最大产量",
-            "dataIndex": "name4",
-            "ellipsis": true,
-            "editable": true,
-            "inputType": 'Input',
-        },
-        {
             "title": "现在月产量",
-            "dataIndex": "name4",
+            "dataIndex": "nowMonthYield",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'Input',
+            "inputType": 'InputNumber',
         },
         {
             "title": "上年度销售总额",
-            "dataIndex": "name4",
+            "dataIndex": "preYearSaleroom",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'Input',
+            "inputType": 'InputNumber',
         }
     ];
 
@@ -86,51 +101,44 @@ const ManufactureAbility = (props) => {
     const columnsForProSitu = [
         {
             "title": "产品",
-            "dataIndex": "name1",
+            "dataIndex": "product",
             "ellipsis": true,
-            "editable": true,
             "inputType": 'InputNumber',
         },
         {
             "title": "月生产能力",
-            "dataIndex": "name2",
+            "dataIndex": "monthProductCapacity",
             "ellipsis": true,
-            "editable": true,
             "inputType": 'InputNumber',
         },
         {
             "title": "计量单位",
-            "dataIndex": "name3",
+            "dataIndex": "unit",
             "ellipsis": true,
-            "editable": true,
             "inputType": 'InputNumber',
         },
         {
             "title": "占总产量％",
-            "dataIndex": "name4",
+            "dataIndex": "rateWithTotal",
             "ellipsis": true,
-            "editable": true,
             "inputType": 'Input',
         },
         {
             "title": "产品交付周期(天）",
-            "dataIndex": "name4",
+            "dataIndex": "productDeliveryCycle",
             "ellipsis": true,
-            "editable": true,
             "inputType": 'Input',
         },
-        {
-            "title": "产品直通率",
-            "dataIndex": "name4",
-            "ellipsis": true,
-            "editable": true,
-            "inputType": 'Input',
-        },
+        // {
+        //     "title": "产品直通率",
+        //     "dataIndex": "offSeasonMonth",
+        //     "ellipsis": true,
+        //     "inputType": 'Input',
+        // },
         {
             "title": "旺季月份",
-            "dataIndex": "name4",
+            "dataIndex": "offSeasonMonth",
             "ellipsis": true,
-            "editable": true,
             "inputType": 'Input',
         },
     ];
@@ -139,73 +147,68 @@ const ManufactureAbility = (props) => {
     const columnsForEqu = [
         {
             "title": "工厂名称",
-            "dataIndex": "name1",
+            "dataIndex": "factoryName",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
         },
         {
             "title": "生产设备、在线检测设备名称",
-            "dataIndex": "name2",
+            "dataIndex": "equipmentName",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
         },
         {
             "title": "规格型号",
-            "dataIndex": "name3",
+            "dataIndex": "model",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
         },
         {
             "title": "生产厂家",
-            "dataIndex": "name4",
+            "dataIndex": "productFactory",
             "ellipsis": true,
             "editable": true,
             "inputType": 'Input',
         },
         {
             "title": "产地",
-            "dataIndex": "name4",
+            "dataIndex": "productArea",
             "ellipsis": true,
             "editable": true,
             "inputType": 'Input',
         },
         {
             "title": "购买时间",
-            "dataIndex": "name4",
+            "dataIndex": "buyTime",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'Input',
+            "inputType": 'DatePicker',
         },
         {
             "title": "数量",
-            "dataIndex": "name4",
+            "dataIndex": "number",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'Input',
+            "inputType": 'InputNumber',
         },
         {
             "title": "用于何工序及生产哪类配件",
-            "dataIndex": "name4",
+            "dataIndex": "useTo",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'Input',
         },
         {
             "title": "单班产量",
-            "dataIndex": "name4",
+            "dataIndex": "singleClassProduction",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'Input',
+            "inputType": 'InputNumber',
         },
         {
             "title": "目前状态",
-            "dataIndex": "name4",
+            "dataIndex": "currentStatus",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'Input',
         },
     ];
 
@@ -213,17 +216,14 @@ const ManufactureAbility = (props) => {
     const columnsForOther = [
         {
             "title": "产品",
-            "dataIndex": "name1",
+            "dataIndex": "product",
             "ellipsis": true,
-            "editable": true,
-            "inputType": 'InputNumber',
         },
         {
             "title": "流程及材料说明",
-            "dataIndex": "name1",
+            "dataIndex": "attachmentIds",
             "ellipsis": true,
-            "editable": true,
-            "inputType": 'InputNumber',
+            "inputType": 'UploadFile',
         },
     ];
 
@@ -231,66 +231,111 @@ const ManufactureAbility = (props) => {
     const columnsForKeyProcess = [
         {
             "title": "产品",
-            "dataIndex": "name1",
+            "dataIndex": "product",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
         },
         {
             "title": "关键工序/工艺名称",
-            "dataIndex": "name1",
+            "dataIndex": "keyTechnologyName",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
         },
         {
             "title": "工艺、技术要求",
-            "dataIndex": "name1",
+            "dataIndex": "technicalRequirement",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
         },
         {
             "title": "设备精度、工艺水平",
-            "dataIndex": "name1",
+            "dataIndex": "technologicalLevel",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
         },
         {
             "title": "备注",
-            "dataIndex": "name1",
+            "dataIndex": "remark",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
+            "inputType": 'TextArea',
         },
     ];
 
+    function handleSave() {
+        if (getFieldValue('haveEnvironmentalTestingEquipment')) {
+            // if (isEmptyArray(tableTata)) {
+            //     message.info('列表至少填写一条设备信息！');
+            //     return;
+            // }
+        }
+        form.validateFieldsAndScroll((error, value) => {
+            console.log(value);
+            if (error) return;
+            const saveParams = {
+                ...value,
+                tabKey: 'manufactureAbilityTab',
+                productionCapacities: productionCapacities || [],
+                currentProductionSituations: data.currentProductionSituations || [],
+                productManufacturingIntroductions: data.productManufacturingIntroductions || [],
+                keyProductEquipments: keyProductEquipments || [],
+                technologyEquipments: technologyEquipments || [],
+                recommendDemandId: id || '676800B6-F19D-11EA-9F88-0242C0A8442E',
+            };
+            requestPostApi(filterEmptyFileds(saveParams)).then((res) => {
+                if (res && res.success) {
+                    message.success('保存数据成功');
+                    updateGlobalStatus();
+                } else {
+                    message.error(res.message);
+                }
+            })
+        })
+    }
+
+    function setNewData(newData, type) {
+        switch (type) {
+            case 'productionCapacities':
+                setproductionCapacities(newData);
+                break;
+            case 'keyProductEquipments':
+                setkeyProductEquipments(newData);
+                break;
+            case 'technologyEquipments':
+                settechnologyEquipments(newData);
+                break;    
+            default:
+                break;
+        }
+    }
+
     return (
         <div>
-            <Spin spinning={data.loading}>
+            <Spin spinning={loading}>
                 <PageHeader
                     ghost={false}
                     style={{
                         padding: '0px'
                     }}
                     title="制造能力"
-                    extra={[
-                        <Button key="save" type="primary" style={{ marginRight: '12px' }}>
+                    extra={type === 'add' ? [
+                        <Button key="save" type="primary" style={{ marginRight: '12px' }} onClick={() => handleSave()}>
                             保存
                         </Button>,
-                    ]}
+                    ] : null}
                 >
                     <div className={styles.wrapper}>
                         <div className={styles.bgw}>
                             <div className={styles.title}>生产能力</div>
                             <div className={styles.content}>
                                 <EditableFormTable
-                                    dataSource={[]}
+                                    dataSource={productionCapacities}
                                     columns={columnsForProCapacity}
-                                    rowKey='name1'
-                                    // setNewData={setNewData}
-                                    isEditTable
+                                    rowKey='id'
+                                    setNewData={setNewData}
+                                    isEditTable={type === 'add'}
+                                    isToolBar={type === 'add'}
+                                    tableType='productionCapacities'
                                 />
                             </div>
                         </div>
@@ -300,9 +345,9 @@ const ManufactureAbility = (props) => {
                             <div className={styles.title}>现有生产情况</div>
                             <div className={styles.content}>
                                 <EditableFormTable
-                                    dataSource={[]}
+                                    dataSource={data.currentProductionSituations}
                                     columns={columnsForProSitu}
-                                    rowKey='name1'
+                                    rowKey='id'
                                 // setNewData={setNewData}
                                 />
                             </div>
@@ -315,7 +360,7 @@ const ManufactureAbility = (props) => {
                                 <Row>
                                     <Col span={24}>
                                         <FormItem label="设备清单" {...formLayout}>
-                                            {getFieldDecorator('source', {
+                                            {getFieldDecorator('keyProductEquipmentFileIds', {
                                                 initialValue: '',
                                                 // rules: [
                                                 //     {
@@ -323,16 +368,20 @@ const ManufactureAbility = (props) => {
                                                 //         message: '自主技术开发能力不能为空',
                                                 //     },
                                                 // ],
-                                            })(<UploadFile />)}
+                                            })(<UploadFile showColor={type !== 'add' ? true : false}
+                                                type={type !== 'add'}
+                                                entityId={data.keyProductEquipmentFileIds} />)}
                                         </FormItem>
                                     </Col>
                                 </Row>
                                 <EditableFormTable
-                                    dataSource={[]}
+                                    dataSource={keyProductEquipments}
                                     columns={columnsForEqu}
-                                    rowKey='name1'
-                                    // setNewData={setNewData}
-                                    isEditTable
+                                    rowKey='id'
+                                    setNewData={setNewData}
+                                    isEditTable={type === 'add'}
+                                    isToolBar={type === 'add'}
+                                    tableType='keyProductEquipments'
                                 />
                             </div>
                         </div>
@@ -342,10 +391,9 @@ const ManufactureAbility = (props) => {
                             <div className={styles.title}>产品制造工艺流程简介</div>
                             <div className={styles.content}>
                                 <EditableFormTable
-                                    dataSource={[]}
+                                    dataSource={data.productManufacturingIntroductions}
                                     columns={columnsForOther}
-                                    rowKey='name1'
-                                // setNewData={setNewData}
+                                    rowKey='id'
                                 />
                             </div>
                         </div>
@@ -355,11 +403,13 @@ const ManufactureAbility = (props) => {
                             <div className={styles.title}>关键工艺及关键工艺设备情况</div>
                             <div className={styles.content}>
                                 <EditableFormTable
-                                    dataSource={[]}
+                                    dataSource={technologyEquipments}
                                     columns={columnsForKeyProcess}
-                                    rowKey='name1'
-                                    isEditTable
-                                // setNewData={setNewData}
+                                    rowKey='id'
+                                    isEditTable={type === 'add'}
+                                    isToolBar={type === 'add'}
+                                    setNewData={setNewData}
+                                    tableType='technologyEquipments'
                                 />
                             </div>
                         </div>

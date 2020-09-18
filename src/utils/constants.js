@@ -1,8 +1,8 @@
 /*
- * @Author: Eason 
- * @Date: 2020-02-21 18:03:16 
+ * @Author: Eason
+ * @Date: 2020-02-21 18:03:16
  * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2020-09-07 13:36:56
+ * @Last Modified time: 2020-09-16 10:09:45
  */
 import { base } from '../../public/app.config.json';
 
@@ -12,8 +12,8 @@ const BASE_DOMAIN = '/';
 /** 网关地址 */
 const GATEWAY = '';
 
-/** 
-* 非生产环境下是使用mocker开发，还是与真实后台开发或联调 
+/**
+* 非生产环境下是使用mocker开发，还是与真实后台开发或联调
 * 注：
 *    yarn start 使用mocker
 *    yarn start:no-mock使用真实后台开发或联调

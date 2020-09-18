@@ -67,9 +67,13 @@ const LimitMaterial = ({ form }) => {
         { title: '处理时间', dataIndex: 'conductorDate', ellipsis: true },
     ]
     const validateItem = (data) => {
+        console.log(data)
         return new Promise((resolve, reject) => {
             const dataList = data.map(item => {
-                item.limitNumber = Number(item.limitNumber).toFixed(2);
+                // 避免均质材质中的含量存在%号
+                if(item.materialWeight && item.materialWeight.toString().indexOf('%')!==-1){
+                    item.materialWeight = item.materialWeight.split('%')[0];
+                }
                 item.environmentalProtectionCode = selectedRow[selectedRow.length - 1].environmentalProtectionCode;
                 return item;
             })
@@ -105,7 +109,7 @@ const LimitMaterial = ({ form }) => {
                 tableRightRef.current.manualSelectedRows();
                 tableRightRef.current.remoteDataRefresh();
             } else {
-                message.error(res.msg)
+                message.error(res.message)
             }
         });
     };
@@ -657,7 +661,7 @@ const LimitMaterial = ({ form }) => {
                     </FormItem>
                 </Row>
                 <Row>
-                    <FormItem label=' 排序号' {...formLayout}>
+                    <FormItem label='排序号' {...formLayout}>
                         {
                             getFieldDecorator('orderNo', {
                                 initialValue: ESPdata.modalSource && ESPdata.modalSource.orderNo,

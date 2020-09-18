@@ -121,7 +121,13 @@ function SupplierConfigure() {
       url: `${smBaseUrl}/api/SmSupplierRegConfigService/findByProperty`,
       params: {
         ...searchValue,
-        quickSearchProperties:['supplierCategoryCode','supplierCategoryName']
+        quickSearchProperties:['supplierCategoryCode','supplierCategoryName'],
+        sortOrders: [
+          {
+            property: 'configCode',
+            direction: 'DESC'
+          }
+        ]
       },
       type: 'POST'
     }
@@ -211,17 +217,17 @@ function SupplierConfigure() {
           <>
             {
               authAction(
-                <Button type='primary' ignore={DEVELOPER_ENV} key='' className={styles.btn} onClick={handleCreate}>新增</Button>
+                <Button type='primary' ignore={DEVELOPER_ENV} key='SUPPLIER_MASTER_DATA_CONFIGURE_ADD' className={styles.btn} onClick={handleCreate}>新增</Button>
               )
             }
             {
               authAction(
-                <Button ignore={DEVELOPER_ENV} key='' className={styles.btn} onClick={handleEditor} disabled={empty}>编辑</Button>
+                <Button ignore={DEVELOPER_ENV} key='SUPPLIER_MASTER_DATA_CONFIGURE_EDIT' className={styles.btn} onClick={handleEditor} disabled={empty}>编辑</Button>
               )
             }
             {
               authAction(
-                <Button ignore={DEVELOPER_ENV} key='' className={styles.btn} onClick={handleCheckDetail} disabled={empty}>明细</Button>
+                <Button ignore={DEVELOPER_ENV} key='SUPPLIER_MASTER_DATA_CONFIGURE_DETAIL' className={styles.btn} onClick={handleCheckDetail} disabled={empty}>明细</Button>
               )
             }
             {/* {

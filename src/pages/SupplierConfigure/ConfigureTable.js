@@ -28,7 +28,6 @@ const tabformRef = forwardRef(({
       const tablereflist = tableRef.current.data;
       const selectData = tablereflist.slice(0)
       selectData[index] = data;
-      console.log(selectData)
       selectData[index].operationCode = e.target.value;
       let selectindex = e.target.value;
       let selectName = selectindex;
@@ -57,14 +56,12 @@ const tabformRef = forwardRef(({
       const selectData = tablereflist.slice(0)
       selectData[index] = data;
       selectData[index].smSort = e.target.value;
-      onBlured(selectData)
+      //onBlured(selectData)
     }
   }
   function sortTable() {
     const sorttabledata = tableRef.current.data;
-    return {
-      sorttabledata
-    }
+    return sorttabledata
   }
   const tableProps = {
     columns: [
@@ -152,10 +149,10 @@ const tabformRef = forwardRef(({
         width: 220
       }
     ],
-    sort: {
-      multiple: true,
-      field: { smMsgTypeCode: 'asc', smSort: 'asc' },
-    },
+    // sort: {
+    //   multiple: true,
+    //   field: { smMsgTypeCode: 'asc', smSort: 'asc' },
+    // },
   }
   function handleCheck() {
     console.log(tableRef.current.data)

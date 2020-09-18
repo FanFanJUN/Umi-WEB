@@ -3,10 +3,15 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-09-14 11:07:43
- * @LastEditTime: 2020-09-14 15:50:21
+ * @LastEditTime: 2020-09-16 14:39:39
  * @Description: 工具s
- * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/Common/utils.js
+ * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/CommonUtil/utils.js
  */
+import React from 'react';
+import { Form, Input } from 'antd';
+
+const FormItem = Form.Item;
+
 /**
   * @description 表单 map 对象 搜索去掉空字符串 undefined null值 保留有效参数值F
   * @author LC@1981824361
@@ -95,3 +100,28 @@ export function guid() {
         return v.toString(16);
     });
 }
+
+//避免数字为0而出现的bug
+export const numberInitialValue = (value) => {
+    return checkNull(value) ? '' : value.toString()
+};
+
+/**
+ * @description:  隐藏表单  不占位
+ * @param {type} 
+ * @return {type} 
+ */
+export const hideFormItem = (getFieldDecorator) => {
+    return (name, initialValue) =>
+        <div style={{ display: 'none' }}>
+            <FormItem>
+                {
+                    getFieldDecorator(name, {
+                        initialValue: numberInitialValue(initialValue),
+                    })(
+                        <Input type={"hidden"} />
+                    )
+                }
+            </FormItem>
+        </div>
+};
