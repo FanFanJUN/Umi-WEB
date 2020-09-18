@@ -259,6 +259,10 @@ export default create()(function ({ form }) {
         delete value.materialCode_name;
         delete value.materialGroupCode_name;
         delete value.strategicPurchaseCode_name;
+        delete value.effectiveStatus_name;
+        delete value.syncStatus_name;
+        delete value.assignSupplierStatus_name;
+        delete value.allotSupplierState_name;
         setSearchValue(v => ({ ...v, ...value }));
         headerRef.current.hide();
         tableRef.current.remoteDataRefresh();

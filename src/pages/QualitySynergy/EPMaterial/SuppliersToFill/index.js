@@ -215,11 +215,15 @@ const SupplierFillList = function ({ form }) {
     }
     // 处理高级搜索
     function handleAdvnacedSearch(value) {
+        console.log(value)
+        // value.needToFill = value.needToFill === 'yes' ? true : value.needToFill === 'no' ? false : '';
         value.materialCode = value.materialCode_name;
         value.strategicPurchaseCode = value.strategicPurchaseCode_name;
         delete value.materialCode_name;
         delete value.materialGroupCode_name;
         delete value.strategicPurchaseCode_name;
+        delete value.effectiveStatus_name;
+        delete value.needToFill_name;
         setSearchValue(v => ({ ...v, ...value }));
         headerRef.current.hide();
         tableRef.current.remoteDataRefresh();

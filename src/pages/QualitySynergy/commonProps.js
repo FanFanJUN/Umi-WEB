@@ -823,8 +823,8 @@ export const PDMStatus = {
 // 是否需要填报
 export const needToFillList = {
   dataSource: [
-    { code: 'yes', name: '是', },
-    { code: 'no', name: '否', },
+    { code: 'true', name: '是', },
+    { code: 'false', name: '否', },
   ],
   ...commonProps,
 };
