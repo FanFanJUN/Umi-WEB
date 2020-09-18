@@ -84,7 +84,7 @@ export default () => {
   };
 
   const handleBack = () => {
-    openNewTab('qualitySynergy/DataSharingList', '技术资料分享需求列表', true);
+    openNewTab(`qualitySynergy/DataSharingList`, '技术资料分享需求列表', true);
     // closeCurrent();
   };
 
