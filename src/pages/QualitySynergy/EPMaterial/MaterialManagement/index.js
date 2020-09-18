@@ -80,8 +80,15 @@ export default create()(function ({ form }) {
                 setOrgId(res.data[0].id);
             }
         });
+        window.parent.frames.addEventListener('message', listenerParentClose, false);
+        return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
     }, []);
-
+    function listenerParentClose(event) {
+        const { data = {} } = event;
+        if (data.tabAction === 'close') {
+            tableRef.current.remoteDataRefresh()
+        }
+    }
     function redirectToPage(type) {
         const [key] = selectedRowKeys;
         const { id = '' } = FRAMELEEMENT;
@@ -330,8 +337,8 @@ export default create()(function ({ form }) {
                 sync: false,
                 delete: !(rows[0].effectiveStatus === 'DRAFT' && rows[0].sourceName === 'SRM'),
                 submit: rows[0].effectiveStatus === 'EFFECT',
-                withdraw: !(rows[0].effectiveStatus === 'EFFECT'&&rows[0].allotSupplierState === 'ALLOT_NOT'),
-                distribute: !(rows[0].applyPersonAccount === getUserAccount()&&rows[0].effectiveStatus === 'EFFECT'),
+                withdraw: !(rows[0].effectiveStatus === 'EFFECT' && rows[0].allotSupplierState === 'ALLOT_NOT'),
+                distribute: !(rows[0].applyPersonAccount === getUserAccount() && rows[0].effectiveStatus === 'EFFECT'),
             });
         } else if (rows.length === 0) {
             setButtonStatus({
@@ -447,7 +454,7 @@ export default create()(function ({ form }) {
         { title: '环保标准', dataIndex: 'environmentalProtectionName', ellipsis: true },
         { title: '战略采购代码', dataIndex: 'strategicPurchaseCode', ellipsis: true },
         { title: '战略采购名称', dataIndex: 'strategicPurchaseName', ellipsis: true },
-        { title: '供应商', dataIndex: 'list', ellipsis: true, render: (text, item) => <a href="javascript:viod(0)" onClick={(e)=>{showSuplier(e, item)}}>查看</a> },
+        { title: '供应商', dataIndex: 'list', ellipsis: true, render: (text, item) => <a href="javascript:viod(0)" onClick={(e) => { showSuplier(e, item) }}>查看</a> },
         { title: '环保管理人员', dataIndex: 'environmentAdminName', ellipsis: true },
         { title: '创建人', dataIndex: 'applyPersonName', ellipsis: true },
         { title: '创建人联系方式', dataIndex: 'applyPersonPhone', ellipsis: true },
@@ -471,7 +478,7 @@ export default create()(function ({ form }) {
             authAction(<Button
                 className={styles.btn}
                 disabled={buttonStatus.detail}
-                onClick={() => {editRef.current.showModal('edit');}}
+                onClick={() => { editRef.current.showModal('edit'); }}
                 ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_MATERIAL_EDIT'
             >编辑</Button>)
@@ -498,7 +505,7 @@ export default create()(function ({ form }) {
             authAction(<Button
                 className={styles.btn}
                 disabled={buttonStatus.maint}
-                onClick={() => {setMaintainModal(true);}}
+                onClick={() => { setMaintainModal(true); }}
                 key='QUALITYSYNERGY_MATERIAL_PERSON'
                 ignore={DEVELOPER_ENV}
             >维护环保管理人员</Button>)
@@ -585,7 +592,7 @@ export default create()(function ({ form }) {
                 className={styles.btn}
                 disabled={buttonStatus.generate}
                 onClick={() => {
-                    setCheckModalType('generate'); 
+                    setCheckModalType('generate');
                     // generateRef.current.setVisible(true);
                     samplingRef.current.setVisible(true);
                 }}
@@ -729,9 +736,9 @@ export default create()(function ({ form }) {
         {/* 查看供应商资质 */}
         <CheckQualificationModal ref={checkRef} />
         {/* 分配供应商 */}
-        <DistributeSupplierModal wrappedComponentRef={supplierRef} selectedRow={selectedRows[0]} supplierModalType={supplierModalType} viewDemandNum={viewDemandNum}/>
+        <DistributeSupplierModal wrappedComponentRef={supplierRef} selectedRow={selectedRows[0]} supplierModalType={supplierModalType} viewDemandNum={viewDemandNum} />
         {/* 抽检复核 */}
-        <CheckModal wrappedComponentRef={samplingRef} selectedRow={selectedRows[0]} checkModalType={checkModalType}/>
+        <CheckModal wrappedComponentRef={samplingRef} selectedRow={selectedRows[0]} checkModalType={checkModalType} />
         {/* 生成报表 */}
         {/* <GenerateModal wrappedComponentRef={generateRef} /> */}
         {/* 同步历史 */}

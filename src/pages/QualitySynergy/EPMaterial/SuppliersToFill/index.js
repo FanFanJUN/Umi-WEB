@@ -4,7 +4,7 @@ import { Input, Button, message, Modal, Form } from 'antd';
 import { supplierManagerBaseUrl, recommendUrl } from '@/utils/commonUrl';
 import { openNewTab, getFrameElement, getUserName, getUserId, getUserAccount } from '@/utils';
 import classnames from 'classnames';
-import { AutoSizeLayout, Header, AdvancedForm, Upload} from '@/components';
+import { AutoSizeLayout, Header, AdvancedForm, Upload } from '@/components';
 import FillingHistory from '../components/fillingHistory'
 import { findMaterialCode, MaterialConfig, StrategicPurchaseConfig, needToFillList, fillStatusList, allPersonList } from '../../commonProps';
 import styles from './index.less'
@@ -20,7 +20,7 @@ const { create, Item: FormItem } = Form;
 const { Search } = Input;
 const { confirm } = Modal;
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
-const SupplierFillList = function ({form}) {
+const SupplierFillList = function ({ form }) {
     const headerRef = useRef(null)
     const tableRef = useRef(null);
     const historyRef = useRef(null);
@@ -43,8 +43,8 @@ const SupplierFillList = function ({form}) {
         { title: '物料代码', key: 'materialCode', type: 'list', props: MaterialConfig },
         { title: '战略采购', key: 'strategicPurchaseCode', type: 'list', props: StrategicPurchaseConfig },
         { title: '环保管理人员', key: 'environmentAdministratorName', props: { placeholder: '输入环保管理人员查询' } },
-        { title: '是否需要填报', key: 'needToFill', type: 'list', props: needToFillList},
-        { title: '填报状态', key: 'effectiveStatus', type: 'list', props: fillStatusList},
+        { title: '是否需要填报', key: 'needToFill', type: 'list', props: needToFillList },
+        { title: '填报状态', key: 'effectiveStatus', type: 'list', props: fillStatusList },
     ]
     // 页面跳转
     function redirectToPage(type) {
@@ -66,6 +66,17 @@ const SupplierFillList = function ({form}) {
                 break;
         }
     }
+    useEffect(() => {
+        window.parent.frames.addEventListener('message', listenerParentClose, false);
+        return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
+    }, []);
+
+    function listenerParentClose(event) {
+        const { data = {} } = event;
+        if (data.tabAction === 'close') {
+            tableRef.current.remoteDataRefresh()
+        }
+    }
     const headerLeft = <>
         {
             authAction(<Button
@@ -80,7 +91,7 @@ const SupplierFillList = function ({form}) {
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={selectedRowKeys.length!==1}
+                disabled={selectedRowKeys.length !== 1}
                 onClick={() => { redirectToPage('detail') }}
                 ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_SUPPLIERFILL_DETAIL_NEW'
@@ -89,7 +100,7 @@ const SupplierFillList = function ({form}) {
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={selectedRowKeys.length!==1}
+                disabled={selectedRowKeys.length !== 1}
                 onClick={() => { handleButton('submit') }}
                 key='QUALITYSYNERGY_SUPPLIERFILL_SUBMIT_NEW'
                 ignore={DEVELOPER_ENV}
@@ -98,7 +109,7 @@ const SupplierFillList = function ({form}) {
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={selectedRowKeys.length!==1}
+                disabled={selectedRowKeys.length !== 1}
                 onClick={() => { handleButton('withdraw') }}
                 ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_SUPPLIERFILL_WITHDEAW_NEW'
@@ -107,7 +118,7 @@ const SupplierFillList = function ({form}) {
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={selectedRowKeys.length!==1}
+                disabled={selectedRowKeys.length !== 1}
                 onClick={() => { setCopyVisible(true) }}
                 key='QUALITYSYNERGY_SUPPLIERFILL_COPY_NEW'
                 ignore={DEVELOPER_ENV}
@@ -116,7 +127,7 @@ const SupplierFillList = function ({form}) {
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={selectedRowKeys.length!==1}
+                disabled={selectedRowKeys.length !== 1}
                 ignore={DEVELOPER_ENV}
                 onClick={() => {
                     historyRef.current.setVisible(true);
@@ -166,8 +177,8 @@ const SupplierFillList = function ({form}) {
         { title: '有效截止日期', dataIndex: 'effectiveEndDate', ellipsis: true, render: (text) => text ? text.slice(0, 10) : '' },
         { title: '物料代码', dataIndex: 'materialCode', ellipsis: true, },
         { title: '物料描述', dataIndex: 'materialName', ellipsis: true, },
-        { title: '填报截止日期', dataIndex: 'fillEndDate', ellipsis: true, render: (text) => text ? text.slice(0, 10) : ''},
-        { title: '分配日期', dataIndex: 'distributionDate', ellipsis: true, render: (text) => text ? text.slice(0, 10) : ''},
+        { title: '填报截止日期', dataIndex: 'fillEndDate', ellipsis: true, render: (text) => text ? text.slice(0, 10) : '' },
+        { title: '分配日期', dataIndex: 'distributionDate', ellipsis: true, render: (text) => text ? text.slice(0, 10) : '' },
         { title: '物料组', dataIndex: 'materialGroupCode', ellipsis: true, },
         { title: '物料组描述', dataIndex: 'materialGroupName', ellipsis: true, },
         { title: '战略采购名称', dataIndex: 'strategicPurchaseName', ellipsis: true, },
@@ -225,16 +236,16 @@ const SupplierFillList = function ({form}) {
     }
     // 上传确认
     function handleUploadOk() {
-        validateFields((error, values)=>{
+        validateFields((error, values) => {
             const { files } = values;
-            if(!error) {
+            if (!error) {
                 uploadFile({
                     aptitudeFileId: files ? files.join() : '',
                     supplierName: getUserName(),
                     supplierCode: getUserAccount(),
                     supplierId: getUserId()
                 }).then(res => {
-                    if(res.statusCode === 200) {
+                    if (res.statusCode === 200) {
                         message.success('上传成功');
                         setUploadVisible(false);
                     } else {
@@ -243,7 +254,7 @@ const SupplierFillList = function ({form}) {
                 })
             }
         })
-        
+
     }
     return <Fragment>
         <Header
