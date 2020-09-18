@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:53:17
- * @LastEditTime: 2020-09-18 09:41:52
+ * @LastEditTime: 2020-09-18 15:42:37
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/ResearchAbility/index.js
  * @Description: 研发能力 Tab
  * @Connect: 1981824361@qq.com
@@ -34,7 +34,7 @@ const formLayoutCol = {
     },
 };
 
-const ResearchAbility = ({ form }) => {
+const ResearchAbility = ({ form, updateGlobalStatus }) => {
 
     const [data, setData] = useState({});
     const [patentsAwards, setpatentsAwards] = useState([]);
@@ -243,6 +243,7 @@ const ResearchAbility = ({ form }) => {
             requestPostApi(filterEmptyFileds({ tabKey: 'researchAbilityTab', ...saveParams })).then((res) => {
                 if (res && res.success) {
                     message.success('保存研发能力成功');
+                    updateGlobalStatus();
                 } else {
                     message.error(res.message);
                 }

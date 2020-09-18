@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:34:49
- * @LastEditTime: 2020-09-18 14:43:49
+ * @LastEditTime: 2020-09-18 15:42:11
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/SellCondition/index.js
  * @Description: 销售情况 Tab
  * @Connect: 1981824361@qq.com
@@ -17,7 +17,7 @@ import { findSalesSituationById, saveSupplierSalesSituation } from '../../../../
 import { router } from 'dva';
 import { filterEmptyFileds } from '../CommonUtil/utils';
 
-const SellCondition = ({ form }) => {
+const SellCondition = ({ form, updateGlobalStatus }) => {
     const [data, setData] = useState({});
     const [supplierSalesProceeds, setsupplierSalesProceeds] = useState([]); // 销售收入及利润
     const [changhongSaleInfos, setchanghongSaleInfos] = useState([]);
@@ -63,6 +63,7 @@ const SellCondition = ({ form }) => {
             saveSupplierSalesSituation(filterEmptyFileds(saveParams)).then((res) => {
                 if (res && res.success) {
                     message.success('保存销售情况成功');
+                    updateGlobalStatus();
                 } else {
                     message.error(res.message);
                 }

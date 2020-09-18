@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:58:13
- * @LastEditTime: 2020-09-17 17:11:48
+ * @LastEditTime: 2020-09-18 15:45:18
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/Other/index.js
  * @Description: 其他附加资料
  * @Connect: 1981824361@qq.com
@@ -28,7 +28,7 @@ const formLayout = {
     },
 };
 
-const Other = ({ form }) => {
+const Other = ({ form, updateGlobalStatus }) => {
 
     const [data, setData] = useState({});
     const [loading, setLoading] = useState(false);
@@ -66,6 +66,7 @@ const Other = ({ form }) => {
             requestPostApi(filterEmptyFileds(saveParams)).then((res) => {
                 if (res && res.success) {
                     message.success(res.message);
+                    updateGlobalStatus();
                 } else {
                     message.error(res.message);
                 }

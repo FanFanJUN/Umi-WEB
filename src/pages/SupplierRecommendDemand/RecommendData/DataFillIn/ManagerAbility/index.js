@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:58:19
- * @LastEditTime: 2020-09-18 13:29:07
+ * @LastEditTime: 2020-09-18 15:43:28
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/ManagerAbility/index.js
  * @Description: 供应链管理能力 Tab
  * @Connect: 1981824361@qq.com
@@ -26,7 +26,7 @@ const formLayout = {
     },
 };
 
-const ManagerAbility = ({ form }) => {
+const ManagerAbility = ({ form, updateGlobalStatus }) => {
 
     const [data, setData] = useState({});
     const [keyMaterialSuppliers, setkeyMaterialSuppliers] = useState([]);
@@ -172,6 +172,7 @@ const ManagerAbility = ({ form }) => {
             requestPostApi(filterEmptyFileds(saveParams)).then((res) => {
                 if (res && res.success) {
                     message.success('保存数据成功');
+                    updateGlobalStatus();
                 } else {
                     message.error(res.message);
                 }

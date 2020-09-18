@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:58:26
- * @LastEditTime: 2020-09-16 17:52:26
+ * @LastEditTime: 2020-09-18 15:44:53
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/DWC/index.js
  * @Description: 合作意愿 Tab
  * @Connect: 1981824361@qq.com
@@ -35,7 +35,7 @@ const formLayoutCol = {
 
 const isAgreeorNot = ['同意', '不同意'];
 
-const DWC = ({ form }) => {
+const DWC = ({ form, updateGlobalStatus }) => {
     const [data, setData] = useState({});
     const [loading, setLoading] = useState(false);
     const [radioValue, setRadioValue] = useState('');
@@ -71,6 +71,7 @@ const DWC = ({ form }) => {
             requestPostApi(filterEmptyFileds(saveParams)).then((res) => {
                 if (res && res.success) {
                     message.success(res.message);
+                    updateGlobalStatus();
                 } else {
                     message.error(res.message);
                 }

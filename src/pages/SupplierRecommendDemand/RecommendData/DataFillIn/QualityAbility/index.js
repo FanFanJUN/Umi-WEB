@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:58:10
- * @LastEditTime: 2020-09-18 14:25:32
+ * @LastEditTime: 2020-09-18 15:43:04
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/QualityAbility/index.js
  * @Description: 质量能力
  * @Connect: 1981824361@qq.com
@@ -26,7 +26,7 @@ const formLayout = {
     },
 };
 
-const QualityAbility = ({ form }) => {
+const QualityAbility = ({ form, updateGlobalStatus }) => {
 
     const [data, setData] = useState({});
     const [keyControlProcesses, setkeyControlProcesses] = useState([]);
@@ -302,6 +302,7 @@ const QualityAbility = ({ form }) => {
             requestPostApi(filterEmptyFileds(saveParams)).then((res) => {
                 if (res && res.success) {
                     message.success('保存数据成功');
+                    updateGlobalStatus();
                 } else {
                     message.error(res.message);
                 }
