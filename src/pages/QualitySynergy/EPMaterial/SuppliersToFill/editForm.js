@@ -77,7 +77,7 @@ export default function () {
                     <div className={styles.bgw}>
                         <div className={styles.title}>基本信息</div>
                         <div className={styles.content}>
-                            <BaseInfo isView={true} originData={originData} />
+                            <BaseInfo isView={true} originData={originData} isSupplier={true}/>
                         </div>
                     </div>
                 </div>

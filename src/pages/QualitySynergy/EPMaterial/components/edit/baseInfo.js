@@ -14,7 +14,7 @@ const formLayout = {
   },
 };
 
-const BaseInfo = forwardRef(({ form, isView, setBuCode, originData={} }, ref) => {
+const BaseInfo = forwardRef(({ form, isView, setBuCode, originData={}, isSupplier }, ref) => {
   useImperativeHandle(ref, () => ({
     getFormInfo,
     validateFieldsAndScroll
@@ -61,7 +61,7 @@ const BaseInfo = forwardRef(({ form, isView, setBuCode, originData={} }, ref) =>
         </Col>
       </Row>
       <Row>
-        <Col span={12}>
+        {!isSupplier && <Col span={12}>
           <FormItem label='业务单元' {...formLayout}>
             {
               getFieldDecorator('buId'),
@@ -83,7 +83,7 @@ const BaseInfo = forwardRef(({ form, isView, setBuCode, originData={} }, ref) =>
               )
             }
           </FormItem>
-        </Col>
+        </Col>}
         <Col span={12}>
           <FormItem label='创建人联系方式' {...formLayout}>
             {
@@ -94,14 +94,13 @@ const BaseInfo = forwardRef(({ form, isView, setBuCode, originData={} }, ref) =>
             }
           </FormItem>
         </Col>
-      </Row>
-      <Row>
-
+      {/* </Row>
+      <Row> */}
         <Col span={12}>
           <FormItem label='创建日期' {...formLayout}>
             {
-              getFieldDecorator('dateTime', {
-                initialValue: isView ? originData.dateTime : moment().format('YYYY-MM-DD')
+              getFieldDecorator('createdDate', {
+                initialValue: isView ? originData.createdDate : moment().format('YYYY-MM-DD')
               })(<Input disabled/>)
             }
           </FormItem>
