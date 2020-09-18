@@ -7,7 +7,8 @@ import React, { useState, useEffect } from 'react';
 import { Table, PageHeader, Button, Input, Radio, message } from 'antd';
 import styles from '../index.less';
 import { queryCSRorEPEData, saveCSRorEPEData } from '../../../../../services/recommend';
-import { ExtTable } from 'suid';
+import { Upload } from '../../../../../components';
+// import {  } from 'seid';
 import { router } from 'dva';
 const { useLocation } = router;
 const { Group: RadioGroup } = Radio;
@@ -54,6 +55,16 @@ function CSRQuestionnaire({
       }
     },
     {
+      title: '附件',
+      dataIndex: 'attacmentId',
+      render(text, record) {
+        const { attachmentConfig } = record;
+        if (attachmentConfig) {
+          return <Upload fileOnChange={handleUploadFile} entityId={text}/>
+        }
+      }
+    },
+    {
       title: '备注',
       dataIndex: 'remarkValue',
       render(text, record, index) {
@@ -79,6 +90,18 @@ function CSRQuestionnaire({
     })
     setDataSource(newDataSource)
   }
+  function handleUploadFile(ids, index) {
+    const newDataSource = dataSource.map((item, n) => {
+      if (n === index) {
+        return ({
+          ...item,
+          attachmentIds: ids
+        })
+      }
+      return item
+    })
+    setDataSource(newDataSource)
+  }
   async function handleSave() {
     toggleConfirmLoading(true)
     const { success, message: msg } = await saveCSRorEPEData(dataSource);
@@ -94,12 +117,11 @@ function CSRQuestionnaire({
     async function getFormData() {
       const { success, data } = await queryCSRorEPEData({
         supplierRecommendDemandId: id,
-        csrConfigEnum: 'CSR'
+        csrConfigEnum: 'PRODUCTION_ENVIRONMENT'
       })
       if (success) {
         setDataSource(data.map((item, k) => ({ ...item, lineIndex: k + 1 })))
       }
-      // console.log(success, data)
     }
     getFormData()
   }, [])

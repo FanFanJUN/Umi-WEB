@@ -39,9 +39,15 @@ export default function() {
     shareDemanNumber: '',
   });
 
+  console.log(window.location)
+
   const [assignData, setAssignData] = useState({
     visible: false,
   });
+
+  useEffect(() => {
+    tableRef.current.remoteDataRefresh();
+  }, [])
 
   const [data, setData] = useState({
     quickSearchValue: '',
@@ -155,7 +161,7 @@ export default function() {
     { title: '业务单元', key: 'buCode', type: 'list', props: BUConfigNoFrostHighSearch },
     { title: '申请人', key: 'applyPeopleName', props: { placeholder: '输入申请人查询' } },
     { title: '分配供应商状态', key: 'allotSupplierState', type: 'list', props: ShareDistributionProps },
-    { title: '状态', key: 'state', type: 'list', props: ShareStatusProps },
+    { title: '状态', key: 'code', type: 'list', props: ShareStatusProps },
   ];
 
   const columns = [

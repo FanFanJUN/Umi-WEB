@@ -137,11 +137,12 @@ const FormContext = forwardRef(({
   }
   function setAllFormatValues({
     fields = {},
-    treeData = []
+    treeData = {}
   }) {
     const { attachmentId, ...other } = fields;
-    console.log(attachmentId)
     setFieldsValue(other)
+    console.log(treeData)
+    setSystemView(treeData)
     setAttachment(attachmentId)
   }
   function formatViewData(iview) {
@@ -206,6 +207,7 @@ const FormContext = forwardRef(({
                     {...corporationProps}
                     placeholder='选择申请公司'
                     field={['corporationCode']}
+                    disabled={type === 'detail'}
                   />
                 )
               }
@@ -241,6 +243,7 @@ const FormContext = forwardRef(({
                     name='orgName'
                     {...orgnazationProps}
                     field={['orgCode']}
+                    disabled={type === 'detail'}
                   />
                 )
               }
@@ -283,6 +286,7 @@ const FormContext = forwardRef(({
                       changeAgentState(result)
                       // if(reg)
                     }}
+                    disabled={type === 'detail'}
                   />
                 )
               }
@@ -331,6 +335,7 @@ const FormContext = forwardRef(({
                           }
                         }}
                         field={['originFactoryCode']}
+                        disabled={type === 'detail'}
                       />
                     )
                   }
@@ -371,6 +376,7 @@ const FormContext = forwardRef(({
                     name='materialCategoryName'
                     {...materialClassProps}
                     field={['materialCategoryCode']}
+                    disabled={type === 'detail'}
                   />
                 )
               }
@@ -410,6 +416,7 @@ const FormContext = forwardRef(({
                     name='identifyMaterialLevelName'
                     {...fimlyMaterialClassifyProps}
                     field={['identifyMaterialLevelValue']}
+                    disabled={type === 'detail'}
                   />
                 )
               }
@@ -444,9 +451,11 @@ const FormContext = forwardRef(({
                     onClick={() => {
                       recRef.current.show()
                     }}
+                    disabled={type === 'detail'}
                   >新增</Button>
                   <Button
                     onClick={handleRemoveSelectedRows}
+                    disabled={type === 'detail'}
                   >删除</Button>
                 </>
               }
@@ -481,7 +490,11 @@ const FormContext = forwardRef(({
                     field={['selfMainDataEvlSystemId']}
                     {...evaluateSystemProps}
                     style={{ width: 350 }}
-                    afterSelect={item => setSystemView(item)}
+                    afterSelect={item => {
+                      console.log(item)
+                      setSystemView(item)
+                    }}
+                    disabled={type === 'detail'}
                   />
                 )
               }
@@ -510,7 +523,8 @@ const FormContext = forwardRef(({
                     }
                   ]
                 })(
-                  <CheckboxGroup options={recommendCheckbox} />
+                  <CheckboxGroup options={recommendCheckbox}
+                    disabled={type === 'detail'} />
                 )
               }
             </FormItem>
@@ -528,7 +542,8 @@ const FormContext = forwardRef(({
                     }
                   ]
                 })(
-                  <RadioGroup>
+                  <RadioGroup
+                    disabled={type === 'detail'}>
                     <Radio value='COMMONLY'>一般</Radio>
                     <Radio value='STRONGER'>较强烈</Radio>
                     <Radio value='STRONG'>强烈</Radio>
@@ -550,7 +565,8 @@ const FormContext = forwardRef(({
                     }
                   ]
                 })(
-                  <TextArea rows={6} maxLength={500} />
+                  <TextArea
+                    disabled={type === 'detail'} rows={6} maxLength={500} />
                 )
               }
             </FormItem>
@@ -571,7 +587,12 @@ const FormContext = forwardRef(({
           </Col>
         </Row>
       </Form>
-      <RecommendCompany ref={recRef} initialDataSource={recommendCompany} onContinue={handleSelectRecommendCompanyAndContinue} onOk={handleSelectRecommendCompany} />
+      <RecommendCompany
+        ref={recRef}
+        initialDataSource={recommendCompany}
+        onContinue={handleSelectRecommendCompanyAndContinue}
+        onOk={handleSelectRecommendCompany}
+      />
     </div>
   )
 })

@@ -123,6 +123,7 @@ class UploadFile extends React.Component {
                     item.thumbUrl = `${ATTACMENT_HOST}/preview?docId=` + item.response[0]
                 }
             })
+            console.log(fileList)
             this.setState({fileList, completeUploadFile});
         } else {
             this.handleRemove(file)

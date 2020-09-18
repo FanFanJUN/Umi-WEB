@@ -1,7 +1,5 @@
 import {
   useState,
-  useEffect,
-  useCallback,
   useRef
 } from 'react';
 import styles from './index.less';
@@ -70,7 +68,8 @@ export default () => {
       <Button className={styles.btn} onClick={handleEditor} disabled={empty || underWay}>编辑</Button>
       <Button className={styles.btn} onClick={handleRemove} disabled={empty || !fillInit}>删除</Button>
       <Button className={styles.btn} disabled={empty || underWay || !fillInit} onClick={handleSubmitSupplierFillIn}>提交供应商填报</Button>
-      <Button className={styles.btn} disabled={empty || !fillComplete}>填报信息确认</Button>
+      <Button className={styles.btn} disabled={empty}>填报信息确认</Button>
+      {/* <Button className={styles.btn} disabled={empty || !fillComplete}>填报信息确认</Button> */}
       <Button className={styles.btn} disabled={empty || !fillComplete}>提交审核</Button>
       <Button className={styles.btn} disabled={empty || !fillComplete}>审核历史</Button>
       <Button className={styles.btn} disabled={empty} onClick={stopApprove}>审核终止</Button>
