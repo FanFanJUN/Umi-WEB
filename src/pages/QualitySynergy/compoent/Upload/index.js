@@ -7,7 +7,6 @@ import '../../../../components/Upload/upload.css';
 import * as fileIcon from '../../../../components/Upload/fileIcon';
 import { onLineTarget } from '../../../../../config/proxy.config';
 import { BASE_URL } from '../../../../utils/constants';
-import { getFrameElement } from '../../../../utils';
 
 const host = process.env.NODE_ENV === 'production' ? '' : onLineTarget;
 
@@ -27,7 +26,6 @@ class UploadFile extends React.Component {
   }
 
   componentDidMount() {
-    console.log(window.location,  window.top, window.self, getFrameElement(), 'window')
     this.updateFile(this.props.entityId);
   }
 
@@ -145,10 +143,10 @@ class UploadFile extends React.Component {
         }
       }
       fileList.map(item => {
-        console.log(item, 'item');
+        console.log(origin, 'item');
         if (item.status === 'done') {
           item.url = host + baseUrl + '/supplierRegister/download?docId=' + item.response[0];
-          item.thumbUrl = window._previewUrl + item.response[0];
+          item.thumbUrl = `${origin}/api-gateway/edm-service/preview` + '?docId=' + item.response[0];
         }
       });
       this.setState({ fileList, completeUploadFile });

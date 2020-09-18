@@ -41,12 +41,13 @@ export default function() {
     value.materialGroupCode = value.materialGroupCode_name;
     value.strategicPurchaseCode = value.strategicPurchaseCode_name;
     value.buCode = value.buCode_name;
+    value.fileDownloadState = value.fileDownloadState_name;
     delete value.materialCode_name;
     delete value.materialGroupCode_name;
     delete value.strategicPurchaseCode_name;
     delete value.buCode_name;
-    delete value.state_name;
-    setData(v => ({ ...v, epTechnicalShareDemandSearchBo: value }));
+    delete value.fileDownloadState_name;
+    setData(v => ({ ...v, EpTechnicalShareDemandSearchBo: value }));
     tableRef.current.remoteDataRefresh();
   }
 
@@ -57,7 +58,7 @@ export default function() {
     { title: '战略采购', key: 'strategicPurchaseCode', type: 'list', props: StrategicPurchaseConfig },
     { title: '业务单元', key: 'buCode', type: 'list', props: BUConfigNoFrostHighSearch },
     { title: '申请人', key: 'applyPeopleName', props: { placeholder: '输入申请人查询' } },
-    { title: '状态', key: 'state', type: 'list', props: ShareDownloadStatus },
+    { title: '状态', key: 'fileDownloadState', type: 'list', props: ShareDownloadStatus },
   ]
 
   const columns = [

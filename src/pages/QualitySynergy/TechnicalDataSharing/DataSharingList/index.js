@@ -78,6 +78,7 @@ export default function() {
 
   const handleQuickSearch = (value) => {
     setData(v => ({ ...v, quickSearchValue: value }));
+    tableRef.current.manualSelectedRows();
     tableRef.current.remoteDataRefresh();
     console.log(value, 'value');
   };
@@ -142,6 +143,7 @@ export default function() {
     delete value.state_name;
     delete value.allotSupplierState_name;
     setData(v => ({ ...v, epTechnicalShareDemandSearchBo: value }));
+    tableRef.current.manualSelectedRows();
     tableRef.current.remoteDataRefresh();
   };
 
@@ -285,7 +287,6 @@ export default function() {
 
   const handleModalCancel = () => {
     setModalData((value) => ({ ...value, visible: false }));
-    tableRef.current.remoteDataRefresh();
   };
 
   const handleSeesSupplier = (shareDemanNumber) => {
@@ -336,6 +337,7 @@ export default function() {
       <SupplierModal
         {...modalData}
         selectedRows={data.selectedRows}
+        tableRefresh={() => tableRef.current.remoteDataRefresh()}
         onCancel={handleModalCancel}
       />
       <TacticAssign
