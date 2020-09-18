@@ -1,6 +1,14 @@
 import { basicServiceUrl, baseUrl, recommendUrl } from '../utils/commonUrl';
 import request from '../utils/request';
-
+// 豁免条款-新增/编辑
+export async function materialCompositionVerification(params) {
+  const url = `${recommendUrl}/api/epDataFillMaterialConstituentService/checkImport`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+}
 
 // 豁免条款-新增/编辑
 export async function exemptionClauseDataInsert(params) {
@@ -165,7 +173,7 @@ export async function frozenTechnicalDataCategory(params) {
     });
 }
 
-// 
+//
 // BU-新增
 export async function addBU(params) {
     const url = `${baseUrl}/bu/addBu`;
