@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-09 15:28:52
- * @LastEditTime: 2020-09-17 14:03:03
+ * @LastEditTime: 2020-09-18 10:23:19
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/SellCondition/SalesProfit.js
  * @Description: 销售收入及利润 Table
  * @Connect: 1981824361@qq.com

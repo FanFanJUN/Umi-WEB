@@ -3,7 +3,7 @@ import Header from '../../../../components/Header';
 import AdvancedForm from '../../../../components/AdvancedForm';
 import { Button, Input, message, Modal } from 'antd';
 import styles from './index.less';
-import { ExtTable, utils } from 'suid';
+import { ComboList, ExtTable, utils } from 'suid';
 import {
   BUConfigNoFrostHighSearch,
   DeleteDataSharingList,
@@ -147,7 +147,7 @@ export default function() {
 
   // 高级查询配置
   const formItems = [
-    { title: '物料代码', key: 'materialCode', type: 'list', props: MaterialConfig },
+    { title: '物料代码', key: 'materialCode', type: 'list', props: MaterialConfig,},
     { title: '物料组', key: 'materialGroupCode', type: 'list', props: MaterialGroupConfig },
     { title: '战略采购', key: 'strategicPurchaseCode', type: 'list', props: StrategicPurchaseConfig },
     { title: '业务单元', key: 'buCode', type: 'list', props: BUConfigNoFrostHighSearch },
@@ -172,8 +172,8 @@ export default function() {
     //   dataIndex: 'buId',
     //   render: (v, data) => <a onClick={() => handleSeesSupplier(data.shareDemanNumber)}>查看</a>,
     // },
-    { title: 'BU代码', dataIndex: 'buCode', ellipsis: true },
-    { title: 'BU名称', dataIndex: 'buName', ellipsis: true },
+    { title: '业务单元代码', dataIndex: 'buCode', ellipsis: true },
+    { title: '业务单元名称', dataIndex: 'buName', ellipsis: true },
     { title: '申请人', dataIndex: 'applyPeopleName', ellipsis: true },
     { title: '申请人联系方式', dataIndex: 'applyPeoplePhone', ellipsis: true },
     { title: '申请日期', dataIndex: 'applyDate', ellipsis: true, width: 160 },
@@ -182,6 +182,8 @@ export default function() {
   const visibleSupplier = () => {
     console.log('查看供应商');
   };
+
+  console.log(judge(data.selectedRows, 'allotSupplierState', '已分配'))
 
   const headerLeft = <>
     {
@@ -210,7 +212,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='TECHNICAL_DATA_SHARING_DELETE'
-        disabled={data.selectedRowKeys.length === 0}
+        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', '草稿')}
       >删除</Button>)
     }
     {
@@ -246,10 +248,10 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={
-          data.selectedRowKeys.length === 0 ||
+          data.selectedRowKeys.length !== 1 ||
           judge(data.selectedRows, 'strategicPurchaseCode', null) ||
           !judge(data.selectedRows, 'strategicPurchaseCode', data.selectedRows[0]?.strategicPurchaseCode) ||
-          !judge(data.selectedRows, 'state', '生效') || (judge(data.selectedRows, 'allotSupplierState', '已分配') ? data.selectedRowKeys > 1 : false)
+          !judge(data.selectedRows, 'state', '生效') || (judge(data.selectedRows, 'allotSupplierState', '已分配') ? data.selectedRowKeys.length > 1 : false)
         }
         key='TECHNICAL_DATA_SHARING_ALLOT'
       >分配供应商</Button>)
@@ -259,7 +261,9 @@ export default function() {
         onClick={() => redirectToPage('govern')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'strategicPurchaseCode', null)}
+        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'strategicPurchaseCode', null)
+        || !judge(data.selectedRows, 'state', '生效')
+        }
         key='TECHNICAL_DATA_SHARING_GOVERN'
       >指派战略采购</Button>)
     }
@@ -290,6 +294,7 @@ export default function() {
 
   const tacticCancel = () => {
     setAssignData((value) => ({ ...value, visible: false }))
+    tableRef.current.remoteDataRefresh();
   }
 
   return (

@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:53:17
- * @LastEditTime: 2020-09-17 16:51:49
+ * @LastEditTime: 2020-09-18 09:41:52
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/ResearchAbility/index.js
  * @Description: 研发能力 Tab
  * @Connect: 1981824361@qq.com
@@ -273,7 +273,7 @@ const ResearchAbility = ({ form }) => {
                                     <Col span={12}>
                                         <FormItem label="自主技术开发能力" {...formLayout}>
                                             {getFieldDecorator('selfRdCapability', {
-                                                initialValue: type === 'add' ? 1 : data.selfRdCapability,
+                                                initialValue: type === 'add' ? 'FULLY' : data.selfRdCapability,
                                                 rules: [
                                                     {
                                                         required: true,
@@ -282,9 +282,9 @@ const ResearchAbility = ({ form }) => {
                                                 ],
                                             })(
                                                 <Radio.Group>
-                                                    <Radio value={1}>完全具备</Radio>
-                                                    <Radio value={2}>基本具备</Radio>
-                                                    <Radio value={3}>不具备</Radio>
+                                                    <Radio value={'FULLY'}>完全具备</Radio>
+                                                    <Radio value={'BASIC'}>基本具备</Radio>
+                                                    <Radio value={'NOT'}>不具备</Radio>
                                                 </Radio.Group>)}
                                         </FormItem>
                                     </Col>
