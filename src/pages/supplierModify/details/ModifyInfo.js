@@ -350,6 +350,7 @@ const SupplierEditRef = forwardRef(({
                   <div className={styles.title}>供应商专用资质</div>
                   <div>
                     <QualificationProfessional
+                      editData={editData}
                       wrappedComponentRef={QualispecialRef}
                       isView={true}
                     />

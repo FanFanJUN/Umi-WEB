@@ -27,31 +27,38 @@ const AuthorizeRef = forwardRef(({
     const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
     const [configure, setConfigure] = useState([]);
     const [dataSource, setDataSource] = useState([]);
-    const [posited, setposited] = useState(0);
+    const [authoriz, setauthoriz] = useState([]);
     //const [lineCode, setLineCode] = useState(1);
-    
+
     useEffect(() => {
         let initData = [{ keyId: keys, lineCode: getLineCode(lineCode) }];
-        console.log(initData)
-        lineCode ++;
+        // console.log(initData)
+        // lineCode ++;
         let editData = editformData;
+        console.log(editData)
         if (editData && editData.contactVos && editData.contactVos.length > 0) {
-            let positioned = editData.contactVos[0].position;
-            setposited(positioned)
-            initData = editData.contactVos.map((item, index) => ({keyId: index, ...item }));
+            // let positionArray = [];
+            // editData.contactVos.forEach(items => {
+            //     console.log(items)
+            //     positionArray.push(items.position)
+            // })
+            //editData.contactVos.position = positionArray
+            initData = editData.contactVos.map((item, index) => ({ keyId: index, ...item }));
             let maxLineNum = getMaxLineNum(editData.contactVos);
             console.log(maxLineNum)
-            lineCode = maxLineNum + 1;
+            lineCode = maxLineNum - 1;
             keys = initData.length - 1;
-            
+
         }
-        setDataSource(initData)
+        //setDataSource(initData)
+        getBankcodelist(editData)
     }, [editformData])
 
     const tableProps = [
         {
             title: '操作',
             align: 'center',
+            dataIndex: 'operation',
             width: 100,
             render: (text, record, index) => {
                 return <div>
@@ -82,13 +89,13 @@ const AuthorizeRef = forwardRef(({
                 return <span>
                     <FormItem style={{ marginBottom: 0 }}>
                         {
-                            getFieldDecorator(`position[${index}]`),    
+                            getFieldDecorator(`position[${index}]`),
                             getFieldDecorator(`positionName[${index}]`, {
                                 initialValue: record ? record.positionName : '',
                                 rules: [{ required: true, message: '请选择职位!', whitespace: true }],
                             })(
                                 <ComboList
-                                    form={form} 
+                                    form={form}
                                     {...listPositionConfig}
                                     showSearch={false}
                                     //afterSelect={afterSelect}
@@ -246,13 +253,55 @@ const AuthorizeRef = forwardRef(({
     // function afterSelect(val) {
     //     form.setFieldsValue({ position: val.value, positionName: val.name })
     // }
+    function getBankcodelist(val) {
+        let contactVos;
+        if (val) {
+            console.log(val)
+            if (val.contactVos !== undefined) {
+                console.log()
+                contactVos = val.contactVos;
+                contactVos.forEach(item => item.key = keys++);
+                //设置行号，取（最大值+1）为当前行号
+                if (contactVos.length > 0) {
+                    if (!isEmpty(contactVos)) {
+                        console.log(contactVos)
+                        contactVos.forEach(item => {
+                            item.lineCode = getLineCode(lineCode++)
+                        })
+                    }
+                    let maxLineCode = getMaxLineNum(contactVos);
+                    lineCode = maxLineCode++;
+                    // keys = keys ++
+                    // console.log(lineCode)
+                    // console.log(keys)
+                    setDataSource(contactVos)
+                }else {
+                    let determine = lineCode + 1
+                    lineCode = lineCode + 1
+                    const newData = [...dataSource, { keyId: ++keys, lineCode: getLineCode(determine) }];
+                    setDataSource(newData)
+                }
+                
+            }
+        }
+    }
     // 新增
     async function handleAdd() {
-        console.log(keys)
-        const newData = [...dataSource, { keyId: ++keys, lineCode: getLineCode(lineCode) }];
-        lineCode++;
-        console.log(keys)
-        console.log(newData)
+        let determine;
+        if (dataSource.length === 0) {
+            lineCode = lineCode
+        } else {
+            determine = lineCode + 1
+            lineCode = lineCode + 1
+        }
+        const newData = [...dataSource, { keyId: ++keys, lineCode: getLineCode(determine) }];
+        //setauthoriz([{ keyId: ++keys, lineCode: getLineCode(determine) }])
+        //lineCode++;
+        // let setlecode = [];
+        // setlecode.push({ keyId: ++keys, lineCode: getLineCode(determine) })
+        // console.log(newData)
+        // console.log(setlecode)
+        // setauthoriz(setlecode)
         setDataSource(newData)
     };
     //删除
@@ -260,7 +309,7 @@ const AuthorizeRef = forwardRef(({
         //const { dataSource } = this.state;
         console.log(dataSource)
         const newData = dataSource.filter((item) => item.keyId !== key);
-        lineCode--;
+        lineCode = lineCode - 1;
         for (let i = 0; i < newData.length; i++) {
             newData[i].lineCode = getLineCode(i + 1);
         }
@@ -284,8 +333,14 @@ const AuthorizeRef = forwardRef(({
         let result = {};
         form.validateFieldsAndScroll((err, values) => {
             if (values) {
-                if (isEmpty(values.position[0])) {
-                    values.position[0] = posited
+                console.log(values.length)
+                if (!isEmpty(values.name[0])) {
+                    console.log(111)
+                    let positionArray = [];
+                    dataSource.forEach(items => {
+                        positionArray.push(items.name)
+                    })
+                    values.name = positionArray
                 }
                 result = dataTransfer2(dataSource, values);
             }
@@ -297,10 +352,24 @@ const AuthorizeRef = forwardRef(({
         let result = false;
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                if (isEmpty(values.position[0])) {
-                    values.position[0] = posited
-                }
-                result = dataTransfer2(dataSource, values);
+                let adsad = [];
+                values.position.forEach(items => {
+                    console.log(items)
+                    if (items === undefined) {
+                        console.log(dataSource)
+                        dataSource.forEach(item => {
+
+                            adsad.push(item.position)
+                        })
+                        console.log(adsad)
+                        items = adsad;
+                        //positionArray.push(items.position)
+                    }
+                    console.log(values)
+                    // dataSource.position = positionArray
+                    // console.log(dataSource)
+                })
+                //result = dataTransfer2(dataSource, values);
             }
         })
         return result;
@@ -325,7 +394,7 @@ const AuthorizeRef = forwardRef(({
                             disabled: false,
                             pageSize: 100,
                         }}
-                        height={180}
+                        height={height}
                         checkbox={false}
                         rowKey={(item) => `row-${item.keyId}`}
                     />

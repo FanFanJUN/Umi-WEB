@@ -19,7 +19,7 @@ const getAgentregRef = forwardRef(({
     const headerRef = useRef(null)
     const { getFieldDecorator, validateFieldsAndScroll, getFieldValue, setFieldsValue } = form;
     const [loading, triggerLoading] = useState(false);
-    const [searchValue, setSearchValue] = useState({});
+    const [searchValue, setSearchValue] = useState('');
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [visible, setvisible] = useState(false);
@@ -33,7 +33,7 @@ const getAgentregRef = forwardRef(({
         store: {
             url: `${smBaseUrl}/api/supplierModifyService/findCanChooseSupplier`,
             params: {
-                ...searchValue,
+                quickSearchValue: searchValue,
                 quickSearchProperties: ['name'],
                 sortOrders: [
                     {
@@ -84,15 +84,9 @@ const getAgentregRef = forwardRef(({
     }
     // 查询
     function handleQuickSerach() {
-        let search;
-        if(Object.keys(searchValue).length == 0){
-            search = ""
-        }else {
-            search = searchValue
-        }
-        setSearchValue({
-            quickSearchValue: search
-        })
+        let search = "";
+        setSearchValue(search);
+        setSearchValue(searchValue)
         uploadTable();
     }
     function uploadTable() {

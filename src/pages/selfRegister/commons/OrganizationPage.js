@@ -34,6 +34,7 @@ const OrganizatRef = forwardRef(({
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 values.supplierType = '1';
+                values.openId = accounts.openId;
                 result = values;
             }
         });
