@@ -248,7 +248,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={
-          data.selectedRowKeys.length === 0 ||
+          data.selectedRowKeys.length !== 1 ||
           judge(data.selectedRows, 'strategicPurchaseCode', null) ||
           !judge(data.selectedRows, 'strategicPurchaseCode', data.selectedRows[0]?.strategicPurchaseCode) ||
           !judge(data.selectedRows, 'state', '生效') || (judge(data.selectedRows, 'allotSupplierState', '已分配') ? data.selectedRowKeys.length > 1 : false)

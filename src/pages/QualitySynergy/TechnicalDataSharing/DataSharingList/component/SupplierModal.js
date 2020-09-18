@@ -309,7 +309,7 @@ const SupplierModal = (props) => {
           <Button className={styles.btn} onClick={handleAddSupplier} type='primary'>新增</Button>
           <Button className={styles.btn} onClick={handleTimeEdit} disabled={data.selectedRowKeys?.length === 0}>编辑资料下载日期</Button>
           <Button className={styles.btn} onClick={handleDelete} disabled={data.selectedRowKeys?.length === 0}>删除</Button>
-          <Button disabled={!judge(data.sourceData, 'downloadAbortDate')} onClick={saveSupplier}>保存</Button>
+          <Button className={styles.btn} disabled={!judge(data.sourceData, 'downloadAbortDate')} onClick={saveSupplier}>保存</Button>
           <Button className={styles.btn} disabled={data.selectedRowKeys?.length === 0 ||
           !judge(data.selectedRows, 'downloadAbortDate')
           } onClick={() => changeReleaseStatus(true)}>发布</Button>

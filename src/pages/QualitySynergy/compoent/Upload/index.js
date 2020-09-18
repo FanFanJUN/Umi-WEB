@@ -60,6 +60,7 @@ class UploadFile extends React.Component {
     //图片格式显示系统的预览
     if (fileName.toLocaleLowerCase().includes('png') || fileName.toLocaleLowerCase().includes('jpg') || fileName.toLocaleLowerCase().includes('gif')
       || fileName.toLocaleLowerCase().includes('jpeg')) {
+      console.log('触发')
       return host + baseUrl + '/supplierRegister/preview?docId=' + id;
     }
     return fileIcon.defaultIcon;
