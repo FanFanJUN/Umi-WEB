@@ -3,7 +3,7 @@ import { Affix, Button, message, Spin } from 'antd';
 import classnames from 'classnames';
 import styles from '../../../../Supplier/Editor/index.less';
 import { router } from 'dva';
-import { closeCurrent, getMobile, getUserAccount, getUserId, getUserName } from '../../../../../utils';
+import { closeCurrent, getMobile, getUserAccount, getUserId, getUserName, openNewTab } from '../../../../../utils';
 import BaseInfo from './BaseInfo';
 import MaterialInfo from './MaterialInfo';
 import TechnicalData from './TechnicalData';
@@ -84,7 +84,8 @@ export default () => {
   };
 
   const handleBack = () => {
-    closeCurrent();
+    openNewTab('qualitySynergy/DataSharingList', '技术资料分享需求列表', true);
+    // closeCurrent();
   };
 
   const handleSave = async (type) => {
@@ -111,13 +112,13 @@ export default () => {
           const submitResult = await SubmitDataSharingList({ ids: saveResult.data });
           if (submitResult.success) {
             message.success(submitResult.message);
-            closeCurrent();
+            handleBack()
           } else {
             message.error(submitResult.message);
           }
         } else {
           message.success(saveResult.message);
-          closeCurrent();
+          handleBack()
         }
       } else {
         message.error(saveResult.message);
@@ -139,7 +140,7 @@ export default () => {
       UpdateDataSharingList(allData).then(res => {
         if (res.success) {
           message.success(res.message);
-          closeCurrent();
+          handleBack()
         } else {
           message.error(res.message);
         }
