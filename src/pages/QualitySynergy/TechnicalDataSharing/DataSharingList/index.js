@@ -251,7 +251,7 @@ export default function() {
         ignore={DEVELOPER_ENV}
         disabled={
           data.selectedRowKeys.length !== 1 ||
-          judge(data.selectedRows, 'strategicPurchaseCode', null) ||
+          !data.selectedRows.every(item => item.strategicPurchaseCode) ||
           !judge(data.selectedRows, 'strategicPurchaseCode', data.selectedRows[0]?.strategicPurchaseCode) ||
           !judge(data.selectedRows, 'state', '生效') || (judge(data.selectedRows, 'allotSupplierState', '已分配') ? data.selectedRowKeys.length > 1 : false)
         }
@@ -263,7 +263,7 @@ export default function() {
         onClick={() => redirectToPage('govern')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'strategicPurchaseCode', null)
+        disabled={data.selectedRowKeys.length === 0 || data.selectedRows.every(item => item.strategicPurchaseCode)
         || !judge(data.selectedRows, 'state', '生效')
         }
         key='TECHNICAL_DATA_SHARING_GOVERN'
