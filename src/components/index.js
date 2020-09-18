@@ -8,6 +8,7 @@ import { ComboGrid, ComboList, ComboTree, MixinSelect, ComboAttachment } from '.
 import ComboMultiple from './ComboMultiple';
 import ComboDatePicker from './ComboDatePicker';
 import Upload from './Upload';
+import UserModal from './UserModal';
 
 export {
   AdvancedForm,
@@ -23,5 +24,6 @@ export {
   ComboSelect,
   ComboMultiple,
   ComboDatePicker,
-  Upload
+  Upload,
+  UserModal
 }
