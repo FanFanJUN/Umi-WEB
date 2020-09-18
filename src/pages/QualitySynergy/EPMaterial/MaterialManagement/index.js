@@ -165,7 +165,7 @@ export default create()(function ({ form }) {
                 id: item.id,
                 '状态': item.effectiveStatus === 'DRAFT' ? '草稿' : '生效',
                 '分配供应商状态': item.allotSupplierState === 'ALLOT_END' ? '存在符合的供应商' : '未分配',
-                '物料标记状态': item.materialMarkStatus === 'EXIST_CONFORM_SUPPLIER' ? '存在符合的供应商' : '不存在符合的供应商',
+                '物料标记状态': item.assignSupplierStatus === 'EXIST_CONFORM_SUPPLIER' ? '存在符合的供应商' : '不存在符合的供应商',
                 '同步PDM状态': item.syncStatus === 'SYNC_FAILURE' ? '同步成功' : '同步失败',
                 '冻结': item.frozen ? '已冻结' : '未冻结',
                 '物料代码': item.materialCode,
@@ -179,9 +179,8 @@ export default create()(function ({ form }) {
                 '环保管理人员': item.environmentAdminName,
                 '创建人': item.applyPersonName,
                 '创建人联系方式': item.applyPersonPhone,
-                '申请日期': item.frozen,
+                '申请日期': item.createdDate,
                 '来源': item.sourceName,
-                '物料标记状态是否变化': item.frozen,
             });
         });
         console.log(res, 'res');
@@ -390,7 +389,7 @@ export default create()(function ({ form }) {
         { title: '申请人', key: 'applyPersonName', props: { placeholder: '输入申请人查询' } },
         { title: '状态', key: 'effectiveStatus', type: 'list', props: statusProps },
         { title: '分配供应商状态', key: 'allotSupplierState', type: 'list', props: distributionProps },
-        { title: '物料标记状态', key: 'materialMarkStatus', type: 'list', props: materialStatus },
+        { title: '物料标记状态', key: 'assignSupplierStatus', type: 'list', props: materialStatus },
         { title: '同步PDM状态', key: 'syncStatus', type: 'list', props: PDMStatus },
     ];
     const columns = [
@@ -419,7 +418,7 @@ export default create()(function ({ form }) {
             },
         },
         {
-            title: '物料标记状态', dataIndex: 'materialMarkStatus', width: 120, render: (text) => {
+            title: '物料标记状态', dataIndex: 'assignSupplierStatus', width: 120, render: (text) => {
                 switch (text) {
                     case 'EXIST_CONFORM_SUPPLIER':
                         return '存在符合的供应商';
@@ -452,9 +451,8 @@ export default create()(function ({ form }) {
         { title: '环保管理人员', dataIndex: 'environmentAdminName', ellipsis: true },
         { title: '创建人', dataIndex: 'applyPersonName', ellipsis: true },
         { title: '创建人联系方式', dataIndex: 'applyPersonPhone', ellipsis: true },
-        { title: '申请日期', dataIndex: 'name12', ellipsis: true },
+        { title: '申请日期', dataIndex: 'createdDate', ellipsis: true },
         { title: '来源', dataIndex: 'sourceName', ellipsis: true },
-        { title: '物料标记状态是否变化', dataIndex: 'name13', width: 160, render: (text) => text ? '是' : '否' },
         { dataIndex: 'name14', width: 20, ellipsis: true },
     ].map(item => ({ ...item, align: 'center' }));
     const headerLeft = <>

@@ -17,6 +17,7 @@ export default function () {
     const handleSave = async (nowPublish) => {
         const { validateFieldsAndScroll } = formRef.current;
         validateFieldsAndScroll(async (err, values) => {
+            toggleLoading(true);
             console.log(values)
             if (!err) {
                 let res = {};
@@ -34,9 +35,12 @@ export default function () {
                     // 仅保存
                     res = await addEpDemandList(dataSource);
                 }
+                toggleLoading(false);
                if(res.success && res.statusCode === 200) {
                    message.success(nowPublish? '保存并提交成功' : '保存成功');
-                   handleBack();
+                   setTimeout(()=>{
+                        handleBack();
+                   }, 5000)
                } else {
                    message.error(res.message);
                }

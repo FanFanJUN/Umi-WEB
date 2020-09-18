@@ -25,7 +25,6 @@ export default function () {
     }, [])
     const handleSave = (publish) => {
         let saveData = { ...originData }
-        
         supplierRef.current.validateFieldsAndScroll(async (error, values) => {
             if (!error) {
                 const macData = mcdRef.current.getSplitDataList();
@@ -37,7 +36,9 @@ export default function () {
                 const res = await epDemandUpdate(saveData);
                 if (res.statusCode === 200) {
                     message.success('操作成功');
-                    handleBack();
+                    setTimeout(()=>{
+                        handleBack();
+                    }, 5000)
                 } else {
                     message.error(res.message);
                 }

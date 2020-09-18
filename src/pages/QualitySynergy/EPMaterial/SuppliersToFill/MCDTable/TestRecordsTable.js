@@ -3,7 +3,6 @@ import { ExtTable, ExtModal, DataImport, ComboList } from 'suid';
 import { Button, Col, Form, Modal, Row, Input, Select, InputNumber } from 'antd'
 import { limitScopeList, findByIsRecordCheckListTrue } from '../../../commonProps';
 import { findByProtectionCodeAndMaterialCodeAndRangeCode } from '../../../../../services/qualitySynergy'
-import { Upload } from '@/components';
 import { smBaseUrl } from '@/utils/commonUrl';
 import classnames from 'classnames'
 import styles from '../index.less'
