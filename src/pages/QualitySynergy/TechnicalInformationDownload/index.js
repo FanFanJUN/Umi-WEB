@@ -64,22 +64,22 @@ export default function() {
   const columns = [
     { title: '下载状态', dataIndex: 'fileDownloadState', width: 80 },
     { title: '预警', dataIndex: 'warning', width: 80, render: (v) => <div style={{width: '100%', display: 'flex', justifyContent: 'center'}}>
-        <div style={{width: '15px', height: '15px', borderRadius: '50%', background: v}} />
+        <div style={{width: '20px', height: '20px', borderRadius: '50%', background: v}} />
       </div>},
-    { title: '资料下载截止日期', dataIndex: 'downloadAbortDate', width: 70 },
+    { title: '资料下载截止日期', dataIndex: 'downloadAbortDate', width: 180 },
     { title: '物料代码', dataIndex: 'materialCode', ellipsis: true, },
-    { title: '物料描述', dataIndex: 'materialName', ellipsis: true, },
+    { title: '物料描述', dataIndex: 'materialName', ellipsis: true, width: 180},
     { title: '物料组代码', dataIndex: 'materialGroupCode', ellipsis: true, },
     { title: '物料组描述', dataIndex: 'materialGroupName', ellipsis: true, },
     { title: '文件类别', dataIndex: 'fileCategoryName', ellipsis: true, },
     { title: '文件版本', dataIndex: 'fileVersion', ellipsis: true, },
-    { title: '技术资料附件', dataIndex: 'technicalDataFileIdList', width: 120, render: (v, data) => <Upload type='show' entityId={v} downloadClick={() => changeDownloadStatus(data.id)}/>},
+    { title: '技术资料附件', dataIndex: 'technicalDataFileIdList', width: 120, render: (v, data) => <Upload type='show' entityId={v} downloadClick={() => changeDownloadStatus(data.epTechnicalSupplierId)}/>},
     { title: '样品需求日期', dataIndex: 'sampleRequirementDate', ellipsis: true, },
     { title: '战略采购名称', dataIndex: 'strategicPurchaseName', ellipsis: true, },
     { title: '业务单元名称', dataIndex: 'buName', ellipsis: true, },
     { title: '申请人', dataIndex: 'applyPeopleName', ellipsis: true, },
     { title: '申请人联系方式', dataIndex: 'applyPeoplePhone', ellipsis: true, },
-    { title: '分享需求号', dataIndex: 'shareDemanNumber', ellipsis: true, },
+    { title: '分享需求号', dataIndex: 'shareDemanNumber', ellipsis: true,  width: 180 },
   ].map(item => ({ ...item, align: 'center' }));
 
   const onChange = (e) => {
@@ -128,7 +128,7 @@ export default function() {
       <AutoSizeLayout>
         {
           (h) => <ExtTable
-            rowKey={(v) => v.shareDemanNumber}
+            rowKey={(v) => v.epTechnicalSupplierId}
             height={h}
             columns={columns}
             store={{

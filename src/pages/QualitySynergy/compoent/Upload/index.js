@@ -223,7 +223,7 @@ class UploadFile extends React.Component {
       actions.push(<a target="_blank" href={item.thumbUrl}>预览</a>);
     }
     if (this.props.download !== false) {
-      actions.push(<a target="_blank" href={item.url} onClick={this.props.downloadClick()}>下载</a>);
+      actions.push(<a target="_blank" href={item.url} onClick={this.props.downloadClick}>下载</a>);
     }
     if (this.props.type !== 'show' && !this.props.disabled) {
       actions.push(<a target="_blank" onClick={() => this.handleRemove(item)}>删除</a>);
