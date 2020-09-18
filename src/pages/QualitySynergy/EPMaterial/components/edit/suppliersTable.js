@@ -19,7 +19,7 @@ export default function ({originData={}}) {
         { title: '分配日期', dataIndex: 'allotDate', ellipsis: true, align: 'center', },
         { title: '分配批次 ', dataIndex: 'allotBatch', ellipsis: true, align: 'center', },
         { title: '分配人', dataIndex: 'allotPeopleName', ellipsis: true, align: 'center', },
-        { title: '填报编号', dataIndex: 'name8', ellipsis: true, },
+        { title: '填报编号', dataIndex: 'fillNumber', ellipsis: true, },
         { title: '填报截止日期', dataIndex: 'name9', ellipsis: true, },
         { title: '填报日期', dataIndex: 'name10', ellipsis: true, },
         { title: '填报状态', dataIndex: 'name11', ellipsis: true, },

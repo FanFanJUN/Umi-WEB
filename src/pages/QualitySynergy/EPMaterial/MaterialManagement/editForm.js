@@ -34,7 +34,7 @@ export default function () {
                     // 仅保存
                     res = await addEpDemandList(dataSource);
                 }
-               if(res.success) {
+               if(res.success && res.statusCode === 200) {
                    message.success(nowPublish? '保存并提交成功' : '保存成功');
                    handleBack();
                } else {

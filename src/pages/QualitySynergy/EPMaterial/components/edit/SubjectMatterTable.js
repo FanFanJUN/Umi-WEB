@@ -1,9 +1,11 @@
 import { useEffect, useState, useRef, Fragment, useImperativeHandle, forwardRef } from 'react';
-import { ExtTable, ComboList, utils, ToolBar, ScrollBar } from 'suid';
-import {Form} from 'antd'
+import { ExtTable, DataImport } from 'suid';
+import {Form} from 'antd';
 import EditModal from '../editModal';
-import { Button, message, Modal } from 'antd'
-import styles from '../index.less'
+import { Button, message, Modal } from 'antd';
+import styles from '../index.less';
+import { addDemandImport } from '../../../../../services/qualitySynergy';
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const { confirm } = Modal;
 const { create, Item: FormItem } = Form;
 const SubjectMatterTable = forwardRef(({buCode}, ref)=>{
@@ -78,12 +80,57 @@ const SubjectMatterTable = forwardRef(({buCode}, ref)=>{
             })
         }
     }
+    const validateItem = (data) => {
+        return new Promise((resolve, reject) => {
+            addDemandImport(data).then(res => {
+                const response = res.data.map((item, index) => ({
+                    ...item,
+                    key: index,
+                    validate: item.importStatus,
+                    status: item.importStatus ? '数据完整' : '失败',
+                    statusCode: item.importStatus ? 'success' : 'error',
+                    message: item.importStatus ? '成功' : item.failInfo
+                }))
+                resolve(response);
+            }).catch(err => {
+                reject(err)
+            })
+        })
+    };
+
+    const importFunc = (value) => {
+        // let newList = [].concat(dataList);
+        // value.forEach((addItem, index) => {
+        //     delete addItem.status;
+        //     delete addItem.statusCode;
+        //     delete addItem.message;
+        //     delete addItem.validate;
+        //     addItem.rowKey = dataList.length + index;
+        //     newList.push(addItem);
+        // })
+        // newList = newList.map((item, index) => ({...item, rowKey: index}));
+        // setSplitDataList(newList);
+        // tableRef.current.manualSelectedRows();
+    };
     return <Fragment>
-        <div className={styles.mb}>
+        <div className={styles.mb} style={{display: 'flex'}}>
             <Button type='primary' className={styles.btn} onClick={handleAdd}>新增</Button>
             <Button className={styles.btn} onClick={handleEdit}>编辑</Button>
             <Button className={styles.btn} onClick={()=>{handleTableTada('delete')}}>删除</Button>
-            <Button className={styles.btn}>批量导入</Button>
+            <DataImport
+                tableProps={{ columns }}
+                validateFunc={validateItem}
+                importFunc={importFunc}
+                validateAll={true}
+                key='import'
+                templateFileList={[
+                    {
+                        download: `${DEVELOPER_ENV === 'true' ? '' : '/react-srm-sm-web'}/templates/环保资料物料批导模板V1.0.xlsx`,
+                        fileName: '环保资料物料批导模板V1.0.xlsx',
+                        key: 'ExemptionClause',
+                    },
+                ]}
+            />
         </div>
         <div>
             <ExtTable

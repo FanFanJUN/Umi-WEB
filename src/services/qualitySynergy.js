@@ -327,6 +327,15 @@ export async function addDemandSupplier(params) {
         data: params,
     });
 }
+// 填报环保资料物料-批量导入
+export async function addDemandImport(params) {
+    const url = `${recommendUrl}/api/epDemandService/importData`;
+    return request({
+        url,
+        method: 'POST',
+        data: params,
+    });
+}
 // 填报环保资料物料-分配供应商-暂停/取消暂停
 export async function supplierIsPause(params) {
     const url = `${recommendUrl}/api/epDemandSupplierService/isPause`;
@@ -348,6 +357,15 @@ export async function editDemandSupplier(params) {
 // 填报环保资料物料-分配供应商-删除
 export async function deleteSupplier(params) {
     const url = `${recommendUrl}/api/epDemandSupplierService/deleted`;
+    return request({
+        url,
+        method: 'GET',
+        params: params,
+    });
+}
+// 填报环保资料物料-根据需求号查看供应商
+export async function findByDemandNumber(params) {
+    const url = `${recommendUrl}/api/epDemandSupplierService/findByDemandNumber`;
     return request({
         url,
         method: 'GET',

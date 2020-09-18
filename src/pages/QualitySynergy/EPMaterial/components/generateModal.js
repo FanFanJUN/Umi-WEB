@@ -43,10 +43,10 @@ const generateModal = forwardRef(({ form }, ref) => {
         { title: '供应商代码', dataIndex: 'name5', ellipsis: true, align: 'center', },
         { title: '供应商名称 ', dataIndex: 'name6', ellipsis: true, align: 'center', },
         { title: '填报编号', dataIndex: 'name7', ellipsis: true, align: 'center', },
-        { title: '有效开始日期', dataIndex: 'name7', ellipsis: true, align: 'center', },
-        { title: '有效截止日期', dataIndex: 'name7', ellipsis: true, align: 'center', },
-        { title: '分配批次', dataIndex: 'name7', ellipsis: true, align: 'center', },
-        { title: '详情', dataIndex: 'name7', ellipsis: true, align: 'center', },
+        { title: '有效开始日期', dataIndex: 'name8', ellipsis: true, align: 'center', },
+        { title: '有效截止日期', dataIndex: 'name9', ellipsis: true, align: 'center', },
+        { title: '分配批次', dataIndex: 'name10', ellipsis: true, align: 'center', },
+        { title: '详情', dataIndex: 'name11', ellipsis: true, align: 'center', },
     ];
     // 复核确定
     function handleOk() {

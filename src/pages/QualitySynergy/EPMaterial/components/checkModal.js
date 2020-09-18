@@ -2,7 +2,7 @@ import { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment 
 import { ExtTable, ExtModal, message, ComboList } from 'suid';
 import { Button, Input, Form, Modal, Radio } from 'antd'
 import { recommendUrl } from '@/utils/commonUrl';
-import{ checkReview } from '../../../../services/qualitySynergy';
+import { checkReview } from '../../../../services/qualitySynergy';
 import { values } from 'lodash';
 const { create, Item: FormItem } = Form;
 const { TextArea } = Input;
@@ -10,7 +10,7 @@ const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 14, },
 };
-const checkModal = forwardRef(({ form, selectedRow={} }, ref) => {
+const checkModal = forwardRef(({ form, selectedRow = {}, checkModalType }, ref) => {
     useImperativeHandle(ref, () => ({
         setVisible
     }))
@@ -23,7 +23,7 @@ const checkModal = forwardRef(({ form, selectedRow={} }, ref) => {
     const columns = [
         {
             title: '提交状态', dataIndex: 'submitStatus', width: 70, align: 'center', render: (text) => {
-                switch(text){
+                switch (text) {
                     case "SUBMITTED": return '已提交';
                     case "NOTSUBMITTED": return '未提交';
                     default: return '';
@@ -32,7 +32,7 @@ const checkModal = forwardRef(({ form, selectedRow={} }, ref) => {
         },
         {
             title: '符合性检查', dataIndex: 'compliance', ellipsis: true, align: 'center', render: (text) => {
-                switch(text){
+                switch (text) {
                     case "FIT": return '符合';
                     case "NOTFIT": return '不符合';
                     case "NOTCOMPLETED": return '复核不符合';
@@ -40,21 +40,25 @@ const checkModal = forwardRef(({ form, selectedRow={} }, ref) => {
                 }
             }
         },
-        { title: '复核状态', dataIndex: 'reviewResults', ellipsis: true, align: 'center', render: (text) => {
-            switch(text){
-                case "NOPASS": return '复核不通过';
-                case "PASS": return '复核通过';
-                default: return '';
+        {
+            title: '复核状态', dataIndex: 'reviewResults', ellipsis: true, align: 'center', render: (text) => {
+                switch (text) {
+                    case "NOPASS": return '复核不通过';
+                    case "PASS": return '复核通过';
+                    default: return '';
+                }
             }
-        }},
+        },
         { title: '复核意见', dataIndex: 'reviewResultComments', ellipsis: true, align: 'center', },
-        { title: '环保资料是否有效', dataIndex: 'effective', ellipsis: true, width: 140, align: 'center', render: (text)=>{
-            switch(text){
-                case "INVALID": return '无效';
-                case "VALID": return '有效';
-                default: return '';
+        {
+            title: '环保资料是否有效', dataIndex: 'effective', ellipsis: true, width: 140, align: 'center', render: (text) => {
+                switch (text) {
+                    case "INVALID": return '无效';
+                    case "VALID": return '有效';
+                    default: return '';
+                }
             }
-        }},
+        },
         { title: '供应商代码', dataIndex: 'supplierCode', ellipsis: true, align: 'center', },
         { title: '供应商名称 ', dataIndex: 'supplierName', ellipsis: true, align: 'center', },
         { title: '填报编号', dataIndex: 'fillNumber', ellipsis: true, align: 'center', },
@@ -62,28 +66,32 @@ const checkModal = forwardRef(({ form, selectedRow={} }, ref) => {
         { title: '有效截止日期', dataIndex: 'effectiveEndDate', ellipsis: true, align: 'center', },
         { title: '分配批次', dataIndex: 'batch', ellipsis: true, align: 'center', },
     ];
-    // 复核确定
+    // 复核确定/生成
     function handleOk() {
-        validateFields((err, fieldsValue)=>{
-            if (!err) {
-                let dataList = selectedRows.map(item => {
-                    return {
-                        id: item.id,
-                        ...fieldsValue
-                    }
-                })
-                checkReview(dataList).then(res => {
-                    setCheckVisible(false);
-                    if(res.statusCode === 200) {
-                        message.success('操作成功');
-                        tableRef.current.manualSelectedRows();
-                        tableRef.current.remoteDataRefresh();
-                    } else {
-                        message.error(res.message);
-                    }
-                })
-            }
-        })
+        if (checkModalType !== 'check') {
+            // 处理生成报表
+        } else {
+            validateFields((err, fieldsValue) => {
+                if (!err) {
+                    let dataList = selectedRows.map(item => {
+                        return {
+                            id: item.id,
+                            ...fieldsValue
+                        }
+                    })
+                    checkReview(dataList).then(res => {
+                        setCheckVisible(false);
+                        if (res.statusCode === 200) {
+                            message.success('操作成功');
+                            tableRef.current.manualSelectedRows();
+                            tableRef.current.remoteDataRefresh();
+                        } else {
+                            message.error(res.message);
+                        }
+                    })
+                }
+            })
+        }
     }
     // 记录列表选中
     function handleSelectedRows(rowKeys, rows) {
@@ -103,12 +111,12 @@ const checkModal = forwardRef(({ form, selectedRow={} }, ref) => {
             cancelText="退出"
             onCancel={() => { tableRef.current.manualSelectedRows(); setVisible(false); }}
             onOk={() => { checkOneSelect() && setCheckVisible(true) }}
-            okText="复核"
+            okText={checkModalType === 'check' ? "复核" : "生成"}
             maskClosable={false}
             visible={visible}
             centered
             width={1100}
-            title="抽检复核"
+            title={checkModalType === 'check' ? "抽检复核" : "生成报表"}
         >
             <ExtTable
                 columns={columns}
@@ -116,7 +124,7 @@ const checkModal = forwardRef(({ form, selectedRow={} }, ref) => {
                 allowCancelSelect
                 showSearch={true}
                 remotePaging
-                checkbox={{ multiSelect: false }}
+                checkbox={{ multiSelect: checkModalType==='check' }}
                 ref={tableRef}
                 rowKey={(item) => item.id}
                 size='small'
@@ -125,8 +133,8 @@ const checkModal = forwardRef(({ form, selectedRow={} }, ref) => {
                 store={{
                     url: `${recommendUrl}/api/epDataFillService/findPageByCode`,
                     params: {
-                        materialCode: selectedRow.materialCode
-                        // materialCode: '810045822'
+                        // materialCode: selectedRow.materialCode
+                        materialCode: '810045822'
                     },
                     type: 'POST'
                 }}
@@ -136,7 +144,7 @@ const checkModal = forwardRef(({ form, selectedRow={} }, ref) => {
             destroyOnClose
             cancelText="退出"
             onCancel={() => { setCheckVisible(false); }}
-            onOk={()=>{handleOk()}}
+            onOk={() => { handleOk() }}
             maskClosable={false}
             okText="复核"
             visible={checkVisible}
@@ -148,7 +156,7 @@ const checkModal = forwardRef(({ form, selectedRow={} }, ref) => {
             <Form>
                 <FormItem label='复核结果' labelCol={{ span: 4 }} wrapperCol={{ span: 18 }}>
                     {
-                        getFieldDecorator('reviewResults',{
+                        getFieldDecorator('reviewResults', {
                             initialValue: 'PASS',
                         })(
                             <Radio.Group>

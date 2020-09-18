@@ -66,7 +66,12 @@ export default create()(function ({ form }) {
     const [searchValue, setSearchValue] = useState({});
     const [maintainModal, setMaintainModal] = useState(false);//维护环保人员弹框
     const [assignPurchase, setAssignPurchase] = useState(false);//指派战略采购弹框
-    const [qualificationModal, setQualificationModal] = useState(false);
+    const [supplierVisible, setSupplierVisible] = useState(false);
+    // 抽检复核与生成报表是同一个弹框
+    const [checkModalType, setCheckModalType] = useState('');
+    // 分配供应商与查看供应商是同一个弹框
+    const [supplierModalType, setSupplierModalType] = useState('');
+    const [viewDemandNum, setViewDemandNum] = useState('')
     const FRAMELEEMENT = getFrameElement();
     const { getFieldDecorator, setFieldsValue, validateFields } = form;
     useEffect(() => {
@@ -327,7 +332,7 @@ export default create()(function ({ form }) {
                 delete: !(rows[0].effectiveStatus === 'DRAFT' && rows[0].sourceName === 'SRM'),
                 submit: rows[0].effectiveStatus === 'EFFECT',
                 withdraw: !(rows[0].effectiveStatus === 'EFFECT'&&rows[0].allotSupplierState === 'ALLOT_NOT'),
-                distribute: rows[0].applyPersonCode === getUserAccount(),
+                distribute: !(rows[0].applyPersonAccount === getUserAccount()&&rows[0].effectiveStatus === 'EFFECT'),
             });
         } else if (rows.length === 0) {
             setButtonStatus({
@@ -370,7 +375,12 @@ export default create()(function ({ form }) {
             });
         }
     }
-
+    function showSuplier(e, item) {
+        e.stopPropagation();
+        setSupplierModalType('view');
+        setViewDemandNum(item.demandNumber)
+        supplierRef.current.setVisible(true);
+    }
     // 高级查询配置
     const formItems = [
         { title: '物料代码', key: 'materialCode', type: 'list', props: MaterialConfig },
@@ -438,13 +448,13 @@ export default create()(function ({ form }) {
         { title: '环保标准', dataIndex: 'environmentalProtectionName', ellipsis: true },
         { title: '战略采购代码', dataIndex: 'strategicPurchaseCode', ellipsis: true },
         { title: '战略采购名称', dataIndex: 'strategicPurchaseName', ellipsis: true },
-        { title: '供应商', dataIndex: 'list', ellipsis: true, render: (text) => <a href="#">查看</a> },
+        { title: '供应商', dataIndex: 'list', ellipsis: true, render: (text, item) => <a href="javascript:viod(0)" onClick={(e)=>{showSuplier(e, item)}}>查看</a> },
         { title: '环保管理人员', dataIndex: 'environmentAdminName', ellipsis: true },
         { title: '创建人', dataIndex: 'applyPersonName', ellipsis: true },
         { title: '创建人联系方式', dataIndex: 'applyPersonPhone', ellipsis: true },
         { title: '申请日期', dataIndex: 'name12', ellipsis: true },
         { title: '来源', dataIndex: 'sourceName', ellipsis: true },
-        { title: '物料标记状态是否变化', dataIndex: 'name13', width: 140, ellipsis: true },
+        { title: '物料标记状态是否变化', dataIndex: 'name13', width: 160, render: (text) => text ? '是' : '否' },
         { dataIndex: 'name14', width: 20, ellipsis: true },
     ].map(item => ({ ...item, align: 'center' }));
     const headerLeft = <>
@@ -526,7 +536,7 @@ export default create()(function ({ form }) {
             authAction(<Button
                 className={styles.btn}
                 disabled={buttonStatus.distribute}
-                onClick={() => { supplierRef.current.setVisible(true); }}
+                onClick={() => { setSupplierModalType('distribute'); supplierRef.current.setVisible(true); }}
                 key='QUALITYSYNERGY_MATERIAL_SUPPLIER'
                 ignore={DEVELOPER_ENV}
             >分配供应商</Button>)
@@ -567,7 +577,7 @@ export default create()(function ({ form }) {
             authAction(<Button
                 className={styles.btn}
                 disabled={buttonStatus.check}
-                onClick={() => { samplingRef.current.setVisible(true); }}
+                onClick={() => { setCheckModalType('check'); samplingRef.current.setVisible(true); }}
                 key='QUALITYSYNERGY_MATERIAL_RECHECK'
                 ignore={DEVELOPER_ENV}
             >抽检复核</Button>)
@@ -577,7 +587,9 @@ export default create()(function ({ form }) {
                 className={styles.btn}
                 disabled={buttonStatus.generate}
                 onClick={() => {
-                    generateRef.current.setVisible(true);
+                    setCheckModalType('generate'); 
+                    // generateRef.current.setVisible(true);
+                    samplingRef.current.setVisible(true);
                 }}
                 ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_MATERIAL_GENERATE'
@@ -719,11 +731,11 @@ export default create()(function ({ form }) {
         {/* 查看供应商资质 */}
         <CheckQualificationModal ref={checkRef} />
         {/* 分配供应商 */}
-        <DistributeSupplierModal wrappedComponentRef={supplierRef} selectedRow={selectedRows[0]} />
+        <DistributeSupplierModal wrappedComponentRef={supplierRef} selectedRow={selectedRows[0]} supplierModalType={supplierModalType} viewDemandNum={viewDemandNum}/>
         {/* 抽检复核 */}
-        <CheckModal wrappedComponentRef={samplingRef} selectedRow={selectedRows[0]} />
+        <CheckModal wrappedComponentRef={samplingRef} selectedRow={selectedRows[0]} checkModalType={checkModalType}/>
         {/* 生成报表 */}
-        <GenerateModal wrappedComponentRef={generateRef} />
+        {/* <GenerateModal wrappedComponentRef={generateRef} /> */}
         {/* 同步历史 */}
         <SyncHistory wrappedComponentRef={historyRef} id={selectedRowKeys[0]} />
     </Fragment>;

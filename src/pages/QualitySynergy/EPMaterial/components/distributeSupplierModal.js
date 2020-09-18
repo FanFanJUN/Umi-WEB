@@ -11,7 +11,8 @@ import {
     releaseSupplier,
     cancelReleaseSupplier,
     editDemandSupplier,
-    deleteSupplier
+    deleteSupplier,
+    findByDemandNumber
 } from '../../../../services/qualitySynergy'
 import styles from './index.less'
 import moment from 'moment';
@@ -22,7 +23,7 @@ const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 14, },
 };
-const supplierModal = forwardRef(({ form, selectedRow }, ref) => {
+const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDemandNum }, ref) => {
     useImperativeHandle(ref, () => ({
         setVisible
     }))
@@ -42,12 +43,32 @@ const supplierModal = forwardRef(({ form, selectedRow }, ref) => {
     const { getFieldDecorator, validateFields } = form;
     useEffect(() => {
         if (visible === true) {
-            getData();
+            if(supplierModalType === 'distribute') {
+                getData();
+            } else {
+                findByDemandNumber({
+                    demandNumber: viewDemandNum
+                }).then(res => {
+                    if (res.rows) {
+                        // if (res.data) {
+                        //     let dataList = res.data.map((item, index) => {
+                        //         return {
+                        //             ...item,
+                        //             rowKey: index,
+                        //         }
+                        //     })
+                        //     setDataSource(dataList);
+                        // }
+                    } else {
+                        message.error(res.message);
+                    }
+                })
+            }
         }
     }, [visible])
     const columns = [
         { title: '是否暂停', dataIndex: 'suspend', align: 'center', width: 80, render: (text) => text ? '是' : '否' },
-        { title: '是否发布', dataIndex: 'publish', width: 80, align: 'center', render: (text) => text == 'true' ? '是' : '否' },
+        { title: '是否发布', dataIndex: 'publish', width: 80, align: 'center', render: (text) => text ? '是' : '否' },
         { title: '供应商代码', dataIndex: 'supplierCode', ellipsis: true, align: 'center', },
         { title: '供应商名称', dataIndex: 'supplierName', ellipsis: true, align: 'center', },
         { title: '填报截止日期', dataIndex: 'fillEndDate', ellipsis: true, align: 'center', render: (text) => text ? text.slice(0, 10) : '' },
@@ -62,13 +83,14 @@ const supplierModal = forwardRef(({ form, selectedRow }, ref) => {
     async function getData() {
         const res = await findByPageOfSupplier({ demandNumber: selectedRow.demandNumber });
         if (res.statusCode === 200) {
-            if (res.data && res.data.rows) {
+            if (res.data) {
                 let suppliers = []
-                let dataList = res.data.rows.map((item, index) => {
+                let dataList = res.data.map((item, index) => {
                     suppliers.push(item.supplierCode);
                     return {
                         ...item,
-                        rowKey: index
+                        rowKey: index,
+                        whetherDelete: false
                     }
                 })
                 setSuplierCodes(suppliers);
@@ -98,11 +120,24 @@ const supplierModal = forwardRef(({ form, selectedRow }, ref) => {
     }
     // 删除
     function handleDelete(v) {
+        let deleteRows = [].concat(deleteList);
+        let suppliers = [];
         let newList = dataSource.filter(item => {
-            return !(selectedRowKeys.includes(item.rowKey))
+            if (selectedRowKeys.includes(item.rowKey)) {
+                if (item.id) {
+                    item.whetherDelete = true;
+                    deleteRows.push(item);
+                }
+                return false;
+            } else {
+                suppliers.push(item.supplierCode);
+                return true;
+            }
         });
-        newList.map((item, index) => ({ ...item, rowKey: index }))
+        newList.map((item, index) => ({ ...item, rowKey: index }));
+        setDeleteList(deleteRows);
         setDataSource(newList);
+        setSuplierCodes(suppliers);
         setEditTag(true);
         tableRef.current.manualSelectedRows();
     }
@@ -114,7 +149,6 @@ const supplierModal = forwardRef(({ form, selectedRow }, ref) => {
                 suspend: !item.suspend
             } : item
         });
-        newList.map((item, index) => ({ ...item, rowKey: index }))
         setDataSource(newList);
         setEditTag(true);
         tableRef.current.manualSelectedRows();
@@ -128,7 +162,7 @@ const supplierModal = forwardRef(({ form, selectedRow }, ref) => {
         let addList = [];
         let suppliers = [];
         supplierSelected.forEach((item, index) => {
-            if(!supplierCodes.includes(item.code)) {
+            if (!supplierCodes.includes(item.code)) {
                 suppliers.push(item.code);
                 addList.push({
                     rowKey: dataSource.length + index,
@@ -157,8 +191,13 @@ const supplierModal = forwardRef(({ form, selectedRow }, ref) => {
     }
     // 保存
     async function handleSave() {
+        if(supplierModalType === 'view'){
+            setVisible(false);
+            return;
+        }
         let res = {};
-        let saveData = { ...selectedRow, demandSupplierBoList: dataSource }
+        let saveList = dataSource.concat(deleteList);
+        let saveData = { ...selectedRow, demandSupplierBoList: saveList }
         res = await addDemandSupplier(saveData);
         if (res.statusCode === 200) {
             message.success('操作成功');
@@ -169,14 +208,13 @@ const supplierModal = forwardRef(({ form, selectedRow }, ref) => {
         }
     }
     // 发布/取消发布
-    function handlePublish(tag) {
+    function handlePublish() {
         let newList = dataSource.map(item => {
             return (selectedRowKeys.includes(item.rowKey)) ? {
                 ...item,
-                publish: tag
+                publish: !item.publish
             } : item
         });
-        newList.map((item, index) => ({ ...item, rowKey: index }))
         setDataSource(newList);
         setEditTag(true);
         tableRef.current.manualSelectedRows();
@@ -196,6 +234,10 @@ const supplierModal = forwardRef(({ form, selectedRow }, ref) => {
         return !tag;
     }
     function handleCancel() {
+        if(supplierModalType === 'view'){
+            setVisible(false);
+            return;
+        }
         if (editTag) {
             Modal.confirm({
                 title: '退出',
@@ -215,13 +257,13 @@ const supplierModal = forwardRef(({ form, selectedRow }, ref) => {
             destroyOnClose={true}
             onCancel={() => { handleCancel() }}
             onOk={() => { handleSave() }}
-            okText="保存"
+            okText={supplierModalType === 'distribute' ? "保存":"确定"}
             visible={visible}
             centered
             width={1100}
-            title="分配供应商"
+            title={supplierModalType === 'distribute' ? "分配供应商" : "查看供应商"}
         >
-            <div className={styles.mbt}>
+            <div className={styles.mbt} style={{display: supplierModalType === 'distribute' ? 'block' : 'none'}}>
                 <Button type='primary' className={styles.btn} onClick={() => { setAddVisible(true) }} key="add">新增</Button>
                 <Button className={styles.btn}
                     disabled={selectedRows.length === 0 || checkSameBatch()}
