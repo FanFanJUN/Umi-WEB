@@ -74,7 +74,7 @@ const SupplierFillList = function ({form}) {
                 disabled={(selectedRows.length !== 1 || selectedRows[0].effectiveStatus === 'COMPLETED')}
                 onClick={() => { redirectToPage('add') }}
                 ignore={DEVELOPER_ENV}
-                key='QUALITYSYNERGY_SUPPLIERFILL_FILL'
+                key='QUALITYSYNERGY_SUPPLIERFILL_FILL_NEW'
             >填报</Button>)
         }
         {
@@ -83,7 +83,7 @@ const SupplierFillList = function ({form}) {
                 disabled={selectedRowKeys.length!==1}
                 onClick={() => { redirectToPage('detail') }}
                 ignore={DEVELOPER_ENV}
-                key='QUALITYSYNERGY_SUPPLIERFILL_DETAIL'
+                key='QUALITYSYNERGY_SUPPLIERFILL_DETAIL_NEW'
             >明细</Button>)
         }
         {
@@ -91,7 +91,7 @@ const SupplierFillList = function ({form}) {
                 className={styles.btn}
                 disabled={selectedRowKeys.length!==1}
                 onClick={() => { handleButton('submit') }}
-                key='QUALITYSYNERGY_SUPPLIERFILL_SUBMIT'
+                key='QUALITYSYNERGY_SUPPLIERFILL_SUBMIT_NEW'
                 ignore={DEVELOPER_ENV}
             >提交</Button>)
         }
@@ -101,7 +101,7 @@ const SupplierFillList = function ({form}) {
                 disabled={selectedRowKeys.length!==1}
                 onClick={() => { handleButton('withdraw') }}
                 ignore={DEVELOPER_ENV}
-                key='QUALITYSYNERGY_SUPPLIERFILL_WITHDEAW'
+                key='QUALITYSYNERGY_SUPPLIERFILL_WITHDEAW_NEW'
             >撤回</Button>)
         }
         {
@@ -109,7 +109,7 @@ const SupplierFillList = function ({form}) {
                 className={styles.btn}
                 disabled={selectedRowKeys.length!==1}
                 onClick={() => { setCopyVisible(true) }}
-                key='QUALITYSYNERGY_SUPPLIERFILL_COPY'
+                key='QUALITYSYNERGY_SUPPLIERFILL_COPY_NEW'
                 ignore={DEVELOPER_ENV}
             >复制</Button>)
         }
@@ -121,7 +121,7 @@ const SupplierFillList = function ({form}) {
                 onClick={() => {
                     historyRef.current.setVisible(true);
                 }}
-                key='QUALITYSYNERGY_SUPPLIERFILL_HISTORY'
+                key='QUALITYSYNERGY_SUPPLIERFILL_HISTORY_NEW'
             >填报历史</Button>)
         }
         {
@@ -129,7 +129,7 @@ const SupplierFillList = function ({form}) {
                 className={styles.btn}
                 disabled={false}
                 onClick={() => { setUploadVisible(true) }}
-                key='QUALITYSYNERGY_SUPPLIERFILL_UPLOAD'
+                key='QUALITYSYNERGY_SUPPLIERFILL_UPLOAD_NEW'
                 ignore={DEVELOPER_ENV}
             >上传资质文件</Button>)
         }
