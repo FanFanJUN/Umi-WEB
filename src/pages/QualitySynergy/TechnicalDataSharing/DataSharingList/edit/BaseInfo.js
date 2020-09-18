@@ -85,6 +85,7 @@ let BaseInfo = React.forwardRef((props, ref) => {
                   ],
                 })(
                   <ComboList
+                    allowClear={true}
                     style={{ width: '100%' }}
                     form={form}
                     name={'buName'}

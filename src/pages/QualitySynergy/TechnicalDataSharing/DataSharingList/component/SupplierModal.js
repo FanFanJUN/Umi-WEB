@@ -189,6 +189,7 @@ const SupplierModal = (props) => {
   // 添加截止日期
   const addEndTime = () => {
     const endTime = moment(getFieldValue('endTime')).format('YYYY-MM-DD')
+    console.log(data.sourceData)
     let newSourceData = data.sourceData.slice()
     newSourceData.map((item, index) => {
       data.selectedRowKeys.map(data => {
@@ -199,7 +200,7 @@ const SupplierModal = (props) => {
     })
     console.log(newSourceData, 'newSourceData')
     setData(v => ({...v, sourceData: newSourceData}))
-    console.log(data.sourceData, 'sourceData')
+    tableRef.current.manualSelectedRows()
     modalCancel()
   }
 
@@ -214,12 +215,13 @@ const SupplierModal = (props) => {
       })
     })
     console.log(newSourceData)
+    tableRef.current.manualSelectedRows()
     setData(v => ({...v, sourceData: newSourceData}))
   }
 
   // 保存供应商
   const saveSupplier = () => {
-    if (judge(data.selectedRows, 'downloadAbortDate') && data.sourceData.length > 0) {
+    if (data.sourceData.length > 0) {
       Modal.confirm({
         title: '保存',
         okText: '确定',
@@ -242,6 +244,8 @@ const SupplierModal = (props) => {
           })
         }
       })
+    } else {
+      message.error('至少有一个供应商')
     }
   }
 
@@ -305,11 +309,11 @@ const SupplierModal = (props) => {
           <Button className={styles.btn} onClick={handleAddSupplier} type='primary'>新增</Button>
           <Button className={styles.btn} onClick={handleTimeEdit} disabled={data.selectedRowKeys?.length === 0}>编辑资料下载日期</Button>
           <Button className={styles.btn} onClick={handleDelete} disabled={data.selectedRowKeys?.length === 0}>删除</Button>
+          <Button disabled={!judge(data.sourceData, 'downloadAbortDate')} onClick={saveSupplier}>保存</Button>
           <Button className={styles.btn} disabled={data.selectedRowKeys?.length === 0 ||
           !judge(data.selectedRows, 'downloadAbortDate')
           } onClick={() => changeReleaseStatus(true)}>发布</Button>
           <Button className={styles.btn} disabled={data.selectedRowKeys?.length === 0 || !judge(data.selectedRows, 'downloadAbortDate')} onClick={() => changeReleaseStatus(false)}>取消发布</Button>
-          <Button disabled={!judge(data.sourceData, 'downloadAbortDate')} onClick={saveSupplier}>保存</Button>
         </div>
       }
       <ExtTable

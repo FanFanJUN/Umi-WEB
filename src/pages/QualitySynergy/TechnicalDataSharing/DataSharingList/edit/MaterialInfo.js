@@ -75,6 +75,7 @@ const MaterialInfo = React.forwardRef((props, ref) => {
                  isView ? <span>{data.materialCode}</span> :  getFieldDecorator('materialCode', {
                    initialValue: type === 'add' ? '' : data.materialCode,
                  })(<ComboList
+                   allowClear={true}
                    style={{ width: '100%' }}
                    form={form}
                    name={'materialCode'}
@@ -96,7 +97,7 @@ const MaterialInfo = React.forwardRef((props, ref) => {
                       },
                     ],
                   })(
-                    <Input disabled={true} placeholder='请输入物料描述' style={{ width: '100%' }}/>,
+                    <Input disabled={getFieldValue('materialCode') ? true : false} placeholder='请输入物料描述' style={{ width: '100%' }}/>,
                   )
                 }
               </FormItem>
@@ -118,6 +119,7 @@ const MaterialInfo = React.forwardRef((props, ref) => {
                       },
                     ],
                   })(<ComboList
+                    allowClear={true}
                     disabled={getFieldValue('materialCode') ? true : false}
                     style={{ width: '100%' }}
                     form={form}

@@ -1,7 +1,6 @@
 import { smBaseUrl, baseUrl, recommendUrl, basicServiceUrl } from '../../utils/commonUrl';
 import request from '../../utils/request';
 import React from 'react';
-import { commonUrl } from '../../utils';
 const commonProps = {
   reader: {
     name: 'name',
@@ -15,6 +14,7 @@ const commonProps = {
 
 // 技术资料状态
 export const ShareStatusProps = {
+  allowClear: true,
   dataSource: [
     {
       code: '草稿',
@@ -47,6 +47,7 @@ export const ShareDownloadStatus = {
 
 // 技术资料分配供应商状态
 export const ShareDistributionProps = {
+  allowClear: true,
   dataSource: [
     {
       code: '已分配',
@@ -385,6 +386,7 @@ export async function DeleteBasicMaterials(params) {
 
 // 战略采购列表
 export const StrategicPurchaseConfig = {
+  allowClear: true,
   remotePaging: true,
   store: {
     type: 'POST',
@@ -406,6 +408,7 @@ export const StrategicPurchaseConfig = {
 // 物料组列表
 export const MaterialGroupConfig = {
   remotePaging: true,
+  allowClear: true,
   store: {
     type: 'POST',
     autoLoad: false,
@@ -451,6 +454,7 @@ export const MaterialConfig = {
     autoLoad: false,
     url: `${baseUrl}/materialSrm/findByPage`,
   },
+  allowClear: true,
   style: {
     width: '100%',
   },
@@ -587,6 +591,7 @@ export const BUModelConfig = {
 
 // BU列表未冻结高级查询
 export const BUConfigNoFrostHighSearch = {
+  allowClear: true,
   remotePaging: true,
   store: {
     type: 'POST',
