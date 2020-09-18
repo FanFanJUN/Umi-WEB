@@ -13,6 +13,7 @@ import '../../../components/upload.css'
 const { create } = Form;
 const FormItem = Form.Item;
 let lineCode = 1;
+let keys = -1;
 const QualificationRef = forwardRef(({
     form,
     initialValue = {},
@@ -29,7 +30,7 @@ const QualificationRef = forwardRef(({
     const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
     const [configure, setConfigure] = useState([]);
     const [dataSource, setDataSource] = useState([]);
-    const [keys, setKey] = useState();
+    //const [keys, setKey] = useState();
     //const [lineCode, setLineCode] = useState(0);
     const [initIndex, setInitIndex] = useState();
     const { attachment = null } = initialValue;
@@ -74,7 +75,7 @@ const QualificationRef = forwardRef(({
         console.log(lineCode)
         console.log(initData)
         setDataSource(initData)
-        let keys = initData.length - 1;
+        keys = initData.length - 1;
         let initIndex = initData.length;
         let itemArr = [],modifydata= [];
         if (editData && editData.genCertVos && editData.genCertVos.length > 0) {
@@ -108,7 +109,7 @@ const QualificationRef = forwardRef(({
             lineCode = maxLineNum + 1;
             keys = initData.length - 1;
             console.log(initData)
-            setKey(initData.length - 1);
+            //setKey(initData.length - 1);
             setInitIndex(initData.length);
             setDataSource(initData)
         }
@@ -126,6 +127,7 @@ const QualificationRef = forwardRef(({
             title: '操作',
             width: 50,
             align: 'center',
+            dataIndex:'operation',
             render: (text, record, index) => {
                 return <div>
                     {
@@ -302,14 +304,16 @@ const QualificationRef = forwardRef(({
     // 新增
     function handleAdd() {
         console.log(keys)
-        const newData = [...dataSource, { key: (keys + 1), lineCode: getLineCode(lineCode) }];
+        const newData = [...dataSource, { key: keys + 1, lineCode: getLineCode(lineCode) }];
         //setLineCode(lineCode + 1)
         lineCode++;
+        keys ++ ;
         console.log(newData)
         setDataSource(newData)
     };
     //删除
     function handleDelete(key) {
+        console.log(key)
         //const { dataSource } = this.state;
         const newData = dataSource.filter((item) => item.key !== key);
         //setLineCode(lineCode - 1);

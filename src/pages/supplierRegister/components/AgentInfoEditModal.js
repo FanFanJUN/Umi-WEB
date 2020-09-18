@@ -31,10 +31,11 @@ const AgentModelRef = forwardRef(({
             creatorName,
             ...other
         } = initialValues;
-        const fields = {
-            ...other
-        }
-        setFieldsValue(fields);
+        // const fields = {
+        //     ...other
+        // }
+        // console.log(fields)
+        // setFieldsValue(fields);
     }, []);
 
     function handleModalVisible(flag) {

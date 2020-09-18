@@ -2,7 +2,7 @@ import React, { forwardRef, useImperativeHandle, useEffect, useRef ,useState} fr
 import { Modal, Form, Button, message, Input, } from 'antd';
 import { Fieldclassification ,countryListConfig} from '@/utils/commonProps'
 import { ExtTable } from 'suid';
-import { openNewTab, getFrameElement } from '@/utils';
+import { openNewTab, getFrameElement ,isEmpty} from '@/utils';
 import { smBaseUrl } from '@/utils/commonUrl';
 import UploadFile from '../../../components/Upload/index'
 import styles from '../index.less';
@@ -29,14 +29,17 @@ const getAgentregRef = forwardRef(({
     function handleModalVisible (flag) {
         setvisible(!!flag)
     };
-    function handleOk() {
-        let result;
+    async function handleOk() {
+        let result = false;
         form.validateFieldsAndScroll((err, values) => {
-          if (!err) {
+          if (isEmpty(values.modifyReason)) {
+            message.error('请将填写变更原因！');
+            return false;
+          }else {
             result = values;
+            ReaModelOk(result)
           }
         });
-        ReaModelOk(result);
     }
 
     return (
@@ -87,11 +90,11 @@ const getAgentregRef = forwardRef(({
 
             )}
             <a style={{marginLeft: 30}}
-                href='/srm-sm-web/供应商更名申请函.docx'>
+                href='/srm-se-web/供应商更名申请函.docx'>
                   <b>下载更名模版</b>
             </a>
             <a key='downloadTemplate' style={{marginLeft: 30}}
-                href='/srm-sm-web/公司账户变更通知函.doc'>
+                href='/srm-se-web/公司账户变更通知函.doc'>
                   <b>下载银行帐号变更模版</b>
             </a>
 

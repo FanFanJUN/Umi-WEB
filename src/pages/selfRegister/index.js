@@ -18,6 +18,7 @@ export default function () {
         let organ = {};
         organ.mobile = query.mobile;
         organ.email = query.email;
+        organ.openId = query.openId;
         setaccounts(organ)
     }, []);
     //上一步

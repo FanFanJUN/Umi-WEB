@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:58:22
- * @LastEditTime: 2020-09-17 10:16:12
+ * @LastEditTime: 2020-09-18 15:44:28
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/HdssControll/index.js
  * @Description: 产品有害物质管控 tab
  * @Connect: 1981824361@qq.com
@@ -27,7 +27,7 @@ const formLayout = {
     },
 };
 
-const HdssControll = ({ form }) => {
+const HdssControll = ({ form, updateGlobalStatus }) => {
 
     const [data, setData] = useState({});
     const [tableTata, setTableTata] = useState([]);
@@ -101,6 +101,7 @@ const HdssControll = ({ form }) => {
             requestPostApi(filterEmptyFileds(saveParams)).then((res) => {
                 if (res && res.success) {
                     message.success('保存数据成功');
+                    updateGlobalStatus();
                 } else {
                     message.error(res.message);
                 }

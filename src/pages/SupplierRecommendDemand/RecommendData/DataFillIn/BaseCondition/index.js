@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 15:52:52
- * @LastEditTime: 2020-09-17 13:55:45
+ * @LastEditTime: 2020-09-18 15:41:33
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/BaseCondition/index.js
  * @Description: 基本情况 Tab
  * @Connect: 1981824361@qq.com
@@ -18,7 +18,7 @@ import { router } from 'dva';
 import { findrBaseInfoById, saveBaseInfo } from '../../../../../services/dataFillInApi';
 import { filterEmptyFileds } from '../CommonUtil/utils';
 
-const BaseCondition = ({ form }) => {
+const BaseCondition = ({ form, updateGlobalStatus }) => {
 
     const [data, setData] = useState({});
     const [loading, setLoading] = useState(false);
@@ -55,7 +55,8 @@ const BaseCondition = ({ form }) => {
             };
             saveBaseInfo(filterEmptyFileds(saveParams)).then((res) => {
                 if (res && res.success) {
-                    message.success('保存基本情况成功')
+                    message.success('保存基本情况成功');
+                    updateGlobalStatus();
                 } else {
                     message.error(res.message);
                 }

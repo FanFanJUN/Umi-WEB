@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 14:29:17
- * @LastEditTime: 2020-09-17 10:24:10
+ * @LastEditTime: 2020-09-18 15:39:03
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/index.js
  * @Description: 资料填报 Tabs
  * @Connect: 1981824361@qq.com
@@ -130,42 +130,42 @@ function DataFillIn({
       <Tabs tabPosition='left' onChange={(activeKey) => handleChange(activeKey)}>
         {/* 基本情况 */}
         <TabPane key='baseCondition' tab={baseConditionTab}>
-          <BaseCondition />
+          <BaseCondition updateGlobalStatus={updateGlobalStatus()} />
         </TabPane>
 
         {/* 销售情况 */}
         <TabPane key='sellCondition' tab={sellConditionTab}>
-          <SellCondition />
+          <SellCondition updateGlobalStatus={updateGlobalStatus()} />
         </TabPane>
 
         {/* 研发能力 */}
         <TabPane key='researchAbility' tab={researchAbilityTab}>
-          <ResearchAbility />
+          <ResearchAbility updateGlobalStatus={updateGlobalStatus()} />
         </TabPane>
 
         {/* 质量能力 */}
         <TabPane key='qualityAbility' tab={qualityAbilityTab}>
-          <QualityAbility />
+          <QualityAbility updateGlobalStatus={updateGlobalStatus()} />
         </TabPane>
 
         {/* 供应链管理能力 */}
         <TabPane key='managerAbility' tab={managerAbilityTab}>
-          <ManagerAbility />
+          <ManagerAbility updateGlobalStatus={updateGlobalStatus()} />
         </TabPane>
 
         {/* 制造能力 */}
         <TabPane key='manufactureAbility' tab={manufactureAbilityTab}>
-          <ManufactureAbility />
+          <ManufactureAbility updateGlobalStatus={updateGlobalStatus()} />
         </TabPane>
 
         {/* 产品有害物质管控 */}
         <TabPane key='hdssControll' tab={hdssControllTab}>
-          <HdssControll />
+          <HdssControll updateGlobalStatus={updateGlobalStatus()} />
         </TabPane>
 
         {/* 合作意愿 */}
         <TabPane key='DWC' tab={DWCTab}>
-          <DWC />
+          <DWC updateGlobalStatus={updateGlobalStatus()} />
         </TabPane>
 
         {/* 企业社会责任 */}
@@ -180,12 +180,12 @@ function DataFillIn({
 
         {/* 其他附加资料 */}
         <TabPane key='other' tab={otherTab}>
-          <Other />
+          <Other updateGlobalStatus={updateGlobalStatus()} />
         </TabPane>
 
         {/* 报价单及成分分析表 */}
         <TabPane key='quotationAndGPCA' tab={quotationAndGPCATab}>
-          <QuotationAndGPCA />
+          <QuotationAndGPCA updateGlobalStatus={updateGlobalStatus()} />
         </TabPane>
       </Tabs>
     </div>

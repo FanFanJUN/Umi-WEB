@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:58:07
- * @LastEditTime: 2020-09-17 10:21:30
+ * @LastEditTime: 2020-09-18 15:47:11
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/QuotationAndGPCA/index.js
  * @Description: 报价单及成分分析表 Tab
  * @Connect: 1981824361@qq.com
@@ -15,7 +15,7 @@ import { router } from 'dva';
 import { requestPostApi, requestGetApi } from '../../../../../services/dataFillInApi';
 import { filterEmptyFileds } from '../CommonUtil/utils';
 
-const QuotationAndGPCA = (props) => {
+const QuotationAndGPCA = ({ updateGlobalStatus }) => {
 
     const [data, setData] = useState({});
     const [dataSource, setDataSource] = useState([]);
@@ -123,6 +123,7 @@ const QuotationAndGPCA = (props) => {
         requestPostApi(filterEmptyFileds(saveParams)).then((res) => {
             if (res && res.success) {
                 message.success('保存数据成功');
+                updateGlobalStatus();
             } else {
                 message.error(res.message);
             }
@@ -154,7 +155,7 @@ const QuotationAndGPCA = (props) => {
                             <div className={styles.content}>
                                 <Row style={{ marginBottom: '10px' }}>
                                     <span style={{ marginRight: '18px' }}>能够且愿意向长虹提供完整的成本结构:</span>
-                                    <Radio.Group onChange={(value) => onChange(value)} value={supplyCostStructure}>
+                                    <Radio.Group onChange={(value) => onChange(value)} value={type === 'add' ? supplyCostStructure : data.supplyCostStructure}>
                                         <Radio value={true}>是</Radio>
                                         <Radio value={false}>否</Radio>
                                     </Radio.Group>

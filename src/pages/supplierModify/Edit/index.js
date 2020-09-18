@@ -334,7 +334,7 @@ function CreateStrategy() {
         proCertVos = getspecialpurpose() || [];
       }
     }
-
+    console.log(authorizedClientVal)
     let enclosurelist = [], basedata, accountData, baseexten, automaticdata, automaticincome,
       automThreeYear, rangeValinfo;
     if (baseVal && baseVal.supplierVo) {
@@ -393,19 +393,19 @@ function CreateStrategy() {
     }
     setwholeData(wholeData)
     getModelRef.current.handleModalVisible(true);
-    let saveData = wholeData;
-    console.log(saveData)
-    triggerLoading(true)
-    const { success, message: msg } = await saveSupplierRegister(saveData);
-    if (success) {
-      message.success(msg);
-      triggerLoading(false)
-      closeCurrent()
-      return
-    }else {
-      message.error(msg);
-    }
-    triggerLoading(false)
+    // let saveData = wholeData;
+    // console.log(saveData)
+    // triggerLoading(true)
+    // const { success, message: msg } = await saveSupplierRegister(saveData);
+    // if (success) {
+    //   message.success(msg);
+    //   triggerLoading(false)
+    //   closeCurrent()
+    //   return
+    // }else {
+    //   message.error(msg);
+    // }
+    // triggerLoading(false)
   }
   async function createSave(val) {
     let params = { ...wholeData, ...val };
@@ -578,6 +578,7 @@ function CreateStrategy() {
                   <div className={styles.title}>供应商专用资质</div>
                   <div>
                     <QualificationProfessional
+                      editData={editData}
                       wrappedComponentRef={QualispecialRef}
                     />
                   </div>

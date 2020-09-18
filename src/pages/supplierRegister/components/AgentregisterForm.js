@@ -37,13 +37,11 @@ const getAgentregRef = forwardRef(({
         const fields = {
             ...other
         }
-        setFieldsValue(fields);
-        setupAgent();
-    }, []);
-    function setupAgent() {
-        let initData = [];
-        if (editData && editData.supplierAgents !== undefined) {
-            initData = editData.supplierAgents.map((item, index) => {
+        
+        let initData = [], editData = [];
+        editData.push(fields);
+        if (editData && editData.length > 0) {
+            initData = editData.map((item, index) => {
               item.country = {
                 key: item.countryId || item.country && item.country.key || "",
                 label: item.countryName || item.country && item.country.label || ""
@@ -53,11 +51,18 @@ const getAgentregRef = forwardRef(({
               return item;
             });
           }
-          let sedinitData =  initData.length > 0 ? initData[0] : null;
-          let originalCode =  initData.length > 0 && initData[0].originalCode ? initData[0].originalCode :''
-          setInitData(sedinitData)
+          initData =  initData.length > 0 ? initData[0] : null;
+          console.log(initData)
+          let originalCode =  editData.length > 0 && editData[0].originalCode ? editData[0].originalCode :''
+          setInitData(initData)
           setoriginalCode(originalCode)
-    }
+          console.log(editData)
+          setFieldsValue(initData);
+        //setupAgent();
+    }, []);
+    // function setupAgent() {
+        
+    // }
     // 获取表单值
     function getFormValue() {
         let result = false;
@@ -107,7 +112,7 @@ const getAgentregRef = forwardRef(({
                         {...formItemLayout}
                     >
                         {
-                            <span></span>
+                            <span>{originalCode}</span>
                         }
                     </FormItem>
                 </Col>

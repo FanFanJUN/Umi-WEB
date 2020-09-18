@@ -32,6 +32,7 @@ const MainClientRef = forwardRef(({
             initData = editData.extendVo.majorCustomersVos.map((item, index) => ({ key: index, ...item }));
             keys = initData.length - 1;
         }
+        console.log(initData.length)
         setDataSource(initData)
     }, [editData])
 
@@ -40,6 +41,7 @@ const MainClientRef = forwardRef(({
             title: '操作',
             align: 'center',
             width: 100,
+            dataIndex:'operation',
             render: (text, record, index) => {
                 return <div>
                     {
@@ -138,6 +140,7 @@ const MainClientRef = forwardRef(({
                         columns={tableProps}
                         dataSource={dataSource}
                         showSearch={false}
+                        lineNumber={true}
                         pagination={{
                             hideOnSinglePage: true,
                             disabled: false,

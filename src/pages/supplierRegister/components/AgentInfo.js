@@ -191,13 +191,15 @@ const Agentformef = forwardRef(({
   }
   // 编辑
   function handleEdit() {
+    console.log(selectedRows)
     let newsagent;
     if (selectedRows.length > 1) {
       newsagent = selectedRows.splice(1);
     }else {
       newsagent = selectedRows
     }
-    setDataSource(newsagent) 
+    console.log(newsagent)
+    //setDataSource(newsagent) 
     setEdit(true)
     const [row] = newsagent;
     setInitialValue({ ...row })

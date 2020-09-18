@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:58:16
- * @LastEditTime: 2020-09-18 09:41:05
+ * @LastEditTime: 2020-09-18 15:44:02
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/ManufactureAbility/index.js
  * @Description: 制造能力 Tab
  * @Connect: 1981824361@qq.com
@@ -26,7 +26,7 @@ const formLayout = {
     },
 };
 
-const ManufactureAbility = ({ form }) => {
+const ManufactureAbility = ({ form, updateGlobalStatus }) => {
 
     const [data, setData] = useState({});
     const [productionCapacities, setproductionCapacities] = useState([]);
@@ -285,6 +285,7 @@ const ManufactureAbility = ({ form }) => {
             requestPostApi(filterEmptyFileds(saveParams)).then((res) => {
                 if (res && res.success) {
                     message.success('保存数据成功');
+                    updateGlobalStatus();
                 } else {
                     message.error(res.message);
                 }

@@ -25,7 +25,7 @@ function SupplierConfigure() {
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [onlyMe, setOnlyMe] = useState(true);
     const [selectedRows, setRows] = useState([]);
-    const [searchValue, setSearchValue] = useState({});
+    const [searchValue, setSearchValue] = useState('');
     const [visible, setVisible] = useState(false);
     const [recommen, setrecommen] = useState([]);
     const [loading, triggerLoading] = useState(false);
@@ -172,7 +172,7 @@ function SupplierConfigure() {
         store: {
             url: `${smBaseUrl}/api/supplierModifyService/findRequestByPage`,
             params: {
-                ...searchValue,
+                quickSearchValue: searchValue,
                 quickSearchProperties: ['supplierName'],
                 sortOrders: [
                     {
@@ -262,6 +262,7 @@ function SupplierConfigure() {
     function handleCheckEdit() {
        // const [key] = selectedRowKeys;
         let id = selectedRows[0].id;
+        //let id = '';
         openNewTab(`supplier/supplierModify/Edit/index?id=${id}`, '供应商变更编辑', false)
     }
     // 明细
@@ -276,16 +277,9 @@ function SupplierConfigure() {
     }
     // 查询
     function handleQuickSerach() {
-        let search;
-        if(Object.keys(searchValue).length == 0){
-            search = ""
-        }else {
-            search = searchValue
-        }
-        setSearchValue({
-            quickSearchValue: search
-        })
-        console.log(searchValue)
+        let search = "";
+        setSearchValue(search);
+        setSearchValue(searchValue)
         uploadTable();
     }
     // 提交审核完成更新列表
@@ -428,7 +422,8 @@ function SupplierConfigure() {
             <AutoSizeLayout>
                 {
                     (height) => <ExtTable
-                        columns={authorizations.userType === 'Supplier' ? supplierColumns : columns}
+                        //columns={authorizations.userType === 'Supplier' ? supplierColumns : columns}
+                        columns={columns}
                         showSearch={false}
                         ref={tableRef}
                         rowKey={(item) => item.id}

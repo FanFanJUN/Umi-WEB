@@ -31,6 +31,7 @@ export const ShareStatusProps = {
 
 // 技术资料下载状态
 export const ShareDownloadStatus = {
+  allowClear: true,
   dataSource: [
     {
       code: '已下载',

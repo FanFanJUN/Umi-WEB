@@ -554,6 +554,7 @@ function CreateStrategy() {
                   <div className={styles.title}>供应商专用资质</div>
                   <div>
                     <QualificationProfessional
+                      editData={editData}
                       wrappedComponentRef={QualispecialRef}
                     />
                   </div>

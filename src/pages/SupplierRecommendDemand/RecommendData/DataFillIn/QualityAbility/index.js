@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:58:10
- * @LastEditTime: 2020-09-17 17:29:12
+ * @LastEditTime: 2020-09-18 15:43:04
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/QualityAbility/index.js
  * @Description: 质量能力
  * @Connect: 1981824361@qq.com
@@ -19,16 +19,21 @@ import { filterEmptyFileds } from '../CommonUtil/utils';
 const FormItem = Form.Item;
 const formLayout = {
     labelCol: {
-        span: 8,
+        span: 10,
     },
     wrapperCol: {
-        span: 16,
+        span: 14,
     },
 };
 
-const QualityAbility = ({form}) => {
+const QualityAbility = ({ form, updateGlobalStatus }) => {
 
     const [data, setData] = useState({});
+    const [keyControlProcesses, setkeyControlProcesses] = useState([]);
+    const [keyTestingEquipments, setkeyTestingEquipments] = useState([]);
+    const [cannotTestItems, setcannotTestItems] = useState([]);
+    const [finishedProductQualities, setfinishedProductQualities] = useState([]);
+    const [materialQualities, setmaterialQualities] = useState([]);
     const [loading, setLoading] = useState(false);
 
     const { query: { id, type = 'add' } } = router.useLocation();
@@ -40,7 +45,11 @@ const QualityAbility = ({form}) => {
             const res = await requestGetApi({ supplierRecommendDemandId: id, tabKey: 'qualityAbilityTab' });
             if (res.success) {
                 res.data && setData(res.data);
-                // setTableTata(data.environmentalTestingEquipments);
+                setkeyControlProcesses(res.data.keyControlProcesses);
+                setkeyTestingEquipments(res.data.keyTestingEquipments);
+                setcannotTestItems(res.data.finishedProductQualities);
+                setfinishedProductQualities(res.data.finishedProductQualities);
+                setmaterialQualities(res.data.materialQualities);
             } else {
                 message.error(res.message);
             }
@@ -55,76 +64,85 @@ const QualityAbility = ({form}) => {
     const columnsForKeyControl = [
         {
             "title": "工序名称",
-            "dataIndex": "name1",
+            "dataIndex": "name",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
         },
         {
             "title": "重点控制工序现场是否有标志和控制",
-            "dataIndex": "name2",
+            "dataIndex": "exsitFlagControl",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
+            "inputType": 'Select',
         },
     ];
     // 关键检测、实验设备
-    const columnsForProKeyPro= [
+    const columnsForProKeyPro = [
         {
             "title": "工厂名称",
-            "dataIndex": "name1",
+            "dataIndex": "factoryName",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
         },
         {
             "title": "设备名称",
-            "dataIndex": "name2",
+            "dataIndex": "equipmentName",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
         },
         {
             "title": "规格型号",
-            "dataIndex": "name3",
+            "dataIndex": "specificationModel",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
         },
         {
             "title": "生产厂家",
-            "dataIndex": "name4",
+            "dataIndex": "manufacturer",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'Input',
         },
         {
             "title": "产地",
-            "dataIndex": "name4",
+            "dataIndex": "originPlace",
             "ellipsis": true,
             "editable": true,
             "inputType": 'Input',
         },
         {
             "title": "购买时间",
-            "dataIndex": "name4",
+            "dataIndex": "buyDate",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'Input',
+            "inputType": 'DatePicker',
         },
         {
             "title": "数量",
-            "dataIndex": "name4",
+            "dataIndex": "number",
+            "ellipsis": true,
+            "editable": true,
+            "inputType": 'InputNumber',
+        },
+        {
+            "title": "检测项目",
+            "dataIndex": "testItem",
             "ellipsis": true,
             "editable": true,
             "inputType": 'Input',
         },
         {
-            "title": "检测项目",
-            "dataIndex": "name4",
+            "title": "精度",
+            "dataIndex": "accuracy",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'Input',
+            "inputType": 'InputNumber',
+        },
+        {
+            "title": "备注",
+            "dataIndex": "emark",
+            "ellipsis": true,
+            "editable": true,
+            "inputType": 'TextArea',
         }
     ];
 
@@ -132,42 +150,38 @@ const QualityAbility = ({form}) => {
     const columnsForProject = [
         {
             "title": "无能力检测项目",
-            "dataIndex": "name1",
+            "dataIndex": "cannotTestItem",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
         },
         {
             "title": "委托实验部门（检测机构）",
-            "dataIndex": "name2",
+            "dataIndex": "testOrganization",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
         },
         {
             "title": "检测周期",
-            "dataIndex": "name3",
+            "dataIndex": "testCycle",
             "ellipsis": true,
             "editable": true,
             "inputType": 'InputNumber',
         },
         {
             "title": "周期单位",
-            "dataIndex": "name4",
+            "dataIndex": "cycleUnit",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'Input',
         },
     ];
 
     // 成品检验项目
-    const columnsForFinishPro= [
+    const columnsForFinishPro = [
         {
             "title": "产品",
-            "dataIndex": "name1",
+            "dataIndex": "product",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
         },
         {
             "title": "检验项目",
@@ -210,31 +224,29 @@ const QualityAbility = ({form}) => {
     const columnsForQuality = [
         {
             "title": "产品",
-            "dataIndex": "name1",
+            "dataIndex": "product",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
         },
         {
             "title": "原材料名称及规格型号/牌号",
-            "dataIndex": "name1",
+            "dataIndex": "originModelBrand",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
         },
         {
             "title": "物料入厂验收合格率",
-            "dataIndex": "name1",
+            "dataIndex": "materialQualifiedRate",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
+            "inputType": 'percentInput',
         },
         {
             "title": "物料使用不良率",
-            "dataIndex": "name1",
+            "dataIndex": "materialUseBadRate",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
+            "inputType": 'percentInput',
         },
     ];
 
@@ -242,28 +254,28 @@ const QualityAbility = ({form}) => {
     const columnsForFinishQua = [
         {
             "title": "产品",
-            "dataIndex": "name1",
+            "dataIndex": "product",
             "ellipsis": true,
             "editable": true,
             "inputType": 'InputNumber',
         },
         {
             "title": "产品直通率",
-            "dataIndex": "name1",
+            "dataIndex": "productStraightInRate",
             "ellipsis": true,
             "editable": true,
             "inputType": 'InputNumber',
         },
         {
             "title": "成品检验合格率",
-            "dataIndex": "name1",
+            "dataIndex": "testQualifiedRate",
             "ellipsis": true,
             "editable": true,
             "inputType": 'InputNumber',
         },
         {
             "title": "成品出厂合格率",
-            "dataIndex": "name1",
+            "dataIndex": "leaveFactoryQualifiedRate",
             "ellipsis": true,
             "editable": true,
             "inputType": 'InputNumber',
@@ -290,6 +302,7 @@ const QualityAbility = ({form}) => {
             requestPostApi(filterEmptyFileds(saveParams)).then((res) => {
                 if (res && res.success) {
                     message.success('保存数据成功');
+                    updateGlobalStatus();
                 } else {
                     message.error(res.message);
                 }
@@ -297,24 +310,39 @@ const QualityAbility = ({form}) => {
         })
     }
 
-    function setNewData(newData) {
-        // setTableTata(newData);
+    function setNewData(newData, type) {
+        switch (type) {
+            case 'keyControlProcesses':
+                setkeyControlProcesses(newData);
+                break;
+            case 'keyTestingEquipments':
+                setkeyTestingEquipments(newData);
+                break;
+            case 'cannotTestItems':
+                setcannotTestItems(newData);
+                break;
+            case 'materialQualities':
+                setmaterialQualities(newData);
+                break;
+            default:
+                break;
+        }
     }
 
     return (
         <div>
-            <Spin spinning={data.loading}>
+            <Spin spinning={loading}>
                 <PageHeader
                     ghost={false}
                     style={{
                         padding: '0px'
                     }}
                     title="质量控制"
-                    extra={[
+                    extra={type === 'add' ? [
                         <Button key="save" type="primary" style={{ marginRight: '12px' }} onClick={() => handleSave()}>
                             保存
                         </Button>,
-                    ]}
+                    ] : null}
                 >
                     <div className={styles.wrapper}>
                         <div className={styles.bgw}>
@@ -324,33 +352,33 @@ const QualityAbility = ({form}) => {
                                 <Row>
                                     <Col span={12}>
                                         <FormItem label="材料入厂检验" {...formLayout}>
-                                            {getFieldDecorator('source', {
-                                                initialValue: '',
+                                            {getFieldDecorator('materialIncomeInspection', {
+                                                initialValue: type === 'add' ? '' : data.materialIncomeInspection,
                                                 // rules: [
                                                 //     {
                                                 //         required: true,
                                                 //         message: '自主技术开发能力不能为空',
                                                 //     },
                                                 // ],
-                                            })(<Radio.Group value={'1'}>
-                                                <Radio value={1}>有</Radio>
-                                                <Radio value={2}>无</Radio>
+                                            })(<Radio.Group>
+                                                <Radio value={true}>有</Radio>
+                                                <Radio value={false}>无</Radio>
                                             </Radio.Group>)}
                                         </FormItem>
                                     </Col>
                                     <Col span={12}>
                                         <FormItem label="生产过程检验" {...formLayout}>
-                                            {getFieldDecorator('source', {
-                                                initialValue: '',
+                                            {getFieldDecorator('productionProcessInspection', {
+                                                initialValue: type === 'add' ? '' : data.productionProcessInspection,
                                                 // rules: [
                                                 //     {
                                                 //         required: true,
                                                 //         message: '自主技术开发能力不能为空',
                                                 //     },
                                                 // ],
-                                            })(<Radio.Group value={'1'}>
-                                                <Radio value={1}>有</Radio>
-                                                <Radio value={2}>无</Radio>
+                                            })(<Radio.Group>
+                                                <Radio value={true}>有</Radio>
+                                                <Radio value={false}>无</Radio>
                                             </Radio.Group>)}
                                         </FormItem>
                                     </Col>
@@ -358,43 +386,45 @@ const QualityAbility = ({form}) => {
                                 <Row>
                                     <Col span={12}>
                                         <FormItem label="出厂检验" {...formLayout}>
-                                            {getFieldDecorator('source', {
-                                                initialValue: '',
+                                            {getFieldDecorator('routineTest', {
+                                                initialValue: type === 'add' ? '' : data.routineTest,
                                                 // rules: [
                                                 //     {
                                                 //         required: true,
                                                 //         message: '自主技术开发能力不能为空',
                                                 //     },
                                                 // ],
-                                            })(<Radio.Group value={'1'}>
-                                                <Radio value={1}>有</Radio>
-                                                <Radio value={2}>无</Radio>
+                                            })(<Radio.Group>
+                                                <Radio value={true}>有</Radio>
+                                                <Radio value={false}>无</Radio>
                                             </Radio.Group>)}
                                         </FormItem>
                                     </Col>
                                 </Row>
                                 <Divider>重点控制工序</Divider>
                                 <EditableFormTable
-                                    dataSource={[]}
+                                    dataSource={keyControlProcesses}
                                     columns={columnsForKeyControl}
-                                    rowKey='name1'
-                                    // setNewData={setNewData}
-                                    isEditTable
+                                    rowKey='id'
+                                    setNewData={setNewData}
+                                    isEditTable={type === 'add'}
+                                    isToolBar={type === 'add'}
+                                    tableType='keyControlProcesses'
                                 />
                                 <Row>
                                     <Col span={12}>
                                         <FormItem label="关键工序是否实行了SPC控制" {...formLayout}>
-                                            {getFieldDecorator('source', {
-                                                initialValue: '',
+                                            {getFieldDecorator('spcControl', {
+                                                initialValue: type === 'add' ? '' : data.spcControl,
                                                 // rules: [
                                                 //     {
                                                 //         required: true,
                                                 //         message: '自主技术开发能力不能为空',
                                                 //     },
                                                 // ],
-                                            })(<Radio.Group value={'1'}>
-                                                <Radio value={1}>有</Radio>
-                                                <Radio value={2}>无</Radio>
+                                            })(<Radio.Group>
+                                                <Radio value={true}>有</Radio>
+                                                <Radio value={false}>无</Radio>
                                             </Radio.Group>)}
                                         </FormItem>
                                     </Col>
@@ -402,33 +432,33 @@ const QualityAbility = ({form}) => {
                                 <Row>
                                     <Col span={12}>
                                         <FormItem label="是否有可靠性实验室" {...formLayout}>
-                                            {getFieldDecorator('source', {
-                                                initialValue: '',
+                                            {getFieldDecorator('accessibilityLab', {
+                                                initialValue: type === 'add' ? '' : data.accessibilityLab,
                                                 // rules: [
                                                 //     {
                                                 //         required: true,
                                                 //         message: '自主技术开发能力不能为空',
                                                 //     },
                                                 // ],
-                                            })(<Radio.Group value={'1'}>
-                                                <Radio value={1}>有</Radio>
-                                                <Radio value={2}>无</Radio>
+                                            })(<Radio.Group>
+                                                <Radio value={true}>有</Radio>
+                                                <Radio value={false}>无</Radio>
                                             </Radio.Group>)}
                                         </FormItem>
                                     </Col>
                                     <Col span={12}>
                                         <FormItem label="是否制定试验计划并实施" {...formLayout}>
-                                            {getFieldDecorator('source', {
-                                                initialValue: '',
+                                            {getFieldDecorator('testPlan', {
+                                                initialValue: type === 'add' ? '' : data.testPlan,
                                                 // rules: [
                                                 //     {
                                                 //         required: true,
                                                 //         message: '自主技术开发能力不能为空',
                                                 //     },
                                                 // ],
-                                            })(<Radio.Group value={'1'}>
-                                                <Radio value={1}>是</Radio>
-                                                <Radio value={2}>否</Radio>
+                                            })(<Radio.Group>
+                                                <Radio value={true}>是</Radio>
+                                                <Radio value={false}>否</Radio>
                                             </Radio.Group>)}
                                         </FormItem>
                                     </Col>
@@ -436,33 +466,33 @@ const QualityAbility = ({form}) => {
                                 <Row>
                                     <Col span={12}>
                                         <FormItem label="是否培训" {...formLayout}>
-                                            {getFieldDecorator('source', {
-                                                initialValue: '',
+                                            {getFieldDecorator('inspectorTrain', {
+                                                initialValue: type === 'add' ? '' : data.inspectorTrain,
                                                 // rules: [
                                                 //     {
                                                 //         required: true,
                                                 //         message: '自主技术开发能力不能为空',
                                                 //     },
                                                 // ],
-                                            })(<Radio.Group value={'1'}>
-                                                <Radio value={1}>有</Radio>
-                                                <Radio value={2}>无</Radio>
+                                            })(<Radio.Group>
+                                                <Radio value={true}>有</Radio>
+                                                <Radio value={false}>无</Radio>
                                             </Radio.Group>)}
                                         </FormItem>
                                     </Col>
                                     <Col span={12}>
                                         <FormItem label="资质认定" {...formLayout}>
-                                            {getFieldDecorator('source', {
-                                                initialValue: '',
+                                            {getFieldDecorator('inspectorCertification', {
+                                                initialValue: type === 'add' ? '' : data.inspectorCertification,
                                                 // rules: [
                                                 //     {
                                                 //         required: true,
                                                 //         message: '自主技术开发能力不能为空',
                                                 //     },
                                                 // ],
-                                            })(<Radio.Group value={'1'}>
-                                                <Radio value={1}>有</Radio>
-                                                <Radio value={2}>无</Radio>
+                                            })(<Radio.Group>
+                                                <Radio value={true}>有</Radio>
+                                                <Radio value={false}>无</Radio>
                                             </Radio.Group>)}
                                         </FormItem>
                                     </Col>
@@ -470,33 +500,33 @@ const QualityAbility = ({form}) => {
                                 <Row>
                                     <Col span={12}>
                                         <FormItem label="产品追溯" {...formLayout}>
-                                            {getFieldDecorator('source', {
-                                                initialValue: '',
+                                            {getFieldDecorator('productTracking', {
+                                                initialValue: type === 'add' ? '' : data.productTracking,
                                                 // rules: [
                                                 //     {
                                                 //         required: true,
                                                 //         message: '自主技术开发能力不能为空',
                                                 //     },
                                                 // ],
-                                            })(<Radio.Group value={'1'}>
-                                                <Radio value={1}>有</Radio>
-                                                <Radio value={2}>无</Radio>
+                                            })(<Radio.Group>
+                                                <Radio value={true}>有</Radio>
+                                                <Radio value={false}>无</Radio>
                                             </Radio.Group>)}
                                         </FormItem>
                                     </Col>
                                     <Col span={12}>
                                         <FormItem label="FMEA管理（过程）" {...formLayout}>
-                                            {getFieldDecorator('source', {
-                                                initialValue: '',
+                                            {getFieldDecorator('productCertification', {
+                                                initialValue: type === 'add' ? '' : data.productCertification,
                                                 // rules: [
                                                 //     {
                                                 //         required: true,
                                                 //         message: '自主技术开发能力不能为空',
                                                 //     },
                                                 // ],
-                                            })(<Radio.Group value={'1'}>
-                                                <Radio value={1}>具备</Radio>
-                                                <Radio value={2}>不具备</Radio>
+                                            })(<Radio.Group>
+                                                <Radio value={true}>具备</Radio>
+                                                <Radio value={false}>不具备</Radio>
                                             </Radio.Group>)}
                                         </FormItem>
                                     </Col>
@@ -505,8 +535,8 @@ const QualityAbility = ({form}) => {
                                 <Row>
                                     <Col span={12}>
                                         <FormItem label="设备清单" {...formLayout}>
-                                            {getFieldDecorator('source', {
-                                                initialValue: '',
+                                            {getFieldDecorator('equipmentListFileIds', {
+                                                initialValue: type === 'add' ? '' : data.equipmentListFileIds,
                                                 // rules: [
                                                 //     {
                                                 //         required: true,
@@ -514,55 +544,63 @@ const QualityAbility = ({form}) => {
                                                 //     },
                                                 // ],
                                             })(
-                                                <UploadFile />)}
+                                                <UploadFile
+                                                    showColor={type !== 'add' ? true : false}
+                                                    type={type !== 'add'}
+                                                    entityId={data.equipmentListFileIds}
+                                                />)}
                                         </FormItem>
                                     </Col>
                                 </Row>
                                 <EditableFormTable
-                                    dataSource={[]}
+                                    dataSource={keyTestingEquipments}
                                     columns={columnsForProKeyPro}
-                                    rowKey='name1'
-                                    isEditTable
-                                // setNewData={setNewData}
+                                    rowKey='id'
+                                    setNewData={setNewData}
+                                    tableType='keyTestingEquipments'
+                                    isEditTable={type === 'add'}
+                                    isToolBar={type === 'add'}
                                 />
                                 <Row>
                                     <Col span={12}>
                                         <FormItem label="企业有无目前无法检测的检测项目" {...formLayout}>
-                                            {getFieldDecorator('source', {
-                                                initialValue: '',
+                                            {getFieldDecorator('haveCannotTestItem', {
+                                                initialValue: type === 'add' ? '' : data.haveCannotTestItem,
                                                 // rules: [
                                                 //     {
                                                 //         required: true,
                                                 //         message: '自主技术开发能力不能为空',
                                                 //     },
                                                 // ],
-                                            })(<Radio.Group value={'1'}>
-                                                <Radio value={1}>有</Radio>
-                                                <Radio value={2}>无</Radio>
+                                            })(<Radio.Group>
+                                                <Radio value={true}>有</Radio>
+                                                <Radio value={false}>无</Radio>
                                             </Radio.Group>)}
                                         </FormItem>
                                     </Col>
                                 </Row>
                                 <EditableFormTable
-                                    dataSource={[]}
+                                    dataSource={cannotTestItems}
                                     columns={columnsForProject}
-                                    rowKey='name1'
-                                    isEditTable
-                                // setNewData={setNewData}
+                                    rowKey='id'
+                                    isEditTable={type === 'add'}
+                                    isToolBar={type === 'add'}
+                                    setNewData={setNewData}
+                                    tableType='cannotTestItems'
                                 />
                                 <Divider>不检测项目</Divider>
                                 <Row>
                                     <Col span={12}>
                                         <FormItem label="例举" {...formLayout}>
-                                            {getFieldDecorator('source', {
-                                                initialValue: '',
+                                            {getFieldDecorator('noTestItem', {
+                                                initialValue: type === 'add' ? '' : data.noTestItem,
                                                 // rules: [
                                                 //     {
                                                 //         required: true,
                                                 //         message: '自主技术开发能力不能为空',
                                                 //     },
                                                 // ],
-                                            })(<Input.TextArea/>)}
+                                            })(<Input.TextArea />)}
                                         </FormItem>
                                     </Col>
                                 </Row>
@@ -570,30 +608,30 @@ const QualityAbility = ({form}) => {
                                 <Row>
                                     <Col span={12}>
                                         <FormItem label="从硬件上计划进哪些检测设备（仪表仪器" {...formLayout}>
-                                            {getFieldDecorator('source', {
-                                                initialValue: '',
+                                            {getFieldDecorator('planBuyEquipment', {
+                                                initialValue: type === 'add' ? '' : data.planBuyEquipment,
                                                 // rules: [
                                                 //     {
                                                 //         required: true,
                                                 //         message: '自主技术开发能力不能为空',
                                                 //     },
                                                 // ],
-                                            })(<Input.TextArea/>)}
+                                            })(<Input.TextArea />)}
                                         </FormItem>
                                     </Col>
                                 </Row>
                                 <Row>
                                     <Col span={12}>
                                         <FormItem label="从软件上有何措施" {...formLayout}>
-                                            {getFieldDecorator('source', {
-                                                initialValue: '',
+                                            {getFieldDecorator('softwareStep', {
+                                                initialValue: type === 'add' ? '' : data.softwareStep,
                                                 // rules: [
                                                 //     {
                                                 //         required: true,
                                                 //         message: '自主技术开发能力不能为空',
                                                 //     },
                                                 // ],
-                                            })(<Input.TextArea/>)}
+                                            })(<Input.TextArea />)}
                                         </FormItem>
                                     </Col>
                                 </Row>
@@ -601,69 +639,92 @@ const QualityAbility = ({form}) => {
                                 <Row>
                                     <Col span={12}>
                                         <FormItem label="产品质量控制流程简介" {...formLayout}>
-                                            {getFieldDecorator('source', {
-                                                initialValue: '',
+                                            {getFieldDecorator('qualityControlBrief', {
+                                                initialValue: type === 'add' ? '' : data.qualityControlBrief,
                                                 // rules: [
                                                 //     {
                                                 //         required: true,
                                                 //         message: '自主技术开发能力不能为空',
                                                 //     },
                                                 // ],
-                                            })(<Input.TextArea/>)}
+                                            })(<Input.TextArea />)}
                                         </FormItem>
                                     </Col>
                                     <Col span={12}>
                                         <FormItem label="附件" {...formLayout}>
-                                            {getFieldDecorator('source', {
-                                                initialValue: '',
+                                            {getFieldDecorator('qualityControlBriefFileIds', {
+                                                initialValue: type === 'add' ? '' : data.qualityControlBriefFileIds,
                                                 // rules: [
                                                 //     {
                                                 //         required: true,
                                                 //         message: '自主技术开发能力不能为空',
                                                 //     },
                                                 // ],
-                                            })(<UploadFile/>)}
+                                            })(<UploadFile
+                                                showColor={type !== 'add' ? true : false}
+                                                type={type !== 'add'}
+                                                entityId={data.qualityControlBriefFileIds}
+                                            />)}
                                         </FormItem>
                                     </Col>
                                 </Row>
                                 <Row>
                                     <Col span={12}>
-                                        <FormItem label="成品检验规范附件" {...formLayout}>
-                                            {getFieldDecorator('source', {
-                                                initialValue: '',
+                                        <FormItem label="成品检验规范" {...formLayout}>
+                                            {getFieldDecorator('finishedProductTestNorm', {
+                                                initialValue: type === 'add' ? '' : data.finishedProductTestNorm,
                                                 // rules: [
                                                 //     {
                                                 //         required: true,
                                                 //         message: '自主技术开发能力不能为空',
                                                 //     },
                                                 // ],
-                                            })(<UploadFile/>)}
+                                            })(<Input.TextArea />)}
+                                        </FormItem>
+                                    </Col>
+                                    <Col span={12}>
+                                        <FormItem label="成品检验规范附件" {...formLayout}>
+                                            {getFieldDecorator('finishedProductTestNormFileIds', {
+                                                initialValue: type === 'add' ? '' : data.finishedProductTestNormFileIds,
+                                                // rules: [
+                                                //     {
+                                                //         required: true,
+                                                //         message: '自主技术开发能力不能为空',
+                                                //     },
+                                                // ],
+                                            })(<UploadFile
+                                                showColor={type !== 'add' ? true : false}
+                                                type={type !== 'add'}
+                                                entityId={data.finishedProductTestNormFileIds}
+                                            />)}
                                         </FormItem>
                                     </Col>
                                 </Row>
                                 <Divider>成品检验项目</Divider>
                                 <EditableFormTable
-                                    dataSource={[]}
+                                    dataSource={finishedProductQualities}
                                     columns={columnsForFinishPro}
-                                    rowKey='name1'
-                                    isEditTable
-                                // setNewData={setNewData}
+                                    rowKey='id'
+                                    isEditTable={type === 'add'}
+                                    isToolBar={type === 'add'}
+                                    setNewData={setNewData}
+                                    tableType='finishedProductQualities'
                                 />
                                 <Divider>原材料质量状况</Divider>
                                 <EditableFormTable
-                                    dataSource={[]}
+                                    dataSource={materialQualities}
                                     columns={columnsForQuality}
-                                    rowKey='name1'
-                                    isEditTable
-                                // setNewData={setNewData}
+                                    rowKey='id'
+                                    isEditTable={type === 'add'}
+                                    isToolBar={type === 'add'}
+                                    setNewData={setNewData}
+                                    tableType='materialQualities'
                                 />
                                 <Divider>成品质量状况</Divider>
                                 <EditableFormTable
-                                    dataSource={[]}
+                                    dataSource={finishedProductQualities}
                                     columns={columnsForFinishQua}
-                                    rowKey='name1'
-                                    // isEditTable
-                                // setNewData={setNewData}
+                                    rowKey='id'
                                 />
                             </div>
                         </div>
