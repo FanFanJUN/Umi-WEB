@@ -47,7 +47,7 @@ export default create()(function ({ form }) {
     const [OrgId, setOrgId] = useState('');
     // 按钮禁用控制
     const [buttonStatus, setButtonStatus] = useState({
-        detail: true,
+        edit: true,
         delete: true,
         frozen: true,
         maint: true,
@@ -248,7 +248,7 @@ export default create()(function ({ form }) {
     // 处理快速查询
     function handleQuickSearch(value) {
         setSearchValue(v => ({ ...v, quickSearchValue: value }));
-        tableRef.current.remoteDataRefresh();
+        refresh();
         // uploadTable()
     }
 
@@ -266,7 +266,7 @@ export default create()(function ({ form }) {
         delete value.allotSupplierState_name;
         setSearchValue(v => ({ ...v, ...value }));
         headerRef.current.hide();
-        tableRef.current.remoteDataRefresh();
+        refresh();
     }
 
     // 指派战略采购
@@ -344,11 +344,13 @@ export default create()(function ({ form }) {
                 submit: rows[0].effectiveStatus === 'EFFECT',
                 withdraw: !(rows[0].effectiveStatus === 'EFFECT' && rows[0].allotSupplierState === 'ALLOT_NOT'),
                 distribute: !(rows[0].applyPersonAccount === getUserAccount() && rows[0].effectiveStatus === 'EFFECT'),
+                edit: !(rows[0].effectiveStatus === 'DRAFT' && rows[0].allotSupplierState === 'ALLOT_NOT'),
             });
         } else if (rows.length === 0) {
             setButtonStatus({
                 detail: true,
                 delete: true,
+                edit: true,
                 frozen: true,
                 maint: true,
                 detail: true,
@@ -364,6 +366,7 @@ export default create()(function ({ form }) {
         } else {
             setButtonStatus({
                 detail: true,
+                edit: true,
                 delete: true,
                 withdraw: true,
                 distribute: true,
@@ -483,7 +486,7 @@ export default create()(function ({ form }) {
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={buttonStatus.detail}
+                disabled={buttonStatus.edit}
                 onClick={() => { editRef.current.showModal('edit'); }}
                 ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_MATERIAL_EDIT'

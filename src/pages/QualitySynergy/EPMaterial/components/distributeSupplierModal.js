@@ -73,7 +73,7 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
     ];
     const supplierColumns = [
         { title: '供应商代码', dataIndex: 'code', ellipsis: true, align: 'center', },
-        { title: '供应商名称', dataIndex: 'name', width: 150, ellipsis: true, align: 'center', },
+        { title: '供应商名称', dataIndex: 'name', width: 200, ellipsis: true, align: 'center', },
     ];
     async function getData() {
         const res = await findByPageOfSupplier({ 
@@ -168,6 +168,7 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                     supplierName: item.name,
                     publish: 0,
                     suspend: 0,
+                    whetherDelete: false,
                     allotDate: moment().format('YYYY-MM-DD'),
                     demandNumber: selectedRow.demandNumber,
                     allotPeopleId: getUserId(),
@@ -199,7 +200,8 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
         if (res.statusCode === 200) {
             message.success('操作成功');
             setEditTag(false);
-            tableRef.current.remoteDataRefresh();
+            setDeleteList([]);
+            getData();
         } else {
             message.error(res.message);
         }
@@ -232,6 +234,7 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
     }
     function handleCancel() {
         if(supplierModalType === 'view'){
+            tableRef.current.manualSelectedRows(); 
             setVisible(false);
             return;
         }
@@ -246,6 +249,7 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                 },
             })
         } else {
+            tableRef.current.manualSelectedRows();
             setVisible(false);
         }
     }
@@ -285,11 +289,11 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                     allowCancelSelect
                     showSearch={false}
                     // remotePaging
+                    checkbox={{ multiSelect: true }}
                     ref={tableRef}
                     rowKey={(item) => item.rowKey}
                     size='small'
                     onSelectRow={(rowKeys, rows) => {
-                        console.log(rows)
                         setRowKeys(rowKeys);
                         setRows(rows);
                     }}
@@ -317,6 +321,7 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
         <ExtModal
             centered
             destroyOnClose
+            width="150vh"
             visible={addVisible}
             zIndex={1001}
             onCancel={() => { setAddVisible(false) }}
@@ -326,14 +331,14 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                 <Button className={styles.btn} type="primary" onClick={() => { handleAdd() }} key="continue">确认并继续</Button>]
             }
         >
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px', marginTop: '15px' }}>
+            {/* <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px', marginTop: '15px' }}>
                 <Search style={{ width: '60%' }} placeholder='请输入关键字查询' onSearch={handleQuickSearch} allowClear />
-            </div>
+            </div> */}
             <ExtTable
                 columns={supplierColumns}
                 bordered
                 allowCancelSelect
-                showSearch={false}
+                showSearch={true}
                 remotePaging
                 checkbox={{ multiSelect: false }}
                 ref={supplierTableRef}
