@@ -84,8 +84,8 @@ export default () => {
   };
 
   const handleBack = () => {
-    // openNewTab(`qualitySynergy/DataSharingList`, '技术资料分享需求列表', true);
-    closeCurrent();
+    openNewTab(`qualitySynergy/DataSharingList`, '技术资料分享需求列表', true);
+    // closeCurrent();
   };
 
   const handleSave = async (type) => {
@@ -136,8 +136,11 @@ export default () => {
           allData.epTechnicalDataBoList.map(item => {
             if (item.id) {
               item.technicalDataFileIdList = item.technicalDataFileIdList.map(items => {
+                console.log(item, items, 'id')
                 if (items.id) {
-                  return item.id;
+                  return items.id;
+                } else {
+                  return items
                 }
               });
             }

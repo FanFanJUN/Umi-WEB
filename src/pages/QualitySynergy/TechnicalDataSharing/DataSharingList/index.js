@@ -198,8 +198,6 @@ export default function() {
     console.log('查看供应商');
   };
 
-  console.log(judge(data.selectedRows, 'allotSupplierState', '已分配'))
-
   const headerLeft = <>
     {
       authAction(<Button
@@ -253,7 +251,7 @@ export default function() {
         onClick={() => redirectToPage('recall')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', '生效') || !judge(data.selectedRows, 'allotSupplierState', '未分配')}
+        disabled={data.selectedRowKeys.length === 0 || !data.selectedRows.every(item => item.strategicPurchaseCode)}
         key='TECHNICAL_DATA_SHARING_UNDO'
       >撤回</Button>)
     }
@@ -265,7 +263,6 @@ export default function() {
         disabled={
           data.selectedRowKeys.length !== 1 ||
           !data.selectedRows.every(item => item.strategicPurchaseCode) ||
-          !judge(data.selectedRows, 'strategicPurchaseCode', data.selectedRows[0]?.strategicPurchaseCode) ||
           !judge(data.selectedRows, 'state', '生效') || (judge(data.selectedRows, 'allotSupplierState', '已分配') ? data.selectedRowKeys.length > 1 : false)
         }
         key='TECHNICAL_DATA_SHARING_ALLOT'

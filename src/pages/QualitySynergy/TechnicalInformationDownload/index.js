@@ -32,6 +32,7 @@ export default function() {
 
   const handleQuickSearch = (value) => {
     setData(v => ({...v, quickSearchValue: value}))
+    tableRef.current.manualSelectedRows();
     tableRef.current.remoteDataRefresh();
   }
 
@@ -41,13 +42,14 @@ export default function() {
     value.materialGroupCode = value.materialGroupCode_name;
     value.strategicPurchaseCode = value.strategicPurchaseCode_name;
     value.buCode = value.buCode_name;
-    value.fileDownloadState = value.fileDownloadState_name;
+    // value.fileDownloadState = value.fileDownloadState_name;
     delete value.materialCode_name;
     delete value.materialGroupCode_name;
     delete value.strategicPurchaseCode_name;
     delete value.buCode_name;
-    delete value.fileDownloadState_name;
+    // delete value.fileDownloadState_name;
     setData(v => ({ ...v, EpTechnicalShareDemandSearchBo: value }));
+    tableRef.current.manualSelectedRows();
     tableRef.current.remoteDataRefresh();
   }
 
@@ -58,11 +60,11 @@ export default function() {
     { title: '战略采购', key: 'strategicPurchaseCode', type: 'list', props: StrategicPurchaseConfig },
     { title: '业务单元', key: 'buCode', type: 'list', props: BUConfigNoFrostHighSearch },
     { title: '申请人', key: 'applyPeopleName', props: { placeholder: '输入申请人查询' } },
-    { title: '状态', key: 'fileDownloadState', type: 'list', props: ShareDownloadStatus },
+    // { title: '状态', key: 'fileDownloadState', type: 'list', props: ShareDownloadStatus },
   ]
 
   const columns = [
-    { title: '下载状态', dataIndex: 'fileDownloadState', width: 80 },
+    { title: '下载状态', dataIndex: 'fileDownloadState', width: 80, render: (v) => v ? v : '未下载' },
     { title: '预警', dataIndex: 'warning', width: 80, render: (v) => <div style={{width: '100%', display: 'flex', justifyContent: 'center'}}>
         <div style={{width: '20px', height: '20px', borderRadius: '50%', background: v}} />
       </div>},
@@ -73,7 +75,7 @@ export default function() {
     { title: '物料组描述', dataIndex: 'materialGroupName', ellipsis: true, },
     { title: '文件类别', dataIndex: 'fileCategoryName', ellipsis: true, },
     { title: '文件版本', dataIndex: 'fileVersion', ellipsis: true, },
-    { title: '技术资料附件', dataIndex: 'technicalDataFileIdList', width: 120, render: (v, data) => <Upload type='show' entityId={v} downloadClick={() => changeDownloadStatus(data.epTechnicalSupplierId)}/>},
+    { title: '技术资料附件', dataIndex: 'technicalDataFileIdList', width: 120, render: (v, data) => <Upload type='show' entityId={v} downloadClick={() => changeDownloadStatus(data)}/>},
     { title: '样品需求日期', dataIndex: 'sampleRequirementDate', ellipsis: true, },
     { title: '战略采购名称', dataIndex: 'strategicPurchaseName', ellipsis: true, },
     { title: '业务单元名称', dataIndex: 'buName', ellipsis: true, },
@@ -84,12 +86,15 @@ export default function() {
 
   const onChange = (e) => {
     setData(v => ({...v, checked: e.target.checked}))
-    console.log(e)
+    tableRef.current.manualSelectedRows();
+    tableRef.current.remoteDataRefresh();
   }
 
-  const changeDownloadStatus = (id) => {
+  const changeDownloadStatus = (data) => {
+    console.log(data, 'data')
     UpdateShareDownLoadState({
-      epTechnicalSupplierId: id
+      shareDemanNumber: data.shareDemanNumber,
+      epTechnicalSupplierId: data.epTechnicalSupplierId
     }).then(res => {
       if (res.success) {
         tableRef.current.remoteDataRefresh();
@@ -128,11 +133,12 @@ export default function() {
       <AutoSizeLayout>
         {
           (h) => <ExtTable
-            rowKey={(v) => v.epTechnicalSupplierId}
+            rowKey={(v) => v.key}
             height={h}
             columns={columns}
             store={{
               params: {
+                fileDownloadState: data.checked ? '未下载' : '已下载',
                 quickSearchValue: data.quickSearchValue,
                 ...data.EpTechnicalShareDemandSearchBo ,
               },
@@ -142,7 +148,7 @@ export default function() {
             allowCancelSelect={true}
             remotePaging={true}
             checkbox={{
-              multiSelect: true,
+              multiSelect: false,
             }}
             ref={tableRef}
             showSearch={false}
