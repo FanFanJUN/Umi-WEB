@@ -1,9 +1,9 @@
 import { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment } from 'react';
-import { ExtTable, ExtModal, ScrollBar, ComboList } from 'suid';
-import { Button, DatePicker, Form, Modal, message, Input } from 'antd'
+import { ExtTable, ExtModal, ScrollBar } from 'suid';
+import { Button, DatePicker, Form, Modal, message, Input } from 'antd';
 import { materialCode } from '../../commonProps';
 import { smBaseUrl, supplierManagerBaseUrl } from '@/utils/commonUrl';
-import { getUserName, getMobile, getUserId, getUserAccount } from '../../../../utils';
+import { getUserName, getUserId, getUserAccount } from '../../../../utils';
 import {
     addDemandSupplier,
     findByPageOfSupplier,
@@ -11,8 +11,6 @@ import {
 } from '../../../../services/qualitySynergy'
 import styles from './index.less'
 import moment from 'moment';
-const { Search } = Input;
-const { confirm } = Modal;
 const { create, Item: FormItem } = Form;
 const formLayout = {
     labelCol: { span: 8, },
@@ -92,6 +90,7 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                 })
                 setSuplierCodes(suppliers);
                 setDataSource(dataList);
+                tableRef.current.manualSelectedRows();
             }
         } else {
             message.error(res.message);
@@ -223,9 +222,6 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
         if (!selectedRows || selectedRows.length === 0 || !key) return false;
         return selectedRows.every((item) => item[key]) ? 1 : selectedRows.every((item) => !item[key]) ? 2 : false
     }
-    function handleQuickSearch(v) {
-        console.log(v)
-    }
     function checkSameBatch() {
         if (selectedRows.length < 2) return false;
         let allotBatch = selectedRows[0].allotBatch;
@@ -288,7 +284,6 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                     bordered
                     allowCancelSelect
                     showSearch={false}
-                    // remotePaging
                     checkbox={{ multiSelect: true }}
                     ref={tableRef}
                     rowKey={(item) => item.rowKey}

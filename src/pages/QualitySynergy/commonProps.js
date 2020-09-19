@@ -780,7 +780,7 @@ export const distributionProps = {
   dataSource: [
     {
       code: 'ALLOT_END',
-      name: '存在符合的供应商',
+      name: '已分配',
     },
     {
       code: 'ALLOT_NOT',

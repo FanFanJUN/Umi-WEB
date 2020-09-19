@@ -172,7 +172,7 @@ export default create()(function ({ form }) {
             arr.push({
                 id: item.id,
                 '状态': item.effectiveStatus === 'DRAFT' ? '草稿' : '生效',
-                '分配供应商状态': item.allotSupplierState === 'ALLOT_END' ? '存在符合的供应商' : '未分配',
+                '分配供应商状态': item.allotSupplierState === 'ALLOT_END' ? '已分配' : '未分配',
                 '物料标记状态': item.assignSupplierStatus === 'EXIST_CONFORM_SUPPLIER' ? '存在符合的供应商' : '不存在符合的供应商',
                 '同步PDM状态': item.syncStatus === 'SYNC_FAILURE' ? '同步成功' : '同步失败',
                 '冻结': item.frozen ? '已冻结' : '未冻结',
@@ -183,11 +183,11 @@ export default create()(function ({ form }) {
                 '环保标准': item.environmentalProtectionName,
                 '战略采购代码': item.strategicPurchaseCode,
                 '战略采购名称': item.strategicPurchaseName,
-                '供应商': item.list,
+                // '供应商': item.list,
                 '环保管理人员': item.environmentAdminName,
                 '创建人': item.applyPersonName,
                 '创建人联系方式': item.applyPersonPhone,
-                '申请日期': item.createdDate,
+                '申请日期': item.applyDate,
                 '来源': item.sourceName,
             });
         });
@@ -430,7 +430,7 @@ export default create()(function ({ form }) {
             title: '分配供应商状态', dataIndex: 'allotSupplierState', width: 120, render: (text) => {
                 switch (text) {
                     case 'ALLOT_END':
-                        return '存在符合的供应商';
+                        return '已分配';
                     case 'ALLOT_NOT':
                         return '未分配';
                     default:
@@ -439,7 +439,7 @@ export default create()(function ({ form }) {
             },
         },
         {
-            title: '物料标记状态', dataIndex: 'assignSupplierStatus', width: 120, render: (text) => {
+            title: '物料标记状态', dataIndex: 'assignSupplierStatus', width: 160, render: (text) => {
                 switch (text) {
                     case 'EXIST_CONFORM_SUPPLIER':
                         return '存在符合的供应商';
