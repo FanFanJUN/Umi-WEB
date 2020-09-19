@@ -106,8 +106,8 @@ export default function () {
                 <div className={styles.wrapper}>
                     <div className={styles.bgw}>
                         <div className={styles.title}>填写说明</div>
-                        <div className={styles.content}>
-                            <ul style={{ border: '1px solid #d9d9d9', padding: '0', marginBottom: '10px', borderBottom: 'none'}}>
+                        <div className={styles.content} style={{ paddingBottom: '10px'}}>
+                            <ul style={{ border: '1px solid #d9d9d9', padding: '0', borderBottom: 'none'}}>
                                 {
                                     notesList.map((item, index) => {
                                         return <li style={{ borderBottom: '1px solid #d9d9d9', padding: '0 15px'}}>

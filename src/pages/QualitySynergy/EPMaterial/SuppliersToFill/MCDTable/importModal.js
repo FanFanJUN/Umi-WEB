@@ -85,7 +85,7 @@ export default function ({ visible, setVisible }) {
             >
                 <Button style={{ marginRight: 15, marginLeft: 15, marginBottom: 6 }}>上传</Button>
             </Upload>
-            <a key='downloadTemplate'  href={'this.props.dowloadUrl'}>下载模版</a>
+            <a key='template' href={`${DEVELOPER_ENV === 'true' ? '' : '/react-srm-sm-web'}/templates/mcd表批导模板v1.0.xlsx`}>下载模版</a>
         </Row>
         <Row>
             <Col span={12} className={styles.rl}>

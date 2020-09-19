@@ -463,3 +463,12 @@ export async function getNotes() {
         data: {},
     });
 }
+// 下载生成报表
+export async function downLoad(params) {
+    const url = `${recommendUrl}/epController/downloadFileReport`;
+    return request({
+        url,
+        method: 'POST',
+        data: params,
+    });
+}

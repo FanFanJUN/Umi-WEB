@@ -63,7 +63,7 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
     }, [visible])
     const columns = [
         { title: '是否暂停', dataIndex: 'suspend', align: 'center', width: 80, render: (text) => text ? '是' : '否' },
-        { title: '是否发布', dataIndex: 'publish', width: 80, align: 'center', render: (text) => text ? '是' : '否' },
+        { title: '是否发布', dataIndex: 'publish', width: 80, align: 'center', render: (text) => text ? '已发布' : '草稿' },
         { title: '供应商代码', dataIndex: 'supplierCode', ellipsis: true, align: 'center', },
         { title: '供应商名称', dataIndex: 'supplierName', ellipsis: true, align: 'center', },
         { title: '填报截止日期', dataIndex: 'fillEndDate', ellipsis: true, align: 'center', render: (text) => text ? text.slice(0, 10) : '' },

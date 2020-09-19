@@ -86,14 +86,13 @@ const SubjectMatterTable = forwardRef(({ buCode }, ref) => {
                 return { ...item, buCode }
             })
             addDemandImport(sendList).then(res => {
-                console.log(res)
                 const response = res.data && res.data.map((item, index) => ({
                     ...item,
                     key: index,
-                    validate: item.importStatus,
-                    status: item.importStatus ? '数据完整' : '失败',
-                    statusCode: item.importStatus ? 'success' : 'error',
-                    message: item.importStatus ? '成功' : item.failInfo
+                    validate: item.importResult,
+                    status: item.importResult ? '数据完整' : '失败',
+                    statusCode: item.importResult ? 'success' : 'error',
+                    message: item.importResult ? '成功' : item.importResultInfo
                 }))
                 resolve(response);
             })
@@ -101,18 +100,18 @@ const SubjectMatterTable = forwardRef(({ buCode }, ref) => {
     };
 
     const importFunc = (value) => {
-        // let newList = [].concat(dataList);
-        // value.forEach((addItem, index) => {
-        //     delete addItem.status;
-        //     delete addItem.statusCode;
-        //     delete addItem.message;
-        //     delete addItem.validate;
-        //     addItem.rowKey = dataList.length + index;
-        //     newList.push(addItem);
-        // })
-        // newList = newList.map((item, index) => ({...item, rowKey: index}));
-        // setSplitDataList(newList);
-        // tableRef.current.manualSelectedRows();
+        let newList = [].concat(dataSource);
+        value.forEach((addItem, index) => {
+            delete addItem.status;
+            delete addItem.statusCode;
+            delete addItem.message;
+            delete addItem.validate;
+            addItem.rowKey = dataSource.length + index;
+            newList.push(addItem);
+        })
+        console.log('newList', newList)
+        // setDataSource(newList);
+        tableRef.current.manualSelectedRows();
     };
     return <Fragment>
         <div className={styles.mb} style={{ display: 'flex' }}>

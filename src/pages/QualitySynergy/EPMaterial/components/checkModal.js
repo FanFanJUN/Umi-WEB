@@ -2,7 +2,7 @@ import { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment 
 import { ExtTable, ExtModal, message, ComboList } from 'suid';
 import { Button, Input, Form, Modal, Radio } from 'antd'
 import { recommendUrl } from '@/utils/commonUrl';
-import { checkReview } from '../../../../services/qualitySynergy';
+import { checkReview, downLoad } from '../../../../services/qualitySynergy';
 import { values } from 'lodash';
 const { create, Item: FormItem } = Form;
 const { TextArea } = Input;
@@ -105,12 +105,24 @@ const checkModal = forwardRef(({ form, selectedRow = {}, checkModalType }, ref) 
         }
         return true;
     }
+    // 复核/生成
+    function handleOkOff() {
+        if (checkOneSelect()) {
+            if(checkModalType === 'check') {
+                setCheckVisible(true);
+            } else {
+                downLoad({id: selectedRowKeys[0]}).then(res => {
+                    console.log(res)
+                })
+            }
+        }
+    }
     return <Fragment>
         <ExtModal
             destroyOnClose
             cancelText="退出"
             onCancel={() => { tableRef.current.manualSelectedRows(); setVisible(false); }}
-            onOk={() => { checkOneSelect() && setCheckVisible(true) }}
+            onOk={() => { handleOkOff() }}
             okText={checkModalType === 'check' ? "复核" : "生成"}
             maskClosable={false}
             visible={visible}
