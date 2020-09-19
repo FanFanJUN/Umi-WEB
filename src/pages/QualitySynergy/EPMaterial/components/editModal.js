@@ -8,7 +8,7 @@ const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 12, },
 };
-const editModal = forwardRef(({ form, initData, buCode, handleTableTada }, ref) => {
+const editModal = forwardRef(({ form, initData, buCode, handleTableTada, materialCodes }, ref) => {
     useImperativeHandle(ref, () => ({
         showModal
     }))
@@ -40,6 +40,11 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada }, ref) 
         setVisible(true);
     }
     const handleAfterSelect = (item) => {
+        if(materialCodes.includes(item.materialCode)){
+            message.error('此物料已存在表格中，不能再次添加！');
+            setFieldsValue({ materialId: '', materialCode: '', materialName: '', materialGroupCode: '', materialGroupName: '', materialGroupId: ''})
+            return;
+        }
         setLoading(true);
         let tag1, tag2;
         // 根据物料组+业务板块找战略采购
@@ -106,9 +111,9 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada }, ref) 
                 <Row>
                     <FormItem label='物料代码' {...formLayout}>
                         {
-                            getFieldDecorator('materialId', { initialValue: initData && initData.materialId }),
+                            getFieldDecorator('materialId', { initialValue: modalType === 'add' ? '' : initData && initData.materialId }),
                             getFieldDecorator('materialCode', {
-                                initialValue: initData && initData.materialCode,
+                                initialValue: modalType === 'add' ? '' : initData && initData.materialCode,
                                 rules: [{ required: true, message: '不能为空' }]
                             })(<ComboList form={form}
                                 {...MaterialConfig}
@@ -122,7 +127,7 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada }, ref) 
                     <FormItem label='物料描述' {...formLayout}>
                         {
                             getFieldDecorator('materialName', {
-                                initialValue: initData && initData.materialName,
+                                initialValue: modalType === 'add' ? '' : initData && initData.materialName,
                                 rules: [{ required: true, message: '不能为空' }]
                             })(<Input disabled />)
                         }
@@ -131,9 +136,9 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada }, ref) 
                 <Row>
                     <FormItem label='物料组代码' {...formLayout}>
                         {
-                            getFieldDecorator('materialGroupId', { initialValue: initData && initData.materialGroupId }),
+                            getFieldDecorator('materialGroupId', { initialValue: modalType === 'add' ? '' : initData && initData.materialGroupId }),
                             getFieldDecorator('materialGroupCode', {
-                                initialValue: initData && initData.materialGroupCode,
+                                initialValue: modalType === 'add' ? '' : initData && initData.materialGroupCode,
                                 rules: [{ required: true, message: '不能为空' }]
                             })(<Input disabled />)
                         }
@@ -143,7 +148,7 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada }, ref) 
                     <FormItem label='物料组名称' {...formLayout}>
                         {
                             getFieldDecorator('materialGroupName', {
-                                initialValue: initData && initData.materialGroupName,
+                                initialValue: modalType === 'add' ? '' : initData && initData.materialGroupName,
                                 rules: [{ required: true, message: '不能为空' }]
                             })(<Input disabled />)
                         }
@@ -152,10 +157,10 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada }, ref) 
                 <Row>
                     <FormItem label='环保标准' {...formLayout}>
                         {
-                            getFieldDecorator('environmentalProtectionId', { initialValue: initData && initData.environmentalProtectionId }),
-                            getFieldDecorator('environmentalProtectionCode', { initialValue: initData && initData.environmentalProtectionCode }),
+                            getFieldDecorator('environmentalProtectionId', { initialValue: modalType === 'add' ? '' : initData && initData.environmentalProtectionId }),
+                            getFieldDecorator('environmentalProtectionCode', { initialValue: modalType === 'add' ? '' : initData && initData.environmentalProtectionCode }),
                             getFieldDecorator('environmentalProtectionName', {
-                                initialValue: initData && initData.environmentalProtectionName,
+                                initialValue: modalType === 'add' ? '' : initData && initData.environmentalProtectionName,
                             })(<Input disabled />)
                         }
                     </FormItem>

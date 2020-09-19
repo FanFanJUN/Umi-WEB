@@ -24,8 +24,8 @@ export default function () {
                 let dataSource = tableRef.current.getTableList();
                 dataSource = dataSource.map(item => {
                     return {
+                        ...item,
                         ...values,
-                        ...item
                     }
                 })
                 if(nowPublish) {

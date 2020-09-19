@@ -367,7 +367,12 @@ export default create()(function ({ form }) {
             setButtonStatus({
                 detail: true,
                 edit: true,
-                delete: true,
+                delete: (() => {
+                    // 来源srm且均为草稿状态
+                    return !rows.every(item => {
+                        return (item.effectiveStatus === 'DRAFT' && item.sourceName === 'SRM')
+                    });
+                })(),
                 withdraw: true,
                 distribute: true,
                 sync: true,

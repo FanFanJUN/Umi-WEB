@@ -5,6 +5,7 @@ import EditModal from '../editModal';
 import { Button, message, Modal } from 'antd';
 import styles from '../index.less';
 import { addDemandImport } from '../../../../../services/qualitySynergy';
+import { getUserName, getUserId, getUserAccount } from '../../../../../utils'
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const { confirm } = Modal;
 const { create, Item: FormItem } = Form;
@@ -15,6 +16,8 @@ const SubjectMatterTable = forwardRef(({ buCode }, ref) => {
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [dataSource, setDataSource] = useState([]);
+    // 表格新增数据不能重复
+    const [materialCodes, setMaterialCodes] = useState([]);
     const tableRef = useRef(null);
     const editRef = useRef(null);
     const columns = [
@@ -49,14 +52,16 @@ const SubjectMatterTable = forwardRef(({ buCode }, ref) => {
     function handleTableTada(type, obj) {
         console.log('更新表格数据', type, obj)
         let newList = [];
-        if (type === 'add') {
+        if (type === 'delete') {
+            newList = dataSource.filter(item => {
+                return !selectedRowKeys.includes(item.lineNum);
+            })
+        } else if (type === 'add') {
             [...newList] = dataSource;
             newList.push({
                 ...obj,
-                lineNum: dataSource.length + 1
+                lineNum: dataSource.length
             })
-            setDataSource(newList);
-            tableRef.current.manualSelectedRows();
         } else if (type === 'edit') {
             newList = dataSource.map(item => {
                 if (item.lineNum === obj.lineNum) {
@@ -64,21 +69,12 @@ const SubjectMatterTable = forwardRef(({ buCode }, ref) => {
                 }
                 return item;
             })
-            setDataSource(newList);
-            tableRef.current.manualSelectedRows();
-        } else {
-            confirm({
-                title: '删除',
-                content: '请确认删除选中数据',
-                onOk: () => {
-                    newList = dataSource.filter(item => {
-                        return !selectedRowKeys.includes(item.lineNum);
-                    })
-                    setDataSource(newList);
-                    tableRef.current.manualSelectedRows();
-                }
-            })
         }
+        let newMaterialCodes = newList.map(item => item.materialCode);
+        setMaterialCodes(newMaterialCodes);
+        console.log('当前表格物料代码', newMaterialCodes);
+        setDataSource(newList);
+        tableRef.current.manualSelectedRows();
     }
     const validateItem = (data) => {
         return new Promise((resolve, reject) => {
@@ -106,19 +102,22 @@ const SubjectMatterTable = forwardRef(({ buCode }, ref) => {
             delete addItem.statusCode;
             delete addItem.message;
             delete addItem.validate;
-            addItem.rowKey = dataSource.length + index;
+            addItem.lineNum = dataSource.length + index;
+            addItem.applyPersonId = getUserId();
+            addItem.applyPersonAccount = getUserAccount();
+            addItem.applyPersonName = getUserName();
             newList.push(addItem);
         })
         console.log('newList', newList)
-        // setDataSource(newList);
+        setDataSource(newList);
         tableRef.current.manualSelectedRows();
     };
     return <Fragment>
         <div className={styles.mb} style={{ display: 'flex' }}>
             <Button type='primary' className={styles.btn} onClick={handleAdd}>新增</Button>
             <Button className={styles.btn} onClick={handleEdit}>编辑</Button>
-            <Button className={styles.btn} onClick={() => { handleTableTada('delete') }}>删除</Button>
-            {!buCode && <Button type='primary' className={styles.btn} onClick={() => { message.warning('请先选择业务单元!') }}>导入</Button>}
+            <Button style={{ margin: '0 10px 0 5px' }} onClick={() => { handleTableTada('delete') }}>删除</Button>
+            {!buCode && <Button type='primary' onClick={() => { message.warning('请先选择业务单元!') }}>导入</Button>}
             {buCode && <DataImport
                 tableProps={{ columns }}
                 validateFunc={validateItem}
@@ -143,7 +142,6 @@ const SubjectMatterTable = forwardRef(({ buCode }, ref) => {
                 checkbox={{ multiSelect: false }}
                 ref={tableRef}
                 checkbox={true}
-                rowKey={(item) => item.id}
                 size='small'
                 rowKey="lineNum"
                 onSelectRow={(rowKeys, rows) => {
@@ -160,6 +158,7 @@ const SubjectMatterTable = forwardRef(({ buCode }, ref) => {
             initData={selectedRows[0]}
             wrappedComponentRef={editRef}
             handleTableTada={handleTableTada}
+            materialCodes={materialCodes}
         />
     </Fragment>
 })
