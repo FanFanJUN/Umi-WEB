@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Affix, Button, message, Spin } from 'antd';
+import { Affix, Button, message, Modal, Spin } from 'antd';
 import classnames from 'classnames';
 import styles from '../../../../Supplier/Editor/index.less';
 import { router } from 'dva';
@@ -84,8 +84,8 @@ export default () => {
   };
 
   const handleBack = () => {
-    openNewTab(`qualitySynergy/DataSharingList`, '技术资料分享需求列表', true);
-    // closeCurrent();
+    // openNewTab(`qualitySynergy/DataSharingList`, '技术资料分享需求列表', true);
+    closeCurrent();
   };
 
   const handleSave = async (type) => {
@@ -104,49 +104,66 @@ export default () => {
       return message.error('至少添加一行技术资料')
     }
     let allData = { ...baseInfoData, ...materialInfoData, epTechnicalDataBoList: technicalData };
-    if (data.type === 'add') {
-      const saveResult = await AddDataSharingList(allData);
-      if (saveResult.success) {
-        // 如果保存并提交
-        if (type === 'addSave') {
-          const submitResult = await SubmitDataSharingList({ ids: saveResult.data });
-          if (submitResult.success) {
-            message.success(submitResult.message);
-            handleBack()
+    Modal.confirm({
+      title: type === 'add' ? '保存' : '保存并提交',
+      content: type === 'add' ? '请确认保存数据' : '请确认保存并提交数据',
+      okText: '确定',
+      cancelText: '取消',
+      onOk: async () => {
+        if (!data.id) {
+          const saveResult = await AddDataSharingList(allData);
+          if (saveResult.success) {
+            // 如果保存并提交
+            if (type === 'addSave') {
+              const submitResult = await SubmitDataSharingList({ ids: saveResult.data });
+              if (submitResult.success) {
+                message.success(submitResult.message);
+                handleBack()
+              } else {
+                message.error(submitResult.message);
+              }
+            } else {
+              message.success(saveResult.message);
+              handleBack()
+            }
           } else {
-            message.error(submitResult.message);
+            message.error(saveResult.message);
           }
         } else {
-          message.success(saveResult.message);
-          handleBack()
-        }
-      } else {
-        message.error(saveResult.message);
-      }
-    } else {
-      allData.id = data.id;
-      allData.state = '草稿';
-      allData.allotSupplierState = '未分配';
-      allData.epTechnicalDataBoList.map(item => {
-        if (item.id) {
-          item.technicalDataFileIdList = item.technicalDataFileIdList.map(items => {
-            if (items.id) {
-              return item.id;
+          allData.id = data.id;
+          allData.state = '草稿';
+          allData.allotSupplierState = '未分配';
+          allData.epTechnicalDataBoList.map(item => {
+            if (item.id) {
+              item.technicalDataFileIdList = item.technicalDataFileIdList.map(items => {
+                if (items.id) {
+                  return item.id;
+                }
+              });
             }
           });
+          allData.epTechnicalDataBoList = [...allData.epTechnicalDataBoList, ...deleteArr];
+          const updateRes = await UpdateDataSharingList(allData)
+          if (updateRes.success) {
+            if (type === 'addSave') {
+              const updateSubmitResult = await SubmitDataSharingList({ ids: allData.id });
+              if (updateSubmitResult.success) {
+                message.success(updateSubmitResult.message)
+                handleBack()
+              } else {
+                message.error(updateSubmitResult.message())
+              }
+            } else {
+              message.success(updateRes.message);
+              handleBack()
+            }
+          } else {
+            message.error(updateRes.message)
+          }
+          console.log(allData);
         }
-      });
-      allData.epTechnicalDataBoList = [...allData.epTechnicalDataBoList, ...deleteArr];
-      UpdateDataSharingList(allData).then(res => {
-        if (res.success) {
-          message.success(res.message);
-          handleBack()
-        } else {
-          message.error(res.message);
-        }
-      });
-      console.log(allData);
-    }
+      }
+    })
   };
 
   return (
@@ -184,6 +201,7 @@ export default () => {
             data={data.editDate?.epTechnicalDataVos}
             isView={data.isView}
             setDeleteArr={setDeleteArr}
+            deleteArr={deleteArr}
             wrappedComponentRef={technicalDataRef}
             type={data.type}
           /> : ''

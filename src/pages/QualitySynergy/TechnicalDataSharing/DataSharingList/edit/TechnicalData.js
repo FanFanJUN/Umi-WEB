@@ -45,18 +45,22 @@ const TechnicalData = React.forwardRef((props, ref) => {
     } else if (type === 'edit') {
       setData((value) => ({...value, type: 'edit', visible: true, title: '编辑技术资料'}))
     } else {
-      let deleteArr = []
+      let deleteArr = props.deleteArr.slice()
       let newData = JSON.parse(JSON.stringify(data.dataSource))
       data.dataSource.map((item, index) => {
+        console.log(item, data.selectedRowKeys)
         data.selectedRowKeys.map(data => {
-          if (item.id === data) {
+          if (item.lineNumber === data) {
+            console.log(newData[index])
             newData[index].whetherDelete = true
-            deleteArr.push(newData[index])
+            if (newData[index].id) {
+              deleteArr.push(newData[index])
+              props.setDeleteArr(deleteArr)
+            }
             newData.splice(index, 1)
           }
         })
       })
-      props.setDeleteArr(deleteArr)
       setData(v => ({...v, dataSource: newData}))
       tableRef.current.manualSelectedRows();
     }
