@@ -38,7 +38,7 @@ export default function () {
                     message.success('操作成功');
                     setTimeout(()=>{
                         handleBack();
-                    }, 5000)
+                    }, 3000)
                 } else {
                     message.error(res.message);
                 }

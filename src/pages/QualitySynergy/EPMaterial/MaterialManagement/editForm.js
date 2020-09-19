@@ -40,7 +40,7 @@ export default function () {
                    message.success(nowPublish? '保存并提交成功' : '保存成功');
                    setTimeout(()=>{
                         handleBack();
-                   }, 5000)
+                   }, 3000)
                } else {
                    message.error(res.message);
                }

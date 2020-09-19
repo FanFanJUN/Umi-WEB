@@ -11,7 +11,6 @@ class EnvironmentProDemandList extends Component {
             loading: false
         }
         this.columns = [
-            { title: '行号', dataIndex: 'name', ellipsis: true, align: 'center' },
             { title: '供应商代码', dataIndex: 'supplierCode', ellipsis: true, align: 'center' },
             { title: '供应商名称', dataIndex: 'supplierName', ellipsis: true, align: 'center', width: 120 },
             {

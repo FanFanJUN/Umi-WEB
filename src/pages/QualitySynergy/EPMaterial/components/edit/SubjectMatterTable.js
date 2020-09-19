@@ -81,8 +81,12 @@ const SubjectMatterTable = forwardRef(({buCode}, ref)=>{
         }
     }
     const validateItem = (data) => {
+        let sendList = data.map(item => {
+            delete item.key;
+            return {...item, buCode}
+        })
         return new Promise((resolve, reject) => {
-            addDemandImport(data).then(res => {
+            addDemandImport(sendList).then(res => {
                 const response = res.data.map((item, index) => ({
                     ...item,
                     key: index,
@@ -117,7 +121,8 @@ const SubjectMatterTable = forwardRef(({buCode}, ref)=>{
             <Button type='primary' className={styles.btn} onClick={handleAdd}>新增</Button>
             <Button className={styles.btn} onClick={handleEdit}>编辑</Button>
             <Button className={styles.btn} onClick={()=>{handleTableTada('delete')}}>删除</Button>
-            <DataImport
+            {!buCode && <Button type='primary' className={styles.btn} onClick={()=>{message.warning('请先选择业务单元!')}}>导入</Button>}
+            {buCode && <DataImport
                 tableProps={{ columns }}
                 validateFunc={validateItem}
                 importFunc={importFunc}
@@ -130,7 +135,7 @@ const SubjectMatterTable = forwardRef(({buCode}, ref)=>{
                         key: 'ExemptionClause',
                     },
                 ]}
-            />
+            />}
         </div>
         <div>
             <ExtTable

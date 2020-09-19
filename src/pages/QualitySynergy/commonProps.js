@@ -842,12 +842,12 @@ export const buList = {
   store: {
     type: 'POST',
     autoLoad: false,
-    url: `${baseUrl}/bu/findByPage`,
+    url: `${baseUrl}/bu/findPage`,
   },
   rowKey: 'buCode',
   reader: {
-    name: 'buCode',
-    field: ['buName', 'id'],
+    name: 'buCodeAndName',
+    field: ['buName', 'id', 'buCode'],
     description: 'buName',
   },
   placeholder: '选择业务单元',

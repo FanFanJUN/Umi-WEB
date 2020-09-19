@@ -66,7 +66,8 @@ const BaseInfo = forwardRef(({ form, isView, setBuCode, originData={}, isSupplie
             {
               getFieldDecorator('buId'),
               getFieldDecorator('buName'),
-              getFieldDecorator('buCode', {
+              getFieldDecorator('buCode'),
+              getFieldDecorator('buCodeAndName', {
                 initialValue: isView ? originData.buCode : '',
                 rules: [{ required: true, message: '请选择供应商代码' }]
               })(
@@ -74,8 +75,8 @@ const BaseInfo = forwardRef(({ form, isView, setBuCode, originData={}, isSupplie
                   form={form}
                   disabled={isView}
                   {...buList}
-                  name='buCode'
-                  field={['buName', 'buId']}
+                  name='buCodeAndName'
+                  field={['buName', 'buId', 'buCode']}
                   afterSelect={(item)=>{
                     setBuCode(item.buCode)
                   }}
@@ -99,7 +100,7 @@ const BaseInfo = forwardRef(({ form, isView, setBuCode, originData={}, isSupplie
         <Col span={12}>
           <FormItem label='创建日期' {...formLayout}>
             {
-              getFieldDecorator('createdDate', {
+              getFieldDecorator('applyDate', {
                 initialValue: isView ? originData.createdDate : moment().format('YYYY-MM-DD')
               })(<Input disabled/>)
             }

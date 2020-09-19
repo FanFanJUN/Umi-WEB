@@ -290,6 +290,7 @@ const SupplierFillList = function ({ form }) {
                         type: 'POST',
                         params: {
                             ...searchValue,
+                            quickSearchProperties: []
                         },
                     }}
                 />

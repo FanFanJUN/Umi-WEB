@@ -458,11 +458,11 @@ export default create()(function ({ form }) {
         { title: '环保标准', dataIndex: 'environmentalProtectionName', ellipsis: true },
         { title: '战略采购代码', dataIndex: 'strategicPurchaseCode', ellipsis: true },
         { title: '战略采购名称', dataIndex: 'strategicPurchaseName', ellipsis: true },
-        { title: '供应商', dataIndex: 'list', ellipsis: true, render: (text, item) => <a href="javascript:viod(0)" onClick={(e) => { showSuplier(e, item) }}>查看</a> },
+        { title: '供应商', dataIndex: 'list', ellipsis: true, render: (text, item) => <span onClick={(e) => { showSuplier(e, item) }} style={{color: 'blue', cursor: 'pointer'}}>查看</span> },
         { title: '环保管理人员', dataIndex: 'environmentAdminName', ellipsis: true },
         { title: '创建人', dataIndex: 'applyPersonName', ellipsis: true },
         { title: '创建人联系方式', dataIndex: 'applyPersonPhone', ellipsis: true },
-        { title: '申请日期', dataIndex: 'createdDate', ellipsis: true },
+        { title: '申请日期', dataIndex: 'applyDate', ellipsis: true, render: (text) => text ? text.slice(0, 10) : '' },
         { title: '来源', dataIndex: 'sourceName', ellipsis: true },
         { dataIndex: 'name14', width: 20, ellipsis: true },
     ].map(item => ({ ...item, align: 'center' }));
