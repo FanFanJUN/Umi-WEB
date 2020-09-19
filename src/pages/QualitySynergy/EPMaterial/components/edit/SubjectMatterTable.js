@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, Fragment, useImperativeHandle, forwardRef } from 'react';
 import { ExtTable, DataImport } from 'suid';
-import {Form} from 'antd';
+import { Form } from 'antd';
 import EditModal from '../editModal';
 import { Button, message, Modal } from 'antd';
 import styles from '../index.less';
@@ -8,8 +8,8 @@ import { addDemandImport } from '../../../../../services/qualitySynergy';
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const { confirm } = Modal;
 const { create, Item: FormItem } = Form;
-const SubjectMatterTable = forwardRef(({buCode}, ref)=>{
-    useImperativeHandle(ref, ()=>({
+const SubjectMatterTable = forwardRef(({ buCode }, ref) => {
+    useImperativeHandle(ref, () => ({
         getTableList
     }))
     const [selectedRowKeys, setRowKeys] = useState([]);
@@ -49,7 +49,7 @@ const SubjectMatterTable = forwardRef(({buCode}, ref)=>{
     function handleTableTada(type, obj) {
         console.log('更新表格数据', type, obj)
         let newList = [];
-        if(type === 'add') {
+        if (type === 'add') {
             [...newList] = dataSource;
             newList.push({
                 ...obj,
@@ -57,11 +57,11 @@ const SubjectMatterTable = forwardRef(({buCode}, ref)=>{
             })
             setDataSource(newList);
             tableRef.current.manualSelectedRows();
-        } else if(type === 'edit') {
+        } else if (type === 'edit') {
             newList = dataSource.map(item => {
-                if(item.lineNum===obj.lineNum){
+                if (item.lineNum === obj.lineNum) {
                     return obj;
-                } 
+                }
                 return item;
             })
             setDataSource(newList);
@@ -81,13 +81,13 @@ const SubjectMatterTable = forwardRef(({buCode}, ref)=>{
         }
     }
     const validateItem = (data) => {
-        let sendList = data.map(item => {
-            delete item.key;
-            return {...item, buCode}
-        })
         return new Promise((resolve, reject) => {
+            let sendList = data.map(item => {
+                return { ...item, buCode }
+            })
             addDemandImport(sendList).then(res => {
-                const response = res.data.map((item, index) => ({
+                console.log(res)
+                const response = res.data && res.data.map((item, index) => ({
                     ...item,
                     key: index,
                     validate: item.importStatus,
@@ -96,8 +96,6 @@ const SubjectMatterTable = forwardRef(({buCode}, ref)=>{
                     message: item.importStatus ? '成功' : item.failInfo
                 }))
                 resolve(response);
-            }).catch(err => {
-                reject(err)
             })
         })
     };
@@ -117,11 +115,11 @@ const SubjectMatterTable = forwardRef(({buCode}, ref)=>{
         // tableRef.current.manualSelectedRows();
     };
     return <Fragment>
-        <div className={styles.mb} style={{display: 'flex'}}>
+        <div className={styles.mb} style={{ display: 'flex' }}>
             <Button type='primary' className={styles.btn} onClick={handleAdd}>新增</Button>
             <Button className={styles.btn} onClick={handleEdit}>编辑</Button>
-            <Button className={styles.btn} onClick={()=>{handleTableTada('delete')}}>删除</Button>
-            {!buCode && <Button type='primary' className={styles.btn} onClick={()=>{message.warning('请先选择业务单元!')}}>导入</Button>}
+            <Button className={styles.btn} onClick={() => { handleTableTada('delete') }}>删除</Button>
+            {!buCode && <Button type='primary' className={styles.btn} onClick={() => { message.warning('请先选择业务单元!') }}>导入</Button>}
             {buCode && <DataImport
                 tableProps={{ columns }}
                 validateFunc={validateItem}
@@ -143,7 +141,6 @@ const SubjectMatterTable = forwardRef(({buCode}, ref)=>{
                 bordered
                 allowCancelSelect
                 showSearch={false}
-                remotePaging
                 checkbox={{ multiSelect: false }}
                 ref={tableRef}
                 checkbox={true}

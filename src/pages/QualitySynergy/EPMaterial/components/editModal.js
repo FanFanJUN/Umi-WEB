@@ -55,7 +55,11 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada }, ref) 
                     loading: tag2 && false
                 })
             } else {
-                message.warning('未查询到相关战略采购数据，请检查！');
+                setFieldsValue({
+                    strategicPurchaseCode: '',
+                    strategicPurchaseName: '',
+                })
+                // message.warning('未查询到相关战略采购数据！');
             }
         })
 

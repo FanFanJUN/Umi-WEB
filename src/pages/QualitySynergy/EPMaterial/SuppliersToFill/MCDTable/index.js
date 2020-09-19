@@ -4,6 +4,7 @@ import styles from '../index.less'
 import SplitPartsTable from './SplitPartsTable';
 import MaterialTable from './MaterialTable';
 import TestRecordsTable from './TestRecordsTable';
+import ImportModal from './importModal';
 const { create, Item: FormItem } = Form;
 const formLayout = {
     labelCol: {
@@ -19,6 +20,7 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
     }))
     const splitRef = useRef(null)
     const { getFieldDecorator, validateFields } = form;
+    const [visible, setVisible] = useState(false)
     const [selectedSplitData, setSelectedSpilt] = useState({})
     const [splitDataList, setSplitDataList] = useState(originData.epDataFillSplitPartsVoList ? originData.epDataFillSplitPartsVoList : []);
     useEffect(() => {
@@ -92,7 +94,7 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
                     </FormItem>
                 </Col>
                 <Col span={6} className={styles.fcs}>
-                    <Button>批量导入</Button>
+                    <Button onClick={()=>{setVisible(true)}}>批量导入</Button>
                 </Col>
             </Row>
         </Form>
@@ -115,6 +117,7 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
                 </Row>
             </Col>
         </Row>
+        <ImportModal visible={visible} setVisible={setVisible}/>
     </Fragment>
 })
 export default create()(MCDForm)
