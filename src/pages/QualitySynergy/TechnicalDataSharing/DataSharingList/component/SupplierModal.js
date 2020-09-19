@@ -228,33 +228,29 @@ const SupplierModal = (props) => {
   // 保存供应商
   const saveSupplier = () => {
     console.log(data.deleteArr, '    console.log(data.deleteArr)\n')
-    if (sourceData.length > 0) {
-      Modal.confirm({
-        title: '保存',
-        okText: '确定',
-        content: '请确认保存所有供应商!',
-        cancelText: '取消',
-        onOk: () => {
-          const ids = props.selectedRows.map(item => item.id);
-          let arr = [...sourceData, ...data.deleteArr];
-          arr = arr.map(item => ({ ...item, technicalLineNumber: item.lineNumber }));
-          DistributionSupplierSave({
-            ids: ids,
-            epTechnicalSupplierBos: arr,
-          }).then(res => {
-            if (res.success) {
-              message.success(res.message);
-              handleCancel();
-              props.tableRefresh();
-            } else {
-              message.error(res.message);
-            }
-          });
-        },
-      });
-    } else {
-      message.error('至少有一个供应商');
-    }
+    Modal.confirm({
+      title: '保存',
+      okText: '确定',
+      content: '请确认保存所有供应商!',
+      cancelText: '取消',
+      onOk: () => {
+        const ids = props.selectedRows.map(item => item.id);
+        let arr = [...sourceData, ...data.deleteArr];
+        arr = arr.map(item => ({ ...item, technicalLineNumber: item.lineNumber }));
+        DistributionSupplierSave({
+          ids: ids,
+          epTechnicalSupplierBos: arr,
+        }).then(res => {
+          if (res.success) {
+            message.success(res.message);
+            handleCancel();
+            props.tableRefresh();
+          } else {
+            message.error(res.message);
+          }
+        });
+      },
+    });
   };
 
   const duplicateRemoval = (arr, key) => {
