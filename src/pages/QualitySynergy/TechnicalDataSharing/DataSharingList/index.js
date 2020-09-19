@@ -39,15 +39,22 @@ export default function() {
     shareDemanNumber: '',
   });
 
-  console.log(window.location)
-
   const [assignData, setAssignData] = useState({
     visible: false,
   });
 
   useEffect(() => {
-    tableRef.current.remoteDataRefresh();
+    window.parent.frames.addEventListener('message', listenerParentClose, false);
+    return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
   }, [])
+
+  const listenerParentClose = (event) => {
+    const { data = {} } = event;
+    console.log('进入监听', data.tabAction)
+    if (data.tabAction === 'close') {
+      tableRef.current.remoteDataRefresh();
+    }
+  }
 
   const [data, setData] = useState({
     quickSearchValue: '',
@@ -279,7 +286,7 @@ export default function() {
 
   const headerRight = <>
     <Search
-      placeholder='物料代码和物料描述'
+      placeholder='请输入物料和物料组'
       className={styles.btn}
       onSearch={handleQuickSearch}
       allowClear

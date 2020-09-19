@@ -58,7 +58,6 @@ class UploadFile extends React.Component {
     //图片格式显示系统的预览
     if (fileName.toLocaleLowerCase().includes('png') || fileName.toLocaleLowerCase().includes('jpg') || fileName.toLocaleLowerCase().includes('gif')
       || fileName.toLocaleLowerCase().includes('jpeg')) {
-      console.log('触发')
       return host + baseUrl + '/supplierRegister/preview?docId=' + id;
     }
     return fileIcon.defaultIcon;
@@ -119,12 +118,10 @@ class UploadFile extends React.Component {
   };
 
   handleChange = ({ file, fileList }) => {
-    console.log(file, fileList, 'test');
     if (!file.error) {
       let completeUploadFile = this.state.completeUploadFile;
       let index = -1;
       if (file.status === 'done') {
-        console.log(file, 'xxxxxxxxxxx');
         completeUploadFile.push(file.response[0]);
         if (this.props.onChange) {
           this.props.onChange(completeUploadFile.length === 0 ? null : completeUploadFile);
@@ -143,7 +140,6 @@ class UploadFile extends React.Component {
         }
       }
       fileList.map(item => {
-        console.log(origin, 'item');
         if (item.status === 'done') {
           item.url = host + baseUrl + '/supplierRegister/download?docId=' + item.response[0];
           item.thumbUrl = `${origin}/api-gateway/edm-service/preview` + '?docId=' + item.response[0];
@@ -211,7 +207,6 @@ class UploadFile extends React.Component {
   };
 
   getAction = (item) => {
-    console.log(item, 'item')
     if (item.status === 'uploading') {
       return null;
     }
