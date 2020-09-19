@@ -8,19 +8,25 @@ import BaseInfo from '../components/edit/baseInfo';
 import SubjectMatterForm from '../components/edit/SubjectMatterForm';
 import SupplierInfo from '../components/edit/supplierInfo';
 import MCDTable from './MCDTable';
-import { supplerFindVoById, epDemandUpdate, findByProtectionCodeAndMaterialCodeAndRangeCode } from '../../../../services/qualitySynergy'
+import { supplerFindVoById, epDemandUpdate, getNotes } from '../../../../services/qualitySynergy'
 export default function () {
     const [loading, toggleLoading] = useState(false);
     const [originData, setOriginData] = useState({})
     const supplierRef = useRef(null);
     const mcdRef = useRef(null);
+    const [notesList, setNotesList] = useState([]);
     const { query } = router.useLocation();
     const handleBack = () => {
         closeCurrent();
     }
     useEffect(() => {
-        findByProtectionCodeAndMaterialCodeAndRangeCode({"protectionCode": "G","materialCode": "SYFW002","rangeCode": "DIBP"}).then(res => {
+        getNotes().then(res => {
             console.log(res)
+            if (res.data && res.data.rows) {
+                setNotesList(res.data.rows);
+            } else {
+                message.error('获取填写说明失败!');
+            }
         })
     }, [])
     const handleSave = (publish) => {
@@ -30,13 +36,13 @@ export default function () {
                 const macData = mcdRef.current.getSplitDataList();
                 values.uploadAttachmentIds = values.reachEnvironmentId;
                 values.reachEnvironmentId = values.reachEnvironmentId ? values.reachEnvironmentId.join() : '';
-                saveData = { ...saveData, ...values,  commit: !!publish, ...macData }
+                saveData = { ...saveData, ...values, commit: !!publish, ...macData }
                 saveData.epDataFillSplitPartsBoList = macData.epDataFillSplitPartsVoList;
                 delete saveData.epDataFillSplitPartsVoList;
                 const res = await epDemandUpdate(saveData);
                 if (res.statusCode === 200) {
                     message.success('操作成功');
-                    setTimeout(()=>{
+                    setTimeout(() => {
                         handleBack();
                     }, 3000)
                 } else {
@@ -77,7 +83,7 @@ export default function () {
                     <div className={styles.bgw}>
                         <div className={styles.title}>基本信息</div>
                         <div className={styles.content}>
-                            <BaseInfo isView={true} originData={originData} isSupplier={true}/>
+                            <BaseInfo isView={true} originData={originData} isSupplier={true} />
                         </div>
                     </div>
                 </div>
@@ -93,7 +99,7 @@ export default function () {
                     <div className={styles.bgw}>
                         <div className={styles.title}>供应商信息</div>
                         <div className={styles.content}>
-                            <SupplierInfo wrappedComponentRef={supplierRef} originData={originData} isView={query.pageStatus === 'detail'}/>
+                            <SupplierInfo wrappedComponentRef={supplierRef} originData={originData} isView={query.pageStatus === 'detail'} />
                         </div>
                     </div>
                 </div>
@@ -101,7 +107,16 @@ export default function () {
                     <div className={styles.bgw}>
                         <div className={styles.title}>填写说明</div>
                         <div className={styles.content}>
-                            内容区
+                            <ul style={{ border: '1px solid #d9d9d9', padding: '0', marginBottom: '10px', borderBottom: 'none'}}>
+                                {
+                                    notesList.map((item, index) => {
+                                        return <li style={{ borderBottom: '1px solid #d9d9d9', padding: '0 15px'}}>
+                                            <div>{index + 1 + '. ' + item.chContent}</div>
+                                            <div>{' ' + item.ehContent}</div>
+                                        </li>
+                                    })
+                                }
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -109,7 +124,7 @@ export default function () {
                     <div className={styles.bgw}>
                         <div className={styles.title}>MCD表</div>
                         <div className={styles.content}>
-                            <MCDTable wrappedComponentRef={mcdRef} originData={originData} isView={query.pageStatus === 'detail'}/>
+                            <MCDTable wrappedComponentRef={mcdRef} originData={originData} isView={query.pageStatus === 'detail'} />
                         </div>
                     </div>
                 </div>

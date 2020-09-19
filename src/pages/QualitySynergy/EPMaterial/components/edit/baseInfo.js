@@ -2,7 +2,7 @@ import { useEffect, useState, forwardRef, useImperativeHandle, Fragment } from '
 import { Form, Row, Col, Input, Button, Modal, message, notification } from 'antd';
 import { ComboList } from 'suid';
 import { buList } from '../../../commonProps'
-import { getUserName, getMobile, getUserId, getUserAccount } from '../../../../../utils'
+import { getUserName, getMobile, getUserId, getUserAccount, phoneOrTel } from '../../../../../utils'
 import moment from 'moment'
 const { create, Item: FormItem } = Form;
 const formLayout = {
@@ -90,7 +90,10 @@ const BaseInfo = forwardRef(({ form, isView, setBuCode, originData={}, isSupplie
             {
               getFieldDecorator('applyPersonPhone', {
                 initialValue: isView ? originData.applyPersonPhone : getMobile(),
-                rules: [{ required: true, message: '请输入创建人联系方式'}]
+                rules: [
+                  { required: true, message: '请输入创建人联系方式'},
+                  { validator: phoneOrTel, message: '请输入手机或者座机号' }
+                ]
               })(<Input disabled={isView} />)
             }
           </FormItem>

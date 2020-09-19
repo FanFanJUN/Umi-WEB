@@ -6,7 +6,7 @@ import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar, DataExport } 
 import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
 import { recommendUrl } from '@/utils/commonUrl';
 import {
-    materialCode, MaterialConfig, MaterialGroupConfig, StrategicPurchaseConfig,
+    MaterialConfig, MaterialGroupConfig, StrategicPurchaseConfig,
     statusProps, distributionProps, materialStatus, PDMStatus, allPersonList,
 } from '../../commonProps';
 import CheckQualificationModal from '../components/checkQualificationModal';
@@ -85,8 +85,9 @@ export default create()(function ({ form }) {
     }, []);
     function listenerParentClose(event) {
         const { data = {} } = event;
+        console.log('进入监听', data.tabAction)
         if (data.tabAction === 'close') {
-            tableRef.current.remoteDataRefresh()
+            tableRef.current.remoteDataRefresh();
         }
     }
     function redirectToPage(type) {
@@ -95,11 +96,11 @@ export default create()(function ({ form }) {
         const { pathname } = window.location;
         switch (type) {
             case 'add':
-                openNewTab(`qualitySynergy/EPMaterial/editForm?frameElementId=${id}&frameElementSrc=${pathname}`, '填报环保资料物料-新增', false);
+                openNewTab(`qualitySynergy/EPMaterial/editForm?frameElementId=${id}&frameElementSrc=${pathname}`, '环保资料物料-新增', false);
                 break;
             case 'detail':
                 if (!checkOneSelect()) return;
-                openNewTab(`qualitySynergy/EPMaterial/detailForm?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '填报环保资料物料-明细', false);
+                openNewTab(`qualitySynergy/EPMaterial/detailForm?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '环保资料物料-明细', false);
                 break;
             default:
                 break;
@@ -389,6 +390,7 @@ export default create()(function ({ form }) {
         e.stopPropagation();
         setSupplierModalType('view');
         setViewDemandNum(item.demandNumber)
+        tableRef.current.manualSelectedRows();
         supplierRef.current.setVisible(true);
     }
     // 高级查询配置

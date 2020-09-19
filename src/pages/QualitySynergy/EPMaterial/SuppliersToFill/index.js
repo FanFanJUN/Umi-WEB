@@ -57,10 +57,10 @@ const SupplierFillList = function ({ form }) {
         const { pathname } = window.location;
         switch (type) {
             case 'add':
-                openNewTab(`qualitySynergy/EPMaterial/suppliersFillForm?id=${key}&pageStatus=add&frameElementId=${id}&frameElementSrc=${pathname}`, '填报环保资料物料-新增', false)
+                openNewTab(`qualitySynergy/EPMaterial/suppliersFillForm?id=${key}&pageStatus=add`, '填报环保资料物料-新增', false)
                 break;
             case 'detail':
-                openNewTab(`qualitySynergy/EPMaterial/suppliersFillForm?id=${key}&pageStatus=detail&frameElementId=${id}&frameElementSrc=${pathname}`, '填报环保资料物料-明细', false);
+                openNewTab(`qualitySynergy/EPMaterial/suppliersFillForm?id=${key}&pageStatus=detail`, '填报环保资料物料-明细', false);
                 break;
             default:
                 break;

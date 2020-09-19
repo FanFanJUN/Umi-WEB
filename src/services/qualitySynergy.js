@@ -336,54 +336,9 @@ export async function addDemandImport(params) {
         data: params,
     });
 }
-// 填报环保资料物料-分配供应商-暂停/取消暂停
-export async function supplierIsPause(params) {
-    const url = `${recommendUrl}/api/epDemandSupplierService/isPause`;
-    return request({
-        url,
-        method: 'POST',
-        data: params,
-    });
-}
-// 填报环保资料物料-分配供应商-编辑填报截止日期
-export async function editDemandSupplier(params) {
-    const url = `${recommendUrl}/api/epDemandSupplierService/editDemandSupplier`;
-    return request({
-        url,
-        method: 'POST',
-        data: params,
-    });
-}
-// 填报环保资料物料-分配供应商-删除
-export async function deleteSupplier(params) {
-    const url = `${recommendUrl}/api/epDemandSupplierService/deleted`;
-    return request({
-        url,
-        method: 'GET',
-        params: params,
-    });
-}
 // 填报环保资料物料-根据需求号查看供应商
 export async function findByDemandNumber(params) {
     const url = `${recommendUrl}/api/epDemandSupplierService/findByDemandNumber`;
-    return request({
-        url,
-        method: 'GET',
-        params: params,
-    });
-}
-// 填报环保资料物料-分配供应商-发布
-export async function releaseSupplier(params) {
-    const url = `${recommendUrl}/api/epDemandSupplierService/release`;
-    return request({
-        url,
-        method: 'GET',
-        params: params,
-    });
-}
-// 填报环保资料物料-分配供应商-取消发布
-export async function cancelReleaseSupplier(params) {
-    const url = `${recommendUrl}/api/epDemandSupplierService/cancelRelease`;
     return request({
         url,
         method: 'GET',
@@ -497,5 +452,14 @@ export async function testRecordCheckImport(params) {
         url,
         method: 'POST',
         data: params,
+    });
+}
+// 获取填写说明
+export async function getNotes() {
+    const url = `${recommendUrl}/api/epDictService/findByPage`;
+    return request({
+        url,
+        method: 'POST',
+        data: {},
     });
 }

@@ -6,12 +6,7 @@ import { smBaseUrl, supplierManagerBaseUrl } from '@/utils/commonUrl';
 import { getUserName, getMobile, getUserId, getUserAccount } from '../../../../utils';
 import {
     addDemandSupplier,
-    supplierIsPause,
     findByPageOfSupplier,
-    releaseSupplier,
-    cancelReleaseSupplier,
-    editDemandSupplier,
-    deleteSupplier,
     findByDemandNumber
 } from '../../../../services/qualitySynergy'
 import styles from './index.less'
@@ -81,7 +76,9 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
         { title: '供应商名称', dataIndex: 'name', width: 150, ellipsis: true, align: 'center', },
     ];
     async function getData() {
-        const res = await findByPageOfSupplier({ demandNumber: selectedRow.demandNumber });
+        const res = await findByPageOfSupplier({ 
+            demandNumber: supplierModalType === 'distribute' ? selectedRow.demandNumber : viewDemandNum
+        });
         if (res.statusCode === 200) {
             if (res.data) {
                 let suppliers = []

@@ -2,7 +2,7 @@ import { useEffect, useState, forwardRef, useImperativeHandle, Fragment } from '
 import { Form, Row, Col, Input, Button, Modal, message, notification } from 'antd';
 import { ComboList } from 'suid';
 import { materialCode } from '../../../commonProps'
-import { getUserName, getMobile, getUserEmail } from '../../../../../utils'
+import { getUserName, getMobile, getUserEmail, phoneOrTel } from '../../../../../utils'
 import { Upload } from '@/components';
 import moment from 'moment';
 const { TextArea } = Input;
@@ -13,6 +13,14 @@ const formLayout = {
   },
   wrapperCol: {
     span: 16,
+  },
+};
+const formLayoutLogn = {
+  labelCol: {
+    span: 4,
+  },
+  wrapperCol: {
+    span: 20,
   },
 };
 
@@ -55,7 +63,7 @@ const BaseInfo = forwardRef(({ form, originData={}, isView }, ref) => {
           <FormItem label='填报截止日期' {...formLayout}>
             {
               getFieldDecorator('fillEndDate', {
-                initialValue: originData.fillEndDate,
+                initialValue: originData.fillEndDate && originData.fillEndDate.slice(0, 10),
               })(<Input disabled />)
             }
           </FormItem>
@@ -64,7 +72,7 @@ const BaseInfo = forwardRef(({ form, originData={}, isView }, ref) => {
           <FormItem label='填报日期' {...formLayout}>
             {
               getFieldDecorator('fillDate', {
-                initialValue: originData.fillDate ?  moment(originData.fillDate) : moment().format('YYYY-MM-DD'),
+                initialValue: originData.fillDate ?  originData.fillDate.slice(0, 10) : moment().format('YYYY-MM-DD'),
                 rules: [{ required: true, message: '请选择供应商代码' }]
               })(<Input disabled />)
             }
@@ -99,7 +107,10 @@ const BaseInfo = forwardRef(({ form, originData={}, isView }, ref) => {
             {
               getFieldDecorator('fillPeoplePhone', {
                 initialValue: originData.fillPeoplePhone ? originData.fillPeoplePhone : getMobile(),
-                rules: [{ required: true, message: '请输入电话' }]
+                rules: [
+                  { required: true, message: '请输入电话' },
+                  { validator: phoneOrTel, message: '请输入手机或者座机号' }
+                ]
               })(<Input disabled={isView}/>)
             }
           </FormItem>
@@ -138,12 +149,12 @@ const BaseInfo = forwardRef(({ form, originData={}, isView }, ref) => {
         </Col>
       </Row>
       <Row>
-        <Col span={12}>
-          <FormItem label='申明' {...formLayout}>
+        <Col span={24}>
+          <FormItem label='申明' {...formLayoutLogn}>
             {
               getFieldDecorator('dateTime', {
                 initialValue: ''
-              })(<TextArea rows={6} maxLength={500} disabled={isView}/>)
+              })(<Input rows={6} maxLength={500} disabled={isView}/>)
             }
           </FormItem>
         </Col>

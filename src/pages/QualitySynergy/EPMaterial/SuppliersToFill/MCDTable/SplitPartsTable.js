@@ -26,7 +26,7 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
     const [modalType, setModalType] = useState('');
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
-    const { getFieldDecorator, validateFields } = form;
+    const { getFieldDecorator, validateFields, setFieldsValue } = form;
     
     const columns = [
         { title: '拆分部位名称', dataIndex: 'splitPartsName', align: 'center' },
@@ -122,6 +122,15 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
         setSplitDataList(newList);
         tableRef.current.manualSelectedRows();
     };
+    function setEndDate(date) {
+        let pickDate = date.format('YYYY-MM-DD');
+        let list = pickDate.split('-');
+        list[0] = Number(list[0]) + 1;
+        let effectiveEndDate = list.join('-');
+        setFieldsValue({
+            effectiveEndDate
+        });
+    }
     return <Fragment>
         <div className={styles.macTitle}>拆分部件</div>
         <div className={classnames({
@@ -153,7 +162,6 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
             bordered
             allowCancelSelect
             showSearch={false}
-            remotePaging
             checkbox={{ multiSelect: false }}
             ref={tableRef}
             checkbox={true}
@@ -211,7 +219,7 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
                     <FormItem label='测试结论' {...formLayout}>
                         {
                             getFieldDecorator('reportResult', {
-                                initialValue: modalType==='edit' ? selectedRows[0].reportResult : '',
+                                initialValue: modalType==='edit' ? selectedRows[0].reportResult : 'true',
                                 rules: [{ required: true, message: '请选择供应商代码' }]
                             })(<Select style={{ width: '100%' }}>
                                 <Option value="true">通过</Option>
@@ -234,9 +242,9 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
                     <FormItem label='报告日期' {...formLayout}>
                         {
                             getFieldDecorator('reportDate', {
-                                initialValue: modalType==='edit' ? moment(selectedRows[0].reportDate) : '',
+                                initialValue: modalType==='edit' ? moment(selectedRows[0].reportDate) : null,
                                 rules: [{ required: true, message: '请选择报告日期' }]
-                            })(<DatePicker style={{ width: '100%' }} />)
+                            })(<DatePicker style={{ width: '100%' }} onChange={setEndDate} format="YYYY-MM-DD" />)
                         }
                     </FormItem>
                 </Row>

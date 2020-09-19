@@ -392,5 +392,18 @@ export const checkDateWithYearAdd3 = (rule, value, callback) => {
   }
   callback();
 }
+export const phoneOrTel = (rule, value, callback) => {
+  if (value) {
+    if (value.match(/^((\(\d{2,3}\))|(\d{3}\-))?(\(0\d{2,3}\)|0\d{2,3}-)?[1-9]\d{6,7}(\-\d{1,4})?$/) || value.match(/^(13|15|18|17|16|19|14)\d{9}$/)) {
+      callback();
+    }
+    else {
+      callback('请输入电话或手机');
+    }
+  }
+  else {
+    callback();
+  }
+};
 export { default as request } from './request';
 export { constants, userAuth as userUtils, commonProps, commonUrl };

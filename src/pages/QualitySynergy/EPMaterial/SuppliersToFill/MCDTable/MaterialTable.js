@@ -167,7 +167,6 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
             bordered
             allowCancelSelect
             showSearch={false}
-            remotePaging
             checkbox={{ multiSelect: false }}
             ref={tableRef}
             rowKey={(item) => item.rowKey}
