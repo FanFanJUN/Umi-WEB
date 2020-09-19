@@ -284,12 +284,10 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                     bordered
                     allowCancelSelect
                     showSearch={false}
-                    remotePaging
-                    // checkbox={{ multiSelect: false }}
+                    // remotePaging
                     ref={tableRef}
                     rowKey={(item) => item.rowKey}
                     size='small'
-                    checkbox={true}
                     onSelectRow={(rowKeys, rows) => {
                         console.log(rows)
                         setRowKeys(rowKeys);
