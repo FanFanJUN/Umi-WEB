@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-09 16:16:44
- * @LastEditTime: 2020-09-18 14:48:20
+ * @LastEditTime: 2020-09-18 16:07:41
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/SellCondition/MarketCompetitive.js
  * @Description: 市场地位及竞争状况
  * @Connect: 1981824361@qq.com
@@ -57,12 +57,12 @@ const MarketCompetitive = React.forwardRef(({ form, data, type, setTableData }, 
                     <Col span={24}>
                         <FormItem label="行业知名度" {...formLayout}>
                             {getFieldDecorator('industryVisibility', {
-                                initialValue: type === 'add' ? 2 : data.industryVisibility,
+                                initialValue: type === 'add' ? 'JOINT_VENTURES_INTERNATIONA_FAMOUS' : data.industryVisibility,
                             })(<Radio.Group>
-                                <Radio value={1}>行业内的国际知名企业</Radio>
-                                <Radio value={2}>行业内国际知名企业在中国的合资企业</Radio>
-                                <Radio value={3}>行业内的国内知名企业</Radio>
-                                <Radio value={4}>都不是</Radio>
+                                <Radio value={'INTERNATIONAL_FAMOUS'}>行业内的国际知名企业</Radio>
+                                <Radio value={'JOINT_VENTURES_INTERNATIONA_FAMOUS'}>行业内国际知名企业在中国的合资企业</Radio>
+                                <Radio value={'DOMESTIC_FAMOUS'}>行业内的国内知名企业</Radio>
+                                <Radio value={'ALL_NOT'}>都不是</Radio>
                             </Radio.Group>)}
                         </FormItem>
                     </Col>

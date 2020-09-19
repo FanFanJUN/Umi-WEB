@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:58:10
- * @LastEditTime: 2020-09-18 15:43:04
+ * @LastEditTime: 2020-09-18 17:40:42
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/QualityAbility/index.js
  * @Description: 质量能力
  * @Connect: 1981824361@qq.com
@@ -32,6 +32,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
     const [keyControlProcesses, setkeyControlProcesses] = useState([]);
     const [keyTestingEquipments, setkeyTestingEquipments] = useState([]);
     const [cannotTestItems, setcannotTestItems] = useState([]);
+    const [finishedProductTestingItems, setfinishedProductTestingItems] = useState([]);
     const [finishedProductQualities, setfinishedProductQualities] = useState([]);
     const [materialQualities, setmaterialQualities] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -50,6 +51,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                 setcannotTestItems(res.data.finishedProductQualities);
                 setfinishedProductQualities(res.data.finishedProductQualities);
                 setmaterialQualities(res.data.materialQualities);
+                setfinishedProductTestingItems(res.data.finishedProductTestingItems);
             } else {
                 message.error(res.message);
             }
@@ -185,38 +187,50 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
         },
         {
             "title": "检验项目",
-            "dataIndex": "name2",
+            "dataIndex": "testingItem",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'InputNumber',
         },
         {
             "title": "自检/外检",
-            "dataIndex": "name3",
+            "dataIndex": "selfExternalInspection",
+            "ellipsis": true,
+            "editable": true,
+            "inputType": 'Select',
+            selectOptions: [
+                {name: '自检', value: true},
+                {name: '外检', value: false},
+            ]
+        },
+        {
+            "title": "检验类型",
+            "dataIndex": "testingTypeEnum",
+            "ellipsis": true,
+            "editable": true,
+            "inputType": 'Select',
+            selectOptions: [
+                {name: '周期检验', value: 'PERIODIC_TEST'},
+                {name: '逐批检验', value: 'BATCH_INSPECTION'},
+            ]
+        },
+        {
+            "title": "检验周期",
+            "dataIndex": "testingCycle",
             "ellipsis": true,
             "editable": true,
             "inputType": 'InputNumber',
         },
         {
-            "title": "检验类型",
-            "dataIndex": "name4",
-            "ellipsis": true,
-            "editable": true,
-            "inputType": 'Input',
-        },
-        {
-            "title": "检验周期",
-            "dataIndex": "name4",
-            "ellipsis": true,
-            "editable": true,
-            "inputType": 'Input',
-        },
-        {
             "title": "周期单位",
-            "dataIndex": "name4",
+            "dataIndex": "cycleUnitEnum",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'Input',
+            "inputType": 'Select',
+            selectOptions: [
+                {name: '日', value: 'DAY'},
+                {name: '月', value: 'MONTH'},
+                {name: '年', value: 'YEAR'},
+            ]
         },
     ];
 
@@ -323,6 +337,9 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                 break;
             case 'materialQualities':
                 setmaterialQualities(newData);
+                break;
+            case 'finishedProductTestingItems':
+                setfinishedProductTestingItems(newData);
                 break;
             default:
                 break;
@@ -702,13 +719,13 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                                 </Row>
                                 <Divider>成品检验项目</Divider>
                                 <EditableFormTable
-                                    dataSource={finishedProductQualities}
+                                    dataSource={finishedProductTestingItems}
                                     columns={columnsForFinishPro}
                                     rowKey='id'
                                     isEditTable={type === 'add'}
                                     isToolBar={type === 'add'}
                                     setNewData={setNewData}
-                                    tableType='finishedProductQualities'
+                                    tableType='finishedProductTestingItems'
                                 />
                                 <Divider>原材料质量状况</Divider>
                                 <EditableFormTable

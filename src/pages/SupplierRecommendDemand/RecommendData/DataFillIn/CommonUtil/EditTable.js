@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-10 10:57:33
- * @LastEditTime: 2020-09-18 15:12:49
+ * @LastEditTime: 2020-09-18 17:57:18
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/CommonUtil/EditTable.js
  * @Description:  函数式可编辑行 Table组件
  * @Connect: 1981824361@qq.com
@@ -32,6 +32,7 @@ const EditableCell = (params) => {
             required,
             inputDisabled,
             inputDefaultValue,
+            selectOptions,
         }
     } = params;
     const { getFieldDecorator } = form;
@@ -49,6 +50,16 @@ const EditableCell = (params) => {
             case 'DatePicker':
                 return <DatePicker />
             case 'Select':
+                if (selectOptions) {
+                    return <Select
+                        style={{ width: 150 }}
+                        placeholder="请选择"
+                    >
+                        {selectOptions.map(item => {
+                            return <Option value={item.value}>{item.name}</Option>
+                        })}
+                    </Select>
+                }
                 return <Select
                     style={{ width: 150 }}
                     placeholder="请选择"
@@ -78,13 +89,20 @@ const EditableCell = (params) => {
     const getRecordData = () => {
         const a = record[dataIndex];
         if (inputType === 'Select') {
-            if (a === true) {
-                return '是';
-            }
-            if (a === false) {
+            // a有boolean 类型  判断有无值  不用&&符号
+            if (!isEmptyArray(selectOptions) && a !== undefined && a !== '' && a !== null) {
+                // col 传递参数
+                const selectObj = selectOptions.filter(item => {
+                    return item.value === a;
+                });
+                return selectObj[0].name;
+            } else {
+                // 默认 参数
+                if (a === true) {
+                    return '是';
+                }
                 return '否';
             }
-            return a;
         } else if (inputType === 'DatePicker') {
             return a && moment(a).format('YYYY-MM-DD');
         } else {
@@ -226,6 +244,7 @@ const EditableTable = (props) => {
                     required: !(col.required === false), // 默认必输
                     inputDisabled: col.inputDisabled,
                     inputDefaultValue: col.inputDefaultValue,
+                    selectOptions: col.selectOptions, // 下拉选类型
                 }} />
             }
         };
