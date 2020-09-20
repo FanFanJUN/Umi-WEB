@@ -80,16 +80,16 @@ export default create()(function ({ form }) {
                 setOrgId(res.data[0].id);
             }
         });
-        window.parent.frames.addEventListener('message', listenerParentClose, false);
-        return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
+        // window.parent.frames.addEventListener('message', listenerParentClose, false);
+        // return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
     }, []);
-    function listenerParentClose(event) {
-        const { data = {} } = event;
-        console.log('进入监听', data.tabAction)
-        if (data.tabAction === 'close') {
-            tableRef.current.remoteDataRefresh();
-        }
-    }
+    // function listenerParentClose(event) {
+    //     const { data = {} } = event;
+    //     console.log('进入监听', data.tabAction)
+    //     if (data.tabAction === 'close') {
+    //         tableRef.current.remoteDataRefresh();
+    //     }
+    // }
     function redirectToPage(type) {
         const [key] = selectedRowKeys;
         const { id = '' } = FRAMELEEMENT;
