@@ -31,7 +31,7 @@ export default [
       { path: '/qualitySynergy/LimitMaterial', component: './QualitySynergy/mainData/LimitMaterial', title: '环保标准限用物质对应关系-主数据' },
       { path: '/qualitySynergy/BusinessUnitToBU', component: './QualitySynergy/mainData/BusinessUnitToBU', title: '业务模块对业务单元主数据-主数据' },
       { path: '/qualitySynergy/BU', component: './QualitySynergy/mainData/BU', title: '业务单元主数据-主数据' },
-      { path: '/qualitySynergy/EPStatement', component: './QualitySynergy/mainData/EPStatement', title: '环保数据字典表' },
+      // { path: '/qualitySynergy/EPStatement', component: './QualitySynergy/mainData/EPStatement', title: '环保数据字典表' },
 
     ]
   },
