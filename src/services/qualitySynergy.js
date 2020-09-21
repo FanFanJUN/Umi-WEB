@@ -203,28 +203,28 @@ export async function frozenBU(params) {
 }
 // 环保数据字典表-新增
 export async function addEpDict(params) {
-    const url = `${baseUrl}/epDictService/addEpDict`;
+    const url = `${recommendUrl}/api/epDictService/addEpDict`;
     return request({
         url,
         method: 'POST',
-        params: params,
+        data: params,
     });
 }
-// 环保数据字典表-新增
+// 环保数据字典表-编辑
 export async function editEpDict(params) {
-    const url = `${baseUrl}/epDictService/editEpDict`;
+    const url = `${recommendUrl}/api/epDictService/editEpDict`;
     return request({
         url,
         method: 'POST',
-        params: params,
+        data: params,
     });
 }
 // 环保数据字典表-删除
 export async function deleteEpDict(params) {
-    const url = `${baseUrl}/epDictService/editEpDict`;
+    const url = `${recommendUrl}/api/epDictService/delete`;
     return request({
         url,
-        method: 'POST',
+        method: 'DELETE',
         params: params,
     });
 }

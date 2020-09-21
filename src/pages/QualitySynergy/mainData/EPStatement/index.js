@@ -1,6 +1,6 @@
 
 import React, { Fragment, useState, useRef } from 'react';
-import { Button, Form, Row, Input, Modal, message } from 'antd';
+import { Button, Form, Row, Input, Modal, message, Select } from 'antd';
 import styles from '../../TechnicalDataSharing/DataSharingList/index.less';
 import { baseUrl, recommendUrl } from '../../../../utils/commonUrl';
 import { DataImport, ExtTable, ExtModal, utils, AuthAction } from 'suid';
@@ -10,6 +10,7 @@ import {
     deleteEpDict,
 } from '../../../../services/qualitySynergy';
 import { AutoSizeLayout } from '../../../../components';
+const { Option } = Select;
 const { TextArea } = Input;
 const { authAction } = utils;
 const { create, Item: FormItem } = Form;
@@ -27,23 +28,17 @@ const TechnicalDataFileTypes = (props) => {
         modalSource: '',
     });
     const { form } = props;
-    const { getFieldDecorator, validateFields } = form;
+    const { getFieldDecorator, validateFields, setFieldsValue } = form;
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [selectedRow, setSelectedRow] = useState([]);
 
     const columns = [
-        { title: '文件类别代码', dataIndex: 'fileCategoryCode', width: 200 },
-        { title: '文件类别名称', dataIndex: 'fileCategoryName', ellipsis: true, },
+        { title: '数据类型名称', dataIndex: 'modelName', ellipsis: true, },
+        { title: '中文内容', dataIndex: 'chContent', width: 400, ellipsis: true, },
+        { title: '英文内容', dataIndex: 'ehContent', width: 500, ellipsis: true, },
         { title: '排序号', dataIndex: 'orderNo', ellipsis: true, },
-        { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (text) => text ? '已冻结' : '未冻结' },
     ]
-    // 检查传入数据的冻结情况，全冻结返回thaw，全未冻结返回freeze
-    const checkFreeze = (dataList) => {
-        if(!dataList || dataList.length===0) return false;
-        return dataList.every((item)=>item.frozen)?'thaw':dataList.every((item)=>!item.frozen)?'freeze':false
-    }
     const buttonClick = (type) => {
-        console.log('选中数据', selectedRow)
         switch (type) {
             case 'add':
                 setData((value) => ({ ...value, visible: true, modalSource: '' }));
@@ -108,10 +103,14 @@ const TechnicalDataFileTypes = (props) => {
             if (!errs) {
                 let res = {}
                 if (data.modalSource) {
+                    let list = [];
                     values = { ...data.modalSource, ...values }
                     res = await editEpDict(values);
                 } else {
-                    res = await addEpDict(values);
+                    let list = [];
+                    list.push(values);
+                    console.log(list)
+                    res = await addEpDict(list);
                 }
                 if (res.success) {
                     message.success('操作成功');
@@ -124,6 +123,17 @@ const TechnicalDataFileTypes = (props) => {
             }
         })
     }
+    function handleSelect(item) {
+        if(item==='TXSM'){
+            setFieldsValue({
+                modelName: '填写说明'
+            })
+        } else {
+            setFieldsValue({
+                modelName: '申明'
+            })
+        }
+    }
     return (
         <Fragment>
             <AutoSizeLayout>
@@ -132,12 +142,13 @@ const TechnicalDataFileTypes = (props) => {
                         Table
                         columns={columns}
                         store={{
-                            url: `${recommendUrl}/epDictService/findByPage`,
+                            url: `${recommendUrl}/api/epDictService/findByPage`,
                             type: 'POST'
                         }}
                         height={h}
                         ref={tableRef}
                         checkbox={true}
+                        searchPlaceHolder={'输入数据类型名称查询'}
                         remotePaging={true}
                         selectedRowKeys={selectedRowKeys}
                         onSelectRow={(selectedRowKeys, selectedRows) => {
@@ -160,6 +171,20 @@ const TechnicalDataFileTypes = (props) => {
                 title={data.modalSource ? '编辑' : '新增'}
             >
                 <Form>
+                    <Row>
+                        <FormItem label='测试结论' {...formLayout}>
+                            {
+                                getFieldDecorator('modelName', {initialValue: data.modalSource ? data.modalSource.modelName : '填写说明'}),
+                                getFieldDecorator('modelType', {
+                                    initialValue: data.modalSource ? data.modalSource.modelType : 'TXSM',
+                                    rules: [{ required: true, message: '请选择数据类型' }]
+                                })(<Select style={{ width: '100%' }} onChange={handleSelect}>
+                                    <Option value="SM">申明</Option>
+                                    <Option value="TXSM">填写说明</Option>
+                                </Select>)
+                            }
+                        </FormItem>
+                    </Row>
                     <Row>
                         <FormItem label='填写说明(中文)' {...formLayout}>
                             {
