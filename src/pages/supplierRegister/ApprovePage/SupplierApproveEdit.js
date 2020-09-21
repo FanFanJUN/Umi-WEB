@@ -54,7 +54,7 @@ const SupplierEditRef = forwardRef(({
     setEditData(wholeData.supplierInfoVo)
     configurelist(configuredata)
     setConfigure(configuredata)
-    setsupplierName(wholeData.supplierInfoVo.supplierVo.name)
+    //setsupplierName(wholeData.supplierInfoVo.supplierVo.name)
   }, [wholeData,configuredata])
   // 
   function configurelist(configure) {

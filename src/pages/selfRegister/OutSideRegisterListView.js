@@ -329,7 +329,7 @@ function SupplierConfigure() {
                             authAction(
                                 <Button type='primary' 
                                     ignore={DEVELOPER_ENV} 
-                                    key='' 
+                                    key='SRM_SM_SUPPLIER_MY_PERFORMANCE_EDIT' 
                                     className={styles.btn} 
                                     onClick={handleEditor}
                                     disabled={empty || underWay || !isSelf}
@@ -341,7 +341,7 @@ function SupplierConfigure() {
                             authAction(
                                 <Button 
                                     ignore={DEVELOPER_ENV} 
-                                    key='' 
+                                    key='SRM_SM_SUPPLIER_MY_PERFORMANCE_DETAIL' 
                                     className={styles.btn} 
                                     onClick={handleCheckDetail} 
                                     disabled={empty}
@@ -360,7 +360,7 @@ function SupplierConfigure() {
                                     disabled={empty || underWay || !isSelf || !Toexamine}
                                     businessModelCode='com.ecmp.srm.sm.entity.SupplierApply'
                                     ignore={DEVELOPER_ENV}
-                                    key='PURCHASE_VIEW_CHANGE_APPROVE'
+                                    key='SRM_SM_SUPPLIER_MY_PERFORMANCE_EXAMINE'
                                 ></StartFlow>
                             )
                         }
@@ -371,7 +371,7 @@ function SupplierConfigure() {
                                     disabled={empty || !underWay || !isSelf || completed}
                                     onClick={stopApprove}
                                     ignore={DEVELOPER_ENV}
-                                    key='PURCHASE_VIEW_CHANGE_STOP_APPROVE'
+                                    key='SRM_SM_SUPPLIER_MY_PERFORMANCE_STOP_APPROVAL'
                                 >终止审核</Button>
                             )
                         }
@@ -381,7 +381,7 @@ function SupplierConfigure() {
                                     businessId={flowId}
                                     flowMapUrl='flow-web/design/showLook'
                                     ignore={DEVELOPER_ENV}
-                                    key='PURCHASE_VIEW_CHANGE_APPROVE_HISTORY'
+                                    key='SRM_SM_SUPPLIER_MY_PERFORMANCE_HISTORY'
                                 >
                                     <Button className={styles.btn} disabled={empty || !underWay || !completed}>审核历史</Button>
                                 </FlowHistoryButton>

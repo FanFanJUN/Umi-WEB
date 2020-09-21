@@ -134,7 +134,7 @@ export const SupplierconfigureDetail = params =>
 // };
 //中国省份
 export const listChineseProvinces = () => {
-  return httpUtils.post(`/srm-baf-web/supplierRegister/listChineseProvinces`);
+  return httpUtils.post(`${BASE_URL}/srm-baf-web/supplierRegister/listChineseProvinces`);
 };
 //市
 export const listCityByProvince = (params) => {
@@ -300,6 +300,12 @@ export const saveRegistVo = params => {
 // 统一社会信用代码重复检查
 export const checkCreditCode = params => createServiceRequest({
   path: '/supplierRegister/checkCreditCode',
+  params,
+  hack: true
+})
+// 注册账号重复效验
+export const checkAccount = params => createServiceRequest({
+  path: '/supplierRegister/findByAccountAndTenantCode',
   params,
   hack: true
 })

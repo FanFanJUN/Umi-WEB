@@ -1,7 +1,7 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useState } from 'react';
 import { Form, Row, Input, Col, message, Radio, Button } from 'antd';
 import SearchTable from '../../supplierRegister/components/SearchTable'
-import { checkCreditCode } from '../../../services/supplierRegister'
+import { checkCreditCode ,checkAccount} from '../../../services/supplierRegister'
 import {chineseProvinceTableConfig} from '../../../utils/commonProps'
 const { create } = Form;
 const FormItem = Form.Item;
@@ -43,10 +43,28 @@ const OrganizatRef = forwardRef(({
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 values.supplierType = '0';
+                values.openId = accounts.openId;
                 result = values;
             }
         });
         return result;
+    }
+    async function handleCheck() {
+        let name = form.getFieldValue('name');
+        if (!name) {
+            message.error('请输入用户名');
+            return false;
+        }
+        if (name) {
+            const {success, message: msg } = await checkAccount({ supplierName: name, supplierId: '' });
+            if (success){
+                message.error('供应商名称已存在，请重新输入');
+            }else {
+                message.success('供应商名称可以使用');
+            }
+        } else {
+            message.error('请输入供应商名称');
+        }
     }
     //检查供应商名称
     async function handleCheckName() {
@@ -94,7 +112,7 @@ const OrganizatRef = forwardRef(({
                             })(
                                 <Input
                                     //onChange={this.supplierNameChange}
-                                    onBlur={handleCheckName}
+                                    onBlur={handleCheck}
                                     placeholder={'个人名称+手机号'}
                                 />,
                             )

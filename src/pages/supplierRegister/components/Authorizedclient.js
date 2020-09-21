@@ -363,11 +363,12 @@ const AuthorizeRef = forwardRef(({
     //联系人验证
     function setName(e) {
         dataSource.forEach((item,index) => {
-            if (index + 1 === parseInt(e.target.name)) {
+            if (index === parseInt(e.target.name)) {
+                console.log(333)
                 item.name = e.target.value
             }
         })
-        //console.log(dataSource)
+        console.log(dataSource)
         aggregatename = form.getFieldValue('name');
 
         let quencyname = counts(aggregatename,e.target.value);
@@ -407,6 +408,7 @@ const AuthorizeRef = forwardRef(({
                 }
             }
         })
+        console.log(result)
         return result;
     }
     // 设置所有表格参数
