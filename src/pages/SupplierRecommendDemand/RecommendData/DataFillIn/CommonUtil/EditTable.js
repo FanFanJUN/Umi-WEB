@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-10 10:57:33
- * @LastEditTime: 2020-09-18 17:57:18
+ * @LastEditTime: 2020-09-21 11:05:12
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/CommonUtil/EditTable.js
  * @Description:  函数式可编辑行 Table组件
  * @Connect: 1981824361@qq.com
@@ -54,6 +54,7 @@ const EditableCell = (params) => {
                     return <Select
                         style={{ width: 150 }}
                         placeholder="请选择"
+                        disabled={inputDisabled}
                     >
                         {selectOptions.map(item => {
                             return <Option value={item.value}>{item.name}</Option>
@@ -105,6 +106,10 @@ const EditableCell = (params) => {
             }
         } else if (inputType === 'DatePicker') {
             return a && moment(a).format('YYYY-MM-DD');
+        } else if (inputType === 'percentInput') {
+            return `${a}%`;
+        } else if (inputType === 'UploadFile') {
+            return <UploadFile type='show' entityId={a} />
         } else {
             return record[dataIndex];
         }
@@ -123,7 +128,6 @@ const EditableCell = (params) => {
     }
 
     const renderCell = () => {
-        console.log(editing);
         return (
             editing ? (
                 <Form.Item style={{ margin: 0 }}>
@@ -154,7 +158,6 @@ const EditableTable = (props) => {
     const { form, dataSource, columns, rowKey, isEditTable = false, isToolBar = false, setNewData,
         recommendDemandId = '676800B6-F19D-11EA-9F88-0242C0A8442E', tableType } = props;
 
-    console.log(dataSource);
     const [editingKey, setEditingKey] = useState('');
     const [buttonDisabled, setButtonDisabled] = useState(false);
     const tableRef = useRef(null);
@@ -297,21 +300,18 @@ const EditableTable = (props) => {
             <AutoSizeLayout>
                 {(h) => <ExtTable
                     bordered
-                    // height={h}
+                    size='small'
+                    height={400}
                     dataSource={dataSource || []}
                     columns={mergeColumns}
-                    //   pagination={{
-                    //     onChange: this.cancel,
-                    //   }}
                     ref={tableRef}
                     showSearch={false}
                     rowKey={rowKey}
                     remotePaging={true}
-                    pagination={{
-                        // pageSizeOptions: ['5','10', '15'],
-                        defaultPageSize: 5,
-                        showQuickJumper: true
-                    }}
+                    // pagination={{
+                    //     pageSizeOptions: ['5', '10', '15'],
+                    //     defaultPageSize: 5,
+                    // }}
                     toolBar={isToolBar ? {
                         left: (
                             <Button type="primary" onClick={handleAdd} disabled={buttonDisabled}>

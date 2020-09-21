@@ -140,6 +140,16 @@ export const DistributionSupplierSave = async params => {
   });
 }
 
+// 技术资料分享撤回
+export async function RecallDataSharingList(params) {
+  const url = `${recommendUrl}/api/epTechnicalShareDemandService/revoke`;
+  return request({
+    url,
+    method: 'GET',
+    params: params,
+  });
+}
+
 //技术资料分享战略指派
 export async function StrategyAssignedDataSharingList(params) {
   const url = `${recommendUrl}/api/epTechnicalShareDemandService/designateStrategy`;
