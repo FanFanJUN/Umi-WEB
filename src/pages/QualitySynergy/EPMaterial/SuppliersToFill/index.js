@@ -35,8 +35,6 @@ const SupplierFillList = function ({ form }) {
     const FRAMELEEMENT = getFrameElement();
     const {
         getFieldDecorator,
-        getFieldValue,
-        setFieldsValue,
         validateFields
     } = form;
     useEffect(() => {
@@ -88,7 +86,7 @@ const SupplierFillList = function ({ form }) {
     function listenerParentClose(event) {
         const { data = {} } = event;
         if (data.tabAction === 'close') {
-            tableRef.current.remoteDataRefresh()
+            setSearchValue({})
         }
     }
     const headerLeft = <>
@@ -215,7 +213,7 @@ const SupplierFillList = function ({ form }) {
                 break;
         }
         if (res.statusCode === 200) {
-            refresh();
+            setSearchValue({})
             message.success('操作成功');
         } else {
             message.error(res.message);
@@ -225,12 +223,10 @@ const SupplierFillList = function ({ form }) {
     // 快捷查询
     function handleQuickSearch(value) {
         setSearchValue(v => ({ ...v, quickSearchValue: value }));
-        tableRef.current.remoteDataRefresh();
     }
     // 处理高级搜索
     function handleAdvnacedSearch(value) {
         console.log(value)
-        // value.needToFill = value.needToFill === 'yes' ? true : value.needToFill === 'no' ? false : '';
         value.materialCode = value.materialCode_name;
         value.strategicPurchaseCode = value.strategicPurchaseCode_name;
         delete value.materialCode_name;
@@ -240,17 +236,11 @@ const SupplierFillList = function ({ form }) {
         delete value.needToFill_name;
         setSearchValue(v => ({ ...v, ...value }));
         headerRef.current.hide();
-        tableRef.current.remoteDataRefresh();
     }
     // 记录列表选中
     function handleSelectedRows(rowKeys, rows) {
         setRowKeys(rowKeys);
         setRows(rows);
-    }
-    // 清空选中/刷新表格数据
-    const refresh = () => {
-        tableRef.current.manualSelectedRows();
-        tableRef.current.remoteDataRefresh();
     }
     // 上传确认
     function handleUploadOk() {

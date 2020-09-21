@@ -34,17 +34,21 @@ export default function () {
         supplierRef.current.validateFieldsAndScroll(async (error, values) => {
             if (!error) {
                 const macData = mcdRef.current.getSplitDataList();
+                if(!macData.tag)return;
+                toggleLoading(true);
                 values.uploadAttachmentIds = values.reachEnvironmentId;
                 values.reachEnvironmentId = values.reachEnvironmentId ? values.reachEnvironmentId.join() : '';
                 saveData = { ...saveData, ...values, commit: !!publish, ...macData }
                 saveData.epDataFillSplitPartsBoList = macData.epDataFillSplitPartsVoList;
                 delete saveData.epDataFillSplitPartsVoList;
+                delete saveData.tag;
                 const res = await epDemandUpdate(saveData);
+                toggleLoading(false);
                 if (res.statusCode === 200) {
                     message.success('操作成功');
                     setTimeout(() => {
-                        handleBack();
-                    }, 3000)
+                        
+                    }, 1000)
                 } else {
                     message.error(res.message);
                 }
@@ -53,7 +57,7 @@ export default function () {
     }
     useEffect(() => {
         (async function () {
-            // toggleLoading(true);
+            toggleLoading(true);
             const res = await supplerFindVoById({ id: query.id });
             if (res.statusCode === 200) {
                 setOriginData(res.data)

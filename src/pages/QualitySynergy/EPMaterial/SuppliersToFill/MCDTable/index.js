@@ -19,7 +19,7 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
         getSplitDataList
     }))
     const splitRef = useRef(null)
-    const { getFieldDecorator, validateFields } = form;
+    const { getFieldDecorator, validateFieldsAndScroll } = form;
     const [visible, setVisible] = useState(false)
     const [selectedSplitData, setSelectedSpilt] = useState({})
     const [splitDataList, setSplitDataList] = useState(originData.epDataFillSplitPartsVoList ? originData.epDataFillSplitPartsVoList : []);
@@ -29,7 +29,6 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
     }, [originData]);
     // 参数为某一条拆分部件数据,根据rowKey替换
     function handleSplitDataList(dataObj) {
-        console.log('设置表格数据', dataObj);
         let newList = splitDataList.map(item => {
             return item.rowKey === dataObj.rowKey ? {...item, ...dataObj} : item;
         })
@@ -39,7 +38,7 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
     }
     function getSplitDataList() {
         let backData = {}
-        validateFields((errors, values) => {
+        validateFieldsAndScroll((errors, values) => {
             if (!errors) {
                 console.log(values)
                 let saveList = splitDataList.map(item => {
@@ -54,8 +53,11 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
                 })
                 backData = {
                     ...values,
+                    tag: true,
                     epDataFillSplitPartsVoList: saveList
                 }
+            } else {
+                backData = {tag: false}
             }
         })
         return backData;
@@ -94,7 +96,7 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
                     </FormItem>
                 </Col>
                 <Col span={6} className={styles.fcs}>
-                    <Button onClick={()=>{setVisible(true)}}>批量导入</Button>
+                    {!isView && <Button onClick={()=>{setVisible(true)}}>批量导入</Button>}
                 </Col>
             </Row>
         </Form>

@@ -6,6 +6,7 @@ import styles from '../index.less'
 import SplitPartsTable from './SplitPartsTable';
 import MaterialTable from './MaterialTable';
 import TestRecordsTable from './TestRecordsTable';
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const { create, Item: FormItem } = Form;
 
 export default function ({ visible, setVisible }) {
