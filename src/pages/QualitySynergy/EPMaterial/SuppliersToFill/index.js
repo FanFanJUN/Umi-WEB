@@ -13,7 +13,8 @@ import {
     epDemandSubmit,
     epDemandRecall,
     epDemandCopyAll,
-    uploadFile
+    uploadFile,
+    supplierGetList
 } from '../../../../services/qualitySynergy';
 const { authAction, storage } = utils;
 const { create, Item: FormItem } = Form;
@@ -29,7 +30,7 @@ const SupplierFillList = function ({ form }) {
     const [uploadVisible, setUploadVisible] = useState(false);
     const [selectedRows, setRows] = useState([]);
     const [searchValue, setSearchValue] = useState({});
-    const [attachment, setAttachment] = useState(null);
+    const [dataSource, setDataSource] = useState([]);
     const [materialObj, setMaterialObj] = useState({})
     const FRAMELEEMENT = getFrameElement();
     const {
@@ -38,6 +39,19 @@ const SupplierFillList = function ({ form }) {
         setFieldsValue,
         validateFields
     } = form;
+    useEffect(() => {
+        supplierGetList({
+            ...searchValue,
+            quickSearchProperties: []
+        }).then(res => {
+            console.log(res)
+            if(res.success && res.statusCode === 200) {
+                setDataSource(res.data.rows)
+            } else {
+                message.error(res.message)
+            }
+        })
+    }, [searchValue])
     // 高级查询配置
     const formItems = [
         { title: '物料代码', key: 'materialCode', type: 'list', props: MaterialConfig },
@@ -285,14 +299,15 @@ const SupplierFillList = function ({ form }) {
                     showSearch={false}
                     onSelectRow={handleSelectedRows}
                     selectedRowKeys={selectedRowKeys}
-                    store={{
-                        url: `${recommendUrl}/api/epDataFillService/findByPage`,
-                        type: 'POST',
-                        params: {
-                            ...searchValue,
-                            quickSearchProperties: []
-                        },
-                    }}
+                    dataSource={dataSource}
+                    // store={{
+                    //     url: `${recommendUrl}/api/epDataFillService/findByPage`,
+                    //     type: 'POST',
+                    //     params: {
+                    //         ...searchValue,
+                    //         quickSearchProperties: []
+                    //     },
+                    // }}
                 />
             }
         </AutoSizeLayout>

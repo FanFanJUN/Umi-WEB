@@ -472,3 +472,12 @@ export async function downLoad(params) {
         data: params,
     });
 }
+// 获取供应商-环保资料填报列表数据
+export async function supplierGetList(params) {
+    const url = `${recommendUrl}/api/epDataFillService/findByPage`;
+    return request({
+        url,
+        method: 'POST',
+        data: params,
+    });
+}
