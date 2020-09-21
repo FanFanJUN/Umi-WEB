@@ -40,7 +40,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
         { title: '物质重量(mg)', dataIndex: 'scopeApplication', ellipsis: true, align: 'center', },
         { title: '均质材料中的含量(%) ', dataIndex: 'materialWeight', ellipsis: true, align: 'center', },
         { title: '豁免条款', dataIndex: 'exemptionClause', ellipsis: true, align: 'center' },
-        { title: '符合性', dataIndex: 'compliance', ellipsis: true, align: 'center', },
+        { title: '符合性', dataIndex: 'compliance', ellipsis: true, align: 'center', render: (text) => text ? '符合' : '不符合'},
     ];
     // 记录列表选中
     function handleSelectedRows(rowKeys, rows) {

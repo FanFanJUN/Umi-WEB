@@ -462,7 +462,7 @@ export default create()(function ({ form }) {
                 }
             },
         },
-        { title: '冻结', dataIndex: 'frozen', width: 70, render: (text) => text ? '已冻结' : '未冻结' },
+        { title: '冻结', dataIndex: 'frozen', width: 70, render: (text) => text ? '是' : '否' },
         { title: '物料代码', dataIndex: 'materialCode', ellipsis: true },
         { title: '物料描述', dataIndex: 'materialName', ellipsis: true },
         { title: '物料组代码', dataIndex: 'materialGroupCode', ellipsis: true },

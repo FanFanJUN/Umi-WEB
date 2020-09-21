@@ -72,7 +72,7 @@ export default function () {
             <Spin spinning={loading}>
                 <Affix>
                     <div className={classnames(styles.fbc, styles.affixHeader)}>
-                        <span className={styles.headTitle}>{query.pageStatus === 'add' ? `环保资料填报-${originData.fillNumber}` : '环保资料填报明细-xxx'}</span>
+                        <span className={styles.headTitle}>{query.pageStatus === 'add' ? `环保资料填报-${originData.fillNumber}` : `环保资料填报明细-${originData.fillNumber}`}</span>
                         {
                             query.pageStatus === 'detail' ? <div>
                                 <Button className={styles.btn} onClick={handleBack}>返回</Button>
