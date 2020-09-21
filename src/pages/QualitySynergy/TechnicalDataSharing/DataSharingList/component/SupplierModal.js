@@ -254,11 +254,21 @@ const SupplierModal = (props) => {
   };
 
   const duplicateRemoval = (arr, key) => {
-    let obj = {};
-    arr = arr.reduce(function(item, next) {
-      obj[next[key]] ? '' : obj[next[key]] = item.push(next);
-      return item;
-    }, []);
+    for (let i = 0; i < arr.length - 1; i++) {
+      for (let j = i + 1; j < arr.length; j++) {
+        if (arr[i][key] === arr[j][key]) {
+          arr.splice(j, 1);
+          //因为数组长度减小1，所以直接 j++ 会漏掉一个元素，所以要 j--
+          j--;
+        }
+      }
+    }
+    // let obj = {};
+    // arr = arr.reduce((item, next) => {
+    //   console.log(obj, next, item, 'obj[next[key]]')
+    //   obj[next[key]] ? '' : obj[next[key]] = item.push(next);
+    //   return item;
+    // }, []);
     return arr;  //去重后返回的数组
   };
 
