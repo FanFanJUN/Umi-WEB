@@ -66,17 +66,17 @@ const SupplierFillList = function ({ form }) {
                 break;
         }
     }
-    // useEffect(() => {
-    //     window.parent.frames.addEventListener('message', listenerParentClose, false);
-    //     return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
-    // }, []);
+    useEffect(() => {
+        window.parent.frames.addEventListener('message', listenerParentClose, false);
+        return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
+    }, []);
 
-    // function listenerParentClose(event) {
-    //     const { data = {} } = event;
-    //     if (data.tabAction === 'close') {
-    //         tableRef.current.remoteDataRefresh()
-    //     }
-    // }
+    function listenerParentClose(event) {
+        const { data = {} } = event;
+        if (data.tabAction === 'close') {
+            tableRef.current.remoteDataRefresh()
+        }
+    }
     const headerLeft = <>
         {
             authAction(<Button
