@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 14:29:17
- * @LastEditTime: 2020-09-21 09:15:25
+ * @LastEditTime: 2020-09-21 10:16:49
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/index.js
  * @Description: 资料填报 Tabs
  * @Connect: 1981824361@qq.com
@@ -129,7 +129,7 @@ function DataFillIn({
       <Tooltip title="返回顶部">
         <BackTop visibilityHeight={400} />
       </Tooltip>
-      <Tabs tabPosition='left' activeKey={activityKey} onChange={(activeKey) => handleChange(activeKey)}>
+      <Tabs tabPosition='left' onChange={(activeKey) => handleChange(activeKey)}>
         {/* 基本情况 */}
         <TabPane key='baseCondition' tab={baseConditionTab}>
           <BaseCondition updateGlobalStatus={updateGlobalStatus} />
