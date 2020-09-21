@@ -34,7 +34,7 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada, materia
                 setOrgId(res.data[0].id);
             }
         })
-    }, [buCode, visible])
+    }, [buCode])
     function showModal(type) {
         setModalType(type);
         setVisible(true);

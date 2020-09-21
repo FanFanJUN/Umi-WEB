@@ -343,6 +343,7 @@ export default create()(function ({ form }) {
                 submit: rows[0].effectiveStatus === 'EFFECT',
                 withdraw: !(rows[0].effectiveStatus === 'EFFECT' && rows[0].allotSupplierState === 'ALLOT_NOT'),
                 distribute: !(rows[0].applyPersonAccount === getUserAccount() && rows[0].effectiveStatus === 'EFFECT'),
+                check: !(rows[0].effectiveStatus === 'EFFECT' && rows[0].allotSupplierState === 'ALLOT_END'),
                 edit: !(rows[0].effectiveStatus === 'DRAFT' && rows[0].allotSupplierState === 'ALLOT_NOT'),
             });
         } else if (rows.length === 0) {
@@ -687,6 +688,7 @@ export default create()(function ({ form }) {
         <EditModal
             wrappedComponentRef={editRef}
             initData={selectedRows[0]}
+            buCode={selectedRows[0] && selectedRows[0].buCode}
             handleTableTada={handleTableTada}
         />
         {/* 维护环保管理人员 */}
