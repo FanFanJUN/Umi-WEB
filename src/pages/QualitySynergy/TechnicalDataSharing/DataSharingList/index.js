@@ -94,17 +94,25 @@ export default function() {
 
   // 撤回选中单据
   const recallList = () => {
-    RecallDataSharingList({
-      ids: data.selectedRowKeys.toString()
-    }).then(res => {
-      if (res.success) {
-        message.success(res.message)
-        tableRef.current.manualSelectedRows();
-        tableRef.current.remoteDataRefresh();
-      } else {
-        message.error(res.message)
-      }
-    })
+    Modal.confirm({
+      title: '撤回',
+      content: '是否撤回选中的数据',
+      okText: '是',
+      cancelText: '否',
+      onOk: () => {
+        RecallDataSharingList({
+          ids: data.selectedRowKeys.toString()
+        }).then(res => {
+          if (res.success) {
+            message.success(res.message)
+            tableRef.current.manualSelectedRows();
+            tableRef.current.remoteDataRefresh();
+          } else {
+            message.error(res.message)
+          }
+        })
+      },
+    });
   }
 
   const handleQuickSearch = (value) => {
