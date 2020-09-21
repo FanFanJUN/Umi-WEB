@@ -134,7 +134,7 @@ export const SupplierconfigureDetail = params =>
 // };
 //中国省份
 export const listChineseProvinces = () => {
-  return httpUtils.post(`${BASE_URL}/srm-baf-web/supplierRegister/listChineseProvinces`);
+  return httpUtils.post(`/srm-baf-web/supplierRegister/listChineseProvinces`);
 };
 //市
 export const listCityByProvince = (params) => {

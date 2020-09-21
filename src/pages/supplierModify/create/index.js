@@ -212,17 +212,17 @@ function CreateStrategy() {
     againdata.againdata = '0';
     let saveData = { ...againdata };
     console.log(saveData)
-    // triggerLoading(true)
-    // const { success, message: msg } = await TemporarySupplierRegister(saveData);
-    // if (success) {
-    //   message.success('保存成功');
-    //   triggerLoading(false)
-    //   closeCurrent()
-    //   return
-    // }else {
-    //   message.error(msg);
-    // }
-    // triggerLoading(false)
+    triggerLoading(true)
+    const { success, message: msg } = await TemporarySupplierRegister(saveData);
+    if (success) {
+      message.success('保存成功');
+      triggerLoading(false)
+      closeCurrent()
+      return
+    }else {
+      message.error(msg);
+    }
+    triggerLoading(false)
   }
   // 帐号暂存
   function ObtainAccount() {
