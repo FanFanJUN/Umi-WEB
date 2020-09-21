@@ -43,15 +43,13 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                     demandNumber: viewDemandNum
                 }).then(res => {
                     if (res.data) {
-                        if (res.data.rows) {
-                            let dataList = res.data.rows.map((item, index) => {
-                                return {
-                                    ...item,
-                                    rowKey: index,
-                                }
-                            })
-                            setDataSource(dataList);
-                        }
+                        let dataList = res.data.map((item, index) => {
+                            return {
+                                ...item,
+                                rowKey: index,
+                            }
+                        })
+                        setDataSource(dataList);
                     } else {
                         message.error(res.message);
                     }

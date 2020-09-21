@@ -170,7 +170,6 @@ export default create()(function ({ form }) {
         let arr = [];
         res.data.rows.map(item => {
             arr.push({
-                id: item.id,
                 '状态': item.effectiveStatus === 'DRAFT' ? '草稿' : '生效',
                 '分配供应商状态': item.allotSupplierState === 'ALLOT_END' ? '已分配' : '未分配',
                 '物料标记状态': item.assignSupplierStatus === 'EXIST_CONFORM_SUPPLIER' ? '存在符合的供应商' : '不存在符合的供应商',
