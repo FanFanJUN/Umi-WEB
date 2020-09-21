@@ -819,11 +819,11 @@ export const materialStatus = {
 export const PDMStatus = {
   dataSource: [
     {
-      code: 'draft',
+      code: 'SYNC_SUCCESS',
       name: '同步成功',
     },
     {
-      code: 'INPROCESS',
+      code: 'SYNC_FAILURE',
       name: '同步失败',
     },
   ],

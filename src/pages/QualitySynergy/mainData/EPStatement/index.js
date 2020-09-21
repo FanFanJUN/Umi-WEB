@@ -54,7 +54,7 @@ const TechnicalDataFileTypes = (props) => {
                         title: '请确认是否删除选中技术资料类别数据',
                         onOk: async () => {
                             const parmas = selectedRowKeys.join();
-                            const res = await deleteEpDict({ id: parmas });
+                            const res = await deleteEpDict({ ids: parmas });
                             if (res.success) {
                                 message.success('删除成功');
                                 tableRef.current.manualSelectedRows();

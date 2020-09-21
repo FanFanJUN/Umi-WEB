@@ -221,10 +221,10 @@ export async function editEpDict(params) {
 }
 // 环保数据字典表-删除
 export async function deleteEpDict(params) {
-    const url = `${recommendUrl}/api/epDictService/delete`;
+    const url = `${recommendUrl}/api/epDictService/batchDelete`;
     return request({
         url,
-        method: 'DELETE',
+        method: 'GET',
         params: params,
     });
 }
