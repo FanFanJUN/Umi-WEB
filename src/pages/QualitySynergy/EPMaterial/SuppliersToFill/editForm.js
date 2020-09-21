@@ -47,7 +47,7 @@ export default function () {
                 if (res.statusCode === 200) {
                     message.success('操作成功');
                     setTimeout(() => {
-                        
+                        handleBack();
                     }, 1000)
                 } else {
                     message.error(res.message);
