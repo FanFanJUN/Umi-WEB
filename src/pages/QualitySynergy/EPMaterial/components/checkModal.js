@@ -145,8 +145,8 @@ const checkModal = forwardRef(({ form, selectedRow = {}, checkModalType }, ref) 
                 store={{
                     url: `${recommendUrl}/api/epDataFillService/findPageByCode`,
                     params: {
-                        // materialCode: selectedRow.materialCode
-                        materialCode: '810045822'
+                        materialCode: selectedRow.materialCode
+                        // materialCode: '810045822'
                     },
                     type: 'POST'
                 }}

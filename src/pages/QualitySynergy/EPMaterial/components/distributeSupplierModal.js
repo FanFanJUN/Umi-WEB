@@ -253,10 +253,11 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
         <ExtModal
             destroyOnClose={true}
             onCancel={() => { handleCancel() }}
-            onOk={() => { handleSave() }}
-            okText={supplierModalType === 'distribute' ? "保存":"确定"}
+            // onOk={() => { handleSave() }}
+            // okText={supplierModalType === 'distribute' ? "保存":"确定"}
             visible={visible}
             centered
+            footer={null}
             width={1100}
             title={supplierModalType === 'distribute' ? "分配供应商" : "查看供应商"}
         >
