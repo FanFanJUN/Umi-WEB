@@ -1,10 +1,11 @@
-import React, { forwardRef, useImperativeHandle, useEffect, useRef, useState } from 'react';
+import React, { forwardRef, useImperativeHandle, useEffect, useRef, useState,useContext} from 'react';
 import { Modal, Form, Row, Col, Input, } from 'antd';
 import { Fieldclassification } from '@/utils/commonProps'
 import { ComboTree, ComboGrid, ComboList } from 'suid';
-import { onlyNumber } from '@/utils/index';
+import { onlyNumber,isEmpty } from '@/utils/index';
 import { ComboAttachment } from '@/components';
 import UploadFile from '../../../components/Upload/index'
+import myContext from './ContextName'
 import {
     provinceListConfig,
     cityListConfig,
@@ -23,6 +24,7 @@ const formItemLayout = {
     labelCol: { span: 8 },
     wrapperCol: { span: 16 }
 };
+
 const BankbaseRef = forwardRef(({
     isView,
     form,
@@ -38,6 +40,7 @@ const BankbaseRef = forwardRef(({
         getFormValue,
         form
     }));
+    const count = useContext(myContext); 
     const { getFieldDecorator, validateFieldsAndScroll, getFieldValue, setFieldsValue } = form;
     const [bankcodeTab, setBankcode] = useState([]);
     const [initData, setInitData] = useState([]);
@@ -50,6 +53,9 @@ const BankbaseRef = forwardRef(({
         } = initialValues;
         const fields = {
             ...other
+        }
+        if (isEmpty(fields.bankOwner)) {
+            fields.bankOwner = count
         }
         
         let initData = [], editData = [];
@@ -97,7 +103,9 @@ const BankbaseRef = forwardRef(({
         initData = initData.length > 0 ? initData[0] : null;
         setInitData(initData);
         setFieldsValue(initData);
+        
     }, []);
+    
     // async function BankcodeConfigTable() {
     //     let params = {code:'BANK_CODE','Q_EQ_frozen__bool':'0'}
     //     const { data, success, message: msg } = await getBankcodelist(params);

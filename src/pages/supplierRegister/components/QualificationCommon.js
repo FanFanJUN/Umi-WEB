@@ -14,6 +14,7 @@ const { create } = Form;
 const FormItem = Form.Item;
 let lineCode = 1;
 let keys = -1;
+let initIndex;
 const QualificationRef = forwardRef(({
     form,
     initialValue = {},
@@ -32,7 +33,7 @@ const QualificationRef = forwardRef(({
     const [dataSource, setDataSource] = useState([]);
     //const [keys, setKey] = useState();
     //const [lineCode, setLineCode] = useState(0);
-    const [initIndex, setInitIndex] = useState();
+    //const [initIndex, setInitIndex] = useState();
     const { attachment = null } = initialValue;
     
     useEffect(() => {
@@ -72,11 +73,11 @@ const QualificationRef = forwardRef(({
                 'qualificationName': '审计报告',
             },
         ];
-        console.log(lineCode)
-        console.log(initData)
+        // console.log(lineCode)
+        // console.log(initData)
         setDataSource(initData)
         keys = initData.length - 1;
-        let initIndex = initData.length;
+        initIndex = initData.length;
         let itemArr = [],modifydata= [];
         if (editData && editData.genCertVos && editData.genCertVos.length > 0) {
             editData.genCertVos.map((item,index) => {
@@ -108,10 +109,12 @@ const QualificationRef = forwardRef(({
             let maxLineNum = getMaxLineNum(initData);
             lineCode = maxLineNum + 1;
             keys = initData.length - 1;
-            console.log(initData)
-            //setKey(initData.length - 1);
-            setInitIndex(initData.length);
+            //initIndex = initData.length
+            //console.log(initData)
             setDataSource(initData)
+            //setKey(initData.length - 1);
+            //setInitIndex(initData.length);
+            
         }
         
     }
@@ -303,17 +306,17 @@ const QualificationRef = forwardRef(({
     ].map(item => ({ ...item, align: 'center' }))
     // 新增
     function handleAdd() {
-        console.log(keys)
+        //console.log(keys)
         const newData = [...dataSource, { key: keys + 1, lineCode: getLineCode(lineCode) }];
         //setLineCode(lineCode + 1)
         lineCode++;
         keys ++ ;
-        console.log(newData)
+        //console.log(newData)
         setDataSource(newData)
     };
     //删除
     function handleDelete(key) {
-        console.log(key)
+        //console.log(key)
         //const { dataSource } = this.state;
         const newData = dataSource.filter((item) => item.key !== key);
         //setLineCode(lineCode - 1);

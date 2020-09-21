@@ -11,6 +11,7 @@ import AgentInfo from '../components/AgentInfo'
 import QualificationCommon from '../components/QualificationCommon'
 import QualificationProfessional from '../components/QualificationProfessional'
 import classnames from 'classnames';
+import myContext from '../components/ContextName'
 import {
   findSupplierconfigureId,
   TemporarySupplierRegister,
@@ -41,7 +42,7 @@ function CreateStrategy() {
   const [loading, triggerLoading] = useState(false);
   const [accountVo, setaccountVo] = useState(false);
   const [configure, setConfigure] = useState([]);
-
+  const [supplierName, setsupplierName] = useState();
   const { query } = router.useLocation();
   const { frameElementId, frameElementSrc = "", Opertype = "" } = query;
   let typeId = query.frameElementId;
@@ -56,6 +57,7 @@ function CreateStrategy() {
     const { data, success, message: msg } = await SupplierconfigureDetail({ supplierId: id });
     if (success) {
       let suppliertype = data.supplierInfoVo.supplierVo.supplierCategory.id
+      setsupplierName(data.supplierInfoVo.supplierVo.name)
       initConfigurationTable(suppliertype)
       setTimeout(() => {
         
@@ -403,7 +405,9 @@ function CreateStrategy() {
     typeId = id;
     initConfigurationTable();
   }
-
+  function setSuppliername(name) {
+    setsupplierName(name)
+  }
   // 返回
   function handleBack() {
     closeCurrent()
@@ -433,6 +437,7 @@ function CreateStrategy() {
                   <div className={styles.title}>基本信息</div>
                   <div >
                     <BaseInfo
+                      Dyformname={setSuppliername}
                       baseinfo={baseinfo}
                       initialValues={editData}
                       editformData={editData}
@@ -496,10 +501,12 @@ function CreateStrategy() {
 
                   <div className={styles.title}>银行信息</div>
                   <div>
-                    <Bank
-                      editData={editData}
-                      wrappedComponentRef={Bankformef}
-                    />
+                    <myContext.Provider value={supplierName}>
+                      <Bank
+                        editData={editData}
+                        wrappedComponentRef={Bankformef}
+                      />
+                  </myContext.Provider>
                   </div>
                 </div>
               );

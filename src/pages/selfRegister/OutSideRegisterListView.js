@@ -368,7 +368,7 @@ function SupplierConfigure() {
                             authAction(
                                 <Button
                                     className={styles.btn}
-                                    disabled={empty || !underWay || !isSelf}
+                                    disabled={empty || !underWay || !isSelf || completed}
                                     onClick={stopApprove}
                                     ignore={DEVELOPER_ENV}
                                     key='PURCHASE_VIEW_CHANGE_STOP_APPROVE'

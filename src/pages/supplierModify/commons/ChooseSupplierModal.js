@@ -67,16 +67,16 @@ const getAgentregRef = forwardRef(({
         setRows(rows);
     }
     function handleOk() {
-        //const empty = selectedRowKeys.length === 0;
+        const empty = selectedRowKeys.length === 0;
         if (selectedRowKeys.length !== 1) {
             message.error('请选择一行数据！');
-          } else {
+        } else {
             //隐藏供应商选择框
             handleModalVisible(false);
             // let categoryid = selectedRows[0].supplier.supplierCategoryId;
             let id = selectedRows[0].supplierId;
             openNewTab(`supplier/supplierModify/create/index?id=${id}`, '供应商变更新建变更单', false)
-          }
+        }
     }
     // 输入框值
     function SerachValue(v) {

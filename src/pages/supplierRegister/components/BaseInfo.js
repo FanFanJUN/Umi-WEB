@@ -16,7 +16,7 @@ const BaseinfoRef = forwardRef(({
 	wholeData = {},
 	initialValues = {},
 	onClickfication = () => null,
-	onChangeMaterialLevel = () => null,
+	Dyformname = () => null,
 	approve,
 	change
 }, ref) => {
@@ -172,9 +172,14 @@ const BaseinfoRef = forwardRef(({
 	function ficationInfo(id) {
 		onClickfication(id)
 	}
+	function setSupplier(name) {
+		console.log(name)
+		Dyformname(name)
+	}
 	return (
 		<div>
 			<DynamicForm
+				setName={setSupplier}
 				isView={isView}
 				initialValues={initialValues}
 				editData={editData}

@@ -12,6 +12,7 @@ import QualificationCommon from '../../supplierRegister/components/Qualification
 import QualificationProfessional from '../../supplierRegister/components/QualificationProfessional'
 import ReasonAndStartFlowModal from '../commons/ReasonAndStartFlowModal'
 import classnames from 'classnames';
+import myContext from '../../supplierRegister/components/ContextName'
 import {
   SupplierconfigureDetail,
   SaveSupplierconfigureService
@@ -45,7 +46,7 @@ function CreateStrategy() {
   const [loading, triggerLoading] = useState(false);
   const [accountVo, setaccountVo] = useState(false);
   const [configure, setConfigure] = useState([]);
-
+  const [supplierName, setsupplierName] = useState();
   const { query } = router.useLocation();
   // 变更详情
   async function initsupplierDetai() {
@@ -54,6 +55,7 @@ function CreateStrategy() {
     const { data, success, message: msg } = await findByRequestIdForModify({ id: id });
     if (success) {
       let suppliertype = data.supplierApplyVo.supplierInfoVo.supplierVo.supplierCategory.id
+      setsupplierName(data.supplierApplyVo.supplierInfoVo.supplierVo.name)
       initConfigurationTable(suppliertype)
       setTimeout(() => {
         setInitialValue(data.supplierApplyVo.supplierInfoVo)
@@ -66,6 +68,7 @@ function CreateStrategy() {
       triggerLoading(false);
       message.error(msg)
     }
+  
   }
   async function initConfigurationTable(typeId) {
     triggerLoading(true);
@@ -155,13 +158,19 @@ function CreateStrategy() {
       baseexten = baseVal.extendVo
     }
     if (baseVal && baseVal.genCertVos) {
-      enclosurelist = { ...enclosurelist, ...baseVal.genCertVos[0] }
+      let ertttyher;
+      let theredata = {ertttyher,...baseVal.genCertVos}
+      enclosurelist = [enclosurelist, ...theredata]
+      console.log(baseVal.genCertVos)
+      //enclosurelist = baseVal.genCertVos
     }
     if (accountVal && accountVal.supplierVo) {
       accountData = accountVal.supplierVo
     }
     if (qualifications) {
       enclosurelist = [enclosurelist, ...qualifications.proCertVos];
+    }else {
+      enclosurelist = enclosurelist
     }
     if (businessInfoVal && businessInfoVal.supplierVo) {
       automaticdata = businessInfoVal.supplierVo
@@ -202,15 +211,16 @@ function CreateStrategy() {
     }
     wholeData.againdata = '0';
     let saveData = wholeData;
-    triggerLoading(true)
-    const { success, message: msg } = await TemporarySupplierRegister(saveData);
-    if (success) {
-      message.success('保存成功');
-      triggerLoading(false)
-      closeCurrent()
-      return
-    }
-    triggerLoading(false)
+    console.log(saveData)
+    // triggerLoading(true)
+    // const { success, message: msg } = await TemporarySupplierRegister(saveData);
+    // if (success) {
+    //   message.success('保存成功');
+    //   triggerLoading(false)
+    //   closeCurrent()
+    //   return
+    // }
+    // triggerLoading(false)
   }
   // 帐号暂存
   function ObtainAccount() {
@@ -288,6 +298,7 @@ function CreateStrategy() {
       if (item.operationCode !== '3' && item.fieldCode === 'contactVos') {
         const { getAuthorfrom } = AuthorizeRef.current; // 授权委托人
         authorizedClientVal = getAuthorfrom();
+        //console.log(authorizedClientVal)
         if (!authorizedClientVal) {
           message.error('请将授权委托人信息填写完全！');
           return false;
@@ -334,7 +345,7 @@ function CreateStrategy() {
         proCertVos = getspecialpurpose() || [];
       }
     }
-    console.log(authorizedClientVal)
+    //console.log(authorizedClientVal)
     let enclosurelist = [], basedata, accountData, baseexten, automaticdata, automaticincome,
       automThreeYear, rangeValinfo;
     if (baseVal && baseVal.supplierVo) {
@@ -393,19 +404,6 @@ function CreateStrategy() {
     }
     setwholeData(wholeData)
     getModelRef.current.handleModalVisible(true);
-    // let saveData = wholeData;
-    // console.log(saveData)
-    // triggerLoading(true)
-    // const { success, message: msg } = await saveSupplierRegister(saveData);
-    // if (success) {
-    //   message.success(msg);
-    //   triggerLoading(false)
-    //   closeCurrent()
-    //   return
-    // }else {
-    //   message.error(msg);
-    // }
-    // triggerLoading(false)
   }
   async function createSave(val) {
     let params = { ...wholeData, ...val };
@@ -420,6 +418,9 @@ function CreateStrategy() {
       message.error(msg);
     }
     triggerLoading(false)
+  }
+  function setSuppliername(name) {
+    setsupplierName(name)
   }
   // 获取配置列表项
   useEffect(() => {
@@ -458,6 +459,7 @@ function CreateStrategy() {
                   <div className={styles.title}>基本信息</div>
                   <div >
                     <BaseInfo
+                      Dyformname={setSuppliername}
                       baseinfo={baseinfo}
                       initialValues={editData}
                       editformData={editData}
@@ -520,10 +522,13 @@ function CreateStrategy() {
 
                   <div className={styles.title}>银行信息</div>
                   <div>
+                  <myContext.Provider value={supplierName}>
                     <Bank
                       editData={editData}
                       wrappedComponentRef={Bankformef}
                     />
+                  </myContext.Provider>
+                    
                   </div>
                 </div>
               );

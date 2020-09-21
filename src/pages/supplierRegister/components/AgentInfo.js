@@ -274,10 +274,11 @@ const Agentformef = forwardRef(({
   // 获取表单值
   function getAgentform() {
     const agentInfo = tabformRef.current.data;
-    if (!agentInfo || agentInfo.length === 0) {
-      return false;
-    }
-    return agentInfo;
+    console.log(agentInfo)
+    // if (!agentInfo || agentInfo.length === 0) {
+    //   return false;
+    // }
+    // return agentInfo;
   }
   // 设置所有表格参数
   const setHeaderFields = (fields) => {

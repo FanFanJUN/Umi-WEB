@@ -1,4 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useEffect,useRef ,useState} from 'react';
+import {connect} from 'react-redux';
 import { Modal, Form,message} from 'antd';
 import BankBase from './BankBase';
 import BankOverseas from './BankOverseas'
@@ -110,5 +111,4 @@ const BankInfoRef = forwardRef(({
         );
     },
 );
-
 export default create()(BankInfoRef);
