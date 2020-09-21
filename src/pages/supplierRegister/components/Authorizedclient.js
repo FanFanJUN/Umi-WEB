@@ -11,7 +11,7 @@ import { indexOf } from 'lodash';
 const { create } = Form;
 const FormItem = Form.Item;
 let keys = 0;
-let lineCode = 0;
+let lineCode = 1;
 let aggregate = [];
 let aggregatename = [];
 const poinsitiondata = [
@@ -58,8 +58,11 @@ const AuthorizeRef = forwardRef(({
         if (editData && editData.contactVos && editData.contactVos.length > 0) {
             initData = editData.contactVos.map((item, index) => ({ key: index, ...item }));
             let maxLineNum = getMaxLineNum(editData.contactVos);
-            lineCode = maxLineNum + 1;
+            console.log(maxLineNum)
+            //lineCode = maxLineNum + 1;
             keys = initData.length - 1;
+        }else {
+            editData = editData.contactVos
         }
         getBankcodelist(editData)
     }, [editformData])
@@ -104,30 +107,30 @@ const AuthorizeRef = forwardRef(({
                                 initialValue: record ? record.positionName : '',
                                 rules: [{ required: true, message: '请选择职位!', whitespace: true }],
                             })( 
-                                // <ComboList 
-                                //     form={form}
-                                //     {...listPositionConfig}
-                                //     showSearch={false}
-                                //     afterSelect={afterSelect}
-                                //     name={`positionName[${index}]`}
-                                //     field={[`position[${index}]`]}
-                                // />
                                 <ComboList 
                                     form={form}
-                                    style={{ width:'100%' }}
-                                    dataSource={poinsitiondata}
-                                    reader={{
-                                        name: 'name',
-                                        field: ['value'],
-                                        
-                                    }}
+                                    {...listPositionConfig}
                                     showSearch={false}
-                                    afterSelect={(item)=>{
-                                        afterSelect(item,`${index}` + 1 )
-                                    }}
+                                    afterSelect={afterSelect}
                                     name={`positionName[${index}]`}
                                     field={[`position[${index}]`]}
                                 />
+                                // <ComboList 
+                                //     form={form}
+                                //     style={{ width:'100%' }}
+                                //     dataSource={poinsitiondata}
+                                //     reader={{
+                                //         name: 'name',
+                                //         field: ['value'],
+                                        
+                                //     }}
+                                //     showSearch={false}
+                                //     afterSelect={(item)=>{
+                                //         afterSelect(item,`${index}` + 1 )
+                                //     }}
+                                //     name={`positionName[${index}]`}
+                                //     field={[`position[${index}]`]}
+                                // />
                             )
                         }
                     </FormItem>
@@ -291,30 +294,34 @@ const AuthorizeRef = forwardRef(({
     function getBankcodelist(val) {
         let contactVos;
         if (val) {
+            console.log(val)
             if (val.contactVos !== undefined) {
                 contactVos = val.contactVos;
                 contactVos.forEach(item => item.key = keys++);
                 //设置行号，取（最大值+1）为当前行号
                 if (contactVos.length > 0) {
                     if (!isEmpty(contactVos)) {
+                        console.log(lineCode)
                         contactVos.forEach(item => {
                             item.lineCode = getLineCode(lineCode++)
                         })
                     }
+                    console.log(contactVos)
                     let maxLineCode = getMaxLineNum(contactVos);
                     lineCode = maxLineCode++;
                     setDataSource(contactVos)
                 }else {
-                    let determine = lineCode + 1
+                    let determine = lineCode
                     lineCode = lineCode + 1
                     const newData = [...dataSource, { key: ++keys, lineCode: getLineCode(determine) }];
                     setDataSource(newData)
                 }
                 
             }else {
-                let determine = lineCode + 1
-                lineCode = lineCode + 1
+                let determine = lineCode
+                //lineCode = lineCode
                 const newData = [...dataSource, { key: ++keys, lineCode: getLineCode(determine) }];
+                console.log(newData)
                 setDataSource(newData)
             }
         }

@@ -272,7 +272,7 @@ const CommonconfigRef = forwardRef(({
                             <span>{editData && editData.supplierVo && editData.supplierVo.supplierCategory ? editData.supplierVo.supplierCategory.code + ' ' + editData.supplierVo.supplierCategory.name : ''}</span> :
                             getFieldDecorator('supplierVo.supplierCategoryId'),
                           getFieldDecorator('supplierVo.supplierCategoryName', {
-                            initialValue: editData && editData.supplierVo ? editData.supplierVo.supplierCategoryId : '',
+                            initialValue: editData && editData.supplierVo ? editData.supplierVo.supplierCategoryName : '',
                             rules: [{ required: item.verifi === '0', message: '请选择供应商分类', whitespace: true }],
                           })(
                             <ComboTree
@@ -321,6 +321,27 @@ const CommonconfigRef = forwardRef(({
                           initialValue: editData && editData.extendVo ? editData.extendVo.searchCondition : '',
                           rules: [{ required: item.verifi === '0', message: "请输入简称！" },
                           { pattern: "^[\u4E00-\u9FA5]+$", message: "只能是汉字" }
+
+                          ]
+                        })(
+                          <Input
+                            disabled={item.verifi === '2'}
+                            maxLength={10}
+                            placeholder={'请输入简称'} />
+                        )}
+                    </FormItem>
+                  </Col> : null}
+                  {item.key === 'englishName' ? <Col span={8}>
+                    <FormItem
+                      {...formItemLayout}
+                      label={'简称'}
+                      style={{ width: '100%', marginBottom: 10 }}
+                    >
+                      {isView ? <span>{editData && editData.extendVo ? editData.extendVo.searchCondition : ''}</span> :
+                        getFieldDecorator('extendVo.searchCondition', {
+                          initialValue: editData && editData.extendVo ? editData.extendVo.searchCondition : '',
+                          rules: [{ required: item.verifi === '0', message: "请输入简称！" },
+                          //{ pattern: "^[\u4E00-\u9FA5]+$", message: "只能是汉字" }
 
                           ]
                         })(
@@ -386,7 +407,7 @@ const CommonconfigRef = forwardRef(({
                             <span>{editData && editData.supplierVo && editData.supplierVo.enterpriseProperty ? editData.supplierVo.enterpriseProperty.name : ''}</span> :
                           getFieldDecorator('supplierVo.enterprisePropertyId'),
                           getFieldDecorator('supplierVo.enterprisePropertyName', {
-                            initialValue: editData && editData.supplierVo ? editData.supplierVo.enterprisePropertyId : '',
+                            initialValue: editData && editData.supplierVo ? editData.supplierVo.enterprisePropertyName : '',
                             rules: [{ required: item.verifi === '0', message: '请选择企业性质', whitespace: true }],
                           })(
                             <ComboList
@@ -412,7 +433,7 @@ const CommonconfigRef = forwardRef(({
                             <span>{editData && editData.supplierVo && editData.supplierVo.taxpayersCategory ? editData.supplierVo.taxpayersCategory.name : ''}</span> :
                             getFieldDecorator('supplierVo.taxpayersCategoryId'),
                           getFieldDecorator('supplierVo.taxpayersCategoryName', {
-                            initialValue: editData && editData.supplierVo ? editData.supplierVo.taxpayersCategoryId : '',
+                            initialValue: editData && editData.supplierVo ? editData.supplierVo.taxpayersCategoryName : '',
                             rules: [{ required: item.verifi === '0', message: '请选择纳税人类别', whitespace: true }],
                           })(
                             <ComboList
@@ -461,7 +482,7 @@ const CommonconfigRef = forwardRef(({
                             <span>{editData && editData.supplierVo ? editData.supplierVo.belongIndustryName : ''}</span> :
                             getFieldDecorator('supplierVo.belongIndustry'),
                           getFieldDecorator('supplierVo.belongIndustryName', {
-                            initialValue: editData && editData.supplierVo ? editData.supplierVo.belongIndustry : '',
+                            initialValue: editData && editData.supplierVo ? editData.supplierVo.belongIndustryName : '',
                             rules: [{ required: item.verifi === '0', message: '请选择业务标的物', whitespace: true }],
                           })(
                             <ComboList

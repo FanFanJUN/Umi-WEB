@@ -117,7 +117,7 @@ const tabformRef = forwardRef(({
       { title: '添加时间', dataIndex: 'createdDate', width: 200 },
       {
         title: '排序码',
-        dataIndex: 'standby1',
+        dataIndex: 'sort',
         width: 220
       },
       {

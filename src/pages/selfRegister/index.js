@@ -16,7 +16,7 @@ export default function () {
     const [accounts, setaccounts] = useState(false);
     useEffect(() => {
         let organ = {};
-        organ.mobile = query.mobile;
+        organ.mobile = query.phone;
         organ.email = query.email;
         organ.openId = query.openId;
         setaccounts(organ)

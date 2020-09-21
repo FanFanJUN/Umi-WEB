@@ -148,7 +148,7 @@ function CreateStrategy() {
       }
     })
     let enclosurelist = [], basedata, baseexten, accountData,
-      automaticdata, automaticincome, automThreeYear, rangeValinfo;
+      automaticdata, automaticincome, automThreeYear, rangeValinfo,othersatt = [];
     if (baseVal && baseVal.supplierVo) {
       baseVal.supplierVo.id = editData.supplierVo.id;
       baseVal.extendVo.id = editData.extendVo.id;
@@ -158,19 +158,16 @@ function CreateStrategy() {
       baseexten = baseVal.extendVo
     }
     if (baseVal && baseVal.genCertVos) {
-      let ertttyher;
-      let theredata = {ertttyher,...baseVal.genCertVos}
-      enclosurelist = [enclosurelist, ...theredata]
-      console.log(baseVal.genCertVos)
-      //enclosurelist = baseVal.genCertVos
+      enclosurelist.push(...baseVal.genCertVos)
+      othersatt = enclosurelist
     }
     if (accountVal && accountVal.supplierVo) {
       accountData = accountVal.supplierVo
     }
     if (qualifications) {
-      enclosurelist = [enclosurelist, ...qualifications.proCertVos];
+      enclosurelist = [...othersatt, ...qualifications.proCertVos];
     }else {
-      enclosurelist = enclosurelist
+      enclosurelist = othersatt
     }
     if (businessInfoVal && businessInfoVal.supplierVo) {
       automaticdata = businessInfoVal.supplierVo
@@ -212,15 +209,17 @@ function CreateStrategy() {
     wholeData.againdata = '0';
     let saveData = wholeData;
     console.log(saveData)
-    // triggerLoading(true)
-    // const { success, message: msg } = await TemporarySupplierRegister(saveData);
-    // if (success) {
-    //   message.success('保存成功');
-    //   triggerLoading(false)
-    //   closeCurrent()
-    //   return
-    // }
-    // triggerLoading(false)
+    triggerLoading(true)
+    const { success, message: msg } = await TemporarySupplierRegister(saveData);
+    if (success) {
+      message.success('保存成功');
+      triggerLoading(false)
+      closeCurrent()
+      return
+    }else {
+      message.error(msg);
+    }
+    triggerLoading(false)
   }
   // 帐号暂存
   function ObtainAccount() {
@@ -347,7 +346,7 @@ function CreateStrategy() {
     }
     //console.log(authorizedClientVal)
     let enclosurelist = [], basedata, accountData, baseexten, automaticdata, automaticincome,
-      automThreeYear, rangeValinfo;
+      automThreeYear, rangeValinfo,othersatt = [];
     if (baseVal && baseVal.supplierVo) {
       baseVal.supplierVo.id = editData.supplierVo.id;
       baseVal.extendVo.id = editData.extendVo.id;
@@ -357,13 +356,16 @@ function CreateStrategy() {
       baseexten = baseVal.extendVo
     }
     if (baseVal && baseVal.genCertVos) {
-      enclosurelist = { ...enclosurelist, ...baseVal.genCertVos[0] }
+      enclosurelist.push(...baseVal.genCertVos)
+      othersatt = enclosurelist
     }
     if (accountVal && accountVal.supplierVo) {
       accountData = accountVal.supplierVo
     }
     if (qualifications) {
-      enclosurelist = [enclosurelist, ...qualifications.proCertVos];
+      enclosurelist = [...othersatt, ...qualifications.proCertVos];
+    }else {
+      enclosurelist = othersatt
     }
     if (businessInfoVal && businessInfoVal.supplierVo) {
       automaticdata = businessInfoVal.supplierVo
@@ -407,7 +409,7 @@ function CreateStrategy() {
   }
   async function createSave(val) {
     let params = { ...wholeData, ...val };
-    triggerLoading(true)
+    console.log(params)
     const { success, message: msg } = await TemporarySupplierRegister(params);
     if (success) {
       message.success(msg);
@@ -430,6 +432,9 @@ function CreateStrategy() {
   // 返回
   function handleBack() {
     closeCurrent()
+  }
+  function hideloading() {
+    triggerLoading(false)
   }
   return (
     <Spin spinning={loading} tip='处理中...'>
@@ -593,6 +598,8 @@ function CreateStrategy() {
           })
         }
         <ReasonAndStartFlowModal
+          loading={false}
+          hideloading={hideloading}
           editData={Reasonchange}
           disabled={true}
           ReaModelOk={createSave}

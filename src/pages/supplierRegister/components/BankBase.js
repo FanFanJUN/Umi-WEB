@@ -54,7 +54,8 @@ const BankbaseRef = forwardRef(({
         const fields = {
             ...other
         }
-        if (isEmpty(fields.bankOwner)) {
+        console.log(fields)
+        if (fields && isEmpty(fields.bankOwner)) {
             fields.bankOwner = count
         }
         
@@ -62,7 +63,6 @@ const BankbaseRef = forwardRef(({
         editData.push(fields);
         if (editData && editData.length > 0) {
             initData = editData.map((item, index) => {
-               
                 item.country = {
                     key: item.countryId || item.country && item.country.key || "",
                     label: item.countryName || item.country && item.country.label || ""
@@ -73,17 +73,29 @@ const BankbaseRef = forwardRef(({
                         key: item.provinceId || item.province && item.province.key || ""
                         , label: item.provinceName || item.province && item.province.label || ""
                     };
+                }else {
+                    item.province = {
+                        key: "", label: ""
+                    };
                 }
                 if (item.payment || item.paymentName || item.paymentCode) {
                     item.payment = {
                         key: item.paymentCode || item.payment && item.payment.key || ""
                         , label: item.paymentName || item.payment && item.payment.label || ""
                     };
+                }else {
+                    item.payment = {
+                        key: "", label: ""
+                    };
                 }
                 if (item.region || item.regionName || item.regionId) {
                     item.region = {
                         key: item.regionId || item.region && item.region.key || "",
                         label: item.regionName || item.region && item.region.label || ""
+                    };
+                }else {
+                    item.region = {
+                        key: "",label: ""
                     };
                 }
                 // this.bankCodeName = item.bankCodeName;
@@ -100,6 +112,7 @@ const BankbaseRef = forwardRef(({
             })
         };
         console.log(initData)
+        console.log(getFieldValue("country").key)
         initData = initData.length > 0 ? initData[0] : null;
         setInitData(initData);
         setFieldsValue(initData);

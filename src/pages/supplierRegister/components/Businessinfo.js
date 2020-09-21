@@ -112,7 +112,7 @@ const BusinessRef = forwardRef(({
                                                 {editData && editData.supplierVo ? editData.supplierVo.enterpriseProfile : ''}</div> :
                                                 getFieldDecorator("supplierVo.enterpriseProfile", {
                                                     initialValue: editData && editData.supplierVo ? editData.supplierVo.enterpriseProfile : '',
-                                                    rules: [{ required: true, message: "请输入供应商简介", whitespace: true }]
+                                                    rules: [{ required: item.verifi === '0', message: "请输入供应商简介", whitespace: true }]
                                                 })(
                                                     <Input.TextArea 
                                                     disabled={item.verifi === '2'}
@@ -138,7 +138,7 @@ const BusinessRef = forwardRef(({
                                                 {editData && editData.supplierVo ? editData.supplierVo.businessScope : ''}</div> :
                                                 getFieldDecorator("supplierVo.businessScope", {
                                                     initialValue: editData && editData.supplierVo ? editData.supplierVo.businessScope : '',
-                                                    rules: [{ required: true, message: "请输入供应商经营范围", whitespace: true }]
+                                                    rules: [{ required: item.verifi === '0', message: "请输入供应商经营范围", whitespace: true }]
                                                 })(
                                                     <Input.TextArea disabled={item.verifi === '2'} maxLength={250} placeholder={"请输入供应商经营范围"} />
                                                 )
