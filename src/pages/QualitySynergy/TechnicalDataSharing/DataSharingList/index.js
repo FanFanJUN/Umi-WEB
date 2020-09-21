@@ -43,18 +43,18 @@ export default function() {
     visible: false,
   });
 
-  // useEffect(() => {
-  //   window.parent.frames.addEventListener('message', listenerParentClose, false);
-  //   return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
-  // }, [])
+  useEffect(() => {
+    window.parent.frames.addEventListener('message', listenerParentClose, false);
+    return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
+  }, [])
 
-  // const listenerParentClose = (event) => {
-  //   const { data = {} } = event;
-  //   console.log('进入监听', data.tabAction)
-  //   if (data.tabAction === 'close') {
-  //     tableRef.current.remoteDataRefresh();
-  //   }
-  // }
+  const listenerParentClose = (event) => {
+    const { data = {} } = event;
+    console.log('进入监听', data.tabAction)
+    if (data.tabAction === 'close') {
+      tableRef.current.remoteDataRefresh();
+    }
+  }
 
   const [data, setData] = useState({
     quickSearchValue: '',

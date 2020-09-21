@@ -76,6 +76,7 @@ const CommonconfigRef = forwardRef(({
   editData = [],
   wholeData = [],
   selectfication = () => null,
+  setName = () => null,
   approve,
   change
 }, ref) => {
@@ -85,7 +86,7 @@ const CommonconfigRef = forwardRef(({
   }));
   const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
   const [companycode, setcompanycode] = useState([ ]);
-  
+  const [supplierName, setsupplierName] = useState();
   //console.log(initialValues)
   useEffect(() => {
     // const {
@@ -102,6 +103,11 @@ const CommonconfigRef = forwardRef(({
   // 设置表单参数
   function setHeaderFields(fields) {
     const { attachmentId = null, ...fs } = fields;
+    console.log(fields)
+    // setTimeout(() => {
+    //   setsupplierName(fields.supplierVo.name)
+    // }, 100);
+    
     setFieldsValue(fs)
   }
   //注册地址同步办公地址
@@ -112,6 +118,8 @@ const CommonconfigRef = forwardRef(({
   //检查供应商名称
   async function handleCheckName() {
     const name = form.getFieldValue('supplierVo.name');
+    setsupplierName(name)
+    setName(name);
     if (name.indexOf(' ') !== -1) {
       message.error('供应商名称不允许存在空格，请重新输入');
       //this.setChecks('checkSupplierNameResult', false);
@@ -198,18 +206,28 @@ const CommonconfigRef = forwardRef(({
   function handletypeSelect(item) {
     selectfication(item.id)
   }
+  function sendSupplierName(){
+    setName(supplierName);
+  }
   // 泛虹公司选择
   function RainbowChange(value, record) {
     if (record) {
       setcompanycode(record.code)
+      setsupplierName(record.name)
       form.setFieldsValue({
         'supplierVo.name': record.name,
         'supplierVo.bukrName': record.name
       });
+      sendSupplierName();
     }
-  }
-  function FactoryChange() {
     
+  }
+  // 泛虹工厂
+  function FactoryChange(value, record) {
+    form.setFieldsValue({
+      'supplierVo.workName': record.name,
+      'supplierVo.name': supplierName + + '(' + value + '工厂' + ')'
+    });
   }
   // 拟合作公司
   function cooperationChange(value, record) {
@@ -224,10 +242,9 @@ const CommonconfigRef = forwardRef(({
   function deleteSelect(record) {
     console.log(record)
     if (record) {
-     // setcompanycode(record.code)
       form.setFieldsValue({
-        'supplierVo.workName': record.name,
-        //'supplierVo.name': record.name
+        'supplierVo.workName': '',
+        'supplierVo.name': supplierName
       });
     }
   }
@@ -678,7 +695,7 @@ const CommonconfigRef = forwardRef(({
                               rules: [{ required: item.verifi === '0', message: '请选择泛虹公司', whitespace: true }],
                             })(
                               <SearchTable
-                              disabled={item.verifi === '2'}
+                                disabled={item.verifi === '2'}
                                 onChange={RainbowChange}
                                 config={oddcorporationSupplierConfig}
                                 placeholder="请选择公司"
@@ -864,24 +881,24 @@ const CommonconfigRef = forwardRef(({
                     </Col> : null
                   }
                   {
-                    item.type === 'dbCode' ? <Col span={8}>
+                    item.key === 'dbCode' ? <Col span={8}>
                       <FormItem
                         {...formItemLayout}
                         label={'邓白氏码'}
                       >
-                        {isView ?
-                          <span>{editData && editData.supplierVo && editData.supplierVo.dbCode ? editData && editData.supplierVo && editData.supplierVo.dbCode : ''}</span> :
+                        {
                           getFieldDecorator('supplierVo.dbCode', {
                             initialValue: editData && editData.supplierVo && editData.supplierVo.dbCode
                               ? editData.supplierVo.dbCode : '',
                             rules: [{ required: item.verifi === '0', message: "请输入邓白氏码", whitespace: true }]
                           })(
                             <Input
-                            disabled={item.verifi === '2'}
+                              disabled={item.verifi === '2'}
                               maxLength={9}
                               onChange={creditCodeChange}
                               placeholder={'请输入邓白氏码'} />
-                          )}
+                          )
+                          }
                       </FormItem>
                     </Col> : null
                   }

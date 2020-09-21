@@ -252,7 +252,10 @@ const Bankformef = forwardRef(({
       //this.setState({selectedRows: [formData]})
     } else { 
       //生成行号
-      dataSource.length === 0 ? '' : lineCode++;
+      if (dataSource.length) {
+      }else {
+        lineCode++
+      }
       formData.lineCode = getLineCode(lineCode);
       formData.key = keys++;
       const newData = [...dataSource, formData];

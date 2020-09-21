@@ -163,10 +163,6 @@ function SupplierConfigure() {
             },
         },
     ].map(_ => ({ ..._, align: 'center' }))
-    /* 按钮禁用状态控制 */
-    const FRAMEELEMENT = getFrameElement();
-    //const empty = selectedRowKeys.length === 0;
-    //const dataSource = []
 
     const dataSource = {
         store: {
@@ -260,9 +256,8 @@ function SupplierConfigure() {
     }
     // 编辑
     function handleCheckEdit() {
-       // const [key] = selectedRowKeys;
+        const [key] = selectedRowKeys;
         let id = selectedRows[0].id;
-        //let id = '';
         openNewTab(`supplier/supplierModify/Edit/index?id=${id}`, '供应商变更编辑', false)
     }
     // 明细
@@ -291,12 +286,12 @@ function SupplierConfigure() {
         const {success, message: msg } = await checkExistUnfinishedValidity({ requestId: selectedRows[0].id });
         if (success) {
             message.success(msg)
-
             return true;
         }else {
             message.error(msg)
             return false;
         }
+        
     }
     // 终止审核
   function stopApprove() {
@@ -380,7 +375,7 @@ function SupplierConfigure() {
                             authAction(
                                 <Button
                                     className={styles.btn}
-                                    disabled={empty || !underWay || !isSelf}
+                                    disabled={empty || !underWay || !isSelf || completed}
                                     onClick={stopApprove}
                                     ignore={DEVELOPER_ENV}
                                     key='SRM-SM-SUPPLIERMODEL_STOP_APPROVAL'
@@ -422,8 +417,7 @@ function SupplierConfigure() {
             <AutoSizeLayout>
                 {
                     (height) => <ExtTable
-                        //columns={authorizations.userType === 'Supplier' ? supplierColumns : columns}
-                        columns={columns}
+                        columns={authorizations.userType === 'Supplier' ? supplierColumns : columns}
                         showSearch={false}
                         ref={tableRef}
                         rowKey={(item) => item.id}

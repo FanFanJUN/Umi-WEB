@@ -10,6 +10,7 @@ import SupplyRange from "../../supplierRegister/components/SupplyRange"
 import AgentInfo from '../../supplierRegister/components/AgentInfo'
 import QualificationCommon from '../../supplierRegister/components/QualificationCommon'
 import QualificationProfessional from '../../supplierRegister/components/QualificationProfessional'
+import myContext from '../../supplierRegister/components/ContextName'
 import classnames from 'classnames';
 
 import styles from '../../supplierRegister/components/index.less';
@@ -43,12 +44,14 @@ const SupplierEditRef = forwardRef(({
   const [loading, triggerLoading] = useState(false);
   const [accountVo, setaccountVo] = useState(false);
   const [configure, setConfigure] = useState([ ]);
+  const [supplierName, setsupplierName] = useState();
   useEffect(() => {
     
     setInitialValue(wholeData.supplierInfoVo)
     setEditData(wholeData.supplierInfoVo)
     configurelist(configuredata)
     setConfigure(configuredata)
+    setsupplierName(wholeData.supplierInfoVo.supplierVo.name)
   }, [wholeData,configuredata])
   // 
   function configurelist(configure) {
@@ -202,6 +205,9 @@ const SupplierEditRef = forwardRef(({
     }
     return wholeData;
   }
+  function setSuppliername(name) {
+    setsupplierName(name)
+  }
   return (
     <Spin spinning={loading} tip='处理中...'>
 
@@ -214,6 +220,7 @@ const SupplierEditRef = forwardRef(({
                   <div className={styles.title}>基本信息</div>
                   <div >
                     <BaseInfo
+                      Dyformname={setSuppliername}
                       baseinfo={baseinfo}
                       initialValues={editData}
                       editformData={editData}
@@ -281,12 +288,14 @@ const SupplierEditRef = forwardRef(({
 
                   <div className={styles.title}>银行信息</div>
                   <div>
+                  <myContext.Provider value={supplierName}>
                     <Bank
-                      editData={editData}
-                      wrappedComponentRef={Bankformef}
-                      isView={false}
-                      headerInfo={false}
-                    />
+                        editData={editData}
+                        wrappedComponentRef={Bankformef}
+                        isView={false}
+                        headerInfo={false}
+                      />
+                  </myContext.Provider>
                   </div>
                 </div>
               );

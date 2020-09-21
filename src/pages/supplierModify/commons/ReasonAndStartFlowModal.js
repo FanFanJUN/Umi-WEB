@@ -62,7 +62,7 @@ const getAgentregRef = forwardRef(({
           >
             {
               getFieldDecorator("modifyReason", {
-                initialValue: editData.modifyReason,
+                initialValue: editData && editData.modifyReason,
                 rules: [{
                   required: true, message: "请填写原因",
                   whitespace: false
