@@ -263,12 +263,6 @@ const SupplierModal = (props) => {
         }
       }
     }
-    // let obj = {};
-    // arr = arr.reduce((item, next) => {
-    //   console.log(obj, next, item, 'obj[next[key]]')
-    //   obj[next[key]] ? '' : obj[next[key]] = item.push(next);
-    //   return item;
-    // }, []);
     return arr;  //去重后返回的数组
   };
 

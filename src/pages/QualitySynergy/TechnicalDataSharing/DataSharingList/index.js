@@ -10,7 +10,7 @@ import {
   judge,
   materialCode,
   MaterialConfig,
-  MaterialGroupConfig,
+  MaterialGroupConfig, RecallDataSharingList,
   ShareDistributionProps,
   ShareStatusProps,
   StrategicPurchaseConfig,
@@ -80,6 +80,9 @@ export default function() {
       case 'submit':
         submitOrRecall('submit');
         break;
+      case 'recall':
+        recallList();
+        break;
       case 'allot':
         setModalData({ title: '分配供应商', visible: true, type: 'allot' });
         break;
@@ -88,6 +91,21 @@ export default function() {
         break;
     }
   };
+
+  // 撤回选中单据
+  const recallList = () => {
+    RecallDataSharingList({
+      ids: data.selectedRowKeys.toString()
+    }).then(res => {
+      if (res.success) {
+        message.success(res.message)
+        tableRef.current.manualSelectedRows();
+        tableRef.current.remoteDataRefresh();
+      } else {
+        message.error(res.message)
+      }
+    })
+  }
 
   const handleQuickSearch = (value) => {
     setData(v => ({ ...v, quickSearchValue: value }));
@@ -168,7 +186,7 @@ export default function() {
     { title: '业务单元', key: 'buCode', type: 'list', props: BUConfigNoFrostHighSearch },
     { title: '申请人', key: 'applyPeopleName', props: { placeholder: '输入申请人查询' } },
     { title: '分配供应商状态', key: 'allotSupplierState', type: 'list', props: ShareDistributionProps },
-    { title: '状态', key: 'code', type: 'list', props: ShareStatusProps },
+    { title: '状态', key: 'state', type: 'list', props: ShareStatusProps },
   ];
 
   const columns = [
@@ -251,7 +269,7 @@ export default function() {
         onClick={() => redirectToPage('recall')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        disabled={data.selectedRowKeys.length === 0 || !data.selectedRows.every(item => item.strategicPurchaseCode)}
+        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', '生效')}
         key='TECHNICAL_DATA_SHARING_UNDO'
       >撤回</Button>)
     }
