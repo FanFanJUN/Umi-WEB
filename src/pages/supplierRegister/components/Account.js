@@ -73,7 +73,7 @@ const AccountRef = forwardRef(({
                           initialValue: editData && editData.supplierVo && editData.supplierVo.accountVo
                             && editData.supplierVo.accountVo.account
                             ? editData.supplierVo.accountVo.account : '',
-                          rules: [{ required: true, message: '请输入手机', whitespace: true }],
+                          rules: [{ required: item.verifi === '0', message: '请输入手机', whitespace: true }],
                         })(
                           <Input
                             disabled={item.verifi === '2'}
@@ -98,7 +98,7 @@ const AccountRef = forwardRef(({
                           initialValue: editData && editData.supplierVo && editData.supplierVo.accountVo
                             && editData.supplierVo.accountVo.mobile
                             ? editData.supplierVo.accountVo.mobile : '',
-                          rules: [{ required: true, message: '请输入手机', whitespace: true }],
+                          rules: [{ required: item.verifi === '0', message: '请输入手机', whitespace: true }],
                         })(
                           <Input
                             disabled={item.verifi === '2'}
@@ -124,7 +124,7 @@ const AccountRef = forwardRef(({
                             && editData.supplierVo.accountVo.email
                             ? editData.supplierVo.accountVo.email : '',
                           rules: [{ validator: onMailCheck, message: '请输入正确格式的邮件地址!', whitespace: true },
-                          { required: true, message: '请输入邮件地址!' },]
+                          { required: item.verifi === '0', message: '请输入邮件地址!' },]
                         })(
                           <Input
                             disabled={item.verifi === '2'}

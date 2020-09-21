@@ -67,7 +67,6 @@ const BaseinfoRef = forwardRef(({
 				});
 				delete values.attachments;
 			}
-			console.log(values)
 			if (values.extendVo) {
 				let { extendVo } = values;
 				if (values.regFund) {
@@ -115,9 +114,9 @@ const BaseinfoRef = forwardRef(({
 	}
 	// 获取表单参数
 	function getBaseInfo() {
-		let result ;
+		let result = false;
 		CommonconfigRef.current.form.validateFieldsAndScroll((err, values) => {
-			if (!values.regFund.number) {
+			if (values && values.regFund && !values.regFund.number) {
 				setFieldsValue({ 'regFund': { number: '' } });
 				form.validateFields(['regFund'], { force: true });
 			}
@@ -125,7 +124,7 @@ const BaseinfoRef = forwardRef(({
 			values.genCertVos = Object.keys(attachments).map((key) => {
 				return { qualificationType: key, attachments: attachments[key] === '' ? [] : attachments[key] };
 			});
-			
+			delete values.attachments;
 			if (!err) {
 				let {extendVo} = values;
 				if (values.regFund) {
@@ -151,7 +150,7 @@ const BaseinfoRef = forwardRef(({
 					extendVo.officeStreet = values.office.street;
 
 				}
-				delete values.attachments;
+				
 				delete values.register;
 				delete values.office;
 				result = values;

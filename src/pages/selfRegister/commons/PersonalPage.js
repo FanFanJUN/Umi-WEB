@@ -16,10 +16,7 @@ const tipsLayout = {
 const OrganizatRef = forwardRef(({
     isView,
     form,
-    editData = [],
-    initialValue = {},
-    accountinfo = [],
-    approve
+    accounts=[],
 }, ref) => {
     useImperativeHandle(ref, () => ({
         getpersoninfo,
@@ -158,7 +155,7 @@ const OrganizatRef = forwardRef(({
                     >
                         {
                             getFieldDecorator('mobile', {
-                                initialValue: '',
+                                initialValue: accounts && accounts.mobile,
                                 rules: [{
                                     required: true,
                                 }],

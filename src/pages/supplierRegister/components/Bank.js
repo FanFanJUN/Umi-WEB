@@ -165,7 +165,6 @@ const Bankformef = forwardRef(({
   function cleanSelectedRecord() {
     setRowKeys([]);
     setRows([]);
-    
   }
   // 新增
   function showModal() {
@@ -184,7 +183,6 @@ const Bankformef = forwardRef(({
       newsbank = selectedRows
     }
     //setDataSource(newsbank) 
-    console.log(newsbank)
     setEdit(true)
     const [row] = newsbank;
     setInitialValue({ ...row })
@@ -208,7 +206,6 @@ const Bankformef = forwardRef(({
       if (item.key === val.key) {
         const copyData = dataSource.slice(0)
         copyData[index] = val;
-        console.log()
         setDataSource(copyData)
         setRows(copyData)
       }
@@ -252,7 +249,7 @@ const Bankformef = forwardRef(({
       //this.setState({selectedRows: [formData]})
     } else { 
       //生成行号
-      if (dataSource.length) {
+      if (dataSource.length  === 0) {
       }else {
         lineCode++
       }
@@ -260,6 +257,7 @@ const Bankformef = forwardRef(({
       formData.key = keys++;
       const newData = [...dataSource, formData];
       setDataSource(newData)
+      cleanSelectedRecord();
     }
     //如果不是变更，重排为连续的行号
     // if (!this.props.isModify) {

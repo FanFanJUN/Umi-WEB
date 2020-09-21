@@ -244,6 +244,7 @@ function SupplierConfigure() {
                 if (success) {
                     handleComplete();
                     message.success('删除成功！');
+                    uploadTable();
                     triggerLoading(false)
                 } else {
                     message.error(msg);

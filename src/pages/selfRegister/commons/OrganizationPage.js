@@ -125,7 +125,7 @@ const OrganizatRef = forwardRef(({
                     </FormItem>
                 </Col>
             </Row>
-            <Row>
+            {/* <Row>
                 <Col span={15}>
                     <FormItem
                         {...formItemLayout}
@@ -147,7 +147,7 @@ const OrganizatRef = forwardRef(({
                         }
                     </FormItem>
                 </Col>
-            </Row>
+            </Row> */}
         </Form>
     )
 }

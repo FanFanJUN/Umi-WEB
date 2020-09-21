@@ -150,7 +150,7 @@ function CreateStrategy() {
       }
     })
     let enclosurelist = [], basedata, baseexten, accountData,
-      automaticdata, automaticincome, automThreeYear, rangeValinfo;
+      automaticdata, automaticincome, automThreeYear, rangeValinfo,othersatt = [];
     if (baseVal && baseVal.supplierVo) {
       basedata = baseVal.supplierVo
     }
@@ -158,15 +158,16 @@ function CreateStrategy() {
       baseexten = baseVal.extendVo
     }
     if (baseVal && baseVal.genCertVos) {
-      enclosurelist = { ...enclosurelist, ...baseVal.genCertVos}
+      enclosurelist.push(...baseVal.genCertVos)
+      othersatt = enclosurelist
     }
     if (accountVal && accountVal.supplierVo) {
       accountData = accountVal.supplierVo
     }
     if (qualifications) {
-      enclosurelist = [enclosurelist, ...qualifications.proCertVos];
+      enclosurelist = [...othersatt, ...qualifications.proCertVos];
     }else {
-      enclosurelist = [enclosurelist]
+      enclosurelist = othersatt
     }
     if (businessInfoVal && businessInfoVal.supplierVo) {
       automaticdata = businessInfoVal.supplierVo
@@ -346,7 +347,7 @@ function CreateStrategy() {
     }
 
     let enclosurelist = [], basedata, accountData, baseexten, automaticdata, automaticincome,
-      automThreeYear, rangeValinfo;
+      automThreeYear, rangeValinfo,othersatt=[];
     if (baseVal && baseVal.supplierVo) {
       basedata = baseVal.supplierVo
     }
@@ -354,13 +355,16 @@ function CreateStrategy() {
       baseexten = baseVal.extendVo
     }
     if (baseVal && baseVal.genCertVos) {
-      enclosurelist = { ...enclosurelist, ...baseVal.genCertVos[0] }
+      enclosurelist.push(...baseVal.genCertVos)
+      othersatt = enclosurelist
     }
     if (accountVal && accountVal.supplierVo) {
       accountData = accountVal.supplierVo
     }
     if (qualifications) {
-      enclosurelist = [enclosurelist, ...qualifications.proCertVos];
+      enclosurelist = [...othersatt, ...qualifications.proCertVos];
+    }else {
+      enclosurelist = othersatt
     }
     if (businessInfoVal && businessInfoVal.supplierVo) {
       automaticdata = businessInfoVal.supplierVo
@@ -408,11 +412,8 @@ function CreateStrategy() {
     getModelRef.current.handleModalVisible(true);
   }
   async function createSave(val) {
-
-    //console.log(val)
-    let params = { ...againdata, ...val };
-    //console.log(params)
     triggerLoading(true)
+    let params = { ...againdata, ...val };
     const { success, message: msg } = await TemporarySupplierRegister(params);
     if (success) {
       message.success(msg);

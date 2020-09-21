@@ -14,6 +14,8 @@ const getAgentregRef = forwardRef(({
     isView,
     disabled,
     ReaModelOk = () => null,
+    hideloading = () => null,
+    loading
 }, ref,) => {
     useImperativeHandle(ref, () => ({ 
         handleModalVisible,
@@ -22,28 +24,31 @@ const getAgentregRef = forwardRef(({
     const headerRef = useRef(null)
     const { getFieldDecorator, validateFieldsAndScroll, getFieldValue, setFieldsValue } = form;
     const [visible, setvisible] = useState(false);
+    //const [loading, triggerLoading] = useState(false);
     useEffect(() => {
         
     }, []);
 
     function handleModalVisible (flag) {
         setvisible(!!flag)
+        hideloading();
     };
     async function handleOk() {
-        let result = false;
-        form.validateFieldsAndScroll((err, values) => {
-          if (isEmpty(values.modifyReason)) {
-            message.error('请将填写变更原因！');
-            return false;
-          }else {
-            result = values;
-            ReaModelOk(result)
-          }
-        });
+      let result = false;
+      form.validateFieldsAndScroll((err, values) => {
+        if (isEmpty(values.modifyReason)) {
+          message.error('请将填写变更原因！');
+          return false;
+        }else {
+          result = values;
+          ReaModelOk(result)
+        }
+      });
     }
 
     return (
         <Modal
+            confirmLoading={loading}
             width={1000}
             className={"choose-supplier"}
             centered
