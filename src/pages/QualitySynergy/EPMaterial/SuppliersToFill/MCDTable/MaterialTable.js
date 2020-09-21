@@ -1,6 +1,6 @@
 import { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment } from 'react';
 import { ExtTable, ExtModal, DataImport, ComboList } from 'suid';
-import { Button, DatePicker, Form, Modal, Row, Input, Select } from 'antd';
+import { Button, DatePicker, Form, Modal, Row, Input, Select, message } from 'antd';
 import { limitMaterialList, limitScopeList, exemptionClauseDataList } from '../../../commonProps';
 import { materialCompositionVerification } from '../../../../../services/qualitySynergy';
 import classnames from 'classnames'
