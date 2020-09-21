@@ -195,6 +195,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
             centered
             destroyOnClose
             visible={visible}
+            width="600px"
             onCancel={() => { setVisible(false) }}
             onOk={() => { handleAdd() }}
             title={`${modalType === 'add' ? '新增' : '编辑'}测试记录表物质`}
