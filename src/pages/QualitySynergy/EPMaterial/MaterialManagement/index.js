@@ -345,6 +345,8 @@ export default create()(function ({ form }) {
                 distribute: !(rows[0].applyPersonAccount === getUserAccount() && rows[0].effectiveStatus === 'EFFECT'),
                 check: !(rows[0].effectiveStatus === 'EFFECT' && rows[0].allotSupplierState === 'ALLOT_END'),
                 edit: !(rows[0].effectiveStatus === 'DRAFT' && rows[0].allotSupplierState === 'ALLOT_NOT'),
+                generate: !(rows[0].effectiveStatus === 'EFFECT' && rows[0].allotSupplierState === 'ALLOT_END'),
+                pdm: rows[0].syncStatus !== 'SYNC_FAILURE',
             });
         } else if (rows.length === 0) {
             setButtonStatus({
@@ -453,8 +455,8 @@ export default create()(function ({ form }) {
         {
             title: '同步PDM状态', dataIndex: 'syncStatus', width: 120, render: (text) => {
                 switch (text) {
-                    case 'SYNC_FAILURE': return '同步成功';
-                    case 'SYNC_SUCCESS': return '同步失败';
+                    case 'SYNC_FAILURE': return '同步失败';
+                    case 'SYNC_SUCCESS': return '同步成功';
                     default:
                         return '';
                 }

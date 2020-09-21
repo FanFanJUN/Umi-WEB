@@ -68,7 +68,7 @@ const BaseInfo = forwardRef(({ form, isView, setBuCode, originData={}, isSupplie
               getFieldDecorator('buName'),
               getFieldDecorator('buCode'),
               getFieldDecorator('buCodeAndName', {
-                initialValue: isView ? originData.buCode : '',
+                initialValue: isView ? originData.buCode + ' ' + originData.buName : '',
                 rules: [{ required: true, message: '请选择供应商代码' }]
               })(
                 <ComboList

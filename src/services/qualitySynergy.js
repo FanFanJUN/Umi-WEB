@@ -201,6 +201,34 @@ export async function frozenBU(params) {
         params: params,
     });
 }
+// 环保数据字典表-新增
+export async function addEpDict(params) {
+    const url = `${baseUrl}/epDictService/addEpDict`;
+    return request({
+        url,
+        method: 'POST',
+        params: params,
+    });
+}
+// 环保数据字典表-新增
+export async function editEpDict(params) {
+    const url = `${baseUrl}/epDictService/editEpDict`;
+    return request({
+        url,
+        method: 'POST',
+        params: params,
+    });
+}
+// 环保数据字典表-删除
+export async function deleteEpDict(params) {
+    const url = `${baseUrl}/epDictService/editEpDict`;
+    return request({
+        url,
+        method: 'POST',
+        params: params,
+    });
+}
+
 // 根据业务单元找业务板块
 export async function findByBuCode(params) {
     const url = `${baseUrl}/bmBuContact/findByBuCode`;
