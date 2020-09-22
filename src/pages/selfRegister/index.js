@@ -50,7 +50,7 @@ export default function () {
         const { data,success, message: msg } = await saveRegistVo({registrationInformationVo: JSON.stringify(resultData)})
         if (success) {
             //window.open(window.location.href + `/react-basic-web/index?_s=` + data)
-            window.open(window.location.href + `/srm-se-web/NewHomePageView?_s=` + data)
+            window.open(`/srm-se-web/NewHomePageView?_s=` + data)
         } else {
             message.error(msg);
         }

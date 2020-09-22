@@ -1,6 +1,6 @@
 import React, { forwardRef, useState, useRef, useEffect, useImperativeHandle } from 'react';
 import { ExtTable, WorkFlow, ExtModal, utils, ToolBar } from 'suid';
-import { Form, Button, message, Checkbox, Modal } from 'antd';
+import { Form, Button, message, Checkbox, Modal,AuthButton} from 'antd';
 import { openNewTab, getFrameElement } from '@/utils';
 import Header from '@/components/Header';
 import UploadFile from '../../../components/Upload/index'
@@ -289,28 +289,20 @@ const Agentformef = forwardRef(({
   const headerleft = (
     <>
       {
-          authAction(
-            <Button type='primary' ignore={DEVELOPER_ENV} key='' className={styles.btn} onClick={() => showModal()}>新增</Button>
-          )
-        }
-        {
-          authAction(
-            <Button ignore={DEVELOPER_ENV} key='' className={styles.btn} onClick={() => handleEdit()} disabled={empty}>编辑</Button>
-          )
-        }
-        {
-          authAction(
-            <Button ignore={DEVELOPER_ENV} key='' className={styles.btn} disabled={empty} onClick={handleRemove}>删除</Button>
-          )
-        }
+        <AuthButton type="primary" className={styles.btn} onClick={() => showModal()}>新增</AuthButton>
+      }
+      {
+        <AuthButton className={styles.btn} onClick={() => handleEdit()} disabled={empty} >编辑</AuthButton>
+      }
+      {
+        <AuthButton className={styles.btn} disabled={empty} onClick={handleRemove}>删除</AuthButton>
+      }
     </>
   );
   const agentleft = (
     <>
         {
-          authAction(
-            <Button ignore={DEVELOPER_ENV} key='' className={styles.btn} onClick={() => handleEdit()} disabled={empty}>编辑</Button>
-          )
+          <AuthButton className={styles.btn} onClick={() => handleEdit()} disabled={empty} >编辑</AuthButton>
         }
     </>
   );
