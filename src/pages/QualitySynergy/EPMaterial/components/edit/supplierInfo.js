@@ -132,7 +132,7 @@ const BaseInfo = forwardRef(({ form, originData={}, isView }, ref) => {
             {
               getFieldDecorator('reachEnvironmentId', {
                 initialValue: '',
-                rules: [{ required: true, message: '请上传报告附件' }]
+                rules: [{ required: true, message: '请上传附件' }]
               })(<Upload entityId={originData ? originData.reachEnvironmentId : ''} type={isView?'show':''}/>)
             }
           </FormItem>
@@ -142,7 +142,7 @@ const BaseInfo = forwardRef(({ form, originData={}, isView }, ref) => {
             {
               getFieldDecorator('fillPeopleFax', {
                 initialValue: originData.fillPeopleEmail,
-                rules: [{ required: true, message: '请选择供应商代码' }]
+                rules: [{ required: true, message: '请输入传真' }]
               })(<Input disabled={isView}/>)
             }
           </FormItem>

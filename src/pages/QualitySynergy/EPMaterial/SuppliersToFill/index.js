@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, Fragment } from 'react'
 import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import { Input, Button, message, Modal, Form } from 'antd';
 import { supplierManagerBaseUrl, recommendUrl } from '@/utils/commonUrl';
-import { openNewTab, getFrameElement, getUserName, getUserId, getUserAccount } from '@/utils';
+import { openNewTab, getFrameElement, getUserName, getUserId, getUserAccount, closeCurrent } from '@/utils';
 import classnames from 'classnames';
 import { AutoSizeLayout, Header, AdvancedForm, Upload } from '@/components';
 import FillingHistory from '../components/fillingHistory'
@@ -14,7 +14,8 @@ import {
     epDemandRecall,
     epDemandCopyAll,
     uploadFile,
-    supplierGetList
+    supplierGetList,
+    findMyselfData
 } from '../../../../services/qualitySynergy';
 const { authAction, storage } = utils;
 const { create, Item: FormItem } = Form;
@@ -31,7 +32,8 @@ const SupplierFillList = function ({ form }) {
     const [selectedRows, setRows] = useState([]);
     const [searchValue, setSearchValue] = useState({});
     const [dataSource, setDataSource] = useState([]);
-    const [materialObj, setMaterialObj] = useState({})
+    const [materialObj, setMaterialObj] = useState({});
+    const [ownerFiles, setOwnerFiles] = useState('');
     const FRAMELEEMENT = getFrameElement();
     const {
         getFieldDecorator,
@@ -47,6 +49,26 @@ const SupplierFillList = function ({ form }) {
                 setDataSource(res.data.rows)
             } else {
                 message.error(res.message)
+            }
+        })
+        findMyselfData().then(res => {
+            if(res.success && res.statusCode===200){
+                if(res.data.length === 0) {
+                    confirm({
+                        title: '提示',
+                        content: '您还未上传资质文件，请先上传文件！',
+                        okText: '立即上传',
+                        cancelText: '退出',
+                        onOk: ()=>{
+                            setUploadVisible(true);
+                        },
+                        onCancel: ()=>{
+                            closeCurrent();
+                        }
+                    })
+                } else {
+                    setOwnerFiles(res.data)
+                }
             }
         })
     }, [searchValue])
@@ -247,6 +269,7 @@ const SupplierFillList = function ({ form }) {
         validateFields((error, values) => {
             const { files } = values;
             if (!error) {
+                setOwnerFiles(files ? files.join() : '');
                 uploadFile({
                     aptitudeFileId: files ? files.join() : '',
                     supplierName: getUserName(),
@@ -330,11 +353,12 @@ const SupplierFillList = function ({ form }) {
             visible={uploadVisible}
             title="上传资质文件"
         >
-            <FormItem label='不使用禁用物质的声明' labelCol={{ span: 8 }} wrapperCol={{ span: 12 }}>
+            <FormItem label='不使用禁用物质的声明' labelCol={{ span: 10 }} wrapperCol={{ span: 12 }}>
                 {
                     getFieldDecorator('files', {
+                        initialValue: ownerFiles,
                         rules: [{ required: true, message: '请上传文件' }]
-                    })(<Upload entityId={''} />)
+                    })(<Upload entityId={ownerFiles} />)
                 }
             </FormItem>
         </ExtModal>}

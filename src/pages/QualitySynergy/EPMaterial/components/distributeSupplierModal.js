@@ -1,7 +1,6 @@
 import { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment } from 'react';
 import { ExtTable, ExtModal, ScrollBar } from 'suid';
-import { Button, DatePicker, Form, Modal, message, Input } from 'antd';
-import { materialCode } from '../../commonProps';
+import { Button, DatePicker, Form, Modal, message } from 'antd';
 import { smBaseUrl, supplierManagerBaseUrl } from '@/utils/commonUrl';
 import { getUserName, getUserId, getUserAccount } from '../../../../utils';
 import {
@@ -36,7 +35,7 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
     const { getFieldDecorator, validateFields } = form;
     useEffect(() => {
         if (visible === true) {
-            if(supplierModalType === 'distribute') {
+            if (supplierModalType === 'distribute') {
                 getData();
             } else {
                 findByDemandNumber({
@@ -72,7 +71,7 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
         { title: '供应商名称', dataIndex: 'name', width: 200, ellipsis: true, align: 'center', },
     ];
     async function getData() {
-        const res = await findByPageOfSupplier({ 
+        const res = await findByPageOfSupplier({
             demandNumber: supplierModalType === 'distribute' ? selectedRow.demandNumber : viewDemandNum
         });
         if (res.statusCode === 200) {
@@ -185,23 +184,29 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
         }
     }
     // 保存
-    async function handleSave() {
-        if(supplierModalType === 'view'){
+    function handleSave() {
+        if (supplierModalType === 'view') {
             setVisible(false);
             return;
         }
-        let res = {};
-        let saveList = dataSource.concat(deleteList);
-        let saveData = { ...selectedRow, demandSupplierBoList: saveList }
-        res = await addDemandSupplier(saveData);
-        if (res.statusCode === 200) {
-            message.success('操作成功');
-            setEditTag(false);
-            setDeleteList([]);
-            getData();
-        } else {
-            message.error(res.message);
-        }
+        Modal.confirm({
+            title: '保存',
+            content: '请确认保存所有供应商!',
+            onOk: async () => {
+                let res = {};
+                let saveList = dataSource.concat(deleteList);
+                let saveData = { ...selectedRow, demandSupplierBoList: saveList }
+                res = await addDemandSupplier(saveData);
+                if (res.statusCode === 200) {
+                    message.success('操作成功');
+                    setEditTag(false);
+                    setDeleteList([]);
+                    setVisible(false);
+                } else {
+                    message.error(res.message);
+                }
+            },
+        });
     }
     // 发布/取消发布
     function handlePublish() {
@@ -227,8 +232,8 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
         return !tag;
     }
     function handleCancel() {
-        if(supplierModalType === 'view'){
-            tableRef.current.manualSelectedRows(); 
+        if (supplierModalType === 'view') {
+            tableRef.current.manualSelectedRows();
             setVisible(false);
             return;
         }
@@ -259,7 +264,7 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
             width={1100}
             title={supplierModalType === 'distribute' ? "分配供应商" : "查看供应商"}
         >
-            <div className={styles.mbt} style={{display: supplierModalType === 'distribute' ? 'block' : 'none'}}>
+            <div className={styles.mbt} style={{ display: supplierModalType === 'distribute' ? 'block' : 'none' }}>
                 <Button type='primary' className={styles.btn} onClick={() => { setAddVisible(true) }} key="add">新增</Button>
                 <Button className={styles.btn}
                     disabled={selectedRows.length === 0 || checkSameBatch()}

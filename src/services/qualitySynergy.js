@@ -446,6 +446,14 @@ export async function uploadFile(params) {
         data: params,
     });
 }
+// 供应商-填报环保资料-获取当前登录用户上传的资质文件
+export async function findMyselfData() {
+    const url = `${recommendUrl}/api/epSupplierAptitudeService/findMyselfData`;
+    return request({
+        url,
+        method: 'POST',
+    });
+}
 // 查询组织机构
 export async function findOrgTreeWithoutFrozen(params) {
     const url = `/api-gateway/basic-service/organization/findOrgTreeWithoutFrozen`;

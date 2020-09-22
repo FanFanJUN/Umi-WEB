@@ -14,7 +14,6 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada, materia
     }))
     const [visible, setVisible] = useState(false);
     const [bmCode, setBmCode] = useState('');
-    const [loading, setLoading] = useState(false);
     const [modalType, setModalType] = useState('');
     const [OrgId, setOrgId] = useState('');
     const { getFieldDecorator, setFieldsValue, validateFields } = form;
@@ -40,12 +39,11 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada, materia
         setVisible(true);
     }
     const handleAfterSelect = (item) => {
-        if(materialCodes.includes(item.materialCode)){
+        if(materialCodes && materialCodes.includes(item.materialCode)){
             message.error('此物料已存在表格中，不能再次添加！');
             setFieldsValue({ materialId: '', materialCode: '', materialName: '', materialGroupCode: '', materialGroupName: '', materialGroupId: ''})
             return;
         }
-        setLoading(true);
         let tag1, tag2;
         // 根据物料组+业务板块找战略采购
         sapMaterialGroupMapPurchaseGroup({
@@ -57,7 +55,6 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada, materia
                 setFieldsValue({
                     strategicPurchaseCode: res.data.rows[0].purchaseGroupCode,
                     strategicPurchaseName: res.data.rows[0].purchaseGroupName,
-                    loading: tag2 && false
                 })
             } else {
                 setFieldsValue({
@@ -78,7 +75,6 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada, materia
                     environmentalProtectionId: espRes.data.id,
                     environmentalProtectionCode: espRes.data.environmentalProtectionCode,
                     environmentalProtectionName: espRes.data.environmentalProtectionName,
-                    loading: tag1 && false
                 })
             } else {
                 message.warning('未查询到相关环保标准，请检查！');
@@ -101,7 +97,6 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada, materia
             onCancel={() => { setVisible(false) }}
             onOk={handleOk}
             visible={visible}
-            loading={loading}
             maskClosable={false}
             centered
             width={500}
