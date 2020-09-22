@@ -18,8 +18,8 @@ class UploadFile extends React.Component {
     super(props);
     this.state = {
       modalVisible: false,
-      fileList: [],
-      completeUploadFile: [],
+      fileList: {},
+      completeUploadFile: {},
     };
 
     this.entityId = props.entityId

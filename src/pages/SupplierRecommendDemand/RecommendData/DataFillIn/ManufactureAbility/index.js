@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:58:16
- * @LastEditTime: 2020-09-18 15:44:02
+ * @LastEditTime: 2020-09-22 10:31:46
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/ManufactureAbility/index.js
  * @Description: 制造能力 Tab
  * @Connect: 1981824361@qq.com
@@ -40,12 +40,15 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
 
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             const res = await requestGetApi({ supplierRecommendDemandId: id, tabKey: 'manufactureAbilityTab' });
             if (res.success) {
                 res.data && setData(res.data);
-                setproductionCapacities(res.data.productionCapacities);
-                setkeyProductEquipments(res.data.keyProductEquipments);
-                settechnologyEquipments(res.data.technologyEquipments);
+                if (res.data) {
+                    setproductionCapacities(res.data.productionCapacities);
+                    setkeyProductEquipments(res.data.keyProductEquipments);
+                    settechnologyEquipments(res.data.technologyEquipments);
+                }
             } else {
                 message.error(res.message);
             }
@@ -303,7 +306,7 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
                 break;
             case 'technologyEquipments':
                 settechnologyEquipments(newData);
-                break;    
+                break;
             default:
                 break;
         }

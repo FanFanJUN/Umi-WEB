@@ -26,6 +26,7 @@ const QuotationAndGPCA = ({ updateGlobalStatus }) => {
 
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             const res = await requestGetApi({ supplierRecommendDemandId: id, tabKey: 'quotationAndGPCATab' });
             if (res.success) {
                 res.data && setData(res.data);

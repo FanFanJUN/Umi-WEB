@@ -147,7 +147,6 @@ const BankbaseRef = forwardRef(({
                 let obj = {};
                 Object.keys(values).forEach((key) => {
                 if (key === "country") {
-                    console.log(countryId)
                     obj[key + "Name"] = values[key].label;
                     obj[key + "Id"] = values[key].key  || countryId;
                 } else if (key === "province" && values.province) {

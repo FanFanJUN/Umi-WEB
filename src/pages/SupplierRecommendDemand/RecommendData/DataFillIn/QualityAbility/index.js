@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:58:10
- * @LastEditTime: 2020-09-18 17:40:42
+ * @LastEditTime: 2020-09-22 10:30:13
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/QualityAbility/index.js
  * @Description: 质量能力
  * @Connect: 1981824361@qq.com
@@ -43,23 +43,26 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const res = await requestGetApi({ supplierRecommendDemandId: id, tabKey: 'qualityAbilityTab' });
+            setLoading(true);
+            const res = await requestGetApi({ supplierRecommendDemandId: id || '676800B6-F19D-11EA-9F88-0242C0A8442E', tabKey: 'qualityAbilityTab' });
             if (res.success) {
                 res.data && setData(res.data);
-                setkeyControlProcesses(res.data.keyControlProcesses);
-                setkeyTestingEquipments(res.data.keyTestingEquipments);
-                setcannotTestItems(res.data.finishedProductQualities);
-                setfinishedProductQualities(res.data.finishedProductQualities);
-                setmaterialQualities(res.data.materialQualities);
-                setfinishedProductTestingItems(res.data.finishedProductTestingItems);
+                if (res.data) {
+                    setkeyControlProcesses(res.data.keyControlProcesses);
+                    setkeyTestingEquipments(res.data.keyTestingEquipments);
+                    setcannotTestItems(res.data.finishedProductQualities);
+                    setfinishedProductQualities(res.data.finishedProductQualities);
+                    setmaterialQualities(res.data.materialQualities);
+                    setfinishedProductTestingItems(res.data.finishedProductTestingItems);
+                }
             } else {
                 message.error(res.message);
             }
             setLoading(false);
         };
-        if (type !== 'add') {
-            fetchData();
-        }
+        // if (type !== 'add') {
+        fetchData();
+        // }
     }, []);
 
     // 重点控制工序
@@ -198,8 +201,8 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
             "editable": true,
             "inputType": 'Select',
             selectOptions: [
-                {name: '自检', value: true},
-                {name: '外检', value: false},
+                { name: '自检', value: true },
+                { name: '外检', value: false },
             ]
         },
         {
@@ -209,8 +212,8 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
             "editable": true,
             "inputType": 'Select',
             selectOptions: [
-                {name: '周期检验', value: 'PERIODIC_TEST'},
-                {name: '逐批检验', value: 'BATCH_INSPECTION'},
+                { name: '周期检验', value: 'PERIODIC_TEST' },
+                { name: '逐批检验', value: 'BATCH_INSPECTION' },
             ]
         },
         {
@@ -227,9 +230,9 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
             "editable": true,
             "inputType": 'Select',
             selectOptions: [
-                {name: '日', value: 'DAY'},
-                {name: '月', value: 'MONTH'},
-                {name: '年', value: 'YEAR'},
+                { name: '日', value: 'DAY' },
+                { name: '月', value: 'MONTH' },
+                { name: '年', value: 'YEAR' },
             ]
         },
     ];

@@ -28,7 +28,6 @@ function SupplierConfigure() {
     const [loading, triggerLoading] = useState(false);
     const [attachId, setAttachId] = useState('');
     const [fixedHeader, setfixedHeader] = useState('');
-    //const [dataSource, setData] = useState([]);
     const [singleRow = {}] = selectedRows;
     /** 按钮可用性判断变量集合 BEGIN*/
     const [signleRow = {}] = selectedRows;
@@ -332,7 +331,7 @@ function SupplierConfigure() {
                                     key='SRM_SM_SUPPLIER_MY_PERFORMANCE_EDIT' 
                                     className={styles.btn} 
                                     onClick={handleEditor}
-                                    disabled={empty || underWay}
+                                    //disabled={empty || underWay}
                                     >编辑
                                 </Button>
                             )

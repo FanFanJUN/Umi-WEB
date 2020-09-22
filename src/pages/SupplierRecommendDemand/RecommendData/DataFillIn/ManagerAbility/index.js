@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:58:19
- * @LastEditTime: 2020-09-18 15:43:28
+ * @LastEditTime: 2020-09-22 10:31:28
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/ManagerAbility/index.js
  * @Description: 供应链管理能力 Tab
  * @Connect: 1981824361@qq.com
@@ -38,10 +38,11 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
 
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             const res = await requestGetApi({ supplierRecommendDemandId: id, tabKey: 'managerAbilityTab' });
             if (res.success) {
                 res.data && setData(res.data);
-                setkeyMaterialSuppliers(res.data.keyMaterialSuppliers);
+                res.data && setkeyMaterialSuppliers(res.data.keyMaterialSuppliers);
             } else {
                 message.error(res.message);
             }

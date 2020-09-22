@@ -111,9 +111,12 @@ const AuthorizeRef = forwardRef(({
                                     form={form}
                                     {...listPositionConfig}
                                     showSearch={false}
-                                    afterSelect={afterSelect}
+                                    //afterSelect={afterSelect}
                                     name={`positionName[${index}]`}
                                     field={[`position[${index}]`]}
+                                    afterSelect={(item)=>{
+                                        afterSelect(item,`${index + 1}`)
+                                    }}
                                 />
                                 // <ComboList 
                                 //     form={form}
@@ -284,10 +287,14 @@ const AuthorizeRef = forwardRef(({
     function afterSelect(val,key) {
         setEdit(true)
         dataSource.forEach((item,index) => {
+            console.log(item.key)
+            console.log(key)
             if (item.key === Number(key)) {
+                console.log(23123)
                 const copyData = dataSource.slice(0)
                 copyData[index].position = val.value;
                 setDataSource(copyData)
+                console.log(dataSource)
             }
         })
     }
@@ -364,7 +371,6 @@ const AuthorizeRef = forwardRef(({
     function setName(e) {
         dataSource.forEach((item,index) => {
             if (index === parseInt(e.target.name)) {
-                console.log(333)
                 item.name = e.target.value
             }
         })
@@ -385,6 +391,11 @@ const AuthorizeRef = forwardRef(({
     function authorTemporary() {
         let result = {};
         form.validateFieldsAndScroll((err, values) => {
+            values.position.forEach((item,index) => {
+                if (item === undefined) {
+                    values.position[index] = dataSource[index].position
+                }
+            })
             if (values) {
                 if (edit) {
                     result = dataTransfer2(dataSource, values);
@@ -400,6 +411,11 @@ const AuthorizeRef = forwardRef(({
     function getAuthorfrom() {
         let result = false;
         form.validateFieldsAndScroll((err, values) => {
+            values.position.forEach((item,index) => {
+                if (item === undefined) {
+                    values.position[index] = dataSource[index].position
+                }
+            })
             if (!err) {
                 if (edit) {
                     result = dataTransfer2(dataSource, values);
@@ -408,7 +424,6 @@ const AuthorizeRef = forwardRef(({
                 }
             }
         })
-        console.log(result)
         return result;
     }
     // 设置所有表格参数
