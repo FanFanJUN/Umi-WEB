@@ -256,6 +256,7 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
         <ExtModal
             destroyOnClose={true}
             onCancel={() => { handleCancel() }}
+            maskClosable={false}
             // onOk={() => { handleSave() }}
             // okText={supplierModalType === 'distribute' ? "保存":"确定"}
             visible={visible}
@@ -304,6 +305,7 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
         <ExtModal
             centered
             destroyOnClose
+            maskClosable={false}
             onCancel={() => { setEditDateVisible(false) }}
             onOk={handleEditDate}
             visible={editDateVisible}
@@ -322,6 +324,7 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
             destroyOnClose
             width="150vh"
             visible={addVisible}
+            maskClosable={false}
             zIndex={1001}
             onCancel={() => { setAddVisible(false) }}
             footer={

@@ -65,6 +65,7 @@ const generateModal = forwardRef(({ form }, ref) => {
             onOk={() => { handleOk() }}
             okText="生成"
             visible={visible}
+            maskClosable={false}
             centered
             width={1100}
             title="生成报表-MCD表"

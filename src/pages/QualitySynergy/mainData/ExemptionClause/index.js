@@ -337,11 +337,11 @@ const ExemptionClause = (props) => {
                         <FormItem label='比较标识' {...formLayout}>
                             {
                                 getFieldDecorator('limitNumberMaxSign', {
-                                    initialValue: data.modalSource && (data.modalSource.limitNumberMaxSign).toString(),
+                                    initialValue: data.modalSource && data.modalSource.limitNumberMaxSign,
                                     rules: [{ required: (!!getFieldValue('limitNumber') && getFieldValue('limitNumber') != 0), message: '请选择比较标识' }]
                                 })(<Select style={{ width: '100%' }} allowClear>
-                                    <Select.Option value="true">最高值</Select.Option>
-                                    <Select.Option value="false">最低值</Select.Option>
+                                    <Select.Option value={true}>最高值</Select.Option>
+                                    <Select.Option value={false}>最低值</Select.Option>
                                 </Select>)
                             }
                         </FormItem>

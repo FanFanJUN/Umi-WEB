@@ -4,12 +4,12 @@ import { Input, Button, message, Modal, Form } from 'antd';
 import { supplierManagerBaseUrl, recommendUrl } from '@/utils/commonUrl';
 import { openNewTab, getFrameElement, getUserName, getUserId, getUserAccount, closeCurrent } from '@/utils';
 import classnames from 'classnames';
-import { AutoSizeLayout, Header, AdvancedForm, Upload } from '@/components';
+import { AutoSizeLayout, Header, AdvancedForm} from '@/components';
+import Upload from '../../compoent/Upload';
 import FillingHistory from '../components/fillingHistory'
 import { findMaterialCode, MaterialConfig, StrategicPurchaseConfig, needToFillList, fillStatusList, allPersonList } from '../../commonProps';
 import styles from './index.less'
 import {
-    epDemandUpdate,
     epDemandSubmit,
     epDemandRecall,
     epDemandCopyAll,
@@ -33,7 +33,7 @@ const SupplierFillList = function ({ form }) {
     const [searchValue, setSearchValue] = useState({});
     const [dataSource, setDataSource] = useState([]);
     const [materialObj, setMaterialObj] = useState({});
-    const [ownerFiles, setOwnerFiles] = useState('');
+    const [ownerFiles, setOwnerFiles] = useState([]);
     const FRAMELEEMENT = getFrameElement();
     const {
         getFieldDecorator,
@@ -48,26 +48,6 @@ const SupplierFillList = function ({ form }) {
                 setDataSource(res.data.rows)
             } else {
                 message.error(res.message)
-            }
-        })
-        findMyselfData().then(res => {
-            if(res.success && res.statusCode===200){
-                if(res.data.length === 0) {
-                    confirm({
-                        title: '提示',
-                        content: '您还未上传资质文件，请先上传文件！',
-                        okText: '立即上传',
-                        cancelText: '退出',
-                        onOk: ()=>{
-                            setUploadVisible(true);
-                        },
-                        onCancel: ()=>{
-                            closeCurrent();
-                        }
-                    })
-                } else {
-                    setOwnerFiles(res.data[0].aptitudeFileId)
-                }
             }
         })
     }, [searchValue])
@@ -100,9 +80,34 @@ const SupplierFillList = function ({ form }) {
         }
     }
     useEffect(() => {
+        findMyselfData().then(res => {
+            if(res.success && res.statusCode===200){
+                if(res.data.length === 0) {
+                    confirm({
+                        title: '提示',
+                        content: '您还未上传资质文件，请先上传文件！',
+                        okText: '立即上传',
+                        cancelText: '退出',
+                        onOk: ()=>{
+                            setUploadVisible(true);
+                        },
+                        onCancel: ()=>{
+                            closeCurrent();
+                        }
+                    })
+                } else {
+                    console.log('res.data', res.data)
+                    // let ids = res.data.map(item => item.documentInfo);
+                    // setOwnerFiles(ids)
+                }
+            }
+        })
+    }, [uploadVisible]);
+
+    useEffect(()=>{
         window.parent.frames.addEventListener('message', listenerParentClose, false);
-        return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
-    }, []);
+        return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
+    }, [])
 
     function listenerParentClose(event) {
         const { data = {} } = event;
@@ -268,7 +273,7 @@ const SupplierFillList = function ({ form }) {
         validateFields((error, values) => {
             const { files } = values;
             if (!error) {
-                setOwnerFiles(files ? files.join() : '');
+                console.log('files', files)
                 uploadFile({
                     aptitudeFileId: files ? files.join() : '',
                     supplierName: getUserName(),
@@ -285,6 +290,13 @@ const SupplierFillList = function ({ form }) {
             }
         })
 
+    }
+    function handleUploadCancle() {
+        if(ownerFiles.length === 0) {
+            closeCurrent();
+        } else {
+            setUploadVisible(false);
+        }
     }
     return <Fragment>
         <Header
@@ -327,6 +339,7 @@ const SupplierFillList = function ({ form }) {
         {copyVisible && <ExtModal
             centered
             destroyOnClose
+            maskClosable={false}
             onCancel={() => { setCopyVisible(false) }}
             onOk={() => { handleButton('copy') }}
             visible={copyVisible}
@@ -347,15 +360,16 @@ const SupplierFillList = function ({ form }) {
         {uploadVisible && <ExtModal
             centered
             destroyOnClose
-            onCancel={() => { setUploadVisible(false) }}
+            maskClosable={false}
+            onCancel={() => { handleUploadCancle()}}
             onOk={() => { handleUploadOk() }}
+            cancelText={ownerFiles.length === 0 ? '退出' : '取消'}
             visible={uploadVisible}
             title="上传资质文件"
         >
             <FormItem label='不使用禁用物质的声明' labelCol={{ span: 10 }} wrapperCol={{ span: 12 }}>
                 {
                     getFieldDecorator('files', {
-                        initialValue: ownerFiles,
                         rules: [{ required: true, message: '请上传文件' }]
                     })(<Upload entityId={ownerFiles} />)
                 }

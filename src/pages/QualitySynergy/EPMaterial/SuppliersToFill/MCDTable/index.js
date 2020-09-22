@@ -44,6 +44,8 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
                 let saveList = splitDataList.map(item => {
                     let newObj = {
                         ...item,
+                        uploadAttachmentIds: item.documentInfoList ? item.documentInfoList.map(v => v.id?v.id:v) : [],
+                        testReportAttachmentId: item.documentInfoList ? item.documentInfoList.map(v => v.id?v.id:v).join() : '',
                         epDataFillTestLogBoList: item.testLogVoList,
                         materialConstituentBoList: item.voList
                     }

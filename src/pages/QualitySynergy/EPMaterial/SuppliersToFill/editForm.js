@@ -45,8 +45,8 @@ export default function () {
                 const macData = mcdRef.current.getSplitDataList();
                 if(!macData.tag)return;
                 toggleLoading(true);
-                values.uploadAttachmentIds = values.reachEnvironmentId;
-                values.reachEnvironmentId = values.reachEnvironmentId ? values.reachEnvironmentId.join() : '';
+                values.uploadAttachmentIds = values.reachEnvironmentList ? values.reachEnvironmentList.map(item => item.id ? item.id : item) : [];
+                values.reachEnvironmentId = values.uploadAttachmentIds.join();
                 saveData = { ...saveData, ...values, commit: !!publish, ...macData }
                 saveData.epDataFillSplitPartsBoList = macData.epDataFillSplitPartsVoList;
                 delete saveData.epDataFillSplitPartsVoList;
@@ -124,7 +124,7 @@ export default function () {
                                 {
                                     notesList.map((item, index) => {
                                         if(item.modelType === 'SM')return '';
-                                        return <li style={{ borderBottom: '1px solid #d9d9d9', padding: '5px 15px'}}>
+                                        return <li style={{ borderBottom: '1px solid #d9d9d9', padding: '5px 15px'}} key={index}>
                                             <div>{index + 1 + '. ' + item.chContent}</div>
                                             <div style={{paddingLeft: '10px'}}>{item.ehContent}</div>
                                         </li>

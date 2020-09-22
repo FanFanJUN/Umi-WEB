@@ -448,7 +448,7 @@ export default create()(function ({ form }) {
                     case 'DIS_EXIST_CONFORM_SUPPLIER':
                         return '不存在符合的供应商';
                     default:
-                        return '';
+                        return '未检查';
                 }
             },
         },
@@ -458,7 +458,7 @@ export default create()(function ({ form }) {
                     case 'SYNC_FAILURE': return '同步失败';
                     case 'SYNC_SUCCESS': return '同步成功';
                     default:
-                        return '';
+                        return '未同步';
                 }
             },
         },

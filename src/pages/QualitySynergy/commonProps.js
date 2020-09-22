@@ -740,7 +740,7 @@ export const exemptionClauseDataList = {
   store: {
     type: 'POST',
     autoLoad: false,
-    url: `${baseUrl}/exemptionClauseData/findByPage`,
+    url: `${baseUrl}/exemptionClauseData/findSearchByPage`,
     params: {
       quickSearchProperties: [],
     },

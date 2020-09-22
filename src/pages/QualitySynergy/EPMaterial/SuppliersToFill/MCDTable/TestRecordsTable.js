@@ -16,7 +16,7 @@ const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 14, },
 };
-const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList, environmentalProtectionCode }, ref) => {
+const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList, environmentalProtectionCode, isView}, ref) => {
     useImperativeHandle(ref, () => ({
         setVisible
     }))
@@ -26,7 +26,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [dataSource, setDataSource] = useState([]);
-    const { getFieldDecorator, validateFields, getFieldValue, setFieldsValue, isView } = form;
+    const { getFieldDecorator, validateFields, getFieldValue, setFieldsValue } = form;
     useEffect(() => {
         setDataSource(selectedSplitData.testLogVoList ? selectedSplitData.testLogVoList.map((item, index) => ({ ...item, rowKey: index })) : []);
         if (!selectedSplitData.testLogVoList || selectedSplitData.testLogVoList.length === 0) {
@@ -199,6 +199,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
             centered
             destroyOnClose
             visible={visible}
+            maskClosable={false}
             width="600px"
             onCancel={() => { setVisible(false) }}
             onOk={() => { handleAdd() }}

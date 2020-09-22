@@ -1,6 +1,6 @@
 // 批量导入弹框
-import { useEffect, useState, useRef, forwardRef, useImperativeHandle, Fragment } from 'react';
-import { Form, Col, Row, Upload, Button } from 'antd';
+import { useEffect, useState, useRef } from 'react';
+import { Form, Col, Row, Upload, Button, message } from 'antd';
 import { ExtModal } from 'suid'
 import styles from '../index.less'
 import SplitPartsTable from './SplitPartsTable';
@@ -18,9 +18,6 @@ export default function ({ visible, setVisible }) {
         console.log('确定')
     }
     const fileUpload = ({file}) => {
-        if(file.status !=='uploading'){
-            this.setState({loading:false});
-        }
         if (file.status === 'done') {
             if (file.response && file.response.data) {
                 let msg = []
@@ -40,7 +37,7 @@ export default function ({ visible, setVisible }) {
                         title: '错误信息'
                     })
                 }
-                this.setState({importData: result.filter(item=>item!==undefined)})
+                console.log('result', result)
             } else if (file.response && file.response.msg) {
                 message.error(file.response.msg)
             } else {
@@ -53,7 +50,6 @@ export default function ({ visible, setVisible }) {
         if (!xsl) {
             message.error('必须上传模版文件');
         }
-        this.setState({loading:true});
         return xsl
     }
     const getHeaders = () => {

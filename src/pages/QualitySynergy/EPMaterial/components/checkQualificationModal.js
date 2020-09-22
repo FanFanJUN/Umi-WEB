@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { ExtTable, ExtModal, ScrollBar } from 'suid';
-import { Upload } from '@/components';
+import Upload from '../../compoent/Upload';
 import { recommendUrl } from '@/utils/commonUrl';
 
 class EnvironmentProDemandList extends Component {
@@ -14,8 +14,8 @@ class EnvironmentProDemandList extends Component {
             { title: '供应商代码', dataIndex: 'supplierCode', ellipsis: true, align: 'center' },
             { title: '供应商名称', dataIndex: 'supplierName', ellipsis: true, align: 'center', width: 120 },
             {
-                title: '供应商资质文件', dataIndex: 'aptitudeFileId', ellipsis: true, align: 'center', render: (text) => {
-                    return <Upload entityId={text} type="show" />
+                title: '供应商资质文件', dataIndex: 'documentInfo', ellipsis: true, align: 'center', render: (text) => {
+                    return <Upload entityId={text?text:[]} type="show" />
                 }
             },
         ]
@@ -38,6 +38,7 @@ class EnvironmentProDemandList extends Component {
                 visible={visible}
                 centered
                 width={640}
+                maskClosable={false}
                 footer={null}
                 bodyStyle={{ height: 380, padding: 0 }}
                 title="查看供应商资质"

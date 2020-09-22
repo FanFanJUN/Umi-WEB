@@ -511,9 +511,7 @@ const LimitMaterial = ({ form }) => {
                                     style={{ width: '100%' }}
                                     precision={2}
                                     step={0.01}
-                                    formatter={value => `${value ? value + '%' : ''}`}
-                                    parser={value => value.replace('%', '')}
-                                    min={0} max={100}
+                                    min={0}
                                 />)
                             }
                         </FormItem>

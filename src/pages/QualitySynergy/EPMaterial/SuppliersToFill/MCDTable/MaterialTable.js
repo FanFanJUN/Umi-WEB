@@ -32,12 +32,18 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
         }
     }, [selectedSplitData]);
     // 解决编辑状态下-是否为限用物质控制物料输入的bug
-    useEffect(()=>{
-        if(visible&&modalType==='edit'){
-            setFieldsValue({
-                isRestricted: selectedRows[0].isRestricted
-            })
-        }
+    useEffect(() => {
+        if (visible) {
+            if(modalType === 'edit') {
+                setFieldsValue({
+                    isRestricted: selectedRows[0].isRestricted
+                })
+            } else {
+                setFieldsValue({
+                    isRestricted: undefined
+                })
+            }
+        } 
     }, [visible])
     const columns = [
         { title: '物质代码', dataIndex: 'substanceCode', align: 'center' },
@@ -47,7 +53,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
         { title: '适用范围', dataIndex: 'practicalRangeName', ellipsis: true, align: 'center', },
         { title: '物质重量(mg)', dataIndex: 'scopeApplication', ellipsis: true, align: 'center', },
         { title: '均质材料中的含量(%) ', dataIndex: 'materialWeight', ellipsis: true, align: 'center', },
-        { title: '豁免条款', dataIndex: 'exemptionClause', ellipsis: true, align: 'center' },
+        { title: '豁免条款', dataIndex: 'exemptionClauseCode', ellipsis: true, align: 'center' },
         { title: '符合性', dataIndex: 'compliance', ellipsis: true, align: 'center', render: (text) => text ? '符合' : '不符合' },
     ];
     // 记录列表选中
@@ -190,12 +196,26 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
             centered
             destroyOnClose
             visible={visible}
+            maskClosable={false}
             width="600px"
             onCancel={() => { setVisible(false) }}
             onOk={() => { handleAdd() }}
             title={`${modalType === 'add' ? '新增' : '编辑'}材料成分表物质`}
         >
             <Form>
+                <Row>
+                    <FormItem label='是否限用物质' {...formLayout}>
+                        {
+                            getFieldDecorator('isRestricted', {
+                                initialValue: modalType === 'edit' ? selectedRows[0].isRestricted : '',
+                                rules: [{ required: true, message: '请选择' }]
+                            })(<Select style={{ width: '100%' }}>
+                                <Option value={true}>是</Option>
+                                <Option value={false}>否</Option>
+                            </Select>)
+                        }
+                    </FormItem>
+                </Row>
                 <Row>
                     <FormItem label={getFieldValue('isRestricted') ? '物质代码' : '物质名称'} {...formLayout}>
                         {
@@ -211,22 +231,9 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                                     field={['substanceId', 'substanceName', 'casNo']}
                                     placeholder="请选择"
                                 />) : getFieldDecorator('substanceName', {
-                                    initialValue: modalType === 'edit' ? selectedRows[0].substanceCode : '',
+                                    initialValue: modalType === 'edit' ? selectedRows[0].substanceName : '',
                                     rules: [{ required: true, message: '请填写物质名称' }]
                                 })(<Input placeholder="请输入" />)
-                        }
-                    </FormItem>
-                </Row>
-                <Row>
-                    <FormItem label='是否限用物质' {...formLayout}>
-                        {
-                            getFieldDecorator('isRestricted', {
-                                initialValue: modalType === 'edit' ? selectedRows[0].isRestricted : '',
-                                rules: [{ required: true, message: '请选择' }]
-                            })(<Select style={{ width: '100%' }}>
-                                <Option value={true}>是</Option>
-                                <Option value={false}>否</Option>
-                            </Select>)
                         }
                     </FormItem>
                 </Row>
@@ -284,7 +291,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                         }
                     </FormItem>
                 </Row>
-                <Row>
+                {!(getFieldValue('isRestricted') === false) && <Row>
                     <FormItem label='豁免条款' {...formLayout}>
                         {
                             getFieldDecorator('exemptionClauseId', { initialValue: modalType === 'edit' ? selectedRows[0].exemptionClauseId : '', }),
@@ -299,7 +306,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                             />)
                         }
                     </FormItem>
-                </Row>
+                </Row>}
             </Form>
         </ExtModal>}
     </Fragment>
