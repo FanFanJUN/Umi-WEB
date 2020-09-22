@@ -31,16 +31,16 @@ class UploadFile extends React.Component {
   }
 
 
-  // componentWillReceiveProps(nextProps) {
-  //   if ((nextProps.entityId && nextProps.entityId !== this.props.entityId)
-  //     || nextProps.refresh) {
-  //     this.entityId = nextProps.entityId
-  //     this.updateFile(nextProps.entityId)
-  //   }else if(!nextProps.entityId && this.props.entityId){
-  //     this.entityId = '';
-  //     this.updateFile();
-  //   }
-  // }
+  componentWillReceiveProps(nextProps) {
+    if ((nextProps.entityId && nextProps.entityId !== this.props.entityId)
+      || nextProps.refresh) {
+      this.entityId = nextProps.entityId
+      this.updateFile(nextProps.entityId)
+    }else if(!nextProps.entityId && this.props.entityId){
+      this.entityId = '';
+      this.updateFile();
+    }
+  }
 
   //获得文件 icon
   getIcon(fileName, id) {

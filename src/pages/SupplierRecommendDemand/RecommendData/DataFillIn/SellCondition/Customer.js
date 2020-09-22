@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-09 15:36:50
- * @LastEditTime: 2020-09-17 14:15:35
+ * @LastEditTime: 2020-09-22 15:17:08
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/SellCondition/Customer.js
  * @Description: 客户相关
  * @Connect: 1981824361@qq.com
@@ -78,8 +78,8 @@ const Customer = React.forwardRef(({ form, type, data, setTableData }, ref) => {
     const columnsForOrder = [
         { title: '客户', dataIndex: 'customer', ellipsis: true, },
         { title: '订单或合同', dataIndex: 'orderContract', ellipsis: true, },
-        { title: '关键件/重要件', dataIndex: 'importantPart', ellipsis: true, inputType: 'Select' },
-        { title: '应用经验证明材料', dataIndex: 'applicationExperienceFileIds', ellipsis: true, inputType: 'UploadFile' },
+        { title: '关键件/重要件', dataIndex: 'importantPart', ellipsis: true, inputType: 'Select', width: 172 },
+        { title: '应用经验证明材料', dataIndex: 'applicationExperienceFileIds', ellipsis: true, inputType: 'UploadFile', width: 181 },
     ].map(item => ({ ...item, align: 'center' }));
 
     const columnsForDevPlan = [
