@@ -55,6 +55,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
             onOk: () => {
                 let newList = dataSource.filter(item => !(selectedRowKeys.includes(item.rowKey)));
                 newList = newList.map((item, index) => ({ ...item, rowKey: index }));
+                setDataSource(newList);
                 handleSplitDataList({
                     rowKey: selectedSplitData.rowKey,
                     testLogVoList: newList
