@@ -37,6 +37,7 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
         { title: '报告日期', dataIndex: 'reportDate', ellipsis: true, align: 'center', },
         { title: '有效截止日期 ', dataIndex: 'effectiveEndDate', ellipsis: true, align: 'center', },
         { title: '报告附件', dataIndex: 'testReportAttachmentId', ellipsis: true, align: 'center', render:(text)=>{
+            console.log('附件text', text)
             return <Upload entityId={text} type="show" />
         } },
         { title: '排序', dataIndex: 'name8', ellipsis: true, align: 'center', },
@@ -58,6 +59,7 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
     function handleAdd() {
         validateFields((errors, values) => {
             if (!errors) {
+                console.log('编辑数据', values)
                 values.reportDate = moment(values.reportDate).format('YYYY-MM-DD');
                 values.uploadAttachmentIds = values.testReportAttachmentId;
                 values.testReportAttachmentId = values.testReportAttachmentId ? values.testReportAttachmentId.join() : '';

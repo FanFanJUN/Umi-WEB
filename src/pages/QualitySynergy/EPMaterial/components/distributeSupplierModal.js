@@ -270,7 +270,7 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                     disabled={selectedRows.length === 0 || checkSameBatch()}
                     onClick={() => { !checkSameBatch() && setEditDateVisible(true) }} key="edit">编辑填报截止日期</Button>
                 <Button className={styles.btn}
-                    disabled={selectedRows.length === 0}
+                    disabled={!(selectedRows.length !== 0 && checkAllSameStatus('publish') === 2)}
                     onClick={() => { handleDelete() }} key="delete" >删除</Button>
                 <Button className={styles.btn} onClick={() => { handleSuspended() }} key="suspend"
                     disabled={checkAllSameStatus('suspend') === false}>{checkAllSameStatus('suspend') === 1 ? '取消暂停' : checkAllSameStatus('suspend') === 2 ? '暂停' : '暂停/取消暂停'}</Button>

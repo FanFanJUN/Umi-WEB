@@ -141,7 +141,7 @@ const BaseInfo = forwardRef(({ form, originData={}, isView }, ref) => {
           <FormItem label='传真' {...formLayout}>
             {
               getFieldDecorator('fillPeopleFax', {
-                initialValue: originData.fillPeopleEmail,
+                initialValue: originData.fillPeopleFax,
                 rules: [{ required: true, message: '请输入传真' }]
               })(<Input disabled={isView}/>)
             }
