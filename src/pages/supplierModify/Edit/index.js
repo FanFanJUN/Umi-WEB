@@ -435,6 +435,10 @@ function CreateStrategy() {
   function hideloading() {
     triggerLoading(false)
   }
+  // 切换配置
+  function ficationtype(id) {
+    initConfigurationTable(id);
+  }
   return (
     <Spin spinning={loading} tip='处理中...'>
       <Affix offsetTop={0}>
@@ -469,6 +473,7 @@ function CreateStrategy() {
                       editformData={editData}
                       wholeData={wholeData}
                       wrappedComponentRef={BaseinfoRef}
+                      onClickfication={ficationtype}
                     />
                   </div>
                 </div>

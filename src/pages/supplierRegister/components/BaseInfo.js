@@ -169,6 +169,7 @@ const BaseinfoRef = forwardRef(({
 		console.log(editData)
 	}
 	function ficationInfo(id) {
+		console.log(id)
 		onClickfication(id)
 	}
 	function setSupplier(name) {

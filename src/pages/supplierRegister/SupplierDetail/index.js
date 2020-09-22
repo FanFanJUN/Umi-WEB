@@ -187,8 +187,8 @@ function CreateStrategy() {
                     <Businessinfo
                       businesshide={businesshide}
                       editformData={editData}
-                      wrappedComponentRef={BusinessRef}
                       isView={true}
+                      wrappedComponentRef={SupplyRangeRef}
                     />
                   </div>
                 </div>

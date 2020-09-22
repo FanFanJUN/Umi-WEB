@@ -48,15 +48,15 @@ const BankInfoRef = forwardRef(({
                 //绑定附件
                 if (bankInfo.openingPermit && bankInfo.openingPermit.length > 0 && !bankInfo.openingPermitId) {
                     RelationDocId(bankInfo.openingPermit, bankInfo.openingPermitId).then(id => {
+                        console.log(343434)
                         bankInfo.openingPermitId = id;
                     })
                 }
                 if (edit) {
-                    let editbankInfo = {...initialValues,...bankInfo};
+                    let editbankInfo = {initialValues,...bankInfo};
                     console.log(editbankInfo)
                     onOk(editbankInfo);
                     handleModalVisible(false);
-                    
                 }else {
                     if (mergeData(bankInfo)) {
                         handleModalVisible(false);
