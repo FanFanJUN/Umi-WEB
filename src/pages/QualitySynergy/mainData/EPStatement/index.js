@@ -15,8 +15,7 @@ const { TextArea } = Input;
 const { authAction } = utils;
 const { create, Item: FormItem } = Form;
 const { confirm } = Modal;
-const DEVELOPER_ENV = true;
-// const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 14, },
@@ -28,7 +27,7 @@ const TechnicalDataFileTypes = (props) => {
         modalSource: '',
     });
     const { form } = props;
-    const { getFieldDecorator, validateFields, setFieldsValue } = form;
+    const { getFieldDecorator, validateFields, setFieldsValue, getFieldValue } = form;
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [selectedRow, setSelectedRow] = useState([]);
 
@@ -186,7 +185,7 @@ const TechnicalDataFileTypes = (props) => {
                         </FormItem>
                     </Row>
                     <Row>
-                        <FormItem label='填写说明(中文)' {...formLayout}>
+                        <FormItem label={getFieldValue('modelType') === 'TXSM' ? '填写说明(中文)' : '申明内容'} {...formLayout}>
                             {
                                 getFieldDecorator('chContent', {
                                     initialValue: data.modalSource && data.modalSource.chContent,
@@ -195,7 +194,7 @@ const TechnicalDataFileTypes = (props) => {
                             }
                         </FormItem>
                     </Row>
-                    <Row>
+                    {(getFieldValue('modelType') === 'TXSM') && <Row>
                         <FormItem label='填写说明(英文)' {...formLayout}>
                             {
                                 getFieldDecorator('ehContent', {
@@ -204,8 +203,7 @@ const TechnicalDataFileTypes = (props) => {
                                 })(<TextArea />)
                             }
                         </FormItem>
-                    </Row>
-
+                    </Row>}
                     <Row>
                         <FormItem label='排序号' {...formLayout}>
                             {

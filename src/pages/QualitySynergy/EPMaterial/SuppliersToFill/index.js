@@ -44,7 +44,6 @@ const SupplierFillList = function ({ form }) {
             ...searchValue,
             quickSearchProperties: []
         }).then(res => {
-            console.log(res)
             if(res.success && res.statusCode === 200) {
                 setDataSource(res.data.rows)
             } else {
@@ -67,7 +66,7 @@ const SupplierFillList = function ({ form }) {
                         }
                     })
                 } else {
-                    setOwnerFiles(res.data)
+                    setOwnerFiles(res.data[0].aptitudeFileId)
                 }
             }
         })

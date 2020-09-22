@@ -1,6 +1,6 @@
 import { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment } from 'react';
 import { ExtTable, ExtModal, DataImport, ComboList } from 'suid';
-import { Button, DatePicker, Form, Modal, Row, Input, Select, message } from 'antd';
+import { Button, InputNumber, Form, Modal, Row, Input, Select, message } from 'antd';
 import { limitMaterialList, limitScopeList, exemptionClauseDataList } from '../../../commonProps';
 import { materialCompositionVerification } from '../../../../../services/qualitySynergy';
 import classnames from 'classnames'
@@ -23,24 +23,32 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [dataSource, setDataSource] = useState([]);
-    const { getFieldDecorator, validateFields, getFieldValue } = form;
+    const { getFieldDecorator, validateFields, getFieldValue, setFieldsValue } = form;
     useEffect(() => {
-        console.log('进入这里执行', selectedSplitData)
+        // console.log('进入这里执行', selectedSplitData)
         setDataSource(selectedSplitData.voList ? selectedSplitData.voList.map((item, index) => ({ ...item, rowKey: index })) : []);
         if (!selectedSplitData.voList || selectedSplitData.voList.length === 0) {
             tableRef.current.manualSelectedRows();
         }
-    }, [selectedSplitData])
+    }, [selectedSplitData]);
+    // 解决编辑状态下-是否为限用物质控制物料输入的bug
+    useEffect(()=>{
+        if(visible&&modalType==='edit'){
+            setFieldsValue({
+                isRestricted: selectedRows[0].isRestricted
+            })
+        }
+    }, [visible])
     const columns = [
         { title: '物质代码', dataIndex: 'substanceCode', align: 'center' },
         { title: '物质名称', dataIndex: 'substanceName', ellipsis: true, align: 'center' },
-        { title: '是否限用物质', dataIndex: 'isRestricted', ellipsis: true, align: 'center', render: (text) => { return text == 'true' ? '是' : '否' } },
+        { title: '是否限用物质', dataIndex: 'isRestricted', ellipsis: true, align: 'center', render: (text) => { return text ? '是' : '否' } },
         { title: 'CAS.NO', dataIndex: 'casNo', ellipsis: true, align: 'center', },
         { title: '适用范围', dataIndex: 'practicalRangeName', ellipsis: true, align: 'center', },
         { title: '物质重量(mg)', dataIndex: 'scopeApplication', ellipsis: true, align: 'center', },
         { title: '均质材料中的含量(%) ', dataIndex: 'materialWeight', ellipsis: true, align: 'center', },
         { title: '豁免条款', dataIndex: 'exemptionClause', ellipsis: true, align: 'center' },
-        { title: '符合性', dataIndex: 'compliance', ellipsis: true, align: 'center', render: (text) => text ? '符合' : '不符合'},
+        { title: '符合性', dataIndex: 'compliance', ellipsis: true, align: 'center', render: (text) => text ? '符合' : '不符合' },
     ];
     // 记录列表选中
     function handleSelectedRows(rowKeys, rows) {
@@ -135,6 +143,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
         });
         tableRef.current.manualSelectedRows();
     };
+    // console.
     return <Fragment>
         <div className={styles.macTitle}>材料成分表</div>
         <div className={classnames({
@@ -188,24 +197,23 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
         >
             <Form>
                 <Row>
-                    <FormItem label='物质代码' {...formLayout}>
+                    <FormItem label={getFieldValue('isRestricted') ? '物质代码' : '物质名称'} {...formLayout}>
                         {
                             getFieldDecorator('substanceId', { initialValue: modalType === 'edit' ? selectedRows[0].substanceId : '' }),
                             getFieldDecorator('substanceName', { initialValue: modalType === 'edit' ? selectedRows[0].substanceName : '' }),
-                            (!getFieldValue('isRestricted') && modalType === 'add') ? <Input disabled={true} placeholder="请先选择是否为限用物质" />
-                                : getFieldValue('isRestricted') === 'false' ? getFieldDecorator('substanceName', {
+                            (getFieldValue('isRestricted') === undefined && modalType === 'add') ? <Input disabled={true} placeholder="请先选择是否为限用物质" />
+                                : getFieldValue('isRestricted') ? getFieldDecorator('substanceCode', {
+                                    initialValue: modalType === 'edit' ? selectedRows[0].substanceCode : '',
+                                    rules: [{ required: true, message: '请选择物质名称' }]
+                                })(<ComboList form={form}
+                                    {...limitMaterialList}
+                                    name='substanceCode'
+                                    field={['substanceId', 'substanceName', 'casNo']}
+                                    placeholder="请选择"
+                                />) : getFieldDecorator('substanceName', {
                                     initialValue: modalType === 'edit' ? selectedRows[0].substanceCode : '',
                                     rules: [{ required: true, message: '请填写物质名称' }]
                                 })(<Input placeholder="请输入" />)
-                                    : getFieldDecorator('substanceCode', {
-                                        initialValue: modalType === 'edit' ? selectedRows[0].substanceCode : '',
-                                        rules: [{ required: true, message: '请选择物质名称' }]
-                                    })(<ComboList form={form}
-                                        {...limitMaterialList}
-                                        name='substanceCode'
-                                        field={['substanceId', 'substanceName', 'casNo']}
-                                        placeholder="请选择"
-                                    />)
                         }
                     </FormItem>
                 </Row>
@@ -213,11 +221,11 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                     <FormItem label='是否限用物质' {...formLayout}>
                         {
                             getFieldDecorator('isRestricted', {
-                                initialValue: modalType === 'edit' ? selectedRows[0].isRestricted && selectedRows[0].isRestricted.toString() : '',
+                                initialValue: modalType === 'edit' ? selectedRows[0].isRestricted : '',
                                 rules: [{ required: true, message: '请选择' }]
                             })(<Select style={{ width: '100%' }}>
-                                <Option value="true">是</Option>
-                                <Option value="false">否</Option>
+                                <Option value={true}>是</Option>
+                                <Option value={false}>否</Option>
                             </Select>)
                         }
                     </FormItem>
@@ -253,8 +261,12 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                         {
                             getFieldDecorator('scopeApplication', {
                                 initialValue: modalType === 'edit' ? selectedRows[0].scopeApplication : '',
-                                rules: [{ required: true, message: '请填入物质重量(mg)' }]
-                            })(<Input />)
+                                rules: [{ required: true, message: '请填入物质重量' }]
+                            })(<InputNumber style={{ width: '100%' }} min={0} onBlur={() => {
+                                if (getFieldValue('scopeApplication') === 0) {
+                                    setFieldsValue({ scopeApplication: '' })
+                                }
+                            }} />)
                         }
                     </FormItem>
                 </Row>
@@ -264,7 +276,11 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                             getFieldDecorator('materialWeight', {
                                 initialValue: modalType === 'edit' ? selectedRows[0].materialWeight : '',
                                 rules: [{ required: true, message: '请填入均质材料中的含量' }]
-                            })(<Input />)
+                            })(<InputNumber style={{ width: '100%' }} min={0} onBlur={() => {
+                                if (getFieldValue('scopeApplication') === 0) {
+                                    setFieldsValue({ scopeApplication: '' })
+                                }
+                            }} />)
                         }
                     </FormItem>
                 </Row>

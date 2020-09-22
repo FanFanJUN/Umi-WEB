@@ -6,6 +6,7 @@ import styles from '../index.less'
 import SplitPartsTable from './SplitPartsTable';
 import MaterialTable from './MaterialTable';
 import TestRecordsTable from './TestRecordsTable';
+import { recommendUrl } from '../../../../../utils/commonUrl'
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const { create, Item: FormItem } = Form;
 
@@ -78,7 +79,7 @@ export default function ({ visible, setVisible }) {
     >
         <Row style={{marginBottom:6}}>
             <Upload
-                action={'uploadUrl'}
+                action={`${recommendUrl}api/epController/importData`}
                 onChange={fileUpload}
                 headers={getHeaders()}
                 beforeUpload={beforeUpload}

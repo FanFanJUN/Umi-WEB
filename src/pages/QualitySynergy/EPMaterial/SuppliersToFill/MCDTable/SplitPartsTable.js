@@ -32,7 +32,7 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
         { title: '拆分部位名称', dataIndex: 'splitPartsName', align: 'center' },
         { title: '均质材料名称', dataIndex: 'homogeneousMaterialName', ellipsis: true, align: 'center' },
         { title: '测试机构', dataIndex: 'testOrganization', ellipsis: true, align: 'center', },
-        { title: '测试结论', dataIndex: 'reportResult', ellipsis: true, align: 'center', render: (text)=>text=='true'?'通过':'不通过'},
+        { title: '测试结论', dataIndex: 'reportResult', ellipsis: true, align: 'center', render: (text)=>text?'通过':'不通过'},
         { title: '报告编号', dataIndex: 'reportNumber', ellipsis: true, align: 'center', },
         { title: '报告日期', dataIndex: 'reportDate', ellipsis: true, align: 'center', },
         { title: '有效截止日期 ', dataIndex: 'effectiveEndDate', ellipsis: true, align: 'center', },
@@ -221,11 +221,11 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
                     <FormItem label='测试结论' {...formLayout}>
                         {
                             getFieldDecorator('reportResult', {
-                                initialValue: modalType==='edit' ? selectedRows[0].reportResult : 'true',
+                                initialValue: modalType==='edit' ? selectedRows[0].reportResult : true,
                                 rules: [{ required: true, message: '请选择供应商代码' }]
                             })(<Select style={{ width: '100%' }}>
-                                <Option value="true">通过</Option>
-                                <Option value="false">不通过</Option>
+                                <Option value={true}>通过</Option>
+                                <Option value={false}>不通过</Option>
                             </Select>)
                         }
                     </FormItem>

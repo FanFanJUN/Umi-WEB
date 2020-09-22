@@ -15,6 +15,7 @@ export default function () {
     const supplierRef = useRef(null);
     const mcdRef = useRef(null);
     const [notesList, setNotesList] = useState([]);
+    const [statement, setStatement] = useState([]);
     const { query } = router.useLocation();
     const handleBack = () => {
         closeCurrent();
@@ -23,6 +24,14 @@ export default function () {
         getNotes().then(res => {
             console.log(res)
             if (res.data && res.data.rows) {
+                let statements = '';
+                res.data.rows.map(item => {
+                    if(item.modelType === 'SM'){
+                        statements += item.chContent
+                    }
+                });
+                console.log('statements', statements)
+                setStatement(statements);
                 setNotesList(res.data.rows);
             } else {
                 message.error('获取填写说明失败!');
@@ -103,7 +112,7 @@ export default function () {
                     <div className={styles.bgw}>
                         <div className={styles.title}>供应商信息</div>
                         <div className={styles.content}>
-                            <SupplierInfo wrappedComponentRef={supplierRef} originData={originData} isView={query.pageStatus === 'detail'} />
+                            <SupplierInfo wrappedComponentRef={supplierRef} originData={originData} isView={query.pageStatus === 'detail'} statement={statement}/>
                         </div>
                     </div>
                 </div>
@@ -114,9 +123,10 @@ export default function () {
                             <ul style={{ border: '1px solid #d9d9d9', padding: '0', borderBottom: 'none'}}>
                                 {
                                     notesList.map((item, index) => {
-                                        return <li style={{ borderBottom: '1px solid #d9d9d9', padding: '0 15px'}}>
+                                        if(item.modelType === 'SM')return '';
+                                        return <li style={{ borderBottom: '1px solid #d9d9d9', padding: '5px 15px'}}>
                                             <div>{index + 1 + '. ' + item.chContent}</div>
-                                            <div>{' ' + item.ehContent}</div>
+                                            <div style={{paddingLeft: '10px'}}>{item.ehContent}</div>
                                         </li>
                                     })
                                 }

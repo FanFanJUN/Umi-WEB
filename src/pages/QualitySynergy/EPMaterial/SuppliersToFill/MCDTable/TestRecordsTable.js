@@ -38,7 +38,10 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
         { title: '物质名称', dataIndex: 'materialName', ellipsis: true, align: 'center' },
         { title: 'CAS.NO', dataIndex: 'casNo', ellipsis: true, align: 'center', },
         { title: '适用范围', dataIndex: 'scopeApplicationName', ellipsis: true, align: 'center', },
-        { title: '含量', dataIndex: 'content', ellipsis: true, align: 'center', },
+        { title: '含量', dataIndex: 'content', ellipsis: true, align: 'center', render:(text, item)=>{
+            if(item.contentType === 'RANGE_VALUE') return '<' + text;
+            else return text;
+        }},
         { title: '基本单位', dataIndex: 'unitName', ellipsis: true, align: 'center', },
         { title: '符合性 ', dataIndex: 'compliance', ellipsis: true, align: 'center', render: (text) => text ? '符合' : '不符合' },
     ];
