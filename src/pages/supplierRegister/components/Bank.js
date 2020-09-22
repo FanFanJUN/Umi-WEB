@@ -206,6 +206,7 @@ const Bankformef = forwardRef(({
       if (item.key === val.key) {
         const copyData = dataSource.slice(0)
         copyData[index] = val;
+        console.log(copyData)
         setDataSource(copyData)
         setRows(copyData)
       }
@@ -230,6 +231,7 @@ const Bankformef = forwardRef(({
   }
   // 数据处理
   function mergeData(formData) {
+    console.log(formData)
     const data = dataSource;
     const exist = data.find((value) => value.bankAccount === formData.bankAccount &&
       value.key !== formData.key);
