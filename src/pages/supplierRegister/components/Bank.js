@@ -1,5 +1,5 @@
 import React, { forwardRef, useState, useRef, useEffect, useImperativeHandle } from 'react';
-import { ExtTable, WorkFlow, ExtModal, utils, ToolBar } from 'suid';
+import { ExtTable, WorkFlow, ExtModal, utils, ToolBar,AuthButton  } from 'suid';
 import { Form, Button, message, Checkbox, Modal } from 'antd';
 import { openNewTab, getFrameElement ,isEmpty} from '@/utils';
 import Header from '@/components/Header';
@@ -206,6 +206,7 @@ const Bankformef = forwardRef(({
       if (item.key === val.key) {
         const copyData = dataSource.slice(0)
         copyData[index] = val;
+        console.log(copyData)
         setDataSource(copyData)
         setRows(copyData)
       }
@@ -230,6 +231,7 @@ const Bankformef = forwardRef(({
   }
   // 数据处理
   function mergeData(formData) {
+    console.log(formData)
     const data = dataSource;
     const exist = data.find((value) => value.bankAccount === formData.bankAccount &&
       value.key !== formData.key);
@@ -290,20 +292,14 @@ const Bankformef = forwardRef(({
   const headerleft = (
     <>
       {
-              authAction(
-                <Button type='primary' ignore={DEVELOPER_ENV} key='' className={styles.btn} onClick={() => showModal()}>新增</Button>
-              )
-            }
-            {
-              authAction(
-                <Button ignore={DEVELOPER_ENV} key='' className={styles.btn} onClick={() => handleEdit()} disabled={empty}>编辑</Button>
-              )
-            }
-            {
-              authAction(
-                <Button ignore={DEVELOPER_ENV} key='' className={styles.btn} disabled={empty} onClick={handleRemove}>删除</Button>
-              )
-            }
+        <AuthButton type="primary" className={styles.btn} onClick={() => showModal()}>新增</AuthButton>
+      }
+      {
+        <AuthButton className={styles.btn} onClick={() => handleEdit()} disabled={empty} >编辑</AuthButton>
+      }
+      {
+        <AuthButton className={styles.btn} disabled={empty} onClick={handleRemove}>删除</AuthButton>
+      }
     </>
   );
   return (

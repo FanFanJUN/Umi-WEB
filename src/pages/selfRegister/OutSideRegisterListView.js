@@ -332,7 +332,7 @@ function SupplierConfigure() {
                                     key='SRM_SM_SUPPLIER_MY_PERFORMANCE_EDIT' 
                                     className={styles.btn} 
                                     onClick={handleEditor}
-                                    disabled={empty || underWay || !isSelf}
+                                    disabled={empty || underWay}
                                     >编辑
                                 </Button>
                             )
@@ -357,7 +357,7 @@ function SupplierConfigure() {
                                     // preStart={handleBeforeStartFlow}
                                     businessKey={flowId}
                                     callBack={handleComplete}
-                                    disabled={empty || underWay || !isSelf || !Toexamine}
+                                    disabled={empty || underWay || !Toexamine}
                                     businessModelCode='com.ecmp.srm.sm.entity.SupplierApply'
                                     ignore={DEVELOPER_ENV}
                                     key='SRM_SM_SUPPLIER_MY_PERFORMANCE_EXAMINE'
@@ -368,7 +368,7 @@ function SupplierConfigure() {
                             authAction(
                                 <Button
                                     className={styles.btn}
-                                    disabled={empty || !underWay || !isSelf || completed}
+                                    disabled={empty || !underWay || completed}
                                     onClick={stopApprove}
                                     ignore={DEVELOPER_ENV}
                                     key='SRM_SM_SUPPLIER_MY_PERFORMANCE_STOP_APPROVAL'

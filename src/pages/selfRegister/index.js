@@ -44,16 +44,16 @@ export default function () {
     }
     // 提交
     async function supplierPayment() {
-        // const { getAccountinfo } = BassAccounRef.current;
-        // let resultData = getAccountinfo()
-        // triggerLoading(true)
-        // const { data,success, message: msg } = await saveRegistVo({registrationInformationVo: JSON.stringify(resultData)})
-        // if (success) {
-        //     window.open(`/NewHomePageView`)
-        //   } else {
-        //     message.error(msg);
-        //   }
-        window.open(`https://tecmp.changhong.com/srm-se-web/NewHomePageView?_s=c9f659d9-3cbc-4a17-a2bd-80724221bd48`)
+        const { getAccountinfo } = BassAccounRef.current;
+        let resultData = getAccountinfo()
+        triggerLoading(true)
+        const { data,success, message: msg } = await saveRegistVo({registrationInformationVo: JSON.stringify(resultData)})
+        if (success) {
+            //window.open(window.location.href + `/react-basic-web/index?_s=` + data)
+            window.open(`/srm-se-web/NewHomePageView?_s=` + data)
+        } else {
+            message.error(msg);
+        }
     }
     return (
         <Wrapper>
