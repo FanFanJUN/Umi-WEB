@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:58:22
- * @LastEditTime: 2020-09-18 15:44:28
+ * @LastEditTime: 2020-09-22 10:33:06
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/HdssControll/index.js
  * @Description: 产品有害物质管控 tab
  * @Connect: 1981824361@qq.com
@@ -39,10 +39,11 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
 
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             const res = await requestGetApi({ supplierRecommendDemandId: id, tabKey: 'hdssControllTab' });
             if (res.success) {
                 res.data && setData(res.data);
-                setTableTata(data.environmentalTestingEquipments);
+                res.data && setTableTata(res.data.environmentalTestingEquipments);
             } else {
                 message.error(res.message);
             }

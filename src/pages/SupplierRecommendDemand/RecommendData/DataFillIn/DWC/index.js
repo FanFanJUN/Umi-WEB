@@ -46,6 +46,7 @@ const DWC = ({ form, updateGlobalStatus }) => {
 
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             const res = await requestGetApi({ supplierRecommendDemandId: '676800B6-F19D-11EA-9F88-0242C0A8442E', tabKey: 'DWCTab' });
             if (res.success) {
                 res.data && setData(res.data);

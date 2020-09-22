@@ -125,3 +125,24 @@ export const hideFormItem = (getFieldDecorator) => {
             </FormItem>
         </div>
 };
+
+
+/**
+ * @description 附件 处理
+ * @author LC@1981824361
+ * @date 2020-09-22
+ * @export
+ * @param {*} list
+ * @returns 
+ */
+export function getDocId(list) {
+    if (!isEmptyArray(list)) {
+        let temp = [];
+        list.forEach(function (item, index) {
+            temp.push(item.id)
+        });
+        return temp;
+    } else {
+        return '';
+    }
+};

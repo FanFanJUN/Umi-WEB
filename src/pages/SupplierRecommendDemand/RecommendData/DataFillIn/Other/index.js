@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:58:13
- * @LastEditTime: 2020-09-18 15:45:18
+ * @LastEditTime: 2020-09-22 10:31:56
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/Other/index.js
  * @Description: 其他附加资料
  * @Connect: 1981824361@qq.com
@@ -40,10 +40,11 @@ const Other = ({ form, updateGlobalStatus }) => {
 
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             const res = await requestGetApi({ supplierRecommendDemandId: '676800B6-F19D-11EA-9F88-0242C0A8442E', tabKey: 'otherTab', });
             if (res.success) {
                 res.data && setData(res.data);
-                setequityStructures(res.data.equityStructures);
+                res.data && setequityStructures(res.data.equityStructures);
             } else {
                 message.error(res.message);
             }

@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-10 10:57:33
- * @LastEditTime: 2020-09-21 11:05:12
+ * @LastEditTime: 2020-09-22 14:35:11
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/CommonUtil/EditTable.js
  * @Description:  函数式可编辑行 Table组件
  * @Connect: 1981824361@qq.com
@@ -12,7 +12,7 @@ import { Input, InputNumber, Popconfirm, Form, Divider, Button, DatePicker, Sele
 import { ExtTable, ComboList, ComboGrid } from 'suid';
 import PropTypes, { any } from 'prop-types';
 import AutoSizeLayout from '../../../../supplierRegister/SupplierAutoLayout';
-import { guid, isEmptyArray, checkNull, hideFormItem } from './utils';
+import { guid, isEmptyArray, checkNull, hideFormItem, getDocId } from './utils';
 import UploadFile from './UploadFile';
 import { currencyTableProps } from '../../../../../utils/commonProps';
 import moment from 'moment';
@@ -44,6 +44,7 @@ const EditableCell = (params) => {
 
     // 编辑样式
     const getInput = () => {
+        const a = record[dataIndex];
         switch (inputType) {
             case 'InputNumber':
                 return <InputNumber disabled={inputDisabled} min={0} />
@@ -69,7 +70,7 @@ const EditableCell = (params) => {
                     <Option value={false}>否</Option>
                 </Select>
             case 'UploadFile':
-                return <UploadFile />
+                return <UploadFile entityId={a} />
             case 'TextArea':
                 return <Input.TextArea disabled={inputDisabled} />
             case 'hideForm':
@@ -89,40 +90,46 @@ const EditableCell = (params) => {
     // 有编辑状态  不处于编辑中 col 显示值
     const getRecordData = () => {
         const a = record[dataIndex];
-        if (inputType === 'Select') {
-            // a有boolean 类型  判断有无值  不用&&符号
-            if (!isEmptyArray(selectOptions) && a !== undefined && a !== '' && a !== null) {
-                // col 传递参数
-                const selectObj = selectOptions.filter(item => {
-                    return item.value === a;
-                });
-                return selectObj[0].name;
-            } else {
-                // 默认 参数
-                if (a === true) {
-                    return '是';
+        if (a !== null && a !== undefined) {
+            if (inputType === 'Select') {
+                // a有boolean 类型  判断有无值  不用&&符号
+                if (!isEmptyArray(selectOptions) && a !== undefined && a !== '' && a !== null) {
+                    // col 传递参数
+                    const selectObj = selectOptions.filter(item => {
+                        return item.value === a;
+                    });
+                    return selectObj[0].name;
+                } else {
+                    // 默认 参数
+                    if (a === true) {
+                        return '是';
+                    }
+                    return '否';
                 }
-                return '否';
+            } else if (inputType === 'DatePicker') {
+                return a && moment(a).format('YYYY-MM-DD');
+            } else if (inputType === 'percentInput') {
+                return `${a}%`;
+            } else if (inputType === 'UploadFile') {
+                return <UploadFile type='show' entityId={a} />
+            } else {
+                return a;
             }
-        } else if (inputType === 'DatePicker') {
-            return a && moment(a).format('YYYY-MM-DD');
-        } else if (inputType === 'percentInput') {
-            return `${a}%`;
-        } else if (inputType === 'UploadFile') {
-            return <UploadFile type='show' entityId={a} />
-        } else {
-            return record[dataIndex];
         }
     }
 
     // 有编辑状态  处于编辑中col 默认值
     const getInit = () => {
+        const a = record[dataIndex];
         if (inputDefaultValue) {
             return inputDefaultValue;
         } else {
             if (inputType === 'DatePicker') {
-                return moment(record[dataIndex]);
+                return moment(a);
             }
+            //  else if (inputType === 'UploadFile') {
+            //     return getDocId(a);
+            // }
             return record[dataIndex];
         }
     }
@@ -327,7 +334,6 @@ const EditableTable = (props) => {
 
 const EditableFormTable = Form.create()(EditableTable);
 
-// const { form, dataSource, columns, rowKey, isEditTable=false, isToolBar=false } = props;
 EditableTable.protoType = {
     //数据源
     dataSource: PropTypes.array,
@@ -345,4 +351,4 @@ EditableTable.protoType = {
     tableType: PropTypes.string,
 }
 
-export default EditableFormTable;
+export default React.memo(EditableFormTable);
