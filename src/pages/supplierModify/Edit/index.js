@@ -409,7 +409,6 @@ function CreateStrategy() {
   }
   async function createSave(val) {
     let params = { ...wholeData, ...val };
-    console.log(params)
     const { success, message: msg } = await TemporarySupplierRegister(params);
     if (success) {
       message.success(msg);

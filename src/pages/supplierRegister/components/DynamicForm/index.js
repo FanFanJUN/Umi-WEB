@@ -969,7 +969,7 @@ const CommonconfigRef = forwardRef(({
                               type={isView ? 'show' : ''}
                               accessType={['pdf', 'jpg', 'png']}
                               warning={'仅支持pdf,jpg,png格式，文件大小不超过10M'}
-                              entityId={entityIdObj ? entityIdObj['注册授权委托书'] : null} />
+                              entityId={entityIdObj ? entityIdObj['授权委托书'] : null} />
                           )
                         } {!isView && <a href='/srm-se-web/供应商法定代表人授权委托书.docx'>模板下载</a>}
                       </FormItem>

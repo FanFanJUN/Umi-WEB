@@ -303,3 +303,9 @@ export const checkCreditCode = params => createServiceRequest({
   params,
   hack: true
 })
+// 注册账号重复效验
+export const checkAccount = params => createServiceRequest({
+  path: '/supplierRegister/findByAccountAndTenantCode',
+  params,
+  hack: true
+})

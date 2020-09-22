@@ -73,16 +73,18 @@ const CommonconfigRef = forwardRef(({
   }, [])
   // 设置表单参数
   function setHeaderFields(fields) {
-    const { attachmentId = null, ...fs } = fields;
-    setFieldsValue(fs)
+    // const { attachmentId = null, ...fs } = fields;
+    // setFieldsValue(fs)
   }
   let entityIdObj = getEntityId(editData);
+  console.log(formItems)
+  console.log(editData)
   return (
     <Row type="flex">
       {
         formItems.map((item, index) => {
           //const Item = Combos[item.type] || Input;
-          if (!!item.type && item.verifi === '0' || !!item.type && item.verifi === '1') {
+          if (!!item.type && item.verifi === '0' || !!item.type && item.verifi === '1' || !!item.type && item.verifi === '2') {
             if (item.key !== 'registerProvinceCode' || item.key !== 'registerProvinceId') {
               return (
                 <>
@@ -345,12 +347,22 @@ const CommonconfigRef = forwardRef(({
                         {...formItemLayout}
                         label={"英文地址"}
                       >
+                        <span>{editData ? editData.extendVo.englishAddress : ""}</span>
+                      </FormItem>
+                    </Col> : null
+                  }
+                  {
+                    item.key === 'englishAddress' ? <Col span={8}>
+                      <FormItem
+                        {...formItemLayout}
+                        label={"英文地址"}
+                      >
                         <span>{editData && editData.extendVo ? editData.extendVo.englishAddress : ""}</span>
                       </FormItem>
                     </Col> : null
                   }
                   {
-                    item.type === 'dbCode' ? <Col span={8}>
+                    item.key === 'dbCode' ? <Col span={8}>
                       <FormItem
                         {...formItemLayout}
                         label={'邓白氏码'}
@@ -405,7 +417,7 @@ const CommonconfigRef = forwardRef(({
                               type={isView ? 'show' : ''}
                               accessType={['pdf', 'jpg', 'png']}
                               warning={'仅支持pdf,jpg,png格式，文件大小不超过10M'}
-                              entityId={entityIdObj ? entityIdObj['注册授权委托书'] : null} />
+                              entityId={entityIdObj ? entityIdObj['授权委托书'] : null} />
                           )
                         } {!isView && <a href='/srm-se-web/供应商法定代表人授权委托书.docx'>模板下载</a>}
                       </FormItem>

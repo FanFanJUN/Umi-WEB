@@ -5,7 +5,7 @@ import RegistrationAgreement from './commons/RegistrationAgreement'
 import BaseAccountInfo from './commons/BaseAccountInfo'
 import {saveRegistVo} from '../../services/supplierRegister'
 import { Wrapper } from './style'
-
+const srmBaseUrl = "/srm-se-web";
 const Step = Steps.Step;
 export default function () {
     const { query } = router.useLocation();
@@ -44,15 +44,16 @@ export default function () {
     }
     // 提交
     async function supplierPayment() {
-        const { getAccountinfo } = BassAccounRef.current;
-        let resultData = getAccountinfo()
-        triggerLoading(true)
-        const { success, message: msg } = await saveRegistVo({registrationInformationVo: JSON.stringify(resultData)})
-        if (success) {
-           // window.location.replace(host + psmBaseUrl + `/RegisterSuccessModal?account= ${resultData.account} &pwd=${resultData.pwd}&name=${resultData.name}`);
-          } else {
-            message.error(msg);
-          }
+        // const { getAccountinfo } = BassAccounRef.current;
+        // let resultData = getAccountinfo()
+        // triggerLoading(true)
+        // const { data,success, message: msg } = await saveRegistVo({registrationInformationVo: JSON.stringify(resultData)})
+        // if (success) {
+        //     window.open(`/NewHomePageView`)
+        //   } else {
+        //     message.error(msg);
+        //   }
+        window.open(`https://tecmp.changhong.com/srm-se-web/NewHomePageView?_s=c9f659d9-3cbc-4a17-a2bd-80724221bd48`)
     }
     return (
         <Wrapper>
