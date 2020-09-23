@@ -470,7 +470,7 @@ export default create()(function ({ form }) {
         { title: '环保标准', dataIndex: 'environmentalProtectionName', ellipsis: true },
         { title: '战略采购代码', dataIndex: 'strategicPurchaseCode', ellipsis: true },
         { title: '战略采购名称', dataIndex: 'strategicPurchaseName', ellipsis: true },
-        { title: '供应商', dataIndex: 'list', ellipsis: true, render: (text, item) => <span onClick={(e) => { showSuplier(e, item) }} style={{color: 'blue', cursor: 'pointer'}}>查看</span> },
+        { title: '供应商', dataIndex: 'list', ellipsis: true, render: (text, item) => <span onClick={(e) => { showSuplier(e, item) }} style={{ color: 'blue', cursor: 'pointer' }}>查看</span> },
         { title: '环保管理人员', dataIndex: 'environmentAdminName', ellipsis: true },
         { title: '创建人', dataIndex: 'applyPersonName', ellipsis: true },
         { title: '创建人联系方式', dataIndex: 'applyPersonPhone', ellipsis: true },
@@ -753,7 +753,13 @@ export default create()(function ({ form }) {
         {/* 查看供应商资质 */}
         <CheckQualificationModal ref={checkRef} />
         {/* 分配供应商 */}
-        <DistributeSupplierModal wrappedComponentRef={supplierRef} selectedRow={selectedRows[0]} supplierModalType={supplierModalType} viewDemandNum={viewDemandNum} />
+        <DistributeSupplierModal
+            wrappedComponentRef={supplierRef}
+            selectedRow={selectedRows[0]}
+            supplierModalType={supplierModalType}
+            viewDemandNum={viewDemandNum}
+            refreshTable={()=>{tableRef.current.remoteDataRefresh();}}
+        />
         {/* 抽检复核 */}
         <CheckModal wrappedComponentRef={samplingRef} selectedRow={selectedRows[0]} checkModalType={checkModalType} />
         {/* 生成报表 */}

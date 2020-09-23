@@ -15,7 +15,7 @@ const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 14, },
 };
-const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDemandNum }, ref) => {
+const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDemandNum, refreshTable }, ref) => {
     useImperativeHandle(ref, () => ({
         setVisible
     }))
@@ -155,6 +155,9 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
         let addList = [];
         let suppliers = [];
         supplierSelected.forEach((item, index) => {
+            let list = moment().format('YYYY-MM-DD').split('-');
+            list[1] = Number(list[1]) + 1;
+            let fillEndDate = list.join('-');
             if (!supplierCodes.includes(item.code)) {
                 suppliers.push(item.code);
                 addList.push({
@@ -165,6 +168,7 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                     publish: 0,
                     suspend: 0,
                     whetherDelete: false,
+                    fillEndDate,
                     allotDate: moment().format('YYYY-MM-DD'),
                     demandNumber: selectedRow.demandNumber,
                     allotPeopleId: getUserId(),
@@ -201,6 +205,7 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                     message.success('操作成功');
                     setEditTag(false);
                     setDeleteList([]);
+                    refreshTable()
                     setVisible(false);
                 } else {
                     message.error(res.message);
@@ -333,9 +338,6 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                 <Button className={styles.btn} type="primary" onClick={() => { handleAdd() }} key="continue">确认并继续</Button>]
             }
         >
-            {/* <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px', marginTop: '15px' }}>
-                <Search style={{ width: '60%' }} placeholder='请输入关键字查询' onSearch={handleQuickSearch} allowClear />
-            </div> */}
             <ExtTable
                 columns={supplierColumns}
                 bordered
@@ -348,13 +350,20 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                 rowKey={(item) => item.id}
                 size='small'
                 onSelectRow={(rowKeys, rows) => {
+                    console.log('选中', rowKeys, rows)
                     setSupplierSelectedRowKeys(rowKeys);
                     setSupplierSelected(rows);
                 }}
                 selectedRowKeys={supplierSelectedRowKeys}
                 store={{
-                    url: `${supplierManagerBaseUrl}/api/supplierService/findSupplierVoByPage`,
+                    url: `${supplierManagerBaseUrl}/api/supplierService/findByPage`,
                     type: 'POST',
+                    params: {
+                        Q_EQ_frozen__Boolean: false,
+                        filters: [
+                            { fieldName: "code", fieldType: "String", operator: "EQ", value: "NONULL" }
+                        ],
+                    }
                 }}
             />
         </ExtModal>
