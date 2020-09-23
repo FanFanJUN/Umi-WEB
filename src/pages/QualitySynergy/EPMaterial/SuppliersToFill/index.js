@@ -96,13 +96,13 @@ const SupplierFillList = function ({ form }) {
                         }
                     })
                 } else {
-                    console.log('res.data', res.data)
-                    // let ids = res.data.map(item => item.documentInfo);
-                    // setOwnerFiles(ids)
+                    // 暂时先上传一次
+                    let ids = res.data[0].documentInfo;
+                    setOwnerFiles(ids)
                 }
             }
         })
-    }, [uploadVisible]);
+    }, []);
 
     useEffect(()=>{
         window.parent.frames.addEventListener('message', listenerParentClose, false);
@@ -180,7 +180,7 @@ const SupplierFillList = function ({ form }) {
                 onClick={() => { setUploadVisible(true) }}
                 key='QUALITYSYNERGY_SUPPLIERFILL_UPLOAD_NEW'
                 ignore={DEVELOPER_ENV}
-            >上传资质文件</Button>)
+            >{ownerFiles.length >0 ? '查看资质文件' : '上传资质文件'}</Button>)
         }
     </>
     const headerRight = <>
@@ -276,6 +276,7 @@ const SupplierFillList = function ({ form }) {
                 console.log('files', files)
                 uploadFile({
                     aptitudeFileId: files ? files.join() : '',
+                    fileIdList: files ? files : [],
                     supplierName: getUserName(),
                     supplierCode: getUserAccount(),
                     supplierId: getUserId()
@@ -371,7 +372,7 @@ const SupplierFillList = function ({ form }) {
                 {
                     getFieldDecorator('files', {
                         rules: [{ required: true, message: '请上传文件' }]
-                    })(<Upload entityId={ownerFiles} />)
+                    })(<Upload entityId={ownerFiles} type={ownerFiles.length >0?'show':''} />)
                 }
             </FormItem>
         </ExtModal>}
