@@ -128,7 +128,11 @@ const TechnicalDataModal = (props) => {
             <FormItem {...formItemLayoutLong} label={'样品需求日期'}>
               {
                 getFieldDecorator('sampleRequirementDate', {
-                  initialValue: type === 'add' ? null : moment(fatherData.sampleRequirementDate),
+                  initialValue: type === 'add' ? (() => {
+                    let d = new Date();
+                    d.setMonth(d.getMonth() +1);
+                    return moment(d)
+                  })() : moment(fatherData.sampleRequirementDate),
                   rules: [
                     {
                       required: true,

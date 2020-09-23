@@ -3,7 +3,7 @@ import { Form, Button, DatePicker, Modal, Col, message, Table } from 'antd';
 import styles from './SupplierModal.less';
 import { ExtModal, ExtTable } from 'suid';
 import { supplierManagerBaseUrl, recommendUrl } from '../../../../../utils/commonUrl';
-import { DistributionSupplierSave, FindSupplierByDemandNumber, generateLineNumber, judge } from '../../../commonProps';
+import { DistributionSupplierSave, FindSupplierByDemandNumber, generateLineNumber, judge, FindMaxDateByDemandNumber } from '../../../commonProps';
 import moment from 'moment/moment';
 import { request } from 'suid/es/utils';
 import { CommonTable } from './CommonTable';
@@ -30,6 +30,7 @@ const SupplierModal = (props) => {
   const [sourceData, setSourceData] = useState([]);
 
   const [data, setData] = useState({
+    downloadAbortDate: '',
     deleteArr: [],
     selectedRowKeys: [],
     selectedRows: [],
@@ -46,6 +47,15 @@ const SupplierModal = (props) => {
       getDataSource();
     } else {
       setData((value) => ({ ...value, show: false }));
+    }
+    if (visible) {
+      FindMaxDateByDemandNumber({
+        id: props.selectedRows[0]?.id
+      }).then(res => {
+        if (res.data) {
+          setData(v => ({...v, downloadAbortDate: res.data}))
+        }
+      })
     }
   }, [visible]);
 
@@ -177,9 +187,8 @@ const SupplierModal = (props) => {
 
   const SupplierAdd = () => {
     return <CommonTable
-      filterMultiple={true}
+      scrollHeight={400}
       ref={supplierTable}
-      pagination={true}
       columns={supplierColumns}
       onSelectRow={onSupplierSelectRow}
       store={{
@@ -297,7 +306,7 @@ const SupplierModal = (props) => {
         allotPeopleName: props.selectedRows[0].strategicPurchaseName,
         allotPeopleCode: props.selectedRows[0].strategicPurchaseCode,
         allotPeopleId: props.selectedRows[0].strategicPurchaseId,
-        downloadAbortDate: '',
+        downloadAbortDate: data.downloadAbortDate,
       });
     });
     arr = [...sourceData, ...arr];

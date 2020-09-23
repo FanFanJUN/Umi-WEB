@@ -14,9 +14,11 @@ import {
     unionPayCodeConfig,
     paymentTypeConfig,
     countryListConfig,
-    BankCountryListConfig
+    BankCountryListConfig,
+    oddunionPayCodeConfig
 } from '@/utils/commonProps'
 import SelectWithService from "../components/SelectWithService";
+import SearchTable from './SearchTable'
 import '../index.less'
 import { fromPairs } from 'lodash';
 const { create } = Form;
@@ -280,26 +282,31 @@ const BankbaseRef = forwardRef(({
                         {
                             isView ? <span></span> :
                                 getFieldDecorator("unionpayCode", {
-                                    initialValue: "",
+                                    initialValue: initData ? initData.unionpayCode : "",
                                     rules: [{ required: !isView, message: '请选择联行号!', }]
                                 })(
-                                    <ComboGrid
-                                        //searchProperties={unionPaynumber}
-                                        cascadeParams={{
-                                            Quick_value: getFieldValue('unionpayCode'),
-                                        }}
-                                        // store={{
-                                        //     params: {
-                                        //         Quick_value: getFieldValue('unionpayCode'),
-                                        //     },
-                                        //     type: 'GET',
-                                        //     autoLoad: false,
-                                        //     url: `${baseUrl}/supplierRegister/getBankNoByPage?Q_EQ_frozen__bool=0`,
-                                        //   }}
-                                        {...unionPayCodeConfig}
-                                        afterSelect={afterSelect}
-                                        name='unionpayCode'
-                                        form={form}
+                                    // <ComboGrid
+                                    //     //searchProperties={unionPaynumber}
+                                    //     cascadeParams={{
+                                    //         Quick_value: getFieldValue('unionpayCode'),
+                                    //     }}
+                                    //     // store={{
+                                    //     //     params: {
+                                    //     //         Quick_value: getFieldValue('unionpayCode'),
+                                    //     //     },
+                                    //     //     type: 'GET',
+                                    //     //     autoLoad: false,
+                                    //     //     url: `${baseUrl}/supplierRegister/getBankNoByPage?Q_EQ_frozen__bool=0`,
+                                    //     //   }}
+                                    //     {...unionPayCodeConfig}
+                                    //     afterSelect={afterSelect}
+                                    //     name='unionpayCode'
+                                    //     form={form}
+                                    // />
+                                    <SearchTable
+                                        placeholder={"请选择联行号"}
+                                        config={oddunionPayCodeConfig}
+                                        selectChange={afterSelect}
                                     />
                                 )}
                     </FormItem>

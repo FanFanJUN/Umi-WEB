@@ -8,7 +8,8 @@ import {listChineseProvinces,
   getAccesstocountries,
   oddgetAllCorporation,
   getCompanyFactory,
-  getNormalSuppliers
+  getNormalSuppliers,
+  listUnionPayCode
 } from '../services/supplierRegister'
 import { searchListByKey } from '../components/utils/CommonUtils';
 // 认定物料类别数据字典
@@ -802,7 +803,7 @@ export const purchaseCompanyPropsreg = {
   },
   reader: {
     name: 'name',
-    field: ['code','id'],
+    field: ['id'],
     description: ['code']
   },
   placeholder: '请选择供应商分类',
@@ -810,3 +811,17 @@ export const purchaseCompanyPropsreg = {
     width: '100%'
   },
 }
+
+// 联行号
+export const oddunionPayCodeConfig = {
+  columns: [{
+      title: '代码',
+      dataIndex: 'code',
+  }, {
+      title: '名称',
+      dataIndex: 'name',
+  }],
+  dataService: listUnionPayCode,
+  key: 'code',
+  text: 'code',
+};

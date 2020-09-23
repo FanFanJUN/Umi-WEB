@@ -10,7 +10,7 @@ export const CommonTable = React.forwardRef((props, ref) => {
     manualSelectedRows: manualSelectedRows
   }))
 
-  const { columns, dataSource, store } = props;
+  const { columns, dataSource, store, scrollHeight } = props;
 
   const [pageInfo, setPageInfo] = useState({
     page: 1,
@@ -85,7 +85,7 @@ export const CommonTable = React.forwardRef((props, ref) => {
     setPageInfo(v => ({...v, page: value}))
   }
 
-  return <div style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+  return <div style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', zIndex: '1002' }}>
     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
       <Search
         style={{ width: 200, marginBottom: '5px' }}
@@ -121,7 +121,7 @@ export const CommonTable = React.forwardRef((props, ref) => {
           };
         }}
         scroll={{
-          y: 400,
+          y: props.scrollHeight,
         }}
         rowSelection={{
           hideSelectAll: true,

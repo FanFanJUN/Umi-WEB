@@ -210,6 +210,7 @@ const CommonconfigRef = forwardRef(({
     event.target.value = value.replace(/[^\d]/g, '');
   }
   let entityIdObj = getEntityId(editData);
+  // 供应商分类切换
   function handletypeSelect(item) {
     selectfication(item.id)
   }
