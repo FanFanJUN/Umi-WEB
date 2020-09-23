@@ -100,6 +100,16 @@ export const generateLineNumber = (index) => {
 }
 
 // 根据id改变下载状态
+export const FindMaxDateByDemandNumber = async params => {
+  const url = `${recommendUrl}/api/epTechnicalShareDemandService/findMaxDate`;
+  return request({
+    url,
+    method: 'GET',
+    params: params,
+  });
+}
+
+// 根据id改变下载状态
 export const UpdateShareDownLoadState = async params => {
   const url = `${recommendUrl}/api/epTechnicalShareDemandService/updateDownLoadState`;
   return request({
