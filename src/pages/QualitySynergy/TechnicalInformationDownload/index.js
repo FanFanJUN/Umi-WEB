@@ -110,7 +110,7 @@ export default function() {
       <Checkbox onChange={onChange} checked={data.checked}>未下载</Checkbox>
     </div>
     <Search
-      placeholder='供应商代码或名称'
+      placeholder='物料或物料组'
       className={styles.btn}
       onSearch={handleQuickSearch}
       allowClear
@@ -138,7 +138,7 @@ export default function() {
             columns={columns}
             store={{
               params: {
-                fileDownloadState: data.checked ? '未下载' : '已下载',
+                ...data.checked ? {fileDownloadState: '未下载'} : null,
                 quickSearchValue: data.quickSearchValue,
                 ...data.EpTechnicalShareDemandSearchBo ,
               },
