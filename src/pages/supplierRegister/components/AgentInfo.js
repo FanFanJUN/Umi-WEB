@@ -275,10 +275,10 @@ const Agentformef = forwardRef(({
   function getAgentform() {
     const agentInfo = tabformRef.current.data;
     console.log(agentInfo)
-    // if (!agentInfo || agentInfo.length === 0) {
-    //   return false;
-    // }
-    // return agentInfo;
+    if (!agentInfo || agentInfo.length === 0) {
+      return false;
+    }
+    return agentInfo;
   }
   // 设置所有表格参数
   const setHeaderFields = (fields) => {

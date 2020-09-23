@@ -310,3 +310,8 @@ export const checkAccount = params => createServiceRequest({
   params,
   hack: true
 })
+
+//银联号
+export const listUnionPayCode = (params) => {
+  return httpUtils.get(`/srm-baf-web/supplierRegister/getBankNoByPage`, params);
+};

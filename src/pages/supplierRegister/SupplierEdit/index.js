@@ -104,7 +104,6 @@ function CreateStrategy() {
         })
       }
       if (item.smMsgTypeCode === '5') {
-        console.log(item)
         handbusiness.push({
           title: item.fieldName,
           key: item.fieldCode,
@@ -199,13 +198,17 @@ function CreateStrategy() {
     if (baseVal) {
       if (baseVal.supplierVo.companyCode) {
         wholeData.companyCode = baseVal.supplierVo.companyCode
-        wholeData.companyName = baseVal.supplierVo.companyName
+        if (baseVal.supplierVo.companyName === baseVal.supplierVo.companyCode) {
+          wholeData.companyName = wholeData.companyName
+        } else {
+          wholeData.companyName = baseVal.supplierVo.companyName
+        }
+
       }
     }
     if (wholeData) {
       wholeData.supplierInfoVo = supplierInfoVo;
     }
-    console.log(wholeData)
     let saveData = wholeData;
     triggerLoading(true)
     const { success, message: msg } = await TemporarySupplierRegister(saveData);
@@ -214,6 +217,8 @@ function CreateStrategy() {
       triggerLoading(false)
       closeCurrent()
       return
+    }else {
+      message.success(msg);
     }
     triggerLoading(false)
   }
@@ -390,7 +395,12 @@ function CreateStrategy() {
     if (baseVal) {
       if (baseVal.supplierVo.companyCode) {
         wholeData.companyCode = baseVal.supplierVo.companyCode
-        wholeData.companyName = baseVal.supplierVo.companyName
+        if (baseVal.supplierVo.companyName === baseVal.supplierVo.companyCode) {
+          wholeData.companyName = wholeData.companyName
+        } else {
+          wholeData.companyName = baseVal.supplierVo.companyName
+        }
+
       }
     }
 
@@ -398,6 +408,7 @@ function CreateStrategy() {
       wholeData.supplierInfoVo = supplierInfoVo;
     }
     let saveData = wholeData;
+    console.log(saveData)
     triggerLoading(true)
     const { success, message: msg } = await saveSupplierRegister(saveData);
     if (success) {
