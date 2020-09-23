@@ -1,54 +1,44 @@
-import React, { Component, Fragment } from 'react';
+import React, { useImperativeHandle, forwardRef, useState, Fragment } from 'react';
 import { ExtTable, ExtModal, ScrollBar } from 'suid';
+import { Form } from 'antd';
 import Upload from '../../compoent/Upload';
 import { recommendUrl } from '@/utils/commonUrl';
+const { create, Item: FormItem } = Form;
 
-class EnvironmentProDemandList extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            dataList: [{ id: 1 }],
-            loading: false
-        }
-        this.columns = [
-            { title: '供应商代码', dataIndex: 'supplierCode', ellipsis: true, align: 'center' },
-            { title: '供应商名称', dataIndex: 'supplierName', ellipsis: true, align: 'center', width: 120 },
-            {
-                title: '供应商资质文件', dataIndex: 'documentInfo', ellipsis: true, align: 'center', render: (text) => {
-                    return <Upload entityId={text?text:[]} type="show" />
-                }
-            },
-        ]
-    }
-    componentDidMount() {
-        this.props.onRef && this.props.onRef(this);
-    }
-    showModal = () => {
-        this.setState({ visible: true })
-    }
-    hiddenModal = () => {
-        this.setState({ visible: false })
-    }
-    render() {
-        const { dataList, loading, visible } = this.state;
+const EnvironmentProDemandList = forwardRef((props, ref) => {
+    useImperativeHandle(ref, () => ({
+        setVisible
+    }))
+    const [visible, setVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const columns = [
+        { title: '供应商代码', dataIndex: 'supplierCode', ellipsis: true, align: 'center' },
+        { title: '供应商名称', dataIndex: 'supplierName', ellipsis: true, align: 'center', width: 120 },
+        {
+            title: '供应商资质文件', dataIndex: 'documentInfo', ellipsis: true, align: 'center', render: (text) => {
+                return <Upload entityId={text?text:[]} type="show" />
+            }
+        },
+    ]
         return <Fragment>
             <ExtModal
                 destroyOnClose
-                onCancel={this.hiddenModal}
+                onCancel={()=>{setVisible(false)}}
                 visible={visible}
                 centered
                 width={640}
                 maskClosable={false}
                 footer={null}
-                bodyStyle={{ height: 380, padding: 0 }}
                 title="查看供应商资质"
             >
                 <ScrollBar>
                     <ExtTable
                         loading={loading}
                         showSearch={true}
+                        remotePaging={true}
+                        size="small"
                         searchPlaceHolder="请输入供应商代码或名称查询"
-                        columns={this.columns}
+                        columns={columns}
                         store={{
                             url: `${recommendUrl}/api/epSupplierAptitudeService/findByPage`,
                             type: 'POST',
@@ -57,6 +47,5 @@ class EnvironmentProDemandList extends Component {
                 </ScrollBar>
             </ExtModal>
         </Fragment>
-    }
-}
-export default EnvironmentProDemandList
+})
+export default create()(EnvironmentProDemandList)

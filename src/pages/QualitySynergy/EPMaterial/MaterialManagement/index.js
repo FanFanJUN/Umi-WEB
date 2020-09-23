@@ -630,7 +630,7 @@ export default create()(function ({ form }) {
             authAction(<Button
                 className={styles.btn}
                 onClick={() => {
-                    checkRef.current.showModal();
+                    checkRef.current.setVisible(true);
                 }}
                 ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_MATERIAL_VIEW'
@@ -751,7 +751,7 @@ export default create()(function ({ form }) {
             </FormItem>
         </ExtModal>}
         {/* 查看供应商资质 */}
-        <CheckQualificationModal ref={checkRef} />
+        <CheckQualificationModal wrappedComponentRef={checkRef} />
         {/* 分配供应商 */}
         <DistributeSupplierModal
             wrappedComponentRef={supplierRef}
