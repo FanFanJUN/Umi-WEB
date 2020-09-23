@@ -60,6 +60,15 @@ const MaterialInfo = React.forwardRef((props, ref) => {
     </FormItem>
   );
 
+  useEffect(() => {
+    if (!getFieldValue('materialCode')) {
+      setFieldsValue({
+        strategicPurchaseCode: '',
+        strategicPurchaseName: ''
+      })
+    }
+  }, [getFieldValue('materialCode')])
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.bgw}>

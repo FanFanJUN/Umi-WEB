@@ -46,8 +46,8 @@ const getAgentregRef = forwardRef(({
                 key: item.countryId || item.country && item.country.key || "",
                 label: item.countryName || item.country && item.country.label || ""
               };
-              delete item.countryId;
-              delete item.countryName;
+              //delete item.countryId;
+              //delete item.countryName;
               return item;
             });
           }
@@ -80,7 +80,10 @@ const getAgentregRef = forwardRef(({
         triggerLoading(true)
         const { data,success, message: msg } = await findCodeByName({name:originalCompanyName});
         if (success) {
-            setoriginalCode(data)
+            //setoriginalCode(data)
+            form.setFieldsValue({
+                'originalCode': data
+            });
         }
         triggerLoading(false)
     }
@@ -112,7 +115,18 @@ const getAgentregRef = forwardRef(({
                         {...formItemLayout}
                     >
                         {
-                            <span>{originalCode}</span>
+                            //<span>{originalCode}</span>
+                            getFieldDecorator("originalCode", {
+                                initialValue: "",
+                                rules: [{
+                                    required: !isView,
+                                    message: '请输入已有供应商代码的原厂名称带出原厂代码!'
+                                }]
+                            })(
+                                <Input
+                                    disabled={true}
+                                />
+                            )
                         }
                     </FormItem>
                 </Col>

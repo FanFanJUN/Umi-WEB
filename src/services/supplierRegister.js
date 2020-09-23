@@ -231,7 +231,8 @@ export const saveBankVo = params => createServiceRequest({
 //代理名称
 export const findCodeByName = params => createServiceRequest({
   path: '/supplier/findByName',
-  params
+  params,
+  hack: true
 })
 // 注册暂存
 export const TemporarySupplierRegister = params => createServiceRequest({

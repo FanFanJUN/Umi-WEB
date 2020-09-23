@@ -32,28 +32,32 @@ const MainClientRef = forwardRef(({
             initData = editData.extendVo.majorCustomersVos.map((item, index) => ({ key: index, ...item }));
             keys = initData.length - 1;
         }
-        console.log(initData.length)
         setDataSource(initData)
     }, [editData])
-
-    const tableProps = [
-        {
-            title: '操作',
-            align: 'center',
-            width: 100,
-            dataIndex:'operation',
-            render: (text, record, index) => {
-                return <div>
-                    {
-                        dataSource.length > 1 ? <Icon
-                            type={'delete'}
-                            title={'删除'}
-                            onClick={() => handleDelete(record.key)}
-                        /> : null
-                    }
-                </div>;
+    let columns = [];
+    if (!isView) {
+        columns.push(
+            {
+                title: '操作',
+                align: 'center',
+                width: 100,
+                dataIndex:'operation',
+                render: (text, record, index) => {
+                    return <div>
+                        {
+                            dataSource.length > 1 ? <Icon
+                                type={'delete'}
+                                title={'删除'}
+                                onClick={() => handleDelete(record.key)}
+                            /> : null
+                        }
+                    </div>;
+                }
             }
-        },
+        );
+    }
+    const tableProps = [
+        ...columns,
         {
             title: <span><label className="ant-form-item-required" title=""></label>客户名称</span>,
             dataIndex: 'majorCustomers',
@@ -146,7 +150,7 @@ const MainClientRef = forwardRef(({
                             disabled: false,
                             pageSize: 100,
                         }}
-                        height={height}
+                        height={400}
                         checkbox={false}
                         rowKey={(item) => `row-${item.key}`}
                     />
