@@ -21,10 +21,10 @@ const TechnicalData = React.forwardRef((props, ref) => {
   })
 
   const columns = [
-    { title: '文件类别', dataIndex: 'fileCategoryName', width: 350 },
-    { title: '文件版本', dataIndex: 'fileVersion', width: 350, ellipsis: true, },
-    { title: '技术资料附件', dataIndex: 'technicalDataFileIdList', width: 350, ellipsis: true,render: (v) => <Upload type='show' entityId={v}>查看</Upload> },
-    { title: '样品需求日期', dataIndex: 'sampleRequirementDate', width: 350, ellipsis: true, },
+    { title: '文件类别', dataIndex: 'fileCategoryName', width: 200 },
+    { title: '文件版本', dataIndex: 'fileVersion', width: 200, ellipsis: true, },
+    { title: '技术资料附件', dataIndex: 'technicalDataFileIdList', width: 200, ellipsis: true,render: (v) => <Upload type='show' entityId={v}>查看</Upload> },
+    { title: '样品需求日期', dataIndex: 'sampleRequirementDate', width: 200, ellipsis: true, },
   ].map(item => ({...item, align: 'center'}))
 
   useEffect(() => {

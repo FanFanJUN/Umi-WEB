@@ -1,10 +1,12 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react';
-import { Form, Button, DatePicker, Modal, Col, message } from 'antd';
+import { Form, Button, DatePicker, Modal, Col, message, Table } from 'antd';
 import styles from './SupplierModal.less';
 import { ExtModal, ExtTable } from 'suid';
-import { supplierManagerBaseUrl } from '../../../../../utils/commonUrl';
+import { supplierManagerBaseUrl, recommendUrl } from '../../../../../utils/commonUrl';
 import { DistributionSupplierSave, FindSupplierByDemandNumber, generateLineNumber, judge } from '../../../commonProps';
 import moment from 'moment/moment';
+import { request } from 'suid/es/utils';
+import { CommonTable } from './CommonTable';
 
 const FormItem = Form.Item;
 
@@ -20,6 +22,7 @@ const SupplierModal = (props) => {
   const { visible, title, type } = props;
 
   const [supplierData, setSupplierData] = useState({
+    dataSource: [],
     selectedRowKeys: [],
     selectedRows: [],
   });
@@ -124,7 +127,7 @@ const SupplierModal = (props) => {
           tableRef.current.manualSelectedRows();
           setSourceData(newSourceData);
           setData(v => ({ ...v, deleteArr }));
-          console.log(deleteArr, 'deleteArr')
+          console.log(deleteArr, 'deleteArr');
         } else {
           message.error('请选择要删除的数据!');
         }
@@ -145,6 +148,7 @@ const SupplierModal = (props) => {
   };
 
   const modalCancel = () => {
+    supplierTable.current.manualSelectedRows();
     setData((value) => ({ ...value, ModalVisible: false }));
   };
 
@@ -173,23 +177,37 @@ const SupplierModal = (props) => {
   };
 
   const SupplierAdd = () => {
-    return <ExtTable
-      height={'500px'}
+    return <CommonTable
+      filterMultiple={true}
       ref={supplierTable}
-      rowKey={(v) => v.id}
+      pagination={true}
       columns={supplierColumns}
-      store={{
-        url: `${supplierManagerBaseUrl}/api/supplierService/findSupplierVoByPage`,
-        type: 'POST',
-      }}
-      allowCancelSelect={true}
-      remotePaging={true}
-      checkbox={{
-        multiSelect: true,
-      }}
       onSelectRow={onSupplierSelectRow}
-      selectedRowKeys={supplierData.selectedRowKeys}
+      store={{
+        url: `${recommendUrl}/api/epTechnicalShareDemandService/findNormalSupplierList`,
+        type: 'POST',
+        params: {
+          id: props.selectedRows[0]?.id
+        }
+      }}
     />;
+    // return <ExtTable
+    //   height={'500px'}
+    //   ref={supplierTable}
+    //   rowKey={(v) => v.id}
+    //   columns={supplierColumns}
+    //   store={{
+    //     url: `${supplierManagerBaseUrl}/api/supplierService/findSupplierVoByPage`,
+    //     type: 'POST',
+    //   }}
+    //   allowCancelSelect={true}
+    //   remotePaging={true}
+    //   checkbox={{
+    //     multiSelect: true,
+    //   }}
+    //   onSelectRow={onSupplierSelectRow}
+    //   selectedRowKeys={supplierData.selectedRowKeys}
+    // />;
   };
 
   // 添加截止日期
@@ -227,7 +245,6 @@ const SupplierModal = (props) => {
 
   // 保存供应商
   const saveSupplier = () => {
-    console.log(data.deleteArr, '    console.log(data.deleteArr)\n')
     Modal.confirm({
       title: '保存',
       okText: '确定',
@@ -269,6 +286,7 @@ const SupplierModal = (props) => {
   //新增供应商确定按钮 ok为确定 continue为确认并继续
   const supplierAddOk = (type) => {
     let arr = [];
+    console.log(supplierData.selectedRows, 'supplierData.selectedRows');
     supplierData.selectedRows.map(item => {
       arr.push({
         supplierCode: item.code,
@@ -284,6 +302,7 @@ const SupplierModal = (props) => {
       });
     });
     arr = [...sourceData, ...arr];
+    console.log(arr, 'arrarrarr');
     // 根据supplierId去重
     arr = duplicateRemoval(arr, 'supplierId');
     arr = arr.map((item, index) => ({ ...item, lineNumber: generateLineNumber(index + 1) }));
@@ -341,7 +360,7 @@ const SupplierModal = (props) => {
         selectedRowKeys={data.selectedRowKeys}
       />
       <ExtModal
-        width={'80vh'}
+        width={'110vh'}
         height={'500px'}
         maskClosable={false}
         title={data.type === 'time' ? '编辑资料下载截止日期' : '新增供应商'}
@@ -349,7 +368,6 @@ const SupplierModal = (props) => {
         footer={data.type === 'supplier' ? [
           <Button key='cancel' onClick={() => {
             modalCancel();
-            supplierTable.current.manualSelectedRows();
           }}>取消</Button>,
           <Button key='ok' type='primary' onClick={() => supplierAddOk('ok')}>确定</Button>,
           <Button key='okAndRun' type='primary' onClick={() => supplierAddOk('continue')}>确定并继续</Button>,
