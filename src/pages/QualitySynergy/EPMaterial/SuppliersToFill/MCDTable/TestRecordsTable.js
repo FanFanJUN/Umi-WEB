@@ -279,7 +279,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                         {
                             getFieldDecorator('unitCode', { initialValue: modalType === 'edit' ? selectedRows[0].unitCode : '' }),
                             getFieldDecorator('unitName', {
-                                initialValue: modalType === 'edit' ? selectedRows[0].unitCode : '',
+                                initialValue: modalType === 'edit' ? selectedRows[0].unitName : '',
                             })(<Input disabled />)
                         }
                     </FormItem>

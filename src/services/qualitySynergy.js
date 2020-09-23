@@ -1,13 +1,13 @@
-import { basicServiceUrl, baseUrl, recommendUrl } from '../utils/commonUrl';
+import { basicServiceUrl, baseUrl, recommendUrl, supplierManagerBaseUrl } from '../utils/commonUrl';
 import request from '../utils/request';
 // 豁免条款-新增/编辑
 export async function materialCompositionVerification(params) {
-  const url = `${recommendUrl}/api/epDataFillMaterialConstituentService/checkImport`;
-  return request({
-    url,
-    method: 'POST',
-    data: params,
-  });
+    const url = `${recommendUrl}/api/epDataFillMaterialConstituentService/checkImport`;
+    return request({
+        url,
+        method: 'POST',
+        data: params,
+    });
 }
 
 // 豁免条款-新增/编辑
@@ -373,6 +373,22 @@ export async function findByDemandNumber(params) {
         params: params,
     });
 }
+// 获取供应商列表-过滤掉无code
+export async function findAllSupplierFillter(params) {
+    const url = `${supplierManagerBaseUrl}/api/supplierService/findByPage`;
+    return request({
+        url,
+        method: 'post',
+        data: {
+            Q_EQ_frozen__Boolean: false,
+            filters: [
+                { fieldName: "code", fieldType: "String", operator: "EQ", value: "NONULL" }
+            ],
+            ...params
+        },
+    });
+}
+
 // 填报环保资料物料-分配供应商-同步pdm
 export async function syncPdm(params) {
     const url = `${recommendUrl}/api/epDemandService/syncPdm`;

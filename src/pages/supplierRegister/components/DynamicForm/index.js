@@ -85,9 +85,11 @@ const CommonconfigRef = forwardRef(({
     form
   }));
   const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
-  const [companycode, setcompanycode] = useState([ ]);
-  const [supplierName, setsupplierName] = useState();
-  //console.log(initialValues)
+  const [companycode, setcompanycode] = useState([]);
+  const [supplierName, setsupplierName] = useState('');
+
+  // console.log(editData)
+  // setsupplierName(editData.supplierVo.name)
   useEffect(() => {
     // const {
     //     id,
@@ -98,8 +100,13 @@ const CommonconfigRef = forwardRef(({
     // }
     // console.log(fields)
     // setFieldsValue(fields);
-
-  }, [])
+    //setsupplierName(editData.supplierVo.name)
+    //console.log(editData)
+    setother(wholeData)
+  }, [wholeData])
+  function setother (val) {
+    setsupplierName(val.supplierName)
+  }
   // 设置表单参数
   function setHeaderFields(fields) {
     const { attachmentId = null, ...fs } = fields;
@@ -107,7 +114,7 @@ const CommonconfigRef = forwardRef(({
     // setTimeout(() => {
     //   setsupplierName(fields.supplierVo.name)
     // }, 100);
-    
+    //setsupplierName(fs.supplierVo.name)
     setFieldsValue(fs)
   }
   //注册地址同步办公地址
@@ -224,14 +231,15 @@ const CommonconfigRef = forwardRef(({
   }
   // 泛虹工厂
   function FactoryChange(value, record) {
-    form.setFieldsValue({
-      'supplierVo.workName': record.name,
-      'supplierVo.name': supplierName + + '(' + value + '工厂' + ')'
-    });
+    if (record) {
+      form.setFieldsValue({
+        'supplierVo.workName': record.name,
+        'supplierVo.name': supplierName + '(' + value + '工厂' + ')'
+      });
+    }
   }
   // 拟合作公司
   function cooperationChange(value, record) {
-    console.log(record)
     if (record) {
       form.setFieldsValue({
         'supplierVo.companyName': record.name,
@@ -240,7 +248,6 @@ const CommonconfigRef = forwardRef(({
     }
   }
   function deleteSelect(record) {
-    console.log(record)
     if (record) {
       form.setFieldsValue({
         'supplierVo.workName': '',

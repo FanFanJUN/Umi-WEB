@@ -77,8 +77,6 @@ const CommonconfigRef = forwardRef(({
     // setFieldsValue(fs)
   }
   let entityIdObj = getEntityId(editData);
-  console.log(formItems)
-  console.log(editData)
   return (
     <Row type="flex">
       {

@@ -6,7 +6,8 @@ import { getUserName, getUserId, getUserAccount } from '../../../../utils';
 import {
     addDemandSupplier,
     findByPageOfSupplier,
-    findByDemandNumber
+    findByDemandNumber,
+    findAllSupplierFillter
 } from '../../../../services/qualitySynergy'
 import styles from './index.less'
 import moment from 'moment';
@@ -32,6 +33,8 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
     const [deleteList, setDeleteList] = useState([]);
     const [supplierCodes, setSuplierCodes] = useState([]);
     const [editTag, setEditTag] = useState(false); // 编辑标记
+    const [pageInfo, setPageInfo] = useState({ page: 1, rows: 30 });
+    const [total, setTotal] = useState(0);
     const { getFieldDecorator, validateFields } = form;
     useEffect(() => {
         if (visible === true) {
@@ -56,6 +59,15 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
             }
         }
     }, [visible])
+    useEffect(() => {
+        if(addVisible) {
+            findAllSupplierFillter({
+                pageInfo: pageInfo,
+            }).then(res => {
+                console.log(res)
+            })
+        }
+    }, [addVisible])
     const columns = [
         { title: '是否暂停', dataIndex: 'suspend', align: 'center', width: 80, render: (text) => text ? '是' : '否' },
         { title: '是否发布', dataIndex: 'publish', width: 80, align: 'center', render: (text) => text ? '已发布' : '草稿' },

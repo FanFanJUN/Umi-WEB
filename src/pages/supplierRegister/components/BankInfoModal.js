@@ -45,23 +45,21 @@ const BankInfoRef = forwardRef(({
                 return false;
             }
             if (bankInfo) {
-                //绑定附件
                 if (bankInfo.openingPermit && bankInfo.openingPermit.length > 0 && !bankInfo.openingPermitId) {
-                    RelationDocId(bankInfo.openingPermit, bankInfo.openingPermitId).then(id => {
-                        console.log(343434)
+                    await RelationDocId(bankInfo.openingPermit, bankInfo.openingPermitId).then(id => {
                         bankInfo.openingPermitId = id;
                     })
                 }
                 if (edit) {
-                    let editbankInfo = {initialValues,...bankInfo};
-                    console.log(editbankInfo)
-                    onOk(editbankInfo);
+                    let editbankInfo = {...initialValues,...bankInfo};
+                    await onOk(editbankInfo);
                     handleModalVisible(false);
                 }else {
-                    if (mergeData(bankInfo)) {
+                    if (await mergeData(bankInfo)) {
                         handleModalVisible(false);
                     }
                     return;
+                    
                 }
                 // else {
                 //     console.log(7777777777)

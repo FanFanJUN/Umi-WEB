@@ -30,7 +30,7 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
     // 参数为某一条拆分部件数据,根据rowKey替换
     function handleSplitDataList(dataObj) {
         let newList = splitDataList.map(item => {
-            return item.rowKey === dataObj.rowKey ? {...item, ...dataObj} : item;
+            return item.rowKey === dataObj.rowKey ? { ...item, ...dataObj } : item;
         })
         setSplitDataList(newList);
         splitRef.current.setRowKeys([dataObj.rowKey]);
@@ -44,8 +44,8 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
                 let saveList = splitDataList.map(item => {
                     let newObj = {
                         ...item,
-                        uploadAttachmentIds: item.documentInfoList ? item.documentInfoList.map(v => v.id?v.id:v) : [],
-                        testReportAttachmentId: item.documentInfoList ? item.documentInfoList.map(v => v.id?v.id:v).join() : '',
+                        uploadAttachmentIds: item.documentInfoList ? item.documentInfoList.map(v => v.id ? v.id : v) : [],
+                        testReportAttachmentId: item.documentInfoList ? item.documentInfoList.map(v => v.id ? v.id : v).join() : '',
                         epDataFillTestLogBoList: item.testLogVoList,
                         materialConstituentBoList: item.voList
                     }
@@ -59,7 +59,7 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
                     epDataFillSplitPartsVoList: saveList
                 }
             } else {
-                backData = {tag: false}
+                backData = { tag: false }
             }
         })
         return backData;
@@ -73,7 +73,7 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
                             getFieldDecorator('mcdMaterialName', {
                                 initialValue: originData.mcdMaterialName,
                                 rules: [{ required: true, message: '请输入物料名称' }]
-                            })(<Input disabled={isView}/>)
+                            })(<Input disabled={isView} />)
                         }
                     </FormItem>
                 </Col>
@@ -83,7 +83,7 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
                             getFieldDecorator('mcdModel', {
                                 initialValue: originData.mcdModel,
                                 rules: [{ required: true, message: '请输入型号' }]
-                            })(<Input disabled={isView}/>)
+                            })(<Input disabled={isView} />)
                         }
                     </FormItem>
                 </Col>
@@ -98,7 +98,7 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
                     </FormItem>
                 </Col>
                 <Col span={6} className={styles.fcs}>
-                    {!isView && <Button onClick={()=>{setVisible(true)}}>批量导入</Button>}
+                    {!isView && <Button onClick={() => { setVisible(true) }}>批量导入</Button>}
                 </Col>
             </Row>
         </Form>
@@ -108,7 +108,12 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
             </Col>
             <Col span={12} className={styles.ll}>
                 <Row>
-                    <MaterialTable dataList={splitDataList} selectedSplitData={selectedSplitData} handleSplitDataList={handleSplitDataList} isView={isView}/>
+                    <MaterialTable dataList={splitDataList}
+                        selectedSplitData={selectedSplitData}
+                        handleSplitDataList={handleSplitDataList}
+                        environmentalProtectionCode={originData.environmentalProtectionCode}
+                        isView={isView}
+                    />
                 </Row>
                 <Row>
                     <TestRecordsTable
@@ -121,7 +126,7 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
                 </Row>
             </Col>
         </Row>
-        <ImportModal visible={visible} setVisible={setVisible}/>
+        <ImportModal visible={visible} setVisible={setVisible} />
     </Fragment>
 })
 export default create()(MCDForm)

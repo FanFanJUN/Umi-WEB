@@ -206,7 +206,6 @@ const Bankformef = forwardRef(({
       if (item.key === val.key) {
         const copyData = dataSource.slice(0)
         copyData[index] = val;
-        console.log(copyData)
         setDataSource(copyData)
         setRows(copyData)
       }
