@@ -1,4 +1,4 @@
-import { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment } from 'react';
+import React, { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment } from 'react';
 import { ExtTable, ExtModal, ScrollBar } from 'suid';
 import { Button, DatePicker, Form, Modal, message, Input } from 'antd';
 import { smBaseUrl, supplierManagerBaseUrl } from '@/utils/commonUrl';
@@ -10,6 +10,8 @@ import {
 } from '../../../../services/qualitySynergy'
 import styles from './index.less'
 import moment from 'moment';
+import { CommonTable } from '../../TechnicalDataSharing/DataSharingList/component/CommonTable';
+import { recommendUrl } from '../../../../utils/commonUrl';
 const { create, Item: FormItem } = Form;
 const formLayout = {
     labelCol: { span: 8, },
@@ -327,7 +329,9 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
         <ExtModal
             centered
             destroyOnClose
-            width="130vh"
+            width={'110vh'}
+            title={'新增供应商'}
+            height={'500px'}
             visible={addVisible}
             maskClosable={false}
             zIndex={1001}
@@ -338,34 +342,27 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                 <Button className={styles.btn} type="primary" onClick={() => { handleAdd() }} key="continue">确认并继续</Button>]
             }
         >
-            <ExtTable
-                columns={supplierColumns}
-                bordered
-                allowCancelSelect
-                showSearch={true}
-                remotePaging
-                checkbox={{ multiSelect: false }}
-                ref={supplierTableRef}
-                checkbox={true}
-                rowKey={(item) => item.id}
-                onSelectRow={(rowKeys, rows) => {
-                    console.log('选中', rowKeys, rows)
-                    setSupplierSelectedRowKeys(rowKeys);
-                    setSupplierSelected(rows);
-                }}
-                selectedRowKeys={supplierSelectedRowKeys}
-                store={{
-                    url: `${supplierManagerBaseUrl}/api/supplierService/findByPage`,
-                    type: 'POST',
-                    params: {
-                        Q_EQ_frozen__Boolean: false,
-                        filters: [
-                            { fieldName: "code", fieldType: "String", operator: "EQ", value: "NONULL" },
-                            {fieldName: "supplierStatus", fieldType: "Integer", operator: "EQ", value: 0}
-                        ],
-                    }
-                }}
-            />
+          <CommonTable
+            scrollHeight={400}
+            ref={supplierTableRef}
+            columns={supplierColumns}
+            onSelectRow={(rowKeys, rows) => {
+              console.log('选中', rowKeys, rows)
+              setSupplierSelectedRowKeys(rowKeys);
+              setSupplierSelected(rows);
+            }}
+            store={{
+              url: `${supplierManagerBaseUrl}/api/supplierService/findByPage`,
+              type: 'POST',
+              params: {
+                Q_EQ_frozen__Boolean: false,
+                filters: [
+                  { fieldName: "code", fieldType: "String", operator: "EQ", value: "NONULL" },
+                  {fieldName: "supplierStatus", fieldType: "Integer", operator: "EQ", value: 0}
+                ],
+              }
+            }}
+          />;
         </ExtModal>
     </Fragment>
 })

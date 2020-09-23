@@ -187,9 +187,8 @@ const SupplierModal = (props) => {
 
   const SupplierAdd = () => {
     return <CommonTable
-      filterMultiple={true}
+      scrollHeight={400}
       ref={supplierTable}
-      pagination={true}
       columns={supplierColumns}
       onSelectRow={onSupplierSelectRow}
       store={{
