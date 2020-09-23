@@ -2,7 +2,7 @@ import { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment 
 import { ExtTable, ExtModal, DataImport, ComboList } from 'suid';
 import { Button, InputNumber, Form, Modal, Row, Input, Select, message } from 'antd';
 import { limitMaterialList, limitScopeList, exemptionClauseDataList } from '../../../commonProps';
-import { materialCompositionVerification } from '../../../../../services/qualitySynergy';
+import { materialCompositionVerification, findByProtectionCodeAndMaterialCodeAndRangeCode } from '../../../../../services/qualitySynergy';
 import classnames from 'classnames'
 import styles from '../index.less'
 import moment from 'moment';
@@ -13,7 +13,7 @@ const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 14, },
 };
-const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList, isView }, ref) => {
+const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList, isView, environmentalProtectionCode }, ref) => {
     useImperativeHandle(ref, () => ({
         setVisible
     }))
@@ -34,7 +34,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
     // 解决编辑状态下-是否为限用物质控制物料输入的bug
     useEffect(() => {
         if (visible) {
-            if(modalType === 'edit') {
+            if (modalType === 'edit') {
                 setFieldsValue({
                     isRestricted: selectedRows[0].isRestricted
                 })
@@ -43,7 +43,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                     isRestricted: undefined
                 })
             }
-        } 
+        }
     }, [visible])
     const columns = [
         { title: '物质代码', dataIndex: 'substanceCode', align: 'center' },
@@ -54,8 +54,24 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
         { title: '物质重量(mg)', dataIndex: 'scopeApplication', ellipsis: true, align: 'center', },
         { title: '均质材料中的含量(%) ', dataIndex: 'materialWeight', ellipsis: true, align: 'center', },
         { title: '豁免条款', dataIndex: 'exemptionClauseCode', ellipsis: true, align: 'center' },
+        { title: '基本单位', dataIndex: 'unitName', ellipsis: true, align: 'center', },
         { title: '符合性', dataIndex: 'compliance', ellipsis: true, align: 'center', render: (text) => text ? '符合' : '不符合' },
     ];
+    async function getUnit(materialCode, scopeApplicationCode) {
+        console.log('获取基本单位', materialCode, scopeApplicationCode)
+        if (!materialCode || !scopeApplicationCode) return;
+        const res = await findByProtectionCodeAndMaterialCodeAndRangeCode({
+            protectionCode: environmentalProtectionCode,
+            materialCode: materialCode,
+            rangeCode: scopeApplicationCode
+        })
+        if (res.statusCode === 200 && res.data) {
+            setFieldsValue({
+                unitCode: res.data.basicUnitCode,
+                unitName: res.data.basicUnitName,
+            })
+        }
+    }
     // 记录列表选中
     function handleSelectedRows(rowKeys, rows) {
         setRowKeys(rowKeys);
@@ -230,6 +246,10 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                                     name='substanceCode'
                                     field={['substanceId', 'substanceName', 'casNo']}
                                     placeholder="请选择"
+                                    afterSelect={(item) => {
+                                        let practicalRangeCode = getFieldValue('practicalRangeCode');;
+                                        getUnit(item.limitMaterialCode, practicalRangeCode)
+                                    }}
                                 />) : getFieldDecorator('substanceName', {
                                     initialValue: modalType === 'edit' ? selectedRows[0].substanceName : '',
                                     rules: [{ required: true, message: '请填写物质名称' }]
@@ -258,7 +278,12 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                                 form={form}
                                 {...limitScopeList}
                                 name='practicalRangeName'
-                                field={['practicalRangeId', 'practicalRangeCode']} />)
+                                field={['practicalRangeId', 'practicalRangeCode']}
+                                afterSelect={(item) => {
+                                    let substanceCode = getFieldValue('substanceCode');;
+                                    getUnit(substanceCode, item.scopeCode)
+                                }}
+                            />)
                         }
                     </FormItem>
                 </Row>
@@ -307,6 +332,16 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                         }
                     </FormItem>
                 </Row>}
+                <Row>
+                    <FormItem label='基本单位' {...formLayout}>
+                        {
+                            getFieldDecorator('unitCode', { initialValue: modalType === 'edit' ? selectedRows[0].unitCode : '' }),
+                            getFieldDecorator('unitName', {
+                                initialValue: modalType === 'edit' ? selectedRows[0].unitName : '',
+                            })(<Input disabled />)
+                        }
+                    </FormItem>
+                </Row>
             </Form>
         </ExtModal>}
     </Fragment>
