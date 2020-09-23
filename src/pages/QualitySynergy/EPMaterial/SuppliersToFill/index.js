@@ -22,7 +22,7 @@ const { create, Item: FormItem } = Form;
 const { Search } = Input;
 const { confirm } = Modal;
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
-const SupplierFillList = function ({ form }) {
+export default create()(function ({ form }) {
     const headerRef = useRef(null)
     const tableRef = useRef(null);
     const historyRef = useRef(null);
@@ -102,12 +102,9 @@ const SupplierFillList = function ({ form }) {
                 }
             }
         })
-    }, []);
-
-    useEffect(() => {
         window.parent.frames.addEventListener('message', listenerParentClose, false);
         return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
-    }, [])
+    }, []);
 
     function listenerParentClose(event) {
         const { data = {} } = event;
@@ -329,11 +326,18 @@ const SupplierFillList = function ({ form }) {
                     checkbox={{ multiSelect: false }}
                     ref={tableRef}
                     rowKey={(item) => item.id}
-                    size='small'
                     showSearch={false}
                     onSelectRow={handleSelectedRows}
                     selectedRowKeys={selectedRowKeys}
-                    dataSource={dataSource}
+                    // dataSource={dataSource}
+                    store={{
+                        url: `${recommendUrl}/api/epDataFillService/findByPage`,
+                        params: {
+                            ...searchValue,
+                            quickSearchProperties: [],
+                        },
+                        type: 'POST',
+                    }}
                 />
             }
         </AutoSizeLayout>
@@ -377,9 +381,7 @@ const SupplierFillList = function ({ form }) {
                 }
             </FormItem>
         </ExtModal>}
-        {/* 填报历史 */}F
+        {/* 填报历史 */}
         <FillingHistory wrappedComponentRef={historyRef} id={selectedRowKeys[0]} />
     </Fragment>
-}
-
-export default create()(SupplierFillList)
+})

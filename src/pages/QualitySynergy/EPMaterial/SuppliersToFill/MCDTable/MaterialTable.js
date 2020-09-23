@@ -160,7 +160,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
             addItem.rowKey = dataSource.length + index;
             newList.push(addItem);
         })
-        newList = newList.map((item, index) => ({ ...item, rowKey: index }))
+        // newList = newList.map((item, index) => ({ ...item, rowKey: index }))
         setDataSource(newList)
         handleSplitDataList({
             rowKey: selectedSplitData.rowKey,

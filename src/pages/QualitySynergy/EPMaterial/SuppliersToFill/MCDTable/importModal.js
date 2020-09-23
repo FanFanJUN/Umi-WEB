@@ -75,7 +75,7 @@ export default function ({ visible, setVisible }) {
     >
         <Row style={{marginBottom:6}}>
             <Upload
-                action={`${recommendUrl}api/epController/importData`}
+                action={`${recommendUrl}/api/epController/importData`}
                 onChange={fileUpload}
                 headers={getHeaders()}
                 beforeUpload={beforeUpload}

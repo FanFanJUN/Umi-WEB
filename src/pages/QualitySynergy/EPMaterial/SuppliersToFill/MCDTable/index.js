@@ -24,7 +24,7 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
     const [selectedSplitData, setSelectedSpilt] = useState({})
     const [splitDataList, setSplitDataList] = useState(originData.epDataFillSplitPartsVoList ? originData.epDataFillSplitPartsVoList : []);
     useEffect(() => {
-        let dataList = originData.epDataFillSplitPartsVoList ? originData.epDataFillSplitPartsVoList.map((item, index) => ({ ...item, rowKey: index })) : []
+        let dataList = originData.epDataFillSplitPartsVoList ? originData.epDataFillSplitPartsVoList.map((item, index) => ({ ...item, rowKey: index, splitPartsLineNumber: index})) : []
         setSplitDataList(dataList);
     }, [originData]);
     // 参数为某一条拆分部件数据,根据rowKey替换

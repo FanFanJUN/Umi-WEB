@@ -49,7 +49,7 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
             content: '请确认是否删除选中拆分部件',
             onOk: () => {
                 let newList = dataList.filter(item => !(selectedRowKeys.includes(item.rowKey)));
-                newList = newList.map((item, index) => ({ ...item, rowKey: index }));
+                newList = newList.map((item, index) => ({ ...item, rowKey: index, splitPartsLineNumber: index }));
                 setSplitDataList(newList);
                 tableRef.current.manualSelectedRows();
             }
@@ -77,6 +77,7 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
                     })
                 } else {
                     values.rowKey = dataList.length;
+                    values.splitPartsLineNumber = dataList.length;
                     values.voList = [];
                     values.testLogVoList = [];
                     newList.push({ ...values });
@@ -118,9 +119,10 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
             delete addItem.message;
             delete addItem.validate;
             addItem.rowKey = dataList.length + index;
+            addItem.splitPartsLineNumber = dataList.length + index;
             newList.push(addItem);
         })
-        newList = newList.map((item, index) => ({ ...item, rowKey: index }));
+        // newList = newList.map((item, index) => ({ ...item, rowKey: index, splitPartsLineNumber: index }));
         setSplitDataList(newList);
         tableRef.current.manualSelectedRows();
     };
