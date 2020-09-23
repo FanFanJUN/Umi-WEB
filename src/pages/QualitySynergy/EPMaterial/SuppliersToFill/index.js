@@ -109,7 +109,7 @@ export default create()(function ({ form }) {
     function listenerParentClose(event) {
         const { data = {} } = event;
         if (data.tabAction === 'close') {
-            // setSearchValue({})
+            setSearchValue({})
             tableRef.current.remoteDataRefresh();
         }
     }
@@ -237,7 +237,6 @@ export default create()(function ({ form }) {
                 break;
         }
         if (res.statusCode === 200) {
-            // setSearchValue({})
             refresh();
             message.success('操作成功');
         } else {
@@ -247,7 +246,7 @@ export default create()(function ({ form }) {
     }
     // 快捷查询
     function handleQuickSearch(value) {
-        // setSearchValue(v => ({ ...v, quickSearchValue: value }));
+        setSearchValue(v => ({ ...v, quickSearchValue: value }));
         refresh();
     }
     // 清空选中/刷新表格数据
@@ -265,7 +264,7 @@ export default create()(function ({ form }) {
         delete value.strategicPurchaseCode_name;
         delete value.effectiveStatus_name;
         delete value.needToFill_name;
-        // setSearchValue(v => ({ ...v, ...value }));
+        setSearchValue(v => ({ ...v, ...value }));
         refresh();
         headerRef.current.hide();
     }

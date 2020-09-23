@@ -39,6 +39,7 @@ const ExemptionClause = (props) => {
         { title: '豁免条款代码', dataIndex: 'exemptionClauseCode', width: 120 },
         { title: '豁免条款物质名称', dataIndex: 'exemptionClauseMaterialName', ellipsis: true, width: 140 },
         { title: 'CAS.NO', dataIndex: 'casNo', ellipsis: true, },
+        { title: 'ppm', dataIndex: 'ppmValue', ellipsis: true },
         { title: '限量(%)', dataIndex: 'limitNumber', ellipsis: true },
         {
             title: '比较标识', dataIndex: 'limitNumberMaxSign', ellipsis: true, render: (text) => {
@@ -312,6 +313,20 @@ const ExemptionClause = (props) => {
                                     initialValue: data.modalSource && data.modalSource.casNo,
                                     // rules: [{ required: true, message: '请填写CAS.NO' }]
                                 })(<Input disabled={data.isView} />)
+                            }
+                        </FormItem>
+                    </Row>
+                    <Row>
+                        <FormItem label='ppm' {...formLayout}>
+                            {
+                                getFieldDecorator('ppmValue', {
+                                    initialValue: data.modalSource && data.modalSource.ppmValue,
+                                    // rules: [{ required: true, message: '请填写限量' }]
+                                })(<InputNumber
+                                    style={{ width: '100%' }}
+                                    min={0} max={100}
+                                    disabled={data.isView}
+                                />)
                             }
                         </FormItem>
                     </Row>
