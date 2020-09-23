@@ -4,7 +4,7 @@ import { Input, Button, message, Modal, Form } from 'antd';
 import { supplierManagerBaseUrl, recommendUrl } from '@/utils/commonUrl';
 import { openNewTab, getFrameElement, getUserName, getUserId, getUserAccount, closeCurrent } from '@/utils';
 import classnames from 'classnames';
-import { AutoSizeLayout, Header, AdvancedForm} from '@/components';
+import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
 import Upload from '../../compoent/Upload';
 import FillingHistory from '../components/fillingHistory'
 import { findMaterialCode, MaterialConfig, StrategicPurchaseConfig, needToFillList, fillStatusList, allPersonList } from '../../commonProps';
@@ -44,7 +44,7 @@ const SupplierFillList = function ({ form }) {
             ...searchValue,
             quickSearchProperties: []
         }).then(res => {
-            if(res.success && res.statusCode === 200) {
+            if (res.success && res.statusCode === 200) {
                 setDataSource(res.data.rows)
             } else {
                 message.error(res.message)
@@ -81,17 +81,17 @@ const SupplierFillList = function ({ form }) {
     }
     useEffect(() => {
         findMyselfData().then(res => {
-            if(res.success && res.statusCode===200){
-                if(res.data.length === 0) {
+            if (res.success && res.statusCode === 200) {
+                if (res.data.length === 0) {
                     confirm({
                         title: '提示',
                         content: '您还未上传资质文件，请先上传文件！',
                         okText: '立即上传',
                         cancelText: '退出',
-                        onOk: ()=>{
+                        onOk: () => {
                             setUploadVisible(true);
                         },
-                        onCancel: ()=>{
+                        onCancel: () => {
                             closeCurrent();
                         }
                     })
@@ -104,7 +104,7 @@ const SupplierFillList = function ({ form }) {
         })
     }, []);
 
-    useEffect(()=>{
+    useEffect(() => {
         window.parent.frames.addEventListener('message', listenerParentClose, false);
         return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
     }, [])
@@ -180,7 +180,7 @@ const SupplierFillList = function ({ form }) {
                 onClick={() => { setUploadVisible(true) }}
                 key='QUALITYSYNERGY_SUPPLIERFILL_UPLOAD_NEW'
                 ignore={DEVELOPER_ENV}
-            >{ownerFiles.length >0 ? '查看资质文件' : '上传资质文件'}</Button>)
+            >{ownerFiles.length > 0 ? '查看资质文件' : '上传资质文件'}</Button>)
         }
     </>
     const headerRight = <>
@@ -270,10 +270,13 @@ const SupplierFillList = function ({ form }) {
     }
     // 上传确认
     function handleUploadOk() {
+        if (ownerFiles.length > 0) {
+            setUploadVisible(false);
+            return;
+        }
         validateFields((error, values) => {
             const { files } = values;
             if (!error) {
-                console.log('files', files)
                 uploadFile({
                     aptitudeFileId: files ? files.join() : '',
                     fileIdList: files ? files : [],
@@ -283,6 +286,12 @@ const SupplierFillList = function ({ form }) {
                 }).then(res => {
                     if (res.statusCode === 200) {
                         message.success('上传成功');
+                        findMyselfData().then(res => {
+                            if (res.success && res.statusCode === 200) {
+                                let ids = res.data[0].documentInfo;
+                                setOwnerFiles(ids)
+                            }
+                        })
                         setUploadVisible(false);
                     } else {
                         message.error(res.message)
@@ -293,7 +302,7 @@ const SupplierFillList = function ({ form }) {
 
     }
     function handleUploadCancle() {
-        if(ownerFiles.length === 0) {
+        if (ownerFiles.length === 0) {
             closeCurrent();
         } else {
             setUploadVisible(false);
@@ -325,14 +334,6 @@ const SupplierFillList = function ({ form }) {
                     onSelectRow={handleSelectedRows}
                     selectedRowKeys={selectedRowKeys}
                     dataSource={dataSource}
-                    // store={{
-                    //     url: `${recommendUrl}/api/epDataFillService/findByPage`,
-                    //     type: 'POST',
-                    //     params: {
-                    //         ...searchValue,
-                    //         quickSearchProperties: []
-                    //     },
-                    // }}
                 />
             }
         </AutoSizeLayout>
@@ -362,7 +363,7 @@ const SupplierFillList = function ({ form }) {
             centered
             destroyOnClose
             maskClosable={false}
-            onCancel={() => { handleUploadCancle()}}
+            onCancel={() => { handleUploadCancle() }}
             onOk={() => { handleUploadOk() }}
             cancelText={ownerFiles.length === 0 ? '退出' : '取消'}
             visible={uploadVisible}
@@ -372,7 +373,7 @@ const SupplierFillList = function ({ form }) {
                 {
                     getFieldDecorator('files', {
                         rules: [{ required: true, message: '请上传文件' }]
-                    })(<Upload entityId={ownerFiles} type={ownerFiles.length >0?'show':''} />)
+                    })(<Upload entityId={ownerFiles} type={ownerFiles.length > 0 ? 'show' : ''} />)
                 }
             </FormItem>
         </ExtModal>}
