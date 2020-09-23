@@ -49,28 +49,29 @@ const AgentModelRef = forwardRef(({
             return false;
         }
         if (agentInfo) {
-            if (edit === false) {
-                //绑定附件
-                if (agentInfo.businessLicenseDocIds && agentInfo.businessLicenseDocIds.length > 0) {
-                    await RelationDocId(agentInfo.businessLicenseDocIds,
-                        agentInfo.businessLicenseDocId).then(id => {
-                            agentInfo.businessLicenseDocId = id;
-                        })
-                }
-                //绑定附件
-                if (agentInfo.powerAttorneyDocIds && agentInfo.powerAttorneyDocIds.length > 0) {
-                    await RelationDocId(agentInfo.powerAttorneyDocIds, agentInfo.powerAttorneyDocId).then(id => {
-                        agentInfo.powerAttorneyDocId = id;
+            //绑定附件
+            if (agentInfo.businessLicenseDocIds && agentInfo.businessLicenseDocIds.length > 0) {
+                await RelationDocId(agentInfo.businessLicenseDocIds,
+                    agentInfo.businessLicenseDocId).then(id => {
+                        agentInfo.businessLicenseDocId = id;
                     })
-                }
-                if (mergeData(agentInfo)) {
+            }
+            //绑定附件
+            if (agentInfo.powerAttorneyDocIds && agentInfo.powerAttorneyDocIds.length > 0) {
+                await RelationDocId(agentInfo.powerAttorneyDocIds, agentInfo.powerAttorneyDocId).then(id => {
+                    agentInfo.powerAttorneyDocId = id;
+                })
+            }
+            if (edit === false) {
+                if (await mergeData(agentInfo)) {
                     handleModalVisible(false);
                 }
                 return;
 
             } else {
                 let editbankInfo = { ...initialValues, ...agentInfo };
-                onOk(editbankInfo);
+                console.log(editbankInfo)
+                await onOk(editbankInfo);
                 handleModalVisible(false);
             }
         }

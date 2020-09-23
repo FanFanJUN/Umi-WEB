@@ -730,7 +730,7 @@ export const unionPayCodeConfig = {
   store:{
     autoLoad:true,
     url: `${baseUrl}/supplierRegister/getBankNoByPage?Q_EQ_frozen__bool=0`,
-    type: 'post'
+    type: 'GET'
   },
   columns:[
     {
@@ -753,6 +753,13 @@ export const unionPayCodeConfig = {
   style: {
     width: '100%'
   },
+  // remotePaging: true,
+  // rowKey: 'code',
+  // reader: {
+  //   field: ['code'],
+  //   name: 'name',
+  //   description: 'code',
+  // },
 }
 // 银行控制
 export const paymentTypeConfig = {

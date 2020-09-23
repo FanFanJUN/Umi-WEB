@@ -1,4 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useRef, useState,useContext} from 'react';
+import { baseUrl} from '../../../utils/commonUrl';
 import { Modal, Form, Row, Col, Input, } from 'antd';
 import { Fieldclassification } from '@/utils/commonProps'
 import { ComboTree, ComboGrid, ComboList } from 'suid';
@@ -168,11 +169,12 @@ const BankbaseRef = forwardRef(({
                 obj.country = countryId;
                 });
                 result = obj;
-                console.log(obj)
             }
         })
         return result;
     }
+    const searchbank = ['value', 'name'];
+    const unionPaynumber = ['code','name'];
     return (
         <Form >
             <Row className="formstyl">
@@ -258,9 +260,10 @@ const BankbaseRef = forwardRef(({
                             getFieldDecorator("bankCode"),
                             getFieldDecorator("bankCodeName", {
                                 initialValue: "",
-                                rules: [{ required: !isView, message: '请选择银行编码!', }]
+                                //rules: [{ required: !isView, message: '请选择银行编码!', }]
                             })(
                                 <ComboGrid
+                                    searchProperties={searchbank}
                                     {...BankcodeConfigTable}
                                     form={form}
                                     name='bankCodeName'
@@ -281,6 +284,18 @@ const BankbaseRef = forwardRef(({
                                     rules: [{ required: !isView, message: '请选择联行号!', }]
                                 })(
                                     <ComboGrid
+                                        //searchProperties={unionPaynumber}
+                                        cascadeParams={{
+                                            Quick_value: getFieldValue('unionpayCode'),
+                                        }}
+                                        // store={{
+                                        //     params: {
+                                        //         Quick_value: getFieldValue('unionpayCode'),
+                                        //     },
+                                        //     type: 'GET',
+                                        //     autoLoad: false,
+                                        //     url: `${baseUrl}/supplierRegister/getBankNoByPage?Q_EQ_frozen__bool=0`,
+                                        //   }}
                                         {...unionPayCodeConfig}
                                         afterSelect={afterSelect}
                                         name='unionpayCode'
@@ -377,12 +392,31 @@ const BankbaseRef = forwardRef(({
                         label={"银行控制代码"}
                         {...formItemLayout}
                     >
-                        {
+                        {/* {
                             isView ? <span></span> :
                                     getFieldDecorator("paymentName",
                                     getFieldDecorator('paymentCode'), {
                                     initialValue: "",
-                                    rules: [{ required: true, message: '请选择银行控制代码!' }]
+                                    //rules: [{ required: !isView, message: '请选择银行控制代码!' }]
+                                    rules: [{
+                                        required: true,
+                                        message: '请选择银行控制代码!'
+                                    }]
+                                })(
+                                    <ComboList
+                                        showSearch={false}
+                                        {...paymentTypeConfig}
+                                        name='paymentName'
+                                        field={['paymentCode']}
+                                        form={form}
+                                    />
+                                )} */}
+                                {
+                            isView ? <span></span> :
+                                getFieldDecorator("paymentCode"),
+                                getFieldDecorator('paymentName', {
+                                    initialValue: "",
+                                    rules: [{ required: !isView, message: '请选择银行控制代码!', }]
                                 })(
                                     <ComboList
                                         showSearch={false}

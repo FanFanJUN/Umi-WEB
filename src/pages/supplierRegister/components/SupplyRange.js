@@ -42,6 +42,7 @@ const SupplyRangeRef = forwardRef(({
       materialId = editData.extendVo.materielCategories.map(item => item ? item.id : '');
       materialName = editData.extendVo.materielCategories.map(item => item ? item.name : '').join('、');
       setMaterialId(materialId)
+      console.log(materialId)
     }
   }
   // 暂存

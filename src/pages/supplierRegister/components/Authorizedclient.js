@@ -58,7 +58,6 @@ const AuthorizeRef = forwardRef(({
         if (editData && editData.contactVos && editData.contactVos.length > 0) {
             initData = editData.contactVos.map((item, index) => ({ key: index, ...item }));
             let maxLineNum = getMaxLineNum(editData.contactVos);
-            console.log(maxLineNum)
             //lineCode = maxLineNum + 1;
             keys = initData.length - 1;
         }else {
@@ -66,25 +65,30 @@ const AuthorizeRef = forwardRef(({
         }
         getBankcodelist(editData)
     }, [editformData])
-
-    const tableProps = [
-        {
-            title: '操作',
-            align: 'center',
-            dataIndex: 'operation',
-            width: 100,
-            render: (text, record, index) => {
-                return <div>
-                    {
-                        dataSource.length > 1 ? <Icon
-                            type={'delete'}
-                            title={'删除'}
-                            onClick={() => handleDelete(record.key)}
-                        /> : null
-                    }
-                </div>;
+    let columns = [];
+    if (!isView) {
+        columns.push(
+            {
+                title: '操作',
+                align: 'center',
+                dataIndex: 'operation',
+                width: 100,
+                render: (text, record, index) => {
+                    return <div>
+                        {
+                            dataSource.length > 1 ? <Icon
+                                type={'delete'}
+                                title={'删除'}
+                                onClick={() => handleDelete(record.key)}
+                            /> : null
+                        }
+                    </div>;
+                }
             }
-        },
+        );
+      }
+    const tableProps = [
+        ...columns,
         {
             title: '行号',
             dataIndex: 'lineCode',
@@ -287,33 +291,27 @@ const AuthorizeRef = forwardRef(({
     function afterSelect(val,key) {
         setEdit(true)
         dataSource.forEach((item,index) => {
-            console.log(item.key)
-            console.log(key)
             if (item.key === Number(key)) {
                 console.log(23123)
                 const copyData = dataSource.slice(0)
                 copyData[index].position = val.value;
                 setDataSource(copyData)
-                console.log(dataSource)
             }
         })
     }
     function getBankcodelist(val) {
         let contactVos;
         if (val) {
-            console.log(val)
             if (val.contactVos !== undefined) {
                 contactVos = val.contactVos;
                 contactVos.forEach(item => item.key = keys++);
                 //设置行号，取（最大值+1）为当前行号
                 if (contactVos.length > 0) {
                     if (!isEmpty(contactVos)) {
-                        console.log(lineCode)
                         contactVos.forEach(item => {
                             item.lineCode = getLineCode(lineCode++)
                         })
                     }
-                    console.log(contactVos)
                     let maxLineCode = getMaxLineNum(contactVos);
                     lineCode = maxLineCode++;
                     setDataSource(contactVos)
@@ -328,7 +326,6 @@ const AuthorizeRef = forwardRef(({
                 let determine = lineCode
                 //lineCode = lineCode
                 const newData = [...dataSource, { key: ++keys, lineCode: getLineCode(determine) }];
-                console.log(newData)
                 setDataSource(newData)
             }
         }
