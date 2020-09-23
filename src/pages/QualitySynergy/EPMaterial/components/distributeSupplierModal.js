@@ -15,7 +15,7 @@ const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 14, },
 };
-const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDemandNum }, ref) => {
+const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDemandNum, refreshTable }, ref) => {
     useImperativeHandle(ref, () => ({
         setVisible
     }))
@@ -205,6 +205,7 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                     message.success('操作成功');
                     setEditTag(false);
                     setDeleteList([]);
+                    refreshTable()
                     setVisible(false);
                 } else {
                     message.error(res.message);
