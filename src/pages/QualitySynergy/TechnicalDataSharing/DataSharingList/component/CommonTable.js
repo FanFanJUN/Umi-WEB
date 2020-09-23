@@ -43,6 +43,10 @@ export const CommonTable = React.forwardRef((props, ref) => {
     }
   }, []);
 
+  useEffect(() => {
+    getDataSource();
+  }, [data.quickValue]);
+
   const onShowSizeChange = (current, pageSize) => {
     console.log(current, pageSize)
     setPageInfo({
@@ -51,12 +55,12 @@ export const CommonTable = React.forwardRef((props, ref) => {
     });
   };
 
-  const getDataSource = (quickValue) => {
+  const getDataSource = () => {
     setData(v => ({ ...v, loading: true }));
     const { url, type, params } = store;
     const allParams = {
       pageInfo,
-      quickValue: quickValue ? quickValue : '',
+      quickValue: data.quickValue,
       ...params,
     };
     request(url, {
@@ -87,7 +91,8 @@ export const CommonTable = React.forwardRef((props, ref) => {
         style={{ width: 200, marginBottom: '5px' }}
         placeholder="请输入代码或名称"
         onSearch={value => {
-          getDataSource(value);
+          setData(v => ({...v, quickValue: value}))
+          setPageInfo(v => ({...v, page: 1}))
         }}
       />
     </div>

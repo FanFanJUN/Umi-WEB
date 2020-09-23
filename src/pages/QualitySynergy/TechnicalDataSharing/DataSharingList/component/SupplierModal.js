@@ -148,7 +148,6 @@ const SupplierModal = (props) => {
   };
 
   const modalCancel = () => {
-    supplierTable.current.manualSelectedRows();
     setData((value) => ({ ...value, ModalVisible: false }));
   };
 
