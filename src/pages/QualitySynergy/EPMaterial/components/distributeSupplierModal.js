@@ -1,13 +1,12 @@
 import { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment } from 'react';
 import { ExtTable, ExtModal, ScrollBar } from 'suid';
-import { Button, DatePicker, Form, Modal, message } from 'antd';
+import { Button, DatePicker, Form, Modal, message, Input } from 'antd';
 import { smBaseUrl, supplierManagerBaseUrl } from '@/utils/commonUrl';
 import { getUserName, getUserId, getUserAccount } from '../../../../utils';
 import {
     addDemandSupplier,
     findByPageOfSupplier,
     findByDemandNumber,
-    findAllSupplierFillter
 } from '../../../../services/qualitySynergy'
 import styles from './index.less'
 import moment from 'moment';
@@ -33,8 +32,6 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
     const [deleteList, setDeleteList] = useState([]);
     const [supplierCodes, setSuplierCodes] = useState([]);
     const [editTag, setEditTag] = useState(false); // 编辑标记
-    const [pageInfo, setPageInfo] = useState({ page: 1, rows: 30 });
-    const [total, setTotal] = useState(0);
     const { getFieldDecorator, validateFields } = form;
     useEffect(() => {
         if (visible === true) {
@@ -59,15 +56,6 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
             }
         }
     }, [visible])
-    useEffect(() => {
-        if(addVisible) {
-            findAllSupplierFillter({
-                pageInfo: pageInfo,
-            }).then(res => {
-                console.log(res)
-            })
-        }
-    }, [addVisible])
     const columns = [
         { title: '是否暂停', dataIndex: 'suspend', align: 'center', width: 80, render: (text) => text ? '是' : '否' },
         { title: '是否发布', dataIndex: 'publish', width: 80, align: 'center', render: (text) => text ? '已发布' : '草稿' },
@@ -293,10 +281,10 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                 <Button className={styles.btn} onClick={() => { handleSuspended() }} key="suspend"
                     disabled={checkAllSameStatus('suspend') === false}>{checkAllSameStatus('suspend') === 1 ? '取消暂停' : checkAllSameStatus('suspend') === 2 ? '暂停' : '暂停/取消暂停'}</Button>
                 <Button className={styles.btn} onClick={() => { handlePublish(true) }}
-                    disabled={selectedRows.length === 0 || checkAllSameStatus('publish') === 1}
+                    disabled={checkAllSameStatus('publish') === 1 || checkAllSameStatus('publish')===false}
                 >发布</Button>
                 <Button className={styles.btn} onClick={() => { handlePublish(false) }}
-                    disabled={selectedRows.length === 0 || checkAllSameStatus('publish') === 2}
+                    disabled={checkAllSameStatus('publish') === 2 || checkAllSameStatus('publish')===false}
                 >取消发布</Button>
                 <Button className={styles.btn} onClick={() => { handleSave() }}>保存</Button>
             </div>
@@ -339,7 +327,7 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
         <ExtModal
             centered
             destroyOnClose
-            width="150vh"
+            width="130vh"
             visible={addVisible}
             maskClosable={false}
             zIndex={1001}
@@ -360,7 +348,6 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                 ref={supplierTableRef}
                 checkbox={true}
                 rowKey={(item) => item.id}
-                size='small'
                 onSelectRow={(rowKeys, rows) => {
                     console.log('选中', rowKeys, rows)
                     setSupplierSelectedRowKeys(rowKeys);
@@ -373,7 +360,8 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                     params: {
                         Q_EQ_frozen__Boolean: false,
                         filters: [
-                            { fieldName: "code", fieldType: "String", operator: "EQ", value: "NONULL" }
+                            { fieldName: "code", fieldType: "String", operator: "EQ", value: "NONULL" },
+                            {fieldName: "supplierStatus", fieldType: "Integer", operator: "EQ", value: 0}
                         ],
                     }
                 }}

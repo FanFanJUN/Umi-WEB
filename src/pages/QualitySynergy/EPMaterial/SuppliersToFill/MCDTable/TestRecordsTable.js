@@ -43,7 +43,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
             else return text;
         }},
         { title: '基本单位', dataIndex: 'unitName', ellipsis: true, align: 'center', },
-        { title: '符合性 ', dataIndex: 'compliance', ellipsis: true, align: 'center', render: (text) => text ? '符合' : '不符合' },
+        { title: '符合性 ', dataIndex: 'compliance', ellipsis: true, align: 'center', render: (text) => text===true ? '符合' : text===false ? '不符合':''  },
     ];
     // 记录列表选中
     function handleSelectedRows(rowKeys, rows) {

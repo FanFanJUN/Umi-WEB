@@ -55,7 +55,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
         { title: '均质材料中的含量(%) ', dataIndex: 'materialWeight', ellipsis: true, align: 'center', },
         { title: '豁免条款', dataIndex: 'exemptionClauseCode', ellipsis: true, align: 'center' },
         { title: '基本单位', dataIndex: 'unitName', ellipsis: true, align: 'center', },
-        { title: '符合性', dataIndex: 'compliance', ellipsis: true, align: 'center', render: (text) => text ? '符合' : '不符合' },
+        { title: '符合性', dataIndex: 'compliance', ellipsis: true, align: 'center', render: (text) => text===true ? '符合' : text===false ? '不符合':'' },
     ];
     async function getUnit(materialCode, scopeApplicationCode) {
         console.log('获取基本单位', materialCode, scopeApplicationCode)
@@ -225,7 +225,11 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                             getFieldDecorator('isRestricted', {
                                 initialValue: modalType === 'edit' ? selectedRows[0].isRestricted : '',
                                 rules: [{ required: true, message: '请选择' }]
-                            })(<Select style={{ width: '100%' }}>
+                            })(<Select style={{ width: '100%' }} onChange={(item)=>{
+                                if(item === false) {
+                                    setFieldsValue({ substanceCode: '', substanceId:'', substanceName: '', casNo: '' })
+                                }
+                            }}>
                                 <Option value={true}>是</Option>
                                 <Option value={false}>否</Option>
                             </Select>)
@@ -262,7 +266,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                         {
                             getFieldDecorator('casNo', {
                                 initialValue: modalType === 'edit' ? selectedRows[0].casNo : '',
-                            })(<Input disabled={getFieldValue('isRestricted') === '1'} />)
+                            })(<Input disabled={getFieldValue('isRestricted') === true} />)
                         }
                     </FormItem>
                 </Row>
@@ -309,8 +313,8 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                                 initialValue: modalType === 'edit' ? selectedRows[0].materialWeight : '',
                                 rules: [{ required: true, message: '请填入均质材料中的含量' }]
                             })(<InputNumber style={{ width: '100%' }} min={0} onBlur={() => {
-                                if (getFieldValue('scopeApplication') === 0) {
-                                    setFieldsValue({ scopeApplication: '' })
+                                if (getFieldValue('materialWeight') === 0) {
+                                    setFieldsValue({ materialWeight: '' })
                                 }
                             }} />)
                         }

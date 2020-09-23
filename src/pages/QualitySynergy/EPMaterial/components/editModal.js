@@ -2,7 +2,13 @@ import { useImperativeHandle, forwardRef, useState, useRef, Fragment, useEffect 
 import { Form, Row, Col, Input, Button, Modal, message, Spin } from 'antd';
 import { ComboList, ExtTable, ExtModal, ComboTree } from 'suid';
 import { MaterialConfig, allPersonList } from '../../commonProps';
-import { findByBuCode, sapMaterialGroupMapPurchaseGroup, epsFindByCode, findOrgTreeWithoutFrozen } from '../../../../services/qualitySynergy';
+import {
+    findByBuCode,
+    sapMaterialGroupMapPurchaseGroup,
+    epsFindByCode,
+    findOrgTreeWithoutFrozen,
+    checkEnvironmentalProtectionData
+} from '../../../../services/qualitySynergy';
 const { create, Item: FormItem } = Form;
 const formLayout = {
     labelCol: { span: 8, },
@@ -29,7 +35,7 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada, materia
         }
         fetchData();
         findOrgTreeWithoutFrozen().then(res => {
-            if(res.success) {
+            if (res.success) {
                 setOrgId(res.data[0].id);
             }
         })
@@ -38,10 +44,18 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada, materia
         setModalType(type);
         setVisible(true);
     }
-    const handleAfterSelect = (item) => {
-        if(materialCodes && materialCodes.includes(item.materialCode)){
+    const handleAfterSelect = async (item) => {
+        const resCheck = await checkEnvironmentalProtectionData({
+            environmentalProtectionName: item.materialDesc
+        })
+        if(!resCheck.success) {
+            setFieldsValue({ materialId: '', materialCode: '', materialName: '', materialGroupCode: '', materialGroupName: '', materialGroupId: '' })
+            message.warning(resCheck.message);
+            return;
+        }
+        if (materialCodes && materialCodes.includes(item.materialCode)) {
             message.error('此物料已存在表格中，不能再次添加！');
-            setFieldsValue({ materialId: '', materialCode: '', materialName: '', materialGroupCode: '', materialGroupName: '', materialGroupId: ''})
+            setFieldsValue({ materialId: '', materialCode: '', materialName: '', materialGroupCode: '', materialGroupName: '', materialGroupId: '' })
             return;
         }
         let tag1, tag2;
@@ -180,7 +194,7 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada, materia
                                 initialValue: initData && initData.environmentAdminName,
                             })(<ComboList form={form}
                                 {...allPersonList}
-                                cascadeParams={{organizationId: OrgId}}
+                                cascadeParams={{ organizationId: OrgId }}
                                 name='environmentAdminName'
                                 field={['environmentAdminId', 'environmentAdminAccount']}
                             />)
