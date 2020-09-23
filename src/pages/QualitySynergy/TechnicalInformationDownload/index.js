@@ -110,7 +110,7 @@ export default function() {
       <Checkbox onChange={onChange} checked={data.checked}>未下载</Checkbox>
     </div>
     <Search
-      placeholder='物料或物料组'
+      placeholder='物料或物料组或资料类别'
       className={styles.btn}
       onSearch={handleQuickSearch}
       allowClear
