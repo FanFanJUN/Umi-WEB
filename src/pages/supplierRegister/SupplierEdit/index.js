@@ -408,7 +408,6 @@ function CreateStrategy() {
       wholeData.supplierInfoVo = supplierInfoVo;
     }
     let saveData = wholeData;
-    console.log(saveData)
     triggerLoading(true)
     const { success, message: msg } = await saveSupplierRegister(saveData);
     if (success) {

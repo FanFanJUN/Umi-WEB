@@ -42,8 +42,8 @@ class MatCatTree extends Component {
       const { defaultCheckedKeys } = this.props;
       let treeloop = res.data;
       if (this.props.isView) {
-        let dataSource = JSON.parse(JSON.stringify(treeloop));
-        let findResultData = this.findCheckedData(defaultCheckedKeys, dataSource);
+        let dataSourceed = JSON.parse(JSON.stringify(treeloop));
+        let findResultData = this.findCheckedData(defaultCheckedKeys, dataSourceed);
         this.keyList = [];
         this.getExpandedKeys(findResultData);
         let expandedKeys = this.keyList;
@@ -333,6 +333,7 @@ class MatCatTree extends Component {
   render() {
     const { dataSource, checkedKeys } = this.state;
     const { defaultCheckedKeys, isView } = this.props;
+    console.log(dataSource)
     return (
       <div>
         <Card title={this.leftTitle()} extra={this.rightTitle()} bodyStyle={{ height: 285, overflow: 'auto' }}>
