@@ -1,7 +1,7 @@
 import { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment } from 'react';
 import { ExtTable, ExtModal, DataImport, ComboList } from 'suid';
 import { Button, Col, Form, Modal, Row, Input, Select, InputNumber } from 'antd'
-import { limitScopeList, findByIsRecordCheckListTrue } from '../../../commonProps';
+import { limitScopeList, findByIsRecordCheckListTrue, findMaterialNameListByRangeCode, findRangeListByMaterialCode } from '../../../commonProps';
 import { findByProtectionCodeAndMaterialCodeAndRangeCode } from '../../../../../services/qualitySynergy'
 import { smBaseUrl } from '@/utils/commonUrl';
 import classnames from 'classnames'
@@ -16,7 +16,7 @@ const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 14, },
 };
-const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList, environmentalProtectionCode, isView}, ref) => {
+const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList, environmentalProtectionCode, isView }, ref) => {
     useImperativeHandle(ref, () => ({
         setVisible
     }))
@@ -38,12 +38,14 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
         { title: '物质名称', dataIndex: 'materialName', ellipsis: true, align: 'center' },
         { title: 'CAS.NO', dataIndex: 'casNo', ellipsis: true, align: 'center', },
         { title: '适用范围', dataIndex: 'scopeApplicationName', ellipsis: true, align: 'center', },
-        { title: '含量', dataIndex: 'content', ellipsis: true, align: 'center', render:(text, item)=>{
-            if(item.contentType === 'RANGE_VALUE') return '<' + text;
-            else return text;
-        }},
+        {
+            title: '含量', dataIndex: 'content', ellipsis: true, align: 'center', render: (text, item) => {
+                if (item.contentType === 'RANGE_VALUE') return '<' + text;
+                else return text;
+            }
+        },
         { title: '基本单位', dataIndex: 'unitName', ellipsis: true, align: 'center', },
-        { title: '符合性 ', dataIndex: 'compliance', ellipsis: true, align: 'center', render: (text) => text===true ? '符合' : text===false ? '不符合':''  },
+        { title: '符合性 ', dataIndex: 'compliance', ellipsis: true, align: 'center', render: (text) => text === true ? '符合' : text === false ? '不符合' : '' },
     ];
     // 记录列表选中
     function handleSelectedRows(rowKeys, rows) {
@@ -215,9 +217,13 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                                 initialValue: modalType === 'edit' ? selectedRows[0].materialName : '',
                                 rules: [{ required: true, message: '请填写拆分部件名称' }]
                             })(<ComboList form={form}
-                                {...findByIsRecordCheckListTrue}
+                                {...findMaterialNameListByRangeCode}
                                 name='materialName'
                                 field={['materialId', 'materialCode', 'casNo']}
+                                cascadeParams={{
+                                    rangeCode: getFieldValue('scopeApplicationCode'),
+                                    protectionCode: environmentalProtectionCode,
+                                }}
                                 afterSelect={(item) => {
                                     let scopeApplicationCode = getFieldValue('scopeApplicationCode');;
                                     getUnit(item.limitMaterialCode, scopeApplicationCode)
@@ -244,12 +250,16 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                                 initialValue: modalType === 'edit' ? selectedRows[0].scopeApplicationName : '',
                                 rules: [{ required: true, message: '请选择适用范围' }]
                             })(<ComboList form={form}
-                                {...limitScopeList}
+                                {...findRangeListByMaterialCode}
                                 name='scopeApplicationName'
+                                cascadeParams={{
+                                    materialCode: getFieldValue('materialCode'),
+                                    protectionCode: environmentalProtectionCode,
+                                }}
                                 field={['scopeApplicationId', 'scopeApplicationCode']}
                                 afterSelect={(item) => {
                                     let materialCode = getFieldValue('materialCode');;
-                                    getUnit(materialCode, item.scopeCode)
+                                    getUnit(materialCode, item.practicalRangeCode)
                                 }}
                             />)
                         }

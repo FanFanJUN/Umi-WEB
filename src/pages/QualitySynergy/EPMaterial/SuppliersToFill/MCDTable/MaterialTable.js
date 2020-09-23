@@ -1,7 +1,7 @@
 import { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment } from 'react';
 import { ExtTable, ExtModal, DataImport, ComboList } from 'suid';
 import { Button, InputNumber, Form, Modal, Row, Input, Select, message } from 'antd';
-import { limitMaterialList, limitScopeList, exemptionClauseDataList } from '../../../commonProps';
+import { limitMaterialList, limitScopeList, exemptionClauseDataList, findRangeListByMaterialCode, findMaterialListByRangeCode } from '../../../commonProps';
 import { materialCompositionVerification, findByProtectionCodeAndMaterialCodeAndRangeCode } from '../../../../../services/qualitySynergy';
 import classnames from 'classnames'
 import styles from '../index.less'
@@ -55,7 +55,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
         { title: '均质材料中的含量(%) ', dataIndex: 'materialWeight', ellipsis: true, align: 'center', },
         { title: '豁免条款', dataIndex: 'exemptionClauseCode', ellipsis: true, align: 'center' },
         { title: '基本单位', dataIndex: 'unitName', ellipsis: true, align: 'center', },
-        { title: '符合性', dataIndex: 'compliance', ellipsis: true, align: 'center', render: (text) => text===true ? '符合' : text===false ? '不符合':'' },
+        { title: '符合性', dataIndex: 'compliance', ellipsis: true, align: 'center', render: (text) => text === true ? '符合' : text === false ? '不符合' : '' },
     ];
     async function getUnit(materialCode, scopeApplicationCode) {
         console.log('获取基本单位', materialCode, scopeApplicationCode)
@@ -225,9 +225,9 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                             getFieldDecorator('isRestricted', {
                                 initialValue: modalType === 'edit' ? selectedRows[0].isRestricted : '',
                                 rules: [{ required: true, message: '请选择' }]
-                            })(<Select style={{ width: '100%' }} onChange={(item)=>{
-                                if(item === false) {
-                                    setFieldsValue({ substanceCode: '', substanceId:'', substanceName: '', casNo: '' })
+                            })(<Select style={{ width: '100%' }} onChange={(item) => {
+                                if (item === false) {
+                                    setFieldsValue({ substanceCode: '', substanceId: '', substanceName: '', casNo: '' })
                                 }
                             }}>
                                 <Option value={true}>是</Option>
@@ -246,10 +246,13 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                                     initialValue: modalType === 'edit' ? selectedRows[0].substanceCode : '',
                                     rules: [{ required: true, message: '请选择物质名称' }]
                                 })(<ComboList form={form}
-                                    {...limitMaterialList}
+                                    {...findMaterialListByRangeCode}
                                     name='substanceCode'
                                     field={['substanceId', 'substanceName', 'casNo']}
-                                    placeholder="请选择"
+                                    cascadeParams={{
+                                        rangeCode: getFieldValue('practicalRangeCode'),
+                                        protectionCode: environmentalProtectionCode,
+                                    }}
                                     afterSelect={(item) => {
                                         let practicalRangeCode = getFieldValue('practicalRangeCode');;
                                         getUnit(item.limitMaterialCode, practicalRangeCode)
@@ -280,12 +283,16 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                                 rules: [{ required: true, message: '请选择适用范围' }]
                             })(<ComboList
                                 form={form}
-                                {...limitScopeList}
+                                {...findRangeListByMaterialCode}
                                 name='practicalRangeName'
+                                cascadeParams={{
+                                    materialCode: getFieldValue('substanceCode'),
+                                    protectionCode: environmentalProtectionCode,
+                                }}
                                 field={['practicalRangeId', 'practicalRangeCode']}
                                 afterSelect={(item) => {
                                     let substanceCode = getFieldValue('substanceCode');;
-                                    getUnit(substanceCode, item.scopeCode)
+                                    getUnit(substanceCode, item.practicalRangeCode)
                                 }}
                             />)
                         }
