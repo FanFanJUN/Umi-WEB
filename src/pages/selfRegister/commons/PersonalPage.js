@@ -44,6 +44,7 @@ const OrganizatRef = forwardRef(({
             if (!err) {
                 values.supplierType = '0';
                 values.openId = accounts.openId;
+                values.name = values.name  + values.mobile
                 result = values;
             }
         });
@@ -114,6 +115,7 @@ const OrganizatRef = forwardRef(({
                                     //onChange={this.supplierNameChange}
                                     onBlur={handleCheck}
                                     placeholder={'个人名称+手机号'}
+                                    maxLength={10}
                                 />,
                             )
                         }

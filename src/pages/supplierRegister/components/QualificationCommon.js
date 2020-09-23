@@ -125,24 +125,30 @@ const QualificationRef = forwardRef(({
             return value1 - value2;
         }
     }
-    const tableProps = [
-        {
-            title: '操作',
-            width: 50,
-            align: 'center',
-            dataIndex:'operation',
-            render: (text, record, index) => {
-                return <div>
-                    {
-                        record.key > initIndex - 1 ? <Icon
-                            type={'delete'}
-                            title={'删除'}
-                            onClick={() => handleDelete(record.key)}
-                        /> : null
-                    }
-                </div>;
+    let columns = [];
+    if (!isView) {
+        columns.push(
+            {
+                title: '操作',
+                width: 50,
+                align: 'center',
+                dataIndex:'operation',
+                render: (text, record, index) => {
+                    return <div>
+                        {
+                            record.key > initIndex - 1 ? <Icon
+                                type={'delete'}
+                                title={'删除'}
+                                onClick={() => handleDelete(record.key)}
+                            /> : null
+                        }
+                    </div>;
+                },
             },
-        },
+        );
+    }
+    const tableProps = [
+        ...columns,
         {
             title: '行号',
             dataIndex: 'lineCode',

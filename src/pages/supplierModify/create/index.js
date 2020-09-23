@@ -20,7 +20,8 @@ import {
 import {
   TemporarySupplierRegister,
   checkExistUnfinishedValidity,
-  saveSupplierRegister
+  saveSupplierRegister,
+  ValiditySupplierRegister
 } from '@/services/SupplierModifyService'
 import styles from '../../supplierRegister/components/index.less';
 import { closeCurrent } from '../../../utils';
@@ -414,16 +415,24 @@ function CreateStrategy() {
   async function createSave(val) {
     triggerLoading(true)
     let params = { ...againdata, ...val };
-    const { success, message: msg } = await TemporarySupplierRegister(params);
+    // 变更保存效验
+    const { success, message: msg } = await ValiditySupplierRegister(params);
     if (success) {
-      message.success(msg);
+      const { success, message: msg } = await TemporarySupplierRegister(params);
+      if (success) {
+        message.success(msg);
+        triggerLoading(false)
+        closeCurrent()
+        return
+      } else {
+        message.error(msg);
+      }
       triggerLoading(false)
-      closeCurrent()
-      return
-    } else {
+    }else{
+      triggerLoading(false)
       message.error(msg);
     }
-    triggerLoading(false)
+   
   }
   function setSuppliername(name) {
     setsupplierName(name)

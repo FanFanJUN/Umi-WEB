@@ -810,6 +810,17 @@ export const purchaseCompanyPropsreg = {
   style: {
     width: '100%'
   },
+  treeNodeProps: (node) => {
+    if (node.nodeLevel === 0) {
+      return {
+        selectable: false
+      }
+    }else if (node.nodeLevel === 1) {
+      return {
+        selectable: false
+      }
+    }
+  }
 }
 
 // 联行号
