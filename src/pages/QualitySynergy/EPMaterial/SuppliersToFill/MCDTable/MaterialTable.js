@@ -1,7 +1,7 @@
 import { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment } from 'react';
 import { ExtTable, ExtModal, DataImport, ComboList } from 'suid';
 import { Button, InputNumber, Form, Modal, Row, Input, Select, message } from 'antd';
-import { limitMaterialList, limitScopeList, exemptionClauseDataList, findRangeListByMaterialCode, findMaterialListByRangeCode } from '../../../commonProps';
+import { limitMaterialList, limitScopeList, exemptionClauseDataList } from '../../../commonProps';
 import { materialCompositionVerification, findByProtectionCodeAndMaterialCodeAndRangeCode } from '../../../../../services/qualitySynergy';
 import classnames from 'classnames'
 import styles from '../index.less'
@@ -58,18 +58,21 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
         { title: '符合性', dataIndex: 'compliance', ellipsis: true, align: 'center', render: (text) => text === true ? '符合' : text === false ? '不符合' : '' },
     ];
     async function getUnit(materialCode, scopeApplicationCode) {
-        console.log('获取基本单位', materialCode, scopeApplicationCode)
         if (!materialCode || !scopeApplicationCode) return;
         const res = await findByProtectionCodeAndMaterialCodeAndRangeCode({
             protectionCode: environmentalProtectionCode,
             materialCode: materialCode,
             rangeCode: scopeApplicationCode
         })
-        if (res.statusCode === 200 && res.data) {
+        if (res.statusCode === 200 && res.data && res.data.basicUnitCode) {
+            console.log(1, res)
             setFieldsValue({
                 unitCode: res.data.basicUnitCode,
                 unitName: res.data.basicUnitName,
             })
+        } else {
+            console.log(2)
+            message.warning('选中物质和适用范围无法带出基本单位，请先联系管理员维护数据！')
         }
     }
     // 记录列表选中
@@ -227,7 +230,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                                 rules: [{ required: true, message: '请选择' }]
                             })(<Select style={{ width: '100%' }} onChange={(item) => {
                                 if (item === false) {
-                                    setFieldsValue({ substanceCode: '', substanceId: '', substanceName: '', casNo: '' })
+                                    setFieldsValue({ substanceCode: '', substanceId: '', substanceName: '', casNo: '', unitCode: '', unitName: ''})
                                 }
                             }}>
                                 <Option value={true}>是</Option>
@@ -246,16 +249,13 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                                     initialValue: modalType === 'edit' ? selectedRows[0].substanceCode : '',
                                     rules: [{ required: true, message: '请选择物质名称' }]
                                 })(<ComboList form={form}
-                                    {...findMaterialListByRangeCode}
+                                    {...limitMaterialList}
                                     name='substanceCode'
                                     field={['substanceId', 'substanceName', 'casNo']}
-                                    cascadeParams={{
-                                        rangeCode: getFieldValue('practicalRangeCode'),
-                                        protectionCode: environmentalProtectionCode,
-                                    }}
                                     afterSelect={(item) => {
-                                        let practicalRangeCode = getFieldValue('practicalRangeCode');;
-                                        getUnit(item.limitMaterialCode, practicalRangeCode)
+                                        let practicalRangeCode = getFieldValue('practicalRangeCode');
+                                        getUnit(item.limitMaterialCode, practicalRangeCode);
+                                        setFieldsValue({ practicalRangeId: '', practicalRangeCode: '', practicalRangeName: '' })
                                     }}
                                 />) : getFieldDecorator('substanceName', {
                                     initialValue: modalType === 'edit' ? selectedRows[0].substanceName : '',
@@ -283,16 +283,12 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                                 rules: [{ required: true, message: '请选择适用范围' }]
                             })(<ComboList
                                 form={form}
-                                {...findRangeListByMaterialCode}
+                                {...limitScopeList}
                                 name='practicalRangeName'
-                                cascadeParams={{
-                                    materialCode: getFieldValue('substanceCode'),
-                                    protectionCode: environmentalProtectionCode,
-                                }}
                                 field={['practicalRangeId', 'practicalRangeCode']}
                                 afterSelect={(item) => {
                                     let substanceCode = getFieldValue('substanceCode');;
-                                    getUnit(substanceCode, item.practicalRangeCode)
+                                    getUnit(substanceCode, item.scopeCode)
                                 }}
                             />)
                         }
@@ -349,7 +345,8 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                             getFieldDecorator('unitCode', { initialValue: modalType === 'edit' ? selectedRows[0].unitCode : '' }),
                             getFieldDecorator('unitName', {
                                 initialValue: modalType === 'edit' ? selectedRows[0].unitName : '',
-                            })(<Input disabled />)
+                                rules: [{ required: (getFieldValue('isRestricted') === true), message: '基本单位不能为空' }]
+                            })(<Input disabled={getFieldValue('isRestricted') === true} />)
                         }
                     </FormItem>
                 </Row>

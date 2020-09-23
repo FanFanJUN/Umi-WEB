@@ -1,7 +1,7 @@
 import { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment } from 'react';
 import { ExtTable, ExtModal, DataImport, ComboList } from 'suid';
 import { Button, Col, Form, Modal, Row, Input, Select, InputNumber } from 'antd'
-import { limitScopeList, findByIsRecordCheckListTrue, findMaterialNameListByRangeCode, findRangeListByMaterialCode } from '../../../commonProps';
+import { limitScopeList, findByIsRecordCheckListTrue } from '../../../commonProps';
 import { findByProtectionCodeAndMaterialCodeAndRangeCode } from '../../../../../services/qualitySynergy'
 import { smBaseUrl } from '@/utils/commonUrl';
 import classnames from 'classnames'
@@ -104,11 +104,13 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
             materialCode: materialCode,
             rangeCode: scopeApplicationCode
         })
-        if (res.statusCode === 200 && res.data) {
+        if (res.statusCode === 200 && res.data && res.data.basicUnitCode) {
             setFieldsValue({
                 unitCode: res.data.basicUnitCode,
                 unitName: res.data.basicUnitName,
             })
+        } else {
+            message.warning('选中物质和适用范围无法带出基本单位，请先联系管理员维护数据！')
         }
     }
     const validateItem = (data) => {
@@ -217,7 +219,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                                 initialValue: modalType === 'edit' ? selectedRows[0].materialName : '',
                                 rules: [{ required: true, message: '请填写拆分部件名称' }]
                             })(<ComboList form={form}
-                                {...findMaterialNameListByRangeCode}
+                                {...findByIsRecordCheckListTrue}
                                 name='materialName'
                                 field={['materialId', 'materialCode', 'casNo']}
                                 cascadeParams={{
@@ -250,16 +252,12 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                                 initialValue: modalType === 'edit' ? selectedRows[0].scopeApplicationName : '',
                                 rules: [{ required: true, message: '请选择适用范围' }]
                             })(<ComboList form={form}
-                                {...findRangeListByMaterialCode}
+                                {...limitScopeList}
                                 name='scopeApplicationName'
-                                cascadeParams={{
-                                    materialCode: getFieldValue('materialCode'),
-                                    protectionCode: environmentalProtectionCode,
-                                }}
                                 field={['scopeApplicationId', 'scopeApplicationCode']}
                                 afterSelect={(item) => {
                                     let materialCode = getFieldValue('materialCode');;
-                                    getUnit(materialCode, item.practicalRangeCode)
+                                    getUnit(materialCode, item.scopeCode)
                                 }}
                             />)
                         }
@@ -290,6 +288,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                             getFieldDecorator('unitCode', { initialValue: modalType === 'edit' ? selectedRows[0].unitCode : '' }),
                             getFieldDecorator('unitName', {
                                 initialValue: modalType === 'edit' ? selectedRows[0].unitName : '',
+                                rules: [{ required: true, message: '基本单位不能为空' }]
                             })(<Input disabled />)
                         }
                     </FormItem>
