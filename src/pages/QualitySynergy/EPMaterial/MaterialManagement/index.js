@@ -664,11 +664,9 @@ export default create()(function ({ form }) {
                     allowCancelSelect
                     showSearch={false}
                     remotePaging={true}
-                    checkbox={{ multiSelect: false }}
                     ref={tableRef}
                     rowKey={(item) => item.id}
                     checkbox={true}
-                    size='small'
                     onSelectRow={(rowKeys, rows) => {
                         setRowKeys(rowKeys);
                         setRows(rows);
