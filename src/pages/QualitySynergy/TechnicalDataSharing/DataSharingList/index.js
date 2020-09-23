@@ -277,7 +277,7 @@ export default function() {
         onClick={() => redirectToPage('recall')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', '生效')}
+        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', '生效') || !judge(data.selectedRows, 'allotSupplierState', '未分配')}
         key='TECHNICAL_DATA_SHARING_UNDO'
       >撤回</Button>)
     }
