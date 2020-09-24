@@ -13,7 +13,7 @@ const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 14, },
 };
-const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList, isView, environmentalProtectionCode }, ref) => {
+const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList, isView, environmentalProtectionCode, isImport }, ref) => {
     useImperativeHandle(ref, () => ({
         setVisible
     }))
@@ -57,6 +57,10 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
         { title: '基本单位', dataIndex: 'unitName', ellipsis: true, align: 'center', },
         { title: '符合性', dataIndex: 'compliance', ellipsis: true, align: 'center', render: (text) => text === 'FIT' ? '符合' : text === 'NOTFIT' ? '不符合' : '' },
     ];
+    const importC = [
+        { title: '验证状态', dataIndex: 'importStatus', align: 'center', width: 80, render: text => <span style={{ color: text ? 'black' : 'red' }}>{text ? '成功' : '失败'}</span> },
+        { title: '验证信息', dataIndex: 'failInfo', ellipsis: true, align: 'center' },
+    ]
     async function getUnit(materialCode, scopeApplicationCode) {
         if (!materialCode || !scopeApplicationCode) return;
         const res = await findByProtectionCodeAndMaterialCodeAndRangeCode({
@@ -198,7 +202,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
             />}
         </div>
         <ExtTable
-            columns={columns}
+            columns={isImport ? importC.concat(columns) :columns}
             bordered
             allowCancelSelect
             showSearch={false}
@@ -230,7 +234,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                                 rules: [{ required: true, message: '请选择' }]
                             })(<Select style={{ width: '100%' }} onChange={(item) => {
                                 if (item === false) {
-                                    setFieldsValue({ substanceCode: '', substanceId: '', substanceName: '', casNo: '', unitCode: '', unitName: ''})
+                                    setFieldsValue({ substanceCode: '', substanceId: '', substanceName: '', casNo: '', unitCode: '', unitName: '' })
                                 }
                             }}>
                                 <Option value={true}>是</Option>

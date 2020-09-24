@@ -14,7 +14,7 @@ const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 14, },
 };
-const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDataList, isView }, ref) => {
+const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDataList, isView, isImport }, ref) => {
     useImperativeHandle(ref, () => ({
         setVisible,
         setRowKeys,
@@ -42,6 +42,10 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
         },
         { title: '排序', dataIndex: 'name8', ellipsis: true, align: 'center', },
     ];
+    const importC = [
+    { title: '验证状态', dataIndex: 'importStatus', align: 'center', width: 80, render: text=><span style={{color: text?'black':'red'}}>{text?'成功':'失败'}</span>},
+        { title: '验证信息', dataIndex: 'failInfo', ellipsis: true, align: 'center' },
+    ]
     // 删除
     function handleDelete() {
         confirm({
@@ -162,7 +166,7 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
             />
         </div>
         <ExtTable
-            columns={columns}
+            columns={isImport ? importC.concat(columns) :columns}
             bordered
             allowCancelSelect
             showSearch={false}

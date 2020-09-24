@@ -16,7 +16,7 @@ const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 14, },
 };
-const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList, environmentalProtectionCode, isView }, ref) => {
+const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList, environmentalProtectionCode, isView, isImport }, ref) => {
     useImperativeHandle(ref, () => ({
         setVisible
     }))
@@ -47,6 +47,10 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
         { title: '基本单位', dataIndex: 'unitName', ellipsis: true, align: 'center', },
         { title: '符合性 ', dataIndex: 'compliance', ellipsis: true, align: 'center', render: (text) => text === 'FIT' ? '符合' : text === 'NOTFIT' ? '不符合' : '' },
     ];
+    const importC = [
+        { title: '验证状态', dataIndex: 'importStatus', align: 'center', width: 80, render: text => <span style={{ color: text ? 'black' : 'red' }}>{text ? '成功' : '失败'}</span> },
+        { title: '验证信息', dataIndex: 'failInfo', ellipsis: true, align: 'center' },
+    ]
     // 记录列表选中
     function handleSelectedRows(rowKeys, rows) {
         setRowKeys(rowKeys);
@@ -186,7 +190,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
             />}
         </div>
         <ExtTable
-            columns={columns}
+            columns={isImport ? importC.concat(columns) :columns}
             bordered
             allowCancelSelect
             showSearch={false}

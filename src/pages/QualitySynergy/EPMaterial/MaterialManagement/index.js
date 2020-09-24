@@ -172,8 +172,8 @@ export default create()(function ({ form }) {
             arr.push({
                 '状态': item.effectiveStatus === 'DRAFT' ? '草稿' : '生效',
                 '分配供应商状态': item.allotSupplierState === 'ALLOT_END' ? '已分配' : item.allotSupplierState === 'ALLOT_NOT' ? '未分配' : '',
-                '物料标记状态': item.assignSupplierStatus === 'EXIST_CONFORM_SUPPLIER' ? '存在符合的供应商' : item.assignSupplierStatus === 'DIS_EXIST_CONFORM_SUPPLIER' ? '不存在符合的供应商' : '',
-                '同步PDM状态': item.syncStatus === 'SYNC_FAILURE' ? '同步成功' : item.syncStatus === 'SYNC_SUCCESS' ? '同步失败' : '',
+                '物料标记状态': item.assignSupplierStatus === 'EXIST_CONFORM_SUPPLIER' ? '存在符合的供应商' : item.assignSupplierStatus === 'DIS_EXIST_CONFORM_SUPPLIER' ? '不存在符合的供应商' : '未检查',
+                '同步PDM状态': item.syncStatus === 'SYNC_FAILURE' ? '同步成功' : item.syncStatus === 'SYNC_SUCCESS' ? '同步失败' : '未同步',
                 '冻结': item.frozen ? '已冻结' : '未冻结',
                 '物料代码': item.materialCode,
                 '物料描述': item.materialName,
