@@ -210,6 +210,7 @@ function CreateStrategy() {
     //console.log(againdata)
     //如果为新增  拼加一个供应商ID在头上
     againdata.supplierId = againdata.supplierId || query.id;
+    againdata.supplierInfoVo.supplierVo.id = editData.supplierVo.id
     againdata.againdata = '0';
     let saveData = { ...againdata };
     console.log(saveData)
@@ -406,6 +407,7 @@ function CreateStrategy() {
     //如果为新增  拼加一个供应商ID在头上
     againdata.supplierId = againdata.supplierId || query.id;
     againdata.againdata = '1';
+    againdata.supplierInfoVo.supplierVo.id = editData.supplierVo.id
     //let saveData = {...againdata};
     setAgaindata(againdata)
      // 变更保存效验

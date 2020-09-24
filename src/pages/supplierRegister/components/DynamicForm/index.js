@@ -339,10 +339,10 @@ const CommonconfigRef = forwardRef(({
                         )}
                     </FormItem>
                   </Col> : null}
-                  {item.key === 'englishName' ? <Col span={8}>
+                  {item.key === 'englishabbreviation' ? <Col span={8}>
                     <FormItem
                       {...formItemLayout}
-                      label={'简称'}
+                      label={'英文简称'}
                       style={{ width: '100%', marginBottom: 10 }}
                     >
                       {isView ? <span>{editData && editData.extendVo ? editData.extendVo.searchCondition : ''}</span> :

@@ -407,6 +407,7 @@ function CreateStrategy() {
     }
     setwholeData(wholeData)
     // 变更保存效验
+    console.log(JSON.stringify(wholeData))
     const { success, message: msg } = await ValiditySupplierRegister(wholeData);
     if (success) {
       getModelRef.current.handleModalVisible(true);

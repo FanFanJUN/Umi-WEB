@@ -31,15 +31,16 @@ const SupplyRangeRef = forwardRef(({
       //materialId = materialIded
       var lists = materialIded.concat();
       console.log(lists)
-      setMaterialId(lists)
-     console.log(materialId)
+      
+      setTimeout(() => {
+        setMaterialId(lists)
+        console.log(materialId)
+      }, 100);
+     
     }
     let materialName = [];
 
   }, [editData])
-  useEffect(()=>{
-    console.log(11111);
-},[materialId])
   const formItemLayoutLong = {
     labelCol: { span: 4 },
     wrapperCol: { span: 20 },
