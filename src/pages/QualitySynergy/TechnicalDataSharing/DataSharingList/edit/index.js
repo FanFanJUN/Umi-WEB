@@ -99,10 +99,14 @@ export default () => {
         return values;
       }
     });
-    const technicalData = technicalDataRef.current.dataSource;
+    let technicalData = technicalDataRef.current.dataSource;
     if (technicalData.length === 0) {
       return message.error('至少添加一行技术资料')
     }
+    // 为技术资料生成行号
+    technicalData.map((item, index) => {
+      item.technicalLineNumber = generateLineNumber(index + 1)
+    })
     let allData = { ...baseInfoData, ...materialInfoData, epTechnicalDataBoList: technicalData };
     Modal.confirm({
       title: type === 'add' ? '保存' : '保存并提交',
@@ -202,6 +206,7 @@ export default () => {
         {
           data.type !== 'detail' || data?.editDate?.technicalDataAndSupplierVos?.length === 0 ? <TechnicalData
             data={data.editDate?.epTechnicalDataVos}
+            userInfo={data.userInfo}
             isView={data.isView}
             setDeleteArr={setDeleteArr}
             deleteArr={deleteArr}

@@ -3,7 +3,7 @@ import { Form, Row, Col, Input, DatePicker } from 'antd';
 import Upload from '../../../../compoent/Upload';
 import { ComboList, ExtModal } from 'suid';
 import moment from 'moment';
-import { CorporationListConfig, getRandom } from '../../../../commonProps';
+import { CorporationListConfig, getRandom, TechnicalDrawings } from '../../../../commonProps';
 
 const FormItem = Form.Item;
 
@@ -14,9 +14,9 @@ const formItemLayoutLong = {
 
 const TechnicalDataModal = (props) => {
 
-  const { visible, type, title, form, fatherData } = props;
+  const { visible, type, title, form, fatherData, userInfo } = props;
 
-  const { getFieldDecorator } = props.form;
+  const { getFieldDecorator, getFieldValue } = props.form;
 
   const onOk = () => {
     props.form.validateFieldsAndScroll((err, values) => {
@@ -108,6 +108,19 @@ const TechnicalDataModal = (props) => {
             </FormItem>
           </Col>
           <Col span={24}>
+            <FormItem {...formItemLayoutLong} label={'技术图纸'}>
+              {
+                getFieldDecorator('drawFlag', {
+                  initialValue: type === 'add' ? '' : fatherData.drawFlag,
+                })(<ComboList
+                  form={form}
+                  name={'drawFlag'}
+                  {...TechnicalDrawings}
+                />)
+              }
+            </FormItem>
+          </Col>
+          <Col span={24}>
             <FormItem {...formItemLayoutLong} label={'技术资料附件'}>
               {
                 getFieldDecorator('technicalDataFileIdList', {
@@ -125,14 +138,44 @@ const TechnicalDataModal = (props) => {
             </FormItem>
           </Col>
           <Col span={24}>
+            <FormItem {...formItemLayoutLong} label={'样品需求数量'}>
+              {
+                getFieldDecorator('sampleRequirementNum', {
+                  initialValue: type === 'add' ? '' : fatherData.sampleRequirementNum,
+                  rules: [
+                    {
+                      required: true,
+                      message: '样品需求数量不能为空',
+                    },
+                  ],
+                })(<Input/>)
+              }
+            </FormItem>
+          </Col>
+          <Col span={24}>
+            <FormItem {...formItemLayoutLong} label={'计量单位'}>
+              {
+                getFieldDecorator('measureUnit', {
+                  initialValue: type === 'add' ? '件' : fatherData.measureUnit,
+                  rules: [
+                    {
+                      required: true,
+                      message: '计量单位不能为空',
+                    },
+                  ],
+                })(<Input/>)
+              }
+            </FormItem>
+          </Col>
+          <Col span={24}>
             <FormItem {...formItemLayoutLong} label={'样品需求日期'}>
               {
                 getFieldDecorator('sampleRequirementDate', {
-                  initialValue: type === 'add' ? (() => {
+                  initialValue: type === 'add' ? (getFieldValue('sampleRequirementNum') === '0' ? null : (() => {
                     let d = new Date();
                     d.setMonth(d.getMonth() +1);
                     return moment(d)
-                  })() : moment(fatherData.sampleRequirementDate),
+                  })()) : moment(fatherData.sampleRequirementDate),
                   rules: [
                     {
                       required: true,
@@ -140,6 +183,40 @@ const TechnicalDataModal = (props) => {
                     },
                   ],
                 })(<DatePicker style={{ width: '100%' }}/>)
+              }
+            </FormItem>
+          </Col>
+          <Col span={24}>
+            <FormItem {...formItemLayoutLong} label={'样品收件人姓名'}>
+              {
+                getFieldDecorator('sampleReceiverName', {
+                  initialValue: type === 'add' ? (
+                    getFieldValue('sampleRequirementNum') === '0' ? '' : userInfo?.userName
+                  ) : fatherData.sampleReceiverName,
+                  rules: [
+                    {
+                      required: true,
+                      message: '样品收件人姓名不能为空',
+                    },
+                  ],
+                })(<Input/>)
+              }
+            </FormItem>
+          </Col>
+          <Col span={24}>
+            <FormItem {...formItemLayoutLong} label={'样品收件人联系方式'}>
+              {
+                getFieldDecorator('sampleReceiverTel', {
+                  initialValue: type === 'add' ? (
+                    getFieldValue('sampleRequirementNum') === '0' ? '' : userInfo?.userMobile
+                  ) : fatherData.sampleReceiverTel,
+                  rules: [
+                    {
+                      required: true,
+                      message: '样品收件人联系方式不能为空',
+                    },
+                  ],
+                })(<Input/>)
               }
             </FormItem>
           </Col>

@@ -12,6 +12,23 @@ const commonProps = {
   placeholder: '请选择'
 };
 
+// 技术图纸
+export const TechnicalDrawings = {
+  allowClear: true,
+  dataSource: [
+    {
+      code: '试制',
+      name: '试制',
+    },
+    {
+      code: '正存',
+      name: '正存',
+    },
+  ],
+  placeholder: '选择技术图纸',
+  ...commonProps,
+}
+
 // 技术资料状态
 export const ShareStatusProps = {
   allowClear: true,
@@ -95,6 +112,7 @@ export const judge = (arr, key, value = undefined) => {
   }
 };
 
+// 生成行号
 export const generateLineNumber = (index) => {
   return (index < 10 ? '00' + index * 10 : index < 100 ? '0' + index * 10 : index * 10).toString()
 }
