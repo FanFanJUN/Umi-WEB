@@ -23,7 +23,7 @@ export default function ({originData={}}) {
         { title: '填报日期', dataIndex: 'name10', ellipsis: true, },
         { title: '填报状态', dataIndex: 'name11', ellipsis: true, },
         {
-            title: '符合性检查', dataIndex: 'compliance', ellipsis: true, align: 'center', render: (text) => {
+            title: '符合性检查', dataIndex: 'coincidenceCheck', ellipsis: true, align: 'center', render: (text) => {
                 switch(text){
                     case "FIT": return '符合';
                     case "NOTFIT": return '不符合';
@@ -31,7 +31,7 @@ export default function ({originData={}}) {
                 }
             }
         },
-        { title: '复核状态', dataIndex: 'reviewResults', ellipsis: true, align: 'center', render: (text) => {
+        { title: '复核状态', dataIndex: 'reviewResult', ellipsis: true, align: 'center', render: (text) => {
             switch(text){
                 case "NOPASS": return '复核不通过';
                 case "PASS": return '复核通过';
@@ -39,7 +39,7 @@ export default function ({originData={}}) {
             }
         }},
         { title: '复核意见', dataIndex: 'reviewResultComments', ellipsis: true, align: 'center', },
-        { title: '环保资料是否有效', dataIndex: 'effective', ellipsis: true, width: 140, align: 'center', render: (text)=>{
+        { title: '环保资料是否有效', dataIndex: 'environmentDataEffective', ellipsis: true, width: 140, align: 'center', render: (text)=>{
             switch(text){
                 case "INVALID": return '无效';
                 case "VALID": return '有效';

@@ -346,7 +346,7 @@ export default create()(function ({ form }) {
                 check: !(rows[0].effectiveStatus === 'EFFECT' && rows[0].allotSupplierState === 'ALLOT_END'),
                 edit: !(rows[0].effectiveStatus === 'DRAFT' && rows[0].allotSupplierState === 'ALLOT_NOT'),
                 generate: !(rows[0].effectiveStatus === 'EFFECT' && rows[0].allotSupplierState === 'ALLOT_END'),
-                pdm: rows[0].syncStatus !== 'SYNC_FAILURE',
+                pdm: !(rows[0].syncStatus !== 'SYNC_SUCCESS' && rows[0].allotSupplierState === 'ALLOT_END' && rows[0].assignSupplierStatus!=='NOT_OPE'),
                 maint: rows[0].frozen,
                 assign: rows[0].frozen,
             });
