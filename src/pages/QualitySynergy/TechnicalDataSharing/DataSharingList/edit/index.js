@@ -45,6 +45,7 @@ export default () => {
         setData((value) => ({ ...value, type: pageState, isView: false, title: '技术资料分享需求-新增' }));
         break;
       case 'edit':
+        getUser();
         findOne(id);
         setData((value) => ({ ...value, type: pageState, id, isView: false, title: '技术资料分享需求-编辑' }));
         break;
@@ -85,7 +86,7 @@ export default () => {
 
   const handleBack = () => {
     // openNewTab(`qualitySynergy/DataSharingList`, '技术资料分享需求列表', true);
-    closeCurrent();
+    // closeCurrent();
   };
 
   const handleSave = async (type) => {
