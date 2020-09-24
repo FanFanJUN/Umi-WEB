@@ -98,8 +98,8 @@ export default function() {
 
   const changeDownloadStatus = (data) => {
     UpdateShareDownLoadState({
-      shareDemanNumber: data.shareDemanNumber,
-      epTechnicalSupplierId: data.epTechnicalSupplierId
+      epTechnicalSupplierId: data.epTechnicalSupplierId,
+      epTechnicalDataId: data.epTechnicalDataId
     }).then(res => {
       if (res.success) {
         tableRef.current.remoteDataRefresh();
