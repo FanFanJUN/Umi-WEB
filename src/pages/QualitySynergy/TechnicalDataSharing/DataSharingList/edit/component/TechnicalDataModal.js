@@ -8,8 +8,8 @@ import { CorporationListConfig, getRandom, TechnicalDrawings } from '../../../..
 const FormItem = Form.Item;
 
 const formItemLayoutLong = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 18 },
+  labelCol: { span: 8 },
+  wrapperCol: { span: 16 },
 };
 
 const TechnicalDataModal = (props) => {
@@ -75,7 +75,7 @@ const TechnicalDataModal = (props) => {
 
   return (
     <ExtModal
-      width={'80vh'}
+      width={'90vh'}
       maskClosable={false}
       visible={visible}
       title={title}
@@ -179,7 +179,7 @@ const TechnicalDataModal = (props) => {
                   initialValue: type === 'add' ? '件' : fatherData.measureUnit,
                   rules: [
                     {
-                      required: true,
+                      required: getFieldValue('sampleRequirementNum') !== '0',
                       message: '计量单位不能为空',
                     },
                   ],
@@ -194,7 +194,7 @@ const TechnicalDataModal = (props) => {
                   initialValue: type === 'add' ? null : moment(fatherData.sampleRequirementDate),
                   rules: [
                     {
-                      required: true,
+                      required: getFieldValue('sampleRequirementNum') !== '0',
                       message: '样品需求日期不能为空',
                     },
                   ],
@@ -209,7 +209,7 @@ const TechnicalDataModal = (props) => {
                   initialValue: type === 'add' ? '' : fatherData.sampleReceiverName,
                   rules: [
                     {
-                      required: true,
+                      required: getFieldValue('sampleRequirementNum') !== '0',
                       message: '样品收件人姓名不能为空',
                     },
                   ],
@@ -224,7 +224,7 @@ const TechnicalDataModal = (props) => {
                   initialValue: type === 'add' ? '' : fatherData.sampleReceiverTel,
                   rules: [
                     {
-                      required: true,
+                      required: getFieldValue('sampleRequirementNum') !== '0',
                       message: '样品收件人联系方式不能为空',
                     },
                   ],
