@@ -414,18 +414,18 @@ function CreateStrategy() {
       wholeData.supplierInfoVo = supplierInfoVo;
     }
     console.log(wholeData)
-    // let saveData = wholeData;
-    // triggerLoading(true)
-    // const { success, message: msg } = await saveSupplierRegister(saveData);
-    // if (success) {
-    //   message.success(msg);
-    //   triggerLoading(false)
-    //   banckjudge()
-    //   return
-    // } else {
-    //   message.error(msg);
-    // }
-    // triggerLoading(false)
+    let saveData = wholeData;
+    triggerLoading(true)
+    const { success, message: msg } = await saveSupplierRegister(saveData);
+    if (success) {
+      message.success(msg);
+      triggerLoading(false)
+      banckjudge()
+      return
+    } else {
+      message.error(msg);
+    }
+    triggerLoading(false)
   }
   function ficationtype(id) {
     initConfigurationTable(id);

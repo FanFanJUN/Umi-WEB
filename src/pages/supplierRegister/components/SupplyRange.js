@@ -5,7 +5,7 @@ import MatCatTree from './MatCatTree'
 import { listAllGeneralTree } from '../../../services/supplierRegister'
 const { create } = Form;
 const FormItem = Form.Item;
-let materialId = [];
+//let materialId = [];
 // let materialIddata = [];
 const SupplyRangeRef = forwardRef(({
   form,
@@ -21,24 +21,25 @@ const SupplyRangeRef = forwardRef(({
     form
   }));
   const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
-  //const [materialId, setMaterialId] = useState([]);
+  const [materialId, setMaterialId] = useState([]);
   useEffect(() => {
     getSupplyRange(editData);
     //let materialId = [];
-    setTimeout(() => {
-      if (editData && editData.extendVo && editData.extendVo.materielCategories) {
-        let materialIded = editData.extendVo.materielCategories.map(item => item ? item.id : '');
-        materialName = editData.extendVo.materielCategories.map(item => item ? item.name : '').join('、');
-        console.log(materialIded)
-        materialId = materialIded
-        //setMaterialId(materialIded)
-       console.log(materialId)
-      }
-    }, 200);
+    if (editData && editData.extendVo && editData.extendVo.materielCategories) {
+      let materialIded = editData.extendVo.materielCategories.map(item => item ? item.id : '');
+      materialName = editData.extendVo.materielCategories.map(item => item ? item.name : '').join('、');
+      //materialId = materialIded
+      var lists = materialIded.concat();
+      console.log(lists)
+      setMaterialId(lists)
+     console.log(materialId)
+    }
     let materialName = [];
-    
-    console.log(12)
+
   }, [editData])
+  useEffect(()=>{
+    console.log(11111);
+},[materialId])
   const formItemLayoutLong = {
     labelCol: { span: 4 },
     wrapperCol: { span: 20 },
@@ -104,6 +105,7 @@ const SupplyRangeRef = forwardRef(({
                   //   message: '请选择物料分类',
                   // }],
                 })(
+                  
                   <MatCatTree
                     service={listAllGeneralTree}
                     isView={isView}

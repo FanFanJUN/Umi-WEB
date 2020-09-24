@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import { Tree, Card, Input, Button, Dropdown, Menu, Icon, Row, Col } from 'antd';
 import connect from 'react-redux/es/connect/connect';
 import {hide, show} from "../../../utils/SharedReducer";
-
+import {isEmpty} from '../../../utils'
 const DirectoryTree = Tree.DirectoryTree;
 const TreeNode = Tree.TreeNode;
 const Search = Input.Search;
@@ -48,17 +48,19 @@ class MatCatTree extends Component {
       let treeloop = res.data;
       if (this.props.isView) {
         let dataSourceed = JSON.parse(JSON.stringify(treeloop));
+        console.log(defaultCheckedKeys)
         let findResultData = this.findCheckedData(defaultCheckedKeys, dataSourceed);
-        this.keyList = [];
-        this.getExpandedKeys(findResultData);
-        let expandedKeys = this.keyList;
-        this.setState({
-          checkedKeys: defaultCheckedKeys,
-          dataSource: findResultData,
-          treeData: findResultData,
-          expandedKeys,
-        });
-        this.props.hide();
+          this.keyList = [];
+          this.getExpandedKeys(findResultData);
+          let expandedKeys = this.keyList;
+          this.setState({
+            checkedKeys: defaultCheckedKeys,
+            dataSource: findResultData,
+            treeData: findResultData,
+            expandedKeys,
+          });
+          this.props.hide();
+       
       } else {
         this.setState({
           checkedKeys: defaultCheckedKeys,
