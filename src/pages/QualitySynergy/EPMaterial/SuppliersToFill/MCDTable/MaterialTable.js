@@ -75,7 +75,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                 unitName: res.data.basicUnitName,
             })
         } else {
-            console.log(2)
+            setFieldsValue({ unitCode: '', unitName: '', })
             message.warning('选中物质和适用范围无法带出基本单位，请先联系管理员维护数据！')
         }
     }

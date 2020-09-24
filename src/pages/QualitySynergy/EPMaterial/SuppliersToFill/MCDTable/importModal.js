@@ -14,10 +14,11 @@ export default function ({ visible, setVisible, environmentalProtectionCode, han
     const splitRef = useRef(null)
     const [selectedSplitData, setSelectedSpilt] = useState({})
     const [splitDataList, setSplitDataList] = useState([]);
-    const [inportTag, setImportTag] = useState(true);
+    const [importTag, setImportTag] = useState(true);
     function handleOk() {
-        if (inportTag) {
-            handleInsert(splitDataList)
+        if (!importTag) {
+            handleInsert(splitDataList);
+            handleCancle();
         }
     }
     const fileUpload = ({ file }) => {
@@ -29,12 +30,10 @@ export default function ({ visible, setVisible, environmentalProtectionCode, han
                     item.voList = item.materialConstituentBoList;
                     item.testLogVoList = item.epDataFillTestLogBoList;
                     item.rowKey = index;
-                    item.splitPartsLineNumber = index;
                     return item;
                 })
                 setImportTag(!tag);
                 setSplitDataList(result);
-                console.log('result', result)
             } else if (file.response && file.response.msg) {
                 message.error(file.response.msg)
             } else {
@@ -71,7 +70,7 @@ export default function ({ visible, setVisible, environmentalProtectionCode, han
         height="800px"
         onCancel={() => { handleCancle() }}
         footer={[
-            <Button type="primary" onClick={() => { handleOk() }} disabled={inportTag}>导入</Button>
+            <Button type="primary" onClick={() => { handleOk() }} disabled={importTag}>导入</Button>
         ]}
         visible={visible}
         title="MCD表数据综合导入"

@@ -87,7 +87,7 @@ export default create()(function ({ form }) {
         const { data = {} } = event;
         console.log('进入监听', data.tabAction)
         if (data.tabAction === 'close') {
-            tableRef.current.remoteDataRefresh();
+            refresh();
         }
     }
     function redirectToPage(type) {
@@ -166,6 +166,7 @@ export default create()(function ({ form }) {
         },
         method: 'POST',
     };
+    // 导出excel
     const explainResponse = res => {
         let arr = [];
         res.data.rows.map(item => {
@@ -248,7 +249,6 @@ export default create()(function ({ form }) {
     function handleQuickSearch(value) {
         setSearchValue(v => ({ ...v, quickSearchValue: value }));
         refresh();
-        // uploadTable()
     }
 
     // 处理高级搜索
@@ -342,11 +342,13 @@ export default create()(function ({ form }) {
                 delete: !(rows[0].effectiveStatus === 'DRAFT' && rows[0].sourceName === 'SRM'),
                 submit: rows[0].effectiveStatus === 'EFFECT',
                 withdraw: !(rows[0].effectiveStatus === 'EFFECT' && rows[0].allotSupplierState === 'ALLOT_NOT'),
-                distribute: !(rows[0].applyPersonAccount === getUserAccount() && rows[0].effectiveStatus === 'EFFECT'),
+                distribute: !(rows[0].applyPersonAccount === getUserAccount() && rows[0].effectiveStatus === 'EFFECT' && !rows[0].frozen),
                 check: !(rows[0].effectiveStatus === 'EFFECT' && rows[0].allotSupplierState === 'ALLOT_END'),
                 edit: !(rows[0].effectiveStatus === 'DRAFT' && rows[0].allotSupplierState === 'ALLOT_NOT'),
                 generate: !(rows[0].effectiveStatus === 'EFFECT' && rows[0].allotSupplierState === 'ALLOT_END'),
                 pdm: rows[0].syncStatus !== 'SYNC_FAILURE',
+                maint: rows[0].frozen,
+                assign: rows[0].frozen,
             });
         } else if (rows.length === 0) {
             setButtonStatus({
@@ -380,12 +382,22 @@ export default create()(function ({ form }) {
                 sync: true,
                 pdm: true,
                 check: true,
+                maint: (() => {
+                    // 非冻结状态
+                    return !rows.every(item => {
+                        return !item.frozen
+                    });
+                })(),
                 assign: (() => {
                     // 物料组相同
-                    let { materialGroupCode } = rows[0]
-                    return !rows.every(item => {
+                    let { materialGroupCode } = rows[0];
+                    let tag2 = false;
+                    let tag1 =  !rows.every(item => {
+                        tag2 = tag2 || item.frozen;
                         return item.materialGroupCode === materialGroupCode;
                     });
+                    console.log('tag2', tag1, tag2)
+                    return tag1||tag2;
                 })(),
                 submit: (() => {
                     // 状态均为草稿
@@ -756,7 +768,9 @@ export default create()(function ({ form }) {
             selectedRow={selectedRows[0]}
             supplierModalType={supplierModalType}
             viewDemandNum={viewDemandNum}
-            refreshTable={()=>{tableRef.current.remoteDataRefresh();}}
+            refreshTable={()=>{
+                refresh();
+            }}
         />
         {/* 抽检复核 */}
         <CheckModal wrappedComponentRef={samplingRef} selectedRow={selectedRows[0]} checkModalType={checkModalType} />

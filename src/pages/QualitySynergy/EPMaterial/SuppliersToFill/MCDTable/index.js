@@ -66,7 +66,13 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
     }
     function handleInsert(list) {
         let newList = [].concat(splitDataList);
-        newList = newList.concat(list);
+        list.forEach((item, index) => {
+            newList.push({
+                ...item,
+                rowKey: splitDataList.length + index,
+                splitPartsLineNumber: splitDataList.length + index,
+            })
+        })
         setSplitDataList(newList)
     }
     return <Fragment>

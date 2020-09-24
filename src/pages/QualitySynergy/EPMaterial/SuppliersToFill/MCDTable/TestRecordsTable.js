@@ -1,6 +1,6 @@
 import { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment } from 'react';
 import { ExtTable, ExtModal, DataImport, ComboList } from 'suid';
-import { Button, Col, Form, Modal, Row, Input, Select, InputNumber } from 'antd'
+import { Button, Col, Form, Modal, Row, Input, Select, InputNumber, message } from 'antd'
 import { limitScopeList, findByIsRecordCheckListTrue } from '../../../commonProps';
 import { findByProtectionCodeAndMaterialCodeAndRangeCode } from '../../../../../services/qualitySynergy'
 import { smBaseUrl } from '@/utils/commonUrl';
@@ -114,6 +114,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                 unitName: res.data.basicUnitName,
             })
         } else {
+            setFieldsValue({ unitCode: '', unitName: '', })
             message.warning('选中物质和适用范围无法带出基本单位，请先联系管理员维护数据！')
         }
     }
