@@ -202,7 +202,7 @@ export default function() {
     { title: '分配供应商状态', dataIndex: 'allotSupplierState', width: 160 },
     { title: '来源', dataIndex: 'source', width: 70 },
     { title: '分享需求号', dataIndex: 'shareDemanNumber', ellipsis: true, width: 180 },
-    { title: '物料代码', dataIndex: 'materialCode', ellipsis: true, width: 160 },
+    // { title: '物料代码', dataIndex: 'materialCode', ellipsis: true, width: 160 },
     { title: '物料描述', dataIndex: 'materialName', ellipsis: true },
     { title: '物料组代码', dataIndex: 'materialGroupCode', ellipsis: true },
     { title: '物料组描述', dataIndex: 'materialGroupName', ellipsis: true },

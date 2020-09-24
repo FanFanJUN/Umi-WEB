@@ -65,11 +65,9 @@ class UploadFile extends React.Component {
 
   //从后台获取附件信息
   updateFile = (value) => {
-    console.log(value, 'value1234569')
     let fileList = [];
     let completeUploadFile = [];
     if (value && value.length > 0 && value[0] && value[0].id) {
-      console.log('触发')
       value.map(item => {
         fileList.push({
           uid: item.id,      // 文件唯一标识，建议设置为负数，防止和内部产生的 id 冲突
