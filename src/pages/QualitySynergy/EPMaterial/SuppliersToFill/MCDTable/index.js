@@ -24,7 +24,7 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
     const [selectedSplitData, setSelectedSpilt] = useState({})
     const [splitDataList, setSplitDataList] = useState(originData.epDataFillSplitPartsVoList ? originData.epDataFillSplitPartsVoList : []);
     useEffect(() => {
-        let dataList = originData.epDataFillSplitPartsVoList ? originData.epDataFillSplitPartsVoList.map((item, index) => ({ ...item, rowKey: index, splitPartsLineNumber: index})) : []
+        let dataList = originData.epDataFillSplitPartsVoList ? originData.epDataFillSplitPartsVoList.map((item, index) => ({ ...item, rowKey: index, splitPartsLineNumber: index })) : []
         setSplitDataList(dataList);
     }, [originData]);
     // 参数为某一条拆分部件数据,根据rowKey替换
@@ -63,6 +63,11 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
             }
         })
         return backData;
+    }
+    function handleInsert(list) {
+        let newList = [].concat(splitDataList);
+        newList = newList.concat(list);
+        setSplitDataList(newList)
     }
     return <Fragment>
         <Form className={styles.bl}>
@@ -126,7 +131,12 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
                 </Row>
             </Col>
         </Row>
-        <ImportModal visible={visible} setVisible={setVisible} environmentalProtectionCode={originData.environmentalProtectionCode} />
+        <ImportModal
+            visible={visible}
+            setVisible={setVisible}
+            environmentalProtectionCode={originData.environmentalProtectionCode}
+            handleInsert={handleInsert}
+        />
     </Fragment>
 })
 export default create()(MCDForm)

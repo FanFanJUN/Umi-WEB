@@ -84,7 +84,8 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                     return {
                         ...item,
                         rowKey: index,
-                        whetherDelete: false
+                        whetherDelete: false,
+                        control: false
                     }
                 })
                 setSuplierCodes(suppliers);
@@ -167,8 +168,8 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                     supplierId: item.id,
                     supplierCode: item.code,
                     supplierName: item.name,
-                    publish: 0,
-                    suspend: 0,
+                    publish: false,
+                    suspend: false,
                     whetherDelete: false,
                     fillEndDate,
                     allotDate: moment().format('YYYY-MM-DD'),
@@ -220,7 +221,8 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
         let newList = dataSource.map(item => {
             return (selectedRowKeys.includes(item.rowKey)) ? {
                 ...item,
-                publish: !item.publish
+                publish: !item.publish,
+                control: item.id&&!item.control
             } : item
         });
         setDataSource(newList);
