@@ -55,10 +55,10 @@ export default function ({ visible, setVisible, environmentalProtectionCode}) {
     const getHeaders = () => {
         let auth;
         try {
-            auth = JSON.parse(localStorage.getItem('Authorization'));
+            auth = JSON.parse(sessionStorage.getItem('Authorization'));
         } catch (e) {
-            console.log(e);
         }
+        console.log('auth', auth)
         return {
             'Authorization': auth ? (auth.accessToken ? auth.accessToken : '') : ''
         }
@@ -75,7 +75,7 @@ export default function ({ visible, setVisible, environmentalProtectionCode}) {
     >
         <Row style={{marginBottom:6}}>
             <Upload
-                action={`/srm-sam-web/epController/importData`}
+                action={`${DEVELOPER_ENV === 'true' ? '/service.api' : ''}/srm-sam-service/epController/importData`}
                 onChange={fileUpload}
                 headers={getHeaders()}
                 data={{

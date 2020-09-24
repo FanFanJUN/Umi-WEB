@@ -22,7 +22,6 @@ export default function () {
     }
     useEffect(() => {
         getNotes().then(res => {
-            console.log(res)
             if (res.data && res.data.rows) {
                 let statements = '';
                 res.data.rows.map(item => {
@@ -30,7 +29,6 @@ export default function () {
                         statements += item.chContent
                     }
                 });
-                console.log('statements', statements)
                 setStatement(statements);
                 setNotesList(res.data.rows);
             } else {

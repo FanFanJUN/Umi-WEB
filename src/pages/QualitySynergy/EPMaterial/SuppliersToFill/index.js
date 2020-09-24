@@ -154,7 +154,7 @@ export default create()(function ({ form }) {
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={selectedRowKeys.length !== 1}
+                // disabled={selectedRowKeys.length !== 1}
                 onClick={() => { setCopyVisible(true) }}
                 key='QUALITYSYNERGY_SUPPLIERFILL_COPY_NEW'
                 ignore={DEVELOPER_ENV}
@@ -231,7 +231,7 @@ export default create()(function ({ form }) {
                 break;
             case 'copy':
                 const { } = materialObj;
-                res = await epDemandCopyAll({ id });
+                res = await epDemandCopyAll({ materialCode: materialObj.materialCode });
                 break;
             default:
                 break;
@@ -365,8 +365,8 @@ export default create()(function ({ form }) {
                     style={{ width: '100%' }}
                     name='supplierCode'
                     afterSelect={(item) => {
-                        console.log(item)
-                        setMaterialObj(item)
+                        const {materialCode, materialName} = item
+                        setMaterialObj({materialCode, materialName})
                     }} />
             </FormItem>
         </ExtModal>}

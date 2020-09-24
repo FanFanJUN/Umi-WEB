@@ -904,11 +904,10 @@ export const findMaterialCode = {
     params: {
     }
   },
-  rowKey: 'code',
+  rowKey: 'id',
   reader: {
-    name: 'userName',
-    field: ['id', 'code'],
-    description: 'code',
+    name: 'materialCode',
+    description: 'materialName',
   },
   placeholder: '选择物料代码',
 };
