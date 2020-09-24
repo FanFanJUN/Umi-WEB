@@ -339,7 +339,7 @@ const CommonconfigRef = forwardRef(({
                       </FormItem>
                     </Col> : null
                   }
-                  {
+                  {/* {
                     item.key === 'englishAddress' ? <Col span={8}>
                       <FormItem
                         {...formItemLayout}
@@ -348,7 +348,7 @@ const CommonconfigRef = forwardRef(({
                         <span>{editData ? editData.extendVo.englishAddress : ""}</span>
                       </FormItem>
                     </Col> : null
-                  }
+                  } */}
                   {
                     item.key === 'englishAddress' ? <Col span={8}>
                       <FormItem

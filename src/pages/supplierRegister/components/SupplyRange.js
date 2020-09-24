@@ -6,7 +6,7 @@ import { listAllGeneralTree } from '../../../services/supplierRegister'
 const { create } = Form;
 const FormItem = Form.Item;
 let materialId = [];
-let materialName = [];
+// let materialIddata = [];
 const SupplyRangeRef = forwardRef(({
   form,
   initialValue = {},
@@ -21,14 +21,23 @@ const SupplyRangeRef = forwardRef(({
     form
   }));
   const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
-  const [materialId, setMaterialId] = useState([]);
-  const [dataSource, setDataSource] = useState([]);
-  const [keys, setKey] = useState(0);
-  const [lineCode, setLineCode] = useState(1);
-  const { attachment = null } = initialValue;
-
+  //const [materialId, setMaterialId] = useState([]);
   useEffect(() => {
     getSupplyRange(editData);
+    //let materialId = [];
+    setTimeout(() => {
+      if (editData && editData.extendVo && editData.extendVo.materielCategories) {
+        let materialIded = editData.extendVo.materielCategories.map(item => item ? item.id : '');
+        materialName = editData.extendVo.materielCategories.map(item => item ? item.name : '').join('、');
+        console.log(materialIded)
+        materialId = materialIded
+        //setMaterialId(materialIded)
+       console.log(materialId)
+      }
+    }, 200);
+    let materialName = [];
+    
+    console.log(12)
   }, [editData])
   const formItemLayoutLong = {
     labelCol: { span: 4 },
@@ -36,14 +45,7 @@ const SupplyRangeRef = forwardRef(({
   };
   function getSupplyRange(val) {
     let editData = val;
-    let materialId = [];
-    let materialName = [];
-    if (editData && editData.extendVo && editData.extendVo.materielCategories) {
-      materialId = editData.extendVo.materielCategories.map(item => item ? item.id : '');
-      materialName = editData.extendVo.materielCategories.map(item => item ? item.name : '').join('、');
-      setMaterialId(materialId)
-      console.log(materialId)
-    }
+   
   }
   // 暂存
   function SupplierTemporary() {
@@ -67,6 +69,7 @@ const SupplyRangeRef = forwardRef(({
     // setAttachment(attachmentId)
     // setFieldsValue(fs)
   }
+  
   return (
     <div>
       <Form>
@@ -108,6 +111,7 @@ const SupplyRangeRef = forwardRef(({
                   />
                 )
               }
+
             </FormItem>
           </Col>
         </Row>

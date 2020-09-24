@@ -22,7 +22,8 @@ import {
 import { offlistChineseProvinces, offlistCityByProvince, offlistAreaByCity } from "../../../services/supplierConfig"
 import styles from '../components/index.less';
 import { closeCurrent } from '../../../utils';
-
+import { openNewTab, getFrameElement } from '@/utils';
+import queryString from "query-string";
 function CreateStrategy() {
   const BaseinfoRef = useRef(null);
   const AccountRef = useRef(null);
@@ -46,6 +47,7 @@ function CreateStrategy() {
   const { query } = router.useLocation();
   const { frameElementId, frameElementSrc = "", Opertype = "" } = query;
   let typeId = query.frameElementId;
+  let urlParams = queryString.parse(window.location.search);
     // 获取配置列表项
     useEffect(() => {
       initsupplierDetai(); //详情
@@ -215,7 +217,7 @@ function CreateStrategy() {
     if (success) {
       message.success('保存成功');
       triggerLoading(false)
-      closeCurrent()
+      banckjudge()
       return
     }else {
       message.success(msg);
@@ -346,6 +348,10 @@ function CreateStrategy() {
       if (item.operationCode !== '3' && item.fieldCode === 'proCertVos') {
         const { getspecialpurpose } = QualispecialRef.current; // 专用资质
         proCertVos = getspecialpurpose() || [];
+        if (!proCertVos) {
+          message.error('请将专用资质信息填写完全！');
+          return false;
+        }
       }
     }
     let enclosurelist = [], basedata, accountData, baseexten, automaticdata, automaticincome,
@@ -407,18 +413,19 @@ function CreateStrategy() {
     if (wholeData) {
       wholeData.supplierInfoVo = supplierInfoVo;
     }
-    let saveData = wholeData;
-    triggerLoading(true)
-    const { success, message: msg } = await saveSupplierRegister(saveData);
-    if (success) {
-      message.success(msg);
-      triggerLoading(false)
-      closeCurrent()
-      return
-    } else {
-      message.error(msg);
-    }
-    triggerLoading(false)
+    console.log(wholeData)
+    // let saveData = wholeData;
+    // triggerLoading(true)
+    // const { success, message: msg } = await saveSupplierRegister(saveData);
+    // if (success) {
+    //   message.success(msg);
+    //   triggerLoading(false)
+    //   banckjudge()
+    //   return
+    // } else {
+    //   message.error(msg);
+    // }
+    // triggerLoading(false)
   }
   function ficationtype(id) {
     initConfigurationTable(id);
@@ -428,7 +435,15 @@ function CreateStrategy() {
   }
   // 返回
   function handleBack() {
-    closeCurrent()
+    banckjudge()
+  }
+  function banckjudge() {
+    let afterUrl = queryString.parse(window.location.search);
+    if (urlParams.isOutside) {
+      openNewTab("supplier/selfRegister/OutSideRegisterListView", '我的注册信息', true, afterUrl.frameId);
+    }else {
+      closeCurrent()
+    }
   }
   return (
     <Spin spinning={loading} tip='处理中...'>

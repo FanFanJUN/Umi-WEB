@@ -49,6 +49,8 @@ function SupplierApproveInfo() {
         
       }
       const handleSave = async (approved) => {
+        //let saveData = wholeData
+        //console.log(JSON.stringify(saveData))
         triggerLoading(true)
         let saveData = wholeData
         const { success, message: msg } = await saveSupplierRegister(saveData)

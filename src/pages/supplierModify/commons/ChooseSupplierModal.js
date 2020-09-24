@@ -75,8 +75,15 @@ const getAgentregRef = forwardRef(({
             handleModalVisible(false);
             // let categoryid = selectedRows[0].supplier.supplierCategoryId;
             let id = selectedRows[0].supplierId;
+            cleanSelectedRecord();
             openNewTab(`supplier/supplierModify/create/index?id=${id}`, '供应商变更新建变更单', false)
         }
+    }
+    // 清除选中项
+    function cleanSelectedRecord() {
+        setRows([]);
+        setRowKeys([])
+        tableRef.current.manualSelectedRows([])
     }
     // 输入框值
     function SerachValue(v) {

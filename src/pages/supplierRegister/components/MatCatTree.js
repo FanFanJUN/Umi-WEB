@@ -24,7 +24,7 @@ class MatCatTree extends Component {
       expandedKeys: [],
       findResultData: [],
       dataSource: [],
-      checkedKeys: this.props.defaultCheckedKeys,
+      defaultCheckedKeys: this.props.defaultCheckedKeys,
     };
   }
 
@@ -35,11 +35,16 @@ class MatCatTree extends Component {
   componentDidMount() {
     this.props.onRef && this.props.onRef(this);
   }
+  // componentWillReceiveProps(nextProps) {
+  //   console.log(nextProps.defaultCheckedKeys)
+  //   this.setState({defaultCheckedKeys: nextProps.defaultCheckedKeys});
+  // }
 
   getDataSource() {
     this.props.show();
     this.props.service().then(res => {
       const { defaultCheckedKeys } = this.props;
+      //console.log(defaultCheckedKeys)
       let treeloop = res.data;
       if (this.props.isView) {
         let dataSourceed = JSON.parse(JSON.stringify(treeloop));
@@ -238,6 +243,7 @@ class MatCatTree extends Component {
   };
   //查找关键字节点
   findCheckedData = (checkedKeys, tree) => {
+    //console.log(checkedKeys)
     return tree.map(treeNode => {
       //如果有子节点
       if (treeNode.children && treeNode.children.length > 0) {
@@ -333,7 +339,6 @@ class MatCatTree extends Component {
   render() {
     const { dataSource, checkedKeys } = this.state;
     const { defaultCheckedKeys, isView } = this.props;
-    console.log(dataSource)
     return (
       <div>
         <Card title={this.leftTitle()} extra={this.rightTitle()} bodyStyle={{ height: 285, overflow: 'auto' }}>

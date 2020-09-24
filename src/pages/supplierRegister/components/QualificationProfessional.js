@@ -278,8 +278,11 @@ const QualispecialRef = forwardRef(({
       form.validateFieldsAndScroll((err, values) => {
         if (!err) {
           result = dataTransfer(dataSource, values, -1);
+        }else {
+          message.error('请将专用资质信息填写完全！');
         }
       });
+      console.log(result)
       return result;
     }
     // 设置所有表格参数

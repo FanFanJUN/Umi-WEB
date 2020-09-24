@@ -95,6 +95,8 @@ export default [
       { path: '/supplier/selfRegister/index', component: './selfRegister/index', title: '供应商自主注册' },
       /**我的注册信息 */
       { path: '/supplier/selfRegister/OutSideRegisterListView', component: './selfRegister/OutSideRegisterListView', title: '我的注册信息' },
+      /**我的详细信息 */
+      { path: '/supplier/supplierRegister/MySupplierInfo', component: './supplierRegister/MySupplierInfo', title: '我的详细信息' },
       /* add Example
       {
         path: '/path',
