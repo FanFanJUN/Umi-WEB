@@ -202,15 +202,17 @@ function SupplierConfigure() {
         })
         uploadTable();
     }
+    const searchbank = ['name'];
     // 右侧搜索
     const searchBtnCfg = (
         <>
             <ComboList
                 style={{ width: 280 }}
+                searchProperties={searchbank}
                 {...corporationSupplierConfig}
                 afterSelect={cooperationChange}
                 rowKey="code"
-                showSearch={false}
+                //showSearch={false}
                 reader={{
                     name: 'name',
                 }}

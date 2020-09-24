@@ -315,3 +315,10 @@ export const checkAccount = params => createServiceRequest({
 export const listUnionPayCode = (params) => {
   return httpUtils.get(`/srm-baf-web/supplierRegister/getBankNoByPage`, params);
 };
+
+// 获取登录信息
+
+export const getSupplierUserMsg = params => createServiceRequest({
+  path: '/supplier/getSupplierUserMsg',
+  params
+})

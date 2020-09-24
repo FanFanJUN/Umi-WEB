@@ -202,7 +202,12 @@ const SupplierEditRef = forwardRef(({
     if (baseVal) {
       if (baseVal.supplierVo.companyCode) {
         wholeData.companyCode = baseVal.supplierVo.companyCode
-        wholeData.companyName = baseVal.supplierVo.companyName
+        if (baseVal.supplierVo.companyName === baseVal.supplierVo.companyCode) {
+          wholeData.companyName = wholeData.companyName
+        } else {
+          wholeData.companyName = baseVal.supplierVo.companyName
+        }
+
       }
     }
     
