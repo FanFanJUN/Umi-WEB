@@ -158,9 +158,6 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
         let addList = [];
         let suppliers = [];
         supplierSelected.forEach((item, index) => {
-            let list = moment().format('YYYY-MM-DD').split('-');
-            list[1] = Number(list[1]) + 1;
-            let fillEndDate = list.join('-');
             if (!supplierCodes.includes(item.code)) {
                 suppliers.push(item.code);
                 addList.push({
@@ -171,7 +168,8 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                     publish: false,
                     suspend: false,
                     whetherDelete: false,
-                    fillEndDate,
+                    // 当前日趋+1月
+                    fillEndDate: moment(new Date().setMonth(new Date().getMonth() +1)).format('YYYY-MM-DD'),
                     allotDate: moment().format('YYYY-MM-DD'),
                     demandNumber: selectedRow.demandNumber,
                     allotPeopleId: getUserId(),
