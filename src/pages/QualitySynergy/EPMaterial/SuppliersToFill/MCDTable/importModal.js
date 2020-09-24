@@ -10,7 +10,7 @@ import { recommendUrl } from '../../../../../utils/commonUrl'
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const { create, Item: FormItem } = Form;
 
-export default function ({ visible, setVisible }) {
+export default function ({ visible, setVisible, environmentalProtectionCode}) {
     const splitRef = useRef(null)
     const [selectedSplitData, setSelectedSpilt] = useState({})
     const [splitDataList, setSplitDataList] = useState([]);
@@ -75,9 +75,12 @@ export default function ({ visible, setVisible }) {
     >
         <Row style={{marginBottom:6}}>
             <Upload
-                action={`${recommendUrl}/api/epController/importData`}
+                action={`/srm-sam-web/epController/importData`}
                 onChange={fileUpload}
                 headers={getHeaders()}
+                data={{
+                    code: environmentalProtectionCode
+                }}
                 beforeUpload={beforeUpload}
                 showUploadList={false}
             >

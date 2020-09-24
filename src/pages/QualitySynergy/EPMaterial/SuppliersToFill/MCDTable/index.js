@@ -126,7 +126,7 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
                 </Row>
             </Col>
         </Row>
-        <ImportModal visible={visible} setVisible={setVisible} />
+        <ImportModal visible={visible} setVisible={setVisible} environmentalProtectionCode={originData.environmentalProtectionCode} />
     </Fragment>
 })
 export default create()(MCDForm)
