@@ -237,6 +237,9 @@ export default create()(function ({ form }) {
                 break;
         }
         if (res.statusCode === 200) {
+            if(type === 'copy') {
+                setCopyVisible(false);
+            }
             refresh();
             message.success('操作成功');
         } else {

@@ -159,7 +159,7 @@ export default create()(function ({ form }) {
     };
     // 获取导出的数据
     const requestParams = {
-        url: `${recommendUrl}/api/epDemandService/findByPage`,
+        url: `${recommendUrl}/api/epDemandService/findByPages`,
         data: {
             ...searchValue,
             quickSearchProperties: [],

@@ -1,12 +1,13 @@
 // 批量导入弹框
 import { useEffect, useState, useRef } from 'react';
-import { Form, Col, Row, Upload, Button, message } from 'antd';
+import { Form, Col, Row, Upload, Button, message, Modal } from 'antd';
 import { ExtModal } from 'suid'
 import styles from '../index.less'
 import SplitPartsTable from './SplitPartsTable';
 import MaterialTable from './MaterialTable';
 import TestRecordsTable from './TestRecordsTable';
 import { recommendUrl } from '../../../../../utils/commonUrl'
+import { BASE_URL } from '../../../../../utils/constants';
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const { create, Item: FormItem } = Form;
 
@@ -22,11 +23,11 @@ export default function ({ visible, setVisible, environmentalProtectionCode}) {
             if (file.response && file.response.data) {
                 let msg = []
                 let result = file.response.data.map((item, index) => {
-                    if (item.msg === null || item.msg === undefined || Object.keys(item.msg).length !== 0) {
+                    if (!item.importStatus) {
                         msg.push(<span key={'import_error_' + index} style={{display: 'block'}}>
-                        {'第' + (index + 1) + '行:' + JSON.stringify(item.msg) + ''}</span>)
+                        {'第' + (index + 1) + '行:' + JSON.stringify(item.failInfo) + ''}</span>)
                     }else{
-                        item.index=index;
+                        item.rowKey=index;
                         return item;
                     }
                 })
@@ -75,7 +76,7 @@ export default function ({ visible, setVisible, environmentalProtectionCode}) {
     >
         <Row style={{marginBottom:6}}>
             <Upload
-                action={`${DEVELOPER_ENV === 'true' ? '/service.api' : ''}/srm-sam-service/epController/importData`}
+                action={`${window.location.origin + BASE_URL}/srm-sam-service/epController/importData`}
                 onChange={fileUpload}
                 headers={getHeaders()}
                 data={{
