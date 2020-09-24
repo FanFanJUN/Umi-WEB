@@ -39,7 +39,7 @@ const ExemptionClause = (props) => {
         { title: '豁免条款代码', dataIndex: 'exemptionClauseCode', width: 120 },
         { title: '豁免条款物质名称', dataIndex: 'exemptionClauseMaterialName', ellipsis: true, width: 140 },
         { title: 'CAS.NO', dataIndex: 'casNo', ellipsis: true, },
-        { title: 'ppm', dataIndex: 'ppmValue', ellipsis: true },
+        { title: '限量(ppm)', dataIndex: 'ppmValue', ellipsis: true },
         { title: '限量(%)', dataIndex: 'limitNumber', ellipsis: true },
         {
             title: '比较标识', dataIndex: 'limitNumberMaxSign', ellipsis: true, render: (text) => {
@@ -124,6 +124,9 @@ const ExemptionClause = (props) => {
                 if (item.limitNumber) {
                     if (item.limitNumber.toString().indexOf('%') !== -1) {
                         item.limitNumber = item.limitNumber.split('%')[0];
+                    }
+                    if (item.ppmValue.toString().indexOf('%') !== -1) {
+                        item.ppmValue = item.ppmValue.split('%')[0];
                     }
                     item.limitNumber = Number(item.limitNumber).toFixed(2)
                 } else {

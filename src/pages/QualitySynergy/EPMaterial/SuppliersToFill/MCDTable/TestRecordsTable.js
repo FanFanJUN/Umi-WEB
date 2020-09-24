@@ -283,7 +283,11 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                             getFieldDecorator('content', {
                                 initialValue: modalType === 'edit' ? selectedRows[0].content : '',
                                 rules: [{ required: true, message: '请输入' }]
-                            })(<InputNumber style={{ width: '40%' }} />)
+                            })(<InputNumber style={{ width: '40%' }} min={0} onBlur={() => {
+                                if (getFieldValue('content') === 0) {
+                                    setFieldsValue({ content: '' })
+                                }
+                            }} />)
                         }
                     </FormItem>
                 </Row>
