@@ -16,7 +16,7 @@ const TechnicalDataModal = (props) => {
 
   const { visible, type, title, form, fatherData, userInfo } = props;
 
-  const { getFieldDecorator, getFieldValue } = props.form;
+  const { getFieldDecorator, getFieldValue, setFieldsValue } = props.form;
 
   const onOk = () => {
     props.form.validateFieldsAndScroll((err, values) => {
@@ -32,6 +32,24 @@ const TechnicalDataModal = (props) => {
       }
     });
   };
+
+  useEffect(() => {
+    if (getFieldValue('sampleRequirementNum') !== '0') {
+      let d = new Date();
+      d.setMonth(d.getMonth() +1);
+      setFieldsValue({
+        sampleReceiverTel: userInfo?.userMobile,
+        sampleReceiverName: userInfo?.userName,
+        sampleRequirementDate: moment(d)
+      })
+    } else {
+      setFieldsValue({
+        sampleReceiverTel: '',
+        sampleReceiverName: '',
+        sampleRequirementDate: null
+      })
+    }
+  }, [getFieldValue('sampleRequirementNum')])
 
   const onCancel = () => {
     props.onCancel();
@@ -52,6 +70,8 @@ const TechnicalDataModal = (props) => {
       }
     </FormItem>
   );
+
+  console.log( getFieldValue('sampleRequirementNum') === '0')
 
   return (
     <ExtModal
@@ -171,11 +191,7 @@ const TechnicalDataModal = (props) => {
             <FormItem {...formItemLayoutLong} label={'样品需求日期'}>
               {
                 getFieldDecorator('sampleRequirementDate', {
-                  initialValue: type === 'add' ? (getFieldValue('sampleRequirementNum') === '0' ? null : (() => {
-                    let d = new Date();
-                    d.setMonth(d.getMonth() +1);
-                    return moment(d)
-                  })()) : moment(fatherData.sampleRequirementDate),
+                  initialValue: type === 'add' ? null : moment(fatherData.sampleRequirementDate),
                   rules: [
                     {
                       required: true,
@@ -190,9 +206,7 @@ const TechnicalDataModal = (props) => {
             <FormItem {...formItemLayoutLong} label={'样品收件人姓名'}>
               {
                 getFieldDecorator('sampleReceiverName', {
-                  initialValue: type === 'add' ? (
-                    getFieldValue('sampleRequirementNum') === '0' ? '' : userInfo?.userName
-                  ) : fatherData.sampleReceiverName,
+                  initialValue: type === 'add' ? '' : fatherData.sampleReceiverName,
                   rules: [
                     {
                       required: true,
@@ -207,9 +221,7 @@ const TechnicalDataModal = (props) => {
             <FormItem {...formItemLayoutLong} label={'样品收件人联系方式'}>
               {
                 getFieldDecorator('sampleReceiverTel', {
-                  initialValue: type === 'add' ? (
-                    getFieldValue('sampleRequirementNum') === '0' ? '' : userInfo?.userMobile
-                  ) : fatherData.sampleReceiverTel,
+                  initialValue: type === 'add' ? '' : fatherData.sampleReceiverTel,
                   rules: [
                     {
                       required: true,
