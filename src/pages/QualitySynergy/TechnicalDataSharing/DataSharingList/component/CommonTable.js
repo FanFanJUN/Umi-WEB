@@ -10,7 +10,7 @@ export const CommonTable = React.forwardRef((props, ref) => {
     manualSelectedRows: manualSelectedRows
   }))
 
-  const { columns, dataSource, store, scrollHeight } = props;
+  const { columns, dataSource, store, quickValueKey } = props;
 
   const [pageInfo, setPageInfo] = useState({
     page: 1,
@@ -60,7 +60,8 @@ export const CommonTable = React.forwardRef((props, ref) => {
     const { url, type, params } = store;
     const allParams = {
       pageInfo,
-      quickValue: data.quickValue,
+      quickSearchProperties: ["code", "name"],
+      ...quickValueKey ? {quickValue: data.quickValue} : {quickSearchValue: data.quickValue},
       ...params,
     };
     request(url, {

@@ -188,6 +188,7 @@ const SupplierModal = (props) => {
   const SupplierAdd = () => {
     return <CommonTable
       scrollHeight={400}
+      quickValueKey={true}
       ref={supplierTable}
       columns={supplierColumns}
       onSelectRow={onSupplierSelectRow}
