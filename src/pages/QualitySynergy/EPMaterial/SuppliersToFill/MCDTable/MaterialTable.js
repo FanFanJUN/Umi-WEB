@@ -48,7 +48,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
     const columns = [
         { title: '物质代码', dataIndex: 'substanceCode', align: 'center' },
         { title: '物质名称', dataIndex: 'substanceName', ellipsis: true, align: 'center' },
-        { title: '是否限用物质', dataIndex: 'isRestricted', ellipsis: true, align: 'center', render: (text) => { return text ? '是' : '否' } },
+        { title: '是否限用物质', dataIndex: 'isRestricted', ellipsis: true, align: 'center', render: (text) => { return (text===true||text==='true') ? '是' : '否' } },
         { title: 'CAS.NO', dataIndex: 'casNo', ellipsis: true, align: 'center', },
         { title: '适用范围', dataIndex: 'practicalRangeName', ellipsis: true, align: 'center', },
         { title: '物质重量(mg)', dataIndex: 'scopeApplication', ellipsis: true, align: 'center', },

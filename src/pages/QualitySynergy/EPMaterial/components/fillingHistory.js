@@ -9,7 +9,7 @@ const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 14, },
 };
-const checkModal = forwardRef(({ form, id }, ref) => {
+const checkModal = forwardRef(({ form, id, materialCode }, ref) => {
     useImperativeHandle(ref, () => ({
         setVisible
     }))
@@ -103,6 +103,7 @@ const checkModal = forwardRef(({ form, id }, ref) => {
                     url: `${recommendUrl}/api/epDataFillService/findAllByPage`,
                     params: {
                         id,
+                        materialCode,
                         quickSearchProperties: []
                     },
                     type: 'POST'
