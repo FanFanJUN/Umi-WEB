@@ -162,7 +162,7 @@ const SupplierModal = (props) => {
   };
 
   const disabledDate = (current) => {
-    return current && current < moment().endOf("day");
+    return current && current <moment().subtract(1, "days");
   }
 
 
