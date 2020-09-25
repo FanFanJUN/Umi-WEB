@@ -31,7 +31,7 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
         { title: '拆分部位名称', dataIndex: 'splitPartsName', align: 'center' },
         { title: '均质材料名称', dataIndex: 'homogeneousMaterialName', ellipsis: true, align: 'center' },
         { title: '测试机构', dataIndex: 'testOrganization', ellipsis: true, align: 'center', },
-        { title: '测试结论', dataIndex: 'reportResult', ellipsis: true, align: 'center', render: (text) => text ? '通过' : '不通过' },
+        { title: '测试结论', dataIndex: 'reportResult', ellipsis: true, align: 'center', render: (text) => (text === true || text === 'true') ? '通过' : '不通过' },
         { title: '报告编号', dataIndex: 'reportNumber', ellipsis: true, align: 'center', },
         { title: '报告日期', dataIndex: 'reportDate', ellipsis: true, align: 'center', },
         { title: '有效截止日期 ', dataIndex: 'effectiveEndDate', ellipsis: true, align: 'center', },
@@ -43,7 +43,7 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
         { title: '排序', dataIndex: 'name8', ellipsis: true, align: 'center', },
     ];
     const importC = [
-    { title: '验证状态', dataIndex: 'importStatus', align: 'center', width: 80, render: text=><span style={{color: text?'black':'red'}}>{text?'成功':'失败'}</span>},
+        { title: '验证状态', dataIndex: 'importStatus', align: 'center', width: 80, render: text => <span style={{ color: text ? 'black' : 'red' }}>{text ? '成功' : '失败'}</span> },
         { title: '验证信息', dataIndex: 'failInfo', ellipsis: true, align: 'center' },
     ]
     // 删除
@@ -124,6 +124,8 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
             delete addItem.validate;
             addItem.rowKey = dataList.length + index;
             addItem.splitPartsLineNumber = dataList.length + index;
+            addItem.voList = [];
+            addItem.testLogVoList = [];
             newList.push(addItem);
         })
         // newList = newList.map((item, index) => ({ ...item, rowKey: index, splitPartsLineNumber: index }));
@@ -166,7 +168,7 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
             />
         </div>
         <ExtTable
-            columns={isImport ? importC.concat(columns) :columns}
+            columns={isImport ? importC.concat(columns) : columns}
             bordered
             allowCancelSelect
             showSearch={false}
@@ -271,7 +273,7 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
                         {
                             getFieldDecorator('documentInfoList', {
                                 rules: [{ required: true, message: '请上传报告附件' }]
-                            })(<Upload entityId={modalType==='edit' ? selectedRows[0].documentInfoList : ''} />)
+                            })(<Upload entityId={modalType === 'edit' ? selectedRows[0].documentInfoList : ''} />)
                         }
                     </FormItem>
                 </Row>
