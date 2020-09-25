@@ -128,7 +128,7 @@ const TechnicalDataModal = (props) => {
             </FormItem>
           </Col>
           <Col span={24}>
-            <FormItem {...formItemLayoutLong} label={'技术图纸'}>
+            <FormItem {...formItemLayoutLong} label={'图纸状态'}>
               {
                 getFieldDecorator('drawFlag', {
                   initialValue: type === 'add' ? '' : fatherData.drawFlag,
