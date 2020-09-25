@@ -348,7 +348,7 @@ export default create()(function ({ form }) {
                 generate: !(rows[0].effectiveStatus === 'EFFECT' && rows[0].allotSupplierState === 'ALLOT_END'),
                 pdm: !(rows[0].syncStatus !== 'SYNC_SUCCESS' && rows[0].allotSupplierState === 'ALLOT_END' && rows[0].assignSupplierStatus!=='NOT_OPE'),
                 maint: rows[0].frozen,
-                assign: (rows[0].frozen || rows[0].effectiveStatus === 'EFFECT'),
+                assign: rows[0].frozen,
             });
         } else if (rows.length === 0) {
             setButtonStatus({
@@ -389,17 +389,15 @@ export default create()(function ({ form }) {
                     });
                 })(),
                 assign: (() => {
-                    // 物料组相同，未冻结，非生效状态
+                    // 物料组相同
                     let { materialGroupCode } = rows[0];
                     let tag2 = false;
-                    let tag3 = false;
                     let tag1 =  !rows.every(item => {
                         tag2 = tag2 || item.frozen;
-                        tag3 = tag3 || item.effectiveStatus === 'EFFECT'
                         return item.materialGroupCode === materialGroupCode;
                     });
-                    console.log('tag2', tag1, tag2, tag3)
-                    return (tag1||tag2||tag3);
+                    console.log('tag2', tag1, tag2)
+                    return tag1||tag2;
                 })(),
                 submit: (() => {
                     // 状态均为草稿
