@@ -50,7 +50,8 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
         { title: '物质名称', dataIndex: 'substanceName', ellipsis: true, align: 'center' },
         { title: '是否限用物质', dataIndex: 'isRestricted', ellipsis: true, align: 'center', render: (text) => { return (text===true||text==='true') ? '是' : '否' } },
         { title: 'CAS.NO', dataIndex: 'casNo', ellipsis: true, align: 'center', },
-        { title: '适用范围', dataIndex: 'practicalRangeName', ellipsis: true, align: 'center', },
+        { title: '适用范围代码', dataIndex: 'practicalRangeCode', ellipsis: true, align: 'center', },
+        { title: '适用范围名称', dataIndex: 'practicalRangeName', ellipsis: true, align: 'center', },
         { title: '物质重量(mg)', dataIndex: 'scopeApplication', ellipsis: true, align: 'center', },
         { title: '均质材料中的含量(%) ', dataIndex: 'materialWeight', ellipsis: true, align: 'center', },
         { title: '豁免条款', dataIndex: 'exemptionClauseCode', ellipsis: true, align: 'center' },
@@ -160,7 +161,6 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
             delete addItem.statusCode;
             delete addItem.message;
             delete addItem.validate;
-            addItem.isRestricted = addItem.isRestricted.toString();
             addItem.rowKey = dataSource.length + index;
             newList.push(addItem);
         })
@@ -221,7 +221,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
             visible={visible}
             maskClosable={false}
             width="600px"
-            onCancel={() => { setVisible(false) }}
+            onCancel={() => { form.resetFields(); setVisible(false); }}
             onOk={() => { handleAdd() }}
             title={`${modalType === 'add' ? '新增' : '编辑'}材料成分表物质`}
         >

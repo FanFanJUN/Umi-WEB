@@ -108,7 +108,7 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada, materia
     return <Fragment>
         <ExtModal
             destroyOnClose
-            onCancel={() => { setVisible(false) }}
+            onCancel={() => { form.resetFields(); setVisible(false); }}
             onOk={handleOk}
             visible={visible}
             maskClosable={false}
@@ -177,10 +177,10 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada, materia
                 <Row>
                     <FormItem label='战略采购' {...formLayout}>
                         {
-                            getFieldDecorator('strategicPurchaseId', { initialValue: initData && initData.strategicPurchaseId }),
-                            getFieldDecorator('strategicPurchaseCode', { initialValue: initData && initData.strategicPurchaseCode }),
+                            getFieldDecorator('strategicPurchaseId', { initialValue: modalType === 'add' ? '' : initData && initData.strategicPurchaseId }),
+                            getFieldDecorator('strategicPurchaseCode', { initialValue: modalType === 'add' ? '' : initData && initData.strategicPurchaseCode }),
                             getFieldDecorator('strategicPurchaseName', {
-                                initialValue: initData && initData.strategicPurchaseName,
+                                initialValue: modalType === 'add' ? '' : initData && initData.strategicPurchaseName,
                             })(<Input disabled />)
                         }
                     </FormItem>
@@ -188,10 +188,10 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada, materia
                 <Row>
                     <FormItem label='环保管理人员' {...formLayout}>
                         {
-                            getFieldDecorator('environmentAdminId', { initialValue: initData && initData.environmentAdminId }),
-                            getFieldDecorator('environmentAdminAccount', { initialValue: initData && initData.environmentAdminAccount }),
+                            getFieldDecorator('environmentAdminId', { initialValue: modalType === 'add' ? '' : initData && initData.environmentAdminId }),
+                            getFieldDecorator('environmentAdminAccount', { initialValue: modalType === 'add' ? '' : initData && initData.environmentAdminAccount }),
                             getFieldDecorator('environmentAdminName', {
-                                initialValue: initData && initData.environmentAdminName,
+                                initialValue: modalType === 'add' ? '' : initData && initData.environmentAdminName,
                             })(<ComboList form={form}
                                 {...allPersonList}
                                 cascadeParams={{ organizationId: OrgId }}

@@ -88,7 +88,7 @@ export default function ({ visible, setVisible, environmentalProtectionCode, han
             >
                 <Button style={{ marginRight: 15, marginLeft: 15, marginBottom: 6 }}>上传</Button>
             </Upload>
-            <a key='template' href={`${DEVELOPER_ENV === 'true' ? '' : '/react-srm-sm-web'}/templates/MCD表批导模板V2.0.xlsx`}>下载模版</a>
+            <a key='template' href={`${DEVELOPER_ENV === 'true' ? '' : '/react-srm-sm-web'}/templates/MCD表批导模板V3.0.xlsx`}>下载模版</a>
         </Row>
         <Row>
             <Col span={12} className={styles.rl}>
