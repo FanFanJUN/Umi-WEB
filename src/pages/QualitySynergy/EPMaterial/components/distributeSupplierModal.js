@@ -169,7 +169,7 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                     suspend: false,
                     whetherDelete: false,
                     // 当前日趋+1月
-                    fillEndDate: moment(new Date().setMonth(new Date().getMonth() +1)).format('YYYY-MM-DD'),
+                    fillEndDate: moment(new Date().setMonth(new Date().getMonth() + 1)).format('YYYY-MM-DD'),
                     allotDate: moment().format('YYYY-MM-DD'),
                     demandNumber: selectedRow.demandNumber,
                     allotPeopleId: getUserId(),
@@ -220,7 +220,7 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
             return (selectedRowKeys.includes(item.rowKey)) ? {
                 ...item,
                 publish: !item.publish,
-                control: item.id&&!item.control
+                control: item.id && !item.control
             } : item
         });
         setDataSource(newList);
@@ -283,10 +283,10 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                 <Button className={styles.btn} onClick={() => { handleSuspended() }} key="suspend"
                     disabled={checkAllSameStatus('suspend') === false}>{checkAllSameStatus('suspend') === 1 ? '取消暂停' : checkAllSameStatus('suspend') === 2 ? '暂停' : '暂停/取消暂停'}</Button>
                 <Button className={styles.btn} onClick={() => { handlePublish(true) }}
-                    disabled={checkAllSameStatus('publish') === 1 || checkAllSameStatus('publish')===false}
+                    disabled={checkAllSameStatus('publish') === 1 || checkAllSameStatus('publish') === false}
                 >发布</Button>
                 <Button className={styles.btn} onClick={() => { handlePublish(false) }}
-                    disabled={checkAllSameStatus('publish') === 2 || checkAllSameStatus('publish')===false}
+                    disabled={checkAllSameStatus('publish') === 2 || checkAllSameStatus('publish') === false}
                 >取消发布</Button>
                 <Button className={styles.btn} onClick={() => { handleSave() }}>保存</Button>
             </div>
@@ -322,7 +322,11 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                 {
                     getFieldDecorator('endDate', {
                         rules: [{ required: true, message: '请选择填报截止日期' }]
-                    })(<DatePicker />)
+                    })(<DatePicker
+                        disabledDate={(value) => {
+                            return value.valueOf() <= moment().add(-1, "second")
+                        }}
+                    />)
                 }
             </FormItem>
         </ExtModal>
@@ -342,27 +346,27 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                 <Button className={styles.btn} type="primary" onClick={() => { handleAdd() }} key="continue">确认并继续</Button>]
             }
         >
-          <CommonTable
-            scrollHeight={400}
-            ref={supplierTableRef}
-            columns={supplierColumns}
-            onSelectRow={(rowKeys, rows) => {
-              console.log('选中', rowKeys, rows)
-              setSupplierSelectedRowKeys(rowKeys);
-              setSupplierSelected(rows);
-            }}
-            store={{
-              url: `${supplierManagerBaseUrl}/api/supplierService/findByPage`,
-              type: 'POST',
-              params: {
-                Q_EQ_frozen__Boolean: false,
-                filters: [
-                  { fieldName: "code", fieldType: "String", operator: "EQ", value: "NONULL" },
-                  {fieldName: "supplierStatus", fieldType: "Integer", operator: "EQ", value: 0}
-                ],
-              }
-            }}
-          />;
+            <CommonTable
+                scrollHeight={400}
+                ref={supplierTableRef}
+                columns={supplierColumns}
+                onSelectRow={(rowKeys, rows) => {
+                    console.log('选中', rowKeys, rows)
+                    setSupplierSelectedRowKeys(rowKeys);
+                    setSupplierSelected(rows);
+                }}
+                store={{
+                    url: `${supplierManagerBaseUrl}/api/supplierService/findByPage`,
+                    type: 'POST',
+                    params: {
+                        Q_EQ_frozen__Boolean: false,
+                        filters: [
+                            { fieldName: "code", fieldType: "String", operator: "EQ", value: "NONULL" },
+                            { fieldName: "supplierStatus", fieldType: "Integer", operator: "EQ", value: 0 }
+                        ],
+                    }
+                }}
+            />;
         </ExtModal>
     </Fragment>
 })
