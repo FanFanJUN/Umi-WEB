@@ -43,8 +43,8 @@ const checkModal = forwardRef(({ form, selectedRow = {}, checkModalType }, ref) 
         {
             title: '复核状态', dataIndex: 'reviewResults', ellipsis: true, align: 'center', render: (text) => {
                 switch (text) {
-                    case "NOPASS": return '复核不通过';
-                    case "PASS": return '复核通过';
+                    case "NOPASS": return '不通过';
+                    case "PASS": return '通过';
                     default: return '';
                 }
             }
@@ -111,9 +111,10 @@ const checkModal = forwardRef(({ form, selectedRow = {}, checkModalType }, ref) 
             if(checkModalType === 'check') {
                 setCheckVisible(true);
             } else {
-                downLoad({id: selectedRowKeys[0]}).then(res => {
-                    console.log(res)
-                })
+                window.open(`${recommendUrl}/epController/downloadFileReport?id=${selectedRowKeys[0]}`);
+                // downLoad({id: selectedRowKeys[0]}).then(res => {
+                //     console.log(res)
+                // })
             }
         }
     }
@@ -138,6 +139,7 @@ const checkModal = forwardRef(({ form, selectedRow = {}, checkModalType }, ref) 
                 remotePaging
                 checkbox={{ multiSelect: checkModalType==='check' }}
                 ref={tableRef}
+                searchPlaceHolder="请输入供应商代码或名称进行查询"
                 rowKey={(item) => item.id}
                 size='small'
                 onSelectRow={handleSelectedRows}
@@ -146,7 +148,6 @@ const checkModal = forwardRef(({ form, selectedRow = {}, checkModalType }, ref) 
                     url: `${recommendUrl}/api/epDataFillService/findPageByCode`,
                     params: {
                         materialCode: selectedRow.materialCode
-                        // materialCode: '810045822'
                     },
                     type: 'POST'
                 }}

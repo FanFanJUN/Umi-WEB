@@ -15,13 +15,13 @@ export default function ({originData={}}) {
         { title: '是否发布', dataIndex: 'publish', ellipsis: true, align: 'center', render: (text) => text ? '已发布' : '草稿'},
         { title: '供应商代码', dataIndex: 'supplierCode', ellipsis: true, align: 'center', },
         { title: '供应商名称', dataIndex: 'supplierName', ellipsis: true, align: 'center', },
-        { title: '分配日期', dataIndex: 'allotDate', ellipsis: true, align: 'center', },
+        { title: '分配日期', dataIndex: 'allotDate', ellipsis: true, align: 'center', render: (text) => text ? text.slice(0, 10) : ''},
         { title: '分配批次 ', dataIndex: 'allotBatch', ellipsis: true, align: 'center', },
         { title: '分配人', dataIndex: 'allotPeopleName', ellipsis: true, align: 'center', },
         { title: '填报编号', dataIndex: 'fillNumber', ellipsis: true, },
-        { title: '填报截止日期', dataIndex: 'fillEndDate', ellipsis: true, },
-        { title: '填报日期', dataIndex: 'name10', ellipsis: true, },
-        { title: '填报状态', dataIndex: 'name11', ellipsis: true, },
+        { title: '填报截止日期', dataIndex: 'fillEndDate', ellipsis: true, render: (text) => text ? text.slice(0, 10) : ''},
+        { title: '填报日期', dataIndex: 'fillDate', ellipsis: true, render: (text) => text ? text.slice(0, 10) : ''},
+        { title: '填报状态', dataIndex: 'fillState', ellipsis: true, },
         {
             title: '符合性检查', dataIndex: 'coincidenceCheck', ellipsis: true, align: 'center', render: (text) => {
                 switch(text){
