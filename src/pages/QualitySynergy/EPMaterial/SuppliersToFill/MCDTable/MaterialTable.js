@@ -55,7 +55,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
         { title: '物质重量(mg)', dataIndex: 'scopeApplication', ellipsis: true, align: 'center', },
         { title: '均质材料中的含量(%) ', dataIndex: 'materialWeight', ellipsis: true, align: 'center', },
         { title: '豁免条款', dataIndex: 'exemptionClauseCode', ellipsis: true, align: 'center' },
-        { title: '基本单位', dataIndex: 'unitName', ellipsis: true, align: 'center', },
+        { title: '基本单位', dataIndex: 'unitCode', ellipsis: true, align: 'center', },
         { title: '符合性', dataIndex: 'compliance', ellipsis: true, align: 'center', render: (text) => text === 'FIT' ? '符合' : text === 'NOTFIT' ? '不符合' : '' },
     ];
     const importC = [
@@ -347,9 +347,9 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                 <Row>
                     <FormItem label='基本单位' {...formLayout}>
                         {
-                            getFieldDecorator('unitCode', { initialValue: modalType === 'edit' ? selectedRows[0].unitCode : '' }),
-                            getFieldDecorator('unitName', {
-                                initialValue: modalType === 'edit' ? selectedRows[0].unitName : '',
+                            getFieldDecorator('unitName', { initialValue: modalType === 'edit' ? selectedRows[0].unitName : '' }),
+                            getFieldDecorator('unitCode', {
+                                initialValue: modalType === 'edit' ? selectedRows[0].unitCode : '',
                                 rules: [{ required: (getFieldValue('isRestricted') === true), message: '基本单位不能为空' }]
                             })(<Input disabled={getFieldValue('isRestricted') === true} />)
                         }
