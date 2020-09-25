@@ -351,22 +351,7 @@ export default create()(function ({ form }) {
                 assign: rows[0].frozen,
             });
         } else if (rows.length === 0) {
-            setButtonStatus({
-                detail: true,
-                delete: true,
-                edit: true,
-                frozen: true,
-                maint: true,
-                detail: true,
-                submit: true,
-                withdraw: true,
-                distribute: true,
-                assign: true,
-                pdm: true,
-                sync: true,
-                check: true,
-                generate: true,
-            });
+            setButtonStatus({ detail: true, delete: true, edit: true, frozen: true, maint: true, detail: true, submit: true, withdraw: true, distribute: true, assign: true, pdm: true, sync: true, check: true, generate: true,})
         } else {
             setButtonStatus({
                 detail: true,

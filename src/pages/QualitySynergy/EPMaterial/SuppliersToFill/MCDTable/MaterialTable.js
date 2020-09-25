@@ -132,7 +132,8 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
     }
     const validateItem = (data) => {
         return new Promise((resolve, reject) => {
-            materialCompositionVerification(data).then(res => {
+            let sendList = data.map(item => ({ ...item, environmentalProtectionCode }))
+            materialCompositionVerification(sendList).then(res => {
                 if (res.success) {
                     let response = res.data.map((item, index) => ({
                         ...item,
