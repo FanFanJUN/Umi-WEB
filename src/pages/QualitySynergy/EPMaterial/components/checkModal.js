@@ -3,6 +3,7 @@ import { ExtTable, ExtModal, message, ComboList } from 'suid';
 import { Button, Input, Form, Modal, Radio } from 'antd'
 import { recommendUrl } from '@/utils/commonUrl';
 import { checkReview, downLoad } from '../../../../services/qualitySynergy';
+import { BASE_URL } from '../../../../utils/constants';
 import { values } from 'lodash';
 const { create, Item: FormItem } = Form;
 const { TextArea } = Input;
@@ -111,10 +112,7 @@ const checkModal = forwardRef(({ form, selectedRow = {}, checkModalType }, ref) 
             if(checkModalType === 'check') {
                 setCheckVisible(true);
             } else {
-                window.open(`${recommendUrl}/epController/downloadFileReport?id=${selectedRowKeys[0]}`);
-                // downLoad({id: selectedRowKeys[0]}).then(res => {
-                //     console.log(res)
-                // })
+                window.open(`${window.location.origin + BASE_URL + recommendUrl}/epController/downloadFileReport?id=${selectedRowKeys[0]}`);
             }
         }
     }
