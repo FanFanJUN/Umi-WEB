@@ -46,11 +46,12 @@ export default function () {
     async function supplierPayment() {
         const { getAccountinfo } = BassAccounRef.current;
         let resultData = getAccountinfo()
+        console.log(JSON.stringify(resultData))
         triggerLoading(true)
         const { data,success, message: msg } = await saveRegistVo({registrationInformationVo: JSON.stringify(resultData)})
         if (success) {
-            //window.open(window.location.href + `/react-basic-web/index?_s=` + data)
-            window.open(`/srm-se-web/NewHomePageView?_s=` + data)
+            window.open(window.location.host + `/react-basic-web/index?_s=` + data)
+            //window.open(`/srm-se-web/NewHomePageView?_s=` + data)
         } else {
             message.error(msg);
         }

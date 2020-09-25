@@ -24,7 +24,7 @@ import {
   ValiditySupplierRegister
 } from '@/services/SupplierModifyService'
 import styles from '../../supplierRegister/components/index.less';
-import { closeCurrent } from '../../../utils';
+import { closeCurrent ,isEmpty} from '../../../utils';
 
 function CreateStrategy() {
   const BaseinfoRef = useRef(null);
@@ -45,7 +45,7 @@ function CreateStrategy() {
   const [editData, setEditData] = useState([]);
   const [againdata, setAgaindata] = useState({});
   const [loading, triggerLoading] = useState(false);
-  const [accountVo, setaccountVo] = useState(false);
+  const [visible, setvisible] = useState(false);
   const [configure, setConfigure] = useState([]);
   const [supplierName, setsupplierName] = useState();
   const { query } = router.useLocation();
@@ -65,6 +65,16 @@ function CreateStrategy() {
         setwholeData(data)
         setAgaindata(againdata)
         triggerLoading(false);
+        if (data.supplierInfoVo.supplierVo.accountVo) {
+          let mobile = data.supplierInfoVo.supplierVo.accountVo.mobile;
+          let email = data.supplierInfoVo.supplierVo.accountVo.email;
+          if (isEmpty(mobile) || isEmpty(email)) {
+            setvisible(true)
+          }
+        }
+        if (data.supplierInfoVo.supplierVo.accountVo === undefined) {
+          setvisible(true)
+        }
       }, 100);
     } else {
       triggerLoading(false);
@@ -451,6 +461,12 @@ function CreateStrategy() {
   function ficationtype(id) {
     initConfigurationTable(id);
   }
+  function handleOk() {
+    setvisible(false)
+  }
+  function handleCancel() {
+    setvisible(false)
+  }
   return (
     <Spin spinning={loading} tip='处理中...'>
       <Affix offsetTop={0}>
@@ -619,6 +635,14 @@ function CreateStrategy() {
           ReaModelOk={createSave}
           wrappedComponentRef={getModelRef}
         />
+        <Modal
+            title="提示"
+            visible={visible}
+            onOk={handleOk}
+            onCancel={handleCancel}
+            >
+            <p>请先到供应商账号的个人设置中绑定手机和邮箱，再变更其他信息，否则无法保存变更信息</p>
+        </Modal>
       </div>
     </Spin>
   )

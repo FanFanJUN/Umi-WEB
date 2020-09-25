@@ -10,6 +10,8 @@ import SupplyRange from "../../supplierRegister/components/SupplyRange"
 import AgentInfo from '../../supplierRegister/components/AgentInfo'
 import QualificationCommon from '../../supplierRegister/components/QualificationCommon'
 import QualificationProfessional from '../../supplierRegister/components/QualificationProfessional'
+import StatusInfor from '../../supplierRegister/components/StatusInfor'
+import PurchaseInfor from '../../supplierRegister/components/PurchaseInfor'
 import classnames from 'classnames';
 
 import styles from '../../supplierRegister/components/index.less';
@@ -358,6 +360,36 @@ const SupplierEditRef = forwardRef(({
                   </div>
                 </div>
               );
+            }
+            if (item.operationCode !== '3' && item.fieldCode === 'group_status_information') {
+              return (
+                  <div className={styles.bgw}>
+
+                      <div className={styles.title}>集团状态信息</div>
+                      <div>
+                          <StatusInfor
+                              editData={editData}
+                              wrappedComponentRef={QualispecialRef}
+                              isView={true}
+                          />
+                      </div>
+                  </div>
+              );
+            }
+            if (item.operationCode !== '3' && item.fieldCode === 'supplierFinanceViews') {
+                return (
+                    <div className={styles.bgw}>
+
+                        <div className={styles.title}>公司采购组织信息</div>
+                        <div>
+                            <PurchaseInfor
+                                editData={editData}
+                                wrappedComponentRef={QualispecialRef}
+                                isView={true}
+                            />
+                        </div>
+                    </div>
+                );
             }
           })
         }

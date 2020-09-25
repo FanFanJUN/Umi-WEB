@@ -329,6 +329,11 @@ const Agentformef = forwardRef(({
             size='small'
             height={height}
             Modeltitle={Modeltitle}
+            pagination={{
+              hideOnSinglePage: true,
+              disabled: false,
+              pageSize: 100,
+            }}
             remotePaging={true}
             ellipsis={false}
             wrappedComponentRef={agentModelRef}
@@ -350,6 +355,11 @@ const Agentformef = forwardRef(({
             CNCountryId={CNCountryId}
             wrappedComponentRef={agentModelRef}
             isView={isView}
+            pagination={{
+              hideOnSinglePage: true,
+              disabled: false,
+              pageSize: 100,
+            }}
             edit={edit}
             saveData={false}
             editData={editData}

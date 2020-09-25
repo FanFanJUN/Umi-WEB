@@ -24,7 +24,7 @@ const getAgentregRef = forwardRef(({
     const headerRef = useRef(null)
     const { getFieldDecorator, validateFieldsAndScroll, getFieldValue, setFieldsValue } = form;
     const [visible, setvisible] = useState(false);
-    //const [loading, triggerLoading] = useState(false);
+    const [confirmLoading, setconfirmLoading] = useState(false);
     useEffect(() => {
         
     }, []);
@@ -41,6 +41,7 @@ const getAgentregRef = forwardRef(({
           return false;
         }else {
           result = values;
+          setconfirmLoading(true)
           ReaModelOk(result)
         }
       });
@@ -48,7 +49,6 @@ const getAgentregRef = forwardRef(({
 
     return (
         <Modal
-            confirmLoading={loading}
             width={1000}
             className={"choose-supplier"}
             centered
@@ -57,6 +57,7 @@ const getAgentregRef = forwardRef(({
             title={"变更原因"}
             visible={visible}
             onCancel={() => handleModalVisible(false)}
+            confirmLoading={confirmLoading}
             onOk={handleOk}
         >
             <Form>

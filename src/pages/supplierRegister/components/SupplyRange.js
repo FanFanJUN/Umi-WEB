@@ -23,32 +23,28 @@ const SupplyRangeRef = forwardRef(({
   const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
   const [materialId, setMaterialId] = useState([]);
   useEffect(() => {
-    getSupplyRange(editData);
-    //let materialId = [];
-    if (editData && editData.extendVo && editData.extendVo.materielCategories) {
-      let materialIded = editData.extendVo.materielCategories.map(item => item ? item.id : '');
-      materialName = editData.extendVo.materielCategories.map(item => item ? item.name : '').join('、');
-      //materialId = materialIded
-      var lists = materialIded.concat();
-      console.log(lists)
-      
-      setTimeout(() => {
-        setMaterialId(lists)
-        console.log(materialId)
-      }, 100);
-     
-    }
+    //getSupplyRange(editData);
+    let materialIded = [];
     let materialName = [];
-
+    if (editData && editData.extendVo && editData.extendVo.materielCategories) {
+      materialIded = editData.extendVo.materielCategories.map(item => item ? item.id : '');
+      materialName = editData.extendVo.materielCategories.map(item => item ? item.name : '').join('、');
+     // materialId = materialIded;
+      setMaterialId(materialIded)
+      // setFieldsValue({
+      //   ['extendVo.matCatIds'] : materialIded
+      // })
+    }
   }, [editData])
+
   const formItemLayoutLong = {
     labelCol: { span: 4 },
     wrapperCol: { span: 20 },
   };
-  function getSupplyRange(val) {
-    let editData = val;
+  // function getSupplyRange(val) {
+  //   let editData = val;
    
-  }
+  // }
   // 暂存
   function SupplierTemporary() {
     let result = {};
@@ -121,8 +117,7 @@ const SupplyRangeRef = forwardRef(({
       </Form>
     </div>
   )
-}
-)
+})
 const CommonForm = create()(SupplyRangeRef)
 
 export default CommonForm
