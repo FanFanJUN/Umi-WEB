@@ -117,6 +117,15 @@ const CommonconfigRef = forwardRef(({
                       <span>{editData && editData.extendVo ? editData.extendVo.searchCondition : ''}</span>
                     </FormItem>
                   </Col> : null}
+                  {item.key === 'englishabbreviation' ? <Col span={8}>
+                    <FormItem
+                      {...formItemLayout}
+                      label={'英文简称'}
+                      style={{ width: '100%', marginBottom: 10 }}
+                    >
+                      <span>{editData && editData.extendVo ? editData.extendVo.searchCondition : ''}</span>
+                    </FormItem>
+                  </Col> : null}
                   {item.key === 'creditCode' ? <Col span={8}>
                     <FormItem
                       {...formItemLayout}

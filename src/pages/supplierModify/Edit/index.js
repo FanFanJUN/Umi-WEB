@@ -406,27 +406,28 @@ function CreateStrategy() {
       wholeData.supplierInfoVo = supplierInfoVo;
     }
     setwholeData(wholeData)
-    getModelRef.current.handleModalVisible(true);
-  }
-  async function createSave(val) {
-    let params = { ...wholeData, ...val };
     // 变更保存效验
-    const { success, message: msg } = await ValiditySupplierRegister(params);
+    console.log(JSON.stringify(wholeData))
+    const { success, message: msg } = await ValiditySupplierRegister(wholeData);
     if (success) {
-      // 变更保存
-      const { success, message: msg } = await TemporarySupplierRegister(params);
-      if (success) {
-        message.success(msg);
-        triggerLoading(false)
-        closeCurrent()
-        return
-      } else {
-        message.error(msg);
-      }
-      triggerLoading(false)
+      getModelRef.current.handleModalVisible(true);
     }else {
       message.error(msg);
     }
+    
+  }
+  async function createSave(val) {
+    let params = { ...wholeData, ...val };
+    const { success, message: msg } = await TemporarySupplierRegister(params);
+    if (success) {
+      message.success(msg);
+      triggerLoading(false)
+      closeCurrent()
+      return
+    } else {
+      message.error(msg);
+    }
+    triggerLoading(false)
   }
   function setSuppliername(name) {
     setsupplierName(name)

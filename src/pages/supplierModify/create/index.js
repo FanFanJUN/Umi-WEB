@@ -43,7 +43,7 @@ function CreateStrategy() {
   const [initialValue, setInitialValue] = useState({});
   const [wholeData, setwholeData] = useState([]);
   const [editData, setEditData] = useState([]);
-  const [againdata, setAgaindata] = useState([]);
+  const [againdata, setAgaindata] = useState({});
   const [loading, triggerLoading] = useState(false);
   const [accountVo, setaccountVo] = useState(false);
   const [configure, setConfigure] = useState([]);
@@ -210,6 +210,7 @@ function CreateStrategy() {
     //console.log(againdata)
     //如果为新增  拼加一个供应商ID在头上
     againdata.supplierId = againdata.supplierId || query.id;
+    againdata.supplierInfoVo.supplierVo.id = editData.supplierVo.id
     againdata.againdata = '0';
     let saveData = { ...againdata };
     console.log(saveData)
@@ -406,19 +407,24 @@ function CreateStrategy() {
     //如果为新增  拼加一个供应商ID在头上
     againdata.supplierId = againdata.supplierId || query.id;
     againdata.againdata = '1';
+    againdata.supplierInfoVo.supplierVo.id = editData.supplierVo.id
     //let saveData = {...againdata};
     setAgaindata(againdata)
-    //let saveData = againdata;
-    //console.log(getModelRef.current)
-    getModelRef.current.handleModalVisible(true);
+     // 变更保存效验
+     console.log(againdata)
+     const { success, message: msg } = await ValiditySupplierRegister(againdata);
+     if (success) {
+      getModelRef.current.handleModalVisible(true);
+     }else {
+      message.error(msg);
+     }
+     
+    
   }
   async function createSave(val) {
     triggerLoading(true)
     let params = { ...againdata, ...val };
-    // 变更保存效验
-    const { success, message: msg } = await ValiditySupplierRegister(params);
-    if (success) {
-      const { success, message: msg } = await TemporarySupplierRegister(params);
+    const { success, message: msg } = await TemporarySupplierRegister(params);
       if (success) {
         message.success(msg);
         triggerLoading(false)
@@ -428,11 +434,6 @@ function CreateStrategy() {
         message.error(msg);
       }
       triggerLoading(false)
-    }else{
-      triggerLoading(false)
-      message.error(msg);
-    }
-   
   }
   function setSuppliername(name) {
     setsupplierName(name)
