@@ -207,7 +207,7 @@ const QualispecialRef = forwardRef(({
             align: "center",
             width: 300,
             render: (text, record, index) => {
-              return <FormItem style={{textAlign: "left",marginBottom: 0}}>
+              return <FormItem style={{marginBottom: 0}}>
                 {
                   getFieldDecorator(`attachments_p[${record.key}]`, {
                     initialValue: "",

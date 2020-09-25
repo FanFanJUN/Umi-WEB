@@ -260,17 +260,17 @@ const tabformRef = forwardRef(({
           <>
             {
               authAction(
-                <Button type='primary' ignore={DEVELOPER_ENV} key='' className={styles.btn} onClick={() => showModal()}>新增</Button>
+                <Button type='primary' ignore={DEVELOPER_ENV} key='SUPPLIER_REGISTER_CONFIGURE_TABLE_ADD' className={styles.btn} onClick={() => showModal()}>新增</Button>
               )
             }
             {
               authAction(
-                <Button ignore={DEVELOPER_ENV} key='' className={styles.btn} onClick={() => showModal('editor')} disabled={empty}>编辑</Button>
+                <Button ignore={DEVELOPER_ENV} key='SUPPLIER_REGISTER_CONFIGURE_TABLE_EDIT' className={styles.btn} onClick={() => showModal('editor')} disabled={empty}>编辑</Button>
               )
             }
             {
               authAction(
-                <Button ignore={DEVELOPER_ENV} key='' className={styles.btn} disabled={empty} onClick={handleRemove}>删除</Button>
+                <Button ignore={DEVELOPER_ENV} key='SUPPLIER_REGISTER_CONFIGURE_TABLE_DETAIL' className={styles.btn} disabled={empty} onClick={handleRemove}>删除</Button>
               )
             }
           </>

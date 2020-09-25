@@ -102,19 +102,19 @@ const OrganizatRef = forwardRef(({
                 <Col span={15}>
                     <FormItem
                         {...formItemLayout}
-                        label={'个人名称+手机号'}
+                        label={'姓名'}
                     >
                         {
                             getFieldDecorator('name', {
                                 initialValue: '',
-                                rules: [{ required: true, message: '个人名称+手机号' },
+                                rules: [{ required: true, message: '姓名' },
                                 //{ validator: this.checkName },
                                 ],
                             })(
                                 <Input
                                     //onChange={this.supplierNameChange}
                                     onBlur={handleCheck}
-                                    placeholder={'个人名称+手机号'}
+                                    placeholder={'姓名'}
                                     maxLength={10}
                                 />,
                             )

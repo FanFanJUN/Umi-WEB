@@ -272,6 +272,36 @@ function CreateStrategy() {
                 </div>
               );
             }
+            if (query.type) {
+              return (
+                  <div className={styles.bgw}>
+
+                      <div className={styles.title}>集团状态信息</div>
+                      <div>
+                          <StatusInfor
+                              editData={editData}
+                              wrappedComponentRef={QualispecialRef}
+                              isView={true}
+                          />
+                      </div>
+                  </div>
+              );
+            }
+            if (query.type) {
+                return (
+                    <div className={styles.bgw}>
+
+                        <div className={styles.title}>公司采购组织信息</div>
+                        <div>
+                            <PurchaseInfor
+                                editData={editData}
+                                wrappedComponentRef={QualispecialRef}
+                                isView={true}
+                            />
+                        </div>
+                    </div>
+                );
+            }
           })
         }
       

@@ -35,12 +35,14 @@ class MatCatTree extends Component {
   componentDidMount() {
     this.props.onRef && this.props.onRef(this);
   }
-  // componentWillReceiveProps(nextProps) {
-  //   console.log(nextProps.defaultCheckedKeys)
-  //   this.setState({defaultCheckedKeys: nextProps.defaultCheckedKeys});
-  // }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.defaultCheckedKeys.length  > 0) {
+      this.getDataSource()
+    }
+    
+  }
 
-  getDataSource() {
+  getDataSource= (value) =>  {
     this.props.show();
     this.props.service().then(res => {
       const { defaultCheckedKeys } = this.props;
@@ -48,7 +50,6 @@ class MatCatTree extends Component {
       let treeloop = res.data;
       if (this.props.isView) {
         let dataSourceed = JSON.parse(JSON.stringify(treeloop));
-        console.log(defaultCheckedKeys)
         let findResultData = this.findCheckedData(defaultCheckedKeys, dataSourceed);
           this.keyList = [];
           this.getExpandedKeys(findResultData);

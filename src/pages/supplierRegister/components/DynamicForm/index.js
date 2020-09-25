@@ -348,15 +348,15 @@ const CommonconfigRef = forwardRef(({
                       {isView ? <span>{editData && editData.extendVo ? editData.extendVo.searchCondition : ''}</span> :
                         getFieldDecorator('extendVo.searchCondition', {
                           initialValue: editData && editData.extendVo ? editData.extendVo.searchCondition : '',
-                          rules: [{ required: item.verifi === '0', message: "请输入简称！" },
-                          //{ pattern: "^[\u4E00-\u9FA5]+$", message: "只能是汉字" }
+                          rules: [{ required: item.verifi === '0', message: "请输入英文简称！" },
+                          { pattern: "^[\u0391-\uFFE5A-Za-z]+$", message: "只能是汉字或英文" }
 
                           ]
                         })(
                           <Input
                             disabled={item.verifi === '2'}
                             maxLength={10}
-                            placeholder={'请输入简称'} />
+                            placeholder={'请输入英文简称'} />
                         )}
                     </FormItem>
                   </Col> : null}

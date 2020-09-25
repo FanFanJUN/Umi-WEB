@@ -24,7 +24,6 @@ const getAgentregRef = forwardRef(({
     const [selectedRows, setRows] = useState([]);
     const [visible, setvisible] = useState(false);
     const [current, setcurrent] = useState([]);
-    //const [dataSource, setData] = useState([]);
     useEffect(() => {
         //getSupplierlist()
     }, []);

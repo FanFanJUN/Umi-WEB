@@ -1,35 +1,47 @@
-import React, { useState, useRef, useEffect } from 'react';
+/**
+ * 实现功能： 高级查询表单组件
+ * 使用说明见 README.md
+ * auth: hezhi
+ * version: 0.0.1
+ * date: 2020-04-01
+ */
+
+import React, { forwardRef, useImperativeHandle, useEffect, useState } from 'react';
+import { Button, Row, Col, Form, Input, DatePicker, message } from 'antd';
 import { ExtTable, WorkFlow, ExtModal, utils,ToolBar  } from 'suid';
-import { Input, Button, message, Checkbox } from 'antd';
-import { openNewTab, getFrameElement } from '@/utils';
-import Header from '@/components/Header';
-//import AdvancedForm from '@/components/AdvancedForm';
 import AutoSizeLayout from '@/components/AutoSizeLayout';
-import styles from './index.less';
-import { smBaseUrl} from '@/utils/commonUrl';
-import {queryStrategyTableList} from "@/services/supplierConfig"
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
-const { Search } = Input
-const { authAction, storage } = utils;
-let editData;
-function PurchaseInfor() {
+const { create } = Form;
+const FormItem = Form.Item;
+
+const PurchaseInfor = forwardRef(({
+  form,
+  editData = [],
+}, ref) => {
+  useImperativeHandle(ref, () => ({
+    form
+  }));
   const [dataSource, setDataSource] = useState([]);
-  const [onlyMe, setOnlyMe] = useState(true);
-  const [selectedRows, setRows] = useState([]);
-
-
+  useEffect(() => {
+    setDataSource(editData.supplierFinanceViews)
+  }, [editData])
   const columns = [
     {
+      title: '公司代码',
+      dataIndex: 'corporationCode',
+      align: 'center',
+      width: 140,
+    },
+     {
         title: '公司名称',
         dataIndex: 'corporationName',
         align: 'center',
-        width: 180,
+        width: 240,
       },
       {
         title: '采购组织代码',
         dataIndex: 'purchaseOrgCode',
         align: 'center',
-        width: 240,
+        width: 200,
       },
       {
         title: '采购组织名称',
@@ -40,9 +52,10 @@ function PurchaseInfor() {
       {
         title: '状态',
         align: 'center',
-        // dataIndex: 'regionName',
+        dataIndex: '',
         width: 140,
         render: (text,blacklist,frozen) => {
+          console.log(text)
           if (text.blacklist === true) {
             return  <span>黑名单</span>
           } else if(text.frozen === true && text.blacklist === false){
@@ -103,12 +116,6 @@ function PurchaseInfor() {
         width: 140
       }
   ].map(_ => ({ ..._, align: 'center' }))
-
-
-  useEffect(() => {
-    setDataSource(editData)
-  }, [editData]);
-  
   return (
     <>
       <AutoSizeLayout>
@@ -117,21 +124,26 @@ function PurchaseInfor() {
             columns={columns}
             showSearch={false}
             rowKey={(item) => item.id}
-            checkbox={{
-              multiSelect: false
-            }}
+            checkbox={false}
             allowCancelSelect
+            pagination={{
+              hideOnSinglePage: true,
+              disabled: false,
+              pageSize: 100,
+             }}
             size='small'
             height={height}
             remotePaging={true}
             ellipsis={false}
-            //dataSource={dataSource}
-            {...dataSource}
+            dataSource={dataSource}
+            //{...dataSource}
           />
         }
       </AutoSizeLayout>
     </>
   )
-}
+})
 
-export default PurchaseInfor
+const CommonForm = create()(PurchaseInfor)
+
+export default CommonForm

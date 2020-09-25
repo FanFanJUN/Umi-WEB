@@ -262,7 +262,7 @@ function SupplierConfigure() {
         const [key] = selectedRowKeys;
         let categoryid = selectedRows[0].supplier.supplierCategoryId;
         let id = selectedRows[0].supplierId;
-        openNewTab(`supplier/supplierRegister/SupplierDetail/index?id=${id}&frameElementId=${categoryid}`, '供应商注册信息明细', false)
+        openNewTab(`supplier/supplierRegister/SupplierDetail/index?id=${id}&frameElementId=${categoryid}&type=false`, '供应商注册信息明细', false)
     }
     // 输入框值
     function SerachValue(v) {

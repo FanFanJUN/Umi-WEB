@@ -438,11 +438,13 @@ function CreateStrategy() {
     banckjudge()
   }
   function banckjudge() {
+    console.log(query.frameElementId)
     let afterUrl = queryString.parse(window.location.search);
-    if (urlParams.isOutside) {
-      openNewTab("supplier/selfRegister/OutSideRegisterListView", '我的注册信息', true, afterUrl.frameId);
+    if (query.frameElementId) {
+      closeCurrent()
     }else {
       closeCurrent()
+      openNewTab("supplier/selfRegister/OutSideRegisterListView", '我的注册信息', true, afterUrl.frameId);
     }
   }
   return (
