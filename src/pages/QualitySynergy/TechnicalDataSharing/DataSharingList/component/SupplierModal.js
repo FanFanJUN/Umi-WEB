@@ -161,6 +161,11 @@ const SupplierModal = (props) => {
     setData((value) => ({ ...value, ModalVisible: false }));
   };
 
+  const disabledDate = (current) => {
+    return current && current <moment().subtract(1, "days");
+  }
+
+
   const TimeAdd = () => {
     return <Form>
       <Col span={24}>
@@ -173,7 +178,9 @@ const SupplierModal = (props) => {
               initialValue: null,
               rules: [{ required: true, message: '资料下载截止日期不能为空' }],
             })(
-              <DatePicker style={{ width1: '100%' }}/>,
+              <DatePicker
+                disabledDate={disabledDate}
+                style={{ width1: '100%' }}/>,
             )
           }
         </FormItem>
