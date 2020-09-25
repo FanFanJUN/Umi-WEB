@@ -63,8 +63,8 @@ const checkModal = forwardRef(({ form, selectedRow = {}, checkModalType }, ref) 
         { title: '供应商代码', dataIndex: 'supplierCode', ellipsis: true, align: 'center', },
         { title: '供应商名称 ', dataIndex: 'supplierName', ellipsis: true, align: 'center', },
         { title: '填报编号', dataIndex: 'fillNumber', ellipsis: true, align: 'center', },
-        { title: '有效开始日期', dataIndex: 'effectiveStartDate', ellipsis: true, align: 'center', },
-        { title: '有效截止日期', dataIndex: 'effectiveEndDate', ellipsis: true, align: 'center', },
+        { title: '有效开始日期', dataIndex: 'effectiveStartDate', ellipsis: true, align: 'center', render: (text) => text ? text.slice(0, 10) : ''},
+        { title: '有效截止日期', dataIndex: 'effectiveEndDate', ellipsis: true, align: 'center', render: (text) => text ? text.slice(0, 10) : ''},
         { title: '分配批次', dataIndex: 'batch', ellipsis: true, align: 'center', },
     ];
     // 复核确定/生成
