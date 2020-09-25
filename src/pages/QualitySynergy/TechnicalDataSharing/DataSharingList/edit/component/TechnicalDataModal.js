@@ -34,7 +34,7 @@ const TechnicalDataModal = (props) => {
   };
 
   useEffect(() => {
-    if (getFieldValue('sampleRequirementNum') !== '0') {
+    if (getFieldValue('sampleRequirementNum')?.toString() !== '0') {
       let d = new Date();
       d.setMonth(d.getMonth() +1);
       setFieldsValue({
@@ -194,7 +194,7 @@ const TechnicalDataModal = (props) => {
                   initialValue: type === 'add' ? null : moment(fatherData.sampleRequirementDate),
                   rules: [
                     {
-                      required: getFieldValue('sampleRequirementNum') !== '0',
+                      required: getFieldValue('sampleRequirementNum')?.toString() !== '0',
                       message: '样品需求日期不能为空',
                     },
                   ],
@@ -209,7 +209,7 @@ const TechnicalDataModal = (props) => {
                   initialValue: type === 'add' ? '' : fatherData.sampleReceiverName,
                   rules: [
                     {
-                      required: getFieldValue('sampleRequirementNum') !== '0',
+                      required: getFieldValue('sampleRequirementNum')?.toString() !== '0',
                       message: '样品收件人姓名不能为空',
                     },
                   ],
@@ -224,7 +224,7 @@ const TechnicalDataModal = (props) => {
                   initialValue: type === 'add' ? '' : fatherData.sampleReceiverTel,
                   rules: [
                     {
-                      required: getFieldValue('sampleRequirementNum') !== '0',
+                      required: getFieldValue('sampleRequirementNum')?.toString() !== '0',
                       message: '样品收件人联系方式不能为空',
                     },
                   ],
