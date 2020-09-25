@@ -75,7 +75,7 @@ export default function() {
     { title: '物料组描述', dataIndex: 'materialGroupName', ellipsis: true, },
     { title: '文件类别', dataIndex: 'fileCategoryName', ellipsis: true, },
     { title: '文件版本', dataIndex: 'fileVersion', ellipsis: true, },
-    { title: '图纸标识', dataIndex: 'drawFlag', ellipsis: true, },
+    { title: '图纸状态', dataIndex: 'drawFlag', ellipsis: true, },
     { title: '技术资料附件', dataIndex: 'technicalDataFileIdList', width: 120, render: (v, data) => <Upload type='show' entityId={v} downloadClick={() => changeDownloadStatus(data)}/>},
     { title: '样品需求数量', dataIndex: 'sampleRequirementNum', ellipsis: true, },
     { title: '计量单位', dataIndex: 'measureUnit', ellipsis: true, },

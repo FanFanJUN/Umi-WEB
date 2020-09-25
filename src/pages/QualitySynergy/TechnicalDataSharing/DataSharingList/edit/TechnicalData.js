@@ -22,7 +22,7 @@ const TechnicalData = React.forwardRef((props, ref) => {
   const columns = [
     { title: '文件类别', dataIndex: 'fileCategoryName', width: 140 },
     { title: '文件版本', dataIndex: 'fileVersion', width: 140, ellipsis: true, },
-    { title: '图纸标识', dataIndex: 'drawFlag', ellipsis: true, width: 140},
+    { title: '图纸状态', dataIndex: 'drawFlag', ellipsis: true, width: 140},
     { title: '技术资料附件', dataIndex: 'technicalDataFileIdList', width: 140, ellipsis: true,render: (v) => <Upload type='show' entityId={v}>查看</Upload> },
     { title: '样品需求数量', dataIndex: 'sampleRequirementNum', ellipsis: true, width: 140},
     { title: '计量单位', dataIndex: 'measureUnit', ellipsis: true, width: 140},
@@ -76,15 +76,13 @@ const TechnicalData = React.forwardRef((props, ref) => {
   const TechnicalDataAddAndEdit = (value) => {
     let newData = JSON.parse(JSON.stringify(data.dataSource))
     value.whetherDelete = false
-    value.sampleRequirementDate = moment(value.sampleRequirementDate).format('YYYY-MM-DD')
+    value.sampleRequirementDate = value.sampleRequirementDate ? moment(value.sampleRequirementDate).format('YYYY-MM-DD') : ''
     if (data.type === 'add') {
       newData.push(value)
     } else {
       data.dataSource.map((item, index) => {
-        console.log(value, '1')
         if(item.lineNumber === value.lineNumber) {
           newData[index] = value
-          console.log(newData[index], '2')
         }
       })
     }
