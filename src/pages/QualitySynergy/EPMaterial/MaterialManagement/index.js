@@ -3,7 +3,7 @@ import { Input, Button, message, Modal, Form } from 'antd';
 import styles from './index.less';
 import moment from 'moment';
 import { openNewTab, getFrameElement, getUserAccount } from '@/utils';
-import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar, DataExport } from 'suid';
+import { ExtTable, ComboList, ExtModal, utils, DataExport } from 'suid';
 import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
 import { recommendUrl } from '@/utils/commonUrl';
 import {
@@ -13,7 +13,6 @@ import {
 import CheckQualificationModal from '../components/checkQualificationModal';
 import DistributeSupplierModal from '../components/distributeSupplierModal';
 import CheckModal from '../components/checkModal';
-import GenerateModal from '../components/generateModal';
 import EditModal from '../components/editModal';
 import SyncHistory from '../components/syncHistory';
 import {
@@ -43,7 +42,6 @@ export default create()(function ({ form }) {
     const editRef = useRef(null);
     const supplierRef = useRef(null);
     const samplingRef = useRef(null);
-    const generateRef = useRef(null);
     const historyRef = useRef(null);
     const [OrgId, setOrgId] = useState('');
     // 按钮禁用控制
@@ -76,14 +74,17 @@ export default create()(function ({ form }) {
     const FRAMELEEMENT = getFrameElement();
     const { getFieldDecorator, setFieldsValue, validateFields } = form;
     useEffect(() => {
+        if(!maintainModal)return;
         findOrgTreeWithoutFrozen().then(res => {
             if (res.success) {
                 setOrgId(res.data[0].id);
             }
         });
+    }, [maintainModal]);
+    useEffect(()=>{
         window.parent.frames.addEventListener('message', listenerParentClose, false);
         return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
-    }, []);
+    }, [])
     function listenerParentClose(event) {
         const { data = {} } = event;
         console.log('进入监听', data.tabAction)
@@ -618,7 +619,6 @@ export default create()(function ({ form }) {
                 disabled={buttonStatus.generate}
                 onClick={() => {
                     setCheckModalType('generate');
-                    // generateRef.current.setVisible(true);
                     samplingRef.current.setVisible(true);
                 }}
                 ignore={DEVELOPER_ENV}
@@ -708,6 +708,7 @@ export default create()(function ({ form }) {
             onCancel={() => {
                 setMaintainModal(false);
             }}
+            maskClosable={false}
             onOk={handleManagerSelect}
             visible={maintainModal}
             title="维护环保管理人员"
@@ -738,6 +739,7 @@ export default create()(function ({ form }) {
             onCancel={() => {
                 setAssignPurchase(false);
             }}
+            maskClosable={false}
             onOk={maintainSeleteChange}
             visible={assignPurchase}
             title="指派战略采购"
@@ -760,7 +762,7 @@ export default create()(function ({ form }) {
         </ExtModal>}
         {/* 查看供应商资质 */}
         <CheckQualificationModal wrappedComponentRef={checkRef} />
-        {/* 分配供应商 */}
+        {/* 分配供应商/查看供应商 */}
         <DistributeSupplierModal
             wrappedComponentRef={supplierRef}
             selectedRow={selectedRows[0]}
@@ -770,10 +772,8 @@ export default create()(function ({ form }) {
                 refresh();
             }}
         />
-        {/* 抽检复核 */}
+        {/* 抽检复核/生成报表 */}
         <CheckModal wrappedComponentRef={samplingRef} selectedRow={selectedRows[0]} checkModalType={checkModalType} />
-        {/* 生成报表 */}
-        {/* <GenerateModal wrappedComponentRef={generateRef} /> */}
         {/* 同步历史 */}
         <SyncHistory wrappedComponentRef={historyRef} id={selectedRowKeys[0]} />
     </Fragment>;
