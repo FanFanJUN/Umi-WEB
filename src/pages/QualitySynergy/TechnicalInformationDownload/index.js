@@ -88,6 +88,7 @@ export default function() {
     { title: '收件人联系方式', dataIndex: 'sampleReceiverTel', ellipsis: true, },
     { title: '分享需求号', dataIndex: 'shareDemanNumber', ellipsis: true,  width: 180 },
     { title: '分享需求行号', dataIndex: 'technicalLineNumber', ellipsis: true, },
+    { title: '备注', dataIndex: 'remark', ellipsis: true, width: 160 },
   ].map(item => ({ ...item, align: 'center' }));
 
   const onChange = (e) => {
