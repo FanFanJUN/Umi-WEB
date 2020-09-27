@@ -8,7 +8,7 @@ import {
     SaveSupplierconfigureService,
     saveSupplierRegister
   } from '@/services/supplierRegister';
-  import { closeCurrent } from '../../../utils/index';
+  import { closeCurrent ,checkToken} from '../../../utils/index';
 function SupplierApproveInfo() {
     const saveformRef = useRef(null)
     const { query } = router.useLocation();
@@ -16,6 +16,7 @@ function SupplierApproveInfo() {
     const [loading, triggerLoading] = useState(false);
     const [wholeData, setwholeData] = useState([]);
     const [configuredata, setconfigurelist] = useState([]);
+    const [isReady, setIsReady] = useState(false);
     useEffect(() => {
         async function initsupplierDetai() {
             triggerLoading(true);
@@ -32,6 +33,7 @@ function SupplierApproveInfo() {
             }
           }
           initsupplierDetai(); 
+          checkToken(query, setIsReady);
     }, []);
     // 类型配置表
     async function initConfigurationTable(typeId) {
@@ -78,6 +80,8 @@ function SupplierApproveInfo() {
         }
       }
     return (
+      <>
+      {isReady ? (
         <WorkFlow.Approve
             businessId={id}
             taskId={taskId}
@@ -92,6 +96,9 @@ function SupplierApproveInfo() {
                 wrappedComponentRef={saveformRef}
             />
         </WorkFlow.Approve>
+      ):null}
+      </>
+        
     )
 }
 

@@ -3,7 +3,7 @@ import { ExtTable, WorkFlow, ExtModal, utils, ToolBar,ScrollBar } from 'suid';
 import { router } from 'dva';
 import { message} from 'antd';
 import SupplierApprovePage from './SupplierApprovePage'
-import { closeCurrent } from '../../../utils/index';
+import { closeCurrent ,checkToken} from '../../../utils/index';
 import {
     findApplySupplierInfoVo,
     SaveSupplierconfigureService,
@@ -16,6 +16,7 @@ function SupplierApproveInfo() {
     const [loading, triggerLoading] = useState(false);
     const [wholeData, setwholeData] = useState([]);
     const [configuredata, setconfigurelist] = useState([]);
+    const [isReady, setIsReady] = useState(false);
     useEffect(() => {
         async function initsupplierDetai() {
             triggerLoading(true);
@@ -32,6 +33,7 @@ function SupplierApproveInfo() {
             }
           }
           initsupplierDetai();
+          checkToken(query, setIsReady);
     }, []);
     // 类型配置表
     async function initConfigurationTable(typeId) {
@@ -77,20 +79,25 @@ function SupplierApproveInfo() {
         }
       }
     return (
-        <WorkFlow.Approve
-            businessId={id}
-            taskId={taskId}
-            instanceId={instanceId}
-            flowMapUrl="flow-web/design/showLook"
-            submitComplete={handleSubmitComplete}
-            beforeSubmit={handleSave}
-            >
-            <SupplierApprovePage
-                wholeData={wholeData}
-                configuredata={configuredata}
-                wrappedComponentRef={saveformRef}
-            />
-        </WorkFlow.Approve>
+      <>
+        {isReady ? (
+          <WorkFlow.Approve
+              businessId={id}
+              taskId={taskId}
+              instanceId={instanceId}
+              flowMapUrl="flow-web/design/showLook"
+              submitComplete={handleSubmitComplete}
+              beforeSubmit={handleSave}
+              >
+              <SupplierApprovePage
+                  wholeData={wholeData}
+                  configuredata={configuredata}
+                  wrappedComponentRef={saveformRef}
+              />
+          </WorkFlow.Approve>
+        ) : null}
+      </>
+        
     )
 }
 

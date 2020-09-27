@@ -3,7 +3,7 @@ import { ExtTable, WorkFlow, ExtModal, utils, ToolBar,ScrollBar } from 'suid';
 import { message} from 'antd';
 import { router } from 'dva';
 import SupplierApproveAgentEdit from './SupplierApproveAgentEdit'
-import { closeCurrent } from '../../../utils/index';
+import { closeCurrent,checkToken } from '../../../utils/index';
 import {
     findApplySupplierInfoVo,
     SaveSupplierconfigureService,
@@ -15,7 +15,9 @@ function SupplierApproveInfo() {
     const [loading, triggerLoading] = useState(false);
     const [wholeData, setwholeData] = useState([]);
     const [configuredata, setconfigurelist] = useState([]);
+    const [isReady, setIsReady] = useState(false);
     const { id, taskId, instanceId } = query;
+    
     useEffect(() => {
         // 供应商详情
         async function initsupplierDetai() {
@@ -33,6 +35,7 @@ function SupplierApproveInfo() {
             }
           }
           initsupplierDetai(); 
+          checkToken(query, setIsReady);
     }, []);
     // 类型配置表
     async function initConfigurationTable(typeId) {
@@ -84,21 +87,26 @@ function SupplierApproveInfo() {
         }
       }
     return (
-        <WorkFlow.Approve
-            businessId={id}
-            taskId={taskId}
-            instanceId={instanceId}
-            flowMapUrl="flow-web/design/showLook"
-            submitComplete={handleSubmitComplete}
-            beforeSubmit={handleSave}
-            >
-            <SupplierApproveAgentEdit
-                wrappedComponentRef={AgentformRef}
-                wholeData={wholeData}
-                configuredata={configuredata}
-                //ref={tableRef}
-            />
-        </WorkFlow.Approve>
+        <>
+          {isReady ? (
+            <WorkFlow.Approve
+                businessId={id}
+                taskId={taskId}
+                instanceId={instanceId}
+                flowMapUrl="flow-web/design/showLook"
+                submitComplete={handleSubmitComplete}
+                beforeSubmit={handleSave}
+                >
+                <SupplierApproveAgentEdit
+                    wrappedComponentRef={AgentformRef}
+                    wholeData={wholeData}
+                    configuredata={configuredata}
+                    //ref={tableRef}
+                />
+            </WorkFlow.Approve>
+          ) : null}
+        </>
+        
     )
 }
 

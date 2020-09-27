@@ -12,7 +12,7 @@ import {
   import {
     SaveSupplierconfigureService
   } from '@/services/supplierRegister';
-  import { closeCurrent } from '../../../utils/index';
+  import { closeCurrent,checkToken} from '../../../utils/index';
   import styles from '../index.less';
   const TabPane = Tabs.TabPane;
 function SupplierApproveInfo() {
@@ -24,8 +24,10 @@ function SupplierApproveInfo() {
     const [configuredata, setconfigurelist] = useState([]);
     const [initialValue, setInitialValue] = useState({});
     const [editData, setEditData] = useState([]);
+    const [isReady, setIsReady] = useState(false);
     useEffect(() => {
         initsupplierDetai(); 
+        checkToken(query, setIsReady);
     }, []);
     // 供应商变更详情
     async function initsupplierDetai() {
@@ -89,7 +91,8 @@ function SupplierApproveInfo() {
         }
       }
     return (
-        <WorkFlow.Approve
+      <>
+        {isReady ? (<WorkFlow.Approve
             businessId={id}
             taskId={taskId}
             instanceId={instanceId}
@@ -114,7 +117,9 @@ function SupplierApproveInfo() {
                     </TabPane>
                 </Tabs>
             </div>
-        </WorkFlow.Approve>
+        </WorkFlow.Approve>): null}
+      </>
+        
     )
 }
 

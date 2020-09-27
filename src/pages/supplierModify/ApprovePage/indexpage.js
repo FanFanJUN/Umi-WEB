@@ -12,7 +12,7 @@ import {
   import {
     SaveSupplierconfigureService
   } from '@/services/supplierRegister';
-  import { closeCurrent } from '../../../utils/index';
+  import { closeCurrent,checkToken} from '../../../utils/index';
   import styles from '../index.less';
   const TabPane = Tabs.TabPane;
   let senddata;
@@ -26,8 +26,10 @@ function SupplierApproveInfo() {
     const [initialValue, setInitialValue] = useState({});
     const [editData, setEditData] = useState([]);
     const [saveData, setSaveData] = useState([]);
+    const [isReady, setIsReady] = useState(false);
     useEffect(() => {
         initsupplierDetai(); 
+        checkToken(query, setIsReady);
     }, []);
     // 供应商变更详情
     async function initsupplierDetai() {
@@ -85,32 +87,36 @@ function SupplierApproveInfo() {
         }
       }
     return (
-        <WorkFlow.Approve
-            businessId={id}
-            taskId={taskId}
-            instanceId={instanceId}
-            flowMapUrl="flow-web/design/showLook"
-            submitComplete={handleSubmitComplete}
-            beforeSubmit={handleSave}
-            >
-            <div className={styles.wrapper}>
-                <Tabs className={styles.tabcolor}>
-                    <TabPane forceRender tab="变更列表" key="1">
-                    <ModifyHistoryDetail
-                        editData={wholeData}
-                        //lineDataSource={lineDataSource}
-                        />
-                    </TabPane>
-                    <TabPane forceRender tab="基本信息" key="2">
-                        <ModifyInfo  
-                            wholeData={wholeData}
-                            configuredata={configuredata}
-                            wrappedComponentRef={saveformRef}
-                        />
-                    </TabPane>
-                </Tabs>
-            </div>
-        </WorkFlow.Approve>
+        <>
+            {isReady ? (
+                <WorkFlow.Approve
+                    businessId={id}
+                    taskId={taskId}
+                    instanceId={instanceId}
+                    flowMapUrl="flow-web/design/showLook"
+                    submitComplete={handleSubmitComplete}
+                    beforeSubmit={handleSave}
+                    >
+                    <div className={styles.wrapper}>
+                        <Tabs className={styles.tabcolor}>
+                            <TabPane forceRender tab="变更列表" key="1">
+                            <ModifyHistoryDetail
+                                editData={wholeData}
+                                //lineDataSource={lineDataSource}
+                                />
+                            </TabPane>
+                            <TabPane forceRender tab="基本信息" key="2">
+                                <ModifyInfo  
+                                    wholeData={wholeData}
+                                    configuredata={configuredata}
+                                    wrappedComponentRef={saveformRef}
+                                />
+                            </TabPane>
+                        </Tabs>
+                    </div>
+                </WorkFlow.Approve>
+            ): null}
+        </>
     )
 }
 
