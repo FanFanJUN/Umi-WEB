@@ -231,7 +231,16 @@ const TechnicalDataModal = (props) => {
                 })(<Input/>)
               }
             </FormItem>
-          </Col>
+          </Col>  <Col span={24}>
+          <FormItem {...formItemLayoutLong} label={'备注'}>
+            {
+              getFieldDecorator('remark', {
+                initialValue: type === 'add' ? '' : fatherData.remark,
+              })(<Input.TextArea maxLength={500} placeholder='500字范围内'/>)
+            }
+          </FormItem>
+        </Col>
+
         </Row>
       </Form>
     </ExtModal>
