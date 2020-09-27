@@ -3,8 +3,6 @@ import {listChineseProvinces,
   listCityByProvince,
   listAreaByCity,
   getAllCurrencyWithoutAuth,
-  getAllCorporation,
-  officelistChineseProvinces,
   getAccesstocountries,
   oddgetAllCorporation,
   getCompanyFactory,
@@ -24,7 +22,7 @@ export const fimlyMaterialClassifyProps = {
   reader: {
     name: 'name',
     field: ['value'],
-    description: 'name'
+    description: 'value'
   },
   remotePaging: true,
   placeholder: '选择认定物料类别'
@@ -42,7 +40,7 @@ export const thatTypeProps = {
   reader: {
     name: 'name',
     field: ['name', 'value'],
-    description: 'name'
+    description: 'value'
   },
   // remotePaging: true,
   placeholder: '选择认定类型'
@@ -106,8 +104,8 @@ export const supplierProps_no_filter = {
   },
   reader: {
     name: 'name',
-    field: ['id'],
-    description: 'id'
+    field: ['id', 'code'],
+    description: 'code'
   },
   remotePaging: true,
   placeholder: '选择供应商'
@@ -132,16 +130,15 @@ export const orgnazationProps = {
 // 原厂数据主数据
 export const originFactoryProps = {
   store: {
-    url: `${smBaseUrl}/api/supplierAgentService/findListBySupplierId`,
+    url: `${smBaseUrl}/api/supplierAgentService/findBySupplierIdBackList`,
     type: 'GET'
   },
   style: {
     width: '100%'
   },
   reader: {
-    name: 'name',
-    field: ['code'],
-    data: 'data'
+    name: 'originalCompanyName',
+    field: ['originalCode']
   },
   placeholder: '选择原厂'
 }
@@ -418,7 +415,7 @@ export const evaluateSystemProps = {
   reader:{
     name: 'name',
     field: ['id'],
-    description: 'id'
+    description: 'code'
   },
   style: {
     width: '100%'

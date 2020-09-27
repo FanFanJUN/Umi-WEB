@@ -21,8 +21,6 @@ import { router } from 'dva';
 const { TabPane } = Tabs;
 
 function DataFillIn({
-  type = 'create',
-  id = null,
   // 更新所有表单填写状态函数
   updateGlobalStatus,
   // 所有表单填报状态

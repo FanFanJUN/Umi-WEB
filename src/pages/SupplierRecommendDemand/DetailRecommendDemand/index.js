@@ -12,7 +12,8 @@ import RecommendForm from '../forms/RecommendForm';
 import { saveSupplierRecommendDemand, querySupplierRecommendDemand } from '../../../services/recommend';
 import { closeCurrent } from '../../../utils';
 export default ({
-  offsetTop = 0
+  offsetTop = 0,
+  fixed = true
 }) => {
   const [loading, toggleLoading] = useState(false);
   const formRef = useRef(null);
@@ -59,13 +60,21 @@ export default ({
   }, [])
   return (
     <Spin spinning={loading}>
-      <Affix offsetTop={offsetTop}>
-        <div className={classnames(styles.fbc, styles.affixHeader)}>
-          <span>供应商推荐需求</span>
-          <div>
+      {
+        fixed ?
+          <Affix offsetTop={offsetTop}>
+            <div className={classnames(styles.fbc, styles.affixHeader)}>
+              <span>供应商推荐需求</span>
+              <div>
+              </div>
+            </div>
+          </Affix> :
+          <div className={classnames(styles.fbc, styles.affixHeader)}>
+            <span>供应商推荐需求</span>
+            <div>
+            </div>
           </div>
-        </div>
-      </Affix>
+      }
       <RecommendForm wrappedComponentRef={formRef} type='detail' />
     </Spin>
   )

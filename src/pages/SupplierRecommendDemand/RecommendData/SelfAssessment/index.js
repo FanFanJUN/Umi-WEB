@@ -6,11 +6,14 @@ import {
   PageHeader,
   message,
   InputNumber,
-  Form
+  Form,
+  Upload,
+  Modal
 } from 'antd';
 import { router } from 'dva';
 import styles from './index.less';
-import { querySelfAssessment, saveSelfAssessment } from '../../../../services/recommend';
+import { querySelfAssessment, saveSelfAssessment, exportProject, importProject } from '../../../../services/recommend';
+import { downloadBlobFile } from '../../../../utils';
 
 const { useLocation } = router;
 const { Item } = Form
@@ -64,7 +67,7 @@ function SelfAssessment({
                     message: '请打分'
                   }
                 ],
-                initialValue: record.score
+                initialValue: record.score,
               })(<InputNumber max={record.highestScore} />)
             }
           </Item>
@@ -75,8 +78,13 @@ function SelfAssessment({
   ]
   const left = (
     <>
-      <Button className={styles.btn}>导出打分项</Button>
-      <Button className={styles.btn}>导入打分项</Button>
+      <Button onClick={handleExport} className={styles.btn}>导出打分项</Button>
+      <Upload
+        beforeUpload={handleImport}
+        showUploadList={false}
+      >
+        <Button className={styles.btn}>导入打分项</Button>
+      </Upload>
     </>
   );
   async function handleSave() {
@@ -109,6 +117,58 @@ function SelfAssessment({
   const headerExtra = type === 'detail' ? [] : [
     <Button key='header-save' type='primary' onClick={handleSave} loading={confirmLoading}>保存</Button>
   ];
+  function handleExport() {
+    Modal.confirm({
+      title: '导出当前打分项',
+      content: '是否导出当前所有打分项',
+      okText: '导出',
+      cancelText: '取消',
+      onOk: async () => {
+        const { data, success, message: msg } = await exportProject({
+          supplierRecommendDemandId: query.id
+        })
+        downloadBlobFile(data, '评分导入模板.xls')
+        if (success) {
+          message.success(msg)
+          return
+        }
+        message.error(msg)
+      }
+    })
+  }
+  function findTreeNodeAndSetValue(v = [], t = []) {
+    t.forEach(system => {
+      if (!!system.ruleId) {
+        const index = v.findIndex(vv => vv.code === system.ruleCode)
+        if (index !== -1) {
+          form.setFieldsValue({
+            [system.ruleId]: v[index].score
+          })
+        }
+      } else {
+        if (!!system.children) {
+          findTreeNodeAndSetValue(v, system.children);
+        }
+      }
+    })
+  }
+  async function handleImport(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('supplierRecommendDemandId', query.id)
+    const { data } = await importProject(formData)
+    const errors = data.filter(item => !!item.msg);
+    if (errors.length !== 0) {
+      Modal.error({
+        title: '导入错误',
+        content: errors.map(item => `${item.name}-${item.msg}`)
+      })
+      return false
+    }
+    findTreeNodeAndSetValue(data, dataSource)
+    message.success('导入成功')
+    return false
+  }
   useEffect(() => {
     async function initialDataSource() {
       toggleLoading(true)

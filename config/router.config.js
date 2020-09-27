@@ -136,6 +136,16 @@ export default [
         component: './SupplierRecommendDemand/ReviewTeamConfirm',
         title: '评审小组确定'
       },
+      {
+        path: '/supplier/recommend/review/mark',
+        component: './SupplierRecommendDemand/ReviewMark',
+        title: '评审打分'
+      },
+      {
+        path: '/supplier/recommend/team/filter/opinion',
+        component: './SupplierRecommendDemand/FilterOpinion',
+        title: '评审小组筛选意见'
+      },
       //  企业社会责任调查表选项主数据
       {
         path: '/csr/config',

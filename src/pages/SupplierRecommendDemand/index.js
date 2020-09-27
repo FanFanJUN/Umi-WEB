@@ -4,15 +4,17 @@ import {
 } from 'react';
 import styles from './index.less';
 import { Header, AutoSizeLayout, AdvancedForm } from '../../components'
-import { ExtTable, utils } from 'suid';
+import { ExtTable, utils, WorkFlow } from 'suid';
 import { Button, Input, Checkbox, Modal, message } from 'antd';
 import { commonProps, commonUrl, openNewTab, getFrameElement } from '../../utils';
 import { removeSupplierRecommendDemand, submitToSupplier } from '../../services/recommend';
 import { stopApproveingOrder } from '../../services/supplier';
 const { Search } = Input;
+const { StartFlow } = WorkFlow;
 const { storage } = utils;
 const { recommendUrl } = commonUrl;
 const { corporationProps, materialClassProps, statusProps, flowStatusProps } = commonProps
+
 
 export default () => {
   const headerRef = useRef(null);
@@ -25,7 +27,7 @@ export default () => {
   const FRAMELEEMENT = getFrameElement();
   const [signleRow = {}] = selectedRows;
   const { account } = storage.sessionStorage.get("Authorization") || {};
-  const { flowStatus: signleFlowStatus, id: flowId } = signleRow;
+  const { flowStatus: signleFlowStatus, id: flowId, supplierRecommendDemandStatus } = signleRow;
   // 已提交审批状态
   const underWay = signleFlowStatus !== 'INIT';
   // 审核完成状态
@@ -33,7 +35,7 @@ export default () => {
   // 填报完成状态
   const fillComplete = signleFlowStatus === 'FILLED';
   // 未提交填报状态
-  const fillInit = signleFlowStatus === 'DRAFT'
+  const fillInit = supplierRecommendDemandStatus === 'DRAFT'
   // 未选中数据状态
   const empty = selectedRowKeys.length === 0;
   const tableProps = {
@@ -65,12 +67,20 @@ export default () => {
   const left = (
     <>
       <Button className={styles.btn} type='primary' onClick={handleCreate}>新增</Button>
-      <Button className={styles.btn} onClick={handleEditor} disabled={empty || underWay}>编辑</Button>
-      <Button className={styles.btn} onClick={handleRemove} disabled={empty || !fillInit}>删除</Button>
+      <Button className={styles.btn} disabled={empty || underWay} onClick={handleEditor}>编辑</Button>
+      <Button className={styles.btn} disabled={empty || !fillInit} onClick={handleRemove}>删除</Button>
       <Button className={styles.btn} disabled={empty || underWay || !fillInit} onClick={handleSubmitSupplierFillIn}>提交供应商填报</Button>
-      <Button className={styles.btn} disabled={empty}>填报信息确认</Button>
-      {/* <Button className={styles.btn} disabled={empty || !fillComplete}>填报信息确认</Button> */}
-      <Button className={styles.btn} disabled={empty || !fillComplete}>提交审核</Button>
+      <Button className={styles.btn} disabled={empty} onClick={handleOpenInfomationConfirm}>填报信息确认</Button>
+      {/* <Button className={styles.btn} disabled={empty || !fillComplete}>提交审核</Button> */}
+      <StartFlow
+        businessModelCode='com.ecmp.srm.sam.entity.srd.SupplierRecommendDemand'
+        businessKey={flowId}
+        startComplete={uploadTable}
+      >
+        {
+          loading => <Button className={styles.btn} loading={loading} disabled={empty}>提交审核</Button>
+        }
+      </StartFlow>
       <Button className={styles.btn} disabled={empty || !fillComplete}>审核历史</Button>
       <Button className={styles.btn} disabled={empty} onClick={stopApprove}>审核终止</Button>
       <Checkbox className={styles.btn} onChange={handleOnlyMeChange} checked={onlyMe}>仅我的</Checkbox>
@@ -229,6 +239,15 @@ export default () => {
     const { pathname } = window.location;
     openNewTab(`supplier/recommend/demand/editor?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '编辑供应商推荐需求', false)
   }
+  
+  // 填报信息确认页签打开
+  function handleOpenInfomationConfirm() {
+    const [key] = selectedRowKeys;
+    const { id = '' } = FRAMELEEMENT;
+    const { pathname } = window.location;
+    openNewTab(`supplier/recommend/fillIn/infomation/confirm?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}&type=detail`, '填报信息确认', false)
+  }
+
   // 处理删除
   async function handleRemove() {
     const [key] = selectedRowKeys;
@@ -272,6 +291,7 @@ export default () => {
   }
   // 清除选中项
   function cleanSelectedRecord() {
+    tableRef.current.manualSelectedRows([])
     setRowKeys([])
   }
   // 快速搜索

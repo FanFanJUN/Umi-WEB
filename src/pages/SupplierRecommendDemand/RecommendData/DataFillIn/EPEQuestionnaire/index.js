@@ -29,7 +29,7 @@ function CSRQuestionnaire({
     >保存</Button>
   ];
   const { query } = useLocation();
-  const { id = null } = query;
+  const { id = null, type = 'create' } = query;
   const columns = [
     {
       title: '序号',
@@ -46,7 +46,7 @@ function CSRQuestionnaire({
       render(text, record, index) {
         const { selectConfigList } = record;
         return (
-          <RadioGroup value={text} onChange={(e) => handleLineChange(e, index, 'selectValue')}>
+          <RadioGroup disabled={type === 'detail'} value={text} onChange={(e) => handleLineChange(e, index, 'selectValue')}>
             {
               selectConfigList.map((item, k) => <Radio value={k} key={`${k}-value-key`}>{item}</Radio>)
             }
@@ -56,11 +56,11 @@ function CSRQuestionnaire({
     },
     {
       title: '附件',
-      dataIndex: 'attacmentId',
-      render(text, record) {
+      dataIndex: 'attachmentId',
+      render(text, record, index) {
         const { attachmentConfig } = record;
         if (attachmentConfig) {
-          return <Upload fileOnChange={handleUploadFile} entityId={text}/>
+          return <Upload fileOnChange={(ids) => handleUploadFile(ids, index)} entityId={text} type={type === 'detail' ? 'show' : ''} />
         }
       }
     },
@@ -69,6 +69,9 @@ function CSRQuestionnaire({
       dataIndex: 'remarkValue',
       render(text, record, index) {
         const { remarkConfig } = record;
+        if (type === 'detail') {
+          return text
+        }
         if (remarkConfig) {
           return <Input className={styles.input} value={text} onChange={(event) => handleLineChange(event, index, 'remarkValue')} />
         }
@@ -91,6 +94,7 @@ function CSRQuestionnaire({
     setDataSource(newDataSource)
   }
   function handleUploadFile(ids, index) {
+    console.log()
     const newDataSource = dataSource.map((item, n) => {
       if (n === index) {
         return ({
@@ -127,7 +131,7 @@ function CSRQuestionnaire({
   }, [])
   return (
     <div>
-      <PageHeader title='企业社会责任' extra={headerExtra} />
+      <PageHeader title='企业生产环境' extra={headerExtra} />
       <div className={styles.divider}></div>
       <Table
         columns={columns}
