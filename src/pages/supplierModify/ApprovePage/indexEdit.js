@@ -25,9 +25,12 @@ function SupplierApproveInfo() {
     const [initialValue, setInitialValue] = useState({});
     const [editData, setEditData] = useState([]);
     const [isReady, setIsReady] = useState(false);
-    useEffect(() => {
+    useEffect(() => { 
+      async function init() {
+        await checkToken(query, setIsReady);
         initsupplierDetai(); 
-        checkToken(query, setIsReady);
+      }
+      init()
     }, []);
     // 供应商变更详情
     async function initsupplierDetai() {

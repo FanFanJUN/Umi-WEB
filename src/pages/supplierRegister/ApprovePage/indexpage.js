@@ -18,23 +18,28 @@ function SupplierApproveInfo() {
     const [configuredata, setconfigurelist] = useState([]);
     const [isReady, setIsReady] = useState(false);
     useEffect(() => {
-        async function initsupplierDetai() {
-            triggerLoading(true);
-            let id = query.id;
-            const { data, success, message: msg } = await findApplySupplierInfoVo({supplierApplyId:id});
-            if (success) {
-                let suppliertype = data.supplierInfoVo.supplierVo.supplierCategory.id
-                initConfigurationTable(suppliertype)
-                setwholeData(data)
-                triggerLoading(false);
-            }else {
-              triggerLoading(false);
-              message.error(msg)
-            }
-          }
-          initsupplierDetai();
-          checkToken(query, setIsReady);
+      async function init() {
+        await checkToken(query, setIsReady);
+        initsupplierDetai(); 
+      }
+      init()
+      
     }, []);
+    async function initsupplierDetai() {
+      triggerLoading(true);
+      let id = query.id;
+      const { data, success, message: msg } = await findApplySupplierInfoVo({supplierApplyId:id});
+      if (success) {
+          let suppliertype = data.supplierInfoVo.supplierVo.supplierCategory.id
+          initConfigurationTable(suppliertype)
+          setwholeData(data)
+          triggerLoading(false);
+      }else {
+        triggerLoading(false);
+        message.error(msg)
+      }
+    }
+    initsupplierDetai();
     // 类型配置表
     async function initConfigurationTable(typeId) {
         triggerLoading(true);
