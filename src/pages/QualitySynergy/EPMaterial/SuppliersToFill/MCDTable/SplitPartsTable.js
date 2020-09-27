@@ -33,8 +33,8 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
         { title: '测试机构', dataIndex: 'testOrganization', ellipsis: true, align: 'center', },
         { title: '测试结论', dataIndex: 'reportResult', ellipsis: true, align: 'center', render: (text) => (text === true || text === 'true') ? '通过' : '不通过' },
         { title: '报告编号', dataIndex: 'reportNumber', ellipsis: true, align: 'center', },
-        { title: '报告日期', dataIndex: 'reportDate', ellipsis: true, align: 'center', },
-        { title: '有效截止日期 ', dataIndex: 'effectiveEndDate', ellipsis: true, align: 'center', },
+        { title: '报告日期', dataIndex: 'reportDate', ellipsis: true, align: 'center', render: (text) => text ? text.slice(0, 10) : ''},
+        { title: '有效截止日期 ', dataIndex: 'effectiveEndDate', ellipsis: true, align: 'center', render: (text) => text ? text.slice(0, 10) : ''},
         {
             title: '报告附件', dataIndex: 'documentInfoList', ellipsis: true, align: 'center', render: (text) => {
                 return <Upload entityId={text} type="show" />
