@@ -139,6 +139,10 @@ const Ctx = forwardRef(({
         placeholder='选择公司'
       />
       <div className={styles.title}>
+        认定类型
+      </div>
+      <ComboList value={thatType?.name} {...thatTypeProps} afterSelect={handleThatTypeSelect}></ComboList>
+      <div className={styles.title}>
         选择采购组织
       </div>
       <ExtTable
@@ -150,10 +154,6 @@ const Ctx = forwardRef(({
         selectedRowKeys={selectedRowKeys}
         rowKey={item => `${item.code}-${item.corporationCode}`}
       />
-      <div className={styles.title}>
-        认定类型
-      </div>
-      <ComboList value={thatType?.name} {...thatTypeProps} afterSelect={handleThatTypeSelect}></ComboList>
     </ExtModal>
   )
 })

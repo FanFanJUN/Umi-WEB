@@ -38,7 +38,6 @@ function TeamConfirm({
   const [selectedRows, setRows] = useState([]);
   // 选中的评审人
   const [selectedReviewRows, setReviewRows] = useState([]);
-  const [confirmLoading, setConfirmLoading] = useState(false);
   const [systemOp, setSystemOp] = useState({});
   const { query } = useLocation();
   const empty = selectedRowKeys.length === 0;
@@ -54,7 +53,7 @@ function TeamConfirm({
       },
       {
         title: '指标定义',
-        dataIndex: ''
+        dataIndex: 'definition'
       },
       {
         title: '评分标准',
@@ -138,7 +137,7 @@ function TeamConfirm({
       console.log(data)
       const { evlSystemRules, supplierEvlSystem } = data
       const ks = getDataSourceKeys(evlSystemRules)
-      form.setFieldsValue({ systemName: supplierEvlSystem.name })
+      form.setFieldsValue({ systemName: supplierEvlSystem?.name })
       setDataSource(evlSystemRules)
       setExpandedRowKeys(ks)
       return
@@ -152,6 +151,10 @@ function TeamConfirm({
     setReviewRows([])
   }
   function getDataSourceKeys(d, ks = []) {
+    const isValid = Array.isArray(d)
+    if(!isValid){
+      return []
+    }
     let kes = ks;
     d.forEach(item => {
       kes.push(item.key)

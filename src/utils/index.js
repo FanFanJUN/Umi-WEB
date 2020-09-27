@@ -222,7 +222,9 @@ export const getMobile = () => {
 }
 
 export const downloadBlobFile = (data, name) => {
-  const blob = new Blob([data]);
+  // console.log(typeof data)
+  // return
+  const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' });
   const fileName = name;
   if ('download' in document.createElement('a')) {
     // 非IE下载
@@ -239,30 +241,31 @@ export const downloadBlobFile = (data, name) => {
     navigator.msSaveBlob(blob, fileName);
   }
 };
+
 export function isEmpty(val) {
   return val === undefined || val === null || val === '' || val === "" || (typeof val === 'string' && val.trim() === '')
 }
 export const convertDataToFormData = (data) => {
   let formData = new FormData();
   if (isEmpty(data)) {
-      return formData;
+    return formData;
   }
   //如果传进对象为数组  返回数组
   if (data instanceof Array) {
-      return data;
+    return data;
   }
   Object.keys(data).forEach((item) => {
-      if (data[item] instanceof Array) {
-          for (let value of data[item].values()) {
-              formData.append(item, value);
-          }
-      } else if (data[item] instanceof Object) {
-          for (let key of Object.keys(data[item])) {
-              formData.append(item + '.' + key, data[item][key]);
-          }
-      } else if (data[item]) {
-          formData.append(item, data[item]);
+    if (data[item] instanceof Array) {
+      for (let value of data[item].values()) {
+        formData.append(item, value);
       }
+    } else if (data[item] instanceof Object) {
+      for (let key of Object.keys(data[item])) {
+        formData.append(item + '.' + key, data[item][key]);
+      }
+    } else if (data[item]) {
+      formData.append(item, data[item]);
+    }
   });
   return formData;
 }
@@ -282,7 +285,7 @@ export const getEntityId = (editData) => {
 };
 //身份证校验
 export const checkCardNo = (rule, value, callback) => {
-// 身份证号码为15位或者18位，15位时全为数字，18位前17位为数字，最后一位是校验位，可能为数字或字符X
+  // 身份证号码为15位或者18位，15位时全为数字，18位前17位为数字，最后一位是校验位，可能为数字或字符X
   let reg = /^\d{17}(\d|X|x)$/;
   if (value && !reg.test(value)) {
     callback('请输入正确格式的身份证号');
@@ -299,17 +302,17 @@ export const onlyNumber = (event) => {
 export function onMailCheck(rule, value, callback) {
   let exp = /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/;
   if (!value || value === "") {
-      callback();
+    callback();
   }
   else if (!value.match(exp)) {
 
-      callback("邮箱格式错误！");
+    callback("邮箱格式错误！");
   } else {
-      callback();
+    callback();
   }
 }
 //小写转大写
-export function toUpperCase( event) {
+export function toUpperCase(event) {
   let value = event.target.value;
   event.target.value = value.toUpperCase();
 }
@@ -405,5 +408,10 @@ export const phoneOrTel = (rule, value, callback) => {
     callback();
   }
 };
+
+export const DELAY = timeout => new Promise(resolve=> {
+  setTimeout(resolve, timeout)
+})
+
 export { default as request } from './request';
 export { constants, userAuth as userUtils, commonProps, commonUrl };

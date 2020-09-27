@@ -1,9 +1,9 @@
-export const localTarget = 'http://tecmp.changhong.com';
-export const onLineTarget = 'https://tecmp.changhong.com';
+export const localTarget = 'http://decmp.changhong.com'; // 开发访问地址
+export const onLineTarget = 'https://tecmp.changhong.com'; // 测试访问地址 更换请更换下面的变量
 
 export default {
   '/service.api': {
-    target: localTarget,
+    target: onLineTarget,
     changeOrigin: true,
     secure: false,
     pathRewrite: { '^/service.api': '' },
