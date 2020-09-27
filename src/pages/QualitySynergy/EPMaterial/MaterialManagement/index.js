@@ -1,18 +1,18 @@
 import React, { useState, useRef, useEffect, Fragment } from 'react';
 import { Input, Button, message, Modal, Form } from 'antd';
 import styles from './index.less';
+import moment from 'moment';
 import { openNewTab, getFrameElement, getUserAccount } from '@/utils';
-import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar, DataExport } from 'suid';
+import { ExtTable, ComboList, ExtModal, utils, DataExport } from 'suid';
 import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
 import { recommendUrl } from '@/utils/commonUrl';
 import {
-    MaterialConfig, MaterialGroupConfig, StrategicPurchaseConfig,
+    MaterialConfig, MaterialGroupConfig, StrategicPurchaseConfig, StrategicForName,
     statusProps, distributionProps, materialStatus, PDMStatus, allPersonList,
 } from '../../commonProps';
 import CheckQualificationModal from '../components/checkQualificationModal';
 import DistributeSupplierModal from '../components/distributeSupplierModal';
 import CheckModal from '../components/checkModal';
-import GenerateModal from '../components/generateModal';
 import EditModal from '../components/editModal';
 import SyncHistory from '../components/syncHistory';
 import {
@@ -42,7 +42,6 @@ export default create()(function ({ form }) {
     const editRef = useRef(null);
     const supplierRef = useRef(null);
     const samplingRef = useRef(null);
-    const generateRef = useRef(null);
     const historyRef = useRef(null);
     const [OrgId, setOrgId] = useState('');
     // 按钮禁用控制
@@ -75,14 +74,17 @@ export default create()(function ({ form }) {
     const FRAMELEEMENT = getFrameElement();
     const { getFieldDecorator, setFieldsValue, validateFields } = form;
     useEffect(() => {
+        if(!maintainModal)return;
         findOrgTreeWithoutFrozen().then(res => {
             if (res.success) {
                 setOrgId(res.data[0].id);
             }
         });
+    }, [maintainModal]);
+    useEffect(()=>{
         window.parent.frames.addEventListener('message', listenerParentClose, false);
         return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
-    }, []);
+    }, [])
     function listenerParentClose(event) {
         const { data = {} } = event;
         console.log('进入监听', data.tabAction)
@@ -256,9 +258,11 @@ export default create()(function ({ form }) {
         value.materialCode = value.materialCode_name;
         value.materialGroupCode = value.materialGroupCode_name;
         value.strategicPurchaseCode = value.strategicPurchaseCode_name;
+        value.strategicPurchaseName = value.strategicPurchaseName_name;
         delete value.materialCode_name;
         delete value.materialGroupCode_name;
         delete value.strategicPurchaseCode_name;
+        delete value.strategicPurchaseName_name;
         delete value.effectiveStatus_name;
         delete value.syncStatus_name;
         delete value.assignSupplierStatus_name;
@@ -342,13 +346,14 @@ export default create()(function ({ form }) {
                 delete: !(rows[0].effectiveStatus === 'DRAFT' && rows[0].sourceName === 'SRM'),
                 submit: rows[0].effectiveStatus === 'EFFECT',
                 withdraw: !(rows[0].effectiveStatus === 'EFFECT' && rows[0].allotSupplierState === 'ALLOT_NOT'),
-                distribute: !(rows[0].applyPersonAccount === getUserAccount() && rows[0].effectiveStatus === 'EFFECT' && !rows[0].frozen),
+                distribute: !(rows[0].applyPersonAccount === getUserAccount() && rows[0].effectiveStatus === 'EFFECT' && !rows[0].frozen && rows[0].strategicPurchaseCode),
                 check: !(rows[0].effectiveStatus === 'EFFECT' && rows[0].allotSupplierState === 'ALLOT_END'),
                 edit: !(rows[0].effectiveStatus === 'DRAFT' && rows[0].allotSupplierState === 'ALLOT_NOT'),
                 generate: !(rows[0].effectiveStatus === 'EFFECT' && rows[0].allotSupplierState === 'ALLOT_END'),
                 pdm: !(rows[0].syncStatus !== 'SYNC_SUCCESS' && rows[0].allotSupplierState === 'ALLOT_END' && rows[0].assignSupplierStatus!=='NOT_OPE'),
                 maint: rows[0].frozen,
                 assign: rows[0].frozen,
+                frozen: rows[0].frozen
             });
         } else if (rows.length === 0) {
             setButtonStatus({ detail: true, delete: true, edit: true, frozen: true, maint: true, detail: true, submit: true, withdraw: true, distribute: true, assign: true, pdm: true, sync: true, check: true, generate: true,})
@@ -367,7 +372,14 @@ export default create()(function ({ form }) {
                 sync: true,
                 pdm: true,
                 check: true,
+                generate: true,
                 maint: (() => {
+                    // 非冻结状态
+                    return !rows.every(item => {
+                        return !item.frozen
+                    });
+                })(),
+                frozen: (() => {
                     // 非冻结状态
                     return !rows.every(item => {
                         return !item.frozen
@@ -404,6 +416,7 @@ export default create()(function ({ form }) {
     const formItems = [
         { title: '物料代码', key: 'materialCode', type: 'list', props: MaterialConfig },
         { title: '物料组', key: 'materialGroupCode', type: 'list', props: MaterialGroupConfig },
+        // { title: '战略采购', key: 'strategicPurchaseName', type: 'list', props: StrategicForName },
         { title: '战略采购', key: 'strategicPurchaseCode', type: 'list', props: StrategicPurchaseConfig },
         { title: '环保管理人员', key: 'environmentAdminName', props: { placeholder: '输入申请人查询' } },
         { title: '申请人', key: 'applyPersonName', props: { placeholder: '输入申请人查询' } },
@@ -467,7 +480,7 @@ export default create()(function ({ form }) {
         { title: '环保标准', dataIndex: 'environmentalProtectionName', ellipsis: true },
         { title: '战略采购代码', dataIndex: 'strategicPurchaseCode', ellipsis: true },
         { title: '战略采购名称', dataIndex: 'strategicPurchaseName', ellipsis: true },
-        { title: '供应商', dataIndex: 'list', ellipsis: true, render: (text, item) => <span onClick={(e) => { showSuplier(e, item) }} style={{ color: 'blue', cursor: 'pointer' }}>查看</span> },
+        { title: '供应商', dataIndex: 'list', ellipsis: true, render: (text, item) => <span onClick={(e) => { showSuplier(e, item) }} style={{ color: '#096dd9', cursor: 'pointer' }}>查看</span> },
         { title: '环保管理人员', dataIndex: 'environmentAdminName', ellipsis: true },
         { title: '创建人', dataIndex: 'applyPersonName', ellipsis: true },
         { title: '创建人联系方式', dataIndex: 'applyPersonPhone', ellipsis: true },
@@ -606,7 +619,6 @@ export default create()(function ({ form }) {
                 disabled={buttonStatus.generate}
                 onClick={() => {
                     setCheckModalType('generate');
-                    // generateRef.current.setVisible(true);
                     samplingRef.current.setVisible(true);
                 }}
                 ignore={DEVELOPER_ENV}
@@ -619,6 +631,7 @@ export default create()(function ({ form }) {
                 // onClick={handleExport}
                 requestParams={requestParams}
                 explainResponse={explainResponse}
+                filenameFormat={'环保资料物料清单'+moment().format('YYYYMMDD')}
                 key='QUALITYSYNERGY_MATERIAL_EXPORT'
                 ignore={DEVELOPER_ENV}
             >导出</DataExport.Button>)
@@ -695,6 +708,7 @@ export default create()(function ({ form }) {
             onCancel={() => {
                 setMaintainModal(false);
             }}
+            maskClosable={false}
             onOk={handleManagerSelect}
             visible={maintainModal}
             title="维护环保管理人员"
@@ -725,29 +739,30 @@ export default create()(function ({ form }) {
             onCancel={() => {
                 setAssignPurchase(false);
             }}
+            maskClosable={false}
             onOk={maintainSeleteChange}
             visible={assignPurchase}
             title="指派战略采购"
         >
             <FormItem label='战略采购' {...formLayout}>
                 {
-                    getFieldDecorator('strategicPurchaseId', { initialValue: selectedRows[0] && selectedRows[0].environmentAdminId }),
-                    getFieldDecorator('strategicPurchaseName', { initialValue: selectedRows[0] && selectedRows[0].environmentAdminAccount }),
-                    getFieldDecorator('strategicPurchaseCode', {
-                        initialValue: selectedRows[0] && selectedRows[0].strategicPurchaseCode,
+                    getFieldDecorator('strategicPurchaseId', { initialValue: selectedRows[0] && selectedRows[0].strategicPurchaseId }),
+                    getFieldDecorator('strategicPurchaseCode', { initialValue: selectedRows[0] && selectedRows[0].strategicPurchaseCode }),
+                    getFieldDecorator('strategicPurchaseName', {
+                        initialValue: selectedRows[0] && selectedRows[0].strategicPurchaseName,
                         rules: [{ required: true, message: '不能为空' }]
                     })(<ComboList
                         form={form}
-                        {...StrategicPurchaseConfig}
-                        name='strategicPurchaseCode'
-                        field={['strategicPurchaseId', 'strategicPurchaseName']}
+                        {...StrategicForName}
+                        name='strategicPurchaseName'
+                        field={['strategicPurchaseId', 'strategicPurchaseCode']}
                     />)
                 }
             </FormItem>
         </ExtModal>}
         {/* 查看供应商资质 */}
         <CheckQualificationModal wrappedComponentRef={checkRef} />
-        {/* 分配供应商 */}
+        {/* 分配供应商/查看供应商 */}
         <DistributeSupplierModal
             wrappedComponentRef={supplierRef}
             selectedRow={selectedRows[0]}
@@ -757,10 +772,8 @@ export default create()(function ({ form }) {
                 refresh();
             }}
         />
-        {/* 抽检复核 */}
+        {/* 抽检复核/生成报表 */}
         <CheckModal wrappedComponentRef={samplingRef} selectedRow={selectedRows[0]} checkModalType={checkModalType} />
-        {/* 生成报表 */}
-        {/* <GenerateModal wrappedComponentRef={generateRef} /> */}
         {/* 同步历史 */}
         <SyncHistory wrappedComponentRef={historyRef} id={selectedRowKeys[0]} />
     </Fragment>;

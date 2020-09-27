@@ -6,9 +6,9 @@ import { baseUrl} from '../../utils/commonUrl';
 import './upload.css'
 import * as fileIcon from "./fileIcon";
 import { BASE_URL,ATTACMENT_HOST } from '../../utils/constants';
-import { onLineTarget } from '../../../config/proxy.config';
+import { onLineTarget, localTarget } from '../../../config/proxy.config';
 
-const host = process.env.NODE_ENV === 'production' ? '' : onLineTarget;
+const host = process.env.NODE_ENV === 'production' ? '' : localTarget;
 
 class UploadFile extends React.Component {
 

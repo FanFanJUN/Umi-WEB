@@ -120,6 +120,7 @@ const FormContext = forwardRef(({
     getFieldValue,
     validateFieldsAndScroll
   } = form;
+  const empty = selectedRowKeys.length === 0;
   const originSupplierId = getFieldValue('supplierId')
   function handleSelectRecommendCompany(select) {
     // console.log(select)
@@ -131,7 +132,6 @@ const FormContext = forwardRef(({
   async function getAllFormatValues() {
     const v = await validateFieldsAndScroll().then(_ => _)
     const { files } = v;
-    console.log(files)
     const hasFile = Array.isArray(files);
     return { ...v, supplierRecommendDemandLines: recommendCompany, attachmentIds: hasFile ? files.map(item => item.id) : null }
   }
@@ -139,9 +139,13 @@ const FormContext = forwardRef(({
     fields = {},
     treeData = {}
   }) {
-    const { attachmentId, ...other } = fields;
+
+    const { attachmentId, supplierCategory, ...other } = fields;
+    const name = supplierCategory?.name;
+    const reg = /代理商/g;
+    const result = reg.test(name);
+    changeAgentState(result)
     setFieldsValue(other)
-    console.log(treeData)
     setSystemView(treeData)
     setAttachment(attachmentId)
   }
@@ -168,7 +172,6 @@ const FormContext = forwardRef(({
   }
   function handleSelectedRows(ks) {
     setRowKeys(ks)
-    // setRows(rs)
   }
   function handleRemoveSelectedRows() {
     Modal.confirm({
@@ -266,6 +269,7 @@ const FormContext = forwardRef(({
           <Col span={12}>
             <FormItem label='供应商名称' {...formLayout}>
               {
+                getFieldDecorator('supplierId'),
                 getFieldDecorator('supplierName', {
                   rules: [
                     {
@@ -278,7 +282,7 @@ const FormContext = forwardRef(({
                     form={form}
                     name='supplierName'
                     {...supplierProps_no_filter}
-                    field={['supplierId']}
+                    field={['supplierId', 'supplierCode']}
                     afterSelect={(item) => {
                       const name = item?.supplierCategory?.name;
                       const reg = /代理商/g;
@@ -293,17 +297,10 @@ const FormContext = forwardRef(({
             </FormItem>
           </Col>
           <Col span={12}>
-            <FormItem label='供应商ID' {...formLayout}>
+            <FormItem label='供应商代码' {...formLayout}>
               {
-                getFieldDecorator('supplierId', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '请选择供应商'
-                    }
-                  ]
-                })(
-                  <Input disabled placeholder='选择供应商' />
+                getFieldDecorator('supplierCode')(
+                  <Input disabled placeholder='供应商代码' />
                 )
               }
             </FormItem>
@@ -344,14 +341,7 @@ const FormContext = forwardRef(({
               <Col span={12}>
                 <FormItem label='原厂代码' {...formLayout}>
                   {
-                    getFieldDecorator('originFactoryCode', {
-                      rules: [
-                        {
-                          required: true,
-                          message: '请选择原厂'
-                        }
-                      ]
-                    })(
+                    getFieldDecorator('originFactoryCode')(
                       <Input disabled placeholder='选择原厂' />
                     )
                   }
@@ -455,7 +445,7 @@ const FormContext = forwardRef(({
                   >新增</Button>
                   <Button
                     onClick={handleRemoveSelectedRows}
-                    disabled={type === 'detail'}
+                    disabled={type === 'detail' || empty}
                   >删除</Button>
                 </>
               }
@@ -491,7 +481,6 @@ const FormContext = forwardRef(({
                     {...evaluateSystemProps}
                     style={{ width: 350 }}
                     afterSelect={item => {
-                      console.log(item)
                       setSystemView(item)
                     }}
                     disabled={type === 'detail'}

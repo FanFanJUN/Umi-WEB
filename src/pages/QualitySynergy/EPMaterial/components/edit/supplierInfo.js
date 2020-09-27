@@ -22,7 +22,7 @@ const formLayoutLogn = {
   },
 };
 
-const BaseInfo = forwardRef(({ form, originData = {}, isView }, ref) => {
+const BaseInfo = forwardRef(({ form, originData = {}, isView, statement }, ref) => {
 
   const [attachment, setAttachment] = useState(null);
   const {
@@ -153,7 +153,7 @@ const BaseInfo = forwardRef(({ form, originData = {}, isView }, ref) => {
           <FormItem label='申明' {...formLayoutLogn}>
             {
               getFieldDecorator('dateTime', {
-                initialValue: '我公司保证填报的数据真实有效，如果发生变更会将变更后数据及时通知长虹公司。'
+                initialValue: statement?statement:'我公司保证填报的数据真实有效，如果发生变更会将变更后数据及时通知长虹公司。'
               })(<Input rows={6} maxLength={500} disabled={true} />)
             }
           </FormItem>

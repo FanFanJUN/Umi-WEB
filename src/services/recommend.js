@@ -1,6 +1,5 @@
 import { request } from '../utils';
 import { recommendUrl } from '../utils/commonUrl';
-
 function createServiceRequest(option) {
   const {
     path: url,
@@ -18,7 +17,8 @@ function createServiceRequest(option) {
     method,
     headers,
     data,
-    params: method === 'GET' ? data : hack ? data : null
+    params: method === 'GET' ? data : hack ? data : null,
+    ...option
   }).catch(error => {
     return ({
       ...error,
@@ -159,4 +159,70 @@ export const queryTeamConfirmHistoryList = params => createServiceRequest({
   path: '/api/samSupplierEvlSystemService/findReviewEvlRuleVoByRecommendDemandId',
   params,
   method: 'GET'
+})
+
+// 导出打分项
+export const exportProject = params => createServiceRequest({
+  path: '/srdController/exportSelfRuleScore',
+  params,
+  method: 'POST',
+  hack: true,
+  responseType: 'blob'
+})
+
+// 导入打分项
+export const importProject = params => createServiceRequest({
+  path: '/srdController/importSelfRuleScore',
+  params,
+  method: 'POST',
+  headers: {
+    'Content-Type': 'multipart/form-data'
+  }
+})
+
+// 推荐需求评审-评审打分
+export const queryReviewMarkData = params => createServiceRequest({
+  path: '/api/supplierRecommendDemandService/findCompareSupplierByRecommendDemandId',
+  params,
+  method: 'GET'
+})
+
+// 推荐需求评审-评审打分保存
+export const saveReviewMarkData = params => createServiceRequest({
+  path: '/api/supplierRecommendDemandService/saveReviewVo',
+  params,
+  method: 'POST'
+})
+
+// 推荐需求评审-导出打分项
+export const exportRevieMarkData = params => createServiceRequest({
+  path: '/srdController/exportReviewRuleScore',
+  params,
+  method: 'POST',
+  hack: true,
+  responseType: 'blob'
+})
+
+// 推荐需求评审-导入打分项
+export const importRevieMarkData = params => createServiceRequest({
+  path: '/srdController/importReviewRuleScore',
+  params,
+  method: 'POST',
+  headers: {
+    'Content-Type': 'multipart/form-data'
+  }
+})
+
+// 推荐需求评审-获取采购小组筛选意见数据
+export const queryFilterOpinion = params => createServiceRequest({
+  path: '/api/compareResultService/findResultByRecommendDemandId',
+  params,
+  method: 'GET'
+})
+
+// 推荐需求评审-保存采购小组筛选意见数据
+export const saveFilterOpinion = params => createServiceRequest({
+  path: '/api/compareResultService/saveCompareResult',
+  params,
+  method: 'POST'
 })

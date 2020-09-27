@@ -2,6 +2,7 @@ import { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment 
 import { ExtTable, ExtModal, message, ComboList } from 'suid';
 import { Button, Input, Form, Modal, Radio } from 'antd'
 import { recommendUrl } from '@/utils/commonUrl';
+import { openNewTab} from '@/utils';
 import { checkReview, downLoad } from '../../../../services/qualitySynergy';
 import { BASE_URL } from '../../../../utils/constants';
 import { values } from 'lodash';
@@ -62,7 +63,11 @@ const checkModal = forwardRef(({ form, selectedRow = {}, checkModalType }, ref) 
         },
         { title: '供应商代码', dataIndex: 'supplierCode', ellipsis: true, align: 'center', },
         { title: '供应商名称 ', dataIndex: 'supplierName', ellipsis: true, align: 'center', },
-        { title: '填报编号', dataIndex: 'fillNumber', ellipsis: true, align: 'center', },
+        { title: '填报编号', dataIndex: 'fillNumber', ellipsis: true, align: 'center', render: (text, item)=>{
+            return <a onClick={()=>{
+                openNewTab(`qualitySynergy/EPMaterial/suppliersFillForm?id=${item.id}&pageStatus=detail`, '填报环保资料物料-明细', false);
+            }}>{text}</a>
+        }},
         { title: '有效开始日期', dataIndex: 'effectiveStartDate', ellipsis: true, align: 'center', render: (text) => text ? text.slice(0, 10) : ''},
         { title: '有效截止日期', dataIndex: 'effectiveEndDate', ellipsis: true, align: 'center', render: (text) => text ? text.slice(0, 10) : ''},
         { title: '分配批次', dataIndex: 'batch', ellipsis: true, align: 'center', },

@@ -18,7 +18,7 @@ function PutForwardOpinion({
   const [visible, setVisible] = useState(false);
   const [selectedRowKeys, setRowKeys] = useState([]);
   const [selectedRows, setRows] = useState([]);
-  const [singleRow={}] = selectedRows;
+  const [singleRow = {}] = selectedRows;
   const isSubmit = singleRow.status
   // 未选中数据状态
   const empty = selectedRowKeys.length === 0;
@@ -98,7 +98,7 @@ function PutForwardOpinion({
       content: '确定要删除当前所选意见？',
       onOk: async () => {
         const [id] = selectedRowKeys;
-        const { success, message: msg } = await removeOpinion({id});
+        const { success, message: msg } = await removeOpinion({ id });
         if (success) {
           message.success(msg);
           cleanSelectedRecord();
@@ -137,6 +137,7 @@ function PutForwardOpinion({
   }
   // 清除选中项
   function cleanSelectedRecord() {
+    tableRef.current.manualSelectedRows([])
     setRowKeys([])
     setRows([])
   }

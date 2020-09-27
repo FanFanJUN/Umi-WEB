@@ -299,6 +299,7 @@ const FormRef = forwardRef(({ form, type = 'create' }, ref) => {
   }
   // 清除选中项
   function cleanSelectedRecord() {
+    tableRef.current.manualSelectedRows([])
     setRowKeys([])
   }
   // 删除选中项

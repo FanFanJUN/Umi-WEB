@@ -7,7 +7,6 @@ import React, { useState, useEffect } from 'react';
 import { Table, PageHeader, Button, Input, Radio, message } from 'antd';
 import styles from '../index.less';
 import { queryCSRorEPEData, saveCSRorEPEData } from '../../../../../services/recommend';
-import { ExtTable } from 'suid';
 import { router } from 'dva';
 const { useLocation } = router;
 const { Group: RadioGroup } = Radio;
@@ -28,7 +27,7 @@ function CSRQuestionnaire({
     >保存</Button>
   ];
   const { query } = useLocation();
-  const { id = null } = query;
+  const { id = null, type = 'create' } = query;
   const columns = [
     {
       title: '序号',
@@ -45,7 +44,7 @@ function CSRQuestionnaire({
       render(text, record, index) {
         const { selectConfigList } = record;
         return (
-          <RadioGroup value={text} onChange={(e) => handleLineChange(e, index, 'selectValue')}>
+          <RadioGroup disabled={type==='detail'} value={text} onChange={(e) => handleLineChange(e, index, 'selectValue')}>
             {
               selectConfigList.map((item, k) => <Radio value={k} key={`${k}-value-key`}>{item}</Radio>)
             }
@@ -57,6 +56,9 @@ function CSRQuestionnaire({
       title: '备注',
       dataIndex: 'remarkValue',
       render(text, record, index) {
+        if (type === 'detail') {
+          return text
+        }
         const { remarkConfig } = record;
         if (remarkConfig) {
           return <Input className={styles.input} value={text} onChange={(event) => handleLineChange(event, index, 'remarkValue')} />

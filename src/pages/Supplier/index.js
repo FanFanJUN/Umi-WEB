@@ -254,6 +254,7 @@ export default function () {
   // 清除选中项
   function cleanSelectedRecord() {
     setRowKeys([])
+    tableRef.current.manualSelectedRows([])
   }
   // 高级查询配置
   const formItems = [
