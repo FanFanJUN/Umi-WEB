@@ -9,7 +9,7 @@ import styles from './index.less';
 import DetailRecommendDemand from '../DetailRecommendDemand';
 import SupplierRecommendFillInData from '../RecommendData/DataFillIn';
 import SelfAssessment from '../RecommendData/SelfAssessment';
-import { Tabs } from 'antd';
+import { Tabs, Skeleton } from 'antd';
 import { WorkFlow } from 'suid';
 import Review from '../Review';
 import Filter from '../Filter';
