@@ -167,6 +167,7 @@ const SupplierModal = (props) => {
 
 
   const TimeAdd = () => {
+    console.log(data, 'supplierData')
     return <Form>
       <Col span={24}>
         <FormItem
@@ -175,7 +176,7 @@ const SupplierModal = (props) => {
         >
           {
             getFieldDecorator('endTime', {
-              initialValue: data.downloadAbortDate ? moment(data.downloadAbortDate) : null,
+              initialValue: data.selectedRowKeys.length === 1 ? data.selectedRows[0]?.downloadAbortDate ? moment(data.selectedRows[0]?.downloadAbortDate) : null : null,
               rules: [{ required: true, message: '资料下载截止日期不能为空' }],
             })(
               <DatePicker
@@ -241,6 +242,7 @@ const SupplierModal = (props) => {
     console.log(newSourceData, 'newSourceData');
     tableRef.current.manualSelectedRows();
     setSourceData(newSourceData);
+    props.form.resetFields();
     modalCancel();
   };
 
