@@ -64,6 +64,7 @@ function FillInInfomationConfirm() {
     <Approve
       beforeSubmit={beforeSubmit}
       submitComplete={handleComplete}
+      flowMapUrl='flow-web/design/showLook'
     >
       <div>
         <div className={styles.title}>评审小组筛选意见</div>

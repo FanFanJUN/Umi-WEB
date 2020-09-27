@@ -57,6 +57,7 @@ function ReviewMark() {
     <Approve
       beforeSubmit={beforeSubmit}
       submitComplete={handleComplete}
+      flowMapUrl='flow-web/design/showLook'
     >
       <div>
         <Affix>

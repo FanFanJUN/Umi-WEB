@@ -32,6 +32,7 @@ function FillInInfomationConfirm() {
   return (
     <Approve
       submitComplete={handleComplete}
+      flowMapUrl='flow-web/design/showLook'
     >
       <div>
         <Affix>
