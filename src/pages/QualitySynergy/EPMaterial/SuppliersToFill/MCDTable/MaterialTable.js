@@ -285,7 +285,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                             getFieldDecorator('practicalRangeCode', { initialValue: modalType === 'edit' ? selectedRows[0].practicalRangeCode : '' }),
                             getFieldDecorator('practicalRangeName', {
                                 initialValue: modalType === 'edit' ? selectedRows[0].practicalRangeName : '',
-                                rules: [{ required: true, message: '请选择适用范围' }]
+                                rules: [{ required: (getFieldValue('isRestricted') === true), message: '请选择适用范围' }]
                             })(<ComboList
                                 form={form}
                                 {...limitScopeList}

@@ -6,7 +6,7 @@ import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar, DataExport } 
 import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
 import { recommendUrl } from '@/utils/commonUrl';
 import {
-    MaterialConfig, MaterialGroupConfig, StrategicPurchaseConfig,
+    MaterialConfig, MaterialGroupConfig, StrategicPurchaseConfig, StrategicForName,
     statusProps, distributionProps, materialStatus, PDMStatus, allPersonList,
 } from '../../commonProps';
 import CheckQualificationModal from '../components/checkQualificationModal';
@@ -256,9 +256,11 @@ export default create()(function ({ form }) {
         value.materialCode = value.materialCode_name;
         value.materialGroupCode = value.materialGroupCode_name;
         value.strategicPurchaseCode = value.strategicPurchaseCode_name;
+        value.strategicPurchaseName = value.strategicPurchaseName_name;
         delete value.materialCode_name;
         delete value.materialGroupCode_name;
         delete value.strategicPurchaseCode_name;
+        delete value.strategicPurchaseName_name;
         delete value.effectiveStatus_name;
         delete value.syncStatus_name;
         delete value.assignSupplierStatus_name;
@@ -367,6 +369,7 @@ export default create()(function ({ form }) {
                 sync: true,
                 pdm: true,
                 check: true,
+                generate: true,
                 maint: (() => {
                     // 非冻结状态
                     return !rows.every(item => {
@@ -404,6 +407,7 @@ export default create()(function ({ form }) {
     const formItems = [
         { title: '物料代码', key: 'materialCode', type: 'list', props: MaterialConfig },
         { title: '物料组', key: 'materialGroupCode', type: 'list', props: MaterialGroupConfig },
+        // { title: '战略采购', key: 'strategicPurchaseName', type: 'list', props: StrategicForName },
         { title: '战略采购', key: 'strategicPurchaseCode', type: 'list', props: StrategicPurchaseConfig },
         { title: '环保管理人员', key: 'environmentAdminName', props: { placeholder: '输入申请人查询' } },
         { title: '申请人', key: 'applyPersonName', props: { placeholder: '输入申请人查询' } },
@@ -731,16 +735,16 @@ export default create()(function ({ form }) {
         >
             <FormItem label='战略采购' {...formLayout}>
                 {
-                    getFieldDecorator('strategicPurchaseId', { initialValue: selectedRows[0] && selectedRows[0].environmentAdminId }),
-                    getFieldDecorator('strategicPurchaseName', { initialValue: selectedRows[0] && selectedRows[0].environmentAdminAccount }),
-                    getFieldDecorator('strategicPurchaseCode', {
-                        initialValue: selectedRows[0] && selectedRows[0].strategicPurchaseCode,
+                    getFieldDecorator('strategicPurchaseId', { initialValue: selectedRows[0] && selectedRows[0].strategicPurchaseId }),
+                    getFieldDecorator('strategicPurchaseCode', { initialValue: selectedRows[0] && selectedRows[0].strategicPurchaseCode }),
+                    getFieldDecorator('strategicPurchaseName', {
+                        initialValue: selectedRows[0] && selectedRows[0].strategicPurchaseName,
                         rules: [{ required: true, message: '不能为空' }]
                     })(<ComboList
                         form={form}
-                        {...StrategicPurchaseConfig}
-                        name='strategicPurchaseCode'
-                        field={['strategicPurchaseId', 'strategicPurchaseName']}
+                        {...StrategicForName}
+                        name='strategicPurchaseName'
+                        field={['strategicPurchaseId', 'strategicPurchaseCode']}
                     />)
                 }
             </FormItem>

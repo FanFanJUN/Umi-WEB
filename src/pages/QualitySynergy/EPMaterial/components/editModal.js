@@ -25,7 +25,7 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada, materia
     const { getFieldDecorator, setFieldsValue, validateFields } = form;
 
     useEffect(() => {
-        if (!buCode) return;
+        if (!buCode || !visible) return;
         // 根据业务单元找业务板块
         async function fetchData() {
             const res = await findByBuCode({ buCode: buCode });
@@ -39,7 +39,7 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada, materia
                 setOrgId(res.data[0].id);
             }
         })
-    }, [buCode])
+    }, [buCode, visible])
     function showModal(type) {
         setModalType(type);
         setVisible(true);

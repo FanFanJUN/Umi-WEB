@@ -393,6 +393,6 @@ export default create()(function ({ form }) {
             </FormItem>
         </ExtModal>}
         {/* 填报历史 */}
-        <FillingHistory wrappedComponentRef={historyRef} id={selectedRowKeys[0]} materialCode={selectedRows[0]&&selectedRows[0].materialCode} />
+        <FillingHistory wrappedComponentRef={historyRef} materialCode={selectedRows[0]&&selectedRows[0].materialCode} />
     </Fragment>
 })

@@ -443,6 +443,15 @@ export const StrategicPurchaseConfig = {
     width: '100%',
   },
 };
+// 战略采购列表
+export const StrategicForName = {
+  ...StrategicPurchaseConfig,
+  reader: {
+    name: 'name',
+    field: ['id', 'code'],
+    description: 'code',
+  },
+};
 
 // 物料组列表
 export const MaterialGroupConfig = {
