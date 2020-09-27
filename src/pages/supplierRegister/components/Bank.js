@@ -19,7 +19,7 @@ let lineCode = 1;
 const Bankformef = forwardRef(({
   form,
   isView = false,
-  editData = {},
+  editData = [],
   headerInfo
 }, ref) => {
   useImperativeHandle(ref, () => ({
