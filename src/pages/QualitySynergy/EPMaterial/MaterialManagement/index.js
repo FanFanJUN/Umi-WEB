@@ -344,13 +344,14 @@ export default create()(function ({ form }) {
                 delete: !(rows[0].effectiveStatus === 'DRAFT' && rows[0].sourceName === 'SRM'),
                 submit: rows[0].effectiveStatus === 'EFFECT',
                 withdraw: !(rows[0].effectiveStatus === 'EFFECT' && rows[0].allotSupplierState === 'ALLOT_NOT'),
-                distribute: !(rows[0].applyPersonAccount === getUserAccount() && rows[0].effectiveStatus === 'EFFECT' && !rows[0].frozen),
+                distribute: !(rows[0].applyPersonAccount === getUserAccount() && rows[0].effectiveStatus === 'EFFECT' && !rows[0].frozen && rows[0].strategicPurchaseCode),
                 check: !(rows[0].effectiveStatus === 'EFFECT' && rows[0].allotSupplierState === 'ALLOT_END'),
                 edit: !(rows[0].effectiveStatus === 'DRAFT' && rows[0].allotSupplierState === 'ALLOT_NOT'),
                 generate: !(rows[0].effectiveStatus === 'EFFECT' && rows[0].allotSupplierState === 'ALLOT_END'),
                 pdm: !(rows[0].syncStatus !== 'SYNC_SUCCESS' && rows[0].allotSupplierState === 'ALLOT_END' && rows[0].assignSupplierStatus!=='NOT_OPE'),
                 maint: rows[0].frozen,
                 assign: rows[0].frozen,
+                frozen: rows[0].frozen
             });
         } else if (rows.length === 0) {
             setButtonStatus({ detail: true, delete: true, edit: true, frozen: true, maint: true, detail: true, submit: true, withdraw: true, distribute: true, assign: true, pdm: true, sync: true, check: true, generate: true,})
@@ -371,6 +372,12 @@ export default create()(function ({ form }) {
                 check: true,
                 generate: true,
                 maint: (() => {
+                    // 非冻结状态
+                    return !rows.every(item => {
+                        return !item.frozen
+                    });
+                })(),
+                frozen: (() => {
                     // 非冻结状态
                     return !rows.every(item => {
                         return !item.frozen
@@ -471,7 +478,7 @@ export default create()(function ({ form }) {
         { title: '环保标准', dataIndex: 'environmentalProtectionName', ellipsis: true },
         { title: '战略采购代码', dataIndex: 'strategicPurchaseCode', ellipsis: true },
         { title: '战略采购名称', dataIndex: 'strategicPurchaseName', ellipsis: true },
-        { title: '供应商', dataIndex: 'list', ellipsis: true, render: (text, item) => <span onClick={(e) => { showSuplier(e, item) }} style={{ color: 'blue', cursor: 'pointer' }}>查看</span> },
+        { title: '供应商', dataIndex: 'list', ellipsis: true, render: (text, item) => <span onClick={(e) => { showSuplier(e, item) }} style={{ color: '#096dd9', cursor: 'pointer' }}>查看</span> },
         { title: '环保管理人员', dataIndex: 'environmentAdminName', ellipsis: true },
         { title: '创建人', dataIndex: 'applyPersonName', ellipsis: true },
         { title: '创建人联系方式', dataIndex: 'applyPersonPhone', ellipsis: true },

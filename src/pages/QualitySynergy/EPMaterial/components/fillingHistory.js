@@ -1,14 +1,10 @@
 import { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment } from 'react';
-import { ExtTable, ExtModal, ScrollBar, ComboList } from 'suid';
-import { openNewTab, getFrameElement } from '@/utils';
-import { Button, Input, Form, Modal, Radio } from 'antd'
+import { ExtTable, ExtModal } from 'suid';
+import { openNewTab} from '@/utils';
+import { Form } from 'antd'
 import { recommendUrl } from '@/utils/commonUrl';
 const { create, Item: FormItem } = Form;
-const { TextArea } = Input;
-const formLayout = {
-    labelCol: { span: 8, },
-    wrapperCol: { span: 14, },
-};
+
 const checkModal = forwardRef(({ form, supplierCode, materialCode }, ref) => {
     useImperativeHandle(ref, () => ({
         setVisible
@@ -17,7 +13,6 @@ const checkModal = forwardRef(({ form, supplierCode, materialCode }, ref) => {
     const [visible, setVisible] = useState(false);
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
-    const { getFieldDecorator, validateFields, getFieldValue } = form;
     const columns = [
         {
             title: '提交状态', dataIndex: 'submitStatus', width: 70, align: 'center', render: (text) => {
@@ -39,8 +34,8 @@ const checkModal = forwardRef(({ form, supplierCode, materialCode }, ref) => {
         },
         { title: '复核状态', dataIndex: 'reviewResults', ellipsis: true, align: 'center', render: (text) => {
             switch(text){
-                case "NOPASS": return '复核不通过';
-                case "PASS": return '复核通过';
+                case "NOPASS": return '不通过';
+                case "PASS": return '通过';
                 default: return '';
             }
         }},
@@ -52,24 +47,16 @@ const checkModal = forwardRef(({ form, supplierCode, materialCode }, ref) => {
                 default: return '';
             }
         }},
-        { title: '填报编号', dataIndex: 'fillNumber', ellipsis: true, align: 'center', },
+        { title: '填报编号', dataIndex: 'fillNumber', ellipsis: true, align: 'center', render: (text, item)=>{
+            return <a onClick={()=>{
+                openNewTab(`qualitySynergy/EPMaterial/suppliersFillForm?id=${item.fillId ? item.fillId : item.id}&pageStatus=detail`, '填报环保资料物料-明细', false);
+            }}>{text}</a>
+        }},
         { title: '有效开始日期', dataIndex: 'effectiveStartDate', ellipsis: true, align: 'center', render: (text) => text ? text.slice(0, 10) : ''},
         { title: '有效截止日期', dataIndex: 'effectiveEndDate', ellipsis: true, align: 'center', render: (text) => text ? text.slice(0, 10) : ''},
         { title: '分配批次', dataIndex: 'batch', ellipsis: true, align: 'center', },
-        { title: '详情', dataIndex: 'detail', ellipsis: true, align: 'center', render: (text, item)=>{
-            return <a onClick={()=>{
-                openNewTab(`qualitySynergy/EPMaterial/suppliersFillForm?id=${item.id}&pageStatus=detail`, '填报环保资料物料-明细', false);
-            }}>查看</a>
-        }},
+        // { title: '详情', dataIndex: 'detail', ellipsis: true, align: 'center'},
     ];
-    // 复核确定
-    function handleOk() {
-        validateFields((err, fieldsValue)=>{
-            if (!err) {
-                console.log(fieldsValue)
-            }
-        })
-    }
     // 记录列表选中
     function handleSelectedRows(rowKeys, rows) {
         setRowKeys(rowKeys);

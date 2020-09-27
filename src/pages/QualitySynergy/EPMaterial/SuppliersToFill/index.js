@@ -219,6 +219,11 @@ export default create()(function ({ form }) {
         { title: '物料组描述', dataIndex: 'materialGroupName', ellipsis: true, },
         { title: '战略采购名称', dataIndex: 'strategicPurchaseName', ellipsis: true, },
         { title: '环保管理人员', dataIndex: 'environmentAdministratorName', ellipsis: true, },
+        { title: '创建人', dataIndex: 'applyPersonName', ellipsis: true },
+        { title: '创建人联系方式', dataIndex: 'applyPersonPhone', ellipsis: true },
+        { title: '供应商代码', dataIndex: 'supplierCode', ellipsis: true },
+        { title: '供应商名称', dataIndex: 'supplierName', width: 200, ellipsis: true },
+        { dataIndex: 'emputy', width: 20, ellipsis: true },
     ].map(item => ({ ...item, align: 'center' }));
     const handleButton = async (type) => {
         let res = {}, id = selectedRowKeys[0]

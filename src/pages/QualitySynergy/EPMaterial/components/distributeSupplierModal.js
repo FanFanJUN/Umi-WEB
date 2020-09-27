@@ -259,6 +259,16 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
             setVisible(false);
         }
     }
+    function getInitDate() {
+        if(selectedRows.length === 0){
+            return '';
+        } else {
+            let endDate = selectedRows[0].fillEndDate;
+            let isSame = selectedRows.every(item => item.fillEndDate === endDate);
+            if(isSame)return moment(endDate);
+            else return ''
+        }
+    }
     return <Fragment>
         <ExtModal
             destroyOnClose={true}
@@ -321,6 +331,7 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
             <FormItem label='填报截止日期' {...formLayout}>
                 {
                     getFieldDecorator('endDate', {
+                        initialValue: getInitDate(),
                         rules: [{ required: true, message: '请选择填报截止日期' }]
                     })(<DatePicker
                         disabledDate={(value) => {

@@ -1,11 +1,11 @@
 import { useEffect, useState, useRef, Fragment } from 'react'
 import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import FillingHistory from '../fillingHistory';
+import { openNewTab } from '@/utils';
 
 export default function ({originData={}}) {
     const tableRef = useRef(null);
     const historyRef = useRef(null);
-    const [selectedRowKeys, setRowKeys] = useState([]);
     const [dataSource, setDataSource] = useState([]);
     const [params, setParams] = useState({});
     useEffect(()=>{
@@ -21,7 +21,11 @@ export default function ({originData={}}) {
         { title: '分配日期', dataIndex: 'allotDate', ellipsis: true, align: 'center', render: (text) => text ? text.slice(0, 10) : ''},
         { title: '分配批次 ', dataIndex: 'allotBatch', ellipsis: true, align: 'center', },
         { title: '分配人', dataIndex: 'allotPeopleName', ellipsis: true, align: 'center', },
-        { title: '填报编号', dataIndex: 'fillNumber', ellipsis: true, },
+        { title: '填报编号', dataIndex: 'fillNumber', ellipsis: true, render: (text, item)=>{
+            return <a onClick={()=>{
+                openNewTab(`qualitySynergy/EPMaterial/suppliersFillForm?id=${item.id}&pageStatus=detail`, '填报环保资料物料-明细', false);
+            }}>{text}</a>
+        }},
         { title: '填报截止日期', dataIndex: 'fillEndDate', ellipsis: true, render: (text) => text ? text.slice(0, 10) : ''},
         { title: '填报日期', dataIndex: 'fillDate', ellipsis: true, render: (text) => text ? text.slice(0, 10) : ''},
         { title: '填报状态', dataIndex: 'fillState', ellipsis: true, render: (text) => {
@@ -42,8 +46,8 @@ export default function ({originData={}}) {
         },
         { title: '复核状态', dataIndex: 'reviewResult', ellipsis: true, align: 'center', render: (text) => {
             switch(text){
-                case "NOPASS": return '复核不通过';
-                case "PASS": return '复核通过';
+                case "NOPASS": return '不通过';
+                case "PASS": return '通过';
                 default: return '';
             }
         }},
@@ -55,7 +59,7 @@ export default function ({originData={}}) {
                 default: return '';
             }
         }},
-        { title: '填报历史', dataIndex: 'name16', ellipsis: true, render: (text, item) => <span onClick={(e) => { showHistory(e, item) }} style={{ color: 'blue', cursor: 'pointer' }}>查看</span>},
+        { title: '填报历史', dataIndex: 'name16', ellipsis: true, render: (text, item) => <span onClick={(e) => { showHistory(e, item) }} style={{ color: '#096dd9', cursor: 'pointer' }}>查看</span>},
     ].map(item => ({ ...item, align: 'center' }));
     function showHistory(e, item) {
         e.stopPropagation();
@@ -76,7 +80,6 @@ export default function ({originData={}}) {
                 ref={tableRef}
                 rowKey={(item) => item.id}
                 size='small'
-                selectedRowKeys={selectedRowKeys}
                 dataSource={dataSource}
             />
             {/* 填报历史 */}
