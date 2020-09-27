@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, Fragment } from 'react';
 import { Input, Button, message, Modal, Form } from 'antd';
 import styles from './index.less';
+import moment from 'moment';
 import { openNewTab, getFrameElement, getUserAccount } from '@/utils';
 import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar, DataExport } from 'suid';
 import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
@@ -630,6 +631,7 @@ export default create()(function ({ form }) {
                 // onClick={handleExport}
                 requestParams={requestParams}
                 explainResponse={explainResponse}
+                filenameFormat={'环保资料物料清单'+moment().format('YYYYMMDD')}
                 key='QUALITYSYNERGY_MATERIAL_EXPORT'
                 ignore={DEVELOPER_ENV}
             >导出</DataExport.Button>)

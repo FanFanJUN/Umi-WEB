@@ -41,7 +41,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
         { title: '适用范围名称', dataIndex: 'scopeApplicationName', ellipsis: true, align: 'center', },
         {
             title: '含量', dataIndex: 'content', ellipsis: true, align: 'center', render: (text, item) => {
-                if (item.contentType === 'RANGE_VALUE') return '<' + text;
+                if (item.contentType === 'RANGE_VALUE' && text) return '<' + text;
                 else return text;
             }
         },
