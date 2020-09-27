@@ -74,6 +74,7 @@ const getAgentregRef = forwardRef(({
             handleModalVisible(false);
             // let categoryid = selectedRows[0].supplier.supplierCategoryId;
             let id = selectedRows[0].supplierId;
+            setSearchValue('');
             cleanSelectedRecord();
             openNewTab(`supplier/supplierModify/create/index?id=${id}`, '供应商变更新建变更单', false)
         }

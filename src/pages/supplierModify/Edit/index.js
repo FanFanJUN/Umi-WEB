@@ -64,15 +64,27 @@ function CreateStrategy() {
         setReasonchange(data.supplierApplyVo)
         setwholeData(data.supplierApplyVo)
         triggerLoading(false);
-        if (data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo) {
-          let mobile = data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo.mobile;
-          let email = data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo.email;
-          if (isEmpty(mobile) || isEmpty(email)) {
+        if (data.supplierApplyVo.supplierInfoVo.supplierVo.supplierCategoryName === '个人供应商') {
+          if (data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo) {
+            let mobile = data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo.mobile;
+            if (isEmpty(mobile)) {
+              setvisible(true)
+            }
+          }
+          if (data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo === undefined) {
             setvisible(true)
           }
-        }
-        if (data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo === undefined) {
-          setvisible(true)
+        }else {
+          if (data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo) {
+            let mobile = data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo.mobile;
+            let email = data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo.email;
+            if (isEmpty(mobile) || isEmpty(email)) {
+              setvisible(true)
+            }
+          }
+          if (data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo === undefined) {
+            setvisible(true)
+          }
         }
       }, 200);
     } else {

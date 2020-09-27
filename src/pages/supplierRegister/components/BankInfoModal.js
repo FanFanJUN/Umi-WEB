@@ -22,6 +22,7 @@ const BankInfoRef = forwardRef(({
         const BankbaseRef = useRef(null);
         const getBankoversRef = useRef(null);
         const [dataSource, setDataSource] = useState([]);
+        const [confirmLoading, setconfirmLoading] = useState(false);
         useImperativeHandle(ref, () => ({ 
             handleModalVisible,
             form
@@ -52,11 +53,15 @@ const BankInfoRef = forwardRef(({
                 }
                 if (edit) {
                     let editbankInfo = {...initialValues,...bankInfo};
+                    setconfirmLoading(true)
                     await onOk(editbankInfo);
                     handleModalVisible(false);
+                    setconfirmLoading(false)
                 }else {
                     if (await mergeData(bankInfo)) {
+                        setconfirmLoading(true)
                         handleModalVisible(false);
+                        setconfirmLoading(false)
                     }
                     return;
                     
@@ -113,6 +118,7 @@ const BankInfoRef = forwardRef(({
                 width="80vw"
                 onCancel={() => handleModalVisible(false)}
                 maskClosable={false}
+                confirmLoading={confirmLoading}
                 onOk={handleSave}
             >
                 <BankBase

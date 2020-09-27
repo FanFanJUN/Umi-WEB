@@ -206,6 +206,11 @@ function SupplierConfigure() {
         //setSearchValue(searchValue)
         uploadTable();
     }
+    // 清空泛虹公司
+    function clearinput() {
+        setSearchValue('')
+        uploadTable();
+    }
     const searchbank = ['name'];
     // 右侧搜索
     const searchBtnCfg = (
@@ -217,6 +222,8 @@ function SupplierConfigure() {
                 afterSelect={cooperationChange}
                 rowKey="code"
                 //showSearch={false}
+                allowClear={true}
+                afterClear={clearinput}
                 reader={{
                     name: 'name',
                 }}
@@ -307,6 +314,10 @@ function SupplierConfigure() {
     // 输入框值
     function SerachValue(v) {
         setSearchValue(v.target.value)
+        if (v.target.value === '') {
+            setSearchValue('')
+            uploadTable();
+        }
     }
     // 查询
     function handleQuickSerach() {

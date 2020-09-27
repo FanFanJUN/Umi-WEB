@@ -65,15 +65,25 @@ function CreateStrategy() {
         setwholeData(data)
         setAgaindata(againdata)
         triggerLoading(false);
-        if (data.supplierInfoVo.supplierVo.accountVo) {
+        if (data.supplierInfoVo.supplierVo.supplierCategoryName === '个人供应商') {
           let mobile = data.supplierInfoVo.supplierVo.accountVo.mobile;
-          let email = data.supplierInfoVo.supplierVo.accountVo.email;
-          if (isEmpty(mobile) || isEmpty(email)) {
+          if (isEmpty(mobile)) {
             setvisible(true)
           }
-        }
-        if (data.supplierInfoVo.supplierVo.accountVo === undefined) {
-          setvisible(true)
+          if (data.supplierInfoVo.supplierVo.accountVo === undefined) {
+            setvisible(true)
+          }
+        }else {
+          if (data.supplierInfoVo.supplierVo.accountVo) {
+            let mobile = data.supplierInfoVo.supplierVo.accountVo.mobile;
+            let email = data.supplierInfoVo.supplierVo.accountVo.email;
+            if (isEmpty(mobile) || isEmpty(email)) {
+              setvisible(true)
+            }
+          }
+          if (data.supplierInfoVo.supplierVo.accountVo === undefined) {
+            setvisible(true)
+          }
         }
       }, 100);
     } else {
