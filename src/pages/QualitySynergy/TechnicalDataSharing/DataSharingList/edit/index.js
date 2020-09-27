@@ -52,7 +52,7 @@ export default () => {
         break;
       case 'detail':
         findOne(id);
-        setData((value) => ({ ...value, type: pageState, isView: true, title: '技术资料分享需求-明细' }));
+        setData((value) => ({ ...value, type: pageState, isView: true, title: `技术资料分享需求-明细`}));
         break;
     }
     console.log(pageState, 'pageState');
@@ -64,6 +64,12 @@ export default () => {
     const userMobile = getMobile();
     setData((v) => ({ ...v, userInfo: { userName, userId, userMobile } }));
   };
+
+  useEffect(() => {
+    if (data.type === 'detail') {
+      setData(v => ({...v, title: `技术资料分享需求-明细 ${data?.editDate?.shareDemanNumber}`}))
+    }
+  }, [data.editDate?.shareDemanNumber])
 
   const findOne = (id) => {
     setData(v => ({...v, spinLoading: true}))
