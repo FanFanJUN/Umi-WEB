@@ -5,6 +5,7 @@ import RegistrationAgreement from './commons/RegistrationAgreement'
 import BaseAccountInfo from './commons/BaseAccountInfo'
 import {saveRegistVo} from '../../services/supplierRegister'
 import { Wrapper } from './style'
+import {closeCurrent} from '../../utils'
 const srmBaseUrl = "/srm-se-web";
 const Step = Steps.Step;
 export default function () {
@@ -50,6 +51,7 @@ export default function () {
         triggerLoading(true)
         const { data,success, message: msg } = await saveRegistVo({registrationInformationVo: JSON.stringify(resultData)})
         if (success) {
+            closeCurrent()
             window.open(`/react-basic-web/index?_s=` + data)
             //window.open(`/srm-se-web/NewHomePageView?_s=` + data)
         } else {

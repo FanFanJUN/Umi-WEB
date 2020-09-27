@@ -24,6 +24,7 @@ const AgentModelRef = forwardRef(({
     }));
     const { getFieldDecorator, validateFieldsAndScroll, getFieldValue, setFieldsValue } = form;
     const [visible, setvisible] = useState(false);
+    const [confirmLoading, setconfirmLoading] = useState(false);
     useEffect(() => {
         const {
             id,
@@ -64,15 +65,18 @@ const AgentModelRef = forwardRef(({
             }
             if (edit === false) {
                 if (await mergeData(agentInfo)) {
+                    setconfirmLoading(true)
                     handleModalVisible(false);
+                    setconfirmLoading(false)
                 }
                 return;
 
             } else {
                 let editbankInfo = { ...initialValues, ...agentInfo };
-                console.log(editbankInfo)
+                setconfirmLoading(true)
                 await onOk(editbankInfo);
                 handleModalVisible(false);
+                setconfirmLoading(false)
             }
         }
     }

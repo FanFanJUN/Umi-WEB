@@ -175,7 +175,7 @@ const SupplierModal = (props) => {
         >
           {
             getFieldDecorator('endTime', {
-              initialValue: null,
+              initialValue: data.downloadAbortDate ? moment(data.downloadAbortDate) : null,
               rules: [{ required: true, message: '资料下载截止日期不能为空' }],
             })(
               <DatePicker

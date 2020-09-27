@@ -24,6 +24,7 @@ const AgentModelRef = forwardRef(({
     }));
     const { getFieldDecorator, validateFieldsAndScroll, getFieldValue, setFieldsValue } = form;
     const [visible, setvisible] = useState(false);
+    const [confirmLoading, setconfirmLoading] = useState(false);
     useEffect(() => {
         const {
             id,
@@ -48,29 +49,33 @@ const AgentModelRef = forwardRef(({
             return false;
         }
         if (agentInfo) {
-            if (edit === false) {
-                //绑定附件
-                if (agentInfo.businessLicenseDocIds && agentInfo.businessLicenseDocIds.length > 0) {
-                    await RelationDocId(agentInfo.businessLicenseDocIds,
-                        agentInfo.businessLicenseDocId).then(id => {
-                            agentInfo.businessLicenseDocId = id;
-                        })
-                }
-                //绑定附件
-                if (agentInfo.powerAttorneyDocIds && agentInfo.powerAttorneyDocIds.length > 0) {
-                    await RelationDocId(agentInfo.powerAttorneyDocIds, agentInfo.powerAttorneyDocId).then(id => {
-                        agentInfo.powerAttorneyDocId = id;
+            //绑定附件
+            if (agentInfo.businessLicenseDocIds && agentInfo.businessLicenseDocIds.length > 0) {
+                await RelationDocId(agentInfo.businessLicenseDocIds,
+                    agentInfo.businessLicenseDocId).then(id => {
+                        agentInfo.businessLicenseDocId = id;
                     })
-                }
-                if (mergeData(agentInfo)) {
+            }
+            //绑定附件
+            if (agentInfo.powerAttorneyDocIds && agentInfo.powerAttorneyDocIds.length > 0) {
+                await RelationDocId(agentInfo.powerAttorneyDocIds, agentInfo.powerAttorneyDocId).then(id => {
+                    agentInfo.powerAttorneyDocId = id;
+                })
+            }
+            if (edit === false) {
+                if (await mergeData(agentInfo)) {
+                    setconfirmLoading(true)
                     handleModalVisible(false);
+                    setconfirmLoading(false)
                 }
                 return;
 
             } else {
                 let editbankInfo = { ...initialValues, ...agentInfo };
-                onOk(editbankInfo);
+                setconfirmLoading(true)
+                await onOk(editbankInfo);
                 handleModalVisible(false);
+                setconfirmLoading(false)
             }
         }
     }
@@ -105,6 +110,7 @@ const AgentModelRef = forwardRef(({
             width="80vw"
             maskClosable={false}
             onCancel={() => handleModalVisible(false)}
+            confirmLoading={confirmLoading}
             onOk={handleSave}
         >
             <AgentApproveForm
