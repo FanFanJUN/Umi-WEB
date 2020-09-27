@@ -39,7 +39,7 @@ function SupplierApproveInfo() {
         message.error(msg)
       }
     }
-    initsupplierDetai();
+    //initsupplierDetai();
     // 类型配置表
     async function initConfigurationTable(typeId) {
         triggerLoading(true);
