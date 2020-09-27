@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ExtTable, WorkFlow, ExtModal, utils, ToolBar,ScrollBar } from 'suid';
+import { ExtTable, WorkFlow, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import { Input, Button, message, Modal } from 'antd';
 import { openNewTab, getFrameElement } from '@/utils';
 import { StartFlow } from 'seid';
@@ -9,7 +9,7 @@ import Header from '@/components/Header';
 import AutoSizeLayout from '@/components/AutoSizeLayout';
 import styles from './index.less';
 import { smBaseUrl } from '@/utils/commonUrl';
-import { RecommendationList ,stopApproveingOrder} from "@/services/supplierRegister"
+import { RecommendationList, stopApproveingOrder } from "@/services/supplierRegister"
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 const { Search } = Input
 const { authAction, storage } = utils;
@@ -28,11 +28,10 @@ function SupplierConfigure() {
     const [loading, triggerLoading] = useState(false);
     const [attachId, setAttachId] = useState('');
     const [fixedHeader, setfixedHeader] = useState('');
-    //const [dataSource, setData] = useState([]);
-    const [singleRow = {}] = selectedRows;
     /** 按钮可用性判断变量集合 BEGIN*/
     const [signleRow = {}] = selectedRows;
-    const { flowStatus: signleFlowStatus, id: flowId, creatorId ,saveStatus: typeStatus} = signleRow;
+    const { flowStatus: signleFlowStatus, id: flowId, creatorId, saveStatus: typeStatus } = signleRow;
+    console.log(selectedRows)
     // 已提交审核状态
     const underWay = signleFlowStatus !== 'INIT';
     // 审核完成状态
@@ -41,15 +40,10 @@ function SupplierConfigure() {
     const empty = selectedRowKeys.length === 0;
     // 是不是自己的单据
     const isSelf = currentUserId === creatorId;
+    // 审核历史
+    const history = signleFlowStatus !== 'INIT' && signleFlowStatus !=='INPROCESS';
     // 提交审核
     const Toexamine = signleFlowStatus === 'INIT' && typeStatus === 1;
-    const {
-        state: rowState,
-        approvalState: rowApprovalState,
-        changeable: rowChangeable,
-        flowId: businessId
-    } = singleRow;
-
     const columns = [
         {
             title: '申请单号',
@@ -60,12 +54,12 @@ function SupplierConfigure() {
             title: '审批状态',
             dataIndex: 'flowStatus',
             width: 100,
-            render: function(text, record, row) {
+            render: function (text, record, row) {
                 if (text === 'INIT' && record.saveStatus === 0) {
                     return <div>草稿</div>;
                 } else if (text === 'INIT' && record.saveStatus === 1) {
                     return <div>已保存</div>;
-                }else if (text === 'INPROCESS') {
+                } else if (text === 'INPROCESS') {
                     return <div>审批中</div>;
                 } else if (text === 'COMPLETED') {
                     return <div>审批完成</div>;
@@ -81,11 +75,6 @@ function SupplierConfigure() {
             title: '供应商名称',
             dataIndex: 'supplier.name',
             width: 220,
-        },
-        {
-            title: '账号',
-            dataIndex: 'account',
-            width: 160,
         },
         {
             title: '联系电话',
@@ -127,51 +116,51 @@ function SupplierConfigure() {
         },
     ].map(_ => ({ ..._, align: 'center' }))
     /**推荐信息弹窗表格 */
-  const tableProps = {
-    fixedHeader,
-    columns: [
-      {
-        title: '推荐单号',
-        dataIndex: 'code',
-        width: 180,
-        align: 'center',
-    },
-    {
-        title: '准入公司',
-        dataIndex: 'corporation.name',
-        width: 260,
-        align: 'center',
-        align: 'center',
-    },
-    {
-        title: '物料分类',
-        dataIndex: 'materielCategory',
-        width: 240,
-        align: 'center',
-    },
-    {
-        title: '推荐人',
-        dataIndex: 'creatorName',
-        width: 120,
-        align: 'center',
-    },
-    {
-        title: '推荐状态',
-        dataIndex: 'flowStatus',
-        width: 140,
-        align: 'center',
-        render: function(text, record, row) {
-            if (text === 'init') {
-                return <div>未提交审批</div>;
-            } else if (text === 'inProcess') {
-                return <div className="doingColor">审批中</div>;
-            } else {
-                return <div className="successColor">审批完成</div>;
-            }
-        },
-    },
-    ]
-  }
+    const tableProps = {
+        fixedHeader,
+        columns: [
+            {
+                title: '推荐单号',
+                dataIndex: 'code',
+                width: 180,
+                align: 'center',
+            },
+            {
+                title: '准入公司',
+                dataIndex: 'corporation.name',
+                width: 260,
+                align: 'center',
+                align: 'center',
+            },
+            {
+                title: '物料分类',
+                dataIndex: 'materielCategory',
+                width: 240,
+                align: 'center',
+            },
+            {
+                title: '推荐人',
+                dataIndex: 'creatorName',
+                width: 120,
+                align: 'center',
+            },
+            {
+                title: '推荐状态',
+                dataIndex: 'flowStatus',
+                width: 140,
+                align: 'center',
+                render: function (text, record, row) {
+                    if (text === 'init') {
+                        return <div>未提交审批</div>;
+                    } else if (text === 'inProcess') {
+                        return <div className="doingColor">审批中</div>;
+                    } else {
+                        return <div className="successColor">审批完成</div>;
+                    }
+                },
+            },
+        ]
+    }
     /* 按钮禁用状态控制 */
     const FRAMEELEMENT = getFrameElement();
     //const empty = selectedRowKeys.length === 0;
@@ -184,8 +173,8 @@ function SupplierConfigure() {
                 quickSearchProperties: [],
                 sortOrders: [
                     {
-                      property: 'docNumber',
-                      direction: 'DESC'
+                        property: 'docNumber',
+                        direction: 'DESC'
                     }
                 ]
             },
@@ -231,7 +220,7 @@ function SupplierConfigure() {
         setrecommen([])
         setVisible(true)
         triggerLoading(true)
-        const { data, success, message: msg } = await RecommendationList({supplierId});
+        const { data, success, message: msg } = await RecommendationList({ supplierId });
         if (success) {
             triggerLoading(false)
             setrecommen(data)
@@ -240,7 +229,7 @@ function SupplierConfigure() {
         }
         triggerLoading(false)
         message.error(msg)
-        
+
     }
     // 记录列表选中
     function handleSelectedRows(rowKeys, rows) {
@@ -249,7 +238,9 @@ function SupplierConfigure() {
     }
     // 清除选中项
     function cleanSelectedRecord() {
+        setRows([]);
         setRowKeys([])
+        tableRef.current.manualSelectedRows([])
     }
 
     function uploadTable() {
@@ -273,10 +264,6 @@ function SupplierConfigure() {
         let id = selectedRows[0].supplierId;
         openNewTab(`supplier/supplierRegister/SupplierDetail/index?id=${id}&frameElementId=${categoryid}`, '供应商注册信息明细', false)
     }
-    // 冻结
-    function handleChange() {
-
-    }
     // 输入框值
     function SerachValue(v) {
         setSearchValue(v.target.value)
@@ -298,28 +285,28 @@ function SupplierConfigure() {
         uploadTable()
     }
     // 终止审核
-  function stopApprove() {
-    Modal.confirm({
-      title: '终止审批流程',
-      content: '流程终止后无法恢复，是否继续？',
-      onOk: handleStopApproveRecord,
-      okText: '确定',
-      cancelText: '取消'
-    })
-  }
-  async function handleStopApproveRecord() {
-    const [row] = selectedRows
-    const { id: flowId } = row
-    const { success, message: msg } = await stopApproveingOrder({
-      businessId: flowId
-    })
-    if (success) {
-      message.success(msg)
-      uploadTable()
-      return
+    function stopApprove() {
+        Modal.confirm({
+            title: '终止审批流程',
+            content: '流程终止后无法恢复，是否继续？',
+            onOk: handleStopApproveRecord,
+            okText: '确定',
+            cancelText: '取消'
+        })
     }
-    message.error(msg)
-  }
+    async function handleStopApproveRecord() {
+        const [row] = selectedRows
+        const { id: flowId } = row
+        const { success, message: msg } = await stopApproveingOrder({
+            businessId: flowId
+        })
+        if (success) {
+            message.success(msg)
+            uploadTable()
+            return
+        }
+        message.error(msg)
+    }
     return (
         <>
             <Header
@@ -327,25 +314,25 @@ function SupplierConfigure() {
                     <>
                         {
                             authAction(
-                                <Button type='primary' 
-                                    ignore={DEVELOPER_ENV} 
-                                    key='' 
-                                    className={styles.btn} 
+                                <Button type='primary'
+                                    ignore={DEVELOPER_ENV}
+                                    key='SRM_SM_SUPPLIER_MY_PERFORMANCE_EDIT'
+                                    className={styles.btn}
                                     onClick={handleEditor}
-                                    disabled={empty || underWay || !isSelf}
-                                    >编辑
+                                    disabled={empty || underWay}
+                                >编辑
                                 </Button>
                             )
                         }
                         {
                             authAction(
-                                <Button 
-                                    ignore={DEVELOPER_ENV} 
-                                    key='' 
-                                    className={styles.btn} 
-                                    onClick={handleCheckDetail} 
+                                <Button
+                                    ignore={DEVELOPER_ENV}
+                                    key='SRM_SM_SUPPLIER_MY_PERFORMANCE_DETAIL'
+                                    className={styles.btn}
+                                    onClick={handleCheckDetail}
                                     disabled={empty}
-                                    >明细
+                                >明细
                                 </Button>
                             )
                         }
@@ -357,10 +344,10 @@ function SupplierConfigure() {
                                     // preStart={handleBeforeStartFlow}
                                     businessKey={flowId}
                                     callBack={handleComplete}
-                                    disabled={empty || underWay || !isSelf || !Toexamine}
+                                    disabled={empty || underWay || !Toexamine}
                                     businessModelCode='com.ecmp.srm.sm.entity.SupplierApply'
                                     ignore={DEVELOPER_ENV}
-                                    key='PURCHASE_VIEW_CHANGE_APPROVE'
+                                    key='SRM_SM_SUPPLIER_MY_PERFORMANCE_EXAMINE'
                                 ></StartFlow>
                             )
                         }
@@ -368,10 +355,10 @@ function SupplierConfigure() {
                             authAction(
                                 <Button
                                     className={styles.btn}
-                                    disabled={empty || !underWay || !isSelf || completed}
+                                    disabled={empty || !underWay || completed}
                                     onClick={stopApprove}
                                     ignore={DEVELOPER_ENV}
-                                    key='PURCHASE_VIEW_CHANGE_STOP_APPROVE'
+                                    key='SRM_SM_SUPPLIER_MY_PERFORMANCE_STOP_APPROVAL'
                                 >终止审核</Button>
                             )
                         }
@@ -381,9 +368,9 @@ function SupplierConfigure() {
                                     businessId={flowId}
                                     flowMapUrl='flow-web/design/showLook'
                                     ignore={DEVELOPER_ENV}
-                                    key='PURCHASE_VIEW_CHANGE_APPROVE_HISTORY'
+                                    key='SRM_SM_SUPPLIER_MY_PERFORMANCE_HISTORY'
                                 >
-                                    <Button className={styles.btn} disabled={empty || !underWay || !completed}>审核历史</Button>
+                                    <Button className={styles.btn} disabled={empty || !underWay || history}>审核历史</Button>
                                 </FlowHistoryButton>
                             )
                         }
@@ -426,18 +413,18 @@ function SupplierConfigure() {
                 footer={null}
                 bodyStyle={{ height: 380, padding: 0 }}
                 title="推荐信息"
-                >
+            >
                 <ScrollBar>
                     <ExtTable
                         //loading={true}
                         showSearch={false}
                         dataSource={recommen}
-                        {...tableProps} 
+                        {...tableProps}
                     />
                 </ScrollBar>
-                
+
             </ExtModal>
-    
+
         </>
     )
 }

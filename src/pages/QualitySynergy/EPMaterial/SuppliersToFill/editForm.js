@@ -15,14 +15,21 @@ export default function () {
     const supplierRef = useRef(null);
     const mcdRef = useRef(null);
     const [notesList, setNotesList] = useState([]);
+    const [statement, setStatement] = useState([]);
     const { query } = router.useLocation();
     const handleBack = () => {
         closeCurrent();
     }
     useEffect(() => {
         getNotes().then(res => {
-            console.log(res)
             if (res.data && res.data.rows) {
+                let statements = '';
+                res.data.rows.map(item => {
+                    if(item.modelType === 'SM'){
+                        statements += item.chContent
+                    }
+                });
+                setStatement(statements);
                 setNotesList(res.data.rows);
             } else {
                 message.error('获取填写说明失败!');
@@ -34,17 +41,21 @@ export default function () {
         supplierRef.current.validateFieldsAndScroll(async (error, values) => {
             if (!error) {
                 const macData = mcdRef.current.getSplitDataList();
-                values.uploadAttachmentIds = values.reachEnvironmentId;
-                values.reachEnvironmentId = values.reachEnvironmentId ? values.reachEnvironmentId.join() : '';
+                if(!macData.tag)return;
+                toggleLoading(true);
+                values.uploadAttachmentIds = values.reachEnvironmentList ? values.reachEnvironmentList.map(item => item.id ? item.id : item) : [];
+                values.reachEnvironmentId = values.uploadAttachmentIds.join();
                 saveData = { ...saveData, ...values, commit: !!publish, ...macData }
                 saveData.epDataFillSplitPartsBoList = macData.epDataFillSplitPartsVoList;
                 delete saveData.epDataFillSplitPartsVoList;
+                delete saveData.tag;
                 const res = await epDemandUpdate(saveData);
+                toggleLoading(false);
                 if (res.statusCode === 200) {
                     message.success('操作成功');
                     setTimeout(() => {
                         handleBack();
-                    }, 3000)
+                    }, 1000)
                 } else {
                     message.error(res.message);
                 }
@@ -53,7 +64,7 @@ export default function () {
     }
     useEffect(() => {
         (async function () {
-            // toggleLoading(true);
+            toggleLoading(true);
             const res = await supplerFindVoById({ id: query.id });
             if (res.statusCode === 200) {
                 setOriginData(res.data)
@@ -68,7 +79,7 @@ export default function () {
             <Spin spinning={loading}>
                 <Affix>
                     <div className={classnames(styles.fbc, styles.affixHeader)}>
-                        <span className={styles.headTitle}>{query.pageStatus === 'add' ? `环保资料填报-${originData.fillNumber}` : '环保资料填报明细-xxx'}</span>
+                        <span className={styles.headTitle}>{query.pageStatus === 'add' ? `环保资料填报-${originData.fillNumber}` : `环保资料填报明细-${originData.fillNumber}`}</span>
                         {
                             query.pageStatus === 'detail' ? <div>
                                 <Button className={styles.btn} onClick={handleBack}>返回</Button>
@@ -99,7 +110,7 @@ export default function () {
                     <div className={styles.bgw}>
                         <div className={styles.title}>供应商信息</div>
                         <div className={styles.content}>
-                            <SupplierInfo wrappedComponentRef={supplierRef} originData={originData} isView={query.pageStatus === 'detail'} />
+                            <SupplierInfo wrappedComponentRef={supplierRef} originData={originData} isView={query.pageStatus === 'detail'} statement={statement}/>
                         </div>
                     </div>
                 </div>
@@ -110,9 +121,10 @@ export default function () {
                             <ul style={{ border: '1px solid #d9d9d9', padding: '0', borderBottom: 'none'}}>
                                 {
                                     notesList.map((item, index) => {
-                                        return <li style={{ borderBottom: '1px solid #d9d9d9', padding: '0 15px'}}>
+                                        if(item.modelType === 'SM')return '';
+                                        return <li style={{ borderBottom: '1px solid #d9d9d9', padding: '5px 15px'}} key={index}>
                                             <div>{index + 1 + '. ' + item.chContent}</div>
-                                            <div>{' ' + item.ehContent}</div>
+                                            <div style={{paddingLeft: '10px'}}>{item.ehContent}</div>
                                         </li>
                                     })
                                 }

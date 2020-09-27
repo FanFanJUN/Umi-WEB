@@ -103,3 +103,8 @@ export const findCanModifySupplierList = params => createServiceRequest({
   path: '/supplierModify/findCanChooseSupplier',
   params
 })
+// 保存效验
+export const ValiditySupplierRegister = params => createServiceRequest({
+  path: '/api/supplierChangeService/checkBySave',
+  params
+})

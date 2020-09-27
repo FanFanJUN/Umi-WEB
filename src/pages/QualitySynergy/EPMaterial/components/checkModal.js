@@ -2,7 +2,9 @@ import { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment 
 import { ExtTable, ExtModal, message, ComboList } from 'suid';
 import { Button, Input, Form, Modal, Radio } from 'antd'
 import { recommendUrl } from '@/utils/commonUrl';
+import { openNewTab} from '@/utils';
 import { checkReview, downLoad } from '../../../../services/qualitySynergy';
+import { BASE_URL } from '../../../../utils/constants';
 import { values } from 'lodash';
 const { create, Item: FormItem } = Form;
 const { TextArea } = Input;
@@ -43,8 +45,8 @@ const checkModal = forwardRef(({ form, selectedRow = {}, checkModalType }, ref) 
         {
             title: '复核状态', dataIndex: 'reviewResults', ellipsis: true, align: 'center', render: (text) => {
                 switch (text) {
-                    case "NOPASS": return '复核不通过';
-                    case "PASS": return '复核通过';
+                    case "NOPASS": return '不通过';
+                    case "PASS": return '通过';
                     default: return '';
                 }
             }
@@ -61,9 +63,13 @@ const checkModal = forwardRef(({ form, selectedRow = {}, checkModalType }, ref) 
         },
         { title: '供应商代码', dataIndex: 'supplierCode', ellipsis: true, align: 'center', },
         { title: '供应商名称 ', dataIndex: 'supplierName', ellipsis: true, align: 'center', },
-        { title: '填报编号', dataIndex: 'fillNumber', ellipsis: true, align: 'center', },
-        { title: '有效开始日期', dataIndex: 'effectiveStartDate', ellipsis: true, align: 'center', },
-        { title: '有效截止日期', dataIndex: 'effectiveEndDate', ellipsis: true, align: 'center', },
+        { title: '填报编号', dataIndex: 'fillNumber', ellipsis: true, align: 'center', render: (text, item)=>{
+            return <a onClick={()=>{
+                openNewTab(`qualitySynergy/EPMaterial/suppliersFillForm?id=${item.id}&pageStatus=detail`, '填报环保资料物料-明细', false);
+            }}>{text}</a>
+        }},
+        { title: '有效开始日期', dataIndex: 'effectiveStartDate', ellipsis: true, align: 'center', render: (text) => text ? text.slice(0, 10) : ''},
+        { title: '有效截止日期', dataIndex: 'effectiveEndDate', ellipsis: true, align: 'center', render: (text) => text ? text.slice(0, 10) : ''},
         { title: '分配批次', dataIndex: 'batch', ellipsis: true, align: 'center', },
     ];
     // 复核确定/生成
@@ -111,9 +117,7 @@ const checkModal = forwardRef(({ form, selectedRow = {}, checkModalType }, ref) 
             if(checkModalType === 'check') {
                 setCheckVisible(true);
             } else {
-                downLoad({id: selectedRowKeys[0]}).then(res => {
-                    console.log(res)
-                })
+                window.open(`${window.location.origin + BASE_URL + recommendUrl}/epController/downloadFileReport?id=${selectedRowKeys[0]}`);
             }
         }
     }
@@ -138,6 +142,7 @@ const checkModal = forwardRef(({ form, selectedRow = {}, checkModalType }, ref) 
                 remotePaging
                 checkbox={{ multiSelect: checkModalType==='check' }}
                 ref={tableRef}
+                searchPlaceHolder="请输入供应商代码或名称进行查询"
                 rowKey={(item) => item.id}
                 size='small'
                 onSelectRow={handleSelectedRows}
@@ -145,8 +150,7 @@ const checkModal = forwardRef(({ form, selectedRow = {}, checkModalType }, ref) 
                 store={{
                     url: `${recommendUrl}/api/epDataFillService/findPageByCode`,
                     params: {
-                        // materialCode: selectedRow.materialCode
-                        materialCode: '810045822'
+                        materialCode: selectedRow.materialCode
                     },
                     type: 'POST'
                 }}

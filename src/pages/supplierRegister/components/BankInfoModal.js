@@ -22,6 +22,7 @@ const BankInfoRef = forwardRef(({
         const BankbaseRef = useRef(null);
         const getBankoversRef = useRef(null);
         const [dataSource, setDataSource] = useState([]);
+        const [confirmLoading, setconfirmLoading] = useState(false);
         useImperativeHandle(ref, () => ({ 
             handleModalVisible,
             form
@@ -41,42 +42,61 @@ const BankInfoRef = forwardRef(({
         // 保存银行
         async function handleSave() {
             let bankInfo = BankbaseRef.current.getFormValue();
-            console.log(bankInfo)
             if (!bankInfo) {
                 return false;
             }
             if (bankInfo) {
-                if (edit === false) {
-                    //绑定附件
-                    if (bankInfo.openingPermit && bankInfo.openingPermit.length > 0 && !bankInfo.openingPermitId) {
-                        RelationDocId(bankInfo.openingPermit, bankInfo.openingPermitId).then(id => {
-                            bankInfo.openingPermitId = id;
-                        })
-                    }
-                    if (mergeData(bankInfo)) {
+                if (bankInfo.openingPermit && bankInfo.openingPermit.length > 0 && !bankInfo.openingPermitId) {
+                    await RelationDocId(bankInfo.openingPermit, bankInfo.openingPermitId).then(id => {
+                        bankInfo.openingPermitId = id;
+                    })
+                }
+                if (edit) {
+                    let editbankInfo = {...initialValues,...bankInfo};
+                    setconfirmLoading(true)
+                    await onOk(editbankInfo);
+                    handleModalVisible(false);
+                    setconfirmLoading(false)
+                }else {
+                    if (await mergeData(bankInfo)) {
+                        setconfirmLoading(true)
                         handleModalVisible(false);
+                        setconfirmLoading(false)
                     }
                     return;
                     
-                }else {
-                    let editbankInfo = {...initialValues, ...bankInfo};
-                    onOk(editbankInfo);
-                    handleModalVisible(false);
                 }
-                triggerLoading(true)
-                //生成银行编码
-                bankInfo.bankNo = bankInfo.paymentCode + bankInfo.unionpayCode;
-                saveBankVo({json: JSON.stringify(bankInfo)}).then((result) => {
-                    if (result.success) {
-                    handleModalVisible(false);
-                    message.success("保存成功！");
-                    //this.props.getDataSource && this.props.getDataSource();
-                    } else {
-                    message.error(result.msg);
-                    }
-                }).finally(() => {
-                    triggerLoading(false)
-                });
+                // else {
+                //     console.log(7777777777)
+                //     // if (bankInfo.openingPermit && bankInfo.openingPermit.length > 0 && !bankInfo.openingPermitId) {
+                //     //     RelationDocId(bankInfo.openingPermit, bankInfo.openingPermitId).then(id => {
+                //     //         bankInfo.openingPermitId = id;
+                //     //     })
+                //     // }
+                    
+                //     console.log(bankInfo.bankCodeName) 
+                //     console.log(bankInfo.country) 
+                //      console.log(bankInfo) 
+                //     let editbankInfo = {...initialValues,...bankInfo};
+                //    // editbankInfo.openingPermitId = bankInfo.openingPermitId
+                //     console.log(editbankInfo)
+                //     // onOk(editbankInfo);
+                //     // handleModalVisible(false);
+                // }
+                //triggerLoading(true)
+                // //生成银行编码
+                // bankInfo.bankNo = bankInfo.paymentCode + bankInfo.unionpayCode;
+                // saveBankVo({json: JSON.stringify(bankInfo)}).then((result) => {
+                //     if (result.success) {
+                //     handleModalVisible(false);
+                //     message.success("保存成功！");
+                //     //this.props.getDataSource && this.props.getDataSource();
+                //     } else {
+                //     message.error(result.msg);
+                //     }
+                // }).finally(() => {
+                //     triggerLoading(false)
+                // });
             }
         }
         async function RelationDocId(ids, docId) {
@@ -84,11 +104,10 @@ const BankInfoRef = forwardRef(({
             if (success) {
                 return data;
             }
-           
-          };
-          function handleModalVisible(flag) {
+        };
+        function handleModalVisible(flag) {
             setvisible(!!flag)
-          }
+        }
         return (
             <Modal
                 confirmLoading={loading}
@@ -99,6 +118,7 @@ const BankInfoRef = forwardRef(({
                 width="80vw"
                 onCancel={() => handleModalVisible(false)}
                 maskClosable={false}
+                confirmLoading={confirmLoading}
                 onOk={handleSave}
             >
                 <BankBase

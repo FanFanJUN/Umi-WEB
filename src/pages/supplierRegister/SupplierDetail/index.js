@@ -41,6 +41,7 @@ function CreateStrategy() {
   const { query } = router.useLocation();
   const { frameElementId, frameElementSrc = "", Opertype = "" } = query;
   let typeId = query.frameElementId;
+  let showtype = query.type;
   async function initConfigurationTable() {
     triggerLoading(true);
     let params = {catgroyid:typeId,property:3}
@@ -187,8 +188,8 @@ function CreateStrategy() {
                     <Businessinfo
                       businesshide={businesshide}
                       editformData={editData}
-                      wrappedComponentRef={BusinessRef}
                       isView={true}
+                      wrappedComponentRef={SupplyRangeRef}
                     />
                   </div>
                 </div>
@@ -273,9 +274,38 @@ function CreateStrategy() {
               );
             }
           })
-        }
+          
+          }
       
       </div>
+      {
+        showtype === 'false' ? <div className={styles.wrapper}>
+        <div className={styles.bgw}>
+          <div className={styles.title}>集团状态信息</div>
+          <div>
+            <StatusInfor
+                editData={editData}
+                wrappedComponentRef={QualispecialRef}
+                isView={true}
+            />
+          </div>
+        </div>
+      </div> : null
+      }
+      {
+        showtype === 'false' ? <div className={styles.wrapper}>
+        <div className={styles.bgw}>
+        <div className={styles.title}>公司采购组织信息</div>
+        <div>
+            <PurchaseInfor
+                editData={editData}
+                wrappedComponentRef={QualispecialRef}
+                isView={true}
+            />
+        </div>
+        </div>
+      </div> : null
+      }
     </Spin>
   )
 }

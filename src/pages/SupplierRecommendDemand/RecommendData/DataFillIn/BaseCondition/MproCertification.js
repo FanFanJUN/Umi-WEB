@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-09 13:47:57
- * @LastEditTime: 2020-09-17 14:19:09
+ * @LastEditTime: 2020-09-21 11:03:38
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/BaseCondition/MproCertification.js
  * @Description: 管理体系及产品认证
  * @Connect: 1981824361@qq.com
@@ -44,7 +44,13 @@ const MproCertification = ({ type, data, setTableData }) => {
         { title: '产品', dataIndex: 'productName', ellipsis: true, editable: true },
         {
             title: '认证类型', dataIndex: 'certificateInfoType', ellipsis: true,
-            editable: true, inputDisabled: true, inputDefaultValue: 'PRODUCT_CERTIFICATION'
+            editable: true, inputDisabled: true, inputDefaultValue: 'PRODUCT_CERTIFICATION',
+            inputType: 'Select',
+            selectOptions: [
+                {name: '管理体系', value: 'MANAGEMENT_SYSTEM'},
+                {name: '产品认证', value: 'PRODUCT_CERTIFICATION'},
+                {name: '其他认证', value: 'OTHER_CERTIFICATION'},
+            ]
         },
         { title: '执行标准', dataIndex: 'executiveStandard', ellipsis: true, editable: true },
         { title: '证照编号', dataIndex: 'certificateNumber', ellipsis: true, editable: true },
@@ -67,7 +73,13 @@ const MproCertification = ({ type, data, setTableData }) => {
         { title: '产品', dataIndex: 'productName', ellipsis: true, editable: true },
         {
             title: '认证类型', dataIndex: 'certificateInfoType', ellipsis: true,
-            editable: true, inputDisabled: true, inputDefaultValue: 'OTHER_CERTIFICATION'
+            editable: true, inputDisabled: true, inputDefaultValue: 'OTHER_CERTIFICATION',
+            inputType: 'Select',
+            selectOptions: [
+                {name: '管理体系', value: 'MANAGEMENT_SYSTEM'},
+                {name: '产品认证', value: 'PRODUCT_CERTIFICATION'},
+                {name: '其他认证', value: 'OTHER_CERTIFICATION'},
+            ]
         },
         { title: '执行标准', dataIndex: 'executiveStandard', ellipsis: true, editable: true },
         { title: '证照编号', dataIndex: 'certificateNumber', ellipsis: true, editable: true },

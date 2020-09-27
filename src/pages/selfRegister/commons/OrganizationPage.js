@@ -1,8 +1,9 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useState } from 'react';
 import { Form, Row, Input, Col, message, Radio, Button } from 'antd';
+import {ComboTree} from 'suid'
 import SearchTable from '../../supplierRegister/components/SearchTable'
 import { checkSupplierName } from '../../../services/supplierRegister'
-import {chineseProvinceTableConfig} from '../../../utils/commonProps'
+import {chineseProvinceTableConfig,purchaseCompanyPropsreg} from '../../../utils/commonProps'
 const { create } = Form;
 const FormItem = Form.Item;
 const formItemLayout = {
@@ -82,7 +83,7 @@ const OrganizatRef = forwardRef(({
                     </FormItem>
                 </Col>
             </Row>
-            <Row>
+            {/* <Row>
                 <Col span={15}>
                     <FormItem
                         {...formItemLayout}
@@ -102,7 +103,7 @@ const OrganizatRef = forwardRef(({
                         }
                     </FormItem>
                 </Col>
-            </Row>
+            </Row> */}
             <Row>
                 <Col span={15}>
                     <FormItem
@@ -143,6 +144,32 @@ const OrganizatRef = forwardRef(({
                                     disabled={true}
                                     maxLength={50}
                                     placeholder={'请输入电子邮箱'} />,
+                            )
+                        }
+                    </FormItem>
+                </Col>
+            </Row>
+            <Row>
+                <Col span={15}>
+                    <FormItem
+                        {...formItemLayout}
+                        label={'供应商分类'}
+                    >
+                        {
+                            getFieldDecorator('supplierCategoryId'),
+                            getFieldDecorator('supplierCategoryName', {
+                                initialValue: '',
+                                rules: [{ required: true, message: '请选择供应商分类' },
+                                ],
+                            })(
+                                <ComboTree
+                                    {...purchaseCompanyPropsreg}
+                                    form={form} showSearch={false}
+                                    name='supplierCategoryName'
+                                    field={['supplierCategoryId']}
+                                    //afterSelect={(item) => handletypeSelect(item)}
+
+                            />,
                             )
                         }
                     </FormItem>

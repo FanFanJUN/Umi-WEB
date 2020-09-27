@@ -5,8 +5,8 @@ import MatCatTree from './MatCatTree'
 import { listAllGeneralTree } from '../../../services/supplierRegister'
 const { create } = Form;
 const FormItem = Form.Item;
-let materialId = [];
-let materialName = [];
+//let materialId = [];
+// let materialIddata = [];
 const SupplyRangeRef = forwardRef(({
   form,
   initialValue = {},
@@ -22,28 +22,29 @@ const SupplyRangeRef = forwardRef(({
   }));
   const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
   const [materialId, setMaterialId] = useState([]);
-  const [dataSource, setDataSource] = useState([]);
-  const [keys, setKey] = useState(0);
-  const [lineCode, setLineCode] = useState(1);
-  const { attachment = null } = initialValue;
-
   useEffect(() => {
-    getSupplyRange(editData);
+    //getSupplyRange(editData);
+    let materialIded = [];
+    let materialName = [];
+    if (editData && editData.extendVo && editData.extendVo.materielCategories) {
+      materialIded = editData.extendVo.materielCategories.map(item => item ? item.id : '');
+      materialName = editData.extendVo.materielCategories.map(item => item ? item.name : '').join('、');
+     // materialId = materialIded;
+      setMaterialId(materialIded)
+      // setFieldsValue({
+      //   ['extendVo.matCatIds'] : materialIded
+      // })
+    }
   }, [editData])
+
   const formItemLayoutLong = {
     labelCol: { span: 4 },
     wrapperCol: { span: 20 },
   };
-  function getSupplyRange(val) {
-    let editData = val;
-    let materialId = [];
-    let materialName = [];
-    if (editData && editData.extendVo && editData.extendVo.materielCategories) {
-      materialId = editData.extendVo.materielCategories.map(item => item ? item.id : '');
-      materialName = editData.extendVo.materielCategories.map(item => item ? item.name : '').join('、');
-      setMaterialId(materialId)
-    }
-  }
+  // function getSupplyRange(val) {
+  //   let editData = val;
+   
+  // }
   // 暂存
   function SupplierTemporary() {
     let result = {};
@@ -66,6 +67,7 @@ const SupplyRangeRef = forwardRef(({
     // setAttachment(attachmentId)
     // setFieldsValue(fs)
   }
+  
   return (
     <div>
       <Form>
@@ -100,6 +102,7 @@ const SupplyRangeRef = forwardRef(({
                   //   message: '请选择物料分类',
                   // }],
                 })(
+                  
                   <MatCatTree
                     service={listAllGeneralTree}
                     isView={isView}
@@ -107,14 +110,14 @@ const SupplyRangeRef = forwardRef(({
                   />
                 )
               }
+
             </FormItem>
           </Col>
         </Row>
       </Form>
     </div>
   )
-}
-)
+})
 const CommonForm = create()(SupplyRangeRef)
 
 export default CommonForm

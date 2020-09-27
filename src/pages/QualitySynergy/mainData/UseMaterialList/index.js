@@ -167,7 +167,10 @@ const Index = () => {
     {
       <AuthAction key="QUALITYSYNERGY_UML_IMPORT" ignore>
         <DataImport
-          tableProps={{ columns }}
+          tableProps={{
+            columns,
+            showSearch: false
+          }}
           validateAll={true}
           validateFunc={validateItem}
           importFunc={importFunc}

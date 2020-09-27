@@ -24,7 +24,6 @@ const getAgentregRef = forwardRef(({
     const [selectedRows, setRows] = useState([]);
     const [visible, setvisible] = useState(false);
     const [current, setcurrent] = useState([]);
-    //const [dataSource, setData] = useState([]);
     useEffect(() => {
         //getSupplierlist()
     }, []);
@@ -75,8 +74,16 @@ const getAgentregRef = forwardRef(({
             handleModalVisible(false);
             // let categoryid = selectedRows[0].supplier.supplierCategoryId;
             let id = selectedRows[0].supplierId;
+            setSearchValue('');
+            cleanSelectedRecord();
             openNewTab(`supplier/supplierModify/create/index?id=${id}`, '供应商变更新建变更单', false)
         }
+    }
+    // 清除选中项
+    function cleanSelectedRecord() {
+        setRows([]);
+        setRowKeys([])
+        tableRef.current.manualSelectedRows([])
     }
     // 输入框值
     function SerachValue(v) {

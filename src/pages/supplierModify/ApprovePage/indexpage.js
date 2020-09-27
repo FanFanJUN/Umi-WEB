@@ -15,6 +15,7 @@ import {
   import { closeCurrent } from '../../../utils/index';
   import styles from '../index.less';
   const TabPane = Tabs.TabPane;
+  let senddata;
 function SupplierApproveInfo() {
     const saveformRef = useRef(null)
     const { query } = router.useLocation();
@@ -40,6 +41,8 @@ function SupplierApproveInfo() {
             setwholeData(data.supplierApplyVo)
             setSaveData(data)
             triggerLoading(false);
+            senddata = JSON.stringify(data.supplierApplyVo)
+            console.log(senddata)
         } else {
             triggerLoading(false);
             message.error(msg)
@@ -61,7 +64,7 @@ function SupplierApproveInfo() {
     }
     const handleSave = async (approved) => {
         triggerLoading(true)
-        let params = wholeData
+        let params = JSON.parse(senddata)
         console.log(params)
         const { success, message: msg } = await TemporarySupplierRegister(params)
         triggerLoading(false)

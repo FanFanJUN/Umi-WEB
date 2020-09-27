@@ -226,7 +226,9 @@ function SupplierConfigure() {
     }
     // 清除选中项
     function cleanSelectedRecord() {
+        setRows([])
         setRowKeys([])
+        tableRef.current.manualSelectedRows([])
     }
 
     function uploadTable() {
@@ -244,6 +246,7 @@ function SupplierConfigure() {
                 if (success) {
                     handleComplete();
                     message.success('删除成功！');
+                    uploadTable();
                     triggerLoading(false)
                 } else {
                     message.error(msg);
@@ -365,7 +368,7 @@ function SupplierConfigure() {
                                     needConfirm={handleBeforeStartFlow}
                                     businessKey={flowId}
                                     callBack={handleComplete}
-                                    disabled={empty || underWay || !isSelf}
+                                    disabled={empty || underWay}
                                     businessModelCode='com.ecmp.srm.sm.entity.SupplierModify'
                                     key='SRM-SM-SUPPLIERMODEL_EXAMINE'
                                 >提交审核</StartFlow>
@@ -390,7 +393,7 @@ function SupplierConfigure() {
                                     ignore={DEVELOPER_ENV}
                                     key='SRM-SM-SUPPLIERMODEL_HISTORY'
                                 >
-                                    <Button className={styles.btn} disabled={empty || !underWay || !completed}>审核历史</Button>
+                                    <Button className={styles.btn} disabled={empty || !underWay}>审核历史</Button>
                                 </FlowHistoryButton>
                             )
                         }

@@ -35,13 +35,12 @@ export default function () {
                     // 仅保存
                     res = await addEpDemandList(dataSource);
                 }
-                console.log(res);
                 toggleLoading(false);
                if(res.success && res.statusCode === 200) {
                    message.success(nowPublish? '保存并提交成功' : '保存成功');
                    setTimeout(()=>{
                         handleBack();
-                   }, 3000)
+                   }, 1000)
                } else {
                    message.error(res.message);
                }

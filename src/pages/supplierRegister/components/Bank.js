@@ -1,5 +1,5 @@
 import React, { forwardRef, useState, useRef, useEffect, useImperativeHandle } from 'react';
-import { ExtTable, WorkFlow, ExtModal, utils, ToolBar } from 'suid';
+import { ExtTable, WorkFlow, ExtModal, utils, ToolBar,AuthButton  } from 'suid';
 import { Form, Button, message, Checkbox, Modal } from 'antd';
 import { openNewTab, getFrameElement ,isEmpty} from '@/utils';
 import Header from '@/components/Header';
@@ -165,7 +165,6 @@ const Bankformef = forwardRef(({
   function cleanSelectedRecord() {
     setRowKeys([]);
     setRows([]);
-    
   }
   // 新增
   function showModal() {
@@ -184,7 +183,6 @@ const Bankformef = forwardRef(({
       newsbank = selectedRows
     }
     //setDataSource(newsbank) 
-    console.log(newsbank)
     setEdit(true)
     const [row] = newsbank;
     setInitialValue({ ...row })
@@ -208,7 +206,6 @@ const Bankformef = forwardRef(({
       if (item.key === val.key) {
         const copyData = dataSource.slice(0)
         copyData[index] = val;
-        console.log()
         setDataSource(copyData)
         setRows(copyData)
       }
@@ -233,6 +230,7 @@ const Bankformef = forwardRef(({
   }
   // 数据处理
   function mergeData(formData) {
+    console.log(formData)
     const data = dataSource;
     const exist = data.find((value) => value.bankAccount === formData.bankAccount &&
       value.key !== formData.key);
@@ -252,7 +250,7 @@ const Bankformef = forwardRef(({
       //this.setState({selectedRows: [formData]})
     } else { 
       //生成行号
-      if (dataSource.length) {
+      if (dataSource.length  === 0) {
       }else {
         lineCode++
       }
@@ -260,6 +258,7 @@ const Bankformef = forwardRef(({
       formData.key = keys++;
       const newData = [...dataSource, formData];
       setDataSource(newData)
+      cleanSelectedRecord();
     }
     //如果不是变更，重排为连续的行号
     // if (!this.props.isModify) {
@@ -292,20 +291,14 @@ const Bankformef = forwardRef(({
   const headerleft = (
     <>
       {
-              authAction(
-                <Button type='primary' ignore={DEVELOPER_ENV} key='' className={styles.btn} onClick={() => showModal()}>新增</Button>
-              )
-            }
-            {
-              authAction(
-                <Button ignore={DEVELOPER_ENV} key='' className={styles.btn} onClick={() => handleEdit()} disabled={empty}>编辑</Button>
-              )
-            }
-            {
-              authAction(
-                <Button ignore={DEVELOPER_ENV} key='' className={styles.btn} disabled={empty} onClick={handleRemove}>删除</Button>
-              )
-            }
+        <AuthButton type="primary" className={styles.btn} onClick={() => showModal()}>新增</AuthButton>
+      }
+      {
+        <AuthButton className={styles.btn} onClick={() => handleEdit()} disabled={empty} >编辑</AuthButton>
+      }
+      {
+        <AuthButton className={styles.btn} disabled={empty} onClick={handleRemove}>删除</AuthButton>
+      }
     </>
   );
   return (

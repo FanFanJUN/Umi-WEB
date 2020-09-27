@@ -5,7 +5,8 @@ import RegistrationAgreement from './commons/RegistrationAgreement'
 import BaseAccountInfo from './commons/BaseAccountInfo'
 import {saveRegistVo} from '../../services/supplierRegister'
 import { Wrapper } from './style'
-
+import {closeCurrent} from '../../utils'
+const srmBaseUrl = "/srm-se-web";
 const Step = Steps.Step;
 export default function () {
     const { query } = router.useLocation();
@@ -16,7 +17,7 @@ export default function () {
     const [accounts, setaccounts] = useState(false);
     useEffect(() => {
         let organ = {};
-        organ.mobile = query.mobile;
+        organ.mobile = query.phone;
         organ.email = query.email;
         organ.openId = query.openId;
         setaccounts(organ)
@@ -46,13 +47,16 @@ export default function () {
     async function supplierPayment() {
         const { getAccountinfo } = BassAccounRef.current;
         let resultData = getAccountinfo()
+        console.log(JSON.stringify(resultData))
         triggerLoading(true)
-        const { success, message: msg } = await saveRegistVo({registrationInformationVo: JSON.stringify(resultData)})
+        const { data,success, message: msg } = await saveRegistVo({registrationInformationVo: JSON.stringify(resultData)})
         if (success) {
-           // window.location.replace(host + psmBaseUrl + `/RegisterSuccessModal?account= ${resultData.account} &pwd=${resultData.pwd}&name=${resultData.name}`);
-          } else {
+            closeCurrent()
+            window.open(`/react-basic-web/index?_s=` + data)
+            //window.open(`/srm-se-web/NewHomePageView?_s=` + data)
+        } else {
             message.error(msg);
-          }
+        }
     }
     return (
         <Wrapper>

@@ -231,7 +231,8 @@ export const saveBankVo = params => createServiceRequest({
 //代理名称
 export const findCodeByName = params => createServiceRequest({
   path: '/supplier/findByName',
-  params
+  params,
+  hack: true
 })
 // 注册暂存
 export const TemporarySupplierRegister = params => createServiceRequest({
@@ -252,7 +253,7 @@ export const stopApproveingOrder = params =>createServiceRequest({
 })
 // 老的泛虹公司
 export async function oddgetAllCorporation(params = {}) {
-  return httpUtils.post(`${BASE_URL}/srm-baf-web/basic/listAllCorporation`);
+  return httpUtils.post(`/srm-baf-web/basic/listAllCorporation`);
 }
 // 供应商公司查询工厂
 export const getCompanyFactory = (params = {}) => {
@@ -302,4 +303,22 @@ export const checkCreditCode = params => createServiceRequest({
   path: '/supplierRegister/checkCreditCode',
   params,
   hack: true
+})
+// 注册账号重复效验
+export const checkAccount = params => createServiceRequest({
+  path: '/supplierRegister/findByAccountAndTenantCode',
+  params,
+  hack: true
+})
+
+//银联号
+export const listUnionPayCode = (params) => {
+  return httpUtils.get(`/srm-baf-web/supplierRegister/getBankNoByPage`, params);
+};
+
+// 获取登录信息
+
+export const getSupplierUserMsg = params => createServiceRequest({
+  path: '/supplier/getSupplierUserMsg',
+  params
 })

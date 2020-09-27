@@ -44,25 +44,47 @@ const QualispecialRef = forwardRef(({
         }
         setDataSource(initData)
     }, [editData])
-
-    const tableProps = [
+    let columns = [];
+    if (!isView) {
+      columns.push(
         {
-            title: '操作',
-            align: 'center',
-            dataIndex:'operation',
-            width: 100,
-            render: (text, record, index) => {
-              return <div>
-                {
-                  dataSource.length > 0 ? <Icon
-                    type={'delete'}
-                    title={'删除'}
-                    onClick={() => handleDelete(record.key)}
-                  /> : null
-                }
-              </div>;
-            }
-        },
+          title: "操作",
+          width: 50,
+          align: "center",
+          dataIndex:'operation',
+          render: (text, record, index) => {
+            return <div>
+              {
+                dataSource.length > 0 ? <Icon
+                  type={'delete'}
+                  title={"删除"}
+                  onClick={() => handleDelete(record.key)}
+                /> : null
+              }
+            </div>
+          }
+        }
+      );
+    }
+    const tableProps = [
+        // {
+        //     title: '操作',
+        //     align: 'center',
+        //     dataIndex:'operation',
+        //     width: 100,
+        //     render: (text, record, index) => {
+        //       return <div>
+        //         {
+        //           dataSource.length > 0 ? <Icon
+        //             type={'delete'}
+        //             title={'删除'}
+        //             onClick={() => handleDelete(record.key)}
+        //           /> : null
+        //         }
+        //       </div>;
+        //     }
+        // },
+        ... columns,
         {
             title: '行号',
             dataIndex: 'lineCode',
@@ -75,12 +97,7 @@ const QualispecialRef = forwardRef(({
             width: 200,
             render: (text, record, index) => {
               if (isView) {
-                return text;
-              }
-              if (isView) {
-                return !compareData(record.endDate) ?
-                  <span style={{color: "red"}}>{'专用资质'}</span>
-                  : <span>{'专用资质'}</span>
+                return <span>{record.qualificationType}</span>
               }
               return <FormItem style={{ marginBottom: 0 }}>
                 {
@@ -104,12 +121,7 @@ const QualispecialRef = forwardRef(({
             width: 200,
             render: (text, record, index) => {
               if (isView) {
-                return text;
-              }
-              if (isView) {
-                return !compareData(record.endDate) ?
-                  <span style={{color: "red"}}>{record.qualificationName}</span>
-                  : <span>{record.qualificationName}</span>
+                return <span>{record.qualificationName}</span>
               }
               return <FormItem style={{ marginBottom: 0 }}>
                 {
@@ -195,7 +207,7 @@ const QualispecialRef = forwardRef(({
             align: "center",
             width: 300,
             render: (text, record, index) => {
-              return <FormItem style={{textAlign: "left",marginBottom: 0}}>
+              return <FormItem style={{marginBottom: 0}}>
                 {
                   getFieldDecorator(`attachments_p[${record.key}]`, {
                     initialValue: "",
@@ -266,8 +278,11 @@ const QualispecialRef = forwardRef(({
       form.validateFieldsAndScroll((err, values) => {
         if (!err) {
           result = dataTransfer(dataSource, values, -1);
+        }else {
+          message.error('请将专用资质信息填写完全！');
         }
       });
+      console.log(result)
       return result;
     }
     // 设置所有表格参数

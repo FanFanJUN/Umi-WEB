@@ -20,10 +20,11 @@ import {
 import {
   TemporarySupplierRegister,
   checkExistUnfinishedValidity,
-  saveSupplierRegister
+  saveSupplierRegister,
+  ValiditySupplierRegister
 } from '@/services/SupplierModifyService'
 import styles from '../../supplierRegister/components/index.less';
-import { closeCurrent } from '../../../utils';
+import { closeCurrent ,isEmpty} from '../../../utils';
 
 function CreateStrategy() {
   const BaseinfoRef = useRef(null);
@@ -42,9 +43,9 @@ function CreateStrategy() {
   const [initialValue, setInitialValue] = useState({});
   const [wholeData, setwholeData] = useState([]);
   const [editData, setEditData] = useState([]);
-  const [againdata, setAgaindata] = useState([]);
+  const [againdata, setAgaindata] = useState({});
   const [loading, triggerLoading] = useState(false);
-  const [accountVo, setaccountVo] = useState(false);
+  const [visible, setvisible] = useState(false);
   const [configure, setConfigure] = useState([]);
   const [supplierName, setsupplierName] = useState();
   const { query } = router.useLocation();
@@ -64,6 +65,26 @@ function CreateStrategy() {
         setwholeData(data)
         setAgaindata(againdata)
         triggerLoading(false);
+        if (data.supplierInfoVo.supplierVo.supplierCategoryName === '个人供应商') {
+          let mobile = data.supplierInfoVo.supplierVo.accountVo.mobile;
+          if (isEmpty(mobile)) {
+            setvisible(true)
+          }
+          if (data.supplierInfoVo.supplierVo.accountVo === undefined) {
+            setvisible(true)
+          }
+        }else {
+          if (data.supplierInfoVo.supplierVo.accountVo) {
+            let mobile = data.supplierInfoVo.supplierVo.accountVo.mobile;
+            let email = data.supplierInfoVo.supplierVo.accountVo.email;
+            if (isEmpty(mobile) || isEmpty(email)) {
+              setvisible(true)
+            }
+          }
+          if (data.supplierInfoVo.supplierVo.accountVo === undefined) {
+            setvisible(true)
+          }
+        }
       }, 100);
     } else {
       triggerLoading(false);
@@ -150,7 +171,7 @@ function CreateStrategy() {
       }
     })
     let enclosurelist = [], basedata, baseexten, accountData,
-      automaticdata, automaticincome, automThreeYear, rangeValinfo;
+      automaticdata, automaticincome, automThreeYear, rangeValinfo,othersatt = [];
     if (baseVal && baseVal.supplierVo) {
       basedata = baseVal.supplierVo
     }
@@ -158,15 +179,16 @@ function CreateStrategy() {
       baseexten = baseVal.extendVo
     }
     if (baseVal && baseVal.genCertVos) {
-      enclosurelist = { ...enclosurelist, ...baseVal.genCertVos}
+      enclosurelist.push(...baseVal.genCertVos)
+      othersatt = enclosurelist
     }
     if (accountVal && accountVal.supplierVo) {
       accountData = accountVal.supplierVo
     }
     if (qualifications) {
-      enclosurelist = [enclosurelist, ...qualifications.proCertVos];
+      enclosurelist = [...othersatt, ...qualifications.proCertVos];
     }else {
-      enclosurelist = [enclosurelist]
+      enclosurelist = othersatt
     }
     if (businessInfoVal && businessInfoVal.supplierVo) {
       automaticdata = businessInfoVal.supplierVo
@@ -208,20 +230,21 @@ function CreateStrategy() {
     //console.log(againdata)
     //如果为新增  拼加一个供应商ID在头上
     againdata.supplierId = againdata.supplierId || query.id;
+    againdata.supplierInfoVo.supplierVo.id = editData.supplierVo.id
     againdata.againdata = '0';
     let saveData = { ...againdata };
     console.log(saveData)
-    // triggerLoading(true)
-    // const { success, message: msg } = await TemporarySupplierRegister(saveData);
-    // if (success) {
-    //   message.success('保存成功');
-    //   triggerLoading(false)
-    //   closeCurrent()
-    //   return
-    // }else {
-    //   message.error(msg);
-    // }
-    // triggerLoading(false)
+    triggerLoading(true)
+    const { success, message: msg } = await TemporarySupplierRegister(saveData);
+    if (success) {
+      message.success('保存成功');
+      triggerLoading(false)
+      closeCurrent()
+      return
+    }else {
+      message.error(msg);
+    }
+    triggerLoading(false)
   }
   // 帐号暂存
   function ObtainAccount() {
@@ -346,7 +369,7 @@ function CreateStrategy() {
     }
 
     let enclosurelist = [], basedata, accountData, baseexten, automaticdata, automaticincome,
-      automThreeYear, rangeValinfo;
+      automThreeYear, rangeValinfo,othersatt=[];
     if (baseVal && baseVal.supplierVo) {
       basedata = baseVal.supplierVo
     }
@@ -354,13 +377,16 @@ function CreateStrategy() {
       baseexten = baseVal.extendVo
     }
     if (baseVal && baseVal.genCertVos) {
-      enclosurelist = { ...enclosurelist, ...baseVal.genCertVos[0] }
+      enclosurelist.push(...baseVal.genCertVos)
+      othersatt = enclosurelist
     }
     if (accountVal && accountVal.supplierVo) {
       accountData = accountVal.supplierVo
     }
     if (qualifications) {
-      enclosurelist = [enclosurelist, ...qualifications.proCertVos];
+      enclosurelist = [...othersatt, ...qualifications.proCertVos];
+    }else {
+      enclosurelist = othersatt
     }
     if (businessInfoVal && businessInfoVal.supplierVo) {
       automaticdata = businessInfoVal.supplierVo
@@ -401,28 +427,33 @@ function CreateStrategy() {
     //如果为新增  拼加一个供应商ID在头上
     againdata.supplierId = againdata.supplierId || query.id;
     againdata.againdata = '1';
+    againdata.supplierInfoVo.supplierVo.id = editData.supplierVo.id
     //let saveData = {...againdata};
     setAgaindata(againdata)
-    //let saveData = againdata;
-    //console.log(getModelRef.current)
-    getModelRef.current.handleModalVisible(true);
+     // 变更保存效验
+     console.log(againdata)
+     const { success, message: msg } = await ValiditySupplierRegister(againdata);
+     if (success) {
+      getModelRef.current.handleModalVisible(true);
+     }else {
+      message.error(msg);
+     }
+     
+    
   }
   async function createSave(val) {
-
-    //console.log(val)
-    let params = { ...againdata, ...val };
-    //console.log(params)
     triggerLoading(true)
+    let params = { ...againdata, ...val };
     const { success, message: msg } = await TemporarySupplierRegister(params);
-    if (success) {
-      message.success(msg);
+      if (success) {
+        message.success(msg);
+        triggerLoading(false)
+        closeCurrent()
+        return
+      } else {
+        message.error(msg);
+      }
       triggerLoading(false)
-      closeCurrent()
-      return
-    } else {
-      message.error(msg);
-    }
-    triggerLoading(false)
   }
   function setSuppliername(name) {
     setsupplierName(name)
@@ -435,6 +466,16 @@ function CreateStrategy() {
   // 返回
   function handleBack() {
     closeCurrent()
+  }
+  // 切换配置
+  function ficationtype(id) {
+    initConfigurationTable(id);
+  }
+  function handleOk() {
+    setvisible(false)
+  }
+  function handleCancel() {
+    setvisible(false)
   }
   return (
     <Spin spinning={loading} tip='处理中...'>
@@ -470,6 +511,7 @@ function CreateStrategy() {
                       editformData={editData}
                       wholeData={wholeData}
                       wrappedComponentRef={BaseinfoRef}
+                      onClickfication={ficationtype}
                       change={true}
                     />
                   </div>
@@ -603,6 +645,14 @@ function CreateStrategy() {
           ReaModelOk={createSave}
           wrappedComponentRef={getModelRef}
         />
+        <Modal
+            title="提示"
+            visible={visible}
+            onOk={handleOk}
+            onCancel={handleCancel}
+            >
+            <p>请先到供应商账号的个人设置中绑定手机和邮箱，再变更其他信息，否则无法保存变更信息</p>
+        </Modal>
       </div>
     </Spin>
   )

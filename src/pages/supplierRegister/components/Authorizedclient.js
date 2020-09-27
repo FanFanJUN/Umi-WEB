@@ -11,7 +11,7 @@ import { indexOf } from 'lodash';
 const { create } = Form;
 const FormItem = Form.Item;
 let keys = 0;
-let lineCode = 0;
+let lineCode = 1;
 let aggregate = [];
 let aggregatename = [];
 const poinsitiondata = [
@@ -58,30 +58,37 @@ const AuthorizeRef = forwardRef(({
         if (editData && editData.contactVos && editData.contactVos.length > 0) {
             initData = editData.contactVos.map((item, index) => ({ key: index, ...item }));
             let maxLineNum = getMaxLineNum(editData.contactVos);
-            lineCode = maxLineNum + 1;
+            //lineCode = maxLineNum + 1;
             keys = initData.length - 1;
+        }else {
+            editData = editData.contactVos
         }
         getBankcodelist(editData)
     }, [editformData])
-
-    const tableProps = [
-        {
-            title: '操作',
-            align: 'center',
-            dataIndex: 'operation',
-            width: 100,
-            render: (text, record, index) => {
-                return <div>
-                    {
-                        dataSource.length > 1 ? <Icon
-                            type={'delete'}
-                            title={'删除'}
-                            onClick={() => handleDelete(record.key)}
-                        /> : null
-                    }
-                </div>;
+    let columns = [];
+    if (!isView) {
+        columns.push(
+            {
+                title: '操作',
+                align: 'center',
+                dataIndex: 'operation',
+                width: 100,
+                render: (text, record, index) => {
+                    return <div>
+                        {
+                            dataSource.length > 1 ? <Icon
+                                type={'delete'}
+                                title={'删除'}
+                                onClick={() => handleDelete(record.key)}
+                            /> : null
+                        }
+                    </div>;
+                }
             }
-        },
+        );
+      }
+    const tableProps = [
+        ...columns,
         {
             title: '行号',
             dataIndex: 'lineCode',
@@ -104,30 +111,33 @@ const AuthorizeRef = forwardRef(({
                                 initialValue: record ? record.positionName : '',
                                 rules: [{ required: true, message: '请选择职位!', whitespace: true }],
                             })( 
+                                <ComboList 
+                                    form={form}
+                                    {...listPositionConfig}
+                                    showSearch={false}
+                                    //afterSelect={afterSelect}
+                                    name={`positionName[${index}]`}
+                                    field={[`position[${index}]`]}
+                                    afterSelect={(item)=>{
+                                        afterSelect(item,`${index + 1}`)
+                                    }}
+                                />
                                 // <ComboList 
                                 //     form={form}
-                                //     {...listPositionConfig}
+                                //     style={{ width:'100%' }}
+                                //     dataSource={poinsitiondata}
+                                //     reader={{
+                                //         name: 'name',
+                                //         field: ['value'],
+                                        
+                                //     }}
                                 //     showSearch={false}
-                                //     afterSelect={afterSelect}
+                                //     afterSelect={(item)=>{
+                                //         afterSelect(item,`${index}` + 1 )
+                                //     }}
                                 //     name={`positionName[${index}]`}
                                 //     field={[`position[${index}]`]}
                                 // />
-                                <ComboList 
-                                    form={form}
-                                    style={{ width:'100%' }}
-                                    dataSource={poinsitiondata}
-                                    reader={{
-                                        name: 'name',
-                                        field: ['value'],
-                                        
-                                    }}
-                                    showSearch={false}
-                                    afterSelect={(item)=>{
-                                        afterSelect(item,`${index}` + 1 )
-                                    }}
-                                    name={`positionName[${index}]`}
-                                    field={[`position[${index}]`]}
-                                />
                             )
                         }
                     </FormItem>
@@ -282,6 +292,7 @@ const AuthorizeRef = forwardRef(({
         setEdit(true)
         dataSource.forEach((item,index) => {
             if (item.key === Number(key)) {
+                console.log(23123)
                 const copyData = dataSource.slice(0)
                 copyData[index].position = val.value;
                 setDataSource(copyData)
@@ -305,15 +316,15 @@ const AuthorizeRef = forwardRef(({
                     lineCode = maxLineCode++;
                     setDataSource(contactVos)
                 }else {
-                    let determine = lineCode + 1
+                    let determine = lineCode
                     lineCode = lineCode + 1
                     const newData = [...dataSource, { key: ++keys, lineCode: getLineCode(determine) }];
                     setDataSource(newData)
                 }
                 
             }else {
-                let determine = lineCode + 1
-                lineCode = lineCode + 1
+                let determine = lineCode
+                //lineCode = lineCode
                 const newData = [...dataSource, { key: ++keys, lineCode: getLineCode(determine) }];
                 setDataSource(newData)
             }
@@ -356,11 +367,11 @@ const AuthorizeRef = forwardRef(({
     //联系人验证
     function setName(e) {
         dataSource.forEach((item,index) => {
-            if (index + 1 === parseInt(e.target.name)) {
+            if (index === parseInt(e.target.name)) {
                 item.name = e.target.value
             }
         })
-        //console.log(dataSource)
+        console.log(dataSource)
         aggregatename = form.getFieldValue('name');
 
         let quencyname = counts(aggregatename,e.target.value);
@@ -377,6 +388,11 @@ const AuthorizeRef = forwardRef(({
     function authorTemporary() {
         let result = {};
         form.validateFieldsAndScroll((err, values) => {
+            values.position.forEach((item,index) => {
+                if (item === undefined) {
+                    values.position[index] = dataSource[index].position
+                }
+            })
             if (values) {
                 if (edit) {
                     result = dataTransfer2(dataSource, values);
@@ -392,6 +408,11 @@ const AuthorizeRef = forwardRef(({
     function getAuthorfrom() {
         let result = false;
         form.validateFieldsAndScroll((err, values) => {
+            values.position.forEach((item,index) => {
+                if (item === undefined) {
+                    values.position[index] = dataSource[index].position
+                }
+            })
             if (!err) {
                 if (edit) {
                     result = dataTransfer2(dataSource, values);

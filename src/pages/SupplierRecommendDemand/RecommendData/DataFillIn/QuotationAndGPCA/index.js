@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:58:07
- * @LastEditTime: 2020-09-18 15:47:11
+ * @LastEditTime: 2020-09-21 10:35:59
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/QuotationAndGPCA/index.js
  * @Description: 报价单及成分分析表 Tab
  * @Connect: 1981824361@qq.com
@@ -26,6 +26,7 @@ const QuotationAndGPCA = ({ updateGlobalStatus }) => {
 
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             const res = await requestGetApi({ supplierRecommendDemandId: id, tabKey: 'quotationAndGPCATab' });
             if (res.success) {
                 res.data && setData(res.data);
@@ -106,7 +107,7 @@ const QuotationAndGPCA = ({ updateGlobalStatus }) => {
             "dataIndex": "currencyName",
             "ellipsis": true,
             "editable": true,
-            "inputType": 'Select',
+            "inputType": 'selectwithService',
         },
     ];
 

@@ -24,7 +24,7 @@ function SupplierConfigure() {
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [onlyMe, setOnlyMe] = useState(true);
     const [selectedRows, setRows] = useState([]);
-    const [searchValue, setSearchValue] = useState({});
+    const [searchValue, setSearchValue] = useState('');
     const [visible, setVisible] = useState(false);
     const [recommen, setrecommen] = useState([]);
     const [loading, triggerLoading] = useState(false);
@@ -182,7 +182,7 @@ function SupplierConfigure() {
         store: {
             url: `${smBaseUrl}/api/supplierSelfService/findVoListByPage`,
             params: {
-                ...searchValue,
+                quickSearchValue: searchValue,
                 quickSearchProperties: ['companyName','supplierName'],
                 sortOrders: [
                     {
@@ -196,21 +196,34 @@ function SupplierConfigure() {
     }
     // 泛虹公司
     function cooperationChange(record) {
-        console.log(record)
-        setSearchValue({
-            quickSearchValue: record.name
-        })
+        // console.log(record)
+        // setSearchValue({
+        //     quickSearchValue: record.name
+        // })
+        // uploadTable();
+        //let search = "";
+        setSearchValue(record.name);
+        //setSearchValue(searchValue)
         uploadTable();
     }
+    // 清空泛虹公司
+    function clearinput() {
+        setSearchValue('')
+        uploadTable();
+    }
+    const searchbank = ['name'];
     // 右侧搜索
     const searchBtnCfg = (
         <>
             <ComboList
                 style={{ width: 280 }}
+                searchProperties={searchbank}
                 {...corporationSupplierConfig}
                 afterSelect={cooperationChange}
                 rowKey="code"
-                showSearch={false}
+                //showSearch={false}
+                allowClear={true}
+                afterClear={clearinput}
                 reader={{
                     name: 'name',
                 }}
@@ -301,12 +314,16 @@ function SupplierConfigure() {
     // 输入框值
     function SerachValue(v) {
         setSearchValue(v.target.value)
+        if (v.target.value === '') {
+            setSearchValue('')
+            uploadTable();
+        }
     }
     // 查询
     function handleQuickSerach() {
-        setSearchValue({
-            quickSearchValue: searchValue
-        })
+        let search = "";
+        setSearchValue(search);
+        setSearchValue(searchValue)
         uploadTable();
     }
 

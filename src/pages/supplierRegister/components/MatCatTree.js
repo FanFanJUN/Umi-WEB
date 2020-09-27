@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import { Tree, Card, Input, Button, Dropdown, Menu, Icon, Row, Col } from 'antd';
 import connect from 'react-redux/es/connect/connect';
 import {hide, show} from "../../../utils/SharedReducer";
-
+import {isEmpty} from '../../../utils'
 const DirectoryTree = Tree.DirectoryTree;
 const TreeNode = Tree.TreeNode;
 const Search = Input.Search;
@@ -24,7 +24,7 @@ class MatCatTree extends Component {
       expandedKeys: [],
       findResultData: [],
       dataSource: [],
-      checkedKeys: this.props.defaultCheckedKeys,
+      defaultCheckedKeys: this.props.defaultCheckedKeys,
     };
   }
 
@@ -35,25 +35,33 @@ class MatCatTree extends Component {
   componentDidMount() {
     this.props.onRef && this.props.onRef(this);
   }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.defaultCheckedKeys.length  > 0) {
+      this.getDataSource()
+    }
+    
+  }
 
-  getDataSource() {
+  getDataSource= (value) =>  {
     this.props.show();
     this.props.service().then(res => {
       const { defaultCheckedKeys } = this.props;
+      //console.log(defaultCheckedKeys)
       let treeloop = res.data;
       if (this.props.isView) {
-        let dataSource = JSON.parse(JSON.stringify(treeloop));
-        let findResultData = this.findCheckedData(defaultCheckedKeys, dataSource);
-        this.keyList = [];
-        this.getExpandedKeys(findResultData);
-        let expandedKeys = this.keyList;
-        this.setState({
-          checkedKeys: defaultCheckedKeys,
-          dataSource: findResultData,
-          treeData: findResultData,
-          expandedKeys,
-        });
-        this.props.hide();
+        let dataSourceed = JSON.parse(JSON.stringify(treeloop));
+        let findResultData = this.findCheckedData(defaultCheckedKeys, dataSourceed);
+          this.keyList = [];
+          this.getExpandedKeys(findResultData);
+          let expandedKeys = this.keyList;
+          this.setState({
+            checkedKeys: defaultCheckedKeys,
+            dataSource: findResultData,
+            treeData: findResultData,
+            expandedKeys,
+          });
+          this.props.hide();
+       
       } else {
         this.setState({
           checkedKeys: defaultCheckedKeys,
@@ -238,6 +246,7 @@ class MatCatTree extends Component {
   };
   //查找关键字节点
   findCheckedData = (checkedKeys, tree) => {
+    //console.log(checkedKeys)
     return tree.map(treeNode => {
       //如果有子节点
       if (treeNode.children && treeNode.children.length > 0) {

@@ -27,7 +27,7 @@ const checkModal = forwardRef(({ form, id }, ref) => {
         },
         { title: '报错信息', dataIndex: 'msg', ellipsis: true, align: 'center', },
         { title: '同步时间', dataIndex: 'syncDate', ellipsis: true, align: 'center', width: 160},
-        { title: '同步人', dataIndex: 'syncUser', ellipsis: true, align: 'center', },
+        { title: '同步人', dataIndex: 'syncUser', ellipsis: true, align: 'center', width: 200},
     ];
     // 复核确定
     function handleOk() {

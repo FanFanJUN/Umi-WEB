@@ -39,6 +39,7 @@ const ExemptionClause = (props) => {
         { title: '豁免条款代码', dataIndex: 'exemptionClauseCode', width: 120 },
         { title: '豁免条款物质名称', dataIndex: 'exemptionClauseMaterialName', ellipsis: true, width: 140 },
         { title: 'CAS.NO', dataIndex: 'casNo', ellipsis: true, },
+        { title: '限量(ppm)', dataIndex: 'ppmValue', ellipsis: true },
         { title: '限量(%)', dataIndex: 'limitNumber', ellipsis: true },
         {
             title: '比较标识', dataIndex: 'limitNumberMaxSign', ellipsis: true, render: (text) => {
@@ -123,6 +124,9 @@ const ExemptionClause = (props) => {
                 if (item.limitNumber) {
                     if (item.limitNumber.toString().indexOf('%') !== -1) {
                         item.limitNumber = item.limitNumber.split('%')[0];
+                    }
+                    if (item.ppmValue.toString().indexOf('%') !== -1) {
+                        item.ppmValue = item.ppmValue.split('%')[0];
                     }
                     item.limitNumber = Number(item.limitNumber).toFixed(2)
                 } else {
@@ -316,6 +320,20 @@ const ExemptionClause = (props) => {
                         </FormItem>
                     </Row>
                     <Row>
+                        <FormItem label='ppm' {...formLayout}>
+                            {
+                                getFieldDecorator('ppmValue', {
+                                    initialValue: data.modalSource && data.modalSource.ppmValue,
+                                    // rules: [{ required: true, message: '请填写限量' }]
+                                })(<InputNumber
+                                    style={{ width: '100%' }}
+                                    min={0} max={100}
+                                    disabled={data.isView}
+                                />)
+                            }
+                        </FormItem>
+                    </Row>
+                    <Row>
                         <FormItem label='限量' {...formLayout}>
                             {
                                 getFieldDecorator('limitNumber', {
@@ -337,11 +355,11 @@ const ExemptionClause = (props) => {
                         <FormItem label='比较标识' {...formLayout}>
                             {
                                 getFieldDecorator('limitNumberMaxSign', {
-                                    initialValue: data.modalSource && (data.modalSource.limitNumberMaxSign).toString(),
+                                    initialValue: data.modalSource && data.modalSource.limitNumberMaxSign,
                                     rules: [{ required: (!!getFieldValue('limitNumber') && getFieldValue('limitNumber') != 0), message: '请选择比较标识' }]
                                 })(<Select style={{ width: '100%' }} allowClear>
-                                    <Select.Option value="true">最高值</Select.Option>
-                                    <Select.Option value="false">最低值</Select.Option>
+                                    <Select.Option value={true}>最高值</Select.Option>
+                                    <Select.Option value={false}>最低值</Select.Option>
                                 </Select>)
                             }
                         </FormItem>

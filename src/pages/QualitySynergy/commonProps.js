@@ -12,6 +12,23 @@ const commonProps = {
   placeholder: '请选择'
 };
 
+// 技术图纸
+export const TechnicalDrawings = {
+  allowClear: true,
+  dataSource: [
+    {
+      code: '试制',
+      name: '试制',
+    },
+    {
+      code: '正存',
+      name: '正存',
+    },
+  ],
+  placeholder: '选择技术图纸',
+  ...commonProps,
+}
+
 // 技术资料状态
 export const ShareStatusProps = {
   allowClear: true,
@@ -95,8 +112,19 @@ export const judge = (arr, key, value = undefined) => {
   }
 };
 
+// 生成行号
 export const generateLineNumber = (index) => {
   return (index < 10 ? '00' + index * 10 : index < 100 ? '0' + index * 10 : index * 10).toString()
+}
+
+// 根据id改变下载状态
+export const FindMaxDateByDemandNumber = async params => {
+  const url = `${recommendUrl}/api/epTechnicalShareDemandService/findMaxDate`;
+  return request({
+    url,
+    method: 'GET',
+    params: params,
+  });
 }
 
 // 根据id改变下载状态
@@ -137,6 +165,16 @@ export const DistributionSupplierSave = async params => {
     url,
     method: 'POST',
     data: params,
+  });
+}
+
+// 技术资料分享撤回
+export async function RecallDataSharingList(params) {
+  const url = `${recommendUrl}/api/epTechnicalShareDemandService/revoke`;
+  return request({
+    url,
+    method: 'GET',
+    params: params,
   });
 }
 
@@ -403,6 +441,15 @@ export const StrategicPurchaseConfig = {
   placeholder: '选择战略采购',
   style: {
     width: '100%',
+  },
+};
+// 战略采购列表
+export const StrategicForName = {
+  ...StrategicPurchaseConfig,
+  reader: {
+    name: 'name',
+    field: ['id', 'code'],
+    description: 'code',
   },
 };
 
@@ -730,7 +777,7 @@ export const exemptionClauseDataList = {
   store: {
     type: 'POST',
     autoLoad: false,
-    url: `${baseUrl}/exemptionClauseData/findByPage`,
+    url: `${baseUrl}/exemptionClauseData/findSearchByPage`,
     params: {
       quickSearchProperties: [],
     },
@@ -809,11 +856,11 @@ export const materialStatus = {
 export const PDMStatus = {
   dataSource: [
     {
-      code: 'draft',
+      code: 'SYNC_SUCCESS',
       name: '同步成功',
     },
     {
-      code: 'INPROCESS',
+      code: 'SYNC_FAILURE',
       name: '同步失败',
     },
   ],
@@ -884,11 +931,10 @@ export const findMaterialCode = {
     params: {
     }
   },
-  rowKey: 'code',
+  rowKey: 'id',
   reader: {
-    name: 'userName',
-    field: ['id', 'code'],
-    description: 'code',
+    name: 'materialCode',
+    description: 'materialName',
   },
   placeholder: '选择物料代码',
 };

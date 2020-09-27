@@ -1,22 +1,23 @@
-import { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment } from 'react';
+import React, { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment } from 'react';
 import { ExtTable, ExtModal, ScrollBar } from 'suid';
 import { Button, DatePicker, Form, Modal, message, Input } from 'antd';
-import { materialCode } from '../../commonProps';
 import { smBaseUrl, supplierManagerBaseUrl } from '@/utils/commonUrl';
 import { getUserName, getUserId, getUserAccount } from '../../../../utils';
 import {
     addDemandSupplier,
     findByPageOfSupplier,
-    findByDemandNumber
+    findByDemandNumber,
 } from '../../../../services/qualitySynergy'
 import styles from './index.less'
 import moment from 'moment';
+import { CommonTable } from '../../TechnicalDataSharing/DataSharingList/component/CommonTable';
+import { recommendUrl } from '../../../../utils/commonUrl';
 const { create, Item: FormItem } = Form;
 const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 14, },
 };
-const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDemandNum }, ref) => {
+const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDemandNum, refreshTable }, ref) => {
     useImperativeHandle(ref, () => ({
         setVisible
     }))
@@ -36,22 +37,20 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
     const { getFieldDecorator, validateFields } = form;
     useEffect(() => {
         if (visible === true) {
-            if(supplierModalType === 'distribute') {
+            if (supplierModalType === 'distribute') {
                 getData();
             } else {
                 findByDemandNumber({
                     demandNumber: viewDemandNum
                 }).then(res => {
                     if (res.data) {
-                        if (res.data.rows) {
-                            let dataList = res.data.rows.map((item, index) => {
-                                return {
-                                    ...item,
-                                    rowKey: index,
-                                }
-                            })
-                            setDataSource(dataList);
-                        }
+                        let dataList = res.data.map((item, index) => {
+                            return {
+                                ...item,
+                                rowKey: index,
+                            }
+                        })
+                        setDataSource(dataList);
                     } else {
                         message.error(res.message);
                     }
@@ -74,7 +73,7 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
         { title: '供应商名称', dataIndex: 'name', width: 200, ellipsis: true, align: 'center', },
     ];
     async function getData() {
-        const res = await findByPageOfSupplier({ 
+        const res = await findByPageOfSupplier({
             demandNumber: supplierModalType === 'distribute' ? selectedRow.demandNumber : viewDemandNum
         });
         if (res.statusCode === 200) {
@@ -85,7 +84,8 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                     return {
                         ...item,
                         rowKey: index,
-                        whetherDelete: false
+                        whetherDelete: false,
+                        control: false
                     }
                 })
                 setSuplierCodes(suppliers);
@@ -165,9 +165,11 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                     supplierId: item.id,
                     supplierCode: item.code,
                     supplierName: item.name,
-                    publish: 0,
-                    suspend: 0,
+                    publish: false,
+                    suspend: false,
                     whetherDelete: false,
+                    // 当前日趋+1月
+                    fillEndDate: moment(new Date().setMonth(new Date().getMonth() + 1)).format('YYYY-MM-DD'),
                     allotDate: moment().format('YYYY-MM-DD'),
                     demandNumber: selectedRow.demandNumber,
                     allotPeopleId: getUserId(),
@@ -187,30 +189,38 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
         }
     }
     // 保存
-    async function handleSave() {
-        if(supplierModalType === 'view'){
+    function handleSave() {
+        if (supplierModalType === 'view') {
             setVisible(false);
             return;
         }
-        let res = {};
-        let saveList = dataSource.concat(deleteList);
-        let saveData = { ...selectedRow, demandSupplierBoList: saveList }
-        res = await addDemandSupplier(saveData);
-        if (res.statusCode === 200) {
-            message.success('操作成功');
-            setEditTag(false);
-            setDeleteList([]);
-            getData();
-        } else {
-            message.error(res.message);
-        }
+        Modal.confirm({
+            title: '保存',
+            content: '请确认保存所有供应商!',
+            onOk: async () => {
+                let res = {};
+                let saveList = dataSource.concat(deleteList);
+                let saveData = { ...selectedRow, demandSupplierBoList: saveList }
+                res = await addDemandSupplier(saveData);
+                if (res.statusCode === 200) {
+                    message.success('操作成功');
+                    setEditTag(false);
+                    setDeleteList([]);
+                    refreshTable()
+                    setVisible(false);
+                } else {
+                    message.error(res.message);
+                }
+            },
+        });
     }
     // 发布/取消发布
     function handlePublish() {
         let newList = dataSource.map(item => {
             return (selectedRowKeys.includes(item.rowKey)) ? {
                 ...item,
-                publish: !item.publish
+                publish: !item.publish,
+                control: item.id && !item.control
             } : item
         });
         setDataSource(newList);
@@ -229,8 +239,8 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
         return !tag;
     }
     function handleCancel() {
-        if(supplierModalType === 'view'){
-            tableRef.current.manualSelectedRows(); 
+        if (supplierModalType === 'view') {
+            tableRef.current.manualSelectedRows();
             setVisible(false);
             return;
         }
@@ -249,32 +259,44 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
             setVisible(false);
         }
     }
+    function getInitDate() {
+        if(selectedRows.length === 0){
+            return '';
+        } else {
+            let endDate = selectedRows[0].fillEndDate;
+            let isSame = selectedRows.every(item => item.fillEndDate === endDate);
+            if(isSame)return moment(endDate);
+            else return ''
+        }
+    }
     return <Fragment>
         <ExtModal
             destroyOnClose={true}
             onCancel={() => { handleCancel() }}
-            onOk={() => { handleSave() }}
-            okText={supplierModalType === 'distribute' ? "保存":"确定"}
+            maskClosable={false}
+            // onOk={() => { handleSave() }}
+            // okText={supplierModalType === 'distribute' ? "保存":"确定"}
             visible={visible}
             centered
+            footer={null}
             width={1100}
             title={supplierModalType === 'distribute' ? "分配供应商" : "查看供应商"}
         >
-            <div className={styles.mbt} style={{display: supplierModalType === 'distribute' ? 'block' : 'none'}}>
+            <div className={styles.mbt} style={{ display: supplierModalType === 'distribute' ? 'block' : 'none' }}>
                 <Button type='primary' className={styles.btn} onClick={() => { setAddVisible(true) }} key="add">新增</Button>
                 <Button className={styles.btn}
                     disabled={selectedRows.length === 0 || checkSameBatch()}
                     onClick={() => { !checkSameBatch() && setEditDateVisible(true) }} key="edit">编辑填报截止日期</Button>
                 <Button className={styles.btn}
-                    disabled={selectedRows.length === 0}
+                    disabled={!(selectedRows.length !== 0 && checkAllSameStatus('publish') === 2)}
                     onClick={() => { handleDelete() }} key="delete" >删除</Button>
                 <Button className={styles.btn} onClick={() => { handleSuspended() }} key="suspend"
                     disabled={checkAllSameStatus('suspend') === false}>{checkAllSameStatus('suspend') === 1 ? '取消暂停' : checkAllSameStatus('suspend') === 2 ? '暂停' : '暂停/取消暂停'}</Button>
                 <Button className={styles.btn} onClick={() => { handlePublish(true) }}
-                    disabled={selectedRows.length === 0 || checkAllSameStatus('publish') === 1}
+                    disabled={checkAllSameStatus('publish') === 1 || checkAllSameStatus('publish') === false}
                 >发布</Button>
                 <Button className={styles.btn} onClick={() => { handlePublish(false) }}
-                    disabled={selectedRows.length === 0 || checkAllSameStatus('publish') === 2}
+                    disabled={checkAllSameStatus('publish') === 2 || checkAllSameStatus('publish') === false}
                 >取消发布</Button>
                 <Button className={styles.btn} onClick={() => { handleSave() }}>保存</Button>
             </div>
@@ -300,6 +322,7 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
         <ExtModal
             centered
             destroyOnClose
+            maskClosable={false}
             onCancel={() => { setEditDateVisible(false) }}
             onOk={handleEditDate}
             visible={editDateVisible}
@@ -308,16 +331,24 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
             <FormItem label='填报截止日期' {...formLayout}>
                 {
                     getFieldDecorator('endDate', {
+                        initialValue: getInitDate(),
                         rules: [{ required: true, message: '请选择填报截止日期' }]
-                    })(<DatePicker />)
+                    })(<DatePicker
+                        disabledDate={(value) => {
+                            return value.valueOf() <= moment().add(-1, "second")
+                        }}
+                    />)
                 }
             </FormItem>
         </ExtModal>
         <ExtModal
             centered
             destroyOnClose
-            width="150vh"
+            width={'110vh'}
+            title={'新增供应商'}
+            height={'500px'}
             visible={addVisible}
+            maskClosable={false}
             zIndex={1001}
             onCancel={() => { setAddVisible(false) }}
             footer={
@@ -326,30 +357,27 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                 <Button className={styles.btn} type="primary" onClick={() => { handleAdd() }} key="continue">确认并继续</Button>]
             }
         >
-            {/* <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px', marginTop: '15px' }}>
-                <Search style={{ width: '60%' }} placeholder='请输入关键字查询' onSearch={handleQuickSearch} allowClear />
-            </div> */}
-            <ExtTable
-                columns={supplierColumns}
-                bordered
-                allowCancelSelect
-                showSearch={true}
-                remotePaging
-                checkbox={{ multiSelect: false }}
+            <CommonTable
+                scrollHeight={400}
                 ref={supplierTableRef}
-                checkbox={true}
-                rowKey={(item) => item.id}
-                size='small'
+                columns={supplierColumns}
                 onSelectRow={(rowKeys, rows) => {
+                    console.log('选中', rowKeys, rows)
                     setSupplierSelectedRowKeys(rowKeys);
                     setSupplierSelected(rows);
                 }}
-                selectedRowKeys={supplierSelectedRowKeys}
                 store={{
-                    url: `${supplierManagerBaseUrl}/api/supplierService/findSupplierVoByPage`,
+                    url: `${supplierManagerBaseUrl}/api/supplierService/findByPage`,
                     type: 'POST',
+                    params: {
+                        Q_EQ_frozen__Boolean: false,
+                        filters: [
+                            { fieldName: "code", fieldType: "String", operator: "EQ", value: "NONULL" },
+                            { fieldName: "supplierStatus", fieldType: "Integer", operator: "EQ", value: 0 }
+                        ],
+                    }
                 }}
-            />
+            />;
         </ExtModal>
     </Fragment>
 })

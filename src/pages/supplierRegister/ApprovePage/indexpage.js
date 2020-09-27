@@ -49,22 +49,26 @@ function SupplierApproveInfo() {
         
       }
       const handleSave = async (approved) => {
+        // let saveData = wholeData
+        // console.log(JSON.stringify(saveData))
         triggerLoading(true)
         let saveData = wholeData
         const { success, message: msg } = await saveSupplierRegister(saveData)
-        triggerLoading(false)
-        return new Promise((resolve, reject) => {
-          if (success) {
-              resolve({
-              success,
-              message: msg
-              })
-              message.success(msg)
-              return;
-          }
-          reject(false)
-          message.error(msg)
-        })
+        if (success) {
+          triggerLoading(false)
+          return new Promise((resolve, reject) => {
+            if (success) {
+                resolve({
+                success,
+                message: msg
+                })
+                message.success(msg)
+                return;
+            }
+            reject(false)
+            message.error(msg)
+          })
+        }
     }
     function handleSubmitComplete(res) {
         const { success } = res;

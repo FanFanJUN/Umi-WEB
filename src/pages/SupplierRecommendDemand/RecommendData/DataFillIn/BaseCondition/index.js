@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 15:52:52
- * @LastEditTime: 2020-09-18 15:41:33
+ * @LastEditTime: 2020-09-22 09:22:06
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/BaseCondition/index.js
  * @Description: 基本情况 Tab
  * @Connect: 1981824361@qq.com
@@ -28,6 +28,7 @@ const BaseCondition = ({ form, updateGlobalStatus }) => {
 
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             const res = await findrBaseInfoById({ supplierRecommendDemandId: '676800B6-F19D-11EA-9F88-0242C0A8442E' });
             if (res.success) {
                 res.data && setData(res.data);

@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-08 16:34:49
- * @LastEditTime: 2020-09-18 15:42:11
+ * @LastEditTime: 2020-09-22 10:33:30
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/SellCondition/index.js
  * @Description: 销售情况 Tab
  * @Connect: 1981824361@qq.com
@@ -32,10 +32,11 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
 
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             const res = await findSalesSituationById({ supplierRecommendDemandId: id || '676800B6-F19D-11EA-9F88-0242C0A8442E' });
             if (res.success) {
                 res.data && setData(res.data);
-                setsupplierSalesProceeds(data.supplierSalesProceeds || []);
+                res.data && setsupplierSalesProceeds(res.data.supplierSalesProceeds || []);
             } else {
                 message.error(res.message);
             }

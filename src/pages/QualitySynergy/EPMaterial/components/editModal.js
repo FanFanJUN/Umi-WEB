@@ -2,7 +2,13 @@ import { useImperativeHandle, forwardRef, useState, useRef, Fragment, useEffect 
 import { Form, Row, Col, Input, Button, Modal, message, Spin } from 'antd';
 import { ComboList, ExtTable, ExtModal, ComboTree } from 'suid';
 import { MaterialConfig, allPersonList } from '../../commonProps';
-import { findByBuCode, sapMaterialGroupMapPurchaseGroup, epsFindByCode, findOrgTreeWithoutFrozen } from '../../../../services/qualitySynergy';
+import {
+    findByBuCode,
+    sapMaterialGroupMapPurchaseGroup,
+    epsFindByCode,
+    findOrgTreeWithoutFrozen,
+    checkEnvironmentalProtectionData
+} from '../../../../services/qualitySynergy';
 const { create, Item: FormItem } = Form;
 const formLayout = {
     labelCol: { span: 8, },
@@ -14,13 +20,12 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada, materia
     }))
     const [visible, setVisible] = useState(false);
     const [bmCode, setBmCode] = useState('');
-    const [loading, setLoading] = useState(false);
     const [modalType, setModalType] = useState('');
     const [OrgId, setOrgId] = useState('');
     const { getFieldDecorator, setFieldsValue, validateFields } = form;
 
     useEffect(() => {
-        if (!buCode) return;
+        if (!buCode || !visible) return;
         // 根据业务单元找业务板块
         async function fetchData() {
             const res = await findByBuCode({ buCode: buCode });
@@ -30,22 +35,29 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada, materia
         }
         fetchData();
         findOrgTreeWithoutFrozen().then(res => {
-            if(res.success) {
+            if (res.success) {
                 setOrgId(res.data[0].id);
             }
         })
-    }, [buCode])
+    }, [buCode, visible])
     function showModal(type) {
         setModalType(type);
         setVisible(true);
     }
-    const handleAfterSelect = (item) => {
-        if(materialCodes.includes(item.materialCode)){
-            message.error('此物料已存在表格中，不能再次添加！');
-            setFieldsValue({ materialId: '', materialCode: '', materialName: '', materialGroupCode: '', materialGroupName: '', materialGroupId: ''})
+    const handleAfterSelect = async (item) => {
+        const resCheck = await checkEnvironmentalProtectionData({
+            environmentalProtectionName: item.materialDesc
+        })
+        if(!resCheck.success) {
+            setFieldsValue({ materialId: '', materialCode: '', materialName: '', materialGroupCode: '', materialGroupName: '', materialGroupId: '' })
+            message.warning(resCheck.message);
             return;
         }
-        setLoading(true);
+        if (materialCodes && materialCodes.includes(item.materialCode)) {
+            message.error('此物料已存在表格中，不能再次添加！');
+            setFieldsValue({ materialId: '', materialCode: '', materialName: '', materialGroupCode: '', materialGroupName: '', materialGroupId: '' })
+            return;
+        }
         let tag1, tag2;
         // 根据物料组+业务板块找战略采购
         sapMaterialGroupMapPurchaseGroup({
@@ -57,7 +69,6 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada, materia
                 setFieldsValue({
                     strategicPurchaseCode: res.data.rows[0].purchaseGroupCode,
                     strategicPurchaseName: res.data.rows[0].purchaseGroupName,
-                    loading: tag2 && false
                 })
             } else {
                 setFieldsValue({
@@ -78,7 +89,6 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada, materia
                     environmentalProtectionId: espRes.data.id,
                     environmentalProtectionCode: espRes.data.environmentalProtectionCode,
                     environmentalProtectionName: espRes.data.environmentalProtectionName,
-                    loading: tag1 && false
                 })
             } else {
                 message.warning('未查询到相关环保标准，请检查！');
@@ -98,10 +108,9 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada, materia
     return <Fragment>
         <ExtModal
             destroyOnClose
-            onCancel={() => { setVisible(false) }}
+            onCancel={() => { form.resetFields(); setVisible(false); }}
             onOk={handleOk}
             visible={visible}
-            loading={loading}
             maskClosable={false}
             centered
             width={500}
@@ -168,10 +177,10 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada, materia
                 <Row>
                     <FormItem label='战略采购' {...formLayout}>
                         {
-                            getFieldDecorator('strategicPurchaseId', { initialValue: initData && initData.strategicPurchaseId }),
-                            getFieldDecorator('strategicPurchaseCode', { initialValue: initData && initData.strategicPurchaseCode }),
+                            getFieldDecorator('strategicPurchaseId', { initialValue: modalType === 'add' ? '' : initData && initData.strategicPurchaseId }),
+                            getFieldDecorator('strategicPurchaseCode', { initialValue: modalType === 'add' ? '' : initData && initData.strategicPurchaseCode }),
                             getFieldDecorator('strategicPurchaseName', {
-                                initialValue: initData && initData.strategicPurchaseName,
+                                initialValue: modalType === 'add' ? '' : initData && initData.strategicPurchaseName,
                             })(<Input disabled />)
                         }
                     </FormItem>
@@ -179,13 +188,13 @@ const editModal = forwardRef(({ form, initData, buCode, handleTableTada, materia
                 <Row>
                     <FormItem label='环保管理人员' {...formLayout}>
                         {
-                            getFieldDecorator('environmentAdminId', { initialValue: initData && initData.environmentAdminId }),
-                            getFieldDecorator('environmentAdminAccount', { initialValue: initData && initData.environmentAdminAccount }),
+                            getFieldDecorator('environmentAdminId', { initialValue: modalType === 'add' ? '' : initData && initData.environmentAdminId }),
+                            getFieldDecorator('environmentAdminAccount', { initialValue: modalType === 'add' ? '' : initData && initData.environmentAdminAccount }),
                             getFieldDecorator('environmentAdminName', {
-                                initialValue: initData && initData.environmentAdminName,
+                                initialValue: modalType === 'add' ? '' : initData && initData.environmentAdminName,
                             })(<ComboList form={form}
                                 {...allPersonList}
-                                cascadeParams={{organizationId: OrgId}}
+                                cascadeParams={{ organizationId: OrgId }}
                                 name='environmentAdminName'
                                 field={['environmentAdminId', 'environmentAdminAccount']}
                             />)

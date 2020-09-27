@@ -54,7 +54,7 @@ const SupplierEditRef = forwardRef(({
     setEditData(wholeData.supplierInfoVo)
     configurelist(configuredata)
     setConfigure(configuredata)
-    setsupplierName(wholeData.supplierInfoVo.supplierVo.name)
+    //setsupplierName(wholeData.supplierInfoVo.supplierVo.name)
   }, [wholeData,configuredata])
   // 
   function configurelist(configure) {
@@ -156,7 +156,7 @@ const SupplierEditRef = forwardRef(({
       }
     }
     let enclosurelist = [],basedata,accountData,baseexten,automaticdata,automaticincome,
-    automThreeYear,rangeValinfo;
+    automThreeYear,rangeValinfo,othersatt = [];
     if (baseVal && baseVal.supplierVo) {
       baseVal.supplierVo.id = editData.supplierVo.id;
       baseVal.extendVo.id = editData.extendVo.id;
@@ -166,13 +166,16 @@ const SupplierEditRef = forwardRef(({
       baseexten = baseVal.extendVo
     }
     if (baseVal && baseVal.genCertVos) {
-      enclosurelist= {...enclosurelist,...baseVal.genCertVos[0]}
+      enclosurelist.push(...baseVal.genCertVos)
+      othersatt = enclosurelist
     }
     if (accountVal && accountVal.supplierVo) {
       accountData = accountVal.supplierVo
     }
     if (qualifications) {
-      enclosurelist = [enclosurelist, ...qualifications.proCertVos];
+      enclosurelist = [...othersatt, ...qualifications.proCertVos];
+    }else {
+      enclosurelist = othersatt
     }
     if (businessInfoVal && businessInfoVal.supplierVo) {
       automaticdata = businessInfoVal.supplierVo
@@ -199,7 +202,12 @@ const SupplierEditRef = forwardRef(({
     if (baseVal) {
       if (baseVal.supplierVo.companyCode) {
         wholeData.companyCode = baseVal.supplierVo.companyCode
-        wholeData.companyName = baseVal.supplierVo.companyName
+        if (baseVal.supplierVo.companyName === baseVal.supplierVo.companyCode) {
+          wholeData.companyName = wholeData.companyName
+        } else {
+          wholeData.companyName = baseVal.supplierVo.companyName
+        }
+
       }
     }
     

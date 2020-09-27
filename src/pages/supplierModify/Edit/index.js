@@ -20,10 +20,11 @@ import {
 import {
   findByRequestIdForModify,
   TemporarySupplierRegister,
-  saveSupplierRegister
+  saveSupplierRegister,
+  ValiditySupplierRegister
 } from '@/services/SupplierModifyService'
 import styles from '../../supplierRegister/components/index.less';
-import { closeCurrent } from '../../../utils';
+import { closeCurrent,isEmpty} from '../../../utils';
 
 function CreateStrategy() {
   const BaseinfoRef = useRef(null);
@@ -44,7 +45,7 @@ function CreateStrategy() {
   const [editData, setEditData] = useState([]);
   const [Reasonchange, setReasonchange] = useState(false);
   const [loading, triggerLoading] = useState(false);
-  const [accountVo, setaccountVo] = useState(false);
+  const [visible, setvisible] = useState(false);
   const [configure, setConfigure] = useState([]);
   const [supplierName, setsupplierName] = useState();
   const { query } = router.useLocation();
@@ -63,6 +64,28 @@ function CreateStrategy() {
         setReasonchange(data.supplierApplyVo)
         setwholeData(data.supplierApplyVo)
         triggerLoading(false);
+        if (data.supplierApplyVo.supplierInfoVo.supplierVo.supplierCategoryName === '个人供应商') {
+          if (data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo) {
+            let mobile = data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo.mobile;
+            if (isEmpty(mobile)) {
+              setvisible(true)
+            }
+          }
+          if (data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo === undefined) {
+            setvisible(true)
+          }
+        }else {
+          if (data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo) {
+            let mobile = data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo.mobile;
+            let email = data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo.email;
+            if (isEmpty(mobile) || isEmpty(email)) {
+              setvisible(true)
+            }
+          }
+          if (data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo === undefined) {
+            setvisible(true)
+          }
+        }
       }, 200);
     } else {
       triggerLoading(false);
@@ -148,7 +171,7 @@ function CreateStrategy() {
       }
     })
     let enclosurelist = [], basedata, baseexten, accountData,
-      automaticdata, automaticincome, automThreeYear, rangeValinfo;
+      automaticdata, automaticincome, automThreeYear, rangeValinfo,othersatt = [];
     if (baseVal && baseVal.supplierVo) {
       baseVal.supplierVo.id = editData.supplierVo.id;
       baseVal.extendVo.id = editData.extendVo.id;
@@ -158,19 +181,16 @@ function CreateStrategy() {
       baseexten = baseVal.extendVo
     }
     if (baseVal && baseVal.genCertVos) {
-      let ertttyher;
-      let theredata = {ertttyher,...baseVal.genCertVos}
-      enclosurelist = [enclosurelist, ...theredata]
-      console.log(baseVal.genCertVos)
-      //enclosurelist = baseVal.genCertVos
+      enclosurelist.push(...baseVal.genCertVos)
+      othersatt = enclosurelist
     }
     if (accountVal && accountVal.supplierVo) {
       accountData = accountVal.supplierVo
     }
     if (qualifications) {
-      enclosurelist = [enclosurelist, ...qualifications.proCertVos];
+      enclosurelist = [...othersatt, ...qualifications.proCertVos];
     }else {
-      enclosurelist = enclosurelist
+      enclosurelist = othersatt
     }
     if (businessInfoVal && businessInfoVal.supplierVo) {
       automaticdata = businessInfoVal.supplierVo
@@ -212,15 +232,17 @@ function CreateStrategy() {
     wholeData.againdata = '0';
     let saveData = wholeData;
     console.log(saveData)
-    // triggerLoading(true)
-    // const { success, message: msg } = await TemporarySupplierRegister(saveData);
-    // if (success) {
-    //   message.success('保存成功');
-    //   triggerLoading(false)
-    //   closeCurrent()
-    //   return
-    // }
-    // triggerLoading(false)
+    triggerLoading(true)
+    const { success, message: msg } = await TemporarySupplierRegister(saveData);
+    if (success) {
+      message.success('保存成功');
+      triggerLoading(false)
+      closeCurrent()
+      return
+    }else {
+      message.error(msg);
+    }
+    triggerLoading(false)
   }
   // 帐号暂存
   function ObtainAccount() {
@@ -347,7 +369,7 @@ function CreateStrategy() {
     }
     //console.log(authorizedClientVal)
     let enclosurelist = [], basedata, accountData, baseexten, automaticdata, automaticincome,
-      automThreeYear, rangeValinfo;
+      automThreeYear, rangeValinfo,othersatt = [];
     if (baseVal && baseVal.supplierVo) {
       baseVal.supplierVo.id = editData.supplierVo.id;
       baseVal.extendVo.id = editData.extendVo.id;
@@ -357,13 +379,16 @@ function CreateStrategy() {
       baseexten = baseVal.extendVo
     }
     if (baseVal && baseVal.genCertVos) {
-      enclosurelist = { ...enclosurelist, ...baseVal.genCertVos[0] }
+      enclosurelist.push(...baseVal.genCertVos)
+      othersatt = enclosurelist
     }
     if (accountVal && accountVal.supplierVo) {
       accountData = accountVal.supplierVo
     }
     if (qualifications) {
-      enclosurelist = [enclosurelist, ...qualifications.proCertVos];
+      enclosurelist = [...othersatt, ...qualifications.proCertVos];
+    }else {
+      enclosurelist = othersatt
     }
     if (businessInfoVal && businessInfoVal.supplierVo) {
       automaticdata = businessInfoVal.supplierVo
@@ -403,11 +428,18 @@ function CreateStrategy() {
       wholeData.supplierInfoVo = supplierInfoVo;
     }
     setwholeData(wholeData)
-    getModelRef.current.handleModalVisible(true);
+    // 变更保存效验
+    console.log(JSON.stringify(wholeData))
+    const { success, message: msg } = await ValiditySupplierRegister(wholeData);
+    if (success) {
+      getModelRef.current.handleModalVisible(true);
+    }else {
+      message.error(msg);
+    }
+    
   }
   async function createSave(val) {
     let params = { ...wholeData, ...val };
-    triggerLoading(true)
     const { success, message: msg } = await TemporarySupplierRegister(params);
     if (success) {
       message.success(msg);
@@ -430,6 +462,19 @@ function CreateStrategy() {
   // 返回
   function handleBack() {
     closeCurrent()
+  }
+  function hideloading() {
+    triggerLoading(false)
+  }
+  // 切换配置
+  function ficationtype(id) {
+    initConfigurationTable(id);
+  }
+  function handleOk() {
+    setvisible(false)
+  }
+  function handleCancel() {
+    setvisible(false)
   }
   return (
     <Spin spinning={loading} tip='处理中...'>
@@ -465,6 +510,7 @@ function CreateStrategy() {
                       editformData={editData}
                       wholeData={wholeData}
                       wrappedComponentRef={BaseinfoRef}
+                      onClickfication={ficationtype}
                     />
                   </div>
                 </div>
@@ -593,11 +639,21 @@ function CreateStrategy() {
           })
         }
         <ReasonAndStartFlowModal
+          loading={false}
+          hideloading={hideloading}
           editData={Reasonchange}
           disabled={true}
           ReaModelOk={createSave}
           wrappedComponentRef={getModelRef}
         />
+        <Modal
+            title="提示"
+            visible={visible}
+            onOk={handleOk}
+            onCancel={handleCancel}
+            >
+            <p>请先到供应商账号的个人设置中绑定手机和邮箱，再变更其他信息，否则无法保存变更信息</p>
+        </Modal>
       </div>
     </Spin>
   )

@@ -1,6 +1,6 @@
 import React, { forwardRef, useState, useRef, useEffect, useImperativeHandle } from 'react';
-import { ExtTable, WorkFlow, ExtModal, utils, ToolBar } from 'suid';
-import { Form, Button, message, Checkbox, Modal } from 'antd';
+import { ExtTable, WorkFlow, ExtModal, utils, ToolBar,AuthButton } from 'suid';
+import { Form, Button, message, Checkbox, Modal} from 'antd';
 import { openNewTab, getFrameElement } from '@/utils';
 import Header from '@/components/Header';
 import UploadFile from '../../../components/Upload/index'
@@ -275,10 +275,10 @@ const Agentformef = forwardRef(({
   function getAgentform() {
     const agentInfo = tabformRef.current.data;
     console.log(agentInfo)
-    // if (!agentInfo || agentInfo.length === 0) {
-    //   return false;
-    // }
-    // return agentInfo;
+    if (!agentInfo || agentInfo.length === 0) {
+      return false;
+    }
+    return agentInfo;
   }
   // 设置所有表格参数
   const setHeaderFields = (fields) => {
@@ -287,21 +287,15 @@ const Agentformef = forwardRef(({
     // setFieldsValue(fs)
   }
   const headerleft = (
-    <>
-      {
-          authAction(
-            <Button type='primary' ignore={DEVELOPER_ENV} key='' className={styles.btn} onClick={() => showModal()}>新增</Button>
-          )
+    <> 
+        {
+          <AuthButton type="primary" className={styles.btn} onClick={() => showModal()}>新增</AuthButton>
         }
         {
-          authAction(
-            <Button ignore={DEVELOPER_ENV} key='' className={styles.btn} onClick={() => handleEdit()} disabled={empty}>编辑</Button>
-          )
+          <AuthButton className={styles.btn} onClick={() => handleEdit()} disabled={empty} >编辑</AuthButton>
         }
         {
-          authAction(
-            <Button ignore={DEVELOPER_ENV} key='' className={styles.btn} disabled={empty} onClick={handleRemove}>删除</Button>
-          )
+          <AuthButton className={styles.btn} disabled={empty} onClick={handleRemove}>删除</AuthButton>
         }
     </>
   );
@@ -309,7 +303,7 @@ const Agentformef = forwardRef(({
     <>
         {
           authAction(
-            <Button ignore={DEVELOPER_ENV} key='' className={styles.btn} onClick={() => handleEdit()} disabled={empty}>编辑</Button>
+            <AuthButton className={styles.btn} disabled={empty} onClick={handleEdit}>删除</AuthButton>
           )
         }
     </>
@@ -335,6 +329,11 @@ const Agentformef = forwardRef(({
             size='small'
             height={height}
             Modeltitle={Modeltitle}
+            pagination={{
+              hideOnSinglePage: true,
+              disabled: false,
+              pageSize: 100,
+            }}
             remotePaging={true}
             ellipsis={false}
             wrappedComponentRef={agentModelRef}
@@ -356,6 +355,11 @@ const Agentformef = forwardRef(({
             CNCountryId={CNCountryId}
             wrappedComponentRef={agentModelRef}
             isView={isView}
+            pagination={{
+              hideOnSinglePage: true,
+              disabled: false,
+              pageSize: 100,
+            }}
             edit={edit}
             saveData={false}
             editData={editData}

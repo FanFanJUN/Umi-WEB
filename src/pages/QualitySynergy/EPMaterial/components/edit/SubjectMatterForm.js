@@ -53,7 +53,7 @@ export default function({originData={}}) {
             <Row>
                 <Col span={12}>
                     <FormItem label='环保管理人员' {...formLayout}>
-                        <Input disabled value={originData.environmentAdminName}/>
+                        <Input disabled value={originData.environmentAdministratorName || originData.environmentAdminName}/>
                     </FormItem>
                 </Col>
             </Row>

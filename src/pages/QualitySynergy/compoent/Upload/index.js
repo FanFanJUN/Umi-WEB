@@ -75,7 +75,7 @@ class UploadFile extends React.Component {
           status: 'done', // 状态有：uploading done error removed
           response: [item.id], // 服务端响应内容
           url: host + baseUrl + '/supplierRegister/download?docId=' + item.id, // 下载链接额外的 HTML 属性
-          thumbUrl: window._previewUrl + item.id,
+          thumbUrl: `${origin}/api-gateway/edm-service/preview` + '?docId=' + item.id,
           uploadedTime: item.uploadedTime,
           uploadUserName: item.uploadUserName,
         });
@@ -97,7 +97,7 @@ class UploadFile extends React.Component {
                   status: 'done', // 状态有：uploading done error removed
                   response: [res.data[index].id], // 服务端响应内容
                   url: host + baseUrl + '/supplierRegister/download?docId=' + res.data[index].id, // 下载链接额外的 HTML 属性
-                  thumbUrl: window._previewUrl + res.data[index].id,
+                  thumbUrl: `${origin}/api-gateway/edm-service/preview` + '?docId=' + res.data[index].id,
                   uploadedTime: res.data[index].uploadedTime,
                   uploadUserName: res.data[index].uploadUserName,
                 });
@@ -140,6 +140,7 @@ class UploadFile extends React.Component {
         }
       }
       fileList.map(item => {
+        console.log(item, ';item')
         if (item.status === 'done') {
           item.url = host + baseUrl + '/supplierRegister/download?docId=' + item.response[0];
           item.thumbUrl = `${origin}/api-gateway/edm-service/preview` + '?docId=' + item.response[0];

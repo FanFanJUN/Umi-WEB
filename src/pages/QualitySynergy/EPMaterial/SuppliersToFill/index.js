@@ -2,25 +2,27 @@ import { useEffect, useState, useRef, Fragment } from 'react'
 import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import { Input, Button, message, Modal, Form } from 'antd';
 import { supplierManagerBaseUrl, recommendUrl } from '@/utils/commonUrl';
-import { openNewTab, getFrameElement, getUserName, getUserId, getUserAccount } from '@/utils';
+import { openNewTab, getFrameElement, getUserName, getUserId, getUserAccount, closeCurrent } from '@/utils';
 import classnames from 'classnames';
-import { AutoSizeLayout, Header, AdvancedForm, Upload } from '@/components';
+import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
+import Upload from '../../compoent/Upload';
 import FillingHistory from '../components/fillingHistory'
 import { findMaterialCode, MaterialConfig, StrategicPurchaseConfig, needToFillList, fillStatusList, allPersonList } from '../../commonProps';
 import styles from './index.less'
 import {
-    epDemandUpdate,
     epDemandSubmit,
     epDemandRecall,
     epDemandCopyAll,
-    uploadFile
+    uploadFile,
+    supplierGetList,
+    findMyselfData
 } from '../../../../services/qualitySynergy';
 const { authAction, storage } = utils;
 const { create, Item: FormItem } = Form;
 const { Search } = Input;
 const { confirm } = Modal;
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
-const SupplierFillList = function ({ form }) {
+export default create()(function ({ form }) {
     const headerRef = useRef(null)
     const tableRef = useRef(null);
     const historyRef = useRef(null);
@@ -29,15 +31,26 @@ const SupplierFillList = function ({ form }) {
     const [uploadVisible, setUploadVisible] = useState(false);
     const [selectedRows, setRows] = useState([]);
     const [searchValue, setSearchValue] = useState({});
-    const [attachment, setAttachment] = useState(null);
-    const [materialObj, setMaterialObj] = useState({})
+    const [dataSource, setDataSource] = useState([]);
+    const [materialObj, setMaterialObj] = useState({});
+    const [ownerFiles, setOwnerFiles] = useState([]);
     const FRAMELEEMENT = getFrameElement();
     const {
         getFieldDecorator,
-        getFieldValue,
-        setFieldsValue,
         validateFields
     } = form;
+    useEffect(() => {
+        supplierGetList({
+            ...searchValue,
+            quickSearchProperties: []
+        }).then(res => {
+            if (res.success && res.statusCode === 200) {
+                setDataSource(res.data.rows)
+            } else {
+                message.error(res.message)
+            }
+        })
+    }, [searchValue])
     // 高级查询配置
     const formItems = [
         { title: '物料代码', key: 'materialCode', type: 'list', props: MaterialConfig },
@@ -66,17 +79,40 @@ const SupplierFillList = function ({ form }) {
                 break;
         }
     }
-    // useEffect(() => {
-    //     window.parent.frames.addEventListener('message', listenerParentClose, false);
-    //     return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
-    // }, []);
+    useEffect(() => {
+        findMyselfData().then(res => {
+            if (res.success && res.statusCode === 200) {
+                if (res.data.length === 0) {
+                    confirm({
+                        title: '提示',
+                        content: '您还未上传资质文件，请先上传文件！',
+                        okText: '立即上传',
+                        cancelText: '退出',
+                        onOk: () => {
+                            setUploadVisible(true);
+                        },
+                        onCancel: () => {
+                            closeCurrent();
+                        }
+                    })
+                } else {
+                    // 暂时先上传一次
+                    let ids = res.data[0].documentInfo;
+                    setOwnerFiles(ids)
+                }
+            }
+        })
+        window.parent.frames.addEventListener('message', listenerParentClose, false);
+        return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
+    }, []);
 
-    // function listenerParentClose(event) {
-    //     const { data = {} } = event;
-    //     if (data.tabAction === 'close') {
-    //         tableRef.current.remoteDataRefresh()
-    //     }
-    // }
+    function listenerParentClose(event) {
+        const { data = {} } = event;
+        if (data.tabAction === 'close') {
+            setSearchValue({})
+            tableRef.current.remoteDataRefresh();
+        }
+    }
     const headerLeft = <>
         {
             authAction(<Button
@@ -118,7 +154,7 @@ const SupplierFillList = function ({ form }) {
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={selectedRowKeys.length !== 1}
+                // disabled={selectedRowKeys.length !== 1}
                 onClick={() => { setCopyVisible(true) }}
                 key='QUALITYSYNERGY_SUPPLIERFILL_COPY_NEW'
                 ignore={DEVELOPER_ENV}
@@ -142,7 +178,7 @@ const SupplierFillList = function ({ form }) {
                 onClick={() => { setUploadVisible(true) }}
                 key='QUALITYSYNERGY_SUPPLIERFILL_UPLOAD_NEW'
                 ignore={DEVELOPER_ENV}
-            >上传资质文件</Button>)
+            >{ownerFiles.length > 0 ? '查看资质文件' : '上传资质文件'}</Button>)
         }
     </>
     const headerRight = <>
@@ -183,6 +219,11 @@ const SupplierFillList = function ({ form }) {
         { title: '物料组描述', dataIndex: 'materialGroupName', ellipsis: true, },
         { title: '战略采购名称', dataIndex: 'strategicPurchaseName', ellipsis: true, },
         { title: '环保管理人员', dataIndex: 'environmentAdministratorName', ellipsis: true, },
+        { title: '创建人', dataIndex: 'applyPersonName', ellipsis: true },
+        { title: '创建人联系方式', dataIndex: 'applyPersonPhone', ellipsis: true },
+        { title: '供应商代码', dataIndex: 'supplierCode', ellipsis: true },
+        { title: '供应商名称', dataIndex: 'supplierName', width: 200, ellipsis: true },
+        { dataIndex: 'emputy', width: 20, ellipsis: true },
     ].map(item => ({ ...item, align: 'center' }));
     const handleButton = async (type) => {
         let res = {}, id = selectedRowKeys[0]
@@ -195,12 +236,15 @@ const SupplierFillList = function ({ form }) {
                 break;
             case 'copy':
                 const { } = materialObj;
-                res = await epDemandCopyAll({ id });
+                res = await epDemandCopyAll({ materialCode: materialObj.materialCode });
                 break;
             default:
                 break;
         }
         if (res.statusCode === 200) {
+            if(type === 'copy') {
+                setCopyVisible(false);
+            }
             refresh();
             message.success('操作成功');
         } else {
@@ -211,12 +255,16 @@ const SupplierFillList = function ({ form }) {
     // 快捷查询
     function handleQuickSearch(value) {
         setSearchValue(v => ({ ...v, quickSearchValue: value }));
-        tableRef.current.remoteDataRefresh();
+        refresh();
     }
+    // 清空选中/刷新表格数据
+    const refresh = () => {
+        tableRef.current.manualSelectedRows();
+        tableRef.current.remoteDataRefresh();
+    };
     // 处理高级搜索
     function handleAdvnacedSearch(value) {
         console.log(value)
-        // value.needToFill = value.needToFill === 'yes' ? true : value.needToFill === 'no' ? false : '';
         value.materialCode = value.materialCode_name;
         value.strategicPurchaseCode = value.strategicPurchaseCode_name;
         delete value.materialCode_name;
@@ -225,32 +273,38 @@ const SupplierFillList = function ({ form }) {
         delete value.effectiveStatus_name;
         delete value.needToFill_name;
         setSearchValue(v => ({ ...v, ...value }));
+        refresh();
         headerRef.current.hide();
-        tableRef.current.remoteDataRefresh();
     }
     // 记录列表选中
     function handleSelectedRows(rowKeys, rows) {
         setRowKeys(rowKeys);
         setRows(rows);
     }
-    // 清空选中/刷新表格数据
-    const refresh = () => {
-        tableRef.current.manualSelectedRows();
-        tableRef.current.remoteDataRefresh();
-    }
     // 上传确认
     function handleUploadOk() {
+        if (ownerFiles.length > 0) {
+            setUploadVisible(false);
+            return;
+        }
         validateFields((error, values) => {
             const { files } = values;
             if (!error) {
                 uploadFile({
                     aptitudeFileId: files ? files.join() : '',
+                    fileIdList: files ? files : [],
                     supplierName: getUserName(),
                     supplierCode: getUserAccount(),
                     supplierId: getUserId()
                 }).then(res => {
                     if (res.statusCode === 200) {
                         message.success('上传成功');
+                        findMyselfData().then(res => {
+                            if (res.success && res.statusCode === 200) {
+                                let ids = res.data[0].documentInfo;
+                                setOwnerFiles(ids)
+                            }
+                        })
                         setUploadVisible(false);
                     } else {
                         message.error(res.message)
@@ -259,6 +313,13 @@ const SupplierFillList = function ({ form }) {
             }
         })
 
+    }
+    function handleUploadCancle() {
+        if (ownerFiles.length === 0) {
+            closeCurrent();
+        } else {
+            setUploadVisible(false);
+        }
     }
     return <Fragment>
         <Header
@@ -281,17 +342,17 @@ const SupplierFillList = function ({ form }) {
                     checkbox={{ multiSelect: false }}
                     ref={tableRef}
                     rowKey={(item) => item.id}
-                    size='small'
                     showSearch={false}
                     onSelectRow={handleSelectedRows}
                     selectedRowKeys={selectedRowKeys}
+                    // dataSource={dataSource}
                     store={{
                         url: `${recommendUrl}/api/epDataFillService/findByPage`,
-                        type: 'POST',
                         params: {
                             ...searchValue,
-                            quickSearchProperties: []
+                            quickSearchProperties: [],
                         },
+                        type: 'POST',
                     }}
                 />
             }
@@ -300,6 +361,7 @@ const SupplierFillList = function ({ form }) {
         {copyVisible && <ExtModal
             centered
             destroyOnClose
+            maskClosable={false}
             onCancel={() => { setCopyVisible(false) }}
             onOk={() => { handleButton('copy') }}
             visible={copyVisible}
@@ -311,8 +373,8 @@ const SupplierFillList = function ({ form }) {
                     style={{ width: '100%' }}
                     name='supplierCode'
                     afterSelect={(item) => {
-                        console.log(item)
-                        setMaterialObj(item)
+                        const {materialCode, materialName} = item
+                        setMaterialObj({materialCode, materialName})
                     }} />
             </FormItem>
         </ExtModal>}
@@ -320,22 +382,22 @@ const SupplierFillList = function ({ form }) {
         {uploadVisible && <ExtModal
             centered
             destroyOnClose
-            onCancel={() => { setUploadVisible(false) }}
+            maskClosable={false}
+            onCancel={() => { handleUploadCancle() }}
             onOk={() => { handleUploadOk() }}
+            cancelText={ownerFiles.length === 0 ? '退出' : '取消'}
             visible={uploadVisible}
             title="上传资质文件"
         >
-            <FormItem label='不使用禁用物质的声明' labelCol={{ span: 8 }} wrapperCol={{ span: 12 }}>
+            <FormItem label='不使用禁用物质的声明' labelCol={{ span: 10 }} wrapperCol={{ span: 12 }}>
                 {
                     getFieldDecorator('files', {
                         rules: [{ required: true, message: '请上传文件' }]
-                    })(<Upload entityId={''} />)
+                    })(<Upload entityId={ownerFiles} type={ownerFiles.length > 0 ? 'show' : ''} />)
                 }
             </FormItem>
         </ExtModal>}
-        {/* 填报历史 */}F
-        <FillingHistory wrappedComponentRef={historyRef} id={selectedRowKeys[0]} />
+        {/* 填报历史 */}
+        <FillingHistory wrappedComponentRef={historyRef} materialCode={selectedRows[0]&&selectedRows[0].materialCode} />
     </Fragment>
-}
-
-export default create()(SupplierFillList)
+})

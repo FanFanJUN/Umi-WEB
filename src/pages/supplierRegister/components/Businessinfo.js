@@ -13,7 +13,7 @@ const BusinessRef = forwardRef(({
     form,
     editformData = {},
     editData = {},
-    isView = false,
+    isView,
     businesshide = [],
     isOverseas = null
 }, ref) => {
@@ -45,19 +45,27 @@ const BusinessRef = forwardRef(({
         form.validateFieldsAndScroll((err, values) => {
             if (values) {
                 let endData = values;
-                const { mainTemporary } = MainClientRef.current;
-                const { ThreeTemporary } = ThreeYearRef.current;
-                const getMaSaa = mainTemporary();
-                const incomeVal = ThreeTemporary();
-                if (getMaSaa) {
-                    endData.extendVo = getMaSaa;
-                }
-                if (incomeVal) {
-                    endData.supplierRecentIncomes = incomeVal;
-                }
+                businesshide.map((item, index) => {
+                    if (item.verifi !== '3' && item.key === "majorCustomersVos") {
+                        const { mainTemporary } = MainClientRef.current;
+                        const getMaSaa = mainTemporary();
+                        if (getMaSaa) {
+                            endData.extendVo = getMaSaa;
+                        }
+                    }
+                    if (item.verifi !== '3' && item.key === "supplierRecentIncomes") {
+                        const { ThreeTemporary } = ThreeYearRef.current;
+                        const incomeVal = ThreeTemporary();
+                        if (incomeVal) {
+                            endData.supplierRecentIncomes = incomeVal;
+                        }
+                    }
+                })
+                console.log(endData)
                 result = endData
             }
         });
+        
         return result;
     }
     // 获取表单值
@@ -65,20 +73,33 @@ const BusinessRef = forwardRef(({
         let result = false;
         console.log(form)
         form.validateFieldsAndScroll((err, values) => {
-            const { getMainclient } = MainClientRef.current;
-            const { getThreeYear } = ThreeYearRef.current;
-            const getMaSaa = getMainclient();
-            const incomeVal = getThreeYear();
+            // const { getMainclient } = MainClientRef.current;
+            // const { getThreeYear } = ThreeYearRef.current;
+            // const getMaSaa = getMainclient();
+            // const incomeVal = getThreeYear();
+            
             if (!err) {
-                let endData = values;
-
-                if (!getMaSaa || !incomeVal) {
-                    return false
-                }
-                endData.extendVo = getMaSaa;
-                endData.supplierRecentIncomes = incomeVal;
+                let endData = values,getMaSaa,incomeVal;
+                businesshide.map((item, index) => {
+                    if (item.verifi !== '3' && item.key === "majorCustomersVos") {
+                        const { mainTemporary } = MainClientRef.current;
+                        getMaSaa = mainTemporary();
+                        if (getMaSaa) {
+                            endData.extendVo = getMaSaa;
+                        }
+                    }
+                    if (item.verifi !== '3' && item.key === "supplierRecentIncomes") {
+                        const { ThreeTemporary } = ThreeYearRef.current;
+                        incomeVal = ThreeTemporary();
+                        if (incomeVal) {
+                            endData.supplierRecentIncomes = incomeVal;
+                        }
+                    }
+                })
+                //let others = values;
                 result = endData
             }
+            
         });
         return result;
     }
@@ -103,16 +124,11 @@ const BusinessRef = forwardRef(({
                                         style={{ marginBottom: '5px' }}
                                     >
                                         {
-                                            isView ? <div style={{
-                                                width: "600px",
-                                                overflow: "auto",
-                                                maxHeight: "100px",
-                                                wordWrap: "break-word"
-                                            }}>
+                                            isView ? <div>
                                                 {editData && editData.supplierVo ? editData.supplierVo.enterpriseProfile : ''}</div> :
                                                 getFieldDecorator("supplierVo.enterpriseProfile", {
                                                     initialValue: editData && editData.supplierVo ? editData.supplierVo.enterpriseProfile : '',
-                                                    rules: [{ required: true, message: "请输入供应商简介", whitespace: true }]
+                                                    rules: [{ required: item.verifi === '0', message: "请输入供应商简介", whitespace: true }]
                                                 })(
                                                     <Input.TextArea 
                                                     disabled={item.verifi === '2'}
@@ -129,16 +145,11 @@ const BusinessRef = forwardRef(({
                                         style={{ marginBottom: '5px' }}
                                     >
                                         {
-                                            isView ? <div style={{
-                                                width: "600px",
-                                                overflow: "auto",
-                                                maxHeight: "100px",
-                                                wordWrap: "break-word"
-                                            }}>
+                                            isView ? <div>
                                                 {editData && editData.supplierVo ? editData.supplierVo.businessScope : ''}</div> :
                                                 getFieldDecorator("supplierVo.businessScope", {
                                                     initialValue: editData && editData.supplierVo ? editData.supplierVo.businessScope : '',
-                                                    rules: [{ required: true, message: "请输入供应商经营范围", whitespace: true }]
+                                                    rules: [{ required: item.verifi === '0', message: "请输入供应商经营范围", whitespace: true }]
                                                 })(
                                                     <Input.TextArea disabled={item.verifi === '2'} maxLength={250} placeholder={"请输入供应商经营范围"} />
                                                 )

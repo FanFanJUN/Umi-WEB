@@ -1,6 +1,6 @@
 import { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment } from 'react';
 import { ExtTable, ExtModal, DataImport, ComboList } from 'suid';
-import { Button, Col, Form, Modal, Row, Input, Select, InputNumber } from 'antd'
+import { Button, Col, Form, Modal, Row, Input, Select, InputNumber, message } from 'antd'
 import { limitScopeList, findByIsRecordCheckListTrue } from '../../../commonProps';
 import { findByProtectionCodeAndMaterialCodeAndRangeCode } from '../../../../../services/qualitySynergy'
 import { smBaseUrl } from '@/utils/commonUrl';
@@ -16,7 +16,7 @@ const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 14, },
 };
-const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList, environmentalProtectionCode }, ref) => {
+const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList, environmentalProtectionCode, isView, isImport }, ref) => {
     useImperativeHandle(ref, () => ({
         setVisible
     }))
@@ -26,7 +26,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [dataSource, setDataSource] = useState([]);
-    const { getFieldDecorator, validateFields, getFieldValue, setFieldsValue, isView } = form;
+    const { getFieldDecorator, validateFields, getFieldValue, setFieldsValue } = form;
     useEffect(() => {
         setDataSource(selectedSplitData.testLogVoList ? selectedSplitData.testLogVoList.map((item, index) => ({ ...item, rowKey: index })) : []);
         if (!selectedSplitData.testLogVoList || selectedSplitData.testLogVoList.length === 0) {
@@ -37,11 +37,21 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
         { title: '物质代码', dataIndex: 'materialCode', align: 'center' },
         { title: '物质名称', dataIndex: 'materialName', ellipsis: true, align: 'center' },
         { title: 'CAS.NO', dataIndex: 'casNo', ellipsis: true, align: 'center', },
-        { title: '适用范围', dataIndex: 'scopeApplicationName', ellipsis: true, align: 'center', },
-        { title: '含量', dataIndex: 'content', ellipsis: true, align: 'center', },
-        { title: '基本单位', dataIndex: 'unitName', ellipsis: true, align: 'center', },
-        { title: '符合性 ', dataIndex: 'compliance', ellipsis: true, align: 'center', render: (text) => text ? '符合' : '不符合' },
+        { title: '适用范围代码', dataIndex: 'scopeApplicationCode', ellipsis: true, align: 'center', },
+        { title: '适用范围名称', dataIndex: 'scopeApplicationName', ellipsis: true, align: 'center', },
+        {
+            title: '含量', dataIndex: 'content', ellipsis: true, align: 'center', render: (text, item) => {
+                if (item.contentType === 'RANGE_VALUE') return '<' + text;
+                else return text;
+            }
+        },
+        { title: '基本单位', dataIndex: 'unitCode', ellipsis: true, align: 'center', },
+        { title: '符合性 ', dataIndex: 'compliance', ellipsis: true, align: 'center', render: (text) => text === 'FIT' ? '符合' : text === 'NOTFIT' ? '不符合' : '' },
     ];
+    const importC = [
+        { title: '验证状态', dataIndex: 'importStatus', align: 'center', width: 80, render: text => <span style={{ color: text ? 'black' : 'red' }}>{text ? '成功' : '失败'}</span> },
+        { title: '验证信息', dataIndex: 'failInfo', ellipsis: true, align: 'center' },
+    ]
     // 记录列表选中
     function handleSelectedRows(rowKeys, rows) {
         setRowKeys(rowKeys);
@@ -55,6 +65,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
             onOk: () => {
                 let newList = dataSource.filter(item => !(selectedRowKeys.includes(item.rowKey)));
                 newList = newList.map((item, index) => ({ ...item, rowKey: index }));
+                setDataSource(newList);
                 handleSplitDataList({
                     rowKey: selectedSplitData.rowKey,
                     testLogVoList: newList
@@ -98,11 +109,14 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
             materialCode: materialCode,
             rangeCode: scopeApplicationCode
         })
-        if (res.statusCode === 200 && res.data) {
+        if (res.statusCode === 200 && res.data && res.data.basicUnitCode) {
             setFieldsValue({
                 unitCode: res.data.basicUnitCode,
                 unitName: res.data.basicUnitName,
             })
+        } else {
+            setFieldsValue({ unitCode: '', unitName: '', })
+            message.warning('选中物质和适用范围无法带出基本单位，请先联系管理员维护数据！')
         }
     }
     const validateItem = (data) => {
@@ -134,7 +148,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
             addItem.rowKey = dataSource.length + index;
             newList.push(addItem);
         })
-        newList = newList.map((item, index) => ({ ...item, rowKey: index }));
+        // newList = newList.map((item, index) => ({ ...item, rowKey: index }));
         setDataSource(newList);
         handleSplitDataList({
             rowKey: selectedSplitData.rowKey,
@@ -170,15 +184,15 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                 key='import'
                 templateFileList={[
                     {
-                        download: `${DEVELOPER_ENV === 'true' ? '' : '/react-srm-sm-web'}/templates/测试记录表批导模板V1.0.xlsx`,
-                        fileName: '测试记录表批导模板V1.0.xlsx',
+                        download: `${DEVELOPER_ENV === 'true' ? '' : '/react-srm-sm-web'}/templates/测试记录表批导模板V2.0.xlsx`,
+                        fileName: '测试记录表批导模板V2.0.xlsx',
                         key: 'ExemptionClause',
                     },
                 ]}
             />}
         </div>
         <ExtTable
-            columns={columns}
+            columns={isImport ? importC.concat(columns) :columns}
             bordered
             allowCancelSelect
             showSearch={false}
@@ -195,7 +209,9 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
             centered
             destroyOnClose
             visible={visible}
-            onCancel={() => { setVisible(false) }}
+            maskClosable={false}
+            width="600px"
+            onCancel={() => { form.resetFields(); setVisible(false); }}
             onOk={() => { handleAdd() }}
             title={`${modalType === 'add' ? '新增' : '编辑'}测试记录表物质`}
         >
@@ -212,6 +228,10 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                                 {...findByIsRecordCheckListTrue}
                                 name='materialName'
                                 field={['materialId', 'materialCode', 'casNo']}
+                                cascadeParams={{
+                                    rangeCode: getFieldValue('scopeApplicationCode'),
+                                    protectionCode: environmentalProtectionCode,
+                                }}
                                 afterSelect={(item) => {
                                     let scopeApplicationCode = getFieldValue('scopeApplicationCode');;
                                     getUnit(item.limitMaterialCode, scopeApplicationCode)
@@ -264,16 +284,21 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                             getFieldDecorator('content', {
                                 initialValue: modalType === 'edit' ? selectedRows[0].content : '',
                                 rules: [{ required: true, message: '请输入' }]
-                            })(<InputNumber style={{ width: '40%' }} />)
+                            })(<InputNumber style={{ width: '40%' }} min={0} onBlur={() => {
+                                if (getFieldValue('content') === 0) {
+                                    setFieldsValue({ content: '' })
+                                }
+                            }} />)
                         }
                     </FormItem>
                 </Row>
                 <Row>
                     <FormItem label='基本单位' {...formLayout}>
                         {
-                            getFieldDecorator('unitCode', { initialValue: modalType === 'edit' ? selectedRows[0].unitCode : '' }),
-                            getFieldDecorator('unitName', {
+                            getFieldDecorator('unitName', { initialValue: modalType === 'edit' ? selectedRows[0].unitName : '' }),
+                            getFieldDecorator('unitCode', {
                                 initialValue: modalType === 'edit' ? selectedRows[0].unitCode : '',
+                                rules: [{ required: true, message: '基本单位不能为空' }]
                             })(<Input disabled />)
                         }
                     </FormItem>

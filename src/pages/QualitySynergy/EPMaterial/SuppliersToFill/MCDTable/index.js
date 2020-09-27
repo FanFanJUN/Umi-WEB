@@ -19,19 +19,18 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
         getSplitDataList
     }))
     const splitRef = useRef(null)
-    const { getFieldDecorator, validateFields } = form;
+    const { getFieldDecorator, validateFieldsAndScroll } = form;
     const [visible, setVisible] = useState(false)
     const [selectedSplitData, setSelectedSpilt] = useState({})
     const [splitDataList, setSplitDataList] = useState(originData.epDataFillSplitPartsVoList ? originData.epDataFillSplitPartsVoList : []);
     useEffect(() => {
-        let dataList = originData.epDataFillSplitPartsVoList ? originData.epDataFillSplitPartsVoList.map((item, index) => ({ ...item, rowKey: index })) : []
+        let dataList = originData.epDataFillSplitPartsVoList ? originData.epDataFillSplitPartsVoList.map((item, index) => ({ ...item, rowKey: index, splitPartsLineNumber: index })) : []
         setSplitDataList(dataList);
     }, [originData]);
     // 参数为某一条拆分部件数据,根据rowKey替换
     function handleSplitDataList(dataObj) {
-        console.log('设置表格数据', dataObj);
         let newList = splitDataList.map(item => {
-            return item.rowKey === dataObj.rowKey ? {...item, ...dataObj} : item;
+            return item.rowKey === dataObj.rowKey ? { ...item, ...dataObj } : item;
         })
         setSplitDataList(newList);
         splitRef.current.setRowKeys([dataObj.rowKey]);
@@ -39,12 +38,14 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
     }
     function getSplitDataList() {
         let backData = {}
-        validateFields((errors, values) => {
+        validateFieldsAndScroll((errors, values) => {
             if (!errors) {
                 console.log(values)
                 let saveList = splitDataList.map(item => {
                     let newObj = {
                         ...item,
+                        uploadAttachmentIds: item.documentInfoList ? item.documentInfoList.map(v => v.id ? v.id : v) : [],
+                        testReportAttachmentId: item.documentInfoList ? item.documentInfoList.map(v => v.id ? v.id : v).join() : '',
                         epDataFillTestLogBoList: item.testLogVoList,
                         materialConstituentBoList: item.voList
                     }
@@ -54,11 +55,25 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
                 })
                 backData = {
                     ...values,
+                    tag: true,
                     epDataFillSplitPartsVoList: saveList
                 }
+            } else {
+                backData = { tag: false }
             }
         })
         return backData;
+    }
+    function handleInsert(list) {
+        let newList = [].concat(splitDataList);
+        list.forEach((item, index) => {
+            newList.push({
+                ...item,
+                rowKey: splitDataList.length + index,
+                splitPartsLineNumber: splitDataList.length + index,
+            })
+        })
+        setSplitDataList(newList)
     }
     return <Fragment>
         <Form className={styles.bl}>
@@ -69,7 +84,7 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
                             getFieldDecorator('mcdMaterialName', {
                                 initialValue: originData.mcdMaterialName,
                                 rules: [{ required: true, message: '请输入物料名称' }]
-                            })(<Input disabled={isView}/>)
+                            })(<Input disabled={isView} />)
                         }
                     </FormItem>
                 </Col>
@@ -79,7 +94,7 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
                             getFieldDecorator('mcdModel', {
                                 initialValue: originData.mcdModel,
                                 rules: [{ required: true, message: '请输入型号' }]
-                            })(<Input disabled={isView}/>)
+                            })(<Input disabled={isView} />)
                         }
                     </FormItem>
                 </Col>
@@ -94,7 +109,7 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
                     </FormItem>
                 </Col>
                 <Col span={6} className={styles.fcs}>
-                    <Button onClick={()=>{setVisible(true)}}>批量导入</Button>
+                    {!isView && <Button onClick={() => { setVisible(true) }}>批量导入</Button>}
                 </Col>
             </Row>
         </Form>
@@ -104,7 +119,12 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
             </Col>
             <Col span={12} className={styles.ll}>
                 <Row>
-                    <MaterialTable dataList={splitDataList} selectedSplitData={selectedSplitData} handleSplitDataList={handleSplitDataList} isView={isView}/>
+                    <MaterialTable dataList={splitDataList}
+                        selectedSplitData={selectedSplitData}
+                        handleSplitDataList={handleSplitDataList}
+                        environmentalProtectionCode={originData.environmentalProtectionCode}
+                        isView={isView}
+                    />
                 </Row>
                 <Row>
                     <TestRecordsTable
@@ -117,7 +137,12 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
                 </Row>
             </Col>
         </Row>
-        <ImportModal visible={visible} setVisible={setVisible}/>
+        <ImportModal
+            visible={visible}
+            setVisible={setVisible}
+            environmentalProtectionCode={originData.environmentalProtectionCode}
+            handleInsert={handleInsert}
+        />
     </Fragment>
 })
 export default create()(MCDForm)

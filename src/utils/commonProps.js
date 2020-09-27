@@ -6,7 +6,8 @@ import {listChineseProvinces,
   getAccesstocountries,
   oddgetAllCorporation,
   getCompanyFactory,
-  getNormalSuppliers
+  getNormalSuppliers,
+  listUnionPayCode
 } from '../services/supplierRegister'
 import { searchListByKey } from '../components/utils/CommonUtils';
 // 认定物料类别数据字典
@@ -727,7 +728,7 @@ export const unionPayCodeConfig = {
   store:{
     autoLoad:true,
     url: `${baseUrl}/supplierRegister/getBankNoByPage?Q_EQ_frozen__bool=0`,
-    type: 'post'
+    type: 'GET'
   },
   columns:[
     {
@@ -750,6 +751,13 @@ export const unionPayCodeConfig = {
   style: {
     width: '100%'
   },
+  // remotePaging: true,
+  // rowKey: 'code',
+  // reader: {
+  //   field: ['code'],
+  //   name: 'name',
+  //   description: 'code',
+  // },
 }
 // 银行控制
 export const paymentTypeConfig = {
@@ -792,11 +800,36 @@ export const purchaseCompanyPropsreg = {
   },
   reader: {
     name: 'name',
-    field: ['code','id'],
+    field: ['id'],
     description: ['code']
   },
   placeholder: '请选择供应商分类',
   style: {
     width: '100%'
   },
+  treeNodeProps: (node) => {
+    if (node.nodeLevel === 0) {
+      return {
+        selectable: false
+      }
+    }else if (node.nodeLevel === 1) {
+      return {
+        selectable: false
+      }
+    }
+  }
 }
+
+// 联行号
+export const oddunionPayCodeConfig = {
+  columns: [{
+      title: '代码',
+      dataIndex: 'code',
+  }, {
+      title: '名称',
+      dataIndex: 'name',
+  }],
+  dataService: listUnionPayCode,
+  key: 'code',
+  text: 'code',
+};

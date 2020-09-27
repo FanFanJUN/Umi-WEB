@@ -1,44 +1,39 @@
 // 批量导入弹框
-import { useEffect, useState, useRef, forwardRef, useImperativeHandle, Fragment } from 'react';
-import { Form, Col, Row, Upload, Button } from 'antd';
+import { useEffect, useState, useRef } from 'react';
+import { Form, Col, Row, Upload, Button, message, Modal } from 'antd';
 import { ExtModal } from 'suid'
 import styles from '../index.less'
 import SplitPartsTable from './SplitPartsTable';
 import MaterialTable from './MaterialTable';
 import TestRecordsTable from './TestRecordsTable';
+import { BASE_URL } from '../../../../../utils/constants';
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const { create, Item: FormItem } = Form;
 
-export default function ({ visible, setVisible }) {
+export default function ({ visible, setVisible, environmentalProtectionCode, handleInsert }) {
     const splitRef = useRef(null)
     const [selectedSplitData, setSelectedSpilt] = useState({})
     const [splitDataList, setSplitDataList] = useState([]);
+    const [importTag, setImportTag] = useState(true);
     function handleOk() {
-        console.log('确定')
-    }
-    const fileUpload = ({file}) => {
-        if(file.status !=='uploading'){
-            this.setState({loading:false});
+        if (!importTag) {
+            handleInsert(splitDataList);
+            handleCancle();
         }
+    }
+    const fileUpload = ({ file }) => {
         if (file.status === 'done') {
             if (file.response && file.response.data) {
-                let msg = []
+                let tag = true;
                 let result = file.response.data.map((item, index) => {
-                    if (item.msg === null || item.msg === undefined || Object.keys(item.msg).length !== 0) {
-                        msg.push(<span key={'import_error_' + index} style={{display: 'block'}}>
-                        {'第' + (index + 1) + '行:' + JSON.stringify(item.msg) + ''}</span>)
-                    }else{
-                        item.index=index;
-                        return item;
-                    }
+                    tag = tag && item.importStatus
+                    item.voList = item.materialConstituentBoList;
+                    item.testLogVoList = item.epDataFillTestLogBoList;
+                    item.rowKey = index;
+                    return item;
                 })
-                if (msg.length !== 0) {
-                    Modal.error({
-                        centered: true,
-                        content: <div style={{maxHeight: 360, overflow: 'auto'}}>{msg}</div>,
-                        title: '错误信息'
-                    })
-                }
-                this.setState({importData: result.filter(item=>item!==undefined)})
+                setImportTag(!tag);
+                setSplitDataList(result);
             } else if (file.response && file.response.msg) {
                 message.error(file.response.msg)
             } else {
@@ -47,59 +42,80 @@ export default function ({ visible, setVisible }) {
         }
     }
     const beforeUpload = (file) => {
-        const xsl = file.name.toLocaleLowerCase().includes('xls')||file.name.includes('xlsx');
+        const xsl = file.name.toLocaleLowerCase().includes('xls') || file.name.includes('xlsx');
         if (!xsl) {
             message.error('必须上传模版文件');
         }
-        this.setState({loading:true});
         return xsl
     }
     const getHeaders = () => {
         let auth;
         try {
-            auth = JSON.parse(localStorage.getItem('Authorization'));
+            auth = JSON.parse(sessionStorage.getItem('Authorization'));
         } catch (e) {
-            console.log(e);
         }
         return {
             'Authorization': auth ? (auth.accessToken ? auth.accessToken : '') : ''
         }
+    }
+    const handleCancle = () => {
+        setSelectedSpilt({});
+        setSplitDataList([]);
+        setVisible(false);
     }
     return <ExtModal
         centered
         destroyOnClose
         width="90%"
         height="800px"
-        onCancel={() => { setVisible(false) }}
-        onOk={() => { handleOk() }}
+        onCancel={() => { handleCancle() }}
+        footer={[
+            <Button type="primary" onClick={() => { handleOk() }} disabled={importTag}>导入</Button>
+        ]}
         visible={visible}
         title="MCD表数据综合导入"
     >
-        <Row style={{marginBottom:6}}>
+        <Row style={{ marginBottom: 6 }}>
             <Upload
-                action={'uploadUrl'}
+                action={`${window.location.origin + BASE_URL}/srm-sam-service/epController/importData`}
                 onChange={fileUpload}
                 headers={getHeaders()}
+                data={{
+                    code: environmentalProtectionCode
+                }}
                 beforeUpload={beforeUpload}
                 showUploadList={false}
             >
                 <Button style={{ marginRight: 15, marginLeft: 15, marginBottom: 6 }}>上传</Button>
             </Upload>
-            <a key='template' href={`${DEVELOPER_ENV === 'true' ? '' : '/react-srm-sm-web'}/templates/mcd表批导模板v1.0.xlsx`}>下载模版</a>
+            <a key='template' href={`${DEVELOPER_ENV === 'true' ? '' : '/react-srm-sm-web'}/templates/MCD表批导模板V3.0.xlsx`}>下载模版</a>
         </Row>
         <Row>
             <Col span={12} className={styles.rl}>
-                <SplitPartsTable wrappedComponentRef={splitRef} dataList={splitDataList} setSelectedSpilt={setSelectedSpilt} setSplitDataList={setSplitDataList} isView={true} />
+                <SplitPartsTable
+                    wrappedComponentRef={splitRef}
+                    dataList={splitDataList}
+                    setSelectedSpilt={setSelectedSpilt}
+                    setSplitDataList={setSplitDataList}
+                    isView={true}
+                    isImport={true}
+                />
             </Col>
             <Col span={12} className={styles.ll}>
                 <Row>
-                    <MaterialTable dataList={splitDataList} selectedSplitData={selectedSplitData} isView={true} />
+                    <MaterialTable
+                        dataList={splitDataList}
+                        selectedSplitData={selectedSplitData}
+                        isView={true}
+                        isImport={true}
+                    />
                 </Row>
                 <Row>
                     <TestRecordsTable
                         dataList={splitDataList}
                         selectedSplitData={selectedSplitData}
                         isView={true}
+                        isImport={true}
                     />
                 </Row>
             </Col>

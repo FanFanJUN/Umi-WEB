@@ -1,13 +1,13 @@
-import { basicServiceUrl, baseUrl, recommendUrl } from '../utils/commonUrl';
+import { basicServiceUrl, baseUrl, recommendUrl, supplierManagerBaseUrl } from '../utils/commonUrl';
 import request from '../utils/request';
 // 豁免条款-新增/编辑
 export async function materialCompositionVerification(params) {
-  const url = `${recommendUrl}/api/epDataFillMaterialConstituentService/checkImport`;
-  return request({
-    url,
-    method: 'POST',
-    data: params,
-  });
+    const url = `${recommendUrl}/api/epDataFillMaterialConstituentService/checkImport`;
+    return request({
+        url,
+        method: 'POST',
+        data: params,
+    });
 }
 
 // 豁免条款-新增/编辑
@@ -201,6 +201,34 @@ export async function frozenBU(params) {
         params: params,
     });
 }
+// 环保数据字典表-新增
+export async function addEpDict(params) {
+    const url = `${recommendUrl}/api/epDictService/addEpDict`;
+    return request({
+        url,
+        method: 'POST',
+        data: params,
+    });
+}
+// 环保数据字典表-编辑
+export async function editEpDict(params) {
+    const url = `${recommendUrl}/api/epDictService/editEpDict`;
+    return request({
+        url,
+        method: 'POST',
+        data: params,
+    });
+}
+// 环保数据字典表-删除
+export async function deleteEpDict(params) {
+    const url = `${recommendUrl}/api/epDictService/batchDelete`;
+    return request({
+        url,
+        method: 'GET',
+        params: params,
+    });
+}
+
 // 根据业务单元找业务板块
 export async function findByBuCode(params) {
     const url = `${baseUrl}/bmBuContact/findByBuCode`;
@@ -345,6 +373,7 @@ export async function findByDemandNumber(params) {
         params: params,
     });
 }
+
 // 填报环保资料物料-分配供应商-同步pdm
 export async function syncPdm(params) {
     const url = `${recommendUrl}/api/epDemandService/syncPdm`;
@@ -418,6 +447,14 @@ export async function uploadFile(params) {
         data: params,
     });
 }
+// 供应商-填报环保资料-获取当前登录用户上传的资质文件
+export async function findMyselfData() {
+    const url = `${recommendUrl}/api/epSupplierAptitudeService/findMyselfData`;
+    return request({
+        url,
+        method: 'POST',
+    });
+}
 // 查询组织机构
 export async function findOrgTreeWithoutFrozen(params) {
     const url = `/api-gateway/basic-service/organization/findOrgTreeWithoutFrozen`;
@@ -470,5 +507,23 @@ export async function downLoad(params) {
         url,
         method: 'POST',
         data: params,
+    });
+}
+// 获取供应商-环保资料填报列表数据
+export async function supplierGetList(params) {
+    const url = `${recommendUrl}/api/epDataFillService/findByPage`;
+    return request({
+        url,
+        method: 'POST',
+        data: params,
+    });
+}
+// 检查是否为环保材料
+export async function checkEnvironmentalProtectionData(params) {
+    const url = `${baseUrl}/environmentalProtectionData/checkEnvironmentalProtectionData`;
+    return request({
+        url,
+        method: 'POST',
+        params: params,
     });
 }

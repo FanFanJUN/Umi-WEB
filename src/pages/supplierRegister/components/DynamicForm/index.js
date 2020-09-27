@@ -85,9 +85,11 @@ const CommonconfigRef = forwardRef(({
     form
   }));
   const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
-  const [companycode, setcompanycode] = useState([ ]);
-  const [supplierName, setsupplierName] = useState();
-  //console.log(initialValues)
+  const [companycode, setcompanycode] = useState([]);
+  const [supplierName, setsupplierName] = useState('');
+
+  // console.log(editData)
+  // setsupplierName(editData.supplierVo.name)
   useEffect(() => {
     // const {
     //     id,
@@ -98,8 +100,13 @@ const CommonconfigRef = forwardRef(({
     // }
     // console.log(fields)
     // setFieldsValue(fields);
-
-  }, [])
+    //setsupplierName(editData.supplierVo.name)
+    //console.log(editData)
+    setother(wholeData)
+  }, [wholeData])
+  function setother (val) {
+    setsupplierName(val.supplierName)
+  }
   // 设置表单参数
   function setHeaderFields(fields) {
     const { attachmentId = null, ...fs } = fields;
@@ -107,7 +114,7 @@ const CommonconfigRef = forwardRef(({
     // setTimeout(() => {
     //   setsupplierName(fields.supplierVo.name)
     // }, 100);
-    
+    //setsupplierName(fs.supplierVo.name)
     setFieldsValue(fs)
   }
   //注册地址同步办公地址
@@ -203,6 +210,7 @@ const CommonconfigRef = forwardRef(({
     event.target.value = value.replace(/[^\d]/g, '');
   }
   let entityIdObj = getEntityId(editData);
+  // 供应商分类切换
   function handletypeSelect(item) {
     selectfication(item.id)
   }
@@ -224,14 +232,15 @@ const CommonconfigRef = forwardRef(({
   }
   // 泛虹工厂
   function FactoryChange(value, record) {
-    form.setFieldsValue({
-      'supplierVo.workName': record.name,
-      'supplierVo.name': supplierName + + '(' + value + '工厂' + ')'
-    });
+    if (record) {
+      form.setFieldsValue({
+        'supplierVo.workName': record.name,
+        'supplierVo.name': supplierName + '(' + value + '工厂' + ')'
+      });
+    }
   }
   // 拟合作公司
   function cooperationChange(value, record) {
-    console.log(record)
     if (record) {
       form.setFieldsValue({
         'supplierVo.companyName': record.name,
@@ -240,7 +249,6 @@ const CommonconfigRef = forwardRef(({
     }
   }
   function deleteSelect(record) {
-    console.log(record)
     if (record) {
       form.setFieldsValue({
         'supplierVo.workName': '',
@@ -272,7 +280,7 @@ const CommonconfigRef = forwardRef(({
                             <span>{editData && editData.supplierVo && editData.supplierVo.supplierCategory ? editData.supplierVo.supplierCategory.code + ' ' + editData.supplierVo.supplierCategory.name : ''}</span> :
                             getFieldDecorator('supplierVo.supplierCategoryId'),
                           getFieldDecorator('supplierVo.supplierCategoryName', {
-                            initialValue: editData && editData.supplierVo ? editData.supplierVo.supplierCategoryId : '',
+                            initialValue: editData && editData.supplierVo ? editData.supplierVo.supplierCategoryName : '',
                             rules: [{ required: item.verifi === '0', message: '请选择供应商分类', whitespace: true }],
                           })(
                             <ComboTree
@@ -331,6 +339,27 @@ const CommonconfigRef = forwardRef(({
                         )}
                     </FormItem>
                   </Col> : null}
+                  {item.key === 'englishabbreviation' ? <Col span={8}>
+                    <FormItem
+                      {...formItemLayout}
+                      label={'英文简称'}
+                      style={{ width: '100%', marginBottom: 10 }}
+                    >
+                      {isView ? <span>{editData && editData.extendVo ? editData.extendVo.searchCondition : ''}</span> :
+                        getFieldDecorator('extendVo.searchCondition', {
+                          initialValue: editData && editData.extendVo ? editData.extendVo.searchCondition : '',
+                          rules: [{ required: item.verifi === '0', message: "请输入英文简称！" },
+                          { pattern: "^[\u0391-\uFFE5A-Za-z]+$", message: "只能是汉字或英文" }
+
+                          ]
+                        })(
+                          <Input
+                            disabled={item.verifi === '2'}
+                            maxLength={10}
+                            placeholder={'请输入英文简称'} />
+                        )}
+                    </FormItem>
+                  </Col> : null}
                   {item.key === 'creditCode' ? <Col span={8}>
                     <FormItem
                       {...formItemLayout}
@@ -386,7 +415,7 @@ const CommonconfigRef = forwardRef(({
                             <span>{editData && editData.supplierVo && editData.supplierVo.enterpriseProperty ? editData.supplierVo.enterpriseProperty.name : ''}</span> :
                           getFieldDecorator('supplierVo.enterprisePropertyId'),
                           getFieldDecorator('supplierVo.enterprisePropertyName', {
-                            initialValue: editData && editData.supplierVo ? editData.supplierVo.enterprisePropertyId : '',
+                            initialValue: editData && editData.supplierVo ? editData.supplierVo.enterprisePropertyName : '',
                             rules: [{ required: item.verifi === '0', message: '请选择企业性质', whitespace: true }],
                           })(
                             <ComboList
@@ -412,7 +441,7 @@ const CommonconfigRef = forwardRef(({
                             <span>{editData && editData.supplierVo && editData.supplierVo.taxpayersCategory ? editData.supplierVo.taxpayersCategory.name : ''}</span> :
                             getFieldDecorator('supplierVo.taxpayersCategoryId'),
                           getFieldDecorator('supplierVo.taxpayersCategoryName', {
-                            initialValue: editData && editData.supplierVo ? editData.supplierVo.taxpayersCategoryId : '',
+                            initialValue: editData && editData.supplierVo ? editData.supplierVo.taxpayersCategoryName : '',
                             rules: [{ required: item.verifi === '0', message: '请选择纳税人类别', whitespace: true }],
                           })(
                             <ComboList
@@ -461,7 +490,7 @@ const CommonconfigRef = forwardRef(({
                             <span>{editData && editData.supplierVo ? editData.supplierVo.belongIndustryName : ''}</span> :
                             getFieldDecorator('supplierVo.belongIndustry'),
                           getFieldDecorator('supplierVo.belongIndustryName', {
-                            initialValue: editData && editData.supplierVo ? editData.supplierVo.belongIndustry : '',
+                            initialValue: editData && editData.supplierVo ? editData.supplierVo.belongIndustryName : '',
                             rules: [{ required: item.verifi === '0', message: '请选择业务标的物', whitespace: true }],
                           })(
                             <ComboList
@@ -948,7 +977,7 @@ const CommonconfigRef = forwardRef(({
                               type={isView ? 'show' : ''}
                               accessType={['pdf', 'jpg', 'png']}
                               warning={'仅支持pdf,jpg,png格式，文件大小不超过10M'}
-                              entityId={entityIdObj ? entityIdObj['注册授权委托书'] : null} />
+                              entityId={entityIdObj ? entityIdObj['授权委托书'] : null} />
                           )
                         } {!isView && <a href='/srm-se-web/供应商法定代表人授权委托书.docx'>模板下载</a>}
                       </FormItem>
