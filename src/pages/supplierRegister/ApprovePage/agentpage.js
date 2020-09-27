@@ -51,11 +51,16 @@ function SupplierApproveInfo() {
       }
     const handleSave = async (approved) => {
       triggerLoading(true)
-      const { saveAgent } = AgentformRef.current;
-      let agentVal = saveAgent()
-      if (wholeData) {
-          wholeData.supplierInfoVo.supplierAgents = agentVal;
-      }
+      configuredata.map((item, index) => {
+        if (item.operationCode !== '3' && item.fieldCode === 'supplierAgents') {
+          const { saveAgent } = AgentformRef.current;
+          let agentVal = saveAgent()
+          if (wholeData) {
+              wholeData.supplierInfoVo.supplierAgents = agentVal;
+          }
+        }
+      })
+      
       let saveData = wholeData;
       const { success, message: msg } = await saveLietInFlow({supplierApplyJson: JSON.stringify(saveData)})
       triggerLoading(false)
