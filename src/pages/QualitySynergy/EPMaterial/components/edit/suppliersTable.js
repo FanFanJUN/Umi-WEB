@@ -23,7 +23,7 @@ export default function ({originData={}}) {
         { title: '分配人', dataIndex: 'allotPeopleName', ellipsis: true, align: 'center', },
         { title: '填报编号', dataIndex: 'fillNumber', ellipsis: true, render: (text, item)=>{
             return <a onClick={()=>{
-                openNewTab(`qualitySynergy/EPMaterial/suppliersFillForm?id=${item.id}&pageStatus=detail`, '填报环保资料物料-明细', false);
+                openNewTab(`qualitySynergy/EPMaterial/suppliersFillForm?id=${item.fillId}&pageStatus=detail`, '填报环保资料物料-明细', false);
             }}>{text}</a>
         }},
         { title: '填报截止日期', dataIndex: 'fillEndDate', ellipsis: true, render: (text) => text ? text.slice(0, 10) : ''},
