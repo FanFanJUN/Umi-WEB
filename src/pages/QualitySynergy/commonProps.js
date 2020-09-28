@@ -491,7 +491,7 @@ export const StrategicPurchasingAll = {
     name: 'name',
     description: 'code',
   },
-  placeholder: '选择物料代码',
+  placeholder: '选择战略采购',
 };
 
 // 物料代码列表
