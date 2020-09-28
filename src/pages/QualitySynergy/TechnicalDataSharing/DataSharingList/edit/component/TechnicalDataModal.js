@@ -48,11 +48,13 @@ const TechnicalDataModal = (props) => {
           setFieldsValue({ sampleRequirementDate: moment(d) });
         }
       } else {
-        setFieldsValue({
-          sampleReceiverTel: '',
-          sampleReceiverName: '',
-          sampleRequirementDate: null,
-        });
+        if (type === 'add') {
+          setFieldsValue({
+            sampleReceiverTel: '',
+            sampleReceiverName: '',
+            sampleRequirementDate: null,
+          });
+        }
       }
     }
   }, [getFieldValue('sampleRequirementNum')]);
