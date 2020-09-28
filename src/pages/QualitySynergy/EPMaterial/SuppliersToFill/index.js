@@ -118,7 +118,7 @@ export default create()(function ({ form }) {
             authAction(<Button
                 type='primary'
                 className={styles.btn}
-                disabled={(selectedRows.length !== 1 || selectedRows[0].effectiveStatus === 'COMPLETED')}
+                disabled={selectedRows.length !== 1 || selectedRows[0].effectiveStatus === 'COMPLETED' || !selectedRows[0].needToFill }
                 onClick={() => { redirectToPage('add') }}
                 ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_SUPPLIERFILL_FILL_NEW'

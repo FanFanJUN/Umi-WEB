@@ -102,7 +102,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
         setModalType(type)
         setVisible(true)
     }
-    async function getUnit(materialCode, scopeApplicationCode) {
+    async function getUnit(materialCode, scopeApplicationCode, mName, rName) {
         if (!materialCode || !scopeApplicationCode) return;
         const res = await findByProtectionCodeAndMaterialCodeAndRangeCode({
             protectionCode: environmentalProtectionCode,
@@ -116,7 +116,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
             })
         } else {
             setFieldsValue({ unitCode: '', unitName: '', })
-            message.warning('选中物质和适用范围无法带出基本单位，请先联系管理员维护数据！')
+            message.warning(`物质名称<${mName}>和适用范围<${rName}>不在环保标准<R环保属性有害物料管控标准>范围内，请重新选择！`, 5);
         }
     }
     const validateItem = (data) => {
@@ -233,8 +233,9 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                                     protectionCode: environmentalProtectionCode,
                                 }}
                                 afterSelect={(item) => {
-                                    let scopeApplicationCode = getFieldValue('scopeApplicationCode');;
-                                    getUnit(item.limitMaterialCode, scopeApplicationCode)
+                                    let scopeApplicationCode = getFieldValue('scopeApplicationCode'),
+                                    scopeApplicationName = getFieldValue('scopeApplicationName');
+                                    getUnit(item.limitMaterialCode, scopeApplicationCode, item.limitMaterialName, scopeApplicationName);
                                 }}
                             />)
                         }
@@ -262,8 +263,9 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                                 name='scopeApplicationName'
                                 field={['scopeApplicationId', 'scopeApplicationCode']}
                                 afterSelect={(item) => {
-                                    let materialCode = getFieldValue('materialCode');;
-                                    getUnit(materialCode, item.scopeCode)
+                                    let materialCode = getFieldValue('materialCode'),
+                                    materialName = getFieldValue('materialName');
+                                    getUnit(materialCode, item.scopeCode, materialName, item.scopeName);
                                 }}
                             />)
                         }
