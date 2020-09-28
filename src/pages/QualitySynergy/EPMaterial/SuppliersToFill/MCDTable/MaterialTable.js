@@ -195,8 +195,8 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                 disabled={(!selectedSplitData.testLogVoList)}
                 templateFileList={[
                     {
-                        download: `${(process.env.NODE_ENV === 'development') ? '/' : '/react-srm-sm-web/'}templates/材料成分表批导模板V2.0.xlsx`,
-                        fileName: '材料成分表批导模板V2.0.xlsx',
+                        download: `${(process.env.NODE_ENV === 'development') ? '/' : '/react-srm-sm-web/'}templates/材料成分表批导模板V3.0.xlsx`,
+                        fileName: '材料成分表批导模板V3.0.xlsx',
                         key: 'MaterialComposition',
                     },
                 ]}

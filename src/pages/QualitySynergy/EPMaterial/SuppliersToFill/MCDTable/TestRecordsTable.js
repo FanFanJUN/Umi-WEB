@@ -184,8 +184,8 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                 key='import'
                 templateFileList={[
                     {
-                        download: `${DEVELOPER_ENV === 'true' ? '' : '/react-srm-sm-web'}/templates/测试记录表批导模板V2.0.xlsx`,
-                        fileName: '测试记录表批导模板V2.0.xlsx',
+                        download: `${DEVELOPER_ENV === 'true' ? '' : '/react-srm-sm-web'}/templates/测试记录表批导模板V3.0.xlsx`,
+                        fileName: '测试记录表批导模板V3.0.xlsx',
                         key: 'ExemptionClause',
                     },
                 ]}
