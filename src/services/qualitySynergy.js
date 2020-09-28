@@ -431,7 +431,7 @@ export async function epDemandRecall(params) {
 }
 // 供应商-填报环保资料-撤回
 export async function epDemandCopyAll(params) {
-    const url = `${recommendUrl}/api/epDataFillService/copyAll`;
+    const url = `${recommendUrl}/api/epDataFillService/copyFilledToNotFilled`;
     return request({
         url,
         method: 'GET',
