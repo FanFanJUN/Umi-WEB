@@ -220,17 +220,15 @@ export default () => {
           wrappedComponentRef={materialInfoRef}
           type={data.type}
         />
-        {
-          data.type !== 'detail' || data?.editDate?.technicalDataAndSupplierVos?.length === 0 ? <TechnicalData
-            data={data.editDate?.epTechnicalDataVos}
-            userInfo={data.userInfo}
-            isView={data.isView}
-            setDeleteArr={setDeleteArr}
-            deleteArr={deleteArr}
-            wrappedComponentRef={technicalDataRef}
-            type={data.type}
-          /> : ''
-        }
+        <TechnicalData
+          data={data.editDate?.epTechnicalDataVos}
+          userInfo={data.userInfo}
+          isView={data.isView}
+          setDeleteArr={setDeleteArr}
+          deleteArr={deleteArr}
+          wrappedComponentRef={technicalDataRef}
+          type={data.type}
+        />
         {
           data.type === 'detail' && data?.editDate?.technicalDataAndSupplierVos?.length > 0 ? <SupplierData
             data={data.editDate?.technicalDataAndSupplierVos}
