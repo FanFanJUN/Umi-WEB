@@ -70,10 +70,10 @@ export default create()(function ({ form }) {
         const { pathname } = window.location;
         switch (type) {
             case 'add':
-                openNewTab(`qualitySynergy/EPMaterial/suppliersFillForm?id=${key}&pageStatus=add`, '填报环保资料物料-新增', false)
+                openNewTab(`qualitySynergy/EPMaterial/suppliersFillForm?id=${key}&pageStatus=add`, '环保资料填报-新增', false)
                 break;
             case 'detail':
-                openNewTab(`qualitySynergy/EPMaterial/suppliersFillForm?id=${key}&pageStatus=detail`, '填报环保资料物料-明细', false);
+                openNewTab(`qualitySynergy/EPMaterial/suppliersFillForm?id=${key}&pageStatus=detail`, '环保资料填报-明细', false);
                 break;
             default:
                 break;
@@ -213,6 +213,11 @@ export default create()(function ({ form }) {
         { title: '有效截止日期', dataIndex: 'effectiveEndDate', ellipsis: true, render: (text) => text ? text.slice(0, 10) : '' },
         { title: '物料代码', dataIndex: 'materialCode', ellipsis: true, },
         { title: '物料描述', dataIndex: 'materialName', ellipsis: true, },
+        { title: '填报编号', dataIndex: 'fillNumber', ellipsis: true, render: (text, item)=>{
+            return <a onClick={()=>{
+                openNewTab(`qualitySynergy/EPMaterial/suppliersFillForm?id=${item.id}&pageStatus=detail`, '环保资料填报-明细', false);
+            }}>{text}</a>
+        }},
         { title: '填报截止日期', dataIndex: 'fillEndDate', ellipsis: true, render: (text) => text ? text.slice(0, 10) : '' },
         { title: '分配日期', dataIndex: 'distributionDate', ellipsis: true, render: (text) => text ? text.slice(0, 10) : '' },
         { title: '物料组', dataIndex: 'materialGroupCode', ellipsis: true, },
