@@ -12,7 +12,7 @@ import {
   import {
     SaveSupplierconfigureService
   } from '@/services/supplierRegister';
-  import { closeCurrent } from '../../../utils/index';
+  import { closeCurrent,checkToken } from '../../../utils/index';
   import styles from '../index.less';
   const TabPane = Tabs.TabPane;
 function SupplierApproveInfo() {
@@ -24,8 +24,15 @@ function SupplierApproveInfo() {
     const [configuredata, setconfigurelist] = useState([]);
     const [initialValue, setInitialValue] = useState({});
     const [editData, setEditData] = useState([]);
+    const [isReady, setIsReady] = useState(false);
     useEffect(() => {
-        initsupplierDetai(); 
+        // checkToken(query, setIsReady);
+        // initsupplierDetai(); 
+        async function init() {
+            await checkToken(query, setIsReady);
+            initsupplierDetai(); 
+        }
+        init()
     }, []);
     // 供应商变更详情
     async function initsupplierDetai() {
@@ -57,13 +64,18 @@ function SupplierApproveInfo() {
             message.error(msg)
           }
       }
+      // 流程保存
       const handleSave = async (approved) => {
         triggerLoading(true)
-        const { saveAgent } = saveformRef.current;
-        let agentVal = saveAgent()
-        if (wholeData) {
-            wholeData.supplierInfoVo.supplierAgents = agentVal;
-        }
+        configuredata.map((item, index) => {
+            if (item.operationCode !== '3' && item.fieldCode === 'supplierAgents') {
+                const { saveAgent } = saveformRef.current;
+                let agentVal = saveAgent()
+                if (wholeData) {
+                    wholeData.supplierInfoVo.supplierAgents = agentVal;
+                }
+            }
+        })
         let saveData = wholeData;
         const { success, message: msg } = await saveLietInFlow({supplierApplyJson: JSON.stringify(saveData)})
         triggerLoading(false)
@@ -87,32 +99,36 @@ function SupplierApproveInfo() {
         }
       }
     return (
-        <WorkFlow.Approve
-            businessId={id}
-            taskId={taskId}
-            instanceId={instanceId}
-            flowMapUrl="flow-web/design/showLook"
-            submitComplete={handleSubmitComplete}
-            beforeSubmit={handleSave}
-            >
-            <div className={styles.wrapper}>
-                <Tabs className={styles.tabcolor}>
-                    <TabPane forceRender tab="变更列表" key="1">
-                    <ModifyHistoryDetail
-                        editData={wholeData}
-                        //lineDataSource={lineDataSource}
-                        />
-                    </TabPane>
-                    <TabPane forceRender tab="基本信息" key="2">
-                        <ModifyAgentEdit  
-                            wholeData={wholeData}
-                            configuredata={configuredata}
-                            wrappedComponentRef={saveformRef}
-                        />
-                    </TabPane>
-                </Tabs>
-            </div>
-        </WorkFlow.Approve>
+        <>
+         {isReady ? (
+             <WorkFlow.Approve
+             businessId={id}
+             taskId={taskId}
+             instanceId={instanceId}
+             flowMapUrl="flow-web/design/showLook"
+             submitComplete={handleSubmitComplete}
+             beforeSubmit={handleSave}
+             >
+             <div className={styles.wrapper}>
+                 <Tabs className={styles.tabcolor}>
+                     <TabPane forceRender tab="变更列表" key="1">
+                     <ModifyHistoryDetail
+                         editData={wholeData}
+                         //lineDataSource={lineDataSource}
+                         />
+                     </TabPane>
+                     <TabPane forceRender tab="基本信息" key="2">
+                         <ModifyAgentEdit  
+                             wholeData={wholeData}
+                             configuredata={configuredata}
+                             wrappedComponentRef={saveformRef}
+                         />
+                     </TabPane>
+                 </Tabs>
+             </div>
+         </WorkFlow.Approve>
+         ): null}
+        </>
     )
 }
 

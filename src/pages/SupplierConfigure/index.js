@@ -17,7 +17,7 @@ function SupplierConfigure() {
   const [selectedRowKeys, setRowKeys] = useState([]);
   const [onlyMe, setOnlyMe] = useState(true);
   const [selectedRows, setRows] = useState([]);
-  const [searchValue, setSearchValue] = useState({});
+  const [searchValue, setSearchValue] = useState('');
   const [visible, triggerVisible] = useState(false);
   const [attachId, setAttachId] = useState('');
   const [showAttach, triggerShowAttach] = useState(false);
@@ -120,8 +120,8 @@ function SupplierConfigure() {
     store: {
       url: `${smBaseUrl}/api/SmSupplierRegConfigService/findByProperty`,
       params: {
-        ...searchValue,
-        quickSearchProperties:['supplierCategoryCode','supplierCategoryName'],
+        quickSearchValue: searchValue,
+        quickSearchProperties:['configCode'],
         sortOrders: [
           {
             property: 'configCode',
@@ -136,7 +136,7 @@ function SupplierConfigure() {
   const searchBtnCfg =(
     <>
       <Input
-        placeholder='请输入供应商分类或名称查询'
+        placeholder='请输入配置代码查询'
         className={styles.btn}
         onChange={SerachValue}
         allowClear
@@ -200,9 +200,9 @@ function SupplierConfigure() {
   }
   // 查询
   function handleQuickSerach() {
-    setSearchValue({
-      quickSearchValue: searchValue
-    })
+    let search = "";
+    setSearchValue(search);
+    setSearchValue(searchValue)
     uploadTable();
   }
 
