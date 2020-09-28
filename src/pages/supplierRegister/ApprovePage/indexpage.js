@@ -3,7 +3,7 @@ import { ExtTable, WorkFlow, ExtModal, utils, ToolBar,ScrollBar } from 'suid';
 import { router } from 'dva';
 import { message} from 'antd';
 import SupplierApprovePage from './SupplierApprovePage'
-import { closeCurrent } from '../../../utils/index';
+import { closeCurrent ,checkToken} from '../../../utils/index';
 import {
     findApplySupplierInfoVo,
     SaveSupplierconfigureService,
@@ -16,23 +16,30 @@ function SupplierApproveInfo() {
     const [loading, triggerLoading] = useState(false);
     const [wholeData, setwholeData] = useState([]);
     const [configuredata, setconfigurelist] = useState([]);
+    const [isReady, setIsReady] = useState(false);
     useEffect(() => {
-        async function initsupplierDetai() {
-            triggerLoading(true);
-            let id = query.id;
-            const { data, success, message: msg } = await findApplySupplierInfoVo({supplierApplyId:id});
-            if (success) {
-                let suppliertype = data.supplierInfoVo.supplierVo.supplierCategory.id
-                initConfigurationTable(suppliertype)
-                setwholeData(data)
-                triggerLoading(false);
-            }else {
-              triggerLoading(false);
-              message.error(msg)
-            }
-          }
-          initsupplierDetai();
+      async function init() {
+        await checkToken(query, setIsReady);
+        initsupplierDetai(); 
+      }
+      init()
+      
     }, []);
+    async function initsupplierDetai() {
+      triggerLoading(true);
+      let id = query.id;
+      const { data, success, message: msg } = await findApplySupplierInfoVo({supplierApplyId:id});
+      if (success) {
+          let suppliertype = data.supplierInfoVo.supplierVo.supplierCategory.id
+          initConfigurationTable(suppliertype)
+          setwholeData(data)
+          triggerLoading(false);
+      }else {
+        triggerLoading(false);
+        message.error(msg)
+      }
+    }
+    //initsupplierDetai();
     // 类型配置表
     async function initConfigurationTable(typeId) {
         triggerLoading(true);
@@ -77,20 +84,25 @@ function SupplierApproveInfo() {
         }
       }
     return (
-        <WorkFlow.Approve
-            businessId={id}
-            taskId={taskId}
-            instanceId={instanceId}
-            flowMapUrl="flow-web/design/showLook"
-            submitComplete={handleSubmitComplete}
-            beforeSubmit={handleSave}
-            >
-            <SupplierApprovePage
-                wholeData={wholeData}
-                configuredata={configuredata}
-                wrappedComponentRef={saveformRef}
-            />
-        </WorkFlow.Approve>
+      <>
+        {isReady ? (
+          <WorkFlow.Approve
+              businessId={id}
+              taskId={taskId}
+              instanceId={instanceId}
+              flowMapUrl="flow-web/design/showLook"
+              submitComplete={handleSubmitComplete}
+              beforeSubmit={handleSave}
+              >
+              <SupplierApprovePage
+                  wholeData={wholeData}
+                  configuredata={configuredata}
+                  wrappedComponentRef={saveformRef}
+              />
+          </WorkFlow.Approve>
+        ) : null}
+      </>
+        
     )
 }
 

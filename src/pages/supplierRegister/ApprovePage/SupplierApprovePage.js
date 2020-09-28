@@ -25,7 +25,6 @@ const SupplierAgentRef = forwardRef(({
   configuredata
 }, ref) => {
   useImperativeHandle(ref, () => ({
-    saveAgent,
     form
   }));
   const BaseinfoRef = useRef(null);
@@ -81,15 +80,6 @@ const SupplierAgentRef = forwardRef(({
     setbaseinfo(handlebase)
     setaccountinfo(handleaccount)
     setbusinesshide(handbusiness)
-  }
-  function saveAgent() {
-    const { getAgentform } = Agentformef.current; // 代理商
-    let agentVal = getAgentform()
-    if (!agentVal) {
-      message.error('请将代理商信息填写完全！');
-      return false;
-    }
-    return agentVal;
   }
   return (
     <Spin spinning={loading} tip='处理中...'>

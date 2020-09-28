@@ -118,7 +118,7 @@ export default create()(function ({ form }) {
             authAction(<Button
                 type='primary'
                 className={styles.btn}
-                disabled={(selectedRows.length !== 1 || selectedRows[0].effectiveStatus === 'COMPLETED')}
+                disabled={selectedRows.length !== 1 || selectedRows[0].effectiveStatus === 'COMPLETED' || !selectedRows[0].needToFill }
                 onClick={() => { redirectToPage('add') }}
                 ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_SUPPLIERFILL_FILL_NEW'
@@ -136,7 +136,7 @@ export default create()(function ({ form }) {
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={selectedRowKeys.length !== 1}
+                disabled={selectedRowKeys.length !== 1 || selectedRows[0].effectiveStatus === 'COMPLETED'}
                 onClick={() => { handleButton('submit') }}
                 key='QUALITYSYNERGY_SUPPLIERFILL_SUBMIT_NEW'
                 ignore={DEVELOPER_ENV}
@@ -145,7 +145,7 @@ export default create()(function ({ form }) {
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={selectedRowKeys.length !== 1}
+                disabled={selectedRowKeys.length !== 1|| selectedRows[0].effectiveStatus !== 'COMPLETED'}
                 onClick={() => { handleButton('withdraw') }}
                 ignore={DEVELOPER_ENV}
                 key='QUALITYSYNERGY_SUPPLIERFILL_WITHDEAW_NEW'
@@ -154,7 +154,7 @@ export default create()(function ({ form }) {
         {
             authAction(<Button
                 className={styles.btn}
-                // disabled={selectedRowKeys.length !== 1}
+                disabled={(selectedRowKeys.length !== 1 || selectedRows[0].effectiveStatus === 'COMPLETED')}
                 onClick={() => { setCopyVisible(true) }}
                 key='QUALITYSYNERGY_SUPPLIERFILL_COPY_NEW'
                 ignore={DEVELOPER_ENV}
@@ -236,7 +236,7 @@ export default create()(function ({ form }) {
                 break;
             case 'copy':
                 const { } = materialObj;
-                res = await epDemandCopyAll({ materialCode: materialObj.materialCode });
+                res = await epDemandCopyAll({ materialCode: materialObj.materialCode, id: selectedRowKeys[0] });
                 break;
             default:
                 break;

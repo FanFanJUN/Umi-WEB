@@ -154,7 +154,10 @@ export default [
         path: '/csr/config',
         component: './CSRConfig',
         title: '企业社会责任'
-      }
+      },
+       /**无账号供应商 */
+      { path: '/supplier/ImportSupplier/index', component: './ImportSupplier/index', title: '创建无账号供应商' },
+      { path: '/supplier/ImportSupplier/Edit/index', component: './ImportSupplier/Edit/index', title: '新增无账号供应商' },
     ],
   },
 ];
