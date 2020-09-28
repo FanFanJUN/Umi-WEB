@@ -23,10 +23,10 @@ const TechnicalDataModal = (props) => {
       if (!err) {
         if (type === 'add') {
           // 构造一个随机数Id
-          values.lineNumber = getRandom(10).toString()
+          values.lineNumber = getRandom(10).toString();
         } else {
-          values.id = fatherData.id
-          values.lineNumber = fatherData.lineNumber
+          values.id = fatherData.id;
+          values.lineNumber = fatherData.lineNumber;
         }
         props.onOk(values);
       }
@@ -34,22 +34,28 @@ const TechnicalDataModal = (props) => {
   };
 
   useEffect(() => {
-    if (getFieldValue('sampleRequirementNum')?.toString() !== '0') {
-      let d = new Date();
-      d.setMonth(d.getMonth() +1);
-      setFieldsValue({
-        sampleReceiverTel: userInfo?.userMobile,
-        sampleReceiverName: userInfo?.userName,
-        sampleRequirementDate: moment(d)
-      })
-    } else {
-      setFieldsValue({
-        sampleReceiverTel: '',
-        sampleReceiverName: '',
-        sampleRequirementDate: null
-      })
+    if (visible) {
+      if (getFieldValue('sampleRequirementNum')?.toString() !== '0') {
+        let d = new Date();
+        d.setMonth(d.getMonth() + 1);
+        if (!getFieldValue('sampleReceiverTel')) {
+          setFieldsValue({ sampleReceiverTel: userInfo?.userMobile });
+        }
+        if (!getFieldValue('sampleReceiverName')) {
+          setFieldsValue({ sampleReceiverName: userInfo?.userName });
+        }
+        if (!getFieldValue('sampleRequirementDate')) {
+          setFieldsValue({ sampleRequirementDate: moment(d) });
+        }
+      } else {
+        setFieldsValue({
+          sampleReceiverTel: '',
+          sampleReceiverName: '',
+          sampleRequirementDate: null,
+        });
+      }
     }
-  }, [getFieldValue('sampleRequirementNum')])
+  }, [getFieldValue('sampleRequirementNum')]);
 
   const onCancel = () => {
     props.onCancel();
@@ -70,8 +76,6 @@ const TechnicalDataModal = (props) => {
       }
     </FormItem>
   );
-
-  console.log( getFieldValue('sampleRequirementNum') === '0')
 
   return (
     <ExtModal
@@ -152,7 +156,7 @@ const TechnicalDataModal = (props) => {
                     },
                   ],
                 })(
-                  <Upload entityId={type === 'add' ? null : fatherData.technicalDataFileIdList} />
+                  <Upload entityId={type === 'add' ? null : fatherData.technicalDataFileIdList}/>,
                 )
               }
             </FormItem>
@@ -231,7 +235,7 @@ const TechnicalDataModal = (props) => {
                 })(<Input/>)
               }
             </FormItem>
-          </Col>  <Col span={24}>
+          </Col> <Col span={24}>
           <FormItem {...formItemLayoutLong} label={'备注'}>
             {
               getFieldDecorator('remark', {
