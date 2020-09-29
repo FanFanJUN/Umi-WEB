@@ -119,6 +119,7 @@ const SupplierEditRef = forwardRef(({
                       baseinfo={baseinfo}
                       companyData={wholeData}
                       wrappedComponentRef={BaseinfoRef}
+                      isView={true}
                     />
                   </div>
                 </div>

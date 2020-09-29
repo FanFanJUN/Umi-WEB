@@ -1,7 +1,7 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useState } from 'react';
 import { Form, Row, Input, Col, DatePicker, Radio, Button } from 'antd';
 import { utils, ComboList, ComboTree } from 'suid';
-import { oddunionPayCodeConfig} from '@/utils/commonProps'
+import { corporationConfigShowName} from '@/utils/commonProps'
 import SearchTable from '../../supplierRegister/components/SearchTable'
 import UploadFile from '../../../components/Upload/index'
 const { Item, create } = Form;
@@ -23,6 +23,7 @@ const HeadFormRef = forwardRef(({
     dataSource
 }, ref) => {
     useImperativeHandle(ref, () => ({
+        getImportBaseInfo,
         form
     }));
     const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
@@ -34,15 +35,22 @@ const HeadFormRef = forwardRef(({
             configProperty: Opertype
         })
     }, [])
-    function afterSelect() {
-
+    // 表单
+    function getImportBaseInfo() {
+        let result = false;
+        form.validateFieldsAndScroll((err, values) => {
+        if (!err) {
+            result = values;
+        }
+        });
+        return result;
     }
     return (
         <div >
             <div >
                 <div >
                     <Row>
-                        {/* <Col span={10}>
+                        <Col span={10}>
                             <Item label='申请公司' {...formItemLayout}>
                                 {isView ? dataSource ? dataSource.corporation ? dataSource.corporation.name : '' : "" :
                                     getFieldDecorator("corporationId", {
@@ -51,17 +59,16 @@ const HeadFormRef = forwardRef(({
                                     })(
                                         <SearchTable
                                             placeholder={"请选择申请公司"}
-                                            config={oddunionPayCodeConfig}
-                                            selectChange={afterSelect}
+                                            config={corporationConfigShowName}
                                         />
                                     )
                                 }
                             </Item>
-                        </Col> */}
+                        </Col>
                         <Col span={10}>
                             <Item label='申请人员' {...formItemLayout}>
-                                {
-                                    getFieldDecorator('applyName', {
+                                {isView ? <span>{dataSource ? dataSource.applyName : authorizations.userName}</span> :
+                                    getFieldDecorator("applyName", {
                                         initialValue: dataSource ? dataSource.applyName : "",
                                     })(
                                         <span>{authorizations.userName}</span>

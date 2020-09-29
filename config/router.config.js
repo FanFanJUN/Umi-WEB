@@ -157,7 +157,8 @@ export default [
       },
        /**无账号供应商 */
       { path: '/supplier/ImportSupplier/index', component: './ImportSupplier/index', title: '创建无账号供应商' },
-      { path: '/supplier/ImportSupplier/Edit/index', component: './ImportSupplier/Edit/index', title: '新增无账号供应商' },
+      { path: '/supplier/ImportSupplier/create/index', component: './ImportSupplier/create/index', title: '新增无账号供应商' },
+      { path: '/supplier/ImportSupplier/Edit/index', component: './ImportSupplier/Edit/index', title: '编辑无账号供应商' },
     ],
   },
 ];

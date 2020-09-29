@@ -98,7 +98,7 @@ function SupplierApproveInfo() {
                     instanceId={instanceId}
                     flowMapUrl="flow-web/design/showLook"
                     submitComplete={handleSubmitComplete}
-                    beforeSubmit={handleSave}
+                    //beforeSubmit={handleSave}
                     >
                     <div className={styles.wrapper}>
                         <Tabs className={styles.tabcolor}>

@@ -833,3 +833,20 @@ export const oddunionPayCodeConfig = {
   key: 'code',
   text: 'code',
 };
+// 无账号供应商
+export const corporationConfigShowName = {
+  columns: [{
+      title: '公司代码',
+      dataIndex: 'code',
+      width: 70,
+  },
+      {
+          title: '公司名称',
+          dataIndex: 'name',
+      }],
+  dataService: oddgetAllCorporation,
+  service: oddgetAllCorporation,
+  searchService: (param1, param2, param3) => param3 ? searchListByKey(param1, param2, param3) : searchListByKey(param1, param2, ['code', 'name']),
+  key: 'id',
+  text: 'name',
+};

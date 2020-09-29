@@ -242,7 +242,7 @@ function SupplierConfigure() {
     }
     // 新增无帐号供应商
     async function AddModel() {
-        openNewTab(`supplier/ImportSupplier/Edit/index`, '新增', false)
+        openNewTab(`supplier/ImportSupplier/create/index`, '新增', false)
     }
     // 编辑
     function handleCheckEdit() {
