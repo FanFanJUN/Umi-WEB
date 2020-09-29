@@ -12,6 +12,11 @@ const commonProps = {
   placeholder: '请选择'
 };
 
+export const checkDecimal = (c) => {
+  const r= /^[+-]?[1-9]?[0-9]*\.[0-9]*$/;
+  return r.test(c);
+}
+
 // 技术图纸
 export const TechnicalDrawings = {
   allowClear: true,

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Row, Col, Input, DatePicker } from 'antd';
+import { Form, Row, Col, Input, DatePicker, message } from 'antd';
 import Upload from '../../../../compoent/Upload';
 import { ComboList, ExtModal } from 'suid';
 import moment from 'moment';
-import { CorporationListConfig, getRandom, TechnicalDrawings } from '../../../../commonProps';
+import { checkDecimal, CorporationListConfig, getRandom, TechnicalDrawings } from '../../../../commonProps';
 
 const FormItem = Form.Item;
 
@@ -23,10 +23,14 @@ const TechnicalDataModal = (props) => {
       if (!err) {
         if (type === 'add') {
           // 构造一个随机数Id
-          values.lineNumber = getRandom(10).toString()
+          values.lineNumber = getRandom(10).toString();
         } else {
-          values.id = fatherData.id
-          values.lineNumber = fatherData.lineNumber
+          values.id = fatherData.id;
+          values.lineNumber = fatherData.lineNumber;
+        }
+        if (checkDecimal(Number(getFieldValue('sampleRequirementNum')))) {
+          message.error('样品需求数量必须为整数!')
+          return
         }
         props.onOk(values);
       }
@@ -34,22 +38,30 @@ const TechnicalDataModal = (props) => {
   };
 
   useEffect(() => {
-    if (getFieldValue('sampleRequirementNum')?.toString() !== '0') {
-      let d = new Date();
-      d.setMonth(d.getMonth() +1);
-      setFieldsValue({
-        sampleReceiverTel: userInfo?.userMobile,
-        sampleReceiverName: userInfo?.userName,
-        sampleRequirementDate: moment(d)
-      })
-    } else {
-      setFieldsValue({
-        sampleReceiverTel: '',
-        sampleReceiverName: '',
-        sampleRequirementDate: null
-      })
+    if (visible) {
+      if (getFieldValue('sampleRequirementNum')?.toString() !== '0') {
+        let d = new Date();
+        d.setMonth(d.getMonth() + 1);
+        if (!getFieldValue('sampleReceiverTel')) {
+          setFieldsValue({ sampleReceiverTel: userInfo?.userMobile });
+        }
+        if (!getFieldValue('sampleReceiverName')) {
+          setFieldsValue({ sampleReceiverName: userInfo?.userName });
+        }
+        if (!getFieldValue('sampleRequirementDate')) {
+          setFieldsValue({ sampleRequirementDate: moment(d) });
+        }
+      } else {
+        if (type === 'add') {
+          setFieldsValue({
+            sampleReceiverTel: '',
+            sampleReceiverName: '',
+            sampleRequirementDate: null,
+          });
+        }
+      }
     }
-  }, [getFieldValue('sampleRequirementNum')])
+  }, [getFieldValue('sampleRequirementNum')]);
 
   const onCancel = () => {
     props.onCancel();
@@ -70,8 +82,6 @@ const TechnicalDataModal = (props) => {
       }
     </FormItem>
   );
-
-  console.log( getFieldValue('sampleRequirementNum') === '0')
 
   return (
     <ExtModal
@@ -152,7 +162,7 @@ const TechnicalDataModal = (props) => {
                     },
                   ],
                 })(
-                  <Upload entityId={type === 'add' ? null : fatherData.technicalDataFileIdList} />
+                  <Upload entityId={type === 'add' ? null : fatherData.technicalDataFileIdList}/>,
                 )
               }
             </FormItem>
@@ -191,7 +201,7 @@ const TechnicalDataModal = (props) => {
             <FormItem {...formItemLayoutLong} label={'样品需求日期'}>
               {
                 getFieldDecorator('sampleRequirementDate', {
-                  initialValue: type === 'add' ? null : moment(fatherData.sampleRequirementDate),
+                  initialValue: type === 'add' ? null : fatherData.sampleRequirementDate ? moment(fatherData.sampleRequirementDate) :null,
                   rules: [
                     {
                       required: getFieldValue('sampleRequirementNum')?.toString() !== '0',
@@ -231,7 +241,7 @@ const TechnicalDataModal = (props) => {
                 })(<Input/>)
               }
             </FormItem>
-          </Col>  <Col span={24}>
+          </Col> <Col span={24}>
           <FormItem {...formItemLayoutLong} label={'备注'}>
             {
               getFieldDecorator('remark', {

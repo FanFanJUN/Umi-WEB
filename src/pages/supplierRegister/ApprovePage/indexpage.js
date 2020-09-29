@@ -42,40 +42,40 @@ function SupplierApproveInfo() {
     //initsupplierDetai();
     // 类型配置表
     async function initConfigurationTable(typeId) {
-        triggerLoading(true);
-        let params = {catgroyid:typeId,property:3};
-        const { data, success, message: msg } = await SaveSupplierconfigureService(params);
-          if (success) {
-            let datalist  = data.configBodyVos;
-            triggerLoading(false);
-            setconfigurelist(datalist)
-          }else {
-            triggerLoading(false);
-            message.error(msg)
-          }
-        
-      }
-      const handleSave = async (approved) => {
-        // let saveData = wholeData
-        // console.log(JSON.stringify(saveData))
-        triggerLoading(true)
-        let saveData = wholeData
-        const { success, message: msg } = await saveSupplierRegister(saveData)
+      triggerLoading(true);
+      let params = {catgroyid:typeId,property:3};
+      const { data, success, message: msg } = await SaveSupplierconfigureService(params);
         if (success) {
-          triggerLoading(false)
-          return new Promise((resolve, reject) => {
-            if (success) {
-                resolve({
-                success,
-                message: msg
-                })
-                message.success(msg)
-                return;
-            }
-            reject(false)
-            message.error(msg)
-          })
+          let datalist  = data.configBodyVos;
+          triggerLoading(false);
+          setconfigurelist(datalist)
+        }else {
+          triggerLoading(false);
+          message.error(msg)
         }
+      
+    }
+    const handleSave = async (approved) => {
+      // let saveData = wholeData
+      // console.log(JSON.stringify(saveData))
+      triggerLoading(true)
+      let saveData = wholeData
+      const { success, message: msg } = await saveSupplierRegister(saveData)
+      if (success) {
+        triggerLoading(false)
+        return new Promise((resolve, reject) => {
+          if (success) {
+              resolve({
+              success,
+              message: msg
+              })
+              message.success(msg)
+              return;
+          }
+          reject(false)
+          message.error(msg)
+        })
+      }
     }
     function handleSubmitComplete(res) {
         const { success } = res;
@@ -92,7 +92,7 @@ function SupplierApproveInfo() {
               instanceId={instanceId}
               flowMapUrl="flow-web/design/showLook"
               submitComplete={handleSubmitComplete}
-              beforeSubmit={handleSave}
+              //beforeSubmit={handleSave}
               >
               <SupplierApprovePage
                   wholeData={wholeData}
