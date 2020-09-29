@@ -213,7 +213,7 @@ export default create()(function ({ form }) {
         { title: '有效截止日期', dataIndex: 'effectiveEndDate', ellipsis: true, render: (text) => text ? text.slice(0, 10) : '' },
         { title: '物料代码', dataIndex: 'materialCode', ellipsis: true, },
         { title: '物料描述', dataIndex: 'materialName', ellipsis: true, },
-        { title: '填报编号', dataIndex: 'fillNumber', ellipsis: true, render: (text, item)=>{
+        { title: '填报编号', dataIndex: 'fillNumber', ellipsis: true,  width: 160, render: (text, item)=>{
             return <a onClick={()=>{
                 openNewTab(`qualitySynergy/EPMaterial/suppliersFillForm?id=${item.id}&pageStatus=detail`, '环保资料填报-明细', false);
             }}>{text}</a>
