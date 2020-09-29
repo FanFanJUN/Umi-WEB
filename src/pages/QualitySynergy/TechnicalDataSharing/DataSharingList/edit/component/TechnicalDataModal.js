@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Row, Col, Input, DatePicker } from 'antd';
+import { Form, Row, Col, Input, DatePicker, message } from 'antd';
 import Upload from '../../../../compoent/Upload';
 import { ComboList, ExtModal } from 'suid';
 import moment from 'moment';
-import { CorporationListConfig, getRandom, TechnicalDrawings } from '../../../../commonProps';
+import { checkDecimal, CorporationListConfig, getRandom, TechnicalDrawings } from '../../../../commonProps';
 
 const FormItem = Form.Item;
 
@@ -27,6 +27,10 @@ const TechnicalDataModal = (props) => {
         } else {
           values.id = fatherData.id;
           values.lineNumber = fatherData.lineNumber;
+        }
+        if (checkDecimal(Number(getFieldValue('sampleRequirementNum')))) {
+          message.error('样品需求数量必须为整数!')
+          return
         }
         props.onOk(values);
       }
