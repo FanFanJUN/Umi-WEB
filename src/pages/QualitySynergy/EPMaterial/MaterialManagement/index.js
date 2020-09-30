@@ -275,7 +275,7 @@ export default create()(function ({ form }) {
         if(type === 1) {
             setSearchValue(v => ({ 
                 ...v, 
-                creator_account: value ? getUserAccount() : ''
+                creatorAccount: value ? getUserAccount() : ''
             }));
         } else {
             setSearchValue(v => ({ 
