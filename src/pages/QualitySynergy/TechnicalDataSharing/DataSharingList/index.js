@@ -65,18 +65,6 @@ export default function() {
     selectedRows: [],
   });
 
-  useEffect(() => {
-    if(data.checkedCreate) {
-      tableRef.current.remoteDataRefresh();
-    }
-  }, [data.checkedCreate])
-
-  useEffect(() => {
-    if(data.checkedDistribution) {
-      tableRef.current.remoteDataRefresh();
-    }
-  }, [data.checkedDistribution])
-
 
   const redirectToPage = (type) => {
     switch (type) {
@@ -241,10 +229,12 @@ export default function() {
 
   const onChangeCreate = (e) => {
     setData(v => ({...v, checkedCreate: e.target.checked}))
+    tableRef.current.remoteDataRefresh();
   }
 
   const onChangeDistribution = (e) => {
     setData(v => ({...v, checkedDistribution: e.target.checked}))
+    tableRef.current.remoteDataRefresh();
   }
 
 
