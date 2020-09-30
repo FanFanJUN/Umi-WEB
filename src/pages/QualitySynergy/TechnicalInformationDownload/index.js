@@ -9,7 +9,7 @@ import {
   downloadStatusProps,
   materialCode,
   MaterialConfig,
-  MaterialGroupConfig,
+  MaterialGroupConfig, SendEmailToStrategicSourcing,
   ShareDownloadStatus,
   StrategicPurchaseConfig, UpdateShareDownLoadState,
 } from '../commonProps';
@@ -103,8 +103,20 @@ export default function() {
       epTechnicalDataId: data.epTechnicalDataId
     }).then(res => {
       if (res.success) {
-        tableRef.current.remoteDataRefresh();
-        message.success(res.message)
+        SendEmailToStrategicSourcing({
+          applyPeopleId: data.applyPeopleId,
+          strategicPurchaseId: data.strategicPurchaseId,
+          supplierName: data.supplierName,
+          materialCode: data.materialCode,
+          materialName: data.materialName
+        }).then(response => {
+          if (response.success) {
+            message.success(response.message)
+            tableRef.current.remoteDataRefresh();
+          } else {
+            message.error(response.message)
+          }
+        })
       } else {
         message.error(res.message)
       }
