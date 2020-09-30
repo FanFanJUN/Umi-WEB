@@ -46,8 +46,8 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
         }
     }, [visible])
     const columns = [
-        { title: '物质代码', dataIndex: 'substanceCode', align: 'center' },
-        { title: '物质名称', dataIndex: 'substanceName', ellipsis: true, align: 'center' },
+        { title: '均质材料成分代码', dataIndex: 'substanceCode', align: 'center', width: 140 },
+        { title: '均质材料成分名称', dataIndex: 'substanceName', ellipsis: true, align: 'center', width: 140  },
         { title: '是否限用物质', dataIndex: 'isRestricted', ellipsis: true, align: 'center', render: (text) => { return (text===true||text==='true') ? '是' : '否' } },
         { title: 'CAS.NO', dataIndex: 'casNo', ellipsis: true, align: 'center', },
         { title: '适用范围代码', dataIndex: 'practicalRangeCode', ellipsis: true, align: 'center', },
@@ -245,14 +245,14 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                     </FormItem>
                 </Row>
                 <Row>
-                    <FormItem label={'物质名称'} {...formLayout}>
+                    <FormItem label={'均质材料成分名称'} {...formLayout}>
                         {
                             getFieldDecorator('substanceId', { initialValue: modalType === 'edit' ? selectedRows[0].substanceId : '' }),
                             getFieldDecorator('substanceCode', { initialValue: modalType === 'edit' ? selectedRows[0].substanceCode : '' }),
                             (getFieldValue('isRestricted') === undefined && modalType === 'add') ? <Input disabled={true} placeholder="请先选择是否为限用物质" />
                                 : getFieldValue('isRestricted') ? getFieldDecorator('substanceName', {
                                     initialValue: modalType === 'edit' ? selectedRows[0].substanceName : '',
-                                    rules: [{ required: true, message: '请选择物质名称' }]
+                                    rules: [{ required: true, message: '请选择' }]
                                 })(<ComboList form={form}
                                     {...limitMaterialNameList}
                                     name='substanceName'
@@ -265,7 +265,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                                     }}
                                 />) : getFieldDecorator('substanceName', {
                                     initialValue: modalType === 'edit' ? selectedRows[0].substanceName : '',
-                                    rules: [{ required: true, message: '请填写物质名称' }]
+                                    rules: [{ required: true, message: '请填写均质材料成分名称' }]
                                 })(<Input placeholder="请输入" />)
                         }
                     </FormItem>
