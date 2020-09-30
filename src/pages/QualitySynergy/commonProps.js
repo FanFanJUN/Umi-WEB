@@ -122,6 +122,16 @@ export const generateLineNumber = (index) => {
   return (index < 10 ? '00' + index * 10 : index < 100 ? '0' + index * 10 : index * 10).toString()
 }
 
+// 下载资料发送邮件给战略采购
+export const SendEmailToStrategicSourcing = async params => {
+  const url = `${recommendUrl}/api/epTechnicalShareDemandService/supplierDownloadSendMessage`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+}
+
 // 根据id改变下载状态
 export const FindMaxDateByDemandNumber = async params => {
   const url = `${recommendUrl}/api/epTechnicalShareDemandService/findMaxDate`;
