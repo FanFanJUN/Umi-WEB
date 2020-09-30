@@ -108,7 +108,8 @@ export default function() {
           strategicPurchaseId: data.strategicPurchaseId,
           supplierName: data.supplierName,
           materialCode: data.materialCode,
-          materialName: data.materialName
+          materialName: data.materialName,
+          buName: data.buName
         }).then(response => {
           if (response.success) {
             message.success(response.message)
