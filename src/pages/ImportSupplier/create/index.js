@@ -6,7 +6,7 @@ import ImportBaseInfo from '../commons/ImportBaseInfo'
 import ImportData from '../commons/ImportData'
 import styles from '../../supplierRegister/components/index.less';
 import { closeCurrent, isEmpty } from '../../../utils';
-import { RecommendationList } from '../../../services/ImportSupplier'
+import { RecommendationList,saveBatchVo} from '../../../services/ImportSupplier'
 import { utils} from 'suid';
 function CreateStrategy() {
     const BaseinfoRef = useRef(null);
@@ -27,8 +27,16 @@ function CreateStrategy() {
           return false;
         }
         ImportBaseInfo.applyName = authorizations.userName
-        console.log(ImportBaseInfo)
-        console.log(ImportDate)
+        let params = {...ImportBaseInfo, ...ImportDate}
+        triggerLoading(true)
+        const {success, message: msg } = await saveBatchVo({supplierBatchCreationVo: JSON.stringify(params)})
+        if (success) {
+            triggerLoading(false)
+            closeCurrent()
+        } else {
+            triggerLoading(false)
+            message.error(msg);
+        }
     }
 
     // 获取配置列表项

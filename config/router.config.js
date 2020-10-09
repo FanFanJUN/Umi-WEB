@@ -159,6 +159,10 @@ export default [
       { path: '/supplier/ImportSupplier/index', component: './ImportSupplier/index', title: '创建无账号供应商' },
       { path: '/supplier/ImportSupplier/create/index', component: './ImportSupplier/create/index', title: '新增无账号供应商' },
       { path: '/supplier/ImportSupplier/Edit/index', component: './ImportSupplier/Edit/index', title: '编辑无账号供应商' },
+      { path: '/supplier/ImportSupplier/Detail/index', component: './ImportSupplier/Detail/index', title: '无账号供应商明细' },
+      { path: '/supplier/ImportSupplier/ApprovePage/ImportSupplierApproveEdit', component: './ImportSupplier/ApprovePage/ImportSupplierApproveEdit', title: '无账号供应商流程修改' },
+      { path: '/supplier/ImportSupplier/ApprovePage/ImportSupplierApprovePage', component: './ImportSupplier/ApprovePage/ImportSupplierApprovePage', title: '无账号供应商流程审核' },
+      { path: '/supplier/ImportSupplier/ApprovePage/ImportSupplierApproveDetail', component: './ImportSupplier/ApprovePage/ImportSupplierApproveDetail', title: '无账号供应商流程明细' }
     ],
   },
 ];

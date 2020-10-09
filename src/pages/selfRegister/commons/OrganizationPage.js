@@ -4,7 +4,7 @@ import {ComboTree} from 'suid'
 import { router } from 'dva';
 import SearchTable from '../../supplierRegister/components/SearchTable'
 import { checkSupplierName ,getImgUrl,UnifiedcheckCheckEmail} from '../../../services/supplierRegister'
-import {chineseProvinceTableConfig,purchaseCompanyPropsreg} from '../../../utils/commonProps'
+import {chineseProvinceTableConfig,organpurchaseCompanyPropsreg} from '../../../utils/commonProps'
 import {isEmpty} from '../../../utils'
 const { create } = Form;
 const FormItem = Form.Item;
@@ -192,7 +192,7 @@ const OrganizatRef = forwardRef(({
                                 ],
                             })(
                                 <ComboTree
-                                    {...purchaseCompanyPropsreg}
+                                    {...organpurchaseCompanyPropsreg}
                                     form={form} showSearch={false}
                                     name='supplierCategoryName'
                                     field={['supplierCategoryId']}

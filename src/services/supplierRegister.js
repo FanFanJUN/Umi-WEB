@@ -253,7 +253,7 @@ export const stopApproveingOrder = params =>createServiceRequest({
 })
 // 老的泛虹公司
 export async function oddgetAllCorporation(params = {}) {
-  return httpUtils.post(`${BASE_URL}/srm-baf-web/basic/listAllCorporation`);
+  return httpUtils.post(`/srm-baf-web/basic/listAllCorporation`);
 }
 // 供应商公司查询工厂
 export const getCompanyFactory = (params = {}) => {

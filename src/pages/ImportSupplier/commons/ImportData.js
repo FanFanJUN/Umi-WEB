@@ -18,9 +18,10 @@ let keys = 1;
 let lineCode = 1;
 const Bankformef = forwardRef(({
   form,
-  isView = false,
   editData = {},
-  headerInfo
+  headerInfo,
+  isEdit,
+  isView
 }, ref) => {
   useImperativeHandle(ref, () => ({
     getImportDate,
@@ -30,12 +31,13 @@ const Bankformef = forwardRef(({
   const [dataSource, setDataSource] = useState([]);
   const [selectRowKeys, setRowKeys] = useState([]);
   const [selectedRows, setRows] = useState([]);
-  
+  const [savedata, setsavedata] = useState([]);
   const authorizations = storage.sessionStorage.get("Authorization");
   const host = process.env.NODE_ENV === 'production' ? '' : onLineTarget;
   useEffect(() => {
     handleData(editData)
   }, [editData])
+  // 新增导入表单
   const columns = [
     {
         title: '手机',
@@ -51,245 +53,500 @@ const Bankformef = forwardRef(({
         width: 80,
 
       },
-    //   {
-    //     title: '供应商分类',
-    //     dataIndex: 'supplierVo.supplierCategory',
-    //     ellipsis: true,
-    //     width: 120,
+      {
+        title: '供应商分类',
+        dataIndex: 'supplierCategory',
+        ellipsis: true,
+        width: 120,
 
-    //   },
-    //   {
-    //     title: '供应商名称',
-    //     dataIndex: 'supplierVo.name',
-    //     ellipsis: true,
-    //     width: 120
-    //   },
-    //   {
-    //     title: '统一社会信用代码',
-    //     dataIndex: 'supplierVo.creditCode',
-    //     ellipsis: true,
-    //     width: 160,
+      },
+      {
+        title: '供应商名称',
+        dataIndex: 'name',
+        ellipsis: true,
+        width: 120
+      },
+      {
+        title: '统一社会信用代码',
+        dataIndex: 'creditCode',
+        ellipsis: true,
+        width: 160,
 
-    //   },
-    //   {
-    //     title: '邓白氏码',
-    //     dataIndex: 'supplierVo.dbCode',
-    //     ellipsis: true,
-    //     width: 180,
+      },
+      {
+        title: '邓白氏码',
+        dataIndex: 'dbCode',
+        ellipsis: true,
+        width: 180,
 
-    //   },
-    //   {
-    //     title: '简称',
-    //     dataIndex: 'supplierVo.searchCondition',
-    //     ellipsis: true,
-    //     width: 120,
-    //   },
+      },
+      {
+        title: '简称',
+        dataIndex: 'searchCondition',
+        ellipsis: true,
+        width: 120,
+      },
       
-    //   {
-    //     title: '企业性质',
-    //     dataIndex: 'supplierVo.enterprisePropertyName',
-    //     ellipsis: true,
-    //     width: 100,
+      {
+        title: '企业性质',
+        dataIndex: 'enterprisePropertyName',
+        ellipsis: true,
+        width: 100,
 
-    //   }, 
-    //   {
-    //     title: '邮编',
-    //     dataIndex: 'supplierVo.postcode',
-    //     ellipsis: true,
-    //     width: 120,
+      }, 
+      {
+        title: '邮编',
+        dataIndex: 'postcode',
+        ellipsis: true,
+        width: 120,
 
-    //   },
-    //  {
-    //     title: '注册国家代码',
-    //     dataIndex: 'supplierVo.countryCode',
-    //     ellipsis: true,
-    //     width: 100,
-    //   }, {
-    //     title: '注册国家名称',
-    //     dataIndex: 'supplierVo.countryName',
-    //     ellipsis: true,
-    //     width: 100,
-    //   }, {
-    //     title: '注册省代码',
-    //     dataIndex: 'supplierVo.registerProvinceCode',
-    //     ellipsis: true,
-    //     width: 80,
-    //   }, {
-    //     title: '注册省名称',
-    //     dataIndex: 'supplierVo.registerProvinceName',
-    //     ellipsis: true,
-    //     width: 100,
-    //   }, {
-    //     title: '注册市代码',
-    //     dataIndex: 'supplierVo.registerRegionCode',
-    //     ellipsis: true,
-    //     width: 160,
-    //   }, {
-    //     title: '注册市名称',
-    //     dataIndex: 'supplierVo.registerRegionName',
-    //     ellipsis: true,
-    //     width: 160,
-    //   }, {
-    //     title: '注册区县代码',
-    //     dataIndex: 'supplierVo.registerDistrictCode',
-    //     ellipsis: true,
-    //     width: 160,
-    //   }, {
-    //     title: '注册区县名称',
-    //     dataIndex: 'supplierVo.registerDistrictName',
-    //     ellipsis: true,
-    //     width: 160,
-    //   },  {
-    //     title: '注册详细地址',
-    //     dataIndex: 'supplierVo.registerStreet',
-    //     ellipsis: true,
-    //     width: 100,
+      },
+     {
+        title: '注册国家代码',
+        dataIndex: 'countryCode',
+        ellipsis: true,
+        width: 100,
+      }, {
+        title: '注册国家名称',
+        dataIndex: 'countryName',
+        ellipsis: true,
+        width: 100,
+      }, {
+        title: '注册省代码',
+        dataIndex: 'registerProvinceCode',
+        ellipsis: true,
+        width: 80,
+      }, {
+        title: '注册省名称',
+        dataIndex: 'registerProvinceName',
+        ellipsis: true,
+        width: 100,
+      }, {
+        title: '注册市代码',
+        dataIndex: 'registerRegionCode',
+        ellipsis: true,
+        width: 160,
+      }, {
+        title: '注册市名称',
+        dataIndex: 'registerRegionName',
+        ellipsis: true,
+        width: 160,
+      }, {
+        title: '注册区县代码',
+        dataIndex: 'registerDistrictCode',
+        ellipsis: true,
+        width: 160,
+      }, {
+        title: '注册区县名称',
+        dataIndex: 'registerDistrictName',
+        ellipsis: true,
+        width: 160,
+      },  {
+        title: '注册详细地址',
+        dataIndex: 'registerStreet',
+        ellipsis: true,
+        width: 100,
 
-    //   }, {
-    //     title: '传真',
-    //     dataIndex: 'supplierVo.fax',
-    //     ellipsis: true,
-    //     width: 120,
+      }, {
+        title: '传真',
+        dataIndex: 'fax',
+        ellipsis: true,
+        width: 120,
 
-    //   },
-    //   {
-    //     title: '银行所在国家',
-    //     dataIndex: 'bankCountry',
-    //     ellipsis: true,
-    //     width: 100,
-    //     render: (value, item, index) => {
-    //       if (item.bankInfoVos && item.bankInfoVos.length > 0) {
-    //         return item.bankInfoVos[0].bankCountry
-    //       }
-    //     }
-    //   },
-    //   {
-    //     title: '银行编码',
-    //     dataIndex: 'bankCode',
-    //     ellipsis: true,
-    //     width: 100,
-    //     render: (value, item, index) => {
-    //       if (item.bankInfoVos && item.bankInfoVos.length > 0) {
-    //         return item.bankInfoVos[0].bankCode
-    //       }
-    //     }
-    //   }, 
-    //   {
-    //     title: '银行账户',
-    //     dataIndex: 'bankAccount',
-    //     ellipsis: true,
-    //     width: 100,
-    //     render: (value, item, index) => {
-    //       if (item.bankInfoVos && item.bankInfoVos.length > 0) {
-    //         return item.bankInfoVos[0].bankAccount
-    //       }
-    //     }
-    //   },
-    //   {
-    //     title: '银行名称',
-    //     dataIndex: 'bankName',
-    //     ellipsis: true,
-    //     width: 100,
-    //     render: (value, item, index) => {
-    //       if (item.bankInfoVos && item.bankInfoVos.length > 0) {
-    //         return item.bankInfoVos[0].bankName
-    //       }
-    //     }
-    //   }, 
-    //   {
-    //     title: '银行户主',
-    //     dataIndex: 'bankOwner',
-    //     ellipsis: true,
-    //     width: 120,
-    //     render: (value, item, index) => {
-    //       if (item.bankInfoVos && item.bankInfoVos.length > 0) {
-    //         return item.bankInfoVos[0].bankOwner
-    //       }
-    //     }
-    //   }, 
-    //   {
-    //     title: 'SWIFT码',
-    //     dataIndex: 'swift',
-    //     ellipsis: true,
-    //     width: 80,
-    //     render: (value, item, index) => {
-    //       if (item.bankInfoVos && item.bankInfoVos.length > 0) {
-    //         return item.bankInfoVos[0].swift
-    //       }
-    //     }
-    //   },
-    //   {
-    //     title: '银联行号',
-    //     dataIndex: 'unionpayCode',
-    //     ellipsis: true,
-    //     width: 100,
-    //     render: (value, item, index) => {
-    //       if (item.bankInfoVos && item.bankInfoVos.length > 0) {
-    //         return item.bankInfoVos[0].unionpayCode
-    //       }
-    //     }
-    //   },
-    //    {
-    //     title: '银行地区',
-    //     dataIndex: 'bankArea',
-    //     ellipsis: true,
-    //     width: 100,
-    //     render: (value, item, index) => {
-    //       if (item.bankInfoVos && item.bankInfoVos.length > 0) {
-    //         return item.bankInfoVos[0].bankArea
-    //       }
-    //     }
-    //   }, {
-    //     title: '银行城市',
-    //     dataIndex: 'bankCity',
-    //     ellipsis: true,
-    //     width: 100,
-    //     render: (value, item, index) => {
-    //       if (item.bankInfoVos && item.bankInfoVos.length > 0) {
-    //         return item.bankInfoVos[0].bankCity
-    //       }
-    //     }
-    //   }, {
-    //     title: '银行控制代码',
-    //     dataIndex: 'bankPayment',
-    //     ellipsis: true,
-    //     width: 120,
-    //     render: (value, item, index) => {
-    //       if (item.bankInfoVos && item.bankInfoVos.length > 0) {
-    //         return item.bankInfoVos[0].bankPayment
-    //       }
-    //     }
-    //   }, 
-    //   {
-    //     title: '扩展公司代码',
-    //     dataIndex: 'cors',
-    //     ellipsis: true,
-    //     width: 120,
-    //   },
-    //   {
-    //     title: '扩展采购组织代码',
-    //     dataIndex: 'cgcode',
-    //     ellipsis: true,
-    //     width: 160,
-    //   },
-    //   {
-    //     title: '付款条件',
-    //     dataIndex: 'payConditionCode',
-    //     ellipsis: true,
-    //     width: 80,
+      },
+      {
+        title: '银行所在国家',
+        dataIndex: 'bankCountry',
+        ellipsis: true,
+        width: 100,
+        // render: (value, item, index) => {
+        //   if (item.bankInfoVos && item.bankInfoVos.length > 0) {
+        //     return item.bankInfoVos[0].bankCountry
+        //   }
+        // }
+      },
+      {
+        title: '银行编码',
+        dataIndex: 'bankCode',
+        ellipsis: true,
+        width: 100,
+        // render: (value, item, index) => {
+        //   if (item.bankInfoVos && item.bankInfoVos.length > 0) {
+        //     return item.bankInfoVos[0].bankCode
+        //   }
+        // }
+      }, 
+      {
+        title: '银行账户',
+        dataIndex: 'bankAccount',
+        ellipsis: true,
+        width: 100,
+        // render: (value, item, index) => {
+        //   if (item.bankInfoVos && item.bankInfoVos.length > 0) {
+        //     return item.bankInfoVos[0].bankAccount
+        //   }
+        // }
+      },
+      {
+        title: '银行名称',
+        dataIndex: 'bankName',
+        ellipsis: true,
+        width: 100,
+        // render: (value, item, index) => {
+        //   if (item.bankInfoVos && item.bankInfoVos.length > 0) {
+        //     return item.bankInfoVos[0].bankName
+        //   }
+        // }
+      }, 
+      {
+        title: '银行户主',
+        dataIndex: 'bankOwner',
+        ellipsis: true,
+        width: 120,
+        // render: (value, item, index) => {
+        //   if (item.bankInfoVos && item.bankInfoVos.length > 0) {
+        //     return item.bankInfoVos[0].bankOwner
+        //   }
+        // }
+      }, 
+      {
+        title: 'SWIFT码',
+        dataIndex: 'swift',
+        ellipsis: true,
+        width: 80,
+        // render: (value, item, index) => {
+        //   if (item.bankInfoVos && item.bankInfoVos.length > 0) {
+        //     return item.bankInfoVos[0].swift
+        //   }
+        // }
+      },
+      {
+        title: '银联行号',
+        dataIndex: 'unionpayCode',
+        ellipsis: true,
+        width: 100,
+        // render: (value, item, index) => {
+        //   if (item.bankInfoVos && item.bankInfoVos.length > 0) {
+        //     return item.bankInfoVos[0].unionpayCode
+        //   }
+        // }
+      },
+       {
+        title: '银行地区',
+        dataIndex: 'bankArea',
+        ellipsis: true,
+        width: 100,
+        // render: (value, item, index) => {
+        //   if (item.bankInfoVos && item.bankInfoVos.length > 0) {
+        //     return item.bankInfoVos[0].bankArea
+        //   }
+        // }
+      }, {
+        title: '银行城市',
+        dataIndex: 'bankCity',
+        ellipsis: true,
+        width: 100,
+        // render: (value, item, index) => {
+        //   if (item.bankInfoVos && item.bankInfoVos.length > 0) {
+        //     return item.bankInfoVos[0].bankCity
+        //   }
+        // }
+      }, {
+        title: '银行控制代码',
+        dataIndex: 'bankPayment',
+        ellipsis: true,
+        width: 120,
+        // render: (value, item, index) => {
+        //   if (item.bankInfoVos && item.bankInfoVos.length > 0) {
+        //     return item.bankInfoVos[0].bankPayment
+        //   }
+        // }
+      }, 
+      {
+        title: '扩展公司代码',
+        dataIndex: 'corporationCode',
+        ellipsis: true,
+        width: 120,
+      },
+      {
+        title: '扩展采购组织代码',
+        dataIndex: 'purchaseOrgCode',
+        ellipsis: true,
+        width: 160,
+      },
+      {
+        title: '付款条件',
+        dataIndex: 'payCodition',
+        ellipsis: true,
+        width: 80,
 
-    //   }, {
-    //     title: '方案组',
-    //     dataIndex: 'schemeGroupCode',
-    //     ellipsis: true,
-    //     width: 80,
-    //   },
-    //   {
-    //     title: '币种',
-    //     dataIndex: 'currencyCode',
-    //     ellipsis: true,
-    //     width: 80,
-    //   }
+      }, {
+        title: '方案组',
+        dataIndex: 'schemeGroupCode',
+        ellipsis: true,
+        width: 80,
+      },
+      {
+        title: '币种',
+        dataIndex: 'currencyCode',
+        ellipsis: true,
+        width: 80,
+      }
+  ].map(_ => ({ ..._, align: 'center' }))
+  // 编辑导入表单
+  const columnsedit = [
+    {
+        title: '手机',
+        dataIndex: 'supplierVo.accountVo.mobile',
+        ellipsis: true,
+        width: 180,
+
+      }, 
+      {
+        title: '邮箱',
+        dataIndex: 'supplierVo.accountVo.email',
+        ellipsis: true,
+        width: 80,
+
+      },
+      {
+        title: '供应商分类',
+        dataIndex: 'supplierVo.supplierCategoryName',
+        ellipsis: true,
+        width: 120,
+
+      },
+      {
+        title: '供应商名称',
+        dataIndex: 'supplierVo.name',
+        ellipsis: true,
+        width: 120
+      },
+      {
+        title: '统一社会信用代码',
+        dataIndex: 'supplierVo.creditCode',
+        ellipsis: true,
+        width: 160,
+
+      },
+      {
+        title: '邓白氏码',
+        dataIndex: 'supplierVo.dbCode',
+        ellipsis: true,
+        width: 180,
+
+      },
+      {
+        title: '简称',
+        dataIndex: 'supplierVo.abbreviation',
+        ellipsis: true,
+        width: 120,
+      },
+      
+      {
+        title: '企业性质',
+        dataIndex: 'supplierVo.enterprisePropertyName',
+        ellipsis: true,
+        width: 100,
+
+      }, 
+      {
+        title: '邮编',
+        dataIndex: 'supplierVo.postcode',
+        ellipsis: true,
+        width: 120,
+
+      },
+     {
+        title: '注册国家代码',
+        dataIndex: 'supplierVo.countryCode',
+        ellipsis: true,
+        width: 100,
+      }, {
+        title: '注册国家名称',
+        dataIndex: 'supplierVo.countryName',
+        ellipsis: true,
+        width: 100,
+      }, {
+        title: '注册省代码',
+        dataIndex: 'supplierVo.registerProvinceCode',
+        ellipsis: true,
+        width: 80,
+      }, {
+        title: '注册省名称',
+        dataIndex: 'supplierVo.registerProvinceName',
+        ellipsis: true,
+        width: 100,
+      }, {
+        title: '注册市代码',
+        dataIndex: 'supplierVo.registerRegionCode',
+        ellipsis: true,
+        width: 160,
+      }, {
+        title: '注册市名称',
+        dataIndex: 'supplierVo.registerRegionName',
+        ellipsis: true,
+        width: 160,
+      }, {
+        title: '注册区县代码',
+        dataIndex: 'supplierVo.registerDistrictCode',
+        ellipsis: true,
+        width: 160,
+      }, {
+        title: '注册区县名称',
+        dataIndex: 'supplierVo.registerDistrictName',
+        ellipsis: true,
+        width: 160,
+      },  {
+        title: '注册详细地址',
+        dataIndex: 'supplierVo.registerStreet',
+        ellipsis: true,
+        width: 100,
+
+      }, {
+        title: '传真',
+        dataIndex: 'supplierVo.fax',
+        ellipsis: true,
+        width: 120,
+
+      },
+      {
+        title: '银行所在国家',
+        dataIndex: 'countryName',
+        ellipsis: true,
+        width: 100,
+        render: (value, item, index) => {
+          if (item.bankInfoVos && item.bankInfoVos.length > 0) {
+            return item.bankInfoVos[0].countryName
+          }
+        }
+      },
+      {
+        title: '银行编码',
+        dataIndex: 'bankCode',
+        ellipsis: true,
+        width: 100,
+        render: (value, item, index) => {
+          if (item.bankInfoVos && item.bankInfoVos.length > 0) {
+            return item.bankInfoVos[0].bankCode
+          }
+        }
+      }, 
+      {
+        title: '银行账户',
+        dataIndex: 'bankAccount',
+        ellipsis: true,
+        width: 100,
+        render: (value, item, index) => {
+          if (item.bankInfoVos && item.bankInfoVos.length > 0) {
+            return item.bankInfoVos[0].bankAccount
+          }
+        }
+      },
+      {
+        title: '银行名称',
+        dataIndex: 'bankName',
+        ellipsis: true,
+        width: 100,
+        render: (value, item, index) => {
+          if (item.bankInfoVos && item.bankInfoVos.length > 0) {
+            return item.bankInfoVos[0].bankName
+          }
+        }
+      }, 
+      {
+        title: '银行户主',
+        dataIndex: 'bankOwner',
+        ellipsis: true,
+        width: 120,
+        render: (value, item, index) => {
+          if (item.bankInfoVos && item.bankInfoVos.length > 0) {
+            return item.bankInfoVos[0].bankOwner
+          }
+        }
+      }, 
+      {
+        title: 'SWIFT码',
+        dataIndex: 'swift',
+        ellipsis: true,
+        width: 80,
+        render: (value, item, index) => {
+          if (item.bankInfoVos && item.bankInfoVos.length > 0) {
+            return item.bankInfoVos[0].swift
+          }
+        }
+      },
+      {
+        title: '银联行号',
+        dataIndex: 'unionpayCode',
+        ellipsis: true,
+        width: 100,
+        render: (value, item, index) => {
+          if (item.bankInfoVos && item.bankInfoVos.length > 0) {
+            return item.bankInfoVos[0].unionpayCode
+          }
+        }
+      },
+       {
+        title: '银行地区',
+        dataIndex: 'provinceName',
+        ellipsis: true,
+        width: 100,
+        render: (value, item, index) => {
+          if (item.bankInfoVos && item.bankInfoVos.length > 0) {
+            return item.bankInfoVos[0].provinceName
+          }
+        }
+      }, {
+        title: '银行城市',
+        dataIndex: 'regionName',
+        ellipsis: true,
+        width: 100,
+        render: (value, item, index) => {
+          if (item.bankInfoVos && item.bankInfoVos.length > 0) {
+            return item.bankInfoVos[0].regionName
+          }
+        }
+      }, {
+        title: '银行控制代码',
+        dataIndex: 'paymentCode',
+        ellipsis: true,
+        width: 120,
+        render: (value, item, index) => {
+          if (item.bankInfoVos && item.bankInfoVos.length > 0) {
+            return item.bankInfoVos[0].paymentCode
+          }
+        }
+      }, 
+      {
+        title: '扩展公司代码',
+        dataIndex: 'supplierFinanceView.corporationCode',
+        ellipsis: true,
+        width: 120,
+      },
+      {
+        title: '扩展采购组织代码',
+        dataIndex: 'supplierFinanceView.purchaseOrgCode',
+        ellipsis: true,
+        width: 160,
+      },
+      {
+        title: '付款条件',
+        dataIndex: 'supplierFinanceView.payCodition',
+        ellipsis: true,
+        width: 80,
+      }, {
+        title: '方案组',
+        dataIndex: 'supplierFinanceView.schemeGroupCode',
+        ellipsis: true,
+        width: 80,
+      },
+      {
+        title: '币种',
+        dataIndex: 'supplierFinanceView.currencyCode',
+        ellipsis: true,
+        width: 80,
+      }
   ].map(_ => ({ ..._, align: 'center' }))
   const empty = selectRowKeys.length === 0;
 
@@ -301,11 +558,11 @@ const Bankformef = forwardRef(({
   }
   // 表单
   function getImportDate() {
-    const dataInfo = tabformRef.current.data;
-    if (!dataInfo || dataInfo.length === 0) {
+    if (savedata.length === 0) {
       return false;
     }
-    return dataInfo;
+    return {supplierInfoVos:savedata};
+    
 }
   // 记录列表选中
   function handleSelectedRows(rowKeys, rows) {
@@ -323,103 +580,73 @@ const Bankformef = forwardRef(({
   // 清空列选择并刷新
   function uploadTable() {
     cleanSelectedRecord()
-    //tableRef.current.remoteDataRefresh()
+    tabformRef.current.remoteDataRefresh()
   }
-
-  
 
   // 删除
   async function handleEdit() {
-   // const filterData = dataSource.filter(item => item.key !== selectedRows[0].key);
-    lineCode--;
-    //setDataSource(filterData)
+    let filterData = getArrMatching(dataSource, selectedRows);
+    setDataSource(filterData)
+    uploadTable();
   }
   function getArrMatching(arr1, arr2) {
     return arr1.concat(arr2).filter(function(v, i, arr) {
         return arr.indexOf(v) === arr.lastIndexOf(v);
     })
   }
+  // 导入数据效验
  const validateItem = (data) => {
-    console.log(data)
-    //data = data.map(item => ({...item, recordCheckList: item.recordCheckList === '是'}))
-    // return new Promise((resolve, reject) => {
-    //   Importvalidity(data).then(res => {
-    //     const response = res.data.map(item => ({
-    //       ...item,
-    //       validate: item.importResult,
-    //       status: item.importResult ? '数据完整' : '失败',
-    //       statusCode: item.importResult ? 'success' : 'error',
-    //       message: item.importResult ? '成功' : item.importResultInfo
-    //     }));
-    //     resolve(response);
-    //   }).catch(err => {
-    //     reject(err)
-    //   })
-    // });
+   let importdata = data,response;
+    return new Promise((resolve, reject) => {
+      Importvalidity(data).then(res => {
+        importdata.forEach((item, index) => {
+          if (res.data.errStatus === '1') {
+            response = res.data.msgs.map((items, index) => ({
+              ...item,
+              key: index,
+              validate: false,
+              status: '失败',
+              statusCode: 'error',
+              message: items
+            }))
+            
+          }else {
+            response = res.data.infos.map((items, index) => ({
+              ...item,
+              key: index,
+              validate: items.error === '' ? true : false,
+              status: items.error === '' ? '数据完整' : '失败',
+              statusCode: items.error === '' ? 'success' : 'error',
+              message: items.error === '' ? items.name : items.error
+            }))
+            res.data.infos.forEach((items, index) => {
+              if (items.error === '') {
+                const supplierInfo = res.data.supplierInfoVos.map((info, index) => ({
+                  ...info,
+                  key: index,
+                }))
+                setsavedata(supplierInfo)
+              }
+            })
+          }
+          resolve(response)
+        })
+        
+      }).catch(err => {
+        reject(err)
+      })
+    });
   };
+  // 导入
   const importFunc = (value) => {
-    console.log(value)
-    // Importvalidity(value).then(res => {
-    //   if (res.success) {
-    //       message.success('导入成功');
-    //   } else {
-    //       message.error(res.message)
-    //   }
-    // });
+    if (isEdit) {
+      setDataSource(savedata)
+    }else {
+      setDataSource(value)
+    }
+    
   };
-  function fileUpload({file}) {
-    console.log({file})
-    // if (file.status === 'done') {
-    //   let result = file.response ? file.response : {};
-    //   let baseResult = result['baseResult'];
-    //   if (result.infoVos && result.infoVos.length > 0) {
-    //     let supplierData = result['infoVos'];
-    //     let i = 0;
-    //     supplierData.forEach(item => {
-    //       item.key = i++;
-    //     });
-    //     this.setState({supplierData})
-    //     if (result.baseResult.length > 0) {
-    //       Modal.success({
-    //         title: '基础信息导入结果',
-    //         key: 'baseResult',
-    //         width: window.innerWidth * 0.8,
-    //         content: baseResult ? baseResult.map(msg => <p>{msg}</p>) : "没有新增信息",
-    //       });
-    //     }
-    //   } else {
-    //     Modal.success({
-    //       title: '基础信息导入结果',
-    //       key: 'baseResult',
-    //       width: window.innerWidth * 0.8,
-    //       content: baseResult ? baseResult.map(msg => <p>{msg}</p>) : "没有新增信息",
-    //     });
-    //   }
-    // }
-  }
-  function getHeaders() {
-    let auth;
-    console.log(auth)
-    try {
-     //auth = JSON.parse(localStorage.getItem('Authorization'));
-      auth = storage.sessionStorage.get("Authorization")
-    } catch (e) {
 
-    }
-    return {
-      'Authorization': auth ? (auth.accessToken ? auth.accessToken : '') : ''
-    }
-  };
-  function beforeUpload(file) {
-    console.log(file)
-    const xsl = file.name.toLocaleLowerCase().includes('xls') || file.name.includes('xlsx');
-    if (!xsl) {
-      message.error('必须上传模版文件');
-      return false
-    }
-    //this.props.show();
-    return xsl
-  };
   const headerleft = (
     <>
       {
@@ -430,25 +657,12 @@ const Bankformef = forwardRef(({
               showSearch: false,
               //allowCustomColumns: false
           }}
-          importData={console.log}
           validateAll={true}
-          validateData={validateItem}
+          validateFunc={validateItem}
           importFunc={importFunc}
         />
         
       }
-      {/* {
-        <Upload
-          key="importSupplier"
-          action={"/srm-sm-web" + "/supplierSelf/importSupplierList"}
-          onChange={fileUpload}
-          headers={getHeaders()}
-          beforeUpload={beforeUpload}
-          showUploadList={false}
-        >
-          <Button >导入</Button>
-        </Upload>
-      } */}
       {
         <AuthButton className={styles.btn} onClick={() => handleEdit()} disabled={empty} >删除</AuthButton>
       }
@@ -461,19 +675,16 @@ const Bankformef = forwardRef(({
   );
   return (
     <>
-      <Header  style={{ display: headerInfo === true ? 'none' : 'block',color: 'red' }}
+      <Header style={{ display: headerInfo === true ? 'none' : 'block',color: 'red' }}
         left={ headerInfo ? '' : headerleft}
         advanced={false}
         extra={false}
       />
-        <ExtTable
-            columns={columns}
+        {isView ? <ExtTable
+            columns={isEdit ? columnsedit : columns}
             showSearch={false}
             ref={tabformRef}
             rowKey={(item) => item.key}
-            checkbox={{
-              multiSelect: true
-            }}
             pagination={{
               hideOnSinglePage: true,
               disabled: false,
@@ -488,7 +699,31 @@ const Bankformef = forwardRef(({
             selectedRowKeys={selectRowKeys}
             dataSource={dataSource}
             //{...dataSource}
-          />
+          /> :  <ExtTable
+          columns={isEdit ? columnsedit : columns}
+          showSearch={false}
+          ref={tabformRef}
+          rowKey={(item) => item.key}
+          checkbox={{
+            multiSelect: true
+          }}
+          pagination={{
+            hideOnSinglePage: true,
+            disabled: false,
+            pageSize: 100,
+          }}
+          allowCancelSelect={true}
+          size='small'
+          remotePaging={true}
+          ellipsis={false}
+          saveData={false}
+          onSelectRow={handleSelectedRows}
+          selectedRowKeys={selectRowKeys}
+          dataSource={dataSource}
+          //{...dataSource}
+        />
+            
+          }
     </>
   )
 }

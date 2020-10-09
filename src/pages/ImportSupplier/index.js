@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ExtTable, WorkFlow, ComboList, utils, ToolBar,ScrollBar } from 'suid';
-import { Input, Button, message, Modal } from 'antd';
+import { Input, Button, message, Modal,Form,Row,Col} from 'antd';
 import { openNewTab, getFrameElement ,isEmpty} from '@/utils';
 import { StartFlow } from 'seid';
 import UploadFile from '../../components/Upload/index'
@@ -9,30 +9,23 @@ import Header from '@/components/Header';
 import AutoSizeLayout from '@/components/AutoSizeLayout';
 import styles from './index.less';
 import { smBaseUrl } from '@/utils/commonUrl';
-import { RecommendationList ,stopApproveingOrder} from "@/services/supplierRegister"
-import {deleteSupplierModify,checkExistUnfinishedValidity,findCanModifySupplierList} from '@/services/SupplierModifyService'
+import {deleteBatchById,stopApproveingOrder} from '../../services/ImportSupplier'
 import {corporationSupplierConfig} from '../../utils/commonProps'
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
-const { Search } = Input
+const FormItem = Form.Item;
 const confirm = Modal.confirm;
 const { authAction, storage } = utils;
 const { FlowHistoryButton } = WorkFlow;
+const { getFieldDecorator, setFieldsValue, getFieldValue } = Form;
 function SupplierConfigure() {
-    const getModelRef = useRef(null)
     const tableRef = useRef(null)
     const headerRef = useRef(null)
     const authorizations = storage.sessionStorage.get("Authorization");
     const currentUserId = authorizations?.userId;
     const [selectedRowKeys, setRowKeys] = useState([]);
-    const [onlyMe, setOnlyMe] = useState(true);
     const [selectedRows, setRows] = useState([]);
     const [searchValue, setSearchValue] = useState('');
-    const [visible, setVisible] = useState(false);
-    const [recommen, setrecommen] = useState([]);
     const [loading, triggerLoading] = useState(false);
-    const [attachId, setAttachId] = useState('');
-    const [fixedHeader, setfixedHeader] = useState('');
-    
     const [singleRow = {}] = selectedRows;
     /** 按钮可用性判断变量集合 BEGIN*/
     const [signleRow = {}] = selectedRows;
@@ -47,13 +40,6 @@ function SupplierConfigure() {
     const isSelf = currentUserId === creatorId;
     // 删除草稿
     const isdelete = signleFlowStatus === 'INIT'
-    
-    const {
-        state: rowState,
-        approvalState: rowApprovalState,
-        changeable: rowChangeable,
-        flowId: businessId
-    } = singleRow;
 
     const columns = [
         {
@@ -110,66 +96,25 @@ function SupplierConfigure() {
             dataIndex: 'createdDate',
         },
     ].map(_ => ({ ..._, align: 'center' }))
-    /**供应商表格 */
-    const supplierColumns = [
-        {
-            title: '审批状态',
-            dataIndex: 'flowStatus',
-            key: 'flowStatus',
-            width: 100,
-            render: function(text, record, row) {
-                if (text === 'INIT') {
-                    return <div>未提交审批</div>;
-                } else if (text === 'INPROCESS') {
-                    return <div className="doingColor">审批中</div>;
-                } else {
-                    return <div className="successColor">审批完成</div>;
-                }
-            },
-        },
-        {
-            title: '申请单号',
-            width: 200,
-            dataIndex: 'code',
-        },
-    
-        {
-            title: '变更原因',
-            width: 280,
-            dataIndex: 'modifyReason',
-        },
-        {
-            title: '附件',
-            width: 100,
-            dataIndex: 'id',
-            render: (value) => <UploadFile type="show" entityId={value}/>,
-        },
-        {
-            title: '创建人员',
-            width: 120,
-            dataIndex: 'creatorName',
-        },
-        {
-            title: '变更日期',
-            align: 'center',
-            width: 150,
-            dataIndex: 'createdDate',
-            render: (text) => {
-                return text ? text.substring(0, 10) : '';
-            },
-        },
-    ].map(_ => ({ ..._, align: 'center' }))
 
     const dataSource = {
         store: {
-            url: `${smBaseUrl}/supplierBatchCreation/findBatchByPage`,
+            url: `${smBaseUrl}/api/supplierBatchCreationService/findBatchByPage`,
             params: {
                 quickSearchValue: searchValue,
-                quickSearchProperties: ['supplierName'],
+                
+                quickSearchProperties: ['remark','corporationId'],
                 sortOrders: [
                     {
-                        property: 'docNumber',
+                        property: 'code',
                         direction: 'DESC'
+                    }
+                ],
+                filters:[
+                    {
+                        fieldName:'accountStatus',
+                        value: 1,
+                        operator:'EQ'
                     }
                 ]
             },
@@ -181,17 +126,25 @@ function SupplierConfigure() {
         setSearchValue(record.name);
         uploadTable();
     }
+    function afterSelect(val) {
+        setSearchValue(val.id)
+    }
      // 清空公司
      function clearinput() {
         setSearchValue('')
         uploadTable();
     }
     const searchbank = ['name'];
+    const formItemLayout = {
+        labelCol: { span: 14 },
+        wrapperCol: { span: 10 },
+    };
     // 右侧搜索
     const searchBtnCfg = (
         <>
             <Input
-                placeholder='请输入供应商名称查询'
+                style={{ width: 280 }}
+                placeholder='请输入说明查询'
                 className={styles.btn}
                 onChange={SerachValue}
                 allowClear
@@ -205,12 +158,14 @@ function SupplierConfigure() {
                 //showSearch={false}
                 allowClear={true}
                 afterClear={clearinput}
+                afterSelect={afterSelect}
                 reader={{
                     name: 'name',
                 }}
             />
             <Button type='primary' onClick={handleQuickSerach}>查询</Button>
         </>
+        
     )
 
     useEffect(() => {
@@ -246,19 +201,17 @@ function SupplierConfigure() {
     }
     // 编辑
     function handleCheckEdit() {
-        // const [key] = selectedRowKeys;
-        // let id = selectedRows[0].id;
-        // openNewTab(`supplier/supplierModify/Edit/index?id=${id}`, '供应商变更编辑', false)
-        openNewTab(`supplier/ImportSupplier/Edit/index?id=29DBE7B5-CAFF-11EA-BEFE-0242C0A8440C`, '编辑', false)
+        let id = selectedRows[0].id;
+        openNewTab(`supplier/ImportSupplier/Edit/index?id=` + id + '&isEdit=true', '编辑', false)
     }
     // 删除
     async function handleDelete() {
         confirm({
             title: '是否确认删除',
             onOk: async () => {
-                let params = { supplierModifyId: selectedRows[0].id };
+                let params = { id: selectedRows[0].id };
                 triggerLoading(true)
-                const { success, message: msg } = await deleteSupplierModify(params);
+                const { success, message: msg } = await deleteBatchById(params);
                 if (success) {
                     handleComplete();
                     message.success('删除成功！');
@@ -276,12 +229,15 @@ function SupplierConfigure() {
     // 明细
     function handleCheckDetail() {
         let id = selectedRows[0].id;
-        let supplierId = selectedRows[0].supplierId;
-        openNewTab(`supplier/supplierModify/details/index?id=${id}&supplierId=${supplierId}`, '供应商变更明细', false)
+        openNewTab(`supplier/ImportSupplier/Detail/index?id=` + id + '&headerInfo=true&isEdit=true', '明细', false)
     }
     // 输入框值
     function SerachValue(v) {
         setSearchValue(v.target.value)
+        if (v.target.value === '') {
+            setSearchValue('')
+            uploadTable();
+        }
     }
     // 查询
     function handleQuickSerach() {
@@ -293,18 +249,6 @@ function SupplierConfigure() {
     // 提交审核完成更新列表
     function handleComplete() {
         uploadTable()
-    }
-    // 提交审核验证
-    async function handleBeforeStartFlow() {
-        const {success, message: msg } = await checkExistUnfinishedValidity({ requestId: selectedRows[0].id });
-        if (success) {
-            message.success(msg)
-            return true;
-        }else {
-            message.error(msg)
-            return false;
-        }
-        
     }
     // 终止审核
   function stopApprove() {
@@ -353,7 +297,7 @@ function SupplierConfigure() {
                                     key='SRM-SM-SUPPLIERMODEL_EDIT' 
                                     className={styles.btn} 
                                     onClick={handleCheckEdit} 
-                                    //disabled={empty || underWay || !isSelf}
+                                    disabled={empty || underWay || !isSelf}
                                     >编辑
                                 </Button>
                             )
@@ -387,11 +331,10 @@ function SupplierConfigure() {
                                 <StartFlow
                                     className={styles.btn}
                                     ignore={DEVELOPER_ENV}
-                                    needConfirm={handleBeforeStartFlow}
                                     businessKey={flowId}
                                     callBack={handleComplete}
                                     disabled={empty || underWay || !isSelf}
-                                    businessModelCode='com.ecmp.srm.sm.entity.SupplierModify'
+                                    businessModelCode='com.ecmp.srm.sm.entity.SupplierBatchCreation'
                                     key='SRM-SM-SUPPLIERMODEL_EXAMINE'
                                 >提交审核</StartFlow>
                             )
@@ -431,7 +374,7 @@ function SupplierConfigure() {
             <AutoSizeLayout>
                 {
                     (height) => <ExtTable
-                        columns={authorizations.userType === 'Supplier' ? supplierColumns : columns}
+                        columns={columns}
                         showSearch={false}
                         ref={tableRef}
                         rowKey={(item) => item.id}

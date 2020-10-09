@@ -216,7 +216,7 @@ function SupplierConfigure() {
     const searchBtnCfg = (
         <>
             <ComboList
-                style={{ width: 280 }}
+                style={{ width: 340 }}
                 searchProperties={searchbank}
                 {...corporationSupplierConfig}
                 afterSelect={cooperationChange}
