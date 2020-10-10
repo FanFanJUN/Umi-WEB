@@ -33,7 +33,7 @@ const BaseAccountRef = forwardRef(({
   }, [])
   // 表单
   function getAccountinfo() {
-    if (defaultActiveKey[0] === '1') {
+    if (defaultActiveKey[0] === '1' || defaultActiveKey[0] === 1 ) {
         const { getOrganizinfo } = OrganRef.current; //组织用户
         let organData = getOrganizinfo()
         if (!organData) {
