@@ -71,6 +71,7 @@ function SupplierApproveInfo() {
                                 wrappedComponentRef={DatainfoRef}
                                 isEdit={true}
                                 headerInfo={true}
+                                isView={true}
                             />
                         </div>
                     </div>

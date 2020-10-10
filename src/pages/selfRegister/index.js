@@ -51,17 +51,17 @@ export default function () {
     async function supplierPayment() {
         const { getAccountinfo } = BassAccounRef.current;
         let resultData = getAccountinfo()
-        // if (resultData) {
-        //     triggerLoading(true)
-        //     const { data,success, message: msg } = await saveRegistVo({registrationInformationVo: JSON.stringify(resultData)})
-        //     if (success) {
-        //         closeCurrent()
-        //         window.open(`/react-basic-web/index?_s=` + data)
-        //         //window.open(`/srm-se-web/NewHomePageView?_s=` + data)
-        //     } else {
-        //         message.error(msg);
-        //     }
-        // }
+        if (resultData) {
+            triggerLoading(true)
+            const { data,success, message: msg } = await saveRegistVo({registrationInformationVo: JSON.stringify(resultData)})
+            if (success) {
+                closeCurrent()
+                window.open(`/react-basic-web/index?_s=` + data)
+                //window.open(`/srm-se-web/NewHomePageView?_s=` + data)
+            } else {
+                message.error(msg);
+            }
+        }
     }
     return (
         <Wrapper>

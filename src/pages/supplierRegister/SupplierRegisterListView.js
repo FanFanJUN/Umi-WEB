@@ -421,7 +421,7 @@ function SupplierConfigure() {
                                     ignore={DEVELOPER_ENV}
                                     key='PURCHASE_VIEW_CHANGE_APPROVE_HISTORY'
                                 >
-                                    <Button className={styles.btn} disabled={empty || !underWay || !completed}>审核历史</Button>
+                                    <Button className={styles.btn} disabled={empty || !underWay }>审核历史</Button>
                                 </FlowHistoryButton>
                             )
                         }
