@@ -15,6 +15,9 @@ export default [
     title: '供应商审核',
     routes: [
       { path: '/supplierAudit/auditTypeManagement', component: './SupplierAudit/mainData/auditTypeManagement', title: '审核类型管理' },
+      { path: '/supplierAudit/auditCauseManagement', component: './SupplierAudit/mainData/auditCauseManagement', title: '审核方式管理' },
+      { path: '/supplierAudit/auditCauseManagement', component: './SupplierAudit/mainData/auditCauseManagement', title: '审核原因管理' },
+      { path: '/supplierAudit/managementAuditCriteria', component: './SupplierAudit/mainData/managementAuditCriteria', title: '审核准则管理' },
     ]
   },
   {

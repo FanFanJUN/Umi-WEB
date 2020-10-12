@@ -1,12 +1,11 @@
 import React, { Fragment, useRef, useState } from 'react';
 import { Form, Button, message, Modal } from 'antd';
-import styles from '../../TechnicalDataSharing/DataSharingList/index.less';
-import { baseUrl, smBaseUrl } from '../../../../utils/commonUrl';
+import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
+import { baseUrl } from '../../../../utils/commonUrl';
 import { ExtTable, utils } from 'suid';
 import {
   AddBUCompanyOrganizationRelation, DeleteBUCompanyOrganizationRelation, FrostBUCompanyOrganizationRelation, judgeButtonDisabled,
-} from '../../commonProps';
-import EventModal from './component/EventModal';
+} from '../../../QualitySynergy/commonProps';
 import { AutoSizeLayout } from '../../../../components';
 
 const { authAction } = utils;
@@ -28,12 +27,10 @@ const Index = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   const columns = [
-    { title: '业务单元代码', dataIndex: 'buCode', width: 200 },
-    { title: '业务单元名称', dataIndex: 'buName', ellipsis: true },
-    { title: '公司代码', dataIndex: 'corporationCode', ellipsis: true },
-    { title: '公司名称', dataIndex: 'corporationName', ellipsis: true, width: 300 },
-    { title: '采购组织代码', dataIndex: 'purchaseOrgCode', ellipsis: true },
-    { title: '采购组织名称', dataIndex: 'purchaseOrgName', ellipsis: true, width: 300 },
+    { title: '代码', dataIndex: 'buCode', width: 200 },
+    { title: '名称', dataIndex: 'buName', ellipsis: true },
+    { title: '审核类型代码', dataIndex: 'corporationCode', ellipsis: true },
+    { title: '审核类型名称', dataIndex: 'corporationName', ellipsis: true, width: 300 },
     { title: '排序号', dataIndex: 'orderNo', ellipsis: true },
     { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (value) => value ? '是' : '否' },
   ].map(item => ({ ...item, align: 'center' }));
@@ -184,14 +181,14 @@ const Index = () => {
           />
         }
       </AutoSizeLayout>
-      <EventModal
-        visible={data.visible}
-        onOk={handleOk}
-        type={data.type}
-        data={selectRows[selectRows.length - 1]}
-        onCancel={() => setData((value) => ({ ...value, visible: false }))}
-        title='BU与公司采购组织对应关系新增'
-      />
+      {/*<EventModal*/}
+      {/*  visible={data.visible}*/}
+      {/*  onOk={handleOk}*/}
+      {/*  type={data.type}*/}
+      {/*  data={selectRows[selectRows.length - 1]}*/}
+      {/*  onCancel={() => setData((value) => ({ ...value, visible: false }))}*/}
+      {/*  title='BU与公司采购组织对应关系新增'*/}
+      {/*/>*/}
     </Fragment>
   );
 
