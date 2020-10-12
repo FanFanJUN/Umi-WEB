@@ -8,6 +8,15 @@ export default [
       { title: '登录', path: '/user/login', component: './Login' },
     ],
   },
+  /**供应商审核 */
+  {
+    path: '/supplierAudit',
+    component: '../layouts/LoginLayout',
+    title: '供应商审核',
+    routes: [
+      { path: '/supplierAudit/auditTypeManagement', component: './SupplierAudit/mainData/auditTypeManagement', title: '审核类型管理' },
+    ]
+  },
   {
     path: '/qualitySynergy',
     component: '../layouts/LoginLayout',
