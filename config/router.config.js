@@ -15,8 +15,9 @@ export default [
     title: '供应商审核',
     routes: [
       { path: '/supplierAudit/auditTypeManagement', component: './SupplierAudit/mainData/auditTypeManagement', title: '审核类型管理' },
-      { path: '/supplierAudit/auditCauseManagement', component: './SupplierAudit/mainData/auditCauseManagement', title: '审核方式管理' },
+      { path: '/supplierAudit/managementAuditMode', component: './SupplierAudit/mainData/managementAuditMode', title: '审核方式管理' },
       { path: '/supplierAudit/auditCauseManagement', component: './SupplierAudit/mainData/auditCauseManagement', title: '审核原因管理' },
+      { path: '/supplierAudit/auditOrganizationManagement', component: './SupplierAudit/mainData/auditOrganizationManagement', title: '审核组织方式管理' },
       { path: '/supplierAudit/managementAuditCriteria', component: './SupplierAudit/mainData/managementAuditCriteria', title: '审核准则管理' },
       // { path: '/supplierAudit/AudittypeWithPro', component: './SupplierAudit/mainData/AudittypeWithPro', title: '审核类型默认审核项目-主数据' },
       // { path: '/supplierAudit/ConclusionPassed', component: './SupplierAudit/mainData/ConclusionPassed', title: '结论及是否通过-主数据' },
