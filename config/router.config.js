@@ -18,11 +18,11 @@ export default [
       { path: '/supplierAudit/auditCauseManagement', component: './SupplierAudit/mainData/auditCauseManagement', title: '审核方式管理' },
       { path: '/supplierAudit/auditCauseManagement', component: './SupplierAudit/mainData/auditCauseManagement', title: '审核原因管理' },
       { path: '/supplierAudit/managementAuditCriteria', component: './SupplierAudit/mainData/managementAuditCriteria', title: '审核准则管理' },
-      { path: '/supplierAudit/AudittypeWithPro', component: './SupplierAudit/mainData/AudittypeWithPro', title: '审核类型默认审核项目-主数据' },
-      { path: '/supplierAudit/ConclusionPassed', component: './SupplierAudit/mainData/ConclusionPassed', title: '结论及是否通过-主数据' },
-      { path: '/supplierAudit/AwcConf', component: './SupplierAudit/mainData/AwcConf', title: '审核类型、是否通过和结论配置-主数据' },
-      { path: '/supplierAudit/PrlConf', component: './SupplierAudit/mainData/PrlConf', title: '百分比、评定等级、风险等级配置-主数据' },
-      { path: '/supplierAudit/ReviewCityConf', component: './SupplierAudit/mainData/ReviewCityConf', title: '审核地区城市配置-主数据' },
+      // { path: '/supplierAudit/AudittypeWithPro', component: './SupplierAudit/mainData/AudittypeWithPro', title: '审核类型默认审核项目-主数据' },
+      // { path: '/supplierAudit/ConclusionPassed', component: './SupplierAudit/mainData/ConclusionPassed', title: '结论及是否通过-主数据' },
+      // { path: '/supplierAudit/AwcConf', component: './SupplierAudit/mainData/AwcConf', title: '审核类型、是否通过和结论配置-主数据' },
+      // { path: '/supplierAudit/PrlConf', component: './SupplierAudit/mainData/PrlConf', title: '百分比、评定等级、风险等级配置-主数据' },
+      // { path: '/supplierAudit/ReviewCityConf', component: './SupplierAudit/mainData/ReviewCityConf', title: '审核地区城市配置-主数据' },
     ]
   },
   {
