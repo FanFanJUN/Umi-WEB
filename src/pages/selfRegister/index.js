@@ -1,6 +1,7 @@
 import { useState, useEffect ,useRef} from 'react';
 import { Button, message, Steps, Row, Checkbox } from "antd";
 import { router } from 'dva';
+import Cookies from 'js-cookie';
 import RegistrationAgreement from './commons/RegistrationAgreement'
 import BaseAccountInfo from './commons/BaseAccountInfo'
 import {saveRegistVo} from '../../services/supplierRegister'
@@ -17,13 +18,14 @@ export default function () {
     const [accounts, setaccounts] = useState(false);
     useEffect(() => {
         let organ = {};
-        organ.mobile = query.phone;
-        if (query.email === 'undefined') {
+        let strcookie = Cookies.get();
+        organ.mobile = strcookie._p;
+        if (strcookie._m === 'undefined') {
             organ.email = '';
         }else {
-            organ.email = query.email
+            organ.email = strcookie._m
         }
-        organ.openId = query.openId;
+        organ.openId = strcookie._o
         setaccounts(organ)
     }, []);
     //上一步
@@ -55,6 +57,9 @@ export default function () {
             triggerLoading(true)
             const { data,success, message: msg } = await saveRegistVo({registrationInformationVo: JSON.stringify(resultData)})
             if (success) {
+                Cookies.remove('_o');
+                Cookies.remove('_m');
+                Cookies.remove('_p');
                 closeCurrent()
                 window.open(`/react-basic-web/index?_s=` + data)
                 //window.open(`/srm-se-web/NewHomePageView?_s=` + data)

@@ -2,6 +2,7 @@ import React, { forwardRef, useImperativeHandle, useEffect, useState } from 'rea
 import { Form, Row, Input, Col, message, Radio, Button } from 'antd';
 import {ComboTree} from 'suid'
 import { router } from 'dva';
+import Cookies from 'js-cookie';
 import SearchTable from '../../supplierRegister/components/SearchTable'
 import { checkSupplierName ,getImgUrl,UnifiedcheckCheckEmail} from '../../../services/supplierRegister'
 import {chineseProvinceTableConfig,organpurchaseCompanyPropsreg} from '../../../utils/commonProps'
@@ -124,8 +125,10 @@ const OrganizatRef = forwardRef(({
         }
         message.error(msg)
     }
+
     function displayOrgan() {
-        let email =query.email;
+        let strcookie = Cookies.get();
+        let email = strcookie._m;
         if (isEmpty(email) || email === 'undefined') {
             setisemail(false)
         }else {
