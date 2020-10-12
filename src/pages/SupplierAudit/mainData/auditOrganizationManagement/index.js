@@ -36,10 +36,10 @@ const Index = () => {
   const buttonClick = async (type) => {
     switch (type) {
       case 'add':
-        setData((value) => ({ ...value, visible: true, title: 'BU与公司采购组织对应关系新增', type: 'add' }));
+        setData((value) => ({ ...value, visible: true, title: '审核组织方式管理新增', type: 'add' }));
         break;
       case 'edit':
-        setData((value) => ({ ...value, visible: true, title: 'BU与公司采购组织对应关系编辑', type: 'edit' }));
+        setData((value) => ({ ...value, visible: true, title: '审核组织方式管理编辑', type: 'edit' }));
         break;
       case 'delete':
         await deleteData();
@@ -185,7 +185,7 @@ const Index = () => {
       {/*  type={data.type}*/}
       {/*  data={selectRows[selectRows.length - 1]}*/}
       {/*  onCancel={() => setData((value) => ({ ...value, visible: false }))}*/}
-      {/*  title='BU与公司采购组织对应关系新增'*/}
+      {/*  title='审核组织方式管理新增'*/}
       {/*/>*/}
     </Fragment>
   );

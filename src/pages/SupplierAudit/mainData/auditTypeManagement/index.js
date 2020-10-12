@@ -18,7 +18,7 @@ const Index = () => {
 
   const [data, setData] = useState({
     visible: false,
-    title: '限用物质清单新增',
+    title: '审核类型管理新增',
     type: 'add',
   });
 
@@ -36,10 +36,10 @@ const Index = () => {
   const buttonClick = async (type) => {
     switch (type) {
       case 'add':
-        setData((value) => ({ ...value, visible: true, title: 'BU与公司采购组织对应关系新增', type: 'add' }));
+        setData((value) => ({ ...value, visible: true, title: '审核类型管理系新增', type: 'add' }));
         break;
       case 'edit':
-        setData((value) => ({ ...value, visible: true, title: 'BU与公司采购组织对应关系编辑', type: 'edit' }));
+        setData((value) => ({ ...value, visible: true, title: '审核类型管理编辑', type: 'edit' }));
         break;
       case 'delete':
         await deleteData();
