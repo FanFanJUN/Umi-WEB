@@ -3,12 +3,12 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-12 14:44:24
- * @LastEditTime: 2020-10-12 15:30:58
+ * @LastEditTime: 2020-10-12 18:01:49
  * @Description: 审核地区城市配置
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/mainData/ReviewCityConf/index.js
  */
 import React, { Fragment, useRef, useState } from 'react';
-import { Form, Button, message, Modal, Row, Col, Card } from 'antd';
+import { Form, Button, message, Modal, Row, Col, Card, Empty } from 'antd';
 import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
 import { baseUrl } from '../../../../utils/commonUrl';
 import { ExtTable, utils } from 'suid';
@@ -16,6 +16,8 @@ import {
   AddBUCompanyOrganizationRelation, DeleteBUCompanyOrganizationRelation, FrostBUCompanyOrganizationRelation, judgeButtonDisabled,
 } from '../../../QualitySynergy/commonProps';
 import { AutoSizeLayout } from '../../../../components';
+import stylesRight from './index.less';
+import renderEmpty from 'antd/lib/config-provider/renderEmpty';
 
 const { authAction } = utils;
 
@@ -124,7 +126,6 @@ const Index = () => {
         ignore={DEVELOPER_ENV}
         disabled={selectRows.length === 0}
         key='QUALITYSYNERGY_BUCOR_DELETE'
-        type="danger"
       >删除</Button>)
     }
   </div>;
@@ -156,12 +157,17 @@ const Index = () => {
     console.log(value, 'save');
   };
 
+  function renderEmpty() {
+    return (
+      <div style={{ paddingTop: '152px' }}><Empty description="请选择左侧有效数据进行下一步操作" className={styles.mt} /></div>
+    );
+  }
 
   return (
     <Fragment>
-      <Row>
-        <Col span={12}>
-          <Card title="审核地区">
+      <Row className={stylesRight.around}>
+        <Col span={11}>
+          <Card title="审核地区" bordered={false}>
             <AutoSizeLayout>
               {
                 (h) => <ExtTable
@@ -175,7 +181,7 @@ const Index = () => {
                   allowCancelSelect={true}
                   remotePaging={true}
                   checkbox={{
-                    multiSelect: true,
+                    multiSelect: false,
                   }}
                   ref={tableRef}
                   onSelectRow={onSelectRow}
@@ -188,32 +194,45 @@ const Index = () => {
             </AutoSizeLayout>
           </Card>
         </Col>
-        <Col span={12}>
-          <Card title="城市">
-            <AutoSizeLayout>
-              {
-                (h) => <ExtTable
-                  rowKey={(v) => v.id}
-                  height={h}
-                  columns={columnsforRight}
-                  store={{
-                    url: `${baseUrl}/buCompanyPurchasingOrganization/findByPage`,
-                    type: 'POST',
-                  }}
-                  allowCancelSelect={true}
-                  remotePaging={true}
-                  checkbox={{
-                    multiSelect: true,
-                  }}
-                  ref={tableRef}
-                  onSelectRow={onSelectRow}
-                  selectedRowKeys={selectedRowKeys}
-                  toolBar={{
-                    left: headerLeft,
-                  }}
-                />
-              }
-            </AutoSizeLayout>
+        <Col span={13} className={stylesRight.right}>
+          <div className={stylesRight.triangle}></div>
+          <Card title="城市"
+            bordered={false}
+            className={stylesRight.maxHeight}
+          >
+            {
+              selectedRowKeys.length !== 1 ? renderEmpty() :
+                <div>
+                  <AutoSizeLayout>
+                    {
+                      (h) => <ExtTable
+                        columns={columnsforRight}
+                        checkbox={true}
+                        remotePaging={true}
+                        store={{
+                          url: `${baseUrl}/environmentStandardLimitMaterialRelation/findByPage`,
+                          type: 'POST',
+                          params: {
+                            environmentalProtectionCode: selectRows[selectRows.length - 1].environmentalProtectionCode
+                          }
+                        }}
+                        height={h}
+                        searchPlaceHolder="输入限用物质名称查询"
+                        // ref={tableRightRef}
+                        // selectedRowKeys={selectedRightKeys}
+                        // onSelectRow={(selectedRightKeys, selectedRows) => {
+                        //   setSelectedRight(selectedRows)
+                        //   setSelectedRightKeys(selectedRightKeys)
+                        // }}
+                        toolBar={{
+                          left: headerLeft
+                        }}
+                      />
+                    }
+                  </AutoSizeLayout>
+                </div>
+
+            }
           </Card>
         </Col>
       </Row>
