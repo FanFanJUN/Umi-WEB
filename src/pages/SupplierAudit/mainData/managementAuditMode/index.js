@@ -7,6 +7,7 @@ import {
   AddBUCompanyOrganizationRelation, DeleteBUCompanyOrganizationRelation, FrostBUCompanyOrganizationRelation, judgeButtonDisabled,
 } from '../../../QualitySynergy/commonProps';
 import { AutoSizeLayout } from '../../../../components';
+import EventModal from '../../common/EventModal';
 
 const { authAction } = utils;
 
@@ -179,14 +180,30 @@ const Index = () => {
           />
         }
       </AutoSizeLayout>
-      {/*<EventModal*/}
-      {/*  visible={data.visible}*/}
-      {/*  onOk={handleOk}*/}
-      {/*  type={data.type}*/}
-      {/*  data={selectRows[selectRows.length - 1]}*/}
-      {/*  onCancel={() => setData((value) => ({ ...value, visible: false }))}*/}
-      {/*  title='审核方式管理新增'*/}
-      {/*/>*/}
+      <EventModal
+        onCancel={() => setData((value) => ({ ...value, visible: false }))}
+        onOk={handleOk}
+        data={selectRows[selectRows.length - 1]}
+        fieldsConfig={[
+          {
+            name: '名称',
+            code: 'name'
+          },
+          {
+            name: '代码',
+            code: 'code'
+          },
+          {
+            name: '序列号',
+            code: 'order'
+          }
+        ]}
+        propData={{
+          visible: data.visible,
+          type: data.type,
+          title: '审核类型管理系新增',
+        }}
+      />
     </Fragment>
   );
 

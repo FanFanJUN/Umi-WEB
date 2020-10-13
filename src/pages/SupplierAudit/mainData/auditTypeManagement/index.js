@@ -4,9 +4,13 @@ import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList
 import { baseUrl } from '../../../../utils/commonUrl';
 import { ExtTable, utils } from 'suid';
 import {
-  AddBUCompanyOrganizationRelation, DeleteBUCompanyOrganizationRelation, FrostBUCompanyOrganizationRelation, judgeButtonDisabled,
+  AddBUCompanyOrganizationRelation,
+  DeleteBUCompanyOrganizationRelation,
+  FrostBUCompanyOrganizationRelation,
+  judgeButtonDisabled,
 } from '../../../QualitySynergy/commonProps';
 import { AutoSizeLayout } from '../../../../components';
+import EventModal from '../../common/EventModal';
 
 const { authAction } = utils;
 
@@ -157,7 +161,7 @@ const Index = () => {
     <Fragment>
       <AutoSizeLayout>
         {
-          (h) =>  <ExtTable
+          (h) => <ExtTable
             rowKey={(v) => v.id}
             height={h}
             columns={columns}
@@ -179,14 +183,30 @@ const Index = () => {
           />
         }
       </AutoSizeLayout>
-      {/*<EventModal*/}
-      {/*  visible={data.visible}*/}
-      {/*  onOk={handleOk}*/}
-      {/*  type={data.type}*/}
-      {/*  data={selectRows[selectRows.length - 1]}*/}
-      {/*  onCancel={() => setData((value) => ({ ...value, visible: false }))}*/}
-      {/*  title='BU与公司采购组织对应关系新增'*/}
-      {/*/>*/}
+      <EventModal
+        onCancel={() => setData((value) => ({ ...value, visible: false }))}
+        onOk={handleOk}
+        data={selectRows[selectRows.length - 1]}
+        fieldsConfig={[
+          {
+            name: '名称',
+            code: 'name'
+          },
+          {
+            name: '代码',
+            code: 'code'
+          },
+          {
+            name: '序列号',
+            code: 'order'
+          }
+        ]}
+        propData={{
+          visible: data.visible,
+          type: data.type,
+          title: '审核类型管理系新增',
+        }}
+      />
     </Fragment>
   );
 
