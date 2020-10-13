@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-12 14:44:24
- * @LastEditTime: 2020-10-12 15:16:22
+ * @LastEditTime: 2020-10-13 09:56:32
  * @Description: 百分比、评定等级、风险等级配置
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/mainData/PrlConf/index.js
  */
@@ -16,6 +16,7 @@ import {
   AddBUCompanyOrganizationRelation, DeleteBUCompanyOrganizationRelation, FrostBUCompanyOrganizationRelation, judgeButtonDisabled,
 } from '../../../QualitySynergy/commonProps';
 import { AutoSizeLayout } from '../../../../components';
+import EventModal from '../../common/EventModal';
 
 const { authAction } = utils;
 
@@ -46,6 +47,43 @@ const Index = () => {
     { title: '排序号', dataIndex: 'orderNo', ellipsis: true },
     { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (value) => value ? '是' : '否' },
   ].map(item => ({ ...item, align: 'center' }));
+
+  const fieldsConfig = [{
+    name: '评定等级',
+    code: 'buCode',
+    width: 200,
+    type: 'selectWithData',
+    data: [{ text: 'A', value: 'A' }, { text: 'B', value: 'B' }, { text: 'C', value: 'C' }, { text: 'D', value: 'D' }]
+  },
+  {
+    name: '风险等级',
+    code: 'buName',
+    type: 'selectWithData',
+    data: [{ text: '低', value: 'A' }, { text: '中低', value: 'B' }, { text: '中', value: 'C' }, { text: '高', value: 'D' }]
+  },
+  {
+    name: '开始区间计算符',
+    code: 'orderNo',
+    type: 'selectWithData',
+    data: [{ text: '<', value: 'A' }, { text: '<=', value: 'B' }, { text: '=', value: 'C' }, { text: '>', value: 'D' }, { text: '>=', value: 'D' }]
+  },
+  {
+    name: '开始区间',
+    code: 'orderXx',
+    type: 'inputNumber'
+  },
+  {
+    name: '结束区间计算符',
+    code: 'orderNo',
+    type: 'selectWithData',
+    data: [{ text: '<', value: 'A' }, { text: '<=', value: 'B' }, { text: '=', value: 'C' }, { text: '>', value: 'D' }, { text: '>=', value: 'D' }]
+  },
+  {
+    name: '结束区间',
+    code: 'orderXx',
+    type: 'inputNumber'
+  },
+  ];
 
   const buttonClick = async (type) => {
     switch (type) {
@@ -139,6 +177,10 @@ const Index = () => {
     }
   </div>;
 
+  const handleCancel = () => {
+    setData(() => ({ visible: false }));
+  }
+
   const handleOk = async (value) => {
     if (data.type === 'add') {
       AddBUCompanyOrganizationRelation(value).then(res => {
@@ -171,7 +213,7 @@ const Index = () => {
     <Fragment>
       <AutoSizeLayout>
         {
-          (h) =>  <ExtTable
+          (h) => <ExtTable
             rowKey={(v) => v.id}
             height={h}
             columns={columns}
@@ -193,6 +235,14 @@ const Index = () => {
           />
         }
       </AutoSizeLayout>
+      {data.visible &&
+        <EventModal
+          onCancel={handleCancel}
+          onOk={handleOk}
+          propData={data}
+          fieldsConfig={fieldsConfig}
+          data={selectRows && selectRows[0]}
+        />}
     </Fragment>
   );
 

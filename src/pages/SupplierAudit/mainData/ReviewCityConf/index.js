@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-12 14:44:24
- * @LastEditTime: 2020-10-12 18:01:49
+ * @LastEditTime: 2020-10-13 10:54:00
  * @Description: 审核地区城市配置
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/mainData/ReviewCityConf/index.js
  */
@@ -18,6 +18,7 @@ import {
 import { AutoSizeLayout } from '../../../../components';
 import stylesRight from './index.less';
 import renderEmpty from 'antd/lib/config-provider/renderEmpty';
+import EventModal from '../../common/EventModal';
 
 const { authAction } = utils;
 
@@ -28,18 +29,36 @@ const Index = () => {
   const tableRef = useRef(null);
 
   const [data, setData] = useState({
-    visible: false,
-    title: '限用物质清单新增',
+    leftVisible: false,
+    rightVisible: false,
+    leftTitle: '审核区域新增',
+    rigthTitle: '城市新增',
     type: 'add',
   });
 
-  const [selectRows, setSelectRows] = useState([]);
+  const [rightselectRows, setRightSelectRows] = useState([]);
 
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [rightselectedRowKeys, setRightSelectedRowKeys] = useState([]);
+
+  const [leftselectRows, setLeftSelectRows] = useState([]);
+
+  const [leftselectedRowKeys, setLeftSelectedRowKeys] = useState([]);
 
   const columnsforLeft = [
     { title: '区域', dataIndex: 'buCode', width: 200 },
     { title: '排序号', dataIndex: 'orderNo', ellipsis: true },
+  ];
+
+  const leftfieldsConfig = [
+    {
+      name: '区域',
+      code: 'xx',
+    },
+    {
+      name: '排序号',
+      code: 'xx',
+      type: 'inputNumber'
+    }
   ];
 
   const columnsforRight = [
@@ -47,13 +66,24 @@ const Index = () => {
     { title: '名称', dataIndex: 'orderNo', ellipsis: true },
   ];
 
-  const buttonClick = async (type) => {
+  const rightfieldsConfig = [
+    {
+      name: '代码',
+      code: 'xx',
+    },
+    {
+      name: '名称',
+      code: 'xx',
+    }
+  ];
+
+  const buttonClick = async (type, visible, title, text) => {
     switch (type) {
       case 'add':
-        setData((value) => ({ ...value, visible: true, title: 'BU与公司采购组织对应关系新增', type: 'add' }));
+        setData((value) => ({ ...value, [visible]: true, [title]: text, type: 'add' }));
         break;
       case 'edit':
-        setData((value) => ({ ...value, visible: true, title: 'BU与公司采购组织对应关系编辑', type: 'edit' }));
+        setData((value) => ({ ...value, [visible]: true, [title]: text, type: 'edit' }));
         break;
       case 'delete':
         await deleteData();
@@ -94,41 +124,51 @@ const Index = () => {
     });
   };
 
-  const onSelectRow = (value, rows) => {
-    console.log(value, rows);
-    setSelectRows(rows);
-    setSelectedRowKeys(value);
+  const leftonSelectRow = (value, rows) => {
+    setLeftSelectRows(rows);
+    setLeftSelectedRowKeys(value);
   };
 
-  const headerLeft = <div style={{ width: '100%', display: 'flex', height: '100%', alignItems: 'center' }}>
-    {
-      authAction(<Button
-        type='primary'
-        onClick={() => buttonClick('add')}
-        className={styles.btn}
-        ignore={DEVELOPER_ENV}
-        key='QUALITYSYNERGY_BUCOR_ADD'
-      >新增</Button>)
-    }
-    {
-      authAction(<Button
-        onClick={() => buttonClick('edit')}
-        className={styles.btn}
-        ignore={DEVELOPER_ENV}
-        disabled={selectedRowKeys.length === 0 || selectedRowKeys.length > 1}
-        key='QUALITYSYNERGY_BUCOR_EDIT'
-      >编辑</Button>)
-    }
-    {
-      authAction(<Button
-        onClick={() => buttonClick('delete')}
-        className={styles.btn}
-        ignore={DEVELOPER_ENV}
-        disabled={selectRows.length === 0}
-        key='QUALITYSYNERGY_BUCOR_DELETE'
-      >删除</Button>)
-    }
-  </div>;
+  const rightonSelectRow = (value, rows) => {
+    setRightSelectRows(rows);
+    setRightSelectedRowKeys(value);
+  };
+
+  const HeaderButtons = (visible, title, selectKeys, selectRows) => {
+    return (<div style={{ width: '100%', display: 'flex', height: '100%', alignItems: 'center' }}>
+      {
+        authAction(<Button
+          type='primary'
+          onClick={() => buttonClick('add', visible, title, visible === 'leftVisible' ? '审核地区新增' : '城市新增')}
+          className={styles.btn}
+          ignore={DEVELOPER_ENV}
+          key='QUALITYSYNERGY_BUCOR_ADD'
+        >新增</Button>)
+      }
+      {
+        authAction(<Button
+          onClick={() => buttonClick('edit', visible, title, visible === 'rightVisible' ? '审核地区编辑' : '城市编辑')}
+          className={styles.btn}
+          ignore={DEVELOPER_ENV}
+          disabled={[selectKeys].length === 0 || [selectKeys].length > 1}
+          key='QUALITYSYNERGY_BUCOR_EDIT'
+        >编辑</Button>)
+      }
+      {
+        authAction(<Button
+          onClick={() => buttonClick('delete', visible, title)}
+          className={styles.btn}
+          ignore={DEVELOPER_ENV}
+          disabled={[selectRows].length === 0}
+          key='QUALITYSYNERGY_BUCOR_DELETE'
+        >删除</Button>)
+      }
+    </div>)
+  };
+
+  const handleCancel = (visible) => {
+    setData(() => ({ [visible]: false }));
+  }
 
   const handleOk = async (value) => {
     if (data.type === 'add') {
@@ -184,14 +224,22 @@ const Index = () => {
                     multiSelect: false,
                   }}
                   ref={tableRef}
-                  onSelectRow={onSelectRow}
-                  selectedRowKeys={selectedRowKeys}
+                  onSelectRow={leftonSelectRow}
+                  selectedRowKeys={leftselectedRowKeys}
                   toolBar={{
-                    left: headerLeft,
+                    left: HeaderButtons('leftVisible', 'leftTitle', 'leftselectedRowKeys', 'leftselectRows'),
                   }}
                 />
               }
             </AutoSizeLayout>
+            {data.leftVisible &&
+              <EventModal
+                onCancel={() => handleCancel('leftVisible')}
+                onOk={handleOk}
+                propData={{ ...data, visible: data.leftVisible, title: data.leftTitle }}
+                fieldsConfig={leftfieldsConfig}
+                data={leftselectRows && leftselectRows[0]}
+              />}
           </Card>
         </Col>
         <Col span={13} className={stylesRight.right}>
@@ -201,7 +249,7 @@ const Index = () => {
             className={stylesRight.maxHeight}
           >
             {
-              selectedRowKeys.length !== 1 ? renderEmpty() :
+              leftselectedRowKeys.length !== 1 ? renderEmpty() :
                 <div>
                   <AutoSizeLayout>
                     {
@@ -213,19 +261,15 @@ const Index = () => {
                           url: `${baseUrl}/environmentStandardLimitMaterialRelation/findByPage`,
                           type: 'POST',
                           params: {
-                            environmentalProtectionCode: selectRows[selectRows.length - 1].environmentalProtectionCode
+                            environmentalProtectionCode: leftselectRows[leftselectRows.length - 1].environmentalProtectionCode
                           }
                         }}
                         height={h}
-                        searchPlaceHolder="输入限用物质名称查询"
-                        // ref={tableRightRef}
-                        // selectedRowKeys={selectedRightKeys}
-                        // onSelectRow={(selectedRightKeys, selectedRows) => {
-                        //   setSelectedRight(selectedRows)
-                        //   setSelectedRightKeys(selectedRightKeys)
-                        // }}
+                        searchPlaceHolder="输入城市名称查询"
+                        selectedRowKeys={setRightSelectedRowKeys}
+                        onSelectRow={rightonSelectRow}
                         toolBar={{
-                          left: headerLeft
+                          left: HeaderButtons('rightVisible', 'rigthTitle', 'rightselectedRowKeys', 'rightselectRows')
                         }}
                       />
                     }
@@ -233,6 +277,14 @@ const Index = () => {
                 </div>
 
             }
+            {data.rightVisible &&
+              <EventModal
+                onCancel={() => handleCancel('rightVisible')}
+                onOk={handleOk}
+                propData={{ ...data, visible: data.rightVisible, title: data.rigthTitle }}
+                fieldsConfig={rightfieldsConfig}
+                data={rightselectRows && rightselectRows[0]}
+              />}
           </Card>
         </Col>
       </Row>

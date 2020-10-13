@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-12 14:44:24
- * @LastEditTime: 2020-10-12 15:13:54
+ * @LastEditTime: 2020-10-13 09:49:54
  * @Description: 审核类型、是否通过和结论配置
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/mainData/AwcConf/index.js
  */
@@ -16,6 +16,7 @@ import {
   AddBUCompanyOrganizationRelation, DeleteBUCompanyOrganizationRelation, FrostBUCompanyOrganizationRelation, judgeButtonDisabled,
 } from '../../../QualitySynergy/commonProps';
 import { AutoSizeLayout } from '../../../../components';
+import EventModal from '../../common/EventModal';
 
 const { authAction } = utils;
 
@@ -48,6 +49,14 @@ const Index = () => {
     { title: '排序号', dataIndex: 'orderNo', ellipsis: true },
     { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (value) => value ? '是' : '否' },
   ].map(item => ({ ...item, align: 'center' }));
+
+  const fieldsConfig = [
+    { name: '审核类型代码', code: 'buCode', width: 200 },
+    { name: '审核类型名称', code: 'buName' },
+    { name: '结论代码', code: 'orderNo' },
+    { name: '结论名称', code: 'orderXx' },
+    { name: '是否通过', code: 'orderNo', type: 'selectWithData', data: [{ text: '是', value: true }, { text: '否', value: false }] },
+  ];
 
   const buttonClick = async (type) => {
     switch (type) {
@@ -141,6 +150,10 @@ const Index = () => {
     }
   </div>;
 
+  const handleCancel = () => {
+    setData(() => ({ visible: false }));
+  }
+
   const handleOk = async (value) => {
     if (data.type === 'add') {
       AddBUCompanyOrganizationRelation(value).then(res => {
@@ -195,6 +208,14 @@ const Index = () => {
           />
         }
       </AutoSizeLayout>
+      {data.visible &&
+        <EventModal
+          onCancel={handleCancel}
+          onOk={handleOk}
+          propData={data}
+          fieldsConfig={fieldsConfig}
+          data={selectRows && selectRows[0]}
+        />}
     </Fragment>
   );
 
