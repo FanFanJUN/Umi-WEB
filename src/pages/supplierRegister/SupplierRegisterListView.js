@@ -186,7 +186,7 @@ function SupplierConfigure() {
                 quickSearchProperties: ['companyName','supplierName'],
                 sortOrders: [
                     {
-                      property: 'docNumber',
+                      property: 'createdDate',
                       direction: 'DESC'
                     }
                 ]

@@ -27,6 +27,17 @@ export default [
     ]
   },
   {
+    path: '/pcnModify',
+    component: '../layouts/LoginLayout',
+    title: 'PCN变更',
+    routes: [
+      /**PCN采购 */
+      { path: '/pcnModify/Purchase/index', component: './PCNModify/Purchase', title: 'PCN变更' },
+      /**PCN供应商 */
+      { path: '/pcnModify/Supplier/index', component: './PCNModify/Supplier', title: 'PCN变更发起供应商' },
+    ]
+  },
+  {
     path: '/qualitySynergy',
     component: '../layouts/LoginLayout',
     title: '环保材料',
