@@ -46,8 +46,8 @@ const EventModal = (props) => {
         )
       }
     </FormItem>
-  );
 
+  );
     function getItem(item, form) {
         /*  params-------------前端传到后端的参数名-------数组格式
               keys-------------需要获取相应form的form 字段名值----数组格式并且和1params相匹配一一对应 如果想设置为空传null
@@ -120,7 +120,7 @@ const EventModal = (props) => {
                                  {
                                    item.field.map((response, index) => {
                                     return <Col span={0} key={index}>
-                                       {hideFormItem(response, type === 'add' ? '' : data[response])}
+                                       {hideFormItem(response, type === 'edit' ? data ? data[response] : '' : '')}
                                      </Col>
                                    })
                                  }

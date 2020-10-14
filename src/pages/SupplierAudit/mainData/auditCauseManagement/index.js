@@ -4,14 +4,12 @@ import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList
 import { baseUrl } from '../../../../utils/commonUrl';
 import { ComboList, ExtTable, utils } from 'suid';
 import {
-  AddBUCompanyOrganizationRelation,
   DeleteBUCompanyOrganizationRelation,
-  FrostBUCompanyOrganizationRelation,
   judgeButtonDisabled,
 } from '../../../QualitySynergy/commonProps';
 import { AutoSizeLayout } from '../../../../components';
 import EventModal from '../../common/EventModal';
-import { AuditTypeManagementConfig } from '../commomService';
+import { AuditCauseManagementAdd, AuditCauseManagementFrozen, AuditTypeManagementConfig } from '../commomService';
 
 const { authAction } = utils;
 
@@ -23,7 +21,7 @@ const Index = () => {
 
   const [data, setData] = useState({
     visible: false,
-    title: '限用物质清单新增',
+    title: '审核原因管理新增',
     type: 'add',
   });
 
@@ -58,9 +56,9 @@ const Index = () => {
   };
 
   const editData = async () => {
-    const data = await FrostBUCompanyOrganizationRelation({
+    const data = await AuditCauseManagementFrozen({
       ids: selectedRowKeys.toString(),
-      frozen: !selectRows[0]?.frozen,
+      operation: !selectRows[0]?.frozen,
     });
     if (data.success) {
       tableRef.current.manualSelectedRows();
@@ -134,7 +132,7 @@ const Index = () => {
 
   const handleOk = async (value) => {
     if (data.type === 'add') {
-      AddBUCompanyOrganizationRelation(value).then(res => {
+      AuditCauseManagementAdd(value).then(res => {
         if (res.success) {
           setData((value) => ({ ...value, visible: false }));
           tableRef.current.manualSelectedRows();
@@ -146,7 +144,7 @@ const Index = () => {
     } else {
       const id = selectRows[selectRows.length - 1].id;
       const params = { ...value, id };
-      AddBUCompanyOrganizationRelation(params).then(res => {
+      AuditCauseManagementAdd(params).then(res => {
         if (res.success) {
           setData((value) => ({ ...value, visible: false }));
           tableRef.current.manualSelectedRows();
@@ -214,7 +212,7 @@ const Index = () => {
         propData={{
           visible: data.visible,
           type: data.type,
-          title: '审核类型管理系新增',
+          title: '审核原因管理新增',
         }}
       />
     </Fragment>
