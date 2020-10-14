@@ -24,6 +24,8 @@ export default [
       { path: '/supplierAudit/AwcConf', component: './SupplierAudit/mainData/AwcConf', title: '审核类型、是否通过和结论配置-主数据' },
       { path: '/supplierAudit/PrlConf', component: './SupplierAudit/mainData/PrlConf', title: '百分比、评定等级、风险等级配置-主数据' },
       { path: '/supplierAudit/ReviewCityConf', component: './SupplierAudit/mainData/ReviewCityConf', title: '审核地区城市配置-主数据' },
+      { path: '/supplierAudit/AuditRequirementsManagement', component: './SupplierAudit/AuditRequirementsManagement', title: '审核需求管理' },
+      { path: '/supplierAudit/AuditRequirementsManagementAdd', component: './SupplierAudit/AuditRequirementsManagement/add', title: '审核需求管理新增' },
     ]
   },
   {
