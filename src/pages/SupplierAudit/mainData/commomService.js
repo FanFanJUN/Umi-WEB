@@ -17,6 +17,26 @@ export const AuditTypeManagementConfig = {
   },
 };
 
+//审核准则管理冻结解冻
+export const ManagementAuditCriteriaFrozen = async (params) => {
+  const url = `${baseUrl}/reviewStandard/frozen`;
+  return request({
+    url,
+    method: 'GET',
+    params: params,
+  });
+}
+
+// 审核准则管理新增
+export const ManagementAuditCriteriaAdd = async (params) => {
+  const url = `${baseUrl}/reviewStandard/addReviewStandard `;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+}
+
 //审核组织方式管理冻结解冻
 export const AuditOrganizationManagementFrozen = async (params) => {
   const url = `${baseUrl}/reviewOrganizedWay/frozen`;

@@ -10,7 +10,7 @@ import {
 } from '../../../QualitySynergy/commonProps';
 import { AutoSizeLayout } from '../../../../components';
 import EventModal from '../../common/EventModal';
-import { AuditOrganizationManagementAdd } from '../commomService';
+import { AuditOrganizationManagementAdd, AuditOrganizationManagementFrozen } from '../commomService';
 
 const { authAction } = utils;
 
@@ -55,9 +55,9 @@ const Index = () => {
   };
 
   const editData = async () => {
-    const data = await FrostBUCompanyOrganizationRelation({
+    const data = await AuditOrganizationManagementFrozen({
       ids: selectedRowKeys.toString(),
-      frozen: !selectRows[0]?.frozen,
+      operation: !selectRows[0]?.frozen,
     });
     if (data.success) {
       tableRef.current.manualSelectedRows();
