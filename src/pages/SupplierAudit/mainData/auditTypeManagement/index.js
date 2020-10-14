@@ -4,13 +4,12 @@ import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList
 import { baseUrl } from '../../../../utils/commonUrl';
 import { ExtTable, utils } from 'suid';
 import {
-  AddBUCompanyOrganizationRelation,
   DeleteBUCompanyOrganizationRelation,
-  FrostBUCompanyOrganizationRelation,
   judgeButtonDisabled,
 } from '../../../QualitySynergy/commonProps';
 import { AutoSizeLayout } from '../../../../components';
 import EventModal from '../../common/EventModal';
+import { AuditTypeManagementAdd, AuditTypeManagementFrozen } from '../commomService';
 
 const { authAction } = utils;
 
@@ -31,9 +30,9 @@ const Index = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   const columns = [
-    { title: '代码', dataIndex: 'buCode', width: 200 },
-    { title: '名称', dataIndex: 'buName', ellipsis: true },
-    { title: '排序号', dataIndex: 'orderNo', ellipsis: true },
+    { title: '代码', dataIndex: 'code', width: 200 },
+    { title: '名称', dataIndex: 'name', ellipsis: true },
+    { title: '排序号', dataIndex: 'rank', ellipsis: true },
     { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (value) => value ? '是' : '否' },
   ].map(item => ({ ...item, align: 'center' }));
 
@@ -55,9 +54,9 @@ const Index = () => {
   };
 
   const editData = async () => {
-    const data = await FrostBUCompanyOrganizationRelation({
+    const data = await AuditTypeManagementFrozen({
       ids: selectedRowKeys.toString(),
-      frozen: !selectRows[0]?.frozen,
+      operation: !selectRows[0]?.frozen,
     });
     if (data.success) {
       tableRef.current.manualSelectedRows();
@@ -109,15 +108,15 @@ const Index = () => {
         key='QUALITYSYNERGY_BUCOR_EDIT'
       >编辑</Button>)
     }
-    {
-      authAction(<Button
-        onClick={() => buttonClick('delete')}
-        className={styles.btn}
-        ignore={DEVELOPER_ENV}
-        disabled={selectRows.length === 0}
-        key='QUALITYSYNERGY_BUCOR_DELETE'
-      >删除</Button>)
-    }
+    {/*{*/}
+    {/*  authAction(<Button*/}
+    {/*    onClick={() => buttonClick('delete')}*/}
+    {/*    className={styles.btn}*/}
+    {/*    ignore={DEVELOPER_ENV}*/}
+    {/*    disabled={selectRows.length === 0}*/}
+    {/*    key='QUALITYSYNERGY_BUCOR_DELETE'*/}
+    {/*  >删除</Button>)*/}
+    {/*}*/}
     {
       authAction(<Button
         onClick={() => buttonClick('frost')}
@@ -131,7 +130,7 @@ const Index = () => {
 
   const handleOk = async (value) => {
     if (data.type === 'add') {
-      AddBUCompanyOrganizationRelation(value).then(res => {
+      AuditTypeManagementAdd(value).then(res => {
         if (res.success) {
           setData((value) => ({ ...value, visible: false }));
           tableRef.current.manualSelectedRows();
@@ -143,7 +142,7 @@ const Index = () => {
     } else {
       const id = selectRows[selectRows.length - 1].id;
       const params = { ...value, id };
-      AddBUCompanyOrganizationRelation(params).then(res => {
+      AuditTypeManagementAdd(params).then(res => {
         if (res.success) {
           setData((value) => ({ ...value, visible: false }));
           tableRef.current.manualSelectedRows();
@@ -166,7 +165,7 @@ const Index = () => {
             height={h}
             columns={columns}
             store={{
-              url: `${baseUrl}/buCompanyPurchasingOrganization/findByPage`,
+              url: `${baseUrl}/reviewType/findBySearchPage`,
               type: 'POST',
             }}
             allowCancelSelect={true}
@@ -198,7 +197,7 @@ const Index = () => {
           },
           {
             name: '序列号',
-            code: 'order'
+            code: 'rank'
           }
         ]}
         propData={{

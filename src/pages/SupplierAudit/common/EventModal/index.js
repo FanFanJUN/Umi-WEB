@@ -9,8 +9,10 @@
  */
 import React from 'react';
 import { Col, DatePicker, Form, Radio, Row, Select, InputNumber, Input } from 'antd';
-import { ExtModal } from 'suid';
+import { ExtModal, ComboList } from 'suid';
 import moment from 'moment';
+import { baseUrl } from '../../../../utils/commonUrl';
+import { OrganizationByCompanyCodeConfig } from '../../../QualitySynergy/commonProps';
 
 const FormItem = Form.Item;
 
@@ -33,6 +35,18 @@ const EventModal = (props) => {
             }
         });
     };
+
+  const hideFormItem = (name, initialValue) => (
+    <FormItem>
+      {
+        getFieldDecorator(name, {
+          initialValue: initialValue,
+        })(
+          <Input type={'hidden'} />,
+        )
+      }
+    </FormItem>
+  );
 
     function getItem(item, form) {
         /*  params-------------前端传到后端的参数名-------数组格式
@@ -63,7 +77,7 @@ const EventModal = (props) => {
                 </Select>;
             case 'datePicker':
                 return <DatePicker placeholder={item.placeholder ? item.placeholder : '请选择'} style={{ width: '100%' }} />;
-            case 'radio':
+          case 'radio':
                 const options = [...item.children];
                 const newOpetions = options.map((value, index, array) => {
                     return <Radio key={value.value} value={value.value}>{value.text}</Radio>;
@@ -89,20 +103,43 @@ const EventModal = (props) => {
                     {
                         fieldsConfig && fieldsConfig.map((item => {
                             return (
-                                <Col key={`${item.code}_col`} span={24} style={{ display: item.hidden ? 'none' : 'block' }}>
-                                    <FormItem key={item.code} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label={item.name}>
-                                        {getFieldDecorator(item.code, {
-                                            initialValue: editDataTemp ? (item.type === 'datePicker' ? editDataTemp[item.code] ? moment(editDataTemp[item.code]).format('YYYY-MM-DD') : null : editDataTemp[item.code]) : item.defaultValue,
-                                            rules: item.rules ? item.rules : [
-                                                {
-                                                    required: true,
-                                                    message: `请输入${item.name}`
-                                                }
-                                            ],
-                                            normalize: item.normalize ? item.normalize : (value) => { return value; },
-                                        })(getItem(item, form))}
-                                    </FormItem>
-                                </Col>
+                               item.type !== 'comboList' ?  <Col key={`${item.code}_col`} span={24} style={{ display: item.hidden ? 'none' : 'block' }}>
+                                 <FormItem key={item.code} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label={item.name}>
+                                   {getFieldDecorator(item.code, {
+                                     initialValue: editDataTemp ? (item.type === 'datePicker' ? editDataTemp[item.code] ? moment(editDataTemp[item.code]).format('YYYY-MM-DD') : null : editDataTemp[item.code]) : item.defaultValue,
+                                     rules: item.rules ? item.rules : [
+                                       {
+                                         required: true,
+                                         message: `请输入${item.name}`
+                                       }
+                                     ],
+                                     normalize: item.normalize ? item.normalize : (value) => { return value; },
+                                   })(getItem(item, form))}
+                                 </FormItem>
+                               </Col> : <>
+                                 {
+                                   item.field.map((response, index) => {
+                                    return <Col span={0} key={index}>
+                                       {hideFormItem(response, type === 'add' ? '' : data[response])}
+                                     </Col>
+                                   })
+                                 }
+                                 <Col key={`${item.code}_col`} span={24} style={{ display: item.hidden ? 'none' : 'block' }}>
+                                   <FormItem key={item.code} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label={item.name}>
+                                     {
+                                       getFieldDecorator(item.code, {
+                                         initialValue: editDataTemp ? (item.type === 'datePicker' ? editDataTemp[item.code] ? moment(editDataTemp[item.code]).format('YYYY-MM-DD') : null : editDataTemp[item.code]) : item.defaultValue,
+                                         rules: item.rules ? item.rules : [
+                                           {
+                                             required: true,
+                                             message: `请输入${item.name}`
+                                           },
+                                         ],
+                                       })(<ComboList form={form} field={item.field} name={item.code} {...item.config} />)
+                                     }
+                                   </FormItem>
+                                 </Col>
+                               </>
                             );
                         }))
                     }

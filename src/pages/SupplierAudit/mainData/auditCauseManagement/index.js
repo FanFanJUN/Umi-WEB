@@ -2,7 +2,7 @@ import React, { Fragment, useRef, useState } from 'react';
 import { Form, Button, message, Modal } from 'antd';
 import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
 import { baseUrl } from '../../../../utils/commonUrl';
-import { ExtTable, utils } from 'suid';
+import { ComboList, ExtTable, utils } from 'suid';
 import {
   AddBUCompanyOrganizationRelation,
   DeleteBUCompanyOrganizationRelation,
@@ -11,6 +11,7 @@ import {
 } from '../../../QualitySynergy/commonProps';
 import { AutoSizeLayout } from '../../../../components';
 import EventModal from '../../common/EventModal';
+import { AuditTypeManagementConfig } from '../commomService';
 
 const { authAction } = utils;
 
@@ -31,11 +32,11 @@ const Index = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   const columns = [
-    { title: '代码', dataIndex: 'buCode', width: 200 },
-    { title: '名称', dataIndex: 'buName', ellipsis: true },
-    { title: '审核类型代码', dataIndex: 'corporationCode', ellipsis: true },
-    { title: '审核类型名称', dataIndex: 'corporationName', ellipsis: true, width: 300 },
-    { title: '排序号', dataIndex: 'orderNo', ellipsis: true },
+    { title: '代码', dataIndex: 'code', width: 200 },
+    { title: '名称', dataIndex: 'name', ellipsis: true },
+    { title: '审核类型代码', dataIndex: 'reviewTypeCode', ellipsis: true },
+    { title: '审核类型名称', dataIndex: 'reviewTypeName', ellipsis: true, width: 300 },
+    { title: '排序号', dataIndex: 'rank', ellipsis: true },
     { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (value) => value ? '是' : '否' },
   ].map(item => ({ ...item, align: 'center' }));
 
@@ -111,15 +112,15 @@ const Index = () => {
         key='QUALITYSYNERGY_BUCOR_EDIT'
       >编辑</Button>)
     }
-    {
-      authAction(<Button
-        onClick={() => buttonClick('delete')}
-        className={styles.btn}
-        ignore={DEVELOPER_ENV}
-        disabled={selectRows.length === 0}
-        key='QUALITYSYNERGY_BUCOR_DELETE'
-      >删除</Button>)
-    }
+    {/*{*/}
+    {/*  authAction(<Button*/}
+    {/*    onClick={() => buttonClick('delete')}*/}
+    {/*    className={styles.btn}*/}
+    {/*    ignore={DEVELOPER_ENV}*/}
+    {/*    disabled={selectRows.length === 0}*/}
+    {/*    key='QUALITYSYNERGY_BUCOR_DELETE'*/}
+    {/*  >删除</Button>)*/}
+    {/*}*/}
     {
       authAction(<Button
         onClick={() => buttonClick('frost')}
@@ -168,7 +169,7 @@ const Index = () => {
             height={h}
             columns={columns}
             store={{
-              url: `${baseUrl}/buCompanyPurchasingOrganization/findByPage`,
+              url: `${baseUrl}/reviewReason/findBySearchPage`,
               type: 'POST',
             }}
             allowCancelSelect={true}
@@ -199,16 +200,15 @@ const Index = () => {
             code: 'code',
           },
           {
-            name: '审核类型代码',
-            code: 'corporationCode',
-          },
-          {
-            name: '审核类型名称',
-            code: 'corporationName',
+            name: '审核类型',
+            type: 'comboList',
+            code: 'reviewTypeName',
+            config: AuditTypeManagementConfig,
+            field: ['reviewTypeCode', 'reviewTypeId']
           },
           {
             name: '序列号',
-            code: 'order',
+            code: 'rank',
           },
         ]}
         propData={{
