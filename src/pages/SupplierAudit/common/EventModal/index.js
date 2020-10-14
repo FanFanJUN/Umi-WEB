@@ -36,6 +36,10 @@ const EventModal = (props) => {
         });
     };
 
+  const clearSelected = () => {
+    props.form.resetFields();
+  };
+
   const hideFormItem = (name, initialValue) => (
     <FormItem>
       {
@@ -155,6 +159,7 @@ const EventModal = (props) => {
             title={title}
             onCancel={onCancel}
             maskClosable={false}
+            afterClose={clearSelected}
             onOk={onOk}
         >
             {renderForm()}
