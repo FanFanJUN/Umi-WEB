@@ -35,6 +35,7 @@ export default [
       { path: '/pcnModify/Purchase/index', component: './PCNModify/Purchase', title: 'PCN变更' },
       /**PCN供应商 */
       { path: '/pcnModify/Supplier/index', component: './PCNModify/Supplier', title: 'PCN变更发起供应商' },
+      { path: '/pcnModify/Supplier/Create/index', component: './PCNModify/Supplier/Create/index', title: '新增PCN变更发起供应商' },
     ]
   },
   {

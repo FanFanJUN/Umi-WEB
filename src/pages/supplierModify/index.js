@@ -35,7 +35,7 @@ function SupplierConfigure() {
     const [singleRow = {}] = selectedRows;
     /** 按钮可用性判断变量集合 BEGIN*/
     const [signleRow = {}] = selectedRows;
-    const { flowStatus: signleFlowStatus, id: flowId, creatorId } = signleRow;
+    const { flowStatus: signleFlowStatus, id: flowId, creatorId ,saveStatus: typeStatus} = signleRow;
     // 已提交审核状态
     const underWay = signleFlowStatus !== 'INIT';
     // 审核完成状态
@@ -46,7 +46,8 @@ function SupplierConfigure() {
     const isSelf = currentUserId === creatorId;
     // 删除草稿
     const isdelete = signleFlowStatus === 'INIT'
-    
+    // 提交审核
+    const Toexamine = signleFlowStatus === 'INIT' && typeStatus === 1;
     const {
         state: rowState,
         approvalState: rowApprovalState,
@@ -61,8 +62,10 @@ function SupplierConfigure() {
             key: 'flowStatus',
             width: 100,
             render: function(text, record, row) {
-                if (text === 'INIT') {
-                    return <div>未提交审批</div>;
+                if (text === 'INIT' && record.saveStatus === 0) {
+                    return <div>草稿</div>;
+                } else if (text === 'INIT' && record.saveStatus === 1) {
+                    return <div>已保存</div>;
                 } else if (text === 'INPROCESS') {
                     return <div className="doingColor">审批中</div>;
                 } else {
@@ -122,8 +125,10 @@ function SupplierConfigure() {
             key: 'flowStatus',
             width: 100,
             render: function(text, record, row) {
-                if (text === 'INIT') {
-                    return <div>未提交审批</div>;
+                if (text === 'INIT' && record.saveStatus === 0) {
+                    return <div>草稿</div>;
+                } else if (text === 'INIT' && record.saveStatus === 1) {
+                    return <div>已保存</div>;
                 } else if (text === 'INPROCESS') {
                     return <div className="doingColor">审批中</div>;
                 } else {
@@ -202,6 +207,7 @@ function SupplierConfigure() {
         const { data = {} } = event;
         if (data.tabAction === 'close') {
             tableRef.current.remoteDataRefresh()
+            cleanSelectedRecord()
         }
     }
     // 新增供应商
@@ -368,7 +374,7 @@ function SupplierConfigure() {
                                     needConfirm={handleBeforeStartFlow}
                                     businessKey={flowId}
                                     callBack={handleComplete}
-                                    disabled={empty || underWay}
+                                    disabled={empty || underWay || !Toexamine}
                                     businessModelCode='com.ecmp.srm.sm.entity.SupplierModify'
                                     key='SRM-SM-SUPPLIERMODEL_EXAMINE'
                                 >提交审核</StartFlow>

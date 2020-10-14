@@ -177,7 +177,7 @@ function SupplierConfigure() {
     }
     // 新增
     function AddModel() {
-
+        openNewTab(`/pcnModify/Supplier/create/index`, 'PCN变更新建变更单', false)
     }
     // 编辑
     function handleCheckEdit() {
