@@ -6,6 +6,9 @@ import Header from '@/components/Header';
 import ModifyForm from './ModifyForm';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
 import styles from '../index.less';
+import InfluenceMaterielModal from './InfluenceMaterielModal'
+import MaterielModal from './MaterielModal'
+import SeeMaterielModal from './SeeMaterielModal'
 import UploadFile from '../../../../components/Upload/index'
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 const { create } = Form;
@@ -16,7 +19,7 @@ let keys = 1;
 let lineCode = 1;
 const ModifyinfluenceRef = forwardRef(({
     form,
-    isView = false,
+    isView,
     editData = [],
     headerInfo
 }, ref) => {
@@ -27,7 +30,9 @@ const ModifyinfluenceRef = forwardRef(({
     }));
     const { getFieldDecorator, setFieldsValue, validateFieldsAndScroll } = form;
     const tabformRef = useRef(null)
-    const ModifyfromRef = useRef(null)
+    const getModelRef = useRef(null)
+    const getMatermodRef = useRef(null)
+    const getSeeMaterRef = useRef(null)
     const [dataSource, setDataSource] = useState([]);
     const [selectRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
@@ -120,23 +125,17 @@ const ModifyinfluenceRef = forwardRef(({
         setRowKeys([]);
         setRows([]);
     }
-    // 新增
+    // 物料新增
     function showModal() {
-        setVisible(true)
+        getModelRef.current.handleModalVisible(true);
     }
-    // 编辑
-    function handleEdit() {
-        let newsbank;
-        if (selectedRows.length > 1) {
-            newsbank = selectedRows.splice(1);
-        } else {
-            newsbank = selectedRows
-        }
-        //setDataSource(newsbank) 
-        setEdit(true)
-        const [row] = newsbank;
-        setInitialValue({ ...row })
-
+    // 选择物料
+    function showMateriel() {
+        getMatermodRef.current.handleModalVisible(true);
+    }
+    // 查看物料
+    function showSeeMateriel() {
+        getSeeMaterRef.current.handleModalVisible(true);
     }
     // 清空列选择并刷新
     function uploadTable() {
@@ -175,7 +174,6 @@ const ModifyinfluenceRef = forwardRef(({
     // 删除
     async function handleRemove() {
         const filterData = dataSource.filter(item => item.key !== selectedRows[0].key);
-        lineCode--;
         setDataSource(filterData)
     }
 
@@ -202,10 +200,10 @@ const ModifyinfluenceRef = forwardRef(({
                 <AuthButton className={styles.btn} disabled={empty} onClick={handleRemove}>删除</AuthButton>
             }
             {
-                <AuthButton className={styles.btn} onClick={() => handleEdit()} disabled={empty} >选择物料</AuthButton>
+                <AuthButton className={styles.btn} onClick={() => showMateriel()} disabled={empty} >选择物料</AuthButton>
             }
             {
-                <AuthButton className={styles.btn} onClick={() => handleEdit()} disabled={empty} >查看物料</AuthButton>
+                <AuthButton className={styles.btn} onClick={() => showSeeMateriel()} disabled={empty} >查看物料</AuthButton>
             }
         </>
     );
@@ -242,23 +240,17 @@ const ModifyinfluenceRef = forwardRef(({
                     }
                 </AutoSizeLayout>
                 <div>
-                    <ModifyForm
-                        visible={visible}
-                        onCancel={handleCancel}
-                        onOk={handleSubmit}
-                        type={modalType}
-                        initialValues={initialValue}
-                        wrappedComponentRef={ModifyfromRef}
-                        loading={loading}
-                        destroyOnClose
-                    />
-                    <Modal
-                        visible={showAttach}
-                        onCancel={hideAttach}
-                        footer={
-                            <Button type='ghost' onClick={hideAttach}>关闭</Button>
-                        }
-                    ></Modal>
+                    <InfluenceMaterielModal 
+                        wrappedComponentRef={getModelRef}
+                    >
+                    </InfluenceMaterielModal> 
+                    <MaterielModal 
+                        wrappedComponentRef={getMatermodRef}>
+
+                    </MaterielModal>
+                    <SeeMaterielModal 
+                        wrappedComponentRef={getSeeMaterRef}>
+                    </SeeMaterielModal>
                 </div>
             </div>
             <div>
@@ -274,7 +266,7 @@ const ModifyinfluenceRef = forwardRef(({
                                 ],
                                 initialValue: true
                             })(
-                                <Radio.Group>
+                                <Radio.Group disabled={isView === true}>
                                     <Radio value={true}>有影响</Radio>
                                     <Radio value={false}>无影响</Radio>
                                 </Radio.Group>
@@ -292,7 +284,7 @@ const ModifyinfluenceRef = forwardRef(({
                                 ],
                                 initialValue: true
                             })(
-                                <Radio.Group>
+                                <Radio.Group disabled={isView === true}>
                                     <Radio value={true}>有影响</Radio>
                                     <Radio value={false}>无影响</Radio>
                                 </Radio.Group>
@@ -310,7 +302,7 @@ const ModifyinfluenceRef = forwardRef(({
                                 ],
                                 initialValue: true
                             })(
-                                <Radio.Group>
+                                <Radio.Group disabled={isView === true}>
                                     <Radio value={true}>有影响</Radio>
                                     <Radio value={false}>无影响</Radio>
                                 </Radio.Group>
@@ -328,7 +320,7 @@ const ModifyinfluenceRef = forwardRef(({
                                 ],
                                 initialValue: true
                             })(
-                                <Radio.Group>
+                                <Radio.Group disabled={isView === true}>
                                     <Radio value={true}>有影响</Radio>
                                     <Radio value={false}>无影响</Radio>
                                 </Radio.Group>
@@ -345,6 +337,7 @@ const ModifyinfluenceRef = forwardRef(({
                                         width: "100%"
                                     }}
                                     placeholder="请输入其他物料或整机的影响"
+                                    disabled={isView === true}
                                 />
                             )
                         }

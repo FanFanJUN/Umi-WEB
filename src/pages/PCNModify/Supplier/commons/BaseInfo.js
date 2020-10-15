@@ -55,7 +55,7 @@ const HeadFormRef = forwardRef(({
                     <Row>
                         <Col span={10}>
                             <Item label='供应商名称' {...formLayout}>
-                                {isView ? dataSource ? dataSource.corporation ? dataSource.corporation.name : '' : "" :
+                                {
                                     getFieldDecorator("corporationId", {
                                         initialValue: dataSource ? dataSource.corporationId : "",
                                         rules: [{ required: true, message: "请选择供应商名称", }]
@@ -78,7 +78,7 @@ const HeadFormRef = forwardRef(({
                                             }
                                         ]
                                     })(
-                                        <ComboTree disabled={type === "detail" || type === "editor"}
+                                        <ComboTree disabled={isView === true}
                                             {...confirmRadioOptions}
                                             showSearch={false}
                                             name='supplierCategoryName' field={['supplierCategoryCode', 'supplierCategoryId']} form={form} />
@@ -99,7 +99,7 @@ const HeadFormRef = forwardRef(({
                                             }
                                         ]
                                     })(
-                                        <Input />
+                                        <Input disabled={isView === true}/>
                                     )
                                 }
                             </Item>
@@ -125,16 +125,16 @@ const HeadFormRef = forwardRef(({
                         <Col span={10}>
                             <Item label='联系电话' {...formLayout}>
                                 {
-                                    getFieldDecorator("configProperty", {
-                                        rules: [
-                                            {
-                                                required: true,
-                                                message: '请输入联系电话'
-                                            }
-                                        ]
+                                  getFieldDecorator("configProperty", {
+                                    rules: [
+                                        {
+                                            required: true,
+                                            message: '请输入联系电话'
+                                        }
+                                    ]
                                     })(
-                                        <Input />
-                                    )
+                                        <Input disabled={isView === true}/>
+                                    )  
                                 }
                             </Item>
                         </Col>

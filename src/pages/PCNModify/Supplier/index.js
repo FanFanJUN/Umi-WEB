@@ -183,7 +183,7 @@ function SupplierConfigure() {
     function handleCheckEdit() {
         const [key] = selectedRowKeys;
         let id = selectedRows[0].id;
-        openNewTab(`supplier/supplierModify/Edit/index?id=${id}`, '供应商变更编辑', false)
+        openNewTab(`pcnModify/Supplier/Edit/index?id=${id}`, 'PCN变更编辑变更单', false)
     }
     // 删除
     function handleDelete() {
@@ -193,7 +193,7 @@ function SupplierConfigure() {
     function handleCheckDetail() {
         let id = selectedRows[0].id;
         let supplierId = selectedRows[0].supplierId;
-        openNewTab(`supplier/supplierModify/details/index?id=${id}&supplierId=${supplierId}`, '供应商变更明细', false)
+        openNewTab(`pcnModify/Supplier/Detail/index?id=${id}&supplierId=${supplierId}`, 'PCN变更单明细', false)
     }
     // 提交审核完成更新列表
     function handleComplete() {

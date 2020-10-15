@@ -46,7 +46,7 @@ function CreateStrategy() {
       <Affix offsetTop={0}>
         <div className={classnames([styles.header, styles.flexBetweenStart])}>
           <span className={styles.title}>
-            新增PCN变更信息
+            编辑PCN变更信息
             </span>
           <div className={styles.flexCenter}>
             <Button className={styles.btn} onClick={handleBack}>返回</Button>

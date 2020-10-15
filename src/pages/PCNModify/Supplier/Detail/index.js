@@ -46,7 +46,7 @@ function CreateStrategy() {
       <Affix offsetTop={0}>
         <div className={classnames([styles.header, styles.flexBetweenStart])}>
           <span className={styles.title}>
-            新增PCN变更信息
+            PCN变更信息明细
             </span>
           <div className={styles.flexCenter}>
             <Button className={styles.btn} onClick={handleBack}>返回</Button>
@@ -66,6 +66,8 @@ function CreateStrategy() {
                 editformData={editData}
                 wholeData={wholeData}
                 wrappedComponentRef={BaseinfoRef}
+                isView={true}
+                
             />
             </div>
         </div>
@@ -78,6 +80,8 @@ function CreateStrategy() {
                 editformData={editData}
                 wholeData={wholeData}
                 wrappedComponentRef={ModifyinfoRef}
+                isView={true}
+                headerInfo={true}
             />
             </div>
         </div>
@@ -90,6 +94,8 @@ function CreateStrategy() {
                 editformData={editData}
                 wholeData={wholeData}
                 wrappedComponentRef={ModifyinfluenceRef}
+                isView={true}
+                headerInfo={true}
             />
             </div>
         </div>

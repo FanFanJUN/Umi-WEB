@@ -90,30 +90,30 @@ const QualificationRef = forwardRef(({
             });
             modifydata = modifydata.filter(item => item.qualificationType !== '入网须知');
             modifydata.sort(compare("key"));
-            modifydata.map((item,index) => {
-                itemArr.push({
-                    key: index,
-                    id: item.id,
-                    lineCode: item.lineCode,
-                    qualificationType: item.qualificationType,
-                    refId: item.refId,
-                    startDate: item.startDate,
-                    endDate:item.endDate,
-                    certificateNo: item.certificateNo,
-                    institution: item.institution,
-                    attachments:item.attachments
-                });
-            })
-            initData = itemArr;
-            initData = initData.filter(item => item.qualificationType !== '入网须知');
-            let maxLineNum = getMaxLineNum(initData);
-            lineCode = maxLineNum + 1;
-            keys = initData.length - 1;
-            //initIndex = initData.length
-            //console.log(initData)
-            setDataSource(initData)
-            //setKey(initData.length - 1);
-            //setInitIndex(initData.length);
+            if (modifydata.length > 0) {
+                modifydata.map((item,index) => {
+                    itemArr.push({
+                        key: index,
+                        id: item.id,
+                        lineCode: item.lineCode,
+                        qualificationType: item.qualificationType,
+                        refId: item.refId,
+                        startDate: item.startDate,
+                        endDate:item.endDate,
+                        certificateNo: item.certificateNo,
+                        institution: item.institution,
+                        attachments:item.attachments
+                    });
+                })
+                initData = itemArr;
+                initData = initData.filter(item => item.qualificationType !== '入网须知');
+                let maxLineNum = getMaxLineNum(initData);
+                lineCode = maxLineNum + 1;
+                keys = initData.length - 1;
+                setDataSource(initData)
+            }else {
+                setDataSource(initData)
+            }
             
         }
         

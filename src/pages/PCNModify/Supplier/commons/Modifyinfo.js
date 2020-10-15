@@ -35,7 +35,7 @@ const ModifyinfoRef = forwardRef(({
   const [showAttach, triggerShowAttach] = useState(false);
   const [loading, triggerLoading] = useState(false);
   const [attachId, setAttachId] = useState('')
-  
+  const [title, setTitle] = useState('新增变更详情')
   let Modeltitle = '新增';
   useEffect(() => {
 
@@ -94,6 +94,7 @@ const ModifyinfoRef = forwardRef(({
   }
   // 新增
   function showModal() {
+    setTitle('新增变更详情')
     setVisible(true)
   }
   // 编辑
@@ -104,7 +105,7 @@ const ModifyinfoRef = forwardRef(({
     }else {
       newsbank = selectedRows
     }
-    //setDataSource(newsbank) 
+    setTitle('编辑变更详情')
     setEdit(true)
     const [row] = newsbank;
     setInitialValue({ ...row })
@@ -216,6 +217,7 @@ const ModifyinfoRef = forwardRef(({
           onOk={handleSubmit}
           type={modalType}
           initialValues={initialValue}
+          title={title}
           wrappedComponentRef={ModifyfromRef}
           loading={loading}
           destroyOnClose

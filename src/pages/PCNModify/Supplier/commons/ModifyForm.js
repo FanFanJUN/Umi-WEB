@@ -35,7 +35,8 @@ const ModifyForm = forwardRef(
             type = 'add',
             loading,
             dataSource,
-            isView
+            isView,
+            title
         },
         ref,
     ) => {
@@ -55,7 +56,6 @@ const ModifyForm = forwardRef(
                 setFieldsValue(fields);
             }
         }, [visible]);
-        const title = `新增字段`;
         function handleSubmit() {
             validateFieldsAndScroll((err, val) => {
                 if (!err) {
@@ -95,8 +95,8 @@ const ModifyForm = forwardRef(
                                         description: 'code',
 
                                     }}
-                                    name='smFieldTypeName'
-                                    field={['smFieldTypeCode']}
+                                    name='smFieldCode'
+                                    field={['code']}
                                     form={form}
                                 />
                             )}

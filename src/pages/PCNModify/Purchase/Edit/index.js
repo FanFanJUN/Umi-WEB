@@ -1,11 +1,9 @@
 import React, { createRef, useState, useRef, useEffect } from 'react';
 import { Button, Modal, message, Spin, Affix, Tabs } from 'antd';
 import { router } from 'dva';
-import BaseInfo from '../../supplierRegister/components/BaseInfo'
-
-import ReasonAndStartFlowModal from '../commons/ReasonAndStartFlowModal'
+import Confirmation from '../commons/Confirmation' 
+import PCNModify from '../commons/PCNModify'
 import classnames from 'classnames';
-import myContext from '../../supplierRegister/components/ContextName'
 import {
     SupplierconfigureDetail,
     SaveSupplierconfigureService
@@ -16,12 +14,12 @@ import {
     saveSupplierRegister,
     ValiditySupplierRegister
 } from '@/services/SupplierModifyService'
-import styles from '../../supplierRegister/components/index.less';
-import { closeCurrent, isEmpty } from '../../../utils';
+import styles from '../index.less';
+import { closeCurrent, isEmpty } from '../../../../utils';
 const TabPane = Tabs.TabPane;
 function CreateStrategy() {
 
-    const BaseinfoRef = useRef(null);
+    const ConfirmFromRef = useRef(null);
     const AccountRef = useRef(null);
 
     const [baseinfo, setbaseinfo] = useState([]);
@@ -119,7 +117,7 @@ function CreateStrategy() {
     }
     // 获取配置列表项
     useEffect(() => {
-        initsupplierDetai(); // 获取详情
+        //initsupplierDetai(); // 获取详情
 
     }, []);
     // 返回
@@ -133,9 +131,7 @@ function CreateStrategy() {
         <Spin spinning={loading} tip='处理中...'>
             <Affix offsetTop={0}>
                 <div className={classnames([styles.header, styles.flexBetweenStart])}>
-                    <span className={styles.title}>
-                        PCN变更方案确认
-            </span>
+                    <span className={styles.title}>PCN变更方案确认</span>
                     <div className={styles.flexCenter}>
                         <Button className={styles.btn} onClick={handleBack}>返回</Button>
                         <Button className={styles.btn} onClick={handleSave}>保存</Button>
@@ -143,37 +139,19 @@ function CreateStrategy() {
                 </div>
 
             </Affix>
-            <div>
-                {/* <Tabs className="tabstext" onTabClick={(params)=>tabClickHandler(params)}>
-                    <TabPane forceRender tab="确认方案" key="1">
-                    <OrganizationPage
-                        accounts={accounts}
-                        wrappedComponentRef={OrganRef}
-                    />
-                    </TabPane>
-                    <TabPane forceRender tab="PCN变更信息" key="2">
-                    <PersonalPage 
-                        accounts={accounts}
-                        wrappedComponentRef={PersonRef}
-                    />
-                    </TabPane>
-                </Tabs> */}
-            </div>
             <div className={styles.wrapper}>
-                <div className={styles.bgw}>
-                    <div className={styles.title}>基本信息</div>
-                    <div >
-                        <BaseInfo
-                            Dyformname={setSuppliername}
-                            baseinfo={baseinfo}
-                            initialValues={editData}
-                            editformData={editData}
-                            wholeData={wholeData}
-                            wrappedComponentRef={BaseinfoRef}
-                            onClickfication={ficationtype}
+                <Tabs className="tabstext" onTabClick={(params)=>tabClickHandler(params)}>
+                    <TabPane forceRender tab="确认方案" key="1">
+                        <Confirmation
+                            wrappedComponentRef={ConfirmFromRef}
                         />
-                    </div>
-                </div>
+                    </TabPane>
+                    {/* <TabPane forceRender tab="PCN变更信息" key="2">
+                        <PCNModify 
+                            //wrappedComponentRef={PersonRef}
+                        />
+                    </TabPane> */}
+                </Tabs>
             </div>
         </Spin>
     )

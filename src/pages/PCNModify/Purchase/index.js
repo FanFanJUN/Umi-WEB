@@ -215,7 +215,7 @@ function SupplierConfigure() {
     function handleCheckEdit() {
         const [key] = selectedRowKeys;
         let id = selectedRows[0].id;
-        openNewTab(`supplier/supplierModify/Edit/index?id=${id}`, '供应商变更编辑', false)
+        openNewTab(`pcnModify/Purchase/Edit/index?id=${id}`, 'PCN变更方案编辑', false)
     }
     // 明细
     function handleCheckDetail() {
