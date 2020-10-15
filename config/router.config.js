@@ -154,6 +154,41 @@ export default [
         path: '/csr/config',
         component: './CSRConfig',
         title: '企业社会责任'
+      },
+      {
+        path: '/review/main',
+        component: './ReviewMain',
+        title: '评审人配置'
+      },
+      {
+        path: '/supplier/appraise/project',
+        component: './SupplierAppraise',
+        title: '供应商评价项目'
+      },
+      {
+        path: '/supplier/appraise/project/create',
+        component: './SupplierAppraise/Create',
+        title: '新增供应商评价项目'
+      },
+      {
+        path: '/supplier/appraise/project/editor',
+        component: './SupplierAppraise/Editor',
+        title: '编辑供应商评价项目'
+      },
+      {
+        path: '/supplier/appraise/project/detail',
+        component: './SupplierAppraise/Detail',
+        title: '供应商评价项目详情'
+      },
+      {
+        path: '/supplier/appraise/project/allocation',
+        component: './SupplierAppraise/Allocation',
+        title: '评价项目分配评审人'
+      },
+      {
+        path: '/supplier/appraise/project/evaluate',
+        component: './SupplierAppraise/Evaluate',
+        title: '人工评分'
       }
     ],
   },

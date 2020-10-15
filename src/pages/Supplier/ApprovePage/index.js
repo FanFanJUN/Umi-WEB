@@ -1,24 +1,22 @@
 import { useEffect, useState } from 'react';
 import styles from './index.less';
 import CommonDetail, { ChangeInfo } from '../CommonDetail';
-import { Affix, Button, message, Spin, Tabs } from 'antd';
+import { Affix, message, Spin, Tabs } from 'antd';
 import { WorkFlow } from 'suid';
 import classnames from 'classnames';
 import { queryViewModifyDetail } from '../../../services/supplier';
 import { router } from 'dva';
-import { closeCurrent } from '../../../utils';
+import { closeCurrent, checkToken } from '../../../utils';
 const { TabPane } = Tabs;
 const { Approve } = WorkFlow;
 export default function () {
   const { query } = router.useLocation();
   const { id, taskId, instanceId } = query;
   const [loading, toggleLoading] = useState(false);
+  const [isReady, setIsReady] = useState(false)
   const [headerFields, setHeaderFields] = useState({});
   const [lineDataSource, setLineDataSource] = useState([]);
   const [changeDataSource, setChangeDataSource] = useState([]);
-  const handleBack = () => {
-    closeCurrent()
-  }
   function handleSubmitComplete(res) {
     const { success } = res;
     if (success) {
@@ -54,8 +52,13 @@ export default function () {
       }
       message.error(msg)
     }
-    initialDetailValues()
-  }, [])
+    if (isReady) {
+      initialDetailValues()
+    }
+  }, [isReady])
+  useEffect(() => {
+    checkToken(query, setIsReady);
+  }, []);
   return (
     <div>
       <Affix>

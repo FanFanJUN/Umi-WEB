@@ -9,9 +9,9 @@ function AutoSizeLayout({ children, minHeight = 300 }) {
     timeout = setTimeout(() => {
       const wh = document.body.clientHeight;
       const h = layoutRef.current?.offsetTop;
-      const lh = wh - h
-      console.log(lh)
+      const lh = wh - h;
       setHeight(lh)
+      console.log(wh, h)
     }, 100)
   }
   useLayoutEffect(() => {

@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import styles from './index.less';
 import { useState, useEffect } from 'react';
-import { ExtTable, WorkFlow, AuthAction, utils } from 'suid';
+import { ExtTable, WorkFlow, utils } from 'suid';
 import { StartFlow } from 'seid';
 import { Button, Input, message, Modal } from 'antd';
 import { AutoSizeLayout, Header, AdvancedForm } from '../../components';
@@ -205,10 +205,6 @@ export default function () {
     setRowKeys(rowKeys);
     setRows(rows);
   }
-  // 清除选中项
-  function cleanSelectedRecord() {
-    setRowKeys([])
-  }
   // 更新列表数据
   function uploadTable() {
     cleanSelectedRecord()
@@ -227,7 +223,6 @@ export default function () {
   }
   // 处理快速查询
   function handleQuickSearch(v) {
-    console.log(v)
     setSearchValue({
       quickSearchValue: v
     })
@@ -244,7 +239,6 @@ export default function () {
         value: !!isName ? undefined : v[item]
       }
     }).filter(item => !!item.value)
-    console.log(filters)
     setSearchValue({
       filters: filters
     })

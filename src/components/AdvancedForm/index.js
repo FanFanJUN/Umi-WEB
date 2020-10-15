@@ -8,7 +8,8 @@
 
 import React from 'react';
 import { Button, Row, Col, Form, Input, DatePicker } from 'antd';
-import { MixinSelect, ComboMultiple } from '@/components';
+import { MixinSelect } from '../MixinCombo';
+import ComboMultiple from '../ComboMultiple'
 import {
   ComboGrid,
   ComboList,
@@ -25,7 +26,8 @@ const Combos = {
   multiple: ComboMultiple,
   select: MixinSelect,
   selectTree: ComboTree,
-  rangePicker: RangePicker
+  rangePicker: RangePicker,
+  datePicker: DatePicker
 }
 
 const formLayout = {
@@ -63,7 +65,7 @@ function AdvancedForm({
         {
           formItems.map((item, index) => {
             const Item = Combos[item.type] || Input;
-            if (!!item.type && item.type !== 'rangePicker') {
+            if (!!item.type && item.type !== 'rangePicker' && item.type !== 'datePicker') {
               return (
                 <Col
                   key={`${item.key}-${index}`}
@@ -74,6 +76,9 @@ function AdvancedForm({
                       getFieldDecorator(`${item.key}`),
                       getFieldDecorator(`${item.key}_name`)(
                         <Item
+                          style={{
+                            width: '100%'
+                          }}
                           form={form}
                           {...item.props}
                           name={`${item.key}_name`}

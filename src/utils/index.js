@@ -408,8 +408,18 @@ export const phoneOrTel = (rule, value, callback) => {
     callback();
   }
 };
+// 模拟触发resize事件
+export const sendResize = () => {
+  if (document.createEvent) {
+    var event = document.createEvent("HTMLEvents");
+    event.initEvent("resize", true, true);
+    window.dispatchEvent(event);
+  } else if (document.createEventObject) {
+    window.fireEvent("onresize");
+  }
+}
 
-export const DELAY = timeout => new Promise(resolve=> {
+export const DELAY = timeout => new Promise(resolve => {
   setTimeout(resolve, timeout)
 })
 

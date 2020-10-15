@@ -50,3 +50,29 @@ export function useGlobalStatus(supplierRecommendDemandId) {
   }, [])
   return [status, updateGlobalStatus]
 }
+
+export function useTableProps() {
+  const [selectedRowKeys, setRowKeys] = useState([]);
+  const [selectedRows, setRows] = useState([]);
+  const [dataSource, setDataSource] = useState([]);
+  const [searchValue, setSearchValue] = useState({});
+  function handleSelectedRows(rowKeys, rows) {
+    setRowKeys(rowKeys);
+    setRows(rows);
+  }
+  return [
+    {
+      selectedRowKeys,
+      selectedRows,
+      searchValue,
+      dataSource
+    },
+    {
+      setRowKeys,
+      setRows,
+      setDataSource,
+      handleSelectedRows,
+      setSearchValue
+    }
+  ]
+}

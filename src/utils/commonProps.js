@@ -1,5 +1,6 @@
-import { smBaseUrl, baseUrl ,supplierManagerBaseUrl} from './commonUrl';
-import {listChineseProvinces,
+import { smBaseUrl, baseUrl, supplierManagerBaseUrl } from './commonUrl';
+import {
+  listChineseProvinces,
   listCityByProvince,
   listAreaByCity,
   getAllCurrencyWithoutAuth,
@@ -173,7 +174,7 @@ export const currencyTableProps = {
     },
     type: 'POST'
   },
-  searchProperties : ['code', 'name'],
+  searchProperties: ['code', 'name'],
   columns: [
     {
       title: '币种代码',
@@ -195,7 +196,7 @@ export const currencyTableProps = {
   // height: 150,
   width: 220,
   remotePaging: true,
-  searchPlaceHolder:'请输入查询关键字',
+  searchPlaceHolder: '请输入查询关键字',
   name: 'currencyName'
 }
 
@@ -238,6 +239,40 @@ export const dictProps = {
   }
 }
 
+
+// 评价期间类型枚举
+export const evlPeriodEmu = [
+  {
+    value: 'YEAR',
+    label: '年度'
+  },
+  {
+    value: 'QUARTER',
+    label: '季度'
+  },
+  {
+    value: 'MONTH',
+    label: '月度'
+  }
+];
+
+// 评价层级枚举
+export const evlLevelEmu = [
+  {
+    value: 'BG',
+    label: '业务板块层级'
+  },
+  {
+    value: 'BU',
+    label: '业务单元层级'
+  },
+  {
+    value: 'CORP_AND_PURCHASE_ORG',
+    label: '公司和采购组织层级'
+  }
+]
+
+
 // 审批状态枚举
 export const flowStatusProps = {
   dataSource: [
@@ -250,7 +285,7 @@ export const flowStatusProps = {
       name: '审核中'
     },
     {
-      code: 'INIT',
+      code: 'COMPLETE',
       name: '审核完成'
     },
   ],
@@ -262,6 +297,57 @@ export const flowStatusProps = {
   style: {
     width: '100%'
   }
+}
+// 评价项目单据状态枚举
+export const evlStatusProps = {
+  dataSource: [
+    {
+      code: 'DRAFT',
+      name: '草稿'
+    },
+    {
+      code: 'UNDER_EVALUATION',
+      name: '评价中'
+    },
+    {
+      code: 'EVALUATION_COMPLETED',
+      name: '评价完成'
+    },
+    {
+      code: 'RESULTS_GENERATED',
+      name: '已生成结果'
+    }
+  ],
+  reader: {
+    name: 'name',
+    field: ['code']
+  },
+  style: {
+    width: '100%'
+  }
+}
+
+// 评价期间类型高级查询配置
+export const evlEmu = {
+  dataSource: [
+    {
+      code: 'YEAR',
+      name: '年度'
+    },
+    {
+      code: 'QUARTER',
+      name: '季度'
+    },
+    {
+      code: 'MONTH',
+      name: '月度'
+    }
+  ],
+  reader: {
+    name: 'name',
+    field: ['code']
+  },
+  placeholder: '选择评价期间类型',
 }
 
 // 单据状态枚举
@@ -288,31 +374,6 @@ export const statusProps = {
     width: '100%'
   }
 }
-// // 生效状态枚举
-// export const effectStatusProps = {
-//   dataSource: [
-//     {
-//       code: 'Draft',
-//       name: '草稿'
-//     },
-//     {
-//       code: 'Effective',
-//       name: '生效'
-//     },
-//     {
-//       code: 'Changing',
-//       name: '变更中'
-//     }
-//   ],
-//   reader: {
-//     name: 'name',
-//     field: ['code']
-//   },
-//   placeholder: '选择生效状态',
-//   style: {
-//     width: '100%'
-//   }
-// }
 
 // 二次分类物料组数据
 export const materialClassProps = {
@@ -365,25 +426,25 @@ export const corporationProps = {
 // 供应商分类
 export const purchaseCompanyProps = {
   store: {
-    url: `${supplierManagerBaseUrl}/supplierRegister/findCategorysBySccw`, 
+    url: `${supplierManagerBaseUrl}/supplierRegister/findCategorysBySccw`,
     params: { status: '国内' }
   },
   reader: {
     name: 'name',
-    field: ['code','id'],
-    description: ['code']
+    field: ['code', 'id'],
+    description: 'code'
   },
   placeholder: '请选择供应商分类'
 }
 // 供应商分类枚举
 export const Fieldclassification = {
   store: {
-    url: `${supplierManagerBaseUrl}/SmSupplierConfig/findVoTypeFig`, 
+    url: `${supplierManagerBaseUrl}/SmSupplierConfig/findVoTypeFig`,
     type: 'post'
   },
-  reader:{
+  reader: {
     name: 'name',
-    field: ['value','rank'],
+    field: ['value', 'rank'],
     description: 'rank'
   },
   style: {
@@ -394,10 +455,10 @@ export const Fieldclassification = {
 // 供应商配置表复制从
 export const FieldconfigureList = {
   store: {
-    url: `${supplierManagerBaseUrl}/api/SmSupplierRegConfigService/findByProperty`, 
+    url: `${supplierManagerBaseUrl}/api/SmSupplierRegConfigService/findByProperty`,
     type: 'post'
   },
-  reader:{
+  reader: {
     name: item => `${item.configCode}-${item.supplierCategoryName}`,
     field: ['supplierCategoryCode'],
     description: 'supplierCategoryCode'
@@ -410,10 +471,10 @@ export const FieldconfigureList = {
 // 评价体系主数据
 export const evaluateSystemProps = {
   store: {
-    url: `${baseUrl}/api/supplierEvlSystemService/findTreeByBusinessUnitId`, 
+    url: `${baseUrl}/api/supplierEvlSystemService/findTreeByBusinessUnitId`,
     type: 'post'
   },
-  reader:{
+  reader: {
     name: 'name',
     field: ['id'],
     description: 'code'
@@ -426,10 +487,10 @@ export const evaluateSystemProps = {
 //海关信用状况
 export const customsEnterpriseAll = {
   store: {
-    url: `${baseUrl}/bafWithoutAuth/listCustomsEnterprisesEreditStatus`, 
+    url: `${baseUrl}/bafWithoutAuth/listCustomsEnterprisesEreditStatus`,
     type: 'post'
   },
-  reader:{
+  reader: {
     name: 'name',
     field: ['value']
   },
@@ -438,13 +499,44 @@ export const customsEnterpriseAll = {
   },
   placeholder: '请选择供海关信用状况'
 }
+
+// 业务单元主数据
+export const businessMainProps = {
+  store: {
+    url: `${baseUrl}/api/buService/findAll`,
+    type: 'get'
+  },
+  reader: {
+    name: 'buName',
+    field: ['buCode']
+  },
+  style: {
+    width: '100%'
+  }
+}
+
+// 业务板块主数据
+export const businessUnitMainProps = {
+  store: {
+    url: `${baseUrl}/api/businessUnitService/findAll`,
+    type: 'get'
+  },
+  reader: {
+    name: 'businessUnit',
+    field: ['code']
+  },
+  style: {
+    width: '100%'
+  }
+}
+
 // 业务标的物
 export const industryConfig = {
   store: {
-    url: `${baseUrl}/supplierRegister/getDataItemsFromValueCode?code=category_id&Q_EQ_frozen__bool=0`, 
+    url: `${baseUrl}/supplierRegister/getDataItemsFromValueCode?code=category_id&Q_EQ_frozen__bool=0`,
     type: 'post'
   },
-  reader:{
+  reader: {
     name: 'name',
     field: ['value'],
   },
@@ -456,10 +548,10 @@ export const industryConfig = {
 // 企业性质
 export const enterprisePropertyConfig = {
   store: {
-    url: `${baseUrl}/supplierRegister/listAllEnterpriseProperty`, 
+    url: `${baseUrl}/supplierRegister/listAllEnterpriseProperty`,
     type: 'post'
   },
-  reader:{
+  reader: {
     name: 'name',
     field: ['id']
   },
@@ -471,10 +563,10 @@ export const enterprisePropertyConfig = {
 //纳税人类别
 export const listAllTaxpayersCategory = {
   store: {
-    url: `${baseUrl}/supplierRegister/listAllTaxpayersCategory`, 
+    url: `${baseUrl}/supplierRegister/listAllTaxpayersCategory`,
     type: 'post'
   },
-  reader:{
+  reader: {
     name: 'name',
     field: ['id'],
   },
@@ -486,13 +578,13 @@ export const listAllTaxpayersCategory = {
 //国内省份
 export const chineseProvinceTableConfig = {
   columns: [{
-      title: '代码',
-      dataIndex: 'code',
-      width: 70,
+    title: '代码',
+    dataIndex: 'code',
+    width: 70,
   }, {
-      title: '名称',
-      dataIndex: 'name',
-      width: 200,
+    title: '名称',
+    dataIndex: 'name',
+    width: 200,
   }],
   dataService: listChineseProvinces,
   service: listChineseProvinces,
@@ -504,12 +596,12 @@ export const chineseProvinceTableConfig = {
 //省
 export const provinceListConfig = {
   columns: [{
-      title: '代码',
-      dataIndex: 'code',
-      width: 70,
+    title: '代码',
+    dataIndex: 'code',
+    width: 70,
   }, {
-      title: '名称',
-      dataIndex: 'name',
+    title: '名称',
+    dataIndex: 'name',
   }],
   service: (params) => listChineseProvinces(params),
   searchService: (params) => listChineseProvinces(params),
@@ -524,8 +616,8 @@ export const cityListConfig = {
     dataIndex: 'code',
     width: 70,
   }, {
-      title: '名称',
-      dataIndex: 'name',
+    title: '名称',
+    dataIndex: 'name',
   }],
   service: (params) => listCityByProvince(params),
   searchService: (params) => listCityByProvince(params),
@@ -537,12 +629,12 @@ export const cityListConfig = {
 // 区县
 export const areaListConfig = {
   columns: [{
-      title: '代码',
-      dataIndex: 'code',
-      width: 70,
+    title: '代码',
+    dataIndex: 'code',
+    width: 70,
   }, {
-      title: '名称',
-      dataIndex: 'name',
+    title: '名称',
+    dataIndex: 'name',
   }],
   service: (params) => listAreaByCity(params),
   searchService: (params) => listAreaByCity(params),
@@ -561,12 +653,12 @@ export const currencyListConfigWithoutAuth = {
 };
 // 泛虹公司
 export const corporationSupplierConfig = {
-  store:{
-    autoLoad:true,
+  store: {
+    autoLoad: true,
     url: `${baseUrl}/basic/listAllCorporation?Q_EQ_frozen__bool=0`,
     type: 'post'
   },
-  columns:[
+  columns: [
     {
       title: '公司代码',
       width: 80,
@@ -578,7 +670,7 @@ export const corporationSupplierConfig = {
       dataIndex: 'name',
     },
   ],
-  reader:{
+  reader: {
     name: 'name',
     field: ['code'],
     description: 'code'
@@ -590,15 +682,15 @@ export const corporationSupplierConfig = {
 };
 // 泛虹工厂
 export const companyOrgConfigByCode = {
-  store:{
-    autoLoad:true,
+  store: {
+    autoLoad: true,
     url: `${baseUrl}/factory/findByCorporationCode?Q_EQ_frozen__bool=0`,
     type: 'post'
   },
   // cascadeParams:{
   //   corporationCode: 'A000'
   // },
-  columns:[
+  columns: [
     {
       title: '工厂代码',
       width: 80,
@@ -610,7 +702,7 @@ export const companyOrgConfigByCode = {
       dataIndex: 'name',
     },
   ],
-  reader:{
+  reader: {
     name: 'name',
     field: ['code'],
     description: 'code'
@@ -623,14 +715,14 @@ export const companyOrgConfigByCode = {
 // 老泛虹公司
 export const oddcorporationSupplierConfig = {
   columns: [{
-      title: '公司代码',
-      dataIndex: 'code',
-      width: 70,
+    title: '公司代码',
+    dataIndex: 'code',
+    width: 70,
   },
-      {
-          title: '公司名称',
-          dataIndex: 'name',
-      }],
+  {
+    title: '公司名称',
+    dataIndex: 'name',
+  }],
   dataService: oddgetAllCorporation,
   service: oddgetAllCorporation,
   searchService: (param1, param2, param3) => param3 ? searchListByKey(param1, param2, param3) : searchListByKey(param1, param2, ['code', 'name']),
@@ -640,16 +732,16 @@ export const oddcorporationSupplierConfig = {
 //供应商注册 根据公司code查询工厂
 export const oddcompanyOrgConfigByCode = {
   columns: [
-      {
-          title: '工厂代码',
-          dataIndex: 'code',
-          width: 100,
-      },
-      {
-          title: '工厂名称',
-          dataIndex: 'name',
-          width: 200,
-      }
+    {
+      title: '工厂代码',
+      dataIndex: 'code',
+      width: 100,
+    },
+    {
+      title: '工厂名称',
+      dataIndex: 'name',
+      width: 200,
+    }
   ],
   dataService: (params) => getCompanyFactory(params),
   service: (params) => getCompanyFactory(params),
@@ -660,10 +752,10 @@ export const oddcompanyOrgConfigByCode = {
 // 国家
 export const countryListConfig = {
   store: {
-    url: `${baseUrl}/supplierRegister/listAllCountry`, 
+    url: `${baseUrl}/supplierRegister/listAllCountry`,
     type: 'post'
   },
-  reader:{
+  reader: {
     name: 'name',
     field: ['id'],
   },
@@ -682,10 +774,10 @@ export const BankCountryListConfig = {
 //职务类别
 export const listPositionConfig = {
   store: {
-    url: `${baseUrl}/srmCommon/listPosition`, 
+    url: `${baseUrl}/srmCommon/listPosition`,
     type: 'post'
   },
-  reader:{
+  reader: {
     name: 'name',
     field: ['value'],
   },
@@ -696,12 +788,12 @@ export const listPositionConfig = {
 }
 // 银行编码
 export const BankcodeConfigTable = {
-  store:{
-    autoLoad:true,
+  store: {
+    autoLoad: true,
     url: `${baseUrl}/supplierRegister/getDataItemsFromValueCode?code=BANK_CODE&Q_EQ_frozen__bool=0`,
     type: 'post'
   },
-  columns:[
+  columns: [
     {
       title: '代码',
       width: 80,
@@ -713,7 +805,7 @@ export const BankcodeConfigTable = {
       dataIndex: 'name',
     },
   ],
-  reader:{
+  reader: {
     name: 'name',
     field: ['value'],
     description: 'code'
@@ -725,12 +817,12 @@ export const BankcodeConfigTable = {
 }
 //银联号
 export const unionPayCodeConfig = {
-  store:{
-    autoLoad:true,
+  store: {
+    autoLoad: true,
     url: `${baseUrl}/supplierRegister/getBankNoByPage?Q_EQ_frozen__bool=0`,
     type: 'GET'
   },
-  columns:[
+  columns: [
     {
       title: '代码',
       width: 80,
@@ -743,7 +835,7 @@ export const unionPayCodeConfig = {
     },
   ],
   remotePaging: true,
-  reader:{
+  reader: {
     name: 'name',
     field: ['code'],
     description: 'code'
@@ -762,10 +854,10 @@ export const unionPayCodeConfig = {
 // 银行控制
 export const paymentTypeConfig = {
   store: {
-    url: `${baseUrl}/supplierRegister/getPaymentPage?Q_EQ_frozen__bool=0&S_code=desc`, 
+    url: `${baseUrl}/supplierRegister/getPaymentPage?Q_EQ_frozen__bool=0&S_code=desc`,
     type: 'post'
   },
-  reader:{
+  reader: {
     name: 'name',
     field: ['code'],
   },
@@ -778,15 +870,15 @@ export const paymentTypeConfig = {
 //供应商
 export const SupplierConfigWithName = {
   columns: [{
-      title: '代码',
-      dataIndex: 'code',
-      width: 70,
+    title: '代码',
+    dataIndex: 'code',
+    width: 70,
   },
-      {
-          title: '供应商名称',
-          dataIndex: 'name',
-          width: 500,
-      }],
+  {
+    title: '供应商名称',
+    dataIndex: 'name',
+    width: 500,
+  }],
   dataService: getNormalSuppliers,
   service: getNormalSuppliers,
   searchService: (param1, param2) => searchListByKey(param1, param2, ['name', 'code']),
@@ -796,7 +888,7 @@ export const SupplierConfigWithName = {
 // 注册供应商分类
 export const purchaseCompanyPropsreg = {
   store: {
-    url: `${supplierManagerBaseUrl}/supplierRegister/getSupplierCategoryTree`, 
+    url: `${supplierManagerBaseUrl}/supplierRegister/getSupplierCategoryTree`,
   },
   reader: {
     name: 'name',
@@ -812,7 +904,7 @@ export const purchaseCompanyPropsreg = {
       return {
         selectable: false
       }
-    }else if (node.nodeLevel === 1) {
+    } else if (node.nodeLevel === 1) {
       return {
         selectable: false
       }
@@ -823,11 +915,11 @@ export const purchaseCompanyPropsreg = {
 // 联行号
 export const oddunionPayCodeConfig = {
   columns: [{
-      title: '代码',
-      dataIndex: 'code',
+    title: '代码',
+    dataIndex: 'code',
   }, {
-      title: '名称',
-      dataIndex: 'name',
+    title: '名称',
+    dataIndex: 'name',
   }],
   dataService: listUnionPayCode,
   key: 'code',

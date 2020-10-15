@@ -6,13 +6,14 @@ import { WorkFlow } from 'suid';
 import classnames from 'classnames';
 import { saveViewModify, queryViewModifyDetail } from '../../../services/supplier';
 import { router } from 'dva';
-import { closeCurrent } from '../../../utils';
+import { closeCurrent, checkToken } from '../../../utils';
 const { Approve } = WorkFlow;
 export default function () {
   const formRef = useRef(null);
   const { query } = router.useLocation();
   const { id, taskId, instanceId } = query;
   const [loading, toggleLoading] = useState(false);
+  const [isReady, setIsReady] = useState(false);
   const handleSave = async () => {
     const { getAllParams } = formRef.current;
     const { headerFields, dataSource } = await getAllParams();
@@ -75,8 +76,13 @@ export default function () {
       }
       message.error(msg)
     }
-    initialDetailValues()
-  }, [])
+    if (isReady) {
+      initialDetailValues()
+    }
+  }, [isReady])
+  useEffect(() => {
+    checkToken(query, setIsReady);
+  }, []);
   return (
     <div>
       <Affix>
