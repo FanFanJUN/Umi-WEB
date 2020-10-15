@@ -8,6 +8,38 @@ export default [
       { title: '登录', path: '/user/login', component: './Login' },
     ],
   },
+  /**供应商审核 */
+  {
+    path: '/supplierAudit',
+    component: '../layouts/LoginLayout',
+    title: '供应商审核',
+    routes: [
+      { path: '/supplierAudit/auditTypeManagement', component: './SupplierAudit/mainData/auditTypeManagement', title: '审核类型管理-主数据' },
+      { path: '/supplierAudit/managementAuditMode', component: './SupplierAudit/mainData/managementAuditMode', title: '审核方式管理=主数据' },
+      { path: '/supplierAudit/auditCauseManagement', component: './SupplierAudit/mainData/auditCauseManagement', title: '审核原因管理=主数据' },
+      { path: '/supplierAudit/auditOrganizationManagement', component: './SupplierAudit/mainData/auditOrganizationManagement', title: '审核组织方式管理-主数据' },
+      { path: '/supplierAudit/managementAuditCriteria', component: './SupplierAudit/mainData/managementAuditCriteria', title: '审核准则管理-主数据' },
+      { path: '/supplierAudit/AudittypeWithPro', component: './SupplierAudit/mainData/AudittypeWithPro', title: '审核类型默认审核项目-主数据' },
+      { path: '/supplierAudit/ConclusionPassed', component: './SupplierAudit/mainData/ConclusionPassed', title: '结论及是否通过-主数据' },
+      { path: '/supplierAudit/AwcConf', component: './SupplierAudit/mainData/AwcConf', title: '审核类型、是否通过和结论配置-主数据' },
+      { path: '/supplierAudit/PrlConf', component: './SupplierAudit/mainData/PrlConf', title: '百分比、评定等级、风险等级配置-主数据' },
+      { path: '/supplierAudit/ReviewCityConf', component: './SupplierAudit/mainData/ReviewCityConf', title: '审核地区城市配置-主数据' },
+      { path: '/supplierAudit/AuditRequirementsManagement', component: './SupplierAudit/AuditRequirementsManagement', title: '审核需求管理' },
+      { path: '/supplierAudit/AuditRequirementsManagementAdd', component: './SupplierAudit/AuditRequirementsManagement/add', title: '审核需求管理新增' },
+    ]
+  },
+  {
+    path: '/pcnModify',
+    component: '../layouts/LoginLayout',
+    title: 'PCN变更',
+    routes: [
+      /**PCN采购 */
+      { path: '/pcnModify/Purchase/index', component: './PCNModify/Purchase', title: 'PCN变更' },
+      /**PCN供应商 */
+      { path: '/pcnModify/Supplier/index', component: './PCNModify/Supplier', title: 'PCN变更发起供应商' },
+      { path: '/pcnModify/Supplier/Create/index', component: './PCNModify/Supplier/Create/index', title: '新增PCN变更发起供应商' },
+    ]
+  },
   {
     path: '/qualitySynergy',
     component: '../layouts/LoginLayout',
@@ -189,7 +221,15 @@ export default [
         path: '/supplier/appraise/project/evaluate',
         component: './SupplierAppraise/Evaluate',
         title: '人工评分'
-      }
+      },
+       /**无账号供应商 */
+      { path: '/supplier/ImportSupplier/index', component: './ImportSupplier/index', title: '创建无账号供应商' },
+      { path: '/supplier/ImportSupplier/create/index', component: './ImportSupplier/create/index', title: '新增无账号供应商' },
+      { path: '/supplier/ImportSupplier/Edit/index', component: './ImportSupplier/Edit/index', title: '编辑无账号供应商' },
+      { path: '/supplier/ImportSupplier/Detail/index', component: './ImportSupplier/Detail/index', title: '无账号供应商明细' },
+      { path: '/supplier/ImportSupplier/ApprovePage/ImportSupplierApproveEdit', component: './ImportSupplier/ApprovePage/ImportSupplierApproveEdit', title: '无账号供应商流程修改' },
+      { path: '/supplier/ImportSupplier/ApprovePage/ImportSupplierApprovePage', component: './ImportSupplier/ApprovePage/ImportSupplierApprovePage', title: '无账号供应商流程审核' },
+      { path: '/supplier/ImportSupplier/ApprovePage/ImportSupplierApproveDetail', component: './ImportSupplier/ApprovePage/ImportSupplierApproveDetail', title: '无账号供应商流程明细' }
     ],
   },
 ];

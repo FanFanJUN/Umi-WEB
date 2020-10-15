@@ -121,13 +121,20 @@ function CreateStrategy() {
   async function handleTemporary() {
     let baseVal, accountVal, authorizedClientVal, businessInfoVal, bankVal,
       rangeVal, agentVal, qualifications, proCertVos;
-    configure.map(item => {
+    for (let item of configure) {
       if (item.operationCode !== '3' && item.fieldCode === 'name') {
         const { getTemporaryBaseInfo } = BaseinfoRef.current; // 基本信息
         baseVal = getTemporaryBaseInfo();
 
-      } else if (item.operationCode !== '3' && item.fieldCode === 'mobile') {
-        accountVal = ObtainAccount();
+      }
+      if (item.operationCode !== '3' && item.fieldCode === 'mobile') {
+        //accountVal = ObtainAccount();
+        const { getAccountinfo } = AccountRef.current; //帐号
+        accountVal = getAccountinfo();
+        if (!accountVal) {
+          message.error('请将供应商账号信息填写完全！');
+          return false;
+        }
       }
       if (item.operationCode !== '3' && item.fieldCode === 'contactVos') {
         authorizedClientVal = ObtainAuthor();
@@ -150,7 +157,7 @@ function CreateStrategy() {
       if (item.operationCode !== '3' && item.fieldCode === 'proCertVos') {
         proCertVos = ObtionpurposeTemporary() || '';
       }
-    })
+    }
     let enclosurelist = [], basedata, baseexten, accountData,
       automaticdata, automaticincome, automThreeYear, rangeValinfo,othersatt=[];
     if (baseVal && baseVal.supplierVo) {

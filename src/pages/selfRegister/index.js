@@ -1,11 +1,12 @@
 import { useState, useEffect ,useRef} from 'react';
 import { Button, message, Steps, Row, Checkbox } from "antd";
 import { router } from 'dva';
+import Cookies from 'js-cookie';
 import RegistrationAgreement from './commons/RegistrationAgreement'
 import BaseAccountInfo from './commons/BaseAccountInfo'
 import {saveRegistVo} from '../../services/supplierRegister'
 import { Wrapper } from './style'
-import {closeCurrent} from '../../utils'
+import {closeCurrent,isEmpty} from '../../utils'
 const srmBaseUrl = "/srm-se-web";
 const Step = Steps.Step;
 export default function () {
@@ -17,9 +18,14 @@ export default function () {
     const [accounts, setaccounts] = useState(false);
     useEffect(() => {
         let organ = {};
-        organ.mobile = query.phone;
-        organ.email = query.email;
-        organ.openId = query.openId;
+        let strcookie = Cookies.get();
+        organ.mobile = strcookie._p;
+        if (strcookie._m === 'undefined') {
+            organ.email = '';
+        }else {
+            organ.email = strcookie._m
+        }
+        organ.openId = strcookie._o
         setaccounts(organ)
     }, []);
     //上一步
@@ -47,15 +53,19 @@ export default function () {
     async function supplierPayment() {
         const { getAccountinfo } = BassAccounRef.current;
         let resultData = getAccountinfo()
-        console.log(JSON.stringify(resultData))
-        triggerLoading(true)
-        const { data,success, message: msg } = await saveRegistVo({registrationInformationVo: JSON.stringify(resultData)})
-        if (success) {
-            closeCurrent()
-            window.open(`/react-basic-web/index?_s=` + data)
-            //window.open(`/srm-se-web/NewHomePageView?_s=` + data)
-        } else {
-            message.error(msg);
+        if (resultData) {
+            triggerLoading(true)
+            const { data,success, message: msg } = await saveRegistVo({registrationInformationVo: JSON.stringify(resultData)})
+            if (success) {
+                Cookies.remove('_o');
+                Cookies.remove('_m');
+                Cookies.remove('_p');
+                closeCurrent()
+                window.open(`/react-basic-web/index?_s=` + data)
+                //window.open(`/srm-se-web/NewHomePageView?_s=` + data)
+            } else {
+                message.error(msg);
+            }
         }
     }
     return (

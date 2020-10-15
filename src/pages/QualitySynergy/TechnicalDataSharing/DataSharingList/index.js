@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, Fragment } from 'react';
 import Header from '../../../../components/Header';
 import AdvancedForm from '../../../../components/AdvancedForm';
-import { Button, Input, message, Modal } from 'antd';
+import { Button, Checkbox, Input, message, Modal } from 'antd';
 import styles from './index.less';
 import { ComboList, ExtTable, utils } from 'suid';
 import {
@@ -45,23 +45,26 @@ export default function() {
 
   useEffect(() => {
     window.parent.frames.addEventListener('message', listenerParentClose, false);
-    return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
-  }, [])
+    return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
+  }, []);
 
   const listenerParentClose = (event) => {
     const { data = {} } = event;
-    console.log('进入监听', data.tabAction)
+    console.log('进入监听', data.tabAction);
     if (data.tabAction === 'close') {
       tableRef.current.remoteDataRefresh();
     }
-  }
+  };
 
   const [data, setData] = useState({
+    checkedCreate: false,
+    checkedDistribution: false,
     quickSearchValue: '',
     epTechnicalShareDemandSearchBo: {},
     selectedRowKeys: [],
     selectedRows: [],
   });
+
 
   const redirectToPage = (type) => {
     switch (type) {
@@ -101,19 +104,19 @@ export default function() {
       cancelText: '否',
       onOk: () => {
         RecallDataSharingList({
-          ids: data.selectedRowKeys.toString()
+          ids: data.selectedRowKeys.toString(),
         }).then(res => {
           if (res.success) {
-            message.success(res.message)
+            message.success(res.message);
             tableRef.current.manualSelectedRows();
             tableRef.current.remoteDataRefresh();
           } else {
-            message.error(res.message)
+            message.error(res.message);
           }
-        })
+        });
       },
     });
-  }
+  };
 
   const handleQuickSearch = (value) => {
     setData(v => ({ ...v, quickSearchValue: value }));
@@ -188,7 +191,7 @@ export default function() {
 
   // 高级查询配置
   const formItems = [
-    { title: '物料代码', key: 'materialCode', type: 'list', props: MaterialConfig,},
+    { title: '物料代码', key: 'materialCode', type: 'list', props: MaterialConfig },
     { title: '物料组', key: 'materialGroupCode', type: 'list', props: MaterialGroupConfig },
     { title: '战略采购', key: 'strategicPurchaseCode', type: 'list', props: StrategicPurchaseConfig },
     { title: '业务单元', key: 'buCode', type: 'list', props: BUConfigNoFrostHighSearch },
@@ -223,6 +226,17 @@ export default function() {
   const visibleSupplier = () => {
     console.log('查看供应商');
   };
+
+  const onChangeCreate = (e) => {
+    setData(v => ({...v, checkedCreate: e.target.checked}))
+    tableRef.current.remoteDataRefresh();
+  }
+
+  const onChangeDistribution = (e) => {
+    setData(v => ({...v, checkedDistribution: e.target.checked}))
+    tableRef.current.remoteDataRefresh();
+  }
+
 
   const headerLeft = <>
     {
@@ -307,14 +321,18 @@ export default function() {
     }
   </>;
 
-  const headerRight = <>
+  const headerRight = <div style={{ display: 'flex', alignItems: 'center' }}>
+    <div style={{ width: '380px' }}>
+      <Checkbox onChange={onChangeCreate} checked={data.checkedCreate}>仅我创建</Checkbox>
+      <Checkbox onChange={onChangeDistribution} checked={data.checkedDistribution}>仅我分配</Checkbox>
+    </div>
     <Search
       placeholder='请输入物料和物料组'
       className={styles.btn}
       onSearch={handleQuickSearch}
       allowClear
     />
-  </>;
+  </div>;
 
   const onSelectRow = (value, rows) => {
     console.log(value, rows);
@@ -330,9 +348,9 @@ export default function() {
   };
 
   const tacticCancel = () => {
-    setAssignData((value) => ({ ...value, visible: false }))
+    setAssignData((value) => ({ ...value, visible: false }));
     tableRef.current.remoteDataRefresh();
-  }
+  };
 
   return (
     <Fragment>
@@ -352,6 +370,8 @@ export default function() {
             columns={columns}
             store={{
               params: {
+                ...data.checkedCreate ? {onlyOwn: data.checkedCreate} : null,
+                ...data.checkedDistribution ? {onlyAllocation: data.checkedDistribution} : null,
                 quickSearchValue: data.quickSearchValue,
                 ...data.epTechnicalShareDemandSearchBo,
               },

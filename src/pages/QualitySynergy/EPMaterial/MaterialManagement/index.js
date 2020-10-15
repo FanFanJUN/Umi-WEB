@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, Fragment } from 'react';
-import { Input, Button, message, Modal, Form } from 'antd';
+import { Input, Button, message, Modal, Form, Checkbox } from 'antd';
 import styles from './index.less';
 import moment from 'moment';
 import { openNewTab, getFrameElement, getUserAccount } from '@/utils';
@@ -74,14 +74,14 @@ export default create()(function ({ form }) {
     const FRAMELEEMENT = getFrameElement();
     const { getFieldDecorator, setFieldsValue, validateFields } = form;
     useEffect(() => {
-        if(!maintainModal)return;
+        if (!maintainModal) return;
         findOrgTreeWithoutFrozen().then(res => {
             if (res.success) {
                 setOrgId(res.data[0].id);
             }
         });
     }, [maintainModal]);
-    useEffect(()=>{
+    useEffect(() => {
         window.parent.frames.addEventListener('message', listenerParentClose, false);
         return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
     }, [])
@@ -271,7 +271,20 @@ export default create()(function ({ form }) {
         headerRef.current.hide();
         refresh();
     }
-
+    function onChangeCheck(type, value) {
+        if(type === 1) {
+            setSearchValue(v => ({ 
+                ...v, 
+                creatorAccount: value ? getUserAccount() : ''
+            }));
+        } else {
+            setSearchValue(v => ({ 
+                ...v, 
+                allotOnlyOwn: value
+            }));
+        }
+        refresh();
+    }
     // 指派战略采购
     function maintainSeleteChange() {
         validateFields((err, values) => {
@@ -343,20 +356,20 @@ export default create()(function ({ form }) {
             setButtonStatus({
                 detail: false,
                 sync: false,
-                delete: !(rows[0].effectiveStatus === 'DRAFT' && rows[0].sourceName === 'SRM'),
-                submit: rows[0].effectiveStatus === 'EFFECT',
-                withdraw: !(rows[0].effectiveStatus === 'EFFECT' && rows[0].allotSupplierState === 'ALLOT_NOT'),
-                distribute: !(rows[0].applyPersonAccount === getUserAccount() && rows[0].effectiveStatus === 'EFFECT' && !rows[0].frozen && rows[0].strategicPurchaseCode),
+                delete: !(rows[0].applyPersonAccount === getUserAccount() && rows[0].effectiveStatus === 'DRAFT' && rows[0].sourceName === 'SRM'),
+                submit: !(rows[0].applyPersonAccount === getUserAccount() && rows[0].effectiveStatus !== 'EFFECT'),
+                withdraw: !(rows[0].applyPersonAccount === getUserAccount() && rows[0].effectiveStatus === 'EFFECT' && rows[0].allotSupplierState === 'ALLOT_NOT'),
+                distribute: !(rows[0].effectiveStatus === 'EFFECT' && !rows[0].frozen && rows[0].strategicPurchaseCode),
                 check: !(rows[0].effectiveStatus === 'EFFECT' && rows[0].allotSupplierState === 'ALLOT_END'),
-                edit: !(rows[0].effectiveStatus === 'DRAFT' && rows[0].allotSupplierState === 'ALLOT_NOT'),
+                edit: !(rows[0].applyPersonAccount === getUserAccount() && rows[0].effectiveStatus === 'DRAFT' && rows[0].allotSupplierState === 'ALLOT_NOT'),
                 generate: !(rows[0].effectiveStatus === 'EFFECT' && rows[0].allotSupplierState === 'ALLOT_END'),
-                pdm: !(rows[0].syncStatus !== 'SYNC_SUCCESS' && rows[0].allotSupplierState === 'ALLOT_END' && rows[0].assignSupplierStatus!=='NOT_OPE'),
+                pdm: !(rows[0].syncStatus !== 'SYNC_SUCCESS' && rows[0].allotSupplierState === 'ALLOT_END' && rows[0].assignSupplierStatus !== 'NOT_OPE'),
                 maint: rows[0].frozen,
                 assign: rows[0].frozen,
                 frozen: rows[0].frozen
             });
         } else if (rows.length === 0) {
-            setButtonStatus({ detail: true, delete: true, edit: true, frozen: true, maint: true, detail: true, submit: true, withdraw: true, distribute: true, assign: true, pdm: true, sync: true, check: true, generate: true,})
+            setButtonStatus({ detail: true, delete: true, edit: true, frozen: true, maint: true, detail: true, submit: true, withdraw: true, distribute: true, assign: true, pdm: true, sync: true, check: true, generate: true, })
         } else {
             setButtonStatus({
                 detail: true,
@@ -389,12 +402,12 @@ export default create()(function ({ form }) {
                     // 物料组相同
                     let { materialGroupCode } = rows[0];
                     let tag2 = false;
-                    let tag1 =  !rows.every(item => {
+                    let tag1 = !rows.every(item => {
                         tag2 = tag2 || item.frozen;
                         return item.materialGroupCode === materialGroupCode;
                     });
                     console.log('tag2', tag1, tag2)
-                    return tag1||tag2;
+                    return tag1 || tag2;
                 })(),
                 submit: (() => {
                     // 状态均为草稿
@@ -418,8 +431,8 @@ export default create()(function ({ form }) {
         { title: '物料组', key: 'materialGroupCode', type: 'list', props: MaterialGroupConfig },
         // { title: '战略采购', key: 'strategicPurchaseName', type: 'list', props: StrategicForName },
         { title: '战略采购', key: 'strategicPurchaseCode', type: 'list', props: StrategicPurchaseConfig },
-        { title: '环保管理人员', key: 'environmentAdminName', props: { placeholder: '输入申请人查询' } },
-        { title: '申请人', key: 'applyPersonName', props: { placeholder: '输入申请人查询' } },
+        { title: '环保管理人员', key: 'environmentAdminName', props: { placeholder: '输入环保管理人员查询' } },
+        { title: '创建人', key: 'applyPersonName', props: { placeholder: '输入创建人查询' } },
         { title: '状态', key: 'effectiveStatus', type: 'list', props: statusProps },
         { title: '分配供应商状态', key: 'allotSupplierState', type: 'list', props: distributionProps },
         { title: '物料标记状态', key: 'assignSupplierStatus', type: 'list', props: materialStatus },
@@ -631,7 +644,7 @@ export default create()(function ({ form }) {
                 // onClick={handleExport}
                 requestParams={requestParams}
                 explainResponse={explainResponse}
-                filenameFormat={'环保资料物料清单'+moment().format('YYYYMMDD')}
+                filenameFormat={'环保资料物料清单' + moment().format('YYYYMMDD')}
                 key='QUALITYSYNERGY_MATERIAL_EXPORT'
                 ignore={DEVELOPER_ENV}
             >导出</DataExport.Button>)
@@ -648,6 +661,10 @@ export default create()(function ({ form }) {
         }
     </>;
     const headerRight = <>
+        <div style={{ display: 'flex', flexDirection: 'column',alignItems: 'flex-end', width: '200px' }}>
+            <Checkbox onChange={(v)=>{onChangeCheck(1, v.target.checked)}}>仅我创建</Checkbox>
+            <Checkbox onChange={(v)=>{onChangeCheck(2, v.target.checked)}}>仅我分配</Checkbox>
+        </div>
         <Search
             placeholder='请输入物料代码和物料组代码查询'
             className={styles.btn}
@@ -768,7 +785,7 @@ export default create()(function ({ form }) {
             selectedRow={selectedRows[0]}
             supplierModalType={supplierModalType}
             viewDemandNum={viewDemandNum}
-            refreshTable={()=>{
+            refreshTable={() => {
                 refresh();
             }}
         />

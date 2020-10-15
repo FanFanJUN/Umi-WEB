@@ -2,7 +2,7 @@
  * @Author: Li Cai
  * @LastEditors: Li Cai
  * @Date: 2020-09-09 13:47:57
- * @LastEditTime: 2020-09-21 11:03:38
+ * @LastEditTime: 2020-09-23 13:52:30
  * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/DataFillIn/BaseCondition/MproCertification.js
  * @Description: 管理体系及产品认证
  * @Connect: 1981824361@qq.com
@@ -29,14 +29,14 @@ const MproCertification = ({ type, data, setTableData }) => {
         {
             title: '首次获证时间', dataIndex: 'firstObtainTime', ellipsis: true, render: (text) => {
                 return text && moment(text).format('YYYY-MM-DD');
-            }
+            }, width: 150
         },
         { title: '有效期间', dataIndex: 'validDate', ellipsis: true, },
         { title: '附件', dataIndex: 'attachmentIds', ellipsis: true, },
         {
             title: '计划取得时间', dataIndex: 'planObtainTime', ellipsis: true, render: (text) => {
                 return text && moment(text).format('YYYY-MM-DD');
-            }
+            }, width: 150
         },
     ].map(item => ({ ...item, align: 'center' }));
 
@@ -87,14 +87,14 @@ const MproCertification = ({ type, data, setTableData }) => {
         {
             title: '首次获证时间', dataIndex: 'firstObtainTime', ellipsis: true, render: (text) => {
                 return text && moment(text).format('YYYY-MM-DD');
-            }, inputType: 'DatePicker', editable: true
+            }, inputType: 'DatePicker', editable: true, width: 150
         },
         { title: '最新年审', dataIndex: 'newestAnnualReview', ellipsis: true, editable: true },
         { title: '附件', dataIndex: 'attachmentIds', ellipsis: true, editable: true, inputType: 'UploadFile' },
         {
             title: '计划取得时间', dataIndex: 'planObtainTime', ellipsis: true, render: (text) => {
                 return text && moment(text).format('YYYY-MM-DD');
-            }, inputType: 'DatePicker', editable: true
+            }, inputType: 'DatePicker', editable: true, width: 150
         },
     ].map(item => ({ ...item, align: 'center' }));
 

@@ -49,7 +49,7 @@ const checkModal = forwardRef(({ form, supplierCode, materialCode }, ref) => {
         }},
         { title: '填报编号', dataIndex: 'fillNumber', ellipsis: true, align: 'center', render: (text, item)=>{
             return <a onClick={()=>{
-                openNewTab(`qualitySynergy/EPMaterial/suppliersFillForm?id=${item.fillId ? item.fillId : item.id}&pageStatus=detail`, '填报环保资料物料-明细', false);
+                openNewTab(`qualitySynergy/EPMaterial/suppliersFillForm?id=${item.id}&pageStatus=detail`, '环保资料填报-明细', false);
             }}>{text}</a>
         }},
         { title: '有效开始日期', dataIndex: 'effectiveStartDate', ellipsis: true, align: 'center', render: (text) => text ? text.slice(0, 10) : ''},

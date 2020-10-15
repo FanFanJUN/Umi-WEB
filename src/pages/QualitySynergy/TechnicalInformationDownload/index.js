@@ -9,7 +9,7 @@ import {
   downloadStatusProps,
   materialCode,
   MaterialConfig,
-  MaterialGroupConfig,
+  MaterialGroupConfig, SendEmailToStrategicSourcing,
   ShareDownloadStatus,
   StrategicPurchaseConfig, UpdateShareDownLoadState,
 } from '../commonProps';
@@ -84,8 +84,8 @@ export default function() {
     { title: '业务单元名称', dataIndex: 'buName', ellipsis: true, },
     { title: '申请人', dataIndex: 'applyPeopleName', ellipsis: true, },
     { title: '申请人联系方式', dataIndex: 'applyPeoplePhone', ellipsis: true, },
-    { title: '收件人姓名', dataIndex: 'sampleReceiverName', ellipsis: true, },
-    { title: '收件人联系方式', dataIndex: 'sampleReceiverTel', ellipsis: true, },
+    { title: '样品收件人姓名', dataIndex: 'sampleReceiverName', ellipsis: true, },
+    { title: '样品收件人联系方式', dataIndex: 'sampleReceiverTel', ellipsis: true, },
     { title: '分享需求号', dataIndex: 'shareDemanNumber', ellipsis: true,  width: 180 },
     { title: '分享需求行号', dataIndex: 'technicalLineNumber', ellipsis: true, },
     { title: '备注', dataIndex: 'remark', ellipsis: true, width: 160 },
@@ -103,8 +103,21 @@ export default function() {
       epTechnicalDataId: data.epTechnicalDataId
     }).then(res => {
       if (res.success) {
-        tableRef.current.remoteDataRefresh();
-        message.success(res.message)
+        SendEmailToStrategicSourcing({
+          applyPeopleId: data.applyPeopleId,
+          strategicPurchaseId: data.strategicPurchaseId,
+          supplierName: data.supplierName,
+          materialCode: data.materialCode,
+          materialName: data.materialName,
+          buName: data.buName
+        }).then(response => {
+          if (response.success) {
+            message.success(response.message)
+            tableRef.current.remoteDataRefresh();
+          } else {
+            message.error(response.message)
+          }
+        })
       } else {
         message.error(res.message)
       }

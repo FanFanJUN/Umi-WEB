@@ -176,7 +176,7 @@ const SupplierModal = (props) => {
         >
           {
             getFieldDecorator('endTime', {
-              initialValue: data.selectedRowKeys.length === 1 ? data.selectedRows[0]?.downloadAbortDate ? moment(data.selectedRows[0]?.downloadAbortDate) : null : null,
+              initialValue: data.selectedRowKeys.length === 1 ? (data.selectedRows[0].downloadAbortDate ? moment(data.selectedRows[0].downloadAbortDate) : null) : null,
               rules: [{ required: true, message: '资料下载截止日期不能为空' }],
             })(
               <DatePicker
@@ -229,21 +229,26 @@ const SupplierModal = (props) => {
 
   // 添加截止日期
   const addEndTime = () => {
-    const endTime = moment(getFieldValue('endTime')).format('YYYY-MM-DD');
-    console.log(sourceData);
-    let newSourceData = sourceData.slice();
-    newSourceData.map((item, index) => {
-      data.selectedRowKeys.map(data => {
-        if (data === item.supplierId) {
-          item.downloadAbortDate = endTime;
-        }
-      });
-    });
-    console.log(newSourceData, 'newSourceData');
-    tableRef.current.manualSelectedRows();
-    setSourceData(newSourceData);
-    props.form.resetFields();
-    modalCancel();
+    props.form.validateFieldsAndScroll((err, values) => {
+      console.log(values)
+      if (!err) {
+        const endTime = getFieldValue('endTime') ? moment(getFieldValue('endTime')).format('YYYY-MM-DD') : null;
+        console.log(sourceData);
+        let newSourceData = sourceData.slice();
+        newSourceData.map((item, index) => {
+          data.selectedRowKeys.map(data => {
+            if (data === item.supplierId) {
+              item.downloadAbortDate = endTime;
+            }
+          });
+        });
+        console.log(newSourceData, 'newSourceData');
+        tableRef.current.manualSelectedRows();
+        setSourceData(newSourceData);
+        props.form.resetFields();
+        modalCancel();
+      }
+    })
   };
 
   // 改变供应商发布状态
@@ -316,7 +321,11 @@ const SupplierModal = (props) => {
         allotPeopleName: props.selectedRows[0].strategicPurchaseName,
         allotPeopleCode: props.selectedRows[0].strategicPurchaseCode,
         allotPeopleId: props.selectedRows[0].strategicPurchaseId,
-        downloadAbortDate: data.downloadAbortDate,
+        downloadAbortDate: data.downloadAbortDate ? data.downloadAbortDate : (() => {
+          let d = new Date();
+          d.setMonth(d.getMonth() + 1);
+          return moment(d).format('YYYY-MM-DD')
+        })(),
       });
     });
     arr = [...sourceData, ...arr];

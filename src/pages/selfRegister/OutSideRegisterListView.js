@@ -203,6 +203,7 @@ function SupplierConfigure() {
         const { data = {} } = event;
         if (data.tabAction === 'close') {
             tableRef.current.remoteDataRefresh()
+            cleanSelectedRecord()
         }
     }
     // 取消编辑或新增

@@ -82,13 +82,17 @@ const SupplierEditRef = forwardRef(({
   }
   // 保存
   function saveAgent() {
-    const { getAgentform } = Agentformef.current; // 代理商
-    let agentVal = getAgentform()
-    if (!agentVal) {
-      message.error('请将代理商信息填写完全！');
-      return false;
+    for(let item of configure){
+      if (item.operationCode !== '3' && item.fieldCode === 'supplierAgents') {
+        const { getAgentform } = Agentformef.current; // 代理商
+        let agentVal = getAgentform()
+        if (!agentVal) {
+          message.error('请将代理商信息填写完全！');
+          return false;
+        }
+        return agentVal;
+      }
     }
-    return agentVal;
   }
   return (
     <Spin spinning={loading} tip='处理中...'>
@@ -113,7 +117,9 @@ const SupplierEditRef = forwardRef(({
                     <BaseinfiDetail
                       editformData={editData}
                       baseinfo={baseinfo}
+                      companyData={wholeData}
                       wrappedComponentRef={BaseinfoRef}
+                      isView={true}
                     />
                   </div>
                 </div>

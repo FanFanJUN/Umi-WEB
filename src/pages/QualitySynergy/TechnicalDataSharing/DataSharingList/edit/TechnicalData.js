@@ -27,8 +27,8 @@ const TechnicalData = React.forwardRef((props, ref) => {
     { title: '样品需求数量', dataIndex: 'sampleRequirementNum', ellipsis: true, width: 140},
     { title: '计量单位', dataIndex: 'measureUnit', ellipsis: true, width: 140},
     { title: '样品需求日期', dataIndex: 'sampleRequirementDate', width: 140, ellipsis: true,},
-    { title: '收件人姓名', dataIndex: 'sampleReceiverName', ellipsis: true, width: 140},
-    { title: '收件人联系方式', dataIndex: 'sampleReceiverTel', ellipsis: true, width: 140},
+    { title: '样品收件人姓名', dataIndex: 'sampleReceiverName', ellipsis: true, width: 140},
+    { title: '样品收件人联系方式', dataIndex: 'sampleReceiverTel', ellipsis: true, width: 140},
     { title: '备注', dataIndex: 'remark', ellipsis: true, width: 140},
   ].map(item => ({...item, align: 'center'}))
 

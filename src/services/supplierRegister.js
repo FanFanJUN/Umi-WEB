@@ -1,6 +1,6 @@
 import { request } from '@/utils';
 import { smBaseUrl,baseUrl,gatewayUrl} from '@/utils/commonUrl';
-import { BASE_URL,FLOW_HOST } from '../utils/constants';
+import { BASE_URL,FLOW_HOST,AUTH_SERVER_PATH} from '../utils/constants';
 import {convertDataToFormData} from '../utils'
 import httpUtils from '../utils/FeatchUtils'
 function createServiceRequest(option) {
@@ -322,3 +322,26 @@ export const getSupplierUserMsg = params => createServiceRequest({
   path: '/supplier/getSupplierUserMsg',
   params
 })
+// 获取图形验证码
+
+export const getImgUrl = params => {
+  return request({
+    url: `${gatewayUrl}${AUTH_SERVER_PATH}/userAuth/verifyCode`,
+    data: convertDataToFormData(params),
+    method: 'POST',
+  })
+}
+
+// 自主注册邮箱验证码
+export const UnifiedcheckCheckEmail = params => createServiceRequest({
+  path: '/supplierSelf/CheckEmail',
+  params,
+  hack: true
+})
+// export const UnifiedcheckCheckEmail = params => {
+//   return request({
+//    url: `/api-gateway/basic-service/userExt/portalAuthCode`,
+//    params,
+//    method: 'POST',
+//  })
+// }

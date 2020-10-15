@@ -12,6 +12,11 @@ const commonProps = {
   placeholder: '请选择'
 };
 
+export const checkDecimal = (c) => {
+  const r= /^[+-]?[1-9]?[0-9]*\.[0-9]*$/;
+  return r.test(c);
+}
+
 // 技术图纸
 export const TechnicalDrawings = {
   allowClear: true,
@@ -115,6 +120,16 @@ export const judge = (arr, key, value = undefined) => {
 // 生成行号
 export const generateLineNumber = (index) => {
   return (index < 10 ? '00' + index * 10 : index < 100 ? '0' + index * 10 : index * 10).toString()
+}
+
+// 下载资料发送邮件给战略采购
+export const SendEmailToStrategicSourcing = async params => {
+  const url = `${recommendUrl}/api/epTechnicalShareDemandService/supplierDownloadSendMessage`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
 }
 
 // 根据id改变下载状态
@@ -491,7 +506,7 @@ export const StrategicPurchasingAll = {
     name: 'name',
     description: 'code',
   },
-  placeholder: '选择物料代码',
+  placeholder: '选择战略采购',
 };
 
 // 物料代码列表
@@ -733,7 +748,16 @@ export const limitMaterialList = {
     field: ['id', 'limitMaterialName', 'casNo'],
     description: 'limitMaterialName',
   },
-  placeholder: '选择限用物质列表',
+  placeholder: '选择限用物质',
+};
+// 限用物质列表-非冻结-取name
+export const limitMaterialNameList = {
+  ...limitMaterialList,
+  reader: {
+    name: 'limitMaterialName',
+    field: ['id', 'limitMaterialCode', 'casNo'],
+    description: 'limitMaterialCode',
+  }
 };
 // 限用物质列表-查询是否测试记录表中检查项为是的数据
 export const findByIsRecordCheckListTrue = {

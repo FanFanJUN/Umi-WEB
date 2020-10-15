@@ -904,14 +904,13 @@ export const purchaseCompanyPropsreg = {
       return {
         selectable: false
       }
-    } else if (node.nodeLevel === 1) {
+    }else if (node.nodeLevel === 1 && node.code === '1' || node.nodeLevel === 1 && node.code === '2' ) {
       return {
         selectable: false
       }
     }
   }
 }
-
 // 联行号
 export const oddunionPayCodeConfig = {
   columns: [{
@@ -925,3 +924,48 @@ export const oddunionPayCodeConfig = {
   key: 'code',
   text: 'code',
 };
+// 无账号供应商
+export const corporationConfigShowName = {
+  columns: [{
+      title: '公司代码',
+      dataIndex: 'code',
+      width: 70,
+  },
+      {
+          title: '公司名称',
+          dataIndex: 'name',
+      }],
+  dataService: oddgetAllCorporation,
+  service: oddgetAllCorporation,
+  searchService: (param1, param2, param3) => param3 ? searchListByKey(param1, param2, param3) : searchListByKey(param1, param2, ['code', 'name']),
+  key: 'id',
+  text: 'name',
+};
+
+// 组织成为供应商分类
+// 注册供应商分类
+export const organpurchaseCompanyPropsreg = {
+  store: {
+    url: `${supplierManagerBaseUrl}/supplierRegister/getSupplierCategoryNotOneTree`, 
+  },
+  reader: {
+    name: 'name',
+    field: ['id'],
+    description: ['code']
+  },
+  placeholder: '请选择供应商分类',
+  style: {
+    width: '100%'
+  },
+  treeNodeProps: (node) => {
+    if (node.nodeLevel === 0) {
+      return {
+        selectable: false
+      }
+    }else if (node.nodeLevel === 1 && node.code === '1' || node.nodeLevel === 1 && node.code === '2' ) {
+      return {
+        selectable: false
+      }
+    }
+  }
+}

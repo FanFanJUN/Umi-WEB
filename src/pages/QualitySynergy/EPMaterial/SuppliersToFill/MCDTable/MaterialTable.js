@@ -1,7 +1,7 @@
 import { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment } from 'react';
 import { ExtTable, ExtModal, DataImport, ComboList } from 'suid';
 import { Button, InputNumber, Form, Modal, Row, Input, Select, message } from 'antd';
-import { limitMaterialList, limitScopeList, exemptionClauseDataList } from '../../../commonProps';
+import { limitMaterialNameList, limitScopeList, exemptionClauseDataList } from '../../../commonProps';
 import { materialCompositionVerification, findByProtectionCodeAndMaterialCodeAndRangeCode } from '../../../../../services/qualitySynergy';
 import classnames from 'classnames'
 import styles from '../index.less'
@@ -46,8 +46,8 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
         }
     }, [visible])
     const columns = [
-        { title: '物质代码', dataIndex: 'substanceCode', align: 'center' },
-        { title: '物质名称', dataIndex: 'substanceName', ellipsis: true, align: 'center' },
+        { title: '均质材料成分代码', dataIndex: 'substanceCode', align: 'center', width: 140 },
+        { title: '均质材料成分名称', dataIndex: 'substanceName', ellipsis: true, align: 'center', width: 140  },
         { title: '是否限用物质', dataIndex: 'isRestricted', ellipsis: true, align: 'center', render: (text) => { return (text===true||text==='true') ? '是' : '否' } },
         { title: 'CAS.NO', dataIndex: 'casNo', ellipsis: true, align: 'center', },
         { title: '适用范围代码', dataIndex: 'practicalRangeCode', ellipsis: true, align: 'center', },
@@ -62,7 +62,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
         { title: '验证状态', dataIndex: 'importStatus', align: 'center', width: 80, render: text => <span style={{ color: text ? 'black' : 'red' }}>{text ? '成功' : '失败'}</span> },
         { title: '验证信息', dataIndex: 'failInfo', ellipsis: true, align: 'center' },
     ]
-    async function getUnit(materialCode, scopeApplicationCode) {
+    async function getUnit(materialCode, scopeApplicationCode, mName, rName) {
         if (!materialCode || !scopeApplicationCode) return;
         const res = await findByProtectionCodeAndMaterialCodeAndRangeCode({
             protectionCode: environmentalProtectionCode,
@@ -77,7 +77,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
             })
         } else {
             setFieldsValue({ unitCode: '', unitName: '', })
-            message.warning('选中物质和适用范围无法带出基本单位，请先联系管理员维护数据！')
+            message.warning(`物质名称<${mName}>和适用范围<${rName}>不在环保标准<R环保属性有害物料管控标准>范围内，请重新选择！`, 5);
         }
     }
     // 记录列表选中
@@ -195,8 +195,8 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                 disabled={(!selectedSplitData.testLogVoList)}
                 templateFileList={[
                     {
-                        download: `${(process.env.NODE_ENV === 'development') ? '/' : '/react-srm-sm-web/'}templates/材料成分表批导模板V2.0.xlsx`,
-                        fileName: '材料成分表批导模板V2.0.xlsx',
+                        download: `${(process.env.NODE_ENV === 'development') ? '/' : '/react-srm-sm-web/'}templates/材料成分表批导模板V3.0.xlsx`,
+                        fileName: '材料成分表批导模板V3.0.xlsx',
                         key: 'MaterialComposition',
                     },
                 ]}
@@ -245,26 +245,27 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                     </FormItem>
                 </Row>
                 <Row>
-                    <FormItem label={getFieldValue('isRestricted') ? '物质代码' : '物质名称'} {...formLayout}>
+                    <FormItem label={'均质材料成分名称'} {...formLayout}>
                         {
                             getFieldDecorator('substanceId', { initialValue: modalType === 'edit' ? selectedRows[0].substanceId : '' }),
-                            getFieldDecorator('substanceName', { initialValue: modalType === 'edit' ? selectedRows[0].substanceName : '' }),
+                            getFieldDecorator('substanceCode', { initialValue: modalType === 'edit' ? selectedRows[0].substanceCode : '' }),
                             (getFieldValue('isRestricted') === undefined && modalType === 'add') ? <Input disabled={true} placeholder="请先选择是否为限用物质" />
-                                : getFieldValue('isRestricted') ? getFieldDecorator('substanceCode', {
-                                    initialValue: modalType === 'edit' ? selectedRows[0].substanceCode : '',
-                                    rules: [{ required: true, message: '请选择物质名称' }]
+                                : getFieldValue('isRestricted') ? getFieldDecorator('substanceName', {
+                                    initialValue: modalType === 'edit' ? selectedRows[0].substanceName : '',
+                                    rules: [{ required: true, message: '请选择' }]
                                 })(<ComboList form={form}
-                                    {...limitMaterialList}
-                                    name='substanceCode'
-                                    field={['substanceId', 'substanceName', 'casNo']}
+                                    {...limitMaterialNameList}
+                                    name='substanceName'
+                                    field={['substanceId', 'substanceCode', 'casNo']}
                                     afterSelect={(item) => {
-                                        let practicalRangeCode = getFieldValue('practicalRangeCode');
-                                        getUnit(item.limitMaterialCode, practicalRangeCode);
+                                        let practicalRangeCode = getFieldValue('practicalRangeCode'),
+                                            practicalRangeName = getFieldValue('practicalRangeName');
+                                        getUnit(item.limitMaterialCode, practicalRangeCode, item.limitMaterialName, practicalRangeName);
                                         setFieldsValue({ practicalRangeId: '', practicalRangeCode: '', practicalRangeName: '' })
                                     }}
                                 />) : getFieldDecorator('substanceName', {
                                     initialValue: modalType === 'edit' ? selectedRows[0].substanceName : '',
-                                    rules: [{ required: true, message: '请填写物质名称' }]
+                                    rules: [{ required: true, message: '请填写均质材料成分名称' }]
                                 })(<Input placeholder="请输入" />)
                         }
                     </FormItem>
@@ -292,8 +293,9 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                                 name='practicalRangeName'
                                 field={['practicalRangeId', 'practicalRangeCode']}
                                 afterSelect={(item) => {
-                                    let substanceCode = getFieldValue('substanceCode');;
-                                    getUnit(substanceCode, item.scopeCode)
+                                    let substanceCode = getFieldValue('substanceCode'),
+                                        substanceName = getFieldValue('substanceName');
+                                    getUnit(substanceCode, item.scopeCode, substanceName, item.scopeName)
                                 }}
                             />)
                         }

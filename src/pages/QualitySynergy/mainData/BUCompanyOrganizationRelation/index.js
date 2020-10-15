@@ -4,10 +4,7 @@ import styles from '../../TechnicalDataSharing/DataSharingList/index.less';
 import { baseUrl, smBaseUrl } from '../../../../utils/commonUrl';
 import { ExtTable, utils } from 'suid';
 import {
-  AddBUCompanyOrganizationRelation,
-  AddTheListOfRestrictedMaterials, DeleteBUCompanyOrganizationRelation,
-  DeleteLimitSuppliesScope, DeleteTheListOfRestrictedMaterials,
-  EditTheListOfRestrictedMaterials, FrostBUCompanyOrganizationRelation, judgeButtonDisabled,
+  AddBUCompanyOrganizationRelation, DeleteBUCompanyOrganizationRelation, FrostBUCompanyOrganizationRelation, judgeButtonDisabled,
 } from '../../commonProps';
 import EventModal from './component/EventModal';
 import { AutoSizeLayout } from '../../../../components';
