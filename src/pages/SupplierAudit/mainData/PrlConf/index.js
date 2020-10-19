@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-12 14:44:24
- * @LastEditTime: 2020-10-13 09:56:32
+ * @LastEditTime: 2020-10-19 16:41:17
  * @Description: 百分比、评定等级、风险等级配置
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/mainData/PrlConf/index.js
  */
@@ -13,10 +13,11 @@ import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList
 import { baseUrl } from '../../../../utils/commonUrl';
 import { ExtTable, utils } from 'suid';
 import {
-  AddBUCompanyOrganizationRelation, DeleteBUCompanyOrganizationRelation, FrostBUCompanyOrganizationRelation, judgeButtonDisabled,
+  DeleteBUCompanyOrganizationRelation, judgeButtonDisabled,
 } from '../../../QualitySynergy/commonProps';
 import { AutoSizeLayout } from '../../../../components';
 import EventModal from '../../common/EventModal';
+import { requestGetFrozenApi, requestPostApi } from '../mainDataService';
 
 const { authAction } = utils;
 
@@ -37,52 +38,57 @@ const Index = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   const columns = [
-    { title: '评定等级', dataIndex: 'buCode', width: 200 },
-    { title: '风险等级', dataIndex: 'buName', ellipsis: true },
-    { title: '开始区间计算符', dataIndex: 'buName', ellipsis: true },
-    { title: '开始区间', dataIndex: 'buName', ellipsis: true },
-    { title: '结束区间计算符', dataIndex: 'buName', ellipsis: true },
-    { title: '结束区间', dataIndex: 'buName', ellipsis: true },
-    { title: '名称', dataIndex: 'buName', ellipsis: true },
-    { title: '排序号', dataIndex: 'orderNo', ellipsis: true },
+    { title: '评定等级', dataIndex: 'performanceRatingKey', width: 200 },
+    { title: '风险等级', dataIndex: 'riskRatingKey', ellipsis: true },
+    { title: '开始区间计算符', dataIndex: 'startSectionMark', ellipsis: true },
+    { title: '开始区间', dataIndex: 'startSection', ellipsis: true },
+    { title: '结束区间计算符', dataIndex: 'endSectionMark', ellipsis: true },
+    { title: '结束区间', dataIndex: 'endSection', ellipsis: true },
+    { title: '名称', dataIndex: 'name', ellipsis: true },
+    { title: '排序号', dataIndex: 'rank', ellipsis: true },
     { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (value) => value ? '是' : '否' },
   ].map(item => ({ ...item, align: 'center' }));
 
   const fieldsConfig = [{
     name: '评定等级',
-    code: 'buCode',
+    code: 'performanceRatingKey',
     width: 200,
     type: 'selectWithData',
     data: [{ text: 'A', value: 'A' }, { text: 'B', value: 'B' }, { text: 'C', value: 'C' }, { text: 'D', value: 'D' }]
   },
   {
     name: '风险等级',
-    code: 'buName',
+    code: 'riskRatingKey',
     type: 'selectWithData',
     data: [{ text: '低', value: 'A' }, { text: '中低', value: 'B' }, { text: '中', value: 'C' }, { text: '高', value: 'D' }]
   },
   {
     name: '开始区间计算符',
-    code: 'orderNo',
+    code: 'startSectionMark',
     type: 'selectWithData',
     data: [{ text: '<', value: 'A' }, { text: '<=', value: 'B' }, { text: '=', value: 'C' }, { text: '>', value: 'D' }, { text: '>=', value: 'D' }]
   },
   {
     name: '开始区间',
-    code: 'orderXx',
+    code: 'startSection',
     type: 'inputNumber'
   },
   {
     name: '结束区间计算符',
-    code: 'orderNo',
+    code: 'endSectionMark',
     type: 'selectWithData',
     data: [{ text: '<', value: 'A' }, { text: '<=', value: 'B' }, { text: '=', value: 'C' }, { text: '>', value: 'D' }, { text: '>=', value: 'D' }]
   },
   {
     name: '结束区间',
-    code: 'orderXx',
+    code: 'endSection',
     type: 'inputNumber'
   },
+  {
+    name: '排序号',
+    code: 'rank',
+    type: 'inputNumber'
+  }
   ];
 
   const buttonClick = async (type) => {
@@ -103,9 +109,10 @@ const Index = () => {
   };
 
   const editData = async () => {
-    const data = await FrostBUCompanyOrganizationRelation({
+    const data = await requestGetFrozenApi({
       ids: selectedRowKeys.toString(),
-      frozen: !selectRows[0]?.frozen,
+      operation: !selectRows[0].frozen,
+      key: 'PrlConf'
     });
     if (data.success) {
       tableRef.current.manualSelectedRows();
@@ -158,13 +165,13 @@ const Index = () => {
       >编辑</Button>)
     }
     {
-      authAction(<Button
-        onClick={() => buttonClick('delete')}
-        className={styles.btn}
-        ignore={DEVELOPER_ENV}
-        disabled={selectRows.length === 0}
-        key='QUALITYSYNERGY_BUCOR_DELETE'
-      >删除</Button>)
+      /*  authAction(<Button
+         onClick={() => buttonClick('delete')}
+         className={styles.btn}
+         ignore={DEVELOPER_ENV}
+         disabled={selectRows.length === 0}
+         key='QUALITYSYNERGY_BUCOR_DELETE'
+       >删除</Button>) */
     }
     {
       authAction(<Button
@@ -183,7 +190,7 @@ const Index = () => {
 
   const handleOk = async (value) => {
     if (data.type === 'add') {
-      AddBUCompanyOrganizationRelation(value).then(res => {
+      requestPostApi({ ...value, key: 'PrlConf' }).then(res => {
         if (res.success) {
           setData((value) => ({ ...value, visible: false }));
           tableRef.current.manualSelectedRows();
@@ -195,7 +202,7 @@ const Index = () => {
     } else {
       const id = selectRows[selectRows.length - 1].id;
       const params = { ...value, id };
-      AddBUCompanyOrganizationRelation(params).then(res => {
+      requestPostApi({ ...params, key: 'PrlConf' }).then(res => {
         if (res.success) {
           setData((value) => ({ ...value, visible: false }));
           tableRef.current.manualSelectedRows();
@@ -218,7 +225,7 @@ const Index = () => {
             height={h}
             columns={columns}
             store={{
-              url: `${baseUrl}/buCompanyPurchasingOrganization/findByPage`,
+              url: `${baseUrl}/reviewPerformanceConfigure/findBySearchPage`,
               type: 'POST',
             }}
             allowCancelSelect={true}

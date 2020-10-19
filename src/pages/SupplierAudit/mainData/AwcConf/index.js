@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-12 14:44:24
- * @LastEditTime: 2020-10-13 09:49:54
+ * @LastEditTime: 2020-10-19 16:00:20
  * @Description: 审核类型、是否通过和结论配置
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/mainData/AwcConf/index.js
  */
@@ -13,10 +13,11 @@ import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList
 import { baseUrl } from '../../../../utils/commonUrl';
 import { ExtTable, utils } from 'suid';
 import {
-  AddBUCompanyOrganizationRelation, DeleteBUCompanyOrganizationRelation, FrostBUCompanyOrganizationRelation, judgeButtonDisabled,
+  judgeButtonDisabled,
 } from '../../../QualitySynergy/commonProps';
 import { AutoSizeLayout } from '../../../../components';
 import EventModal from '../../common/EventModal';
+import { requestGetFrozenApi, requestPostApi } from '../mainDataService';
 
 const { authAction } = utils;
 
@@ -37,25 +38,30 @@ const Index = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   const columns = [
-    { title: '审核类型代码', dataIndex: 'buCode', width: 200 },
-    { title: '审核类型名称', dataIndex: 'buName', ellipsis: true },
-    { title: '结论代码', dataIndex: 'orderNo', ellipsis: true },
-    { title: '结论名称', dataIndex: 'orderNo', ellipsis: true },
+    { title: '审核类型代码', dataIndex: 'reviewTypeCode', width: 200 },
+    { title: '审核类型名称', dataIndex: 'reviewTypeName', ellipsis: true },
+    { title: '结论代码', dataIndex: 'conclusionCode', ellipsis: true },
+    { title: '结论名称', dataIndex: 'conclusionName', ellipsis: true },
     {
-      title: '是否通过', dataIndex: 'orderNo', ellipsis: true, render: function (text, context) {
+      title: '是否通过', dataIndex: 'whetherPass', ellipsis: true, render: function (text, context) {
         return text ? '是' : '否';
       }
     },
-    { title: '排序号', dataIndex: 'orderNo', ellipsis: true },
+    { title: '排序号', dataIndex: 'rank', ellipsis: true },
     { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (value) => value ? '是' : '否' },
   ].map(item => ({ ...item, align: 'center' }));
 
   const fieldsConfig = [
-    { name: '审核类型代码', code: 'buCode', width: 200 },
-    { name: '审核类型名称', code: 'buName' },
-    { name: '结论代码', code: 'orderNo' },
-    { name: '结论名称', code: 'orderXx' },
-    { name: '是否通过', code: 'orderNo', type: 'selectWithData', data: [{ text: '是', value: true }, { text: '否', value: false }] },
+    { name: '审核类型代码', code: 'reviewTypeCode', width: 200 },
+    { name: '审核类型名称', code: 'reviewTypeName' },
+    { name: '结论代码', code: 'conclusionCode' },
+    { name: '结论名称', code: 'conclusionName' },
+    { name: '是否通过', code: 'whetherPass', type: 'selectWithData', data: [{ text: '是', value: true }, { text: '否', value: false }] },
+    {
+      name: '排序号',
+      code: 'rank',
+      type: 'inputNumber'
+    }
   ];
 
   const buttonClick = async (type) => {
@@ -76,9 +82,10 @@ const Index = () => {
   };
 
   const editData = async () => {
-    const data = await FrostBUCompanyOrganizationRelation({
+    const data = await requestGetFrozenApi({
       ids: selectedRowKeys.toString(),
-      frozen: !selectRows[0]?.frozen,
+      operation: !selectRows[0]?.frozen,
+      key: 'AwcConf'
     });
     if (data.success) {
       tableRef.current.manualSelectedRows();
@@ -94,8 +101,10 @@ const Index = () => {
       okType: 'danger',
       cancelText: '否',
       async onOk() {
-        const data = await DeleteBUCompanyOrganizationRelation({
+        const data = await requestGetFrozenApi({
           ids: selectedRowKeys.toString(),
+          operation: !selectRows[0].frozen,
+          key: 'AwcConf'
         });
         if (data.success) {
           tableRef.current.manualSelectedRows();
@@ -131,13 +140,13 @@ const Index = () => {
       >编辑</Button>)
     }
     {
-      authAction(<Button
+      /* authAction(<Button
         onClick={() => buttonClick('delete')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={selectRows.length === 0}
         key='QUALITYSYNERGY_BUCOR_DELETE'
-      >删除</Button>)
+      >删除</Button>) */
     }
     {
       authAction(<Button
@@ -156,7 +165,7 @@ const Index = () => {
 
   const handleOk = async (value) => {
     if (data.type === 'add') {
-      AddBUCompanyOrganizationRelation(value).then(res => {
+      requestPostApi({ ...value, key: 'AwcConf' }).then(res => {
         if (res.success) {
           setData((value) => ({ ...value, visible: false }));
           tableRef.current.manualSelectedRows();
@@ -168,7 +177,7 @@ const Index = () => {
     } else {
       const id = selectRows[selectRows.length - 1].id;
       const params = { ...value, id };
-      AddBUCompanyOrganizationRelation(params).then(res => {
+      requestPostApi({ ...params, key: 'AwcConf' }).then(res => {
         if (res.success) {
           setData((value) => ({ ...value, visible: false }));
           tableRef.current.manualSelectedRows();
@@ -191,7 +200,7 @@ const Index = () => {
             height={h}
             columns={columns}
             store={{
-              url: `${baseUrl}/buCompanyPurchasingOrganization/findByPage`,
+              url: `${baseUrl}/reviewTypeConclusionWhetherPassConfigure/findBySearchPage`,
               type: 'POST',
             }}
             allowCancelSelect={true}
