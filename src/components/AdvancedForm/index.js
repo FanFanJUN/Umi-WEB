@@ -73,8 +73,8 @@ function AdvancedForm({
                 >
                   <FormItem style={{ width: '100%' }} label={item.title} {...formLayout}>
                     {
-                      getFieldDecorator(`${item.key}`),
-                      getFieldDecorator(`${item.key}_name`)(
+                      getFieldDecorator(`${item.key}`,),
+                      getFieldDecorator(`${item.key}_name`, item?.rules)(
                         <Item
                           style={{
                             width: '100%'
@@ -97,8 +97,11 @@ function AdvancedForm({
               >
                 <FormItem style={{ width: '100%' }} label={item.title} {...formLayout}>
                   {
-                    getFieldDecorator(`${item.key}`)(
+                    getFieldDecorator(`${item.key}`, item?.rules)(
                       <Item
+                        style={{
+                          width: '100%'
+                        }}
                         form={form}
                         {...item.props}
                         name={`${item.key}`}

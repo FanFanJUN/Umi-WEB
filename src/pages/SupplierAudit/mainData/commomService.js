@@ -1,8 +1,42 @@
 import { baseUrl } from '../../../utils/commonUrl';
 import request from '../../../utils/request';
 
+// 审核原因
+export const AuditCauseManagementConfig = {
+  placeholder: '选择审核原因',
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${baseUrl}/reviewReason/findBySearchPage`,
+  },
+  remotePaging: true,
+  rowKey: 'code',
+  reader: {
+    field: ['code', 'id'],
+    name: 'name',
+    description: 'code',
+  },
+};
+// 公司列表
+export const CompanyConfig = {
+  placeholder: '选择公司',
+  remotePaging: false,
+  store: {
+    type: 'GET',
+    autoLoad: false,
+    url: `${baseUrl}/buCompanyPurchasingOrganization/findCompany`,
+  },
+  rowKey: 'code',
+  reader: {
+    field: ['code', 'id'],
+    name: 'code',
+    description: 'name',
+  },
+};
+
 // 审核类型
 export const AuditTypeManagementConfig = {
+  placeholder: '选择审核类型',
   store: {
     type: 'POST',
     autoLoad: false,

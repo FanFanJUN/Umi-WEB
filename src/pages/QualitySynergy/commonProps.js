@@ -618,6 +618,7 @@ export const CorporationListConfig = {
 
 // 公司列表
 export const CompanyConfig = {
+  placeholder: '选择公司',
   remotePaging: false,
   store: {
     type: 'GET',
