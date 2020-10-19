@@ -2,6 +2,7 @@ import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
 import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/edit/BaseInfo.less';
 import { Col, Form, Modal, Row, Input, DatePicker, Button } from 'antd';
 import { ExtTable } from 'suid';
+import AddBeAudited from './component/addBeAudited';
 
 let IntendedAuditInformation = React.forwardRef((props, ref) => {
 
@@ -13,7 +14,7 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
     selectRows: [],
     selectedRowKeys: [],
     visible: false,
-    title: '新增技术资料'
+    title: '新增拟审核信息'
   })
 
   const columns = [
@@ -32,7 +33,10 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
   const { isView } = props;
 
   const handleBtn = (type) => {
-    console.log(type)
+    switch (type) {
+      case 'add':
+        return setData(v => ({...v, visible: true, title: '新增拟审核信息', type: 'add'}))
+    }
   }
 
   const handleSelectedRows = (value, rows) => {
@@ -69,6 +73,11 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
           />
         </div>
       </div>
+      <AddBeAudited
+        visible={data.visible}
+        title={data.title}
+        type={data.type}
+      />
     </div>
   );
 })

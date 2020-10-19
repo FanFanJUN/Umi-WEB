@@ -1,6 +1,112 @@
 import { baseUrl } from '../../../utils/commonUrl';
 import request from '../../../utils/request';
 
+const commonProps = {
+  reader: {
+    name: 'name',
+    field: ['code'],
+  },
+  style: {
+    width: '100%',
+  },
+};
+
+// 供应商选择策略
+export const SelectionStrategyConfig = {
+  allowClear: true,
+  dataSource: [
+    {
+      code: '合格供应商名录',
+      name: '合格供应商名录',
+    },
+    {
+      code: '正常供应商',
+      name: '正常供应商',
+    },
+  ],
+  placeholder: '选择供应商选择策略',
+  ...commonProps,
+}
+
+// 采购组织数据
+export const ApplyOrganizationProps = {
+  store: {
+    url: `${baseUrl}/basic/listAllOrgnazationWithDataAuth`,
+  },
+  reader: {
+    name: 'name',
+    field: ['code', 'id']
+  },
+  placeholder: '请选择申请部门',
+  style: {
+    width: '100%'
+  },
+  treeNodeProps: (node) => {
+    if (node.nodeLevel === 0) {
+      return {
+        selectable: false
+      }
+    }
+  }
+}
+
+// 二次分类物料组数据
+export const materialClassProps = {
+  store: {
+    url: `${baseUrl}/SecondaryClassificationMaterialGroup/listAllGeneralTree`,
+    params: { Q_EQ_frozen__Boolean: false }
+  },
+  reader: {
+    name: 'showName',
+    field: ['code']
+  },
+  placeholder: '请选择物料分类',
+  style: {
+    width: '100%'
+  },
+  treeNodeProps: (node) => {
+    if (node.nodeLevel === 0) {
+      return {
+        selectable: false
+      }
+    }
+  }
+}
+
+// 有id的采购组织
+export const AllFindByFiltersConfig = {
+  placeholder: '选择采购组织',
+  store: {
+    type: 'GET',
+    autoLoad: false,
+    url: `${baseUrl}/purchaseOrg/listByPage`,
+  },
+  remotePaging: true,
+  rowKey: 'code',
+  reader: {
+    field: ['code', 'id'],
+    name: 'name',
+    description: 'code',
+  },
+};
+
+// 采购组织
+export const FindByFiltersConfig = {
+  placeholder: '选择采购组织',
+  store: {
+    type: 'GET',
+    autoLoad: false,
+    url: `${baseUrl}/purchaseOrg/listByPage`,
+  },
+  remotePaging: true,
+  rowKey: 'code',
+  reader: {
+    field: ['code'],
+    name: 'name',
+    description: 'code',
+  },
+};
+
 // 审核原因
 export const AuditCauseManagementConfig = {
   placeholder: '选择审核原因',
@@ -12,11 +118,29 @@ export const AuditCauseManagementConfig = {
   remotePaging: true,
   rowKey: 'code',
   reader: {
+    field: ['code'],
+    name: 'name',
+    description: 'code',
+  },
+};
+
+// 有id的公司列表
+export const AllCompanyConfig = {
+  placeholder: '选择公司',
+  remotePaging: false,
+  store: {
+    type: 'GET',
+    autoLoad: false,
+    url: `${baseUrl}/buCompanyPurchasingOrganization/findCompany`,
+  },
+  rowKey: 'code',
+  reader: {
     field: ['code', 'id'],
     name: 'name',
     description: 'code',
   },
 };
+
 // 公司列表
 export const CompanyConfig = {
   placeholder: '选择公司',
@@ -28,9 +152,9 @@ export const CompanyConfig = {
   },
   rowKey: 'code',
   reader: {
-    field: ['code', 'id'],
-    name: 'code',
-    description: 'name',
+    field: ['code'],
+    name: 'name',
+    description: 'code',
   },
 };
 
@@ -45,7 +169,7 @@ export const AuditTypeManagementConfig = {
   remotePaging: true,
   rowKey: 'code',
   reader: {
-    field: ['code', 'id'],
+    field: ['code'],
     name: 'name',
     description: 'code',
   },

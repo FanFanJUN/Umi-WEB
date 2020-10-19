@@ -4,7 +4,13 @@ import AdvancedForm from '../../../components/AdvancedForm';
 import { Button, Checkbox, Input, message, Modal } from 'antd';
 import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
 import { ComboList, ExtTable, utils } from 'suid';
-import { AuditCauseManagementConfig, AuditTypeManagementConfig, CompanyConfig } from '../mainData/commomService';
+import {
+  ApplyOrganizationProps,
+  AuditCauseManagementConfig,
+  AuditTypeManagementConfig,
+  CompanyConfig,
+  FindByFiltersConfig,
+} from '../mainData/commomService';
 import {
   BUConfigNoFrostHighSearch,
   DeleteDataSharingList,
@@ -19,6 +25,7 @@ import {
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
 import { openNewTab } from '../../../utils';
+import { materialClassProps } from '../../../utils/commonProps';
 
 const { authAction } = utils;
 const { Search } = Input;
@@ -172,12 +179,12 @@ export default function() {
   // 高级查询配置
   const formItems = [
     { title: '公司', key: 'materialCode', type: 'list', props: CompanyConfig, rules: {rules: [{ required: true, message: '请选择公司'}],} },
-    { title: '采购组织', key: 'materialGroupCode', type: 'list', props: MaterialGroupConfig, rules: {rules: [{ required: true, message: '请选择采购组织'}],}  },
-    { title: '申请部门', key: 'strategicPurchaseCode', type: 'list', props: StrategicPurchaseConfig },
+    { title: '采购组织', key: 'materialGroupCode', type: 'list', props: FindByFiltersConfig, rules: {rules: [{ required: true, message: '请选择采购组织'}],}  },
+    { title: '申请部门', key: 'strategicPurchaseCode', type: 'tree', props: ApplyOrganizationProps },
     { title: '申请人', key: 'buCode', props: { placeholder: '输入申请人' } },
     { title: '申请日期', key: 'applyPeopleName', type: 'datePicker', props: { placeholder: '输入申请人' } },
     { title: '供应商', key: 'allotSupplierState', type: 'list', props: ShareDistributionProps },
-    { title: '物料二次分类', key: 'state', type: 'list', props: ShareStatusProps },
+    { title: '物料二次分类', key: 'state', type: 'tree', props: materialClassProps },
     { title: '审核类型', key: 'state', type: 'list', props: AuditTypeManagementConfig },
     { title: '审核原因', key: 'state', type: 'list', props: AuditCauseManagementConfig },
     { title: '状态', key: 'state', type: 'list', props: ShareStatusProps },
