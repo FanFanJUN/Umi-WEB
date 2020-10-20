@@ -10,6 +10,7 @@ import {findCanChooseSupplier} from '@/services/SupplierModifyService'
 const { create } = Form;
 const getAgentregRef = forwardRef(({
     form,
+    modifyanalysis = () => null,
 }, ref,) => {
     useImperativeHandle(ref, () => ({ 
         handleModalVisible,
@@ -33,7 +34,7 @@ const getAgentregRef = forwardRef(({
             url: `${smBaseUrl}/api/supplierSupplyListTmpService/findVoByPage`,
             params: {
                 quickSearchValue: searchValue,
-                quickSearchProperties: ['code'],
+                quickSearchProperties: ['materielCategoryCode','materielCategory.name'],
                 sortOrders: [
                     {
                         property: 'materielCategory',
@@ -44,20 +45,6 @@ const getAgentregRef = forwardRef(({
             type: 'POST'
         }
     }
-    // 供应商
-    // async function getSupplierlist() {
-    //     let params = {page:1,rows:30,'S_createdDate':'desc'};
-    //     triggerLoading(true)
-    //     const { data,success, message: msg } = await findCanChooseSupplier(params);
-    //     if (success) {
-    //         setData(data)
-    //         triggerLoading(false)
-    //         return
-    //     }else {
-    //         message.error(msg);
-    //     }
-    //     triggerLoading(false)
-    // }
     function handleModalVisible (flag) {
         setvisible(!!flag)
     };
@@ -71,12 +58,10 @@ const getAgentregRef = forwardRef(({
             message.error('请选择一行数据！');
         } else {
             //隐藏供应商选择框
+            modifyanalysis(selectedRows)
             handleModalVisible(false);
-            // let categoryid = selectedRows[0].supplier.supplierCategoryId;
-            let id = selectedRows[0].supplierId;
             setSearchValue('');
             cleanSelectedRecord();
-            openNewTab(`supplier/supplierModify/create/index?id=${id}`, '供应商变更新建变更单', false)
         }
     }
     // 清除选中项
@@ -125,48 +110,57 @@ const getAgentregRef = forwardRef(({
           },
           {
             title: "物料级别",
-            width: 260,
-            dataIndex: "supplierName"
+            width: 140,
+            dataIndex: "materialGrade"
           },
           {
             title: "评定等级",
-            width: 150,
+            width: 140,
             dataIndex: "cooperationLevelName"
           },
           {
             title: "公司代码",
             width: 150,
-            dataIndex: "managementLevellName"
+            dataIndex: "corporation.code"
           },
           {
             title: "公司名称",
-            width: 150,
-            dataIndex: "managementLevellName"
+            width: 240,
+            dataIndex: "corporation.name"
           },
           {
             title: "采购组织代码",
-            width: 260,
-            dataIndex: "supplierName"
+            width: 140,
+            dataIndex: "purchaseOrgCode"
           },
           {
             title: "采购组织名称",
-            width: 150,
-            dataIndex: "cooperationLevelName"
+            width: 240,
+            dataIndex: "purchaseOrg.name"
           },
           {
             title: "开始日期",
             width: 150,
-            dataIndex: "managementLevellName"
+            dataIndex: "startDate",
+            render: (text) => {
+                return text.substring(0, 10);
+            },
           },
           {
             title: "过期日期",
             width: 150,
-            dataIndex: "managementLevellName"
+            dataIndex: "endDate",
+            render: (text) => {
+                return text.substring(0, 10);
+            },
           },
           {
             title: "冻结",
             width: 150,
-            dataIndex: "managementLevellName"
+            dataIndex: "frozen",
+            render: (text, record, index) => (
+                <div>{record.frozen ? '是' : '否'}</div>
+            ),
           }
     ].map(_ => ({ ..._, align: 'center' }));
     // 右侧搜索
@@ -206,7 +200,7 @@ const getAgentregRef = forwardRef(({
                 columns={columns}
                 showSearch={false}
                 ref={tableRef}
-                rowKey={(item) => item.supplierId}
+                rowKey={(item) => item.id}
                 checkbox={{
                     multiSelect: false
                 }}

@@ -93,6 +93,7 @@ const ModifyinfoRef = forwardRef(({
     setTitle('新增变更详情')
     setVisible(true)
     setModalType(false)
+    uploadTable()
   }
   // 编辑
   function handleEdit() {

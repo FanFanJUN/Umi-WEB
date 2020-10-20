@@ -64,8 +64,8 @@ const HeadFormRef = forwardRef(({
                                         ],
                                     })(
                                         <RadioGroup disabled={isView === true} onChange={(e) => scienceEnvir(e)}>
-                                            <Radio value="Organize" >有影响</Radio>
-                                            <Radio value="Organized" >无影响</Radio>
+                                            <Radio value="true" >有影响</Radio>
+                                            <Radio value="false" >无影响</Radio>
                                         </RadioGroup>
                                     )
                                 }
@@ -86,8 +86,8 @@ const HeadFormRef = forwardRef(({
                                         ],
                                     })(
                                         <RadioGroup disabled={isView === true}>
-                                            <Radio value="Safety">有影响</Radio>
-                                            <Radio value="Safetyno">无影响</Radio>
+                                            <Radio value="true">有影响</Radio>
+                                            <Radio value="false">无影响</Radio>
                                         </RadioGroup>
                                     )
                                 }
@@ -108,8 +108,8 @@ const HeadFormRef = forwardRef(({
                                         ],
                                     })(
                                         <RadioGroup disabled={isView === true}>
-                                            <Radio value="security">有影响</Radio>
-                                            <Radio value="securityno">无影响</Radio>
+                                            <Radio value="true">有影响</Radio>
+                                            <Radio value="false">无影响</Radio>
                                         </RadioGroup>
                                     )
                                 }
@@ -130,8 +130,8 @@ const HeadFormRef = forwardRef(({
                                         ],
                                     })(
                                         <RadioGroup disabled={isView === true}>
-                                            <Radio value="machine">有影响</Radio>
-                                            <Radio value="machineno">无影响</Radio>
+                                            <Radio value="true">有影响</Radio>
+                                            <Radio value="false">无影响</Radio>
                                         </RadioGroup>
                                     )
                                 }

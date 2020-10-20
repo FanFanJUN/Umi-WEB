@@ -16,7 +16,6 @@ const { create } = Form;
 const FormItem = Form.Item;
 const { authAction, storage } = utils;
 let keys = 1;
-let lineCode = 1;
 const ModifyinfluenceRef = forwardRef(({
     form,
     isView,
@@ -38,7 +37,6 @@ const ModifyinfluenceRef = forwardRef(({
     const [selectedRows, setRows] = useState([]);
     const [attachId, setAttachId] = useState('')
     const [visible, setVisible] = useState(false);
-    let Modeltitle = '新增';
     useEffect(() => {
 
     }, [])
@@ -151,7 +149,21 @@ const ModifyinfluenceRef = forwardRef(({
         }
     ].map(_ => ({ ..._, align: 'center' }))
     const empty = selectRowKeys.length === 0;
-
+    // 新增的
+    function selectanalysis(val) {
+        let newsdata = [];
+        val.map((item, index) => {
+            newsdata.push({
+                key: keys ++,
+                materielCategoryId: item.materielCategory.name,
+                companyCode: item.corporation.code,
+                companyName: item.corporation.name,
+                purchaseOrgCode: item.purchaseOrgCode,
+                purchaseOrgName: item.purchaseOrg.name,
+            })
+            setDataSource(newsdata);
+        })
+    }
     // 记录列表选中
     function handleSelectedRows(rowKeys, rows) {
         setRowKeys(rowKeys);
@@ -233,7 +245,6 @@ const ModifyinfluenceRef = forwardRef(({
                             allowCancelSelect={true}
                             size='small'
                             height={height}
-                            Modeltitle={Modeltitle}
                             remotePaging={true}
                             ellipsis={false}
                             saveData={false}
@@ -245,7 +256,8 @@ const ModifyinfluenceRef = forwardRef(({
                     }
                 </AutoSizeLayout>
                 <div>
-                    <InfluenceMaterielModal 
+                    <InfluenceMaterielModal
+                        modifyanalysis={selectanalysis} 
                         wrappedComponentRef={getModelRef}
                     />
                     <MaterielModal 

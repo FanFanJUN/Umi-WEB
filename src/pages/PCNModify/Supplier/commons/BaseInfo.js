@@ -135,6 +135,7 @@ const HeadFormRef = forwardRef(({
                                         <Input
                                             onChange={onlyNumber} 
                                             disabled={isView === true}
+                                            maxLength="16"
                                         />
                                     )  
                                 }
