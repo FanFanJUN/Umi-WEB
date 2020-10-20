@@ -644,7 +644,7 @@ const Bankformef = forwardRef(({
           resolve(response)
         })
       }).catch(err => {
-        reject(err)
+        //reject(err)
       })
     });
   };

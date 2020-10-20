@@ -26,35 +26,13 @@ function CreateStrategy() {
   const { query } = router.useLocation();
   const { frameElementId, frameElementSrc = "", Opertype = "" } = query;
 
+    // 获取配置列表项
   useEffect(() => {
 
     }, []);
   // 保存
   async function handleSave() {
-    let baseinfo,modifyVal,modifyanalysisVal;
-    const { validateFieldsAndScroll } = BaseinfoRef.current.form;
-    const {getmodifyform} = ModifyinfoRef.current;
-    const {getmodifyanalyform} = ModifyinfluenceRef.current;
-    validateFieldsAndScroll(async (err, val) => {
-      if (!err) {
-        baseinfo = val;
-        console.log(baseinfo)
-        modifyVal = getmodifyform()
-        if (!modifyVal) {
-          message.error('变更信息不能为空！');
-          return false;
-        }
-        modifyanalysisVal = getmodifyanalyform()
-        if (!modifyanalysisVal) {
-          message.error('变更影响不能为空！');
-          return false;
-        }
-      }else {
-        message.error('基本信息不能为空！');
-        return false;
-      }
-    })
-   
+    
   }
   // 返回
   function handleBack() {
@@ -68,11 +46,10 @@ function CreateStrategy() {
       <Affix offsetTop={0}>
         <div className={classnames([styles.header, styles.flexBetweenStart])}>
           <span className={styles.title}>
-            新增PCN变更信息
+            PCN变更信息明细
             </span>
           <div className={styles.flexCenter}>
             <Button className={styles.btn} onClick={handleBack}>返回</Button>
-            <Button className={styles.btn} onClick={handleSave}>保存</Button>
           </div>
         </div>
 
@@ -83,8 +60,13 @@ function CreateStrategy() {
             <div className={styles.title}>基本信息</div>
             <div >
             <BaseInfo
-                //getBaseInfo={getBaseInfo}
+                baseinfo={baseinfo}
+                initialValues={editData}
+                editformData={editData}
+                wholeData={wholeData}
                 wrappedComponentRef={BaseinfoRef}
+                isView={true}
+                
             />
             </div>
         </div>
@@ -92,7 +74,13 @@ function CreateStrategy() {
             <div className={styles.title}>变更信息</div>
             <div >
             <Modifyinfo
+                baseinfo={baseinfo}
+                initialValues={editData}
+                editformData={editData}
+                wholeData={wholeData}
                 wrappedComponentRef={ModifyinfoRef}
+                isView={true}
+                headerInfo={true}
             />
             </div>
         </div>
@@ -100,7 +88,13 @@ function CreateStrategy() {
             <div className={styles.title}>变更影响分析</div>
             <div >
             <Modifyinfluence
+                baseinfo={baseinfo}
+                initialValues={editData}
+                editformData={editData}
+                wholeData={wholeData}
                 wrappedComponentRef={ModifyinfluenceRef}
+                isView={true}
+                headerInfo={true}
             />
             </div>
         </div>

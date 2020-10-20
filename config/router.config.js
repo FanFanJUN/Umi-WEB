@@ -35,9 +35,15 @@ export default [
     routes: [
       /**PCN采购 */
       { path: '/pcnModify/Purchase/index', component: './PCNModify/Purchase', title: 'PCN变更' },
+      { path: '/pcnModify/Purchase/Edit/index', component: './PCNModify/Purchase/Edit/index', title: 'PCN变更单编辑' },
+      { path: '/pcnModify/Purchase/Detail/index', component: './PCNModify/Purchase/Detail/index', title: 'PCN变更单明细' },
       /**PCN供应商 */
       { path: '/pcnModify/Supplier/index', component: './PCNModify/Supplier', title: 'PCN变更发起供应商' },
-      { path: '/pcnModify/Supplier/Create/index', component: './PCNModify/Supplier/Create/index', title: '新增PCN变更发起供应商' },
+      { path: '/pcnModify/Supplier/Create/index', component: './PCNModify/Supplier/Create/index', title: 'PCN变更发起供应商新增' },
+      { path: '/pcnModify/Supplier/Edit/index', component: './PCNModify/Supplier/Edit/index', title: 'PCN变更发起供应商编辑' },
+      { path: '/pcnModify/Supplier/Detail/index', component: './PCNModify/Supplier/Detail/index', title: 'PCN变更发起供应商明细' },
+      /**PCN变更主数据 */
+      { path: '/pcnModify/MasterData/index', component: './PCNModify/MasterData', title: 'PCN变更主数据' },
     ]
   },
   {

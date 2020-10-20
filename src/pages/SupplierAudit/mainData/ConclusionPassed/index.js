@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-12 14:44:24
- * @LastEditTime: 2020-10-13 09:45:55
+ * @LastEditTime: 2020-10-19 14:38:43
  * @Description: 结论及是否通过
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/mainData/ConclusionPassed/index.js
  */
@@ -13,10 +13,11 @@ import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList
 import { baseUrl } from '../../../../utils/commonUrl';
 import { ExtTable, utils } from 'suid';
 import {
-  AddBUCompanyOrganizationRelation, DeleteBUCompanyOrganizationRelation, FrostBUCompanyOrganizationRelation, judgeButtonDisabled,
+  judgeButtonDisabled,
 } from '../../../QualitySynergy/commonProps';
 import { AutoSizeLayout } from '../../../../components';
 import EventModal from '../../common/EventModal';
+import { requestDelApi, requestGetFrozenApi, requestPostApi } from '../mainDataService';
 
 const { authAction } = utils;
 
@@ -37,22 +38,22 @@ const Index = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   const columns = [
-    { title: '结论代码', dataIndex: 'buCode', width: 200 },
-    { title: '结论名称', dataIndex: 'buName', ellipsis: true },
+    { title: '结论代码', dataIndex: 'code', width: 200 },
+    { title: '结论名称', dataIndex: 'name', ellipsis: true },
     {
-      title: '是否通过', dataIndex: 'buName', ellipsis: true, render: function (text, context) {
-        return text ? '是' : '否';
+      title: '是否通过', dataIndex: 'whetherPass', ellipsis: true, render: function (text, context) {
+        return text !== undefined && (text ? '是' : '否');
       }
     },
-    { title: '排序号', dataIndex: 'orderNo', ellipsis: true },
-    { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (value) => value ? '是' : '否' },
+    { title: '排序号', dataIndex: 'rank', ellipsis: true },
+    { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (value) => value !== undefined && (value ? '是' : '否') },
   ].map(item => ({ ...item, align: 'center' }));
 
   const fieldsConfig = [
-    { name: '结论代码', code: 'buCode', width: 200 },
-    { name: '结论名称', code: 'buName' },
-    { name: '是否通过', code: 'orderNo', type: 'selectWithData', data: [{ text: '是', value: true }, { text: '否', value: false }] },
-    { name: '评价指标名称', code: 'orderXx' },
+    { name: '结论代码', code: 'code', width: 200 },
+    { name: '结论名称', code: 'name' },
+    { name: '是否通过', code: 'whetherPass', type: 'selectWithData', data: [{ text: '是', value: true }, { text: '否', value: false }] },
+    { name: '排序号', code: 'rank', type: 'inputNumber', min: 0 },
   ];
 
   const buttonClick = async (type) => {
@@ -73,9 +74,10 @@ const Index = () => {
   };
 
   const editData = async () => {
-    const data = await FrostBUCompanyOrganizationRelation({
+    const data = await requestGetFrozenApi({
       ids: selectedRowKeys.toString(),
-      frozen: !selectRows[0]?.frozen,
+      operation: !selectRows[0]?.frozen,
+      key: 'ConclusionPassed'
     });
     if (data.success) {
       tableRef.current.manualSelectedRows();
@@ -91,8 +93,9 @@ const Index = () => {
       okType: 'danger',
       cancelText: '否',
       async onOk() {
-        const data = await DeleteBUCompanyOrganizationRelation({
-          ids: selectedRowKeys.toString(),
+        const data = await requestDelApi({
+          id: selectedRowKeys.toString(),
+          key: 'ConclusionPassed'
         });
         if (data.success) {
           tableRef.current.manualSelectedRows();
@@ -153,7 +156,7 @@ const Index = () => {
 
   const handleOk = async (value) => {
     if (data.type === 'add') {
-      AddBUCompanyOrganizationRelation(value).then(res => {
+      requestPostApi({ ...value, key: 'ConclusionPassed' }).then(res => {
         if (res.success) {
           setData((value) => ({ ...value, visible: false }));
           tableRef.current.manualSelectedRows();
@@ -163,9 +166,9 @@ const Index = () => {
         }
       });
     } else {
-      const id = selectRows[selectRows.length - 1].id;
-      const params = { ...value, id };
-      AddBUCompanyOrganizationRelation(params).then(res => {
+      const id = selectRows[0].id;
+      const params = { ...value, id, key: 'ConclusionPassed' };
+      requestPostApi(params).then(res => {
         if (res.success) {
           setData((value) => ({ ...value, visible: false }));
           tableRef.current.manualSelectedRows();
@@ -175,7 +178,6 @@ const Index = () => {
         }
       });
     }
-    console.log(value, 'save');
   };
 
 
@@ -188,7 +190,7 @@ const Index = () => {
             height={h}
             columns={columns}
             store={{
-              url: `${baseUrl}/buCompanyPurchasingOrganization/findByPage`,
+              url: `${baseUrl}/conclusionAndWhetherPass/findBySearchPage`,
               type: 'POST',
             }}
             allowCancelSelect={true}

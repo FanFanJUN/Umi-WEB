@@ -1,9 +1,11 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useState } from 'react';
 import { Form, Row, Input, Col, DatePicker, Radio, Button } from 'antd';
-import { utils, ComboList, ComboTree } from 'suid';
-import { purchaseCompanyPropsreg, FieldconfigureList } from '@/utils/commonProps'
+import { utils, ComboList} from 'suid';
+import { onlyNumber} from '@/utils'
+import moment from 'moment';
+import { PCNMasterdatalist } from '../../commonProps'
 const { Item, create } = Form;
-const { Group } = Radio;
+const { storage } = utils;
 const formLayout = {
     labelCol: {
         span: 8
@@ -26,28 +28,18 @@ const confirmRadioOptions = [
 ]
 const HeadFormRef = forwardRef(({
     form,
-    type = "",
-    Opertype = null,
-    initialValue = {},
-    handcopy = () => null,
     isView,
-    dataSource
+    dataSource,
 }, ref) => {
     useImperativeHandle(ref, () => ({
-        form
+        form,
     }));
     const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
+    const authorizations = storage.sessionStorage.get("Authorization");
     const [configure, setConfigure] = useState([]);
-    const { attachment = null } = initialValue;
     useEffect(() => {
-        setFieldsValue({
-            configProperty: Opertype
-        })
+
     }, [])
-    //复制从获取ID
-    function handleCopySelect(item) {
-        handcopy(item.id)
-    }
     return (
         <div >
             <div >
@@ -55,9 +47,9 @@ const HeadFormRef = forwardRef(({
                     <Row>
                         <Col span={10}>
                             <Item label='供应商名称' {...formLayout}>
-                                {isView ? dataSource ? dataSource.corporation ? dataSource.corporation.name : '' : "" :
-                                    getFieldDecorator("corporationId", {
-                                        initialValue: dataSource ? dataSource.corporationId : "",
+                                {
+                                    getFieldDecorator("smSupplierName", {
+                                        initialValue: authorizations.userName,
                                         rules: [{ required: true, message: "请选择供应商名称", }]
                                     })(
                                         <Input disabled />
@@ -68,9 +60,9 @@ const HeadFormRef = forwardRef(({
                         <Col span={10}>
                             <Item label='变更类型' {...formLayout}>
                                 {
-                                    getFieldDecorator('supplierCategoryCode'),
-                                    getFieldDecorator('supplierCategoryId'),
-                                    getFieldDecorator('supplierCategoryName', {
+                                    getFieldDecorator('smPcnChangeTypeCode',{initialValue: dataSource ? dataSource.smPcnChangeTypeCode : ""}),
+                                    getFieldDecorator('smPcnChangeTypeName', {
+                                        initialValue: dataSource ? dataSource.smPcnChangeTypeName : "",
                                         rules: [
                                             {
                                                 required: true,
@@ -78,10 +70,14 @@ const HeadFormRef = forwardRef(({
                                             }
                                         ]
                                     })(
-                                        <ComboTree disabled={type === "detail" || type === "editor"}
-                                            {...confirmRadioOptions}
+                                        <ComboList disabled={isView === true}
+                                            {...PCNMasterdatalist}
                                             showSearch={false}
-                                            name='supplierCategoryName' field={['supplierCategoryCode', 'supplierCategoryId']} form={form} />
+                                            style={{ width: '100%' }}
+                                            name='smPcnChangeTypeName' 
+                                            field={['smPcnChangeTypeCode']} 
+                                            form={form} 
+                                        />
                                     )
                                 }
                             </Item>
@@ -91,7 +87,8 @@ const HeadFormRef = forwardRef(({
                         <Col span={10}>
                             <Item label='联系人' {...formLayout}>
                                 {
-                                    getFieldDecorator("configProperty", {
+                                    getFieldDecorator("smContacts", {
+                                        initialValue: dataSource ? dataSource.smContacts : "",
                                         rules: [
                                             {
                                                 required: true,
@@ -99,19 +96,20 @@ const HeadFormRef = forwardRef(({
                                             }
                                         ]
                                     })(
-                                        <Input />
+                                        <Input disabled={isView === true}/>
                                     )
                                 }
                             </Item>
                         </Col>
                         <Col span={10}>
-                            <Item label='创建人' {...formLayout}>
+                            <Item label='创建时间' {...formLayout}>
                                 {
-                                    getFieldDecorator("configProperty", {
+                                    getFieldDecorator("createdDate", {
+                                        initialValue: moment().format('YYYY-MM-DD HH:mm:ss'),
                                         rules: [
                                             {
                                                 required: true,
-                                                message: '请输入创建人'
+                                                message: '请输入创建时间'
                                             }
                                         ]
                                     })(
@@ -125,16 +123,20 @@ const HeadFormRef = forwardRef(({
                         <Col span={10}>
                             <Item label='联系电话' {...formLayout}>
                                 {
-                                    getFieldDecorator("configProperty", {
-                                        rules: [
-                                            {
-                                                required: true,
-                                                message: '请输入联系电话'
-                                            }
-                                        ]
+                                  getFieldDecorator("smContactNumber", {
+                                    initialValue: dataSource ? dataSource.smContactNumber : "",
+                                    rules: [
+                                        {
+                                            required: true,
+                                            message: '请输入联系电话'
+                                        }
+                                    ]
                                     })(
-                                        <Input />
-                                    )
+                                        <Input
+                                            onChange={onlyNumber} 
+                                            disabled={isView === true}
+                                        />
+                                    )  
                                 }
                             </Item>
                         </Col>

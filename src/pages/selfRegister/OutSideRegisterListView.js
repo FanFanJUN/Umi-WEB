@@ -253,17 +253,17 @@ function SupplierConfigure() {
         // const [key] = selectedRowKeys;
         // const { id = '' } = FRAMEELEMENT;
         // const { pathname } = window.location
-        let categoryid = selectedRows[0].supplier.supplierCategoryId;
+        //let categoryid = selectedRows[0].supplier.supplierCategoryId;
         let id = selectedRows[0].supplierId;
-        openNewTab(`supplier/supplierRegister/SupplierEdit/index?id=${id}&frameElementId=${categoryid}`, '编辑供应商注册信息', false)
+        openNewTab(`supplier/supplierRegister/SupplierEdit/index?id=${id}`, '编辑供应商注册信息', false)
         //openNewTab(`supplier/supplierRegister/SupplierEdit/index?id=${key}&frameElementId=${id}&Opertype=2`, '编辑供应商注册信息', false)
     }
     // 明细
     function handleCheckDetail() {
         const [key] = selectedRowKeys;
-        let categoryid = selectedRows[0].supplier.supplierCategoryId;
+        //let categoryid = selectedRows[0].supplier.supplierCategoryId;
         let id = selectedRows[0].supplierId;
-        openNewTab(`supplier/supplierRegister/SupplierDetail/index?id=${id}&frameElementId=${categoryid}`, '供应商注册信息明细', false)
+        openNewTab(`supplier/supplierRegister/SupplierDetail/index?id=${id}`, '供应商注册信息明细', false)
     }
     // 输入框值
     function SerachValue(v) {

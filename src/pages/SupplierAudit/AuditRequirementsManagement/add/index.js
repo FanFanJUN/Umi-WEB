@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Affix, Button, Spin } from 'antd';
 import classnames from 'classnames';
 import styles from '../../../Supplier/Editor/index.less';
@@ -8,6 +8,7 @@ import { router } from 'dva';
 import IntendedAuditInformation from './IntendedAuditInformation';
 
 const Index = () => {
+  const baseInfoRef = useRef(null);
 
   const { query } = router.useLocation();
 
@@ -53,8 +54,13 @@ const Index = () => {
     closeCurrent();
   };
 
-  const handleSave = (type) => {
-    console.log(type)
+  const handleSave = async (type) => {
+    const baseInfoData = await baseInfoRef.current.getBaseInfoData((err, values) => {
+      if (!err) {
+        return values;
+      }
+    });
+    console.log(baseInfoData)
   }
 
   return(
@@ -73,13 +79,14 @@ const Index = () => {
           </div>
         </Affix>
         <BaseInfo
+          wrappedComponentRef={baseInfoRef}
           userInfo={data.userInfo}
-          type={'add'}
-          isView={false}
+          type={data.type}
+          isView={data.isView}
         />
         <IntendedAuditInformation
-          type={'add'}
-          isView={false}
+          type={data.type}
+          isView={data.isView}
         />
       </Spin>
     </div>

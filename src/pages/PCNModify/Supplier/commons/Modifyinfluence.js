@@ -1,56 +1,51 @@
 import React, { forwardRef, useState, useRef, useEffect, useImperativeHandle } from 'react';
-import { ExtTable, WorkFlow, ExtModal, utils, ToolBar, AuthButton } from 'suid';
+import { ExtTable, utils, ComboList, AuthButton } from 'suid';
 import { Form, Button, message, Radio, Modal ,Input} from 'antd';
 import { openNewTab, getFrameElement, isEmpty } from '@/utils';
 import Header from '@/components/Header';
 import ModifyForm from './ModifyForm';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
 import styles from '../index.less';
-import UploadFile from '../../../../components/Upload/index'
+import InfluenceMaterielModal from './InfluenceMaterielModal'
+import MaterielModal from './MaterielModal'
+import SeeMaterielModal from './SeeMaterielModal'
+import ModifyinfluenceForm from './ModifyinfluenceForm'
+import {Safetyregulationslist,Strategicprocurementlist} from '../../commonProps'
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 const { create } = Form;
 const FormItem = Form.Item;
-const { TextArea } = Input;
 const { authAction, storage } = utils;
 let keys = 1;
 let lineCode = 1;
 const ModifyinfluenceRef = forwardRef(({
     form,
-    isView = false,
+    isView,
     editData = [],
     headerInfo
 }, ref) => {
     useImperativeHandle(ref, () => ({
-        getbankform,
-        setHeaderFields,
+        getmodifyanalyform,
         form
     }));
     const { getFieldDecorator, setFieldsValue, validateFieldsAndScroll } = form;
     const tabformRef = useRef(null)
-    const ModifyfromRef = useRef(null)
-    const [dataSource, setDataSource] = useState([]);
+    const getModelRef = useRef(null)
+    const getMatermodRef = useRef(null)
+    const getSeeMaterRef = useRef(null)
+    const modifyinfluenceFormRef = useRef(null)
+    const [dataSource, setDataSource] = useState([{
+        key:1,
+        lineCode:'1212321'
+    }]);
     const [selectRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
-    const [visible, setVisible] = useState(false);
-    const [edit, setEdit] = useState(false);
-    const [initialValue, setInitialValue] = useState({});
-    const [modalType, setModalType] = useState('add');
-    const [showAttach, triggerShowAttach] = useState(false);
-    const [loading, triggerLoading] = useState(false);
     const [attachId, setAttachId] = useState('')
-
+    const [visible, setVisible] = useState(false);
     let Modeltitle = '新增';
     useEffect(() => {
 
     }, [])
-    const formLayout = {
-        labelCol: {
-            span: 6,
-        },
-        wrapperCol: {
-            span: 12,
-        }
-    };
+
     const columns = [
         {
             title: '原厂代码',
@@ -68,13 +63,13 @@ const ModifyinfluenceRef = forwardRef(({
             title: '物料分类',
             dataIndex: 'provinceName',
             align: 'center',
-            width: 220,
+            width: 160,
         },
         {
             title: '公司代码',
             align: 'center',
             dataIndex: 'regionName',
-            width: 220,
+            width: 160,
         },
         {
             title: '公司名称',
@@ -84,27 +79,78 @@ const ModifyinfluenceRef = forwardRef(({
         },
         {
             title: '采购组织代码',
-            dataIndex: 'openingPermitId',
+            dataIndex: 'openingPermitIdrft',
             align: 'center',
-            width: 90,
+            width: 200,
         },
         {
             title: '采购组织名称',
             dataIndex: 'openingPermitId',
             align: 'center',
-            width: 90,
+            width: 200,
         },
         {
             title: '是否安规件',
-            dataIndex: 'openingPermitId',
+            dataIndex: 'openingPermitIde',
             align: 'center',
-            width: 90,
+            width: 160,
+            render: (text, record, index) => {
+                if (isView) {
+                    return record.positionName;
+                }
+                return <span>
+                    <FormItem style={{ marginBottom: 0 }}>
+                        {
+                            getFieldDecorator(`position[${index}]`),
+                            getFieldDecorator(`positionName[${index}]`, {
+                                initialValue: record ? record.positionName : '',
+                                rules: [{ required: true, message: '请选择安规件!', whitespace: true }],
+                            })( 
+                                <ComboList 
+                                    form={form}
+                                    {...Safetyregulationslist}
+                                    showSearch={false}
+                                    //afterSelect={afterSelect}
+                                    name={`positionName[${index}]`}
+                                    field={[`position[${index}]`]}
+                                />
+                            )
+                        }
+                    </FormItem>
+                </span>;
+            }
         },
         {
             title: '战略采购',
-            dataIndex: 'openingPermitId',
+            dataIndex: 'openingPermitIeed',
             align: 'center',
-            width: 90,
+            width: 220,
+            render: (text, record, index) => {
+                if (isView) {
+                    return record.positionName;
+                }
+                return <span>
+                    <FormItem style={{ marginBottom: 0 }}>
+                        {
+                            getFieldDecorator(`position[${index}]`),
+                            getFieldDecorator(`positionName[${index}]`, {
+                                initialValue: record ? record.positionName : '',
+                                rules: [{ required: true, message: '请选择战略采购!', whitespace: true }],
+                            })( 
+                                <ComboList 
+                                    form={form}
+                                    {...Strategicprocurementlist}
+                                    showSearch={false}
+                                    style={{ width: '100%' }}
+                                    //afterSelect={afterSelect}
+                                    name={`positionName[${index}]`}
+                                    field={[`position[${index}]`]}
+                                />
+                            )
+                        }
+                    </FormItem>
+                </span>;
+            }
         }
     ].map(_ => ({ ..._, align: 'center' }))
     const empty = selectRowKeys.length === 0;
@@ -115,84 +161,44 @@ const ModifyinfluenceRef = forwardRef(({
         setRows(rows);;
 
     }
-    // 清除选中项
-    function cleanSelectedRecord() {
-        setRowKeys([]);
-        setRows([]);
-    }
-    // 新增
+    // 物料新增
     function showModal() {
-        setVisible(true)
+        getModelRef.current.handleModalVisible(true);
     }
-    // 编辑
-    function handleEdit() {
-        let newsbank;
-        if (selectedRows.length > 1) {
-            newsbank = selectedRows.splice(1);
-        } else {
-            newsbank = selectedRows
-        }
-        //setDataSource(newsbank) 
-        setEdit(true)
-        const [row] = newsbank;
-        setInitialValue({ ...row })
-
+    // 选择物料
+    function showMateriel() {
+        getMatermodRef.current.handleModalVisible(true);
     }
-    // 清空列选择并刷新
-    function uploadTable() {
-        cleanSelectedRecord()
-        //tableRef.current.remoteDataRefresh()
-    }
-    // 取消编辑或新增
-    function handleCancel() {
-        //const { resetFields } = commonFormRef.current.form;
-        //resetFields()
-        setVisible(false)
-        uploadTable()
-    }
-    // 新增或编辑保存
-    function handleSubmit(val) {
-        dataSource.map((item, index) => {
-            if (item.key === val.key) {
-                const copyData = dataSource.slice(0)
-                copyData[index] = val;
-                setDataSource(copyData)
-                setRows(copyData)
-            }
-        })
-        hideModal()
-        uploadTable()
-    }
-    // 关闭弹窗
-    function hideModal() {
-        setVisible(false)
-        setInitialValue({})
-    }
-    function hideAttach() {
-        setAttachId('')
-        triggerShowAttach(false)
+    // 查看物料
+    function showSeeMateriel() {
+        getSeeMaterRef.current.handleModalVisible(true);
     }
     // 删除
     async function handleRemove() {
         const filterData = dataSource.filter(item => item.key !== selectedRows[0].key);
-        lineCode--;
         setDataSource(filterData)
     }
 
     // 获取表单值
-    function getbankform() {
-        const bankInfo = tabformRef.current.data;
-        if (!bankInfo || bankInfo.length === 0) {
+    function getmodifyanalyform() {
+        const analysis = tabformRef.current.data;
+        const {validateFieldsAndScroll} = modifyinfluenceFormRef.current.form;
+        if (!analysis || analysis.length === 0) {
             return false;
+        }else {
+            validateFieldsAndScroll(async (err, val) => {
+                if (!err) {
+                    analysis.push(val)
+                }else {
+                   message.error('影响选择不能为空！');
+                   return false;
+                }
+            })
         }
-        return bankInfo;
+       
+        return analysis;
     }
-    // 设置所有表格参数
-    const setHeaderFields = (fields) => {
-        //const { attachmentId = null, ...fs } = fields;
-        // setAttachment(attachmentId)
-        // setFieldsValue(fs)
-    }
+
     const headerleft = (
         <>
             {
@@ -202,10 +208,10 @@ const ModifyinfluenceRef = forwardRef(({
                 <AuthButton className={styles.btn} disabled={empty} onClick={handleRemove}>删除</AuthButton>
             }
             {
-                <AuthButton className={styles.btn} onClick={() => handleEdit()} disabled={empty} >选择物料</AuthButton>
+                <AuthButton className={styles.btn} onClick={() => showMateriel()} disabled={empty}>选择物料</AuthButton>
             }
             {
-                <AuthButton className={styles.btn} onClick={() => handleEdit()} disabled={empty} >查看物料</AuthButton>
+                <AuthButton className={styles.btn} onClick={() => showSeeMateriel()} disabled={empty} >查看物料</AuthButton>
             }
         </>
     );
@@ -242,114 +248,21 @@ const ModifyinfluenceRef = forwardRef(({
                     }
                 </AutoSizeLayout>
                 <div>
-                    <ModifyForm
-                        visible={visible}
-                        onCancel={handleCancel}
-                        onOk={handleSubmit}
-                        type={modalType}
-                        initialValues={initialValue}
-                        wrappedComponentRef={ModifyfromRef}
-                        loading={loading}
-                        destroyOnClose
+                    <InfluenceMaterielModal 
+                        wrappedComponentRef={getModelRef}
                     />
-                    <Modal
-                        visible={showAttach}
-                        onCancel={hideAttach}
-                        footer={
-                            <Button type='ghost' onClick={hideAttach}>关闭</Button>
-                        }
-                    ></Modal>
+                    <MaterielModal 
+                        wrappedComponentRef={getMatermodRef} />
+
+                    <SeeMaterielModal 
+                        wrappedComponentRef={getSeeMaterRef} />
                 </div>
             </div>
             <div>
-                <Form>
-                    <FormItem label='环保影响' {...formLayout}>
-                        {
-                            getFieldDecorator('remarkConfig', {
-                                rules: [
-                                    {
-                                        required: true,
-                                        message: '请选择环保影响',
-                                    },
-                                ],
-                                initialValue: true
-                            })(
-                                <Radio.Group>
-                                    <Radio value={true}>有影响</Radio>
-                                    <Radio value={false}>无影响</Radio>
-                                </Radio.Group>
-                            )
-                        }
-                    </FormItem>
-                    <FormItem label='安规影响' {...formLayout}>
-                        {
-                            getFieldDecorator('remarkConfig', {
-                                rules: [
-                                    {
-                                        required: true,
-                                        message: '请选择安规影响',
-                                    },
-                                ],
-                                initialValue: true
-                            })(
-                                <Radio.Group>
-                                    <Radio value={true}>有影响</Radio>
-                                    <Radio value={false}>无影响</Radio>
-                                </Radio.Group>
-                            )
-                        }
-                    </FormItem>
-                    <FormItem label='安全可靠性、电性能影响' {...formLayout}>
-                        {
-                            getFieldDecorator('remarkConfig', {
-                                rules: [
-                                    {
-                                        required: true,
-                                        message: '请选择安全可靠性、电性能影响',
-                                    },
-                                ],
-                                initialValue: true
-                            })(
-                                <Radio.Group>
-                                    <Radio value={true}>有影响</Radio>
-                                    <Radio value={false}>无影响</Radio>
-                                </Radio.Group>
-                            )
-                        }
-                    </FormItem>
-                    <FormItem label='其他物料或整机的影响' {...formLayout}>
-                        {
-                            getFieldDecorator('remarkConfig', {
-                                rules: [
-                                    {
-                                        required: true,
-                                        message: '请选择其他物料或整机的影响',
-                                    },
-                                ],
-                                initialValue: true
-                            })(
-                                <Radio.Group>
-                                    <Radio value={true}>有影响</Radio>
-                                    <Radio value={false}>无影响</Radio>
-                                </Radio.Group>
-                            )
-                        }
-                    </FormItem>
-                    <FormItem label='其他物料或整机的影响' {...formLayout}>
-                        {
-                            getFieldDecorator('remarkConfig', {
-                                initialValue: ''
-                            })(
-                                <TextArea
-                                    style={{
-                                        width: "100%"
-                                    }}
-                                    placeholder="请输入其他物料或整机的影响"
-                                />
-                            )
-                        }
-                    </FormItem>
-                </Form>
+                <ModifyinfluenceForm  
+                    wrappedComponentRef={modifyinfluenceFormRef}
+                    isView={isView} 
+                />
             </div>
         </>
 

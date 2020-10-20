@@ -502,9 +502,6 @@ function CreateStrategy() {
       </Affix>
 
       <div className={styles.wrapper}>
-
-
-
         {
           configure.map((item, index) => {
             if (item.smMsgTypeCode !== '3' && item.fieldCode === 'name') {
