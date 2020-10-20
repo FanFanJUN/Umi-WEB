@@ -7,7 +7,7 @@ import Modifyinfluence from '../commons/Modifyinfluence'
 import classnames from 'classnames';
 import styles from '../index.less';
 import { closeCurrent ,isEmpty} from '../../../../utils';
-
+import {findPCNSupplierId} from '../../../../services/pcnModifyService'
 function CreateStrategy() {
   const BaseinfoRef = useRef(null);
   const ModifyinfoRef = useRef(null);
@@ -28,8 +28,20 @@ function CreateStrategy() {
 
     // 获取配置列表项
   useEffect(() => {
-
-    }, []);
+    infoPCNdetails()
+  }, []);
+  // 详情
+  async function infoPCNdetails() {
+    triggerLoading(true);
+    let id = query.id;
+    const { data, success, message: msg } = await findPCNSupplierId({pcnTitleId:id});
+    if (success) {
+      triggerLoading(false);
+      return
+    }
+    triggerLoading(false);
+    message.error(msg) 
+  }
   // 保存
   async function handleSave() {
     

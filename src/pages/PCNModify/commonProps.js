@@ -11,7 +11,62 @@ const commonProps = {
   },
   placeholder: '请选择'
 };
-
+// PCN变更主数据
+export const PCNMasterdatalist = {
+  store: {
+    url: `${smBaseUrl}/pubController/findDataDictionaryItemListByTypeCode?typeCode=PCNBGLX`,
+    type: 'POST'
+  },
+  reader: {
+    name: 'name',
+    field: ['value'],
+    description: 'value'
+  },
+  // remotePaging: true,
+  placeholder: '选择变更类型'
+}
+// 变更信息
+export const ChangecontentList = {
+  store: {
+    url: `${smBaseUrl}/api/smPcnChangesService/findByPage`,
+    type: 'POST'
+  },
+  reader: {
+    name: 'changeContent'
+  },
+  // remotePaging: true,
+  placeholder: '选择变更内容'
+}
+// 是否安规件
+export const Safetyregulationslist = {
+  allowClear: true,
+  dataSource: [
+    {
+      code: '是',
+      name: '是',
+    },
+    {
+      code: '否',
+      name: '否',
+    },
+  ],
+  placeholder: '选择单安规件',
+  ...commonProps,
+}
+// 战略采购
+export const Strategicprocurementlist = {
+  store: {
+    url: `${baseUrl}/purchaseGroup/findByPagesAll`,
+    type: 'POST'
+  },
+  reader: {
+    name: 'code',
+    field: ['name'],
+    description: 'name'
+  },
+  // remotePaging: true,
+  placeholder: '选择变更类型'
+}
 // 供应商单据状态
 export const SupplierBilltypeList = {
   allowClear: true,

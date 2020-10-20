@@ -7,6 +7,7 @@ import styles from '../index.less';
 import BaseInfo from '../../Supplier/commons/BaseInfo';
 import Modifyinfo from  '../../Supplier/commons/Modifyinfo';
 import Modifyinfluence from '../../Supplier/commons/Modifyinfluence'
+import PCNchangeResult from '../../Supplier/commons/PCNchangeResult'
 const { create } = Form;
 const FormItem = Form.Item;
 const formLayout = {
@@ -29,6 +30,7 @@ const getpcnModifyRef = forwardRef(({
     const BaseinfoRef = useRef(null);
     const ModifyinfoRef = useRef(null);
     const ModifyinfluenceRef = useRef(null);
+    const getchangeResult = useRef(null)
     const [selectRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [stafvisible, setStafvisible] = useState(false);
@@ -53,18 +55,30 @@ const getpcnModifyRef = forwardRef(({
             <DetailCard title="基本信息">
                 <BaseInfo
                     wrappedComponentRef={BaseinfoRef}
+                    isView={true}
                 />
             </DetailCard>
             <DetailCard title="变更信息">
                 <Modifyinfo
                     wrappedComponentRef={ModifyinfoRef}
+                    isView={true}
+                    headerInfo={true}
                 />
             </DetailCard>
             <DetailCard title="变更影响分析">
                 <Modifyinfluence
                     wrappedComponentRef={ModifyinfluenceRef}
+                    isView={true}
+                    headerInfo={true}
                 />
             </DetailCard>
+            <DetailCard title="PCN变更结果">
+                <PCNchangeResult
+                    wrappedComponentRef={getchangeResult}
+                    isView={true}
+                />
+            </DetailCard>
+            
 		</div>
 	)
 })

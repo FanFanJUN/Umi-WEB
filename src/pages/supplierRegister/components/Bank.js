@@ -279,8 +279,16 @@ const Bankformef = forwardRef(({
     const bankInfo = tabformRef.current.data;
     if (!bankInfo || bankInfo.length === 0) {
       return false;
+    }else {
+      bankInfo.map(item => {
+        if (isEmpty(item.country) || isEmpty(item.unionpayCode) || isEmpty(item.bankName) || isEmpty(item.bankAccount) || 
+          isEmpty(item.paymentName) || isEmpty(item.bankOwner) || isEmpty(item.openingPermit)) {
+          return false;
+        }else {
+          return bankInfo;
+        }
+      })
     }
-    return bankInfo;
   }
   // 设置所有表格参数
   const setHeaderFields = (fields) => {

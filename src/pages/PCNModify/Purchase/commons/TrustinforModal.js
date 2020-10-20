@@ -3,12 +3,12 @@ import { Modal, Form, Button, message, Input, } from 'antd';
 import { Fieldclassification ,countryListConfig} from '@/utils/commonProps'
 import { ExtTable } from 'suid';
 import { openNewTab, getFrameElement } from '@/utils';
-import { smBaseUrl,baseUrl } from '@/utils/commonUrl';
+import { smBaseUrl } from '@/utils/commonUrl';
 import Header from '@/components/Header';
 import styles from '../index.less';
 import {findCanChooseSupplier} from '@/services/SupplierModifyService'
 const { create } = Form;
-const getAgentregRef = forwardRef(({
+const getTrustinfor = forwardRef(({
     form,
 }, ref,) => {
     useImperativeHandle(ref, () => ({ 
@@ -109,74 +109,29 @@ const getAgentregRef = forwardRef(({
     }
     const columns = [
         {
-            title: "原厂代码",
-            width: 120,
-            dataIndex: "supplierCode"
-          },
-          {
-            title: "原厂名称",
-            width: 260,
-            dataIndex: "supplierName"
-          },
-          {
-            title: "物料分类代码",
-            width: 150,
-            dataIndex: "cooperationLevelName"
-          },
-          {
-            title: "物料分类名称",
-            width: 150,
-            dataIndex: "managementLevellName"
-          },
-          {
-            title: "采购专业组",
-            width: 120,
-            dataIndex: "supplierCode"
-          },
-          {
-            title: "物料级别",
-            width: 260,
-            dataIndex: "supplierName"
-          },
-          {
-            title: "评定等级",
-            width: 150,
-            dataIndex: "cooperationLevelName"
-          },
-          {
             title: "公司代码",
-            width: 150,
-            dataIndex: "managementLevellName"
+            width: 120,
+            dataIndex: "supplierCode"
           },
           {
             title: "公司名称",
-            width: 150,
-            dataIndex: "managementLevellName"
+            width: 260,
+            dataIndex: "supplierName"
           },
           {
             title: "采购组织代码",
-            width: 260,
-            dataIndex: "supplierName"
+            width: 150,
+            dataIndex: "cooperationLevelName"
           },
           {
             title: "采购组织名称",
             width: 150,
-            dataIndex: "cooperationLevelName"
-          },
-          {
-            title: "开始日期",
-            width: 150,
             dataIndex: "managementLevellName"
           },
           {
-            title: "过期日期",
-            width: 150,
-            dataIndex: "managementLevellName"
-          },
-          {
-            title: "冻结",
-            width: 150,
-            dataIndex: "managementLevellName"
+            title: "是否实物认定",
+            width: 120,
+            dataIndex: "supplierCode"
           }
     ].map(_ => ({ ..._, align: 'center' }));
     // 右侧搜索
@@ -199,7 +154,7 @@ const getAgentregRef = forwardRef(({
             centered
             destroyOnClose={true}
             maskClosable={false}
-            title={"选择影响物料"}
+            title={"选择信任信息"}
             visible={visible}
             onCancel={() => handleModalVisible(false)}
             onOk={handleOk}
@@ -207,7 +162,7 @@ const getAgentregRef = forwardRef(({
 
             <Header
                 left={false}
-                right={searchBtnCfg}
+                right={false}
                 advanced={false}
                 extra={false}
                 ref={headerRef}
@@ -235,4 +190,4 @@ const getAgentregRef = forwardRef(({
 },
 );
 
-export default create()(getAgentregRef);
+export default create()(getTrustinfor);

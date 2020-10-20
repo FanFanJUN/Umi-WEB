@@ -1,29 +1,20 @@
-import React, { forwardRef, useImperativeHandle, useEffect, useRef } from 'react';
+import React, { forwardRef, useImperativeHandle, useEffect, useState } from 'react';
 import { Modal, Form, Row, Col, Input, } from 'antd';
 import { Fieldclassification } from '@/utils/commonProps'
 import { ComboGrid, ComboList } from 'suid';
 import UploadFile from '../../../../components/Upload/index'
+import {ChangecontentList} from '../../commonProps'
 // import { baseUrl } from '../../../utils/commonUrl';
 const { create, Item } = Form;
 const { TextArea } = Input;
 const formLayout = {
     labelCol: {
-        span: 10,
+        span: 8,
     },
     wrapperCol: {
-        span: 14
+        span: 16
     },
 };
-const data = [
-    {
-        name: '单值',
-        code: '0',
-    },
-    {
-        name: '多值',
-        code: '1',
-    }
-];
 const ModifyForm = forwardRef(
     (
         {
@@ -31,8 +22,7 @@ const ModifyForm = forwardRef(
             form,
             onCancel = () => null,
             onOk = () => null,
-            initialValues = {},
-            type = 'add',
+            type,
             loading,
             dataSource,
             isView,
@@ -42,26 +32,23 @@ const ModifyForm = forwardRef(
     ) => {
         useImperativeHandle(ref, () => ({ form }));
         const { getFieldDecorator, validateFieldsAndScroll, getFieldValue, setFieldsValue } = form;
+        const [initialValue, setInitialValue] = useState({});
         useEffect(() => {
-            if (type === 'editor' && visible) {
-                const {
-                    id,
-                    createdDate,
-                    creatorName,
-                    ...other
-                } = initialValues;
-                const fields = {
-                    ...other
-                }
-                setFieldsValue(fields);
+            if (type) {
+                setInitialValue(dataSource)
             }
         }, [visible]);
+
         function handleSubmit() {
             validateFieldsAndScroll((err, val) => {
                 if (!err) {
-                    onOk({ ...initialValues, ...val });
+                    onOk({ ...initialValue, ...val });
                 }
             });
+        }
+        // 变更内容
+        function changevalue(val) {
+            form.setFieldsValue({ smFieldName: val.changeRequiredSubmission})
         }
         return (
             <Modal
@@ -78,6 +65,7 @@ const ModifyForm = forwardRef(
                     <Col span={20}>
                         <Item {...formLayout} label="变更内容">
                             {getFieldDecorator('smFieldCode', {
+                                initialValue: dataSource && dataSource.smFieldCode,
                                 rules: [
                                     {
                                         required: true,
@@ -88,16 +76,10 @@ const ModifyForm = forwardRef(
                                 <ComboList
                                     showSearch={false}
                                     style={{ width: '100%' }}
-                                    dataSource={data}
-                                    reader={{
-                                        name: 'name',
-                                        field: ['code'],
-                                        description: 'code',
-
-                                    }}
+                                    {...ChangecontentList}
                                     name='smFieldCode'
-                                    field={['code']}
                                     form={form}
+                                    afterSelect={changevalue}
                                 />
                             )}
                         </Item>
@@ -106,7 +88,8 @@ const ModifyForm = forwardRef(
                 <Row>
                     <Col span={20}>
                         <Item {...formLayout} label="变更描述（变更前）">
-                            {getFieldDecorator('smFieldName', {
+                            {getFieldDecorator('smFieldNamee', {
+                                initialValue: dataSource && dataSource.smFieldNamee,
                                 rules: [
                                     {
                                         required: true,
@@ -127,7 +110,8 @@ const ModifyForm = forwardRef(
                 <Row>
                     <Col span={20}>
                         <Item {...formLayout} label="变更描述（变更后）">
-                            {getFieldDecorator('smFieldName', {
+                            {getFieldDecorator('smFieldNamed', {
+                                initialValue: dataSource && dataSource.smFieldNamed,
                                 rules: [
                                     {
                                         required: true,
@@ -148,7 +132,8 @@ const ModifyForm = forwardRef(
                 <Row>
                     <Col span={20}>
                         <Item {...formLayout} label="变更原因">
-                            {getFieldDecorator('smFieldName', {
+                            {getFieldDecorator('smFieldNamef', {
+                                initialValue: dataSource && dataSource.smFieldNamef,
                                 rules: [
                                     {
                                         required: true,
@@ -170,12 +155,10 @@ const ModifyForm = forwardRef(
                     <Col span={20}>
                         <Item {...formLayout} label="证明材料（参考）">
                             {getFieldDecorator('smFieldName', {
-
+                                initialValue: dataSource && dataSource.smFieldName,
                             })(
                                 <TextArea
-                                    style={{
-                                        width: "100%"
-                                    }}
+                                    disabled
                                     placeholder="请输入证明材料"
                                 />
                             )}

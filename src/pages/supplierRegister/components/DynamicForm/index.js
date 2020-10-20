@@ -127,11 +127,12 @@ const CommonconfigRef = forwardRef(({
     const name = form.getFieldValue('supplierVo.name');
     setsupplierName(name)
     setName(name);
-    if (name.indexOf(' ') !== -1) {
-      message.error('供应商名称不允许存在空格，请重新输入');
-      //this.setChecks('checkSupplierNameResult', false);
-      return false;
-    }
+    name.trim();
+    // if (name.indexOf(' ') !== -1) {
+    //   message.error('供应商名称不允许存在空格，请重新输入');
+    //   //this.setChecks('checkSupplierNameResult', false);
+    //   return false;
+    // }
 
     if (name) {
       const { success, message: msg } = await checkSupplierName({ supplierName: name, supplierId: '' });

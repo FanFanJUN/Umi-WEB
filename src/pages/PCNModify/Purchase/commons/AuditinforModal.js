@@ -24,7 +24,7 @@ const data = [
         code: '1',
     }
 ];
-const getInformation = forwardRef(({
+const getauditinfor = forwardRef(({
     form,
 },ref,) => {
         useImperativeHandle(ref, () => ({ 
@@ -48,9 +48,6 @@ const getInformation = forwardRef(({
                 }
             });
         }
-        function showtrustModal() {
-            getTrustinfor.current.handleModalVisible(true)
-        }
         function ChangRadio(e) {
             if (e.target.value) {
                 settrust(true)
@@ -63,7 +60,7 @@ const getInformation = forwardRef(({
             <>
                 <Modal
                     visible={visible}
-                    title={'编辑认定信息'}
+                    title={'编辑客户信息'}
                     onCancel={() => handleModalVisible(false)}
                     destroyOnClose={true}
                     width="60vw"
@@ -162,7 +159,7 @@ const getInformation = forwardRef(({
                     </Row>
                     <Row>
                         <Col span={12}>
-                            <Item {...formLayout} label="是否安规件">
+                            <Item {...formLayout} label="是否供应商审核">
                                 {getFieldDecorator('smFieldNamerty', {
                                     rules: [
                                         {
@@ -178,45 +175,8 @@ const getInformation = forwardRef(({
                                 )}
                             </Item>
                         </Col>
-                    </Row>
-                    <Row style={{ display: trust === false ? 'none' : 'block'}}>
-                        <Col span={12} push={2}>
-                            <AuthButton type="primary" onClick={() => showtrustModal()}>选择信任信息</AuthButton>  
-                        </Col>
-                    </Row>
-                    <Row style={{ display: trust === false ? 'none' : 'block'}}>
-                        <Col span={12}>
-                            <Item {...formLayout} label="信任公司">
-                                {getFieldDecorator('smFieldName', {
-                                    rules: [
-                                        {
-                                            required: true,
-                                            message: '请选采购组织代码',
-                                        },
-                                    ],
-                                })(
-                                    <Input disabled />
-                                )}
-                            </Item>
-                        </Col>
-                        <Col span={12}>
-                            <Item {...formLayout} label="信任采购组织">
-                                {getFieldDecorator('smFieldName', {
-                                    rules: [
-                                        {
-                                            required: true,
-                                            message: '请选采购组织代码',
-                                        },
-                                    ],
-                                })(
-                                    <Input disabled />
-                                )}
-                            </Item>
-                        </Col>
-                    </Row>
-                    <Row style={{ display: trust === false ? 'none' : 'block'}}>
-                        <Col span={12}>
-                            <Item {...formLayout} label="实物认定确认人">
+                        <Col span={12} style={{ display: trust === false ? 'none' : 'block'}}>
+                            <Item {...formLayout} label="供应商审核确认人">
                                 {getFieldDecorator('smFieldName', {
                                     rules: [
                                         {
@@ -244,10 +204,9 @@ const getInformation = forwardRef(({
                         </Col>
                     </Row>
                 </Modal>
-                <TrustinforModal  wrappedComponentRef={getTrustinfor}/>
             </>
         );
     },
 );
 
-export default create()(getInformation);
+export default create()(getauditinfor);

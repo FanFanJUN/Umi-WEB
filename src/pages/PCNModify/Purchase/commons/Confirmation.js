@@ -9,6 +9,8 @@ import AutoSizeLayout from '../../../../components/AutoSizeLayout';
 import UploadFile from '../../../../components/Upload/index'
 import StaffModal from './StaffModal'
 import InformationModal from './informationModal'
+import CustomerinforModal from './CustomerinforModal'
+import AuditinforModal from './AuditinforModal'
 const { create } = Form;
 const FormItem = Form.Item;
 const formLayout = {
@@ -20,7 +22,7 @@ const formLayout = {
     },
 };
 const { storage } = utils
-const ConfirmFromRef = forwardRef(({
+const getconfirmFromRef = forwardRef(({
 	form,
 	isView,
 	baseinfo = [],
@@ -43,6 +45,8 @@ const ConfirmFromRef = forwardRef(({
     const verifformRef = useRef(null);
     const StaffFormRef = useRef(null);
     const getInformation = useRef(null);
+    const getcustomerinfor = useRef(null);
+    const getauditinfor = useRef(null)
     const [selectRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [stafvisible, setStafvisible] = useState(false);
@@ -226,6 +230,12 @@ const ConfirmFromRef = forwardRef(({
   function showinformation() {
     getInformation.current.handleModalVisible(true)
   }
+  function showCustomer() {
+    getcustomerinfor.current.handleModalVisible(true)
+  }
+  function showAuditinfor() {
+    getauditinfor.current.handleModalVisible(true)
+  }
   // 关闭弹窗
   function handleCancel() {
     setStafvisible(false)
@@ -261,18 +271,18 @@ const ConfirmFromRef = forwardRef(({
         <AuthButton className={styles.btn} onClick={() => showinformation()}>编辑认定信息</AuthButton>
       }
       {
-        <AuthButton className={styles.btn} onClick={PurchaseRemove}>编辑客户信息</AuthButton>
+        <AuthButton className={styles.btn} onClick={() => showCustomer()}>编辑客户信息</AuthButton>
       }
       {
-        <AuthButton className={styles.btn} onClick={PurchaseRemove}>编辑审核信息</AuthButton>
+        <AuthButton className={styles.btn} onClick={() => showAuditinfor()}>编辑审核信息</AuthButton>
       }
     </>
   );
 	return (
 		<div>
-			<div className={classnames([styles.header, styles.flexBetweenStart])}>
+			{/* <div className={classnames([styles.header, styles.flexBetweenStart])}>
                 <span className={styles.title}>确认方案</span>
-            </div>
+            </div> */}
             <div >
                 <DetailCard title="采购小组成员">
                     <Header  style={{ display: headerInfo === true ? 'none' : 'block',color: 'red' }}
@@ -391,10 +401,14 @@ const ConfirmFromRef = forwardRef(({
                 <InformationModal 
                    wrappedComponentRef={getInformation}
                 />
+                {/**客户信息 */}
+                <CustomerinforModal wrappedComponentRef={getcustomerinfor} />
+                {/**审核信息 */}
+                <AuditinforModal wrappedComponentRef={getauditinfor} />
             </div>
 		</div>
 	)
 })
-const CommonForm = create()(ConfirmFromRef)
+const CommonForm = create()(getconfirmFromRef)
 
 export default CommonForm

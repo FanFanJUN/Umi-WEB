@@ -11,16 +11,13 @@ const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 const { create } = Form;
 const { authAction, storage } = utils;
 let keys = 1;
-let lineCode = 1;
 const ModifyinfoRef = forwardRef(({
   form,
-  isView = false,
   editData = [],
   headerInfo
 }, ref) => {
   useImperativeHandle(ref, () => ({
-    getbankform,
-    setHeaderFields,
+    getmodifyform,
     form
   }));
   const tabformRef = useRef(null)
@@ -31,44 +28,43 @@ const ModifyinfoRef = forwardRef(({
   const [visible, setVisible] = useState(false);
   const [edit, setEdit] = useState(false);
   const [initialValue, setInitialValue] = useState({});
-  const [modalType, setModalType] = useState('add');
+  const [modalType, setModalType] = useState(false);
   const [showAttach, triggerShowAttach] = useState(false);
   const [loading, triggerLoading] = useState(false);
   const [attachId, setAttachId] = useState('')
   const [title, setTitle] = useState('新增变更详情')
-  let Modeltitle = '新增';
   useEffect(() => {
 
   }, [editData])
   const columns = [
     {
       title: '变更内容',
-      dataIndex: 'lineCode',
+      dataIndex: 'smChangeValue',
       align: 'center',
       width: 80
     },
     {
       title: '变更描述(变更前)',
-      dataIndex: 'countryName',
+      dataIndex: 'smChangeDescriptionBefore',
       align: 'center',
       width: 220,
     },
     {
       title: '变更描述（变更后）',
-      dataIndex: 'provinceName',
+      dataIndex: 'smChangeDescriptionAfter',
       align: 'center',
       width: 220,
     },
     {
       title: '变更原因',
       align: 'center',
-      dataIndex: 'regionName',
+      dataIndex: 'smChangeReason',
       width: 220,
     },
     {
       title: '证明材料（参考）',
       align: 'center',
-      dataIndex: 'bankCode',
+      dataIndex: 'smChangeProve',
       width: 220,
     },
     {
@@ -84,7 +80,7 @@ const ModifyinfoRef = forwardRef(({
   // 记录列表选中
   function handleSelectedRows(rowKeys, rows) {
     setRowKeys(rowKeys);
-    setRows(rows); ;
+    setRows(rows);
      
   }
   // 清除选中项
@@ -96,25 +92,21 @@ const ModifyinfoRef = forwardRef(({
   function showModal() {
     setTitle('新增变更详情')
     setVisible(true)
+    setModalType(false)
   }
   // 编辑
   function handleEdit() {
-    let newsbank;
-    if (selectedRows.length > 1) {
-      newsbank = selectedRows.splice(1);
-    }else {
-      newsbank = selectedRows
-    }
     setTitle('编辑变更详情')
-    setEdit(true)
-    const [row] = newsbank;
+    setVisible(true)
+    setModalType(true)
+    const [row] = selectedRows;
     setInitialValue({ ...row })
 
   }
   // 清空列选择并刷新
   function uploadTable() {
     cleanSelectedRecord()
-    //tableRef.current.remoteDataRefresh()
+    tabformRef.current.manualSelectedRows();
   }
   // 取消编辑或新增
   function handleCancel() {
@@ -125,14 +117,24 @@ const ModifyinfoRef = forwardRef(({
   }
   // 新增或编辑保存
   function handleSubmit(val) {
-    dataSource.map((item, index) => {
-      if (item.key === val.key) {
-        const copyData = dataSource.slice(0)
-        copyData[index] = val;
-        setDataSource(copyData)
-        setRows(copyData)
-      }
-    })
+    let newsdata = [];
+    if (!modalType) {
+      [...newsdata] = dataSource;
+      newsdata.push({
+          ...val,
+          key: keys ++ 
+      })
+      setDataSource(newsdata);
+    }else {
+      dataSource.map((item, index) => {
+        if (item.key === val.key) {
+          const copyData = dataSource.slice(0)
+          copyData[index] = val;
+          setDataSource(copyData)
+          setRows(copyData)
+        }
+      })
+    }
     hideModal()
     uploadTable()
   }
@@ -148,23 +150,17 @@ const ModifyinfoRef = forwardRef(({
   // 删除
   async function handleRemove() {
     const filterData = dataSource.filter(item => item.key !== selectedRows[0].key);
-    lineCode--;
+    keys--;
     setDataSource(filterData)
   }
   
   // 获取表单值
-  function getbankform() {
-    const bankInfo = tabformRef.current.data;
-    if (!bankInfo || bankInfo.length === 0) {
+  function getmodifyform() {
+    const changeinfor = tabformRef.current.data;
+    if (!changeinfor || changeinfor.length === 0) {
       return false;
     }
-    return bankInfo;
-  }
-  // 设置所有表格参数
-  const setHeaderFields = (fields) => {
-    //const { attachmentId = null, ...fs } = fields;
-    // setAttachment(attachmentId)
-    // setFieldsValue(fs)
+    return changeinfor;
   }
   const headerleft = (
     <>
@@ -199,7 +195,6 @@ const ModifyinfoRef = forwardRef(({
             allowCancelSelect={true}
             size='small'
             height={height}
-            Modeltitle={Modeltitle}
             remotePaging={true}
             ellipsis={false}
             saveData={false}
@@ -216,7 +211,7 @@ const ModifyinfoRef = forwardRef(({
           onCancel={handleCancel}
           onOk={handleSubmit}
           type={modalType}
-          initialValues={initialValue}
+          dataSource={initialValue}
           title={title}
           wrappedComponentRef={ModifyfromRef}
           loading={loading}

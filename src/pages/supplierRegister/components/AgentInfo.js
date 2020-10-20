@@ -1,7 +1,7 @@
 import React, { forwardRef, useState, useRef, useEffect, useImperativeHandle } from 'react';
 import { ExtTable, WorkFlow, ExtModal, utils, ToolBar,AuthButton } from 'suid';
 import { Form, Button, message, Checkbox, Modal} from 'antd';
-import { openNewTab, getFrameElement } from '@/utils';
+import { openNewTab, getFrameElement ,isEmpty} from '@/utils';
 import Header from '@/components/Header';
 import UploadFile from '../../../components/Upload/index'
 import AutoSizeLayout from '../SupplierAutoLayout';
@@ -277,8 +277,16 @@ const Agentformef = forwardRef(({
     console.log(agentInfo)
     if (!agentInfo || agentInfo.length === 0) {
       return false;
+    }else {
+      agentInfo.map(item => {
+        if (isEmpty(item.originalCompanyName) || isEmpty(item.originalCode) || isEmpty(item.agentBrand) || isEmpty(item.countryName) || 
+          isEmpty(item.originalAddress) || isEmpty(item.businessLicenseDocIds) || isEmpty(item.powerAttorneyDocIds)) {
+          return false;
+        }else {
+          return agentInfo;
+        }
+      })
     }
-    return agentInfo;
   }
   // 设置所有表格参数
   const setHeaderFields = (fields) => {

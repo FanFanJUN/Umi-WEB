@@ -50,7 +50,6 @@ function CreateStrategy() {
             </span>
           <div className={styles.flexCenter}>
             <Button className={styles.btn} onClick={handleBack}>返回</Button>
-            <Button className={styles.btn} onClick={handleSave}>保存</Button>
           </div>
         </div>
 

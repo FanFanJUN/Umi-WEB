@@ -1,8 +1,12 @@
 import React, { createRef, useState, useRef, useEffect } from 'react';
 import { Button, Modal, message, Spin, Affix, Tabs } from 'antd';
 import { router } from 'dva';
+import PCNModifyDetail from '../commons/PCNModifyDetail' 
 import Confirmation from '../commons/Confirmation' 
-import PCNModify from '../commons/PCNModify'
+import ResultsIdenDetail from '../commons/ResultsIdenDetail'
+import CustomerOpinionDetail from '../commons/CustomerOpinionDetail'
+import ToexamineDetail from '../commons/ToexamineDetail'
+import Executioninfor from '../commons/Executioninfor'
 import classnames from 'classnames';
 import {
     SupplierconfigureDetail,
@@ -18,11 +22,12 @@ import styles from '../index.less';
 import { closeCurrent, isEmpty } from '../../../../utils';
 const TabPane = Tabs.TabPane;
 function CreateStrategy() {
-
-    const getconfirmFromRef = useRef(null);
     const getpcnModifyRef = useRef(null);
-    const AccountRef = useRef(null);
-
+    const getconfirmFromRef = useRef(null);
+    const getResultsIden = useRef(null);
+    const getCustomerOpin = useRef(null);
+    const getToexamine = useRef(null);
+    const getExecutioninfor = useRef(null)
     const [baseinfo, setbaseinfo] = useState([]);
     const [accountinfo, setaccountinfo] = useState([]);
     const [businesshide, setbusinesshide] = useState([]);
@@ -132,24 +137,47 @@ function CreateStrategy() {
         <Spin spinning={loading} tip='处理中...'>
             <Affix offsetTop={0}>
                 <div className={classnames([styles.header, styles.flexBetweenStart])}>
-                    <span className={styles.title}>PCN变更方案确认</span>
+                    <span className={styles.title}>PCN变更单明细</span>
                     <div className={styles.flexCenter}>
                         <Button className={styles.btn} onClick={handleBack}>返回</Button>
-                        <Button className={styles.btn} onClick={handleSave}>保存</Button>
                     </div>
                 </div>
 
             </Affix>
             <div className={styles.wrapper}>
                 <Tabs className="tabstext" onTabClick={(params)=>tabClickHandler(params)} style={{ background: '#fff' }}>
-                    <TabPane forceRender tab="确认方案" key="1">
-                        <Confirmation
-                            wrappedComponentRef={getconfirmFromRef}
+                    <TabPane forceRender tab="PCN变更单" key="1">
+                        <PCNModifyDetail
+                            wrappedComponentRef={getpcnModifyRef}
                         />
                     </TabPane>
-                    <TabPane forceRender tab="PCN变更信息" key="2">
-                        <PCNModify 
-                            wrappedComponentRef={getpcnModifyRef}
+                    <TabPane forceRender tab="确认方案" key="2">
+                        <Confirmation
+                            wrappedComponentRef={getconfirmFromRef}
+                            isView={true}
+                            headerInfo={true}
+                        />
+                    </TabPane>
+                    <TabPane forceRender tab="验证结果" key="3">
+                        <ResultsIdenDetail
+                            wrappedComponentRef={getResultsIden}
+                        />
+                    </TabPane>
+                    <TabPane forceRender tab="客户意见" key="4">
+                        <CustomerOpinionDetail
+                            wrappedComponentRef={getCustomerOpin}
+                        />
+                    </TabPane>
+                    <TabPane forceRender tab="审核结果" key="5">
+                        <ToexamineDetail
+                            wrappedComponentRef={getToexamine}
+                        />
+                    </TabPane>
+                    <TabPane forceRender tab="执行信息" key="6">
+                        <Executioninfor
+                            wrappedComponentRef={getExecutioninfor}
+                            headerInfo={true}
+                            isView={true}
                         />
                     </TabPane>
                 </Tabs>
