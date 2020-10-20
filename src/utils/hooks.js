@@ -56,6 +56,7 @@ export function useTableProps() {
   const [selectedRows, setRows] = useState([]);
   const [dataSource, setDataSource] = useState([]);
   const [searchValue, setSearchValue] = useState({});
+  const [onlyMe, setOnlyMe] = useState(true);
   function handleSelectedRows(rowKeys, rows) {
     setRowKeys(rowKeys);
     setRows(rows);
@@ -65,14 +66,16 @@ export function useTableProps() {
       selectedRowKeys,
       selectedRows,
       searchValue,
-      dataSource
+      dataSource,
+      onlyMe,
     },
     {
       setRowKeys,
       setRows,
       setDataSource,
       handleSelectedRows,
-      setSearchValue
+      setSearchValue,
+      setOnlyMe
     }
   ]
 }

@@ -66,11 +66,6 @@ export const findAppraiseById = params => createServiceRequest({
   method: 'GET'
 })
 
-// 导出分配评审人excel
-export const exportAllocationData = params => createServiceRequest({
-  path: ''
-})
-
 // 查询当前需要分配评审人的评价项目
 export const findScoreById = params => createServiceRequest({
   path: '/api/seScorerService/findScorerByEvaluationProjectId',

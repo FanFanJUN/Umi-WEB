@@ -11,7 +11,6 @@ function AutoSizeLayout({ children, minHeight = 300 }) {
       const h = layoutRef.current?.offsetTop;
       const lh = wh - h;
       setHeight(lh)
-      console.log(wh, h)
     }, 100)
   }
   useLayoutEffect(() => {

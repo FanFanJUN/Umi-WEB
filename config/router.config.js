@@ -218,9 +218,24 @@ export default [
         title: '评价项目分配评审人'
       },
       {
+        path: '/supplier/appraise/project/manual/evaluate',
+        component: './ManualEvaluate/Evaluate',
+        title: '评价'
+      },
+      {
         path: '/supplier/appraise/project/evaluate',
-        component: './SupplierAppraise/Evaluate',
-        title: '人工评分'
+        component: './ManualEvaluate',
+        title: '人工评价'
+      },
+      {
+        path: '/supplier/appraise/project/evaluate/approve',
+        component: './ManualEvaluate/Approve',
+        title: '人工评价审核'
+      },
+      {
+        path: '/supplier/appraise/project/evaluate/approve/editor',
+        component: './ManualEvaluate/Approve/Editor',
+        title: '人工评价审核编辑'
       },
        /**无账号供应商 */
       { path: '/supplier/ImportSupplier/index', component: './ImportSupplier/index', title: '创建无账号供应商' },

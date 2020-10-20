@@ -419,6 +419,11 @@ export const sendResize = () => {
   }
 }
 
+// 转换时间
+export function formatYMDHmsToYMD(time) {
+  return moment(time).format('YYYY-MM-DD')
+}
+
 export const DELAY = timeout => new Promise(resolve => {
   setTimeout(resolve, timeout)
 })

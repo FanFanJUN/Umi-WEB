@@ -12,7 +12,19 @@ import {
 } from 'react';
 import styles from './index.less';
 import { ComboList, ExtTable } from 'suid';
-import { Row, Col, Form, Input, DatePicker, Radio, Tree, Select, Button, Modal, message } from 'antd';
+import {
+  Row,
+  Col,
+  Form,
+  Input,
+  DatePicker,
+  Radio,
+  Tree,
+  Select,
+  Button,
+  Modal,
+  message
+} from 'antd';
 import { useLocation } from 'dva/router';
 import moment from 'moment';
 import { commonProps, getUserAccount, commonUrl } from '../../../utils';
@@ -88,7 +100,8 @@ const businessColumns = [
 
 const CommonForm = forwardRef(({
   form,
-  type = 'create'
+  type = 'create',
+  initialize = true
 }, ref) => {
   useImperativeHandle(ref, () => ({
     getAllValues,
@@ -349,7 +362,6 @@ const CommonForm = forwardRef(({
     const { success, data, message: msg } = await findAppraiseById({
       evaluationProjectId: query?.id
     })
-    // const { setAllValues } = formRef.current;
     if (success) {
       setAllValues(data)
       return
@@ -357,7 +369,7 @@ const CommonForm = forwardRef(({
     message.error(msg)
   }
   useEffect(() => {
-    if (type === 'detail' || type === 'editor') {
+    if ((type === 'detail' || type === 'editor') && initialize) {
       getInitialValue()
     }
   }, [])
@@ -620,7 +632,7 @@ const CommonForm = forwardRef(({
                     }
                   ]
                 })(
-                  <Select onSelect={handleEvlLevelSelect} disabled={type==='detail'}>
+                  <Select onSelect={handleEvlLevelSelect} disabled={type === 'detail'}>
                     {
                       evlLevelEmu.map(item => (
                         <Option key={item.value}>{item.label}</Option>
