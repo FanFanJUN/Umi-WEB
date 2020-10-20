@@ -30,13 +30,13 @@ const getAgentregRef = forwardRef(({
     //let current = 1;
     const dataSource = {
         store: {
-            url: `${smBaseUrl}/api/supplierModifyService/findCanChooseSupplier`,
+            url: `${smBaseUrl}/api/supplierSupplyListTmpService/findVoByPage`,
             params: {
                 quickSearchValue: searchValue,
-                quickSearchProperties: ['name'],
+                quickSearchProperties: ['code'],
                 sortOrders: [
                     {
-                        property: 'name',
+                        property: 'materielCategory',
                         direction: 'DESC'
                     }
                 ]
@@ -108,30 +108,20 @@ const getAgentregRef = forwardRef(({
         setcurrent(val.current)
     }
     const columns = [
-        {
-            title: "原厂代码",
-            width: 120,
-            dataIndex: "supplierCode"
-          },
-          {
-            title: "原厂名称",
-            width: 260,
-            dataIndex: "supplierName"
-          },
           {
             title: "物料分类代码",
             width: 150,
-            dataIndex: "cooperationLevelName"
+            dataIndex: "materielCategoryCode"
           },
           {
             title: "物料分类名称",
             width: 150,
-            dataIndex: "managementLevellName"
+            dataIndex: "materielCategory.name"
           },
           {
             title: "采购专业组",
             width: 120,
-            dataIndex: "supplierCode"
+            dataIndex: "purchaseOrgCode"
           },
           {
             title: "物料级别",

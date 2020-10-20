@@ -379,7 +379,7 @@ function SupplierConfigure() {
                             authAction(
                                 <Button 
                                     ignore={DEVELOPER_ENV} 
-                                    key='' 
+                                    key='SRM-SM-SUPPLIER-REGISTER-DETAIL' 
                                     className={styles.btn} 
                                     onClick={handleCheckDetail} 
                                     disabled={empty}
@@ -419,7 +419,7 @@ function SupplierConfigure() {
                                     businessId={flowId}
                                     flowMapUrl='flow-web/design/showLook'
                                     ignore={DEVELOPER_ENV}
-                                    key='PURCHASE_VIEW_CHANGE_APPROVE_HISTORY'
+                                    key='SRM-SM-SUPPLIER-REGISTER-HISTORY'
                                 >
                                     <Button className={styles.btn} disabled={empty || !underWay }>审核历史</Button>
                                 </FlowHistoryButton>

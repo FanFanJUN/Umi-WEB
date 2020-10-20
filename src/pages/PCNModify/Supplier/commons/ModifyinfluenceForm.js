@@ -54,8 +54,8 @@ const HeadFormRef = forwardRef(({
                         <Col span={20}>
                             <FormItem label='环保影响' {...formLayout}>
                                 {
-                                    getFieldDecorator('remarkConfig', {
-                                        initialValue: dataSource && dataSource.remarkConfig,
+                                    getFieldDecorator('smEnvironmentalImpact', {
+                                        initialValue: dataSource && dataSource.smEnvironmentalImpact,
                                         rules: [
                                             {
                                                 required: true,
@@ -76,8 +76,8 @@ const HeadFormRef = forwardRef(({
                         <Col span={20}>
                             <FormItem label='安规影响' {...formLayout}>
                                 {
-                                    getFieldDecorator('remarkConfige', {
-                                        initialValue: dataSource && dataSource.remarkConfige,
+                                    getFieldDecorator('smSafetyImpact', {
+                                        initialValue: dataSource && dataSource.smSafetyImpact,
                                         rules: [
                                             {
                                                 required: true,
@@ -98,8 +98,8 @@ const HeadFormRef = forwardRef(({
                         <Col span={20}>
                             <FormItem label='安全可靠性、电性能影响' {...formLayout}>
                                 {
-                                    getFieldDecorator('remarkConfigw', {
-                                        initialValue: dataSource && dataSource.remarkConfigw,
+                                    getFieldDecorator('smSecurityImpac', {
+                                        initialValue: dataSource && dataSource.smSecurityImpac,
                                         rules: [
                                             {
                                                 required: true,
@@ -120,8 +120,8 @@ const HeadFormRef = forwardRef(({
                         <Col span={20}>
                             <FormItem label='其他物料或整机的影响' {...formLayout}>
                                 {
-                                    getFieldDecorator('remarkConfigq', {
-                                        initialValue: dataSource && dataSource.remarkConfigq,
+                                    getFieldDecorator('smMachineImpact', {
+                                        initialValue: dataSource && dataSource.smMachineImpact,
                                         rules: [
                                             {
                                                 required: true,
@@ -142,8 +142,8 @@ const HeadFormRef = forwardRef(({
                         <Col span={20}>
                             <FormItem label='其他物料或整机的影响' {...formLayout}>
                                 {
-                                    getFieldDecorator('remarkConfigedf', {
-                                        initialValue: dataSource && dataSource.remarkConfigedf,
+                                    getFieldDecorator('smOtherImpact', {
+                                        initialValue: dataSource && dataSource.smOtherImpact,
                                     })(
                                         <TextArea
                                             style={{

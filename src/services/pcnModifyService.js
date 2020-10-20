@@ -64,6 +64,25 @@ export const findPCNSupplierId = (params) => {
     method: 'POST'
   })
 };
+// 变更影响分析物料
+export const Impactofchange = params => {
+  return request({
+    url: `${smBaseUrl}/api/supplierSupplyListTmpService/findVoByPage`,
+    data:params,
+    method: 'POST',
+  })
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
