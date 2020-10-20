@@ -50,10 +50,12 @@ let BaseInfo = React.forwardRef((props, ref) => {
         <div className={styles.title}>基本信息</div>
         <div className={styles.content}>
           <Row>
+            <Col span={0}>{hideFormItem('applyCorporationCode', type === 'add' ? '' : data.applyCorporationCode)}</Col>
+            <Col span={0}>{hideFormItem('applyCorporationId', type === 'add' ? '' : data.applyCorporationId)}</Col>
             <Col span={12}>
               <FormItem label="公司" {...formLayout}>
-                {isView ? <span>{''}</span> : getFieldDecorator('1', {
-                  initialValue: type === 'add' ? '' : '',
+                {isView ? <span>{data.applyCorporationName}</span> : getFieldDecorator('applyCorporationName', {
+                  initialValue: type === 'add' ? '' : data.applyCorporationName,
                   rules: [
                     {
                       required: true,
@@ -65,21 +67,23 @@ let BaseInfo = React.forwardRef((props, ref) => {
                     allowClear={true}
                     style={{ width: '100%' }}
                     form={form}
-                    name={'name'}
-                    field={['code', 'id']}
+                    name={'applyCorporationName'}
+                    field={['applyCorporationCode', 'applyCorporationId']}
                     {...AllCompanyConfig}
                   />,
                 )}
               </FormItem>
             </Col>
+            <Col span={0}>{hideFormItem('applyDepartmentCode', type === 'add' ? '' : data.applyDepartmentCode)}</Col>
+            <Col span={0}>{hideFormItem('applyDepartmentId', type === 'add' ? '' : data.applyDepartmentId)}</Col>
             <Col span={12}>
               <FormItem label="申请部门" {...formLayout}>
-                {isView ? <span>{''}</span> : getFieldDecorator('2', {
-                  initialValue: type === 'add' ? '' : '',
+                {isView ? <span>{data.applyDepartmentName}</span> : getFieldDecorator('applyDepartmentName', {
+                  initialValue: type === 'add' ? '' : data.applyDepartmentName,
                   rules: [
                     {
                       required: true,
-                      message: '业务单元不能为空',
+                      message: '申请部门不能为空',
                     },
                   ],
                 })(
@@ -87,8 +91,8 @@ let BaseInfo = React.forwardRef((props, ref) => {
                     allowClear={true}
                     style={{ width: '100%' }}
                     form={form}
-                    name={'name'}
-                    field={['code', 'id']}
+                    name={'applyDepartmentName'}
+                    field={['applyDepartmentCode', 'applyDepartmentId']}
                     {...ApplyOrganizationProps}
                   />,
                 )}
@@ -96,15 +100,15 @@ let BaseInfo = React.forwardRef((props, ref) => {
             </Col>
             <Col span={12}>
               <FormItem label="申请人" {...formLayout}>
-                {isView ? <span>{''}</span> : getFieldDecorator('3', {
-                  initialValue: type === 'add' ? userInfo.userName : '',
+                {isView ? <span>{data.applyName}</span> : getFieldDecorator('applyName', {
+                  initialValue: type === 'add' ? userInfo.userName : data.applyName,
                 })(<Input disabled={true} placeholder="请输入申请人" style={{ width: '100' }} />)}
               </FormItem>
             </Col>
             <Col span={12}>
               <FormItem label="联系方式" {...formLayout}>
-                {isView ? <span>{''}</span> : getFieldDecorator('4', {
-                  initialValue: type === 'add' ? userInfo.userMobile : '',
+                {isView ? <span>{data.applyTel}</span> : getFieldDecorator('applyTel', {
+                  initialValue: type === 'add' ? userInfo.userMobile : data.applyTel,
                   rules: [
                     {
                       required: true,
@@ -122,10 +126,12 @@ let BaseInfo = React.forwardRef((props, ref) => {
             </Col>
           </Row>
           <Row>
+            <Col span={0}>{hideFormItem('purchaseOrgCode', type === 'add' ? '' : data.purchaseOrgCode)}</Col>
+            <Col span={0}>{hideFormItem('purchaseOrgId', type === 'add' ? '' : data.purchaseOrgId)}</Col>
             <Col span={12}>
               <FormItem label="采购组织" {...formLayout}>
-                {isView ? <span>{''}</span> : getFieldDecorator('5', {
-                  initialValue: type === 'add' ? '' : '',
+                {isView ? <span>{data.purchaseOrgName}</span> : getFieldDecorator('purchaseOrgName', {
+                  initialValue: type === 'add' ? '' : data.purchaseOrgName,
                   rules: [
                     {
                       required: true,
@@ -137,8 +143,8 @@ let BaseInfo = React.forwardRef((props, ref) => {
                     allowClear={true}
                     style={{ width: '100%' }}
                     form={form}
-                    name={'name'}
-                    field={['code', 'id']}
+                    name={'purchaseOrgName'}
+                    field={['purchaseOrgCode', 'purchaseOrgId']}
                     {...AllFindByFiltersConfig}
                   />,
                 )}
@@ -148,8 +154,8 @@ let BaseInfo = React.forwardRef((props, ref) => {
           <Row>
             <Col span={24}>
               <FormItem label="申请说明" {...formLongLayout}>
-                {isView ? <span>{''}</span> : getFieldDecorator('6', {
-                  initialValue: type === 'add' ? '' : '',
+                {isView ? <span>{data.reviewRequirementName}</span> : getFieldDecorator('reviewRequirementName', {
+                  initialValue: type === 'add' ? '' : data.reviewRequirementName,
                   rules: [
                     {
                       required: true,
@@ -165,8 +171,8 @@ let BaseInfo = React.forwardRef((props, ref) => {
           <Row>
             <Col span={24}>
               <FormItem label="备注" {...formLongLayout}>
-                {isView ? <span>{''}</span> : getFieldDecorator('7', {
-                  initialValue: type === 'add' ? '' : '',
+                {isView ?  <Input.TextArea rows={6} style={{ width: '100%' }} value={data.remark} /> : getFieldDecorator('remark', {
+                  initialValue: type === 'add' ? '' : data.remark,
                 })(
                   <Input.TextArea rows={6} style={{ width: '100%' }} />
                 )}
@@ -177,10 +183,10 @@ let BaseInfo = React.forwardRef((props, ref) => {
             <Col span={24}>
               <FormItem {...formLongLayout} label={'技术资料附件'}>
                 {
-                  getFieldDecorator('8', {
-                    initialValue: type === 'add' ? null :null,
+                  getFieldDecorator('attachRelatedId', {
+                    initialValue: type === 'add' ? null : data.attachRelatedId,
                   })(
-                    <Upload entityId={type === 'add' ? null : null} type={type === 'add' ? '' : 'show'}/>,
+                    <Upload entityId={type === 'add' ? null : data.attachRelatedId} type={type === 'add' ? '' : 'show'}/>,
                   )
                 }
               </FormItem>
