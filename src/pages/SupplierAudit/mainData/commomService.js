@@ -1,4 +1,4 @@
-import { baseUrl } from '../../../utils/commonUrl';
+import { baseUrl, recommendUrl } from '../../../utils/commonUrl';
 import request from '../../../utils/request';
 
 const commonProps = {
@@ -77,9 +77,9 @@ export const materialClassProps = {
 export const AllFindByFiltersConfig = {
   placeholder: '选择采购组织',
   store: {
-    type: 'GET',
+    type: 'POST',
     autoLoad: false,
-    url: `${baseUrl}/purchaseOrg/listByPage`,
+    url: `${recommendUrl}/common/pagePurchaseOrg`,
   },
   remotePaging: true,
   rowKey: 'code',
@@ -94,9 +94,26 @@ export const AllFindByFiltersConfig = {
 export const FindByFiltersConfig = {
   placeholder: '选择采购组织',
   store: {
-    type: 'GET',
+    type: 'POST',
     autoLoad: false,
-    url: `${baseUrl}/purchaseOrg/listByPage`,
+    url: `${recommendUrl}/common/pagePurchaseOrg`,
+  },
+  remotePaging: true,
+  rowKey: 'code',
+  reader: {
+    field: ['code'],
+    name: 'name',
+    description: 'code',
+  },
+};
+
+// 供应商
+export const SupplierConfig = {
+  placeholder: '选择供应商',
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${recommendUrl}/common/pageSupplier`,
   },
   remotePaging: true,
   rowKey: 'code',

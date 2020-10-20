@@ -24,7 +24,7 @@ const AddBeAudited = (props) => {
   const { getFieldDecorator, getFieldValue, setFieldsValue } = props.form;
 
   const onCancel = () => {
-
+    props.onCancel()
   }
 
   const onOk = () => {

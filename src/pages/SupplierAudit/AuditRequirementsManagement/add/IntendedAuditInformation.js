@@ -3,14 +3,30 @@ import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList
 import { Col, Form, Modal, Row, Input, DatePicker, Button } from 'antd';
 import { ExtTable } from 'suid';
 import AddBeAudited from './component/addBeAudited';
+import Content from './component/content';
 
 let IntendedAuditInformation = React.forwardRef((props, ref) => {
 
   const tableRef = useRef(null);
 
   const [data, setData] = useState({
+    contentVisible: false,
     type: 'add',
-    dataSource: [],
+    dataSource: [
+      {
+        id: 123,
+        fileCategoryName: 1,
+        fileVersion: 2,
+        drawFlag: 2,
+        technicalDataFileIdList: 4,
+        sampleRequirementNum: 5,
+        measureUnit: 6,
+        sampleRequirementDate: 7,
+        sampleReceiverName: 8,
+        sampleReceiverTel: 10,
+        remark:9
+      }
+    ],
     selectRows: [],
     selectedRowKeys: [],
     visible: false,
@@ -18,7 +34,7 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
   })
 
   const columns = [
-    { title: '操作', dataIndex: 'fileCategoryName', width: 140 },
+    { title: '操作', dataIndex: 'fileCategoryName', width: 140, render: () => <span><a onClick={showContent}>内容</a>  <a onClick={showTeam}>小组</a></span> },
     { title: '审核类型', dataIndex: 'fileVersion', width: 140, ellipsis: true, },
     { title: '审核原因', dataIndex: 'drawFlag', ellipsis: true, width: 140},
     { title: '物料分类', dataIndex: 'technicalDataFileIdList', width: 140, ellipsis: true, },
@@ -43,6 +59,16 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
     setData((v) => ({...v, selectedRowKeys: value, selectRows: rows, type: 'add'}))
   }
 
+  // 打开内容界面
+  const showContent = () => {
+    setData(v => ({...v, contentVisible: true}))
+  }
+
+  // 打开小组界面
+  const showTeam = () => {
+
+  }
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.bgw}>
@@ -59,7 +85,7 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
           }
           <ExtTable
             style={{marginTop: '10px'}}
-            rowKey={(v) => v.lineNumber}
+            rowKey={(v) => v.id}
             allowCancelSelect={true}
             showSearch={false}
             remotePaging
@@ -77,6 +103,10 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
         visible={data.visible}
         title={data.title}
         type={data.type}
+        onCancel={() => setData(v => ({...v, visible: false}))}
+      />
+      <Content
+        visible={data.contentVisible}
       />
     </div>
   );
