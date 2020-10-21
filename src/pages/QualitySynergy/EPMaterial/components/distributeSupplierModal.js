@@ -12,7 +12,7 @@ import styles from './index.less'
 import moment from 'moment';
 import { CommonTable } from '../../TechnicalDataSharing/DataSharingList/component/CommonTable';
 import { recommendUrl } from '../../../../utils/commonUrl';
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+const DEVELOPER_ENV = process.env.NODE_ENV === 'development';
 const { create, Item: FormItem } = Form;
 const formLayout = {
     labelCol: { span: 8, },

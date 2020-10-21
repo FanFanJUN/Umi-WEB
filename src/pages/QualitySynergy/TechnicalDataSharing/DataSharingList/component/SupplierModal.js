@@ -9,7 +9,7 @@ import { request } from 'suid/es/utils';
 import { CommonTable } from './CommonTable';
 
 const FormItem = Form.Item;
-
+const DEVELOPER_ENV = process.env.NODE_ENV === 'development';
 const formItemLayoutLong = {
   labelCol: { span: 10 },
   wrapperCol: { span: 14 },
@@ -389,7 +389,7 @@ const SupplierModal = (props) => {
       onCancel={handleCancel}
     >
       {
-        data.show && <div>
+        data.show && <div style={{display: 'flex'}}>
           <Button className={styles.btn} onClick={handleAddSupplier} type='primary'>新增</Button>
           <Button className={styles.btn} onClick={handleTimeEdit}
             disabled={data.selectedRowKeys?.length === 0 || !judge(data.selectedRows, 'publish', false)}>编辑资料下载日期</Button>
