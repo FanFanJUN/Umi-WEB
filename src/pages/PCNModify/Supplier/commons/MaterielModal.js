@@ -3,7 +3,7 @@ import { Modal, Form, Button, message, Input, } from 'antd';
 import { Fieldclassification ,countryListConfig} from '@/utils/commonProps'
 import { ExtTable } from 'suid';
 import { openNewTab, getFrameElement } from '@/utils';
-import { smBaseUrl } from '@/utils/commonUrl';
+import { smBaseUrl ,baseUrl} from '@/utils/commonUrl';
 import Header from '@/components/Header';
 import styles from '../index.less';
 import {findCanChooseSupplier} from '@/services/SupplierModifyService'
@@ -30,7 +30,7 @@ const getMatermodRef = forwardRef(({
     //let current = 1;
     const dataSource = {
         store: {
-            url: `${smBaseUrl}/api/supplierModifyService/findCanChooseSupplier`,
+            url: `${baseUrl}/srm-baf-web/api/materialSrmService/findBySecondaryClassification`,
             params: {
                 quickSearchValue: searchValue,
                 quickSearchProperties: ['name'],
@@ -38,6 +38,13 @@ const getMatermodRef = forwardRef(({
                     {
                         property: 'name',
                         direction: 'DESC'
+                    }
+                ],
+                filters:[
+                    {
+                        fieldName:'supplierId',
+                        value: 1,
+                        operator:'EQ'
                     }
                 ]
             },
@@ -115,12 +122,12 @@ const getMatermodRef = forwardRef(({
           },
           {
             title: "物料分类",
-            width: 150,
+            width: 160,
             dataIndex: "managementLevellName"
           },
           {
             title: "物料代码",
-            width: 120,
+            width: 160,
             dataIndex: "supplierCode"
           },
           {

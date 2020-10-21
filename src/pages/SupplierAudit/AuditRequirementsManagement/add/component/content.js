@@ -27,7 +27,7 @@ const Content = (props) => {
   }
 
   const onCancel = () => {
-
+    props.onCancel()
   }
 
   const clearSelected = () => {

@@ -2,7 +2,12 @@ import React from 'react';
 import { ComboList, ExtModal } from 'suid';
 import { Col, Form, Input, Row } from 'antd';
 import { CorporationListConfig } from '../../../../QualitySynergy/commonProps';
-import { AllCompanyConfig, AuditCauseManagementConfig, SelectionStrategyConfig } from '../../../mainData/commomService';
+import {
+  AllCompanyConfig,
+  AuditCauseManagementConfig,
+  NormalSupplierConfig,
+  SelectionStrategyConfig,
+} from '../../../mainData/commomService';
 
 const FormItem = Form.Item;
 
@@ -33,6 +38,10 @@ const AddBeAudited = (props) => {
 
   const clearSelected = () => {
 
+  }
+
+  const modeSelect = (item) => {
+    console.log(item)
   }
 
   const hideFormItem = (name, initialValue) => (
@@ -127,6 +136,7 @@ const AddBeAudited = (props) => {
                     form={form}
                     name={'name'}
                     field={['code']}
+                    afterSelect={modeSelect}
                     {...SelectionStrategyConfig}
                   />,
                 )
@@ -145,7 +155,14 @@ const AddBeAudited = (props) => {
                     },
                   ],
                 })(
-                  <Input />
+                  <ComboList
+                    allowClear={true}
+                    style={{ width: '100%' }}
+                    form={form}
+                    name={'name'}
+                    field={['code']}
+                    {...NormalSupplierConfig}
+                  />,
                 )
               }
             </FormItem>

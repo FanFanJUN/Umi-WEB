@@ -1,5 +1,5 @@
 import React, { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment } from 'react';
-import { ExtTable, ExtModal, ScrollBar } from 'suid';
+import { ExtTable, ExtModal, ScrollBar, DataImport } from 'suid';
 import { Button, DatePicker, Form, Modal, message, Input } from 'antd';
 import { smBaseUrl, supplierManagerBaseUrl } from '@/utils/commonUrl';
 import { getUserName, getUserId, getUserAccount } from '../../../../utils';
@@ -12,6 +12,7 @@ import styles from './index.less'
 import moment from 'moment';
 import { CommonTable } from '../../TechnicalDataSharing/DataSharingList/component/CommonTable';
 import { recommendUrl } from '../../../../utils/commonUrl';
+const DEVELOPER_ENV = process.env.NODE_ENV === 'development';
 const { create, Item: FormItem } = Form;
 const formLayout = {
     labelCol: { span: 8, },
@@ -269,6 +270,41 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
             else return ''
         }
     }
+    const validateItem = (data) => {
+        return new Promise((resolve, reject) => {
+            const dataList = data.map(item => {
+                return item;
+            })
+            // JudgeTheListOfESPM(dataList).then(res => {
+            //     const response = res.data.map((item, index) => ({
+            //         ...item,
+            //         key: index,
+            //         validate: item.importResult,
+            //         status: item.importResult ? '数据完整' : '失败',
+            //         statusCode: item.importResult ? 'success' : 'error',
+            //         message: item.importResult ? '成功' : item.importResultInfo
+            //     }))
+            //     resolve(response);
+            // }).catch(err => {
+            //     reject(err)
+            // })
+        })
+    };
+
+    const importFunc = (value) => {
+        const dataList = value.map(item => {
+            return item;
+        })
+        // SaveTheListOfESPM(dataList).then(res => {
+        //     if (res.success) {
+        //         message.success('导入成功');
+        //         tableRightRef.current.manualSelectedRows();
+        //         tableRightRef.current.remoteDataRefresh();
+        //     } else {
+        //         message.error(res.message)
+        //     }
+        // });
+    };
     return <Fragment>
         <ExtModal
             destroyOnClose={true}
@@ -282,7 +318,7 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
             width={1100}
             title={supplierModalType === 'distribute' ? "分配供应商" : "查看供应商"}
         >
-            <div className={styles.mbt} style={{ display: supplierModalType === 'distribute' ? 'block' : 'none' }}>
+            <div className={styles.mbt} style={{ display: supplierModalType === 'distribute' ? 'flex' : 'none' }}>
                 <Button type='primary' className={styles.btn} onClick={() => { setAddVisible(true) }} key="add">新增</Button>
                 <Button className={styles.btn}
                     disabled={selectedRows.length === 0 || checkSameBatch()}
@@ -298,7 +334,20 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                 <Button className={styles.btn} onClick={() => { handlePublish(false) }}
                     disabled={checkAllSameStatus('publish') === 2 || checkAllSameStatus('publish') === false}
                 >取消发布</Button>
-                <Button className={styles.btn} onClick={() => { handleSave() }}>保存</Button>
+                <Button style={{margin: '0 6px 0 3px'}} onClick={() => { handleSave() }}>保存</Button>
+                <DataImport
+                    tableProps={{ columns: columns }}
+                    validateFunc={validateItem}
+                    importFunc={importFunc}
+                    validateAll={true}
+                    templateFileList={[
+                        {
+                            download: `${DEVELOPER_ENV ? '':'/react-srm-sm-web'}/templates/分配供应商批导模板.xlsx`,
+                            fileName: '分配供应商批导模板.xlsx',
+                            key: 'LimitMaterial',
+                        },
+                    ]}
+                />
             </div>
             <ScrollBar>
                 <ExtTable

@@ -16,7 +16,6 @@ const { create } = Form;
 const FormItem = Form.Item;
 const { authAction, storage } = utils;
 let keys = 1;
-let lineCode = 1;
 const ModifyinfluenceRef = forwardRef(({
     form,
     isView,
@@ -33,15 +32,11 @@ const ModifyinfluenceRef = forwardRef(({
     const getMatermodRef = useRef(null)
     const getSeeMaterRef = useRef(null)
     const modifyinfluenceFormRef = useRef(null)
-    const [dataSource, setDataSource] = useState([{
-        key:1,
-        lineCode:'1212321'
-    }]);
+    const [dataSource, setDataSource] = useState([]);
     const [selectRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [attachId, setAttachId] = useState('')
     const [visible, setVisible] = useState(false);
-    let Modeltitle = '新增';
     useEffect(() => {
 
     }, [])
@@ -49,49 +44,49 @@ const ModifyinfluenceRef = forwardRef(({
     const columns = [
         {
             title: '原厂代码',
-            dataIndex: 'lineCode',
+            dataIndex: 'smOriginalFactoryCode',
             align: 'center',
             width: 80
         },
         {
             title: '原厂名称',
-            dataIndex: 'countryName',
+            dataIndex: 'smOriginalFactoryName',
             align: 'center',
             width: 220,
         },
         {
             title: '物料分类',
-            dataIndex: 'provinceName',
+            dataIndex: 'materielCategoryId',
             align: 'center',
             width: 160,
         },
         {
             title: '公司代码',
             align: 'center',
-            dataIndex: 'regionName',
+            dataIndex: 'companyCode',
             width: 160,
         },
         {
             title: '公司名称',
             align: 'center',
-            dataIndex: 'bankCode',
+            dataIndex: 'companyName',
             width: 220,
         },
         {
             title: '采购组织代码',
-            dataIndex: 'openingPermitIdrft',
+            dataIndex: 'purchaseOrgCode',
             align: 'center',
             width: 200,
         },
         {
             title: '采购组织名称',
-            dataIndex: 'openingPermitId',
+            dataIndex: 'purchaseOrgName',
             align: 'center',
             width: 200,
         },
         {
             title: '是否安规件',
-            dataIndex: 'openingPermitIde',
+            dataIndex: 'smPcnPart',
             align: 'center',
             width: 160,
             render: (text, record, index) => {
@@ -122,7 +117,7 @@ const ModifyinfluenceRef = forwardRef(({
         },
         {
             title: '战略采购',
-            dataIndex: 'openingPermitIeed',
+            dataIndex: 'smPcnStrategicId',
             align: 'center',
             width: 220,
             render: (text, record, index) => {
@@ -154,7 +149,21 @@ const ModifyinfluenceRef = forwardRef(({
         }
     ].map(_ => ({ ..._, align: 'center' }))
     const empty = selectRowKeys.length === 0;
-
+    // 新增的
+    function selectanalysis(val) {
+        let newsdata = [];
+        val.map((item, index) => {
+            newsdata.push({
+                key: keys ++,
+                materielCategoryId: item.materielCategory.name,
+                companyCode: item.corporation.code,
+                companyName: item.corporation.name,
+                purchaseOrgCode: item.purchaseOrgCode,
+                purchaseOrgName: item.purchaseOrg.name,
+            })
+            setDataSource(newsdata);
+        })
+    }
     // 记录列表选中
     function handleSelectedRows(rowKeys, rows) {
         setRowKeys(rowKeys);
@@ -236,7 +245,6 @@ const ModifyinfluenceRef = forwardRef(({
                             allowCancelSelect={true}
                             size='small'
                             height={height}
-                            Modeltitle={Modeltitle}
                             remotePaging={true}
                             ellipsis={false}
                             saveData={false}
@@ -248,7 +256,8 @@ const ModifyinfluenceRef = forwardRef(({
                     }
                 </AutoSizeLayout>
                 <div>
-                    <InfluenceMaterielModal 
+                    <InfluenceMaterielModal
+                        modifyanalysis={selectanalysis} 
                         wrappedComponentRef={getModelRef}
                     />
                     <MaterielModal 

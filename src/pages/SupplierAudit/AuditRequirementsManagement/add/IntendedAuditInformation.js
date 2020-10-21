@@ -4,12 +4,14 @@ import { Col, Form, Modal, Row, Input, DatePicker, Button } from 'antd';
 import { ExtTable } from 'suid';
 import AddBeAudited from './component/addBeAudited';
 import Content from './component/content';
+import Team from './component/team';
 
 let IntendedAuditInformation = React.forwardRef((props, ref) => {
 
   const tableRef = useRef(null);
 
   const [data, setData] = useState({
+    teamVisible: false,
     contentVisible: false,
     type: 'add',
     dataSource: [
@@ -29,7 +31,7 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
     ],
     selectRows: [],
     selectedRowKeys: [],
-    visible: false,
+    visible: true,
     title: '新增拟审核信息'
   })
 
@@ -52,6 +54,10 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
     switch (type) {
       case 'add':
         return setData(v => ({...v, visible: true, title: '新增拟审核信息', type: 'add'}))
+      case 'content':
+        return showContent()
+      case 'team':
+        return showTeam()
     }
   }
 
@@ -66,7 +72,7 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
 
   // 打开小组界面
   const showTeam = () => {
-
+    setData(v => ({...v, teamVisible: true}))
   }
 
   return (
@@ -79,8 +85,8 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
               <Button onClick={() => {handleBtn('add')}} type='primary'>新增</Button>
               <Button disabled={data.selectRows.length !== 1} onClick={() => {handleBtn('edit')}} style={{marginLeft: '5px'}}>编辑</Button>
               <Button disabled={data.selectedRowKeys.length < 1} onClick={() => {handleBtn('delete')}} style={{marginLeft: '5px'}}>删除</Button>
-              <Button disabled={data.selectRows.length !== 1} onClick={() => {handleBtn('edit')}} style={{marginLeft: '5px'}}>审核内容管理</Button>
-              <Button disabled={data.selectedRowKeys.length < 1} onClick={() => {handleBtn('delete')}} style={{marginLeft: '5px'}}>审核小组管理</Button>
+              <Button disabled={data.selectRows.length !== 1} onClick={() => {handleBtn('content')}} style={{marginLeft: '5px'}}>审核内容管理</Button>
+              <Button disabled={data.selectedRowKeys.length < 1} onClick={() => {handleBtn('team')}} style={{marginLeft: '5px'}}>审核小组管理</Button>
             </div>
           }
           <ExtTable
@@ -106,7 +112,12 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
         onCancel={() => setData(v => ({...v, visible: false}))}
       />
       <Content
+        onCancel={() => setData(v => ({...v, contentVisible: false}))}
         visible={data.contentVisible}
+      />
+      <Team
+        onCancel={() => setData(v => ({...v, teamVisible: false}))}
+        visible={data.teamVisible}
       />
     </div>
   );

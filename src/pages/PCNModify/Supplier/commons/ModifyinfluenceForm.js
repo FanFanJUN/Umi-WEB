@@ -54,8 +54,8 @@ const HeadFormRef = forwardRef(({
                         <Col span={20}>
                             <FormItem label='环保影响' {...formLayout}>
                                 {
-                                    getFieldDecorator('remarkConfig', {
-                                        initialValue: dataSource && dataSource.remarkConfig,
+                                    getFieldDecorator('smEnvironmentalImpact', {
+                                        initialValue: dataSource && dataSource.smEnvironmentalImpact,
                                         rules: [
                                             {
                                                 required: true,
@@ -64,8 +64,8 @@ const HeadFormRef = forwardRef(({
                                         ],
                                     })(
                                         <RadioGroup disabled={isView === true} onChange={(e) => scienceEnvir(e)}>
-                                            <Radio value="Organize" >有影响</Radio>
-                                            <Radio value="Organized" >无影响</Radio>
+                                            <Radio value="true" >有影响</Radio>
+                                            <Radio value="false" >无影响</Radio>
                                         </RadioGroup>
                                     )
                                 }
@@ -76,8 +76,8 @@ const HeadFormRef = forwardRef(({
                         <Col span={20}>
                             <FormItem label='安规影响' {...formLayout}>
                                 {
-                                    getFieldDecorator('remarkConfige', {
-                                        initialValue: dataSource && dataSource.remarkConfige,
+                                    getFieldDecorator('smSafetyImpact', {
+                                        initialValue: dataSource && dataSource.smSafetyImpact,
                                         rules: [
                                             {
                                                 required: true,
@@ -86,8 +86,8 @@ const HeadFormRef = forwardRef(({
                                         ],
                                     })(
                                         <RadioGroup disabled={isView === true}>
-                                            <Radio value="Safety">有影响</Radio>
-                                            <Radio value="Safetyno">无影响</Radio>
+                                            <Radio value="true">有影响</Radio>
+                                            <Radio value="false">无影响</Radio>
                                         </RadioGroup>
                                     )
                                 }
@@ -98,8 +98,8 @@ const HeadFormRef = forwardRef(({
                         <Col span={20}>
                             <FormItem label='安全可靠性、电性能影响' {...formLayout}>
                                 {
-                                    getFieldDecorator('remarkConfigw', {
-                                        initialValue: dataSource && dataSource.remarkConfigw,
+                                    getFieldDecorator('smSecurityImpac', {
+                                        initialValue: dataSource && dataSource.smSecurityImpac,
                                         rules: [
                                             {
                                                 required: true,
@@ -108,8 +108,8 @@ const HeadFormRef = forwardRef(({
                                         ],
                                     })(
                                         <RadioGroup disabled={isView === true}>
-                                            <Radio value="security">有影响</Radio>
-                                            <Radio value="securityno">无影响</Radio>
+                                            <Radio value="true">有影响</Radio>
+                                            <Radio value="false">无影响</Radio>
                                         </RadioGroup>
                                     )
                                 }
@@ -120,8 +120,8 @@ const HeadFormRef = forwardRef(({
                         <Col span={20}>
                             <FormItem label='其他物料或整机的影响' {...formLayout}>
                                 {
-                                    getFieldDecorator('remarkConfigq', {
-                                        initialValue: dataSource && dataSource.remarkConfigq,
+                                    getFieldDecorator('smMachineImpact', {
+                                        initialValue: dataSource && dataSource.smMachineImpact,
                                         rules: [
                                             {
                                                 required: true,
@@ -130,8 +130,8 @@ const HeadFormRef = forwardRef(({
                                         ],
                                     })(
                                         <RadioGroup disabled={isView === true}>
-                                            <Radio value="machine">有影响</Radio>
-                                            <Radio value="machineno">无影响</Radio>
+                                            <Radio value="true">有影响</Radio>
+                                            <Radio value="false">无影响</Radio>
                                         </RadioGroup>
                                     )
                                 }
@@ -142,8 +142,8 @@ const HeadFormRef = forwardRef(({
                         <Col span={20}>
                             <FormItem label='其他物料或整机的影响' {...formLayout}>
                                 {
-                                    getFieldDecorator('remarkConfigedf', {
-                                        initialValue: dataSource && dataSource.remarkConfigedf,
+                                    getFieldDecorator('smOtherImpact', {
+                                        initialValue: dataSource && dataSource.smOtherImpact,
                                     })(
                                         <TextArea
                                             style={{

@@ -34,8 +34,11 @@ const ModifyForm = forwardRef(
         const { getFieldDecorator, validateFieldsAndScroll, getFieldValue, setFieldsValue } = form;
         const [initialValue, setInitialValue] = useState({});
         useEffect(() => {
+            console.log(type)
             if (type) {
                 setInitialValue(dataSource)
+            }else {
+                setInitialValue({})
             }
         }, [visible]);
 
@@ -48,7 +51,7 @@ const ModifyForm = forwardRef(
         }
         // 变更内容
         function changevalue(val) {
-            form.setFieldsValue({ smFieldName: val.changeRequiredSubmission})
+            form.setFieldsValue({ smChangeProve: val.changeRequiredSubmission})
         }
         return (
             <Modal
@@ -64,8 +67,8 @@ const ModifyForm = forwardRef(
                 <Row>
                     <Col span={20}>
                         <Item {...formLayout} label="变更内容">
-                            {getFieldDecorator('smFieldCode', {
-                                initialValue: dataSource && dataSource.smFieldCode,
+                            {getFieldDecorator('smChangeValue', {
+                                initialValue: initialValue && initialValue.smChangeValue,
                                 rules: [
                                     {
                                         required: true,
@@ -77,7 +80,7 @@ const ModifyForm = forwardRef(
                                     showSearch={false}
                                     style={{ width: '100%' }}
                                     {...ChangecontentList}
-                                    name='smFieldCode'
+                                    name='smChangeValue'
                                     form={form}
                                     afterSelect={changevalue}
                                 />
@@ -88,8 +91,8 @@ const ModifyForm = forwardRef(
                 <Row>
                     <Col span={20}>
                         <Item {...formLayout} label="变更描述（变更前）">
-                            {getFieldDecorator('smFieldNamee', {
-                                initialValue: dataSource && dataSource.smFieldNamee,
+                            {getFieldDecorator('smChangeDescriptionBefore', {
+                                initialValue: initialValue && initialValue.smChangeDescriptionBefore,
                                 rules: [
                                     {
                                         required: true,
@@ -110,8 +113,8 @@ const ModifyForm = forwardRef(
                 <Row>
                     <Col span={20}>
                         <Item {...formLayout} label="变更描述（变更后）">
-                            {getFieldDecorator('smFieldNamed', {
-                                initialValue: dataSource && dataSource.smFieldNamed,
+                            {getFieldDecorator('smChangeDescriptionAfter', {
+                                initialValue: initialValue && initialValue.smChangeDescriptionAfter,
                                 rules: [
                                     {
                                         required: true,
@@ -132,8 +135,8 @@ const ModifyForm = forwardRef(
                 <Row>
                     <Col span={20}>
                         <Item {...formLayout} label="变更原因">
-                            {getFieldDecorator('smFieldNamef', {
-                                initialValue: dataSource && dataSource.smFieldNamef,
+                            {getFieldDecorator('smChangeReason', {
+                                initialValue: initialValue && initialValue.smChangeReason,
                                 rules: [
                                     {
                                         required: true,
@@ -154,8 +157,8 @@ const ModifyForm = forwardRef(
                 <Row>
                     <Col span={20}>
                         <Item {...formLayout} label="证明材料（参考）">
-                            {getFieldDecorator('smFieldName', {
-                                initialValue: dataSource && dataSource.smFieldName,
+                            {getFieldDecorator('smChangeProve', {
+                                initialValue: initialValue && initialValue.smChangeProve,
                             })(
                                 <TextArea
                                     disabled
@@ -183,7 +186,7 @@ const ModifyForm = forwardRef(
                                 })(
                                     <UploadFile
                                         title={"附件上传"}
-                                        entityId={dataSource ? dataSource.enclosureId : null}
+                                        entityId={initialValue ? initialValue.openingPermitId : null}
                                         type={isView ? "show" : ""}
                                     />
                                 )

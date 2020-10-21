@@ -1,4 +1,4 @@
-import { baseUrl, recommendUrl } from '../../../utils/commonUrl';
+import { baseUrl, recommendUrl, smBaseUrl } from '../../../utils/commonUrl';
 import request from '../../../utils/request';
 
 const commonProps = {
@@ -8,6 +8,23 @@ const commonProps = {
   },
   style: {
     width: '100%',
+  },
+};
+
+// 正常供应商
+export const NormalSupplierConfig = {
+  placeholder: '选择正常供应商',
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${smBaseUrl}/supplier/findNormalSuppliers`,
+  },
+  remotePaging: true,
+  rowKey: 'code',
+  reader: {
+    field: ['code', 'id'],
+    name: 'name',
+    description: 'code',
   },
 };
 

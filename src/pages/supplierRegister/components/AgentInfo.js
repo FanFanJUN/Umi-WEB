@@ -273,20 +273,23 @@ const Agentformef = forwardRef(({
   }
   // 获取表单值
   function getAgentform() {
+    let sendbank = false;
     const agentInfo = tabformRef.current.data;
-    console.log(agentInfo)
     if (!agentInfo || agentInfo.length === 0) {
       return false;
     }else {
       agentInfo.map(item => {
-        if (isEmpty(item.originalCompanyName) || isEmpty(item.originalCode) || isEmpty(item.agentBrand) || isEmpty(item.countryName) || 
-          isEmpty(item.originalAddress) || isEmpty(item.businessLicenseDocIds) || isEmpty(item.powerAttorneyDocIds)) {
+        if (isEmpty(item.originalCode) || isEmpty(item.originalCompanyName) || isEmpty(item.agentBrand) || isEmpty(item.countryName) || 
+          isEmpty(item.originalAddress) || isEmpty(item.businessLicenseDocId) || isEmpty(item.powerAttorneyDocId)) {
+            sendbank = false;
           return false;
         }else {
+          sendbank = true;
           return agentInfo;
         }
       })
     }
+    return sendbank ? agentInfo : false
   }
   // 设置所有表格参数
   const setHeaderFields = (fields) => {
