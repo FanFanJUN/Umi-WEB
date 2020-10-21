@@ -5,17 +5,15 @@ import { recommendUrl } from '../../../../utils/commonUrl';
 import Header from '../../../../components/Header';
 import AdvancedForm from '../../../../components/AdvancedForm';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
+import Upload from '../../compoent/Upload';
 import {
     BUConfigNoFrostHighSearch,
-    DeleteDataSharingList,
-    judge,
-    materialCode,
     MaterialConfig,
-    MaterialGroupConfig, RecallDataSharingList,
+    MaterialGroupConfig,
     ShareDistributionProps,
     ShareStatusProps,
+    CorporationListConfig,
     StrategicPurchaseConfig,
-    SubmitDataSharingList,
 } from '../../commonProps';
 const { authAction } = utils;
 const { Search } = Input;
@@ -38,6 +36,7 @@ export default function () {
         { title: '申请人', key: 'applyPeopleName', props: { placeholder: '输入申请人查询' } },
         { title: '分配供应商状态', key: 'allotSupplierState', type: 'list', props: ShareDistributionProps },
         { title: '状态', key: 'state', type: 'list', props: ShareStatusProps },
+        { title: '文件类别', key: 'fileCategoryCode', type: 'list', props: CorporationListConfig },
     ];
 
     const columns = [
@@ -45,7 +44,7 @@ export default function () {
         { title: '分配供应商状态', dataIndex: 'allotSupplierState', width: 160 },
         { title: '来源', dataIndex: 'source', width: 70 },
         { title: '分享需求号', dataIndex: 'shareDemanNumber', ellipsis: true, width: 180 },
-        { title: '分享需求行号', dataIndex: 'shareDemanNumber', ellipsis: true, width: 180 },
+        { title: '分享需求行号', dataIndex: 'shareDemanLineNumber', ellipsis: true, width: 180 },
         { title: '物料代码', dataIndex: 'materialCode', ellipsis: true },
         { title: '物料描述', dataIndex: 'materialName', ellipsis: true },
         { title: '物料组代码', dataIndex: 'materialGroupCode', ellipsis: true },
@@ -57,15 +56,16 @@ export default function () {
         { title: '申请人', dataIndex: 'applyPeopleName', ellipsis: true },
         { title: '申请人联系方式', dataIndex: 'applyPeoplePhone', ellipsis: true },
         { title: '申请日期', dataIndex: 'applyDate', ellipsis: true, width: 160 },
-        { title: '文件类别', dataIndex: 'applyDate1', ellipsis: true, width: 160 },
-        { title: '图纸状态', dataIndex: 'applyDate2', ellipsis: true, width: 160 },
-        { title: '技术资料附件', dataIndex: 'applyDate3', ellipsis: true, width: 160 },
-        { title: '样品需求数量', dataIndex: 'applyDate4', ellipsis: true, width: 160 },
-        { title: '计量单位', dataIndex: 'applyDate5', ellipsis: true, width: 160 },
-        { title: '样品需求日期', dataIndex: 'applyDate6', ellipsis: true, width: 160 },
-        { title: '样品收件人姓名', dataIndex: 'applyDate7', ellipsis: true, width: 160 },
-        { title: '样品收件人联系方式', dataIndex: 'applyDate8', ellipsis: true, width: 160 },
-        { title: '备注', dataIndex: 'applyDate9', ellipsis: true, width: 160 },
+        { title: '文件类别', dataIndex: 'fileCategoryName', width: 140 },
+        { title: '文件版本', dataIndex: 'fileVersion', width: 140, ellipsis: true, },
+        { title: '图纸状态', dataIndex: 'drawFlag', ellipsis: true, width: 140},
+        { title: '技术资料附件', dataIndex: 'technicalDataFileIdList', width: 140, ellipsis: true,render: (v) => <Upload type='show' entityId={v}>查看</Upload> },
+        { title: '样品需求数量', dataIndex: 'sampleRequirementNum', ellipsis: true, width: 140},
+        { title: '计量单位', dataIndex: 'measureUnit', ellipsis: true, width: 140},
+        { title: '样品需求日期', dataIndex: 'sampleRequirementDate', width: 140, ellipsis: true,},
+        { title: '样品收件人姓名', dataIndex: 'sampleReceiverName', ellipsis: true, width: 140},
+        { title: '样品收件人联系方式', dataIndex: 'sampleReceiverTel', ellipsis: true, width: 140},
+        { title: '备注', dataIndex: 'remark', ellipsis: true, width: 140},
     ].map(item => ({ ...item, align: 'center' }));
     const headerLeft = <>
         {
