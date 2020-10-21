@@ -12,39 +12,39 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
 
   const [data, setData] = useState({
     teamVisible: false,
-    contentVisible: false,
+    contentVisible: true,
     type: 'add',
     dataSource: [
       {
         id: 123,
         fileCategoryName: 1,
-        fileVersion: 2,
-        drawFlag: 2,
-        technicalDataFileIdList: 4,
-        sampleRequirementNum: 5,
-        measureUnit: 6,
-        sampleRequirementDate: 7,
-        sampleReceiverName: 8,
-        sampleReceiverTel: 10,
+        reviewTypeName: 2,
+        reviewReasonName: 2,
+        materialGroupName: 4,
+        supplierName: 5,
+        agentName: 6,
+        countryName: 7,
+        contactUserName: 8,
+        contactUserTel: 10,
         remark:9
       }
     ],
     selectRows: [],
     selectedRowKeys: [],
-    visible: true,
+    visible: false,
     title: '新增拟审核信息'
   })
 
   const columns = [
-    { title: '操作', dataIndex: 'fileCategoryName', width: 140, render: () => <span><a onClick={showContent}>内容</a>  <a onClick={showTeam}>小组</a></span> },
-    { title: '审核类型', dataIndex: 'fileVersion', width: 140, ellipsis: true, },
-    { title: '审核原因', dataIndex: 'drawFlag', ellipsis: true, width: 140},
-    { title: '物料分类', dataIndex: 'technicalDataFileIdList', width: 140, ellipsis: true, },
-    { title: '供应商', dataIndex: 'sampleRequirementNum', ellipsis: true, width: 140},
-    { title: '代理商', dataIndex: 'measureUnit', ellipsis: true, width: 140},
-    { title: '生产厂地址', dataIndex: 'sampleRequirementDate', width: 140, ellipsis: true,},
-    { title: '供应商联系人', dataIndex: 'sampleReceiverName', ellipsis: true, width: 140},
-    { title: '供应商联系电话', dataIndex: 'sampleReceiverTel', ellipsis: true, width: 140},
+    { title: '操作', dataIndex: 'id', width: 140, render: () => <span><a onClick={showContent}>内容</a>  <a onClick={showTeam}>小组</a></span> },
+    { title: '审核类型', dataIndex: 'reviewTypeName', width: 140, ellipsis: true, },
+    { title: '审核原因', dataIndex: 'reviewReasonName', ellipsis: true, width: 140},
+    { title: '物料分类', dataIndex: 'materialGroupName', width: 140, ellipsis: true, },
+    { title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 140},
+    { title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 140},
+    { title: '生产厂地址', dataIndex: 'countryName', width: 140, render: (v, data) => <span>{data.countryName + data.provinceName + data.cityName + data.countyName + data.address}</span>},
+    { title: '供应商联系人', dataIndex: 'contactUserName', ellipsis: true, width: 140},
+    { title: '供应商联系电话', dataIndex: 'contactUserTel', ellipsis: true, width: 140},
     { title: '备注', dataIndex: 'remark', ellipsis: true, width: 140},
   ].map(item => ({...item, align: 'center'}))
 

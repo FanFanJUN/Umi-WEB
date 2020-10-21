@@ -11,6 +11,24 @@ const commonProps = {
   },
 };
 
+// 评价体系
+export const EvaluationSystemConfig = {
+  store: {
+    type: 'POST',
+    url: `${baseUrl}/api/supplierEvlSystemService/findTreeByBusinessUnitId`,
+  },
+  reader: {
+    field: ['code', 'id'],
+    name: 'name',
+    description: 'code',
+  },
+  placeholder: '选择审核体系',
+  style: {
+    width: '100%'
+  },
+
+};
+
 // 正常供应商
 export const NormalSupplierConfig = {
   placeholder: '选择正常供应商',
@@ -33,11 +51,11 @@ export const SelectionStrategyConfig = {
   allowClear: true,
   dataSource: [
     {
-      code: '合格供应商名录',
+      code: 'QUALIFIED_SUPPLIER',
       name: '合格供应商名录',
     },
     {
-      code: '正常供应商',
+      code: 'NORMAL_SUPPLIER',
       name: '正常供应商',
     },
   ],
@@ -262,6 +280,16 @@ export const AuditCauseManagementFrozen = async (params) => {
 // 审核原因管理新增
 export const AuditCauseManagementAdd = async (params) => {
   const url = `${baseUrl}/reviewReason/addReviewReason`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+}
+
+// 审核类型管理所有
+export const AuditTypeManagementAll = async (params) => {
+  const url = `${baseUrl}/reviewType/findAll`;
   return request({
     url,
     method: 'POST',

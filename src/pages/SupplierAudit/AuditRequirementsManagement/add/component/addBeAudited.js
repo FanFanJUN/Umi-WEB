@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ComboList, ExtModal } from 'suid';
 import { Col, Form, Input, Row } from 'antd';
 import { CorporationListConfig } from '../../../../QualitySynergy/commonProps';
 import {
   AllCompanyConfig,
-  AuditCauseManagementConfig,
+  AuditCauseManagementConfig, AuditTypeManagementAll,
   NormalSupplierConfig,
   SelectionStrategyConfig,
 } from '../../../mainData/commomService';
@@ -40,9 +40,11 @@ const AddBeAudited = (props) => {
 
   }
 
-  const modeSelect = (item) => {
-    console.log(item)
-  }
+  useEffect(() => {
+    // AuditTypeManagementAll().then(res => {
+    //   console.log(res)
+    // })
+  }, [])
 
   const hideFormItem = (name, initialValue) => (
     <FormItem>
@@ -70,15 +72,15 @@ const AddBeAudited = (props) => {
       <Form>
         <Row>
           <Col span={0}>
-            {hideFormItem('fileCategoryCode', type === 'add' ? '' : fatherData.fileCategoryCode)}
+            {hideFormItem('reviewTypeId', type === 'add' ? '' : fatherData.reviewTypeId)}
           </Col>
           <Col span={0}>
-            {hideFormItem('fileCategoryId', type === 'add' ? '' : fatherData.fileCategoryId)}
+            {hideFormItem('reviewTypeCode', type === 'add' ? '' : fatherData.reviewTypeCode)}
           </Col>
           <Col span={12}>
             <FormItem {...formItemLayoutLong} label={'审核类型'}>
               {
-                getFieldDecorator('fileCategoryName', {
+                getFieldDecorator('reviewTypeName', {
                   initialValue: type === 'add' ? '追加审核' : '',
                   rules: [
                     {
@@ -92,10 +94,16 @@ const AddBeAudited = (props) => {
               }
             </FormItem>
           </Col>
+          <Col span={0}>
+            {hideFormItem('reviewReasonId', type === 'add' ? '' : fatherData.reviewReasonId)}
+          </Col>
+          <Col span={0}>
+            {hideFormItem('reviewReasonCode', type === 'add' ? '' : fatherData.reviewReasonCode)}
+          </Col>
           <Col span={12}>
             <FormItem {...formItemLayoutLong} label={'审核原因'}>
               {
-                getFieldDecorator('fileCategoryName', {
+                getFieldDecorator('reviewReasonName', {
                   initialValue: type === 'add' ? '' : '',
                   rules: [
                     {
@@ -108,8 +116,8 @@ const AddBeAudited = (props) => {
                     allowClear={true}
                     style={{ width: '100%' }}
                     form={form}
-                    name={'name'}
-                    field={['code', 'id']}
+                    name={'reviewReasonName'}
+                    field={['reviewReasonCode', 'reviewReasonId']}
                     {...AuditCauseManagementConfig}
                   />,
                 )
@@ -121,7 +129,7 @@ const AddBeAudited = (props) => {
           <Col span={12}>
             <FormItem {...formItemLayoutLong} label={'供应商选择方式'}>
               {
-                getFieldDecorator('fileCategoryName', {
+                getFieldDecorator('supplierStrategyName', {
                   initialValue: type === 'add' ? '' : '',
                   rules: [
                     {
@@ -134,9 +142,7 @@ const AddBeAudited = (props) => {
                     allowClear={true}
                     style={{ width: '100%' }}
                     form={form}
-                    name={'name'}
-                    field={['code']}
-                    afterSelect={modeSelect}
+                    name={'supplierStrategyName'}
                     {...SelectionStrategyConfig}
                   />,
                 )
@@ -156,6 +162,7 @@ const AddBeAudited = (props) => {
                   ],
                 })(
                   <ComboList
+                    disabled={getFieldValue('supplierStrategyName') !== '正常供应商'}
                     allowClear={true}
                     style={{ width: '100%' }}
                     form={form}
@@ -169,10 +176,16 @@ const AddBeAudited = (props) => {
           </Col>
         </Row>
         <Row>
+          <Col span={0}>
+            {hideFormItem('agentId', type === 'add' ? '' : fatherData.agentId)}
+          </Col>
+          <Col span={0}>
+            {hideFormItem('agentCode', type === 'add' ? '' : fatherData.agentCode)}
+          </Col>
           <Col span={12}>
             <FormItem {...formItemLayoutLong} label={'代理商'}>
               {
-                getFieldDecorator('fileCategoryName', {
+                getFieldDecorator('agentName', {
                   initialValue: type === 'add' ? '' : '',
                 })(
                   <Input />
@@ -180,10 +193,16 @@ const AddBeAudited = (props) => {
               }
             </FormItem>
           </Col>
+          <Col span={0}>
+            {hideFormItem('materialGroupId', type === 'add' ? '' : fatherData.materialGroupId)}
+          </Col>
+          <Col span={0}>
+            {hideFormItem('materialGroupCode', type === 'add' ? '' : fatherData.materialGroupCode)}
+          </Col>
           <Col span={12}>
             <FormItem {...formItemLayoutLong} label={'物料分类'}>
               {
-                getFieldDecorator('fileCategoryName', {
+                getFieldDecorator('materialGroupName', {
                   initialValue: type === 'add' ? '' : '',
                   rules: [
                     {
@@ -199,15 +218,53 @@ const AddBeAudited = (props) => {
           </Col>
         </Row>
         <Row>
+          <Col span={0}>
+            {hideFormItem('countryId', type === 'add' ? '' : fatherData.countryId)}
+          </Col>
+          <Col span={0}>
+            {hideFormItem('countryCode', type === 'add' ? '' : fatherData.countryCode)}
+          </Col>
+          <Col span={0}>
+            {hideFormItem('provinceId', type === 'add' ? '' : fatherData.provinceId)}
+          </Col>
+          <Col span={0}>
+            {hideFormItem('provinceCode', type === 'add' ? '' : fatherData.provinceCode)}
+          </Col>
+          <Col span={0}>
+            {hideFormItem('cityId', type === 'add' ? '' : fatherData.cityId)}
+          </Col>
+          <Col span={0}>
+            {hideFormItem('cityCode', type === 'add' ? '' : fatherData.cityCode)}
+          </Col>
+          <Col span={0}>
+            {hideFormItem('countyId', type === 'add' ? '' : fatherData.countyId)}
+          </Col>
+          <Col span={0}>
+            {hideFormItem('countyCode', type === 'add' ? '' : fatherData.countyCode)}
+          </Col>
+
           <Col span={24}>
             <FormItem {...formItemLayout} label={'生产厂地址'}>
               {
-                getFieldDecorator('fileCategoryName', {
+                getFieldDecorator('countryName', {
                   initialValue: type === 'add' ? '' : '',
                   rules: [
                     {
                       required: true,
-                      message: '物料分类不能为空',
+                      message: '国家不能为空',
+                    },
+                  ],
+                })(
+                  <Input style={{width: '15%'}} placeholder={'国家'}/>
+                )
+              }
+              {
+                getFieldDecorator('provinceName', {
+                  initialValue: type === 'add' ? '' : '',
+                  rules: [
+                    {
+                      required: true,
+                      message: '省不能为空',
                     },
                   ],
                 })(
@@ -215,12 +272,12 @@ const AddBeAudited = (props) => {
                 )
               }
               {
-                getFieldDecorator('fileCategoryName', {
+                getFieldDecorator('cityName', {
                   initialValue: type === 'add' ? '' : '',
                   rules: [
                     {
                       required: true,
-                      message: '物料分类不能为空',
+                      message: '市不能为空',
                     },
                   ],
                 })(
@@ -228,12 +285,12 @@ const AddBeAudited = (props) => {
                 )
               }
               {
-                getFieldDecorator('fileCategoryName', {
+                getFieldDecorator('countyName', {
                   initialValue: type === 'add' ? '' : '',
                   rules: [
                     {
                       required: true,
-                      message: '物料分类不能为空',
+                      message: '区/县不能为空',
                     },
                   ],
                 })(
@@ -241,25 +298,12 @@ const AddBeAudited = (props) => {
                 )
               }
               {
-                getFieldDecorator('fileCategoryName', {
+                getFieldDecorator('address', {
                   initialValue: type === 'add' ? '' : '',
                   rules: [
                     {
                       required: true,
-                      message: '物料分类不能为空',
-                    },
-                  ],
-                })(
-                  <Input style={{width: '15%'}}/>
-                )
-              }
-              {
-                getFieldDecorator('fileCategoryName', {
-                  initialValue: type === 'add' ? '' : '',
-                  rules: [
-                    {
-                      required: true,
-                      message: '物料分类不能为空',
+                      message: '详细地址不能为空',
                     },
                   ],
                 })(
@@ -273,12 +317,12 @@ const AddBeAudited = (props) => {
           <Col span={12}>
             <FormItem {...formItemLayoutLong} label={'供应商联系人'}>
               {
-                getFieldDecorator('fileCategoryName', {
+                getFieldDecorator('contactUserName', {
                   initialValue: type === 'add' ? '' : '',
                   rules: [
                     {
                       required: true,
-                      message: '物料分类不能为空',
+                      message: '供应商联系人不能为空',
                     },
                   ],
                 })(
@@ -290,12 +334,12 @@ const AddBeAudited = (props) => {
           <Col span={12}>
             <FormItem {...formItemLayoutLong} label={'供应商联系方式'}>
               {
-                getFieldDecorator('fileCategoryName', {
+                getFieldDecorator('contactUserTel', {
                   initialValue: type === 'add' ? '' : '',
                   rules: [
                     {
                       required: true,
-                      message: '物料分类不能为空',
+                      message: '供应商联系方式不能为空',
                     },
                   ],
                 })(
@@ -309,7 +353,7 @@ const AddBeAudited = (props) => {
           <Col span={24}>
             <FormItem {...formItemLayout} label={'备注'}>
               {
-                getFieldDecorator('fileCategoryName', {
+                getFieldDecorator('remark', {
                   initialValue: type === 'add' ? '' : '',
                 })(
                   <Input.TextArea rows={6} style={{ width: '100%' }}/>

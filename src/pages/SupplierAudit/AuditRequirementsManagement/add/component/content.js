@@ -1,12 +1,13 @@
 import React, { useRef, useState } from 'react';
-import { ComboList, ExtModal, ExtTable } from 'suid';
-import { Col, Form, Row } from 'antd';
-import { AuditCauseManagementConfig } from '../../../mainData/commomService';
+import { ComboList, ComboTree, ExtModal, ExtTable } from 'suid';
+import { Col, Form, Input, Row } from 'antd';
+import { EvaluationSystemConfig } from '../../../mainData/commomService';
+import ShuttleBox from '../../../common/ShuttleBox';
 const FormItem = Form.Item;
 
 const formItemLayoutLong = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 16 },
+  labelCol: { span: 6 },
+  wrapperCol: { span: 18 },
 };
 
 const columns = []
@@ -15,7 +16,7 @@ const Content = (props) => {
   const tableRef = useRef(null);
 
   const [data, setData] = useState({
-
+    treeData: []
   })
 
   const {visible, form, type} = props
@@ -34,9 +35,22 @@ const Content = (props) => {
 
   }
 
-  const handleSelectedRows = (keys, values) => {
-
+  const systemSelect = (value) => {
+    console.log(value)
+    setData(v => ({...v, treeData: value}))
   }
+
+  const hideFormItem = (name, initialValue) => (
+    <FormItem>
+      {
+        getFieldDecorator(name, {
+          initialValue: initialValue,
+        })(
+          <Input type={'hidden'}/>,
+        )
+      }
+    </FormItem>
+  );
 
   return (
     <ExtModal
@@ -51,10 +65,16 @@ const Content = (props) => {
     >
       <Form>
         <Row>
+          <Col span={0}>
+            {hideFormItem('systemId', '')}
+          </Col>
+          <Col span={0}>
+            {hideFormItem('systemCode', '')}
+          </Col>
           <Col span={12}>
             <FormItem {...formItemLayoutLong} label={'审核体系'}>
               {
-                getFieldDecorator('fileCategoryName', {
+                getFieldDecorator('systemName', {
                   initialValue: type === 'add' ? '' : '',
                   rules: [
                     {
@@ -63,13 +83,14 @@ const Content = (props) => {
                     },
                   ],
                 })(
-                  <ComboList
+                  <ComboTree
                     allowClear={true}
                     style={{ width: '100%' }}
                     form={form}
-                    name={'name'}
-                    field={['code', 'id']}
-                    {...AuditCauseManagementConfig}
+                    name={'systemName'}
+                    afterSelect={systemSelect}
+                    field={['systemCode', 'systemId']}
+                    {...EvaluationSystemConfig}
                   />,
                 )
               }
@@ -77,7 +98,11 @@ const Content = (props) => {
           </Col>
         </Row>
       </Form>
-
+      <div style={{height: '300px', width: '100%'}}>
+        <ShuttleBox
+          leftTreeData={data.treeData}
+        />
+      </div>
     </ExtModal>
   )
 
