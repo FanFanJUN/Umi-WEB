@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-12 14:44:24
- * @LastEditTime: 2020-10-13 10:54:00
+ * @LastEditTime: 2020-10-21 14:32:58
  * @Description: 审核地区城市配置
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/mainData/ReviewCityConf/index.js
  */
@@ -17,8 +17,8 @@ import {
 } from '../../../QualitySynergy/commonProps';
 import { AutoSizeLayout } from '../../../../components';
 import stylesRight from './index.less';
-import renderEmpty from 'antd/lib/config-provider/renderEmpty';
 import EventModal from '../../common/EventModal';
+import { requestDelApi, requestPostApi } from '../mainDataService';
 
 const { authAction } = utils;
 
@@ -26,15 +26,18 @@ const DEVELOPER_ENV = process.env.NODE_ENV === 'development';
 
 const Index = () => {
 
-  const tableRef = useRef(null);
-
   const [data, setData] = useState({
     leftVisible: false,
     rightVisible: false,
     leftTitle: '审核区域新增',
     rigthTitle: '城市新增',
-    type: 'add',
+    letfType: 'add',
+    rightType: 'add',
   });
+
+  const tableLeftRef = useRef(null);
+
+  const tableRightRef = useRef();
 
   const [rightselectRows, setRightSelectRows] = useState([]);
 
@@ -45,18 +48,22 @@ const Index = () => {
   const [leftselectedRowKeys, setLeftSelectedRowKeys] = useState([]);
 
   const columnsforLeft = [
-    { title: '区域', dataIndex: 'buCode', width: 200 },
-    { title: '排序号', dataIndex: 'orderNo', ellipsis: true },
+    { title: '区域', dataIndex: 'name', width: 200 },
+    { title: '排序号', dataIndex: 'rank', ellipsis: true },
   ];
 
   const leftfieldsConfig = [
     {
-      name: '区域',
-      code: 'xx',
+      name: '区域名称',
+      code: 'name',
+    },
+    {
+      name: '区域代码',
+      code: 'code',
     },
     {
       name: '排序号',
-      code: 'xx',
+      code: 'rank',
       type: 'inputNumber'
     }
   ];
@@ -77,13 +84,13 @@ const Index = () => {
     }
   ];
 
-  const buttonClick = async (type, visible, title, text) => {
+  const buttonLeftClick = async (type) => {
     switch (type) {
       case 'add':
-        setData((value) => ({ ...value, [visible]: true, [title]: text, type: 'add' }));
+        setData((value) => ({ ...value, leftTitle: '审核地区新增', leftVisible: true, letfType: 'add' }));
         break;
       case 'edit':
-        setData((value) => ({ ...value, [visible]: true, [title]: text, type: 'edit' }));
+        setData((value) => ({ ...value, leftVisible: true, leftTitle: '审核地区编辑', letfType: 'edit' }));
         break;
       case 'delete':
         await deleteData();
@@ -95,13 +102,13 @@ const Index = () => {
   };
 
   const editData = async () => {
-    const data = await FrostBUCompanyOrganizationRelation({
-      ids: selectedRowKeys.toString(),
-      frozen: !selectRows[0]?.frozen,
+    const data = await requestPostApi({
+      ids: leftselectedRowKeys.toString(),
+      frozen: !leftselectRows[0]?.frozen,
     });
     if (data.success) {
-      tableRef.current.manualSelectedRows();
-      tableRef.current.remoteDataRefresh();
+      tableLeftRef.current.manualSelectedRows();
+      tableLeftRef.current.remoteDataRefresh();
     }
   };
 
@@ -113,12 +120,13 @@ const Index = () => {
       okType: 'danger',
       cancelText: '否',
       async onOk() {
-        const data = await DeleteBUCompanyOrganizationRelation({
-          ids: selectedRowKeys.toString(),
+        const data = await requestDelApi({
+          ids: leftselectedRowKeys.toString(),
+          key: 'LeftReviewCityConf'
         });
         if (data.success) {
-          tableRef.current.manualSelectedRows();
-          tableRef.current.remoteDataRefresh();
+          tableLeftRef.current.manualSelectedRows();
+          tableLeftRef.current.remoteDataRefresh();
         }
       },
     });
@@ -134,12 +142,12 @@ const Index = () => {
     setRightSelectedRowKeys(value);
   };
 
-  const HeaderButtons = (visible, title, selectKeys, selectRows) => {
+  const HeaderLeftButtons = () => {
     return (<div style={{ width: '100%', display: 'flex', height: '100%', alignItems: 'center' }}>
       {
         authAction(<Button
           type='primary'
-          onClick={() => buttonClick('add', visible, title, visible === 'leftVisible' ? '审核地区新增' : '城市新增')}
+          onClick={() => buttonLeftClick('add')}
           className={styles.btn}
           ignore={DEVELOPER_ENV}
           key='QUALITYSYNERGY_BUCOR_ADD'
@@ -147,19 +155,19 @@ const Index = () => {
       }
       {
         authAction(<Button
-          onClick={() => buttonClick('edit', visible, title, visible === 'rightVisible' ? '审核地区编辑' : '城市编辑')}
+          onClick={() => buttonLeftClick('edit')}
           className={styles.btn}
           ignore={DEVELOPER_ENV}
-          disabled={[selectKeys].length === 0 || [selectKeys].length > 1}
+          disabled={leftselectedRowKeys.length === 0 || leftselectedRowKeys.length > 1}
           key='QUALITYSYNERGY_BUCOR_EDIT'
         >编辑</Button>)
       }
       {
         authAction(<Button
-          onClick={() => buttonClick('delete', visible, title)}
+          onClick={() => buttonLeftClick('delete')}
           className={styles.btn}
           ignore={DEVELOPER_ENV}
-          disabled={[selectRows].length === 0}
+          disabled={leftselectedRowKeys.length === 0}
           key='QUALITYSYNERGY_BUCOR_DELETE'
         >删除</Button>)
       }
@@ -170,25 +178,52 @@ const Index = () => {
     setData(() => ({ [visible]: false }));
   }
 
-  const handleOk = async (value) => {
-    if (data.type === 'add') {
-      AddBUCompanyOrganizationRelation(value).then(res => {
+  const handleLeftOk = async (value) => {
+    if (data.letfType === 'add') {
+      requestPostApi({ ...value, key: 'LeftReviewCityConf' }).then(res => {
         if (res.success) {
-          setData((value) => ({ ...value, visible: false }));
-          tableRef.current.manualSelectedRows();
-          tableRef.current.remoteDataRefresh();
+          setData((value) => ({ ...value, leftVisible: false }));
+          tableLeftRef.current.manualSelectedRows();
+          tableLeftRef.current.remoteDataRefresh();
         } else {
           message.error(res.message);
         }
       });
     } else {
-      const id = selectRows[selectRows.length - 1].id;
-      const params = { ...value, id };
-      AddBUCompanyOrganizationRelation(params).then(res => {
+      const id = leftselectRows[leftselectRows.length - 1].id;
+      const params = { ...value, id, key: 'LeftReviewCityConf' };
+      requestPostApi(params).then(res => {
         if (res.success) {
-          setData((value) => ({ ...value, visible: false }));
-          tableRef.current.manualSelectedRows();
-          tableRef.current.remoteDataRefresh();
+          setData((value) => ({ ...value, leftVisible: false }));
+          tableLeftRef.current.manualSelectedRows();
+          tableLeftRef.current.remoteDataRefresh();
+        } else {
+          message.error(res.message);
+        }
+      });
+    }
+    console.log(value, 'save');
+  };
+
+  const handleRightOk = async (value) => {
+    if (data.rightType === 'add') {
+      requestPostApi({ ...value, key: 'RightReviewCityConf' }).then(res => {
+        if (res.success) {
+          setData((value) => ({ ...value, rightVisible: false }));
+          tableRightRef.current.manualSelectedRows();
+          tableRightRef.current.remoteDataRefresh();
+        } else {
+          message.error(res.message);
+        }
+      });
+    } else {
+      const id = rightselectRows[rightselectRows.length - 1].id;
+      const params = { ...value, id, key: 'RightReviewCityConf' };
+      requestPostApi(params).then(res => {
+        if (res.success) {
+          setData((value) => ({ ...value, rightVisible: false }));
+          tableRightRef.current.manualSelectedRows();
+          tableRightRef.current.remoteDataRefresh();
         } else {
           message.error(res.message);
         }
@@ -215,7 +250,7 @@ const Index = () => {
                   height={h}
                   columns={columnsforLeft}
                   store={{
-                    url: `${baseUrl}/buCompanyPurchasingOrganization/findByPage`,
+                    url: `${baseUrl}/reviewArea/findBySearchPage`,
                     type: 'POST',
                   }}
                   allowCancelSelect={true}
@@ -223,11 +258,11 @@ const Index = () => {
                   checkbox={{
                     multiSelect: false,
                   }}
-                  ref={tableRef}
+                  ref={tableLeftRef}
                   onSelectRow={leftonSelectRow}
                   selectedRowKeys={leftselectedRowKeys}
                   toolBar={{
-                    left: HeaderButtons('leftVisible', 'leftTitle', 'leftselectedRowKeys', 'leftselectRows'),
+                    left: HeaderLeftButtons(),
                   }}
                 />
               }
@@ -235,8 +270,8 @@ const Index = () => {
             {data.leftVisible &&
               <EventModal
                 onCancel={() => handleCancel('leftVisible')}
-                onOk={handleOk}
-                propData={{ ...data, visible: data.leftVisible, title: data.leftTitle }}
+                onOk={handleLeftOk}
+                propData={{ ...data, visible: data.leftVisible, title: data.leftTitle, type: data.letfType }}
                 fieldsConfig={leftfieldsConfig}
                 data={leftselectRows && leftselectRows[0]}
               />}
@@ -258,18 +293,19 @@ const Index = () => {
                         checkbox={true}
                         remotePaging={true}
                         store={{
-                          url: `${baseUrl}/environmentStandardLimitMaterialRelation/findByPage`,
+                          url: `${baseUrl}/reviewCity/findBySearchPage`,
                           type: 'POST',
                           params: {
-                            environmentalProtectionCode: leftselectRows[leftselectRows.length - 1].environmentalProtectionCode
+                            areaID: leftselectRows[leftselectRows.length - 1].id
                           }
                         }}
                         height={h}
                         searchPlaceHolder="输入城市名称查询"
-                        selectedRowKeys={setRightSelectedRowKeys}
+                        selectedRowKeys={rightselectedRowKeys}
                         onSelectRow={rightonSelectRow}
+                        ref={tableRightRef}
                         toolBar={{
-                          left: HeaderButtons('rightVisible', 'rigthTitle', 'rightselectedRowKeys', 'rightselectRows')
+                          // left: HeaderButtons('rightVisible', 'rigthTitle', 'rightselectedRowKeys', 'rightselectRows')
                         }}
                       />
                     }
@@ -280,8 +316,8 @@ const Index = () => {
             {data.rightVisible &&
               <EventModal
                 onCancel={() => handleCancel('rightVisible')}
-                onOk={handleOk}
-                propData={{ ...data, visible: data.rightVisible, title: data.rigthTitle }}
+                onOk={handleRightOk}
+                propData={{ ...data, visible: data.rightVisible, title: data.rigthTitle, type: data.rightType }}
                 fieldsConfig={rightfieldsConfig}
                 data={rightselectRows && rightselectRows[0]}
               />}
