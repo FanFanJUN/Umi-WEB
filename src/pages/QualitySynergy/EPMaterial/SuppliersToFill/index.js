@@ -154,7 +154,7 @@ export default create()(function ({ form }) {
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={(selectedRowKeys.length !== 1 || selectedRows[0].effectiveStatus === 'COMPLETED')}
+                disabled={!(selectedRowKeys.length > 0 && selectedRows.every(item=>item.effectiveStatus!=='COMPLETED'))}
                 onClick={() => { setCopyVisible(true) }}
                 key='QUALITYSYNERGY_SUPPLIERFILL_COPY_NEW'
                 ignore={DEVELOPER_ENV}
@@ -344,7 +344,7 @@ export default create()(function ({ form }) {
                     height={h}
                     allowCancelSelect
                     remotePaging
-                    checkbox={{ multiSelect: false }}
+                    checkbox={{ multiSelect: true }}
                     ref={tableRef}
                     rowKey={(item) => item.id}
                     showSearch={false}
@@ -372,7 +372,7 @@ export default create()(function ({ form }) {
             visible={copyVisible}
             title="复制已填报物料的环保资料"
         >
-            <FormItem label='从物料代码复制' labelCol={{ span: 8 }} wrapperCol={{ span: 12 }}>
+            <FormItem label='从物料复制' labelCol={{ span: 8 }} wrapperCol={{ span: 12 }}>
                 <ComboList
                     {...findMaterialCode}
                     style={{ width: '100%' }}

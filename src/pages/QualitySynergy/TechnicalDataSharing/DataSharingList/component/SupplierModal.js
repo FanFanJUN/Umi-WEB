@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { Form, Button, DatePicker, Modal, Col, message, Table } from 'antd';
 import styles from './SupplierModal.less';
-import { ExtModal, ExtTable } from 'suid';
+import { ExtModal, ExtTable, DataImport } from 'suid';
 import { supplierManagerBaseUrl, recommendUrl } from '../../../../../utils/commonUrl';
 import { DistributionSupplierSave, FindSupplierByDemandNumber, generateLineNumber, judge, FindMaxDateByDemandNumber } from '../../../commonProps';
 import moment from 'moment/moment';
@@ -53,7 +53,7 @@ const SupplierModal = (props) => {
         id: props.selectedRows[0]?.id
       }).then(res => {
         if (res.data) {
-          setData(v => ({...v, downloadAbortDate: res.data}))
+          setData(v => ({ ...v, downloadAbortDate: res.data }))
         }
       })
     }
@@ -162,7 +162,7 @@ const SupplierModal = (props) => {
   };
 
   const disabledDate = (current) => {
-    return current && current <moment().subtract(1, "days");
+    return current && current < moment().subtract(1, "days");
   }
 
 
@@ -181,7 +181,7 @@ const SupplierModal = (props) => {
             })(
               <DatePicker
                 disabledDate={disabledDate}
-                style={{ width1: '100%' }}/>,
+                style={{ width1: '100%' }} />,
             )
           }
         </FormItem>
@@ -343,7 +343,41 @@ const SupplierModal = (props) => {
       setSourceData(arr);
     }
   };
+  const validateItem = (data) => {
+    return new Promise((resolve, reject) => {
+      const dataList = data.map(item => {
+        return item;
+      })
+      // JudgeTheListOfESPM(dataList).then(res => {
+      //     const response = res.data.map((item, index) => ({
+      //         ...item,
+      //         key: index,
+      //         validate: item.importResult,
+      //         status: item.importResult ? '数据完整' : '失败',
+      //         statusCode: item.importResult ? 'success' : 'error',
+      //         message: item.importResult ? '成功' : item.importResultInfo
+      //     }))
+      //     resolve(response);
+      // }).catch(err => {
+      //     reject(err)
+      // })
+    })
+  };
 
+  const importFunc = (value) => {
+    const dataList = value.map(item => {
+      return item;
+    })
+    // SaveTheListOfESPM(dataList).then(res => {
+    //     if (res.success) {
+    //         message.success('导入成功');
+    //         tableRightRef.current.manualSelectedRows();
+    //         tableRightRef.current.remoteDataRefresh();
+    //     } else {
+    //         message.error(res.message)
+    //     }
+    // });
+  };
   return (
     <ExtModal
       maskClosable={false}
@@ -358,17 +392,30 @@ const SupplierModal = (props) => {
         data.show && <div>
           <Button className={styles.btn} onClick={handleAddSupplier} type='primary'>新增</Button>
           <Button className={styles.btn} onClick={handleTimeEdit}
-                  disabled={data.selectedRowKeys?.length === 0 || !judge(data.selectedRows, 'publish', false)}>编辑资料下载日期</Button>
+            disabled={data.selectedRowKeys?.length === 0 || !judge(data.selectedRows, 'publish', false)}>编辑资料下载日期</Button>
           <Button className={styles.btn} onClick={handleDelete}
-                  disabled={data.selectedRowKeys?.length === 0 || !judge(data.selectedRows, 'publish', false)}>删除</Button>
+            disabled={data.selectedRowKeys?.length === 0 || !judge(data.selectedRows, 'publish', false)}>删除</Button>
           <Button className={styles.btn} disabled={data.selectedRowKeys?.length === 0 ||
-          !judge(data.selectedRows, 'downloadAbortDate') || !judge(data.selectedRows, 'publish', false)
+            !judge(data.selectedRows, 'downloadAbortDate') || !judge(data.selectedRows, 'publish', false)
           } onClick={() => changeReleaseStatus(true)}>发布</Button>
           <Button className={styles.btn}
-                  disabled={data.selectedRowKeys?.length === 0 || !judge(data.selectedRows, 'downloadAbortDate') || !judge(data.selectedRows, 'publish', true)}
-                  onClick={() => changeReleaseStatus(false)}>取消发布</Button>
+            disabled={data.selectedRowKeys?.length === 0 || !judge(data.selectedRows, 'downloadAbortDate') || !judge(data.selectedRows, 'publish', true)}
+            onClick={() => changeReleaseStatus(false)}>取消发布</Button>
           <Button className={styles.btn} disabled={!judge(sourceData, 'downloadAbortDate')}
-                  onClick={saveSupplier}>保存</Button>
+            onClick={saveSupplier}>保存</Button>
+          <DataImport
+            tableProps={{ columns: columns }}
+            validateFunc={validateItem}
+            importFunc={importFunc}
+            validateAll={true}
+            templateFileList={[
+              {
+                download: `${DEVELOPER_ENV ? '' : '/react-srm-sm-web'}/templates/分配供应商批导模板.xlsx`,
+                fileName: '分配供应商批导模板.xlsx',
+                key: 'LimitMaterial',
+              },
+            ]}
+          />
         </div>
       }
       <ExtTable
@@ -399,9 +446,9 @@ const SupplierModal = (props) => {
           <Button key='ok' type='primary' onClick={() => supplierAddOk('ok')}>确定</Button>,
           <Button key='okAndRun' type='primary' onClick={() => supplierAddOk('continue')}>确定并继续</Button>,
         ] : [
-          <Button key='cancel' onClick={modalCancel}>取消</Button>,
-          <Button key='ok' type='primary' onClick={addEndTime}>确定</Button>,
-        ]}
+            <Button key='cancel' onClick={modalCancel}>取消</Button>,
+            <Button key='ok' type='primary' onClick={addEndTime}>确定</Button>,
+          ]}
         onCancel={modalCancel}
       >
         <div style={data.type === 'time' ? { height: '50px' } : { height: '500px' }}>

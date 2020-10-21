@@ -57,6 +57,7 @@ export default [
       { path: '/qualitySynergy/EPMaterial/suppliersToFill', component: './QualitySynergy/EPMaterial/SuppliersToFill', title: '环保资料填报' },
       { path: '/qualitySynergy/EPMaterial/suppliersFillForm', component: './QualitySynergy/EPMaterial/SuppliersToFill/editForm', title: '环保资料填报-填报页面' },
       { path: '/qualitySynergy/DataSharingList', component: './QualitySynergy/TechnicalDataSharing/DataSharingList', title: '技术资料分享' },
+      { path: '/qualitySynergy/DataSharingDetailList', component: './QualitySynergy/TechnicalDataSharing/DataSharingDetailList', title: '技术资料分享明细' },
       { path: '/qualitySynergy/DataSharingAdd', component: './QualitySynergy/TechnicalDataSharing/DataSharingList/edit', title: '技术资料分享-新增' },
       { path: '/qualitySynergy/TechnicalInformationDownload', component: './QualitySynergy/TechnicalInformationDownload', title: '技术资料下载' },
       { path: '/qualitySynergy/UseMaterialList', component: './QualitySynergy/mainData/UseMaterialList', title: '限用物质清单-主数据' },

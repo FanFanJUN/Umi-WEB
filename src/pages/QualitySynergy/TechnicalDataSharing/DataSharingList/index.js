@@ -313,7 +313,8 @@ export default function() {
         onClick={() => redirectToPage('govern')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        disabled={data.selectedRowKeys.length === 0 || data.selectedRows.every(item => item.strategicPurchaseCode)
+        disabled={data.selectedRowKeys.length === 0 
+          // || data.selectedRows.every(item => item.strategicPurchaseCode)
         || !judge(data.selectedRows, 'state', '生效')
         }
         key='TECHNICAL_DATA_SHARING_GOVERN'
@@ -327,7 +328,7 @@ export default function() {
       <Checkbox onChange={onChangeDistribution} checked={data.checkedDistribution}>仅我分配</Checkbox>
     </div>
     <Search
-      placeholder='请输入物料和物料组'
+      placeholder='请输入物料、物料组或分享需求号查询'
       className={styles.btn}
       onSearch={handleQuickSearch}
       allowClear

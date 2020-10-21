@@ -109,7 +109,11 @@ const MCDForm = forwardRef(({ form, originData, isView }, ref) => {
                     </FormItem>
                 </Col>
                 <Col span={6} className={styles.fcs}>
-                    {!isView && <Button onClick={() => { setVisible(true) }}>批量导入</Button>}
+                    {!isView && <Col>
+                        <Button onClick={() => { setVisible(true) }}>批量导入</Button>
+                        <Button onClick={() => { console.log('预览') }} style={{margin: '0 6px'}}>预览</Button>
+                    </Col>
+                    }
                 </Col>
             </Row>
         </Form>
