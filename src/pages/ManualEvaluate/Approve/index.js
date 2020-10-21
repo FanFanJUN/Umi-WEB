@@ -8,7 +8,7 @@ import styles from './index.less';
 import { Tabs, Spin, message } from 'antd';
 import { useLocation } from 'dva/router';
 import { AutoSizeLayout } from '../../../components';
-import { sendResize, checkToken } from '../../../utils';
+import { sendResize, checkToken, closeCurrent } from '../../../utils';
 import { ExtTable, WorkFlow } from 'suid';
 import CommonForm from '../../SupplierAppraise/CommonForm';
 import { useTableProps } from '../../../utils/hooks';
@@ -130,7 +130,13 @@ function Evaluate() {
     }
   }, [isReady])
   return (
-    <Approve>
+    <Approve
+      businessId={query?.id}
+      taskId={query?.taskId}
+      instanceId={query?.instanceId}
+      flowMapUrl="flow-web/design/showLook"
+      submitComplete={closeCurrent}
+    >
       <Tabs
         animated={false}
         onChange={sendResize}
