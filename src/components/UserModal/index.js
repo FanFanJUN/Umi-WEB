@@ -4,13 +4,12 @@
  * @date 2020.9.18
  */
 import React, { useState, forwardRef, useRef, useEffect } from "react";
-import { Col, Row, Tree, Input, Skeleton, Checkbox, Modal, Button } from "antd";
+import { Col, Row, Tree, Input, Skeleton, Checkbox, Button } from "antd";
 import { request } from '@/utils'
 import { baseUrl } from '@/utils/commonUrl'
 import styles from './index.less';
 import { ExtTable, ExtModal } from "suid";
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
 const TreeNode = Tree.TreeNode;
 const Search = Input.Search;
 

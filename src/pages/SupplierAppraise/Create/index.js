@@ -3,7 +3,7 @@ import styles from './index.less';
 import CommonForm from '../CommonForm';
 import { Button, Affix, Modal, message } from 'antd';
 import { saveAppraiseProject } from '../../../services/appraise';
-import { closeCurrent } from '../../../components/utils/CommonUtils';
+import { closeCurrent } from '../../../utils';
 function Create() {
   const formRef = useRef(null);
   async function handleSave() {

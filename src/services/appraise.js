@@ -107,3 +107,11 @@ export const withdrawAppraise = params => createServiceRequest({
   method: 'POST',
   hack: true
 })
+
+// 生成评价结果
+export const generateResult = params => createServiceRequest({
+  path: '/api/seEvaluationProjectService/generateEvaluationResult',
+  params,
+  method: 'POST',
+  hack: true
+})

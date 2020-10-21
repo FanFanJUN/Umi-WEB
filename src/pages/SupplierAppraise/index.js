@@ -13,7 +13,7 @@ import { Header, AutoSizeLayout, AdvancedForm } from '../../components';
 import { evlStatusProps, evaluateSystemProps, orgnazationProps, evlEmu } from '../../utils/commonProps';
 import { getFrameElement, openNewTab } from '../../utils';
 import moment from 'moment';
-import { removeAppraiseProject, sponsorAppraise, withdrawAppraise } from '../../services/appraise';
+import { removeAppraiseProject, sponsorAppraise, withdrawAppraise, generateResult } from '../../services/appraise';
 const { Search } = Input;
 const { authAction, storage } = utils;
 
@@ -40,7 +40,8 @@ function SupplierRevaluate() {
   const {
     needSelectScorer, // 是否需要分配评审人
     evaluationProjectStatus, // 单据状态
-    creatorId
+    creatorId,
+    flowStatus
   } = signleRow;
   // 未选中数据的状态
   const empty = selectedRowKeys.length === 0;
@@ -49,6 +50,14 @@ function SupplierRevaluate() {
   // 可删除状态
   const allowRemove = evaluationProjectStatus === 'DRAFT';
   const complete = evaluationProjectStatus === 'EVALUATION_COMPLETED';
+  // 已生成结果
+  const resultGener = evaluationProjectStatus === 'RESULTS_GENERATED'
+  // 已审批
+  const flowComplete = flowStatus === 'COMPLETED';
+  // 审批中
+  const flowing = flowStatus === 'INPROCESS';
+  // 未审批
+  const flowInit = flowStatus === 'INIT';
   const columns = [
     {
       title: '状态',
@@ -241,13 +250,16 @@ function SupplierRevaluate() {
   const left = (
     <>
       <Button className={styles.btn} type='primary' onClick={handleCreate}>新增</Button>
-      <Button className={styles.btn} onClick={handleEditor} disabled={empty}>编辑</Button>
+      <Button className={styles.btn} onClick={handleEditor} disabled={empty || !allowRemove || resultGener}>编辑</Button>
       <Button className={styles.btn} onClick={handleRemove} disabled={empty || !allowRemove}>删除</Button>
       <Button className={styles.btn} onClick={handleDetail} disabled={empty}>明细</Button>
-      <Button className={styles.btn} onClick={handleAllocation} disabled={empty || !needSelectScorer}>分配评审人</Button>
-      <Button className={styles.btn} onClick={handleAppraise} disabled={empty || !allowRemove}>发起评价</Button>
-      <Button className={styles.btn} onClick={handleWithdraw} disabled={empty || allowRemove}>撤回</Button>
-      <Button className={styles.btn} disabled={empty || !complete}>生成评价结果</Button>
+      <Button className={styles.btn} onClick={handleAllocation} disabled={empty || !needSelectScorer || complete || resultGener}>分配评审人</Button>
+      <Button className={styles.btn} onClick={handleAppraise} disabled={empty || !allowRemove || resultGener}>发起评价</Button>
+      <Button className={styles.btn} onClick={handleWithdraw} disabled={empty || allowRemove || complete || resultGener}>撤回</Button>
+      <Button className={styles.btn} disabled={empty || !complete} onClick={handleGenerateResult}>生成评价结果</Button>
+      <Button className={styles.btn} disabled={empty || !flowInit}>提交审核</Button>
+      <Button className={styles.btn} disabled={empty || !flowing}>终止审核</Button>
+      <Button className={styles.btn} disabled={empty || flowInit}>审核历史</Button>
     </>
   );
   const right = (
@@ -339,6 +351,25 @@ function SupplierRevaluate() {
       quickSearchValue: v
     })
     uploadTable()
+  }
+  // 生成评价结果
+  function handleGenerateResult() {
+    Modal.confirm({
+      title: '生成评价结果',
+      content: '是否生成当前选中评价的结果？',
+      okText: '生成',
+      cancelText: '取消',
+      onOk: async () => {
+        const [evaluationProjectId] = selectedRowKeys;
+        const { success, message: msg } = await generateResult({ evaluationProjectId })
+        if (success) {
+          message.success(msg)
+          uploadTable()
+          return
+        }
+        message.error(msg)
+      }
+    })
   }
   return (
     <div>
