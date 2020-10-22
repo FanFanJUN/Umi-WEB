@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-14 11:02:45
- * @LastEditTime: 2020-10-19 15:44:54
+ * @LastEditTime: 2020-10-20 14:45:06
  * @Description: 主数据接口
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/mainData/mainDataService.js
  */
@@ -29,6 +29,14 @@ export async function requestPostApi(params) {
         // 评定等级
         case 'PrlConf':
             url = '/reviewPerformanceConfigure/addReviewPerformanceConfigure';
+            break;
+        // 审核区域 左table
+        case 'LeftReviewCityConf':
+            url = '/reviewArea/addReviewArea';
+            break;
+        // 审核区域 右table
+        case 'RightReviewCityConf':
+            url = '/reviewCity/addReviewCity';
             break;
         default:
             break;
@@ -61,7 +69,7 @@ export async function requestGetFrozenApi(params) {
         case 'PrlConf':
             url = '/reviewPerformanceConfigure/frozen';
             break;
-            
+
         default:
             break;
     }
@@ -84,13 +92,21 @@ export async function requestDelApi(params) {
         case 'AudittypeWithPro':
             url = '/defaultProjectStandard/delete';
             break;
+        // 审核区域 左table
+        case 'LeftReviewCityConf':
+            url = '/reviewArea/delete';
+            break;
+        // 审核区域 右table
+        case 'RightReviewCityConf':
+            url = '/reviewCity/delete';
+            break;
         default:
             break;
     }
     const requestUrl = `${baseUrl}${url}`;
     return request({
         url: requestUrl,
-        method: 'POST',
+        method: 'GET',
         params,
     });
 }

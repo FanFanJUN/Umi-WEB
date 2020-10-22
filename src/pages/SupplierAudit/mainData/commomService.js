@@ -1,6 +1,19 @@
 import { baseUrl, recommendUrl, smBaseUrl } from '../../../utils/commonUrl';
 import request from '../../../utils/request';
 
+export const duplicateRemoval = (arr, key) => {
+  for (let i = 0; i < arr.length - 1; i++) {
+    for (let j = i + 1; j < arr.length; j++) {
+      if (arr[i][key] === arr[j][key]) {
+        arr.splice(j, 1);
+        //因为数组长度减小1，所以直接 j++ 会漏掉一个元素，所以要 j--
+        j--;
+      }
+    }
+  }
+  return arr;  //去重后返回的数组
+};
+
 const commonProps = {
   reader: {
     name: 'name',
@@ -9,6 +22,30 @@ const commonProps = {
   style: {
     width: '100%',
   },
+};
+
+// 评价体系
+export const EvaluationSystemConfig = {
+  store: {
+    type: 'POST',
+    url: `${baseUrl}/api/supplierEvlSystemService/findTreeByBusinessUnitId`,
+  },
+  reader: {
+    field: ['code', 'id'],
+    name: 'name',
+    description: 'code',
+  },
+  placeholder: '选择审核体系',
+  style: {
+    width: '100%'
+  },
+  treeNodeProps: (node) => {
+    if (node.children.length === 0) {
+      return {
+        selectable: false
+      }
+    }
+  }
 };
 
 // 正常供应商
@@ -33,11 +70,11 @@ export const SelectionStrategyConfig = {
   allowClear: true,
   dataSource: [
     {
-      code: '合格供应商名录',
+      code: 'QUALIFIED_SUPPLIER',
       name: '合格供应商名录',
     },
     {
-      code: '正常供应商',
+      code: 'NORMAL_SUPPLIER',
       name: '正常供应商',
     },
   ],
@@ -262,6 +299,16 @@ export const AuditCauseManagementFrozen = async (params) => {
 // 审核原因管理新增
 export const AuditCauseManagementAdd = async (params) => {
   const url = `${baseUrl}/reviewReason/addReviewReason`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+}
+
+// 审核类型管理所有
+export const AuditTypeManagementAll = async (params) => {
+  const url = `${baseUrl}/reviewType/findAll`;
   return request({
     url,
     method: 'POST',

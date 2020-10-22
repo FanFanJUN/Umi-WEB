@@ -26,6 +26,8 @@ export default [
       { path: '/supplierAudit/ReviewCityConf', component: './SupplierAudit/mainData/ReviewCityConf', title: '审核地区城市配置-主数据' },
       { path: '/supplierAudit/AuditRequirementsManagement', component: './SupplierAudit/AuditRequirementsManagement', title: '审核需求管理' },
       { path: '/supplierAudit/AuditRequirementsManagementAdd', component: './SupplierAudit/AuditRequirementsManagement/add', title: '审核需求管理新增' },
+      { path: '/supplierAudit/AnnualAuditPlan', component: './SupplierAudit/AnnualAuditPlan', title: '年度审核计划管理' },
+      { path: '/supplierAudit/AnnualAuditPlanEda', component: './SupplierAudit/AnnualAuditPlan/EdaPage', title: '年度审核计划管理新增' },
     ]
   },
   {
