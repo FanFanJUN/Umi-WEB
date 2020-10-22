@@ -42,7 +42,7 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
     { title: '物料分类', dataIndex: 'materialGroupName', width: 140, ellipsis: true, },
     { title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 140},
     { title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 140},
-    { title: '生产厂地址', dataIndex: 'countryName', width: 140, render: (v, data) => <span>{data.countryName + data.provinceName + data.cityName + data.countyName + data.address}</span>},
+    { title: '生产厂地址', dataIndex: 'countryName', width: 140, render: (v, data) => <span>{`${data.countryName + data.provinceName + data.cityName + data.countyName + data.address}`}</span>},
     { title: '供应商联系人', dataIndex: 'contactUserName', ellipsis: true, width: 140},
     { title: '供应商联系电话', dataIndex: 'contactUserTel', ellipsis: true, width: 140},
     { title: '备注', dataIndex: 'remark', ellipsis: true, width: 140},

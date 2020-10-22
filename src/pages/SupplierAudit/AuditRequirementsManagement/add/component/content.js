@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { ComboList, ComboTree, ExtModal, ExtTable } from 'suid';
-import { Col, Form, Input, Row } from 'antd';
+import { Col, Form, Input, Row, message } from 'antd';
 import { EvaluationSystemConfig } from '../../../mainData/commomService';
 import ShuttleBox from '../../../common/ShuttleBox';
 const FormItem = Form.Item;
@@ -10,12 +10,11 @@ const formItemLayoutLong = {
   wrapperCol: { span: 18 },
 };
 
-const columns = []
-
 const Content = (props) => {
   const tableRef = useRef(null);
 
   const [data, setData] = useState({
+    leftTreeData: undefined,
     treeData: []
   })
 
@@ -24,7 +23,15 @@ const Content = (props) => {
   const { getFieldDecorator, getFieldValue, setFieldsValue } = props.form;
 
   const onOk = () => {
-
+    props.form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        if (data.treeData.length !== 0) {
+          console.log(values, data.treeData)
+        } else {
+          message.error('请至少选择一个体系!')
+        }
+      }
+    });
   }
 
   const onCancel = () => {
@@ -36,8 +43,7 @@ const Content = (props) => {
   }
 
   const systemSelect = (value) => {
-    console.log(value)
-    setData(v => ({...v, treeData: value}))
+    setData(v => ({...v, leftTreeData: value}))
   }
 
   const hideFormItem = (name, initialValue) => (
@@ -51,6 +57,10 @@ const Content = (props) => {
       }
     </FormItem>
   );
+
+  const getTreeData = (value) => {
+    setData(v => ({...v, treeData: value}))
+  }
 
   return (
     <ExtModal
@@ -100,7 +110,8 @@ const Content = (props) => {
       </Form>
       <div style={{height: '300px', width: '100%'}}>
         <ShuttleBox
-          leftTreeData={data.treeData}
+          onChange={getTreeData}
+          leftTreeData={data.leftTreeData}
         />
       </div>
     </ExtModal>

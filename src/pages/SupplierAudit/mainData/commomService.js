@@ -1,6 +1,19 @@
 import { baseUrl, recommendUrl, smBaseUrl } from '../../../utils/commonUrl';
 import request from '../../../utils/request';
 
+export const duplicateRemoval = (arr, key) => {
+  for (let i = 0; i < arr.length - 1; i++) {
+    for (let j = i + 1; j < arr.length; j++) {
+      if (arr[i][key] === arr[j][key]) {
+        arr.splice(j, 1);
+        //因为数组长度减小1，所以直接 j++ 会漏掉一个元素，所以要 j--
+        j--;
+      }
+    }
+  }
+  return arr;  //去重后返回的数组
+};
+
 const commonProps = {
   reader: {
     name: 'name',
@@ -26,7 +39,13 @@ export const EvaluationSystemConfig = {
   style: {
     width: '100%'
   },
-
+  treeNodeProps: (node) => {
+    if (node.children.length === 0) {
+      return {
+        selectable: false
+      }
+    }
+  }
 };
 
 // 正常供应商
