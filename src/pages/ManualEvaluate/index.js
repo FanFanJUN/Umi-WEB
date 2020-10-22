@@ -22,7 +22,6 @@ function ManualEvaluate() {
   } = tableState;
   const {
     setRowKeys,
-    setRows,
     handleSelectedRows,
     setSearchValue
   } = sets;

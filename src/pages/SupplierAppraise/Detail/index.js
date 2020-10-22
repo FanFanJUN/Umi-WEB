@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import styles from './index.less';
 import CommonForm from '../CommonForm';
 import { Button, Affix } from 'antd';
+import { closeCurrent } from '../../../utils';
 function Detail() {
   const formRef = useRef(null);
   return (
@@ -11,7 +12,7 @@ function Detail() {
           <div className={styles.fbc}>
             <span className={styles.title}>评价项目详情</span>
             <div className={styles.fec}>
-              <Button className={styles.btn}>返回</Button>
+              <Button className={styles.btn} onClick={closeCurrent}>返回</Button>
             </div>
           </div>
         </div>
