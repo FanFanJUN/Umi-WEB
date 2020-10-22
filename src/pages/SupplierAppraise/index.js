@@ -6,7 +6,7 @@
 import { useRef } from 'react';
 import styles from './index.less';
 import { useTableProps } from '../../utils/hooks';
-import { ExtTable, utils } from 'suid';
+import { ExtTable, utils, WorkFlow } from 'suid';
 import { Button, Input, Modal, message } from 'antd';
 import { recommendUrl } from '../../utils/commonUrl';
 import { Header, AutoSizeLayout, AdvancedForm } from '../../components';
@@ -14,8 +14,10 @@ import { evlStatusProps, evaluateSystemProps, orgnazationProps, evlEmu } from '.
 import { getFrameElement, openNewTab } from '../../utils';
 import moment from 'moment';
 import { removeAppraiseProject, sponsorAppraise, withdrawAppraise, generateResult } from '../../services/appraise';
+import { stopApprove } from '../../services/api';
 const { Search } = Input;
 const { authAction, storage } = utils;
+const { StartFlow } = WorkFlow;
 
 function SupplierRevaluate() {
   const [states, sets] = useTableProps();
@@ -41,7 +43,8 @@ function SupplierRevaluate() {
     needSelectScorer, // 是否需要分配评审人
     evaluationProjectStatus, // 单据状态
     creatorId,
-    flowStatus
+    flowStatus,
+    id: businessKey
   } = signleRow;
   // 未选中数据的状态
   const empty = selectedRowKeys.length === 0;
@@ -200,6 +203,13 @@ function SupplierRevaluate() {
       cancelText: '取消'
     })
   }
+  // 查看评价结果
+  function handleCheckResult() {
+    const [key] = selectedRowKeys;
+    const { id = '' } = FRAMELEEMENT;
+    const { pathname } = window.location;
+    openNewTab(`supplier/appraise/project/evaluate/result?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '评价结果', false)
+  }
   // 分配评审人
   function handleAllocation() {
     const [key] = selectedRowKeys;
@@ -257,7 +267,22 @@ function SupplierRevaluate() {
       <Button className={styles.btn} onClick={handleAppraise} disabled={empty || !allowRemove || resultGener}>发起评价</Button>
       <Button className={styles.btn} onClick={handleWithdraw} disabled={empty || allowRemove || complete || resultGener}>撤回</Button>
       <Button className={styles.btn} disabled={empty || !complete} onClick={handleGenerateResult}>生成评价结果</Button>
-      <Button className={styles.btn} disabled={empty || !flowInit}>提交审核</Button>
+      <Button className={styles.btn} disabled={empty || !flowInit || !resultGener} onClick={handleCheckResult}>查看评价结果</Button>
+      <StartFlow
+        businessKey={businessKey}
+        businessModelCode="com.ecmp.srm.sam.entity.se.SeEvaluationProject"
+        startComplete={uploadTable}
+      >
+        {
+          ld => (
+            <Button
+              className={styles.btn}
+              disabled={empty || !flowInit}
+              loading={ld}
+            >提交审核</Button>
+          )
+        }
+      </StartFlow>
       <Button className={styles.btn} disabled={empty || !flowing}>终止审核</Button>
       <Button className={styles.btn} disabled={empty || flowInit}>审核历史</Button>
     </>
@@ -283,7 +308,8 @@ function SupplierRevaluate() {
     selectedRowKeys,
     checkbox: {
       multiSelect: false
-    }
+    },
+    rowKey: item => item.id
   };
   // 清除选中项
   function cleanSelectedRecord() {

@@ -115,3 +115,38 @@ export const generateResult = params => createServiceRequest({
   method: 'POST',
   hack: true
 })
+
+// 评价结果采购小组审批导出
+export const evaluateResultTeamExport = params => createServiceRequest({
+  path: '/seController/exportEvlResultPurchaseTeam',
+  params,
+  method: 'POST',
+  hack: true,
+  responseType: 'blob'
+})
+// 评价结果采购小组审批导入
+export const evaluateResultTeamImport = params => createServiceRequest({
+  path: '/seController/importEvlResultPurchaseTeam',
+  params,
+  method: 'POST',
+  headers: {
+    'Content-Type': 'multipart/form-data'
+  }
+})
+// 评价结果采购小组审批导出
+export const evaluateResultLeaderExport = params => createServiceRequest({
+  path: '/seController/exportEvlResultLeader',
+  params,
+  method: 'POST',
+  hack: true,
+  responseType: 'blob'
+})
+// 评价结果采购小组审批导入
+export const evaluateResultLeaderImport = params => createServiceRequest({
+  path: '/seController/importEvlResultLeader',
+  params,
+  method: 'POST',
+  headers: {
+    'Content-Type': 'multipart/form-data'
+  }
+})

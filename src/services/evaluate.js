@@ -74,3 +74,8 @@ export const queryEvaluateData = params => createServiceRequest({
   method: 'POST',
   hack: true
 })
+
+// 获取评价结果
+export const queryEvaluateResultData = params => createServiceRequest({
+  path: '/api/seEvaluationResultService/findResultsByEvlProjectId'
+})

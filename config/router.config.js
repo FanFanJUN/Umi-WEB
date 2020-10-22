@@ -207,6 +207,14 @@ export default [
         title: '供应商评价项目'
       },
       {
+        path: '/supplier/appraise/project/team/approve',component: './SupplierAppraise/Approve/Team',
+        title: '采购小组确认'
+      },
+      {
+        path: '/supplier/appraise/project/leader/approve',component: './SupplierAppraise/Approve/Leader',
+        title: '领导确认'
+      },
+      {
         path: '/supplier/appraise/project/create',
         component: './SupplierAppraise/Create',
         title: '新增供应商评价项目'
@@ -245,6 +253,11 @@ export default [
         path: '/supplier/appraise/project/evaluate/approve/editor',
         component: './ManualEvaluate/Approve/Editor',
         title: '人工评价审核编辑'
+      },
+      {
+        path: '/supplier/appraise/project/evaluate/result',
+        component: './SupplierAppraise/EvaluateResult',
+        title: '评价结果'
       },
        /**无账号供应商 */
       { path: '/supplier/ImportSupplier/index', component: './ImportSupplier/index', title: '创建无账号供应商' },

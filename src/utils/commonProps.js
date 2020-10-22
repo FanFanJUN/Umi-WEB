@@ -48,6 +48,22 @@ export const thatTypeProps = {
   placeholder: '选择认定类型'
 }
 
+// 处理建议
+export const dealAdviceProps = {
+  store: {
+    url: `${baseUrl}/dataDictionaryItem/getDictByTypeCode`,
+    params: {
+      dictTypeCode: 'supplier_deal_advice'
+    },
+    type: 'get'
+  },
+  reader: {
+    name: 'name',
+    field: ['value']
+  },
+  placeholder: '请选择处理建议'
+}
+
 // 供应商
 export const supplierProps = {
   store: {
