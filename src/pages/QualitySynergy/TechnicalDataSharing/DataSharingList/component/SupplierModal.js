@@ -44,7 +44,9 @@ const SupplierModal = (props) => {
     if (type === 'allot') {
       setSourceData([]);
       setData((value) => ({ ...value, show: true }));
-      getDataSource();
+      if(props.selectedRows.length === 1){
+        getDataSource();
+      }
     } else {
       setData((value) => ({ ...value, show: false }));
     }

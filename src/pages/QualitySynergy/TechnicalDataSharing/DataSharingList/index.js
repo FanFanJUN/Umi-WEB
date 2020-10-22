@@ -301,9 +301,10 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={
-          data.selectedRowKeys.length !== 1 ||
+          data.selectedRowKeys.length === 0 ||
           !data.selectedRows.every(item => item.strategicPurchaseCode) ||
-          !judge(data.selectedRows, 'state', '生效') || (judge(data.selectedRows, 'allotSupplierState', '已分配') ? data.selectedRowKeys.length > 1 : false)
+          !judge(data.selectedRows, 'state', '生效') ||
+          (data.selectedRows.length > 1 && data.selectedRows.some(item=>item.allotSupplierState === '已分配'))
         }
         key='TECHNICAL_DATA_SHARING_ALLOT'
       >分配供应商</Button>)
