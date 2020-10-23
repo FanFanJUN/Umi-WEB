@@ -17,8 +17,8 @@ import { removeAppraiseProject, sponsorAppraise, withdrawAppraise, generateResul
 import { stopApprove } from '../../services/api';
 const { Search } = Input;
 const { authAction, storage } = utils;
-const { StartFlow } = WorkFlow;
-
+const { StartFlow, FlowHistoryButton } = WorkFlow;
+const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 function SupplierRevaluate() {
   const [states, sets] = useTableProps();
   const tableRef = useRef(null);
@@ -271,6 +271,7 @@ function SupplierRevaluate() {
       <StartFlow
         businessKey={businessKey}
         businessModelCode="com.ecmp.srm.sam.entity.se.SeEvaluationProject"
+        flowMapUrl='flow-web/design/showLook'
         startComplete={uploadTable}
       >
         {
@@ -283,8 +284,13 @@ function SupplierRevaluate() {
           )
         }
       </StartFlow>
-      <Button className={styles.btn} disabled={empty || !flowing}>终止审核</Button>
-      <Button className={styles.btn} disabled={empty || flowInit}>审核历史</Button>
+      <Button className={styles.btn} disabled={empty || !flowing} onClick={handleStopApprove}>终止审核</Button>
+      <FlowHistoryButton
+        businessId={businessKey}
+        flowMapUrl='flow-web/design/showLook'
+      >
+        <Button className={styles.btn} disabled={empty || flowInit}>审核历史</Button>
+      </FlowHistoryButton>
     </>
   );
   const right = (
@@ -390,6 +396,24 @@ function SupplierRevaluate() {
         const { success, message: msg } = await generateResult({ evaluationProjectId })
         if (success) {
           message.success(msg)
+          uploadTable()
+          return
+        }
+        message.error(msg)
+      }
+    })
+  }
+  // 终止审批流
+  function handleStopApprove() {
+    Modal.confirm({
+      title: '终止审核',
+      content: '是否终止当前选中数据的审核?',
+      okText: '终止',
+      cancelText: '取消',
+      onOk: async () => {
+        const { success, message: msg } = await stopApprove({ businessId: businessKey })
+        if (success) {
+          message.success(msg);
           uploadTable()
           return
         }

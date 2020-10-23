@@ -1,3 +1,9 @@
+/**
+ * 实现功能： 手工评价
+ * @author hezhi
+ * @date 2020-09-23
+ */
+
 import { useRef } from 'react';
 import styles from './index.less';
 import { ExtTable, WorkFlow } from 'suid';

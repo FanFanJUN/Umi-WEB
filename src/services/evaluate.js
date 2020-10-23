@@ -75,7 +75,10 @@ export const queryEvaluateData = params => createServiceRequest({
   hack: true
 })
 
-// 获取评价结果
-export const queryEvaluateResultData = params => createServiceRequest({
-  path: '/api/seEvaluationResultService/findResultsByEvlProjectId'
+// 获取评定等级主数据
+export const queryEvaluateLevelMain = params => createServiceRequest({
+  path: '/api/supplierScoreMapLevelService/findAll',
+  params,
+  method: 'GET',
+  base: baseUrl
 })

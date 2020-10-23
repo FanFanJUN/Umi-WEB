@@ -259,6 +259,11 @@ export default [
         component: './SupplierAppraise/EvaluateResult',
         title: '评价结果'
       },
+      {
+        path: '/evaluate/level/main',
+        component: './EvaluateLevelMain',
+        title: '评定等级'
+      },
        /**无账号供应商 */
       { path: '/supplier/ImportSupplier/index', component: './ImportSupplier/index', title: '创建无账号供应商' },
       { path: '/supplier/ImportSupplier/create/index', component: './ImportSupplier/create/index', title: '新增无账号供应商' },
