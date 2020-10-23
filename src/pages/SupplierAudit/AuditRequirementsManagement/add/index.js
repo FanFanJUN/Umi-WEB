@@ -6,11 +6,14 @@ import { closeCurrent, getMobile, getUserId, getUserName } from '../../../../uti
 import BaseInfo from './BaseInfo';
 import { router } from 'dva';
 import IntendedAuditInformation from './IntendedAuditInformation';
+import { GetAllAuditType } from '../../mainData/commomService';
 
 const Index = () => {
   const baseInfoRef = useRef(null);
 
   const { query } = router.useLocation();
+
+  const [applyCorporationCode, setApplyCorporationCode] = useState('')
 
   const [data, setData] = useState({
     id: '',
@@ -24,6 +27,8 @@ const Index = () => {
   })
 
   useEffect(() => {
+    // 获取所有审核类型
+    getAuditType()
     const { id, pageState } = query;
     switch (pageState) {
       case 'add':
@@ -40,6 +45,12 @@ const Index = () => {
     }
     console.log(pageState, 'pageState');
   }, []);
+
+  const getAuditType = () => {
+    GetAllAuditType().then(res => {
+      console.log(res)
+    })
+  }
 
   const getUser = () => {
     const userId = getUserId();
@@ -82,9 +93,11 @@ const Index = () => {
           wrappedComponentRef={baseInfoRef}
           userInfo={data.userInfo}
           type={data.type}
+          setApplyCorporationCode={setApplyCorporationCode}
           isView={data.isView}
         />
         <IntendedAuditInformation
+          applyCorporationCode={applyCorporationCode}
           type={data.type}
           isView={data.isView}
         />
