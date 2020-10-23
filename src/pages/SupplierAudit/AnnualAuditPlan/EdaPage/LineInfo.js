@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime: 2020-10-23 16:30:17
+ * @LastEditTime: 2020-10-23 17:47:33
  * @Description: 行信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
@@ -12,6 +12,7 @@ import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList
 import { Form, Button } from 'antd';
 import { ExtTable } from 'suid';
 import AddModal from './AddModal';
+import BatchEditModal from './BatchEditModal';
 
 let LineInfo = (props, ref) => {
 
@@ -26,6 +27,7 @@ let LineInfo = (props, ref) => {
   });
 
   const [dataSource, setDataSource] = useState([]);
+  const [batchEditVisible, setBatchEditVisible] = useState(false);
 
   const columns = [
     { title: '需求公司', dataIndex: 'corporationCode', width: 140, ellipsis: true, },
@@ -54,6 +56,9 @@ let LineInfo = (props, ref) => {
       case 'delete':
         filterSelectRow();
         break;
+      case 'edit':
+        setBatchEditVisible(true);
+        break;
       default:
         break;
     }
@@ -81,10 +86,21 @@ let LineInfo = (props, ref) => {
 
   function handleOk(tableData) {
     console.log(tableData);
+    // tableData.forEach(item => {
+
+    // })
     const newTableList = JSON.parse(JSON.stringify(dataSource));
     newTableList.push(tableData);
     setDataSource(newTableList);
     setData((v) => ({ ...v, visible: false }));
+  }
+
+  function setBatchVisible() {
+    setBatchEditVisible(false);
+  }
+
+  function getBatchFormValue(formValue) {
+    setBatchVisible();
   }
 
   return (
@@ -124,6 +140,14 @@ let LineInfo = (props, ref) => {
           handleOk={handleOk}
           lineData={dataSource}
         />}
+      {
+        batchEditVisible &&
+        <BatchEditModal
+          visible={batchEditVisible}
+          onCancel={setBatchVisible}
+          onOk={getBatchFormValue}
+        />
+      }
     </div>
   );
 }
