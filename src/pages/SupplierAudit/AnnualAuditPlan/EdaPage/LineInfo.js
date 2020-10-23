@@ -3,13 +3,13 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime: 2020-10-21 17:17:33
+ * @LastEditTime: 2020-10-23 16:30:17
  * @Description: 行信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
-import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/edit/BaseInfo.less';
-import { Col, Form, Modal, Row, Input, DatePicker, Button } from 'antd';
+import { Form, Button } from 'antd';
 import { ExtTable } from 'suid';
 import AddModal from './AddModal';
 
@@ -19,17 +19,18 @@ let LineInfo = (props, ref) => {
 
   const [data, setData] = useState({
     type: 'add',
-    dataSource: [],
     selectRows: [],
     selectedRowKeys: [],
     visible: false,
-    title: '新增拟审核信息'
-  })
+    title: ''
+  });
+
+  const [dataSource, setDataSource] = useState([]);
 
   const columns = [
-    { title: '需求公司', dataIndex: 'fileVersion', width: 140, ellipsis: true, },
-    { title: '采购组织', dataIndex: 'drawFlag', ellipsis: true, width: 140 },
-    { title: '供应商', dataIndex: 'sampleRequirementNum', ellipsis: true, width: 140 },
+    { title: '需求公司', dataIndex: 'corporationCode', width: 140, ellipsis: true, },
+    { title: '采购组织', dataIndex: 'purchaseOrgCode', ellipsis: true, width: 140 },
+    { title: '供应商', dataIndex: 'supplierCode', ellipsis: true, width: 140 },
     { title: '代理商', dataIndex: 'measureUnit', ellipsis: true, width: 140 },
     { title: '物料分类', dataIndex: 'measureUnit', ellipsis: true, width: 140 },
     { title: '物料级别', dataIndex: 'measureUnit', ellipsis: true, width: 140 },
@@ -49,14 +50,41 @@ let LineInfo = (props, ref) => {
   const handleBtn = (type) => {
     switch (type) {
       case 'add':
-        return setData(v => ({ ...v, visible: true, title: '新增拟审核信息', type: 'add' }));
+        return setData(v => ({ ...v, visible: true, title: '从合格供应商名录新增', type: 'add' }));
+      case 'delete':
+        filterSelectRow();
+        break;
       default:
         break;
     }
   }
 
+  function filterSelectRow() {
+    const filterData = dataSource.filter((item) => {
+      return item.id !== data.selectedRowKeys[0];
+    });
+    setDataSource(filterData);
+    clearSelect();
+  }
+
+  function clearSelect() {
+    setData(v => ({ v, selectedRowKeys: [], selectRows: [] }));
+  }
+
   const handleSelectedRows = (value, rows) => {
     setData((v) => ({ ...v, selectedRowKeys: value, selectRows: rows, type: 'add' }))
+  }
+
+  function setVisible() {
+    setData(() => ({ visible: false, selectRows: [], selectedRowKeys: [] }));
+  }
+
+  function handleOk(tableData) {
+    console.log(tableData);
+    const newTableList = JSON.parse(JSON.stringify(dataSource));
+    newTableList.push(tableData);
+    setDataSource(newTableList);
+    setData((v) => ({ ...v, visible: false }));
   }
 
   return (
@@ -73,7 +101,7 @@ let LineInfo = (props, ref) => {
           }
           <ExtTable
             style={{ marginTop: '10px' }}
-            rowKey={(v) => v.lineNumber}
+            rowKey='id'
             allowCancelSelect={true}
             showSearch={false}
             remotePaging
@@ -83,7 +111,7 @@ let LineInfo = (props, ref) => {
             selectedRowKeys={data.selectedRowKeys}
             columns={columns}
             ref={tableRef}
-            dataSource={data.dataSource}
+            dataSource={dataSource}
           />
         </div>
       </div>
@@ -92,6 +120,9 @@ let LineInfo = (props, ref) => {
           visible={data.visible}
           title={data.title}
           type={data.type}
+          handleCancel={setVisible}
+          handleOk={handleOk}
+          lineData={dataSource}
         />}
     </div>
   );

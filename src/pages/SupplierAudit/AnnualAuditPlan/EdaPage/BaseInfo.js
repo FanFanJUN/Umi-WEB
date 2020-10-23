@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:40
- * @LastEditTime: 2020-10-21 16:54:56
+ * @LastEditTime: 2020-10-22 09:54:40
  * @Description:  基本信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BaseInfo.js
  */
@@ -11,7 +11,7 @@ import React, { useEffect, useImperativeHandle } from 'react';
 import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/edit/BaseInfo.less';
 import { ComboList, ComboTree, ExtModal } from 'suid';
 import { Col, Form, Modal, Row, Input, DatePicker, InputNumber } from 'antd';
-import Upload from '../../../QualitySynergy/compoent/Upload';
+import Upload from '../../Upload';
 import { AllCompanyConfig, AllFindByFiltersConfig, ApplyOrganizationProps } from '../../mainData/commomService';
 
 const FormItem = Form.Item;
@@ -143,7 +143,7 @@ const BaseInfo = (props) => {
                     },
                   ],
                 })(
-                  <InputNumber style={{ width: '100%' }} />
+                  <InputNumber style={{ width: '100%' }} min={0} />
                 )}
               </FormItem>
             </Col>
