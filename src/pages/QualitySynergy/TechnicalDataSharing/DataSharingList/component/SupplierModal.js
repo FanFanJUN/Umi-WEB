@@ -3,7 +3,7 @@ import { Form, Button, DatePicker, Modal, Col, message, Table } from 'antd';
 import styles from './SupplierModal.less';
 import { ExtModal, ExtTable, DataImport } from 'suid';
 import { supplierManagerBaseUrl, recommendUrl } from '../../../../../utils/commonUrl';
-import { DistributionSupplierSave, FindSupplierByDemandNumber, generateLineNumber, judge, FindMaxDateByDemandNumber } from '../../../commonProps';
+import { DistributionSupplierSave, FindSupplierByDemandNumber, generateLineNumber, judge, FindMaxDateByDemandNumber, importSupplierExcel } from '../../../commonProps';
 import moment from 'moment/moment';
 import { request } from 'suid/es/utils';
 import { CommonTable } from './CommonTable';
@@ -350,35 +350,41 @@ const SupplierModal = (props) => {
       const dataList = data.map(item => {
         return item;
       })
-      // JudgeTheListOfESPM(dataList).then(res => {
-      //     const response = res.data.map((item, index) => ({
-      //         ...item,
-      //         key: index,
-      //         validate: item.importResult,
-      //         status: item.importResult ? '数据完整' : '失败',
-      //         statusCode: item.importResult ? 'success' : 'error',
-      //         message: item.importResult ? '成功' : item.importResultInfo
-      //     }))
-      //     resolve(response);
-      // }).catch(err => {
-      //     reject(err)
-      // })
+      importSupplierExcel({
+        id: props.selectedRows[0].id,
+        boList: dataList
+      }).then(res => {
+          const response = res.data.map((item, index) => ({
+              ...item,
+              key: index,
+              validate: item.importResult,
+              status: item.importResult ? '数据完整' : '失败',
+              statusCode: item.importResult ? 'success' : 'error',
+              message: item.importResult ? '成功' : item.importResultInfo
+          }))
+          resolve(response);
+      }).catch(err => {
+          reject(err)
+      })
     })
   };
-
+// 添加到列表
   const importFunc = (value) => {
-    const dataList = value.map(item => {
+    let dataList = value.map(item => {
+      item.allotPeopleName = props.selectedRows[0].strategicPurchaseName;
+      item.allotPeopleCode = props.selectedRows[0].strategicPurchaseCode;
+      item.allotPeopleId = props.selectedRows[0].strategicPurchaseId;
+      item.allotDate = moment(new Date()).format('YYYY-MM-DD');
+      item.downloadAbortDate = moment(new Date().setMonth(new Date().getMonth() + 1)).format('YYYY-MM-DD');
       return item;
     })
-    // SaveTheListOfESPM(dataList).then(res => {
-    //     if (res.success) {
-    //         message.success('导入成功');
-    //         tableRightRef.current.manualSelectedRows();
-    //         tableRightRef.current.remoteDataRefresh();
-    //     } else {
-    //         message.error(res.message)
-    //     }
-    // });
+    dataList = [...sourceData, ...dataList];
+    dataList = duplicateRemoval(dataList, 'supplierId');
+    dataList = dataList.map((item, index) => ({ ...item, lineNumber: generateLineNumber(index + 1) }));
+    tableRef.current.manualSelectedRows();
+    if (JSON.stringify(dataList) !== JSON.stringify(sourceData)) {
+      setSourceData(dataList);
+    }
   };
   return (
     <ExtModal

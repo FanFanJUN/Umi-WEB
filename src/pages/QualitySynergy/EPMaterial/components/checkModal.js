@@ -133,7 +133,6 @@ const checkModal = forwardRef(({ form, selectedRow = {}, checkModalType }, ref) 
                 <Button onClick={()=>{handleOkOff()}}>复核</Button>
             ] : [
                 <Button onClick={() => { tableRef.current.manualSelectedRows(); setVisible(false); }}>退出</Button>,
-                <Button onClick={()=>{console.log('预览')}}>预览</Button>,
                 <Button onClick={()=>{handleOkOff()}}>生成</Button>
             ]}
             maskClosable={false}

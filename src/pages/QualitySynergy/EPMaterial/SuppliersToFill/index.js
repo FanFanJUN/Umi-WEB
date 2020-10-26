@@ -12,7 +12,7 @@ import styles from './index.less'
 import {
     epDemandSubmit,
     epDemandRecall,
-    epDemandCopyAll,
+    epDemandCopyAllList,
     uploadFile,
     supplierGetList,
     findMyselfData
@@ -154,7 +154,7 @@ export default create()(function ({ form }) {
         {
             authAction(<Button
                 className={styles.btn}
-                disabled={!(selectedRowKeys.length > 0 && selectedRows.every(item=>item.effectiveStatus!=='COMPLETED'))}
+                disabled={!(selectedRowKeys.length > 0 && selectedRows.every(item=>(item.effectiveStatus!=='COMPLETED'&&item.needToFill)))}
                 onClick={() => { setCopyVisible(true) }}
                 key='QUALITYSYNERGY_SUPPLIERFILL_COPY_NEW'
                 ignore={DEVELOPER_ENV}
@@ -241,7 +241,7 @@ export default create()(function ({ form }) {
                 break;
             case 'copy':
                 const { } = materialObj;
-                res = await epDemandCopyAll({ materialCode: materialObj.materialCode, id: selectedRowKeys[0] });
+                res = await epDemandCopyAllList({ materialCode: materialObj.materialCode, ids: selectedRowKeys.join() });
                 break;
             default:
                 break;
