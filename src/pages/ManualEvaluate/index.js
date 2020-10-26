@@ -15,7 +15,7 @@ import { evlStatusProps, evaluateSystemProps, orgnazationProps, evlEmu } from '.
 import { formatYMDHmsToYMD, getFrameElement, openNewTab } from '../../utils';
 import { stopApprove } from '../../services/api';
 const { Search } = Input;
-const { StartFlow } = WorkFlow;
+const { StartFlow, FlowHistoryButton } = WorkFlow;
 
 function ManualEvaluate() {
   const tableRef = useRef(null)
@@ -40,6 +40,7 @@ function ManualEvaluate() {
   // const { evaluationProjectStatus } = seEvaluationProject;
   // 未提交审核状态
   const noSubmit = flowStatus === 'INIT';
+  const completed = flowStatus === 'COMPLETED'
   // 未选中数据的状态
   const empty = selectedRowKeys.length === 0;
   const FRAMELEEMENT = getFrameElement();
@@ -188,8 +189,13 @@ function ManualEvaluate() {
           loading => <Button loading={loading} className={styles.btn} disabled={empty || !noSubmit}>提交审核</Button>
         }
       </StartFlow>
-      <Button className={styles.btn} disabled={empty || noSubmit} onClick={handleStopApprove}>终止审核</Button>
-      <Button className={styles.btn} disabled={empty || noSubmit}>审核历史</Button>
+      <Button className={styles.btn} disabled={empty || noSubmit || completed} onClick={handleStopApprove}>终止审核</Button>
+      <FlowHistoryButton
+        businessId={flowId}
+        flowMapUrl='flow-web/design/showLook'
+      >
+        <Button className={styles.btn} disabled={empty || noSubmit}>审核历史</Button>
+      </FlowHistoryButton>
     </>
   )
   const right = (
