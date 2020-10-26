@@ -4,7 +4,7 @@ import { AutoSizeLayout } from '../../../components';
 import { ExtTable, ComboList, ComboTree } from 'suid';
 import { useLocation } from 'dva/router';
 import { Button, Upload, Form, Input, Select, Spin, Modal, message } from 'antd';
-import { commonUrl, commonProps, downloadBlobFile } from '../../../utils';
+import { commonUrl, commonProps, downloadBlobFile, sendResize } from '../../../utils';
 import {
   evaluateResultLeaderExport, // 领导审核导出
   evaluateResultLeaderImport, // 领导审核导入
@@ -29,7 +29,8 @@ const importMethods = {
 const CommonTable = forwardRef(({
   form,
   type = 'detail',
-  columns = []
+  columns = [],
+  crop = false
 }, ref) => {
   useImperativeHandle(ref, () => ({
 
@@ -52,7 +53,10 @@ const CommonTable = forwardRef(({
     },
     remotePaging: true,
     columns,
-    ref: tableRef
+    ref: tableRef,
+    checkbox: {
+      rowCheck: false
+    }
   }
   function uploadTable() {
     tableRef.current.remoteDataRefresh();
@@ -198,7 +202,7 @@ const CommonTable = forwardRef(({
       <AutoSizeLayout>
         {
           h => (
-            <ExtTable height={h - 65} showSearch={false} {...tableProps} />
+            <ExtTable height={crop ? (h - 128) : (h - 65)} showSearch={false} {...tableProps} />
           )
         }
       </AutoSizeLayout>

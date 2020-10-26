@@ -207,11 +207,11 @@ export default [
         title: '供应商评价项目'
       },
       {
-        path: '/supplier/appraise/project/team/approve',component: './SupplierAppraise/Approve/Team',
+        path: '/supplier/appraise/project/team/approve', component: './SupplierAppraise/Approve/Team',
         title: '采购小组确认'
       },
       {
-        path: '/supplier/appraise/project/leader/approve',component: './SupplierAppraise/Approve/Leader',
+        path: '/supplier/appraise/project/leader/approve', component: './SupplierAppraise/Approve/Leader',
         title: '领导确认'
       },
       {
@@ -264,7 +264,22 @@ export default [
         component: './EvaluateLevelMain',
         title: '评定等级'
       },
-       /**无账号供应商 */
+      {
+        path: '/supplier/appraise/project/evaluate/result/score/details',
+        component: './ManualEvaluate/ScoreDetails',
+        title: '综合得分详情'
+      },
+      {
+        path: '/supplier/appraise/project/evaluate/result/score/details/system',
+        component: './ManualEvaluate/ScoreDetails/System',
+        title: '系统打分评分项明细'
+      },
+      {
+        path: '/supplier/appraise/project/evaluate/result/score/details/manual',
+        component: './ManualEvaluate/ScoreDetails/Manual',
+        title: '人工打分评分项明细'
+      },
+      /**无账号供应商 */
       { path: '/supplier/ImportSupplier/index', component: './ImportSupplier/index', title: '创建无账号供应商' },
       { path: '/supplier/ImportSupplier/create/index', component: './ImportSupplier/create/index', title: '新增无账号供应商' },
       { path: '/supplier/ImportSupplier/Edit/index', component: './ImportSupplier/Edit/index', title: '编辑无账号供应商' },

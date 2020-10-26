@@ -1,12 +1,17 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import styles from './index.less';
 import CommonForm from '../CommonForm';
 import CommonTable from '../CommonTable';
-import { Button, Affix, Tabs } from 'antd';
-import { closeCurrent } from '../../../utils';
+import { Button, Affix, Tabs, Skeleton } from 'antd';
+import { WorkFlow } from 'suid';
+import { closeCurrent, checkToken } from '../../../utils';
+import { useLocation } from 'dva/router';
 const { TabPane } = Tabs;
+const { Approve } = WorkFlow;
 function TeamApprove() {
   const formRef = useRef(null);
+  const { query } = useLocation();
+  const [isReady, setIsReady] = useState(false);
   const tableColumns = [
     {
       title: '供应商代码',
@@ -64,27 +69,38 @@ function TeamApprove() {
       </Affix>
     )
   }
+  useEffect(() => {
+    checkToken(query, setIsReady)
+  }, [])
   return (
-    <div>
-      <Affix>
-        <div className={styles.affixHeader}>
-          <div className={styles.fbc}>
-            <span className={styles.title}>评价结果</span>
-            <div className={styles.fec}>
-              <Button className={styles.btn} onClick={closeCurrent}>返回</Button>
-            </div>
+    <Approve
+      businessId={query?.id}
+      taskId={query?.taskId}
+      instanceId={query?.instanceId}
+      flowMapUrl="flow-web/design/showLook"
+      submitComplete={closeCurrent}
+    >
+      <div className={styles.affixHeader}>
+        <div className={styles.fbc}>
+          <span className={styles.title}>评价结果</span>
+          <div className={styles.fec}>
           </div>
         </div>
-      </Affix>
+      </div>
       <Tabs renderTabBar={renderTabBar} animated={false}>
         <TabPane tab='评价项目' key='base-info'>
-          <CommonForm wrappedComponentRef={formRef} type='detail' />
+          {
+            isReady ? <CommonForm wrappedComponentRef={formRef} type='detail' /> : <Skeleton loading={true} />
+          }
         </TabPane>
         <TabPane tab='采购小组确认' key='evaluate-result'>
-          <CommonTable columns={tableColumns} type='team' />
+          {
+            isReady ?
+              <CommonTable columns={tableColumns} type='team' /> : <Skeleton loading={true} />
+          }
         </TabPane>
       </Tabs>
-    </div>
+    </Approve>
   )
 }
 

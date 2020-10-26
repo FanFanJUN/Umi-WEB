@@ -431,7 +431,8 @@ export const corporationProps = {
   },
   reader: {
     name: 'name',
-    field: ['code']
+    field: ['code'],
+    description: 'code'
     // value: 'code'
   },
   style: {
@@ -500,6 +501,24 @@ export const evaluateSystemProps = {
   },
   placeholder: '请选择评价体系'
 }
+
+// 通过公司代码查询评价体系主数据
+export const evaluateSystemFormCodeProps = {
+  store: {
+    url: `${baseUrl}/api/supplierEvlSystemService/findTreeByCorpCode`,
+    type: 'post'
+  },
+  reader: {
+    name: 'name',
+    field: ['id'],
+    description: 'code'
+  },
+  style: {
+    width: '100%'
+  },
+  placeholder: '请选择评价体系'
+}
+
 //海关信用状况
 export const customsEnterpriseAll = {
   store: {
@@ -920,7 +939,7 @@ export const purchaseCompanyPropsreg = {
       return {
         selectable: false
       }
-    }else if (node.nodeLevel === 1 && node.code === '1' || node.nodeLevel === 1 && node.code === '2' ) {
+    } else if (node.nodeLevel === 1 && node.code === '1' || node.nodeLevel === 1 && node.code === '2') {
       return {
         selectable: false
       }
@@ -984,4 +1003,30 @@ export const organpurchaseCompanyPropsreg = {
       }
     }
   }
+}
+// 采购组织
+export const purchaseOrgConfig = {
+  columns: [
+    {
+      title: '代码',
+      dataIndex: 'code'
+    },
+    {
+      title: '采购组织名称',
+      dataIndex: 'name'
+    }
+  ],
+  store: {
+    url: `${baseUrl}/purchaseOrg/listByPage`,
+    params: { Q_EQ_frozen__Boolean: false }
+  },
+  reader: {
+    name: 'name',
+    field: ['code']
+    // value: 'code'
+  },
+  style: {
+    width: '100%'
+  },
+  remotePaging: true,
 }

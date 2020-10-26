@@ -278,7 +278,7 @@ function SupplierRevaluate() {
           ld => (
             <Button
               className={styles.btn}
-              disabled={empty || !flowInit}
+              disabled={empty || !flowInit || !resultGener}
               loading={ld}
             >提交审核</Button>
           )

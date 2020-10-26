@@ -3,12 +3,12 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-14 11:02:45
- * @LastEditTime: 2020-10-20 14:45:06
+ * @LastEditTime: 2020-10-22 10:16:52
  * @Description: 主数据接口
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/mainData/mainDataService.js
  */
-import request from '../../../utils/request';
-import { baseUrl } from "../../../utils/commonUrl";
+import request from '@/utils/request';
+import { baseUrl } from '@/utils/commonUrl';
 
 // 主数据接口 新增/编辑 请求公用Post
 export async function requestPostApi(params) {
