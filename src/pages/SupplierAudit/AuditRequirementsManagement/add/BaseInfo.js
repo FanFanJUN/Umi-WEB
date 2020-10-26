@@ -30,11 +30,17 @@ let BaseInfo = React.forwardRef((props, ref) => {
 
   const { type, form, data, userInfo } = props;
 
-  const { getFieldDecorator, setFieldsValue } = props.form;
+  const { getFieldDecorator, setFieldsValue, getFieldValue } = props.form;
 
   useImperativeHandle(ref, () => ({
     getBaseInfoData: props.form.validateFieldsAndScroll
   }))
+
+  useEffect(() => {
+    if (getFieldValue('applyCorporationCode')) {
+      props.setApplyCorporationCode(getFieldValue('applyCorporationCode'))
+    }
+  }, [getFieldValue('applyCorporationCode')])
 
   const hideFormItem = (name, initialValue) => (
     <FormItem>

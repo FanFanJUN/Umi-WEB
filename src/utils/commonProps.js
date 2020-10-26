@@ -939,7 +939,7 @@ export const purchaseCompanyPropsreg = {
       return {
         selectable: false
       }
-    }else if (node.nodeLevel === 1 && node.code === '1' || node.nodeLevel === 1 && node.code === '2' ) {
+    } else if (node.nodeLevel === 1 && node.code === '1' || node.nodeLevel === 1 && node.code === '2') {
       return {
         selectable: false
       }
@@ -1003,4 +1003,30 @@ export const organpurchaseCompanyPropsreg = {
       }
     }
   }
+}
+// 采购组织
+export const purchaseOrgConfig = {
+  columns: [
+    {
+      title: '代码',
+      dataIndex: 'code'
+    },
+    {
+      title: '采购组织名称',
+      dataIndex: 'name'
+    }
+  ],
+  store: {
+    url: `${baseUrl}/purchaseOrg/listByPage`,
+    params: { Q_EQ_frozen__Boolean: false }
+  },
+  reader: {
+    name: 'name',
+    field: ['code']
+    // value: 'code'
+  },
+  style: {
+    width: '100%'
+  },
+  remotePaging: true,
 }

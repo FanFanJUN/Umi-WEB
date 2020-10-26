@@ -11,8 +11,8 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
   const tableRef = useRef(null);
 
   const [data, setData] = useState({
-    teamVisible: false,
-    contentVisible: true,
+    teamVisible: true,
+    contentVisible: false,
     type: 'add',
     dataSource: [
       {
@@ -112,6 +112,7 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
         onCancel={() => setData(v => ({...v, visible: false}))}
       />
       <Content
+        applyCorporationCode={props.applyCorporationCode}
         onCancel={() => setData(v => ({...v, contentVisible: false}))}
         visible={data.contentVisible}
       />

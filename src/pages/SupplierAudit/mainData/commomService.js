@@ -24,11 +24,46 @@ const commonProps = {
   },
 };
 
+// 角色
+export const RoleConfig = {
+  allowClear: true,
+  dataSource: [
+    {
+      code: 'GROUP_LEADER',
+      name: '组长',
+    },
+    {
+      code: 'MEMBER',
+      name: '成员',
+    },
+  ],
+  placeholder: '选择角色',
+  ...commonProps,
+}
+
+
+// 人员类型
+export const PersonnelTypeConfig = {
+  allowClear: true,
+  dataSource: [
+    {
+      code: 'INTERNAL_USERS',
+      name: '内部用户',
+    },
+    {
+      code: 'EXTERNAL_USERS',
+      name: '外部用户',
+    },
+  ],
+  placeholder: '选择人员类型',
+  ...commonProps,
+}
+
 // 评价体系
 export const EvaluationSystemConfig = {
   store: {
     type: 'POST',
-    url: `${baseUrl}/api/supplierEvlSystemService/findTreeByBusinessUnitId`,
+    url: `${baseUrl}/api/supplierEvlSystemService/findTreeByCorpCode`,
   },
   reader: {
     field: ['code', 'id'],
@@ -245,6 +280,16 @@ export const AuditTypeManagementConfig = {
     description: 'code',
   },
 };
+
+// 审核类型所有
+export const GetAllAuditType = async (params) => {
+  const url = `${recommendUrl}/common/findAllReviewType`;
+  return request({
+    url,
+    method: 'GET',
+    params: params,
+  });
+}
 
 //审核准则管理冻结解冻
 export const ManagementAuditCriteriaFrozen = async (params) => {

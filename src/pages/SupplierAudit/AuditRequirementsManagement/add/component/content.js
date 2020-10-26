@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ComboList, ComboTree, ExtModal, ExtTable } from 'suid';
 import { Col, Form, Input, Row, message } from 'antd';
 import { EvaluationSystemConfig } from '../../../mainData/commomService';
@@ -21,6 +21,9 @@ const Content = (props) => {
   const {visible, form, type} = props
 
   const { getFieldDecorator, getFieldValue, setFieldsValue } = props.form;
+
+  useEffect(() => {
+  }, [props.applyCorporationCode])
 
   const onOk = () => {
     props.form.validateFieldsAndScroll((err, values) => {
@@ -62,6 +65,7 @@ const Content = (props) => {
     setData(v => ({...v, treeData: value}))
   }
 
+
   return (
     <ExtModal
       width={'90vh'}
@@ -100,6 +104,10 @@ const Content = (props) => {
                     name={'systemName'}
                     afterSelect={systemSelect}
                     field={['systemCode', 'systemId']}
+                    cascadeParams={{
+                      systemUseType: 'SupplierApprove',
+                      corpCode: props.applyCorporationCode,
+                    }}
                     {...EvaluationSystemConfig}
                   />,
                 )
