@@ -11,7 +11,7 @@ import {
   useRef
 } from 'react';
 import styles from './index.less';
-import { ComboList, ExtTable } from 'suid';
+import { ComboList, ExtTable, ComboTree, utils } from 'suid';
 import {
   Row,
   Col,
@@ -34,7 +34,7 @@ import ComboModalList from '../../../components/ComboModalList';
 const {
   corporationProps,
   orgnazationProps,
-  evaluateSystemProps,
+  evaluateSystemFormCodeProps,
   evlPeriodEmu,
   evlLevelEmu,
   businessMainProps,
@@ -115,6 +115,7 @@ const CommonForm = forwardRef(({
   } = form;
   const [systemView, setSystemView] = useState(null);
   const [expandedKeys, setExpandedKeys] = useState([]);
+  const [mainDataKey, setMainDataKey] = useState('main-data-system');
   const [checkedKeys, setCheckedKeys] = useState([]);
   const [autoExpandParent, setAutoExpandParent] = useState(true);
   const [loading, toggleLoading] = useState(false);
@@ -123,6 +124,7 @@ const CommonForm = forwardRef(({
   const tableRef = useRef(null)
   const useAccount = getUserAccount();
   const evlValue = getFieldValue('evlLevel');
+  const corpCode = getFieldValue('corporationCode');
   const { query } = useLocation();
   const [tableCommonProps, tableCommonSets] = useTableProps();
   function formatSystemTree(arr) {
@@ -368,6 +370,15 @@ const CommonForm = forwardRef(({
     }
     message.error(msg)
   }
+  async function handleCorporationChange() {
+    const uid = utils.getUUID()
+    await setSystemView(null)
+    await setFieldsValue({
+      mainDataEvlSystemName: undefined,
+      mainDataEvlSystemId: undefined
+    })
+    await setMainDataKey(uid)
+  }
   useEffect(() => {
     if ((type === 'detail' || type === 'editor') && initialize) {
       getInitialValue()
@@ -419,6 +430,7 @@ const CommonForm = forwardRef(({
                     field={['corporationCode']}
                     name='corporationName'
                     disabled={type === 'detail'}
+                    afterSelect={handleCorporationChange}
                   />
                 )
               }
@@ -527,7 +539,7 @@ const CommonForm = forwardRef(({
                     }
                   ]
                 })(
-                  <ComboList
+                  <ComboTree
                     {...orgnazationProps}
                     form={form}
                     name='orgName'
@@ -576,16 +588,25 @@ const CommonForm = forwardRef(({
                   ]
                 })(
                   <ComboList
+                    key={mainDataKey}
                     form={form}
                     name='mainDataEvlSystemName'
                     field={['mainDataEvlSystemId']}
-                    {...evaluateSystemProps}
+                    {...evaluateSystemFormCodeProps}
+                    store={{
+                      ...evaluateSystemFormCodeProps.store,
+                      url: `${evaluateSystemFormCodeProps.store.url}?corpCode=${corpCode}&systemUseType=SupplierEvaluation`,
+                      params: {
+                        corpCode,
+                        systemUseType: "SupplierEvaluation"
+                      }
+                    }}
                     style={{ width: 350 }}
                     afterSelect={item => {
                       const fs = formatSystemTree([item]);
                       setSystemView(fs)
                     }}
-                    disabled={type === 'detail'}
+                    disabled={type === 'detail' || !corpCode}
                   />
                 )
               }
@@ -661,7 +682,7 @@ const CommonForm = forwardRef(({
                       disabled={type === 'detail'}
                       columns={businessColumns}
                       store={{
-                        url: `${baseUrl}/api/corporationPurchaseOrgService/findByPage`,
+                        url: `${baseUrl}/api/corporationPurchaseOrgService/findByPageWithDataAuth`,
                         type: 'POST',
                         params: {
                           quickSearchProperties: businessColumns.map(item => item.dataIndex)

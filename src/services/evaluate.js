@@ -49,7 +49,7 @@ export const importEvaluateData = params => createServiceRequest({
 // 保存
 export const saveEvaluateData = params => createServiceRequest({
   path: '/api/seSubEvaluationProjectService/save',
-  params, 
+  params,
   method: 'POST'
 })
 
@@ -81,4 +81,34 @@ export const queryEvaluateLevelMain = params => createServiceRequest({
   params,
   method: 'GET',
   base: baseUrl
+})
+
+// 保存评定等级主数据
+export const saveEvaluateLevelMain = params => createServiceRequest({
+  path: '/api/supplierScoreMapLevelService/save',
+  params,
+  method: 'POST',
+  base: baseUrl
+})
+// 删除评定等级主数据
+export const removeEvaluateLevelMain = params => createServiceRequest({
+  path: '/api/supplierScoreMapLevelService/delete',
+  params,
+  method: 'DELETE',
+  base: baseUrl,
+  hack: true
+})
+
+// 获取综合打分详情
+export const queryScoreDetailsInfo = params => createServiceRequest({
+  path: '/api/seEvaluationResultService/findRuleScoreByResultId',
+  params,
+  method: 'GET'
+})
+
+// 获取评分项明细
+export const queryEvaluateScoreDetail = params => createServiceRequest({
+  path: '/api/seEvaluationResultService/findScoreItemsByRuleScoreId',
+  params,
+  method: 'GET'
 })

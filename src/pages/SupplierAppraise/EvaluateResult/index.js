@@ -1,12 +1,14 @@
 import { useRef } from 'react';
 import styles from './index.less';
+import { useLocation } from 'dva/router';
 import CommonForm from '../CommonForm';
 import CommonTable from '../CommonTable';
 import { Button, Affix, Tabs } from 'antd';
-import { closeCurrent } from '../../../utils';
+import { closeCurrent, openNewTab } from '../../../utils';
 const { TabPane } = Tabs;
 function EvaluateResult() {
   const formRef = useRef(null);
+  const { query } = useLocation();
   const tableColumns = [
     {
       title: '供应商代码',
@@ -34,7 +36,12 @@ function EvaluateResult() {
     },
     {
       title: '综合得分',
-      dataIndex: 'totalScore'
+      dataIndex: 'totalScore',
+      render(text, record) {
+        return (
+          <Button type='link' onClick={() => handleCheckScoreDetail(record.id)}>{text}</Button>
+        )
+      }
     },
     {
       title: '等级',
@@ -53,6 +60,9 @@ function EvaluateResult() {
       dataIndex: 'leaderAdviceName'
     }
   ]
+  function handleCheckScoreDetail(evaluationResultId) {
+    openNewTab(`supplier/appraise/project/evaluate/result/score/details?evaluationProjectId=${query?.id}&evaluationResultId=${evaluationResultId}`, '综合得分', false)
+  }
   function renderTabBar(props, DefaultTabBar) {
     return (
       <Affix offsetTop={62}>
@@ -77,7 +87,7 @@ function EvaluateResult() {
           <CommonForm wrappedComponentRef={formRef} type='detail' />
         </TabPane>
         <TabPane tab='评价结果' key='evaluate-result'>
-          <CommonTable columns={tableColumns}/>
+          <CommonTable columns={tableColumns} crop />
         </TabPane>
       </Tabs>
     </div>

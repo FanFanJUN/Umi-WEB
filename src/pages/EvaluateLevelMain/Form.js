@@ -1,5 +1,5 @@
 import { forwardRef, useImperativeHandle, useState } from 'react';
-import { Button, Modal, Form, Row, Col, Select, Input, InputNumber } from 'antd';
+import { Modal, Form, Row, Col, Select, InputNumber } from 'antd';
 import { ComboList } from 'suid';
 import { dealAdviceProps } from '../../utils/commonProps';
 const { create, Item: FormItem } = Form
@@ -24,7 +24,12 @@ const CommonForm = forwardRef(({
     setFieldsValue
   }))
   const modalTitle = type === 'create' ? '新增' : '编辑'
-  const [visible, toggleVisible] = useState(true);
+  const [visible, toggleVisible] = useState(false);
+  const [loading, toggleLoading] = useState(false);
+  const [error, setError] = useState({
+    validateStatus: '',
+    help: ''
+  })
   const {
     getFieldValue,
     getFieldDecorator,
@@ -41,35 +46,89 @@ const CommonForm = forwardRef(({
   }
   async function handleOk() {
     const values = await validateFieldsAndScroll();
-    
+    setError({ validateStatus: '', help: '' })
+    const validate = await checkRangeRepeat(values, dataSource)
+    if (validate) {
+      onOk(values, toggleLoading)
+    }
   }
-  function checkRangeRepeat(current, dataSource) {
+  function validateRangeRepeat(item, current) {
+    const SIGN = { EQ: "=", GT: ">", GE: ">=", LT: "<", LE: "<=" };
     const {
-      markStart,
-      markStartCalsign,
-      markEnd,
-      markEndCalsign
+      markStart: s,
+      markStartCalsign: sc,
+      markEnd: e,
+      markEndCalsign: ec,
+      id
     } = current;
-    const hasRanges = dataSource.map(item=> ({
-      markStart: item.markStart,
-      markStartCalsign: item.markStartCalsign,
-      markEnd: item.markEnd,
-      markEndCalsign: item.markEndCalsign
-    }))
+    const {
+      markStart: cs,
+      markStartCalsign: csc,
+      markEnd: ce,
+      markEndCalsign: cecl,
+      id: cid
+    } = item;
+    if (id == cid) {
+      return true
+    }
+    if (s >= cs && s <= ce) {
+      if (s > cs && s < ce) {
+        return false;
+      } else if (s === ce) {
+        if (ec === SIGN.GE || ec === SIGN.EQ) {
+          if (cecl === SIGN.LE || cecl === SIGN.EQ) {
+            return false;
+          }
+        }
+      }
+    }
+    if (e >= cs && e <= ce) {
+      if (e > cs && e < ce) {
+        return false;
+      } else if (e === cs) {
+        if (ec === SIGN.LE || ec === SIGN.EQ) {
+          if (csc === SIGN.GE || csc === SIGN.EQ) {
+            return false;
+          }
+        }
+      }
+    }
+    if (e > ce && s < cs) {
+      return false;
+    }
+    if (e === ce && s === cs) {
+      return false;
+    }
+    return true
+  }
+  function checkRangeRepeat(current, ds = []) {
+    const hasRanges = ds.every(item => validateRangeRepeat(item, current));
+    console.log(hasRanges)
+    return new Promise((resolve, reject) => {
+      if (!hasRanges) {
+        reject('区间重复')
+        return
+      }
+      resolve(true)
+    }).catch(error => setError({ validateStatus: 'error', help: error }))
   }
   return (
     <Modal
       maskClosable
       visible={visible}
+      confirmLoading={loading}
       onOk={handleOk}
       title={modalTitle}
+      onCancel={hide}
+      destroyOnClose
     >
       <Form {...formLayout}>
-        <FormItem label='区间' required>
+        <FormItem label='区间' {...error} required>
           <Row gutter={[6, 0]}>
             <Col span={6}>
               <FormItem>
                 {
+                  getFieldDecorator('id'),
                   getFieldDecorator('markStartCalsign', {
                     rules: [
                       {
@@ -81,7 +140,8 @@ const CommonForm = forwardRef(({
                     <Select onSelect={(v) => {
                       if (v === '=') {
                         setFieldsValue({
-                          markEndCalsign: '='
+                          markEndCalsign: '=',
+                          markEnd: markStart
                         })
                         return
                       }
@@ -152,7 +212,7 @@ const CommonForm = forwardRef(({
                     ]
                   })(
                     <InputNumber
-                      min={(markStart+1)}
+                      min={markStartCalsign === '=' ? 0 : (markStart + 1) || 0}
                       max={100}
                       disabled={
                         !markStartCalsign ||

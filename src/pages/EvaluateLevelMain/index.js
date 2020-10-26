@@ -3,17 +3,20 @@
  * @author hezhi
  * @date 2020-09-23
  */
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styles from './index.less';
 import { useTableProps } from '../../utils/hooks';
 import { ExtTable } from 'suid';
-import { Button, message } from 'antd';
+import { Button, message, Modal } from 'antd';
 import { Header, AutoSizeLayout } from '../../components';
 import CommonForm from './Form';
-import { queryEvaluateLevelMain } from '../../services/evaluate';
+import { queryEvaluateLevelMain, saveEvaluateLevelMain, removeEvaluateLevelMain } from '../../services/evaluate';
 
 function EvaluateLevelMain() {
-  const [tableState, sets] = useTableProps()
+  const [tableState, sets] = useTableProps();
+  const [type, setType] = useState('create');
+  const tableRef = useRef(null);
+  const formRef = useRef(null);
   const {
     selectedRowKeys,
     selectedRows,
@@ -21,20 +24,96 @@ function EvaluateLevelMain() {
     loading
   } = tableState;
   const {
-    setRows,
     setRowKeys,
     handleSelectedRows,
     setDataSource,
     toggleLoading
   } = sets;
-  const columns = [];
+  const [singleRow = {}] = selectedRows;
+  const empty = selectedRowKeys.length === 0;
+  const columns = [
+    {
+      title: '开始区间计算符',
+      dataIndex: 'markStartCalsign'
+    },
+    {
+      title: '开始区间',
+      dataIndex: 'markStart'
+    },
+    {
+      title: '结束区间计算符',
+      dataIndex: 'markEndCalsign'
+    },
+    {
+      title: '结束区间',
+      dataIndex: 'markEnd'
+    },
+    {
+      title: '评价等级',
+      dataIndex: 'level'
+    },
+    {
+      title: '处理建议',
+      dataIndex: 'dealAdviceName'
+    },
+    {
+      title: '排序码',
+      dataIndex: 'rank'
+    }
+  ];
   const left = (
     <>
-      <Button className={styles.btn}>新增</Button>
-      <Button className={styles.btn}>编辑</Button>
-      <Button className={styles.btn}>删除</Button>
+      <Button className={styles.btn} onClick={handleShowCreate}>新增</Button>
+      <Button className={styles.btn} disabled={empty} onClick={handleShowEditor}>编辑</Button>
+      <Button className={styles.btn} disabled={empty} onClick={handleRemove}>删除</Button>
     </>
   );
+  function handleShowCreate() {
+    setType('create')
+    formRef.current.show()
+  }
+  function handleShowEditor() {
+    setType('editor')
+    formRef.current.show();
+    formRef.current.setFieldsValue({ ...singleRow })
+  }
+  // 清除选中项
+  function cleanSelectedRecord() {
+    setRowKeys([])
+    tableRef.current.manualSelectedRows([])
+  }
+  async function handleSave(values, sl) {
+    sl(true)
+    const { success, message: msg, data } = await saveEvaluateLevelMain(values)
+    sl(false)
+    if (success) {
+      message.success(msg)
+      formRef.current.hide()
+      cleanSelectedRecord()
+      initialDatasource()
+      return
+    }
+    message.error(msg)
+  }
+  function handleRemove() {
+    Modal.confirm({
+      title: '删除当前项',
+      content: '是否删除当前所选项?',
+      okText: '删除',
+      cancelText: '取消',
+      onOk: async () => {
+        const [id] = selectedRowKeys;
+        const { success, message: msg } = await removeEvaluateLevelMain({ id })
+        if (success) {
+          cleanSelectedRecord()
+          initialDatasource()
+          message.success(msg)
+          return
+        }
+        message.error(msg)
+      }
+    })
+  }
   async function initialDatasource() {
     toggleLoading(true)
     const { data, success, message: msg } = await queryEvaluateLevelMain();
@@ -57,18 +136,30 @@ function EvaluateLevelMain() {
         {
           h => (
             <ExtTable
+              bordered
               height={h}
               columns={columns}
               loading={loading}
               showSearch={false}
               dataSource={dataSource}
+              checkbox={{
+                multiSelect: false
+              }}
+              rowKey={item => item?.id}
+              ref={tableRef}
+              allowCancelSelect
               onSelectRow={handleSelectedRows}
               selectedRowKeys={selectedRowKeys}
             />
           )
         }
       </AutoSizeLayout>
-      <CommonForm />
+      <CommonForm
+        wrappedComponentRef={formRef}
+        type={type}
+        onOk={handleSave}
+        dataSource={dataSource}
+      />
     </div>
   )
 }
