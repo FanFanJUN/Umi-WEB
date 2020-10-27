@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import styles from './index.less';
 import CommonForm from '../CommonForm';
 import CommonTable from '../CommonTable';
