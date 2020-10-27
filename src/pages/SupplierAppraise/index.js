@@ -259,38 +259,150 @@ function SupplierRevaluate() {
   }
   const left = (
     <>
-      <Button className={styles.btn} type='primary' onClick={handleCreate}>新增</Button>
-      <Button className={styles.btn} onClick={handleEditor} disabled={empty || !allowRemove || resultGener}>编辑</Button>
-      <Button className={styles.btn} onClick={handleRemove} disabled={empty || !allowRemove}>删除</Button>
-      <Button className={styles.btn} onClick={handleDetail} disabled={empty}>明细</Button>
-      <Button className={styles.btn} onClick={handleAllocation} disabled={empty || !needSelectScorer || complete || resultGener}>分配评审人</Button>
-      <Button className={styles.btn} onClick={handleAppraise} disabled={empty || !allowRemove || resultGener}>发起评价</Button>
-      <Button className={styles.btn} onClick={handleWithdraw} disabled={empty || allowRemove || complete || resultGener}>撤回</Button>
-      <Button className={styles.btn} disabled={empty || !complete} onClick={handleGenerateResult}>生成评价结果</Button>
-      <Button className={styles.btn} disabled={empty || !resultGener} onClick={handleCheckResult}>查看评价结果</Button>
-      <StartFlow
-        businessKey={businessKey}
-        businessModelCode="com.ecmp.srm.sam.entity.se.SeEvaluationProject"
-        flowMapUrl='flow-web/design/showLook'
-        startComplete={uploadTable}
-      >
-        {
-          ld => (
-            <Button
-              className={styles.btn}
-              disabled={empty || !flowInit || !resultGener}
-              loading={ld}
-            >提交审核</Button>
-          )
-        }
-      </StartFlow>
-      <Button className={styles.btn} disabled={empty || !flowing} onClick={handleStopApprove}>终止审核</Button>
-      <FlowHistoryButton
-        businessId={businessKey}
-        flowMapUrl='flow-web/design/showLook'
-      >
-        <Button className={styles.btn} disabled={empty || flowInit}>审核历史</Button>
-      </FlowHistoryButton>
+      {
+        authAction(
+          <Button
+            className={styles.btn}
+            type='primary'
+            onClick={handleCreate}
+            ignore={DEVELOPER_ENV}
+            key='SUPPLIER_APPRAISE_CREATE'
+          >新增</Button>
+        )
+      }
+      {
+        authAction(
+          <Button
+            className={styles.btn}
+            onClick={handleEditor}
+            disabled={empty || !allowRemove || resultGener}
+            ignore={DEVELOPER_ENV}
+            key='SUPPLIER_APPRAISE_EDITOR'
+          >编辑</Button>
+        )
+      }
+      {
+        authAction(
+          <Button
+            className={styles.btn}
+            onClick={handleRemove}
+            disabled={empty || !allowRemove}
+            ignore={DEVELOPER_ENV}
+            key='SUPPLIER_APPRAISE_REMOVE'
+          >删除</Button>
+        )
+      }
+      {
+        authAction(
+          <Button
+            className={styles.btn}
+            onClick={handleDetail}
+            disabled={empty}
+            ignore={DEVELOPER_ENV}
+            key='SUPPLIER_APPRAISE_DETAIL'
+          >明细</Button>
+        )
+      }
+      {
+        authAction(
+          <Button
+            className={styles.btn}
+            onClick={handleAllocation}
+            disabled={empty || !needSelectScorer || complete || resultGener}
+            ignore={DEVELOPER_ENV}
+            key='SUPPLIER_APPRAISE_ALLOT'
+          >分配评审人</Button>
+        )
+      }
+      {
+        authAction(
+          <Button
+            className={styles.btn}
+            onClick={handleAppraise}
+            disabled={empty || !allowRemove || resultGener}
+            ignore={DEVELOPER_ENV}
+            key='SUPPLIER_APPRAISE_START_EVALUATE'
+          >发起评价</Button>
+        )
+      }
+      {
+        authAction(
+          <Button
+            className={styles.btn}
+            onClick={handleWithdraw}
+            disabled={empty || allowRemove || complete || resultGener}
+            ignore={DEVELOPER_ENV}
+            key='SUPPLIER_APPRAISE_WITHDRAW'
+          >撤回</Button>
+        )
+      }
+      {
+        authAction(
+          <Button
+            className={styles.btn}
+            disabled={empty || !complete}
+            onClick={handleGenerateResult}
+            ignore={DEVELOPER_ENV}
+            key='SUPPLIER_APPRAISE_GENERATE_RESULT'
+          >生成评价结果</Button>
+        )
+      }
+      {
+        authAction(
+          <Button
+            className={styles.btn}
+            disabled={empty || !resultGener}
+            onClick={handleCheckResult}
+            ignore={DEVELOPER_ENV}
+            key='SUPPLIER_APPRAISE_CHECK_RESULT'
+          >查看评价结果</Button>
+        )
+      }
+      {
+        authAction(
+          <StartFlow
+            businessKey={businessKey}
+            businessModelCode="com.ecmp.srm.sam.entity.se.SeEvaluationProject"
+            flowMapUrl='flow-web/design/showLook'
+            startComplete={uploadTable}
+            ignore={DEVELOPER_ENV}
+            key='SUPPLIER_APPRAISE_APPROVE'
+          >
+            {
+              ld => (
+                <Button
+                  className={styles.btn}
+                  disabled={empty || !flowInit || !resultGener}
+                  loading={ld}
+                >提交审核</Button>
+              )
+            }
+          </StartFlow>
+        )
+      }
+      {
+        authAction(
+          <Button
+            className={styles.btn}
+            disabled={empty || !flowing}
+            onClick={handleStopApprove}
+            ignore={DEVELOPER_ENV}
+            key='SUPPLIER_APPRAISE_APPROVE_STOP'
+          >终止审核</Button>
+        )
+      }
+      {
+        authAction(
+          <FlowHistoryButton
+            businessId={businessKey}
+            flowMapUrl='flow-web/design/showLook'
+            ignore={DEVELOPER_ENV}
+            key='SUPPLIER_APPRAISE_APPROVE_HISTORY'
+          >
+            <Button className={styles.btn} disabled={empty || flowInit}>审核历史</Button>
+          </FlowHistoryButton>
+        )
+      }
     </>
   );
   const right = (

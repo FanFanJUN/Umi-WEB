@@ -6,7 +6,7 @@
 
 import { useRef } from 'react';
 import styles from './index.less';
-import { ExtTable, WorkFlow } from 'suid';
+import { ExtTable, WorkFlow, utils } from 'suid';
 import { Button, Input, Modal, message } from 'antd';
 import { Header, AutoSizeLayout, AdvancedForm } from '../../components';
 import { useTableProps } from '../../utils/hooks';
@@ -16,6 +16,9 @@ import { formatYMDHmsToYMD, getFrameElement, openNewTab } from '../../utils';
 import { stopApprove } from '../../services/api';
 const { Search } = Input;
 const { StartFlow, FlowHistoryButton } = WorkFlow;
+
+const { authAction } = utils;
+const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 
 function ManualEvaluate() {
   const tableRef = useRef(null)
@@ -176,26 +179,67 @@ function ManualEvaluate() {
   }
   const left = (
     <>
-      <Button className={styles.btn} disabled={!noSubmit || empty} onClick={handleEvaluate}>评价</Button>
-      <Button className={styles.btn} disabled={empty}>明细</Button>
-      <StartFlow
-        className={styles.btn}
-        type='primary'
-        startComplete={uploadTable}
-        businessKey={flowId}
-        businessModelCode='com.ecmp.srm.sam.entity.se.SeSubEvaluationProject'
-      >
-        {
-          loading => <Button loading={loading} className={styles.btn} disabled={empty || !noSubmit}>提交审核</Button>
-        }
-      </StartFlow>
-      <Button className={styles.btn} disabled={empty || noSubmit || completed} onClick={handleStopApprove}>终止审核</Button>
-      <FlowHistoryButton
-        businessId={flowId}
-        flowMapUrl='flow-web/design/showLook'
-      >
-        <Button className={styles.btn} disabled={empty || noSubmit}>审核历史</Button>
-      </FlowHistoryButton>
+      {
+        authAction(
+          <Button
+            className={styles.btn}
+            disabled={!noSubmit || empty}
+            onClick={handleEvaluate}
+            ignore={DEVELOPER_ENV}
+            key='MANUAL_EVALUATE'
+          >评价</Button>
+        )
+      }
+      {
+        authAction(
+          <Button
+            className={styles.btn}
+            disabled={empty}
+            ignore={DEVELOPER_ENV}
+            key='MANUAL_EVALUATE_DETAIL'
+          >明细</Button>
+        )
+      }
+      {
+        authAction(
+          <StartFlow
+            className={styles.btn}
+            type='primary'
+            ignore={DEVELOPER_ENV}
+            key='MANUAL_EVALUATE_APPROVE'
+            startComplete={uploadTable}
+            businessKey={flowId}
+            businessModelCode='com.ecmp.srm.sam.entity.se.SeSubEvaluationProject'
+          >
+            {
+              loading => <Button loading={loading} className={styles.btn} disabled={empty || !noSubmit}>提交审核</Button>
+            }
+          </StartFlow>
+        )
+      }
+      {
+        authAction(
+          <Button
+            className={styles.btn}
+            disabled={empty || noSubmit || completed}
+            onClick={handleStopApprove}
+            ignore={DEVELOPER_ENV}
+            key='MANUAL_EVALUATE_APPROVE_STOP'
+          >终止审核</Button>
+        )
+      }
+      {
+        authAction(
+          <FlowHistoryButton
+            businessId={flowId}
+            flowMapUrl='flow-web/design/showLook'
+            ignore={DEVELOPER_ENV}
+            key='MANUAL_EVALUATE_APPROVE_HISTORY'
+          >
+            <Button className={styles.btn} disabled={empty || noSubmit}>审核历史</Button>
+          </FlowHistoryButton>
+        )
+      }
     </>
   )
   const right = (
