@@ -2,7 +2,7 @@ import { useRef, useEffect, useState } from 'react';
 import styles from './index.less';
 import CommonForm from '../CommonForm';
 import CommonTable from '../CommonTable';
-import {  Affix, Tabs, Skeleton } from 'antd';
+import { Affix, Tabs, Skeleton } from 'antd';
 import { WorkFlow } from 'suid';
 import { closeCurrent, checkToken } from '../../../utils';
 import { useLocation } from 'dva/router';
@@ -84,7 +84,7 @@ function LeaderApprove() {
       flowMapUrl="flow-web/design/showLook"
       submitComplete={closeCurrent}
     >
-      <Affix>
+      <div>
         <div className={styles.affixHeader}>
           <div className={styles.fbc}>
             <span className={styles.title}>评价结果</span>
@@ -92,20 +92,20 @@ function LeaderApprove() {
             </div>
           </div>
         </div>
-      </Affix>
-      <Tabs renderTabBar={renderTabBar} animated={false}>
-        <TabPane tab='评价项目' key='base-info'>
-          {
-            isReady ? <CommonForm wrappedComponentRef={formRef} type='detail' /> : <Skeleton loading={true} />
-          }
-        </TabPane>
-        <TabPane tab='评价结果' key='evaluate-result'>
-          {
-            isReady ?
-              <CommonTable columns={tableColumns} type='leader' /> : <Skeleton loading={true} />
-          }
-        </TabPane>
-      </Tabs>
+        <Tabs animated={false}>
+          <TabPane tab='评价项目' key='base-info'>
+            {
+              isReady ? <CommonForm wrappedComponentRef={formRef} type='detail' /> : <Skeleton loading={true} />
+            }
+          </TabPane>
+          <TabPane tab='评价结果' key='evaluate-result'>
+            {
+              isReady ?
+                <CommonTable columns={tableColumns} type='leader' /> : <Skeleton loading={true} />
+            }
+          </TabPane>
+        </Tabs>
+      </div>
     </Approve>
   )
 }

@@ -80,26 +80,28 @@ function TeamApprove() {
       flowMapUrl="flow-web/design/showLook"
       submitComplete={closeCurrent}
     >
-      <div className={styles.affixHeader}>
-        <div className={styles.fbc}>
-          <span className={styles.title}>评价结果</span>
-          <div className={styles.fec}>
+      <div>
+        <div className={styles.affixHeader}>
+          <div className={styles.fbc}>
+            <span className={styles.title}>评价结果</span>
+            <div className={styles.fec}>
+            </div>
           </div>
         </div>
+        <Tabs animated={false}>
+          <TabPane tab='评价项目' key='base-info'>
+            {
+              isReady ? <CommonForm wrappedComponentRef={formRef} type='detail' /> : <Skeleton loading={true} />
+            }
+          </TabPane>
+          <TabPane tab='采购小组确认' key='evaluate-result'>
+            {
+              isReady ?
+                <CommonTable columns={tableColumns} type='team' /> : <Skeleton loading={true} />
+            }
+          </TabPane>
+        </Tabs>
       </div>
-      <Tabs renderTabBar={renderTabBar} animated={false}>
-        <TabPane tab='评价项目' key='base-info'>
-          {
-            isReady ? <CommonForm wrappedComponentRef={formRef} type='detail' /> : <Skeleton loading={true} />
-          }
-        </TabPane>
-        <TabPane tab='采购小组确认' key='evaluate-result'>
-          {
-            isReady ?
-              <CommonTable columns={tableColumns} type='team' /> : <Skeleton loading={true} />
-          }
-        </TabPane>
-      </Tabs>
     </Approve>
   )
 }
