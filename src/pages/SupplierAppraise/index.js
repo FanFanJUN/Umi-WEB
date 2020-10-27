@@ -267,7 +267,7 @@ function SupplierRevaluate() {
       <Button className={styles.btn} onClick={handleAppraise} disabled={empty || !allowRemove || resultGener}>发起评价</Button>
       <Button className={styles.btn} onClick={handleWithdraw} disabled={empty || allowRemove || complete || resultGener}>撤回</Button>
       <Button className={styles.btn} disabled={empty || !complete} onClick={handleGenerateResult}>生成评价结果</Button>
-      <Button className={styles.btn} disabled={empty || !flowInit || !resultGener} onClick={handleCheckResult}>查看评价结果</Button>
+      <Button className={styles.btn} disabled={empty || !resultGener} onClick={handleCheckResult}>查看评价结果</Button>
       <StartFlow
         businessKey={businessKey}
         businessModelCode="com.ecmp.srm.sam.entity.se.SeEvaluationProject"
