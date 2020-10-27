@@ -110,8 +110,12 @@ const ShuttleBox = (props) => {
         justifyContent: 'center',
         alignItems: 'center',
       }}>
-        <span style={{ fontSize: '50px', cursor: 'pointer' }} onClick={addClick}>{'>'}</span>
-        <span style={{ fontSize: '50px', cursor: 'pointer' }} onClick={deleteClick}>{'<'}</span>
+        {
+          props.type !== 'show' && <span style={{ fontSize: '50px', cursor: 'pointer' }} onClick={addClick}>{'>'}</span>
+        }
+        {
+          props.type !== 'show' && <span style={{ fontSize: '50px', cursor: 'pointer' }} onClick={deleteClick}>{'<'}</span>
+        }
       </div>
       <div style={{ width: '40%', height: '95%', border: '1px solid #f2f2f2', padding: '10px' }}>
         <span style={{ fontSize: '15px', fontWeight: 'bold', marginLeft: '15px' }}>已选择</span>

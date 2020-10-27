@@ -1,4 +1,4 @@
-import { baseUrl, recommendUrl, smBaseUrl } from '../../../utils/commonUrl';
+import { baseUrl, basicServiceUrl, gatewayUrl, recommendUrl, smBaseUrl } from '../../../utils/commonUrl';
 import request from '../../../utils/request';
 
 export const duplicateRemoval = (arr, key) => {
@@ -38,6 +38,23 @@ export const RoleConfig = {
     },
   ],
   placeholder: '选择角色',
+  ...commonProps,
+}
+
+// 国家
+export const TypeConfig = {
+  allowClear: true,
+  dataSource: [
+    {
+      code: 'INTERNAL_USERS',
+      name: '内部用户',
+    },
+    {
+      code: 'EXTERNAL_USERS',
+      name: '外部用户',
+    },
+  ],
+  placeholder: '选择人员类型',
   ...commonProps,
 }
 
@@ -86,11 +103,6 @@ export const EvaluationSystemConfig = {
 // 正常供应商
 export const NormalSupplierConfig = {
   placeholder: '选择正常供应商',
-  store: {
-    type: 'POST',
-    autoLoad: false,
-    url: `${smBaseUrl}/supplier/findNormalSuppliers`,
-  },
   remotePaging: true,
   rowKey: 'code',
   reader: {
@@ -115,6 +127,17 @@ export const SelectionStrategyConfig = {
   ],
   placeholder: '选择供应商选择策略',
   ...commonProps,
+}
+
+// 根据部门查员工
+export const UserByDepartmentConfig = {
+  placeholder: '选择员工编号',
+  remotePaging: true,
+  rowKey: 'code',
+  reader: {
+    name: 'code',
+    description: 'userName',
+  },
 }
 
 // 采购组织数据
@@ -213,6 +236,23 @@ export const SupplierConfig = {
   },
 };
 
+// 单据审核原因
+export const DocumentAuditCauseManagementConfig = {
+  placeholder: '选择审核原因',
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${baseUrl}/reviewReason/findBySearchPage`,
+  },
+  remotePaging: true,
+  rowKey: 'code',
+  reader: {
+    field: ['code', 'id'],
+    name: 'name',
+    description: 'code',
+  },
+};
+
 // 审核原因
 export const AuditCauseManagementConfig = {
   placeholder: '选择审核原因',
@@ -280,6 +320,16 @@ export const AuditTypeManagementConfig = {
     description: 'code',
   },
 };
+
+// 根据用户id查电话
+export const GetUserTelByUserId = async (params={}) => {
+  const url = `${gatewayUrl}${basicServiceUrl}/userProfile/findByUserId`;
+  return request({
+    url,
+    method: 'GET',
+    params: params,
+  });
+}
 
 // 审核类型所有
 export const GetAllAuditType = async (params) => {

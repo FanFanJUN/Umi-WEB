@@ -184,7 +184,7 @@ export default function() {
     { title: '申请人', key: 'buCode', props: { placeholder: '输入申请人' } },
     { title: '申请日期', key: 'applyPeopleName', type: 'datePicker', props: { placeholder: '输入申请人' } },
     { title: '供应商', key: 'allotSupplierState', type: 'list', props: SupplierConfig },
-    { title: '物料二次分类', key: 'state', type: 'tree', props: materialClassProps },
+    { title: '物料分类', key: 'state', type: 'tree', props: materialClassProps },
     { title: '审核类型', key: 'state', type: 'list', props: AuditTypeManagementConfig },
     { title: '审核原因', key: 'state', type: 'list', props: AuditCauseManagementConfig },
     { title: '状态', key: 'state', type: 'list', props: ShareStatusProps },

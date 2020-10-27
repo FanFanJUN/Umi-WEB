@@ -11,6 +11,7 @@ const formItemLayoutLong = {
 };
 
 const Content = (props) => {
+
   const tableRef = useRef(null);
 
   const [data, setData] = useState({
@@ -65,6 +66,8 @@ const Content = (props) => {
     setData(v => ({...v, treeData: value}))
   }
 
+  console.log(props.type, 'type')
+
 
   return (
     <ExtModal
@@ -88,7 +91,7 @@ const Content = (props) => {
           <Col span={12}>
             <FormItem {...formItemLayoutLong} label={'审核体系'}>
               {
-                getFieldDecorator('systemName', {
+                type === 'detail' ? <span>审核体系</span> : getFieldDecorator('systemName', {
                   initialValue: type === 'add' ? '' : '',
                   rules: [
                     {
@@ -105,7 +108,7 @@ const Content = (props) => {
                     afterSelect={systemSelect}
                     field={['systemCode', 'systemId']}
                     cascadeParams={{
-                      systemUseType: 'SupplierApprove',
+                      systemUseType: 'SupplierEvaluation',
                       corpCode: props.applyCorporationCode,
                     }}
                     {...EvaluationSystemConfig}
@@ -118,6 +121,7 @@ const Content = (props) => {
       </Form>
       <div style={{height: '300px', width: '100%'}}>
         <ShuttleBox
+          type={type === 'detail' && 'show'}
           onChange={getTreeData}
           leftTreeData={data.leftTreeData}
         />

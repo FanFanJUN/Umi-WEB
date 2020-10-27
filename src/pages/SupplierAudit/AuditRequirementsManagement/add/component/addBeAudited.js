@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
-import { ComboList, ExtModal } from 'suid';
-import { Col, Form, Input, Row } from 'antd';
-import { CorporationListConfig } from '../../../../QualitySynergy/commonProps';
+import {ComboTree, ComboList, ExtModal } from 'suid';
+import { Col, Form, Input, message, Row } from 'antd';
 import {
-  AllCompanyConfig,
-  AuditCauseManagementConfig, AuditTypeManagementAll,
+  DocumentAuditCauseManagementConfig,
   NormalSupplierConfig,
   SelectionStrategyConfig,
 } from '../../../mainData/commomService';
+import { smBaseUrl } from '../../../../../utils/commonUrl';
+import { documentMaterialClassProps } from '../../../../../utils/commonProps';
 
 const FormItem = Form.Item;
 
@@ -19,32 +19,44 @@ const formItemLayoutLong = {
 const formItemLayout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 20 },
-}
+};
 
 
 const AddBeAudited = (props) => {
 
-  const {visible, title, form, type} = props
+  const { visible, title, form, type } = props;
 
   const { getFieldDecorator, getFieldValue, setFieldsValue } = props.form;
 
   const onCancel = () => {
-    props.onCancel()
-  }
+    props.onCancel();
+  };
 
   const onOk = () => {
-
-  }
+    props.form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        console.log(values);
+      }
+    });
+  };
 
   const clearSelected = () => {
 
-  }
+  };
 
   useEffect(() => {
-    // AuditTypeManagementAll().then(res => {
-    //   console.log(res)
-    // })
-  }, [])
+    if (props.allAuditType && props.allAuditType.length !== 0) {
+      props.allAuditType.map(item => {
+        if (item.name === '追加审核') {
+          console.log(item);
+          setFieldsValue({
+            reviewTypeId: item.id,
+            reviewTypeCode: item.code,
+          });
+        }
+      });
+    }
+  }, [props.allAuditType]);
 
   const hideFormItem = (name, initialValue) => (
     <FormItem>
@@ -58,7 +70,7 @@ const AddBeAudited = (props) => {
     </FormItem>
   );
 
-  return(
+  return (
     <ExtModal
       width={'90vh'}
       maskClosable={false}
@@ -89,7 +101,7 @@ const AddBeAudited = (props) => {
                     },
                   ],
                 })(
-                  <Input  disabled={true}/>
+                  <Input disabled={true}/>,
                 )
               }
             </FormItem>
@@ -118,7 +130,7 @@ const AddBeAudited = (props) => {
                     form={form}
                     name={'reviewReasonName'}
                     field={['reviewReasonCode', 'reviewReasonId']}
-                    {...AuditCauseManagementConfig}
+                    {...DocumentAuditCauseManagementConfig}
                   />,
                 )
               }
@@ -149,10 +161,16 @@ const AddBeAudited = (props) => {
               }
             </FormItem>
           </Col>
+          <Col span={0}>
+            {hideFormItem('supplierId', type === 'add' ? '' : fatherData.supplierId)}
+          </Col>
+          <Col span={0}>
+            {hideFormItem('supplierCode', type === 'add' ? '' : fatherData.supplierCode)}
+          </Col>
           <Col span={12}>
             <FormItem {...formItemLayoutLong} label={'供应商'}>
               {
-                getFieldDecorator('fileCategoryName', {
+                getFieldDecorator('supplierName', {
                   initialValue: type === 'add' ? '' : '',
                   rules: [
                     {
@@ -166,8 +184,19 @@ const AddBeAudited = (props) => {
                     allowClear={true}
                     style={{ width: '100%' }}
                     form={form}
-                    name={'name'}
-                    field={['code']}
+                    name={'supplierName'}
+                    field={['supplierCode', 'supplierId']}
+                    store={{
+                      params: {
+                        corpAndPurOrgs: [{
+                          corporationCode: props.companyCode,
+                          purchaseOrgCode: props.organizationCode,
+                        }],
+                      },
+                      type: 'POST',
+                      autoLoad: false,
+                      url: `${smBaseUrl}/api/supplierService/findNormalSuppliersByInfo `,
+                    }}
                     {...NormalSupplierConfig}
                   />,
                 )
@@ -188,7 +217,7 @@ const AddBeAudited = (props) => {
                 getFieldDecorator('agentName', {
                   initialValue: type === 'add' ? '' : '',
                 })(
-                  <Input />
+                  <Input/>,
                 )
               }
             </FormItem>
@@ -211,7 +240,15 @@ const AddBeAudited = (props) => {
                     },
                   ],
                 })(
-                  <Input />
+                  <ComboTree
+                    disabled={getFieldValue('supplierStrategyName') !== '正常供应商'}
+                    allowClear={true}
+                    style={{ width: '100%' }}
+                    form={form}
+                    name={'materialGroupName'}
+                    field={['materialGroupCode', 'materialGroupId']}
+                    {...documentMaterialClassProps}
+                  />,
                 )
               }
             </FormItem>
@@ -255,7 +292,15 @@ const AddBeAudited = (props) => {
                     },
                   ],
                 })(
-                  <Input style={{width: '15%'}} placeholder={'国家'}/>
+                  <ComboList
+                    disabled={getFieldValue('supplierStrategyName') !== '正常供应商'}
+                    allowClear={true}
+                    style={{ width: '100%' }}
+                    form={form}
+                    name={'supplierName'}
+                    field={['supplierCode', 'supplierId']}
+                    {...NormalSupplierConfig}
+                  />,
                 )
               }
               {
@@ -268,7 +313,7 @@ const AddBeAudited = (props) => {
                     },
                   ],
                 })(
-                  <Input style={{width: '15%'}}/>
+                  <Input style={{ width: '15%' }}/>,
                 )
               }
               {
@@ -281,7 +326,7 @@ const AddBeAudited = (props) => {
                     },
                   ],
                 })(
-                  <Input style={{width: '15%'}}/>
+                  <Input style={{ width: '15%' }}/>,
                 )
               }
               {
@@ -294,7 +339,7 @@ const AddBeAudited = (props) => {
                     },
                   ],
                 })(
-                  <Input style={{width: '15%'}}/>
+                  <Input style={{ width: '15%' }}/>,
                 )
               }
               {
@@ -307,7 +352,7 @@ const AddBeAudited = (props) => {
                     },
                   ],
                 })(
-                  <Input style={{width: '40%'}}/>
+                  <Input style={{ width: '40%' }}/>,
                 )
               }
             </FormItem>
@@ -326,7 +371,7 @@ const AddBeAudited = (props) => {
                     },
                   ],
                 })(
-                  <Input />
+                  <Input/>,
                 )
               }
             </FormItem>
@@ -343,7 +388,7 @@ const AddBeAudited = (props) => {
                     },
                   ],
                 })(
-                  <Input />
+                  <Input/>,
                 )
               }
             </FormItem>
@@ -356,7 +401,7 @@ const AddBeAudited = (props) => {
                 getFieldDecorator('remark', {
                   initialValue: type === 'add' ? '' : '',
                 })(
-                  <Input.TextArea rows={6} style={{ width: '100%' }}/>
+                  <Input.TextArea rows={6} style={{ width: '100%' }}/>,
                 )
               }
             </FormItem>
@@ -364,8 +409,8 @@ const AddBeAudited = (props) => {
         </Row>
       </Form>
     </ExtModal>
-  )
+  );
 
-}
+};
 
 export default Form.create()(AddBeAudited);

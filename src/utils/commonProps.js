@@ -392,6 +392,29 @@ export const statusProps = {
 }
 
 // 二次分类物料组数据
+export const documentMaterialClassProps = {
+  store: {
+    url: `${baseUrl}/SecondaryClassificationMaterialGroup/listAllGeneralTree`,
+    params: { Q_EQ_frozen__Boolean: false }
+  },
+  reader: {
+    name: 'showName',
+    field: ['code', 'id']
+  },
+  placeholder: '请选择物料分类',
+  style: {
+    width: '100%'
+  },
+  treeNodeProps: (node) => {
+    if (node.nodeLevel < 2) {
+      return {
+        selectable: false
+      }
+    }
+  }
+}
+
+// 二次分类物料组数据
 export const materialClassProps = {
   store: {
     url: `${baseUrl}/SecondaryClassificationMaterialGroup/listAllGeneralTree`,
@@ -981,7 +1004,7 @@ export const corporationConfigShowName = {
 // 注册供应商分类
 export const organpurchaseCompanyPropsreg = {
   store: {
-    url: `${supplierManagerBaseUrl}/supplierRegister/getSupplierCategoryNotOneTree`, 
+    url: `${supplierManagerBaseUrl}/supplierRegister/getSupplierCategoryNotOneTree`,
   },
   reader: {
     name: 'name',
