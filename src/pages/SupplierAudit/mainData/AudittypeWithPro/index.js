@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-12 14:44:24
- * @LastEditTime: 2020-10-19 14:43:17
+ * @LastEditTime: 2020-10-27 14:26:24
  * @Description: 审核类型默认审核项目
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/mainData/AudittypeWithPro/index.js
  */
@@ -16,7 +16,7 @@ import {
   AddBUCompanyOrganizationRelation, DeleteBUCompanyOrganizationRelation, FrostBUCompanyOrganizationRelation, judgeButtonDisabled,
 } from '../../../QualitySynergy/commonProps';
 import { AutoSizeLayout } from '../../../../components';
-import EventModal from '../../common/EventModal';
+import CommonModal from './CommonModal';
 import { requestGetFrozenApi, requestPostApi } from '../mainDataService';
 
 const { authAction } = utils;
@@ -203,7 +203,7 @@ const Index = () => {
         }
       </AutoSizeLayout>
       {data.visible &&
-        <EventModal
+        <CommonModal
           onCancel={handleCancel}
           onOk={handleOk}
           propData={data}
