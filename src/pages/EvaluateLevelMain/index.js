@@ -6,12 +6,14 @@
 import { useEffect, useRef, useState } from 'react';
 import styles from './index.less';
 import { useTableProps } from '../../utils/hooks';
-import { ExtTable } from 'suid';
+import { ExtTable, utils } from 'suid';
 import { Button, message, Modal } from 'antd';
 import { Header, AutoSizeLayout } from '../../components';
 import CommonForm from './Form';
 import { queryEvaluateLevelMain, saveEvaluateLevelMain, removeEvaluateLevelMain } from '../../services/evaluate';
 
+const { authAction } = utils;
+const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 function EvaluateLevelMain() {
   const [tableState, sets] = useTableProps();
   const [type, setType] = useState('create');
@@ -63,9 +65,38 @@ function EvaluateLevelMain() {
   ];
   const left = (
     <>
-      <Button className={styles.btn} onClick={handleShowCreate}>新增</Button>
-      <Button className={styles.btn} disabled={empty} onClick={handleShowEditor}>编辑</Button>
-      <Button className={styles.btn} disabled={empty} onClick={handleRemove}>删除</Button>
+      {
+        authAction(
+          <Button
+            ignore={DEVELOPER_ENV}
+            key='EVALUATE_LEVEL_CREATE'
+            className={styles.btn}
+            onClick={handleShowCreate}
+          >新增</Button>
+        )
+      }
+      {
+        authAction(
+          <Button
+            ignore={DEVELOPER_ENV}
+            key='EVALUATE_LEVEL_EDITOR'
+            className={styles.btn}
+            disabled={empty}
+            onClick={handleShowEditor}
+          >编辑</Button>
+        )
+      }
+      {
+        authAction(
+          <Button
+            ignore={DEVELOPER_ENV}
+            key='EVALUATE_LEVEL_REMOVE'
+            className={styles.btn}
+            disabled={empty}
+            onClick={handleRemove}
+          >删除</Button>
+        )
+      }
     </>
   );
   function handleShowCreate() {

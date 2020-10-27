@@ -26,7 +26,6 @@ function Evaluate() {
   const {
     setDataSource
   } = sets;
-  function handleSubmit() { }
   function renderTabBar(props, DefaultTabBar) {
     return (
       <Affix offsetTop={56}>
@@ -212,7 +211,6 @@ function Evaluate() {
                 className={styles.btn}
                 type='primary'
                 beforeStart={handleBeforeSubmit}
-                onClick={handleSubmit}
                 startComplete={closeCurrent}
                 businessKey={query?.flowId}
                 disabled={loading}
