@@ -381,7 +381,7 @@ export default create()(function ({ form }) {
                     });
                 })(),
                 withdraw: true,
-                distribute: true,
+                distribute: !(rows.every(item => (item.effectiveStatus === "EFFECT" && !item.frozen && item.strategicPurchaseCode && item.allotSupplierState !== 'ALLOT_END'))),
                 sync: true,
                 pdm: true,
                 check: true,
@@ -783,6 +783,7 @@ export default create()(function ({ form }) {
         <DistributeSupplierModal
             wrappedComponentRef={supplierRef}
             selectedRow={selectedRows[0]}
+            ids={selectedRowKeys}
             supplierModalType={supplierModalType}
             viewDemandNum={viewDemandNum}
             refreshTable={() => {

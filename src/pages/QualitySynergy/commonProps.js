@@ -141,6 +141,15 @@ export const FindMaxDateByDemandNumber = async params => {
     params: params,
   });
 }
+// 批量导入供应商验证
+export const importSupplierExcel = async params => {
+  const url = `${recommendUrl}/api/epTechnicalShareDemandService/importSupplierExcel`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+}
 
 // 根据id改变下载状态
 export const UpdateShareDownLoadState = async params => {

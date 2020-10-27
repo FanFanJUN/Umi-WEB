@@ -355,6 +355,15 @@ export async function addDemandSupplier(params) {
         data: params,
     });
 }
+// 填报环保资料物料-分配供应商-保存-多选分配
+export async function addDemandSupplierMultiple(params) {
+    const url = `${recommendUrl}/api/epDemandSupplierService/saveDemandSupplierLists`;
+    return request({
+        url,
+        method: 'POST',
+        data: params,
+    });
+}
 // 填报环保资料物料-批量导入
 export async function addDemandImport(params) {
     const url = `${recommendUrl}/api/epDemandService/importData`;
@@ -371,6 +380,15 @@ export async function findByDemandNumber(params) {
         url,
         method: 'GET',
         params: params,
+    });
+}
+// 批量导入供应商验证
+export async function supplierImportData(params) {
+    const url = `${recommendUrl}/api/epDemandSupplierService/importData`;
+    return request({
+        url,
+        method: 'POST',
+        data: params,
     });
 }
 
@@ -429,9 +447,18 @@ export async function epDemandRecall(params) {
         params: params,
     });
 }
-// 供应商-填报环保资料-撤回
+// 供应商-填报环保资料-复制-单行
 export async function epDemandCopyAll(params) {
     const url = `${recommendUrl}/api/epDataFillService/copyFilledToNotFilled`;
+    return request({
+        url,
+        method: 'GET',
+        params: params,
+    });
+}
+// 供应商-填报环保资料-复制-多行
+export async function epDemandCopyAllList(params) {
+    const url = `${recommendUrl}/api/epDataFillService/copyFilledToNotFilledList`;
     return request({
         url,
         method: 'GET',

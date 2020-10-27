@@ -4,21 +4,21 @@ import { Button, DatePicker, Form, Modal, message, Input } from 'antd';
 import { smBaseUrl, supplierManagerBaseUrl } from '@/utils/commonUrl';
 import { getUserName, getUserId, getUserAccount } from '../../../../utils';
 import {
-    addDemandSupplier,
+    addDemandSupplierMultiple,
     findByPageOfSupplier,
     findByDemandNumber,
+    supplierImportData
 } from '../../../../services/qualitySynergy'
 import styles from './index.less'
 import moment from 'moment';
 import { CommonTable } from '../../TechnicalDataSharing/DataSharingList/component/CommonTable';
-import { recommendUrl } from '../../../../utils/commonUrl';
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development';
 const { create, Item: FormItem } = Form;
 const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 14, },
 };
-const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDemandNum, refreshTable }, ref) => {
+const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDemandNum, refreshTable, ids }, ref) => {
     useImperativeHandle(ref, () => ({
         setVisible
     }))
@@ -30,8 +30,7 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [supplierSelected, setSupplierSelected] = useState([]);
-    const [supplierSelectedRowKeys, setSupplierSelectedRowKeys] = useState([]);
-    const [dataSource, setDataSource] = useState([]);
+    const [supplierSelectedRowKeys, setSupplierSelectedRowKeys] = useState([]);    const [dataSource, setDataSource] = useState([]);
     const [deleteList, setDeleteList] = useState([]);
     const [supplierCodes, setSuplierCodes] = useState([]);
     const [editTag, setEditTag] = useState(false); // 编辑标记
@@ -74,6 +73,7 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
         { title: '供应商名称', dataIndex: 'name', width: 200, ellipsis: true, align: 'center', },
     ];
     async function getData() {
+        if(supplierModalType === 'distribute' && ids &&　ids.length > 1)return;
         const res = await findByPageOfSupplier({
             demandNumber: supplierModalType === 'distribute' ? selectedRow.demandNumber : viewDemandNum
         });
@@ -172,7 +172,6 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                     // 当前日趋+1月
                     fillEndDate: moment(new Date().setMonth(new Date().getMonth() + 1)).format('YYYY-MM-DD'),
                     allotDate: moment().format('YYYY-MM-DD'),
-                    demandNumber: selectedRow.demandNumber,
                     allotPeopleId: getUserId(),
                     allotPeopleAccount: getUserAccount(),
                     allotPeopleName: getUserName()
@@ -201,8 +200,10 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
             onOk: async () => {
                 let res = {};
                 let saveList = dataSource.concat(deleteList);
-                let saveData = { ...selectedRow, demandSupplierBoList: saveList }
-                res = await addDemandSupplier(saveData);
+                res = await addDemandSupplierMultiple({
+                    demandIds: ids && ids.join(),
+                    demandSupplierBoList: saveList
+                });
                 if (res.statusCode === 200) {
                     message.success('操作成功');
                     setEditTag(false);
@@ -272,38 +273,45 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
     }
     const validateItem = (data) => {
         return new Promise((resolve, reject) => {
-            const dataList = data.map(item => {
+            const demandBoList = data.map(item => {
                 return item;
             })
-            // JudgeTheListOfESPM(dataList).then(res => {
-            //     const response = res.data.map((item, index) => ({
-            //         ...item,
-            //         key: index,
-            //         validate: item.importResult,
-            //         status: item.importResult ? '数据完整' : '失败',
-            //         statusCode: item.importResult ? 'success' : 'error',
-            //         message: item.importResult ? '成功' : item.importResultInfo
-            //     }))
-            //     resolve(response);
-            // }).catch(err => {
-            //     reject(err)
-            // })
+            supplierImportData(demandBoList).then(res => {
+                const response = res.data.map((item, index) => ({
+                    ...item,
+                    key: index,
+                    validate: item.importResult,
+                    status: item.importResult ? '数据完整' : '失败',
+                    statusCode: item.importResult ? 'success' : 'error',
+                    message: item.importResult ? '成功' : item.importResultInfo
+                }))
+                resolve(response);
+            }).catch(err => {
+                reject(err)
+            })
         })
     };
 
     const importFunc = (value) => {
-        const dataList = value.map(item => {
-            return item;
+        let suppliers = [];
+        let index = 0;
+        let dataList = value.filter((item) => {
+            if (!supplierCodes.includes(item.code)) {
+                item.rowKey = dataSource.length + index;
+                delete item.validate;
+                delete item.status;
+                delete item.statusCode;
+                delete item.message;
+                index++;
+                suppliers.push(item.code);
+                return true;
+            }
+            return false;
         })
-        // SaveTheListOfESPM(dataList).then(res => {
-        //     if (res.success) {
-        //         message.success('导入成功');
-        //         tableRightRef.current.manualSelectedRows();
-        //         tableRightRef.current.remoteDataRefresh();
-        //     } else {
-        //         message.error(res.message)
-        //     }
-        // });
+        suppliers = supplierCodes.concat(suppliers);
+        dataList = dataSource.concat(dataList);
+        setSuplierCodes(suppliers);
+        setDataSource(dataList);
     };
     return <Fragment>
         <ExtModal
