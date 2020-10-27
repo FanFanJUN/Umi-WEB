@@ -1,6 +1,6 @@
 import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
 import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/edit/BaseInfo.less';
-import { Col, Form, Modal, Row, Input, DatePicker, Button } from 'antd';
+import { Col, Form, Modal, Row, Input, DatePicker, Button, message } from 'antd';
 import { ExtTable } from 'suid';
 import AddBeAudited from './component/addBeAudited';
 import Content from './component/content';
@@ -11,7 +11,7 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
   const tableRef = useRef(null);
 
   const [data, setData] = useState({
-    teamVisible: true,
+    teamVisible: false,
     contentVisible: false,
     type: 'add',
     dataSource: [
@@ -53,7 +53,12 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
   const handleBtn = (type) => {
     switch (type) {
       case 'add':
-        return setData(v => ({...v, visible: true, title: '新增拟审核信息', type: 'add'}))
+        if (props.companyCode && props.organizationCode) {
+          setData(v => ({...v, visible: true, title: '新增拟审核信息', type: 'add'}))
+        } else {
+          message.error('请先选择公司和采购组织!')
+        }
+        break;
       case 'content':
         return showContent()
       case 'team':
@@ -62,7 +67,7 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
   }
 
   const handleSelectedRows = (value, rows) => {
-    setData((v) => ({...v, selectedRowKeys: value, selectRows: rows, type: 'add'}))
+    setData((v) => ({...v, selectedRowKeys: value, selectRows: rows}))
   }
 
   // 打开内容界面
@@ -106,17 +111,22 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
         </div>
       </div>
       <AddBeAudited
+        companyCode={props.companyCode}
+        organizationCode={props.organizationCode}
         visible={data.visible}
         title={data.title}
         type={data.type}
+        allAuditType={props.allAuditType}
         onCancel={() => setData(v => ({...v, visible: false}))}
       />
       <Content
         applyCorporationCode={props.applyCorporationCode}
+        type={data.type}
         onCancel={() => setData(v => ({...v, contentVisible: false}))}
         visible={data.contentVisible}
       />
       <Team
+        type={data.type}
         onCancel={() => setData(v => ({...v, teamVisible: false}))}
         visible={data.teamVisible}
       />

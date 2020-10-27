@@ -72,6 +72,7 @@ let BaseInfo = React.forwardRef((props, ref) => {
                   <ComboList
                     allowClear={true}
                     style={{ width: '100%' }}
+                    afterSelect={v => props.setCompanyCode(v.code)}
                     form={form}
                     name={'applyCorporationName'}
                     field={['applyCorporationCode', 'applyCorporationId']}
@@ -149,6 +150,7 @@ let BaseInfo = React.forwardRef((props, ref) => {
                     allowClear={true}
                     style={{ width: '100%' }}
                     form={form}
+                    afterSelect={v => props.setOrganizationCode(v.code)}
                     name={'purchaseOrgName'}
                     field={['purchaseOrgCode', 'purchaseOrgId']}
                     {...AllFindByFiltersConfig}

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Affix, Button, Spin } from 'antd';
+import { Affix, Button, message, Spin } from 'antd';
 import classnames from 'classnames';
 import styles from '../../../Supplier/Editor/index.less';
 import { closeCurrent, getMobile, getUserId, getUserName } from '../../../../utils';
@@ -15,7 +15,12 @@ const Index = () => {
 
   const [applyCorporationCode, setApplyCorporationCode] = useState('')
 
+  const [companyCode, setCompanyCode] = useState('')
+
+  const [organizationCode, setOrganizationCode] = useState()
+
   const [data, setData] = useState({
+    allAuditType: [],
     id: '',
     editDate: {},
     spinLoading: false,
@@ -48,7 +53,11 @@ const Index = () => {
 
   const getAuditType = () => {
     GetAllAuditType().then(res => {
-      console.log(res)
+      if (res.success) {
+        setData(v => ({...v, allAuditType: res.data}))
+      } else {
+        message.error('获取审核类型失败')
+      }
     })
   }
 
@@ -90,6 +99,8 @@ const Index = () => {
           </div>
         </Affix>
         <BaseInfo
+          setCompanyCode={setCompanyCode}
+          setOrganizationCode={setOrganizationCode}
           wrappedComponentRef={baseInfoRef}
           userInfo={data.userInfo}
           type={data.type}
@@ -97,6 +108,9 @@ const Index = () => {
           isView={data.isView}
         />
         <IntendedAuditInformation
+          companyCode={companyCode}
+          organizationCode={organizationCode}
+          allAuditType={data.allAuditType}
           applyCorporationCode={applyCorporationCode}
           type={data.type}
           isView={data.isView}
