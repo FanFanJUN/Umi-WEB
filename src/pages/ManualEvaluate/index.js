@@ -4,7 +4,7 @@
  * @date 2020-09-23
  */
 
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import styles from './index.less';
 import { ExtTable, WorkFlow, utils } from 'suid';
 import { Button, Input, Modal, message } from 'antd';
@@ -340,6 +340,17 @@ function ManualEvaluate() {
       }
     })
   }
+  // 监听二级路由关闭更新列表
+  function listenerParentClose(event) {
+    const { data = {} } = event;
+    if (data.tabAction === 'close') {
+      tableRef.current.remoteDataRefresh()
+    }
+  }
+  useEffect(() => {
+    window.parent.frames.addEventListener('message', listenerParentClose, false);
+    return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
+  }, [])
   return (
     <div>
       <Header
