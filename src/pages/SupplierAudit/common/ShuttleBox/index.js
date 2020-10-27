@@ -27,6 +27,12 @@ const ShuttleBox = (props) => {
     props.onChange(data.rightTreeData)
   }, [data.rightTreeData])
 
+  useEffect(() => {
+    if (props.rightTreeData) {
+      setData(v => ({...v, rightTreeData: props.rightTreeData}))
+    }
+  }, [])
+
   const constructArr = (data) => {
     if (data.children.length !== 0) {
       data.key = data.id;
