@@ -78,9 +78,11 @@ export const PersonnelTypeConfig = {
 
 // 评价体系
 export const EvaluationSystemConfig = {
+  ///api/supplierEvlSystemService/findTreeByCorpCode
+  // https://tecmp.changhong.com/srm-baf-web/supplierEvlSystem/findTreeByBusinessUnitId?businessUnitId=60B62845-9EF8-11EA-AD0D-0242C0A8440B
   store: {
     type: 'POST',
-    url: `${baseUrl}/api/supplierEvlSystemService/findTreeByCorpCode`,
+    url: `${baseUrl}/supplierEvlSystem/findTreeByBusinessUnitId`,
   },
   reader: {
     field: ['code', 'id'],
@@ -98,6 +100,28 @@ export const EvaluationSystemConfig = {
       }
     }
   }
+};
+
+// 区域
+export const AreaConfig = {
+  remotePaging: true,
+  rowKey: 'code',
+  reader: {
+    field: ['id'],
+    name: 'name',
+    description: 'code',
+  },
+};
+
+// 区域
+export const CountryIdConfig = {
+  remotePaging: true,
+  rowKey: 'code',
+  reader: {
+    field: ['countryId'],
+    name: 'name',
+    description: 'code',
+  },
 };
 
 // 正常供应商
@@ -320,6 +344,26 @@ export const AuditTypeManagementConfig = {
     description: 'code',
   },
 };
+
+// 获取供应商联系人 /supplierContactService/findBySupplierId
+export const GetSupplierContact = async (params={}) => {
+  const url = `${recommendUrl}/supplierContactService/findBySupplierId`;
+  return request({
+    url,
+    method: 'GET',
+    params: params,
+  });
+}
+
+// 获取默认审核体系
+export const GetDefaultSystem = async (params={}) => {
+  const url = `${recommendUrl}/api/reviewEvlSystemService/findDefaultEvlSystem`;
+  return request({
+    url,
+    method: 'GET',
+    params: params,
+  });
+}
 
 // 根据用户id查电话
 export const GetUserTelByUserId = async (params={}) => {

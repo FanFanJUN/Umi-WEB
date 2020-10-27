@@ -5,6 +5,7 @@ import EventModal from '../../../common/EventModal';
 import { getRandom } from '../../../../QualitySynergy/commonProps';
 import ContentModal from './contentModal';
 import ShuttleBox from '../../../common/ShuttleBox';
+import { GetDefaultSystem } from '../../../mainData/commomService';
 
 const teamColumns = [
   { title: '组别', dataIndex: 'reviewGroup', ellipsis: true, width: 60 },
@@ -55,11 +56,26 @@ const Team = (props) => {
   });
 
   const [data, setData] = useState({
+    leftTreeData: [],
     selectRows: [],
     visible: false,
     type: 'add',
     title: '组别新增',
   });
+
+  useEffect(() => {
+    if (visible) {
+      GetDefaultSystem({
+        reviewTypeCode: props.reviewTypeCode
+      }).then(res => {
+        if (res.success) {
+          console.log(res)
+        } else {
+          message.error('获取默认评价体系失败!')
+        }
+      })
+    }
+  }, [visible])
 
   const clearSelected = () => {
 
@@ -145,6 +161,7 @@ const Team = (props) => {
   };
 
   const handleContentSelectedRows = (keys, values) => {
+    setData(v => ({...v, leftTreeData: []}))
     setContentData(v => ({ ...v, selectedRows: values, selectedRowKeys: keys }));
   };
 
@@ -226,7 +243,19 @@ const Team = (props) => {
   }
 
   const getTreeData = (value) => {
+    let newData = JSON.parse(JSON.stringify(contentData.dataSource))
+    newData.map((item, index) => {
+      if (item.lineNum === contentData.selectedRowKeys[0]) {
+        newData[index].treeData = value
+      }
+    })
+    setContentData(v =>({...v, dataSource: newData}))
     console.log(value)
+  }
+
+  // 构造左边树
+  const getLeftTreeData = () => {
+    setData(v => ({...v, leftTreeData: props.treeData}))
   }
 
   return (
@@ -270,7 +299,7 @@ const Team = (props) => {
             <Button type='primary' onClick={() => buttonClick('contentAdd')}>新增</Button>
             <Button style={{ marginLeft: '5px' }} onClick={() => buttonClick('contentEdit')}>编辑</Button>
             <Button style={{ marginLeft: '5px' }} onClick={contentDelete}>删除</Button>
-            <Button style={{ marginLeft: '5px' }}>审核内容管理</Button>
+            <Button style={{ marginLeft: '5px' }} onClick={getLeftTreeData}>审核内容管理</Button>
           </div>
           <div style={{ marginTop: '10px', height: '270px' }}>
             <ExtTable

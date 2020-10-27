@@ -19,6 +19,8 @@ const Index = () => {
 
   const [organizationCode, setOrganizationCode] = useState()
 
+  const [auditInformationData, setAuditInformationData] = useState([])
+
   const [data, setData] = useState({
     allAuditType: [],
     id: '',
@@ -80,7 +82,12 @@ const Index = () => {
         return values;
       }
     });
-    console.log(baseInfoData)
+    if (auditInformationData && auditInformationData.length !== 0) {
+
+    } else {
+      message.error('请至少添加一条拟审核信息!')
+    }
+    // console.log(baseInfoData)
   }
 
   return(

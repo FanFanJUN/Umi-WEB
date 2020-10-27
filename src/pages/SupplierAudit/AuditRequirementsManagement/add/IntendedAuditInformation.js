@@ -5,6 +5,7 @@ import { ExtTable } from 'suid';
 import AddBeAudited from './component/addBeAudited';
 import Content from './component/content';
 import Team from './component/team';
+import { getRandom } from '../../../QualitySynergy/commonProps';
 
 let IntendedAuditInformation = React.forwardRef((props, ref) => {
 
@@ -16,6 +17,7 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
     type: 'add',
     dataSource: [
       {
+        lineNum: 123,
         id: 123,
         fileCategoryName: 1,
         reviewTypeName: 2,
@@ -29,6 +31,7 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
         remark:9
       }
     ],
+    treeData: [],
     selectRows: [],
     selectedRowKeys: [],
     visible: false,
@@ -67,17 +70,37 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
   }
 
   const handleSelectedRows = (value, rows) => {
-    setData((v) => ({...v, selectedRowKeys: value, selectRows: rows}))
+    setData((v) => ({...v, selectedRowKeys: value, selectRows: rows, treeData: rows[0].treeData}))
   }
 
   // 打开内容界面
   const showContent = () => {
     setData(v => ({...v, contentVisible: true}))
+
   }
 
   // 打开小组界面
   const showTeam = () => {
     setData(v => ({...v, teamVisible: true}))
+  }
+
+  const contentOk = (value) => {
+    let newData = JSON.parse(JSON.stringify(data.dataSource))
+    newData.map((item, index) => {
+      if (item.lineNum === data.selectedRowKeys[0]) {
+        newData[index].treeData = value
+      }
+    })
+    setData(v => ({...v, dataSource: newData, treeData: value, contentVisible: false}))
+    tableRef.current.remoteDataRefresh();
+  }
+
+  const addBeAuditedOK = (value) => {
+    if (data.type === 'add') {
+      value.lineNum =  getRandom(10)
+      value.treeData = []
+      setData(v => ({...v, dataSource: [...data.dataSource, ...[value]], visible: false}))
+    }
   }
 
   return (
@@ -96,7 +119,7 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
           }
           <ExtTable
             style={{marginTop: '10px'}}
-            rowKey={(v) => v.id}
+            rowKey={(v) => v.lineNum}
             allowCancelSelect={true}
             showSearch={false}
             remotePaging
@@ -113,6 +136,7 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
       <AddBeAudited
         companyCode={props.companyCode}
         organizationCode={props.organizationCode}
+        onOk={addBeAuditedOK}
         visible={data.visible}
         title={data.title}
         type={data.type}
@@ -121,12 +145,16 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
       />
       <Content
         applyCorporationCode={props.applyCorporationCode}
+        treeData={data.treeData}
+        onOk={contentOk}
         type={data.type}
         onCancel={() => setData(v => ({...v, contentVisible: false}))}
         visible={data.contentVisible}
       />
       <Team
         type={data.type}
+        treeData={data.treeData}
+        reviewTypeCode={data.selectRows[0]?.reviewTypeCode}
         onCancel={() => setData(v => ({...v, teamVisible: false}))}
         visible={data.teamVisible}
       />

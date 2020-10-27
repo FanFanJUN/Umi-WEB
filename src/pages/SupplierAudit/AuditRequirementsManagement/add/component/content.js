@@ -12,25 +12,26 @@ const formItemLayoutLong = {
 
 const Content = (props) => {
 
-  const tableRef = useRef(null);
-
   const [data, setData] = useState({
     leftTreeData: undefined,
     treeData: []
   })
 
-  const {visible, form, type} = props
+  const {visible, form, type, treeData} = props
 
   const { getFieldDecorator, getFieldValue, setFieldsValue } = props.form;
 
   useEffect(() => {
-  }, [props.applyCorporationCode])
+    if (props.treeData && props.visible) {
+      setData(v => ({...v, treeData: props.treeData}))
+    }
+  }, [props.treeData])
 
   const onOk = () => {
     props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         if (data.treeData.length !== 0) {
-          console.log(values, data.treeData)
+          props.onOk(data.treeData)
         } else {
           message.error('请至少选择一个体系!')
         }
@@ -43,7 +44,7 @@ const Content = (props) => {
   }
 
   const clearSelected = () => {
-
+    setData(v =>({...v, leftTreeData: undefined, treeData: []}))
   }
 
   const systemSelect = (value) => {
@@ -65,9 +66,6 @@ const Content = (props) => {
   const getTreeData = (value) => {
     setData(v => ({...v, treeData: value}))
   }
-
-  console.log(props.type, 'type')
-
 
   return (
     <ExtModal
@@ -92,7 +90,7 @@ const Content = (props) => {
             <FormItem {...formItemLayoutLong} label={'审核体系'}>
               {
                 type === 'detail' ? <span>审核体系</span> : getFieldDecorator('systemName', {
-                  initialValue: type === 'add' ? '' : '',
+                  initialValue: '',
                   rules: [
                     {
                       required: true,
@@ -121,6 +119,7 @@ const Content = (props) => {
       </Form>
       <div style={{height: '300px', width: '100%'}}>
         <ShuttleBox
+          rightTreeData={treeData}
           type={type === 'detail' && 'show'}
           onChange={getTreeData}
           leftTreeData={data.leftTreeData}

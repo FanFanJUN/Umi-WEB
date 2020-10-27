@@ -28,6 +28,8 @@ export default [
       { path: '/supplierAudit/AuditRequirementsManagementAdd', component: './SupplierAudit/AuditRequirementsManagement/add', title: '审核需求管理新增' },
       { path: '/supplierAudit/AnnualAuditPlan', component: './SupplierAudit/AnnualAuditPlan', title: '年度审核计划管理' },
       { path: '/supplierAudit/AnnualAuditPlanEda', component: './SupplierAudit/AnnualAuditPlan/EdaPage', title: '年度审核计划管理新增' },
+      { path: '/supplierAudit/MonthAuditPlan', component: './SupplierAudit/MonthAuditPlan', title: '月度审核计划管理' },
+      { path: '/supplierAudit/MonthAuditPlanEda', component: './SupplierAudit/MonthAuditPlan/EdaPage', title: '月度审核计划管理新增' },
     ]
   },
   {
