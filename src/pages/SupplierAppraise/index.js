@@ -419,7 +419,13 @@ function SupplierRevaluate() {
       type: 'POST',
       params: {
         ...searchValue,
-        quickSearchProperties: ['docNumber', 'projectName']
+        quickSearchProperties: ['docNumber', 'projectName'],
+        sortOrders: [
+          {
+            property: 'createdDate',
+            direction: 'DESC'
+          }
+        ]
       }
     },
     columns,

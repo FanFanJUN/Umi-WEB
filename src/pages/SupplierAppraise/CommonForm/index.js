@@ -41,7 +41,6 @@ const {
   businessUnitMainProps
 } = commonProps;
 const { baseUrl } = commonUrl;
-const { RangePicker } = DatePicker;
 const { Group: RadioGroup } = Radio;
 const { create, Item: FormItem } = Form;
 const { Option } = Select;
@@ -125,6 +124,8 @@ const CommonForm = forwardRef(({
   const useAccount = getUserAccount();
   const evlValue = getFieldValue('evlLevel');
   const corpCode = getFieldValue('corporationCode');
+  const est = getFieldValue('evlPeriodStartTime');
+  const apt = getFieldValue('applicationPeriodStartTime');
   const { query } = useLocation();
   const [tableCommonProps, tableCommonSets] = useTableProps();
   function formatSystemTree(arr) {
@@ -166,23 +167,6 @@ const CommonForm = forwardRef(({
     if (success) {
       tableCommonSets.setDataSource(data)
     }
-  }
-  // 获取已选树节点的对象
-  function getTreeDataSourceRows(d, ks = [], rs = []) {
-    const isValid = Array.isArray(d)
-    if (!isValid) {
-      return []
-    }
-    let res = rs;
-    d.forEach(item => {
-      if (ks.findIndex(k => k === item.id) !== -1) {
-        res.push(item)
-      }
-      if (!!item.children) {
-        return getTreeDataSourceRows(item.children, ks, res)
-      }
-    })
-    return res
   }
   // 清除选中项
   function cleanSelectedRecord() {
@@ -301,16 +285,16 @@ const CommonForm = forwardRef(({
       seCorporationPurchaseOrgList,
       selectedEvlSystemIds
     } = v;
-    const rangeTime = [moment(evlPeriodEndTime), moment(evlPeriodStartTime)]
-    const applicationPeriodTime = [moment(applicationPeriodStartTime), moment(applicationPeriodEndTime)];
     await setFieldsValue({
       projectName,
       corporationCode,
       corporationName,
       evlPeriodType,
+      evlPeriodStartTime: moment(evlPeriodStartTime),
+      evlPeriodEndTime: moment(evlPeriodEndTime),
       askCompleteTime: moment(askCompleteTime), // 要求完成时间
-      rangeTime,
-      applicationPeriodTime,
+      applicationPeriodStartTime: moment(applicationPeriodStartTime),
+      applicationPeriodEndTime: moment(applicationPeriodEndTime),
       influenceSupplyList, // 是否影响合格供应商名录
       orgCode,
       orgName,
@@ -341,25 +325,16 @@ const CommonForm = forwardRef(({
       message.error('请至少选择一个评价体系节点')
       return
     }
-    const { rangeTime, applicationPeriodTime, createdDate, ...fds } = vs;
+    const { createdDate, ...fds } = vs;
     // 应用期间
-    const at = applicationPeriodTime.map(item => moment(item).format('YYYY-MM-DD HH:mm:ss'));
-    const [applicationPeriodStartTime, applicationPeriodEndTime] = at;
-    // 评价期间
-    const rt = rangeTime.map(item => moment(item).format('YYYY-MM-DD HH:mm:ss'));
-    const ses = getTreeDataSourceRows(systemView, checkedKeys);
-    const [evlPeriodStartTime, evlPeriodEndTime] = rt;
     const formatFields = {
       ...fds,
-      applicationPeriodStartTime,
-      applicationPeriodEndTime,
-      evlPeriodStartTime,
-      evlPeriodEndTime,
       seCorporationPurchaseOrgList: tableCommonProps.dataSource,
       selectedEvlSystems: ses
     }
     return formatFields
   }
+  const ses = getTreeDataSourceRows(systemView, checkedKeys);
   async function getInitialValue() {
     const { success, data, message: msg } = await findAppraiseById({
       evaluationProjectId: query?.id
@@ -370,6 +345,24 @@ const CommonForm = forwardRef(({
     }
     message.error(msg)
   }
+  // 获取已选树节点的对象
+  function getTreeDataSourceRows(d, ks = [], rs = []) {
+    const isValid = Array.isArray(d)
+    if (!isValid) {
+      return []
+    }
+    let res = rs;
+    d.forEach(item => {
+      if (ks.findIndex(k => k === item.id) !== -1) {
+        res.push(item)
+      }
+      if (!!item.children) {
+        return getTreeDataSourceRows(item.children, ks, res)
+      }
+    })
+    return res
+  }
+
   async function handleCorporationChange() {
     const uid = utils.getUUID()
     await setSystemView(null)
@@ -378,6 +371,30 @@ const CommonForm = forwardRef(({
       mainDataEvlSystemId: undefined
     })
     await setMainDataKey(uid)
+  }
+  function disabledDate(currentDate) {
+    const e = getFieldValue('evlPeriodStartTime');
+    const c = currentDate.format('YYYY-MM-DD');
+    const ed = e.format('YYYY-MM-DD');
+    return currentDate < e || c === ed
+  }
+  function disabledDateSt(currentDate) {
+    const e = getFieldValue('evlPeriodEndTime');
+    const c = currentDate.format('YYYY-MM-DD');
+    const ed = e.format('YYYY-MM-DD');
+    return currentDate > e || ed === c
+  }
+  function disabledDateApt(currentDate) {
+    const e = getFieldValue('applicationPeriodStartTime');
+    const c = currentDate.format('YYYY-MM-DD');
+    const ed = e.format('YYYY-MM-DD');
+    return currentDate < e || c === ed
+  }
+  function disabledDateAst(currentDate) {
+    const e = getFieldValue('applicationPeriodEndTime');
+    const c = currentDate.format('YYYY-MM-DD');
+    const ed = e.format('YYYY-MM-DD');
+    return currentDate > e || ed === c
   }
   useEffect(() => {
     if ((type === 'detail' || type === 'editor') && initialize) {
@@ -459,19 +476,43 @@ const CommonForm = forwardRef(({
             </FormItem>
           </Col>
           <Col span={12}>
-            <FormItem label='评价期间' {...formLayout}>
-              {
-                getFieldDecorator('rangeTime', {
-                  rules: [
+            <FormItem label='评价期间' style={{
+              marginBottom: 0
+            }} required {...formLayout}>
+              <Row gutter={[12, 0]}>
+                <Col span={12}>
+                  <FormItem>
                     {
-                      required: true,
-                      message: '请选择评价期间'
+                      getFieldDecorator('evlPeriodStartTime', {
+                        rules: [
+                          {
+                            required: true,
+                            message: '开始时间不能为空'
+                          }
+                        ]
+                      })(
+                        <DatePicker style={{ width: '100%' }} placeholder='开始日期' disabledDate={disabledDateSt}/>
+                      )
                     }
-                  ]
-                })(
-                  <RangePicker disabled={type === 'detail'} style={{ width: '100%' }} />
-                )
-              }
+                  </FormItem>
+                </Col>
+                <Col span={12}>
+                  <FormItem>
+                    {
+                      getFieldDecorator('evlPeriodEndTime', {
+                        rules: [
+                          {
+                            required: true,
+                            message: '结束时间不能为空'
+                          }
+                        ]
+                      })(
+                        <DatePicker style={{ width: '100%' }} placeholder='结束日期' disabled={!est} disabledDate={disabledDate} />
+                      )
+                    }
+                  </FormItem>
+                </Col>
+              </Row>
             </FormItem>
           </Col>
           <Col span={12}>
@@ -491,19 +532,43 @@ const CommonForm = forwardRef(({
             </FormItem>
           </Col>
           <Col span={12}>
-            <FormItem label='应用期间' {...formLayout}>
-              {
-                getFieldDecorator('applicationPeriodTime', {
-                  rules: [
+            <FormItem label='应用期间' style={{
+              marginBottom: 0
+            }} {...formLayout} required>
+              <Row gutter={[12, 0]}>
+                <Col span={12}>
+                  <FormItem>
                     {
-                      required: true,
-                      message: '请选择应用期间'
+                      getFieldDecorator('applicationPeriodStartTime', {
+                        rules: [
+                          {
+                            required: true,
+                            message: '开始时间不能为空'
+                          }
+                        ]
+                      })(
+                        <DatePicker style={{ width: '100%' }} placeholder='开始日期' disabledDate={disabledDateAst}/>
+                      )
                     }
-                  ]
-                })(
-                  <RangePicker disabled={type === 'detail'} style={{ width: '100%' }} />
-                )
-              }
+                  </FormItem>
+                </Col>
+                <Col span={12}>
+                  <FormItem>
+                    {
+                      getFieldDecorator('applicationPeriodEndTime', {
+                        rules: [
+                          {
+                            required: true,
+                            message: '结束时间不能为空'
+                          }
+                        ]
+                      })(
+                        <DatePicker style={{ width: '100%' }} placeholder='结束日期' disabled={!apt} disabledDate={disabledDateApt} />
+                      )
+                    }
+                  </FormItem>
+                </Col>
+              </Row>
             </FormItem>
           </Col>
           <Col span={12}>
