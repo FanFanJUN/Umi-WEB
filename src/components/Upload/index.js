@@ -293,7 +293,7 @@ class UploadFile extends React.Component {
                         beforeUpload={this.beforeUpload}
                         showUploadList={false}
                         fileList={this.state.fileList}
-                        action= {`${BASE_URL}/srm-baf-web/supplierRegister/uploadNoAuth`}
+                        action= {`/srm-baf-web/supplierRegister/uploadNoAuth`}
                         headers={this.getHeaders()}
                         onChange={this.handleChange}
                         style={{width: '100%'}}

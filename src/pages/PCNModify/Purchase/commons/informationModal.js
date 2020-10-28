@@ -232,7 +232,7 @@ const getInformation = forwardRef(({
                                 })(
                                     <UserSelect name="smInKindManName" style={{width:"100%",zIndex:10}}
                                         disabled={type === 'detail'}
-                                        wrapperStyle={{width:900}}
+                                        wrapperStyle={{width:950}}
                                         reader={{name:'userName',field:['code']}} 
                                         form={form}
                                         multiple={false}

@@ -270,26 +270,26 @@ function SupplierConfigure() {
         searchvalue.map(item => {
             console.log(item)
             newdata.push(
-                // {
-                //     fieldName:'smSupplierCode',
-                //     value: item.smSupplierCode,
-                //     operator:'EQ'
-                // },
-                // {
-                //     fieldName:'smSupplierName',
-                //     value: item.smSupplierName,
-                //     operator:'EQ'
-                // },
-                // {
-                //     fieldName:'smDocunmentStatus',
-                //     value: item.smDocunmentStatus,
-                //     operator:'EQ'
-                // },
-                // {
-                //     fieldName:'flowStatus',
-                //     value: item.flowStatus_name,
-                //     operator:'EQ'
-                // },
+                {
+                    fieldName:'smSupplierCode',
+                    value: item.smSupplierCode,
+                    operator:'EQ'
+                },
+                {
+                    fieldName:'smSupplierName',
+                    value: item.smSupplierName,
+                    operator:'EQ'
+                },
+                {
+                    fieldName:'smDocunmentStatus',
+                    value: item.smDocunmentStatus,
+                    operator:'EQ'
+                },
+                {
+                    fieldName:'flowStatus',
+                    value: item.flowStatus_name,
+                    operator:'EQ'
+                },
                 {
                     fieldName:'smPcnChangeTypeCode',
                     value: item.smPcnChangeTypeCode,

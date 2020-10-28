@@ -61,7 +61,7 @@ export const Strategicprocurementlist = {
   },
   reader: {
     name: 'name',
-    field: ['id'],
+    field: ['id','code'],
     description: 'code'
   },
   // remotePaging: true,
@@ -132,34 +132,34 @@ export const ToexamineList = {
   ...commonProps,
 }
 // 战略采购列表
-export const StrategicPurchaseConfig = {
-  allowClear: true,
-  remotePaging: true,
-  store: {
-    type: 'POST',
-    autoLoad: false,
-    url: `${baseUrl}/purchaseGroup/findByPagesAll`,
-  },
-  rowKey: 'name',
-  reader: {
-    name: 'code',
-    field: ['id', 'name'],
-    description: 'name',
-  },
-  placeholder: '选择战略采购',
-  style: {
-    width: '100%',
-  },
-};
+// export const StrategicPurchaseConfig = {
+//   allowClear: true,
+//   remotePaging: true,
+//   store: {
+//     type: 'POST',
+//     autoLoad: false,
+//     url: `${baseUrl}/purchaseGroup/findByPagesAll`,
+//   },
+//   rowKey: 'name',
+//   reader: {
+//     name: 'code',
+//     field: ['id', 'name'],
+//     description: 'name',
+//   },
+//   placeholder: '选择战略采购',
+//   style: {
+//     width: '100%',
+//   },
+// };
 // 战略采购列表
-export const StrategicForName = {
-  ...StrategicPurchaseConfig,
-  reader: {
-    name: 'name',
-    field: ['id', 'code'],
-    description: 'code',
-  },
-};
+// export const StrategicForName = {
+//   ...StrategicPurchaseConfig,
+//   reader: {
+//     name: 'name',
+//     field: ['id', 'code'],
+//     description: 'code',
+//   },
+// };
 // 流程认定结果 
 export const SupplierResulteList = {
   allowClear: true,
