@@ -13,22 +13,25 @@ import { Form, Button } from 'antd';
 import { ExtTable } from 'suid';
 import AddModal from './AddModal';
 import BatchEditModal from './BatchEditModal';
+import AuditContentModal from "./AuditContentModal";
+import PersonManage from "./PersonManage";
+import Team from "../../AuditRequirementsManagement/add/component/team";
 
 let LineInfo = (props, ref) => {
 
   const tableRef = useRef(null);
 
   const [data, setData] = useState({
-    type: 'add',
     selectRows: [],
     selectedRowKeys: [],
-    visible: false,
-    title: ''
   });
 
   const [dataSource, setDataSource] = useState([{ id: 1 }]);
   const [addModalData, setModalData] = useState({});
   const [batchEditVisible, setBatchEditVisible] = useState(false);
+  const [contentModalData, setContentData] = useState({});
+  const [teamModalData, setTeamData] = useState({});
+  const [personModalData, setPersonData] = useState({})
 
   const columns = [
     {
@@ -75,18 +78,19 @@ let LineInfo = (props, ref) => {
       case "edit":
         setBatchEditVisible(true);
         break;
+      case "contenM":
+        setContentData({visible: true, treeData: []});
+        break;
+      case "teamM":
+        setTeamData({visible: true, treeData: [], selectRows: []});
+        break;
+      case "personM":
+        setPersonData({visible: true, originData: []});
+          break;
       default:
         break;
     }
 
-  }
-
-  const handleSelectedRows = (value, rows) => {
-    setData((v) => ({ ...v, selectedRowKeys: value, selectRows: rows, type: 'add' }))
-  }
-
-  function setBatchVisible() {
-    setBatchEditVisible(false);
   }
 
   const handleAddOk = (value) => {
@@ -94,6 +98,13 @@ let LineInfo = (props, ref) => {
   }
   const getBatchFormValue = (value) => {
     console.log("批量编辑确定")
+  }
+  const contentModalOk = (treeData) => {
+    console.log("审核内容管理", treeData);
+    setContentData({visible: false})
+  }
+  const personModalOk = (personData) => {
+    console.log("协同人员管理确定", personData)
   }
   return (
     <div className={styles.wrapper}>
@@ -108,7 +119,7 @@ let LineInfo = (props, ref) => {
               <Button onClick={() => { handleBtn('edit') }} >批量编辑</Button>
               <Button onClick={() => { handleBtn('delete') }} >删除</Button>
               <Button onClick={() => { handleBtn('contenM') }} >审核内容管理</Button>
-              <Button onClick={() => { handleBtn('groupM') }} >审核小组管理</Button>
+              <Button onClick={() => { handleBtn('teamM') }} >审核小组管理</Button>
               <Button onClick={() => { handleBtn('personM') }} >协同人员管理</Button>
             </div>
           }
@@ -120,7 +131,9 @@ let LineInfo = (props, ref) => {
             remotePaging
             checkbox={{ multiSelect: false }}
             size='small'
-            onSelectRow={handleSelectedRows}
+            onSelectRow={(keys, rows) => {
+              setData(() => ({selectedRowKeys: keys, selectRows: rows}))
+            }}
             selectedRowKeys={data.selectedRowKeys}
             columns={columns}
             ref={tableRef}
@@ -140,6 +153,28 @@ let LineInfo = (props, ref) => {
         visible={batchEditVisible}
         onCancel={()=>{setBatchEditVisible(false)}}
         onOk={getBatchFormValue}
+      />
+      }
+      {contentModalData.visible && <AuditContentModal 
+        visible={contentModalData.visible}
+        treeData={contentModalData.treeData}
+        onOk={contentModalOk}
+        onCancel={() => setContentData({visible: false})}
+      />
+      }
+      {teamModalData.visible && <Team
+          type={teamModalData.type}
+          treeData={teamModalData.treeData}
+          reviewTypeCode={teamModalData.selectRows[0]?.reviewTypeCode}
+          onCancel={() => setTeamData({visible: false})}
+          visible={teamModalData.visible}
+        />
+      }
+      {personModalData.visible && <PersonManage 
+          visible={personModalData.visible}
+          originData={personModalData.originData}
+          onCancel={()=>{setPersonData({visible: false})}}
+          onOk={personModalOk}
       />
       }
     </div>

@@ -30,6 +30,7 @@ export default [
       { path: '/supplierAudit/AnnualAuditPlanEda', component: './SupplierAudit/AnnualAuditPlan/EdaPage', title: '年度审核计划管理新增' },
       { path: '/supplierAudit/MonthAuditPlan', component: './SupplierAudit/MonthAuditPlan', title: '月度审核计划管理' },
       { path: '/supplierAudit/MonthAuditPlanEda', component: './SupplierAudit/MonthAuditPlan/EdaPage', title: '月度审核计划管理新增' },
+      { path: '/supplierAudit/detailList', component: './SupplierAudit/MonthAuditPlan/detailList', title: '月度审核计划明细' },
     ]
   },
   {

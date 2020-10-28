@@ -1,11 +1,6 @@
 /*
- * @Author: Li Cai
- * @LastEditors: Li Cai
- * @Connect: 1981824361@qq.com
- * @Date: 2020-10-21 16:00:19
- * @LastEditTime: 2020-10-21 16:32:54
- * @Description:  年度审核计划管理
- * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/index.js
+ * @Description:  月度审核计划管理
+ * @FilePath: /srm-sm-web/src/pages/SupplierAudit/MonthAuditPlan/index.js
  */
 import React, { useState, useRef, useEffect, Fragment } from 'react';
 import Header from '../../../components/Header';
