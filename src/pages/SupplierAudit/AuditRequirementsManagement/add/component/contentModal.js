@@ -36,6 +36,7 @@ const ContentModal = (props) => {
       if (!err) {
         if (data.lineNum) {
           values.lineNum = data.lineNum
+          values.memberRuleBoList = data.memberRuleBoList
         }
         props.onOk(values);
       }

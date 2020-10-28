@@ -16,20 +16,20 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
     contentVisible: false,
     type: 'add',
     dataSource: [
-      {
-        lineNum: 123,
-        id: 123,
-        fileCategoryName: 1,
-        reviewTypeName: 2,
-        reviewReasonName: 2,
-        materialGroupName: 4,
-        supplierName: 5,
-        agentName: 6,
-        countryName: 7,
-        contactUserName: 8,
-        contactUserTel: 10,
-        remark:9
-      }
+      // {
+      //   lineNum: 123,
+      //   id: 123,
+      //   fileCategoryName: 1,
+      //   reviewTypeName: 2,
+      //   reviewReasonName: 2,
+      //   materialGroupName: 4,
+      //   supplierName: 5,
+      //   agentName: 6,
+      //   countryName: 7,
+      //   contactUserName: 8,
+      //   contactUserTel: 10,
+      //   remark:9
+      // }
     ],
     treeData: [],
     selectRows: [],
@@ -103,6 +103,16 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
     }
   }
 
+  const teamOk = (value) => {
+    let newData = JSON.parse(JSON.stringify(data.dataSource))
+    newData.map((item, index) => {
+      if (item.lineNum === data.selectedRowKeys[0]) {
+        newData[index].reviewTeamGroupBoList = value
+      }
+    })
+    setData(v => ({...v, dataSource: newData}))
+  }
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.bgw}>
@@ -153,6 +163,7 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
       />
       <Team
         type={data.type}
+        onOk={teamOk}
         treeData={data.treeData}
         reviewTypeCode={data.selectRows[0]?.reviewTypeCode}
         onCancel={() => setData(v => ({...v, teamVisible: false}))}
