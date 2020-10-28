@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime: 2020-10-27 10:13:33
+ * @LastEditTime: 2020-10-28 10:59:17
  * @Description: 行信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
@@ -30,20 +30,40 @@ let LineInfo = (props, ref) => {
   const [batchEditVisible, setBatchEditVisible] = useState(false);
 
   const columns = [
-    { title: '需求公司', dataIndex: 'corporationCode', width: 140, ellipsis: true, },
-    { title: '采购组织', dataIndex: 'purchaseOrgCode', ellipsis: true, width: 140 },
-    { title: '供应商', dataIndex: 'supplierCode', ellipsis: true, width: 140 },
-    { title: '代理商', dataIndex: 'measureUnit', ellipsis: true, width: 140 },
-    { title: '物料分类', dataIndex: 'measureUnit', ellipsis: true, width: 140 },
-    { title: '物料级别', dataIndex: 'measureUnit', ellipsis: true, width: 140 },
+    {
+      title: '需求公司', dataIndex: 'applyCorporation', width: 140, ellipsis: true, render: (text, record) => {
+        return `${record.applyCorporationCode}_${record.applyCorporationName}`;
+      }
+    },
+    {
+      title: '采购组织', dataIndex: 'purchaseTeam', ellipsis: true, width: 140, render: (text, record) => {
+        return `${record.purchaseTeamCode}_${record.purchaseTeamName}`;
+      }
+    },
+    {
+      title: '供应商', dataIndex: 'supplier', ellipsis: true, width: 140, render: (text, record) => {
+        return `${record.supplierCode}_${record.supplierName}`;
+      }
+    },
+    {
+      title: '代理商', dataIndex: 'agent', ellipsis: true, width: 140, render: (text, record) => {
+        return `${record.agentCode}_${record.agentName}`;
+      }
+    },
+    {
+      title: '物料分类', dataIndex: 'materialGroup', ellipsis: true, width: 140, render: (text, record) => {
+        return `${record.materialGroupCode}_${record.materialGroupName}`;
+      }
+    },
+    { title: '物料级别', dataIndex: 'materialGrade', ellipsis: true, width: 140 },
     { title: '生产厂地址', dataIndex: 'measureUnit', ellipsis: true, width: 140 },
-    { title: '供应商联系人', dataIndex: 'sampleReceiverName', ellipsis: true, width: 140 },
-    { title: '供应商联系电话', dataIndex: 'sampleReceiverTel', ellipsis: true, width: 140 },
-    { title: '审核类型', dataIndex: 'measureUnit', ellipsis: true, width: 140 },
-    { title: '审核原因', dataIndex: 'measureUnit', ellipsis: true, width: 140 },
-    { title: '审核方式', dataIndex: 'measureUnit', ellipsis: true, width: 140 },
-    { title: '预计审核月度', dataIndex: 'measureUnit', ellipsis: true, width: 140 },
-    { title: '专业组', dataIndex: 'measureUnit', ellipsis: true, width: 140 },
+    { title: '供应商联系人', dataIndex: 'contactUserName', ellipsis: true, width: 140 },
+    { title: '供应商联系电话', dataIndex: 'contactUserTel', ellipsis: true, width: 140 },
+    { title: '审核类型', dataIndex: 'reviewTypeName', ellipsis: true, width: 140 },
+    { title: '审核原因', dataIndex: 'reviewReasonName', ellipsis: true, width: 140 },
+    { title: '审核方式', dataIndex: 'reviewWayName', ellipsis: true, width: 140 },
+    { title: '预计审核月度', dataIndex: 'reviewMonth', ellipsis: true, width: 140 },
+    { title: '专业组', dataIndex: 'specialtyTeamName', ellipsis: true, width: 140 },
     { title: '备注', dataIndex: 'remark', ellipsis: true, width: 140 },
   ].map(item => ({ ...item, align: 'center' }))
 
@@ -87,11 +107,34 @@ let LineInfo = (props, ref) => {
 
   function handleOk(tableData) {
     console.log(tableData);
-    // tableData.forEach(item => {
+    tableData.forEach(item => {
+      // 需求公司
+      item.applyCorporationCode = item.corporation.code;
+      item.applyCorporationId = item.corporation.id;
+      item.applyCorporationName = item.corporation.name;
+      // 采购组织=>占用采购组字段 数据库设计错误
+      item.purchaseTeamCode = item.purchaseOrg.name;
+      item.purchaseTeamName = item.purchaseOrg.code;
+      item.purchaseTeamId = item.purchaseOrg.id;
+      // 供应商
+      item.supplierCode = item.supplier.code;
+      item.supplierName = item.supplier.name;
+      item.supplierId = item.supplier.id;
 
-    // })
+      //代理商
+      item.agentCode = item.originSupplierCode;
+      item.agentName = item.originSupplierName;
+
+      // 物料分类
+      item.materialGroupCode = item.materielCategory.code;
+      item.materialGroupId = item.materielCategory.id;
+      item.materialGroupName = item.materielCategory.name;
+
+      // 物料级别
+      item.materialGradeCode = item.materialGrade;
+    })
     const newTableList = JSON.parse(JSON.stringify(dataSource));
-    newTableList.push(tableData);
+    newTableList.push(tableData[0]);
     setDataSource(newTableList);
     setData((v) => ({ ...v, visible: false }));
   }

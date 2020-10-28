@@ -3,21 +3,14 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-23 17:00:19
- * @LastEditTime: 2020-10-27 17:53:06
+ * @LastEditTime: 2020-10-28 11:15:22
  * @Description: 批量编辑页面
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BatchEditModal.js
  */
-import React, { useEffect } from 'react';
+import React from 'react';
 import { ComboGrid, ComboList, ExtModal } from 'suid';
 import { Col, Form, Input, InputNumber, Row } from 'antd';
-import { CorporationListConfig } from '../../../QualitySynergy/commonProps';
-import {
-  AllCompanyConfig,
-  AuditCauseManagementConfig, AuditTypeManagementAll,
-  NormalSupplierConfig,
-  SelectionStrategyConfig,
-} from '../../mainData/commomService';
-import { reviewTypes } from '../propsParams';
+import { reviewTypesProps, reviewReasonsProps, reviewWaysProps } from '../propsParams';
 import { hideFormItem } from '@/utils/utilTool';
 
 const FormItem = Form.Item;
@@ -70,40 +63,43 @@ const BatchEditModal = (props) => {
             <FormItem {...formItemLayoutLong} label={'审核类型'}>
               {
                 getFieldDecorator('reviewTypeName', {
-                  // rules: [
-                  //   {
-                  //     required: true,
-                  //     message: '审核类型不能为空',
-                  //   },
-                  // ],
+                  rules: [
+                    {
+                      required: true,
+                      message: '审核类型不能为空',
+                    },
+                  ],
                 })(
                   <ComboGrid
                     form={form}
                     name='reviewTypeName'
-                    {...reviewTypes}
+                    {...reviewTypesProps}
                     field={['reviewTypeId', 'reviewTypeCode']}
                   />
                 )
               }
             </FormItem>
           </Col>
-          <Col span={0}>
-            {hideFormItem('reviewReasonId', type === 'add' ? '' : fatherData.reviewReasonId)}
-          </Col>
-          <Col span={0}>
-            {hideFormItem('reviewReasonCode', type === 'add' ? '' : fatherData.reviewReasonCode)}
-          </Col>
           <Col span={12}>
+            {HideFormItem('reviewReasonId')}
+            {HideFormItem('reviewReasonCode')}
             <FormItem {...formItemLayoutLong} label={'审核原因'}>
               {
-                getFieldDecorator('reviewReasonName')(
+                getFieldDecorator('reviewReasonName', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '审核原因不能为空',
+                    },
+                  ],
+                })(
                   <ComboList
                     allowClear={true}
                     style={{ width: '100%' }}
                     form={form}
                     name={'reviewReasonName'}
-                    field={['reviewReasonCode', 'reviewReasonId']}
-                    {...AuditCauseManagementConfig}
+                    field={['reviewReasonId', 'reviewReasonCode']}
+                    {...reviewReasonsProps}
                   />,
                 )
               }
@@ -112,10 +108,42 @@ const BatchEditModal = (props) => {
         </Row>
         <Row>
           <Col span={12}>
+            {HideFormItem('reviewWayId')}
+            {HideFormItem('reviewWayCode')}
+            <FormItem {...formItemLayoutLong} label={'审核方式'}>
+              {
+                getFieldDecorator('reviewWayName', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '审核方式不能为空',
+                    },
+                  ],
+                })(
+                  <ComboList
+                    allowClear={true}
+                    style={{ width: '100%' }}
+                    form={form}
+                    name={'reviewWayName'}
+                    field={['reviewWayId', 'reviewWayCode']}
+                    {...reviewWaysProps}
+                  />,
+                )
+              }
+            </FormItem>
+          </Col>
+          <Col span={12}>
             <FormItem {...formItemLayoutLong} label={'预计审核月度'}>
               {
-                getFieldDecorator('supplierStrategyName')(
-                  <InputNumber min={0} />
+                getFieldDecorator('reviewMonth', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '预计审核月度不能为空',
+                    },
+                  ],
+                })(
+                  <InputNumber min={0} style={{ width: '100%' }} />
                 )
               }
             </FormItem>

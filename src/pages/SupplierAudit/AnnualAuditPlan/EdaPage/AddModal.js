@@ -79,7 +79,7 @@ const AddModal = (props) => {
             return;
         }
         const tableData = Object.assign({}, { ...selectRows[0], id: guid() });
-        handleOk(tableData);
+        handleOk([tableData]);
         setselectedRowKeys([]);
         setselectRows([]);
     }
@@ -184,7 +184,7 @@ const AddModal = (props) => {
                                         style={{ width: '100%' }}
                                         form={form}
                                         pagination={false}
-                                        name='name'
+                                        name='materialGradeAndName'
                                         field={['materialGrade']}
                                         {...getListByTypeId('F4D69B2D-7949-11EA-920B-0242C0A84416')}
                                     // afterSelect={setMaterialGrade}
@@ -236,7 +236,7 @@ const AddModal = (props) => {
         >
             <div>{renderForm()}</div>
             <div style={{ textAlign: 'center' }}>
-                <Button type="primary" onClick={handleSearch} style={{marginRight: '10px'}}>查询</Button>
+                <Button type="primary" onClick={handleSearch} style={{ marginRight: '10px' }}>查询</Button>
                 <Button onClick={resetForm}>重置</Button>
             </div>
             <ExtTable
