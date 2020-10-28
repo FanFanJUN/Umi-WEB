@@ -10,6 +10,11 @@ import {findCanChooseSupplier} from '@/services/SupplierModifyService'
 const { create } = Form;
 const getMatermodRef = forwardRef(({
     form,
+    materielCategoryCode,
+    isEdit,
+    iseditMater,
+    implement,
+    materselect = () => null,
 }, ref,) => {
     useImperativeHandle(ref, () => ({ 
         handleModalVisible,
@@ -24,47 +29,31 @@ const getMatermodRef = forwardRef(({
     const [selectedRows, setRows] = useState([]);
     const [visible, setvisible] = useState(false);
     const [current, setcurrent] = useState([]);
+    //const [dataSource, setdataSource] = useState([])
     useEffect(() => {
         //getSupplierlist()
     }, []);
-    //let current = 1;
     const dataSource = {
         store: {
-            url: `${baseUrl}/srm-baf-web/api/materialSrmService/findBySecondaryClassification`,
+            url: `${baseUrl}/materialSrm/findBySecondaryClassificationAndCompany`,
             params: {
                 quickSearchValue: searchValue,
-                quickSearchProperties: ['name'],
+                ///quickSearchProperties: ['materialCode','materialDesc'],
                 sortOrders: [
                     {
-                        property: 'name',
+                        property: '',
                         direction: 'DESC'
                     }
                 ],
-                filters:[
-                    {
-                        fieldName:'supplierId',
-                        value: 1,
-                        operator:'EQ'
-                    }
-                ]
+                secondaryClassificationCode:materielCategoryCode,
+                companyCodeList:[]
             },
             type: 'POST'
         }
     }
-    // 供应商
-    // async function getSupplierlist() {
-    //     let params = {page:1,rows:30,'S_createdDate':'desc'};
-    //     triggerLoading(true)
-    //     const { data,success, message: msg } = await findCanChooseSupplier(params);
-    //     if (success) {
-    //         setData(data)
-    //         triggerLoading(false)
-    //         return
-    //     }else {
-    //         message.error(msg);
-    //     }
-    //     triggerLoading(false)
-    // }
+    function getSupplierlist() {
+        console.log(materielCategoryCode)
+    }
     function handleModalVisible (flag) {
         setvisible(!!flag)
     };
@@ -73,17 +62,38 @@ const getMatermodRef = forwardRef(({
         setRows(rows);
     }
     function handleOk() {
-        const empty = selectedRowKeys.length === 0;
-        if (selectedRowKeys.length !== 1) {
+        if (selectedRowKeys.length === 0) {
             message.error('请选择一行数据！');
         } else {
             //隐藏供应商选择框
+            if (isEdit) {
+               iseditMater[0].smPcnAnalysisMaterielVoList = selectedRows;
+                // oddmater.map((item) =>  {
+                //     selectmater.materialGroupCode = item.materialGroupCode,
+                //     selectmater.materialGroupDesc = item.materialGroupDesc,
+                //     selectmater.materialCode = item.materialCode,
+                //     selectmater.materialStandardDesc = item.materialStandardDesc,
+                //     // selectmater.push({
+                //     //     materialGroupCode: item.materialGroupCode,
+                //     //     materialGroupDesc: item.materialGroupDesc,
+                //     //     materialCode: item.materialCode,
+                //     //     materialStandardDesc: item.materialStandardDesc
+                //     // })
+
+                // })
+                //selectedRows.push(iseditMater)
+                console.log(iseditMater)
+                // let isEditchoice = iseditMater[0].smPcnAnalysisMaterielVoList
+                // console.log(iseditMater)
+                materselect(iseditMater)
+            } else if (implement) {
+                materselect(selectedRows)
+            }else {
+                iseditMater[0].smPcnAnalysisMaterielVoList = selectedRows
+                materselect(iseditMater)
+            }
             handleModalVisible(false);
-            // let categoryid = selectedRows[0].supplier.supplierCategoryId;
-            let id = selectedRows[0].supplierId;
-            setSearchValue('');
             cleanSelectedRecord();
-            openNewTab(`supplier/supplierModify/create/index?id=${id}`, '供应商变更新建变更单', false)
         }
     }
     // 清除选中项
@@ -118,22 +128,22 @@ const getMatermodRef = forwardRef(({
           {
             title: "物料分类代码",
             width: 150,
-            dataIndex: "cooperationLevelName"
+            dataIndex: "materialGroupCode"
           },
           {
             title: "物料分类",
-            width: 160,
-            dataIndex: "managementLevellName"
+            width: 260,
+            dataIndex: "materialGroupDesc"
           },
           {
             title: "物料代码",
             width: 160,
-            dataIndex: "supplierCode"
+            dataIndex: "materialCode"
           },
           {
             title: "物料描述",
-            width: 260,
-            dataIndex: "supplierName"
+            width: 280,
+            dataIndex: "materialDesc"
           },
     ].map(_ => ({ ..._, align: 'center' }));
     // 右侧搜索
@@ -173,9 +183,9 @@ const getMatermodRef = forwardRef(({
                 columns={columns}
                 showSearch={false}
                 ref={tableRef}
-                rowKey={(item) => item.supplierId}
+                rowKey={(item) => item.id}
                 checkbox={{
-                    multiSelect: false
+                    multiSelect: true
                 }}
                 allowCancelSelect
                 size='small'

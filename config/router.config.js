@@ -42,6 +42,11 @@ export default [
       { path: '/pcnModify/Purchase/index', component: './PCNModify/Purchase', title: 'PCN变更' },
       { path: '/pcnModify/Purchase/Edit/index', component: './PCNModify/Purchase/Edit/index', title: 'PCN变更单编辑' },
       { path: '/pcnModify/Purchase/Detail/index', component: './PCNModify/Purchase/Detail/index', title: 'PCN变更单明细' },
+      { path: '/pcnModify/ApprovePage/PCNVerificationResults', component: './PCNModify/ApprovePage/PCNVerificationResults', title: 'PCN流程变更单实物验证结果' },
+      { path: '/pcnModify/ApprovePage/PCNCustomerOpinion', component: './PCNModify/ApprovePage/PCNCustomerOpinion', title: 'PCN流程变更单客户意见' },
+      { path: '/pcnModify/ApprovePage/PCNFindingsAudit', component: './PCNModify/ApprovePage/PCNFindingsAudit', title: 'PCN流程变更单审核意见' },
+      { path: '/pcnModify/ApprovePage/PCNModifyResult', component: './PCNModify/ApprovePage/PCNModifyResult', title: 'PCN流程变更单变更结果' },
+      { path: '/pcnModify/ApprovePage/PCNImplementResult', component: './PCNModify/ApprovePage/PCNImplementResult', title: 'PCN流程变更单执行信息' },
       /**PCN供应商 */
       { path: '/pcnModify/Supplier/index', component: './PCNModify/Supplier', title: 'PCN变更发起供应商' },
       { path: '/pcnModify/Supplier/Create/index', component: './PCNModify/Supplier/Create/index', title: 'PCN变更发起供应商新增' },

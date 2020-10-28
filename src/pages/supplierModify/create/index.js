@@ -241,7 +241,6 @@ function CreateStrategy() {
     //againdata.againdata = '0';
     againdata.saveStatus = '0';
     let saveData = { ...againdata };
-    console.log(saveData)
     triggerLoading(true)
     const { success, message: msg } = await TemporarySupplierRegister(saveData);
     if (success) {
@@ -439,7 +438,6 @@ function CreateStrategy() {
     //let saveData = {...againdata};
     setAgaindata(againdata)
      // 变更保存效验
-     console.log(againdata)
      const { success, message: msg } = await ValiditySupplierRegister(againdata);
      if (success) {
       getModelRef.current.handleModalVisible(true);

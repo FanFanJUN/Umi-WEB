@@ -20,7 +20,10 @@ const formLayout = {
 };
 const { storage } = utils
 const getpcnModifyRef = forwardRef(({
-	form,
+    form,
+    editData,
+    result,
+    isView
 }, ref) => {
 	useImperativeHandle(ref, () => ({
 		getBaseInfo,
@@ -47,19 +50,16 @@ const getpcnModifyRef = forwardRef(({
 	}
 	return (
 		<div>
-			{/* <div className={classnames([styles.header, styles.flexBetweenStart])}>
-                <span className={styles.title}>PCN变更信息</span>
-            </div> */}
-
-          
             <DetailCard title="基本信息">
                 <BaseInfo
+                    editformData={editData}
                     wrappedComponentRef={BaseinfoRef}
                     isView={true}
                 />
             </DetailCard>
             <DetailCard title="变更信息">
                 <Modifyinfo
+                    editformData={editData.smPcnDetailVos}
                     wrappedComponentRef={ModifyinfoRef}
                     isView={true}
                     headerInfo={true}
@@ -67,17 +67,22 @@ const getpcnModifyRef = forwardRef(({
             </DetailCard>
             <DetailCard title="变更影响分析">
                 <Modifyinfluence
+                    editformData={editData.smPcnAnalysisVos}
                     wrappedComponentRef={ModifyinfluenceRef}
                     isView={true}
+                    isEdit={true}
                     headerInfo={true}
                 />
             </DetailCard>
-            <DetailCard title="PCN变更结果">
-                <PCNchangeResult
-                    wrappedComponentRef={getchangeResult}
-                    isView={true}
-                />
-            </DetailCard>
+            {
+                result ? <DetailCard title="PCN变更结果">
+                    <PCNchangeResult
+                        wrappedComponentRef={getchangeResult}
+                        isView={isView}
+                    />
+                </DetailCard> : null
+            }
+            
             
 		</div>
 	)

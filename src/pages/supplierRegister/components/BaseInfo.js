@@ -5,6 +5,7 @@ import { Form, Row, Input, Col, DatePicker, Radio } from 'antd';
 import { utils, ComboList, ComboTree } from 'suid';
 import DynamicForm from './DynamicForm'
 import styles from './index.less';
+import {isEmpty} from '../../../utils'
 const { create } = Form;
 const FormItem = Form.Item;
 const { storage } = utils
@@ -109,7 +110,6 @@ const BaseinfoRef = forwardRef(({
 			}
 			extendVo = values;
 		})
-		console.log(extendVo)
 		return extendVo
 	}
 	// 获取表单参数
@@ -132,23 +132,33 @@ const BaseinfoRef = forwardRef(({
 					extendVo.currencyId = values.regFund.currency;
 				} 
 				if (values.register) {
-					extendVo.registerProvinceName = values.register.province.label;
-					extendVo.registerProvinceId = values.register.province.key;
-					extendVo.registerRegionId = values.register.city.key;
-					extendVo.registerRegionName = values.register.city.label;
-					extendVo.registerDistrictId = values.register.area.key;
-					extendVo.registerDistrictName = values.register.area.label;
-					extendVo.registerStreet = values.register.street;
+					if (!isEmpty(values.register.province.label) && !isEmpty(values.register.city.label) &&
+					!isEmpty(values.register.area.label) && !isEmpty(values.register.street)) {
+						extendVo.registerProvinceName = values.register.province.label;
+						extendVo.registerProvinceId = values.register.province.key;
+						extendVo.registerRegionId = values.register.city.key;
+						extendVo.registerRegionName = values.register.city.label;
+						extendVo.registerDistrictId = values.register.area.key;
+						extendVo.registerDistrictName = values.register.area.label;
+						extendVo.registerStreet = values.register.street;
+					}else {
+						return false
+					}
 				}
 				if (values.office) {
-					extendVo.officeProvinceId = values.office.province.key;
-					extendVo.officeProvinceName = values.office.province.label;
-					extendVo.officeRegionId = values.office.city.key;
-					extendVo.officeRegionName = values.office.city.label;
-					extendVo.officeDistrictId = values.office.area.key;
-					extendVo.officeDistrictName = values.office.area.label;
-					extendVo.officeStreet = values.office.street;
-
+					if (!isEmpty(values.office.province.label) && !isEmpty(values.office.city.label) &&
+					!isEmpty(values.office.area.label) && !isEmpty(values.office.street)) {
+						extendVo.officeProvinceId = values.office.province.key;
+						extendVo.officeProvinceName = values.office.province.label;
+						extendVo.officeRegionId = values.office.city.key;
+						extendVo.officeRegionName = values.office.city.label;
+						extendVo.officeDistrictId = values.office.area.key;
+						extendVo.officeDistrictName = values.office.area.label;
+						extendVo.officeStreet = values.office.street;
+					}else {
+						return false
+					}
+			
 				}
 				
 				delete values.register;
@@ -156,7 +166,6 @@ const BaseinfoRef = forwardRef(({
 				result = values;
 			}
 		})
-		console.log(result)
 		return result;
 	}
 
@@ -165,15 +174,11 @@ const BaseinfoRef = forwardRef(({
 		//const { attachmentId = null, ...fs } = fields;
 		// setAttachment(attachmentId)
 		// setFieldsValue(fs)
-
-		console.log(editData)
 	}
 	function ficationInfo(id) {
-		console.log(id)
 		onClickfication(id)
 	}
 	function setSupplier(name) {
-		console.log(name)
 		Dyformname(name)
 	}
 	return (

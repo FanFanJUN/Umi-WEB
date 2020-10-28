@@ -58,11 +58,17 @@ const getchangeResult = forwardRef(
                 <Row>
                     <Col span={20}>
                         <Item {...formLayout} label="结果">
-                            {getFieldDecorator('smFieldName', {
+                            {getFieldDecorator('pcnResult', {
+                                rules: [
+                                    {
+                                        required: true,
+                                        message: '请选择结果',
+                                    },
+                                ],
                             })(
                                 <Radio.Group disabled={isView === true}>
-                                    <Radio value={true}>是</Radio>
-                                    <Radio value={false}>否</Radio>
+                                    <Radio value={0}>同意</Radio>
+                                    <Radio value={1}>不同意</Radio>
                                 </Radio.Group>
                             )}
                         </Item>
@@ -75,12 +81,18 @@ const getchangeResult = forwardRef(
                             label={'附件资料'}
                         >
                             {
-                                getFieldDecorator('attachment', {
+                                getFieldDecorator('resultEnclosure', {
                                     initialValue: [],
+                                    rules: [
+                                        {
+                                            required: true,
+                                            message: '请上传附件',
+                                        },
+                                    ],
                                 })(
                                     <UploadFile
                                         title={"附件上传"}
-                                        entityId={dataSource ? dataSource.enclosureId : null}
+                                        entityId={dataSource ? dataSource.resultAttachments : null}
                                         type={isView ? "show" : ""}
                                     />
                                 )

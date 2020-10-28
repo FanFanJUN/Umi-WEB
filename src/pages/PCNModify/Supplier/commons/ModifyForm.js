@@ -4,6 +4,7 @@ import { Fieldclassification } from '@/utils/commonProps'
 import { ComboGrid, ComboList } from 'suid';
 import UploadFile from '../../../../components/Upload/index'
 import {ChangecontentList} from '../../commonProps'
+import {getRelationDocId} from '../../../../services/pcnModifyService'
 // import { baseUrl } from '../../../utils/commonUrl';
 const { create, Item } = Form;
 const { TextArea } = Input;
@@ -34,7 +35,6 @@ const ModifyForm = forwardRef(
         const { getFieldDecorator, validateFieldsAndScroll, getFieldValue, setFieldsValue } = form;
         const [initialValue, setInitialValue] = useState({});
         useEffect(() => {
-            console.log(type)
             if (type) {
                 setInitialValue(dataSource)
             }else {
@@ -43,8 +43,13 @@ const ModifyForm = forwardRef(
         }, [visible]);
 
         function handleSubmit() {
-            validateFieldsAndScroll((err, val) => {
+            validateFieldsAndScroll(async(err, val) => {
                 if (!err) {
+                    if (val.attachment && val.attachment.length > 0 && !val.attachmentId) {
+                        await RelationDocId(val.attachment, val.attachmentId).then(id => {
+                            val.attachmentId = id;
+                        })
+                    }
                     onOk({ ...initialValue, ...val });
                 }
             });
@@ -53,6 +58,12 @@ const ModifyForm = forwardRef(
         function changevalue(val) {
             form.setFieldsValue({ smChangeProve: val.changeRequiredSubmission})
         }
+        async function RelationDocId(ids, docId) {
+            const { data, success, message: msg } = await getRelationDocId({json: JSON.stringify(ids), docId: docId});
+            if (success) {
+                return data;
+            }
+        };
         return (
             <Modal
                 confirmLoading={loading}
@@ -186,7 +197,7 @@ const ModifyForm = forwardRef(
                                 })(
                                     <UploadFile
                                         title={"附件上传"}
-                                        entityId={initialValue ? initialValue.openingPermitId : null}
+                                        entityId={initialValue ? initialValue.attachmentId : null}
                                         type={isView ? "show" : ""}
                                     />
                                 )

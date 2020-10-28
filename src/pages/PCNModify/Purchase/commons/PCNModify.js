@@ -7,6 +7,7 @@ import styles from '../index.less';
 import BaseInfo from '../../Supplier/commons/BaseInfo';
 import Modifyinfo from  '../../Supplier/commons/Modifyinfo';
 import Modifyinfluence from '../../Supplier/commons/Modifyinfluence'
+import ModifyinfluenceForm from '../../Supplier/commons/ModifyinfluenceForm'
 const { create } = Form;
 const FormItem = Form.Item;
 const formLayout = {
@@ -19,7 +20,8 @@ const formLayout = {
 };
 const { storage } = utils
 const getpcnModifyRef = forwardRef(({
-	form,
+    form,
+    editData
 }, ref) => {
 	useImperativeHandle(ref, () => ({
 		getBaseInfo,
@@ -29,6 +31,7 @@ const getpcnModifyRef = forwardRef(({
     const BaseinfoRef = useRef(null);
     const ModifyinfoRef = useRef(null);
     const ModifyinfluenceRef = useRef(null);
+    const modifyinfluenceFormRef = useRef(null);
     const [selectRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [stafvisible, setStafvisible] = useState(false);
@@ -52,17 +55,32 @@ const getpcnModifyRef = forwardRef(({
           
             <DetailCard title="基本信息">
                 <BaseInfo
+                    editformData={editData}
                     wrappedComponentRef={BaseinfoRef}
+                    isView={true}
+                    isEdit={true}
                 />
             </DetailCard>
             <DetailCard title="变更信息">
                 <Modifyinfo
+                    editformData={editData.smPcnDetailVos}
                     wrappedComponentRef={ModifyinfoRef}
+                    isView={true}
+                    headerInfo={true}
                 />
             </DetailCard>
             <DetailCard title="变更影响分析">
                 <Modifyinfluence
+                    editformData={editData.smPcnAnalysisVos}
                     wrappedComponentRef={ModifyinfluenceRef}
+                    isView={true}
+                    isEdit={true}
+                    headerInfo={true}
+                />
+                <ModifyinfluenceForm
+                    editformData={editData}
+                    isView={true}  
+                    wrappedComponentRef={modifyinfluenceFormRef}
                 />
             </DetailCard>
 		</div>
