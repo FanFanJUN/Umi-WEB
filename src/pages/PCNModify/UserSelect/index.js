@@ -40,6 +40,7 @@ const UserSelect = forwardRef(({
   value = [],
   placeholder = '选择人员',
   alias = '',
+  multiple,
   ...props
 }, ref) => {
   const { setFieldsValue } = form;
@@ -181,7 +182,12 @@ const UserSelect = forwardRef(({
     setInclude(e.target.checked)
   }
   function handleSelectedRow(_, rows) {
-    const concatRows = [...new Set([...value, ...rows])]
+    let concatRows;
+    if (multiple) {
+      concatRows = [...new Set([...value, ...rows])]
+    }else {
+      concatRows = rows.map(item => item[readName])
+    }
     if (!!setFieldsValue) {
       setFieldsValue({
         [name]: concatRows
@@ -195,6 +201,8 @@ const UserSelect = forwardRef(({
         })
       })
     }
+    console.log(12312)
+    !multiple && triggerVisible(false)
     onChange(concatRows)
     onRowsChange(concatRows)
   }
@@ -285,6 +293,10 @@ const UserSelect = forwardRef(({
                   onChange={(pagination) => {
                     const { current, pageSize } = pagination;
                     setPageInfo({ page: current, rows: pageSize })
+                  }}
+                  rowSelection={{
+                    onChange: handleSelectedRow,
+                    type: multiple ? 'checkbox' : 'radio'
                   }}
                   allowCancelSelect={false}
                   loading={loading}

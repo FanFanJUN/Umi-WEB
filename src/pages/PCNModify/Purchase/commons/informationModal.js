@@ -4,7 +4,7 @@ import { Fieldclassification } from '@/utils/commonProps'
 import { ExtTable, ComboList,AuthButton } from 'suid';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
 import TrustinforModal from './TrustinforModal'
-import UserSelect from '../../../../components/UserSelect/index'
+import UserSelect from '../../UserSelect/index'
 const { create, Item } = Form;
 const formLayout = {
     labelCol: {
@@ -232,9 +232,10 @@ const getInformation = forwardRef(({
                                 })(
                                     <UserSelect name="smInKindManName" style={{width:"100%",zIndex:10}}
                                         disabled={type === 'detail'}
-                                        wrapperStyle={{width:1000}}
+                                        wrapperStyle={{width:900}}
                                         reader={{name:'userName',field:['code']}} 
                                         form={form}
+                                        multiple={false}
                                         field={['smInKindManId']}
                                         placeholder="请选择实物认定确认人"
                                     />

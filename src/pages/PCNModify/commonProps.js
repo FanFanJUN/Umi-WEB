@@ -88,23 +88,23 @@ export const BilltypeList = {
   allowClear: true,
   dataSource: [
     {
-      code: '草稿',
+      code: '0',
       name: '草稿',
     },
     {
-      code: '验证中',
+      code: '1',
       name: '验证中',
     },
     {
-      code: '变更不通过',
+      code: '2',
       name: '变更不通过',
     },
     {
-      code: '变更通过',
+      code: '3',
       name: '变更通过',
     },
     {
-      code: '变更完成',
+      code: '4',
       name: '变更完成',
     }
   ],
@@ -116,15 +116,15 @@ export const ToexamineList = {
   allowClear: true,
   dataSource: [
     {
-      code: '未提交审核',
+      code: 'INIT',
       name: '未提交审核',
     },
     {
-      code: '审核中',
+      code: 'INPROCESS',
       name: '审核中',
     },
     {
-      code: '已审核',
+      code: 'successColor',
       name: '已审核',
     }
   ],
