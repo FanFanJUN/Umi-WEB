@@ -136,6 +136,11 @@ export const NormalSupplierConfig = {
   },
 };
 
+export const supplierStrategyName = {
+  'QUALIFIED_SUPPLIER': '合格供应商名录',
+  'NORMAL_SUPPLIER': '正常供应商'
+}
+
 // 供应商选择策略
 export const SelectionStrategyConfig = {
   allowClear: true,
@@ -352,6 +357,26 @@ export const GetSupplierContact = async (params={}) => {
     url,
     method: 'GET',
     params: params,
+  });
+}
+
+// 审核需求管理findOne
+export const FindOneAuditRequirementsManagement = async (params={}) => {
+  const url = `${recommendUrl}/api/reviewRequirementService/findOneOverride`;
+  return request({
+    url,
+    method: 'GET',
+    params: params,
+  });
+}
+
+// 审核需求管理新增
+export const AddAuditRequirementsManagement = async (params={}) => {
+  const url = `${recommendUrl}/api/reviewRequirementService/insert`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
   });
 }
 

@@ -186,6 +186,9 @@ const AddBeAudited = (props) => {
             </FormItem>
           </Col>
         </Row>
+        <Col span={0}>
+          {hideFormItem('supplierStrategyCode', type === 'add' ? '' : fatherData.supplierStrategyCode)}
+        </Col>
         <Row>
           <Col span={12}>
             <FormItem {...formItemLayoutLong} label={'供应商选择方式'}>
@@ -203,6 +206,7 @@ const AddBeAudited = (props) => {
                     allowClear={true}
                     style={{ width: '100%' }}
                     form={form}
+                    field={['supplierStrategyCode']}
                     name={'supplierStrategyName'}
                     {...SelectionStrategyConfig}
                   />,

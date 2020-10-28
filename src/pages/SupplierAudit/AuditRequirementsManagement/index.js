@@ -65,7 +65,7 @@ export default function() {
         openNewTab('supplierAudit/AuditRequirementsManagementAdd?pageState=add', '审核需求管理-新增', false);
         break;
       case 'edit':
-        openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=edit&id=${data.selectedRowKeys[0]}`, '审核需求管理-编辑', false);
+        openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=edit&id=${data.selectedRows[0].reviewRequirementCode}`, '审核需求管理-编辑', false);
         break;
       case 'detail':
         openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=detail&id=${data.selectedRowKeys[0]}`, '审核需求管理-明细', false);
@@ -178,8 +178,20 @@ export default function() {
 
   // 高级查询配置
   const formItems = [
-    { title: '公司', key: 'materialCode', type: 'list', props: CompanyConfig, rules: {rules: [{ required: true, message: '请选择公司'}],} },
-    { title: '采购组织', key: 'materialGroupCode', type: 'list', props: FindByFiltersConfig, rules: {rules: [{ required: true, message: '请选择采购组织'}],}  },
+    {
+      title: '公司',
+      key: 'materialCode',
+      type: 'list',
+      props: CompanyConfig,
+      rules: { rules: [{ required: true, message: '请选择公司' }] },
+    },
+    {
+      title: '采购组织',
+      key: 'materialGroupCode',
+      type: 'list',
+      props: FindByFiltersConfig,
+      rules: { rules: [{ required: true, message: '请选择采购组织' }] },
+    },
     { title: '申请部门', key: 'strategicPurchaseCode', type: 'tree', props: ApplyOrganizationProps },
     { title: '申请人', key: 'buCode', props: { placeholder: '输入申请人' } },
     { title: '申请日期', key: 'applyPeopleName', type: 'datePicker', props: { placeholder: '输入申请人' } },
@@ -192,15 +204,37 @@ export default function() {
   ];
 
   const columns = [
-    { title: '状态', dataIndex: 'state', width: 80 },
-    { title: '审批状态', dataIndex: 'allotSupplierState', width: 200 },
-    { title: '审核需求号', dataIndex: 'source', width: 200 },
-    { title: '申请说明', dataIndex: 'shareDemanNumber', ellipsis: true, width: 250 },
-    { title: '申请公司', dataIndex: 'materialName', ellipsis: true, width: 200 },
-    { title: '申请部门', dataIndex: 'materialGroupCode', ellipsis: true, width: 200 },
-    { title: '采购组织', dataIndex: 'materialGroupName', ellipsis: true, width: 200 },
-    { title: '申请人员', dataIndex: 'strategicPurchaseCode', ellipsis: true, width: 200 },
-    { title: '申请时间', dataIndex: 'strategicPurchaseName', ellipsis: true, width: 200 },
+    {
+      title: '状态', dataIndex: 'state', width: 80, render: v => {
+        switch (v) {
+          case 'DRAFT':
+            return '草稿';
+          case 'EFFECT':
+            return '生效';
+          case 'CHANGING':
+            return '变更中';
+        }
+      },
+    },
+    {
+      title: '审批状态', dataIndex: 'flowStatus', width: 200, render: v => {
+        switch (v) {
+          case 'INIT':
+            return '未进入流程';
+          case 'INPROCESS':
+            return '流程中';
+          case 'COMPLETED':
+            return '流程处理完成';
+        }
+      },
+    },
+    { title: '审核需求号', dataIndex: 'reviewRequirementCode', width: 200 },
+    { title: '申请说明', dataIndex: 'reviewRequirementName', ellipsis: true, width: 250 },
+    { title: '申请公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 200 },
+    { title: '申请部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200 },
+    { title: '采购组织', dataIndex: 'orgName', ellipsis: true, width: 200 },
+    { title: '申请人员', dataIndex: 'applyName', ellipsis: true, width: 200 },
+    { title: '申请时间', dataIndex: 'createdDate', ellipsis: true, width: 200 },
   ].map(item => ({ ...item, align: 'center' }));
 
   const visibleSupplier = () => {
@@ -234,9 +268,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='TECHNICAL_DATA_SHARING_EDIT'
-        disabled={
-          data.selectedRowKeys.length !== 1 || data.selectedRows[0]?.source !== 'SRM' ||
-          data.selectedRows[0]?.state === '生效' || data.selectedRows[0]?.allotSupplierState === '已分配'}
+        disabled={data.selectedRowKeys.length === 0}
       >编辑</Button>)
     }
     {
@@ -245,7 +277,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='TECHNICAL_DATA_SHARING_DELETE'
-        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', '草稿')}
+        disabled={data.selectedRowKeys.length === 0}
       >删除</Button>)
     }
     {
@@ -320,7 +352,7 @@ export default function() {
                 quickSearchValue: data.quickSearchValue,
                 ...data.epTechnicalShareDemandSearchBo,
               },
-              url: `${recommendUrl}/api/epTechnicalShareDemandService/findByPage`,
+              url: `${recommendUrl}/api/reviewRequirementService/findByPage`,
               type: 'POST',
             }}
             allowCancelSelect={true}

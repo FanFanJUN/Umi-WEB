@@ -1,15 +1,21 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Affix, Button, message, Spin } from 'antd';
+import { Affix, Button, message, Modal, Spin } from 'antd';
 import classnames from 'classnames';
 import styles from '../../../Supplier/Editor/index.less';
 import { closeCurrent, getMobile, getUserId, getUserName } from '../../../../utils';
 import BaseInfo from './BaseInfo';
 import { router } from 'dva';
 import IntendedAuditInformation from './IntendedAuditInformation';
-import { GetAllAuditType } from '../../mainData/commomService';
+import {
+  AddAuditRequirementsManagement,
+  FindOneAuditRequirementsManagement,
+  GetAllAuditType,
+} from '../../mainData/commomService';
 
 const Index = () => {
   const baseInfoRef = useRef(null);
+
+  const intendedAuditInformationRef = useRef(null)
 
   const { query } = router.useLocation();
 
@@ -44,6 +50,7 @@ const Index = () => {
         break;
       case 'edit':
         getUser();
+        findOne(id)
         setData((value) => ({ ...value, type: pageState, id, isView: false, title: '审核需求管理-编辑' }));
         break;
       case 'detail':
@@ -52,6 +59,14 @@ const Index = () => {
     }
     console.log(pageState, 'pageState');
   }, []);
+
+  const findOne = (id) => {
+    FindOneAuditRequirementsManagement({
+      reviewRequirementCode: id
+    }).then(res => {
+      console.log(res)
+    })
+  }
 
   const getAuditType = () => {
     GetAllAuditType().then(res => {
@@ -77,13 +92,25 @@ const Index = () => {
   };
 
   const handleSave = async (type) => {
-    const baseInfoData = await baseInfoRef.current.getBaseInfoData((err, values) => {
+    let insertData = await baseInfoRef.current.getBaseInfoData((err, values) => {
       if (!err) {
         return values;
       }
     });
-    if (auditInformationData && auditInformationData.length !== 0) {
-
+    const lineBoList = await intendedAuditInformationRef.current.getDataSource()
+    console.log(lineBoList)
+    if (lineBoList && lineBoList.length !== 0) {
+      insertData.lineBoList = lineBoList
+      Modal.confirm({
+        title: '是否确认暂存该数据!',
+        onOk: () => {
+          AddAuditRequirementsManagement(insertData).then(res => {
+            console.log(res)
+          })
+        },
+        okText: '确定',
+        cancelText: '取消'
+      })
     } else {
       message.error('请至少添加一条拟审核信息!')
     }
@@ -116,6 +143,7 @@ const Index = () => {
         />
         <IntendedAuditInformation
           companyCode={companyCode}
+          wrappedComponentRef={intendedAuditInformationRef}
           organizationCode={organizationCode}
           allAuditType={data.allAuditType}
           applyCorporationCode={applyCorporationCode}

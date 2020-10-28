@@ -44,7 +44,10 @@ const ContentModal = (props) => {
   };
 
   const departChange = (value) => {
+    console.log(value)
     setFieldsValue({
+      namePath: value.namePath,
+      codePath: value.codePath,
       memberName: '',
       memberTel: '',
       employeeNo: ''
@@ -159,9 +162,12 @@ const ContentModal = (props) => {
             </FormItem>
           </Col>
         </Row>
-        {/*<Col span={0}>*/}
-        {/*  {hideFormItem('departmentName', type === 'add' ? '' : data.departmentName)}*/}
-        {/*</Col>*/}
+        <Col span={0}>
+          {hideFormItem('codePath', type === 'add' ? '' : data.codePath)}
+        </Col>
+        <Col span={0}>
+          {hideFormItem('namePath', type === 'add' ? '' : data.namePath)}
+        </Col>
         <Col span={0}>
           {hideFormItem('departmentId', type === 'add' ? '' : data.departmentId)}
         </Col>

@@ -66,6 +66,7 @@ const Team = (props) => {
 
   useEffect(() => {
     if (visible) {
+      setTeamData(v => ({...v, dataSource: props.reviewTeamGroupBoList}))
       GetDefaultSystem({
         reviewTypeCode: props.reviewTypeCode
       }).then(res => {
@@ -79,7 +80,9 @@ const Team = (props) => {
   }, [visible])
 
   const clearSelected = () => {
-
+    setTeamData(v => ({...v, dataSource: [], selectedRows: [], selectedRowKeys: []}))
+    setContentData(v => ({...v, dataSource: [], selectedRowKeys: [], selectedRows: [], type: 'add'}))
+    setData(v => ({...v, treeData: [], leftTreeData: undefined, selectRows: [], type: 'add'}))
   };
 
   useEffect(() => {
@@ -123,6 +126,7 @@ const Team = (props) => {
   };
 
   const contentAdd = (value) => {
+    console.log(value)
     if (contentData.type === 'add') {
       value.lineNum = getRandom(10);
       value.memberRuleBoList = []
