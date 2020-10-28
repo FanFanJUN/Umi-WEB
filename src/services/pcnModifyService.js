@@ -72,38 +72,71 @@ export const Impactofchange = params => {
     method: 'POST',
   })
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// 保存
+// PCN供应商保存
 export const saveBatchVo = params => {
   return request({
-   url: `${smBaseUrl}/supplierBatchCreation/saveVo`,
-   data: convertDataToFormData(params),
+   url: `${smBaseUrl}/api/smPcnTitleService/savePcnVo`,
+   data: params,
    method: 'POST',
  })
 }
+//绑定附件
+export const getRelationDocId = params => {
+  return request({
+    url: `${smBaseUrl}/supplierRegister/getRelationDocId`,
+    data: convertDataToFormData(params),
+    method: 'POST',
+  })
+}
+
 // 删除
-export const deleteBatchById = params => createServiceRequest({
-  path: '/supplierBatchCreation/deleteBatchById',
-  params,
-  hack: true
-})
+export const deleteBatchById = (params) => {
+  return request({
+    headers:{'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+    url: `${smBaseUrl}/api/smPcnTitleService/deleteByPcnTitleId`,
+    params,
+    method: 'POST',
+  })
+};
+
+// 变更影响分析查看物料
+export const MaterialchangeId = (params) => {
+  return request({
+    url: `${smBaseUrl}/api/smPcnAnalysisMaterielService/findMaterielByAnalysisId`,
+    params,
+    method: 'POST',
+    hack: true
+  })
+};
+// 提交
+export const PCNSupplierSubmit = params => {
+  return request({
+    url: `${smBaseUrl}/api/smPcnTitleService/commitPcn`,
+    params,
+    method: 'POST',
+    hack: true
+  })
+}
+// PCN采购端保存
+
+export const savePurchaseVo = params => {
+  return request({
+   url: `${smBaseUrl}/api/smPcnTitleService/savePurchasePcnVo`,
+   data: params,
+   method: 'POST',
+ })
+}
+
+
+// 保存
+// export const saveBatchVo = params => {
+//   return request({
+//    url: `${smBaseUrl}/supplierBatchCreation/saveVo`,
+//    data: convertDataToFormData(params),
+//    method: 'POST',
+//  })
+// }
+
 
 // 终止审批流程
 export const stopApproveingOrder = params =>createServiceRequest({

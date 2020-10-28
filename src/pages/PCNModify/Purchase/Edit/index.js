@@ -4,16 +4,7 @@ import { router } from 'dva';
 import Confirmation from '../commons/Confirmation' 
 import PCNModify from '../commons/PCNModify'
 import classnames from 'classnames';
-import {
-    SupplierconfigureDetail,
-    SaveSupplierconfigureService
-} from '@/services/supplierRegister';
-import {
-    findByRequestIdForModify,
-    TemporarySupplierRegister,
-    saveSupplierRegister,
-    ValiditySupplierRegister
-} from '@/services/SupplierModifyService'
+import {findPCNSupplierId,savePurchaseVo} from '../../../../services/pcnModifyService'
 import styles from '../index.less';
 import { closeCurrent, isEmpty } from '../../../../utils';
 const TabPane = Tabs.TabPane;
@@ -21,106 +12,45 @@ function CreateStrategy() {
 
     const getconfirmFromRef = useRef(null);
     const getpcnModifyRef = useRef(null);
-    const AccountRef = useRef(null);
-
-    const [baseinfo, setbaseinfo] = useState([]);
-    const [accountinfo, setaccountinfo] = useState([]);
-    const [businesshide, setbusinesshide] = useState([]);
-    const [initialValue, setInitialValue] = useState({});
-    const [wholeData, setwholeData] = useState([]);
-    const [editData, setEditData] = useState([]);
-    const [Reasonchange, setReasonchange] = useState(false);
     const [loading, triggerLoading] = useState(false);
     const [visible, setvisible] = useState(false);
-    const [configure, setConfigure] = useState([]);
-    const [supplierName, setsupplierName] = useState();
+    const [editData, setEditData] = useState([]);
     const { query } = router.useLocation();
-    // 变更详情
-    async function initsupplierDetai() {
+    useEffect(() => {
+        infoPCNdetails()
+
+    }, []);
+    // 详情
+    async function infoPCNdetails() {
         triggerLoading(true);
         let id = query.id;
-        const { data, success, message: msg } = await findByRequestIdForModify({ id: id });
+        const { data, success, message: msg } = await findPCNSupplierId({pcnTitleId:id});
         if (success) {
-            let suppliertype = data.supplierApplyVo.supplierInfoVo.supplierVo.supplierCategory.id
-            setsupplierName(data.supplierApplyVo.supplierInfoVo.supplierVo.name)
-            initConfigurationTable(suppliertype)
-            setTimeout(() => {
-                setInitialValue(data.supplierApplyVo.supplierInfoVo)
-                setEditData(data.supplierApplyVo.supplierInfoVo)
-                setReasonchange(data.supplierApplyVo)
-                setwholeData(data.supplierApplyVo)
-                triggerLoading(false);
-                if (data.supplierApplyVo.supplierInfoVo.supplierVo.supplierCategoryName === '个人供应商') {
-                    if (data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo) {
-                        let mobile = data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo.mobile;
-                        if (isEmpty(mobile)) {
-                            setvisible(true)
-                        }
-                    }
-                    if (data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo === undefined) {
-                        setvisible(true)
-                    }
-                } else {
-                    if (data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo) {
-                        let mobile = data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo.mobile;
-                        let email = data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo.email;
-                        if (isEmpty(mobile) || isEmpty(email)) {
-                            setvisible(true)
-                        }
-                    }
-                    if (data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo === undefined) {
-                        setvisible(true)
-                    }
-                }
-            }, 200);
-        } else {
+            setEditData(data)
             triggerLoading(false);
-            message.error(msg)
+            return
         }
-
+        triggerLoading(false);
+        message.error(msg) 
+        
     }
-    async function initConfigurationTable(typeId) {
-        triggerLoading(true);
-        let params = { catgroyid: typeId, property: 2 };
-        const { data, success, message: msg } = await SaveSupplierconfigureService(params);
-        if (success) {
-            let datalist = data.configBodyVos;
-            setConfigure(datalist)
-            triggerLoading(false);
-        } else {
-            triggerLoading(false);
-            message.error(msg)
-        }
-    }
-
 
     // 保存
     async function handleSave() {
-
-
-
-    }
-    async function createSave(val) {
-        let params = { ...wholeData, ...val };
-        const { success, message: msg } = await TemporarySupplierRegister(params);
+        const {getBaseInfo} = getconfirmFromRef.current
+        let modifydata = getBaseInfo();
+        //console.log(JSON.stringify(modifydata))
+        //let params = {...editData.smPcnConfirmPlanVo, ...modifydata}
+        triggerLoading(true)
+        const {success, message: msg } = await savePurchaseVo(modifydata)
         if (success) {
-            message.success(msg);
             triggerLoading(false)
             closeCurrent()
-            return
         } else {
+            triggerLoading(false)
             message.error(msg);
         }
-        triggerLoading(false)
     }
-    function setSuppliername(name) {
-        setsupplierName(name)
-    }
-    // 获取配置列表项
-    useEffect(() => {
-        //initsupplierDetai(); // 获取详情
-
-    }, []);
     // 返回
     function handleBack() {
         closeCurrent()
@@ -144,11 +74,13 @@ function CreateStrategy() {
                 <Tabs className="tabstext" onTabClick={(params)=>tabClickHandler(params)} style={{ background: '#fff' }}>
                     <TabPane forceRender tab="确认方案" key="1">
                         <Confirmation
+                            editData={editData}
                             wrappedComponentRef={getconfirmFromRef}
                         />
                     </TabPane>
                     <TabPane forceRender tab="PCN变更信息" key="2">
-                        <PCNModify 
+                        <PCNModify
+                            editData={editData} 
                             wrappedComponentRef={getpcnModifyRef}
                         />
                     </TabPane>

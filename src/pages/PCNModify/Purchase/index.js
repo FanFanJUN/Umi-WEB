@@ -8,7 +8,7 @@ import styles from './index.less';
 import { smBaseUrl } from '@/utils/commonUrl';
 import { RecommendationList, stopApproveingOrder } from "@/services/supplierRegister"
 import { deleteSupplierModify, checkExistUnfinishedValidity, findCanModifySupplierList } from '@/services/SupplierModifyService'
-import {BilltypeList,ToexamineList,StrategicPurchaseConfig} from '../commonProps'
+import {BilltypeList,ToexamineList,PCNMasterdatalist,Strategicprocurementlist} from '../commonProps'
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 const { Search } = Input
 const confirm = Modal.confirm;
@@ -23,7 +23,7 @@ function SupplierConfigure() {
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [onlyMe, setOnlyMe] = useState(true);
     const [selectedRows, setRows] = useState([]);
-    const [searchValue, setSearchValue] = useState('');
+    const [searchValue, setSearchValue] = useState({});
     const [visible, setVisible] = useState(false);
     const [recommen, setrecommen] = useState([]);
     const [loading, triggerLoading] = useState(false);
@@ -44,27 +44,23 @@ function SupplierConfigure() {
     const isSelf = currentUserId === creatorId;
     // 删除草稿
     const isdelete = signleFlowStatus === 'INIT'
-
-    const {
-        state: rowState,
-        approvalState: rowApprovalState,
-        changeable: rowChangeable,
-        flowId: businessId
-    } = singleRow;
-
     const columns = [
         {
             title: '单据状态',
-            dataIndex: 'flowStatus',
-            key: 'flowStatus',
-            width: 100,
+            dataIndex: 'smSubmitStatus',
+            key: 'smSubmitStatus',
+            width: 160,
             render: function (text, record, row) {
-                if (text === 'INIT') {
-                    return <div>未提交审批</div>;
-                } else if (text === 'INPROCESS') {
-                    return <div className="doingColor">审批中</div>;
-                } else {
-                    return <div className="successColor">审批完成</div>;
+                if (text === 0) {
+                    return <div>草稿</div>;
+                } else if (text === 1) {
+                    return <div className="doingColor">验证中</div>;
+                } else if (text === 2) {
+                    return <div className="successColor">变更不通过</div>;
+                }else if (text === 3) {
+                    return <div className="successColor">变更通过</div>;
+                }else if (text === 4) {
+                    return <div className="successColor">变更完成</div>;
                 }
             },
         },
@@ -72,7 +68,7 @@ function SupplierConfigure() {
             title: '审批状态',
             dataIndex: 'flowStatus',
             key: 'flowStatus',
-            width: 100,
+            width: 160,
             render: function (text, record, row) {
                 if (text === 'INIT') {
                     return <div>未提交审批</div>;
@@ -86,62 +82,49 @@ function SupplierConfigure() {
         {
             title: 'PCN变更验证单号',
             width: 200,
-            dataIndex: 'code',
+            dataIndex: 'smPcnCode',
         },
         {
             title: '供应商代码',
             width: 140,
-            dataIndex: 'supplierCode',
+            dataIndex: 'smSupplierCode',
         },
         {
             title: '供应商名称',
             width: 220,
-            dataIndex: 'supplierName',
+            dataIndex: 'smSupplierName',
         },
-
         {
-            title: '原厂代码',
-            width: 120,
-            dataIndex: 'creatorName',
-        }, {
-            title: '原厂名称',
-            width: 220,
-            dataIndex: 'modifyReason',
-        }, {
             title: '变更类型',
-            width: 80,
-            dataIndex: 'id',
+            width: 180,
+            dataIndex: 'smPcnChangeTypeName',
         },
         {
-            title: '申请人',
-            width: 80,
-            dataIndex: 'id',
+            title: '联系人',
+            width: 220,
+            dataIndex: 'smContacts',
         },
         {
             title: '联系电话',
-            width: 80,
-            dataIndex: 'id',
+            width: 220,
+            dataIndex: 'smContactNumber',
         },
         {
-            title: '申请日期',
-            align: 'center',
-            width: 150,
+            title: '创建日期',
+            width: 180,
             dataIndex: 'createdDate',
-            render: (text) => {
-                return text ? text.substring(0, 10) : '';
-            },
-        },
+        }
     ].map(_ => ({ ..._, align: 'center' }))
 
     const dataSource = {
         store: {
-            url: `${smBaseUrl}/api/supplierModifyService/findRequestByPage`,
+            url: `${smBaseUrl}/api/smPcnTitleService/findByPurchasePage`,
             params: {
-                quickSearchValue: searchValue,
-                quickSearchProperties: ['supplierName'],
+                ...searchValue,
+                quickSearchProperties: ['smPcnCode'],
                 sortOrders: [
                     {
-                        property: 'docNumber',
+                        property: 'createdDate',
                         direction: 'DESC'
                     }
                 ]
@@ -167,22 +150,22 @@ function SupplierConfigure() {
                 }}
                 className={styles.btn}
             />
-            <Input
+            <Search
                 placeholder='请输入变更单号'
                 className={styles.btn}
-                onChange={SerachValue}
+                onSearch={handleQuickSerach}
                 allowClear
             />
-            <Button type='primary' onClick={handleQuickSerach} className={styles.btn} >查询</Button>
         </>
     )
     // 高级查询配置
     const formItems = [
-        { title: '供应商名称或代码', key: 'materialCode',  props: { placeholder: '输入供应商名称或代码' } },
-        { title: '单据状态', key: 'materialGroupCode', type: 'list', props: BilltypeList },
-        { title: '审核状态', key: 'environmentAdminName', type: 'list', props: ToexamineList },
-        { title: '变更类型', key: 'applyPersonName', type: 'list', props: ToexamineList },
-        { title: '战略采购', key: 'strategicPurchaseCode', type: 'list', props: StrategicPurchaseConfig },
+        { title: '供应商代码', key: 'materialCode',  props: { placeholder: '输入供应商代码' } },
+        { title: '供应商名称', key: 'materialName',  props: { placeholder: '输入供应商名称' } },
+        { title: '单据状态', key: 'smDocunmentStatus', type: 'list', props: BilltypeList },
+        { title: '审核状态', key: 'flowStatus', type: 'list', props: ToexamineList },
+        { title: '变更类型', key: 'smPcnChangeTypeCode', type: 'list', props: PCNMasterdatalist },
+        { title: '战略采购', key: 'smSourcing', type: 'list', props: Strategicprocurementlist },
     ];
     useEffect(() => {
         window.parent.frames.addEventListener('message', listenerParentClose, false);
@@ -213,7 +196,7 @@ function SupplierConfigure() {
     }
     // 编辑
     function handleCheckEdit() {
-        const [key] = selectedRowKeys;
+       //const [key] = selectedRowKeys;
         let id = selectedRows[0].id;
         openNewTab(`pcnModify/Purchase/Edit/index?id=${id}`, 'PCN变更方案编辑', false)
     }
@@ -263,23 +246,65 @@ function SupplierConfigure() {
         message.error(msg)
     }
     // 仅我的
-    function handleOnlyMeChange() {
-
+    function handleOnlyMeChange(e) {
+        setOnlyMe(e.target.checked)
     }
     // 输入框值
     function SerachValue(v) {
         setSearchValue(v.target.value)
     }
     // 查询
-    function handleQuickSerach() {
-        let search = "";
-        setSearchValue(search);
-        setSearchValue(searchValue)
+    function handleQuickSerach(value) {
+        // let search = "";
+        // setSearchValue(search);
+        // setSearchValue(searchValue)
+        // uploadTable();
+        setSearchValue(v => ({ ...v, quickSearchValue: value }));
         uploadTable();
     }
     // 处理高级搜索
     function handleAdvnacedSearch(value) {
-        
+        value.smDocunmentStatus = value.materialGroupCode;
+        value.smPcnChangeTypeCode = value.applyPersonName;
+        value.smSupplierCode = value.materialCode;
+        value.smSupplierName = value.materialName;
+        delete value.applyPersonName;
+        delete value.applyPersonName_name;
+        delete value.materialCode;
+        delete value.materialGroupCode;
+        delete value.materialGroupCode_name;
+        console.log(value)
+        // let searchvalue = [];
+        // searchvalue.push(value);
+        // let newdata = [];
+        // searchvalue.map(item => {
+        //     newdata.push(
+        //         {
+        //             fieldName:'smSupplierCode',
+        //             value: item.smSupplierCode,
+        //             operator:'EQ'
+        //         },
+        //         {
+        //             fieldName:'smSupplierName',
+        //             value: item.smSupplierName,
+        //             operator:'EQ'
+        //         },
+        //         {
+        //             fieldName:'smDocunmentStatus',
+        //             value: item.smDocunmentStatus,
+        //             operator:'EQ'
+        //         },
+        //         {
+        //             fieldName:'smPcnChangeTypeCode',
+        //             value: item.smPcnChangeTypeCode,
+        //             operator:'EQ'
+        //         }
+    
+        //     )
+        // })
+        // setSearchvalue(newdata)
+        // headerRef.current.hide();
+        // uploadTable();
     }
      // 清空泛虹公司
      function clearinput() {
@@ -324,7 +349,7 @@ function SupplierConfigure() {
                                     businessKey={flowId}
                                     callBack={handleComplete}
                                     disabled={empty || underWay}
-                                    businessModelCode='com.ecmp.srm.sm.entity.SupplierModify'
+                                    businessModelCode='com.ecmp.srm.sm.entity.pcn.SmPcnTitle'
                                     key='SRM-SM-SUPPLIERMODEL_EXAMINE'
                                 >提交审核</StartFlow>
                             )

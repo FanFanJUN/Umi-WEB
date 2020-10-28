@@ -25,13 +25,14 @@ const getAgentregRef = forwardRef(({
     const [selectedRows, setRows] = useState([]);
     const [visible, setvisible] = useState(false);
     const [current, setcurrent] = useState([]);
+    // const [dataSource, setdataSource] = useState([])
     useEffect(() => {
         //getSupplierlist()
     }, []);
     //let current = 1;
     const dataSource = {
         store: {
-            url: `${smBaseUrl}/api/supplierSupplyListTmpService/findVoByPage`,
+            url: `${smBaseUrl}/supplierSupplyList/listPageVo`,
             params: {
                 quickSearchValue: searchValue,
                 quickSearchProperties: ['materielCategoryCode','materielCategory.name'],
@@ -40,7 +41,8 @@ const getAgentregRef = forwardRef(({
                         property: 'materielCategory',
                         direction: 'DESC'
                     }
-                ]
+                ],
+                
             },
             type: 'POST'
         }
@@ -105,8 +107,8 @@ const getAgentregRef = forwardRef(({
           },
           {
             title: "采购专业组",
-            width: 120,
-            dataIndex: "purchaseOrgCode"
+            width: 160,
+            dataIndex: "purchaseProfessionalGroup"
           },
           {
             title: "物料级别",

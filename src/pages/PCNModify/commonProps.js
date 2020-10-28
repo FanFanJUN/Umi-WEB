@@ -42,11 +42,11 @@ export const Safetyregulationslist = {
   allowClear: true,
   dataSource: [
     {
-      code: '是',
+      code: '0',
       name: '是',
     },
     {
-      code: '否',
+      code: '1',
       name: '否',
     },
   ],
@@ -56,27 +56,27 @@ export const Safetyregulationslist = {
 // 战略采购
 export const Strategicprocurementlist = {
   store: {
-    url: `${baseUrl}/purchaseGroup/findByPagesAll`,
+    url: `${baseUrl}/api/purchaseGroupService/findByFilters`,
     type: 'POST'
   },
   reader: {
-    name: 'code',
-    field: ['name'],
-    description: 'name'
+    name: 'name',
+    field: ['id'],
+    description: 'code'
   },
   // remotePaging: true,
-  placeholder: '选择变更类型'
+  placeholder: '选择战略采购'
 }
 // 供应商单据状态
 export const SupplierBilltypeList = {
   allowClear: true,
   dataSource: [
     {
-      code: '草稿',
+      code: '0',
       name: '草稿',
     },
     {
-      code: '已提交',
+      code: '1',
       name: '已提交',
     },
   ],
@@ -160,3 +160,19 @@ export const StrategicForName = {
     description: 'code',
   },
 };
+// 流程认定结果 
+export const SupplierResulteList = {
+  allowClear: true,
+  dataSource: [
+    {
+      code: '0',
+      name: '通过',
+    },
+    {
+      code: '1',
+      name: '不通过',
+    },
+  ],
+  placeholder: '选择结果',
+  ...commonProps,
+}

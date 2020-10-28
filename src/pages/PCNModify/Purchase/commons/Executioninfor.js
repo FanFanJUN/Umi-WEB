@@ -1,10 +1,11 @@
 import React, { forwardRef, useState, useRef, useEffect, useImperativeHandle } from 'react';
-import { ExtTable, WorkFlow, ExtModal, utils, ToolBar,AuthButton  } from 'suid';
-import { Form, Row, Col, Input, Modal } from 'antd';
+import { ExtTable, utils, ToolBar,AuthButton  } from 'suid';
+import { Form, Row, Col, Input, DatePicker  } from 'antd';
 import Header from '@/components/Header';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
 import MaterielModal from '../../Supplier/commons/MaterielModal'
 import styles from '../index.less';
+import moment from 'moment';
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 const { create } = Form;
 const FormItem = Form.Item;
@@ -22,7 +23,8 @@ const getExecutioninfor = forwardRef(({
   form,
   isView,
   editData = [],
-  headerInfo
+  headerInfo,
+  materielid
 }, ref) => {
   useImperativeHandle(ref, () => ({
     form
@@ -31,6 +33,7 @@ const getExecutioninfor = forwardRef(({
   const getMatermodRef = useRef(null)
   const [dataSource, setDataSource] = useState([]);
   const [selectRowKeys, setRowKeys] = useState([]);
+  const [selectedRows, setRows] = useState([]);
   const [attachId, setAttachId] = useState('')
   const empty = selectRowKeys.length === 0;
   useEffect(() => {
@@ -50,52 +53,95 @@ const getExecutioninfor = forwardRef(({
   const columns = [
     {
         title: '物料代码',
-        dataIndex: 'lineCode',
+        dataIndex: 'materielTypeCode',
         align: 'center',
-        width: 160
+        width: 180
     },
     {
         title: '物料描述',
-        dataIndex: 'countryName',
+        dataIndex: 'materielTypeName',
         align: 'center',
-        width: 180,
+        width: 280,
     },
+
     {
-        title: '批次',
-        dataIndex: 'countryName',
-        align: 'center',
-        width: 180,
+      title: '批次',
+      dataIndex: 'batch',
+      align: 'center',
+      width: 240,
+      render: (text, record, index) => {
+          if (isView) {
+              return record.smPcnPartName;
+          }
+          return <span>
+              <FormItem style={{ marginBottom: 0 }}>
+                  {
+                      getFieldDecorator(`batch[${index}]`, {
+                          initialValue: record ? record.smPcnPartName : '',
+                      })( 
+                          <Input /> 
+                      )
+                  }
+              </FormItem>
+          </span>;
+      }
     }
   ].map(_ => ({ ..._, align: 'center' }))
-
+  // 记录列表选中
+  function handleSelectedRows(rowKeys, rows) {
+    setRowKeys(rowKeys);
+    setRows(rows);
+  }
+  // 物料新增
   function showExecution() {
     getMatermodRef.current.handleModalVisible(true);
   }
+  // 物料删除
   function handDelete() {
-
+    const filterData = dataSource.filter(item => item.key !== selectedRows[0].key);
+    setDataSource(filterData)
+  }
+  function handleMateriel(val) {
+    let newdata = [];
+    val.map( (item,index)=> {
+      newdata.push({
+        key: index,
+        materielTypeCode: item.materialCode,
+        materielTypeName: item.materialDesc
+      })
+    })
+    setDataSource(newdata)
+  }
+  function disabledDate(current) {
+    return current && current < moment().endOf('day');
   }
   return (
     <>
-        <Row>
-            <Col span={10}>
+        <Row style={{paddingTop:50}}>
+            <Col span={16}>
                 <FormItem {...formLayout} label="PCN变更执行日期">
-                    {getFieldDecorator('smFieldCode', {
+                    {getFieldDecorator('executDate', {
                         rules: [
                             {
                                 required: true,
-                                message: '请输入PCN变更执行日期',
+                                message: '请选择PCN变更执行日期',
                             },
                         ],
                     })(
-                        <Input disabled={isView} />
+                        <DatePicker 
+                          format="YYYY-MM-DD"
+                          disabledDate={disabledDate}
+                          disabled={isView}
+                          style={{ width: '100%' }}
+                        />
                     )}
                 </FormItem>
             </Col>
         </Row>
         <Row>
-            <Col span={10}>
+            <Col span={16}>
                 <FormItem {...formLayout} label="备注">
-                    {getFieldDecorator('smFieldCode', {
+                    {getFieldDecorator('remark', {
                     })(
                         <TextArea  disabled={isView}/>
                     )}
@@ -116,19 +162,29 @@ const getExecutioninfor = forwardRef(({
             checkbox={{
                 multiSelect: false
             }}
+            pagination={{
+              hideOnSinglePage: true,
+              disabled: false,
+              pageSize: 100,
+            }}
             allowCancelSelect={true}
             size='small'
             height={height}
             remotePaging={true}
             ellipsis={false}
             saveData={false}
+            onSelectRow={handleSelectedRows}
             selectedRowKeys={selectRowKeys}
             dataSource={dataSource}
         />
         }
       </AutoSizeLayout>
       <MaterielModal 
-        wrappedComponentRef={getMatermodRef}></MaterielModal>
+        materselect={handleMateriel}
+        implement={true}
+        materielCategoryCode={materielid}
+        wrappedComponentRef={getMatermodRef} 
+      />
     </>
   )
 }

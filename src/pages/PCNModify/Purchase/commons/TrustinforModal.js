@@ -10,6 +10,8 @@ import {findCanChooseSupplier} from '@/services/SupplierModifyService'
 const { create } = Form;
 const getTrustinfor = forwardRef(({
     form,
+    hanldTrust = () => null,
+    editData
 }, ref,) => {
     useImperativeHandle(ref, () => ({ 
         handleModalVisible,
@@ -27,37 +29,6 @@ const getTrustinfor = forwardRef(({
     useEffect(() => {
         //getSupplierlist()
     }, []);
-    //let current = 1;
-    const dataSource = {
-        store: {
-            url: `${smBaseUrl}/api/supplierModifyService/findCanChooseSupplier`,
-            params: {
-                quickSearchValue: searchValue,
-                quickSearchProperties: ['name'],
-                sortOrders: [
-                    {
-                        property: 'name',
-                        direction: 'DESC'
-                    }
-                ]
-            },
-            type: 'POST'
-        }
-    }
-    // 供应商
-    // async function getSupplierlist() {
-    //     let params = {page:1,rows:30,'S_createdDate':'desc'};
-    //     triggerLoading(true)
-    //     const { data,success, message: msg } = await findCanChooseSupplier(params);
-    //     if (success) {
-    //         setData(data)
-    //         triggerLoading(false)
-    //         return
-    //     }else {
-    //         message.error(msg);
-    //     }
-    //     triggerLoading(false)
-    // }
     function handleModalVisible (flag) {
         setvisible(!!flag)
     };
@@ -70,14 +41,9 @@ const getTrustinfor = forwardRef(({
         if (selectedRowKeys.length !== 1) {
             message.error('请选择一行数据！');
         } else {
-            //隐藏供应商选择框
-            handleModalVisible(false);
-            // let categoryid = selectedRows[0].supplier.supplierCategoryId;
-            let id = selectedRows[0].supplierId;
-            setSearchValue('');
-            cleanSelectedRecord();
-            openNewTab(`supplier/supplierModify/create/index?id=${id}`, '供应商变更新建变更单', false)
+            hanldTrust(selectedRows[0])
         }
+        
     }
     // 清除选中项
     function cleanSelectedRecord() {
@@ -111,27 +77,34 @@ const getTrustinfor = forwardRef(({
         {
             title: "公司代码",
             width: 120,
-            dataIndex: "supplierCode"
+            dataIndex: "companyCode"
           },
           {
             title: "公司名称",
             width: 260,
-            dataIndex: "supplierName"
+            dataIndex: "companyName"
           },
           {
             title: "采购组织代码",
             width: 150,
-            dataIndex: "cooperationLevelName"
+            dataIndex: "purchaseOrgCode"
           },
           {
             title: "采购组织名称",
             width: 150,
-            dataIndex: "managementLevellName"
+            dataIndex: "purchaseOrgName"
           },
           {
             title: "是否实物认定",
             width: 120,
-            dataIndex: "supplierCode"
+            dataIndex: "smInKindStatus",
+            render: function (text, record, row) {
+                if (text === 0) {
+                    return <div>否</div>;
+                } else if (text === 1) {
+                    return <div className="doingColor">是</div>;
+                } 
+              },
           }
     ].map(_ => ({ ..._, align: 'center' }));
     // 右侧搜索
@@ -171,7 +144,7 @@ const getTrustinfor = forwardRef(({
                 columns={columns}
                 showSearch={false}
                 ref={tableRef}
-                rowKey={(item) => item.supplierId}
+                rowKey={(item) => item.id}
                 checkbox={{
                     multiSelect: false
                 }}
@@ -182,8 +155,8 @@ const getTrustinfor = forwardRef(({
                 onSelectRow={handleSelectedRows}
                 selectedRowKeys={selectedRowKeys}
                 onChange={pageChange}
-                //dataSource={dataSource}
-                {...dataSource}
+                dataSource={editData}
+                //{...dataSource}
             />
       </Modal>
     );

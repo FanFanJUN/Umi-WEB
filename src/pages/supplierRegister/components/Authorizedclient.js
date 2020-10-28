@@ -180,7 +180,7 @@ const AuthorizeRef = forwardRef(({
                 }
                 return <span><FormItem style={{ marginBottom: 0 }}> {
                     getFieldDecorator(`idNo[${index}]`, {
-                        initialValue: record.idNo,
+                        initialValue: record && record.idNo,
                         rules: [{ required: true, message: '请输入身份证号!', whitespace: true }],
                     })(
                         <Input
@@ -202,7 +202,7 @@ const AuthorizeRef = forwardRef(({
                 }
                 return isOverseas ? <span><FormItem style={{ marginBottom: 0 }}> {
                     getFieldDecorator(`mobile[${index}]`, {
-                        initialValue: record.mobile,
+                        initialValue: record && record.mobile,
                         rules: [{
                             required: true,
                             whitespace: true,
@@ -218,7 +218,7 @@ const AuthorizeRef = forwardRef(({
                 </FormItem>
                 </span> : <span><FormItem style={{ marginBottom: 0 }}> {
                     getFieldDecorator(`mobile[${index}]`, {
-                        initialValue: record.mobile,
+                        initialValue: record && record.mobile,
                         rules: [{
                             required: true,
                             pattern: '^\\d{11}$',
@@ -246,7 +246,7 @@ const AuthorizeRef = forwardRef(({
                 return <span><FormItem style={{ marginBottom: 0 }}>
                     {
                         getFieldDecorator(`email[${index}]`, {
-                            initialValue: record.email,
+                            initialValue: record && record.email,
                             rules: [{ validator: onMailCheck, message: '请输入正确格式的邮件地址!' },
                             { required: true, whitespace: true, message: '请输入邮箱!' }],
                         })(
@@ -394,11 +394,7 @@ const AuthorizeRef = forwardRef(({
                 }
             })
             if (values) {
-                if (edit) {
-                    result = dataTransfer2(dataSource, values);
-                }else {
-                    result = dataSource
-                }
+                result = dataTransfer2(dataSource, values)
                 
             }
         })
@@ -408,17 +404,14 @@ const AuthorizeRef = forwardRef(({
     function getAuthorfrom() {
         let result = false;
         form.validateFieldsAndScroll((err, values) => {
+            console.log(values)
             values.position.forEach((item,index) => {
                 if (item === undefined) {
                     values.position[index] = dataSource[index].position
                 }
             })
             if (!err) {
-                if (edit) {
-                    result = dataTransfer2(dataSource, values);
-                }else {
-                    result = dataSource
-                }
+                result = dataTransfer2(dataSource, values)
             }
         })
         return result;

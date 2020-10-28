@@ -7,14 +7,16 @@ import ModifyForm from './ModifyForm';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
 import styles from '../index.less';
 import UploadFile from '../../../../components/Upload/index'
+
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 const { create } = Form;
 const { authAction, storage } = utils;
 let keys = 1;
 const ModifyinfoRef = forwardRef(({
   form,
-  editData = [],
-  headerInfo
+  editformData = [],
+  headerInfo,
+  isEdit
 }, ref) => {
   useImperativeHandle(ref, () => ({
     getmodifyform,
@@ -26,22 +28,23 @@ const ModifyinfoRef = forwardRef(({
   const [selectRowKeys, setRowKeys] = useState([]);
   const [selectedRows, setRows] = useState([]);
   const [visible, setVisible] = useState(false);
-  const [edit, setEdit] = useState(false);
   const [initialValue, setInitialValue] = useState({});
   const [modalType, setModalType] = useState(false);
   const [showAttach, triggerShowAttach] = useState(false);
   const [loading, triggerLoading] = useState(false);
   const [attachId, setAttachId] = useState('')
-  const [title, setTitle] = useState('新增变更详情')
+  const [title, setTitle] = useState('新增变更详情');
+  
   useEffect(() => {
+    hanldModify(editformData)
+  }, [editformData])
 
-  }, [editData])
   const columns = [
     {
       title: '变更内容',
       dataIndex: 'smChangeValue',
       align: 'center',
-      width: 80
+      width: 180
     },
     {
       title: '变更描述(变更前)',
@@ -69,14 +72,25 @@ const ModifyinfoRef = forwardRef(({
     },
     {
       title: '附件',
-      dataIndex: 'openingPermitId',
+      dataIndex: 'attachmentId',
       align: 'center',
       width: 90,
       render: (value, record) => <UploadFile type="show" entityId={value}/>
     }
   ].map(_ => ({ ..._, align: 'center' }))
   const empty = selectRowKeys.length === 0;
-  
+  // 编辑处理数据
+  function hanldModify(val) {
+    keys ++ ;
+    let newsdata = [];
+    val.map((item, index) => {
+      newsdata.push({
+          ...item,
+          key: keys ++ 
+      })
+      setDataSource(newsdata);
+    })
+  }
   // 记录列表选中
   function handleSelectedRows(rowKeys, rows) {
     setRowKeys(rowKeys);
@@ -163,6 +177,7 @@ const ModifyinfoRef = forwardRef(({
     }
     return changeinfor;
   }
+
   const headerleft = (
     <>
       {
@@ -192,6 +207,11 @@ const ModifyinfoRef = forwardRef(({
             rowKey={(item) => item.key}
             checkbox={{
               multiSelect: false
+            }}
+            pagination={{
+              hideOnSinglePage: true,
+              disabled: false,
+              pageSize: 100,
             }}
             allowCancelSelect={true}
             size='small'
