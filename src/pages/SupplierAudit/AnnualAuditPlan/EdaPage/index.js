@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:04:51
- * @LastEditTime: 2020-10-27 14:03:58
+ * @LastEditTime: 2020-10-28 15:40:02
  * @Description: 新增  编辑  详情 page
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/index.js
  */
@@ -11,10 +11,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Affix, Button, Form, message, Spin } from 'antd';
 import classnames from 'classnames';
 import styles from '../../../Supplier/Editor/index.less';
-import { closeCurrent, getMobile, getUserId, getUserName } from '@/utils';
+import { closeCurrent, getMobile, getUserId, getUserName, getAccount } from '@/utils';
 import BaseInfo from './BaseInfo';
 import { router } from 'dva';
 import LineInfo from './LineInfo';
+import { reviewPlanYearAp } from '../service';
 
 const Index = (props) => {
 
@@ -59,7 +60,8 @@ const Index = (props) => {
         const userId = getUserId();
         const userName = getUserName();
         const userMobile = getMobile();
-        setData((v) => ({ ...v, userInfo: { userName, userId, userMobile } }));
+        const account = getAccount();
+        setData((v) => ({ ...v, userInfo: { userName, userId, userMobile, account } }));
     };
 
     const handleBack = () => {
@@ -68,17 +70,38 @@ const Index = (props) => {
         closeCurrent();
     };
 
-    const handleSave = async (type) => {
+    const handleSave = (buttonType) => {
         form.validateFieldsAndScroll((err, values) => {
             if (err) return;
-            if(lineData.length === 0) {
+            if (lineData.length === 0) {
                 message.info('请至少添加一条行信息');
                 return;
             }
             if (!err) {
-                return values;
+                const allData = { ...values, reviewPlanYearLineBos: lineData };
+                if (buttonType === 'onlySave') {
+                    tohandleSave(allData);
+                } else {
+                    toSaveAndSubmit(allData);
+                }
             }
         });
+    }
+
+    function tohandleSave(allData) {
+        reviewPlanYearAp({ ...allData, type: data.type }).then((res) => {
+            if (res.success) {
+
+            }
+        })
+    }
+
+    function toSaveAndSubmit() {
+
+    }
+
+    function setTablelineData(tableData) {
+        setlineData(tableData);
     }
 
     return (
@@ -90,8 +113,8 @@ const Index = (props) => {
                         {
                             data.type !== 'detail' && <div>
                                 <Button className={styles.btn} onClick={handleBack}>返回</Button>
-                                <Button className={styles.btn} onClick={() => handleSave('add')}>暂存</Button>
-                                <Button className={styles.btn} type='primary' onClick={() => handleSave('addSave')} >提交</Button>
+                                <Button className={styles.btn} onClick={() => handleSave('onlySave')}>暂存</Button>
+                                <Button className={styles.btn} type='primary' onClick={() => handleSave('saveAndsubmit')} >提交</Button>
                             </div>
                         }
                     </div>
@@ -99,13 +122,14 @@ const Index = (props) => {
                 <BaseInfo
                     form={form}
                     userInfo={data.userInfo}
-                    data = {data.baseinfo}
+                    data={data.baseinfo}
                     type={data.type}
                     isView={data.isView}
                 />
                 <LineInfo
                     type={data.type}
                     isView={data.isView}
+                    setlineData={setTablelineData}
                 />
             </Spin>
         </div>

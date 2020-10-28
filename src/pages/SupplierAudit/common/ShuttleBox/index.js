@@ -14,9 +14,6 @@ const ShuttleBox = (props) => {
 
   const { leftTreeData } = props;
 
-  console.log(props.leftTreeData, props.rightTreeData, '打印', data.rightTreeData, data.leftData)
-
-
   useEffect(() => {
     if (leftTreeData) {
       setData(v => ({...v,rightCheckedKeys: [], leftCheckedKeys: []}))
@@ -44,12 +41,18 @@ const ShuttleBox = (props) => {
 
   const constructArr = (data) => {
     if (data.children.length !== 0) {
+      data.systemId = data.id
+      data.systemCode = data.code
+      data.systemName = data.name
       data.key = data.id;
       data.title = data.name;
       data?.children.forEach(item => {
         constructArr(item);
       });
     } else {
+      data.systemId = data.id
+      data.systemCode = data.code
+      data.systemName = data.name
       data.key = data.id;
       data.title = data.name;
     }
@@ -59,11 +62,17 @@ const ShuttleBox = (props) => {
     let newLeftTreeData = JSON.parse(JSON.stringify(props.leftTreeData))
     if (newLeftTreeData.id) {
       newLeftTreeData.children = []
+      newLeftTreeData.systemId = newLeftTreeData.id
+      newLeftTreeData.systemCode = newLeftTreeData.code
+      newLeftTreeData.systemName = newLeftTreeData.name
       newLeftTreeData.key = newLeftTreeData.id
       newLeftTreeData.title = newLeftTreeData.name
       arr.map(item => {
         if (item.id !== newLeftTreeData.id) {
           let newItem = JSON.parse(JSON.stringify(item))
+          newItem.systemId = newItem.id
+          newItem.systemCode = newItem.code
+          newItem.systemName = newItem.name
           newItem.key = newItem.id
           newItem.title = newItem.name
           newLeftTreeData.children.push(newItem)
@@ -154,5 +163,7 @@ const ShuttleBox = (props) => {
   );
 
 };
+
+// ShuttleBox.defaultPor
 
 export default ShuttleBox;

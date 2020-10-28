@@ -15,7 +15,7 @@ const { create } = Form;
 const FormItem = Form.Item;
 const { authAction, storage } = utils;
 let keys = 0,matkey = 0;
-let handlematers = [];
+let handlematers = [],strategy = [];
 const ModifyinfluenceRef = forwardRef(({
     form,
     isView,
@@ -120,7 +120,7 @@ const ModifyinfluenceRef = forwardRef(({
         },
         {
             title: '战略采购',
-            dataIndex: 'smPcnStrategicId',
+            dataIndex: 'smPcnStrategicName',
             align: 'center',
             width: 220,
             render: (text, record, index) => {
@@ -131,6 +131,7 @@ const ModifyinfluenceRef = forwardRef(({
                     <FormItem style={{ marginBottom: 0 }}>
                         {
                             getFieldDecorator(`smPcnStrategicId[${index}]`,{initialValue: record ? record.smPcnStrategicId : ''}),
+                            getFieldDecorator(`smPcnStrategicCode[${index}]`,{initialValue: record ? record.smPcnStrategicCode : ''}),
                             getFieldDecorator(`smPcnStrategicName[${index}]`, {
                                 initialValue: record ? record.smPcnStrategicName : '',
                                 rules: [{ required: true, message: '请选择战略采购!'}],
@@ -142,7 +143,7 @@ const ModifyinfluenceRef = forwardRef(({
                                     style={{ width: '100%' }}
                                     //afterSelect={afterSelect}
                                     name={`smPcnStrategicName[${index}]`}
-                                    field={[`smPcnStrategicId[${index}]`]}
+                                    field={[`smPcnStrategicId[${index}]`,`smPcnStrategicCode[${index}]`]}
                                 />
                             )
                         }
@@ -293,11 +294,15 @@ const ModifyinfluenceRef = forwardRef(({
             return false;
         }else {
             form.validateFieldsAndScroll((err, values) => {
+                console.log(values)
                 values.smPcnPart.forEach((item,index) => {
                     analysis[index].smPcnPart = values.smPcnPart[index]
                 })
+                
                 values.smPcnStrategicId.forEach((item,index) => {
                     analysis[index].smPcnStrategicId = values.smPcnStrategicId[index]
+                    analysis[index].smPcnStrategicCode = values.smPcnStrategicCode[index]
+                    analysis[index].smPcnStrategicName = values.smPcnStrategicName[index]
                 })
                 if (!err) {
                     console.log(analysis)

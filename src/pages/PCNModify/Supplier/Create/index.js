@@ -58,6 +58,7 @@ function CreateStrategy() {
       smPcnAnalysisVos: modifyanalysisVal,
       ...scienceEnviron
     }
+    console.log(params)
     triggerLoading(true)
     const {success, message: msg } = await saveBatchVo(params)
     if (success) {

@@ -6,8 +6,7 @@ import { StartFlow } from 'seid';
 import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
 import styles from './index.less';
 import { smBaseUrl } from '@/utils/commonUrl';
-import { RecommendationList, stopApproveingOrder } from "@/services/supplierRegister"
-import { deleteSupplierModify, checkExistUnfinishedValidity, findCanModifySupplierList } from '@/services/SupplierModifyService'
+import { stopApproveingOrder } from "../../../services/pcnModifyService"
 import {BilltypeList,ToexamineList,PCNMasterdatalist,Strategicprocurementlist} from '../commonProps'
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 const { Search } = Input
@@ -210,18 +209,6 @@ function SupplierConfigure() {
     function handleComplete() {
         uploadTable()
     }
-    // 提交审核验证
-    async function handleBeforeStartFlow() {
-        const { success, message: msg } = await checkExistUnfinishedValidity({ requestId: selectedRows[0].id });
-        if (success) {
-            message.success(msg)
-            return true;
-        } else {
-            message.error(msg)
-            return false;
-        }
-
-    }
     // 终止审核
     function stopApprove() {
         Modal.confirm({
@@ -264,47 +251,61 @@ function SupplierConfigure() {
     }
     // 处理高级搜索
     function handleAdvnacedSearch(value) {
-        value.smDocunmentStatus = value.materialGroupCode;
-        value.smPcnChangeTypeCode = value.applyPersonName;
-        value.smSupplierCode = value.materialCode;
-        value.smSupplierName = value.materialName;
-        delete value.applyPersonName;
-        delete value.applyPersonName_name;
-        delete value.materialCode;
-        delete value.materialGroupCode;
-        delete value.materialGroupCode_name;
         console.log(value)
-        // let searchvalue = [];
-        // searchvalue.push(value);
-        // let newdata = [];
-        // searchvalue.map(item => {
-        //     newdata.push(
-        //         {
-        //             fieldName:'smSupplierCode',
-        //             value: item.smSupplierCode,
-        //             operator:'EQ'
-        //         },
-        //         {
-        //             fieldName:'smSupplierName',
-        //             value: item.smSupplierName,
-        //             operator:'EQ'
-        //         },
-        //         {
-        //             fieldName:'smDocunmentStatus',
-        //             value: item.smDocunmentStatus,
-        //             operator:'EQ'
-        //         },
-        //         {
-        //             fieldName:'smPcnChangeTypeCode',
-        //             value: item.smPcnChangeTypeCode,
-        //             operator:'EQ'
-        //         }
+        // value.smSupplierCode = value.materialCode;
+        // value.smSupplierName = value.materialName;
+        // value.smDocunmentStatus = value.materialGroupCode;
+        // value.smPcnChangeTypeCode = value.applyPersonName;
+        // value.smSupplierCode = value.materialCode;
+        // value.smSupplierName = value.materialName;
+        // delete value.applyPersonName;
+        // delete value.applyPersonName_name;
+        // delete value.materialCode;
+        // delete value.materialGroupCode;
+        // delete value.materialGroupCode_name;
+        // console.log(value)
+        let searchvalue = [];
+        searchvalue.push(value);
+        let newdata = [];
+        searchvalue.map(item => {
+            console.log(item)
+            newdata.push(
+                {
+                    fieldName:'smSupplierCode',
+                    value: item.smSupplierCode,
+                    operator:'EQ'
+                },
+                {
+                    fieldName:'smSupplierName',
+                    value: item.smSupplierName,
+                    operator:'EQ'
+                },
+                {
+                    fieldName:'smDocunmentStatus',
+                    value: item.smDocunmentStatus,
+                    operator:'EQ'
+                },
+                {
+                    fieldName:'flowStatus',
+                    value: item.flowStatus_name,
+                    operator:'EQ'
+                },
+                {
+                    fieldName:'smPcnChangeTypeCode',
+                    value: item.smPcnChangeTypeCode,
+                    operator:'EQ'
+                },
+                {
+                    fieldName:'smPcnStrategicId',
+                    value: item.smSourcing,
+                    operator:'EQ'
+                }
     
-        //     )
-        // })
-        // setSearchvalue(newdata)
-        // headerRef.current.hide();
-        // uploadTable();
+            )
+        })
+        setSearchValue(newdata)
+        headerRef.current.hide();
+        uploadTable();
     }
      // 清空泛虹公司
      function clearinput() {
@@ -345,7 +346,6 @@ function SupplierConfigure() {
                                 <StartFlow
                                     className={styles.btn}
                                     ignore={DEVELOPER_ENV}
-                                    needConfirm={handleBeforeStartFlow}
                                     businessKey={flowId}
                                     callBack={handleComplete}
                                     disabled={empty || underWay}

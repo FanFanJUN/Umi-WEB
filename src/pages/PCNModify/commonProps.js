@@ -61,7 +61,7 @@ export const Strategicprocurementlist = {
   },
   reader: {
     name: 'name',
-    field: ['id'],
+    field: ['id','code'],
     description: 'code'
   },
   // remotePaging: true,
@@ -88,23 +88,23 @@ export const BilltypeList = {
   allowClear: true,
   dataSource: [
     {
-      code: '草稿',
+      code: '0',
       name: '草稿',
     },
     {
-      code: '验证中',
+      code: '1',
       name: '验证中',
     },
     {
-      code: '变更不通过',
+      code: '2',
       name: '变更不通过',
     },
     {
-      code: '变更通过',
+      code: '3',
       name: '变更通过',
     },
     {
-      code: '变更完成',
+      code: '4',
       name: '变更完成',
     }
   ],
@@ -116,15 +116,15 @@ export const ToexamineList = {
   allowClear: true,
   dataSource: [
     {
-      code: '未提交审核',
+      code: 'INIT',
       name: '未提交审核',
     },
     {
-      code: '审核中',
+      code: 'INPROCESS',
       name: '审核中',
     },
     {
-      code: '已审核',
+      code: 'successColor',
       name: '已审核',
     }
   ],
@@ -132,34 +132,34 @@ export const ToexamineList = {
   ...commonProps,
 }
 // 战略采购列表
-export const StrategicPurchaseConfig = {
-  allowClear: true,
-  remotePaging: true,
-  store: {
-    type: 'POST',
-    autoLoad: false,
-    url: `${baseUrl}/purchaseGroup/findByPagesAll`,
-  },
-  rowKey: 'name',
-  reader: {
-    name: 'code',
-    field: ['id', 'name'],
-    description: 'name',
-  },
-  placeholder: '选择战略采购',
-  style: {
-    width: '100%',
-  },
-};
+// export const StrategicPurchaseConfig = {
+//   allowClear: true,
+//   remotePaging: true,
+//   store: {
+//     type: 'POST',
+//     autoLoad: false,
+//     url: `${baseUrl}/purchaseGroup/findByPagesAll`,
+//   },
+//   rowKey: 'name',
+//   reader: {
+//     name: 'code',
+//     field: ['id', 'name'],
+//     description: 'name',
+//   },
+//   placeholder: '选择战略采购',
+//   style: {
+//     width: '100%',
+//   },
+// };
 // 战略采购列表
-export const StrategicForName = {
-  ...StrategicPurchaseConfig,
-  reader: {
-    name: 'name',
-    field: ['id', 'code'],
-    description: 'code',
-  },
-};
+// export const StrategicForName = {
+//   ...StrategicPurchaseConfig,
+//   reader: {
+//     name: 'name',
+//     field: ['id', 'code'],
+//     description: 'code',
+//   },
+// };
 // 流程认定结果 
 export const SupplierResulteList = {
   allowClear: true,
