@@ -234,6 +234,7 @@ const CommonForm = forwardRef(({
   }
   // 处理删除
   function handleRemove() {
+    console.log(tableCommonProps)
     Modal.confirm({
       title: '删除',
       content: '确定要删除当前选中项？',
@@ -491,7 +492,7 @@ const CommonForm = forwardRef(({
                           }
                         ]
                       })(
-                        <DatePicker style={{ width: '100%' }} placeholder='开始日期' disabledDate={disabledDateSt}/>
+                        <DatePicker style={{ width: '100%' }} placeholder='开始日期' disabledDate={disabledDateSt} />
                       )
                     }
                   </FormItem>
@@ -547,7 +548,7 @@ const CommonForm = forwardRef(({
                           }
                         ]
                       })(
-                        <DatePicker style={{ width: '100%' }} placeholder='开始日期' disabledDate={disabledDateAst}/>
+                        <DatePicker style={{ width: '100%' }} placeholder='开始日期' disabledDate={disabledDateAst} />
                       )
                     }
                   </FormItem>
@@ -755,7 +756,7 @@ const CommonForm = forwardRef(({
                       }}
                       onOk={handleCreateOnOk}
                     >新增</ComboModalList>
-                    <Button disabled={type === 'detail'} className={styles.btn} onClick={handleRemove}>删除</Button>
+                    <Button disabled={type === 'detail' || tableCommonProps.selectedRowKeys.length === 0} className={styles.btn} onClick={handleRemove}>删除</Button>
                   </>
                 ) : null
               }
