@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:00:19
- * @LastEditTime: 2020-10-21 16:32:54
+ * @LastEditTime: 2020-10-27 13:51:32
  * @Description:  年度审核计划管理
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/index.js
  */
@@ -35,6 +35,7 @@ import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
 import { openNewTab } from '../../../utils';
 import { materialClassProps } from '../../../utils/commonProps';
+import moment from 'moment';
 
 const { authAction } = utils;
 const { Search } = Input;
@@ -204,14 +205,16 @@ export default function () {
 
     const columns = [
         { title: '状态', dataIndex: 'state', width: 80 },
-        { title: '审批状态', dataIndex: 'allotSupplierState', width: 200 },
-        { title: '年度审核计划号', dataIndex: 'source', width: 200 },
-        { title: '年度', dataIndex: 'shareDemanNumber', ellipsis: true, width: 250 },
-        { title: '拟制说明', dataIndex: 'materialName', ellipsis: true, width: 200 },
-        { title: '拟制公司', dataIndex: 'materialGroupCode', ellipsis: true, width: 200 },
-        { title: '拟制部门', dataIndex: 'materialGroupName', ellipsis: true, width: 200 },
-        { title: '拟制人员', dataIndex: 'strategicPurchaseCode', ellipsis: true, width: 200 },
-        { title: '拟制时间', dataIndex: 'strategicPurchaseName', ellipsis: true, width: 200 },
+        { title: '审批状态', dataIndex: 'flowStatus', width: 200 },
+        { title: '年度审核计划号', dataIndex: 'reviewPlanYearCode', width: 200 },
+        { title: '年度', dataIndex: 'applyYear', ellipsis: true, width: 250 },
+        { title: '拟制说明', dataIndex: 'reviewPlanYearName', ellipsis: true, width: 200 },
+        { title: '拟制公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 200 },
+        { title: '拟制部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200 },
+        { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 200 },
+        { title: '拟制时间', dataIndex: 'applyDate', ellipsis: true, width: 200, render: function (text, record) {
+            return record.applyDateStart &&  `${moment(record.applyDateStart).format('YYYY-MM-DD')} ~ ${moment(record.applyDateEnd).format('YYYY-MM-DD')}`;
+        } },
     ].map(item => ({ ...item, align: 'center' }));
 
     const visibleSupplier = () => {
@@ -331,7 +334,7 @@ export default function () {
                                 quickSearchValue: data.quickSearchValue,
                                 ...data.epTechnicalShareDemandSearchBo,
                             },
-                            url: `${recommendUrl}/api/epTechnicalShareDemandService/findByPage`,
+                            url: `${recommendUrl}/api/reviewPlanYearService/findByPage`,
                             type: 'POST',
                         }}
                         allowCancelSelect={true}

@@ -141,7 +141,7 @@ function SupplierConfigure() {
                 triggerLoading(true)
                 const { success, message: msg } = await MasterfrozenList({id:id,frozen:frozen});
                 if (success) {
-                    message.success('冻结成功！');
+                    message.success(`${type === 'thaw' ? '解冻' : '冻结'}成功！`);
                     uploadTable();
                     triggerLoading(false)
                 } else {

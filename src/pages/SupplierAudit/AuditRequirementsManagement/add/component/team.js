@@ -56,7 +56,8 @@ const Team = (props) => {
   });
 
   const [data, setData] = useState({
-    leftTreeData: [],
+    treeData: [],
+    leftTreeData: undefined,
     selectRows: [],
     visible: false,
     type: 'add',
@@ -65,6 +66,7 @@ const Team = (props) => {
 
   useEffect(() => {
     if (visible) {
+      setTeamData(v => ({...v, dataSource: props.reviewTeamGroupBoList}))
       GetDefaultSystem({
         reviewTypeCode: props.reviewTypeCode
       }).then(res => {
@@ -78,7 +80,9 @@ const Team = (props) => {
   }, [visible])
 
   const clearSelected = () => {
-
+    setTeamData(v => ({...v, dataSource: [], selectedRows: [], selectedRowKeys: []}))
+    setContentData(v => ({...v, dataSource: [], selectedRowKeys: [], selectedRows: [], type: 'add'}))
+    setData(v => ({...v, treeData: [], leftTreeData: undefined, selectRows: [], type: 'add'}))
   };
 
   useEffect(() => {
@@ -122,8 +126,10 @@ const Team = (props) => {
   };
 
   const contentAdd = (value) => {
+    console.log(value)
     if (contentData.type === 'add') {
       value.lineNum = getRandom(10);
+      value.memberRuleBoList = []
       setContentData(v => ({...v, dataSource: [...contentData.dataSource, ...[value]], visible: false}))
     } else {
       let newDataSource = JSON.parse(JSON.stringify(contentData.dataSource))
@@ -144,6 +150,7 @@ const Team = (props) => {
   };
 
   const onOk = () => {
+    props.onOk(teamData.dataSource)
     console.log(teamData.dataSource)
   };
 
@@ -161,7 +168,7 @@ const Team = (props) => {
   };
 
   const handleContentSelectedRows = (keys, values) => {
-    setData(v => ({...v, leftTreeData: []}))
+    setData(v => ({...v, leftTreeData: undefined, treeData: values ? values[0]?.memberRuleBoList ? values[0].memberRuleBoList : [] : []}))
     setContentData(v => ({ ...v, selectedRows: values, selectedRowKeys: keys }));
   };
 
@@ -246,16 +253,21 @@ const Team = (props) => {
     let newData = JSON.parse(JSON.stringify(contentData.dataSource))
     newData.map((item, index) => {
       if (item.lineNum === contentData.selectedRowKeys[0]) {
-        newData[index].treeData = value
+        newData[index].memberRuleBoList = value
       }
     })
     setContentData(v =>({...v, dataSource: newData}))
+    contentTableRef.current.remoteDataRefresh();
     console.log(value)
   }
 
   // 构造左边树
   const getLeftTreeData = () => {
-    setData(v => ({...v, leftTreeData: props.treeData}))
+    if(contentData.selectedRowKeys && contentData.selectedRowKeys.length !== 0) {
+      setData(v => ({...v, leftTreeData: props.treeData}))
+    } else {
+      message.error('请选择一名成员')
+    }
   }
 
   return (
@@ -319,8 +331,9 @@ const Team = (props) => {
           <div style={{ height: '230px' }}>
             <span style={{ fontSize: '15px', fontWeight: 'bold', marginLeft: '15px' }}>成员审核内容管理</span>
             <ShuttleBox
+              rightTreeData={data.treeData}
               onChange={getTreeData}
-              leftTreeData={undefined}
+              leftTreeData={data.leftTreeData}
             />
           </div>
         </div>

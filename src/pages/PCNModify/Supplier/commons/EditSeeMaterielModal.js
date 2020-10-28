@@ -2,12 +2,12 @@ import React, { forwardRef, useImperativeHandle, useEffect, useRef ,useState} fr
 import { Modal, Form, Button, message, Input,Icon } from 'antd';
 import { Fieldclassification ,countryListConfig} from '@/utils/commonProps'
 import { ExtTable } from 'suid';
-import { isEmpty } from '@/utils';
+import { openNewTab, getFrameElement } from '@/utils';
 import { smBaseUrl } from '@/utils/commonUrl';
 import Header from '@/components/Header';
 import styles from '../index.less';
+import {MaterialchangeId} from '../../../../services/pcnModifyService'
 const { create } = Form;
-let keys = 0;
 const getSeeMaterRef = forwardRef(({
     form,
     materiel,
@@ -30,26 +30,29 @@ const getSeeMaterRef = forwardRef(({
     const [visible, setvisible] = useState(false);
     const [current, setcurrent] = useState([]);
     useEffect(() => {
-        handleSeeMater(materiel)
+        //hanldmater(materielCategoryCode)
+        setDataSource(materiel)
     }, [materiel]);
-
-    function handleSeeMater (val) {
-        let newdata = []
-        if (val.length > 0) {
-            val.map(item => {
-                if (!isEmpty(item.smPcnAnalysisMaterielVoList)) {
-                    item.smPcnAnalysisMaterielVoList.map(items => {
-                        keys ++;
-                        newdata.push({
-                            key: keys,
-                            ...items
-                        }) 
-                    })   
-                }
-            })
-            setDataSource(newdata)
-        }
-    }
+    // 编辑查看物料
+    // async function hanldmater(id) {
+    //     triggerLoading(true)
+    //     const { data, success, message: msg } = await MaterialchangeId({analysisId:id});
+    //     if (success) {
+    //         let newsdata = [];
+    //         data.map((item, index) => {
+    //             if (item.analysisId === id) {
+    //                 newsdata.push({
+    //                     ...item,
+    //                     key: selectedKeys
+    //                 })
+    //                 setDataSource(newsdata);
+    //             }
+                
+    //         })
+    //         triggerLoading(false);
+    //         return
+    //     }
+    // }
     function handleModalVisible (flag) {
         setvisible(!!flag)
     };
@@ -59,8 +62,7 @@ const getSeeMaterRef = forwardRef(({
     }
     function handleOk() {
         let handledelete = tableRef.current.data;
-        materiel[0].smPcnAnalysisMaterielVoList = handledelete
-        determine(materiel)
+        determine(handledelete)
         handleModalVisible(false)
     }
     // 清除选中项
@@ -89,9 +91,9 @@ const getSeeMaterRef = forwardRef(({
         setRowKeys([])
     }
     // 删除
-    function handleDelete(key) {
-        const newData = dataSource.filter((item) => item.key !== key);
-        setDataSource(newData)
+    function handleDelete(id) {
+        const newData = dataSource.filter((item) => item.id !== id);
+        //setDataSource(newData)
     }
     const columns = [
         {
@@ -100,13 +102,11 @@ const getSeeMaterRef = forwardRef(({
             dataIndex: 'operation',
                 render: (text, record, index) => {
                     return <div>
-                        {
-                            dataSource.length > 0 ? <Icon
-                                type={'delete'}
-                                title={'删除'}
-                                onClick={() => handleDelete(record.key)}
-                            /> : null
-                        }
+                        <Icon
+                            type={'delete'}
+                            title={'删除'}
+                            onClick={() => handleDelete(record.id)}
+                        />
                     </div>;
                 }
           },

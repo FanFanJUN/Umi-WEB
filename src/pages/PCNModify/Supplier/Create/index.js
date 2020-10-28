@@ -4,25 +4,20 @@ import { router } from 'dva';
 import BaseInfo from '../commons/BaseInfo'
 import Modifyinfo from '../commons/Modifyinfo'
 import Modifyinfluence from '../commons/Modifyinfluence'
+import ModifyinfluenceForm from '../commons/ModifyinfluenceForm'
 import classnames from 'classnames';
 import styles from '../index.less';
 import { closeCurrent ,isEmpty} from '../../../../utils';
-
+import {saveBatchVo} from '../../../../services/pcnModifyService'
 function CreateStrategy() {
   const BaseinfoRef = useRef(null);
   const ModifyinfoRef = useRef(null);
   const ModifyinfluenceRef = useRef(null);
-  const [baseinfo, setbaseinfo] = useState([]);
-  const [accountinfo, setaccountinfo] = useState([]);
-  const [businesshide, setbusinesshide] = useState([]);
-  const [initialValue, setInitialValue] = useState({});
-  const [wholeData, setwholeData] = useState([]);
-  const [editData, setEditData] = useState([]);
+  const modifyinfluenceFormRef = useRef(null);
   const [againdata, setAgaindata] = useState({});
   const [loading, triggerLoading] = useState(false);
   const [visible, setvisible] = useState(false);
   const [configure, setConfigure] = useState([]);
-  const [supplierName, setsupplierName] = useState();
   const { query } = router.useLocation();
   const { frameElementId, frameElementSrc = "", Opertype = "" } = query;
 
@@ -31,30 +26,48 @@ function CreateStrategy() {
     }, []);
   // 保存
   async function handleSave() {
-    let baseinfo,modifyVal,modifyanalysisVal;
-    const { validateFieldsAndScroll } = BaseinfoRef.current.form;
+    let baseinfo,modifyVal,modifyanalysisVal,scienceEnviron;
+    const { basefrom } = BaseinfoRef.current;
     const {getmodifyform} = ModifyinfoRef.current;
     const {getmodifyanalyform} = ModifyinfluenceRef.current;
-    validateFieldsAndScroll(async (err, val) => {
-      if (!err) {
-        baseinfo = val;
-        console.log(baseinfo)
-        modifyVal = getmodifyform()
-        if (!modifyVal) {
-          message.error('变更信息不能为空！');
-          return false;
-        }
-        modifyanalysisVal = getmodifyanalyform()
-        if (!modifyanalysisVal) {
-          message.error('变更影响不能为空！');
-          return false;
-        }
-      }else {
-        message.error('基本信息不能为空！');
-        return false;
-      }
-    })
-   
+    const {modifyinfo} = modifyinfluenceFormRef.current;
+    baseinfo = basefrom();
+    if (!baseinfo) {
+      message.error('基础信息不能为空！');
+      return false;
+    }
+    modifyVal = getmodifyform()
+    if (!modifyVal) {
+      message.error('变更信息不能为空！');
+      return false;
+    }
+    modifyanalysisVal = getmodifyanalyform()
+    if (!modifyanalysisVal) {
+      message.error('变更影响不能为空！');
+      return false;
+    }
+    console.log(modifyanalysisVal)
+    scienceEnviron = modifyinfo()
+    if (!scienceEnviron) {
+      message.error('影响选择不能为空！');
+      return false;
+    }
+    let params = {
+      ...baseinfo,
+      smPcnDetailVos: modifyVal,
+      smPcnAnalysisVos: modifyanalysisVal,
+      ...scienceEnviron
+    }
+    console.log(params)
+    triggerLoading(true)
+    const {success, message: msg } = await saveBatchVo(params)
+    if (success) {
+        triggerLoading(false)
+        closeCurrent()
+    } else {
+        triggerLoading(false)
+        message.error(msg);
+    }
   }
   // 返回
   function handleBack() {
@@ -83,7 +96,6 @@ function CreateStrategy() {
             <div className={styles.title}>基本信息</div>
             <div >
             <BaseInfo
-                //getBaseInfo={getBaseInfo}
                 wrappedComponentRef={BaseinfoRef}
             />
             </div>
@@ -103,6 +115,11 @@ function CreateStrategy() {
                 wrappedComponentRef={ModifyinfluenceRef}
             />
             </div>
+        </div>
+        <div className={styles.bgw}>
+            <ModifyinfluenceForm  
+                wrappedComponentRef={modifyinfluenceFormRef}
+            />
         </div>
       </div>
     </Spin>

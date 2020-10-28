@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:04:51
- * @LastEditTime: 2020-10-21 17:05:58
+ * @LastEditTime: 2020-10-27 14:03:58
  * @Description: 新增  编辑  详情 page
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/index.js
  */
@@ -99,6 +99,7 @@ const Index = (props) => {
                 <BaseInfo
                     form={form}
                     userInfo={data.userInfo}
+                    data = {data.baseinfo}
                     type={data.type}
                     isView={data.isView}
                 />

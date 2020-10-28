@@ -18,8 +18,14 @@ const ShuttleBox = (props) => {
     if (leftTreeData) {
       setData(v => ({...v,rightCheckedKeys: [], leftCheckedKeys: []}))
       let newData = JSON.parse(JSON.stringify(leftTreeData));
-      constructArr(newData);
-      setData(v => ({ ...v, leftData: [newData] }));
+      if (newData.children) {
+        constructArr(newData);
+        setData(v => ({ ...v, leftData: [newData] }));
+      } else {
+        setData(v => ({ ...v, leftData: newData }));
+      }
+    } else {
+      setData(v => ({ ...v, leftData: [] }));
     }
   }, [leftTreeData]);
 
@@ -31,16 +37,22 @@ const ShuttleBox = (props) => {
     if (props.rightTreeData) {
       setData(v => ({...v, rightTreeData: props.rightTreeData}))
     }
-  }, [])
+  }, [props.rightTreeData])
 
   const constructArr = (data) => {
     if (data.children.length !== 0) {
+      data.systemId = data.id
+      data.systemCode = data.code
+      data.systemName = data.name
       data.key = data.id;
       data.title = data.name;
       data?.children.forEach(item => {
         constructArr(item);
       });
     } else {
+      data.systemId = data.id
+      data.systemCode = data.code
+      data.systemName = data.name
       data.key = data.id;
       data.title = data.name;
     }
@@ -48,18 +60,35 @@ const ShuttleBox = (props) => {
   const leftCheck = (keys, values) => {
     let arr = values.checkedNodes.map(item => item.props)
     let newLeftTreeData = JSON.parse(JSON.stringify(props.leftTreeData))
-    newLeftTreeData.children = []
-    newLeftTreeData.key = newLeftTreeData.id
-    newLeftTreeData.title = newLeftTreeData.name
-    arr.map(item => {
-      if (item.id !== newLeftTreeData.id) {
-        let newItem = JSON.parse(JSON.stringify(item))
-        newItem.key = newItem.id
-        newItem.title = newItem.name
-        newLeftTreeData.children.push(newItem)
-      }
-    })
-    setData(v => ({...v, leftSelectData: [newLeftTreeData], leftCheckedKeys: keys}))
+    if (newLeftTreeData.id) {
+      newLeftTreeData.children = []
+      newLeftTreeData.systemId = newLeftTreeData.id
+      newLeftTreeData.systemCode = newLeftTreeData.code
+      newLeftTreeData.systemName = newLeftTreeData.name
+      newLeftTreeData.key = newLeftTreeData.id
+      newLeftTreeData.title = newLeftTreeData.name
+      arr.map(item => {
+        if (item.id !== newLeftTreeData.id) {
+          let newItem = JSON.parse(JSON.stringify(item))
+          newItem.systemId = newItem.id
+          newItem.systemCode = newItem.code
+          newItem.systemName = newItem.name
+          newItem.key = newItem.id
+          newItem.title = newItem.name
+          newLeftTreeData.children.push(newItem)
+        }
+      })
+      setData(v => ({...v, leftSelectData: [newLeftTreeData], leftCheckedKeys: keys}))
+    } else {
+      arr.map((item, index) => {
+        newLeftTreeData.map(value => {
+          if (item.id === value.id) {
+            arr.splice(index, 1)
+          }
+        })
+      })
+      setData(v => ({...v, leftSelectData: arr, leftCheckedKeys: keys}))
+    }
   };
 
   const rightCheck = (keys, values) => {
@@ -88,9 +117,6 @@ const ShuttleBox = (props) => {
   }
 
   const addClick = () => {
-    data.leftSelectData.map(item => {
-
-    })
     let arr = [...data.leftSelectData, ...data.rightTreeData]
     arr = duplicateRemoval(arr, 'id');
     setData(v => ({...v, rightTreeData: arr}))
@@ -137,5 +163,7 @@ const ShuttleBox = (props) => {
   );
 
 };
+
+// ShuttleBox.defaultPor
 
 export default ShuttleBox;

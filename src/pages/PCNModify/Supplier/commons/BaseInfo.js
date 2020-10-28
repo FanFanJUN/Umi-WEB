@@ -29,10 +29,11 @@ const confirmRadioOptions = [
 const HeadFormRef = forwardRef(({
     form,
     isView,
-    dataSource,
+    editformData,
 }, ref) => {
     useImperativeHandle(ref, () => ({
         form,
+        basefrom
     }));
     const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
     const authorizations = storage.sessionStorage.get("Authorization");
@@ -40,6 +41,15 @@ const HeadFormRef = forwardRef(({
     useEffect(() => {
 
     }, [])
+    function basefrom() {
+        let modifyinfluen = false;
+        form.validateFieldsAndScroll(async (err, val) => {
+            if (!err) {
+                modifyinfluen = val;
+            } 
+        })
+        return modifyinfluen ? modifyinfluen : false
+    }
     return (
         <div >
             <div >
@@ -60,9 +70,9 @@ const HeadFormRef = forwardRef(({
                         <Col span={10}>
                             <Item label='变更类型' {...formLayout}>
                                 {
-                                    getFieldDecorator('smPcnChangeTypeCode',{initialValue: dataSource ? dataSource.smPcnChangeTypeCode : ""}),
+                                    getFieldDecorator('smPcnChangeTypeCode',{initialValue: editformData ? editformData.smPcnChangeTypeCode : ""}),
                                     getFieldDecorator('smPcnChangeTypeName', {
-                                        initialValue: dataSource ? dataSource.smPcnChangeTypeName : "",
+                                        initialValue: editformData ? editformData.smPcnChangeTypeName : "",
                                         rules: [
                                             {
                                                 required: true,
@@ -88,7 +98,7 @@ const HeadFormRef = forwardRef(({
                             <Item label='联系人' {...formLayout}>
                                 {
                                     getFieldDecorator("smContacts", {
-                                        initialValue: dataSource ? dataSource.smContacts : "",
+                                        initialValue: editformData ? editformData.smContacts : "",
                                         rules: [
                                             {
                                                 required: true,
@@ -124,7 +134,7 @@ const HeadFormRef = forwardRef(({
                             <Item label='联系电话' {...formLayout}>
                                 {
                                   getFieldDecorator("smContactNumber", {
-                                    initialValue: dataSource ? dataSource.smContactNumber : "",
+                                    initialValue: editformData ? editformData.smContactNumber : "",
                                     rules: [
                                         {
                                             required: true,

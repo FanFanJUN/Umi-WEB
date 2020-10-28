@@ -4,6 +4,7 @@ import { Fieldclassification } from '@/utils/commonProps'
 import { ComboGrid, ComboList } from 'suid';
 import UploadFile from '../../../../components/Upload/index'
 // import { baseUrl } from '../../../utils/commonUrl';
+import UserSelect from '../../UserSelect/index'
 const { create, Item } = Form;
 const formLayout = {
     labelCol: {
@@ -58,7 +59,19 @@ const StaffForm = forwardRef(
         function handleSubmit() {
             validateFieldsAndScroll((err, val) => {
                 if (!err) {
-                    onOk({ ...initialValues, ...val });
+                    let newdata = [];
+                    val.emloyeeName.map((item,index)=> {
+                        val.emloyeeNumber.map((items,indexs)=> {
+                            if (index === indexs) {
+                                newdata.push({
+                                    key: index,
+                                    emloyeeName:item.userName,
+                                    emloyeeNumber:items
+                                })
+                            }
+                        })
+                    })
+                    onOk(newdata);
                 }
             });
         }
@@ -75,28 +88,25 @@ const StaffForm = forwardRef(
             >  
                 <Row>
                     <Col span={20}>
-                        <Item {...formLayout} label="员工编号">
-                            {getFieldDecorator('smFieldName', {
+                        <Item {...formLayout} label="员工姓名">
+                            {
+                            getFieldDecorator('emloyeeNumber'),    
+                            getFieldDecorator('emloyeeName', {
                                 rules: [
                                     {
                                         required: true,
-                                        message: '请选择员工编号',
+                                        message: '请选择员工姓名',
                                     },
                                 ],
                             })(
-                                <ComboList
-                                    showSearch={false}
-                                    style={{ width: '100%' }}
-                                    dataSource={data}
-                                    reader={{
-                                        name: 'name',
-                                        field: ['code'],
-                                        description: 'code',
-
-                                    }}
-                                    name='smFieldCode'
-                                    field={['code']}
+                                <UserSelect name="emloyeeName" style={{width:"100%",zIndex:10}}
+                                    disabled={type === 'detail'}
+                                    wrapperStyle={{width:1000}}
+                                    reader={{name:'userName',field:['code']}} 
                                     form={form}
+                                    field={['emloyeeNumber']}
+                                    multiple={false}
+                                    placeholder="请选择参与人员"
                                 />
                             )}
                         </Item>
@@ -104,16 +114,16 @@ const StaffForm = forwardRef(
                 </Row>
                 <Row>
                     <Col span={20}>
-                        <Item {...formLayout} label="员工姓名">
-                            {getFieldDecorator('smFieldName', {
+                        <Item {...formLayout} label="员工编号">
+                            {getFieldDecorator('emloyeeNumber', {
                                  rules: [
                                     {
                                         required: true,
-                                        message: '请选择员工姓名',
+                                        message: '请选择员工编号',
                                     },
                                 ],
                             })(
-                                <Input
+                                <Input disabled
                                     style={{width: "100%"}}
                                 />
                             )}

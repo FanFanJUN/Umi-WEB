@@ -9,18 +9,19 @@ import styles from '../index.less';
 import InfluenceMaterielModal from './InfluenceMaterielModal'
 import MaterielModal from './MaterielModal'
 import SeeMaterielModal from './SeeMaterielModal'
-import ModifyinfluenceForm from './ModifyinfluenceForm'
 import {Safetyregulationslist,Strategicprocurementlist} from '../../commonProps'
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 const { create } = Form;
 const FormItem = Form.Item;
 const { authAction, storage } = utils;
-let keys = 1;
+let keys = 0,matkey = 0;
+let handlematers = [],strategy = [];
 const ModifyinfluenceRef = forwardRef(({
     form,
     isView,
-    editData = [],
-    headerInfo
+    editformData = [],
+    headerInfo,
+    isEdit
 }, ref) => {
     useImperativeHandle(ref, () => ({
         getmodifyanalyform,
@@ -31,15 +32,17 @@ const ModifyinfluenceRef = forwardRef(({
     const getModelRef = useRef(null)
     const getMatermodRef = useRef(null)
     const getSeeMaterRef = useRef(null)
-    const modifyinfluenceFormRef = useRef(null)
     const [dataSource, setDataSource] = useState([]);
     const [selectRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [attachId, setAttachId] = useState('')
-    const [visible, setVisible] = useState(false);
+    const [materiel, setmateriel] = useState([])
+    const [materielid, setmaterielid] = useState('')
+    const [materieldetailsid, setmaterieldetailsid] = useState('')
+    const [seemateriel, setSeemateriel] = useState('')
     useEffect(() => {
-
-    }, [])
+        hanldModify(editformData)
+    }, [editformData])
 
     const columns = [
         {
@@ -91,14 +94,14 @@ const ModifyinfluenceRef = forwardRef(({
             width: 160,
             render: (text, record, index) => {
                 if (isView) {
-                    return record.positionName;
+                    return record.smPcnPartName;
                 }
                 return <span>
                     <FormItem style={{ marginBottom: 0 }}>
                         {
-                            getFieldDecorator(`position[${index}]`),
-                            getFieldDecorator(`positionName[${index}]`, {
-                                initialValue: record ? record.positionName : '',
+                            getFieldDecorator(`smPcnPart[${index}]`),
+                            getFieldDecorator(`smPcnPartName[${index}]`, {
+                                initialValue: record ? record.smPcnPartName : '',
                                 rules: [{ required: true, message: '请选择安规件!', whitespace: true }],
                             })( 
                                 <ComboList 
@@ -106,8 +109,8 @@ const ModifyinfluenceRef = forwardRef(({
                                     {...Safetyregulationslist}
                                     showSearch={false}
                                     //afterSelect={afterSelect}
-                                    name={`positionName[${index}]`}
-                                    field={[`position[${index}]`]}
+                                    name={`smPcnPartName[${index}]`}
+                                    field={[`smPcnPart[${index}]`]}
                                 />
                             )
                         }
@@ -117,20 +120,21 @@ const ModifyinfluenceRef = forwardRef(({
         },
         {
             title: '战略采购',
-            dataIndex: 'smPcnStrategicId',
+            dataIndex: 'smPcnStrategicName',
             align: 'center',
             width: 220,
             render: (text, record, index) => {
                 if (isView) {
-                    return record.positionName;
+                    return record.smPcnStrategicName;
                 }
                 return <span>
                     <FormItem style={{ marginBottom: 0 }}>
                         {
-                            getFieldDecorator(`position[${index}]`),
-                            getFieldDecorator(`positionName[${index}]`, {
-                                initialValue: record ? record.positionName : '',
-                                rules: [{ required: true, message: '请选择战略采购!', whitespace: true }],
+                            getFieldDecorator(`smPcnStrategicId[${index}]`,{initialValue: record ? record.smPcnStrategicId : ''}),
+                            getFieldDecorator(`smPcnStrategicCode[${index}]`,{initialValue: record ? record.smPcnStrategicCode : ''}),
+                            getFieldDecorator(`smPcnStrategicName[${index}]`, {
+                                initialValue: record ? record.smPcnStrategicName : '',
+                                rules: [{ required: true, message: '请选择战略采购!'}],
                             })( 
                                 <ComboList 
                                     form={form}
@@ -138,8 +142,8 @@ const ModifyinfluenceRef = forwardRef(({
                                     showSearch={false}
                                     style={{ width: '100%' }}
                                     //afterSelect={afterSelect}
-                                    name={`positionName[${index}]`}
-                                    field={[`position[${index}]`]}
+                                    name={`smPcnStrategicName[${index}]`}
+                                    field={[`smPcnStrategicId[${index}]`,`smPcnStrategicCode[${index}]`]}
                                 />
                             )
                         }
@@ -149,26 +153,96 @@ const ModifyinfluenceRef = forwardRef(({
         }
     ].map(_ => ({ ..._, align: 'center' }))
     const empty = selectRowKeys.length === 0;
+    // 编辑处理数据
+    function hanldModify(val) {
+        if (isEdit) {
+            let newsdata = [],MaterielVoList = [];
+            val.map((item, index) => {
+                let Name;keys ++ ;
+                if (item.smPcnPart === 0) {
+                    Name = '是'
+                }else {
+                    Name = '否'
+                }
+                newsdata.push({
+                    ...item,
+                    smPcnPartName: Name,
+                    key: keys
+                })
+                setDataSource(newsdata);
+                // item.smPcnAnalysisMaterielVoList.map((item, index) => {
+                //     MaterielVoList.push({
+                //         ...item
+                //     })
+                //     handlematers.push(MaterielVoList)
+                //     setmateriel(handlematers)
+                // })
+            })
+
+        }
+    }
     // 新增的
     function selectanalysis(val) {
+        keys ++ ;
         let newsdata = [];
+        [...newsdata] = dataSource;
         val.map((item, index) => {
             newsdata.push({
-                key: keys ++,
-                materielCategoryId: item.materielCategory.name,
+                key: keys,
+                materielCategoryId: item.materielCategory && item.materielCategory.name,
                 companyCode: item.corporation.code,
                 companyName: item.corporation.name,
                 purchaseOrgCode: item.purchaseOrgCode,
                 purchaseOrgName: item.purchaseOrg.name,
+                materielCategoryCode: item.materielCategoryCode,
+                smPcnAnalysisMaterielVoList:[]
             })
             setDataSource(newsdata);
         })
+        uploadTable()
+    }
+    // 获取选择的物料
+    function materselect(val) {
+        console.log(val)
+        // matkey ++ ;
+        // console.log(matkey)
+        let newsdata = [];
+        val.map((item) => {
+            item.smPcnAnalysisMaterielVoList.map((items) => {
+                newsdata.push({
+                    key: matkey++,
+                    materielTypeCode: items.materialGroupCode,
+                    materielName: items.materialGroupDesc,
+                    materielCode: items.materialCode,
+                    materielTypeName: items.materialDesc
+                })
+            })
+            item.smPcnAnalysisMaterielVoList = newsdata
+        })
+        handlematers.push(val)
+        setmateriel(handlematers)
+        uploadTable()
+    }
+    // 删除物料操作
+    function determine(val) {
+        console.log(val)
+        handlematers.forEach((item,index) => {
+            item.forEach((items) => {
+                val.forEach((vals) => {
+                    if (items.key === vals.key) {
+                        handlematers[index] = val
+                    }   
+                }) 
+            })
+            
+        })
+        uploadTable()
     }
     // 记录列表选中
     function handleSelectedRows(rowKeys, rows) {
         setRowKeys(rowKeys);
-        setRows(rows);;
-
+        setRows(rows);
+        setSeemateriel(rows)
     }
     // 物料新增
     function showModal() {
@@ -176,38 +250,85 @@ const ModifyinfluenceRef = forwardRef(({
     }
     // 选择物料
     function showMateriel() {
+        let id = selectedRows[0].materielCategoryCode
+        setmaterielid(id)
         getMatermodRef.current.handleModalVisible(true);
     }
     // 查看物料
     function showSeeMateriel() {
+        // if (isEdit) {
+        //     let id = selectedRows[0].id,selectype = selectedRows[0].key
+        //     setmaterieldetailsid(id);
+        //     setKeys(selectype)
+        // }
+        let seemateriel = [];
         getSeeMaterRef.current.handleModalVisible(true);
+        // handlematers.forEach((item) => {
+        //     item.forEach((items) => {
+        //         if (items.key === selectedRows[0].key) {
+        //             seemateriel.push(items)
+        //             setmateriel(seemateriel)
+        //         }
+        //     })
+        // })
     }
-    // 删除
+    // 表单删除
     async function handleRemove() {
         const filterData = dataSource.filter(item => item.key !== selectedRows[0].key);
+        handlematers.map((item,index) => {
+            item.map((items) => {
+                if (items.key === selectedRows[0].key) {
+                    handlematers[index] = [];
+                } 
+            })
+        })
         setDataSource(filterData)
+        uploadTable()
     }
 
     // 获取表单值
     function getmodifyanalyform() {
+        let result = false;
         const analysis = tabformRef.current.data;
-        const {validateFieldsAndScroll} = modifyinfluenceFormRef.current.form;
         if (!analysis || analysis.length === 0) {
             return false;
         }else {
-            validateFieldsAndScroll(async (err, val) => {
+            form.validateFieldsAndScroll((err, values) => {
+                console.log(values)
+                values.smPcnPart.forEach((item,index) => {
+                    analysis[index].smPcnPart = values.smPcnPart[index]
+                })
+                
+                values.smPcnStrategicId.forEach((item,index) => {
+                    analysis[index].smPcnStrategicId = values.smPcnStrategicId[index]
+                    analysis[index].smPcnStrategicCode = values.smPcnStrategicCode[index]
+                    analysis[index].smPcnStrategicName = values.smPcnStrategicName[index]
+                })
                 if (!err) {
-                    analysis.push(val)
-                }else {
-                   message.error('影响选择不能为空！');
-                   return false;
+                    console.log(analysis)
+                    //result = analysis
+                    // analysis.forEach((analy,index) => {
+                    //     handlematers.forEach((item,index) => {
+                    //         item.forEach((items) => {
+                    //             if (analy.key === items.key) {
+                    //                 analysis[index].smPcnAnalysisMaterielVoList = item
+                    //             }
+                    //         })
+                            
+                    //     })
+                    // })
+                    result = analysis
                 }
+                
             })
         }
-       
-        return analysis;
+        return result;
     }
-
+    // 清除选中项
+    function uploadTable() {
+        tabformRef.current.manualSelectedRows([])
+        tabformRef.current.remoteDataRefresh()
+    }
     const headerleft = (
         <>
             {
@@ -217,10 +338,18 @@ const ModifyinfluenceRef = forwardRef(({
                 <AuthButton className={styles.btn} disabled={empty} onClick={handleRemove}>删除</AuthButton>
             }
             {
-                <AuthButton className={styles.btn} onClick={() => showMateriel()} disabled={empty}>选择物料</AuthButton>
+                <AuthButton className={styles.btn} onClick={() => showMateriel()} disabled={empty} >选择物料</AuthButton>
             }
             {
-                <AuthButton className={styles.btn} onClick={() => showSeeMateriel()} disabled={empty} >查看物料</AuthButton>
+                <AuthButton className={styles.btn} onClick={() => showSeeMateriel()} disabled={empty}>查看物料</AuthButton>
+            }
+        </>
+    );
+    // 明细
+    const detailsleft = (
+        <>
+            {
+                <AuthButton className={styles.btn} onClick={() => showSeeMateriel()} disabled={empty}>查看物料</AuthButton>
             }
         </>
     );
@@ -228,7 +357,7 @@ const ModifyinfluenceRef = forwardRef(({
         <>
             <div>
                 <Header style={{ display: headerInfo === true ? 'none' : 'block', color: 'red' }}
-                    left={headerInfo ? '' : headerleft}
+                    left={headerInfo ? detailsleft : headerleft}
                     advanced={false}
                     extra={false}
                 />
@@ -241,6 +370,11 @@ const ModifyinfluenceRef = forwardRef(({
                             rowKey={(item) => item.key}
                             checkbox={{
                                 multiSelect: false
+                            }}
+                            pagination={{
+                                hideOnSinglePage: true,
+                                disabled: false,
+                                pageSize: 100,
                             }}
                             allowCancelSelect={true}
                             size='small'
@@ -256,22 +390,36 @@ const ModifyinfluenceRef = forwardRef(({
                     }
                 </AutoSizeLayout>
                 <div>
+                    {/****** 新增 */}
                     <InfluenceMaterielModal
                         modifyanalysis={selectanalysis} 
                         wrappedComponentRef={getModelRef}
                     />
-                    <MaterielModal 
+                    {/******* 选择物料*/}
+                    <MaterielModal
+                        materselect={materselect}
+                        materielCategoryCode={materielid}
+                        iseditMater={selectedRows} 
+                        isEdit={isEdit}
                         wrappedComponentRef={getMatermodRef} />
-
-                    <SeeMaterielModal 
+                    {/***** 查看物料 */}
+                    {/* { isEdit ? 
+                        <EditSeeMaterielModal 
+                            determine={determine}
+                            materiel={materiel} 
+                            isEdit={isEdit}
+                            selectedKeys={selectedKeys}
+                            materielCategoryCode={materieldetailsid}
+                            wrappedComponentRef={getSeeMaterRef}
+                        /> : 
+                        
+                    } */}
+                    <SeeMaterielModal
+                        determine={determine}
+                        materiel={seemateriel} 
                         wrappedComponentRef={getSeeMaterRef} />
+                    
                 </div>
-            </div>
-            <div>
-                <ModifyinfluenceForm  
-                    wrappedComponentRef={modifyinfluenceFormRef}
-                    isView={isView} 
-                />
             </div>
         </>
 

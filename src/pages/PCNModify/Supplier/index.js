@@ -7,7 +7,7 @@ import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
 import styles from './index.less';
 import { smBaseUrl } from '@/utils/commonUrl';
 import { PCNMasterdatalist} from "../commonProps"
-import { deleteSupplierModify, checkExistUnfinishedValidity, findCanModifySupplierList } from '@/services/SupplierModifyService'
+import { deleteBatchById,PCNSupplierSubmit} from '../../../services/pcnModifyService'
 import {SupplierBilltypeList} from '../commonProps'
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 const { Search } = Input
@@ -21,23 +21,18 @@ function SupplierConfigure() {
     const authorizations = storage.sessionStorage.get("Authorization");
     const currentUserId = authorizations?.userId;
     const [selectedRowKeys, setRowKeys] = useState([]);
-    const [onlyMe, setOnlyMe] = useState(true);
     const [selectedRows, setRows] = useState([]);
     const [searchValue, setSearchValue] = useState({});
-    const [visible, setVisible] = useState(false);
-    const [recommen, setrecommen] = useState([]);
     const [loading, triggerLoading] = useState(false);
     const [attachId, setAttachId] = useState('');
-    const [fixedHeader, setfixedHeader] = useState('');
-
-    const [singleRow = {}] = selectedRows;
+    const [Searchvalue, setSearchvalue] = useState('');
     /** 按钮可用性判断变量集合 BEGIN*/
     const [signleRow = {}] = selectedRows;
-    const { flowStatus: signleFlowStatus, id: flowId, creatorId } = signleRow;
-    // 已提交审核状态
-    const underWay = signleFlowStatus !== 'INIT';
-    // 审核完成状态
-    const completed = signleFlowStatus === 'COMPLETED';
+    const { smDocunmentStatus: signleFlowStatus, id: flowId, creatorId } = signleRow;
+    // 草稿
+    const underWay = signleFlowStatus === 0;
+    // 已提交
+    const completed = signleFlowStatus === 1;
     // 未选中数据的状态
     const empty = selectedRowKeys.length === 0;
     // 是不是自己的单据
@@ -52,12 +47,10 @@ function SupplierConfigure() {
             key: 'smDocunmentStatus',
             width: 100,
             render: function (text, record, row) {
-                if (text === 'INIT') {
-                    return <div>未提交审批</div>;
-                } else if (text === 'INPROCESS') {
-                    return <div className="doingColor">审批中</div>;
+                if (text === 0) {
+                    return <div>草稿</div>;
                 } else {
-                    return <div className="successColor">审批完成</div>;
+                    return <div className="successColor">已提交</div>;
                 }
             },
         },
@@ -78,7 +71,7 @@ function SupplierConfigure() {
         },
         {
             title: '变更类型',
-            width: 120,
+            width: 180,
             dataIndex: 'smPcnChangeTypeName',
         },
         {
@@ -88,35 +81,29 @@ function SupplierConfigure() {
         },
         {
             title: '联系电话',
-            width: 130,
+            width: 220,
             dataIndex: 'smContactNumber',
         },
         {
             title: '创建日期',
-            width: 120,
+            width: 180,
             dataIndex: 'createdDate',
         }
     ].map(_ => ({ ..._, align: 'center' }))
 
     const dataSource = {
         store: {
-            url: `${smBaseUrl}/api/smPcnTitleService/findByPage`,
+            url: `${smBaseUrl}/api/smPcnTitleService/findBySupplierPage`,
             params: {
                 ...searchValue,
-                quickSearchProperties: ['smDocunmentStatus','smPcnCode'],
+                quickSearchProperties: ['smPcnCode'],
                 sortOrders: [
                     {
                         property: 'createdDate',
                         direction: 'DESC'
                     }
                 ],
-                filters:[
-                    {
-                        fieldName:'smDataStatus',
-                        value: 1,
-                        operator:'EQ'
-                    }
-                ]
+                filters:Searchvalue
             },
             type: 'POST'
         }
@@ -128,7 +115,7 @@ function SupplierConfigure() {
             <ComboList
                 searchProperties={searchbank}
                 {...SupplierBilltypeList}
-                //afterSelect={cooperationChange}
+                afterSelect={cooperationChange}
                 rowKey="code"
                 //showSearch={false}
                 allowClear={true}
@@ -148,7 +135,8 @@ function SupplierConfigure() {
     )
     // 高级查询配置
     const formItems = [
-        { title: '供应商名称或代码', key: 'materialCode',  props: { placeholder: '输入供应商名称或代码' } },
+        { title: '供应商代码', key: 'materialCode',  props: { placeholder: '输入供应商代码' } },
+        { title: '供应商名称', key: 'materialName',  props: { placeholder: '输入供应商名称' } },
         { title: '单据状态', key: 'materialGroupCode', type: 'list', props: SupplierBilltypeList },
         { title: '变更类型', key: 'applyPersonName', type: 'list', props: PCNMasterdatalist },
     ];
@@ -162,6 +150,10 @@ function SupplierConfigure() {
         if (data.tabAction === 'close') {
             uploadTable()
         }
+    }
+    function cooperationChange(val) {
+        setSearchValue(v => ({ ...v, quickSearchValue: val.code }));
+        uploadTable();
     }
     // 记录列表选中
     function handleSelectedRows(rowKeys, rows) {
@@ -184,13 +176,53 @@ function SupplierConfigure() {
         openNewTab(`pcnModify/Supplier/Edit/index?id=${id}`, 'PCN变更编辑变更单', false)
     }
     // 删除
-    function handleDelete() {
-
+    async function handleDelete() {
+        confirm({
+            title: '是否确认删除',
+            onOk: async () => {
+                let params = selectedRows[0].id;
+                triggerLoading(true)
+                const { success, message: msg } = await deleteBatchById({pcnTitleId:params});
+                if (success) {
+                    message.success('删除成功！');
+                    uploadTable();
+                    triggerLoading(false)
+                } else {
+                    message.error(msg);
+                    triggerLoading(false)
+                }
+            },
+            onCancel() {
+            },
+        });
     }
     // 明细
     function handleCheckDetail() {
-        //let id = selectedRows[0].id;
-        openNewTab(`pcnModify/Supplier/Detail/index`, 'PCN变更单明细', false)
+        let id = selectedRows[0].id;
+        openNewTab(`pcnModify/Supplier/Detail/index?id=${id}`, 'PCN变更单明细', false)
+    }
+    // 提交
+    async function handleSubmit() {
+        let status = selectedRows[0].smDocunmentStatus;
+        let id = selectedRows[0].id;
+        let statustype = false;
+        if (status === 0) {
+            status = 1
+            statustype = true
+        }else {
+            status = 0
+            statustype = false
+        }
+        triggerLoading(true)
+        const { success, message: msg } = await PCNSupplierSubmit({pcnTitleId:id,smDocunmentStatus:status});
+        if (success) {
+            message.success(`${statustype ? '提交' : '撤回'}成功！`);
+            uploadTable();
+            triggerLoading(false)
+        } else {
+            message.error(msg);
+            triggerLoading(false)
+        }
     }
     // 快速查询
     function handleQuickSerach(value) {
@@ -203,22 +235,46 @@ function SupplierConfigure() {
     }
     // 处理高级搜索
     function handleAdvnacedSearch(value) {
-        console.log(value)
-        // value.materialCode = value.materialCode_name;
-        // value.materialGroupCode = value.materialGroupCode_name;
-        // value.strategicPurchaseCode = value.strategicPurchaseCode_name;
-        // value.strategicPurchaseName = value.strategicPurchaseName_name;
-        // delete value.materialCode_name;
-        // delete value.materialGroupCode_name;
-        // delete value.strategicPurchaseCode_name;
-        // delete value.strategicPurchaseName_name;
-        // delete value.effectiveStatus_name;
-        // delete value.syncStatus_name;
-        // delete value.assignSupplierStatus_name;
-        // delete value.allotSupplierState_name;
-        // setSearchValue(v => ({ ...v, ...value }));
-        //headerRef.current.hide();
-        // uploadTable();
+        value.smDocunmentStatus = value.materialGroupCode;
+        value.smPcnChangeTypeCode = value.applyPersonName;
+        value.smSupplierCode = value.materialCode;
+        value.smSupplierName = value.materialName;
+        delete value.applyPersonName;
+        delete value.applyPersonName_name;
+        delete value.materialCode;
+        delete value.materialGroupCode;
+        delete value.materialGroupCode_name;
+        let searchvalue = [];
+        searchvalue.push(value);
+        let newdata = [];
+        searchvalue.map(item => {
+            newdata.push(
+                {
+                    fieldName:'smSupplierCode',
+                    value: item.smSupplierCode,
+                    operator:'EQ'
+                },
+                {
+                    fieldName:'smSupplierName',
+                    value: item.smSupplierName,
+                    operator:'EQ'
+                },
+                {
+                    fieldName:'smDocunmentStatus',
+                    value: item.smDocunmentStatus,
+                    operator:'EQ'
+                },
+                {
+                    fieldName:'smPcnChangeTypeCode',
+                    value: item.smPcnChangeTypeCode,
+                    operator:'EQ'
+                }
+    
+            )
+        })
+        setSearchvalue(newdata)
+        headerRef.current.hide();
+        uploadTable();
     }
      // 清空泛虹公司
      function clearinput() {
@@ -249,7 +305,7 @@ function SupplierConfigure() {
                                     key='SRM-SM-SUPPLIERMODEL_EDIT'
                                     className={styles.btn}
                                     onClick={handleCheckEdit}
-                                    //disabled={empty || underWay || !isSelf}
+                                    disabled={empty || !underWay || !isSelf}
                                 >编辑
                                 </Button>
                             )
@@ -261,7 +317,7 @@ function SupplierConfigure() {
                                     key='SRM-SM-SUPPLIERMODEL_DELETE' 
                                     className={styles.btn} 
                                     onClick={handleDelete} 
-                                    disabled={empty}
+                                    disabled={empty || !underWay || !isSelf}
                                     >删除
                                 </Button>
                             )
@@ -284,8 +340,8 @@ function SupplierConfigure() {
                                     ignore={DEVELOPER_ENV}
                                     key='SRM-SM-SUPPLIERMODEL_DETAILED'
                                     className={styles.btn}
-                                    onClick={handleCheckDetail}
-                                    disabled={empty}
+                                    onClick={handleSubmit}
+                                    disabled={empty || !underWay || !isSelf}
                                 >提交
                                 </Button>
                             )
@@ -296,8 +352,8 @@ function SupplierConfigure() {
                                     ignore={DEVELOPER_ENV}
                                     key='SRM-SM-SUPPLIERMODEL_DETAILED'
                                     className={styles.btn}
-                                    onClick={handleCheckDetail}
-                                    disabled={empty}
+                                    onClick={handleSubmit}
+                                    disabled={empty || !completed || !isSelf}
                                 >撤回
                                 </Button>
                             )
