@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:40
- * @LastEditTime: 2020-10-22 09:54:40
+ * @LastEditTime: 2020-10-27 17:16:15
  * @Description:  基本信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BaseInfo.js
  */
@@ -12,7 +12,8 @@ import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList
 import { ComboList, ComboTree, ExtModal } from 'suid';
 import { Col, Form, Modal, Row, Input, DatePicker, InputNumber } from 'antd';
 import Upload from '../../Upload';
-import { AllCompanyConfig, AllFindByFiltersConfig, ApplyOrganizationProps } from '../../mainData/commomService';
+import { AllCompanyConfig, ApplyOrganizationProps } from '../propsParams';
+import { isEmptyArray, guid, hideFormItem, filterEmptyFileds } from '@/utils/utilTool';
 
 const FormItem = Form.Item;
 
@@ -36,17 +37,11 @@ const formLongLayout = {
 
 const BaseInfo = (props) => {
 
-  const { type, form, data, userInfo, isView } = props;
+  const { type, form, data = {}, userInfo, isView } = props;
 
   const { getFieldDecorator, setFieldsValue } = form;
 
-  const hideFormItem = (name, initialValue) => (
-    <FormItem>
-      {getFieldDecorator(name, {
-        initialValue: initialValue,
-      })(<Input type={'hidden'} />)}
-    </FormItem>
-  );
+  const HideFormItem = hideFormItem(getFieldDecorator);
 
   return (
     <div className={styles.wrapper}>
@@ -55,8 +50,10 @@ const BaseInfo = (props) => {
         <div className={styles.content}>
           <Row>
             <Col span={12}>
+              {HideFormItem('applyCorporationId'), data.applyCorporationId}
+              {HideFormItem('applyCorporationCode'), data.applyCorporationCode}
               <FormItem label="拟制公司" {...formLayout}>
-                {isView ? <span>{''}</span> : getFieldDecorator('1', {
+                {isView ? <span>{data.applyCorporationName}</span> : getFieldDecorator('applyCorporationCode', {
                   initialValue: type === 'add' ? '' : '',
                   rules: [
                     {
@@ -77,8 +74,10 @@ const BaseInfo = (props) => {
               </FormItem>
             </Col>
             <Col span={12}>
+              {HideFormItem('applyDepartmentId'), data.applyDepartmentId}
+              {HideFormItem('applyDepartmentCode'), data.applyDepartmentCode}
               <FormItem label="拟制部门" {...formLayout}>
-                {isView ? <span>{''}</span> : getFieldDecorator('2', {
+                {isView ? <span>{data.applyDepartmentName}</span> : getFieldDecorator('applyDepartmentName', {
                   initialValue: type === 'add' ? '' : '',
                   rules: [
                     {
@@ -99,9 +98,11 @@ const BaseInfo = (props) => {
               </FormItem>
             </Col>
             <Col span={12}>
+              {HideFormItem('applyId'), data.applyId}
+              {HideFormItem('applyAccount'), data.applyAccount}
               <FormItem label="拟制人" {...formLayout}>
-                {isView ? <span>{''}</span> : getFieldDecorator('3', {
-                  initialValue: type === 'add' ? userInfo.userName : '',
+                {isView ? <span>{data.applyName}</span> : getFieldDecorator('applyName', {
+                  initialValue: type === 'add' ? userInfo.applyName : '',
                   rules: [
                     {
                       required: true,
@@ -113,8 +114,8 @@ const BaseInfo = (props) => {
             </Col>
             <Col span={12}>
               <FormItem label="联系方式" {...formLayout}>
-                {isView ? <span>{''}</span> : getFieldDecorator('4', {
-                  initialValue: type === 'add' ? userInfo.userMobile : '',
+                {isView ? <span>{data.applyTel}</span> : getFieldDecorator('applyTel', {
+                  initialValue: type === 'add' ? userInfo.applyTel : '',
                   rules: [
                     {
                       required: true,
@@ -134,8 +135,7 @@ const BaseInfo = (props) => {
           <Row>
             <Col span={12}>
               <FormItem label="年度" {...formLayout}>
-                {isView ? <span>{''}</span> : getFieldDecorator('5', {
-                  initialValue: type === 'add' ? '' : '',
+                {isView ? <span>{data.applyYear}</span> : getFieldDecorator('applyYear', {
                   rules: [
                     {
                       required: true,
@@ -151,8 +151,7 @@ const BaseInfo = (props) => {
           <Row>
             <Col span={24}>
               <FormItem label="拟制说明" {...formLongLayout}>
-                {isView ? <span>{''}</span> : getFieldDecorator('6', {
-                  initialValue: type === 'add' ? '' : '',
+                {isView ? <span>{data.reviewPlanYearName}</span> : getFieldDecorator('reviewPlanYearName', {
                   rules: [
                     {
                       required: true,
@@ -168,8 +167,7 @@ const BaseInfo = (props) => {
           <Row>
             <Col span={24}>
               <FormItem label="备注" {...formLongLayout}>
-                {isView ? <span>{''}</span> : getFieldDecorator('7', {
-                  initialValue: type === 'add' ? '' : '',
+                {isView ? <span>{data.remark}</span> : getFieldDecorator('remark', {
                 })(
                   <Input.TextArea rows={6} style={{ width: '100%' }} />
                 )}
@@ -180,9 +178,7 @@ const BaseInfo = (props) => {
             <Col span={24}>
               <FormItem {...formLongLayout} label={'附件'}>
                 {
-                  getFieldDecorator('8', {
-                    initialValue: type === 'add' ? null : null,
-                  })(
+                  getFieldDecorator('attachRelatedId')(
                     <Upload entityId={type === 'add' ? null : null} type={type === 'add' ? '' : 'show'} />,
                   )
                 }

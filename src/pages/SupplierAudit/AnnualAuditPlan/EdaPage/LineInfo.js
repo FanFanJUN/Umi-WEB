@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime: 2020-10-23 17:47:33
+ * @LastEditTime: 2020-10-27 10:13:33
  * @Description: 行信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
@@ -65,8 +65,9 @@ let LineInfo = (props, ref) => {
   }
 
   function filterSelectRow() {
+    const selectData = data.selectedRowKeys;
     const filterData = dataSource.filter((item) => {
-      return item.id !== data.selectedRowKeys[0];
+      return !selectData.includes(item.id);
     });
     setDataSource(filterData);
     clearSelect();
@@ -100,6 +101,11 @@ let LineInfo = (props, ref) => {
   }
 
   function getBatchFormValue(formValue) {
+    let newBatchData = [];
+    dataSource.forEach((item) => {
+      item.id = formValue.id;
+    });
+    setDataSource(newBatchData);
     setBatchVisible();
   }
 
@@ -111,8 +117,8 @@ let LineInfo = (props, ref) => {
           {
             !isView && <div>
               <Button onClick={() => handleBtn('add')} type='primary'>从合格供应商名录新增</Button>
-              <Button disabled={data.selectRows.length !== 1} onClick={() => { handleBtn('edit') }} style={{ marginLeft: '5px' }}>批量编辑</Button>
-              <Button disabled={data.selectedRowKeys.length < 1} onClick={() => { handleBtn('delete') }} style={{ marginLeft: '5px' }}>删除</Button>
+              <Button disabled={data.selectRows.length === 0} onClick={() => { handleBtn('edit') }} style={{ marginLeft: '5px' }}>批量编辑</Button>
+              <Button disabled={data.selectedRowKeys.length === 0} onClick={() => { handleBtn('delete') }} style={{ marginLeft: '5px' }}>删除</Button>
             </div>
           }
           <ExtTable
@@ -121,7 +127,7 @@ let LineInfo = (props, ref) => {
             allowCancelSelect={true}
             showSearch={false}
             remotePaging
-            checkbox={{ multiSelect: false }}
+            checkbox={{ multiSelect: true }}
             size='small'
             onSelectRow={handleSelectedRows}
             selectedRowKeys={data.selectedRowKeys}

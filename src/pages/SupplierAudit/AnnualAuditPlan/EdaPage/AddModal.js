@@ -5,8 +5,9 @@ import { AllCompanyConfig, AuditCauseManagementConfig } from '../../mainData/com
 import { isEmptyArray, guid, hideFormItem, filterEmptyFileds } from '@/utils/utilTool';
 // import { getSupplierSupplyList } from '../service';
 import { smBaseUrl } from '@/utils/commonUrl';
-import { purchaseOrgConfig, corporationProps, materialClassProps } from '@/utils/commonProps';
+import { purchaseOrgConfig, corporationProps, materialClassProps, getListByTypeId } from '@/utils/commonProps';
 import LineInfo from './LineInfo';
+import { func } from 'prop-types';
 
 const FormItem = Form.Item;
 
@@ -38,8 +39,12 @@ const AddModal = (props) => {
                 return text && `${text.code}_${text.name}`;
             }
         },
-        { title: '供应商', dataIndex: 'supplierCode', ellipsis: true, width: 140 },
-        { title: '代理商', dataIndex: 'xx', ellipsis: true, width: 140 },
+        {
+            title: '供应商', dataIndex: 'supplier', ellipsis: true, width: 140, render: function (text, context) {
+                return text && `${text.code}_${text.name}`;
+            }
+        },
+        { title: '代理商', dataIndex: 'originSupplierName', ellipsis: true, width: 140 },
         {
             title: '物料分类', dataIndex: 'materielCategory', ellipsis: true, width: 140, render: (text, context) => {
                 return text && text.showName;
@@ -99,28 +104,8 @@ const AddModal = (props) => {
         });
     }
 
-    function selectCorPoration(item, index) {
-        if (item) {
-            setFieldsValue({ Q_EQ_corporationCode: item.code });
-        } else {
-            setFieldsValue({ Q_EQ_corporationCode: '' });
-        }
-    }
-
-    function selectpurchaseOrg(item, index) {
-        if (item) {
-            setFieldsValue({ Q_EQ_purchaseOrgCode: item.code });
-        } else {
-            setFieldsValue({ Q_EQ_purchaseOrgCode: '' });
-        }
-    }
-
-    function selectMaterielCategory(item, index) {
-        if (item) {
-            setFieldsValue({ materielCategoryCode: item.code });
-        } else {
-            setFieldsValue({ materielCategoryCode: '' });
-        }
+    function resetForm() {
+        form.resetFields();
     }
 
     function renderForm() {
@@ -135,10 +120,9 @@ const AddModal = (props) => {
                                         allowClear
                                         style={{ width: '100%' }}
                                         form={form}
-                                        name='name'
+                                        name='Q_EQ_corporationName'
                                         field={['Q_EQ_corporationCode']}
                                         {...corporationProps}
-                                        afterSelect={selectCorPoration}
                                     />
                                 )
                             }
@@ -153,10 +137,10 @@ const AddModal = (props) => {
                                     <ComboGrid
                                         form={form}
                                         field={['Q_EQ_purchaseOrgCode']}
-                                        name={'name'}
+                                        name={'Q_EQ_purchaseOrgName'}
                                         {...purchaseOrgConfig}
                                         allowClear
-                                        afterSelect={selectpurchaseOrg}
+                                    // afterSelect={selectpurchaseOrg}
                                     />
                                 )
                             }
@@ -173,8 +157,8 @@ const AddModal = (props) => {
                                         name='materialCategoryName'
                                         {...materialClassProps}
                                         field={['materielCategoryCode']}
-                                        afterSelect={selectMaterielCategory}
-                                    />,
+                                    // afterSelect={selectMaterielCategory}
+                                    />
                                 )
                             }
                         </FormItem>
@@ -184,23 +168,26 @@ const AddModal = (props) => {
                     <Col span={8}>
                         <FormItem {...formItemLayoutLong} label={'原厂'}>
                             {
-                                getFieldDecorator('fileCategoryName')(
+                                getFieldDecorator('originSupplierCode')(
                                     <Input />
                                 )
                             }
                         </FormItem>
                     </Col>
+                    {HideFormItem('materialGrade')}
                     <Col span={8}>
                         <FormItem {...formItemLayoutLong} label={'物料级别'}>
                             {
-                                getFieldDecorator('fileCategoryName')(
+                                getFieldDecorator('materialGradeAndName')(
                                     <ComboList
                                         allowClear
                                         style={{ width: '100%' }}
                                         form={form}
-                                        name={'name'}
-                                        field={['code', 'id']}
-                                        {...AuditCauseManagementConfig}
+                                        pagination={false}
+                                        name='name'
+                                        field={['materialGrade']}
+                                        {...getListByTypeId('F4D69B2D-7949-11EA-920B-0242C0A84416')}
+                                    // afterSelect={setMaterialGrade}
                                     />,
                                 )
                             }
@@ -248,7 +235,10 @@ const AddModal = (props) => {
 
         >
             <div>{renderForm()}</div>
-            <div style={{ textAlign: 'center' }} onClick={handleSearch}><Button type="primary">查询</Button></div>
+            <div style={{ textAlign: 'center' }}>
+                <Button type="primary" onClick={handleSearch} style={{marginRight: '10px'}}>查询</Button>
+                <Button onClick={resetForm}>重置</Button>
+            </div>
             <ExtTable
                 style={{ marginTop: '10px' }}
                 rowKey='id'

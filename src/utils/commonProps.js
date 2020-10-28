@@ -985,14 +985,14 @@ export const oddunionPayCodeConfig = {
 // 无账号供应商
 export const corporationConfigShowName = {
   columns: [{
-      title: '公司代码',
-      dataIndex: 'code',
-      width: 70,
+    title: '公司代码',
+    dataIndex: 'code',
+    width: 70,
   },
-      {
-          title: '公司名称',
-          dataIndex: 'name',
-      }],
+  {
+    title: '公司名称',
+    dataIndex: 'name',
+  }],
   dataService: oddgetAllCorporation,
   service: oddgetAllCorporation,
   searchService: (param1, param2, param3) => param3 ? searchListByKey(param1, param2, param3) : searchListByKey(param1, param2, ['code', 'name']),
@@ -1020,7 +1020,7 @@ export const organpurchaseCompanyPropsreg = {
       return {
         selectable: false
       }
-    }else if (node.nodeLevel === 1 && node.code === '1' || node.nodeLevel === 1 && node.code === '2' ) {
+    } else if (node.nodeLevel === 1 && node.code === '1' || node.nodeLevel === 1 && node.code === '2') {
       return {
         selectable: false
       }
@@ -1052,4 +1052,20 @@ export const purchaseOrgConfig = {
     width: '100%'
   },
   remotePaging: true,
+}
+// 数据字典
+export const getListByTypeId = (id) => {
+  return {
+    store: {
+      autoLoad: false,
+      url: `${baseUrl}/dataDictionaryItem/getListByTypeId`,
+      params: { dictionaryItemId: id },
+      type: 'GET'
+    },
+    rowKey: 'id',
+    reader: {
+      name: 'name',
+      description: 'value',
+    }
+  };
 }

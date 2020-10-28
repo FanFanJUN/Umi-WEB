@@ -3,12 +3,12 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-23 17:00:19
- * @LastEditTime: 2020-10-23 17:46:46
+ * @LastEditTime: 2020-10-27 17:53:06
  * @Description: 批量编辑页面
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BatchEditModal.js
  */
 import React, { useEffect } from 'react';
-import { ComboList, ExtModal } from 'suid';
+import { ComboGrid, ComboList, ExtModal } from 'suid';
 import { Col, Form, Input, InputNumber, Row } from 'antd';
 import { CorporationListConfig } from '../../../QualitySynergy/commonProps';
 import {
@@ -17,6 +17,8 @@ import {
   NormalSupplierConfig,
   SelectionStrategyConfig,
 } from '../../mainData/commomService';
+import { reviewTypes } from '../propsParams';
+import { hideFormItem } from '@/utils/utilTool';
 
 const FormItem = Form.Item;
 
@@ -48,17 +50,7 @@ const BatchEditModal = (props) => {
     });
   }
 
-  const hideFormItem = (name, initialValue) => (
-    <FormItem>
-      {
-        getFieldDecorator(name, {
-          initialValue: initialValue,
-        })(
-          <Input type={'hidden'} />,
-        )
-      }
-    </FormItem>
-  );
+  const HideFormItem = hideFormItem(getFieldDecorator);
 
   return (
     <ExtModal
@@ -72,17 +64,25 @@ const BatchEditModal = (props) => {
     >
       <Form>
         <Row>
-          <Col span={0}>
-            {hideFormItem('reviewTypeId', type === 'add' ? '' : fatherData.reviewTypeId)}
-          </Col>
-          <Col span={0}>
-            {hideFormItem('reviewTypeCode', type === 'add' ? '' : fatherData.reviewTypeCode)}
-          </Col>
           <Col span={12}>
+            {HideFormItem('reviewTypeId')}
+            {HideFormItem('reviewTypeCode')}
             <FormItem {...formItemLayoutLong} label={'审核类型'}>
               {
-                getFieldDecorator('reviewTypeName')(
-                  <Input />
+                getFieldDecorator('reviewTypeName', {
+                  // rules: [
+                  //   {
+                  //     required: true,
+                  //     message: '审核类型不能为空',
+                  //   },
+                  // ],
+                })(
+                  <ComboGrid
+                    form={form}
+                    name='reviewTypeName'
+                    {...reviewTypes}
+                    field={['reviewTypeId', 'reviewTypeCode']}
+                  />
                 )
               }
             </FormItem>
