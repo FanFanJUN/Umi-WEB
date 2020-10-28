@@ -208,6 +208,27 @@ export const materialClassProps = {
     }
   }
 }
+// 物料分类-code
+export const materialCodeProps = {
+  store: {
+    url: `${baseUrl}/SecondaryClassificationMaterialGroup/listAllGeneralTree`,
+    params: { Q_EQ_frozen__Boolean: false }
+  },
+  reader: {
+    name: 'code'
+  },
+  placeholder: '请选择物料分类',
+  style: {
+    width: '100%'
+  },
+  treeNodeProps: (node) => {
+    if (node.nodeLevel === 0) {
+      return {
+        selectable: false
+      }
+    }
+  }
+}
 
 // 有id的采购组织
 export const AllFindByFiltersConfig = {
@@ -325,6 +346,21 @@ export const CompanyConfig = {
     field: ['code'],
     name: 'name',
     description: 'code',
+  },
+};
+// 审核需求号
+export const reviewRequirementConfig = {
+  placeholder: '选择审核需求号',
+  remotePaging: false,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${recommendUrl}/api/reviewRequirementService/findByPage`,
+  },
+  rowKey: 'reviewRequirementCode',
+  reader: {
+    name: 'reviewRequirementCode',
+    description: 'reviewRequirementName',
   },
 };
 

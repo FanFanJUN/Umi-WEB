@@ -183,15 +183,24 @@ export default function () {
     ];
 
     const columns = [
-        { title: '状态', dataIndex: 'state', width: 80 },
-        { title: '审批状态', dataIndex: 'allotSupplierState', width: 200 },
-        { title: '月度审核计划号', dataIndex: 'source', width: 200 },
-        { title: '月度', dataIndex: 'shareDemanNumber', ellipsis: true, width: 250 },
-        { title: '拟制说明', dataIndex: 'materialName', ellipsis: true, width: 200 },
-        { title: '拟制公司', dataIndex: 'materialGroupCode', ellipsis: true, width: 200 },
-        { title: '拟制部门', dataIndex: 'materialGroupName', ellipsis: true, width: 200 },
-        { title: '拟制人员', dataIndex: 'strategicPurchaseCode', ellipsis: true, width: 200 },
-        { title: '拟制时间', dataIndex: 'strategicPurchaseName', ellipsis: true, width: 200 },
+        { title: '状态', dataIndex: 'state', width: 80, render:(text)=>{
+            switch(text){
+              case "DRAFT":
+                return "草稿";
+              case "EFFECT":
+                return "生效";
+              case "CHANGING":
+                return "变更中";
+            }
+          } },
+        { title: '审批状态', dataIndex: 'flowState', width: 200 },
+        { title: '月度审核计划号', dataIndex: 'reviewPlanMonthCode', width: 200 },
+        { title: '月度', dataIndex: 'applyMonth', ellipsis: true, width: 250 },
+        { title: '拟制说明', dataIndex: 'reviewPlanMonthName', ellipsis: true, width: 200 },
+        { title: '拟制公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 200 },
+        { title: '拟制部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200 },
+        { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 200 },
+        { title: '拟制时间', dataIndex: 'applyDate', ellipsis: true, width: 200 },
     ].map(item => ({ ...item, align: 'center' }));
 
     const headerLeft = <>

@@ -1,10 +1,16 @@
 // 从年度审核新增
-import React, { useState, } from "react";
+import React, { useState, useRef} from "react";
 import { Form, Row, Col, Button } from "antd";
-import { ExtTable, ExtModal, ComboList, ComboGrid, ComboTree } from 'suid';
-import { AuditCauseManagementConfig } from '../../mainData/commomService';
-import { corporationProps, materialClassProps } from '@/utils/commonProps';
-import { smBaseUrl } from '@/utils/commonUrl';
+import { ExtTable, ExtModal, ComboList, ComboTree } from 'suid';
+import {
+    AuditCauseManagementConfig,
+    AllCompanyConfig,
+    AllFindByFiltersConfig,
+    materialCodeProps,
+    reviewRequirementConfig
+} from '../../mainData/commomService';
+import { recommendUrl } from '@/utils/commonUrl';
+import { findRequirementLine } from "../service"
 
 const FormItem = Form.Item;
 const formItemLayoutLong = {
@@ -15,18 +21,13 @@ const formItemLayoutLong = {
 const AddModal = (props) => {
     const { visible, type, handleCancel, handleOk, form } = props
     const { getFieldDecorator, getFieldValue, setFieldsValue } = form;
-    console.log("获取到的visivle", visible)
+    const tableRef = useRef(null)
     const [selectedRowKeys, setselectedRowKeys] = useState([]);
     const [cascadeParams, setCascadeParams] = useState({});
     const [selectRows, setselectRows] = useState([]);
 
-    const store = {
-        params: {
-            valid: 1
-        },
-        url: `${smBaseUrl}/supplierSupplyList/listPageVo`,
-        type: 'GET',
-    }
+    // 从审核需求新增
+    
 
     const columns = [
         {
@@ -35,30 +36,95 @@ const AddModal = (props) => {
             }
         },
         {
-            title: '采购组织', dataIndex: 'purchaseOrg', ellipsis: true, width: 140, render: (text, context) => {
+            title: '采购组织', dataIndex: 'purchaseOrgName', ellipsis: true, width: 140, render: (text, context) => {
                 return text && `${text.code}_${text.name}`;
             }
         },
         { title: '供应商', dataIndex: 'supplierCode', ellipsis: true, width: 140 },
         { title: '代理商', dataIndex: 'xx', ellipsis: true, width: 140 },
         {
-            title: '物料分类', dataIndex: 'materielCategory', ellipsis: true, width: 140, render: (text, context) => {
+            title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 140, render: (text, context) => {
                 return text && text.showName;
             }
         },
-        { title: '物料级别', dataIndex: 'materialGrade', ellipsis: true, width: 140 },
-        { title: '绩效等级', dataIndex: 'measureUnit', ellipsis: true, width: 140 },
-        { title: '采购金额', dataIndex: 'sampleReceiverName', ellipsis: true, width: 140 },
     ].map(item => ({ ...item, align: 'center' }))
 
-    const onOk = () => {
+    const getColums = () => {
+        switch (type) {
+            case "annual":
+                return [
+                    { title: '预计审核月度', dataIndex: 'data1', ellipsis: true, width: 140 },
+                ].concat(columns);
+            case "recommand":
+                return [
+                    { title: '准入推荐号', dataIndex: 'data2', ellipsis: true, width: 140 },
+                ].concat(columns);
+            case "demand":
+                return [
+                    {
+                        title: '提出日期', dataIndex: 'applyDate', ellipsis: true, width: 140, render: (text, item) => {
+                            return item.reviewRequirementVo && item.reviewRequirementVo.applyDate
+                        }
+                    },
+                    { title: '审核需求号', dataIndex: 'reviewRequirementCode', ellipsis: true, width: 140 },
+                    {
+                        title: '需求公司', dataIndex: 'corporation', width: 140, ellipsis: true, render: (text, item) => {
+                            return item.reviewRequirementVo && item.reviewRequirementVo.applyCorporationName
+                        }
+                    },
+                    {
+                        title: '采购组织', dataIndex: 'purchaseOrgName', ellipsis: true, width: 140, render: (text, item) => {
+                            return item.reviewRequirementVo && item.reviewRequirementVo.purchaseOrgName
+                        }
+                    },
+                    { title: '供应商', dataIndex: 'supplierCode', ellipsis: true, width: 140 },
+                    { title: '代理商', dataIndex: 'xagentNamex', ellipsis: true, width: 140 },
+                    { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 140 }
+                ];
+        }
+    }
+
+    const getStore = () => {
+        if(type === "demand") {
+            return {
+                params: {
+                    usedType: 2,
+                    ...cascadeParams
+                },
+                url: `${recommendUrl}/api/reviewRequirementLineService/findForList`,
+                type: 'POST',
+            }
+        } else {
+            return {
+                params: {
+                    usedType: 2,
+                    ...cascadeParams
+                },
+                url: `${recommendUrl}/api/reviewRequirementLineService/findForList`,
+                type: 'POST',
+            }
+        }
+    }
+    const onOk = async () => {
+        const res = await findRequirementLine({
+            ids: selectedRowKeys.join()
+        })
+        console.log(res)
+        if(res.sucess) {
+
+        }
         console.log("执行")
     }
 
     function handleSearch() {
         form.validateFieldsAndScroll((err, values) => {
-            if (err) return;
             if (!err) {
+                if(type === "demand") {
+                    delete values.applyCorporationId;
+                    delete values.applyCorporationName;
+                    delete values.purchaseOrgId;
+                    delete values.purchaseOrgName;
+                }
                 setCascadeParams(values);
             }
         });
@@ -132,15 +198,13 @@ const AddModal = (props) => {
                         <Col span={12}>
                             <FormItem {...formItemLayoutLong} label={'审核需求号'}>
                                 {
-                                    getFieldDecorator('Q_EQ_corporationName')(
-                                        <ComboGrid
+                                    getFieldDecorator('reviewRequirementCode')(
+                                        <ComboList
                                             allowClear
                                             style={{ width: '100%' }}
                                             form={form}
-                                            name='name'
-                                            field={['Q_EQ_corporationCode']}
-                                            {...corporationProps}
-                                            afterSelect={(item)=>{console.log(item)}}
+                                            name='reviewRequirementCode'
+                                            {...reviewRequirementConfig}
                                         />
                                     )
                                 }
@@ -149,15 +213,16 @@ const AddModal = (props) => {
                         <Col span={12}>
                             <FormItem {...formItemLayoutLong} label={'需求公司'}>
                                 {
-                                    getFieldDecorator('Q_EQ_corporationName')(
-                                        <ComboGrid
-                                            allowClear
+                                    getFieldDecorator('applyCorporationId'),
+                                    getFieldDecorator('applyCorporationCode'),
+                                    getFieldDecorator('applyCorporationName')(
+                                        <ComboList
+                                            allowClear={true}
                                             style={{ width: '100%' }}
                                             form={form}
-                                            name='name'
-                                            field={['Q_EQ_corporationCode']}
-                                            {...corporationProps}
-                                            afterSelect={(item)=>{console.log(item)}}
+                                            name={'applyCorporationName'}
+                                            field={['applyCorporationCode', 'applyCorporationId']}
+                                            {...AllCompanyConfig}
                                         />
                                     )
                                 }
@@ -168,15 +233,12 @@ const AddModal = (props) => {
                         <Col span={12}>
                             <FormItem {...formItemLayoutLong} label={'物料分类'}>
                                 {
-                                    getFieldDecorator('materielCategoryCode'),
-                                    getFieldDecorator('materielCategory')(
+                                    getFieldDecorator('materialSecondClassifyCode')(
                                         <ComboTree
                                             allowClear
                                             form={form}
-                                            name='materialCategoryName'
-                                            {...materialClassProps}
-                                            field={['materielCategoryCode']}
-                                            afterSelect={(item)=>{console.log(item)}}
+                                            name='materialSecondClassifyCode'
+                                            {...materialCodeProps}
                                         />,
                                     )
                                 }
@@ -185,15 +247,16 @@ const AddModal = (props) => {
                         <Col span={12}>
                             <FormItem {...formItemLayoutLong} label={'采购组织'}>
                                 {
-                                    getFieldDecorator('Q_EQ_corporationName')(
-                                        <ComboGrid
-                                            allowClear
+                                    getFieldDecorator('purchaseOrgCode'),
+                                    getFieldDecorator('purchaseOrgId'),
+                                    getFieldDecorator('purchaseOrgName')(
+                                        <ComboList
+                                            allowClear={true}
                                             style={{ width: '100%' }}
                                             form={form}
-                                            name='name'
-                                            field={['Q_EQ_corporationCode']}
-                                            {...corporationProps}
-                                            afterSelect={(item)=>{console.log(item)}}
+                                            name={'purchaseOrgName'}
+                                            field={['purchaseOrgCode', 'purchaseOrgId']}
+                                            {...AllFindByFiltersConfig}
                                         />
                                     )
                                 }
@@ -214,7 +277,7 @@ const AddModal = (props) => {
         height={'800px'}
         maskClosable={false}
         visible={visible}
-        title={type==="annual" ? "从年度计划新增" : type==="recommand" ? "从准入推荐新增" : "从审核需求新增"}
+        title={type === "annual" ? "从年度计划新增" : type === "recommand" ? "从准入推荐新增" : "从审核需求新增"}
         onCancel={handleCancel}
         onOk={onOk}
         destroyOnClose
@@ -226,15 +289,19 @@ const AddModal = (props) => {
             allowCancelSelect={true}
             showSearch={false}
             remotePaging
-            checkbox={{ multiSelect: false }}
+            checkbox={{ multiSelect: true }}
             size='small'
             onSelectRow={(key, rows) => {
                 setselectedRowKeys(key);
                 setselectRows(rows);
             }}
+            cascadeParams={{
+                ...cascadeParams
+            }}
+            ref={tableRef}
             selectedRowKeys={selectedRowKeys}
-            store={store}
-            columns={columns}
+            store={getStore()}
+            columns={getColums()}
         />
     </ExtModal>
 }

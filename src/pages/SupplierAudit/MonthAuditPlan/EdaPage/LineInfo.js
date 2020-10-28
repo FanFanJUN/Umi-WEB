@@ -13,7 +13,8 @@ import { Form, Button } from 'antd';
 import { ExtTable } from 'suid';
 import AddModal from './AddModal';
 import BatchEditModal from './BatchEditModal';
-import AuditContentModal from "./AuditContentModal";
+// import AuditContentModal from "./AuditContentModal";
+import AuditContentModal from "../../AuditRequirementsManagement/add/component/content";
 import PersonManage from "./PersonManage";
 import Team from "../../AuditRequirementsManagement/add/component/team";
 
@@ -43,24 +44,33 @@ let LineInfo = (props, ref) => {
         </div>
       }
     },
-    { title: '需求公司', dataIndex: 'corporationCode', width: 140, ellipsis: true, },
-    { title: '采购组织', dataIndex: 'purchaseOrgCode', ellipsis: true, width: 140 },
-    { title: '供应商', dataIndex: 'supplierCode', ellipsis: true, width: 140 },
-    { title: '代理商', dataIndex: 'measureUnit1', ellipsis: true, width: 140 },
-    { title: '物料分类', dataIndex: 'measureUnit2', ellipsis: true, width: 140 },
-    { title: '物料级别', dataIndex: 'measureUnit3', ellipsis: true, width: 140 },
-    { title: '生产厂地址', dataIndex: 'measureUnit4', ellipsis: true, width: 140 },
-    { title: '供应商联系人', dataIndex: 'sampleReceiverName', ellipsis: true, width: 140 },
-    { title: '供应商联系电话', dataIndex: 'sampleReceiverTel', ellipsis: true, width: 140 },
-    { title: '审核类型', dataIndex: 'measureUnit5', ellipsis: true, width: 140 },
-    { title: '审核方式', dataIndex: 'measureUnit6', ellipsis: true, width: 140 },
-    { title: '审核组织方式', dataIndex: 'measureUnit7', ellipsis: true, width: 140 },
-    { title: '专业组', dataIndex: 'measureUnit8', ellipsis: true, width: 140 },
-    { title: '审核小组组长', dataIndex: 'measureUnit9', ellipsis: true, width: 140 },
-    { title: '备注', dataIndex: 'measureUnit0', ellipsis: true, width: 140 },
-    { title: '来源类型', dataIndex: 'measureUnit12', ellipsis: true, width: 140 },
-    { title: '来源单号', dataIndex: 'remark11', ellipsis: true, width: 140 },
-    { title: '来源单行号', dataIndex: 'remark12', ellipsis: true, width: 140 },
+    { title: '需求公司', dataIndex: 'applyCorporationName', width: 140, ellipsis: true, },
+    { title: '采购组织', dataIndex: 'purchaseTeamName', ellipsis: true, width: 140 },
+    { title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 140 },
+    { title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 140 },
+    { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 140 },
+    { title: '物料级别', dataIndex: 'materialGradeName', ellipsis: true, width: 140 },
+    { title: '生产厂地址', dataIndex: 'data2', ellipsis: true, width: 140 },
+    { title: '供应商联系人', dataIndex: 'contactUserName', ellipsis: true, width: 140 },
+    { title: '供应商联系电话', dataIndex: 'contactUserTel', ellipsis: true, width: 140 },
+    { title: '审核类型', dataIndex: 'reviewTypeName', ellipsis: true, width: 140 },
+    { title: '审核方式', dataIndex: 'reviewWayName', ellipsis: true, width: 140 },
+    { title: '审核组织方式', dataIndex: 'reviewOrganizedWayName', ellipsis: true, width: 140 },
+    { title: '专业组', dataIndex: 'specialtyTeamName', ellipsis: true, width: 140 },
+    { title: '审核小组组长', dataIndex: 'data5', ellipsis: true, width: 140 },
+    { title: '备注', dataIndex: 'remark', ellipsis: true, width: 140 },
+    { title: '来源类型', dataIndex: 'ReviewPlanMonthSourceTypeEunm', ellipsis: true, width: 140, render:(text)=>{
+      switch(text){
+        case "Review_Plan_YEAR_LINE":
+          return "年度计划行";
+        case "ADMISSION_RECOMMENDATION":
+          return "准入推荐";
+        case "RECOMMENDATION_REQUIREMENTS":
+          return "推荐需求";
+      }
+    } },
+    { title: '来源单号', dataIndex: 'sourceCode', ellipsis: true, width: 140 },
+    { title: '来源单行号', dataIndex: 'sourceLinenum', ellipsis: true, width: 140 },
   ].map(item => ({ ...item, align: 'center' }))
 
   const { isView } = props;
