@@ -157,6 +157,7 @@ const Team = (props) => {
   const handleTeamSelectedRows = (keys, values) => {
     setTeamData(v => ({ ...v, selectedRows: values, selectedRowKeys: keys }));
     if (keys.length !== 0) {
+      values[0].reviewTeamMemberBoList = values[0].reviewTeamMemberBoList.map(item => ({...item, lineNum: item.lineNum ? item.lineNum : getRandom(10)}))
       setContentData(v => ({...v, dataSource: values[0].reviewTeamMemberBoList}))
       contentTableRef.current.manualSelectedRows();
       contentTableRef.current.remoteDataRefresh();
@@ -168,7 +169,20 @@ const Team = (props) => {
   };
 
   const handleContentSelectedRows = (keys, values) => {
-    setData(v => ({...v, leftTreeData: undefined, treeData: values ? values[0]?.memberRuleBoList ? values[0].memberRuleBoList : [] : []}))
+    let treeData = []
+    if (values[0]?.memberRuleBoList) {
+      values[0].memberRuleBoList.map(item => {
+        if (!item.key) {
+          item.id = item.systemId
+          item.key = item.systemId
+          item.title = item.systemName
+          treeData.push(item)
+        } else {
+          treeData.push(item)
+        }
+      })
+    }
+    setData(v => ({...v, leftTreeData: undefined, treeData: treeData}))
     setContentData(v => ({ ...v, selectedRows: values, selectedRowKeys: keys }));
   };
 
@@ -243,6 +257,7 @@ const Team = (props) => {
           newDataSource.splice(index, 1)
         }
       })
+      setData(v => ({...v, treeData: [], leftTreeData: []}))
       setContentData(v => ({...v, dataSource: newDataSource}))
     } else {
       message.error('请选择一条数据')
@@ -258,11 +273,11 @@ const Team = (props) => {
     })
     setContentData(v =>({...v, dataSource: newData}))
     contentTableRef.current.remoteDataRefresh();
-    console.log(value)
   }
 
   // 构造左边树
   const getLeftTreeData = () => {
+    console.log(props.treeData)
     if(contentData.selectedRowKeys && contentData.selectedRowKeys.length !== 0) {
       setData(v => ({...v, leftTreeData: props.treeData}))
     } else {

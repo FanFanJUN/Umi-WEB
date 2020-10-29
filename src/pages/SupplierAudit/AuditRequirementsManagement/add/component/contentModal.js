@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ComboList, ComboTree, ExtModal } from 'suid';
 import { Col, Form, Input, message, Row } from 'antd';
 import {
@@ -6,8 +6,8 @@ import {
 } from '../../../../QualitySynergy/commonProps';
 import {
   ApplyOrganizationProps,
-  AuditTypeManagementConfig, GetUserTelByUserId,
-  PersonnelTypeConfig,
+  AuditTypeManagementConfig, GetUserTelByUserId, PersonnelTypeArr,
+  PersonnelTypeConfig, RoleArr,
   RoleConfig, UserByDepartmentConfig,
 } from '../../../mainData/commomService';
 import { baseUrl, basicServiceUrl, gatewayUrl } from '../../../../../utils/commonUrl';
@@ -31,6 +31,12 @@ const ContentModal = (props) => {
     props.onCancel();
   };
 
+  useEffect(() => {
+    if (getFieldValue('memberType')) {
+      setDisabled(getFieldValue('memberType') !== 'INTERNAL_USERS');
+    }
+  }, [getFieldValue('memberType')])
+
   const onOk = () => {
     props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
@@ -42,6 +48,17 @@ const ContentModal = (props) => {
       }
     });
   };
+
+  useEffect(() => {
+    console.log(props.data)
+    if (type !== 'add') {
+      setFieldsValue({
+        memberRoleName: RoleArr[props.data.memberRole],
+        memberTypeName: PersonnelTypeArr[props.data.memberType]
+      })
+      setDisabled(props.data.memberType !== 'INTERNAL_USERS');
+    }
+  }, [type])
 
   const departChange = (value) => {
     console.log(value)
@@ -71,7 +88,6 @@ const ContentModal = (props) => {
   );
 
   const personChange = (value) => {
-    setDisabled(value.code !== 'INTERNAL_USERS');
     setFieldsValue({
       memberName: getFieldValue('memberName') && '',
       memberTel: getFieldValue('memberTel') && '',
