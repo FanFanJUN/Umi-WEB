@@ -13,12 +13,12 @@ function createServiceRequest(option) {
   } = option
   const URI = `${base}${url}`
   return request({
+    ...option,
     url: URI,
     method,
     headers,
     data,
-    params: method === 'GET' ? data : hack ? data : null,
-    ...option
+    params: method === 'GET' ? data : hack ? data : null
   }).catch(error => {
     return ({
       ...error,
