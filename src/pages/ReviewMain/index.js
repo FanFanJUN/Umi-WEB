@@ -75,7 +75,14 @@ function ReviewMain() {
     store: {
       url: `${recommendUrl}/api/scorerConfigService/findByPage`,
       params: {
-        ...searchValue
+        ...searchValue,
+        quickSearchProperties: ['ruleCode', 'ruleName'],
+        sortOrders: [
+          {
+            property: 'rank',
+            direction: 'DESC'
+          }
+        ]
       },
       type: 'POST'
     },
