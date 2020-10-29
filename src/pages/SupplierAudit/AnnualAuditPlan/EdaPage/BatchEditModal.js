@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-23 17:00:19
- * @LastEditTime: 2020-10-28 15:12:42
+ * @LastEditTime: 2020-10-29 15:02:05
  * @Description: 批量编辑页面
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BatchEditModal.js
  */
@@ -151,11 +151,13 @@ const BatchEditModal = (props) => {
         </Row>
         <Row>
           {HideFormItem('countryId')}
-          {HideFormItem('countyCode')}
+          {HideFormItem('countryCode')}
           {HideFormItem('provinceId')}
           {HideFormItem('provinceCode')}
           {HideFormItem('cityId')}
           {HideFormItem('cityCode')}
+          {HideFormItem('countyId')}
+          {HideFormItem('countyCode')}
           <Col span={24}>
             <FormItem {...formItemLayout} label={'生产厂地址'}>
               {
@@ -173,7 +175,7 @@ const BatchEditModal = (props) => {
                     width={width}
                     form={form}
                     name={'countryName'}
-                    field={['countryId', 'countyCode']}
+                    field={['countryId', 'countryCode']}
                     store={{
                       params: {
                         filters: [{ fieldName: 'code', fieldType: 'string', operator: 'EQ', value: 'CN' }],
@@ -269,7 +271,7 @@ const BatchEditModal = (props) => {
                     width={width}
                     form={form}
                     name={'countyName'}
-                    field={['countyId']}
+                    field={['countyId', 'countyCode']}
                     store={{
                       params: {
                         includeSelf: false,

@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:40
- * @LastEditTime: 2020-10-28 15:34:46
+ * @LastEditTime: 2020-10-29 14:10:10
  * @Description:  基本信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BaseInfo.js
  */
@@ -37,7 +37,7 @@ const formLongLayout = {
 
 const BaseInfo = (props) => {
 
-  const { type, form, data = {}, userInfo, isView } = props;
+  const { type, form, data = {}, userInfo = {}, isView } = props;
 
   const { getFieldDecorator, setFieldsValue } = form;
 
