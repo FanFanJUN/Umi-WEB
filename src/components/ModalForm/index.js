@@ -23,11 +23,22 @@ const ModalForm = forwardRef(({
   form
 }, ref) => {
   useImperativeHandle(ref, () => ({
-
+    show,
+    hide,
+    setFormValues
   }))
   const [visible, toggleVisible] = useState(false);
+  const { getFieldDecorator, setFieldsValue } = form;
+  async function show() {
+    await toggleVisible(true)
+  }
+  function hide() {
+    await toggleVisible(false)
+  }
 
-  const { getFieldDecorator } = form;
+  function setFormValues(fds) {
+    setFieldsValue(fds)
+  }
   return (
     <ExtModal
       title={title}

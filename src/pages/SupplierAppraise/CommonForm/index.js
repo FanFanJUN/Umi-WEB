@@ -375,26 +375,38 @@ const CommonForm = forwardRef(({
   }
   function disabledDate(currentDate) {
     const e = getFieldValue('evlPeriodStartTime');
-    const c = currentDate.format('YYYY-MM-DD');
-    const ed = e.format('YYYY-MM-DD');
+    const c = currentDate?.format('YYYY-MM-DD');
+    const ed = e?.format('YYYY-MM-DD') || undefined;
+    if(!e || !ed) {
+      return
+    }
     return currentDate < e || c === ed
   }
   function disabledDateSt(currentDate) {
     const e = getFieldValue('evlPeriodEndTime');
-    const c = currentDate.format('YYYY-MM-DD');
-    const ed = e.format('YYYY-MM-DD');
+    const c = currentDate?.format('YYYY-MM-DD');
+    const ed = e?.format('YYYY-MM-DD') || undefined;
+    if(!e || !ed) {
+      return
+    }
     return currentDate > e || ed === c
   }
   function disabledDateApt(currentDate) {
     const e = getFieldValue('applicationPeriodStartTime');
-    const c = currentDate.format('YYYY-MM-DD');
-    const ed = e.format('YYYY-MM-DD');
+    const c = currentDate?.format('YYYY-MM-DD');
+    const ed = e?.format('YYYY-MM-DD') || undefined;
+    if(!e || !ed) {
+      return
+    }
     return currentDate < e || c === ed
   }
   function disabledDateAst(currentDate) {
     const e = getFieldValue('applicationPeriodEndTime');
-    const c = currentDate.format('YYYY-MM-DD');
-    const ed = e.format('YYYY-MM-DD');
+    const c = currentDate?.format('YYYY-MM-DD');
+    const ed = e?.format('YYYY-MM-DD') || undefined;
+    if(!e || !ed) {
+      return
+    }
     return currentDate > e || ed === c
   }
   useEffect(() => {
