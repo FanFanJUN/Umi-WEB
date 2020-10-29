@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime: 2020-10-28 17:14:55
+ * @LastEditTime: 2020-10-29 16:06:23
  * @Description: 行信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
@@ -48,7 +48,7 @@ let LineInfo = (props, ref) => {
     },
     {
       title: '代理商', dataIndex: 'agent', ellipsis: true, width: 140, render: (text, record) => {
-        return `${record.agentCode}_${record.agentName}`;
+        return record.agentCode && `${record.agentCode}_${record.agentName}`;
       }
     },
     {
@@ -58,8 +58,9 @@ let LineInfo = (props, ref) => {
     },
     { title: '物料级别', dataIndex: 'materialGrade', ellipsis: true, width: 140 },
     {
-      title: '生产厂地址', dataIndex: 'address', ellipsis: true, width: 140, render: (v, data) =>
-        `${data.countryName + data.provinceName + data.cityName + data.countyName + data.address}`
+      title: '生产厂地址', dataIndex: 'address', ellipsis: true, width: 140, render: (v, data) => {
+        return data.countryName && `${data.countryName + data.provinceName + data.cityName + data.countyName + data.address}`;
+      }
     },
     { title: '供应商联系人', dataIndex: 'contactUserName', ellipsis: true, width: 140 },
     { title: '供应商联系电话', dataIndex: 'contactUserTel', ellipsis: true, width: 140 },
@@ -91,7 +92,7 @@ let LineInfo = (props, ref) => {
   function filterSelectRow() {
     const selectData = data.selectedRowKeys;
     const filterData = dataSource.filter((item) => {
-      return !selectData.includes(item.id);
+      return !selectData.includes(item.reviewPlanYearLinenum);
     });
     setDataSource(filterData);
     clearSelect();
@@ -136,9 +137,16 @@ let LineInfo = (props, ref) => {
 
       // 物料级别
       item.materialGradeCode = item.materialGrade;
+      item.materialGradeName = item.materialGrade;
+      // 专业组
+      item.specialtyTeamName = item.purchaseProfessionalGroup;
     })
     const newTableList = JSON.parse(JSON.stringify(dataSource));
     newTableList.push(tableData[0]);
+    // 行号
+    newTableList.forEach((item, index) => {
+      item.reviewPlanYearLinenum = ((Array(4).join(0) + (index + 1)).slice(-4) + '0');
+    })
     setDataSource(newTableList);
     setlineData(newTableList);
     setData((v) => ({ ...v, visible: false }));
@@ -150,10 +158,10 @@ let LineInfo = (props, ref) => {
 
   function getBatchFormValue(formValue) {
     const batchEditList = dataSource.filter((item) => {
-      return data.selectedRowKeys.includes(item.id);
+      return data.selectedRowKeys.includes(item.reviewPlanYearLinenum);
     });
     const leftTableData = dataSource.filter((item) => {
-      return !(data.selectedRowKeys.includes(item.id));
+      return !(data.selectedRowKeys.includes(item.reviewPlanYearLinenum));
     });
     const newBatchData = batchEditList.map((item) => {
       return { ...item, ...formValue };
@@ -178,7 +186,7 @@ let LineInfo = (props, ref) => {
           }
           <ExtTable
             style={{ marginTop: '10px' }}
-            rowKey={'id' || 'uid'}
+            rowKey='reviewPlanYearLinenum'
             allowCancelSelect={true}
             showSearch={false}
             remotePaging
