@@ -4,6 +4,7 @@ import { Button, DatePicker, Form, Modal, message, Input } from 'antd';
 import { smBaseUrl, supplierManagerBaseUrl } from '@/utils/commonUrl';
 import { getUserName, getUserId, getUserAccount } from '../../../../utils';
 import {
+    addDemandSupplier,
     addDemandSupplierMultiple,
     findByPageOfSupplier,
     findByDemandNumber,
@@ -91,7 +92,7 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                 })
                 setSuplierCodes(suppliers);
                 setDataSource(dataList);
-                tableRef.current.manualSelectedRows();
+                tableRef.current && tableRef.current.manualSelectedRows();
             }
         } else {
             message.error(res.message);
@@ -169,6 +170,7 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
                     publish: false,
                     suspend: false,
                     whetherDelete: false,
+                    demandNumber: selectedRow.demandNumber,
                     // 当前日趋+1月
                     fillEndDate: moment(new Date().setMonth(new Date().getMonth() + 1)).format('YYYY-MM-DD'),
                     allotDate: moment().format('YYYY-MM-DD'),
@@ -200,10 +202,12 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
             onOk: async () => {
                 let res = {};
                 let saveList = dataSource.concat(deleteList);
-                res = await addDemandSupplierMultiple({
-                    demandIds: ids && ids.join(),
-                    demandSupplierBoList: saveList
-                });
+                let saveData = { ...selectedRow, demandSupplierBoList: saveList }
+                res = await addDemandSupplier(saveData);
+                // res = await addDemandSupplierMultiple({
+                //     demandIds: ids && ids.join(),
+                //     demandSupplierBoList: saveList
+                // });
                 if (res.statusCode === 200) {
                     message.success('操作成功');
                     setEditTag(false);
@@ -298,6 +302,7 @@ const supplierModal = forwardRef(({ form, selectedRow, supplierModalType, viewDe
         let dataList = value.filter((item) => {
             if (!supplierCodes.includes(item.code)) {
                 item.rowKey = dataSource.length + index;
+                item.demandNumber = selectedRow.demandNumber,
                 delete item.validate;
                 delete item.status;
                 delete item.statusCode;
