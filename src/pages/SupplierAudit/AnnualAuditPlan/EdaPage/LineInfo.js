@@ -3,11 +3,11 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime: 2020-10-28 10:59:17
+ * @LastEditTime: 2020-10-28 17:14:55
  * @Description: 行信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/edit/BaseInfo.less';
 import { Form, Button } from 'antd';
 import { ExtTable } from 'suid';
@@ -16,6 +16,7 @@ import BatchEditModal from './BatchEditModal';
 
 let LineInfo = (props, ref) => {
 
+  const { setlineData } = props;
   const tableRef = useRef(null);
 
   const [data, setData] = useState({
@@ -56,7 +57,10 @@ let LineInfo = (props, ref) => {
       }
     },
     { title: '物料级别', dataIndex: 'materialGrade', ellipsis: true, width: 140 },
-    { title: '生产厂地址', dataIndex: 'measureUnit', ellipsis: true, width: 140 },
+    {
+      title: '生产厂地址', dataIndex: 'address', ellipsis: true, width: 140, render: (v, data) =>
+        `${data.countryName + data.provinceName + data.cityName + data.countyName + data.address}`
+    },
     { title: '供应商联系人', dataIndex: 'contactUserName', ellipsis: true, width: 140 },
     { title: '供应商联系电话', dataIndex: 'contactUserTel', ellipsis: true, width: 140 },
     { title: '审核类型', dataIndex: 'reviewTypeName', ellipsis: true, width: 140 },
@@ -136,6 +140,7 @@ let LineInfo = (props, ref) => {
     const newTableList = JSON.parse(JSON.stringify(dataSource));
     newTableList.push(tableData[0]);
     setDataSource(newTableList);
+    setlineData(newTableList);
     setData((v) => ({ ...v, visible: false }));
   }
 
@@ -144,11 +149,18 @@ let LineInfo = (props, ref) => {
   }
 
   function getBatchFormValue(formValue) {
-    let newBatchData = [];
-    dataSource.forEach((item) => {
-      item.id = formValue.id;
+    const batchEditList = dataSource.filter((item) => {
+      return data.selectedRowKeys.includes(item.id);
     });
-    setDataSource(newBatchData);
+    const leftTableData = dataSource.filter((item) => {
+      return !(data.selectedRowKeys.includes(item.id));
+    });
+    const newBatchData = batchEditList.map((item) => {
+      return { ...item, ...formValue };
+    });
+    console.log([...newBatchData, ...leftTableData]);
+    setDataSource([...newBatchData, ...leftTableData]);;
+    setlineData([...newBatchData, ...leftTableData]);
     setBatchVisible();
   }
 
@@ -166,7 +178,7 @@ let LineInfo = (props, ref) => {
           }
           <ExtTable
             style={{ marginTop: '10px' }}
-            rowKey='id'
+            rowKey={'id' || 'uid'}
             allowCancelSelect={true}
             showSearch={false}
             remotePaging

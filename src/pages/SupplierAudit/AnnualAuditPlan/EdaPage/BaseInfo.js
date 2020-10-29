@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:40
- * @LastEditTime: 2020-10-27 17:16:15
+ * @LastEditTime: 2020-10-28 15:34:46
  * @Description:  基本信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BaseInfo.js
  */
@@ -43,6 +43,7 @@ const BaseInfo = (props) => {
 
   const HideFormItem = hideFormItem(getFieldDecorator);
 
+  console.log(userInfo);
   return (
     <div className={styles.wrapper}>
       <div className={styles.bgw}>
@@ -53,7 +54,7 @@ const BaseInfo = (props) => {
               {HideFormItem('applyCorporationId'), data.applyCorporationId}
               {HideFormItem('applyCorporationCode'), data.applyCorporationCode}
               <FormItem label="拟制公司" {...formLayout}>
-                {isView ? <span>{data.applyCorporationName}</span> : getFieldDecorator('applyCorporationCode', {
+                {isView ? <span>{data.applyCorporationName}</span> : getFieldDecorator('applyCorporationName', {
                   initialValue: type === 'add' ? '' : '',
                   rules: [
                     {
@@ -66,8 +67,8 @@ const BaseInfo = (props) => {
                     allowClear={true}
                     style={{ width: '100%' }}
                     form={form}
-                    name={'name'}
-                    field={['code', 'id']}
+                    name='applyCorporationName'
+                    field={['applyCorporationCode', 'applyCorporationId']}
                     {...AllCompanyConfig}
                   />,
                 )}
@@ -90,19 +91,19 @@ const BaseInfo = (props) => {
                     allowClear={true}
                     style={{ width: '100%' }}
                     form={form}
-                    name={'name'}
-                    field={['code', 'id']}
+                    name='applyDepartmentName'
+                    field={['applyDepartmentCode', 'applyDepartmentId']}
                     {...ApplyOrganizationProps}
                   />,
                 )}
               </FormItem>
             </Col>
             <Col span={12}>
-              {HideFormItem('applyId'), data.applyId}
-              {HideFormItem('applyAccount'), data.applyAccount}
+              {HideFormItem('applyId', type === 'add' ? userInfo.userId : data.applyId)}
+              {HideFormItem('applyAccount', type === 'add' ? userInfo.account : data.applyAccount)}
               <FormItem label="拟制人" {...formLayout}>
                 {isView ? <span>{data.applyName}</span> : getFieldDecorator('applyName', {
-                  initialValue: type === 'add' ? userInfo.applyName : '',
+                  initialValue: type === 'add' ? userInfo.userName : data.applyName,
                   rules: [
                     {
                       required: true,
@@ -115,7 +116,7 @@ const BaseInfo = (props) => {
             <Col span={12}>
               <FormItem label="联系方式" {...formLayout}>
                 {isView ? <span>{data.applyTel}</span> : getFieldDecorator('applyTel', {
-                  initialValue: type === 'add' ? userInfo.applyTel : '',
+                  initialValue: type === 'add' ? userInfo.userMobile : data.applyTel,
                   rules: [
                     {
                       required: true,

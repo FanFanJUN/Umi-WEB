@@ -18,14 +18,13 @@ const formItemLayoutLong = {
 
 const AddModal = (props) => {
 
-    const { visible, title, form, type, handleCancel, handleOk, lineData } = props
+    const { visible, title, form, handleCancel, handleOk } = props
 
-    const { getFieldDecorator, getFieldValue, setFieldsValue } = form;
+    const { getFieldDecorator } = form;
 
     const [selectedRowKeys, setselectedRowKeys] = useState([]);
     const [selectRows, setselectRows] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [dataSource, setdataSource] = useState([]);
     const [cascadeParams, setCascadeParams] = useState({});
 
     const columns = [
@@ -78,7 +77,7 @@ const AddModal = (props) => {
             message.info('至少选择一条行信息');
             return;
         }
-        const tableData = Object.assign({}, { ...selectRows[0], id: guid() });
+        const tableData = Object.assign({}, { ...selectRows[0], uid: guid() });
         handleOk([tableData]);
         setselectedRowKeys([]);
         setselectRows([]);

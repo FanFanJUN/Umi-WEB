@@ -3,15 +3,16 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-23 17:00:19
- * @LastEditTime: 2020-10-28 11:15:22
+ * @LastEditTime: 2020-10-28 15:12:42
  * @Description: 批量编辑页面
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BatchEditModal.js
  */
 import React from 'react';
 import { ComboGrid, ComboList, ExtModal } from 'suid';
 import { Col, Form, Input, InputNumber, Row } from 'antd';
-import { reviewTypesProps, reviewReasonsProps, reviewWaysProps } from '../propsParams';
+import { reviewTypesProps, reviewReasonsProps, reviewWaysProps, AreaConfig, CountryIdConfig } from '../propsParams';
 import { hideFormItem } from '@/utils/utilTool';
+import { basicServiceUrl, gatewayUrl } from '@/utils/commonUrl';
 
 const FormItem = Form.Item;
 
@@ -25,6 +26,7 @@ const formItemLayout = {
   wrapperCol: { span: 20 },
 }
 
+const width = 160;
 
 const BatchEditModal = (props) => {
 
@@ -93,8 +95,7 @@ const BatchEditModal = (props) => {
                     },
                   ],
                 })(
-                  <ComboList
-                    allowClear={true}
+                  <ComboGrid
                     style={{ width: '100%' }}
                     form={form}
                     name={'reviewReasonName'}
@@ -120,8 +121,7 @@ const BatchEditModal = (props) => {
                     },
                   ],
                 })(
-                  <ComboList
-                    allowClear={true}
+                  <ComboGrid
                     style={{ width: '100%' }}
                     form={form}
                     name={'reviewWayName'}
@@ -150,43 +150,41 @@ const BatchEditModal = (props) => {
           </Col>
         </Row>
         <Row>
-          <Col span={0}>
-            {hideFormItem('countryId', type === 'add' ? '' : fatherData.countryId)}
-          </Col>
-          <Col span={0}>
-            {hideFormItem('countryCode', type === 'add' ? '' : fatherData.countryCode)}
-          </Col>
-          <Col span={0}>
-            {hideFormItem('provinceId', type === 'add' ? '' : fatherData.provinceId)}
-          </Col>
-          <Col span={0}>
-            {hideFormItem('provinceCode', type === 'add' ? '' : fatherData.provinceCode)}
-          </Col>
-          <Col span={0}>
-            {hideFormItem('cityId', type === 'add' ? '' : fatherData.cityId)}
-          </Col>
-          <Col span={0}>
-            {hideFormItem('cityCode', type === 'add' ? '' : fatherData.cityCode)}
-          </Col>
-          <Col span={0}>
-            {hideFormItem('countyId', type === 'add' ? '' : fatherData.countyId)}
-          </Col>
-          <Col span={0}>
-            {hideFormItem('countyCode', type === 'add' ? '' : fatherData.countyCode)}
-          </Col>
+          {HideFormItem('countryId')}
+          {HideFormItem('countyCode')}
+          {HideFormItem('provinceId')}
+          {HideFormItem('provinceCode')}
+          {HideFormItem('cityId')}
+          {HideFormItem('cityCode')}
           <Col span={24}>
             <FormItem {...formItemLayout} label={'生产厂地址'}>
               {
                 getFieldDecorator('countryName', {
-                  initialValue: type === 'add' ? '' : '',
                   rules: [
                     {
                       required: true,
-                      message: '国家不能为空',
+                      message: '国家/省/市/区县/详细地址不能为空',
                     },
                   ],
                 })(
-                  <Input style={{ width: '15%' }} placeholder={'国家'} />
+                  <ComboList
+                    allowClear={true}
+                    style={{ width: '15%' }}
+                    width={width}
+                    form={form}
+                    name={'countryName'}
+                    field={['countryId', 'countyCode']}
+                    store={{
+                      params: {
+                        filters: [{ fieldName: 'code', fieldType: 'string', operator: 'EQ', value: 'CN' }],
+                      },
+                      type: 'POST',
+                      autoLoad: false,
+                      url: `${gatewayUrl}${basicServiceUrl}/region/findByPage`,
+                    }}
+                    placeholder={'国家'}
+                    {...CountryIdConfig}
+                  />,
                 )
               }
               {
@@ -199,7 +197,27 @@ const BatchEditModal = (props) => {
                     },
                   ],
                 })(
-                  <Input style={{ width: '15%' }} />
+                  <ComboList
+                    allowClear={true}
+                    style={{ width: '15%' }}
+                    width={width}
+                    form={form}
+                    name={'provinceName'}
+                    field={['provinceId', 'provinceCode']}
+                    cascadeParams={{
+                      countryId: getFieldValue('countryId'),
+                    }}
+                    store={{
+                      params: {
+                        countryId: getFieldValue('countryId'),
+                      },
+                      type: 'GET',
+                      autoLoad: false,
+                      url: `${gatewayUrl}${basicServiceUrl}/region/getProvinceByCountry`,
+                    }}
+                    placeholder={'省'}
+                    {...AreaConfig}
+                  />,
                 )
               }
               {
@@ -212,7 +230,27 @@ const BatchEditModal = (props) => {
                     },
                   ],
                 })(
-                  <Input style={{ width: '15%' }} />
+                  <ComboList
+                    allowClear={true}
+                    style={{ width: '15%' }}
+                    width={width}
+                    form={form}
+                    name={'cityName'}
+                    field={['cityId', 'cityCode']}
+                    cascadeParams={{
+                      provinceId: getFieldValue('provinceId'),
+                    }}
+                    store={{
+                      params: {
+                        provinceId: getFieldValue('provinceId'),
+                      },
+                      type: 'GET',
+                      autoLoad: false,
+                      url: `${gatewayUrl}${basicServiceUrl}/region/getCityByProvince`,
+                    }}
+                    placeholder={'市'}
+                    {...AreaConfig}
+                  />,
                 )
               }
               {
@@ -225,7 +263,25 @@ const BatchEditModal = (props) => {
                     },
                   ],
                 })(
-                  <Input style={{ width: '15%' }} />
+                  <ComboList
+                    allowClear={true}
+                    style={{ width: '15%' }}
+                    width={width}
+                    form={form}
+                    name={'countyName'}
+                    field={['countyId']}
+                    store={{
+                      params: {
+                        includeSelf: false,
+                        nodeId: getFieldValue('cityId'),
+                      },
+                      type: 'GET',
+                      autoLoad: false,
+                      url: `${gatewayUrl}${basicServiceUrl}/region/getChildrenNodes`,
+                    }}
+                    placeholder={'区/县'}
+                    {...AreaConfig}
+                  />,
                 )
               }
               {
@@ -238,7 +294,7 @@ const BatchEditModal = (props) => {
                     },
                   ],
                 })(
-                  <Input style={{ width: '40%' }} />
+                  <Input style={{ width: '40%' }} placeholder={'请输入详细地址'} />,
                 )
               }
             </FormItem>

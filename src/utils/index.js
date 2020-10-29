@@ -221,6 +221,11 @@ export const getMobile = () => {
   return info?.mobile
 }
 
+export const getAccount = () => {
+  const info = storage.sessionStorage.get('Authorization') || {};
+  return info?.account
+}
+
 export const downloadBlobFile = (data, name) => {
   // console.log(typeof data)
   // return

@@ -1,9 +1,9 @@
 import request from '@/utils/request';
-import { baseUrl, smBaseUrl } from '@/utils/commonUrl';
+import { recommendUrl } from '@/utils/commonUrl';
 
-// 合格供应商名录
-export async function getSupplierSupplyList(params) {
-    const requestUrl = `${smBaseUrl}/supplierSupplyList/listPageVo`;
+// 审核需求新增-确定
+export async function findRequirementLine(params) {
+    const requestUrl = `${recommendUrl}/api/reviewPlanMonthLineService/findRequirementLine`;
     return request({
         url: requestUrl,
         method: 'GET',

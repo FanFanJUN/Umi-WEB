@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-27 17:01:47
- * @LastEditTime: 2020-10-28 11:14:32
+ * @LastEditTime: 2020-10-28 15:12:13
  * @Description: 参数props
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/propsParams.js
  */
@@ -131,4 +131,26 @@ export const reviewWaysProps = {
     name: 'name',
     description: 'code',
   },
-}; 
+};
+
+// 区域
+export const AreaConfig = {
+  remotePaging: true,
+  rowKey: 'code',
+  reader: {
+    field: ['id', 'code'],
+    name: 'name',
+    description: 'code',
+  },
+};
+
+// 区域
+export const CountryIdConfig = {
+  remotePaging: true,
+  rowKey: 'code',
+  reader: {
+    field: ['countryId', 'code'],
+    name: 'name',
+    description: 'code',
+  },
+};

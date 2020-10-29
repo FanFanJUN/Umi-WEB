@@ -375,6 +375,8 @@ const SupplierModal = (props) => {
       item.allotPeopleCode = props.selectedRows[0].strategicPurchaseCode;
       item.allotPeopleId = props.selectedRows[0].strategicPurchaseId;
       item.allotDate = moment(new Date()).format('YYYY-MM-DD');
+      item.whetherDelete = false;
+      item.publish = false;
       item.downloadAbortDate = moment(new Date().setMonth(new Date().getMonth() + 1)).format('YYYY-MM-DD');
       return item;
     })
