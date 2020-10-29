@@ -52,7 +52,7 @@ const Index = () => {
       case 'edit':
         getUser();
         findOne(reviewRequirementCode)
-        setData((value) => ({ ...value, type: pageState, id, isView: false, title: `审核需求管理-编辑${reviewRequirementCode}`}));
+        setData((value) => ({ ...value, type: pageState, id, isView: false, title: `审核需求管理-编辑 ${reviewRequirementCode}`}));
         break;
       case 'detail':
         setData((value) => ({ ...value, type: pageState, isView: true, title: `审核需求管理-明细${reviewRequirementCode}`}));
@@ -106,8 +106,9 @@ const Index = () => {
       }
     });
     const lineBoList = await intendedAuditInformationRef.current.getDataSource()
+    const deleteArr = await intendedAuditInformationRef.current.getDeleteArr()
     if (lineBoList && lineBoList.length !== 0) {
-      insertData.lineBoList = lineBoList
+      insertData.lineBoList = [...lineBoList, ...deleteLine]
       Modal.confirm({
         title: '是否确认暂存该数据!',
         onOk: () => {
@@ -122,10 +123,11 @@ const Index = () => {
             }).catch(err => message.error(err.message))
           } else {
             let updateData = Object.assign(data.editData, insertData)
+            updateData.deleteList = deleteArr
             UpdateAuditRequirementsManagement(updateData).then(res => {
               if (res.success) {
                 message.success(res.message)
-                // handleBack()
+                handleBack()
               } else {
                 message.error(res.message)
               }

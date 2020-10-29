@@ -12,6 +12,8 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
 
   const tableRef = useRef(null);
 
+  const [deleteArr, setDeleteArr] = useState([])
+
   const [data, setData] = useState({
     reviewTeamGroupBoList: [],
     teamVisible: false,
@@ -55,6 +57,7 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
 
   useImperativeHandle(ref, () => ({
     getDataSource: () => data.dataSource,
+    getDeleteArr: () => deleteArr
   }));
 
   const handleBtn = (type) => {
@@ -105,6 +108,7 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
   }, [editData])
 
   const handleSelectedRows = (value, rows) => {
+    console.log(rows)
     setData((v) => ({
       ...v,
       selectedRowKeys: value,
@@ -279,6 +283,8 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
         visible={data.contentVisible}
       />
       <Team
+        deleteArr={deleteArr}
+        setDeleteArr={setDeleteArr}
         type={data.type}
         reviewTeamGroupBoList={data.reviewTeamGroupBoList}
         onOk={teamOk}

@@ -56,6 +56,7 @@ const Team = (props) => {
   });
 
   const [data, setData] = useState({
+    defaultSystem: [],
     treeData: [],
     leftTreeData: undefined,
     selectRows: [],
@@ -71,11 +72,24 @@ const Team = (props) => {
         reviewTypeCode: props.reviewTypeCode
       }).then(res => {
         if (res.success) {
-          console.log(res)
-        } else {
-          message.error('获取默认评价体系失败!')
+          let defaultSystem = JSON.parse(JSON.stringify(res.data))
+          defaultSystem.map(item => {
+            item.systemId = item.id
+            item.systemName = item.name
+            item.key = item.id
+            item.title = item.name
+            if(item.children && item.children.length !== 0) {
+              item.children.map(v => {
+                v.systemId = v.id
+                v.systemName = v.name
+                v.key = v.id
+                v.title = v.name
+              })
+            }
+          })
+          setData(v => ({...v, defaultSystem}))
         }
-      })
+      }).catch(err => message.error(err.message))
     }
   }, [visible])
 
@@ -151,7 +165,6 @@ const Team = (props) => {
 
   const onOk = () => {
     props.onOk(teamData.dataSource)
-    console.log(teamData.dataSource)
   };
 
   const handleTeamSelectedRows = (keys, values) => {
@@ -234,15 +247,22 @@ const Team = (props) => {
   };
 
   const teamDelete = () => {
-    const {selectedRowKeys} = teamData
-    let newData = teamData.dataSource.slice()
+    const {selectedRowKeys, selectedRows} = teamData
+    let newData = JSON.parse(JSON.stringify(teamData.dataSource))
     if (selectedRowKeys && selectedRowKeys.length !== 0) {
+      if (selectedRows[0].id) {
+        let deleteArr = props.deleteArr.slice()
+        deleteArr.push({id: selectedRows[0].id, type: 'GROUP'})
+        props.setDeleteArr( deleteArr)
+      }
       newData.forEach((value, index) => {
-        if (value.lineNum === selectedRowKeys[0].lineNum) {
+        if (value.lineNum === selectedRowKeys[0]) {
           newData.splice(index, 1)
         }
       })
-      setTeamData(v => ({...v, dataSource: newData}))
+      setTeamData(v => ({...v, dataSource: newData, selectedRows: [], selectedRowKeys: []}))
+      teamTableRef.current.manualSelectedRows()
+      teamTableRef.current.remoteDataRefresh()
     } else {
       message.error('请至少选择一条数据')
     }
@@ -251,6 +271,12 @@ const Team = (props) => {
   // 成员的删除
   const contentDelete = () => {
     if (contentData.selectedRowKeys && contentData.selectedRowKeys.length !== 0) {
+      // 成员和组别的层级太深，和后端约定同意放在一个数组中传过去
+      if (contentData.selectedRows[0].id) {
+        let deleteArr = props.deleteArr.slice()
+        deleteArr.push({id: contentData.selectedRows[0].id, type: 'MEMBER'})
+        props.setDeleteArr(deleteArr)
+      }
       let newDataSource = JSON.parse(JSON.stringify(contentData.dataSource))
       newDataSource.forEach((item, index) => {
         if (item.lineNum === contentData.selectedRowKeys[0]) {
@@ -277,9 +303,9 @@ const Team = (props) => {
 
   // 构造左边树
   const getLeftTreeData = () => {
-    console.log(props.treeData)
+    console.log(props.treeData, data.defaultSystem)
     if(contentData.selectedRowKeys && contentData.selectedRowKeys.length !== 0) {
-      setData(v => ({...v, leftTreeData: props.treeData}))
+      setData(v => ({...v, leftTreeData: [...props.treeData, ...data.defaultSystem]}))
     } else {
       message.error('请选择一名成员')
     }

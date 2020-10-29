@@ -74,7 +74,7 @@ const AddBeAudited = (props) => {
   };
 
   useEffect(() => {
-    if (props.allAuditType && props.allAuditType.length !== 0) {
+    if (props.allAuditType && props.allAuditType.length !== 0 && visible) {
       props.allAuditType.map(item => {
         if (item.name === '追加审核') {
           setFieldsValue({
@@ -84,7 +84,7 @@ const AddBeAudited = (props) => {
         }
       });
     }
-  }, [props.allAuditType]);
+  }, [visible]);
 
   const hideFormItem = (name, initialValue) => (
     <FormItem>

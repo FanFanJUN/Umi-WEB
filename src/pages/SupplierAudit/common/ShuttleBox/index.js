@@ -22,12 +22,19 @@ const ShuttleBox = (props) => {
         constructArr(newData);
         setData(v => ({ ...v, leftData: [newData] }));
       } else {
+        if (newData.length > 1) {
+          newData = duplicateRemoval(newData, 'key')
+        }
         setData(v => ({ ...v, leftData: newData }));
       }
     } else {
       setData(v => ({ ...v, leftData: [] }));
     }
   }, [leftTreeData]);
+
+  // leftTree去重，并去children数量更大值
+  const arrayHeavy = (value) => {
+  }
 
   useEffect(() => {
     props.onChange(data.rightTreeData)
