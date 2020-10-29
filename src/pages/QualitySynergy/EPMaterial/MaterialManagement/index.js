@@ -381,7 +381,8 @@ export default create()(function ({ form }) {
                     });
                 })(),
                 withdraw: true,
-                distribute: !(rows.every(item => (item.effectiveStatus === "EFFECT" && !item.frozen && item.strategicPurchaseCode && item.allotSupplierState !== 'ALLOT_END'))),
+                distribute: true,
+                // distribute: !(rows.every(item => (item.effectiveStatus === "EFFECT" && !item.frozen && item.strategicPurchaseCode && item.allotSupplierState !== 'ALLOT_END'))),
                 sync: true,
                 pdm: true,
                 check: true,

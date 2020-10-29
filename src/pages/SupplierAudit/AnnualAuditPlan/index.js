@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:00:19
- * @LastEditTime: 2020-10-27 13:51:32
+ * @LastEditTime: 2020-10-29 17:13:16
  * @Description:  年度审核计划管理
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/index.js
  */
@@ -204,17 +204,45 @@ export default function () {
     ];
 
     const columns = [
-        { title: '状态', dataIndex: 'state', width: 80 },
-        { title: '审批状态', dataIndex: 'flowStatus', width: 200 },
+        {
+            title: '状态', dataIndex: 'state', width: 80, render: (text) => {
+                switch (text) {
+                    case "DRAFT":
+                        return "草稿";
+                    case "EFFECT":
+                        return "生效";
+                    case "CHANGING":
+                        return "变更中";
+                    default:
+                        break;
+                }
+            }
+        },
+        {
+            title: '审批状态', dataIndex: 'flowStatus', width: 200, render: (text, record) => {
+                switch (text) {
+                    case "INIT":
+                        return "未提交审批";
+                    case "INPROCESS":
+                        return "审批中";
+                    case "COMPLETED":
+                        return "审批完成";
+                    default:
+                        break;
+                }
+            },
+        },
         { title: '年度审核计划号', dataIndex: 'reviewPlanYearCode', width: 200 },
         { title: '年度', dataIndex: 'applyYear', ellipsis: true, width: 250 },
         { title: '拟制说明', dataIndex: 'reviewPlanYearName', ellipsis: true, width: 200 },
         { title: '拟制公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 200 },
         { title: '拟制部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200 },
         { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 200 },
-        { title: '拟制时间', dataIndex: 'applyDate', ellipsis: true, width: 200, render: function (text, record) {
-            return record.applyDateStart &&  `${moment(record.applyDateStart).format('YYYY-MM-DD')} ~ ${moment(record.applyDateEnd).format('YYYY-MM-DD')}`;
-        } },
+        {
+            title: '拟制时间', dataIndex: 'applyDate', ellipsis: true, width: 200, render: function (text, record) {
+                return record.applyDateStart && `${moment(record.applyDateStart).format('YYYY-MM-DD')} ~ ${moment(record.applyDateEnd).format('YYYY-MM-DD')}`;
+            }
+        },
     ].map(item => ({ ...item, align: 'center' }));
 
     const visibleSupplier = () => {

@@ -1,6 +1,19 @@
 import { baseUrl, basicServiceUrl, gatewayUrl, recommendUrl, smBaseUrl } from '../../../utils/commonUrl';
 import request from '../../../utils/request';
 
+/**
+ * 判断为空
+ */
+export const isEmpty = (value) => {
+  return (value === null || value === undefined || value === '' || value === 'null' || value === 'NULL' || value === 'NAN');
+};
+
+/**不超过200位有空格、可换行**/
+export const length_200_n = (rule, value, callback) => {
+  isEmpty(value) && (value = '');
+  value.length < 201 ? callback() : callback('')
+};
+
 export const duplicateRemoval = (arr, key) => {
   for (let i = 0; i < arr.length - 1; i++) {
     for (let j = i + 1; j < arr.length; j++) {
@@ -58,10 +71,18 @@ export const TypeConfig = {
   ...commonProps,
 }
 
+export const RoleArr = {
+  'GROUP_LEADER': '组长',
+  'MEMBER': '成员',
+}
+
+export const PersonnelTypeArr = {
+  'INTERNAL_USERS': '内部用户',
+  'EXTERNAL_USERS': '外部用户',
+}
 
 // 人员类型
 export const PersonnelTypeConfig = {
-  allowClear: true,
   dataSource: [
     {
       code: 'INTERNAL_USERS',
@@ -393,6 +414,16 @@ export const GetSupplierContact = async (params={}) => {
     url,
     method: 'GET',
     params: params,
+  });
+}
+
+// 审核需求管理update
+export const UpdateAuditRequirementsManagement = async (params={}) => {
+  const url = `${recommendUrl}/api/reviewRequirementService/update`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
   });
 }
 

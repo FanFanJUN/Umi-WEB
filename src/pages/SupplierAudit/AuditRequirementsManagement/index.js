@@ -65,7 +65,7 @@ export default function() {
         openNewTab('supplierAudit/AuditRequirementsManagementAdd?pageState=add', '审核需求管理-新增', false);
         break;
       case 'edit':
-        openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=edit&id=${data.selectedRows[0].reviewRequirementCode}`, '审核需求管理-编辑', false);
+        openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=edit&reviewRequirementCode=${data.selectedRows[0].reviewRequirementCode}&id=${data.selectedRows[0].id}`, '审核需求管理-编辑', false);
         break;
       case 'detail':
         openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=detail&id=${data.selectedRowKeys[0]}`, '审核需求管理-明细', false);
@@ -234,7 +234,7 @@ export default function() {
     { title: '申请部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200 },
     { title: '采购组织', dataIndex: 'orgName', ellipsis: true, width: 200 },
     { title: '申请人员', dataIndex: 'applyName', ellipsis: true, width: 200 },
-    { title: '申请时间', dataIndex: 'createdDate', ellipsis: true, width: 200 },
+    { title: '申请时间', dataIndex: 'applyDate', ellipsis: true, width: 200 },
   ].map(item => ({ ...item, align: 'center' }));
 
   const visibleSupplier = () => {

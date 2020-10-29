@@ -6,31 +6,21 @@ import AddBeAudited from './component/addBeAudited';
 import Content from './component/content';
 import Team from './component/team';
 import { getRandom } from '../../../QualitySynergy/commonProps';
+import { supplierStrategyName } from '../../mainData/commomService';
 
 let IntendedAuditInformation = React.forwardRef((props, ref) => {
 
   const tableRef = useRef(null);
 
+  const [deleteArr, setDeleteArr] = useState([])
+
   const [data, setData] = useState({
+    reviewTeamGroupBoList: [],
     teamVisible: false,
     contentVisible: false,
     type: 'add',
-    dataSource: [
-      // {
-      //   lineNum: 123,
-      //   id: 123,
-      //   fileCategoryName: 1,
-      //   reviewTypeName: 2,
-      //   reviewReasonName: 2,
-      //   materialGroupName: 4,
-      //   supplierName: 5,
-      //   agentName: 6,
-      //   countryName: 7,
-      //   contactUserName: 8,
-      //   contactUserTel: 10,
-      //   remark: 9,
-      // },
-    ],
+    editData: {},
+    dataSource: [],
     treeData: [],
     selectRows: [],
     selectedRowKeys: [],
@@ -44,7 +34,7 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
       title: '操作',
       dataIndex: 'id',
       width: 140,
-      render: () => <span><a onClick={showContent}>内容</a>  <a onClick={showTeam}>小组</a></span>,
+      render: () => <span><a onClick={() => showContent('detail')}>内容</a>  <a onClick={() => showTeam('detail')}>小组</a></span>,
     },
     { title: '审核类型', dataIndex: 'reviewTypeName', width: 140, ellipsis: true },
     { title: '审核原因', dataIndex: 'reviewReasonName', ellipsis: true, width: 140 },
@@ -63,21 +53,41 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
     { title: '备注', dataIndex: 'remark', ellipsis: true, width: 140 },
   ].map(item => ({ ...item, align: 'center' }));
 
-  const { isView } = props;
+  const { isView, type, editData } = props;
 
   useImperativeHandle(ref, () => ({
     getDataSource: () => data.dataSource,
+    getDeleteArr: () => deleteArr
   }));
-
 
   const handleBtn = (type) => {
     switch (type) {
       case 'add':
-        if (props.companyCode && props.organizationCode) {
-          setData(v => ({ ...v, visible: true, title: '新增拟审核信息', type: 'add' }));
-        } else {
-          message.error('请先选择公司和采购组织!');
+        setData(v => ({ ...v, visible: true, title: '新增拟审核信息', type: 'add', editData: {} }));
+        break;
+      case 'edit':
+        let editData = JSON.parse(JSON.stringify(data.selectRows[0]));
+        editData.supplierStrategyName = supplierStrategyName[editData.supplierStrategyName];
+        setData(v => ({ ...v, title: '编辑拟审核信息', type: 'edit', editData: editData, visible: true }));
+        break;
+      case 'delete':
+        let deleteData = JSON.parse(JSON.stringify(data.selectRows[0]))
+        if (deleteData.id) {
+          let arr = JSON.parse(JSON.stringify(props.deleteLine))
+          deleteData.whetherDeleted = true
+          arr.push(deleteData)
+          props.setDeleteLine(arr)
         }
+        let newDataSource = JSON.parse(JSON.stringify(data.dataSource))
+        newDataSource.map((item, index) => {
+          if (item.lineNum === data.selectedRowKeys[0]) {
+            newDataSource.splice(index, 1)
+          }
+        })
+        newDataSource = newDataSource.map((item, index) => ({...item, reviewRequirementLinenum: ((Array(4).join(0) + (index + 1)).slice(-4) + '0')}))
+        setData(v => ({...v, dataSource: newDataSource}))
+        tableRef.current.manualSelectedRows();
+        tableRef.current.remoteDataRefresh();
         break;
       case 'content':
         return showContent();
@@ -86,19 +96,61 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
     }
   };
 
+  useEffect(() => {
+    if (type !== 'add') {
+      let newData = JSON.parse(JSON.stringify(editData))
+      newData.map(item => {
+        item.treeData = buildTreeData(item.fatherList, item.sonList)
+        item.lineNum = getRandom(10)
+      })
+      setData(v => ({...v, dataSource: newData}))
+    }
+  }, [editData])
+
   const handleSelectedRows = (value, rows) => {
-    setData((v) => ({ ...v, selectedRowKeys: value, selectRows: rows, treeData: rows[0].treeData }));
+    console.log(rows)
+    setData((v) => ({
+      ...v,
+      selectedRowKeys: value,
+      selectRows: rows,
+      treeData: rows.length !== 0 ? rows[0].treeData : [],
+    }));
   };
+
+  // 编辑和明细时构造treeData
+  const buildTreeData = (fatherList, sonList) => {
+    let arr = JSON.parse(JSON.stringify(fatherList))
+    arr.map(item => {
+      item.id = item.systemId
+      item.key = item.systemId
+      item.title = item.systemName
+      if (!item.children) {
+        item.children = []
+      }
+      sonList.forEach(value => {
+        value.id = value.systemId
+        value.key = value.systemId
+        value.title = value.systemName
+        if (value.parentId === item.systemId) {
+          item.children.push(value)
+        }
+      })
+    })
+    return arr
+  }
 
   // 打开内容界面
   const showContent = () => {
-    setData(v => ({ ...v, contentVisible: true }));
-
+    setData(v => ({ ...v, contentVisible: true, type}));
   };
 
   // 打开小组界面
   const showTeam = () => {
-    setData(v => ({ ...v, teamVisible: true }));
+    let arr = JSON.parse(JSON.stringify(data.selectRows[0].reviewTeamGroupBoList))
+    if (type !== 'add') {
+      arr = arr.map(item => ({...item, lineNum: getRandom(10)}))
+    }
+    setData(v => ({ ...v, reviewTeamGroupBoList: arr, teamVisible: true, type}));
   };
 
   const contentOk = (value) => {
@@ -107,7 +159,7 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
     let arr = [];
     value.map(item => {
       item.children.map(v => {
-        arr.push(v)
+        arr.push(v);
       });
     });
     newData.map((item, index) => {
@@ -117,7 +169,15 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
         newData[index].sonList = arr;
       }
     });
-    setData(v => ({ ...v, dataSource: newData, treeData: value, contentVisible: false }));
+    setData(v => ({
+      ...v,
+      dataSource: newData,
+      treeData: value,
+      contentVisible: false,
+      selectRows: [],
+      selectedRowKeys: [],
+    }));
+    tableRef.current.manualSelectedRows();
     tableRef.current.remoteDataRefresh();
   };
 
@@ -133,6 +193,21 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
       value.treeData = [];
       value.reviewTeamGroupBoList = [];
       setData(v => ({ ...v, dataSource: [...data.dataSource, ...[value]], visible: false }));
+    } else if (data.type === 'edit') {
+      value.reviewRequirementLinenum = data.selectRows[0].reviewRequirementLinenum;
+      value.lineNum = data.selectRows[0].lineNum;
+      value.supplierStrategyName = value.supplierStrategyCode;
+      value.treeData = data.selectRows[0].treeData;
+      value.reviewTeamGroupBoList = data.selectRows[0].reviewTeamGroupBoList;
+      let newData = JSON.parse(JSON.stringify(data.dataSource));
+      newData.map((item, index) => {
+        if (item.lineNum === data.selectedRowKeys[0]) {
+          newData[index] = value;
+        }
+      });
+      setData(v => ({ ...v, dataSource: newData, visible: false }));
+      tableRef.current.manualSelectedRows();
+      tableRef.current.remoteDataRefresh();
     }
   };
 
@@ -143,7 +218,8 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
         newData[index].reviewTeamGroupBoList = value;
       }
     });
-    setData(v => ({ ...v, dataSource: newData, teamVisible: false }));
+    setData(v => ({ ...v, dataSource: newData, teamVisible: false, reviewTeamGroupBoList: []}));
+    tableRef.current.manualSelectedRows();
     tableRef.current.remoteDataRefresh();
   };
 
@@ -188,6 +264,7 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
         </div>
       </div>
       <AddBeAudited
+        editData={data.editData}
         companyCode={props.companyCode}
         organizationCode={props.organizationCode}
         onOk={addBeAuditedOK}
@@ -206,12 +283,14 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
         visible={data.contentVisible}
       />
       <Team
+        deleteArr={deleteArr}
+        setDeleteArr={setDeleteArr}
         type={data.type}
-        reviewTeamGroupBoList={data.selectRows[0]?.reviewTeamGroupBoList}
+        reviewTeamGroupBoList={data.reviewTeamGroupBoList}
         onOk={teamOk}
         treeData={data.treeData}
         reviewTypeCode={data.selectRows[0]?.reviewTypeCode}
-        onCancel={() => setData(v => ({ ...v, teamVisible: false }))}
+        onCancel={() => setData(v => ({ ...v, teamVisible: false, reviewTeamGroupBoList: []}))}
         visible={data.teamVisible}
       />
     </div>

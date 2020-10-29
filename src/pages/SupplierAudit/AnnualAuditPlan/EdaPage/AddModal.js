@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ComboGrid, ComboList, ComboTree, ExtModal, ExtTable } from 'suid';
 import { Button, Col, Form, Input, message, Row } from 'antd';
-import { AllCompanyConfig, AuditCauseManagementConfig } from '../../mainData/commomService';
-import { isEmptyArray, guid, hideFormItem, filterEmptyFileds } from '@/utils/utilTool';
+import { AuditCauseManagementConfig } from '../../mainData/commomService';
+import { isEmptyArray, hideFormItem, filterEmptyFileds } from '@/utils/utilTool';
 // import { getSupplierSupplyList } from '../service';
 import { smBaseUrl } from '@/utils/commonUrl';
 import { purchaseOrgConfig, corporationProps, materialClassProps, getListByTypeId } from '@/utils/commonProps';
-import LineInfo from './LineInfo';
-import { func } from 'prop-types';
 
 const FormItem = Form.Item;
 
@@ -77,7 +75,8 @@ const AddModal = (props) => {
             message.info('至少选择一条行信息');
             return;
         }
-        const tableData = Object.assign({}, { ...selectRows[0], uid: guid() });
+        const tableData = Object.assign({}, selectRows[0]);
+        delete tableData.id;
         handleOk([tableData]);
         setselectedRowKeys([]);
         setselectRows([]);

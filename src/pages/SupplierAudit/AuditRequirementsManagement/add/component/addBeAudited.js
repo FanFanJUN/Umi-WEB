@@ -3,7 +3,7 @@ import { ComboTree, ComboList, ExtModal } from 'suid';
 import { Col, Form, Input, message, Row } from 'antd';
 import {
   AreaConfig, CountryIdConfig,
-  DocumentAuditCauseManagementConfig,
+  DocumentAuditCauseManagementConfig, length_200_n,
   NormalSupplierConfig,
   SelectionStrategyConfig,
 } from '../../../mainData/commomService';
@@ -27,10 +27,10 @@ const formItemLayout = {
 const AddBeAudited = (props) => {
 
   const [data, setData] = useState({
-    visible: false
-  })
+    visible: false,
+  });
 
-  const { visible, title, form, type } = props;
+  const { visible, title, form, type, editData } = props;
 
   const { getFieldDecorator, getFieldValue, setFieldsValue } = props.form;
 
@@ -41,7 +41,8 @@ const AddBeAudited = (props) => {
   const onOk = () => {
     props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        props.onOk(values)
+        console.log(values);
+        props.onOk(values);
       }
     });
   };
@@ -63,17 +64,17 @@ const AddBeAudited = (props) => {
       countyName: supplierExtend.officeDistrictName,
       address: supplierExtend.officeStreet,
     });
-    getSupplierContact()
+    getSupplierContact();
     console.log(value, '供应商');
   };
 
   // 获取供应商联系人
   const getSupplierContact = () => {
 
-  }
+  };
 
   useEffect(() => {
-    if (props.allAuditType && props.allAuditType.length !== 0) {
+    if (props.allAuditType && props.allAuditType.length !== 0 && visible) {
       props.allAuditType.map(item => {
         if (item.name === '追加审核') {
           setFieldsValue({
@@ -83,7 +84,7 @@ const AddBeAudited = (props) => {
         }
       });
     }
-  }, [props.allAuditType]);
+  }, [visible]);
 
   const hideFormItem = (name, initialValue) => (
     <FormItem>
@@ -99,25 +100,43 @@ const AddBeAudited = (props) => {
 
   const openSupplierModal = () => {
     if (getFieldValue('supplierStrategyName')) {
-      setData(v => ({...v, visible: true}))
+      setData(v => ({ ...v, visible: true }));
     } else {
-      message.error('请先选择供应商选择策略!')
+      message.error('请先选择供应商选择策略!');
     }
-  }
+  };
+
+  const supplierStrategyChange = () => {
+    setFieldsValue({
+      supplierName: '',
+      supplierCode: '',
+      supplierId: '',
+    });
+  };
 
   const supplierOk = (value) => {
-    const {materielCategory, supplier} = value
+    const { materielCategory, supplier, supplier: { supplierExtend } } = value;
+    console.log(supplierExtend);
     setFieldsValue({
       materialGroupName: materielCategory.name,
       materialGroupCode: materielCategory.code,
       materialGroupId: materielCategory.id,
       supplierName: supplier.name,
       supplierCode: supplier.code,
-      supplierId: supplier.id
-    })
-    setData(v => ({...v, visible: false}))
-    console.log(value)
-  }
+      supplierId: supplier.id,
+      countryId: supplierExtend.countryId,
+      countryName: supplierExtend.countryName,
+      provinceId: supplierExtend.officeProvinceId,
+      provinceName: supplierExtend.officeProvinceName,
+      cityId: supplierExtend.officeRegionId,
+      cityName: supplierExtend.officeRegionId,
+      countyId: supplierExtend.officeDistrictId,
+      countyName: supplierExtend.officeDistrictName,
+      address: supplierExtend.officeStreet,
+    });
+    setData(v => ({ ...v, visible: false }));
+    console.log(value);
+  };
 
   return (
     <ExtModal
@@ -133,16 +152,16 @@ const AddBeAudited = (props) => {
       <Form>
         <Row>
           <Col span={0}>
-            {hideFormItem('reviewTypeId', type === 'add' ? '' : fatherData.reviewTypeId)}
+            {hideFormItem('reviewTypeId', type === 'add' ? '' : editData.reviewTypeId)}
           </Col>
           <Col span={0}>
-            {hideFormItem('reviewTypeCode', type === 'add' ? '' : fatherData.reviewTypeCode)}
+            {hideFormItem('reviewTypeCode', type === 'add' ? '' : editData.reviewTypeCode)}
           </Col>
           <Col span={12}>
             <FormItem {...formItemLayoutLong} label={'审核类型'}>
               {
                 getFieldDecorator('reviewTypeName', {
-                  initialValue: type === 'add' ? '追加审核' : '',
+                  initialValue: editData.reviewTypeName ? editData.reviewTypeName : '追加审核',
                   rules: [
                     {
                       required: true,
@@ -156,16 +175,16 @@ const AddBeAudited = (props) => {
             </FormItem>
           </Col>
           <Col span={0}>
-            {hideFormItem('reviewReasonId', type === 'add' ? '' : fatherData.reviewReasonId)}
+            {hideFormItem('reviewReasonId', type === 'add' ? '' : editData.reviewReasonId)}
           </Col>
           <Col span={0}>
-            {hideFormItem('reviewReasonCode', type === 'add' ? '' : fatherData.reviewReasonCode)}
+            {hideFormItem('reviewReasonCode', type === 'add' ? '' : editData.reviewReasonCode)}
           </Col>
           <Col span={12}>
             <FormItem {...formItemLayoutLong} label={'审核原因'}>
               {
                 getFieldDecorator('reviewReasonName', {
-                  initialValue: type === 'add' ? '' : '',
+                  initialValue: editData.reviewReasonName ? editData.reviewReasonName : '',
                   rules: [
                     {
                       required: true,
@@ -187,14 +206,14 @@ const AddBeAudited = (props) => {
           </Col>
         </Row>
         <Col span={0}>
-          {hideFormItem('supplierStrategyCode', type === 'add' ? '' : fatherData.supplierStrategyCode)}
+          {hideFormItem('supplierStrategyCode', type === 'add' ? '' : editData.supplierStrategyCode)}
         </Col>
         <Row>
           <Col span={12}>
             <FormItem {...formItemLayoutLong} label={'供应商选择方式'}>
               {
                 getFieldDecorator('supplierStrategyName', {
-                  initialValue: type === 'add' ? '' : '',
+                  initialValue: editData.supplierStrategyName ? editData.supplierStrategyName : '',
                   rules: [
                     {
                       required: true,
@@ -205,6 +224,7 @@ const AddBeAudited = (props) => {
                   <ComboList
                     allowClear={true}
                     style={{ width: '100%' }}
+                    afterSelect={supplierStrategyChange}
                     form={form}
                     field={['supplierStrategyCode']}
                     name={'supplierStrategyName'}
@@ -215,16 +235,16 @@ const AddBeAudited = (props) => {
             </FormItem>
           </Col>
           <Col span={0}>
-            {hideFormItem('supplierId', type === 'add' ? '' : fatherData.supplierId)}
+            {hideFormItem('supplierId', type === 'add' ? '' : editData.supplierId)}
           </Col>
           <Col span={0}>
-            {hideFormItem('supplierCode', type === 'add' ? '' : fatherData.supplierCode)}
+            {hideFormItem('supplierCode', type === 'add' ? '' : editData.supplierCode)}
           </Col>
           <Col span={12}>
             <FormItem {...formItemLayoutLong} label={'供应商'}>
               {
                 getFieldDecorator('supplierName', {
-                  initialValue: type === 'add' ? '' : '',
+                  initialValue: editData.supplierName ? editData.supplierName : '',
                   rules: [
                     {
                       required: true,
@@ -256,23 +276,24 @@ const AddBeAudited = (props) => {
                 )
               }
               {
-                getFieldValue('supplierStrategyName') !== '正常供应商' && <a style={{ marginLeft: '2%' }} onClick={openSupplierModal}>选择</a>
+                getFieldValue('supplierStrategyName') !== '正常供应商' &&
+                <a style={{ marginLeft: '2%' }} onClick={openSupplierModal}>选择</a>
               }
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span={0}>
-            {hideFormItem('agentId', type === 'add' ? '' : fatherData.agentId)}
+            {hideFormItem('agentId', type === 'add' ? '' : editData.agentId)}
           </Col>
           <Col span={0}>
-            {hideFormItem('agentCode', type === 'add' ? '' : fatherData.agentCode)}
+            {hideFormItem('agentCode', type === 'add' ? '' : editData.agentCode)}
           </Col>
           <Col span={12}>
             <FormItem {...formItemLayoutLong} label={'代理商'}>
               {
                 getFieldDecorator('agentName', {
-                  initialValue: type === 'add' ? '' : '',
+                  initialValue: editData.agentName ? editData.agentName : '',
                 })(
                   <Input/>,
                 )
@@ -280,16 +301,16 @@ const AddBeAudited = (props) => {
             </FormItem>
           </Col>
           <Col span={0}>
-            {hideFormItem('materialGroupId', type === 'add' ? '' : fatherData.materialGroupId)}
+            {hideFormItem('materialGroupId', type === 'add' ? '' : editData.materialGroupId)}
           </Col>
           <Col span={0}>
-            {hideFormItem('materialGroupCode', type === 'add' ? '' : fatherData.materialGroupCode)}
+            {hideFormItem('materialGroupCode', type === 'add' ? '' : editData.materialGroupCode)}
           </Col>
           <Col span={12}>
             <FormItem {...formItemLayoutLong} label={'物料分类'}>
               {
                 getFieldDecorator('materialGroupName', {
-                  initialValue: type === 'add' ? '' : '',
+                  initialValue: editData.materialGroupName ? editData.materialGroupName : '',
                   rules: [
                     {
                       required: true,
@@ -313,22 +334,22 @@ const AddBeAudited = (props) => {
         </Row>
         <Row>
           <Col span={0}>
-            {hideFormItem('countryId', type === 'add' ? '' : fatherData.countryId)}
+            {hideFormItem('countryId', type === 'add' ? '' : editData.countryId)}
           </Col>
           <Col span={0}>
-            {hideFormItem('provinceId', type === 'add' ? '' : fatherData.provinceId)}
+            {hideFormItem('provinceId', type === 'add' ? '' : editData.provinceId)}
           </Col>
           <Col span={0}>
-            {hideFormItem('cityId', type === 'add' ? '' : fatherData.cityId)}
+            {hideFormItem('cityId', type === 'add' ? '' : editData.cityId)}
           </Col>
           <Col span={0}>
-            {hideFormItem('countyId', type === 'add' ? '' : fatherData.countyId)}
+            {hideFormItem('countyId', type === 'add' ? '' : editData.countyId)}
           </Col>
           <Col span={24}>
             <FormItem {...formItemLayout} label={'生产厂地址'}>
               {
                 getFieldDecorator('countryName', {
-                  initialValue: type === 'add' ? '' : '',
+                  initialValue: editData.countryName ? editData.countryName : '',
                   rules: [
                     {
                       required: true,
@@ -357,7 +378,7 @@ const AddBeAudited = (props) => {
               }
               {
                 getFieldDecorator('provinceName', {
-                  initialValue: type === 'add' ? '' : '',
+                  initialValue: editData.provinceName ? editData.provinceName : '',
                   rules: [
                     {
                       required: true,
@@ -389,7 +410,7 @@ const AddBeAudited = (props) => {
               }
               {
                 getFieldDecorator('cityName', {
-                  initialValue: type === 'add' ? '' : '',
+                  initialValue: editData.cityName ? editData.cityName : '',
                   rules: [
                     {
                       required: true,
@@ -421,7 +442,7 @@ const AddBeAudited = (props) => {
               }
               {
                 getFieldDecorator('countyName', {
-                  initialValue: type === 'add' ? '' : '',
+                  initialValue: editData.countyName ? editData.countyName : '',
                   rules: [
                     {
                       required: true,
@@ -451,7 +472,7 @@ const AddBeAudited = (props) => {
               }
               {
                 getFieldDecorator('address', {
-                  initialValue: type === 'add' ? '' : '',
+                  initialValue: editData.address ? editData.address : '',
                   rules: [
                     {
                       required: true,
@@ -470,7 +491,7 @@ const AddBeAudited = (props) => {
             <FormItem {...formItemLayoutLong} label={'供应商联系人'}>
               {
                 getFieldDecorator('contactUserName', {
-                  initialValue: type === 'add' ? '' : '',
+                  initialValue: editData.contactUserName ? editData.contactUserName : '',
                   rules: [
                     {
                       required: true,
@@ -487,7 +508,7 @@ const AddBeAudited = (props) => {
             <FormItem {...formItemLayoutLong} label={'供应商联系方式'}>
               {
                 getFieldDecorator('contactUserTel', {
-                  initialValue: type === 'add' ? '' : '',
+                  initialValue: editData.contactUserTel ? editData.contactUserTel : '',
                   rules: [
                     {
                       required: true,
@@ -506,9 +527,10 @@ const AddBeAudited = (props) => {
             <FormItem {...formItemLayout} label={'备注'}>
               {
                 getFieldDecorator('remark', {
-                  initialValue: type === 'add' ? '' : '',
+                  initialValue: editData.contactUserTel ? editData.contactUserTel : '',
+                  rules: [{ validator: length_200_n, message: '请勿超过200个汉字' }],
                 })(
-                  <Input.TextArea rows={6} style={{ width: '100%' }}/>,
+                  <Input.TextArea rows={5} style={{ width: '100%' }}/>,
                 )
               }
             </FormItem>
@@ -518,7 +540,7 @@ const AddBeAudited = (props) => {
       <AddSupplier
         visible={data.visible}
         onOk={supplierOk}
-        onCancel={() => setData(v => ({...v, visible: false}))}
+        onCancel={() => setData(v => ({ ...v, visible: false }))}
       />
     </ExtModal>
   );

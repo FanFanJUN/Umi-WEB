@@ -9,7 +9,7 @@ import IntendedAuditInformation from './IntendedAuditInformation';
 import {
   AddAuditRequirementsManagement,
   FindOneAuditRequirementsManagement,
-  GetAllAuditType,
+  GetAllAuditType, UpdateAuditRequirementsManagement,
 } from '../../mainData/commomService';
 
 const Index = () => {
@@ -25,12 +25,13 @@ const Index = () => {
 
   const [organizationCode, setOrganizationCode] = useState()
 
-  const [auditInformationData, setAuditInformationData] = useState([])
+  const [deleteLine, setDeleteLine] = useState([])
 
   const [data, setData] = useState({
+    lineBoList: [],
+    editData: {},
     allAuditType: [],
     id: '',
-    editDate: {},
     spinLoading: false,
     isView: false,
     loading: false,
@@ -42,7 +43,7 @@ const Index = () => {
   useEffect(() => {
     // 获取所有审核类型
     getAuditType()
-    const { id, pageState } = query;
+    const { id, pageState, reviewRequirementCode } = query;
     switch (pageState) {
       case 'add':
         getUser();
@@ -50,20 +51,27 @@ const Index = () => {
         break;
       case 'edit':
         getUser();
-        findOne(id)
-        setData((value) => ({ ...value, type: pageState, id, isView: false, title: '审核需求管理-编辑' }));
+        findOne(reviewRequirementCode)
+        setData((value) => ({ ...value, type: pageState, id, isView: false, title: `审核需求管理-编辑 ${reviewRequirementCode}`}));
         break;
       case 'detail':
-        setData((value) => ({ ...value, type: pageState, isView: true, title: `审核需求管理-明细`}));
+        setData((value) => ({ ...value, type: pageState, isView: true, title: `审核需求管理-明细${reviewRequirementCode}`}));
         break;
     }
-    console.log(pageState, 'pageState');
   }, []);
 
   const findOne = (id) => {
+    setData(v => ({...v, spinLoading: true}))
     FindOneAuditRequirementsManagement({
       reviewRequirementCode: id
     }).then(res => {
+      if (res.success) {
+        setCompanyCode(res.data.applyCorporationCode)
+        setOrganizationCode(res.data.purchaseOrgCode)
+        setData(v => ({...v, editData: res.data, lineBoList: res.data.lineBoList, spinLoading: false}))
+      } else {
+        message.error(res.message)
+      }
       console.log(res)
     })
   }
@@ -98,15 +106,33 @@ const Index = () => {
       }
     });
     const lineBoList = await intendedAuditInformationRef.current.getDataSource()
-    console.log(lineBoList)
+    const deleteArr = await intendedAuditInformationRef.current.getDeleteArr()
     if (lineBoList && lineBoList.length !== 0) {
-      insertData.lineBoList = lineBoList
+      insertData.lineBoList = [...lineBoList, ...deleteLine]
       Modal.confirm({
         title: '是否确认暂存该数据!',
         onOk: () => {
-          AddAuditRequirementsManagement(insertData).then(res => {
-            console.log(res)
-          })
+          if (data.type === 'add') {
+            AddAuditRequirementsManagement(insertData).then(res => {
+              if (res.success) {
+                message.success(res.message)
+                handleBack()
+              } else {
+                message.error(res.message)
+              }
+            }).catch(err => message.error(err.message))
+          } else {
+            let updateData = Object.assign(data.editData, insertData)
+            updateData.deleteList = deleteArr
+            UpdateAuditRequirementsManagement(updateData).then(res => {
+              if (res.success) {
+                message.success(res.message)
+                handleBack()
+              } else {
+                message.error(res.message)
+              }
+            }).catch(err => message.error(err.message))
+          }
         },
         okText: '确定',
         cancelText: '取消'
@@ -133,6 +159,7 @@ const Index = () => {
           </div>
         </Affix>
         <BaseInfo
+          editData={data.editData}
           setCompanyCode={setCompanyCode}
           setOrganizationCode={setOrganizationCode}
           wrappedComponentRef={baseInfoRef}
@@ -142,6 +169,9 @@ const Index = () => {
           isView={data.isView}
         />
         <IntendedAuditInformation
+          setDeleteLine={setDeleteLine}
+          deleteLine={deleteLine}
+          editData={data.lineBoList}
           companyCode={companyCode}
           wrappedComponentRef={intendedAuditInformationRef}
           organizationCode={organizationCode}
