@@ -5,7 +5,7 @@ import EventModal from '../../../common/EventModal';
 import { getRandom } from '../../../../QualitySynergy/commonProps';
 import ContentModal from './contentModal';
 import ShuttleBox from '../../../common/ShuttleBox';
-import { GetDefaultSystem } from '../../../mainData/commomService';
+import { duplicateRemoval, GetDefaultSystem } from '../../../mainData/commomService';
 
 const teamColumns = [
   { title: '组别', dataIndex: 'reviewGroup', ellipsis: true, width: 60 },
@@ -76,12 +76,14 @@ const Team = (props) => {
             let defaultSystem = JSON.parse(JSON.stringify(res.data));
             defaultSystem.map(item => {
               item.systemId = item.id;
+              item.systemCode = item.code;
               item.systemName = item.name;
               item.key = item.id;
               item.title = item.name;
               if (item.children && item.children.length !== 0) {
                 item.children.map(v => {
                   v.systemId = v.id;
+                  item.systemCode = item.code;
                   v.systemName = v.name;
                   v.key = v.id;
                   v.title = v.name;
@@ -117,7 +119,6 @@ const Team = (props) => {
     });
     setTeamData(v => ({ ...v, dataSource: newTeamData }));
     teamTableRef.current.remoteDataRefresh();
-    console.log(teamData.dataSource);
   };
 
   const handleOk = (value) => {
@@ -187,19 +188,17 @@ const Team = (props) => {
   };
 
   const handleContentSelectedRows = (keys, values) => {
-    let treeData = [];
-    if (values[0]?.memberRuleBoList) {
-      values[0].memberRuleBoList.map(item => {
-        if (!item.key) {
-          item.id = item.systemId;
-          item.key = item.systemId;
-          item.title = item.systemName;
-          treeData.push(item);
-        } else {
-          treeData.push(item);
-        }
-      });
-    }
+    let treeData = values[0]?.memberRuleBoList ? values[0].memberRuleBoList ? JSON.parse(JSON.stringify(values[0].memberRuleBoList)) : [] : [];
+    treeData = treeData.map(item => {
+      if (!item.key) {
+        item.id = item.systemId;
+        item.key = item.systemId;
+        item.title = item.systemName;
+        return item;
+      } else {
+        return item;
+      }
+    });
     setData(v => ({ ...v, leftTreeData: undefined, treeData: treeData }));
     setContentData(v => ({ ...v, selectedRows: values, selectedRowKeys: keys }));
   };
@@ -308,9 +307,12 @@ const Team = (props) => {
 
   // 构造左边树
   const getLeftTreeData = () => {
-    console.log(props.treeData, data.defaultSystem);
     if (contentData.selectedRowKeys && contentData.selectedRowKeys.length !== 0) {
-      setData(v => ({ ...v, leftTreeData: [...props.treeData, ...data.defaultSystem] }));
+      let arr = [...props.treeData, ...data.defaultSystem];
+      if (arr.length > 1) {
+        arr = duplicateRemoval(arr, 'key');
+      }
+      setData(v => ({ ...v, leftTreeData: arr }));
     } else {
       message.error('请选择一名成员');
     }
