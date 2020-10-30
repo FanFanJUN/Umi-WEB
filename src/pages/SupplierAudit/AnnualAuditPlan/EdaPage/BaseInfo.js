@@ -43,7 +43,7 @@ const BaseInfo = (props) => {
 
   const HideFormItem = hideFormItem(getFieldDecorator);
 
-  console.log(userInfo);
+  // console.log(userInfo);
   return (
     <div className={styles.wrapper}>
       <div className={styles.bgw}>

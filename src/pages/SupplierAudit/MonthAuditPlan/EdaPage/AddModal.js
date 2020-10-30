@@ -109,11 +109,9 @@ const AddModal = (props) => {
         const res = await findRequirementLine({
             ids: selectedRowKeys.join()
         })
-        console.log(res)
-        if(res.sucess) {
-
+        if(res.success) {
+            handleOk(res.data);
         }
-        console.log("执行")
     }
 
     function handleSearch() {
@@ -273,7 +271,7 @@ const AddModal = (props) => {
     }
 
     return <ExtModal
-        width={'120vh'}
+        width={'1000px'}
         height={'800px'}
         maskClosable={false}
         visible={visible}
