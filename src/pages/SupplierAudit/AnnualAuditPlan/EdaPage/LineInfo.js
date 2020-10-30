@@ -3,20 +3,21 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime: 2020-10-29 16:06:23
+ * @LastEditTime: 2020-10-30 15:03:10
  * @Description: 行信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/edit/BaseInfo.less';
 import { Form, Button } from 'antd';
 import { ExtTable } from 'suid';
 import AddModal from './AddModal';
 import BatchEditModal from './BatchEditModal';
+import { isEmptyArray } from '../../../../utils/utilTool';
 
 let LineInfo = (props, ref) => {
 
-  const { setlineData } = props;
+  const { setlineData, originData, type, isView } = props;
   const tableRef = useRef(null);
 
   const [data, setData] = useState({
@@ -29,6 +30,12 @@ let LineInfo = (props, ref) => {
 
   const [dataSource, setDataSource] = useState([]);
   const [batchEditVisible, setBatchEditVisible] = useState(false);
+
+  useEffect(() => {
+    if (originData && !isEmptyArray(originData.planYearLineVos)) {
+      setDataSource(originData.planYearLineVos)
+    }
+  }, [originData])
 
   const columns = [
     {
@@ -56,7 +63,7 @@ let LineInfo = (props, ref) => {
         return `${record.materialGroupCode}_${record.materialGroupName}`;
       }
     },
-    { title: '物料级别', dataIndex: 'materialGrade', ellipsis: true, width: 140 },
+    { title: '物料级别', dataIndex: 'materialGradeName', ellipsis: true, width: 140 },
     {
       title: '生产厂地址', dataIndex: 'address', ellipsis: true, width: 140, render: (v, data) => {
         return data.countryName && `${data.countryName + data.provinceName + data.cityName + data.countyName + data.address}`;
@@ -71,8 +78,6 @@ let LineInfo = (props, ref) => {
     { title: '专业组', dataIndex: 'specialtyTeamName', ellipsis: true, width: 140 },
     { title: '备注', dataIndex: 'remark', ellipsis: true, width: 140 },
   ].map(item => ({ ...item, align: 'center' }))
-
-  const { isView } = props;
 
   const handleBtn = (type) => {
     switch (type) {
@@ -190,7 +195,7 @@ let LineInfo = (props, ref) => {
             allowCancelSelect={true}
             showSearch={false}
             remotePaging
-            checkbox={{ multiSelect: true }}
+            checkbox={isView ? null : { multiSelect: true }}
             size='small'
             onSelectRow={handleSelectedRows}
             selectedRowKeys={data.selectedRowKeys}

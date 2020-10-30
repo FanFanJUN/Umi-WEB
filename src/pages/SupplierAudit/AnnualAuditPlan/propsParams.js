@@ -3,11 +3,22 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-27 17:01:47
- * @LastEditTime: 2020-10-28 15:12:13
+ * @LastEditTime: 2020-10-30 15:56:04
  * @Description: 参数props
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/propsParams.js
  */
 import { baseUrl } from "../../../utils/commonUrl";
+
+const commonProps = {
+  reader: {
+    name: 'name',
+    field: ['code'],
+  },
+  style: {
+    width: '100%',
+  },
+  placeholder: '请选择'
+};
 
 // 有id的公司列表
 export const AllCompanyConfig = {
@@ -154,3 +165,41 @@ export const CountryIdConfig = {
     description: 'code',
   },
 };
+
+// 状态
+export const stateProps = {
+  allowClear: true,
+  dataSource: [
+    {
+      code: 'DRAFT',
+      name: '草稿',
+    },
+    {
+      code: 'EFFECT',
+      name: '生效',
+    },
+  ],
+  placeholder: '选择状态',
+  ...commonProps,
+};
+
+// 审批流程状态
+export const flowProps = {
+  allowClear: true,
+  dataSource: [
+    {
+      code: 'INIT',
+      name: '未提交审批',
+    },
+    {
+      code: 'INPROCESS',
+      name: '审批中',
+    },
+    {
+      code: 'COMPLETED',
+      name: '审批完成',
+    },
+  ],
+  placeholder: '选择状态',
+  ...commonProps,
+}

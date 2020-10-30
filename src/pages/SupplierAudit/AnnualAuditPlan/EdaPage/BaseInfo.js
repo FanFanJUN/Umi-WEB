@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:40
- * @LastEditTime: 2020-10-29 14:10:10
+ * @LastEditTime: 2020-10-30 15:36:23
  * @Description:  基本信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BaseInfo.js
  */
@@ -13,7 +13,7 @@ import { ComboList, ComboTree, ExtModal } from 'suid';
 import { Col, Form, Modal, Row, Input, DatePicker, InputNumber } from 'antd';
 import Upload from '../../Upload';
 import { AllCompanyConfig, ApplyOrganizationProps } from '../propsParams';
-import { isEmptyArray, guid, hideFormItem, filterEmptyFileds } from '@/utils/utilTool';
+import { isEmptyArray, guid, hideFormItem, filterEmptyFileds, getDocIdForArray } from '@/utils/utilTool';
 
 const FormItem = Form.Item;
 
@@ -37,25 +37,36 @@ const formLongLayout = {
 
 const BaseInfo = (props) => {
 
-  const { type, form, data = {}, userInfo = {}, isView } = props;
+  const { type, form, originData: data, userInfo = {}, isView } = props;
 
   const { getFieldDecorator, setFieldsValue } = form;
 
   const HideFormItem = hideFormItem(getFieldDecorator);
 
-  // console.log(userInfo);
   return (
     <div className={styles.wrapper}>
       <div className={styles.bgw}>
         <div className={styles.title}>基本信息</div>
         <div className={styles.content}>
+          {type !== 'add' &&
+            <Row>
+              <Col span={12}>
+                <FormItem label="年度审核计划号" {...formLayout}>
+                  {isView ? <span>{data.reviewPlanYearCode}</span> : getFieldDecorator('reviewPlanYearCode', {
+                    initialValue: type === 'add' ? '' : data.reviewPlanYearCode,
+                  })(
+                    <Input disabled />
+                  )}
+                </FormItem>
+              </Col>
+            </Row>}
           <Row>
             <Col span={12}>
-              {HideFormItem('applyCorporationId'), data.applyCorporationId}
-              {HideFormItem('applyCorporationCode'), data.applyCorporationCode}
+              {HideFormItem('applyCorporationId', data.applyCorporationId)}
+              {HideFormItem('applyCorporationCode', data.applyCorporationCode)}
               <FormItem label="拟制公司" {...formLayout}>
                 {isView ? <span>{data.applyCorporationName}</span> : getFieldDecorator('applyCorporationName', {
-                  initialValue: type === 'add' ? '' : '',
+                  initialValue: type === 'add' ? '' : data.applyCorporationName,
                   rules: [
                     {
                       required: true,
@@ -75,11 +86,11 @@ const BaseInfo = (props) => {
               </FormItem>
             </Col>
             <Col span={12}>
-              {HideFormItem('applyDepartmentId'), data.applyDepartmentId}
-              {HideFormItem('applyDepartmentCode'), data.applyDepartmentCode}
+              {HideFormItem('applyDepartmentId', data.applyDepartmentId)}
+              {HideFormItem('applyDepartmentCode', data.applyDepartmentCode)}
               <FormItem label="拟制部门" {...formLayout}>
                 {isView ? <span>{data.applyDepartmentName}</span> : getFieldDecorator('applyDepartmentName', {
-                  initialValue: type === 'add' ? '' : '',
+                  initialValue: type === 'add' ? '' : data.applyDepartmentName,
                   rules: [
                     {
                       required: true,
@@ -137,6 +148,7 @@ const BaseInfo = (props) => {
             <Col span={12}>
               <FormItem label="年度" {...formLayout}>
                 {isView ? <span>{data.applyYear}</span> : getFieldDecorator('applyYear', {
+                  initialValue: type === 'add' ? '' : data.applyYear,
                   rules: [
                     {
                       required: true,
@@ -153,6 +165,7 @@ const BaseInfo = (props) => {
             <Col span={24}>
               <FormItem label="拟制说明" {...formLongLayout}>
                 {isView ? <span>{data.reviewPlanYearName}</span> : getFieldDecorator('reviewPlanYearName', {
+                  initialValue: type === 'add' ? '' : data.reviewPlanYearName,
                   rules: [
                     {
                       required: true,
@@ -169,6 +182,7 @@ const BaseInfo = (props) => {
             <Col span={24}>
               <FormItem label="备注" {...formLongLayout}>
                 {isView ? <span>{data.remark}</span> : getFieldDecorator('remark', {
+                  initialValue: type === 'add' ? '' : data.remark,
                 })(
                   <Input.TextArea rows={6} style={{ width: '100%' }} />
                 )}
@@ -179,8 +193,14 @@ const BaseInfo = (props) => {
             <Col span={24}>
               <FormItem {...formLongLayout} label={'附件'}>
                 {
-                  getFieldDecorator('attachRelatedId')(
-                    <Upload entityId={type === 'add' ? null : null} type={type === 'add' ? '' : 'show'} />,
+                  getFieldDecorator('attachRelatedId', {
+                    initialValue: type === 'add' ? '' : getDocIdForArray(data.attachRelatedId),
+                  })(
+                    <Upload
+                      entityId={type === 'add' ? null : data.attachRelatedInfo}
+                      type={type === 'detail' ? 'show' : ''}
+                      showColor={isView ? true : false}
+                    />
                   )
                 }
               </FormItem>
@@ -188,7 +208,7 @@ const BaseInfo = (props) => {
           </Row>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 export default BaseInfo;

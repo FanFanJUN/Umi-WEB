@@ -3,12 +3,13 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 17:58:33
- * @LastEditTime: 2020-10-23 14:42:23
+ * @LastEditTime: 2020-10-30 10:57:09
  * @Description: 工具集
  * @FilePath: /srm-sm-web/src/utils/utilTool.js
  */
 import React from 'react';
 import { Form, Input } from 'antd';
+import { getUserId, getUserName, getMobile, getAccount } from '@/utils';
 
 
 const FormItem = Form.Item;
@@ -125,4 +126,45 @@ export const hideFormItem = (getFieldDecorator) => {
                 }
             </FormItem>
         </div>
-};  
+};
+
+// 按钮控制
+export const judge = (arr, key, value = undefined) => {
+    if (value !== undefined) {
+        if (arr?.length > 0) {
+            return arr.every(item => item[key] === value);
+        } else {
+            return true;
+        }
+    } else {
+        if (arr?.length > 0) {
+            return arr.every(item => item[key] !== '');
+        } else {
+            return true;
+        }
+    }
+};
+
+// session usernfo
+export const getUserInfoFromSession = () => {
+    const userId = getUserId();
+    const userName = getUserName();
+    const userMobile = getMobile();
+    const account = getAccount();
+    return { userName, userId, userMobile, account };
+};
+
+// 附件处理
+export  const  getDocIdForArray=(list)=>{
+    if(list&&list.length>0){
+        let temp=[];
+        list.forEach(function (item,index) {
+            // console.log(item);
+            temp.push(item.id)
+        });
+        return temp;
+    } else{
+        return []
+    }
+
+};
