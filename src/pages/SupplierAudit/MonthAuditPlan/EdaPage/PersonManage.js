@@ -2,17 +2,22 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Button } from "antd";
 import { ExtModal, ExtTable } from "suid";
+import AddPersonModal from "./addPersonModal";
 
 
 const PersonManage = ({ visible, onOk, onCancel, originData }) => {
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [selectedRows, setSelectedRows] = useState([]);
     const [dataSource, setDataSource] = useState([]);
+    const [addModalData, setAddData] = useState({});
     const tableRef = useRef(null);
     const buttonClick = (type) => {
         switch (type) {
             case "add":
-                console.log("点击新增");
+                setAddData({
+                    visible: true,
+                    type: 'add',
+                })
                 break;
             case "esit":
                 console.log("点击编辑");
@@ -35,6 +40,9 @@ const PersonManage = ({ visible, onOk, onCancel, originData }) => {
         { title: '姓名', dataIndex: 'memberName', width: 120  },
         { title: '联系电话', dataIndex: 'memberTel', width: 100  },
     ]
+    const personHandleOK = (value) => {
+        console.log("新增数据", value)
+    }
     return <>
         <ExtModal
             width={'120vh'}
@@ -65,6 +73,13 @@ const PersonManage = ({ visible, onOk, onCancel, originData }) => {
                 ref={tableRef}
                 dataSource={dataSource}
             />
+            {addModalData.visible && <AddPersonModal
+                visible={addModalData.visible}
+                isView={addModalData.isView}
+                personHandleOK={personHandleOK}
+                onCancel={()=>{setAddData({visible: false})}}
+            />
+            }
         </ExtModal>
     </>
 }

@@ -16,7 +16,7 @@ import BatchEditModal from './BatchEditModal';
 // import AuditContentModal from "./AuditContentModal";
 import AuditContentModal from "../../AuditRequirementsManagement/add/component/content";
 import PersonManage from "./PersonManage";
-import Team from "../../AuditRequirementsManagement/add/component/team";
+import Team from "./Team";
 
 let LineInfo = forwardRef((props, ref) => {
 
@@ -173,8 +173,8 @@ let LineInfo = forwardRef((props, ref) => {
               <Button onClick={() => { handleBtn('edit') }} >批量编辑</Button>
               <Button onClick={() => { handleBtn('delete') }} >删除</Button>
               <Button onClick={() => { handleBtn('contenM') }} >审核内容管理</Button>
-              <Button onClick={() => { handleBtn('teamM') }} >审核小组管理</Button>
-              <Button onClick={() => { handleBtn('personM') }} >协同人员管理</Button>
+              <Button onClick={() => { handleBtn('teamM') }} disabled={data.selectRows.length!==1}>审核小组管理</Button>
+              <Button onClick={() => { handleBtn('personM') }} disabled={data.selectRows.length===0}>协同人员管理</Button>
             </div>
           }
           <ExtTable
@@ -202,12 +202,14 @@ let LineInfo = forwardRef((props, ref) => {
         handleOk={handleAddOk}
         lineData={dataSource}
       />}
+      {/* 批量编辑 */}
       { batchEditVisible && <BatchEditModal
         visible={batchEditVisible}
         onCancel={() => { setBatchEditVisible(false) }}
         onOk={getBatchFormValue}
       />
       }
+      {/* 审核内容管理 */}
       {contentModalData.visible && <AuditContentModal
         visible={contentModalData.visible}
         treeData={contentModalData.treeData}
@@ -215,14 +217,17 @@ let LineInfo = forwardRef((props, ref) => {
         onCancel={() => setContentData({ visible: false })}
       />
       }
+      {/* 审核小组管理 */}
       {teamModalData.visible && <Team
         type={teamModalData.type}
         treeData={teamModalData.treeData}
-        reviewTypeCode={teamModalData.selectRows[0]?.reviewTypeCode}
+        reviewTeamGroupBoList={data.selectRows[0]?.reviewTeamGroupBoList}
+        reviewTypeCode={data.selectRows[0]?.reviewTypeCode}
         onCancel={() => setTeamData({ visible: false })}
         visible={teamModalData.visible}
       />
       }
+      {/* 协同人员管理 */}
       {personModalData.visible && <PersonManage
         visible={personModalData.visible}
         originData={personModalData.originData}
