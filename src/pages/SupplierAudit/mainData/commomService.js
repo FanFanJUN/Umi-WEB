@@ -11,7 +11,7 @@ export const isEmpty = (value) => {
 /**不超过200位有空格、可换行**/
 export const length_200_n = (rule, value, callback) => {
   isEmpty(value) && (value = '');
-  value.length < 201 ? callback() : callback('')
+  value.length < 201 ? callback() : callback('');
 };
 
 export const duplicateRemoval = (arr, key) => {
@@ -25,6 +25,18 @@ export const duplicateRemoval = (arr, key) => {
     }
   }
   return arr;  //去重后返回的数组
+};
+
+export const stateConfig = {
+  'DRAFT': '草稿',
+  'EFFECT': '生效',
+  'CHANGING': '变更中',
+};
+
+export const flowStatusConfig = {
+  'INIT': '未进入流程',
+  'INPROCESS': '流程中',
+  'COMPLETED': '流程处理完成',
 };
 
 const commonProps = {
@@ -52,7 +64,7 @@ export const RoleConfig = {
   ],
   placeholder: '选择角色',
   ...commonProps,
-}
+};
 
 // 国家
 export const TypeConfig = {
@@ -69,17 +81,17 @@ export const TypeConfig = {
   ],
   placeholder: '选择人员类型',
   ...commonProps,
-}
+};
 
 export const RoleArr = {
   'GROUP_LEADER': '组长',
   'MEMBER': '成员',
-}
+};
 
 export const PersonnelTypeArr = {
   'INTERNAL_USERS': '内部用户',
   'EXTERNAL_USERS': '外部用户',
-}
+};
 
 // 人员类型
 export const PersonnelTypeConfig = {
@@ -95,7 +107,7 @@ export const PersonnelTypeConfig = {
   ],
   placeholder: '选择人员类型',
   ...commonProps,
-}
+};
 
 // 评价体系
 export const EvaluationSystemConfig = {
@@ -112,15 +124,15 @@ export const EvaluationSystemConfig = {
   },
   placeholder: '选择审核体系',
   style: {
-    width: '100%'
+    width: '100%',
   },
   treeNodeProps: (node) => {
     if (node.children.length === 0) {
       return {
-        selectable: false
-      }
+        selectable: false,
+      };
     }
-  }
+  },
 };
 
 // 区域
@@ -159,8 +171,8 @@ export const NormalSupplierConfig = {
 
 export const supplierStrategyName = {
   'QUALIFIED_SUPPLIER': '合格供应商名录',
-  'NORMAL_SUPPLIER': '正常供应商'
-}
+  'NORMAL_SUPPLIER': '正常供应商',
+};
 
 // 供应商选择策略
 export const SelectionStrategyConfig = {
@@ -177,7 +189,7 @@ export const SelectionStrategyConfig = {
   ],
   placeholder: '选择供应商选择策略',
   ...commonProps,
-}
+};
 
 // 根据部门查员工
 export const UserByDepartmentConfig = {
@@ -188,7 +200,7 @@ export const UserByDepartmentConfig = {
     name: 'code',
     description: 'userName',
   },
-}
+};
 
 // 采购组织数据
 export const ApplyOrganizationProps = {
@@ -197,64 +209,64 @@ export const ApplyOrganizationProps = {
   },
   reader: {
     name: 'name',
-    field: ['code', 'id']
+    field: ['code', 'id'],
   },
   placeholder: '请选择申请部门',
   style: {
-    width: '100%'
+    width: '100%',
   },
   treeNodeProps: (node) => {
     if (node.nodeLevel === 0) {
       return {
-        selectable: false
-      }
+        selectable: false,
+      };
     }
-  }
-}
+  },
+};
 
 // 二次分类物料组数据
 export const materialClassProps = {
   store: {
     url: `${baseUrl}/SecondaryClassificationMaterialGroup/listAllGeneralTree`,
-    params: { Q_EQ_frozen__Boolean: false }
+    params: { Q_EQ_frozen__Boolean: false },
   },
   reader: {
     name: 'showName',
-    field: ['code']
+    field: ['code'],
   },
   placeholder: '请选择物料分类',
   style: {
-    width: '100%'
+    width: '100%',
   },
   treeNodeProps: (node) => {
     if (node.nodeLevel === 0) {
       return {
-        selectable: false
-      }
+        selectable: false,
+      };
     }
-  }
-}
+  },
+};
 // 物料分类-code
 export const materialCodeProps = {
   store: {
     url: `${baseUrl}/SecondaryClassificationMaterialGroup/listAllGeneralTree`,
-    params: { Q_EQ_frozen__Boolean: false }
+    params: { Q_EQ_frozen__Boolean: false },
   },
   reader: {
-    name: 'code'
+    name: 'code',
   },
   placeholder: '请选择物料分类',
   style: {
-    width: '100%'
+    width: '100%',
   },
   treeNodeProps: (node) => {
     if (node.nodeLevel === 0) {
       return {
-        selectable: false
-      }
+        selectable: false,
+      };
     }
-  }
-}
+  },
+};
 
 // 有id的采购组织
 export const AllFindByFiltersConfig = {
@@ -408,64 +420,64 @@ export const AuditTypeManagementConfig = {
 };
 
 // 获取供应商联系人 /supplierContactService/findBySupplierId
-export const GetSupplierContact = async (params={}) => {
+export const GetSupplierContact = async (params = {}) => {
   const url = `${smBaseUrl}/api/supplierContactService/findBySupplierId`;
   return request({
     url,
     method: 'GET',
     params: params,
   });
-}
+};
 
 // 审核需求管理update
-export const UpdateAuditRequirementsManagement = async (params={}) => {
+export const UpdateAuditRequirementsManagement = async (params = {}) => {
   const url = `${recommendUrl}/api/reviewRequirementService/update`;
   return request({
     url,
     method: 'POST',
     data: params,
   });
-}
+};
 
 // 审核需求管理findOne
-export const FindOneAuditRequirementsManagement = async (params={}) => {
+export const FindOneAuditRequirementsManagement = async (params = {}) => {
   const url = `${recommendUrl}/api/reviewRequirementService/findOneOverride`;
   return request({
     url,
     method: 'GET',
     params: params,
   });
-}
+};
 
 // 审核需求管理新增
-export const AddAuditRequirementsManagement = async (params={}) => {
+export const AddAuditRequirementsManagement = async (params = {}) => {
   const url = `${recommendUrl}/api/reviewRequirementService/insert`;
   return request({
     url,
     method: 'POST',
     data: params,
   });
-}
+};
 
 // 获取默认审核体系
-export const GetDefaultSystem = async (params={}) => {
+export const GetDefaultSystem = async (params = {}) => {
   const url = `${recommendUrl}/api/reviewEvlSystemService/findDefaultEvlSystem`;
   return request({
     url,
     method: 'GET',
     params: params,
   });
-}
+};
 
 // 根据用户id查电话
-export const GetUserTelByUserId = async (params={}) => {
+export const GetUserTelByUserId = async (params = {}) => {
   const url = `${gatewayUrl}${basicServiceUrl}/userProfile/findByUserId`;
   return request({
     url,
     method: 'GET',
     params: params,
   });
-}
+};
 
 // 审核类型所有
 export const GetAllAuditType = async (params) => {
@@ -475,7 +487,7 @@ export const GetAllAuditType = async (params) => {
     method: 'GET',
     params: params,
   });
-}
+};
 
 //审核准则管理冻结解冻
 export const ManagementAuditCriteriaFrozen = async (params) => {
@@ -485,7 +497,7 @@ export const ManagementAuditCriteriaFrozen = async (params) => {
     method: 'GET',
     params: params,
   });
-}
+};
 
 // 审核准则管理新增
 export const ManagementAuditCriteriaAdd = async (params) => {
@@ -495,7 +507,7 @@ export const ManagementAuditCriteriaAdd = async (params) => {
     method: 'POST',
     data: params,
   });
-}
+};
 
 //审核组织方式管理冻结解冻
 export const AuditOrganizationManagementFrozen = async (params) => {
@@ -505,7 +517,7 @@ export const AuditOrganizationManagementFrozen = async (params) => {
     method: 'GET',
     params: params,
   });
-}
+};
 
 // 审核组织方式管理新增
 export const AuditOrganizationManagementAdd = async (params) => {
@@ -515,7 +527,7 @@ export const AuditOrganizationManagementAdd = async (params) => {
     method: 'POST',
     data: params,
   });
-}
+};
 
 // 审核原因管理冻结解冻
 export const AuditCauseManagementFrozen = async (params) => {
@@ -525,7 +537,7 @@ export const AuditCauseManagementFrozen = async (params) => {
     method: 'GET',
     params: params,
   });
-}
+};
 
 // 审核原因管理新增
 export const AuditCauseManagementAdd = async (params) => {
@@ -535,7 +547,7 @@ export const AuditCauseManagementAdd = async (params) => {
     method: 'POST',
     data: params,
   });
-}
+};
 
 // 审核类型管理所有
 export const AuditTypeManagementAll = async (params) => {
@@ -545,7 +557,7 @@ export const AuditTypeManagementAll = async (params) => {
     method: 'POST',
     data: params,
   });
-}
+};
 
 // 审核类型管理新增
 export const AuditTypeManagementAdd = async (params) => {
@@ -555,7 +567,7 @@ export const AuditTypeManagementAdd = async (params) => {
     method: 'POST',
     data: params,
   });
-}
+};
 
 // 审核类型管理冻结解冻
 export const AuditTypeManagementFrozen = async (params) => {
@@ -565,7 +577,7 @@ export const AuditTypeManagementFrozen = async (params) => {
     method: 'GET',
     params: params,
   });
-}
+};
 
 // 审核方式管理新增
 export const ManagementAuditModeAdd = async (params) => {
@@ -575,7 +587,7 @@ export const ManagementAuditModeAdd = async (params) => {
     method: 'POST',
     data: params,
   });
-}
+};
 
 // 审核方式管理冻结解冻
 export const ManagementAuditModeFrozen = async (params) => {
@@ -585,7 +597,7 @@ export const ManagementAuditModeFrozen = async (params) => {
     method: 'GET',
     params: params,
   });
-}
+};
 
 // 审核方式管理删除
 export const ManagementAuditModeDelete = async (params) => {
@@ -595,4 +607,4 @@ export const ManagementAuditModeDelete = async (params) => {
     method: 'GET',
     params: params,
   });
-}
+};

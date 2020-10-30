@@ -295,7 +295,6 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
       />
       <Team
         deleteArr={deleteArr}
-        isView={props.isView}
         setDeleteArr={setDeleteArr}
         type={data.type}
         reviewTeamGroupBoList={data.reviewTeamGroupBoList}

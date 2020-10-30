@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect, Fragment } from 'react';
 import Header from '../../../components/Header';
 import AdvancedForm from '../../../components/AdvancedForm';
-import { Button, Checkbox, Input, message, Modal } from 'antd';
+import { Button, Input, message, Modal } from 'antd';
 import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
-import { ComboList, ExtTable, utils } from 'suid';
+import { ExtTable, utils } from 'suid';
 import {
   ApplyOrganizationProps,
   AuditCauseManagementConfig,
@@ -12,14 +12,9 @@ import {
   FindByFiltersConfig, SupplierConfig,
 } from '../mainData/commomService';
 import {
-  BUConfigNoFrostHighSearch,
-  DeleteDataSharingList,
-  judge,
-  MaterialConfig,
-  MaterialGroupConfig, RecallDataSharingList,
-  ShareDistributionProps,
-  ShareStatusProps,
-  StrategicPurchaseConfig,
+  DeleteDataSharingList, flowProps,
+  RecallDataSharingList,
+  ShareStatusProps, stateProps,
   SubmitDataSharingList,
 } from '../../QualitySynergy/commonProps';
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
@@ -171,36 +166,36 @@ export default function() {
     // delete value.buCode_name;
     // delete value.state_name;
     // delete value.allotSupplierState_name;
-    // setData(v => ({ ...v, epTechnicalShareDemandSearchBo: value }));
-    // tableRef.current.manualSelectedRows();
-    // tableRef.current.remoteDataRefresh();
+    setData(v => ({ ...v, epTechnicalShareDemandSearchBo: value }));
+    tableRef.current.manualSelectedRows();
+    tableRef.current.remoteDataRefresh();
   };
 
   // 高级查询配置
   const formItems = [
     {
       title: '公司',
-      key: 'materialCode',
+      key: 'applyCorporationCode',
       type: 'list',
       props: CompanyConfig,
       rules: { rules: [{ required: true, message: '请选择公司' }] },
     },
     {
       title: '采购组织',
-      key: 'materialGroupCode',
+      key: 'purchaseOrgCode',
       type: 'list',
       props: FindByFiltersConfig,
       rules: { rules: [{ required: true, message: '请选择采购组织' }] },
     },
-    { title: '申请部门', key: 'strategicPurchaseCode', type: 'tree', props: ApplyOrganizationProps },
-    { title: '申请人', key: 'buCode', props: { placeholder: '输入申请人' } },
-    { title: '申请日期', key: 'applyPeopleName', type: 'datePicker', props: { placeholder: '输入申请人' } },
-    { title: '供应商', key: 'allotSupplierState', type: 'list', props: SupplierConfig },
-    { title: '物料分类', key: 'state', type: 'tree', props: materialClassProps },
-    { title: '审核类型', key: 'state', type: 'list', props: AuditTypeManagementConfig },
-    { title: '审核原因', key: 'state', type: 'list', props: AuditCauseManagementConfig },
-    { title: '状态', key: 'state', type: 'list', props: ShareStatusProps },
-    { title: '审批状态', key: 'state', type: 'list', props: ShareStatusProps },
+    { title: '申请部门', key: 'applyDepartmentCode', type: 'tree', props: ApplyOrganizationProps },
+    { title: '申请人', key: 'applyName', props: { placeholder: '输入申请人' } },
+    { title: '申请日期', key: 'applyDateStart', type: 'datePicker', props: { placeholder: '输入申请日期' } },
+    { title: '供应商', key: 'supplierCode', type: 'list', props: SupplierConfig },
+    { title: '物料分类', key: 'materialSecondClassifyCode', type: 'tree', props: materialClassProps },
+    { title: '审核类型', key: 'reviewTypeCode', type: 'list', props: AuditTypeManagementConfig },
+    { title: '审核原因', key: 'reviewReasonCode', type: 'list', props: AuditCauseManagementConfig },
+    { title: '状态', key: 'state', type: 'list', props: stateProps },
+    { title: '审批状态', key: 'flowState', type: 'list', props: flowProps },
   ];
 
   const columns = [
