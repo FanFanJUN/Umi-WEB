@@ -409,7 +409,7 @@ export const AuditTypeManagementConfig = {
 
 // 获取供应商联系人 /supplierContactService/findBySupplierId
 export const GetSupplierContact = async (params={}) => {
-  const url = `${recommendUrl}/supplierContactService/findBySupplierId`;
+  const url = `${smBaseUrl}/api/supplierContactService/findBySupplierId`;
   return request({
     url,
     method: 'GET',
