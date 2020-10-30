@@ -64,7 +64,7 @@ let BaseInfo = React.forwardRef((props, ref) => {
             <Col span={0}>{hideFormItem('applyCorporationId', type === 'add' ? '' : editData.applyCorporationId)}</Col>
             <Col span={12}>
               <FormItem label="公司" {...formLayout}>
-                {isView ? <span>{data.applyCorporationName}</span> : getFieldDecorator('applyCorporationName', {
+                {isView ? <span>{editData.applyCorporationName}</span> : getFieldDecorator('applyCorporationName', {
                   initialValue: type === 'add' ? '' : editData.applyCorporationName,
                   rules: [
                     {
@@ -183,7 +183,7 @@ let BaseInfo = React.forwardRef((props, ref) => {
           <Row>
             <Col span={24}>
               <FormItem label="备注" {...formLongLayout}>
-                {isView ?  <Input.TextArea rows={6} style={{ width: '100%' }} value={editData.remark} /> : getFieldDecorator('remark', {
+                {isView ?  <Input.TextArea rows={6} style={{ width: '100%', border: 'none' }} disabled={true} value={editData.remark} /> : getFieldDecorator('remark', {
                   initialValue: type === 'add' ? '' : editData.remark,
                   rules: [{validator: length_200_n, message: '请勿超过200个汉字'},]
                 })(
