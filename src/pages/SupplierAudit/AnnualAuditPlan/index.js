@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:00:19
- * @LastEditTime: 2020-10-30 15:32:22
+ * @LastEditTime: 2020-10-30 16:34:49
  * @Description:  年度审核计划管理
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/index.js
  */
@@ -12,6 +12,7 @@ import Header from '../../../components/Header';
 import AdvancedForm from '../../../components/AdvancedForm';
 import { Button, Checkbox, Input, message, Modal, Tooltip } from 'antd';
 import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
+import { StartFlow } from 'seid';
 import { BarCode, ComboList, ExtTable, utils } from 'suid';
 import {
     ApplyOrganizationProps,
@@ -36,7 +37,8 @@ import { openNewTab } from '../../../utils';
 import { judge } from '../../../utils/utilTool';
 import { materialClassProps } from '../../../utils/commonProps';
 import moment from 'moment';
-import { deleteReviewPlanYear } from './service';
+import { deleteReviewPlanYear, submitReviewPlanYear } from './service';
+import { stateProps, flowProps, reviewTypesProps, reviewReasonsProps } from './propsParams';
 
 const { authAction } = utils;
 const { Search } = Input;
@@ -128,7 +130,7 @@ export default function () {
 
     const submitOrRecall = (type) => {
         if (type === 'submit') {
-            SubmitDataSharingList({
+            submitReviewPlanYear({
                 ids: data.selectedRowKeys.toString(),
             }).then(res => {
                 if (res.success) {
@@ -194,15 +196,15 @@ export default function () {
     const formItems = [
         { title: '公司', key: 'applyCorporationCode', type: 'list', props: CompanyConfig },
         { title: '采购组织', key: 'purchaseTeamCode', type: 'list', props: FindByFiltersConfig },
-        { title: '申请部门', key: 'strategicPurchaseCode', type: 'tree', props: ApplyOrganizationProps },
-        { title: '申请人', key: 'buCode', props: { placeholder: '输入申请人' } },
-        { title: '申请日期', key: 'applyPeopleName', type: 'datePicker', props: { placeholder: '输入申请人' } },
-        { title: '供应商', key: 'allotSupplierState', type: 'list', props: ShareDistributionProps },
-        { title: '物料二次分类', key: 'state', type: 'tree', props: materialClassProps },
-        { title: '审核类型', key: 'state', type: 'list', props: AuditTypeManagementConfig },
-        { title: '审核原因', key: 'state', type: 'list', props: AuditCauseManagementConfig },
-        { title: '状态', key: 'state', type: 'list', props: ShareStatusProps },
-        { title: '审批状态', key: 'state', type: 'list', props: ShareStatusProps },
+        { title: '申请部门', key: 'applyDepartmentCode', type: 'tree', props: ApplyOrganizationProps },
+        { title: '申请人', key: 'applyName', props: { placeholder: '输入申请人' } },
+        { title: '申请日期', key: 'applyDate', type: 'datePicker', props: { placeholder: '输入申请人' } },
+        { title: '供应商', key: 'supplierCode', type: 'list', props: ShareDistributionProps },
+        { title: '物料二次分类', key: 'materialGroupCode', type: 'tree', props: materialClassProps },
+        { title: '审核类型', key: 'reviewTypeCode', type: 'grid', props: reviewTypesProps },
+        { title: '审核原因', key: 'reviewReasonCode', type: 'grid', props: reviewReasonsProps },
+        { title: '审批状态', key: 'flowStatus', type: 'list', props: flowProps },
+        { title: '状态', key: 'state', type: 'list', props: stateProps },
     ];
 
     const columns = [
@@ -302,12 +304,15 @@ export default function () {
             >明细</Button>)
         }
         {
-            authAction(<Button
-                onClick={() => redirectToPage('submit')}
+            authAction(<StartFlow
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='TECHNICAL_DATA_SHARING_SUBMIT'
-            >提交审核</Button>)
+                businessKey={data.selectedRowKeys[0]}
+                // callBack={handleComplete}
+                // disabled={empty || underWay || !isSelf}
+                businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewPlanYear'
+                key='SRM-SM-ACCOUNTSUPPLIER-EXAMINE'
+            >提交审核</StartFlow>)
         }
         {
             authAction(<Button
@@ -315,6 +320,7 @@ export default function () {
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 key='TECHNICAL_DATA_SHARING_UNDO'
+                disabled={data.selectedRowKeys.length !== 1}
             >审核历史</Button>)
         }
         {
@@ -323,6 +329,7 @@ export default function () {
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 key='TECHNICAL_DATA_SHARING_ALLOT'
+                disabled={data.selectedRowKeys.length !== 1}
             >终止审核</Button>)
         }
     </>;

@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:04:51
- * @LastEditTime: 2020-10-30 14:17:49
+ * @LastEditTime: 2020-10-30 16:05:56
  * @Description: 新增  编辑  详情 page
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/index.js
  */
@@ -91,7 +91,7 @@ const Index = (props) => {
                 }
             })
             if (!err) {
-                const allData = { ...originData,...values, reviewPlanYearLineBos: finnalLineData };
+                const allData = { ...originData,...values, flowStatus: 'INIT', reviewPlanYearLineBos: finnalLineData };
                 if (buttonType === 'onlySave') {
                     tohandleSave(allData);
                 } else {
