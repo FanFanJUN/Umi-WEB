@@ -388,9 +388,9 @@ const CommonForm = forwardRef(({
     const c = currentDate?.format('YYYY-MM-DD');
     const ed = e?.format('YYYY-MM-DD') || undefined;
     if (!e || !ed) {
-      return currentDate && currentDate < moment().endOf('day')
+      return
     }
-    return currentDate > e || ed === c || (currentDate && currentDate < moment().endOf('day'))
+    return currentDate > e || ed === c
   }
   function disabledDateApt(currentDate) {
     const e = getFieldValue('applicationPeriodStartTime');
