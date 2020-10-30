@@ -9,7 +9,7 @@ import { Upload, Button, Modal, message, Spin } from 'antd';
 import { ExtTable, utils } from 'suid';
 import { Header, AutoSizeLayout } from '../../../components';
 import { useLocation } from 'dva/router';
-import { findScoreById, exportEvlProjectScorer, importEvlProjectScorer } from '../../../services/appraise';
+import { findScoreById, exportEvlProjectScorer, importEvlProjectScorer, sponsorAppraise } from '../../../services/appraise';
 import { downloadBlobFile, sendResize, closeCurrent } from '../../../utils';
 
 function Allocation() {
@@ -81,7 +81,25 @@ function Allocation() {
         const { success, data, message: msg } = await exportEvlProjectScorer({ evaluationProjectId: query?.id });
         if (success) {
           downloadBlobFile(data, '评审人分配模板.xlsx')
-          message.success(msg)
+          message.success('导出成功')
+          return
+        }
+        message.error(msg)
+      }
+    })
+  }
+  function handleAppraise() {
+    Modal.confirm({
+      title: '发起评价',
+      content: '确定当前项目要发起评价吗？',
+      okText: '确定',
+      cancelText: '取消',
+      onOk: async () => {
+        const { success, message: msg } = await sponsorAppraise({
+          evaluationProjectId: query?.id
+        })
+        if (success) {
+          // closeCurrent()
           return
         }
         message.error(msg)
@@ -133,6 +151,7 @@ function Allocation() {
         <div className={styles.fbc}>
           <span className={styles.title}>分配评审人</span>
           <div>
+            <Button className={styles.btn} onClick={handleAppraise}>发起评价</Button>
             <Button onClick={back}>返回</Button>
           </div>
         </div>

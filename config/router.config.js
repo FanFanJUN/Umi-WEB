@@ -248,6 +248,11 @@ export default [
         title: '评价'
       },
       {
+        path: '/supplier/appraise/project/manual/evaluate/detail',
+        component: './ManualEvaluate/Detail',
+        title: '评价项目明细'
+      },
+      {
         path: '/supplier/appraise/project/evaluate',
         component: './ManualEvaluate',
         title: '人工评价'

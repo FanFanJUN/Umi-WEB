@@ -377,7 +377,7 @@ const CommonForm = forwardRef(({
     const e = getFieldValue('evlPeriodStartTime');
     const c = currentDate?.format('YYYY-MM-DD');
     const ed = e?.format('YYYY-MM-DD') || undefined;
-    if(!e || !ed) {
+    if (!e || !ed) {
       return
     }
     return currentDate < e || c === ed
@@ -386,7 +386,7 @@ const CommonForm = forwardRef(({
     const e = getFieldValue('evlPeriodEndTime');
     const c = currentDate?.format('YYYY-MM-DD');
     const ed = e?.format('YYYY-MM-DD') || undefined;
-    if(!e || !ed) {
+    if (!e || !ed) {
       return
     }
     return currentDate > e || ed === c
@@ -395,7 +395,7 @@ const CommonForm = forwardRef(({
     const e = getFieldValue('applicationPeriodStartTime');
     const c = currentDate?.format('YYYY-MM-DD');
     const ed = e?.format('YYYY-MM-DD') || undefined;
-    if(!e || !ed) {
+    if (!e || !ed) {
       return
     }
     return currentDate < e || c === ed
@@ -404,7 +404,7 @@ const CommonForm = forwardRef(({
     const e = getFieldValue('applicationPeriodEndTime');
     const c = currentDate?.format('YYYY-MM-DD');
     const ed = e?.format('YYYY-MM-DD') || undefined;
-    if(!e || !ed) {
+    if (!e || !ed) {
       return
     }
     return currentDate > e || ed === c
@@ -504,7 +504,12 @@ const CommonForm = forwardRef(({
                           }
                         ]
                       })(
-                        <DatePicker style={{ width: '100%' }} placeholder='开始日期' disabledDate={disabledDateSt} />
+                        <DatePicker
+                          style={{ width: '100%' }}
+                          disabled={type === 'detail'}
+                          placeholder='开始日期'
+                          disabledDate={disabledDateSt}
+                        />
                       )
                     }
                   </FormItem>
@@ -520,7 +525,12 @@ const CommonForm = forwardRef(({
                           }
                         ]
                       })(
-                        <DatePicker style={{ width: '100%' }} placeholder='结束日期' disabled={!est} disabledDate={disabledDate} />
+                        <DatePicker
+                          style={{ width: '100%' }}
+                          placeholder='结束日期'
+                          disabled={!est || type === 'detail'}
+                          disabledDate={disabledDate}
+                        />
                       )
                     }
                   </FormItem>
@@ -560,7 +570,12 @@ const CommonForm = forwardRef(({
                           }
                         ]
                       })(
-                        <DatePicker style={{ width: '100%' }} placeholder='开始日期' disabledDate={disabledDateAst} />
+                        <DatePicker
+                          style={{ width: '100%' }}
+                          placeholder='开始日期'
+                          disabledDate={disabledDateAst}
+                          disabled={type === 'detail'}
+                        />
                       )
                     }
                   </FormItem>
@@ -576,7 +591,12 @@ const CommonForm = forwardRef(({
                           }
                         ]
                       })(
-                        <DatePicker style={{ width: '100%' }} placeholder='结束日期' disabled={!apt} disabledDate={disabledDateApt} />
+                        <DatePicker
+                          style={{ width: '100%' }}
+                          placeholder='结束日期'
+                          disabled={!apt || type === 'detail'}
+                          disabledDate={disabledDateApt}
+                        />
                       )
                     }
                   </FormItem>

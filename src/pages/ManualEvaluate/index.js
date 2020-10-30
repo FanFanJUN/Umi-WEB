@@ -166,7 +166,7 @@ function ManualEvaluate() {
       },
       {
         title: '评价人',
-        dataIndex: 'seEvaluationProject.creatorName'
+        dataIndex: 'scorerName'
       },
       {
         title: '评价日期',
@@ -196,6 +196,7 @@ function ManualEvaluate() {
             className={styles.btn}
             disabled={empty}
             ignore={DEVELOPER_ENV}
+            onClick={handleCheckDetail}
             key='MANUAL_EVALUATE_DETAIL'
           >明细</Button>
         )
@@ -321,6 +322,13 @@ function ManualEvaluate() {
     const { id = '' } = FRAMELEEMENT;
     const { pathname } = window.location;
     openNewTab(`supplier/appraise/project/manual/evaluate?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}&flowId=${flowId}`, '评价', false)
+  }
+  // 查看明细页面
+  function handleCheckDetail() {
+    const [key] = selectedRowKeys;
+    const { id = '' } = FRAMELEEMENT;
+    const { pathname } = window.location;
+    openNewTab(`supplier/appraise/project/manual/evaluate/detail?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}&flowId=${flowId}`, '评价明细', false)
   }
   // 终止审批流
   function handleStopApprove() {
