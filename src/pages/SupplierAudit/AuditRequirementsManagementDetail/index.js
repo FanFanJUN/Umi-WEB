@@ -12,8 +12,7 @@ import {
   FindByFiltersConfig, flowStatusConfig, stateConfig, SupplierConfig,
 } from '../mainData/commomService';
 import {
-  flowProps,
-  ShareStatusProps, stateProps,
+  flowProps, stateProps,
 } from '../../QualitySynergy/commonProps';
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
@@ -26,21 +25,7 @@ const { Search } = Input;
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 
 export default function() {
-
-
   const tableRef = useRef(null);
-
-  useEffect(() => {
-    window.parent.frames.addEventListener('message', listenerParentClose, false);
-    return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
-  }, []);
-
-  const listenerParentClose = (event) => {
-    const { data = {} } = event;
-    if (data.tabAction === 'close') {
-      tableRef.current.remoteDataRefresh();
-    }
-  };
 
   const [data, setData] = useState({
     quickSearchValue: '',
