@@ -10,6 +10,15 @@ export async function findRequirementLine(params) {
         params,
     });
 }
+// 年度计划新增-确定
+export async function findYearLineLine(params) {
+    const requestUrl = `${recommendUrl}/api/reviewPlanMonthLineService/findYearLine`;
+    return request({
+        url: requestUrl,
+        method: 'GET',
+        params,
+    });
+}
 
 // 新增月度计划-保存
 export async function insertMonthBo(params) {

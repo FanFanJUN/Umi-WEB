@@ -5,7 +5,7 @@ import { ExtModal, ExtTable } from "suid";
 import AddPersonModal from "./addPersonModal";
 
 
-const PersonManage = ({ visible, onOk, onCancel, originData }) => {
+const PersonManage = ({ visible, onOk, onCancel, originData, isView }) => {
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [selectedRows, setSelectedRows] = useState([]);
     const [dataSource, setDataSource] = useState([]);
@@ -14,13 +14,14 @@ const PersonManage = ({ visible, onOk, onCancel, originData }) => {
     const buttonClick = (type) => {
         switch (type) {
             case "add":
+                setAddData({ visible: true,})
+                break;
+            case "edit":
                 setAddData({
                     visible: true,
-                    type: 'add',
+                    isEdit: true,
+                    originData: selectedRows[0]
                 })
-                break;
-            case "esit":
-                console.log("点击编辑");
                 break;
             case "delet":
                 console.log("点击删除");
@@ -35,28 +36,34 @@ const PersonManage = ({ visible, onOk, onCancel, originData }) => {
         setDataSource(dataList)
     }, originData)
     const columns = [
-        { title: '部门', dataIndex: 'departmentName', width: 120  },
+        { title: '部门', dataIndex: 'departmentName', width: 160  },
         { title: '员工编号', dataIndex: 'employeeNo', width: 100  },
         { title: '姓名', dataIndex: 'memberName', width: 120  },
         { title: '联系电话', dataIndex: 'memberTel', width: 100  },
     ]
     const personHandleOK = (value) => {
         console.log("新增数据", value)
+        let newList = [].concat(dataSource);
+        newList.push({
+            rowKey: dataSource.length,
+            ...value
+        })
+        setDataSource(newList)
     }
     return <>
         <ExtModal
-            width={'120vh'}
+            width={'50vw'}
             maskClosable={false}
             visible={visible}
             title={'协同人员管理'}
             onCancel={onCancel}
-            onOk={onOk}
+            onOk={()=>{onOk(dataSource)}}
             destroyOnClose={true}
         >
-            <div style={{ marginTop: '10px' }}>
+            <div style={{display:isView?"none":"block", margin: '10px 0'}}>
                 <Button type='primary' onClick={() => buttonClick('add')}>新增</Button>
-                <Button style={{ marginLeft: '5px' }} onClick={() => buttonClick('edit')}>编辑</Button>
-                <Button style={{ marginLeft: '5px' }} onClick={() => buttonClick('delete')}>删除</Button>
+                <Button style={{ marginLeft: '5px' }} onClick={() => buttonClick('edit')} disabled={selectedRows.length !== 1}>编辑</Button>
+                <Button style={{ marginLeft: '5px' }} onClick={() => buttonClick('delete')}  disabled={selectedRows.length === 0}>删除</Button>
             </div>
             <ExtTable
                 rowKey={(v) => v.rowKey}
@@ -75,9 +82,10 @@ const PersonManage = ({ visible, onOk, onCancel, originData }) => {
             />
             {addModalData.visible && <AddPersonModal
                 visible={addModalData.visible}
-                isView={addModalData.isView}
+                isEdit={addModalData.isEdit}
                 personHandleOK={personHandleOK}
                 onCancel={()=>{setAddData({visible: false})}}
+                originData={addModalData.originData}
             />
             }
         </ExtModal>

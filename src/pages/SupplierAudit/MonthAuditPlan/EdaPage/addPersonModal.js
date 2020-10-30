@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { ComboList, ComboTree, ExtModal } from 'suid';
 import { Col, Form, Input, Row } from 'antd';
-import { ApplyOrganizationProps, UserByDepartmentConfig, GetUserTelByUserId} from '../../mainData/commomService';
+import { ApplyOrganizationProps, UserByDepartmentConfig, GetUserTelByUserId } from '../../mainData/commomService';
 import { basicServiceUrl, gatewayUrl } from '../../../../utils/commonUrl';
 
 const FormItem = Form.Item;
@@ -12,26 +12,37 @@ const formItemLayoutLong = {
 };
 
 const AddPersonModal = (props) => {
-    const { visible, onCancel, isEdit, personHandleOK, form } = props;
+    const { visible, onCancel, isEdit, personHandleOK, form, originData } = props;
     const { getFieldDecorator, setFieldsValue, getFieldValue } = props.form;
 
     const clearSelected = () => {
         form.resetFields();
     };
     const onOk = () => {
-        props.form.validateFieldsAndScroll((err, values) => {
+        form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                if (data.lineNum) {
-                    values.lineNum = data.lineNum
-                    values.memberRuleBoList = data.memberRuleBoList
-                }
                 personHandleOK(values);
+                onCancel();
             }
         });
     }
+    // 部门选择更改
+    const departChange = (value) => {
+        console.log('部门选择更改', value)
+        setFieldsValue({
+            namePath: value.namePath,
+            codePath: value.codePath,
+            memberName: '',
+            memberTel: '',
+            employeeNo: ''
+        });
+    }
+    // 员工选择更改
     const userSelect = (value) => {
+        console.log('员工选择更改', value)
         setFieldsValue({
             memberName: value.userName,
+            memberId: value.id,
             employeeNo: value.user.tenantCode
         });
         GetUserTelByUserId({
@@ -46,8 +57,9 @@ const AddPersonModal = (props) => {
             }
         });
     };
+
     return <ExtModal
-        width={'80vh'}
+        width={'30vw'}
         visible={visible}
         title={isEdit ? "编辑协同管理人员" : "新增协同管理人员"}
         onCancel={onCancel}
@@ -59,18 +71,19 @@ const AddPersonModal = (props) => {
             <Row>
                 <FormItem {...formItemLayoutLong} label={'部门'}>
                     {
-                        getFieldDecorator('departmentCode'),
-                        getFieldDecorator('departmentId'),
+                        getFieldDecorator('namePath', { initialValue: isEdit ? originData.namePath : '', }),
+                        getFieldDecorator('codePath', { initialValue: isEdit ? originData.codePath : '', }),
+                        getFieldDecorator('departmentCode', { initialValue: isEdit ? originData.departmentCode : '', }),
+                        getFieldDecorator('departmentId', { initialValue: isEdit ? originData.departmentId : '', }),
                         getFieldDecorator('departmentName', {
                             initialValue: isEdit ? originData.departmentName : '',
+                            rules: [{ required: true, message: '部门不能为空', },]
                         })(
                             <ComboTree
                                 form={form}
                                 name={'departmentName'}
                                 field={['departmentCode', 'departmentId']}
-                                afterSelect={(item) => {
-                                    console.log(item)
-                                }}
+                                afterSelect={departChange}
                                 {...ApplyOrganizationProps}
                             />,
                         )
@@ -82,6 +95,7 @@ const AddPersonModal = (props) => {
                     {
                         getFieldDecorator('employeeNo', {
                             initialValue: isEdit ? originData.employeeNo : "",
+                            rules: [{ required: true, message: '员工编号不能为空', },]
                         })(
                             <ComboList
                                 form={form}
@@ -110,14 +124,10 @@ const AddPersonModal = (props) => {
             <Row>
                 <FormItem {...formItemLayoutLong} label={'姓名'}>
                     {
+                        getFieldDecorator('memberId', { initialValue: isEdit ? originData.memberId : '', }),
                         getFieldDecorator('memberName', {
                             initialValue: isEdit ? originData.memberName : "",
-                            rules: [
-                                {
-                                    required: true,
-                                    message: '姓名不能为空',
-                                },
-                            ],
+                            rules: [{ required: true, message: '姓名不能为空', },],
                         })(<Input disabled={true} placeholder='请输入姓名' />)
                     }
                 </FormItem>
@@ -127,13 +137,7 @@ const AddPersonModal = (props) => {
                     {
                         getFieldDecorator('memberTel', {
                             initialValue: isEdit ? originData.memberTel : '',
-                            rules: [
-                                {
-                                    required: true,
-                                    message: '联系电话不能为空',
-                                },
-                            ],
-                        })(<Input placeholder='请输入联系电话' disabled={true} />)
+                        })(<Input placeholder='请输入联系电话' />)
                     }
                 </FormItem>
             </Row>

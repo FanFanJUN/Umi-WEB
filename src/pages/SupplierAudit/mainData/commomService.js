@@ -199,6 +199,7 @@ export const UserByDepartmentConfig = {
   reader: {
     name: 'code',
     description: 'userName',
+    field: ["code", "id"]
   },
 };
 
@@ -333,6 +334,25 @@ export const DocumentAuditCauseManagementConfig = {
     field: ['code', 'id'],
     name: 'name',
     description: 'code',
+  },
+};
+// 月度计划-从年度审核计划-新增
+export const reviewPlanYearConfig = {
+  placeholder: '选择审核原因',
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    params: {
+      // state: 'EFFECT'
+    },
+    url: `${recommendUrl}/api/reviewPlanYearService/findByPage`,
+  },
+  remotePaging: true,
+  rowKey: 'reviewPlanYearCode',
+  reader: {
+    field: ['reviewPlanYearCode', 'id'],
+    name: 'reviewPlanYearName',
+    description: 'reviewPlanYearCode',
   },
 };
 

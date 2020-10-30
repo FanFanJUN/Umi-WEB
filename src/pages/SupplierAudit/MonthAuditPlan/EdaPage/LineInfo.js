@@ -43,7 +43,14 @@ let LineInfo = forwardRef((props, ref) => {
         return <div>
           <a onClick={() => { console.log("跳转到内容") }} key="content">内容</a>
           <a onClick={() => { console.log("跳转到小组") }} style={{ margin: '0 3px' }} key="group">小组</a>
-          <a onClick={() => { console.log("跳转到协同") }} key="xietong">协同</a>
+          <a onClick={(e) => {
+            e.stopPropagation();
+            setPersonData({ 
+              visible: true,
+              isView: true,
+              originData: item.coordinationMemberBoList ? item.coordinationMemberBoList : []
+            });
+          }} key="xietong">协同</a>
         </div>
       }
     },
@@ -104,14 +111,17 @@ let LineInfo = forwardRef((props, ref) => {
         setTeamData({ visible: true, treeData: [], selectRows: [] });
         break;
       case "personM":
-        setPersonData({ visible: true, originData: [] });
+        setPersonData({ 
+          visible: true, 
+          originData: (data.selectRows.length === 1)&&data.selectRows[0].coordinationMemberBoList ? data.selectRows[0].coordinationMemberBoList : []
+        });
         break;
       default:
         break;
     }
 
   }
-
+  
   const handleAddOk = (value) => {
     console.log('行数据', value)
     let newList = value.map((item, index) => {
@@ -150,6 +160,16 @@ let LineInfo = forwardRef((props, ref) => {
     setDataSource(newList);
     setModalData({ visible: false });
   }
+  const handleDelete = () => {
+    let newList = dataSource.filter(item => {
+      return !data.selectedRowKeys.includes(item.lineNum);
+    })
+    newList = newList.map((iten, index)=> {
+      item.lineNum = index;
+      return item;
+    })
+    setDataSource(newList)
+  }
   const getBatchFormValue = (value) => {
     console.log("批量编辑确定")
   }
@@ -159,6 +179,15 @@ let LineInfo = forwardRef((props, ref) => {
   }
   const personModalOk = (personData) => {
     console.log("协同人员管理确定", personData)
+    setPersonData({ visible: false});
+    let newList = dataSource.map(item => {
+      if(data.selectedRowKeys.includes(item.lineNum)) {
+        item.coordinationMemberBoList = personData
+      }
+      return item
+    })
+    console.log('整合的数据', newList);
+    setDataSource(newList);
   }
   return (
     <div className={styles.wrapper}>
@@ -171,7 +200,7 @@ let LineInfo = forwardRef((props, ref) => {
               <Button onClick={() => handleBtn('recommand')} type='primary'>从准入推荐新增</Button>
               <Button onClick={() => handleBtn('demand')} type='primary'>从审核需求新增</Button>
               <Button onClick={() => { handleBtn('edit') }} >批量编辑</Button>
-              <Button onClick={() => { handleBtn('delete') }} >删除</Button>
+              <Button onClick={() => { handleDelete() }} disabled={data.selectRows.length===0}>删除</Button>
               <Button onClick={() => { handleBtn('contenM') }} >审核内容管理</Button>
               <Button onClick={() => { handleBtn('teamM') }} disabled={data.selectRows.length!==1}>审核小组管理</Button>
               <Button onClick={() => { handleBtn('personM') }} disabled={data.selectRows.length===0}>协同人员管理</Button>
@@ -231,6 +260,7 @@ let LineInfo = forwardRef((props, ref) => {
       {personModalData.visible && <PersonManage
         visible={personModalData.visible}
         originData={personModalData.originData}
+        isView={personModalData.isView}
         onCancel={() => { setPersonData({ visible: false }) }}
         onOk={personModalOk}
       />
