@@ -34,6 +34,48 @@ export const TechnicalDrawings = {
   ...commonProps,
 }
 
+// 审批流程
+export const flowProps = {
+  allowClear: true,
+  dataSource: [
+    {
+      code: 'INIT',
+      name: '未进入流程',
+    },
+    {
+      code: 'INPROCESS',
+      name: '流程中',
+    },
+    {
+      code: 'COMPLETED',
+      name: '流程处理完成',
+    },
+  ],
+  placeholder: '选择状态',
+  ...commonProps,
+}
+
+// 状态
+export const stateProps = {
+  allowClear: true,
+  dataSource: [
+    {
+      code: 'DRAFT',
+      name: '草稿',
+    },
+    {
+      code: 'EFFECT',
+      name: '生效',
+    },
+    {
+      code: 'CHANGING',
+      name: '变更中',
+    },
+  ],
+  placeholder: '选择状态',
+  ...commonProps,
+}
+
 // 技术资料状态
 export const ShareStatusProps = {
   allowClear: true,
