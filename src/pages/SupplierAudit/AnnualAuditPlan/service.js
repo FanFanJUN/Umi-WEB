@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-22 10:13:27
- * @LastEditTime: 2020-10-28 15:49:45
+ * @LastEditTime: 2020-10-30 16:24:21
  * @Description: 接口 集
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/service.js
  */
@@ -35,8 +35,8 @@ export async function findDetailedById(params) {
     const requestUrl = `${recommendUrl}/api/reviewPlanYearService/findDetailedById`;
     return request({
         url: requestUrl,
-        method: 'POST',
-        data: params,
+        method: 'GET',
+        params,
     });
 }
 // 删除
@@ -48,4 +48,12 @@ export async function deleteReviewPlanYear(params) {
         params,
     });
 }
-// 头行组合数据明细查询分页：reviewPlanYearService/findDetailedReviewPlanYearAndLine 参数和我发给你的那个分页的一样
+//提交审核
+export async function submitReviewPlanYear(params) {
+    const url = `${recommendUrl}/api/reviewPlanYearService/pushTasksToDo`;
+    return request({
+      url,
+      method: 'GET',
+      params,
+    });
+  }

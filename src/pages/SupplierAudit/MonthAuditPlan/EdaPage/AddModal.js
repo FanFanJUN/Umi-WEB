@@ -1,18 +1,20 @@
 // 从年度审核新增
-import React, { useState, useRef} from "react";
-import { Form, Row, Col, Button } from "antd";
-import { ExtTable, ExtModal, ComboList, ComboTree } from 'suid';
+import React, { useState, useRef } from "react";
+import { Form, Row, Col, Button, Select } from "antd";
+import { ExtTable, ExtModal, ComboList, ComboTree,  } from 'suid';
 import {
     AuditCauseManagementConfig,
+    reviewPlanYearConfig,
     AllCompanyConfig,
     AllFindByFiltersConfig,
     materialCodeProps,
     reviewRequirementConfig
 } from '../../mainData/commomService';
 import { recommendUrl } from '@/utils/commonUrl';
-import { findRequirementLine } from "../service"
+import { findRequirementLine, findYearLineLine } from "../service"
 
 const FormItem = Form.Item;
+const { Option } = Select;
 const formItemLayoutLong = {
     labelCol: { span: 8 },
     wrapperCol: { span: 16 },
@@ -25,35 +27,23 @@ const AddModal = (props) => {
     const [selectedRowKeys, setselectedRowKeys] = useState([]);
     const [cascadeParams, setCascadeParams] = useState({});
     const [selectRows, setselectRows] = useState([]);
-
-    // 从审核需求新增
-    
+    const [selectedTear, setSelectedYear] = useState("")
 
     const columns = [
-        {
-            title: '需求公司', dataIndex: 'corporation', width: 140, ellipsis: true, render: (text, context) => {
-                return text && `${text.code}_${text.name}`;
-            }
-        },
-        {
-            title: '采购组织', dataIndex: 'purchaseOrgName', ellipsis: true, width: 140, render: (text, context) => {
-                return text && `${text.code}_${text.name}`;
-            }
-        },
+        { title: '需求公司', dataIndex: 'applyCorporationName', width: 140, ellipsis: true },
+        { title: '采购组织', dataIndex: 'purchaseOrgName', ellipsis: true, width: 140 },
         { title: '供应商', dataIndex: 'supplierCode', ellipsis: true, width: 140 },
-        { title: '代理商', dataIndex: 'xx', ellipsis: true, width: 140 },
-        {
-            title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 140, render: (text, context) => {
-                return text && text.showName;
-            }
-        },
+        { title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 140 },
+        { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 140 },
     ].map(item => ({ ...item, align: 'center' }))
 
     const getColums = () => {
         switch (type) {
             case "annual":
                 return [
-                    { title: '预计审核月度', dataIndex: 'data1', ellipsis: true, width: 140 },
+                    { title: '预计审核月度', dataIndex: 'reviewMonth', ellipsis: true, width: 140, render: (text)=>{
+                        return text ? (selectedTear + "年" + text + "月") : ""
+                    }},
                 ].concat(columns);
             case "recommand":
                 return [
@@ -85,7 +75,15 @@ const AddModal = (props) => {
     }
 
     const getStore = () => {
-        if(type === "demand") {
+        if (type === "annual") {
+            return {
+                params: {
+                    ...cascadeParams
+                },
+                url: `${recommendUrl}/api/reviewPlanYearService/findPageLineById`,
+                type: 'POST',
+            }
+        } else if (type === "demand") {
             return {
                 params: {
                     usedType: 2,
@@ -106,24 +104,36 @@ const AddModal = (props) => {
         }
     }
     const onOk = async () => {
-        const res = await findRequirementLine({
-            ids: selectedRowKeys.join()
-        })
-        console.log(res)
-        if(res.sucess) {
-
+        let res = {};
+        if (type === "demand") {
+            res = await findRequirementLine({
+                ids: selectedRowKeys.join()
+            })
+        } else if(type === "annual") {
+            res = await findYearLineLine({
+                ids: selectedRowKeys.join()
+            })
         }
-        console.log("执行")
+        if (res.success) {
+            handleOk(res.data);
+        }
     }
 
     function handleSearch() {
         form.validateFieldsAndScroll((err, values) => {
+            console.log(values)
             if (!err) {
-                if(type === "demand") {
+                if (type === "demand") {
                     delete values.applyCorporationId;
                     delete values.applyCorporationName;
                     delete values.purchaseOrgId;
                     delete values.purchaseOrgName;
+                } else if(type === "annual") {
+                    delete values.reviewPlanYearName
+                    delete values.reviewPlanYearCode
+                    if(values.reviewMonth) {
+                        values.reviewMonth = Number(values.reviewMonth);
+                    }
                 }
                 setCascadeParams(values);
             }
@@ -134,40 +144,57 @@ const AddModal = (props) => {
         if (type === "annual") {
             return <Form>
                 <Row>
-                    <Col span={12}>
+                    <Col span={10}>
                         <FormItem {...formItemLayoutLong} label={'年度审核计划'}>
                             {
-                                getFieldDecorator('fileCategoryName')(
+                                getFieldDecorator('id'),
+                                getFieldDecorator('reviewPlanYearCode'),
+                                getFieldDecorator('reviewPlanYearName', {
+                                    rules: [{ required: true, message: '请选择', },]
+                                })(
                                     <ComboList
                                         allowClear
                                         style={{ width: '100%' }}
                                         form={form}
-                                        name={'name'}
-                                        field={['code', 'id']}
-                                        {...AuditCauseManagementConfig}
+                                        name={'reviewPlanYearName'}
+                                        field={['reviewPlanYearCode', 'id']}
+                                        {...reviewPlanYearConfig}
+                                        afterSelect={(item)=>{
+                                            if(item.applyYear) {
+                                                setSelectedYear(item.applyYear)
+                                            }
+                                        }}
                                     />,
                                 )
                             }
                         </FormItem>
                     </Col>
-                    <Col span={12}>
+                    <Col span={10}>
                         <FormItem {...formItemLayoutLong} label={'预计审核月度'}>
                             {
-                                getFieldDecorator('fileCategoryName')(
-                                    <ComboList
-                                        allowClear
-                                        style={{ width: '100%' }}
-                                        form={form}
-                                        name={'name'}
-                                        field={['code', 'id']}
-                                        {...AuditCauseManagementConfig}
-                                    />,
+                                getFieldDecorator('reviewMonth')(
+                                    <Select>
+                                        <Option value="1">1月</Option>
+                                        <Option value="2">2月</Option>
+                                        <Option value="3">3月</Option>
+                                        <Option value="4">4月</Option>
+                                        <Option value="4">5月</Option>
+                                        <Option value="4">6月</Option>
+                                        <Option value="4">7月</Option>
+                                        <Option value="4">8月</Option>
+                                        <Option value="4">9月</Option>
+                                        <Option value="4">10月</Option>
+                                        <Option value="4">11月</Option>
+                                        <Option value="4">12月</Option>
+                                    </Select>
                                 )
                             }
                         </FormItem>
                     </Col>
+                    <Col span={4}>
+                        <div style={{ textAlign: 'center' }} onClick={handleSearch}><Button type="primary">查询</Button></div>
+                    </Col>
                 </Row>
-                <div style={{ textAlign: 'center' }} onClick={handleSearch}><Button type="primary">查询</Button></div>
             </Form>
         } else if (type === "recommand") {
             return <Form>
@@ -273,7 +300,7 @@ const AddModal = (props) => {
     }
 
     return <ExtModal
-        width={'120vh'}
+        width={'1000px'}
         height={'800px'}
         maskClosable={false}
         visible={visible}

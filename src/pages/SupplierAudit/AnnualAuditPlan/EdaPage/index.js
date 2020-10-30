@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:04:51
- * @LastEditTime: 2020-10-28 15:40:02
+ * @LastEditTime: 2020-10-30 16:05:56
  * @Description: 新增  编辑  详情 page
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/index.js
  */
@@ -12,10 +12,14 @@ import { Affix, Button, Form, message, Spin } from 'antd';
 import classnames from 'classnames';
 import styles from '../../../Supplier/Editor/index.less';
 import { closeCurrent, getMobile, getUserId, getUserName, getAccount } from '@/utils';
+import { getUserInfoFromSession } from '@/utils/utilTool';
 import BaseInfo from './BaseInfo';
 import { router } from 'dva';
 import LineInfo from './LineInfo';
-import { reviewPlanYearAp } from '../service';
+import { findDetailedById, reviewPlanYearAp } from '../service';
+import { isEmptyArray } from '../../../../utils/utilTool';
+
+const userInfo = getUserInfoFromSession();
 
 const Index = (props) => {
 
@@ -26,25 +30,36 @@ const Index = (props) => {
     const [data, setData] = useState({
         id: '',
         editDate: {},
-        spinLoading: false,
         isView: false,
         loading: false,
         type: 'add',
         title: '',
-        userInfo: {},
     });
 
     const [lineData, setlineData] = useState([]);
+    const [spinLoading, setSpinLoading] = useState(false);
+    const [originData, setOriginData] = useState({});
 
     useEffect(() => {
         const { id, pageState } = query;
+        if (pageState === 'edit' || pageState === 'detail') {
+            async function fetchData() {
+                setSpinLoading(true);
+                const res = await findDetailedById({ id: query.id });
+                if (res.success) {
+                    res.data && setOriginData(res.data);
+                } else {
+                    message.error(res.message);
+                }
+                setSpinLoading(false);
+            }
+            fetchData();
+        }
         switch (pageState) {
             case 'add':
-                getUser();
                 setData((value) => ({ ...value, type: pageState, isView: false, title: '年度审核计划管理-新增' }));
                 break;
             case 'edit':
-                getUser();
                 setData((value) => ({ ...value, type: pageState, id, isView: false, title: '年度审核计划管理-编辑' }));
                 break;
             case 'detail':
@@ -56,14 +71,6 @@ const Index = (props) => {
         console.log(pageState, 'pageState');
     }, []);
 
-    const getUser = () => {
-        const userId = getUserId();
-        const userName = getUserName();
-        const userMobile = getMobile();
-        const account = getAccount();
-        setData((v) => ({ ...v, userInfo: { userName, userId, userMobile, account } }));
-    };
-
     const handleBack = () => {
         setData(v => ({ ...v, loading: false }))
         // openNewTab(`qualitySynergy/DataSharingList`, '技术资料分享需求列表', true);
@@ -71,14 +78,20 @@ const Index = (props) => {
     };
 
     const handleSave = (buttonType) => {
+        const finnalLineData = !isEmptyArray(lineData) ? lineData : originData.planYearLineVos;
         form.validateFieldsAndScroll((err, values) => {
             if (err) return;
-            if (lineData.length === 0) {
+            if (finnalLineData.length === 0) {
                 message.info('请至少添加一条行信息');
                 return;
             }
+            finnalLineData.forEach((item)=>{
+                if(!item.whetherDelete) {
+                    item.whetherDelete = false;
+                }
+            })
             if (!err) {
-                const allData = { ...values, reviewPlanYearLineBos: lineData };
+                const allData = { ...originData,...values, flowStatus: 'INIT', reviewPlanYearLineBos: finnalLineData };
                 if (buttonType === 'onlySave') {
                     tohandleSave(allData);
                 } else {
@@ -91,7 +104,9 @@ const Index = (props) => {
     function tohandleSave(allData) {
         reviewPlanYearAp({ ...allData, type: data.type }).then((res) => {
             if (res.success) {
-
+                message.info(res.message);
+            } else {
+                message.error(res.message); 
             }
         })
     }
@@ -106,7 +121,7 @@ const Index = (props) => {
 
     return (
         <div>
-            <Spin spinning={data.spinLoading}>
+            <Spin spinning={spinLoading}>
                 <Affix>
                     <div className={classnames(styles.fbc, styles.affixHeader)}>
                         <span>{data.title}</span>
@@ -121,8 +136,8 @@ const Index = (props) => {
                 </Affix>
                 <BaseInfo
                     form={form}
-                    userInfo={data.userInfo}
-                    data={data.baseinfo}
+                    userInfo={userInfo}
+                    originData={originData}
                     type={data.type}
                     isView={data.isView}
                 />
@@ -130,6 +145,7 @@ const Index = (props) => {
                     type={data.type}
                     isView={data.isView}
                     setlineData={setTablelineData}
+                    originData={originData}
                 />
             </Spin>
         </div>

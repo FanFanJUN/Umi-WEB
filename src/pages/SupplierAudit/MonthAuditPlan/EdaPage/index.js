@@ -6,10 +6,12 @@ import styles from '../../../Supplier/Editor/index.less';
 import { router } from 'dva';
 import { closeCurrent, getMobile, getUserId, getUserName } from '@/utils';
 import LineInfo from './LineInfo';
+import { insertMonthBo } from "../service";
 
 const Index = (props) => {
     const { form } = props;
     const [lineData, setlineData] = useState([]);
+    const tableRef = useRef(null);
     const [data, setData] = useState({
         id: '',
         editDate: {},
@@ -40,7 +42,6 @@ const Index = (props) => {
                 setData((value) => ({ ...value, type: pageState, isView: false, title: '月度审核计划管理-新增' }));
                 break;
         }
-        console.log(pageState, 'pageState');
     }, []);
 
     const getUser = () => {
@@ -56,15 +57,20 @@ const Index = (props) => {
         closeCurrent();
     };
 
-    const handleSave = async (type) => {
-        form.validateFieldsAndScroll((err, values) => {
+    const handleSave = (type) => {
+        form.validateFieldsAndScroll(async (err, values) => {
             if (err) return;
+            let saveData = {...values};
+            let lineData = tableRef.current.getTableList();
+            saveData.lineBoList = lineData;
+            console.log('lineData', saveData)
             if(lineData.length === 0) {
                 message.info('请至少添加一条行信息');
                 return;
             }
-            if (!err) {
-                return values;
+            const res = await insertMonthBo(saveData)
+            if(res.success) {
+                message.success("保存成功");
             }
         });
     }
@@ -76,8 +82,8 @@ const Index = (props) => {
                     {
                         data.type !== 'detail' && <div>
                             <Button className={styles.btn} onClick={handleBack}>返回</Button>
-                            <Button className={styles.btn} onClick={() => handleSave('add')}>暂存</Button>
-                            <Button className={styles.btn} type='primary' onClick={() => handleSave('addSave')} >提交</Button>
+                            <Button className={styles.btn} onClick={() => handleSave('save')}>暂存</Button>
+                            <Button className={styles.btn} type='primary' onClick={() => handleSave('publish')} >提交</Button>
                         </div>
                     }
                 </div>
@@ -91,6 +97,7 @@ const Index = (props) => {
             <LineInfo
                 type={data.type}
                 isView={data.isView}
+                wrappedComponentRef={tableRef}
             />
         </Spin>
     </>
