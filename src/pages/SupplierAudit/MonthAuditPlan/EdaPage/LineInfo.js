@@ -171,7 +171,17 @@ let LineInfo = forwardRef((props, ref) => {
     setDataSource(newList)
   }
   const getBatchFormValue = (value) => {
-    console.log("批量编辑确定")
+    console.log("批量编辑确定", value)
+    let newList = dataSource.map(item => {
+      if(data.selectedRowKeys.includes(item.lineNum)) {
+        return {
+          ...item,
+          value
+        }
+      }
+      return item;
+    })
+    setDataSource(newList);
   }
   const contentModalOk = (treeData) => {
     console.log("审核内容管理", treeData);
@@ -199,7 +209,7 @@ let LineInfo = forwardRef((props, ref) => {
               <Button onClick={() => handleBtn('annual')} type='primary'>从年度计划新增</Button>
               <Button onClick={() => handleBtn('recommand')} type='primary'>从准入推荐新增</Button>
               <Button onClick={() => handleBtn('demand')} type='primary'>从审核需求新增</Button>
-              <Button onClick={() => { handleBtn('edit') }} >批量编辑</Button>
+              <Button onClick={() => { handleBtn('edit') }} disabled={data.selectRows.length===0}>批量编辑</Button>
               <Button onClick={() => { handleDelete() }} disabled={data.selectRows.length===0}>删除</Button>
               <Button onClick={() => { handleBtn('contenM') }} >审核内容管理</Button>
               <Button onClick={() => { handleBtn('teamM') }} disabled={data.selectRows.length!==1}>审核小组管理</Button>
@@ -235,6 +245,7 @@ let LineInfo = forwardRef((props, ref) => {
       { batchEditVisible && <BatchEditModal
         visible={batchEditVisible}
         onCancel={() => { setBatchEditVisible(false) }}
+        originData={data.selectRows.length ===1 ? data.selectRows[0] : {}}
         onOk={getBatchFormValue}
       />
       }

@@ -8,7 +8,7 @@
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BatchEditModal.js
  */
 import React, { useEffect } from 'react';
-import { ComboList, ExtModal } from 'suid';
+import { ComboList, ExtModal, ComboGrid } from 'suid';
 import { Col, Form, Input, InputNumber, Row } from 'antd';
 import { CorporationListConfig } from '../../../QualitySynergy/commonProps';
 import {
@@ -17,8 +17,11 @@ import {
   NormalSupplierConfig,
   SelectionStrategyConfig,
 } from '../../mainData/commomService';
+import { reviewReasonsProps,reviewOrganizeProps, reviewWaysProps, CountryIdConfig, AreaConfig } from "../../AnnualAuditPlan/propsParams";
+import { basicServiceUrl, gatewayUrl } from '@/utils/commonUrl';
 
 const FormItem = Form.Item;
+const width = 160;
 
 const formItemLayoutLong = {
   labelCol: { span: 8 },
@@ -33,7 +36,7 @@ const formItemLayout = {
 
 const BatchEditModal = (props) => {
 
-  const { visible, title, form, type, fatherData = {} } = props;
+  const { visible, form, type, originData = {} } = props;
 
   const { getFieldDecorator, getFieldValue, setFieldsValue } = props.form;
 
@@ -44,6 +47,7 @@ const BatchEditModal = (props) => {
   const onOk = () => {
     form.validateFieldsAndScroll((err, values) => {
       if (err) return;
+      props.onCancel();
       props.onOk(values);
     });
   }
@@ -62,7 +66,7 @@ const BatchEditModal = (props) => {
 
   return (
     <ExtModal
-      width={'120vh'}
+      width={'60vw'}
       maskClosable={false}
       visible={visible}
       title='批量编辑'
@@ -76,14 +80,15 @@ const BatchEditModal = (props) => {
             <FormItem {...formItemLayoutLong} label={'审核原因'}>
               {
                 getFieldDecorator('reviewReasonId'),
-                getFieldDecorator('reviewReasonCode')(
-                  <ComboList
+                getFieldDecorator('reviewReasonCode'),
+                getFieldDecorator('reviewReasonName')(
+                  <ComboGrid
                     allowClear={true}
                     style={{ width: '100%' }}
                     form={form}
                     name={'reviewReasonName'}
-                    field={['reviewReasonCode', 'reviewReasonId']}
-                    {...AuditCauseManagementConfig}
+                    field={['reviewReasonId', "reviewReasonCode"]}
+                    {...reviewReasonsProps}
                   />,
                 )
               }
@@ -92,28 +97,36 @@ const BatchEditModal = (props) => {
           <Col span={12}>
             <FormItem {...formItemLayoutLong} label={'审核方式'}>
               {
-                 getFieldDecorator('reviewTypeId'),
-                 getFieldDecorator('reviewTypeCode'),
-                getFieldDecorator('reviewTypeName')(
-                  <Input />
+                getFieldDecorator('reviewTypeId'),
+                getFieldDecorator('reviewTypeCode'),
+                getFieldDecorator('reviewTypeName', {
+                  rules: [{ required: true, message: '审核方式不能为空', },],
+                })(
+                  <ComboGrid
+                    style={{ width: '100%' }}
+                    form={form}
+                    name={'reviewTypeName'}
+                    field={['reviewTypeId', 'reviewTypeCode']}
+                    {...reviewWaysProps}
+                  />,
                 )
               }
             </FormItem>
           </Col>
         </Row>
         <Row>
-        <Col span={12}>
+          <Col span={12}>
             <FormItem {...formItemLayoutLong} label={'审核组织形式'}>
               {
-                getFieldDecorator('reviewReasonId'),
-                getFieldDecorator('reviewReasonCode')(
+                getFieldDecorator('reviewOrganizedWayId'),
+                getFieldDecorator('reviewOrganizedWayName')(
                   <ComboList
                     allowClear={true}
                     style={{ width: '100%' }}
                     form={form}
-                    name={'reviewReasonName'}
-                    field={['reviewReasonCode', 'reviewReasonId']}
-                    {...AuditCauseManagementConfig}
+                    name={'reviewOrganizedWayName'}
+                    field={['reviewOrganizedWayCode', 'reviewOrganizedWayId']}
+                    {...reviewOrganizeProps}
                   />,
                 )
               }
@@ -122,8 +135,8 @@ const BatchEditModal = (props) => {
           <Col span={12}>
             <FormItem {...formItemLayoutLong} label={'审核小组组长'}>
               {
-                 getFieldDecorator('reviewTypeId'),
-                 getFieldDecorator('reviewTypeCode'),
+                getFieldDecorator('reviewTypeId'),
+                getFieldDecorator('reviewTypeCode'),
                 getFieldDecorator('reviewTypeName')(
                   <Input />
                 )
@@ -146,7 +159,24 @@ const BatchEditModal = (props) => {
                     },
                   ],
                 })(
-                  <Input style={{ width: '15%' }} placeholder={'国家'} />
+                  <ComboList
+                    allowClear={true}
+                    style={{ width: '15%' }}
+                    width={width}
+                    form={form}
+                    name={'countryName'}
+                    field={['countryId', 'countryCode']}
+                    store={{
+                      params: {
+                        filters: [{ fieldName: 'code', fieldType: 'string', operator: 'EQ', value: 'CN' }],
+                      },
+                      type: 'POST',
+                      autoLoad: false,
+                      url: `${gatewayUrl}${basicServiceUrl}/region/findByPage`,
+                    }}
+                    placeholder={'国家'}
+                    {...CountryIdConfig}
+                  />
                 )
               }
               {
@@ -161,7 +191,27 @@ const BatchEditModal = (props) => {
                     },
                   ],
                 })(
-                  <Input style={{ width: '15%' }} />
+                  <ComboList
+                    allowClear={true}
+                    style={{ width: '15%' }}
+                    width={width}
+                    form={form}
+                    name={'provinceName'}
+                    field={['provinceId', 'provinceCode']}
+                    cascadeParams={{
+                      countryId: getFieldValue('countryId'),
+                    }}
+                    store={{
+                      params: {
+                        countryId: getFieldValue('countryId'),
+                      },
+                      type: 'GET',
+                      autoLoad: false,
+                      url: `${gatewayUrl}${basicServiceUrl}/region/getProvinceByCountry`,
+                    }}
+                    placeholder={'省'}
+                    {...AreaConfig}
+                  />
                 )
               }
               {
@@ -169,14 +219,29 @@ const BatchEditModal = (props) => {
                 getFieldDecorator('cityCode'),
                 getFieldDecorator('cityName', {
                   initialValue: type === 'add' ? '' : '',
-                  rules: [
-                    {
-                      required: true,
-                      message: '市不能为空',
-                    },
-                  ],
+                  rules: [{ required: true, message: '市不能为空', },],
                 })(
-                  <Input style={{ width: '15%' }} />
+                  <ComboList
+                    allowClear={true}
+                    style={{ width: '15%' }}
+                    width={width}
+                    form={form}
+                    name={'cityName'}
+                    field={['cityId', 'cityCode']}
+                    cascadeParams={{
+                      provinceId: getFieldValue('provinceId'),
+                    }}
+                    store={{
+                      params: {
+                        provinceId: getFieldValue('provinceId'),
+                      },
+                      type: 'GET',
+                      autoLoad: false,
+                      url: `${gatewayUrl}${basicServiceUrl}/region/getCityByProvince`,
+                    }}
+                    placeholder={'市'}
+                    {...AreaConfig}
+                  />,
                 )
               }
               {
@@ -184,25 +249,33 @@ const BatchEditModal = (props) => {
                 getFieldDecorator('countyCode'),
                 getFieldDecorator('countyName', {
                   initialValue: type === 'add' ? '' : '',
-                  rules: [
-                    {
-                      required: true,
-                      message: '区/县不能为空',
-                    },
-                  ],
+                  rules: [{ required: true, message: '区/县不能为空', },],
                 })(
-                  <Input style={{ width: '15%' }} />
+                  <ComboList
+                    allowClear={true}
+                    style={{ width: '15%' }}
+                    width={width}
+                    form={form}
+                    name={'countyName'}
+                    field={['countyId', 'countyCode']}
+                    store={{
+                      params: {
+                        includeSelf: false,
+                        nodeId: getFieldValue('cityId'),
+                      },
+                      type: 'GET',
+                      autoLoad: false,
+                      url: `${gatewayUrl}${basicServiceUrl}/region/getChildrenNodes`,
+                    }}
+                    placeholder={'区/县'}
+                    {...AreaConfig}
+                  />,
                 )
               }
               {
                 getFieldDecorator('address', {
                   initialValue: type === 'add' ? '' : '',
-                  rules: [
-                    {
-                      required: true,
-                      message: '详细地址不能为空',
-                    },
-                  ],
+                  rules: [{ required: true, message: '详细地址不能为空', },],
                 })(
                   <Input style={{ width: '40%' }} />
                 )

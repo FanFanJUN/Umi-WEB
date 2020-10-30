@@ -143,6 +143,43 @@ export const reviewWaysProps = {
     description: 'code',
   },
 };
+// 审核组织方式
+export const reviewOrganizeProps = {
+  placeholder: '选择审核组织形式',
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    params:{
+      pageInfo:{rows: 15, page: 1},
+      filters:[{
+        fieldName: "frozen",
+        fieldType: "Boolean",
+        operator: "EQ",
+        value: false
+      }]
+    },
+    url: `${baseUrl}/api/reviewOrganizedWayService/findByPage`,
+  },
+  remotePaging: true,
+  columns: [
+    {
+      title: '代码',
+      width: 80,
+      dataIndex: 'code',
+    },
+    {
+      title: '名称',
+      width: 200,
+      dataIndex: 'name',
+    },
+  ],
+  rowKey: 'code',
+  reader: {
+    field: ['id', 'code'],
+    name: 'name',
+    description: 'code',
+  },
+};
 
 // 区域
 export const AreaConfig = {

@@ -93,6 +93,7 @@ const Index = (props) => {
                 userInfo={data.userInfo}
                 type={data.type}
                 isView={data.isView}
+                originData={data.editDate}
             />
             <LineInfo
                 type={data.type}
