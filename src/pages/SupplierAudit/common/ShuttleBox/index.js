@@ -22,19 +22,12 @@ const ShuttleBox = (props) => {
         constructArr(newData);
         setData(v => ({ ...v, leftData: [newData] }));
       } else {
-        if (newData.length > 1) {
-          newData = duplicateRemoval(newData, 'key')
-        }
         setData(v => ({ ...v, leftData: newData }));
       }
     } else {
       setData(v => ({ ...v, leftData: [] }));
     }
   }, [leftTreeData]);
-
-  // leftTree去重，并去children数量更大值
-  const arrayHeavy = (value) => {
-  }
 
   useEffect(() => {
     props.onChange(data.rightTreeData)
@@ -105,10 +98,11 @@ const ShuttleBox = (props) => {
 
   const deleteRightTreeData = (data, key) => {
     data.forEach((item, index) => {
+      console.log(item.id, 'data', key)
       if (item.id === key) {
         data.splice(index, 1)
       } else {
-        if (item.children.length !== 0) {
+        if (item.children && item.children.length !== 0) {
           deleteRightTreeData(item.children, key)
         }
       }
