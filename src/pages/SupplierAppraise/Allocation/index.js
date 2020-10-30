@@ -99,7 +99,7 @@ function Allocation() {
           evaluationProjectId: query?.id
         })
         if (success) {
-          // closeCurrent()
+          closeCurrent()
           return
         }
         message.error(msg)

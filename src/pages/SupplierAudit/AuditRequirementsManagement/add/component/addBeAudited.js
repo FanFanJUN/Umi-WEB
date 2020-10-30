@@ -3,7 +3,7 @@ import { ComboTree, ComboList, ExtModal } from 'suid';
 import { Col, Form, Input, message, Row } from 'antd';
 import {
   AreaConfig, CountryIdConfig,
-  DocumentAuditCauseManagementConfig, length_200_n,
+  DocumentAuditCauseManagementConfig, GetSupplierContact, length_200_n,
   NormalSupplierConfig,
   SelectionStrategyConfig,
 } from '../../../mainData/commomService';
@@ -64,13 +64,17 @@ const AddBeAudited = (props) => {
       countyName: supplierExtend.officeDistrictName,
       address: supplierExtend.officeStreet,
     });
-    getSupplierContact();
+    getSupplierContact(value.id);
     console.log(value, '供应商');
   };
 
   // 获取供应商联系人
-  const getSupplierContact = () => {
-
+  const getSupplierContact = (id) => {
+    GetSupplierContact({
+      supplierId: id
+    }).then(res =>{
+      console.log(res, '联系人')
+    })
   };
 
   useEffect(() => {
@@ -116,7 +120,6 @@ const AddBeAudited = (props) => {
 
   const supplierOk = (value) => {
     const { materielCategory, supplier, supplier: { supplierExtend } } = value;
-    console.log(supplierExtend);
     setFieldsValue({
       materialGroupName: materielCategory.name,
       materialGroupCode: materielCategory.code,
@@ -134,6 +137,7 @@ const AddBeAudited = (props) => {
       countyName: supplierExtend.officeDistrictName,
       address: supplierExtend.officeStreet,
     });
+    getSupplierContact(value.supplierId)
     setData(v => ({ ...v, visible: false }));
     console.log(value);
   };

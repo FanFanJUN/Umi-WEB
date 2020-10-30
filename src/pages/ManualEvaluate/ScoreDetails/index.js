@@ -25,7 +25,7 @@ function ScoreDetails() {
   const { query } = useLocation();
   function checkEvaluateDetail(ruleScoreId, type) {
     const pathname = type === 'system' ? 'supplier/appraise/project/evaluate/result/score/details/system' : 'supplier/appraise/project/evaluate/result/score/details/manual'
-    openNewTab(`${pathname}?ruleScoreId=${ruleScoreId}`)
+    openNewTab(`${pathname}?ruleScoreId=${ruleScoreId}`,'人工-分值详情', false)
   }
   const columns = [
     {

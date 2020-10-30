@@ -1,6 +1,6 @@
 
 export default (config) => {
   // optimize chunks
-  // config.output
-  //   .filename('[name].[hash].js');
+  config.output
+    .filename('[name].[hash].js');
 };

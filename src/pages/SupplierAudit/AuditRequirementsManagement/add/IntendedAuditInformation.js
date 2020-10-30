@@ -34,7 +34,7 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
       title: '操作',
       dataIndex: 'id',
       width: 140,
-      render: () => <span><a onClick={() => showContent('detail')}>内容</a>  <a onClick={() => showTeam('detail')}>小组</a></span>,
+      render: (v, value) => <span><a onClick={() => showContent(value.treeData, 'detail')}>内容</a>  <a onClick={() => showTeam(value.reviewTeamGroupBoList, 'detail')}>小组</a></span>,
     },
     { title: '审核类型', dataIndex: 'reviewTypeName', width: 140, ellipsis: true },
     { title: '审核原因', dataIndex: 'reviewReasonName', ellipsis: true, width: 140 },
@@ -140,17 +140,28 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
   }
 
   // 打开内容界面
-  const showContent = () => {
+  const showContent = (value=undefined, type='add') => {
+    console.log(value, 'value')
+    if (value) {
+      setTimeout(() => {
+        setData(v =>({...v, treeData: value}))
+      }, 300)
+    }
     setData(v => ({ ...v, contentVisible: true, type}));
   };
 
   // 打开小组界面
-  const showTeam = () => {
-    let arr = JSON.parse(JSON.stringify(data.selectRows[0].reviewTeamGroupBoList))
+  const showTeam = (boList=undefined, handleType='add') => {
+    let arr = []
+    if (boList) {
+      arr = JSON.parse(JSON.stringify(boList))
+    } else {
+      arr = JSON.parse(JSON.stringify(data.selectRows[0].reviewTeamGroupBoList))
+    }
     if (type !== 'add') {
       arr = arr.map(item => ({...item, lineNum: getRandom(10)}))
     }
-    setData(v => ({ ...v, reviewTeamGroupBoList: arr, teamVisible: true, type}));
+    setData(v => ({ ...v, reviewTeamGroupBoList: arr, teamVisible: true, type: handleType}));
   };
 
   const contentOk = (value) => {
@@ -284,6 +295,7 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
       />
       <Team
         deleteArr={deleteArr}
+        isView={props.isView}
         setDeleteArr={setDeleteArr}
         type={data.type}
         reviewTeamGroupBoList={data.reviewTeamGroupBoList}

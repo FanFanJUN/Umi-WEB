@@ -75,6 +75,7 @@ const Content = (props) => {
       visible={visible}
       title={'审核内容管理'}
       onCancel={onCancel}
+      {...props.type === 'detail' && { footer: null }}
       onOk={onOk}
       destroyOnClose={true}
       afterClose={clearSelected}

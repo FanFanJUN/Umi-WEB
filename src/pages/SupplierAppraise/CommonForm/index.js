@@ -377,8 +377,9 @@ const CommonForm = forwardRef(({
     const e = getFieldValue('evlPeriodStartTime');
     const c = currentDate?.format('YYYY-MM-DD');
     const ed = e?.format('YYYY-MM-DD') || undefined;
+    const ct = moment()
     if (!e || !ed) {
-      return
+      return currentDate && currentDate < moment().endOf('day');
     }
     return currentDate < e || c === ed
   }
@@ -387,9 +388,9 @@ const CommonForm = forwardRef(({
     const c = currentDate?.format('YYYY-MM-DD');
     const ed = e?.format('YYYY-MM-DD') || undefined;
     if (!e || !ed) {
-      return
+      return currentDate && currentDate < moment().endOf('day')
     }
-    return currentDate > e || ed === c
+    return currentDate > e || ed === c || (currentDate && currentDate < moment().endOf('day'))
   }
   function disabledDateApt(currentDate) {
     const e = getFieldValue('applicationPeriodStartTime');
@@ -405,9 +406,9 @@ const CommonForm = forwardRef(({
     const c = currentDate?.format('YYYY-MM-DD');
     const ed = e?.format('YYYY-MM-DD') || undefined;
     if (!e || !ed) {
-      return
+      return currentDate && currentDate < moment().endOf('day')
     }
-    return currentDate > e || ed === c
+    return currentDate > e || ed === c || (currentDate && currentDate < moment().endOf('day'))
   }
   useEffect(() => {
     if ((type === 'detail' || type === 'editor') && initialize) {
@@ -549,7 +550,7 @@ const CommonForm = forwardRef(({
                     }
                   ]
                 })(
-                  <DatePicker disabled={type === 'detail'} style={{ width: '100%' }} />
+                  <DatePicker disabled={type === 'detail'} style={{ width: '100%' }} disabledDate={(currentDate) => currentDate && currentDate < moment().endOf('day')} />
                 )
               }
             </FormItem>

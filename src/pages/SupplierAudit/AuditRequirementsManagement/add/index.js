@@ -50,12 +50,12 @@ const Index = () => {
         setData((value) => ({ ...value, type: pageState, isView: false, title: '审核需求管理-新增' }));
         break;
       case 'edit':
-        getUser();
         findOne(reviewRequirementCode)
         setData((value) => ({ ...value, type: pageState, id, isView: false, title: `审核需求管理-编辑 ${reviewRequirementCode}`}));
         break;
       case 'detail':
-        setData((value) => ({ ...value, type: pageState, isView: true, title: `审核需求管理-明细${reviewRequirementCode}`}));
+        findOne(reviewRequirementCode)
+        setData((value) => ({ ...value, type: pageState, isView: true, title: `审核需求管理-明细 ${reviewRequirementCode}`}));
         break;
     }
   }, []);
