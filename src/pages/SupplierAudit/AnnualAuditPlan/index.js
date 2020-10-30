@@ -3,14 +3,14 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:00:19
- * @LastEditTime: 2020-10-29 17:13:16
+ * @LastEditTime: 2020-10-30 15:32:22
  * @Description:  年度审核计划管理
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/index.js
  */
 import React, { useState, useRef, useEffect, Fragment } from 'react';
 import Header from '../../../components/Header';
 import AdvancedForm from '../../../components/AdvancedForm';
-import { Button, Checkbox, Input, message, Modal } from 'antd';
+import { Button, Checkbox, Input, message, Modal, Tooltip } from 'antd';
 import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
 import { BarCode, ComboList, ExtTable, utils } from 'suid';
 import {
@@ -23,7 +23,6 @@ import {
 import {
     BUConfigNoFrostHighSearch,
     DeleteDataSharingList,
-    judge,
     MaterialConfig,
     MaterialGroupConfig, RecallDataSharingList,
     ShareDistributionProps,
@@ -34,8 +33,10 @@ import {
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
 import { openNewTab } from '../../../utils';
+import { judge } from '../../../utils/utilTool';
 import { materialClassProps } from '../../../utils/commonProps';
 import moment from 'moment';
+import { deleteReviewPlanYear } from './service';
 
 const { authAction } = utils;
 const { Search } = Input;
@@ -44,7 +45,7 @@ const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 
 export default function () {
 
-
+    const headerRef = useRef(null);
     const tableRef = useRef(null);
 
     useEffect(() => {
@@ -63,7 +64,7 @@ export default function () {
         checkedCreate: false,
         checkedDistribution: false,
         quickSearchValue: '',
-        epTechnicalShareDemandSearchBo: {},
+        advanceFormData: {},
         selectedRowKeys: [],
         selectedRows: [],
     });
@@ -75,10 +76,10 @@ export default function () {
                 openNewTab('supplierAudit/AnnualAuditPlanEda?pageState=add', '年度审核计划管理-新增', false);
                 break;
             case 'edit':
-                openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=edit&id=${data.selectedRowKeys[0]}`, '审核需求管理-编辑', false);
+                openNewTab(`supplierAudit/AnnualAuditPlanEda?pageState=edit&id=${data.selectedRowKeys[0]}`, '年度审核计划管理-编辑', false);
                 break;
             case 'detail':
-                openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=detail&id=${data.selectedRowKeys[0]}`, '审核需求管理-明细', false);
+                openNewTab(`supplierAudit/AnnualAuditPlanDetail?pageState=detail&id=${data.selectedRowKeys[0]}`, '年度审核计划管理-明细', false);
                 break;
             case 'delete':
                 deleteList();
@@ -152,7 +153,7 @@ export default function () {
             okType: 'danger',
             cancelText: '否',
             onOk: () => {
-                DeleteDataSharingList({
+                deleteReviewPlanYear({
                     ids: data.selectedRowKeys.toString(),
                 }).then(res => {
                     if (res.success) {
@@ -183,15 +184,16 @@ export default function () {
         // delete value.buCode_name;
         // delete value.state_name;
         // delete value.allotSupplierState_name;
-        // setData(v => ({ ...v, epTechnicalShareDemandSearchBo: value }));
-        // tableRef.current.manualSelectedRows();
-        // tableRef.current.remoteDataRefresh();
+        setData(v => ({ ...v, advanceFormData: value }));
+        headerRef.current.hide();
+        tableRef.current.manualSelectedRows();
+        tableRef.current.remoteDataRefresh();
     };
 
     // 高级查询配置
     const formItems = [
-        { title: '公司', key: 'materialCode', type: 'list', props: CompanyConfig, rules: { rules: [{ required: true, message: '请选择公司' }], } },
-        { title: '采购组织', key: 'materialGroupCode', type: 'list', props: FindByFiltersConfig, rules: { rules: [{ required: true, message: '请选择采购组织' }], } },
+        { title: '公司', key: 'applyCorporationCode', type: 'list', props: CompanyConfig },
+        { title: '采购组织', key: 'purchaseTeamCode', type: 'list', props: FindByFiltersConfig },
         { title: '申请部门', key: 'strategicPurchaseCode', type: 'tree', props: ApplyOrganizationProps },
         { title: '申请人', key: 'buCode', props: { placeholder: '输入申请人' } },
         { title: '申请日期', key: 'applyPeopleName', type: 'datePicker', props: { placeholder: '输入申请人' } },
@@ -277,8 +279,8 @@ export default function () {
                 ignore={DEVELOPER_ENV}
                 key='TECHNICAL_DATA_SHARING_EDIT'
                 disabled={
-                    data.selectedRowKeys.length !== 1 || data.selectedRows[0]?.source !== 'SRM' ||
-                    data.selectedRows[0]?.state === '生效' || data.selectedRows[0]?.allotSupplierState === '已分配'}
+                    data.selectedRowKeys.length !== 1 ||
+                    data.selectedRows[0]?.state !== 'DRAFT' || data.selectedRows[0]?.flowStatus !== 'INIT'}
             >编辑</Button>)
         }
         {
@@ -287,7 +289,7 @@ export default function () {
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 key='TECHNICAL_DATA_SHARING_DELETE'
-                disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', '草稿')}
+                disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', 'DRAFT') || data.selectedRowKeys.length > 1}
             >删除</Button>)
         }
         {
@@ -325,7 +327,7 @@ export default function () {
         }
     </>;
 
-    const headerRight = <div style={{ display: 'flex', alignItems: 'center' }}>
+    const headerRight = <div style={{ display: 'flex', alignItems: 'center', width: '300px' }}>
         <Search
             placeholder='请输入年度审核计划号或拟制说明查询'
             className={styles.btn}
@@ -347,6 +349,7 @@ export default function () {
                 content={
                     <AdvancedForm formItems={formItems} onOk={handleAdvancedSearch} />
                 }
+                ref={headerRef}
                 advanced
             />
             <AutoSizeLayout>
@@ -360,7 +363,7 @@ export default function () {
                                 ...data.checkedCreate ? { onlyOwn: data.checkedCreate } : null,
                                 ...data.checkedDistribution ? { onlyAllocation: data.checkedDistribution } : null,
                                 quickSearchValue: data.quickSearchValue,
-                                ...data.epTechnicalShareDemandSearchBo,
+                                ...data.advanceFormData,
                             },
                             url: `${recommendUrl}/api/reviewPlanYearService/findByPage`,
                             type: 'POST',
