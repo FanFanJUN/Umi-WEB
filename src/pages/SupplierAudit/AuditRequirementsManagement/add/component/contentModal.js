@@ -52,10 +52,6 @@ const ContentModal = (props) => {
   useEffect(() => {
     console.log(props.data)
     if (type !== 'add') {
-      setFieldsValue({
-        memberRoleName: RoleArr[props.data.memberRole],
-        memberTypeName: PersonnelTypeArr[props.data.memberType]
-      })
       setDisabled(props.data.memberType !== 'INTERNAL_USERS');
     }
   }, [type])

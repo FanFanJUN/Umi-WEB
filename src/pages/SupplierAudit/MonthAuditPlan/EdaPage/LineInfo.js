@@ -16,7 +16,8 @@ import BatchEditModal from './BatchEditModal';
 // import AuditContentModal from "./AuditContentModal";
 import AuditContentModal from "../../AuditRequirementsManagement/add/component/content";
 import PersonManage from "./PersonManage";
-import Team from "./Team";
+import Team from "../../AuditRequirementsManagement/add/component/Team";
+import { getRandom } from '../../../QualitySynergy/commonProps';
 
 let LineInfo = forwardRef((props, ref) => {
 
@@ -48,7 +49,7 @@ let LineInfo = forwardRef((props, ref) => {
           <a onClick={() => { console.log("跳转到小组") }} style={{ margin: '0 3px' }} key="group">小组</a>
           <a onClick={(e) => {
             e.stopPropagation();
-            setPersonData({ 
+            setPersonData({
               visible: true,
               isView: true,
               originData: item.coordinationMemberBoList ? item.coordinationMemberBoList : []
@@ -114,8 +115,8 @@ let LineInfo = forwardRef((props, ref) => {
         setTeamData({ visible: true, treeData: [], selectRows: [] });
         break;
       case "personM":
-        setPersonData({ 
-          visible: true, 
+        setPersonData({
+          visible: true,
           originData: (data.selectRows.length === 1)&&data.selectRows[0].coordinationMemberBoList ? data.selectRows[0].coordinationMemberBoList : []
         });
         break;
@@ -123,6 +124,19 @@ let LineInfo = forwardRef((props, ref) => {
         break;
     }
 
+  }
+
+  const teamOk = (value) => {
+    let newData = JSON.parse(JSON.stringify(dataSource));
+    newData.map((item, index) => {
+      if (item.lineNum === data.selectedRowKeys[0]) {
+        newData[index].reviewTeamGroupBoList = value;
+      }
+    });
+    setDataSource(newData)
+    setTeamData(v => ({...v, visible: false}))
+    tableRef.current.manualSelectedRows();
+    tableRef.current.remoteDataRefresh();
   }
   // 编辑和明细时构造treeData
   const buildTreeData = (fatherList, sonList) => {
@@ -149,14 +163,16 @@ let LineInfo = forwardRef((props, ref) => {
     console.log('行数据', value)
     let newList = value.map((item, index) => {
       let groupObj = {};
-      item.lineNum = dataSource.length + index;
+      item.lineNum = getRandom(10)
       if(item.reviewTeamGroupBoList) {
         for(var i=0; i<item.reviewTeamGroupBoList.length; i++) {
+          console.log(item.reviewTeamGroupBoList[i])
           let lineObj = item.reviewTeamGroupBoList[i];
+          lineObj.lineNum = getRandom(10)
           if(lineObj.reviewTeamMemberBoList) {
             for(let j = 0; j < lineObj.reviewTeamMemberBoList.length; j++) {
               let obj = lineObj.reviewTeamMemberBoList[j];
-              if(obj.memberRole === "GROUP_LEADER") {
+              if(obj.memberRole === "GROUP_LEADER" && !groupObj.leaderName) {
                 groupObj.leaderId = obj.memberId;
                 groupObj.leaderName = obj.memberName;
                 groupObj.leaderTel = obj.memberTel;
@@ -166,12 +182,8 @@ let LineInfo = forwardRef((props, ref) => {
                 groupObj.leaderDepartmentName = obj.departmentName;
                 groupObj.codePath = obj.codePath;
                 groupObj.namePath = obj.namePath;
-                break;
               }
             }
-          }
-          if(Object.keys(groupObj).length > 0) {
-            break;
           }
         }
       }
@@ -257,6 +269,7 @@ let LineInfo = forwardRef((props, ref) => {
             checkbox={{ multiSelect: false }}
             size='small'
             onSelectRow={(keys, rows) => {
+              console.log(rows)
               setData(() => ({ selectedRowKeys: keys, selectRows: rows }))
             }}
             selectedRowKeys={data.selectedRowKeys}
@@ -294,6 +307,7 @@ let LineInfo = forwardRef((props, ref) => {
       }
       {/* 审核小组管理 */}
       {teamModalData.visible && <Team
+        onOk={teamOk}
         type={teamModalData.type}
         treeData={teamModalData.treeData}
         reviewTeamGroupBoList={data.selectRows[0]?.reviewTeamGroupBoList}
