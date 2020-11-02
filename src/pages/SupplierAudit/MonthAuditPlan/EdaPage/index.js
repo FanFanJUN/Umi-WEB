@@ -63,7 +63,9 @@ const Index = (props) => {
             let saveData = {...values};
             let lineData = tableRef.current.getTableList();
             saveData.reviewPlanMonthName = saveData.reviewPlanYearName;
+            saveData.attachRelatedIds = saveData.attachRelatedId;
             delete saveData.reviewPlanYearName;
+            delete saveData.attachRelatedId;
             saveData.lineBoList = lineData;
             console.log('lineData', saveData)
             if(lineData.length === 0) {

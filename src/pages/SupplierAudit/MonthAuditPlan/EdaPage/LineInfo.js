@@ -189,12 +189,22 @@ let LineInfo = forwardRef((props, ref) => {
     let newList = value.map((item, index) => {
       let groupObj = {};
       item.treeData = buildTreeData(item.fatherList, item.sonList);
-      item.lineNum = getRandom(10)
+      item.lineNum = getRandom(10);
+      item.reviewPlanMonthLinenum = ((Array(4).join(0) + (index + 1)).slice(-4) + '0');
+      // 采购组织/专业组暂时写死
+      item.purchaseTeamCode = '2520';
+      item.purchaseTeamId = 'B2A7879B-9358-11EA-B42A-0242C0A84414';
+      item.purchaseTeamName = '电视公司零采采购组织';
+
+      item.specialtyTeamId = '0018F187-882A-11EA-8625-0242C0A84414';
+      item.specialtyTeamCode = '15009749';
+      item.specialtyTeamName = '军民融合BG';
+
       if(item.reviewTeamGroupBoList) {
         for(var i=0; i<item.reviewTeamGroupBoList.length; i++) {
           console.log(item.reviewTeamGroupBoList[i])
           let lineObj = item.reviewTeamGroupBoList[i];
-          lineObj.lineNum = getRandom(10)
+          lineObj.lineNum = getRandom(10);
           if(lineObj.reviewTeamMemberBoList) {
             for(let j = 0; j < lineObj.reviewTeamMemberBoList.length; j++) {
               let obj = lineObj.reviewTeamMemberBoList[j];
@@ -230,7 +240,8 @@ let LineInfo = forwardRef((props, ref) => {
           return !data.selectedRowKeys.includes(item.lineNum);
         })
         newList = newList.map((item, index)=> {
-          item.lineNum = index;
+          item.lineNum = getRandom(10);
+          item.reviewPlanMonthLinenum = ((Array(4).join(0) + (index + 1)).slice(-4) + '0');
           return item;
         })
         setDataSource(newList);

@@ -92,17 +92,17 @@ const BatchEditModal = (props) => {
           <Col span={12}>
             <FormItem {...formItemLayoutLong} label={'审核方式'}>
               {
-                getFieldDecorator('reviewTypeId', {initialValue: originData.reviewTypeId}),
-                getFieldDecorator('reviewTypeCode', {initialValue: originData.reviewTypeCode}),
-                getFieldDecorator('reviewTypeName', {
-                  initialValue: originData.reviewTypeName,
+                getFieldDecorator('reviewWayId', {initialValue: originData.reviewWayId}),
+                getFieldDecorator('reviewWayCode', {initialValue: originData.reviewWayCode}),
+                getFieldDecorator('reviewWayName', {
+                  initialValue: originData.reviewWayName,
                   rules: [{ required: true, message: '审核方式不能为空', },],
                 })(
                   <ComboGrid
                     style={{ width: '100%' }}
                     form={form}
-                    name={'reviewTypeName'}
-                    field={['reviewTypeId', 'reviewTypeCode']}
+                    name={'reviewWayName'}
+                    field={['reviewWayId', 'reviewWayCode']}
                     {...reviewWaysProps}
                   />,
                 )
@@ -115,6 +115,7 @@ const BatchEditModal = (props) => {
             <FormItem {...formItemLayoutLong} label={'审核组织形式'}>
               {
                 getFieldDecorator('reviewOrganizedWayId', {initialValue: originData.reviewOrganizedWayId}),
+                getFieldDecorator('reviewOrganizedWayCode', {initialValue: originData.reviewOrganizedWayCode}),
                 getFieldDecorator('reviewOrganizedWayName', {
                   initialValue: originData.reviewOrganizedWayName,
                   rules: [{ required: true, message: '审核组织形式不能为空', },],
@@ -124,7 +125,7 @@ const BatchEditModal = (props) => {
                     style={{ width: '100%' }}
                     form={form}
                     name={'reviewOrganizedWayName'}
-                    field={['reviewOrganizedWayCode', 'reviewOrganizedWayId']}
+                    field={['reviewOrganizedWayId', 'reviewOrganizedWayCode']}
                     {...reviewOrganizeProps}
                   />,
                 )
