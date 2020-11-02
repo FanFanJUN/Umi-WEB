@@ -127,7 +127,7 @@ const Team = (props) => {
       value.reviewTeamMemberBoList = [];
       setTeamData(v => ({ ...v, dataSource: [...teamData.dataSource, ...[value]] }));
     } else {
-      let newData = teamData.dataSource.slice();
+      let newData = teamData.dataSource.slice();x
       teamData.dataSource.forEach((item, index) => {
         if (item.lineNum === data.selectRows[0].lineNum) {
           value.lineNum = item.lineNum;

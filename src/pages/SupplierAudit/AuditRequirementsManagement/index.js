@@ -8,7 +8,7 @@ import {
   ApplyOrganizationProps,
   AuditCauseManagementConfig,
   AuditTypeManagementConfig,
-  CompanyConfig,
+  CompanyConfig, DeleteAuditRequirementsManagement,
   FindByFiltersConfig, SupplierConfig,
 } from '../mainData/commomService';
 import {
@@ -138,14 +138,13 @@ export default function() {
       okType: 'danger',
       cancelText: '否',
       onOk: () => {
-        DeleteDataSharingList({
-          ids: data.selectedRowKeys.toString(),
+        DeleteAuditRequirementsManagement({
+          reviewRequirementCode: data.selectedRows[0].reviewRequirementCode,
         }).then(res => {
           if (res.success) {
             message.success(res.message);
             tableRef.current.manualSelectedRows();
             tableRef.current.remoteDataRefresh();
-
           } else {
             message.error(res.message);
           }
@@ -291,7 +290,7 @@ export default function() {
         businessKey={data.flowId}
         callBack={handleComplete}
         disabled={data.selectedRowKeys.length !== 1}
-        businessModelCode='com.ecmp.srm.sm.entity.AuditRequirementsManagement'
+        businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewRequirement'
         key='SRM-SM-SUPPLIERMODEL_EXAMINE'
       >提交审核</StartFlow>)
     }
@@ -359,7 +358,7 @@ export default function() {
             allowCancelSelect={true}
             remotePaging={true}
             checkbox={{
-              multiSelect: true,
+              multiSelect: false,
             }}
             ref={tableRef}
             showSearch={false}
