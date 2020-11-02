@@ -205,7 +205,7 @@ function SupplierConfigure() {
     // 明细
     function handleCheckDetail() {
         let id = selectedRows[0].id;
-        openNewTab(`pcnModify/Supplier/Detail/index?id=${id}`, 'PCN变更单明细', false)
+        openNewTab(`pcnModify/Supplier/Detail/index?id=${id}&alone=true`, 'PCN变更单明细', false)
     }
     // 提交
     async function handleSubmit() {

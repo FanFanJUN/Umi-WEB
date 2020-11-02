@@ -17,7 +17,6 @@ function CreateStrategy() {
   const [editData, setEditData] = useState([]);
   const [loading, triggerLoading] = useState(false);
   const { query } = router.useLocation();
-  const { frameElementId, frameElementSrc = "", Opertype = "" } = query;
 
   useEffect(() => {
     infoPCNdetails()
@@ -85,6 +84,7 @@ function CreateStrategy() {
                 wrappedComponentRef={ModifyinfluenceRef}
                 isView={true}
                 isEdit={true}
+                alone={query.alone}
                 headerInfo={true}
             />
             </div>
