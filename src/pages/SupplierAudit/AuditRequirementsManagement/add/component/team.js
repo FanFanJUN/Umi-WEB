@@ -5,7 +5,7 @@ import EventModal from '../../../common/EventModal';
 import { getRandom } from '../../../../QualitySynergy/commonProps';
 import ContentModal from './contentModal';
 import ShuttleBox from '../../../common/ShuttleBox';
-import { duplicateRemoval, GetDefaultSystem } from '../../../mainData/commomService';
+import { duplicateRemoval, GetDefaultSystem, PersonnelTypeArr, RoleArr } from '../../../mainData/commomService';
 
 const teamColumns = [
   { title: '组别', dataIndex: 'reviewGroup', ellipsis: true, width: 60 },
@@ -175,6 +175,8 @@ const Team = (props) => {
     if (keys.length !== 0) {
       values[0].reviewTeamMemberBoList = values[0].reviewTeamMemberBoList.map(item => ({
         ...item,
+        memberRoleName: RoleArr[item.memberRole],
+        memberTypeName: PersonnelTypeArr[item.memberType],
         lineNum: item.lineNum ? item.lineNum : getRandom(10),
       }));
       setContentData(v => ({ ...v, dataSource: values[0].reviewTeamMemberBoList }));
@@ -215,13 +217,17 @@ const Team = (props) => {
         }));
         break;
       case 'teamEdit':
-        setData(v => ({
-          ...v,
-          selectRows: teamData.selectedRows,
-          title: '组别编辑',
-          type: 'edit',
-          visible: true,
-        }));
+        if (teamData.selectedRowKeys && teamData.selectedRowKeys.length !== 0) {
+          setData(v => ({
+            ...v,
+            selectRows: teamData.selectedRows,
+            title: '组别编辑',
+            type: 'edit',
+            visible: true,
+          }));
+        } else {
+          message.error('请选择一个组别!');
+        }
         break;
       case 'contentAdd':
         if (teamData.selectedRows.length !== 0) {
