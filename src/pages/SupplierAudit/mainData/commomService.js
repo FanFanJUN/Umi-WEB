@@ -450,6 +450,16 @@ export const AuditTypeManagementConfig = {
   },
 };
 
+// 审核需求管理delete
+export const DeleteAuditRequirementsManagement = async (params = {}) => {
+  const url = `${recommendUrl}/api/reviewRequirementService/delete`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+};
+
 // 获取供应商联系人 /supplierContactService/findBySupplierId
 export const GetSupplierContact = async (params = {}) => {
   const url = `${smBaseUrl}/api/supplierContactService/findBySupplierId`;
