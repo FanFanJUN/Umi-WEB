@@ -28,7 +28,7 @@ import {
 } from '../../QualitySynergy/commonProps';
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
-import { openNewTab } from '../../../utils';
+import { openNewTab, getUserAccount } from '../../../utils';
 import { materialClassProps } from '../../../utils/commonProps';
 
 const { authAction } = utils;
@@ -219,9 +219,10 @@ export default function () {
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 key='SUPPLIER_AUDIT_MONTH_EDIT'
-                disabled={
-                    data.selectedRowKeys.length !== 1 || data.selectedRows[0]?.source !== 'SRM' ||
-                    data.selectedRows[0]?.state === '生效' || data.selectedRows[0]?.allotSupplierState === '已分配'}
+                disabled={ 
+                    data.selectedRowKeys.length !== 1 
+                    // || data.selectedRows[0]?.state !== 'DRAFT'
+                }
             >编辑</Button>)
         }
         {
@@ -230,7 +231,9 @@ export default function () {
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 key='SUPPLIER_AUDIT_MONTH_DELETE'
-                disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', '草稿')}
+                disabled={ !(data.selectedRowKeys.length !== 0 
+                    &&judge(data.selectedRows, 'state', 'DRAFT')
+                    &&judge(data.selectedRows, 'applyAccount', getUserAccount()))}
             >删除</Button>)
         }
         {

@@ -9,7 +9,7 @@
  */
 import React, { useEffect, useRef, useState, useImperativeHandle, forwardRef } from 'react';
 import styles from '../index.less';
-import { Form, Button } from 'antd';
+import { Form, Button, Modal } from 'antd';
 import { ExtTable } from 'suid';
 import AddModal from './AddModal';
 import BatchEditModal from './BatchEditModal';
@@ -43,7 +43,7 @@ let LineInfo = forwardRef((props, ref) => {
         return <div>
           <a onClick={(e) => {
             e.stopPropagation();
-            setContentData({ visible: true, treeData: [], type: 'detail' });
+            setContentData({ visible: true, treeData: item.treeData, type: 'detail' });
           }} key="content">内容</a>
           <a onClick={() => { console.log("跳转到小组") }} style={{ margin: '0 3px' }} key="group">小组</a>
           <a onClick={(e) => {
@@ -108,7 +108,7 @@ let LineInfo = forwardRef((props, ref) => {
         setBatchEditVisible(true);
         break;
       case "contenM":
-        setContentData({ visible: true, treeData: [], type: 'edit'});
+        setContentData({ visible: true, treeData: data.selectRows.length === 1 ? data.selectRows[0].treeData : [], type: 'edit'});
         break;
       case "teamM":
         setTeamData({ visible: true, treeData: [], selectRows: [] });
@@ -126,6 +126,7 @@ let LineInfo = forwardRef((props, ref) => {
   }
   // 编辑和明细时构造treeData
   const buildTreeData = (fatherList, sonList) => {
+    if(!fatherList || !sonList)return[];
     let arr = JSON.parse(JSON.stringify(fatherList))
     arr.map(item => {
       item.id = item.systemId
@@ -145,11 +146,13 @@ let LineInfo = forwardRef((props, ref) => {
     })
     return arr
   }
+  // 新增弹框-确定
   const handleAddOk = (value) => {
     console.log('行数据', value)
     let newList = value.map((item, index) => {
       let groupObj = {};
       item.lineNum = dataSource.length + index;
+      item.treeData = buildTreeData(item.fatherList, item.sonList);
       if(item.reviewTeamGroupBoList) {
         for(var i=0; i<item.reviewTeamGroupBoList.length; i++) {
           let lineObj = item.reviewTeamGroupBoList[i];
@@ -182,15 +185,23 @@ let LineInfo = forwardRef((props, ref) => {
     setDataSource(newList);
     setModalData({ visible: false });
   }
+  // 删除行数据
   const handleDelete = () => {
-    let newList = dataSource.filter(item => {
-      return !data.selectedRowKeys.includes(item.lineNum);
+    Modal.confirm({
+      title: "删除",
+      content: "是否确认删除选中数据",
+      onOk: ()=>{
+        let newList = dataSource.filter(item => {
+          return !data.selectedRowKeys.includes(item.lineNum);
+        })
+        newList = newList.map((item, index)=> {
+          item.lineNum = index;
+          return item;
+        })
+        setDataSource(newList);
+        tableRef.current.manualSelectedRows();
+      }
     })
-    newList = newList.map((iten, index)=> {
-      item.lineNum = index;
-      return item;
-    })
-    setDataSource(newList)
   }
   const getBatchFormValue = (value) => {
     console.log("批量编辑确定", value)
@@ -213,7 +224,7 @@ let LineInfo = forwardRef((props, ref) => {
         treeData.forEach(v => {
           item.sonList = item.sonList.concat(v.children)
         })
-        // item.treeData = buildTreeData(item.fatherList, item.sonList)
+        item.treeData = buildTreeData(item.fatherList, item.sonList);
       }
       return item;
     })
@@ -254,9 +265,10 @@ let LineInfo = forwardRef((props, ref) => {
             rowKey='lineNum'
             allowCancelSelect={true}
             showSearch={false}
-            checkbox={{ multiSelect: false }}
+            checkbox={{ multiSelect: true }}
             size='small'
             onSelectRow={(keys, rows) => {
+              console.log("选中改变", keys, rows)
               setData(() => ({ selectedRowKeys: keys, selectRows: rows }))
             }}
             selectedRowKeys={data.selectedRowKeys}
