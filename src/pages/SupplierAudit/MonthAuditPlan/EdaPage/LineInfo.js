@@ -166,6 +166,7 @@ let LineInfo = forwardRef((props, ref) => {
     let newList = value.map((item, index) => {
       let groupObj = {};
       item.treeData = buildTreeData(item.fatherList, item.sonList);
+      console.log(item, 'item')
       item.lineNum = getRandom(10)
       if(item.reviewTeamGroupBoList) {
         for(var i=0; i<item.reviewTeamGroupBoList.length; i++) {
@@ -320,7 +321,7 @@ let LineInfo = forwardRef((props, ref) => {
       {teamModalData.visible && <Team
         onOk={teamOk}
         type={teamModalData.type}
-        treeData={teamModalData.treeData}
+        treeData={data.selectRows[0]?.treeData}
         reviewTeamGroupBoList={data.selectRows[0]?.reviewTeamGroupBoList}
         reviewTypeCode={data.selectRows[0]?.reviewTypeCode}
         onCancel={() => setTeamData({ visible: false })}

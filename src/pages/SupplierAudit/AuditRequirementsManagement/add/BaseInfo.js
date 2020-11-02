@@ -129,6 +129,7 @@ let BaseInfo = React.forwardRef((props, ref) => {
                 })(
                   <Input
                     disabled={type === 'detail'}
+                    type={'number'}
                     placeholder="请输入申请人联系方式"
                     style={{ width: '100%' }}
                   />,

@@ -145,6 +145,12 @@ const Team = (props) => {
   const contentAdd = (value) => {
     console.log(value);
     if (contentData.type === 'add') {
+      if (value.memberRole === 'GROUP_LEADER') {
+        if (contentData.dataSource.some(item => item.memberRole === 'GROUP_LEADER')) {
+          message.error('每个组只能有一个组长!')
+          return
+        }
+      }
       value.lineNum = getRandom(10);
       value.memberRuleBoList = [];
       setContentData(v => ({ ...v, dataSource: [...contentData.dataSource, ...[value]], visible: false }));
