@@ -7,7 +7,7 @@ import { useRef, useEffect } from 'react';
 import styles from './index.less';
 import { useTableProps } from '../../utils/hooks';
 import { ExtTable, utils, WorkFlow } from 'suid';
-import { Button, Input, Modal, message } from 'antd';
+import { Button, Input, Modal, message, Checkbox } from 'antd';
 import { recommendUrl } from '../../utils/commonUrl';
 import { Header, AutoSizeLayout, AdvancedForm } from '../../components';
 import { evlStatusProps, evaluateSystemProps, orgnazationProps, evlEmu } from '../../utils/commonProps';
@@ -25,17 +25,20 @@ function SupplierRevaluate() {
   const headerRef = useRef(null);
   const authorizations = storage.sessionStorage.get("Authorization");
   const currentUserId = authorizations?.userId;
+  const account = authorizations?.account;
 
   const FRAMELEEMENT = getFrameElement();
   const {
     selectedRowKeys,
     selectedRows,
-    searchValue
+    searchValue,
+    onlyMe
   } = states;
   const {
     setRowKeys,
     setRows,
-    setSearchValue
+    setSearchValue,
+    setOnlyMe
   } = sets;
   /** 按钮可用性判断变量集合 BEGIN*/
   const [signleRow = {}] = selectedRows;
@@ -52,6 +55,8 @@ function SupplierRevaluate() {
   const isSelf = currentUserId === creatorId;
   // 可删除状态
   const allowRemove = evaluationProjectStatus === 'DRAFT';
+  // 评价中
+  const evaluateIng = evaluationProjectStatus === 'UNDER_EVALUATION';
   const complete = evaluationProjectStatus === 'EVALUATION_COMPLETED';
   // 已生成结果
   const resultGener = evaluationProjectStatus === 'RESULTS_GENERATED'
@@ -65,7 +70,23 @@ function SupplierRevaluate() {
     {
       title: '状态',
       dataIndex: 'evaluationProjectStatusRemark',
-      width: 80
+      width: 120
+    },
+    {
+      title: '审批状态',
+      dataIndex: 'flowStatus',
+      render(text) {
+        switch (text) {
+          case 'INIT':
+            return '未提交审批'
+          case 'INPROCESS':
+            return '审批中'
+          case 'COMPLETED':
+            return '审批完成'
+          default:
+            return ''
+        }
+      }
     },
     {
       title: '需分配评审人',
@@ -76,15 +97,18 @@ function SupplierRevaluate() {
     },
     {
       title: '评价项目号',
-      dataIndex: 'docNumber'
+      dataIndex: 'docNumber',
+      width: 200
     },
     {
       title: '评价项目名称',
-      dataIndex: 'projectName'
+      dataIndex: 'projectName',
+      width: 200
     },
     {
       title: '评价体系',
-      dataIndex: 'mainDataEvlSystemName'
+      dataIndex: 'mainDataEvlSystemName',
+      width: 200
     },
     {
       title: '要求完成时间',
@@ -96,7 +120,7 @@ function SupplierRevaluate() {
     {
       title: '组织部门',
       dataIndex: 'orgName',
-      width: 200
+      width: 300
     },
     {
       title: '评价期间类型',
@@ -257,6 +281,11 @@ function SupplierRevaluate() {
       }
     })
   }
+  // 切换仅查看我
+  function handleOnlyMeChange(e) {
+    setOnlyMe(e.target.checked)
+    uploadTable()
+  }
   const left = (
     <>
       {
@@ -308,7 +337,7 @@ function SupplierRevaluate() {
           <Button
             className={styles.btn}
             onClick={handleAllocation}
-            disabled={empty || !needSelectScorer || complete || resultGener}
+            disabled={empty || !needSelectScorer || complete || resultGener || evaluateIng}
             ignore={DEVELOPER_ENV}
             key='SUPPLIER_APPRAISE_ALLOT'
           >分配评审人</Button>
@@ -403,6 +432,7 @@ function SupplierRevaluate() {
           </FlowHistoryButton>
         )
       }
+      <Checkbox className={styles.btn} onChange={handleOnlyMeChange} checked={onlyMe}>仅我的</Checkbox>
     </>
   );
   const right = (
@@ -419,6 +449,16 @@ function SupplierRevaluate() {
       type: 'POST',
       params: {
         ...searchValue,
+        filters: searchValue.filters ?
+          searchValue.filters.concat([{
+            fieldName: 'creatorAccount',
+            operator: 'EQ',
+            value: onlyMe ? account : undefined
+          }]) : [{
+            fieldName: 'creatorAccount',
+            operator: 'EQ',
+            value: onlyMe ? account : undefined
+          }],
         quickSearchProperties: ['docNumber', 'projectName'],
         sortOrders: [
           {

@@ -129,7 +129,8 @@ function ManualEvaluate() {
       },
       {
         title: '评价单号',
-        dataIndex: 'docNumber'
+        dataIndex: 'docNumber',
+        width: 200
       },
       {
         title: '评价项目名称',

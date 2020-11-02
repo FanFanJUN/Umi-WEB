@@ -23,7 +23,8 @@ import {
   Select,
   Button,
   Modal,
-  message
+  message,
+  Spin
 } from 'antd';
 import { useLocation } from 'dva/router';
 import moment from 'moment';
@@ -85,7 +86,8 @@ const businessColumns = [
   },
   {
     title: '公司名称',
-    dataIndex: 'corporationName'
+    dataIndex: 'corporationName',
+    width: 250
   },
   {
     title: '采购组织代码',
@@ -93,7 +95,8 @@ const businessColumns = [
   },
   {
     title: '采购组织名称',
-    dataIndex: 'purchaseOrgName'
+    dataIndex: 'purchaseOrgName',
+    width: 250
   }
 ]
 
@@ -337,9 +340,11 @@ const CommonForm = forwardRef(({
   }
   const ses = getTreeDataSourceRows(systemView, checkedKeys);
   async function getInitialValue() {
+    toggleLoading(true)
     const { success, data, message: msg } = await findAppraiseById({
       evaluationProjectId: query?.id
-    })
+    });
+    toggleLoading(false)
     if (success) {
       setAllValues(data)
       return
@@ -421,7 +426,7 @@ const CommonForm = forwardRef(({
     getTableData(id)
   }, [treeSelected])
   return (
-    <div className={styles.wrapper}>
+    <Spin className={styles.wrapper} spinning={loading}>
       <Form>
         <div className={styles.commonTitle}>
           基本信息
@@ -808,7 +813,7 @@ const CommonForm = forwardRef(({
           </Col>
         </Row>
       </Form>
-    </div>
+    </Spin>
   )
 })
 

@@ -62,7 +62,7 @@ function LeaderApprove() {
       dataIndex: 'newProductOpinion'
     },
     {
-      title: '领导决策',
+      title: '领导决定',
       dataIndex: 'leaderAdviceName'
     }
   ]
