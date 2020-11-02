@@ -117,7 +117,7 @@ export const reviewReasonsProps = {
 
 // 审核方式
 export const reviewWaysProps = {
-  placeholder: '选择审核原因',
+  placeholder: '选择审核方式',
   store: {
     type: 'POST',
     autoLoad: false,

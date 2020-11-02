@@ -58,6 +58,7 @@ const PersonManage = ({ visible, onOk, onCancel, originData, isView }) => {
             title={'协同人员管理'}
             onCancel={onCancel}
             onOk={()=>{onOk(dataSource)}}
+            {...isView && { footer: null }}
             destroyOnClose={true}
         >
             <div style={{display:isView?"none":"block", margin: '10px 0'}}>

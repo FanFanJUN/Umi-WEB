@@ -7,18 +7,14 @@
  * @Description: 批量编辑页面
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BatchEditModal.js
  */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ComboList, ExtModal, ComboGrid } from 'suid';
 import { Col, Form, Input, InputNumber, Row } from 'antd';
-import { CorporationListConfig } from '../../../QualitySynergy/commonProps';
-import {
-  AllCompanyConfig,
-  AuditCauseManagementConfig, AuditTypeManagementAll,
-  NormalSupplierConfig,
-  SelectionStrategyConfig,
-} from '../../mainData/commomService';
+import { listAllOrgnazationWithDataAuth } from '../service';
+import { UserByDepartmentNameConfig } from "../../mainData/commomService";
 import { reviewReasonsProps,reviewOrganizeProps, reviewWaysProps, CountryIdConfig, AreaConfig } from "../../AnnualAuditPlan/propsParams";
 import { basicServiceUrl, gatewayUrl } from '@/utils/commonUrl';
+
 
 const FormItem = Form.Item;
 const width = 160;
@@ -36,9 +32,18 @@ const formItemLayout = {
 
 const BatchEditModal = (props) => {
 
-  const { visible, form, type, originData = {} } = props;
+  const { visible, form, originData = {} } = props;
+  const [prgId, setOrgId] = useState('')
 
   const { getFieldDecorator, getFieldValue, setFieldsValue } = props.form;
+
+  useEffect(()=>{
+    listAllOrgnazationWithDataAuth().then(res => {
+      if(res.success) {
+        setOrgId(res.data[0] ? res.data[0].id : '');
+      }
+    })
+  }, [])
 
   const onCancel = () => {
     props.onCancel()
@@ -52,17 +57,7 @@ const BatchEditModal = (props) => {
     });
   }
 
-  const hideFormItem = (name, initialValue) => (
-    <FormItem>
-      {
-        getFieldDecorator(name, {
-          initialValue: initialValue,
-        })(
-          <Input type={'hidden'} />,
-        )
-      }
-    </FormItem>
-  );
+
 
   return (
     <ExtModal
@@ -79,9 +74,9 @@ const BatchEditModal = (props) => {
           <Col span={12}>
             <FormItem {...formItemLayoutLong} label={'审核原因'}>
               {
-                getFieldDecorator('reviewReasonId'),
-                getFieldDecorator('reviewReasonCode'),
-                getFieldDecorator('reviewReasonName')(
+                getFieldDecorator('reviewReasonId', {initialValue: originData.reviewReasonId}),
+                getFieldDecorator('reviewReasonCode', {initialValue: originData.reviewReasonCode}),
+                getFieldDecorator('reviewReasonName', {initialValue: originData.reviewReasonName})(
                   <ComboGrid
                     allowClear={true}
                     style={{ width: '100%' }}
@@ -97,9 +92,10 @@ const BatchEditModal = (props) => {
           <Col span={12}>
             <FormItem {...formItemLayoutLong} label={'审核方式'}>
               {
-                getFieldDecorator('reviewTypeId'),
-                getFieldDecorator('reviewTypeCode'),
+                getFieldDecorator('reviewTypeId', {initialValue: originData.reviewTypeId}),
+                getFieldDecorator('reviewTypeCode', {initialValue: originData.reviewTypeCode}),
                 getFieldDecorator('reviewTypeName', {
+                  initialValue: originData.reviewTypeName,
                   rules: [{ required: true, message: '审核方式不能为空', },],
                 })(
                   <ComboGrid
@@ -118,8 +114,11 @@ const BatchEditModal = (props) => {
           <Col span={12}>
             <FormItem {...formItemLayoutLong} label={'审核组织形式'}>
               {
-                getFieldDecorator('reviewOrganizedWayId'),
-                getFieldDecorator('reviewOrganizedWayName')(
+                getFieldDecorator('reviewOrganizedWayId', {initialValue: originData.reviewOrganizedWayId}),
+                getFieldDecorator('reviewOrganizedWayName', {
+                  initialValue: originData.reviewOrganizedWayName,
+                  rules: [{ required: true, message: '审核组织形式不能为空', },],
+                })(
                   <ComboList
                     allowClear={true}
                     style={{ width: '100%' }}
@@ -135,10 +134,30 @@ const BatchEditModal = (props) => {
           <Col span={12}>
             <FormItem {...formItemLayoutLong} label={'审核小组组长'}>
               {
-                getFieldDecorator('reviewTypeId'),
-                getFieldDecorator('reviewTypeCode'),
-                getFieldDecorator('reviewTypeName')(
-                  <Input />
+                getFieldDecorator('leaderId', {initialValue: originData.leaderId}),
+                getFieldDecorator('leaderEmployeeNo', {initialValue: originData.leaderEmployeeNo}),
+                getFieldDecorator('leaderTel', {initialValue: originData.leaderTel}),
+                getFieldDecorator('leaderName', {
+                  initialValue: originData.leaderName,
+                  rules: [{ required: true, message: '审核小组组长不能为空', },],
+                })(
+                  <ComboList
+                      form={form}
+                      name={'leaderName'}
+                      field={['leaderEmployeeNo', 'leaderId', 'leaderTel']}
+                      store={{
+                        data: {
+                          includeSubNode: true,
+                          quickSearchProperties: ['code', 'user.userName'],
+                          organizationId: prgId,
+                          sortOrders: [{ property: 'code', direction: 'ASC' }],
+                        },
+                        type: 'POST',
+                        autoLoad: false,
+                        url: `${gatewayUrl}${basicServiceUrl}/employee/findByUserQueryParam`,
+                      }}
+                      {...UserByDepartmentNameConfig}
+                    />
                 )
               }
             </FormItem>
@@ -148,10 +167,10 @@ const BatchEditModal = (props) => {
           <Col span={24}>
             <FormItem {...formItemLayout} label={'生产厂地址'}>
               {
-                getFieldDecorator('countryId'),
-                getFieldDecorator('countryCode'),
+                getFieldDecorator('countryId', {initialValue: originData.countryId}),
+                getFieldDecorator('countryCode', {initialValue: originData.countryCode}),
                 getFieldDecorator('countryName', {
-                  initialValue: type === 'add' ? '' : '',
+                  initialValue: originData.countryName,
                   rules: [
                     {
                       required: true,
@@ -180,10 +199,10 @@ const BatchEditModal = (props) => {
                 )
               }
               {
-                getFieldDecorator('provinceId'),
-                getFieldDecorator('provinceCode'),
+                getFieldDecorator('provinceId', {initialValue: originData.provinceId}),
+                getFieldDecorator('provinceCode', {initialValue: originData.provinceCode}),
                 getFieldDecorator('provinceName', {
-                  initialValue: type === 'add' ? '' : '',
+                  initialValue: originData.provinceName,
                   rules: [
                     {
                       required: true,
@@ -215,10 +234,10 @@ const BatchEditModal = (props) => {
                 )
               }
               {
-                getFieldDecorator('cityId'),
-                getFieldDecorator('cityCode'),
+                getFieldDecorator('cityId', {initialValue: originData.cityId}),
+                getFieldDecorator('cityCode', {initialValue: originData.cityCode}),
                 getFieldDecorator('cityName', {
-                  initialValue: type === 'add' ? '' : '',
+                  initialValue: originData.cityName,
                   rules: [{ required: true, message: '市不能为空', },],
                 })(
                   <ComboList
@@ -245,10 +264,10 @@ const BatchEditModal = (props) => {
                 )
               }
               {
-                getFieldDecorator('countyId'),
-                getFieldDecorator('countyCode'),
+                getFieldDecorator('countyId', {initialValue: originData.countyId}),
+                getFieldDecorator('countyCode', {initialValue: originData.countyCode}),
                 getFieldDecorator('countyName', {
-                  initialValue: type === 'add' ? '' : '',
+                  initialValue: originData.countyName,
                   rules: [{ required: true, message: '区/县不能为空', },],
                 })(
                   <ComboList
@@ -274,7 +293,7 @@ const BatchEditModal = (props) => {
               }
               {
                 getFieldDecorator('address', {
-                  initialValue: type === 'add' ? '' : '',
+                  initialValue: originData.address,
                   rules: [{ required: true, message: '详细地址不能为空', },],
                 })(
                   <Input style={{ width: '40%' }} />
@@ -288,7 +307,7 @@ const BatchEditModal = (props) => {
             <FormItem {...formItemLayoutLong} label={'供应商联系人'}>
               {
                 getFieldDecorator('contactUserName', {
-                  initialValue: type === 'add' ? '' : '',
+                  initialValue: originData.contactUserName,
                   rules: [
                     {
                       required: true,
@@ -305,7 +324,7 @@ const BatchEditModal = (props) => {
             <FormItem {...formItemLayoutLong} label={'供应商联系方式'}>
               {
                 getFieldDecorator('contactUserTel', {
-                  initialValue: type === 'add' ? '' : '',
+                  initialValue: originData.contactUserTel,
                   rules: [
                     {
                       required: true,
@@ -324,7 +343,7 @@ const BatchEditModal = (props) => {
             <FormItem {...formItemLayout} label={'备注'}>
               {
                 getFieldDecorator('remark', {
-                  initialValue: type === 'add' ? '' : '',
+                  initialValue: originData.remark,
                 })(
                   <Input.TextArea rows={6} style={{ width: '100%' }} />
                 )

@@ -44,9 +44,23 @@ let LineInfo = forwardRef((props, ref) => {
         return <div>
           <a onClick={(e) => {
             e.stopPropagation();
-            setContentData({ visible: true, treeData: item.treeData, type: 'detail' });
+            setContentData({ 
+              visible: true, 
+              treeData: item.treeData,
+              applyCorporationCode: item.applyCorporationCode,
+              type: 'detail'
+            });
           }} key="content">内容</a>
-          <a onClick={() => { console.log("跳转到小组") }} style={{ margin: '0 3px' }} key="group">小组</a>
+          <a onClick={(e) => {
+            e.stopPropagation();
+            setTeamData({ 
+              visible: true, 
+              treeData: item.treeData, 
+              reviewTeamGroupBoList: item.reviewTeamGroupBoList,
+              reviewTypeCode: item.reviewTypeCode,
+              type: 'detail' 
+            });
+          }} style={{ margin: '0 3px' }} key="group">小组</a>
           <a onClick={(e) => {
             e.stopPropagation();
             setPersonData({
@@ -109,10 +123,20 @@ let LineInfo = forwardRef((props, ref) => {
         setBatchEditVisible(true);
         break;
       case "contenM":
-        setContentData({ visible: true, treeData: data.selectRows.length === 1 ? data.selectRows[0].treeData : [], type: 'edit'});
+        setContentData({ 
+          visible: true,
+          applyCorporationCode: data.selectRows[0]?.applyCorporationCode,
+          treeData: data.selectRows[0]?.treeData, 
+          type: 'edit'
+        });
         break;
       case "teamM":
-        setTeamData({ visible: true, treeData: [], selectRows: [] });
+        setTeamData({ 
+          visible: true, 
+          treeData: data.selectRows[0]?.treeData, 
+          reviewTeamGroupBoList: data.selectRows[0]?.reviewTeamGroupBoList,
+          reviewTypeCode: data.selectRows[0]?.reviewTypeCode,
+        });
         break;
       case "personM":
         setPersonData({
@@ -125,7 +149,7 @@ let LineInfo = forwardRef((props, ref) => {
     }
 
   }
-
+// 审核小组管理弹框-确定
   const teamOk = (value) => {
     let newData = JSON.parse(JSON.stringify(dataSource));
     newData.map((item, index) => {
@@ -136,7 +160,6 @@ let LineInfo = forwardRef((props, ref) => {
     setDataSource(newData)
     setTeamData(v => ({...v, visible: false}))
     tableRef.current.manualSelectedRows();
-    tableRef.current.remoteDataRefresh();
   }
   // 编辑和明细时构造treeData
   const buildTreeData = (fatherList, sonList) => {
@@ -166,7 +189,6 @@ let LineInfo = forwardRef((props, ref) => {
     let newList = value.map((item, index) => {
       let groupObj = {};
       item.treeData = buildTreeData(item.fatherList, item.sonList);
-      console.log(item, 'item')
       item.lineNum = getRandom(10)
       if(item.reviewTeamGroupBoList) {
         for(var i=0; i<item.reviewTeamGroupBoList.length; i++) {
@@ -216,19 +238,21 @@ let LineInfo = forwardRef((props, ref) => {
       }
     })
   }
+  // 批量编辑弹框-确定
   const getBatchFormValue = (value) => {
-    console.log("批量编辑确定", value)
     let newList = dataSource.map(item => {
       if(data.selectedRowKeys.includes(item.lineNum)) {
         return {
           ...item,
-          value
+          ...value
         }
       }
       return item;
     })
+    tableRef.current.manualSelectedRows();
     setDataSource(newList);
   }
+  // 审核内容管理弹框-确定
   const contentModalOk = (treeData) => {
     let newList = dataSource.map(item => {
       if(data.selectedRowKeys.includes(item.lineNum)) {
@@ -245,6 +269,7 @@ let LineInfo = forwardRef((props, ref) => {
     setDataSource(newList);
     setContentData({ visible: false })
   }
+  // 协同人员管理弹框-确定
   const personModalOk = (personData) => {
     setPersonData({ visible: false});
     let newList = dataSource.map(item => {
@@ -309,7 +334,7 @@ let LineInfo = forwardRef((props, ref) => {
       }
       {/* 审核内容管理 */}
       {contentModalData.visible && <AuditContentModal
-        applyCorporationCode={data.selectRows.length===1 ? data.selectRows[0].applyCorporationCode : ''}
+        applyCorporationCode={contentModalData.applyCorporationCode}
         type={contentModalData.type}
         visible={contentModalData.visible}
         treeData={contentModalData.treeData}
@@ -321,9 +346,9 @@ let LineInfo = forwardRef((props, ref) => {
       {teamModalData.visible && <Team
         onOk={teamOk}
         type={teamModalData.type}
-        treeData={data.selectRows[0]?.treeData}
-        reviewTeamGroupBoList={data.selectRows[0]?.reviewTeamGroupBoList}
-        reviewTypeCode={data.selectRows[0]?.reviewTypeCode}
+        treeData={teamModalData.treeData}
+        reviewTeamGroupBoList={teamModalData.reviewTeamGroupBoList}
+        reviewTypeCode={teamModalData.reviewTypeCode}
         onCancel={() => setTeamData({ visible: false })}
         visible={teamModalData.visible}
       />

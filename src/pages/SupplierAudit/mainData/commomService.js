@@ -202,6 +202,17 @@ export const UserByDepartmentConfig = {
     field: ["code", "id"]
   },
 };
+// 根据部门查员工-取name
+export const UserByDepartmentNameConfig = {
+  placeholder: '选择审核小组组长',
+  remotePaging: true,
+  rowKey: 'userName',
+  reader: {
+    name: 'userName',
+    description: 'code',
+    field: ["code", "id", "mobile"]
+  },
+};
 
 // 采购组织数据
 export const ApplyOrganizationProps = {
