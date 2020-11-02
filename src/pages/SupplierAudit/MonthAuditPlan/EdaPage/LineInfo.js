@@ -41,7 +41,10 @@ let LineInfo = forwardRef((props, ref) => {
     {
       title: '操作', dataIndex: 'operaton', width: 140, ellipsis: true, render: (text, item) => {
         return <div>
-          <a onClick={() => { console.log("跳转到内容") }} key="content">内容</a>
+          <a onClick={(e) => {
+            e.stopPropagation();
+            setContentData({ visible: true, treeData: [], type: 'detail' });
+          }} key="content">内容</a>
           <a onClick={() => { console.log("跳转到小组") }} style={{ margin: '0 3px' }} key="group">小组</a>
           <a onClick={(e) => {
             e.stopPropagation();
@@ -105,7 +108,7 @@ let LineInfo = forwardRef((props, ref) => {
         setBatchEditVisible(true);
         break;
       case "contenM":
-        setContentData({ visible: true, treeData: [] });
+        setContentData({ visible: true, treeData: [], type: 'edit'});
         break;
       case "teamM":
         setTeamData({ visible: true, treeData: [], selectRows: [] });
@@ -121,13 +124,32 @@ let LineInfo = forwardRef((props, ref) => {
     }
 
   }
-  
+  // 编辑和明细时构造treeData
+  const buildTreeData = (fatherList, sonList) => {
+    let arr = JSON.parse(JSON.stringify(fatherList))
+    arr.map(item => {
+      item.id = item.systemId
+      item.key = item.systemId
+      item.title = item.systemName
+      if (!item.children) {
+        item.children = []
+      }
+      sonList.forEach(value => {
+        value.id = value.systemId
+        value.key = value.systemId
+        value.title = value.systemName
+        if (value.parentId === item.systemId) {
+          item.children.push(value)
+        }
+      })
+    })
+    return arr
+  }
   const handleAddOk = (value) => {
     console.log('行数据', value)
     let newList = value.map((item, index) => {
       let groupObj = {};
       item.lineNum = dataSource.length + index;
-      // debugger;
       if(item.reviewTeamGroupBoList) {
         for(var i=0; i<item.reviewTeamGroupBoList.length; i++) {
           let lineObj = item.reviewTeamGroupBoList[i];
@@ -184,11 +206,22 @@ let LineInfo = forwardRef((props, ref) => {
     setDataSource(newList);
   }
   const contentModalOk = (treeData) => {
-    console.log("审核内容管理", treeData);
+    let newList = dataSource.map(item => {
+      if(data.selectedRowKeys.includes(item.lineNum)) {
+        item.fatherList = treeData;
+        item.sonList = [];
+        treeData.forEach(v => {
+          item.sonList = item.sonList.concat(v.children)
+        })
+        // item.treeData = buildTreeData(item.fatherList, item.sonList)
+      }
+      return item;
+    })
+    console.log('整合的数据', newList);
+    setDataSource(newList);
     setContentData({ visible: false })
   }
   const personModalOk = (personData) => {
-    console.log("协同人员管理确定", personData)
     setPersonData({ visible: false});
     let newList = dataSource.map(item => {
       if(data.selectedRowKeys.includes(item.lineNum)) {
@@ -211,7 +244,7 @@ let LineInfo = forwardRef((props, ref) => {
               <Button onClick={() => handleBtn('demand')} type='primary'>从审核需求新增</Button>
               <Button onClick={() => { handleBtn('edit') }} disabled={data.selectRows.length===0}>批量编辑</Button>
               <Button onClick={() => { handleDelete() }} disabled={data.selectRows.length===0}>删除</Button>
-              <Button onClick={() => { handleBtn('contenM') }} >审核内容管理</Button>
+              <Button onClick={() => { handleBtn('contenM')}} disabled={data.selectRows.length===0}>审核内容管理</Button>
               <Button onClick={() => { handleBtn('teamM') }} disabled={data.selectRows.length!==1}>审核小组管理</Button>
               <Button onClick={() => { handleBtn('personM') }} disabled={data.selectRows.length===0}>协同人员管理</Button>
             </div>
@@ -251,6 +284,8 @@ let LineInfo = forwardRef((props, ref) => {
       }
       {/* 审核内容管理 */}
       {contentModalData.visible && <AuditContentModal
+        applyCorporationCode={data.selectRows.length===1 ? data.selectRows[0].applyCorporationCode : ''}
+        type={contentModalData.type}
         visible={contentModalData.visible}
         treeData={contentModalData.treeData}
         onOk={contentModalOk}
