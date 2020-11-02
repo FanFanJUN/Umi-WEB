@@ -1,16 +1,17 @@
 import React, { createRef, useState, useRef, useEffect } from 'react';
 import { Button, Modal, message, Spin, Affix, Tabs } from 'antd';
+import { WorkFlow} from 'suid';
 import { router } from 'dva';
-import PCNModifyDetail from '../commons/PCNModifyDetail'
-import Confirmation from '../commons/Confirmation'
-import ResultsIdenDetail from '../commons/ResultsIdenDetail'
-import CustomerOpinionDetail from '../commons/CustomerOpinionDetail'
-import ToexamineDetail from '../commons/ToexamineDetail'
-import Executioninfor from '../commons/Executioninfor'
-import classnames from 'classnames';
-import {findPCNSupplierId} from '../../../../services/pcnModifyService'
-import styles from '../index.less';
-import { closeCurrent, isEmpty } from '../../../../utils';
+import PCNModifyDetail from '../Purchase/commons/PCNModifyDetail'
+import Confirmation from '../Purchase/commons/Confirmation'
+import ResultsIdenDetail from '../Purchase/commons/ResultsIdenDetail'
+import CustomerOpinionDetail from '../Purchase/commons/CustomerOpinionDetail'
+import ToexamineDetail from '../Purchase/commons/ToexamineDetail'
+import Executioninfor from '../Purchase/commons/Executioninfor'
+
+import { closeCurrent, isEmpty ,checkToken} from '../../../utils';
+import styles from '../Purchase/index.less';
+import {findPCNSupplierId,savePurchaseVo} from '../../../services/pcnModifyService'
 const TabPane = Tabs.TabPane;
 function CreateStrategy() {
     const getpcnModifyRef = useRef(null);
@@ -25,9 +26,13 @@ function CreateStrategy() {
     const [isReady, setIsReady] = useState(false);
     const { query } = router.useLocation();
     const { id, taskId, instanceId } = query;
-    // 
+    // 获取配置列表项
     useEffect(() => {
-        initsupplierDetai();
+        async function init() {
+            await checkToken(query, setIsReady);
+                initsupplierDetai(); 
+            }
+            init()
     }, []);
     // 变更详情
     async function initsupplierDetai() {
@@ -41,27 +46,12 @@ function CreateStrategy() {
             triggerLoading(false);
             message.error(msg)
         }
-
-    }
-
-    // 返回
-    function handleBack() {
-        closeCurrent()
     }
     function tabClickHandler(params) {
         //setdefaultActiveKey(params)
     }
     return (
         <Spin spinning={loading} tip='处理中...'>
-            <Affix offsetTop={0}>
-                <div className={classnames([styles.header, styles.flexBetweenStart])}>
-                    <span className={styles.title}>PCN变更单明细</span>
-                    <div className={styles.flexCenter}>
-                        <Button className={styles.btn} onClick={handleBack}>返回</Button>
-                    </div>
-                </div>
-
-            </Affix>
             <div className={styles.wrapper}>
                 <Tabs className="tabstext" onTabClick={(params)=>tabClickHandler(params)} style={{ background: '#fff' }}>
                     <TabPane forceRender tab="PCN变更单" key="1">

@@ -7,7 +7,7 @@ import Confirmation from '../Purchase/commons/Confirmation'
 import CustomerOpinionDetail from '../Purchase/commons/CustomerOpinionDetail'
 import { closeCurrent, isEmpty ,checkToken} from '../../../utils';
 import styles from '../Purchase/index.less';
-import {findPCNSupplierId,savePurchaseVo} from '../../../services/pcnModifyService'
+import {findPCNSupplierId,saveApprovePurchaseVo} from '../../../services/pcnModifyService'
 const TabPane = Tabs.TabPane;
 function CreateStrategy() {
     const getpcnModifyRef = useRef(null);
@@ -31,7 +31,7 @@ function CreateStrategy() {
     async function initsupplierDetai() {
         triggerLoading(true);
         let id = query.id;
-        const { data, success, message: msg } = await findPCNSupplierId({pcnTitleId:'31E4EE14-14FD-11EB-9BB9-42A58951E645'});
+        const { data, success, message: msg } = await findPCNSupplierId({pcnTitleId:id});
         if (success) {
             setEditData(data)
             triggerLoading(false);
@@ -41,10 +41,34 @@ function CreateStrategy() {
         }
     }
     // 保存
-    async function handleSave() {
-
-
-
+    const handleSave = async (approved) => {
+        const {getCustomerform} = getCustomerOpin.current;
+        let customerdata = getCustomerform()
+        if (!customerdata) {
+          return false
+        }else {
+          triggerLoading(true)
+          const { success, message: msg } = await saveApprovePurchaseVo(customerdata)
+          triggerLoading(false)
+          return new Promise((resolve, reject) => {
+              if (success) {
+                  resolve({
+                  success,
+                  message: msg
+                  })
+                  message.success(msg)
+                  return;
+              }
+              reject(false)
+              message.error(msg)
+          })
+        }
+    }
+    function handleSubmitComplete(res) {
+        const { success } = res;
+        if (success) {
+          closeCurrent();
+        }
     }
     function tabClickHandler(params) {
         //setdefaultActiveKey(params)
@@ -56,7 +80,7 @@ function CreateStrategy() {
                 taskId={taskId}
                 instanceId={instanceId}
                 flowMapUrl="flow-web/design/showLook"
-                //submitComplete={handleSubmitComplete}
+                submitComplete={handleSubmitComplete}
                 beforeSubmit={handleSave}
                 >
                     <Spin spinning={loading} tip='处理中...'>

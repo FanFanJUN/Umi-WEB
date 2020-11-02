@@ -235,17 +235,24 @@ const getconfirmFromRef = forwardRef(({
             let verificatab = verifformRef.current.data;
             if (verificatab.length > 0) {
               verificatab.map(item => {
+                console.log(item)
                 if (!isEmpty(item.smInKindStatus) || !isEmpty(item.smCustomerConfirm) || !isEmpty(item.smSupplierAuditStatus)) {
                   let newverifica = verifformRef.current.data
-                  editData.smPcnAnalysisVos.map((orig,indexs) => {
-                    newverifica.map((items,index) => {
-                      if (orig.id === items.id) {
-                        editData.smPcnAnalysisVos.splice(indexs,1,items)
-                      }
-                      
+                  if (item.smInKindStatus === 0 && item.smCustomerConfirm === 0 && item.smSupplierAuditStatus === 0) {
+                    message.error('验证方案不能全部为否！')
+                  }else {
+                    editData.smPcnAnalysisVos.map((orig,indexs) => {
+                      newverifica.map((items,index) => {
+                        if (orig.id === items.id) {
+                          editData.smPcnAnalysisVos.splice(indexs,1,items)
+                        }
+                        
+                      })
                     })
-                  })
-                  result = editData
+                    result = editData
+                  }
+                  
+                  
                 }else{
                   message.error('验证数据最少有一行编辑数据！')
                   result = false
@@ -439,7 +446,7 @@ const getconfirmFromRef = forwardRef(({
                                 {getFieldDecorator('attachment', {
                                     rules: [
                                         {
-                                            required: true,
+                                            required: !isView,
                                             message: '请上传评审资料',
                                         },
                                     ],
@@ -460,7 +467,7 @@ const getconfirmFromRef = forwardRef(({
                                     initialValue: purchase && purchase.ideaStatus,
                                     rules: [
                                         {
-                                            required: true,
+                                            required: !isView,
                                             message: '请选择初评意见',
                                         },
                                     ],

@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useEffect,useRef, useState } from 'react';
-import { Modal, Form, Row, Col, Input,Radio } from 'antd';
+import { Modal, Form, Row, Col, Input,Radio,message} from 'antd';
 import { Fieldclassification } from '@/utils/commonProps'
 import { ExtTable, ComboList,AuthButton } from 'suid';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
@@ -78,6 +78,7 @@ const getcustomerinfor = forwardRef(({
               },
         ]
         function handleModalVisible (flag) {
+            settrust(false)
             setvisible(!!flag)
         };
         function handleSubmit() {
@@ -91,17 +92,30 @@ const getcustomerinfor = forwardRef(({
                             smCustomerConfirmsCode: val.smCustomerConfirmsName[0].code,
                             smCustomerConfirmsName: val.smCustomerConfirmsName[0].userName,
                         }
+                        editData.map(item => {
+                            newdata.push({...item,...cognizance})
+                        })
+                        customer(newdata)
+                        settrust(false)
+                    }else {
+                        message.error('请将客户信息填写完整！')
+                        return false
                     }
                 });
             }else {
                 cognizance = {
                     smCustomerConfirm: trust ? 1 : 0,
+                    smCustomerConfirmsID: '',
+                    smCustomerConfirmsCode: '',
+                    smCustomerConfirmsName: '',
                 }
+                editData.map(item => {
+                    newdata.push({...item,...cognizance})
+                })
+                customer(newdata)
+                settrust(false)
             }
-            editData.map(item => {
-                newdata.push({...item,...cognizance})
-            })
-            customer(newdata)
+           
             
         }
         function ChangRadio(e) {

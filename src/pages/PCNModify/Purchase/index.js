@@ -7,7 +7,7 @@ import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
 import styles from './index.less';
 import { smBaseUrl } from '@/utils/commonUrl';
 import { stopApproveingOrder } from "../../../services/pcnModifyService"
-import {BilltypeList,ToexamineList,PCNMasterdatalist,Strategicprocurementlist} from '../commonProps'
+import {BilltypeList,ToexamineList,PCNMasterdatalist,seniorStrategypurchase} from '../commonProps'
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 const { Search } = Input
 const confirm = Modal.confirm;
@@ -18,7 +18,7 @@ function SupplierConfigure() {
     const tableRef = useRef(null)
     const headerRef = useRef(null)
     const authorizations = storage.sessionStorage.get("Authorization");
-    const currentUserId = authorizations?.userId;
+    const currentUserId = authorizations?.account;
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [onlyMe, setOnlyMe] = useState(true);
     const [selectedRows, setRows] = useState([]);
@@ -27,12 +27,12 @@ function SupplierConfigure() {
     const [recommen, setrecommen] = useState([]);
     const [loading, triggerLoading] = useState(false);
     const [attachId, setAttachId] = useState('');
-    const [fixedHeader, setfixedHeader] = useState('');
+    const [seniorsearchValue, setSeniorsearchValue] = useState('');
 
     const [singleRow = {}] = selectedRows;
     /** 按钮可用性判断变量集合 BEGIN*/
     const [signleRow = {}] = selectedRows;
-    const { flowStatus: signleFlowStatus, id: flowId, creatorId } = signleRow;
+    const { flowStatus: signleFlowStatus, id: flowId, smPcnStrategicCode,smDocunmentStatus: typeStatus } = signleRow;
     // 已提交审核状态
     const underWay = signleFlowStatus !== 'INIT';
     // 审核完成状态
@@ -40,9 +40,11 @@ function SupplierConfigure() {
     // 未选中数据的状态
     const empty = selectedRowKeys.length === 0;
     // 是不是自己的单据
-    const isSelf = currentUserId === creatorId;
+    const isSelf = smPcnStrategicCode === currentUserId;
     // 删除草稿
     const isdelete = signleFlowStatus === 'INIT'
+    // 提交审核
+    const Toexamine = signleFlowStatus === 'INIT' && typeStatus === 1;
     const columns = [
         {
             title: '单据状态',
@@ -50,9 +52,11 @@ function SupplierConfigure() {
             key: 'smSubmitStatus',
             width: 160,
             render: function (text, record, row) {
-                if (text === 0) {
+                if (text === 0 && record.smDocunmentStatus === 0) {
                     return <div>草稿</div>;
-                } else if (text === 1) {
+                } else if (text === 0 && record.smDocunmentStatus === 1) {
+                    return <div>已保存</div>;
+                }else if (text === 1) {
                     return <div className="doingColor">验证中</div>;
                 } else if (text === 2) {
                     return <div className="successColor">变更不通过</div>;
@@ -117,7 +121,8 @@ function SupplierConfigure() {
 
     const dataSource = {
         store: {
-            url: `${smBaseUrl}/api/smPcnTitleService/findByPurchasePage`,
+            url: `${smBaseUrl}/api/smPcnTitleService/findByPurchasePage?onlyMeStatus=1`,
+            //url: `${smBaseUrl}/api/smPcnTitleService/findByPurchasePage`,
             params: {
                 ...searchValue,
                 quickSearchProperties: ['smPcnCode'],
@@ -126,7 +131,8 @@ function SupplierConfigure() {
                         property: 'createdDate',
                         direction: 'DESC'
                     }
-                ]
+                ],
+                filters:seniorsearchValue
             },
             type: 'POST'
         }
@@ -139,7 +145,7 @@ function SupplierConfigure() {
                 style={{ width: 340 }}
                 searchProperties={searchbank}
                 {...BilltypeList}
-                //afterSelect={cooperationChange}
+                afterSelect={cooperationChange}
                 rowKey="code"
                 //showSearch={false}
                 allowClear={true}
@@ -164,7 +170,7 @@ function SupplierConfigure() {
         { title: '单据状态', key: 'smDocunmentStatus', type: 'list', props: BilltypeList },
         { title: '审核状态', key: 'flowStatus', type: 'list', props: ToexamineList },
         { title: '变更类型', key: 'smPcnChangeTypeCode', type: 'list', props: PCNMasterdatalist },
-        { title: '战略采购', key: 'smSourcing', type: 'list', props: Strategicprocurementlist },
+        { title: '战略采购', key: 'smSourcing', type: 'list', props: seniorStrategypurchase },
     ];
     useEffect(() => {
         window.parent.frames.addEventListener('message', listenerParentClose, false);
@@ -202,8 +208,8 @@ function SupplierConfigure() {
     // 明细
     function handleCheckDetail() {
         let id = selectedRows[0].id;
-        let supplierId = selectedRows[0].supplierId;
-        openNewTab(`supplier/supplierModify/details/index?id=${id}&supplierId=${supplierId}`, '供应商变更明细', false)
+        //openNewTab(`pcnModify/Purchase/Detail/index?id=${id}`, 'PCN变更方案明细', false)
+        openNewTab(`pcnModify/ApprovePage/PCNSeewholeDetail?id=${id}`, 'PCN变更方案明细', false)
     }
     // 提交审核完成更新列表
     function handleComplete() {
@@ -236,34 +242,13 @@ function SupplierConfigure() {
     function handleOnlyMeChange(e) {
         setOnlyMe(e.target.checked)
     }
-    // 输入框值
-    function SerachValue(v) {
-        setSearchValue(v.target.value)
-    }
     // 查询
     function handleQuickSerach(value) {
-        // let search = "";
-        // setSearchValue(search);
-        // setSearchValue(searchValue)
-        // uploadTable();
         setSearchValue(v => ({ ...v, quickSearchValue: value }));
         uploadTable();
     }
     // 处理高级搜索
     function handleAdvnacedSearch(value) {
-        console.log(value)
-        // value.smSupplierCode = value.materialCode;
-        // value.smSupplierName = value.materialName;
-        // value.smDocunmentStatus = value.materialGroupCode;
-        // value.smPcnChangeTypeCode = value.applyPersonName;
-        // value.smSupplierCode = value.materialCode;
-        // value.smSupplierName = value.materialName;
-        // delete value.applyPersonName;
-        // delete value.applyPersonName_name;
-        // delete value.materialCode;
-        // delete value.materialGroupCode;
-        // delete value.materialGroupCode_name;
-        // console.log(value)
         let searchvalue = [];
         searchvalue.push(value);
         let newdata = [];
@@ -272,22 +257,22 @@ function SupplierConfigure() {
             newdata.push(
                 {
                     fieldName:'smSupplierCode',
-                    value: item.smSupplierCode,
+                    value: item.materialCode,
                     operator:'EQ'
                 },
                 {
                     fieldName:'smSupplierName',
-                    value: item.smSupplierName,
+                    value: item.materialName,
                     operator:'EQ'
                 },
                 {
-                    fieldName:'smDocunmentStatus',
+                    fieldName:'smSubmitStatus',
                     value: item.smDocunmentStatus,
                     operator:'EQ'
                 },
                 {
                     fieldName:'flowStatus',
-                    value: item.flowStatus_name,
+                    value: item.flowStatus,
                     operator:'EQ'
                 },
                 {
@@ -303,13 +288,25 @@ function SupplierConfigure() {
     
             )
         })
-        setSearchValue(newdata)
+        setSeniorsearchValue(newdata)
         headerRef.current.hide();
+        uploadTable();
+    }
+    function cooperationChange(val) {
+        console.log(val)
+        let search = []
+        search.push({
+            fieldName:'smSubmitStatus',
+            value: val.code,
+            operator:'EQ'
+        })
+        setSeniorsearchValue(search)
         uploadTable();
     }
      // 清空泛虹公司
      function clearinput() {
         setSearchValue('')
+        setSeniorsearchValue('')
         uploadTable();
     }
     return (
@@ -321,7 +318,7 @@ function SupplierConfigure() {
                             authAction(
                                 <Button
                                     ignore={DEVELOPER_ENV}
-                                    key='SRM-SM-SUPPLIERMODEL_EDIT'
+                                    key='SSRM-SM-PCNPURCHASE-EDIT'
                                     className={styles.btn}
                                     onClick={handleCheckEdit}
                                     disabled={empty || underWay || !isSelf}
@@ -333,7 +330,7 @@ function SupplierConfigure() {
                             authAction(
                                 <Button
                                     ignore={DEVELOPER_ENV}
-                                    key='SRM-SM-SUPPLIERMODEL_DETAILED'
+                                    key='SRM-SM-PCNPURCHASE-DETAIL'
                                     className={styles.btn}
                                     onClick={handleCheckDetail}
                                     disabled={empty}
@@ -348,13 +345,13 @@ function SupplierConfigure() {
                                     ignore={DEVELOPER_ENV}
                                     businessKey={flowId}
                                     callBack={handleComplete}
-                                    disabled={empty || underWay}
+                                    disabled={empty || underWay || !Toexamine}
                                     businessModelCode='com.ecmp.srm.sm.entity.pcn.SmPcnTitle'
-                                    key='SRM-SM-SUPPLIERMODEL_EXAMINE'
+                                    key='SRM-SM-PCNPURCHASE-EXAMINE'
                                 >提交审核</StartFlow>
                             )
                         }
-                        {
+                        {/* {
                             authAction(
                                 <Button
                                     className={styles.btn}
@@ -364,20 +361,20 @@ function SupplierConfigure() {
                                     key='SRM-SM-SUPPLIERMODEL_STOP_APPROVAL'
                                 >终止审核</Button>
                             )
-                        }
+                        } */}
                         {
                             authAction(
                                 <FlowHistoryButton
                                     businessId={flowId}
                                     flowMapUrl='flow-web/design/showLook'
                                     ignore={DEVELOPER_ENV}
-                                    key='SRM-SM-SUPPLIERMODEL_HISTORY'
+                                    key='SRM-SM-PCNPURCHASE-HISTORY'
                                 >
                                     <Button className={styles.btn} disabled={empty || !underWay}>审核历史</Button>
                                 </FlowHistoryButton>
                             )
                         }
-                        <Checkbox className={styles.btn} onChange={handleOnlyMeChange} checked={onlyMe}>仅我的</Checkbox>
+                        {/* <Checkbox className={styles.btn} onChange={handleOnlyMeChange} checked={onlyMe}>仅我的</Checkbox> */}
                     </>
                 }
                 right={searchBtnCfg}

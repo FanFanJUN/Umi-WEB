@@ -38,7 +38,7 @@ function CreateStrategy() {
     async function initsupplierDetai() {
         triggerLoading(true);
         let id = query.id;
-        const { data, success, message: msg } = await findPCNSupplierId({pcnTitleId:'31E4EE14-14FD-11EB-9BB9-42A58951E645'});
+        const { data, success, message: msg } = await findPCNSupplierId({pcnTitleId:id});
         if (success) {
             setEditData(data)
             triggerLoading(false);
@@ -66,6 +66,8 @@ function CreateStrategy() {
                                     <PCNModifyDetail
                                         editData={editData}
                                         wrappedComponentRef={getpcnModifyRef}
+                                        isView={true}
+                                        result={true}
                                     />
                                 </TabPane>
                                 <TabPane forceRender tab="确认方案" key="2">
@@ -80,18 +82,21 @@ function CreateStrategy() {
                                     <ResultsIdenDetail
                                         editData={editData}
                                         wrappedComponentRef={getResultsIden}
+                                        isView={true}
                                     />
                                 </TabPane>
                                 <TabPane forceRender tab="客户意见" key="4">
                                     <CustomerOpinionDetail
                                         editData={editData}
                                         wrappedComponentRef={getCustomerOpin}
+                                        isView={true}
                                     />
                                 </TabPane>
                                 <TabPane forceRender tab="审核结果" key="5">
                                     <ToexamineDetail
                                         editData={editData}
                                         wrappedComponentRef={getToexamine}
+                                        isView={true}
                                     />
                                 </TabPane>
                                 <TabPane forceRender tab="执行信息" key="6">
@@ -99,7 +104,7 @@ function CreateStrategy() {
                                         editData={editData}
                                         wrappedComponentRef={getExecutioninfor}
                                         headerInfo={true}
-                                        isView={false}
+                                        isView={true}
                                     />
                                 </TabPane>
                             </Tabs>

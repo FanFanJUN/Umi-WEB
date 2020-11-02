@@ -5,6 +5,7 @@ import { openNewTab, getFrameElement ,isEmpty} from '@/utils';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
 import UploadFile from '../../../../components/Upload/index'
 import {SupplierResulteList} from '../../commonProps'
+import { dataTransfer2 } from '../../../supplierRegister/CommonUtils'
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 const { create } = Form;
 const FormItem = Form.Item;
@@ -15,15 +16,19 @@ const getToexamine = forwardRef(({
   editData = [],
 }, ref) => {
   useImperativeHandle(ref, () => ({
-    form
+    form,
+    getExamineform
   }));
   const { getFieldDecorator, setFieldsValue, validateFieldsAndScroll } = form;
+  const tabformRef = useRef(null)
+  const [toexamine, setToexamine] = useState([]);
   const [dataSource, setDataSource] = useState([]);
   const [selectRowKeys, setRowKeys] = useState([]);
 
   const [attachId, setAttachId] = useState('')
 
   useEffect(() => {
+    setToexamine(editData)
     setDataSource(editData.smPcnAnalysisVos)
   }, [editData])
   const columns = [
@@ -77,21 +82,23 @@ const getToexamine = forwardRef(({
         width: 220,
         render: (text, record, index) => {
           if (isView) {
-              return record.smSupplierAuditResultStatus;
+              return !isEmpty(record) && !isEmpty(record.smSupplierAuditResultStatus) ? record.smSupplierAuditResultStatus === 0 ? '通过' : '不通过' : '';
           }
           return <span>
               <FormItem style={{ marginBottom: 0 }}>
                   {
-                      getFieldDecorator(`smSupplierAuditResultStatus[${index}]`, {
+                      getFieldDecorator(`smSupplierAuditResultStatus[${index}]`,{initialValue: record ? record.smSupplierAuditResultStatus : ''}),
+                      getFieldDecorator(`smSupplierAuditResultStatusName[${index}]`, {
                           initialValue: record ? record.smSupplierAuditResultStatus : '',
-                          rules: [{ required: true, message: '请选择实物认定结果!', whitespace: true }],
+                          rules: [{ required: true, message: '请选择审核结果!', whitespace: true }],
                       })( 
                           <ComboList 
-                              form={form}
-                              {...SupplierResulteList}
-                              showSearch={false}
-                              //afterSelect={afterSelect}
-                              name={`smSupplierAuditResultStatus[${index}]`}
+                            form={form}
+                            {...SupplierResulteList}
+                            showSearch={false}
+                            //afterSelect={afterSelect}
+                            name={`smSupplierAuditResultStatusName[${index}]`}
+                            field={[`smSupplierAuditResultStatus[${index}]`]}
                           />
                       )
                   }
@@ -111,13 +118,13 @@ const getToexamine = forwardRef(({
         return <span>
           <FormItem style={{ marginBottom: 0 }}>
             {
-              getFieldDecorator(`smSupplierAuditConfirmerAttachments[${index}]`, {
-                  initialValue: record ? record.smSupplierAuditConfirmerAttachments : '',
-                  rules: [{ required: true, message: '请选择实物认定结果!', whitespace: true }],
+              getFieldDecorator(`smSupplierAuditConfirmerEnclosure[${index}]`, {
+                  initialValue: record ? record.smSupplierAuditConfirmerEnclosure : '',
+                  rules: [{ required: true, message: '请上传附件!'}],
               })( 
                 <UploadFile
                     title={"附件上传"}
-                    entityId={editData ? editData.smSupplierAuditConfirmerAttachments : null}
+                    entityId={record ? record.smSupplierAuditConfirmerEnclosure : null}
                     type={isView ? "show" : ""}
                 />
               )
@@ -128,6 +135,33 @@ const getToexamine = forwardRef(({
     }
   ].map(_ => ({ ..._, align: 'center' }))
 
+  // 获取表单
+  function getExamineform() {
+    let result = false;
+    const examine = tabformRef.current.data;
+    if (examine.length === 0) {
+      return false;
+    }else {
+      form.validateFieldsAndScroll((err, values) => {
+        let handledata = dataTransfer2(examine, values)
+        handledata.forEach((item,index) => {
+          examine.forEach((items,ins)=> {
+            items.smSupplierAuditConfirmerAttachments = item.smSupplierAuditConfirmerEnclosure
+            items.smSupplierAuditResultStatus = item.smSupplierAuditResultStatus
+          })
+          
+        })
+        if (!err) {
+          toexamine.smPcnAnalysisVos = examine
+          result = toexamine
+        }else {
+          message.error('审核结果不能为空！')
+          return false;
+        }
+      })
+    }
+    return result;
+  }
   
 
   return (
@@ -137,10 +171,9 @@ const getToexamine = forwardRef(({
         (height) => <ExtTable
             columns={columns}
             showSearch={false}
+            ref={tabformRef}
             rowKey={(item) => item.id}
-            checkbox={{
-                multiSelect: false
-            }}
+            checkbox={false}
             pagination={{
               hideOnSinglePage: true,
               disabled: false,

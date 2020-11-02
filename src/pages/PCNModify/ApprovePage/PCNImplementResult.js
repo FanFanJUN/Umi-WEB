@@ -7,7 +7,7 @@ import Confirmation from '../Purchase/commons/Confirmation'
 import Executioninfor from '../Purchase/commons/Executioninfor'
 import { closeCurrent, isEmpty ,checkToken} from '../../../utils';
 import styles from '../Purchase/index.less';
-import {findPCNSupplierId,savePurchaseVo} from '../../../services/pcnModifyService'
+import {findPCNSupplierId,saveApproveExecutorVo} from '../../../services/pcnModifyService'
 const TabPane = Tabs.TabPane;
 function CreateStrategy() {
     const getpcnModifyRef = useRef(null);
@@ -32,7 +32,7 @@ function CreateStrategy() {
     async function initsupplierDetai() {
         triggerLoading(true);
         let id = query.id;
-        const { data, success, message: msg } = await findPCNSupplierId({pcnTitleId:'31E4EE14-14FD-11EB-9BB9-42A58951E645'});
+        const { data, success, message: msg } = await findPCNSupplierId({pcnTitleId:id});
         if (success) {
             setEditData(data)
             let id = data.smPcnAnalysisVos[0].materielCategoryCode
@@ -43,11 +43,35 @@ function CreateStrategy() {
             message.error(msg)
         }
     }
-    // 保存
-    async function handleSave() {
-
-
-
+    const handleSave = async (approved) => {
+        const {getImplementInfo} = getExecutioninfor.current;
+        let implementdata = getImplementInfo()
+        console.log(implementdata)
+        if (!implementdata) {
+          return false
+        }else {
+          triggerLoading(true)
+          const { success, message: msg } = await saveApproveExecutorVo(implementdata)
+          triggerLoading(false)
+          return new Promise((resolve, reject) => {
+              if (success) {
+                  resolve({
+                  success,
+                  message: msg
+                  })
+                  message.success(msg)
+                  return;
+              }
+              reject(false)
+              message.error(msg)
+          })
+        }
+    }
+    function handleSubmitComplete(res) {
+        const { success } = res;
+        if (success) {
+          closeCurrent();
+        }
     }
     function tabClickHandler(params) {
         //setdefaultActiveKey(params)
@@ -59,7 +83,7 @@ function CreateStrategy() {
                 taskId={taskId}
                 instanceId={instanceId}
                 flowMapUrl="flow-web/design/showLook"
-                //submitComplete={handleSubmitComplete}
+                submitComplete={handleSubmitComplete}
                 beforeSubmit={handleSave}
                 >
                     <Spin spinning={loading} tip='处理中...'>
@@ -69,7 +93,8 @@ function CreateStrategy() {
                                     <PCNModifyDetail
                                         editData={editData}
                                         wrappedComponentRef={getpcnModifyRef}
-                                        result={false}
+                                        result={true}
+                                        isView={true}
                                     />
                                 </TabPane>
                                 <TabPane forceRender tab="执行信息" key="5">

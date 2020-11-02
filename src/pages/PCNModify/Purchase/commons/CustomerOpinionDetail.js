@@ -4,6 +4,8 @@ import { Form, Button, message, Checkbox, Modal } from 'antd';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
 import UploadFile from '../../../../components/Upload/index'
 import {SupplierResulteList} from '../../commonProps'
+import { dataTransfer2 } from '../../../supplierRegister/CommonUtils'
+import {isEmpty} from '../../../../utils'
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 const { create } = Form;
 const FormItem = Form.Item;
@@ -14,15 +16,19 @@ const getCustomerOpin = forwardRef(({
   editData = [],
 }, ref) => {
   useImperativeHandle(ref, () => ({
-    form
+    form,
+    getCustomerform
   }));
   const { getFieldDecorator, setFieldsValue, validateFieldsAndScroll } = form;
+  const tabformRef = useRef(null)
   const [dataSource, setDataSource] = useState([]);
+  const [customer, setCustomer] = useState([]);
   const [selectRowKeys, setRowKeys] = useState([]);
 
   const [attachId, setAttachId] = useState('')
 
   useEffect(() => {
+    setCustomer(editData)
     setDataSource(editData.smPcnAnalysisVos)
   }, [editData])
   const columns = [
@@ -76,22 +82,24 @@ const getCustomerOpin = forwardRef(({
         width: 220,
         render: (text, record, index) => {
           if (isView) {
-              return record.smCustomerResultConfirm;
+              return !isEmpty(record) && !isEmpty(record.smCustomerResultConfirm) ? record.smCustomerResultConfirm === 0 ? '通过' : '不通过' : '';
           }
           return <span>
               <FormItem style={{ marginBottom: 0 }}>
                   {
-                      getFieldDecorator(`smCustomerResultConfirm[${index}]`, {
-                          initialValue: record ? record.smCustomerResultConfirm : '',
-                          rules: [{ required: true, message: '请选择实物认定结果!', whitespace: true }],
+                      getFieldDecorator(`smCustomerResultConfirm[${index}]`,{initialValue: record ? record.smCustomerResultConfirm : ''}),
+                      getFieldDecorator(`smCustomerResultConfirmName[${index}]`, {
+                          initialValue: record ? record.smCustomerResultConfirmName : '',
+                          rules: [{ required: true, message: '请选择客户结果!', whitespace: true }],
                       })( 
-                          <ComboList 
-                              form={form}
-                              {...SupplierResulteList}
-                              showSearch={false}
-                              //afterSelect={afterSelect}
-                              name={`smCustomerResultConfirm[${index}]`}
-                          />
+                        <ComboList 
+                            form={form}
+                            {...SupplierResulteList}
+                            showSearch={false}
+                            //afterSelect={afterSelect}
+                            name={`smCustomerResultConfirmName[${index}]`}
+                            field={[`smCustomerResultConfirm[${index}]`]}
+                        />
                       )
                   }
               </FormItem>
@@ -110,13 +118,13 @@ const getCustomerOpin = forwardRef(({
         return <span>
           <FormItem style={{ marginBottom: 0 }}>
             {
-              getFieldDecorator(`customerAttachments[${index}]`, {
-                  initialValue: record ? record.customerAttachments : '',
-                  rules: [{ required: true, message: '请选择实物认定结果!', whitespace: true }],
+              getFieldDecorator(`customerEnclosure[${index}]`, {
+                  initialValue: record ? record.customerEnclosure : '',
+                  rules: [{ required: true, message: '请上传附件!'}],
               })( 
                 <UploadFile
                     title={"附件上传"}
-                    entityId={editData ? editData.customerAttachments : null}
+                    entityId={record ? record.customerEnclosure : null}
                     type={isView ? "show" : ""}
                 />
               )
@@ -127,7 +135,33 @@ const getCustomerOpin = forwardRef(({
     }
   ].map(_ => ({ ..._, align: 'center' }))
 
-  
+  // 获取表单
+  function getCustomerform() {
+    let result = false;
+    const material = tabformRef.current.data;
+    if (material.length === 0) {
+      return false;
+    }else {
+      form.validateFieldsAndScroll((err, values) => {
+        let handledata = dataTransfer2(material, values)
+        handledata.forEach((item,index) => {
+          material.forEach((items,ins)=> {
+            items.customerAttachments = item.customerEnclosure
+            items.smCustomerResultConfirm = item.smCustomerResultConfirm
+          })
+          
+        })
+        if (!err) {
+          customer.smPcnAnalysisVos = material
+          result = customer
+        }else {
+          message.error('客户意见不能为空！')
+          return false;
+        }
+      })
+    }
+    return result;
+  }
 
   return (
     <>
@@ -136,10 +170,9 @@ const getCustomerOpin = forwardRef(({
         (height) => <ExtTable
             columns={columns}
             showSearch={false}
+            ref={tabformRef}
             rowKey={(item) => item.id}
-            checkbox={{
-                multiSelect: false
-            }}
+            checkbox={false}
             pagination={{
               hideOnSinglePage: true,
               disabled: false,

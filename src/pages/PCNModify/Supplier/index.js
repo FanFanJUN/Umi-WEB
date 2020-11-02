@@ -25,7 +25,7 @@ function SupplierConfigure() {
     const [searchValue, setSearchValue] = useState({});
     const [loading, triggerLoading] = useState(false);
     const [attachId, setAttachId] = useState('');
-    const [Searchvalue, setSearchvalue] = useState('');
+    const [seniorSearchvalue, setSeniorsearchvalue] = useState('');
     /** 按钮可用性判断变量集合 BEGIN*/
     const [signleRow = {}] = selectedRows;
     const { smDocunmentStatus: signleFlowStatus, id: flowId, creatorId } = signleRow;
@@ -103,7 +103,7 @@ function SupplierConfigure() {
                         direction: 'DESC'
                     }
                 ],
-                filters:Searchvalue
+                filters:seniorSearchvalue
             },
             type: 'POST'
         }
@@ -152,7 +152,13 @@ function SupplierConfigure() {
         }
     }
     function cooperationChange(val) {
-        setSearchValue(v => ({ ...v, quickSearchValue: val.code }));
+        let search = []
+        search.push({
+            fieldName:'smDocunmentStatus',
+            value: val.code,
+            operator:'EQ'
+        })
+        setSeniorsearchvalue(search)
         uploadTable();
     }
     // 记录列表选中
@@ -226,10 +232,6 @@ function SupplierConfigure() {
     }
     // 快速查询
     function handleQuickSerach(value) {
-        // let search = "";
-        // setSearchValue(search);
-        // setSearchValue(searchValue)
-        // uploadTable();
         setSearchValue(v => ({ ...v, quickSearchValue: value }));
         uploadTable();
     }
@@ -272,13 +274,14 @@ function SupplierConfigure() {
     
             )
         })
-        setSearchvalue(newdata)
+        setSeniorsearchvalue(newdata)
         headerRef.current.hide();
         uploadTable();
     }
      // 清空泛虹公司
      function clearinput() {
         setSearchValue('')
+        setSeniorsearchvalue('')
         uploadTable();
     }
     return (
@@ -290,7 +293,7 @@ function SupplierConfigure() {
                             authAction(
                                 <Button type='primary' 
                                     ignore={DEVELOPER_ENV} 
-                                    key='SRM-SM-SUPPLIERMODEL_ADD' 
+                                    key='SRM-SM-PCNSUPPLIER-ADD' 
                                     className={styles.btn} 
                                     onClick={AddModel}
                                     //disabled={empty}
@@ -302,7 +305,7 @@ function SupplierConfigure() {
                             authAction(
                                 <Button
                                     ignore={DEVELOPER_ENV}
-                                    key='SRM-SM-SUPPLIERMODEL_EDIT'
+                                    key='SRM-SM-PCNSUPPLIER-EDIT'
                                     className={styles.btn}
                                     onClick={handleCheckEdit}
                                     disabled={empty || !underWay || !isSelf}
@@ -314,7 +317,7 @@ function SupplierConfigure() {
                             authAction(
                                 <Button 
                                     ignore={DEVELOPER_ENV} 
-                                    key='SRM-SM-SUPPLIERMODEL_DELETE' 
+                                    key='SRM-SM-PCNSUPPLIER-DELETE' 
                                     className={styles.btn} 
                                     onClick={handleDelete} 
                                     disabled={empty || !underWay || !isSelf}
@@ -326,7 +329,7 @@ function SupplierConfigure() {
                             authAction(
                                 <Button
                                     ignore={DEVELOPER_ENV}
-                                    key='SRM-SM-SUPPLIERMODEL_DETAILED'
+                                    key='SRM-SM-PCNSUPPLIER-DETAIL'
                                     className={styles.btn}
                                     onClick={handleCheckDetail}
                                     disabled={empty}
@@ -338,7 +341,7 @@ function SupplierConfigure() {
                             authAction(
                                 <Button
                                     ignore={DEVELOPER_ENV}
-                                    key='SRM-SM-SUPPLIERMODEL_DETAILED'
+                                    key='SRM-SM-PCNSUPPLIER-SUBMIT'
                                     className={styles.btn}
                                     onClick={handleSubmit}
                                     disabled={empty || !underWay || !isSelf}
@@ -350,7 +353,7 @@ function SupplierConfigure() {
                             authAction(
                                 <Button
                                     ignore={DEVELOPER_ENV}
-                                    key='SRM-SM-SUPPLIERMODEL_DETAILED'
+                                    key='SRM-SM-PCNSUPPLIER-WITHDRAW'
                                     className={styles.btn}
                                     onClick={handleSubmit}
                                     disabled={empty || !completed || !isSelf}

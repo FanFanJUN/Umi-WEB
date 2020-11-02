@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useEffect,useRef, useState } from 'react';
-import { Modal, Form, Row, Col, Input,Radio } from 'antd';
+import { Modal, Form, Row, Col, Input,Radio ,message} from 'antd';
 import { Fieldclassification } from '@/utils/commonProps'
 import { ExtTable } from 'suid';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
@@ -77,6 +77,7 @@ const getauditinfor = forwardRef(({
               },
         ]
         function handleModalVisible (flag) {
+            settrust(false)
             setvisible(!!flag)
         };
         // 获取表单值
@@ -91,17 +92,30 @@ const getauditinfor = forwardRef(({
                             smSupplierAuditConfirmerCode: val.smSupplierAuditConfirmerName[0].code,
                             smSupplierAuditConfirmerName: val.smSupplierAuditConfirmerName[0].userName,
                         }
+                        editData.map(item => {
+                            newdata.push({...item,...cognizance})
+                        })
+                        toexamine(newdata)
+                        settrust(false)
+                    }else {
+                        message.error('请将审核信息填写完整！')
+                        return false
                     }
                 });
             }else {
                 cognizance = {
                     smSupplierAuditStatus: trust ? 1 : 0,
+                    smSupplierAuditConfirmerID: '',
+                    smSupplierAuditConfirmerCode: '',
+                    smSupplierAuditConfirmerName: '',
                 }
+                editData.map(item => {
+                    newdata.push({...item,...cognizance})
+                })
+                toexamine(newdata)
+                settrust(false)
             }
-            editData.map(item => {
-                newdata.push({...item,...cognizance})
-            })
-            toexamine(newdata)
+           
             
         }
         function ChangRadio(e) {

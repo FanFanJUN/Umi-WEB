@@ -1,6 +1,6 @@
 import React, { forwardRef, useState, useRef, useEffect, useImperativeHandle } from 'react';
 import { ExtTable, utils, ToolBar,AuthButton  } from 'suid';
-import { Form, Row, Col, Input, DatePicker  } from 'antd';
+import { Form, Row, Col, Input, DatePicker,message  } from 'antd';
 import Header from '@/components/Header';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
 import MaterielModal from '../../Supplier/commons/MaterielModal'
@@ -27,18 +27,40 @@ const getExecutioninfor = forwardRef(({
   materielid
 }, ref) => {
   useImperativeHandle(ref, () => ({
-    form
+    form,
+    getImplementInfo
   }));
   const { getFieldDecorator, setFieldsValue, getFieldValue, validateFieldsAndScroll } = form;
   const getMatermodRef = useRef(null)
+  const tabformRef = useRef(null)
   const [dataSource, setDataSource] = useState([]);
+  const [implement, setImplement] = useState([]);
+  const [materiel, setMateriel] = useState([]);
   const [selectRowKeys, setRowKeys] = useState([]);
   const [selectedRows, setRows] = useState([]);
   const [attachId, setAttachId] = useState('')
   const empty = selectRowKeys.length === 0;
-  useEffect(() => {
 
+  useEffect(() => {
+    handleimplement(editData)
   }, [editData])
+  // 
+  async function handleimplement(val) {
+    if (val) {
+      setDataSource(val.smPcnExecutInfoVo)
+      setImplement(val)
+      if (val.smPcnExecutInfoVo) {
+        let newdata = [];
+        val.smPcnExecutInfoVo.smPcnExecutInfoDataVos.map((item,index) => {
+          newdata.push({
+            key: index,
+            ...item
+          })
+        })
+        setMateriel(newdata)
+      }
+    }
+  }
   // 采购小组头部
   const headerleft = (
     <>
@@ -71,15 +93,18 @@ const getExecutioninfor = forwardRef(({
       width: 240,
       render: (text, record, index) => {
           if (isView) {
-              return record.smPcnPartName;
+              return record.batch;
           }
           return <span>
               <FormItem style={{ marginBottom: 0 }}>
                   {
                       getFieldDecorator(`batch[${index}]`, {
-                          initialValue: record ? record.smPcnPartName : '',
+                          initialValue: record ? record.batch : '',
                       })( 
-                          <Input /> 
+                          <Input 
+                            placeholder='请输入批次'
+                            onBlur={onInput(record, index)}
+                          /> 
                       )
                   }
               </FormItem>
@@ -98,8 +123,8 @@ const getExecutioninfor = forwardRef(({
   }
   // 物料删除
   function handDelete() {
-    const filterData = dataSource.filter(item => item.key !== selectedRows[0].key);
-    setDataSource(filterData)
+    const filterData = materiel.filter(item => item.key !== selectedRows[0].key);
+    setMateriel(filterData)
   }
   function handleMateriel(val) {
     let newdata = [];
@@ -107,44 +132,78 @@ const getExecutioninfor = forwardRef(({
       newdata.push({
         key: index,
         materielTypeCode: item.materialCode,
-        materielTypeName: item.materialDesc
+        materielTypeName: item.materialDesc,
       })
     })
-    setDataSource(newdata)
+    setMateriel(newdata)
   }
   function disabledDate(current) {
     return current && current < moment().endOf('day');
+  }
+  function onInput(data, index) {
+    return (e) => {
+      const tablereflist = tabformRef.current.data;
+      const selectData = tablereflist.slice(0)
+      selectData[index] = data;
+      selectData[index].batch = e.target.value;
+    }
+  }
+  // 获取表单参数
+  function getImplementInfo() {
+    let result = false;
+    const tabledata = tabformRef.current.data;
+    form.validateFieldsAndScroll((err, values) => {
+        if (!err) {
+            delete values.batch
+            values.executDate = moment(values.resultEnclosure).format('YYYY-MM-DD HH:mm:ss')
+            implement.smPcnExecutInfoVo = {...implement.smPcnExecutInfoVo, ...values}
+            implement.smPcnExecutInfoVo.smPcnExecutInfoDataVos = tabledata
+            result = implement
+            
+        }else {
+          message.error('请将执行信息填写完全！')
+        }
+    })
+    return result;
   }
   return (
     <>
         <Row style={{paddingTop:50}}>
             <Col span={16}>
                 <FormItem {...formLayout} label="PCN变更执行日期">
-                    {getFieldDecorator('executDate', {
+                    {
+                      isView ? <span>{dataSource ? dataSource.executDate : ''}</span> :
+                      getFieldDecorator('executDate', {
+                        initialValue: dataSource ? dataSource.executDate : '',
                         rules: [
                             {
                                 required: true,
                                 message: '请选择PCN变更执行日期',
                             },
                         ],
-                    })(
-                        <DatePicker 
-                          format="YYYY-MM-DD"
-                          disabledDate={disabledDate}
-                          disabled={isView}
-                          style={{ width: '100%' }}
-                        />
-                    )}
+                      })(
+                          <DatePicker 
+                            format="YYYY-MM-DD"
+                            disabledDate={disabledDate}
+                            disabled={isView}
+                            style={{ width: '100%' }}
+                          />
+                      )
+                    }
                 </FormItem>
             </Col>
         </Row>
         <Row>
             <Col span={16}>
                 <FormItem {...formLayout} label="备注">
-                    {getFieldDecorator('remark', {
-                    })(
-                        <TextArea  disabled={isView}/>
-                    )}
+                    {
+                      isView ? <span>{dataSource ? dataSource.remark : ''}</span> :
+                      getFieldDecorator('remark', {
+                        initialValue: dataSource ? dataSource.remark : '',
+                      })(
+                          <TextArea  disabled={isView}/>
+                      )
+                    }
                 </FormItem>
             </Col>
         </Row>
@@ -158,6 +217,7 @@ const getExecutioninfor = forwardRef(({
         (height) => <ExtTable
             columns={columns}
             showSearch={false}
+            ref={tabformRef}
             rowKey={(item) => item.key}
             checkbox={{
                 multiSelect: false
@@ -175,7 +235,7 @@ const getExecutioninfor = forwardRef(({
             saveData={false}
             onSelectRow={handleSelectedRows}
             selectedRowKeys={selectRowKeys}
-            dataSource={dataSource}
+            dataSource={materiel}
         />
         }
       </AutoSizeLayout>

@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useEffect,useRef, useState } from 'react';
-import { Modal, Form, Row, Col, Input,Radio } from 'antd';
+import { Modal, Form, Row, Col, Input,Radio,message } from 'antd';
 import { Fieldclassification } from '@/utils/commonProps'
 import { ExtTable, ComboList,AuthButton } from 'suid';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
@@ -78,6 +78,7 @@ const getInformation = forwardRef(({
               },
         ]
         function handleModalVisible (flag) {
+            settrust(false)
             setvisible(!!flag)
         };
         function handleSubmit() {
@@ -93,17 +94,33 @@ const getInformation = forwardRef(({
                             smTrustCompanyCode: val.smTrustCompanyCode,
                             smTrustPurchasCode: val.smTrustPurchasCode
                         }
+                        editData.map(item => {
+                            newdata.push({...item,...cognizance})
+                        })
+                        determine(newdata)
+                        settrust(false)
+                    }else {
+                        message.error('请将信任信息填写完整！')
+                        return false
                     }
                 });
             }else {
                 cognizance = {
                     smInKindStatus: trust ? 1 : 0,
+                    smInKindManId: '',
+                    smInKindManCode: '',
+                    smInKindManName: '',
+                    smTrustCompanyCode: '',
+                    smTrustPurchasCode: ''
                 }
+                editData.map(item => {
+                    newdata.push({...item,...cognizance})
+                })
+                determine(newdata)
+                settrust(false)
+                return false
             }
-            editData.map(item => {
-                newdata.push({...item,...cognizance})
-            })
-            determine(newdata)
+            
         }
         function showtrustModal() {
             getTrustinfor.current.handleModalVisible(true)

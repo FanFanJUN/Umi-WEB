@@ -12,8 +12,7 @@ const getSeeMaterRef = forwardRef(({
     form,
     materiel,
     determine = () => null,
-    isEdit,
-    materielCategoryCode
+    isView
 }, ref,) => {
     useImperativeHandle(ref, () => ({ 
         handleModalVisible,
@@ -93,43 +92,49 @@ const getSeeMaterRef = forwardRef(({
         const newData = dataSource.filter((item) => item.key !== key);
         setDataSource(newData)
     }
-    const columns = [
+    let columns = [];
+    if (!isView) {
+        columns.push(
+            {
+                title: "操作",
+                width: 50,
+                dataIndex: 'operation',
+                    render: (text, record, index) => {
+                        return <div>
+                            {
+                                dataSource.length > 0 ? <Icon
+                                    type={'delete'}
+                                    title={'删除'}
+                                    onClick={() => handleDelete(record.key)}
+                                /> : null
+                            }
+                        </div>;
+                    }
+            },
+        );
+      }
+    const tableProps = [
+        ...columns,
         {
-            title: "操作",
-            width: 50,
-            dataIndex: 'operation',
-                render: (text, record, index) => {
-                    return <div>
-                        {
-                            dataSource.length > 0 ? <Icon
-                                type={'delete'}
-                                title={'删除'}
-                                onClick={() => handleDelete(record.key)}
-                            /> : null
-                        }
-                    </div>;
-                }
-          },
-          {
             title: "物料分类代码",
             width: 150,
             dataIndex: "materielTypeCode"
-          },
-          {
+        },
+        {
             title: "物料分类",
             width: 260,
             dataIndex: "materielName"
-          },
-          {
+        },
+        {
             title: "物料代码",
             width: 160,
             dataIndex: "materielCode"
-          },
-          {
+        },
+        {
             title: "物料描述",
             width: 280,
             dataIndex: "materielTypeName"
-          },
+        },
     ].map(_ => ({ ..._, align: 'center' }));
     // 右侧搜索
     const searchBtnCfg = (
@@ -165,7 +170,7 @@ const getSeeMaterRef = forwardRef(({
                 ref={headerRef}
             />
             <ExtTable
-                columns={columns}
+                columns={tableProps}
                 showSearch={false}
                 ref={tableRef}
                 rowKey={(item) => item.key}

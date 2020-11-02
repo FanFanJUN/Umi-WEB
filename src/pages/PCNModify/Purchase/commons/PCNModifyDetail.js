@@ -1,6 +1,6 @@
 
 import React, { forwardRef, useImperativeHandle, useEffect, useRef, useState } from 'react';
-import { Form, Row, Input, Col, Button, Radio,Modal } from 'antd';
+import { Form, message } from 'antd';
 import { utils, ExtTable, AuthButton,DetailCard } from 'suid';
 import classnames from 'classnames';
 import styles from '../index.less';
@@ -46,7 +46,15 @@ const getpcnModifyRef = forwardRef(({
 
 	// 获取表单参数
 	function getBaseInfo() {
-
+        let result = false;
+        const {getResultBaseInfo} = getchangeResult.current;
+        let changedata = getResultBaseInfo()
+        if (changedata) {
+            result = changedata
+            return result
+        }else {
+            message.error('PCN变更结果不能为空！')
+        }
 	}
 	return (
 		<div>
@@ -77,6 +85,7 @@ const getpcnModifyRef = forwardRef(({
             {
                 result ? <DetailCard title="PCN变更结果">
                     <PCNchangeResult
+                        editformData={editData}
                         wrappedComponentRef={getchangeResult}
                         isView={isView}
                     />

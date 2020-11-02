@@ -39,16 +39,17 @@ function CreateStrategy() {
     async function handleSave() {
         const {getBaseInfo} = getconfirmFromRef.current
         let modifydata = getBaseInfo();
-        //console.log(JSON.stringify(modifydata))
-        //let params = {...editData.smPcnConfirmPlanVo, ...modifydata}
-        triggerLoading(true)
-        const {success, message: msg } = await savePurchaseVo(modifydata)
-        if (success) {
-            triggerLoading(false)
-            closeCurrent()
-        } else {
-            triggerLoading(false)
-            message.error(msg);
+        if (modifydata) {
+            modifydata.smDocunmentStatus = 1
+            triggerLoading(true)
+            const {success, message: msg } = await savePurchaseVo(modifydata)
+            if (success) {
+                triggerLoading(false)
+                closeCurrent()
+            } else {
+                triggerLoading(false)
+                message.error(msg);
+            }
         }
     }
     // 返回

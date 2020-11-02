@@ -49,6 +49,8 @@ export default [
       { path: '/pcnModify/ApprovePage/PCNFindingsAudit', component: './PCNModify/ApprovePage/PCNFindingsAudit', title: 'PCN流程变更单审核意见' },
       { path: '/pcnModify/ApprovePage/PCNModifyResult', component: './PCNModify/ApprovePage/PCNModifyResult', title: 'PCN流程变更单变更结果' },
       { path: '/pcnModify/ApprovePage/PCNImplementResult', component: './PCNModify/ApprovePage/PCNImplementResult', title: 'PCN流程变更单执行信息' },
+      { path: '/pcnModify/ApprovePage/PCNApproveDetail', component: './PCNModify/ApprovePage/PCNApproveDetail', title: 'PCN流程变更单最终确认' },
+      { path: '/pcnModify/ApprovePage/PCNSeewholeDetail', component: './PCNModify/ApprovePage/PCNSeewholeDetail', title: 'PCN流程变更单明细' },
       /**PCN供应商 */
       { path: '/pcnModify/Supplier/index', component: './PCNModify/Supplier', title: 'PCN变更发起供应商' },
       { path: '/pcnModify/Supplier/Create/index', component: './PCNModify/Supplier/Create/index', title: 'PCN变更发起供应商新增' },

@@ -76,8 +76,8 @@ function SupplierConfigure() {
                 quickSearchProperties: [''],
                 sortOrders: [
                     {
-                        property: 'frozen',
-                        direction: 'DESC'
+                        property: 'changeSort',
+                        direction: 'ASC'
                     }
                 ]
             },
@@ -196,7 +196,7 @@ function SupplierConfigure() {
                             authAction(
                                 <Button type='primary' 
                                     ignore={DEVELOPER_ENV} 
-                                    key='SRM-SM-SUPPLIERMODEL_ADD' 
+                                    key='SRM-SM-PCNMASTERDATA-ADD' 
                                     className={styles.btn} 
                                     onClick={AddModel}
                                     //disabled={empty}
@@ -208,7 +208,7 @@ function SupplierConfigure() {
                             authAction(
                                 <Button
                                     ignore={DEVELOPER_ENV}
-                                    key='SRM-SM-SUPPLIERMODEL_EDIT'
+                                    key='SRM-SM-PCNMASTERDATA-EDIT'
                                     className={styles.btn}
                                     onClick={handleCheckEdit}
                                     disabled={empty}
@@ -220,7 +220,7 @@ function SupplierConfigure() {
                             authAction(
                                 <Button 
                                     ignore={DEVELOPER_ENV} 
-                                    key='SRM-SM-SUPPLIERMODEL_DELETE' 
+                                    key='SRM-SM-PCNMASTERDATA-FROZEN' 
                                     className={styles.btn} 
                                     onClick={() => handleFrozen('freeze')}
                                     disabled={empty || frozenStatus}
@@ -232,7 +232,7 @@ function SupplierConfigure() {
                             authAction(
                                 <Button 
                                     ignore={DEVELOPER_ENV} 
-                                    key='SRM-SM-SUPPLIERMODEL_DELETE' 
+                                    key='SRM-SM-PCNMASTERDATA-THAW' 
                                     className={styles.btn} 
                                     onClick={() => handleFrozen('thaw')}
                                     disabled={empty || frozenthaw}
@@ -241,23 +241,28 @@ function SupplierConfigure() {
                             )
                         }
                         {
-                            <DataImport
-                                className={styles.btn}
-                                tableProps={{
-                                    columns,
-                                    showSearch: false,
-                                    //allowCustomColumns: false
-                                }}
-                                validateAll={true}
-                                validateFunc={validateItem}
-                                importFunc={importFunc}
-                            />
+                            authAction(
+                                <DataImport
+                                    key='SRM-SM-PCNMASTERDATA-IMPORT'
+                                    className={styles.btn}
+                                    tableProps={{
+                                        columns,
+                                        showSearch: false,
+                                        //allowCustomColumns: false
+                                    }}
+                                    validateAll={true}
+                                    validateFunc={validateItem}
+                                    importFunc={importFunc}
+                                    ignore={DEVELOPER_ENV}
+                                />
+                            )
+                           
                         }
                         {
                             authAction(
                                 <Button
                                     ignore={DEVELOPER_ENV}
-                                    key='SRM-SM-SUPPLIERMODEL_DETAILED'
+                                    key='SRM-SM-PCNMASTERDATA-DOWNLOAD'
                                     className={styles.btn}
                                     href={host + "/srm-sm-web/SmPcnChanges/downloadTemplate?userAccount=" + authorizations.account} key="download"
                                 >模版下载

@@ -105,7 +105,7 @@ const StaffForm = forwardRef(
                                     reader={{name:'userName',field:['code']}} 
                                     form={form}
                                     field={['emloyeeNumber']}
-                                    multiple={false}
+                                    multiple={true}
                                     placeholder="请选择参与人员"
                                 />
                             )}

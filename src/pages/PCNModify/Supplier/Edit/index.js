@@ -133,6 +133,7 @@ function CreateStrategy() {
                 editformData={editData.smPcnAnalysisVos}
                 wrappedComponentRef={ModifyinfluenceRef}
                 isEdit={true}
+                isView={false}
             />
             </div>
         </div>

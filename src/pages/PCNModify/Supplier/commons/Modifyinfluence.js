@@ -89,7 +89,7 @@ const ModifyinfluenceRef = forwardRef(({
         },
         {
             title: '是否安规件',
-            dataIndex: 'smPcnPart',
+            dataIndex: 'smPcnPartName',
             align: 'center',
             width: 160,
             render: (text, record, index) => {
@@ -99,7 +99,7 @@ const ModifyinfluenceRef = forwardRef(({
                 return <span>
                     <FormItem style={{ marginBottom: 0 }}>
                         {
-                            getFieldDecorator(`smPcnPart[${index}]`),
+                            getFieldDecorator(`smPcnPart[${index}]`,{initialValue: record ? record.smPcnPart : ''}),
                             getFieldDecorator(`smPcnPartName[${index}]`, {
                                 initialValue: record ? record.smPcnPartName : '',
                                 rules: [{ required: true, message: '请选择安规件!', whitespace: true }],
@@ -108,7 +108,7 @@ const ModifyinfluenceRef = forwardRef(({
                                     form={form}
                                     {...Safetyregulationslist}
                                     showSearch={false}
-                                    //afterSelect={afterSelect}
+                                    afterSelect={afterSelect}
                                     name={`smPcnPartName[${index}]`}
                                     field={[`smPcnPart[${index}]`]}
                                 />
@@ -139,7 +139,7 @@ const ModifyinfluenceRef = forwardRef(({
                                 <ComboList 
                                     form={form}
                                     {...Strategicprocurementlist}
-                                    showSearch={false}
+                                    showSearch={true}
                                     style={{ width: '100%' }}
                                     //afterSelect={afterSelect}
                                     name={`smPcnStrategicName[${index}]`}
@@ -167,8 +167,10 @@ const ModifyinfluenceRef = forwardRef(({
                 newsdata.push({
                     ...item,
                     smPcnPartName: Name,
+                    smPcnPart: item.smPcnPart,
                     key: keys
                 })
+                console.log(newsdata)
                 setDataSource(newsdata);
                 // item.smPcnAnalysisMaterielVoList.map((item, index) => {
                 //     MaterielVoList.push({
@@ -256,21 +258,7 @@ const ModifyinfluenceRef = forwardRef(({
     }
     // 查看物料
     function showSeeMateriel() {
-        // if (isEdit) {
-        //     let id = selectedRows[0].id,selectype = selectedRows[0].key
-        //     setmaterieldetailsid(id);
-        //     setKeys(selectype)
-        // }
-        let seemateriel = [];
         getSeeMaterRef.current.handleModalVisible(true);
-        // handlematers.forEach((item) => {
-        //     item.forEach((items) => {
-        //         if (items.key === selectedRows[0].key) {
-        //             seemateriel.push(items)
-        //             setmateriel(seemateriel)
-        //         }
-        //     })
-        // })
     }
     // 表单删除
     async function handleRemove() {
@@ -328,6 +316,9 @@ const ModifyinfluenceRef = forwardRef(({
     function uploadTable() {
         tabformRef.current.manualSelectedRows([])
         tabformRef.current.remoteDataRefresh()
+    }
+    function afterSelect(val) {
+        console.log(val)
     }
     const headerleft = (
         <>
@@ -401,23 +392,15 @@ const ModifyinfluenceRef = forwardRef(({
                         materielCategoryCode={materielid}
                         iseditMater={selectedRows} 
                         isEdit={isEdit}
-                        wrappedComponentRef={getMatermodRef} />
+                        wrappedComponentRef={getMatermodRef} 
+                    />
                     {/***** 查看物料 */}
-                    {/* { isEdit ? 
-                        <EditSeeMaterielModal 
-                            determine={determine}
-                            materiel={materiel} 
-                            isEdit={isEdit}
-                            selectedKeys={selectedKeys}
-                            materielCategoryCode={materieldetailsid}
-                            wrappedComponentRef={getSeeMaterRef}
-                        /> : 
-                        
-                    } */}
                     <SeeMaterielModal
                         determine={determine}
-                        materiel={seemateriel} 
-                        wrappedComponentRef={getSeeMaterRef} />
+                        materiel={seemateriel}
+                        isView={isView} 
+                        wrappedComponentRef={getSeeMaterRef} 
+                    />
                     
                 </div>
             </div>

@@ -2,7 +2,7 @@ import React, { forwardRef, useImperativeHandle, useEffect, useRef ,useState} fr
 import { Modal, Form, Button, message, Input, } from 'antd';
 import { Fieldclassification ,countryListConfig} from '@/utils/commonProps'
 import { ExtTable } from 'suid';
-import { openNewTab, getFrameElement } from '@/utils';
+import { isEmpty} from '@/utils';
 import { smBaseUrl,baseUrl } from '@/utils/commonUrl';
 import Header from '@/components/Header';
 import styles from '../index.less';
@@ -29,13 +29,10 @@ const getAgentregRef = forwardRef(({
     useEffect(() => {
         //getSupplierlist()
     }, []);
-    //let current = 1;
     const dataSource = {
         store: {
-            url: `${smBaseUrl}/supplierSupplyList/listPageVo`,
+            url: `${smBaseUrl}/supplierSupplyList/listPageVo?valid=1&page=1&rows=30&Quick_value=` + searchValue,
             params: {
-                quickSearchValue: searchValue,
-                quickSearchProperties: ['materielCategoryCode','materielCategory.name'],
                 sortOrders: [
                     {
                         property: 'materielCategory',
@@ -74,7 +71,12 @@ const getAgentregRef = forwardRef(({
     }
     // 输入框值
     function SerachValue(v) {
-        setSearchValue(v.target.value)
+        if (isEmpty(v.target.value)) {
+            setSearchValue('')
+        }else {
+            setSearchValue(v.target.value)
+        }
+        
     }
     // 查询
     function handleQuickSerach() {
@@ -93,6 +95,11 @@ const getAgentregRef = forwardRef(({
     }
     function pageChange(val) {
         setcurrent(val.current)
+    }
+    function clearinput() {
+        setSearchValue('')
+        setAccurate('0')
+        uploadTable();
     }
     const columns = [
           {
@@ -213,7 +220,6 @@ const getAgentregRef = forwardRef(({
                 onSelectRow={handleSelectedRows}
                 selectedRowKeys={selectedRowKeys}
                 onChange={pageChange}
-                //dataSource={dataSource}
                 {...dataSource}
             />
       </Modal>

@@ -113,6 +113,7 @@ function CreateStrategy() {
             <div >
             <Modifyinfluence
                 wrappedComponentRef={ModifyinfluenceRef}
+                isView={false}
             />
             </div>
         </div>

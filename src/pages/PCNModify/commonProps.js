@@ -43,11 +43,11 @@ export const Safetyregulationslist = {
   dataSource: [
     {
       code: '0',
-      name: '是',
+      name: '否',
     },
     {
       code: '1',
-      name: '否',
+      name: '是',
     },
   ],
   placeholder: '选择单安规件',
@@ -80,8 +80,14 @@ export const SupplierBilltypeList = {
       name: '已提交',
     },
   ],
+  reader: {
+    name: 'name',
+    field: ['code'],
+  },
+  style: {
+    width: '100%',
+  },
   placeholder: '选择单据状态',
-  ...commonProps,
 }
 // 单据状态
 export const BilltypeList = {
@@ -173,6 +179,27 @@ export const SupplierResulteList = {
       name: '不通过',
     },
   ],
+  reader: {
+    name: 'name',
+    field: ['code'],
+  },
+  style: {
+    width: '100%',
+  },
   placeholder: '选择结果',
-  ...commonProps,
+}
+
+// 高级查询战略采购
+export const seniorStrategypurchase = {
+  store: {
+    url: `${baseUrl}/api/purchaseGroupService/findByFilters`,
+    type: 'POST'
+  },
+  reader: {
+    name: 'name',
+    field: ['id'],
+    description: 'code'
+  },
+  // remotePaging: true,
+  placeholder: '选择战略采购'
 }

@@ -58,6 +58,7 @@ const HeadFormRef = forwardRef(({
                         <Col span={10}>
                             <Item label='供应商名称' {...formLayout}>
                                 {
+                                    isView ? <span>{authorizations ? authorizations.userName : ''}</span> :
                                     getFieldDecorator("smSupplierName", {
                                         initialValue: authorizations.userName,
                                         rules: [{ required: true, message: "请选择供应商名称", }]
@@ -70,25 +71,29 @@ const HeadFormRef = forwardRef(({
                         <Col span={10}>
                             <Item label='变更类型' {...formLayout}>
                                 {
-                                    getFieldDecorator('smPcnChangeTypeCode',{initialValue: editformData ? editformData.smPcnChangeTypeCode : ""}),
-                                    getFieldDecorator('smPcnChangeTypeName', {
-                                        initialValue: editformData ? editformData.smPcnChangeTypeName : "",
-                                        rules: [
-                                            {
-                                                required: true,
-                                                message: '请选择变更类型'
-                                            }
-                                        ]
-                                    })(
-                                        <ComboList disabled={isView === true}
-                                            {...PCNMasterdatalist}
-                                            showSearch={false}
-                                            style={{ width: '100%' }}
-                                            name='smPcnChangeTypeName' 
-                                            field={['smPcnChangeTypeCode']} 
-                                            form={form} 
-                                        />
+                                    isView ? <span>{editformData ? editformData.smPcnChangeTypeName : ''}</span> :
+                                    (
+                                        getFieldDecorator('smPcnChangeTypeCode',{initialValue: editformData ? editformData.smPcnChangeTypeCode : ""}),
+                                        getFieldDecorator('smPcnChangeTypeName', {
+                                            initialValue: editformData ? editformData.smPcnChangeTypeName : "",
+                                            rules: [
+                                                {
+                                                    required: true,
+                                                    message: '请选择变更类型'
+                                                }
+                                            ]
+                                        })(
+                                            <ComboList disabled={isView === true}
+                                                {...PCNMasterdatalist}
+                                                showSearch={false}
+                                                style={{ width: '100%' }}
+                                                name='smPcnChangeTypeName' 
+                                                field={['smPcnChangeTypeCode']} 
+                                                form={form} 
+                                            />
+                                        )
                                     )
+                                    
                                 }
                             </Item>
                         </Col>
@@ -97,6 +102,7 @@ const HeadFormRef = forwardRef(({
                         <Col span={10}>
                             <Item label='联系人' {...formLayout}>
                                 {
+                                    isView ? <span>{editformData ?  editformData.smContacts : ''}</span> :
                                     getFieldDecorator("smContacts", {
                                         initialValue: editformData ? editformData.smContacts : "",
                                         rules: [
@@ -114,6 +120,7 @@ const HeadFormRef = forwardRef(({
                         <Col span={10}>
                             <Item label='创建时间' {...formLayout}>
                                 {
+                                    isView ? <span>{editformData ?  editformData.createdDate : ''}</span> :
                                     getFieldDecorator("createdDate", {
                                         initialValue: moment().format('YYYY-MM-DD HH:mm:ss'),
                                         rules: [
@@ -133,14 +140,15 @@ const HeadFormRef = forwardRef(({
                         <Col span={10}>
                             <Item label='联系电话' {...formLayout}>
                                 {
-                                  getFieldDecorator("smContactNumber", {
-                                    initialValue: editformData ? editformData.smContactNumber : "",
-                                    rules: [
-                                        {
-                                            required: true,
-                                            message: '请输入联系电话'
-                                        }
-                                    ]
+                                    isView ? <span>{editformData ?  editformData.smContactNumber : ''}</span> :
+                                    getFieldDecorator("smContactNumber", {
+                                        initialValue: editformData ? editformData.smContactNumber : "",
+                                        rules: [
+                                            {
+                                                required: true,
+                                                message: '请输入联系电话'
+                                            }
+                                        ]
                                     })(
                                         <Input
                                             onChange={onlyNumber} 

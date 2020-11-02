@@ -82,7 +82,6 @@ const getMatermodRef = forwardRef(({
 
                 // })
                 //selectedRows.push(iseditMater)
-                console.log(iseditMater)
                 // let isEditchoice = iseditMater[0].smPcnAnalysisMaterielVoList
                 // console.log(iseditMater)
                 materselect(iseditMater)

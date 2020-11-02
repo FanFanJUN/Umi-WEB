@@ -128,14 +128,41 @@ export const savePurchaseVo = params => {
 }
 
 
-// 保存
-// export const saveBatchVo = params => {
-//   return request({
-//    url: `${smBaseUrl}/supplierBatchCreation/saveVo`,
-//    data: convertDataToFormData(params),
-//    method: 'POST',
-//  })
-// }
+
+// 采购端流程保存
+export const saveApprovePurchaseVo = params => {
+  return request({
+   url: `${smBaseUrl}/api/smPcnTitleService/saveFlowPcnVo`,
+   data: params,
+   method: 'POST',
+ })
+}
+
+// PCN变更结果流程保存
+export const saveApproveFlowResultsVo = params => {
+  return request({
+   url: `${smBaseUrl}/api/smPcnTitleService/saveFlowResultsPcnVo`,
+   data: params,
+   method: 'POST',
+ })
+}
+
+// 流程执行人保存
+export const saveApproveExecutorVo = params => {
+  return request({
+   url: `${smBaseUrl}/api/smPcnTitleService/saveFlowEndExecutInfoData`,
+   data: params,
+   method: 'POST',
+ })
+}
+// 流程确认数据状态效验
+export const saveApproveCheckConfirm = params => {
+  return request({
+   url: `${smBaseUrl}/api/smPcnTitleService/checkConfirmResult`,
+   data: params,
+   method: 'POST',
+ })
+}
 
 
 // 终止审批流程
