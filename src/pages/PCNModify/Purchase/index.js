@@ -318,7 +318,7 @@ function SupplierConfigure() {
                             authAction(
                                 <Button
                                     ignore={DEVELOPER_ENV}
-                                    key='SSRM-SM-PCNPURCHASE-EDIT'
+                                    key='SRM-SM-PCNPURCHASE-EDIT'
                                     className={styles.btn}
                                     onClick={handleCheckEdit}
                                     disabled={empty || underWay || !isSelf}

@@ -9,14 +9,15 @@
  */
 import React, { useEffect, useRef, useState, useImperativeHandle, forwardRef } from 'react';
 import styles from '../index.less';
-import { Form, Button } from 'antd';
+import { Form, Button, Modal } from 'antd';
 import { ExtTable } from 'suid';
 import AddModal from './AddModal';
 import BatchEditModal from './BatchEditModal';
 // import AuditContentModal from "./AuditContentModal";
 import AuditContentModal from "../../AuditRequirementsManagement/add/component/content";
 import PersonManage from "./PersonManage";
-import Team from "./Team";
+import Team from "../../AuditRequirementsManagement/add/component/Team";
+import { getRandom } from '../../../QualitySynergy/commonProps';
 
 let LineInfo = forwardRef((props, ref) => {
 
@@ -41,11 +42,14 @@ let LineInfo = forwardRef((props, ref) => {
     {
       title: '操作', dataIndex: 'operaton', width: 140, ellipsis: true, render: (text, item) => {
         return <div>
-          <a onClick={() => { console.log("跳转到内容") }} key="content">内容</a>
+          <a onClick={(e) => {
+            e.stopPropagation();
+            setContentData({ visible: true, treeData: item.treeData, type: 'detail' });
+          }} key="content">内容</a>
           <a onClick={() => { console.log("跳转到小组") }} style={{ margin: '0 3px' }} key="group">小组</a>
           <a onClick={(e) => {
             e.stopPropagation();
-            setPersonData({ 
+            setPersonData({
               visible: true,
               isView: true,
               originData: item.coordinationMemberBoList ? item.coordinationMemberBoList : []
@@ -105,14 +109,14 @@ let LineInfo = forwardRef((props, ref) => {
         setBatchEditVisible(true);
         break;
       case "contenM":
-        setContentData({ visible: true, treeData: [] });
+        setContentData({ visible: true, treeData: data.selectRows.length === 1 ? data.selectRows[0].treeData : [], type: 'edit'});
         break;
       case "teamM":
         setTeamData({ visible: true, treeData: [], selectRows: [] });
         break;
       case "personM":
-        setPersonData({ 
-          visible: true, 
+        setPersonData({
+          visible: true,
           originData: (data.selectRows.length === 1)&&data.selectRows[0].coordinationMemberBoList ? data.selectRows[0].coordinationMemberBoList : []
         });
         break;
@@ -121,20 +125,58 @@ let LineInfo = forwardRef((props, ref) => {
     }
 
   }
-  
+
+  const teamOk = (value) => {
+    let newData = JSON.parse(JSON.stringify(dataSource));
+    newData.map((item, index) => {
+      if (item.lineNum === data.selectedRowKeys[0]) {
+        newData[index].reviewTeamGroupBoList = value;
+      }
+    });
+    setDataSource(newData)
+    setTeamData(v => ({...v, visible: false}))
+    tableRef.current.manualSelectedRows();
+    tableRef.current.remoteDataRefresh();
+  }
+  // 编辑和明细时构造treeData
+  const buildTreeData = (fatherList, sonList) => {
+    if(!fatherList || !sonList)return[];
+    let arr = JSON.parse(JSON.stringify(fatherList))
+    arr.map(item => {
+      item.id = item.systemId
+      item.key = item.systemId
+      item.title = item.systemName
+      if (!item.children) {
+        item.children = []
+      }
+      sonList.forEach(value => {
+        value.id = value.systemId
+        value.key = value.systemId
+        value.title = value.systemName
+        if (value.parentId === item.systemId) {
+          item.children.push(value)
+        }
+      })
+    })
+    return arr
+  }
+  // 新增弹框-确定
   const handleAddOk = (value) => {
     console.log('行数据', value)
     let newList = value.map((item, index) => {
       let groupObj = {};
-      item.lineNum = dataSource.length + index;
-      // debugger;
+      item.treeData = buildTreeData(item.fatherList, item.sonList);
+      console.log(item, 'item')
+      item.lineNum = getRandom(10)
       if(item.reviewTeamGroupBoList) {
         for(var i=0; i<item.reviewTeamGroupBoList.length; i++) {
+          console.log(item.reviewTeamGroupBoList[i])
           let lineObj = item.reviewTeamGroupBoList[i];
+          lineObj.lineNum = getRandom(10)
           if(lineObj.reviewTeamMemberBoList) {
             for(let j = 0; j < lineObj.reviewTeamMemberBoList.length; j++) {
               let obj = lineObj.reviewTeamMemberBoList[j];
-              if(obj.memberRole === "GROUP_LEADER") {
+              if(obj.memberRole === "GROUP_LEADER" && !groupObj.leaderName) {
                 groupObj.leaderId = obj.memberId;
                 groupObj.leaderName = obj.memberName;
                 groupObj.leaderTel = obj.memberTel;
@@ -144,12 +186,8 @@ let LineInfo = forwardRef((props, ref) => {
                 groupObj.leaderDepartmentName = obj.departmentName;
                 groupObj.codePath = obj.codePath;
                 groupObj.namePath = obj.namePath;
-                break;
               }
             }
-          }
-          if(Object.keys(groupObj).length > 0) {
-            break;
           }
         }
       }
@@ -160,15 +198,23 @@ let LineInfo = forwardRef((props, ref) => {
     setDataSource(newList);
     setModalData({ visible: false });
   }
+  // 删除行数据
   const handleDelete = () => {
-    let newList = dataSource.filter(item => {
-      return !data.selectedRowKeys.includes(item.lineNum);
+    Modal.confirm({
+      title: "删除",
+      content: "是否确认删除选中数据",
+      onOk: ()=>{
+        let newList = dataSource.filter(item => {
+          return !data.selectedRowKeys.includes(item.lineNum);
+        })
+        newList = newList.map((item, index)=> {
+          item.lineNum = index;
+          return item;
+        })
+        setDataSource(newList);
+        tableRef.current.manualSelectedRows();
+      }
     })
-    newList = newList.map((iten, index)=> {
-      item.lineNum = index;
-      return item;
-    })
-    setDataSource(newList)
   }
   const getBatchFormValue = (value) => {
     console.log("批量编辑确定", value)
@@ -184,11 +230,22 @@ let LineInfo = forwardRef((props, ref) => {
     setDataSource(newList);
   }
   const contentModalOk = (treeData) => {
-    console.log("审核内容管理", treeData);
+    let newList = dataSource.map(item => {
+      if(data.selectedRowKeys.includes(item.lineNum)) {
+        item.fatherList = treeData;
+        item.sonList = [];
+        treeData.forEach(v => {
+          item.sonList = item.sonList.concat(v.children)
+        })
+        item.treeData = buildTreeData(item.fatherList, item.sonList);
+      }
+      return item;
+    })
+    console.log('整合的数据', newList);
+    setDataSource(newList);
     setContentData({ visible: false })
   }
   const personModalOk = (personData) => {
-    console.log("协同人员管理确定", personData)
     setPersonData({ visible: false});
     let newList = dataSource.map(item => {
       if(data.selectedRowKeys.includes(item.lineNum)) {
@@ -211,7 +268,7 @@ let LineInfo = forwardRef((props, ref) => {
               <Button onClick={() => handleBtn('demand')} type='primary'>从审核需求新增</Button>
               <Button onClick={() => { handleBtn('edit') }} disabled={data.selectRows.length===0}>批量编辑</Button>
               <Button onClick={() => { handleDelete() }} disabled={data.selectRows.length===0}>删除</Button>
-              <Button onClick={() => { handleBtn('contenM') }} >审核内容管理</Button>
+              <Button onClick={() => { handleBtn('contenM')}} disabled={data.selectRows.length===0}>审核内容管理</Button>
               <Button onClick={() => { handleBtn('teamM') }} disabled={data.selectRows.length!==1}>审核小组管理</Button>
               <Button onClick={() => { handleBtn('personM') }} disabled={data.selectRows.length===0}>协同人员管理</Button>
             </div>
@@ -221,9 +278,10 @@ let LineInfo = forwardRef((props, ref) => {
             rowKey='lineNum'
             allowCancelSelect={true}
             showSearch={false}
-            checkbox={{ multiSelect: false }}
+            checkbox={{ multiSelect: true }}
             size='small'
             onSelectRow={(keys, rows) => {
+              console.log("选中改变", keys, rows)
               setData(() => ({ selectedRowKeys: keys, selectRows: rows }))
             }}
             selectedRowKeys={data.selectedRowKeys}
@@ -251,6 +309,8 @@ let LineInfo = forwardRef((props, ref) => {
       }
       {/* 审核内容管理 */}
       {contentModalData.visible && <AuditContentModal
+        applyCorporationCode={data.selectRows.length===1 ? data.selectRows[0].applyCorporationCode : ''}
+        type={contentModalData.type}
         visible={contentModalData.visible}
         treeData={contentModalData.treeData}
         onOk={contentModalOk}
@@ -259,8 +319,9 @@ let LineInfo = forwardRef((props, ref) => {
       }
       {/* 审核小组管理 */}
       {teamModalData.visible && <Team
+        onOk={teamOk}
         type={teamModalData.type}
-        treeData={teamModalData.treeData}
+        treeData={data.selectRows[0]?.treeData}
         reviewTeamGroupBoList={data.selectRows[0]?.reviewTeamGroupBoList}
         reviewTypeCode={data.selectRows[0]?.reviewTypeCode}
         onCancel={() => setTeamData({ visible: false })}

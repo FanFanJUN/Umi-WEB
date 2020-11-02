@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:04:51
- * @LastEditTime: 2020-10-30 16:05:56
+ * @LastEditTime: 2020-11-02 13:45:44
  * @Description: 新增  编辑  详情 page
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/index.js
  */
@@ -85,13 +85,26 @@ const Index = (props) => {
                 message.info('请至少添加一条行信息');
                 return;
             }
-            finnalLineData.forEach((item)=>{
-                if(!item.whetherDelete) {
+            finnalLineData.forEach((item) => {
+                if (!item.whetherDelete) {
                     item.whetherDelete = false;
                 }
             })
+
+            // 校验行数据
+            try {
+                finnalLineData.forEach((item, index) => {
+                    if (!item.reviewTypeCode || !item.reviewReasonCode) {
+                        message.info('行上必填项为空, 请完善');
+                        throw new Error("checkError");
+                    }
+                });
+            } catch (e) {
+                if (e.message !== 'checkError') throw e;
+            };
+
             if (!err) {
-                const allData = { ...originData,...values, flowStatus: 'INIT', reviewPlanYearLineBos: finnalLineData };
+                const allData = { ...originData, ...values, flowStatus: 'INIT', reviewPlanYearLineBos: finnalLineData };
                 if (buttonType === 'onlySave') {
                     tohandleSave(allData);
                 } else {
@@ -106,7 +119,7 @@ const Index = (props) => {
             if (res.success) {
                 message.info(res.message);
             } else {
-                message.error(res.message); 
+                message.error(res.message);
             }
         })
     }

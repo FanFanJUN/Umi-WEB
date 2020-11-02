@@ -52,10 +52,6 @@ const ContentModal = (props) => {
   useEffect(() => {
     console.log(props.data)
     if (type !== 'add') {
-      setFieldsValue({
-        memberRoleName: RoleArr[props.data.memberRole],
-        memberTypeName: PersonnelTypeArr[props.data.memberType]
-      })
       setDisabled(props.data.memberType !== 'INTERNAL_USERS');
     }
   }, [type])
@@ -268,7 +264,7 @@ const ContentModal = (props) => {
                       message: '联系电话不能为空',
                     },
                   ],
-                })(<Input placeholder='请输入联系电话'/>)
+                })(<Input type={'number'} placeholder='请输入联系电话'/>)
               }
             </FormItem>
           </Col>

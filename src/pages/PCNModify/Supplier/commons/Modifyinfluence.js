@@ -3,7 +3,6 @@ import { ExtTable, utils, ComboList, AuthButton } from 'suid';
 import { Form, Button, message, Radio, Modal ,Input} from 'antd';
 import { openNewTab, getFrameElement, isEmpty } from '@/utils';
 import Header from '@/components/Header';
-import ModifyForm from './ModifyForm';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
 import styles from '../index.less';
 import InfluenceMaterielModal from './InfluenceMaterielModal'
@@ -21,7 +20,8 @@ const ModifyinfluenceRef = forwardRef(({
     isView,
     editformData = [],
     headerInfo,
-    isEdit
+    isEdit,
+    alone
 }, ref) => {
     useImperativeHandle(ref, () => ({
         getmodifyanalyform,
@@ -44,7 +44,24 @@ const ModifyinfluenceRef = forwardRef(({
         hanldModify(editformData)
     }, [editformData])
 
-    const columns = [
+    let columns = [];
+    if (alone) {
+        columns.push(
+            {
+                title: "执行结果",
+                width: 100,
+                dataIndex: 'SmPcnAnalysisVo',
+                render: function (text, record, row) {
+                    if (text === 0) {
+                        return <div>同意</div>;
+                    } else {
+                        return <div className="successColor">不同意</div>;
+                    }
+                },
+            },
+        );
+    }
+    const tableProps = [
         {
             title: '原厂代码',
             dataIndex: 'smOriginalFactoryCode',
@@ -150,7 +167,8 @@ const ModifyinfluenceRef = forwardRef(({
                     </FormItem>
                 </span>;
             }
-        }
+        },
+        ...columns,
     ].map(_ => ({ ..._, align: 'center' }))
     const empty = selectRowKeys.length === 0;
     // 编辑处理数据
@@ -191,6 +209,8 @@ const ModifyinfluenceRef = forwardRef(({
         val.map((item, index) => {
             newsdata.push({
                 key: keys,
+                smOriginalFactoryCode:item.originSupplierCode,
+                smOriginalFactoryName:item.originSupplierName,
                 materielCategoryId: item.materielCategory && item.materielCategory.name,
                 companyCode: item.corporation.code,
                 companyName: item.corporation.name,
@@ -211,6 +231,7 @@ const ModifyinfluenceRef = forwardRef(({
         let newsdata = [];
         val.map((item) => {
             item.smPcnAnalysisMaterielVoList.map((items) => {
+
                 newsdata.push({
                     key: matkey++,
                     materielTypeCode: items.materialGroupCode,
@@ -355,7 +376,7 @@ const ModifyinfluenceRef = forwardRef(({
                 <AutoSizeLayout>
                     {
                         (height) => <ExtTable
-                            columns={columns}
+                            columns={tableProps}
                             showSearch={false}
                             ref={tabformRef}
                             rowKey={(item) => item.key}

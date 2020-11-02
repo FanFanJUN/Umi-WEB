@@ -98,10 +98,19 @@ const getAgentregRef = forwardRef(({
     }
     function clearinput() {
         setSearchValue('')
-        setAccurate('0')
         uploadTable();
     }
     const columns = [
+        {
+            title: "原厂代码",
+            width: 150,
+            dataIndex: "originSupplierCode"
+          },
+          {
+            title: "原厂名称",
+            width: 220,
+            dataIndex: "originSupplierName"
+          },
           {
             title: "物料分类代码",
             width: 150,

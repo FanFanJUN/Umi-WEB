@@ -129,6 +129,7 @@ let BaseInfo = React.forwardRef((props, ref) => {
                 })(
                   <Input
                     disabled={type === 'detail'}
+                    type={'number'}
                     placeholder="请输入申请人联系方式"
                     style={{ width: '100%' }}
                   />,
@@ -183,7 +184,7 @@ let BaseInfo = React.forwardRef((props, ref) => {
           <Row>
             <Col span={24}>
               <FormItem label="备注" {...formLongLayout}>
-                {isView ?  <Input.TextArea rows={6} style={{ width: '100%', border: 'none' }} disabled={true} value={editData.remark} /> : getFieldDecorator('remark', {
+                {isView ?  <span style={{ width: '100%', border: 'none' }}>{editData.remark}</span> : getFieldDecorator('remark', {
                   initialValue: type === 'add' ? '' : editData.remark,
                   rules: [{validator: length_200_n, message: '请勿超过200个汉字'},]
                 })(

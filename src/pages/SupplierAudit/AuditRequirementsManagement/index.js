@@ -3,7 +3,7 @@ import Header from '../../../components/Header';
 import AdvancedForm from '../../../components/AdvancedForm';
 import { Button, Input, message, Modal } from 'antd';
 import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
-import { ExtTable, utils } from 'suid';
+import { ExtTable, utils, WorkFlow } from 'suid';
 import {
   ApplyOrganizationProps,
   AuditCauseManagementConfig,
@@ -13,14 +13,16 @@ import {
 } from '../mainData/commomService';
 import {
   DeleteDataSharingList, flowProps,
-  RecallDataSharingList,
-  ShareStatusProps, stateProps,
+  RecallDataSharingList, stateProps,
   SubmitDataSharingList,
 } from '../../QualitySynergy/commonProps';
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
 import { openNewTab } from '../../../utils';
 import { materialClassProps } from '../../../utils/commonProps';
+import { StartFlow } from 'seid';
+
+const { FlowHistoryButton } = WorkFlow;
 
 const { authAction } = utils;
 const { Search } = Input;
@@ -45,6 +47,7 @@ export default function() {
   };
 
   const [data, setData] = useState({
+    flowId: '',
     checkedCreate: false,
     checkedDistribution: false,
     quickSearchValue: '',
@@ -232,19 +235,15 @@ export default function() {
     { title: '申请时间', dataIndex: 'applyDate', ellipsis: true, width: 200 },
   ].map(item => ({ ...item, align: 'center' }));
 
-  const visibleSupplier = () => {
-    console.log('查看供应商');
+  // 提交审核验证
+  const handleBeforeStartFlow = async () => {
+
   };
 
-  const onChangeCreate = (e) => {
-    setData(v => ({ ...v, checkedCreate: e.target.checked }));
-    tableRef.current.remoteDataRefresh();
-  };
+  // 提交审核完成更新列表
+  function handleComplete() {
 
-  const onChangeDistribution = (e) => {
-    setData(v => ({ ...v, checkedDistribution: e.target.checked }));
-    tableRef.current.remoteDataRefresh();
-  };
+  }
 
 
   const headerLeft = <>
@@ -285,20 +284,26 @@ export default function() {
       >明细</Button>)
     }
     {
-      authAction(<Button
-        onClick={() => redirectToPage('submit')}
-        className={styles.btn}
+      authAction(<StartFlow
+        style={{marginRight:'5px'}}
         ignore={DEVELOPER_ENV}
-        key='TECHNICAL_DATA_SHARING_SUBMIT'
-      >提交审核</Button>)
+        needConfirm={handleBeforeStartFlow}
+        businessKey={data.flowId}
+        callBack={handleComplete}
+        disabled={data.selectedRowKeys.length !== 1}
+        businessModelCode='com.ecmp.srm.sm.entity.AuditRequirementsManagement'
+        key='SRM-SM-SUPPLIERMODEL_EXAMINE'
+      >提交审核</StartFlow>)
     }
     {
-      authAction(<Button
-        onClick={() => redirectToPage('recall')}
-        className={styles.btn}
+      authAction(<FlowHistoryButton
+        businessId={'96CD244D-18F6-11EB-8657-0242C0A84402'}
+        flowMapUrl='flow-web/design/showLook'
         ignore={DEVELOPER_ENV}
-        key='TECHNICAL_DATA_SHARING_UNDO'
-      >审核历史</Button>)
+        key='SRM-SM-SUPPLIERMODEL_HISTORY'
+      >
+        <Button className={styles.btn} disabled={data.selectedRowKeys.length !== 1}>审核历史</Button>
+      </FlowHistoryButton>)
     }
     {
       authAction(<Button
@@ -321,7 +326,8 @@ export default function() {
 
   const onSelectRow = (value, rows) => {
     console.log(value, rows);
-    setData((v) => ({ ...v, selectedRowKeys: value, selectedRows: rows }));
+    const [flowData = {}] = rows;
+    setData((v) => ({ ...v, selectedRowKeys: value, selectedRows: rows, flowId: flowData.id }));
   };
 
   return (
