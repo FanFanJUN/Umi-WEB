@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:00:19
- * @LastEditTime: 2020-10-30 16:34:49
+ * @LastEditTime: 2020-11-02 10:10:14
  * @Description:  年度审核计划管理
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/index.js
  */
@@ -70,6 +70,8 @@ export default function () {
         selectedRowKeys: [],
         selectedRows: [],
     });
+
+    const checkOnlyOneSelect = data.selectedRowKeys.length === 1;
 
 
     const redirectToPage = (type) => {
@@ -281,7 +283,7 @@ export default function () {
                 ignore={DEVELOPER_ENV}
                 key='TECHNICAL_DATA_SHARING_EDIT'
                 disabled={
-                    data.selectedRowKeys.length !== 1 ||
+                    !checkOnlyOneSelect ||
                     data.selectedRows[0]?.state !== 'DRAFT' || data.selectedRows[0]?.flowStatus !== 'INIT'}
             >编辑</Button>)
         }
@@ -300,7 +302,7 @@ export default function () {
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 key='TECHNICAL_DATA_SHARING_DETAIL'
-                disabled={data.selectedRowKeys.length !== 1}
+                disabled={!checkOnlyOneSelect}
             >明细</Button>)
         }
         {
@@ -309,7 +311,7 @@ export default function () {
                 ignore={DEVELOPER_ENV}
                 businessKey={data.selectedRowKeys[0]}
                 // callBack={handleComplete}
-                // disabled={empty || underWay || !isSelf}
+                disabled={!checkOnlyOneSelect}
                 businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewPlanYear'
                 key='SRM-SM-ACCOUNTSUPPLIER-EXAMINE'
             >提交审核</StartFlow>)
@@ -320,7 +322,7 @@ export default function () {
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 key='TECHNICAL_DATA_SHARING_UNDO'
-                disabled={data.selectedRowKeys.length !== 1}
+                disabled={!checkOnlyOneSelect}
             >审核历史</Button>)
         }
         {
@@ -329,7 +331,7 @@ export default function () {
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 key='TECHNICAL_DATA_SHARING_ALLOT'
-                disabled={data.selectedRowKeys.length !== 1}
+                disabled={!checkOnlyOneSelect}
             >终止审核</Button>)
         }
     </>;

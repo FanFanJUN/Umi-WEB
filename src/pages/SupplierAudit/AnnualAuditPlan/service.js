@@ -3,12 +3,13 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-22 10:13:27
- * @LastEditTime: 2020-10-30 16:24:21
+ * @LastEditTime: 2020-11-02 10:33:43
  * @Description: 接口 集
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/service.js
  */
 import request from '@/utils/request';
 import { recommendUrl, smBaseUrl } from '@/utils/commonUrl';
+import { baseUrl } from '../../../utils/commonUrl';
 
 // 合格供应商名录
 export async function getSupplierSupplyList(params) {
@@ -55,5 +56,14 @@ export async function submitReviewPlanYear(params) {
       url,
       method: 'GET',
       params,
+    });
+  }
+// 审核类型
+export async function findReviewTypesByCode(params) {
+    const url = `${baseUrl}/reviewType/findBySearchPage`;
+    return request({
+      url,
+      method: 'POST',
+      data: params,
     });
   }

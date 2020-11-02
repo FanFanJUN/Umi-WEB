@@ -3,16 +3,17 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-23 17:00:19
- * @LastEditTime: 2020-10-29 15:02:05
+ * @LastEditTime: 2020-11-02 11:06:47
  * @Description: 批量编辑页面
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BatchEditModal.js
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ComboGrid, ComboList, ExtModal } from 'suid';
-import { Col, Form, Input, InputNumber, Row } from 'antd';
+import { Col, Form, Input, InputNumber, message, Row } from 'antd';
 import { reviewTypesProps, reviewReasonsProps, reviewWaysProps, AreaConfig, CountryIdConfig } from '../propsParams';
 import { hideFormItem } from '@/utils/utilTool';
 import { basicServiceUrl, gatewayUrl } from '@/utils/commonUrl';
+import { findReviewTypesByCode } from '../service';
 
 const FormItem = Form.Item;
 
@@ -33,6 +34,19 @@ const BatchEditModal = (props) => {
   const { visible, title, form, type, fatherData = {} } = props;
 
   const { getFieldDecorator, getFieldValue, setFieldsValue } = props.form;
+
+  useEffect(() => {
+    async function fetchData() {
+      const res = await findReviewTypesByCode({ quickSearchValue: 'Supervision_review' });
+      if (res.success) {
+        const obj = res.data.rows;
+        setFieldsValue({ reviewTypeId: obj[0].id, reviewTypeCode: obj[0].code, reviewTypeName: obj[0].name });
+      } else {
+        message.error('获取审核类型失败');
+      }
+    }
+    fetchData();
+  }, []);
 
   const onCancel = () => {
     props.onCancel()
