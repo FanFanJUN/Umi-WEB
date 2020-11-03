@@ -1,5 +1,6 @@
 import { baseUrl, basicServiceUrl, gatewayUrl, recommendUrl, smBaseUrl } from '../../../utils/commonUrl';
 import request from '../../../utils/request';
+import { FLOW_HOST } from '../../../utils/constants';
 
 /**
  * 判断为空
@@ -449,6 +450,16 @@ export const AuditTypeManagementConfig = {
     description: 'code',
   },
 };
+
+// 终止审批流程
+export const EndFlow = async (params={}) => {
+  const url = `${gatewayUrl}${FLOW_HOST}/flowInstance/checkAndEndByBusinessId`
+  return request({
+    url,
+    method: 'POST',
+    params,
+  })
+}
 
 // 审核需求管理delete
 export const DeleteAuditRequirementsManagement = async (params = {}) => {
