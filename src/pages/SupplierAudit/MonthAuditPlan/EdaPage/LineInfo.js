@@ -16,7 +16,7 @@ import BatchEditModal from './BatchEditModal';
 // import AuditContentModal from "./AuditContentModal";
 import AuditContentModal from "../../AuditRequirementsManagement/add/component/content";
 import PersonManage from "./PersonManage";
-import Team from "../../AuditRequirementsManagement/add/component/Team";
+import Team from "../../AuditRequirementsManagement/add/component/team";
 import { getRandom } from '../../../QualitySynergy/commonProps';
 
 let LineInfo = forwardRef((props, ref) => {
@@ -44,8 +44,8 @@ let LineInfo = forwardRef((props, ref) => {
         return <div>
           <a onClick={(e) => {
             e.stopPropagation();
-            setContentData({ 
-              visible: true, 
+            setContentData({
+              visible: true,
               treeData: item.treeData,
               applyCorporationCode: item.applyCorporationCode,
               type: 'detail'
@@ -53,12 +53,12 @@ let LineInfo = forwardRef((props, ref) => {
           }} key="content">内容</a>
           <a onClick={(e) => {
             e.stopPropagation();
-            setTeamData({ 
-              visible: true, 
-              treeData: item.treeData, 
+            setTeamData({
+              visible: true,
+              treeData: item.treeData,
               reviewTeamGroupBoList: item.reviewTeamGroupBoList,
               reviewTypeCode: item.reviewTypeCode,
-              type: 'detail' 
+              type: 'detail'
             });
           }} style={{ margin: '0 3px' }} key="group">小组</a>
           <a onClick={(e) => {
@@ -123,17 +123,17 @@ let LineInfo = forwardRef((props, ref) => {
         setBatchEditVisible(true);
         break;
       case "contenM":
-        setContentData({ 
+        setContentData({
           visible: true,
           applyCorporationCode: data.selectRows[0]?.applyCorporationCode,
-          treeData: data.selectRows[0]?.treeData, 
+          treeData: data.selectRows[0]?.treeData,
           type: 'edit'
         });
         break;
       case "teamM":
-        setTeamData({ 
-          visible: true, 
-          treeData: data.selectRows[0]?.treeData, 
+        setTeamData({
+          visible: true,
+          treeData: data.selectRows[0]?.treeData,
           reviewTeamGroupBoList: data.selectRows[0]?.reviewTeamGroupBoList,
           reviewTypeCode: data.selectRows[0]?.reviewTypeCode,
         });
