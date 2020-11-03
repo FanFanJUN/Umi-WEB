@@ -54,22 +54,16 @@ let LineInfo = forwardRef((props, ref) => {
         return <div>
           <a onClick={(e) => {
             e.stopPropagation();
-            setContentData({
-              visible: true,
-              treeData: item.treeData,
-              applyCorporationCode: item.applyCorporationCode,
-              type: 'detail',
-            });
+            setTimeout(() => {
+              setData(v => ({ ...v, treeData: item.treeData }));
+            }, 300);
+            setContentData(v => ({ ...v, visible: true, type: 'detail' }));
           }} key="content">内容</a>
           <a onClick={(e) => {
             e.stopPropagation();
-            setTeamData({
-              visible: true,
-              treeData: item.treeData,
-              reviewTeamGroupBoList: item.reviewTeamGroupBoList,
-              reviewTypeCode: item.reviewTypeCode,
-              type: 'detail',
-            });
+            let arr = JSON.parse(JSON.stringify(item.reviewTeamGroupBoList ? item.reviewTeamGroupBoList : []));
+            arr = arr.map(item => ({ ...item, lineNum: getRandom(10) }));
+            setTeamData(v => ({ ...v, reviewTeamGroupBoList: arr, visible: true, type: 'detail', treeData: item.treeData ? item.treeData : []}));
           }} style={{ margin: '0 3px' }} key="group">小组</a>
           <a onClick={(e) => {
             e.stopPropagation();
