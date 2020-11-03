@@ -107,6 +107,10 @@ const AddModal = (props) => {
         }
     }
     const onOk = async () => {
+        if(selectRows.length === 0) {
+            message.warning("至少选中一行！");
+            return;
+        }
         let res = {};
         setLoading(true);
         if (type === "demand") {
@@ -307,8 +311,7 @@ const AddModal = (props) => {
     }
 
     return <ExtModal
-        width={'1000px'}
-        height={'800px'}
+        width={'80vw'}
         maskClosable={false}
         visible={visible}
         title={type === "annual" ? "从年度计划新增" : type === "recommand" ? "从准入推荐新增" : "从审核需求新增"}

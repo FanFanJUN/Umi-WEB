@@ -24,7 +24,7 @@ let LineInfo = forwardRef((props, ref) => {
     getTableList,
   }));
   const tableRef = useRef(null);
-
+  const { originData, isView } = props;
   const [data, setData] = useState({
     selectRows: [],
     selectedRowKeys: [],
@@ -37,6 +37,17 @@ let LineInfo = forwardRef((props, ref) => {
   const [teamModalData, setTeamData] = useState({});
   const [personModalData, setPersonData] = useState({});
 
+  useEffect(()=>{
+    if(originData && originData.length > 0) {
+      let newList = originData.map(item => {
+        item.lineNum = getRandom(10);
+        item.treeData = buildTreeData(item.fatherList, item.sonList);
+        return item;
+      })
+      console.log('originData', newList)
+      setDataSource(newList);
+    }
+  }, [originData])
   const columns = [
     {
       title: '操作', dataIndex: 'operaton', width: 140, ellipsis: true, render: (text, item) => {
@@ -105,8 +116,6 @@ let LineInfo = forwardRef((props, ref) => {
     { title: '来源单号', dataIndex: 'sourceCode', ellipsis: true, width: 140 },
     { title: '来源单行号', dataIndex: 'sourceLinenum', ellipsis: true, width: 140 },
   ].map(item => ({ ...item, align: 'center' }));
-
-  const { isView } = props;
 
   function getTableList() {
     return dataSource;
@@ -284,6 +293,7 @@ let LineInfo = forwardRef((props, ref) => {
     setPersonData({ visible: false });
     let newList = dataSource.map(item => {
       if (data.selectedRowKeys.includes(item.lineNum)) {
+        // console.log("进入处理数据")
         item.coordinationMemberBoList = personData;
       }
       return item;

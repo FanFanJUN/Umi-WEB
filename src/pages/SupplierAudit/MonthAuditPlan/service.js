@@ -37,3 +37,13 @@ export async function listAllOrgnazationWithDataAuth(params) {
         method: 'GET',
     });
 }
+
+// 新增月度计划-保存
+export async function findOneOverride(params) {
+    const requestUrl = `${recommendUrl}/api/reviewPlanMonthService/findOneOverride`;
+    return request({
+        url: requestUrl,
+        method: 'GET',
+        params,
+    });
+}

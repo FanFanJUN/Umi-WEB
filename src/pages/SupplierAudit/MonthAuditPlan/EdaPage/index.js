@@ -1,27 +1,27 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Affix, Button, Form, message, Spin } from 'antd';
+import { Affix, Button, Form, message, Spin, Modal } from 'antd';
 import classnames from 'classnames';
 import BaseInfo from "./BaseInfo";
 import styles from '../../../Supplier/Editor/index.less';
 import { router } from 'dva';
 import { closeCurrent, getMobile, getUserId, getUserName } from '@/utils';
 import LineInfo from './LineInfo';
-import { insertMonthBo } from "../service";
+import { insertMonthBo, findOneOverride } from "../service";
 
 const Index = (props) => {
     const { form } = props;
-    const [lineData, setlineData] = useState([]);
     const tableRef = useRef(null);
     const [data, setData] = useState({
         id: '',
-        editDate: {},
         spinLoading: false,
         isView: false,
-        loading: false,
         type: 'add',
         title: '',
         userInfo: {},
     });
+    const [editData, setEditData] = useState({});
+    const [loading, setLoading] = useState(false);
+
     const { query } = router.useLocation();
 
     useEffect(() => {
@@ -33,9 +33,11 @@ const Index = (props) => {
                 break;
             case 'edit':
                 getUser();
+                getDetail();
                 setData((value) => ({ ...value, type: pageState, id, isView: false, title: '月度审核计划管理-编辑' }));
                 break;
             case 'detail':
+                getDetail();
                 setData((value) => ({ ...value, type: pageState, isView: true, title: `月度审核计划管理-明细` }));
                 break;
             default:
@@ -43,6 +45,19 @@ const Index = (props) => {
                 break;
         }
     }, []);
+
+    const getDetail = async () => {
+        setLoading(true);
+        const res = await findOneOverride({
+            reviewPlanMonthCode: query.id
+        });
+        setLoading(false);
+        if (res) {
+            setEditData(res.data)
+        } else {
+            message.error(res.message);
+        }
+    }
 
     const getUser = () => {
         const userId = getUserId();
@@ -52,33 +67,44 @@ const Index = (props) => {
     };
 
     const handleBack = () => {
-        setData(v => ({ ...v, loading: false }))
-        // openNewTab(`qualitySynergy/DataSharingList`, '技术资料分享需求列表', true);
         closeCurrent();
     };
 
     const handleSave = (type) => {
         form.validateFieldsAndScroll(async (err, values) => {
             if (err) return;
-            let saveData = {...values};
+            let saveData = { ...values };
             let lineData = tableRef.current.getTableList();
             saveData.lineBoList = lineData;
-            if(lineData.length === 0) {
+            if (!saveData.attachRelatedIds) {
+                saveData.attachRelatedIds = [];
+            }
+            if (lineData.length === 0) {
                 message.info('请至少添加一条行信息');
                 return;
             }
-            setData(v => ({ ...v, loading: true }))
-            const res = await insertMonthBo(saveData)
-            if(res.success) {
-                message.success("保存成功");
-                handleBack();
+            setLoading(true);
+            const res = await insertMonthBo(saveData);
+            if (res.success) {
+                if (type === "save") {
+                    setLoading(false);
+                    message.success("保存成功");
+                    setTimeout(()=>{
+                        handleBack();
+                    }, 3000)
+                } else {
+                    // 处理提交审核
+                }
             } else {
+                setLoading(false);
                 message.error(res.message);
             }
+            
+
         });
     }
     return <>
-        <Spin spinning={data.spinLoading}>
+        <Spin spinning={loading}>
             <Affix>
                 <div className={classnames(styles.fbc, styles.affixHeader)}>
                     <span>{data.title}</span>
@@ -96,12 +122,13 @@ const Index = (props) => {
                 userInfo={data.userInfo}
                 type={data.type}
                 isView={data.isView}
-                originData={data.editDate}
+                originData={editData}
             />
             <LineInfo
                 type={data.type}
                 isView={data.isView}
                 wrappedComponentRef={tableRef}
+                originData={editData.lineBoList}
             />
         </Spin>
     </>
