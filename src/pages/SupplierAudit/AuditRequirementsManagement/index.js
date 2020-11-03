@@ -12,7 +12,7 @@ import {
   FindByFiltersConfig, SupplierConfig,
 } from '../mainData/commomService';
 import {
-  DeleteDataSharingList, flowProps,
+  DeleteDataSharingList, flowProps, judge,
   RecallDataSharingList, stateProps,
   SubmitDataSharingList,
 } from '../../QualitySynergy/commonProps';
@@ -241,7 +241,8 @@ export default function() {
 
   // 提交审核完成更新列表
   function handleComplete() {
-
+    tableRef.current.manualSelectedRows();
+    tableRef.current.remoteDataRefresh();
   }
 
 
@@ -261,7 +262,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='TECHNICAL_DATA_SHARING_EDIT'
-        disabled={data.selectedRowKeys.length !== 1}
+        disabled={!judge(data.selectedRows, 'state', 'DRAFT') || data.selectedRowKeys.length === 0}
       >编辑</Button>)
     }
     {
@@ -289,14 +290,14 @@ export default function() {
         needConfirm={handleBeforeStartFlow}
         businessKey={data.flowId}
         callBack={handleComplete}
-        disabled={data.selectedRowKeys.length !== 1}
+        disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length === 0}
         businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewRequirement'
         key='SRM-SM-SUPPLIERMODEL_EXAMINE'
       >提交审核</StartFlow>)
     }
     {
       authAction(<FlowHistoryButton
-        businessId={'96CD244D-18F6-11EB-8657-0242C0A84402'}
+        businessId={data.flowId}
         flowMapUrl='flow-web/design/showLook'
         ignore={DEVELOPER_ENV}
         key='SRM-SM-SUPPLIERMODEL_HISTORY'
@@ -307,6 +308,7 @@ export default function() {
     {
       authAction(<Button
         onClick={() => redirectToPage('allot')}
+        disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='TECHNICAL_DATA_SHARING_ALLOT'
@@ -322,6 +324,8 @@ export default function() {
       allowClear
     />
   </div>;
+
+  console.log(judge(data.selectedRows, 'flowStatus', 'INIT'))
 
   const onSelectRow = (value, rows) => {
     console.log(value, rows);
