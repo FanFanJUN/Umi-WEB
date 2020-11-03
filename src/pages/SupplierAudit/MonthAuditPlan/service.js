@@ -1,5 +1,5 @@
 import request from '@/utils/request';
-import { recommendUrl } from '@/utils/commonUrl';
+import { recommendUrl, baseUrl } from '@/utils/commonUrl';
 
 // 审核需求新增-确定
 export async function findRequirementLine(params) {
@@ -27,5 +27,13 @@ export async function insertMonthBo(params) {
         url: requestUrl,
         method: 'POST',
         data: params,
+    });
+}
+// 获取部门
+export async function listAllOrgnazationWithDataAuth(params) {
+    const requestUrl = `${baseUrl}/basic/listAllOrgnazationWithDataAuth`;
+    return request({
+        url: requestUrl,
+        method: 'GET',
     });
 }

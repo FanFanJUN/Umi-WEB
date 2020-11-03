@@ -1,7 +1,7 @@
 // 从年度审核新增
 import React, { useState, useRef } from "react";
-import { Form, Row, Col, Button, Select } from "antd";
-import { ExtTable, ExtModal, ComboList, ComboTree,  } from 'suid';
+import { Form, Row, Col, Button, Select, Spin, message } from "antd";
+import { ExtTable, ExtModal, ComboList, ComboTree, } from 'suid';
 import {
     AuditCauseManagementConfig,
     reviewPlanYearConfig,
@@ -27,6 +27,7 @@ const AddModal = (props) => {
     const [selectedRowKeys, setselectedRowKeys] = useState([]);
     const [cascadeParams, setCascadeParams] = useState({});
     const [selectRows, setselectRows] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [selectedTear, setSelectedYear] = useState("")
 
     const columns = [
@@ -41,9 +42,11 @@ const AddModal = (props) => {
         switch (type) {
             case "annual":
                 return [
-                    { title: '预计审核月度', dataIndex: 'reviewMonth', ellipsis: true, width: 140, render: (text)=>{
-                        return text ? (selectedTear + "年" + text + "月") : ""
-                    }},
+                    {
+                        title: '预计审核月度', dataIndex: 'reviewMonth', ellipsis: true, width: 140, render: (text) => {
+                            return text ? (selectedTear + "年" + text + "月") : ""
+                        }
+                    },
                 ].concat(columns);
             case "recommand":
                 return [
@@ -105,17 +108,21 @@ const AddModal = (props) => {
     }
     const onOk = async () => {
         let res = {};
+        setLoading(true);
         if (type === "demand") {
             res = await findRequirementLine({
                 ids: selectedRowKeys.join()
             })
-        } else if(type === "annual") {
+        } else if (type === "annual") {
             res = await findYearLineLine({
                 ids: selectedRowKeys.join()
             })
         }
+        setLoading(false);
         if (res.success) {
             handleOk(res.data);
+        } else {
+            message.error(res.message);
         }
     }
 
@@ -128,10 +135,10 @@ const AddModal = (props) => {
                     delete values.applyCorporationName;
                     delete values.purchaseOrgId;
                     delete values.purchaseOrgName;
-                } else if(type === "annual") {
+                } else if (type === "annual") {
                     delete values.reviewPlanYearName
                     delete values.reviewPlanYearCode
-                    if(values.reviewMonth) {
+                    if (values.reviewMonth) {
                         values.reviewMonth = Number(values.reviewMonth);
                     }
                 }
@@ -159,8 +166,8 @@ const AddModal = (props) => {
                                         name={'reviewPlanYearName'}
                                         field={['reviewPlanYearCode', 'id']}
                                         {...reviewPlanYearConfig}
-                                        afterSelect={(item)=>{
-                                            if(item.applyYear) {
+                                        afterSelect={(item) => {
+                                            if (item.applyYear) {
                                                 setSelectedYear(item.applyYear)
                                             }
                                         }}
@@ -309,28 +316,31 @@ const AddModal = (props) => {
         onOk={onOk}
         destroyOnClose
     >
-        <div>{renderForm()}</div>
-        <ExtTable
-            style={{ marginTop: '10px' }}
-            rowKey='id'
-            allowCancelSelect={true}
-            showSearch={false}
-            remotePaging
-            checkbox={{ multiSelect: true }}
-            size='small'
-            onSelectRow={(key, rows) => {
-                setselectedRowKeys(key);
-                setselectRows(rows);
-            }}
-            cascadeParams={{
-                ...cascadeParams
-            }}
-            ref={tableRef}
-            selectedRowKeys={selectedRowKeys}
-            store={getStore()}
-            columns={getColums()}
-        />
+        <Spin spinning={loading}>
+            <div>{renderForm()}</div>
+            <ExtTable
+                style={{ marginTop: '10px' }}
+                rowKey='id'
+                allowCancelSelect={true}
+                showSearch={false}
+                remotePaging
+                checkbox={{ multiSelect: true }}
+                size='small'
+                onSelectRow={(key, rows) => {
+                    setselectedRowKeys(key);
+                    setselectRows(rows);
+                }}
+                cascadeParams={{
+                    ...cascadeParams
+                }}
+                ref={tableRef}
+                selectedRowKeys={selectedRowKeys}
+                store={getStore()}
+                columns={getColums()}
+            />
+        </Spin>
     </ExtModal>
+
 }
 
 export default Form.create()(AddModal);

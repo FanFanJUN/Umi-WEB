@@ -11,21 +11,22 @@ import {
   FindOneAuditRequirementsManagement,
   GetAllAuditType, UpdateAuditRequirementsManagement,
 } from '../../mainData/commomService';
+import { StartFlow } from 'seid';
 
 const Index = () => {
   const baseInfoRef = useRef(null);
 
-  const intendedAuditInformationRef = useRef(null)
+  const intendedAuditInformationRef = useRef(null);
 
   const { query } = router.useLocation();
 
-  const [applyCorporationCode, setApplyCorporationCode] = useState('')
+  const [applyCorporationCode, setApplyCorporationCode] = useState('');
 
-  const [companyCode, setCompanyCode] = useState('')
+  const [companyCode, setCompanyCode] = useState('');
 
-  const [organizationCode, setOrganizationCode] = useState()
+  const [organizationCode, setOrganizationCode] = useState();
 
-  const [deleteLine, setDeleteLine] = useState([])
+  const [deleteLine, setDeleteLine] = useState([]);
 
   const [data, setData] = useState({
     lineBoList: [],
@@ -38,11 +39,11 @@ const Index = () => {
     type: 'add',
     title: '',
     userInfo: {},
-  })
+  });
 
   useEffect(() => {
     // 获取所有审核类型
-    getAuditType()
+    getAuditType();
     const { id, pageState, reviewRequirementCode } = query;
     switch (pageState) {
       case 'add':
@@ -50,41 +51,47 @@ const Index = () => {
         setData((value) => ({ ...value, type: pageState, isView: false, title: '审核需求管理-新增' }));
         break;
       case 'edit':
-        findOne(reviewRequirementCode)
-        setData((value) => ({ ...value, type: pageState, id, isView: false, title: `审核需求管理-编辑 ${reviewRequirementCode}`}));
+        findOne(reviewRequirementCode);
+        setData((value) => ({
+          ...value,
+          type: pageState,
+          id,
+          isView: false,
+          title: `审核需求管理-编辑 ${reviewRequirementCode}`,
+        }));
         break;
       case 'detail':
-        findOne(reviewRequirementCode)
-        setData((value) => ({ ...value, type: pageState, isView: true, title: `审核需求管理-明细 ${reviewRequirementCode}`}));
+        findOne(reviewRequirementCode);
+        setData((value) => ({ ...value, type: pageState, isView: true, title: `审核需求管理-明细 ${reviewRequirementCode}` }));
         break;
     }
   }, []);
 
   const findOne = (id) => {
-    setData(v => ({...v, spinLoading: true}))
+    setData(v => ({ ...v, spinLoading: true }));
     FindOneAuditRequirementsManagement({
-      reviewRequirementCode: id
+      reviewRequirementCode: id,
     }).then(res => {
       if (res.success) {
-        setCompanyCode(res.data.applyCorporationCode)
-        setOrganizationCode(res.data.purchaseOrgCode)
-        setData(v => ({...v, editData: res.data, lineBoList: res.data.lineBoList, spinLoading: false}))
+        setCompanyCode(res.data.applyCorporationCode);
+        setOrganizationCode(res.data.purchaseOrgCode);
+        setData(v => ({ ...v, editData: res.data, lineBoList: res.data.lineBoList, spinLoading: false }));
       } else {
-        message.error(res.message)
+        message.error(res.message);
       }
-      console.log(res)
-    })
-  }
+      console.log(res);
+    });
+  };
 
   const getAuditType = () => {
     GetAllAuditType().then(res => {
       if (res.success) {
-        setData(v => ({...v, allAuditType: res.data}))
+        setData(v => ({ ...v, allAuditType: res.data }));
       } else {
-        message.error('获取审核类型失败')
+        message.error('获取审核类型失败');
       }
-    })
-  }
+    });
+  };
 
   const getUser = () => {
     const userId = getUserId();
@@ -94,7 +101,7 @@ const Index = () => {
   };
 
   const handleBack = () => {
-    setData(v => ({...v, loading: false}))
+    setData(v => ({ ...v, loading: false }));
     // openNewTab(`qualitySynergy/DataSharingList`, '技术资料分享需求列表', true);
     closeCurrent();
   };
@@ -105,45 +112,53 @@ const Index = () => {
         return values;
       }
     });
-    const lineBoList = await intendedAuditInformationRef.current.getDataSource()
-    const deleteArr = await intendedAuditInformationRef.current.getDeleteArr()
+    const lineBoList = await intendedAuditInformationRef.current.getDataSource();
+    const deleteArr = await intendedAuditInformationRef.current.getDeleteArr();
     if (lineBoList && lineBoList.length !== 0) {
-      insertData.lineBoList = [...lineBoList, ...deleteLine]
+      insertData.lineBoList = [...lineBoList, ...deleteLine];
       Modal.confirm({
         title: '是否确认暂存该数据!',
         onOk: () => {
           if (data.type === 'add') {
             AddAuditRequirementsManagement(insertData).then(res => {
               if (res.success) {
-                message.success(res.message)
-                handleBack()
+                message.success(res.message);
+                handleBack();
               } else {
-                message.error(res.message)
+                message.error(res.message);
               }
-            }).catch(err => message.error(err.message))
+            }).catch(err => message.error(err.message));
           } else {
-            let updateData = Object.assign(data.editData, insertData)
-            updateData.deleteList = deleteArr
+            let updateData = Object.assign(data.editData, insertData);
+            updateData.deleteList = deleteArr;
             UpdateAuditRequirementsManagement(updateData).then(res => {
               if (res.success) {
-                message.success(res.message)
-                handleBack()
+                message.success(res.message);
+                handleBack();
               } else {
-                message.error(res.message)
+                message.error(res.message);
               }
-            }).catch(err => message.error(err.message))
+            }).catch(err => message.error(err.message));
           }
         },
         okText: '确定',
-        cancelText: '取消'
-      })
+        cancelText: '取消',
+      });
     } else {
-      message.error('请至少添加一条拟审核信息!')
+      message.error('请至少添加一条拟审核信息!');
     }
     // console.log(baseInfoData)
-  }
+  };
 
-  return(
+  const handleBeforeStartFlow = () => {
+
+  };
+
+  const handleComplete = () => {
+
+  };
+
+  return (
     <div>
       <Spin spinning={data.spinLoading}>
         <Affix>
@@ -153,7 +168,17 @@ const Index = () => {
               data.type !== 'detail' && <div>
                 <Button className={styles.btn} onClick={handleBack}>返回</Button>
                 <Button className={styles.btn} onClick={() => handleSave('add')}>暂存</Button>
-                <Button className={styles.btn} type='primary' onClick={() => handleSave('addSave')} >提交</Button>
+                <StartFlow
+                  style={{ marginRight: '5px' }}
+                  needConfirm={handleBeforeStartFlow}
+                  businessKey={data.flowId}
+                  callBack={handleComplete}
+                  startButtonProps={{
+                    type: 'primary'
+                  }}
+                  businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewRequirement'
+                  key='SRM-SM-SUPPLIERMODEL_EXAMINE'
+                />
               </div>
             }
           </div>
@@ -182,8 +207,8 @@ const Index = () => {
         />
       </Spin>
     </div>
-  )
+  );
 
-}
+};
 
-export default Index
+export default Index;
