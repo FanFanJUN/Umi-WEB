@@ -207,10 +207,10 @@ const BaseInfo = (props) => {
               <FormItem {...formLongLayout} label={'附件'}>
                 {
                   getFieldDecorator('attachRelatedIds', {
-                    initialValue: type === 'add' ? '' : getDocIdForArray(data.attachRelatedIds),
+                    initialValue: type === 'add' ? '' : getDocIdForArray(data.fileList),
                   })(
                     <Upload
-                      entityId={type === 'add' ? null : data.attachRelatedInfo}
+                      entityId={type === 'add' ? null : data.fileList}
                       type={type === 'detail' ? 'show' : ''}
                       showColor={isView ? true : false}
                     />

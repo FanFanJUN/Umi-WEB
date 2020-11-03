@@ -19,7 +19,6 @@ const Index = (props) => {
         type: 'add',
         title: '',
         userInfo: {},
-        flowId: ''
     });
     const [editData, setEditData] = useState({});
     const [loading, setLoading] = useState(false);
@@ -56,7 +55,6 @@ const Index = (props) => {
         setLoading(false);
         if (res) {
             setEditData(res.data)
-            // setData(v=>({...v, flowId: res.data.id}))
         } else {
             message.error(res.message);
         }
@@ -73,7 +71,7 @@ const Index = (props) => {
         closeCurrent();
     };
 
-    const handleSave = (type) => {
+    const handleSave = async (type) => {
         form.validateFieldsAndScroll(async (err, values) => {
             if (err) return;
             let saveData = { ...values };
@@ -97,7 +95,6 @@ const Index = (props) => {
                     }, 3000)
                 } else {
                     // 处理提交审核
-                    setData(v=>({...v, flowId: res.data}))
                     return res.data;
                 }
             } else {
@@ -108,14 +105,20 @@ const Index = (props) => {
         });
     }
     // 提交审核验证
-    const handleBeforeStartFlow = async () => {
-        const id = await handleSave("publish");
-        if(id) {
-            return true;
-        } else {
-            return false
-        }
-    };
+    const handleBeforeStartFlow = () => {
+        return new Promise(function (resolve, reject) {
+            (async function () {
+                const id = await handleSave("publish");
+                if (id) {
+                    resolve({
+                        success: true,
+                        message: '保存单据成功',
+                        data: { businessKey: id },
+                    });
+                }
+            })()
+        })
+    }
     // 提交审核完成更新列表
     function handleComplete() {
 
@@ -132,8 +135,7 @@ const Index = (props) => {
                             {/* <Button className={styles.btn} type='primary' onClick={() => handleSave('publish')} >提交</Button> */}
                             <StartFlow
                                 style={{ marginRight: '5px' }}
-                                needConfirm={handleBeforeStartFlow}
-                                businessKey={data.flowId}
+                                beforeStart={handleBeforeStartFlow}
                                 butTitle="提交"
                                 callBack={handleComplete}
                                 businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewRequirement'
