@@ -8,6 +8,18 @@ export default [
       { title: '登录', path: '/user/login', component: './Login' },
     ],
   },
+  {
+    path: '/gradeSystem',
+    component: '../layouts/LoginLayout',
+    title: '系统打分主数据',
+    routes: [
+      {
+        path: '/gradeSystem/acceptFYP',
+        component: './AcceptFYPMain',
+        title: '入厂验收批次合格率'
+      }
+    ]
+  },
   /**供应商审核 */
   {
     path: '/supplierAudit',
@@ -305,6 +317,5 @@ export default [
       { path: '/supplier/ImportSupplier/ApprovePage/ImportSupplierApprovePage', component: './ImportSupplier/ApprovePage/ImportSupplierApprovePage', title: '无账号供应商流程审核' },
       { path: '/supplier/ImportSupplier/ApprovePage/ImportSupplierApproveDetail', component: './ImportSupplier/ApprovePage/ImportSupplierApproveDetail', title: '无账号供应商流程明细' }
     ],
-  },
+  }
 ];
-
