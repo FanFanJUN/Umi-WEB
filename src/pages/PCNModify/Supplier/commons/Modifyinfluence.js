@@ -55,8 +55,10 @@ const ModifyinfluenceRef = forwardRef(({
                 render: function (text, record, row) {
                     if (text === 0) {
                         return <div>同意</div>;
-                    } else {
+                    } else if (text === 1){
                         return <div className="successColor">不同意</div>;
+                    }else {
+                        return <div></div>;
                     }
                 },
             },
@@ -208,11 +210,13 @@ const ModifyinfluenceRef = forwardRef(({
         [...newsdata] = dataSource;
         if (newsdata.length > 0) {
             let result = newsdata.some(item =>{
-                if(item.materielCategoryCode === val[0].materielCategoryCode && 
-                    item.companyCode === val[0].corporation.code && 
-                    item.purchaseOrgCode === val[0].purchaseOrgCode){
-                   return true 
-               } 
+                for (let items of val) {
+                    if (item.materielCategoryCode === items.materielCategoryCode && 
+                        item.companyCode === items.corporation.code && 
+                        item.purchaseOrgCode === items.purchaseOrgCode){
+                        return true 
+                    } 
+                }
             })
             if (result) {
                 message.error('当前数据已存在，请重新选择！')

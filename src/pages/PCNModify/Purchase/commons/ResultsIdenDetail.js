@@ -88,18 +88,18 @@ const getResultsIden = forwardRef(({
         } 
       },
     },
-    {
-      title: '信任公司',
-      dataIndex: 'smTrustCompanyCode',
-      align: 'center',
-      width: 180,
-    },
-    {
-      title: '信任采购组织',
-      dataIndex: 'smTrustPurchasCode',
-      align: 'center',
-      width: 180
-    },
+    // {
+    //   title: '信任公司',
+    //   dataIndex: 'smTrustCompanyCode',
+    //   align: 'center',
+    //   width: 180,
+    // },
+    // {
+    //   title: '信任采购组织',
+    //   dataIndex: 'smTrustPurchasCode',
+    //   align: 'center',
+    //   width: 180
+    // },
     {
       title: '实物认定结果',
       dataIndex: 'smInKindResultStatus',
@@ -110,7 +110,8 @@ const getResultsIden = forwardRef(({
             return !isEmpty(record) && !isEmpty(record.smInKindResultStatus) ? record.smInKindResultStatus === 0 ? '通过' : '不通过' : '';
           }
           return <span>
-              <FormItem style={{ marginBottom: 0 }}>
+              {
+                record.smInKindStatus === 1 ? <FormItem style={{ marginBottom: 0 }}>
                   {
                       getFieldDecorator(`smInKindResultStatus[${index}]`,{initialValue: record ? record.smInKindResultStatus : ''}),
                       getFieldDecorator(`smInKindResultStatusName[${index}]`, {
@@ -127,7 +128,9 @@ const getResultsIden = forwardRef(({
                           />
                       )
                   }
-              </FormItem>
+              </FormItem> : null
+              }
+              
           </span>;
       }
     },
@@ -142,20 +145,23 @@ const getResultsIden = forwardRef(({
             return <UploadFile type="show" entityId={text}/>
           }
           return <span>
-            <FormItem style={{ marginBottom: 0 }}>
-              {
-                getFieldDecorator(`kindManEnclosure[${index}]`, {
-                    initialValue: record ? record.kindManEnclosure : '',
-                    rules: [{ required: true, message: '请上传附件!'}],
-                })( 
-                  <UploadFile
-                      title={"附件上传"}
-                      entityId={record ? record.kindManEnclosure : null}
-                      type={isView ? "show" : ""}
-                  />
-                )
-              }
-            </FormItem>
+            {
+              record.smInKindStatus === 1 ? <FormItem style={{ marginBottom: 0 }}>
+                {
+                  getFieldDecorator(`kindManEnclosure[${index}]`, {
+                      initialValue: record ? record.kindManEnclosure : '',
+                      rules: [{ required: true, message: '请上传附件!'}],
+                  })( 
+                    <UploadFile
+                        title={"附件上传"}
+                        entityId={record ? record.kindManEnclosure : null}
+                        type={isView ? "show" : ""}
+                    />
+                  )
+                }
+              </FormItem> : null
+            }
+            
           </span>
         }
     }

@@ -128,12 +128,12 @@ const getMatermodRef = forwardRef(({
           {
             title: "物料分类代码",
             width: 150,
-            dataIndex: "materialGroupCode"
+            dataIndex: "codePath"
           },
           {
             title: "物料分类",
             width: 260,
-            dataIndex: "materialGroupDesc"
+            dataIndex: "namePath"
           },
           {
             title: "物料代码",

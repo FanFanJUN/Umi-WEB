@@ -50,14 +50,17 @@ const getExecutioninfor = forwardRef(({
       setDataSource(val.smPcnExecutInfoVo)
       setImplement(val)
       if (val.smPcnExecutInfoVo) {
-        let newdata = [];
-        val.smPcnExecutInfoVo.smPcnExecutInfoDataVos.map((item,index) => {
-          newdata.push({
-            key: index,
-            ...item
+        if (val.smPcnExecutInfoVo.smPcnExecutInfoDataVos) {
+          let newdata = [];
+          val.smPcnExecutInfoVo.smPcnExecutInfoDataVos.map((item,index) => {
+            newdata.push({
+              key: index,
+              ...item
+            })
           })
-        })
-        setMateriel(newdata)
+          setMateriel(newdata)
+        }
+       
       }
     }
   }

@@ -251,9 +251,10 @@ const getconfirmFromRef = forwardRef(({
                     return false
                   }
                 }else {
-                  if (verificatab.length > 1) {
-                    alltype.push(false)
-                  } 
+                  // if (verificatab.length > 1) {
+                  //   console.log(56)
+                  //   alltype.push(true)
+                  // } 
                 }
               }
             }
