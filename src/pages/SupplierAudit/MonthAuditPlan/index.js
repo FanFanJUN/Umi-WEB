@@ -9,6 +9,7 @@ import { Button, Input, message, Modal } from 'antd';
 import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
 import { ExtTable, utils, WorkFlow } from 'suid';
 import { StartFlow } from 'seid';
+import moment from "moment";
 import { ApplyOrganizationProps, CompanyConfig, } from '../mainData/commomService';
 import {
     DeleteDataSharingList,
@@ -81,7 +82,10 @@ export default function () {
         delete value.materialSecondClassifyCode_name;
         delete value.allotSupplierState_name;
         delete value.reviewTypeCode_name;
-        value.applyDate = value.applyDate?value.applyDate.formate("YYYY-MM-DD") : ''
+        value.applyDate = value.applyDate?moment(value.applyDate).format('YYYY-MM-DD ') : ''
+        value.ApplyDateStart = value.applyDate? value.applyDate + "00:00:00" : ''
+        value.ApplyDateEnd = value.applyDate? value.applyDate + "23:59:59" : ''
+        delete value.applyDate;
         setData(v => ({ ...v, epTechnicalShareDemandSearchBo: {...value} }));
         tableRef.current.manualSelectedRows();
         tableRef.current.remoteDataRefresh();
