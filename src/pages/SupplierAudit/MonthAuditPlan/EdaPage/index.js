@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Affix, Button, Form, message, Spin, Modal } from 'antd';
+import { StartFlow } from 'seid';
 import classnames from 'classnames';
 import BaseInfo from "./BaseInfo";
 import styles from '../../../Supplier/Editor/index.less';
@@ -18,6 +19,7 @@ const Index = (props) => {
         type: 'add',
         title: '',
         userInfo: {},
+        flowId: ''
     });
     const [editData, setEditData] = useState({});
     const [loading, setLoading] = useState(false);
@@ -54,6 +56,7 @@ const Index = (props) => {
         setLoading(false);
         if (res) {
             setEditData(res.data)
+            // setData(v=>({...v, flowId: res.data.id}))
         } else {
             message.error(res.message);
         }
@@ -89,19 +92,33 @@ const Index = (props) => {
                 if (type === "save") {
                     setLoading(false);
                     message.success("保存成功");
-                    setTimeout(()=>{
-                        handleBack();
+                    setTimeout(() => {
+                        // handleBack();
                     }, 3000)
                 } else {
                     // 处理提交审核
+                    setData(v=>({...v, flowId: res.data}))
+                    return res.data;
                 }
             } else {
                 setLoading(false);
                 message.error(res.message);
+                return false;
             }
-            
-
         });
+    }
+    // 提交审核验证
+    const handleBeforeStartFlow = async () => {
+        const id = await handleSave("publish");
+        if(id) {
+            return true;
+        } else {
+            return false
+        }
+    };
+    // 提交审核完成更新列表
+    function handleComplete() {
+
     }
     return <>
         <Spin spinning={loading}>
@@ -112,7 +129,15 @@ const Index = (props) => {
                         data.type !== 'detail' && <div>
                             <Button className={styles.btn} onClick={handleBack}>返回</Button>
                             <Button className={styles.btn} onClick={() => handleSave('save')}>暂存</Button>
-                            <Button className={styles.btn} type='primary' onClick={() => handleSave('publish')} >提交</Button>
+                            {/* <Button className={styles.btn} type='primary' onClick={() => handleSave('publish')} >提交</Button> */}
+                            <StartFlow
+                                style={{ marginRight: '5px' }}
+                                needConfirm={handleBeforeStartFlow}
+                                businessKey={data.flowId}
+                                butTitle="提交"
+                                callBack={handleComplete}
+                                businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewRequirement'
+                            ></StartFlow>
                         </div>
                     }
                 </div>

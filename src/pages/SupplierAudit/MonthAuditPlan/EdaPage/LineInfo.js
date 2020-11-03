@@ -161,6 +161,7 @@ let LineInfo = forwardRef((props, ref) => {
     }
 
   };
+
 // 审核小组管理弹框-确定
   const teamOk = (value) => {
     let newData = JSON.parse(JSON.stringify(dataSource));
@@ -171,8 +172,9 @@ let LineInfo = forwardRef((props, ref) => {
     });
     setDataSource(newData);
     setTeamData(v => ({ ...v, visible: false }));
-    tableRef.current.manualSelectedRows();
+    // tableRef.current.manualSelectedRows();
   };
+
   // 编辑和明细时构造treeData
   const buildTreeData = (fatherList, sonList) => {
     if (!fatherList || !sonList) return [];
@@ -195,6 +197,7 @@ let LineInfo = forwardRef((props, ref) => {
     });
     return arr;
   };
+
   // 新增弹框-确定
   const handleAddOk = (value) => {
     // console.log('行数据', value)
@@ -238,6 +241,7 @@ let LineInfo = forwardRef((props, ref) => {
     setDataSource(newList);
     setModalData({ visible: false });
   };
+
   // 删除行数据
   const handleDelete = () => {
     Modal.confirm({
@@ -257,6 +261,7 @@ let LineInfo = forwardRef((props, ref) => {
       },
     });
   };
+
   // 批量编辑弹框-确定
   const getBatchFormValue = (value) => {
     let newList = dataSource.map(item => {
@@ -271,6 +276,7 @@ let LineInfo = forwardRef((props, ref) => {
     tableRef.current.manualSelectedRows();
     setDataSource(newList);
   };
+
   // 审核内容管理弹框-确定
   const contentModalOk = (treeData) => {
     let newList = dataSource.map(item => {
@@ -288,6 +294,7 @@ let LineInfo = forwardRef((props, ref) => {
     setDataSource(newList);
     setContentData({ visible: false });
   };
+
   // 协同人员管理弹框-确定
   const personModalOk = (personData) => {
     setPersonData({ visible: false });

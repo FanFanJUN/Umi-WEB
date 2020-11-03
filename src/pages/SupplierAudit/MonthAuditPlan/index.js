@@ -126,17 +126,29 @@ export default function () {
 
     }
     // 终止审核
-    const handleStopFlow = ()=>{
+    const handleStopFlow = () => {
         Modal.confirm({
-            title: '终止审核',
-            content: '是否确定终止审核选中数据',
-            okText: '是',
-            cancelText: '否',
-            onOk: () => {
-              console.log("终止！")
-            },
-          });
-    }
+          title: '终止审核',
+          content: '是否终止审核？',
+          okText: '确定',
+          cancelText: '取消',
+          onOk: async () => {
+            setData(v => ({ ...v, spinning: true }));
+            const { flowId } = data;
+            const { success, message: msg } = await EndFlow({
+              businessId: flowId,
+            });
+            if (success) {
+              message.success(msg);
+              setData(v => ({ ...v, spinning: false }));
+              tableRef.current.manualSelectedRows();
+              tableRef.current.remoteDataRefresh();
+              return;
+            }
+            message.error(msg);
+          },
+        });
+      };
 
     // 高级查询配置
     const formItems = [
@@ -231,28 +243,31 @@ export default function () {
                 needConfirm={handleBeforeStartFlow}
                 businessKey={data.flowId}
                 callBack={handleComplete}
-                disabled={data.selectedRowKeys.length !== 1}
+                disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length === 0}
                 businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewRequirement'
                 key='SUPPLIER_AUDIT_MONTH_INFLOW'
-            >提交审核</StartFlow>)
+              >提交审核</StartFlow>)
         }
         {
             authAction(<FlowHistoryButton
-                businessId={'96CD244D-18F6-11EB-8657-0242C0A84402'}
+                businessId={data.flowId}
                 flowMapUrl='flow-web/design/showLook'
                 ignore={DEVELOPER_ENV}
+                disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
                 key='SUPPLIER_AUDIT_MONTH_HISTORY'
-            >
+              >
                 <Button className={styles.btn} disabled={data.selectedRowKeys.length !== 1}>审核历史</Button>
-            </FlowHistoryButton>)
+              </FlowHistoryButton>)
         }
         {
             authAction(<Button
                 onClick={handleStopFlow}
+                loading={data.spinning}
+                disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='SUPPLIER_AUDIT_MONTH_STOP'
-            >终止审核</Button>)
+                key='TECHNICAL_DATA_SHARING_ALLOT'
+              >终止审核</Button>)
         }
         {
             authAction(<Button
@@ -280,11 +295,6 @@ export default function () {
             allowClear
         />
     </div>;
-
-    const onSelectRow = (value, rows) => {
-        console.log(value, rows);
-        setData((v) => ({ ...v, selectedRowKeys: value, selectedRows: rows }));
-    };
 
     return (
         <Fragment>
@@ -318,7 +328,10 @@ export default function () {
                         }}
                         ref={tableRef}
                         showSearch={false}
-                        onSelectRow={onSelectRow}
+                        onSelectRow={(value, rows) => {
+                            console.log(value, rows);
+                            setData((v) => ({ ...v, selectedRowKeys: value, selectedRows: rows, flowId: value[0] }));
+                        }}
                         selectedRowKeys={data.selectedRowKeys}
                     />
                 }
