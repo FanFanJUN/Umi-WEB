@@ -1,6 +1,7 @@
 import { useState, useImperativeHandle, forwardRef } from 'react';
+import styles from './index.less'
 import { ExtModal } from 'suid';
-import { Form, Input } from 'antd';
+import { Form, Input, Row, Col } from 'antd';
 import PropTypes from 'prop-types';
 
 const { Item: FormItem, create } = Form;
@@ -13,36 +14,56 @@ const formLayout = {
   }
 }
 
+const ShowLabel = ({ value, ...props }) => <div {...props}>{value}</div>
+
 const FormItemTypes = {
-
+  label: ShowLabel
 }
-
 const ModalForm = forwardRef(({
   fields = [],
   title = '表单',
+  onOk = () => null,
   form
 }, ref) => {
   useImperativeHandle(ref, () => ({
     show,
     hide,
-    setFormValues
+    setFormValues,
+    getFormValues
   }))
   const [visible, toggleVisible] = useState(false);
-  const { getFieldDecorator, setFieldsValue } = form;
+  const {
+    getFieldDecorator,
+    setFieldsValue,
+    validateFieldsAndScroll
+  } = form;
   async function show() {
     await toggleVisible(true)
   }
-  function hide() {
+  async function hide() {
     await toggleVisible(false)
   }
 
   function setFormValues(fds) {
     setFieldsValue(fds)
   }
+  async function getFormValues() {
+    const value = await validateFieldsAndScroll();
+    return value
+  }
+  async function handleOk() {
+    const value = await validateFieldsAndScroll()
+
+  }
   return (
     <ExtModal
       title={title}
       visible={visible}
+      destroyOnClose
+      okText='保存'
+      cancelText='取消'
+      onOk={handleOk}
+      onCancel={hide}
     >
       <Form {...formLayout}>
         <Row>
