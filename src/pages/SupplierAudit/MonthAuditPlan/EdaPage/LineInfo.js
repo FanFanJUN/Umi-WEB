@@ -185,7 +185,7 @@ let LineInfo = forwardRef((props, ref) => {
   }
   // 新增弹框-确定
   const handleAddOk = (value) => {
-    console.log('行数据', value)
+    // console.log('行数据', value)
     let newList = value.map((item, index) => {
       let groupObj = {};
       item.treeData = buildTreeData(item.fatherList, item.sonList);
@@ -196,13 +196,9 @@ let LineInfo = forwardRef((props, ref) => {
       item.purchaseTeamId = 'B2A7879B-9358-11EA-B42A-0242C0A84414';
       item.purchaseTeamName = '电视公司零采采购组织';
 
-      item.specialtyTeamId = '0018F187-882A-11EA-8625-0242C0A84414';
-      item.specialtyTeamCode = '15009749';
-      item.specialtyTeamName = '军民融合BG';
-
       if(item.reviewTeamGroupBoList) {
         for(var i=0; i<item.reviewTeamGroupBoList.length; i++) {
-          console.log(item.reviewTeamGroupBoList[i])
+          // console.log(item.reviewTeamGroupBoList[i])
           let lineObj = item.reviewTeamGroupBoList[i];
           lineObj.lineNum = getRandom(10);
           if(lineObj.reviewTeamMemberBoList) {
@@ -276,7 +272,7 @@ let LineInfo = forwardRef((props, ref) => {
       }
       return item;
     })
-    console.log('整合的数据', newList);
+    // console.log('整合的数据', newList);
     setDataSource(newList);
     setContentData({ visible: false })
   }
@@ -289,7 +285,7 @@ let LineInfo = forwardRef((props, ref) => {
       }
       return item
     })
-    console.log('整合的数据', newList);
+    // console.log('整合的数据', newList);
     setDataSource(newList);
   }
   return (
@@ -317,7 +313,7 @@ let LineInfo = forwardRef((props, ref) => {
             checkbox={{ multiSelect: true }}
             size='small'
             onSelectRow={(keys, rows) => {
-              console.log("选中改变", keys, rows)
+              // console.log("选中改变", keys, rows)
               setData(() => ({ selectedRowKeys: keys, selectRows: rows }))
             }}
             selectedRowKeys={data.selectedRowKeys}

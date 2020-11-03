@@ -5,9 +5,10 @@
 import React, { useState, useRef, useEffect, Fragment } from 'react';
 import Header from '../../../components/Header';
 import AdvancedForm from '../../../components/AdvancedForm';
-import { Button, Checkbox, Input, message, Modal } from 'antd';
+import { Button, Input, message, Modal } from 'antd';
 import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
-import { BarCode, ComboList, ExtTable, utils } from 'suid';
+import { ExtTable, utils, WorkFlow } from 'suid';
+import { StartFlow } from 'seid';
 import {
     ApplyOrganizationProps,
     AuditCauseManagementConfig,
@@ -16,21 +17,18 @@ import {
     FindByFiltersConfig,
 } from '../mainData/commomService';
 import {
-    BUConfigNoFrostHighSearch,
     DeleteDataSharingList,
     judge,
-    MaterialConfig,
-    MaterialGroupConfig, RecallDataSharingList,
     ShareDistributionProps,
     ShareStatusProps,
-    StrategicPurchaseConfig,
-    SubmitDataSharingList,
+    flowProps
 } from '../../QualitySynergy/commonProps';
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
 import { openNewTab, getUserAccount } from '../../../utils';
 import { materialClassProps } from '../../../utils/commonProps';
 
+const { FlowHistoryButton } = WorkFlow;
 const { authAction } = utils;
 const { Search } = Input;
 
@@ -60,6 +58,7 @@ export default function () {
         epTechnicalShareDemandSearchBo: {},
         selectedRowKeys: [],
         selectedRows: [],
+        flowId: ''
     });
 
 
@@ -74,67 +73,17 @@ export default function () {
             case 'detail':
                 openNewTab(`supplierAudit/MonthAuditPlanEda?pageState=detail&id=${data.selectedRowKeys[0]}`, '月度审核计划管理-明细', false);
                 break;
-            case 'delete':
-                deleteList();
-                break;
-            case 'submit':
-                submitOrRecall('submit');
-                break;
-            case 'recall':
-                recallList();
-                break;
             default:
                 break;
         }
     };
 
-    // 撤回选中单据
-    const recallList = () => {
-        Modal.confirm({
-            title: '撤回',
-            content: '是否撤回选中的数据',
-            okText: '是',
-            cancelText: '否',
-            onOk: () => {
-                RecallDataSharingList({
-                    ids: data.selectedRowKeys.toString(),
-                }).then(res => {
-                    if (res.success) {
-                        message.success(res.message);
-                        tableRef.current.manualSelectedRows();
-                        tableRef.current.remoteDataRefresh();
-                    } else {
-                        message.error(res.message);
-                    }
-                });
-            },
-        });
-    };
-
+    // 快速查询
     const handleQuickSearch = (value) => {
         setData(v => ({ ...v, quickSearchValue: value }));
         tableRef.current.manualSelectedRows();
         tableRef.current.remoteDataRefresh();
         console.log(value, 'value');
-    };
-
-
-    const submitOrRecall = (type) => {
-        if (type === 'submit') {
-            SubmitDataSharingList({
-                ids: data.selectedRowKeys.toString(),
-            }).then(res => {
-                if (res.success) {
-                    message.success('提交成功');
-                    tableRef.current.manualSelectedRows();
-                    tableRef.current.remoteDataRefresh();
-                } else {
-                    message.error(res.message);
-                }
-            });
-        } else {
-
-        }
     };
 
     // 删除
@@ -166,34 +115,67 @@ export default function () {
     const handleAdvancedSearch = (value) => {
         console.log(value, '高级查询');
     };
+    // 提交审核验证
+    const handleBeforeStartFlow = async () => {
+
+    };
+    // 提交审核完成更新列表
+    function handleComplete() {
+
+    }
+    // 终止审核
+    const handleStopFlow = ()=>{
+        Modal.confirm({
+            title: '终止审核',
+            content: '是否确定终止审核选中数据',
+            okText: '是',
+            cancelText: '否',
+            onOk: () => {
+              console.log("终止！")
+            },
+          });
+    }
 
     // 高级查询配置
     const formItems = [
-        { title: '公司', key: 'materialCode', type: 'list', props: CompanyConfig, rules: { rules: [{ required: true, message: '请选择公司' }], } },
-        { title: '采购组织', key: 'materialGroupCode', type: 'list', props: FindByFiltersConfig, rules: { rules: [{ required: true, message: '请选择采购组织' }], } },
-        { title: '申请部门', key: 'strategicPurchaseCode', type: 'tree', props: ApplyOrganizationProps },
-        { title: '申请人', key: 'buCode', props: { placeholder: '输入申请人' } },
-        { title: '申请日期', key: 'applyPeopleName', type: 'datePicker', props: { placeholder: '输入申请人' } },
+        { title: '公司', key: 'applyCorporationCode', type: 'list', props: CompanyConfig, rules: { rules: [{ required: true, message: '请选择公司' }], } },
+        { title: '采购组织', key: 'purchaseOrgCode', type: 'list', props: FindByFiltersConfig, rules: { rules: [{ required: true, message: '请选择采购组织' }], } },
+        { title: '申请部门', key: 'applyDepartmentCode', type: 'tree', props: ApplyOrganizationProps },
+        { title: '申请人', key: 'applyName', props: { placeholder: '输入申请人' } },
+        { title: '申请日期', key: 'applyDate', type: 'datePicker', props: { placeholder: '输入申请人' } },
         { title: '供应商', key: 'allotSupplierState', type: 'list', props: ShareDistributionProps },
-        { title: '物料二次分类', key: 'state', type: 'tree', props: materialClassProps },
-        { title: '审核类型', key: 'state', type: 'list', props: AuditTypeManagementConfig },
-        { title: '审核原因', key: 'state', type: 'list', props: AuditCauseManagementConfig },
+        { title: '物料二次分类', key: 'materialSecondClassifyCode', type: 'tree', props: materialClassProps },
+        { title: '审核类型', key: 'reviewTypeCode', type: 'list', props: AuditTypeManagementConfig },
+        { title: '审核原因', key: 'reviewReasonCode', type: 'list', props: AuditCauseManagementConfig },
         { title: '状态', key: 'state', type: 'list', props: ShareStatusProps },
-        { title: '审批状态', key: 'state', type: 'list', props: ShareStatusProps },
+        { title: '审批状态', key: 'flowStatus', type: 'list', props: flowProps },
     ];
 
     const columns = [
-        { title: '状态', dataIndex: 'state', width: 80, render:(text)=>{
-            switch(text){
-              case "DRAFT":
-                return "草稿";
-              case "EFFECT":
-                return "生效";
-              case "CHANGING":
-                return "变更中";
+        {
+            title: '状态', dataIndex: 'state', width: 80, render: (text) => {
+                switch (text) {
+                    case "DRAFT":
+                        return "草稿";
+                    case "EFFECT":
+                        return "生效";
+                    case "CHANGING":
+                        return "变更中";
+                }
             }
-          } },
-        { title: '审批状态', dataIndex: 'flowState', width: 200 },
+        },
+        {
+            title: '审批状态', dataIndex: 'flowStatus', width: 200, render: v => {
+                switch (v) {
+                    case 'INIT':
+                        return '未进入流程';
+                    case 'INPROCESS':
+                        return '流程中';
+                    case 'COMPLETED':
+                        return '流程处理完成';
+                }
+            },
+        },
         { title: '月度审核计划号', dataIndex: 'reviewPlanMonthCode', width: 200 },
         { title: '月度', dataIndex: 'applyMonth', ellipsis: true, width: 250 },
         { title: '拟制说明', dataIndex: 'reviewPlanMonthName', ellipsis: true, width: 200 },
@@ -219,21 +201,21 @@ export default function () {
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 key='SUPPLIER_AUDIT_MONTH_EDIT'
-                disabled={ 
-                    data.selectedRowKeys.length !== 1 
+                disabled={
+                    data.selectedRowKeys.length !== 1
                     // || data.selectedRows[0]?.state !== 'DRAFT'
                 }
             >编辑</Button>)
         }
         {
             authAction(<Button
-                onClick={() => redirectToPage('delete')}
+                onClick={deleteList}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 key='SUPPLIER_AUDIT_MONTH_DELETE'
-                disabled={ !(data.selectedRowKeys.length !== 0 
-                    &&judge(data.selectedRows, 'state', 'DRAFT')
-                    &&judge(data.selectedRows, 'applyAccount', getUserAccount()))}
+                disabled={!(data.selectedRowKeys.length !== 0
+                    && judge(data.selectedRows, 'state', 'DRAFT')
+                    && judge(data.selectedRows, 'applyAccount', getUserAccount()))}
             >删除</Button>)
         }
         {
@@ -246,24 +228,30 @@ export default function () {
             >明细</Button>)
         }
         {
-            authAction(<Button
-                onClick={() => redirectToPage('submit')}
-                className={styles.btn}
+            authAction(<StartFlow
+                style={{ marginRight: '5px' }}
                 ignore={DEVELOPER_ENV}
-                key='SUPPLIER_AUDIT_MONTH_SUBMIT'
-            >提交审核</Button>)
+                needConfirm={handleBeforeStartFlow}
+                businessKey={data.flowId}
+                callBack={handleComplete}
+                disabled={data.selectedRowKeys.length !== 1}
+                businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewRequirement'
+                key='SUPPLIER_AUDIT_MONTH_INFLOW'
+            >提交审核</StartFlow>)
         }
         {
-            authAction(<Button
-                onClick={() => redirectToPage('history')}
-                className={styles.btn}
+            authAction(<FlowHistoryButton
+                businessId={'96CD244D-18F6-11EB-8657-0242C0A84402'}
+                flowMapUrl='flow-web/design/showLook'
                 ignore={DEVELOPER_ENV}
                 key='SUPPLIER_AUDIT_MONTH_HISTORY'
-            >审核历史</Button>)
+            >
+                <Button className={styles.btn} disabled={data.selectedRowKeys.length !== 1}>审核历史</Button>
+            </FlowHistoryButton>)
         }
         {
             authAction(<Button
-                onClick={() => redirectToPage('stop')}
+                onClick={handleStopFlow}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 key='SUPPLIER_AUDIT_MONTH_STOP'
@@ -324,7 +312,7 @@ export default function () {
                                 quickSearchValue: data.quickSearchValue,
                                 ...data.epTechnicalShareDemandSearchBo,
                             },
-                            url: `${recommendUrl}/api/epTechnicalShareDemandService/findByPage`,
+                            url: `${recommendUrl}/api/reviewPlanMonthService/findByPage`,
                             type: 'POST',
                         }}
                         allowCancelSelect={true}

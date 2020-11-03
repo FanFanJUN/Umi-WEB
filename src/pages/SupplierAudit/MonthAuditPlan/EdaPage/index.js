@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Affix, Button, Form, message, Spin } from 'antd';
 import classnames from 'classnames';
-import BaseInfo from "../../AnnualAuditPlan/EdaPage/BaseInfo"
+import BaseInfo from "./BaseInfo";
 import styles from '../../../Supplier/Editor/index.less';
 import { router } from 'dva';
 import { closeCurrent, getMobile, getUserId, getUserName } from '@/utils';
@@ -62,19 +62,18 @@ const Index = (props) => {
             if (err) return;
             let saveData = {...values};
             let lineData = tableRef.current.getTableList();
-            saveData.reviewPlanMonthName = saveData.reviewPlanYearName;
-            saveData.attachRelatedIds = saveData.attachRelatedId;
-            delete saveData.reviewPlanYearName;
-            delete saveData.attachRelatedId;
             saveData.lineBoList = lineData;
-            console.log('lineData', saveData)
             if(lineData.length === 0) {
                 message.info('请至少添加一条行信息');
                 return;
             }
+            setData(v => ({ ...v, loading: true }))
             const res = await insertMonthBo(saveData)
             if(res.success) {
                 message.success("保存成功");
+                handleBack();
+            } else {
+                message.error(res.message);
             }
         });
     }
