@@ -180,7 +180,7 @@ const getResultsIden = forwardRef(({
           cognizance.smPcnAnalysisVos = material
           result = cognizance
         }else {
-          message.error('验证结果不能为空！')
+          message.error('实物认定结果不能为空！')
           return false;
         }
       })

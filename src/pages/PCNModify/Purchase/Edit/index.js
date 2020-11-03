@@ -32,7 +32,6 @@ function CreateStrategy() {
         }
         triggerLoading(false);
         message.error(msg) 
-        
     }
 
     // 保存

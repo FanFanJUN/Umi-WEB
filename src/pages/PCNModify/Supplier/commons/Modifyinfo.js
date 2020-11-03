@@ -16,6 +16,7 @@ const ModifyinfoRef = forwardRef(({
   form,
   editformData = [],
   headerInfo,
+  modifytype,
   isEdit
 }, ref) => {
   useImperativeHandle(ref, () => ({
@@ -235,6 +236,7 @@ const ModifyinfoRef = forwardRef(({
           dataSource={initialValue}
           title={title}
           wrappedComponentRef={ModifyfromRef}
+          modifytype={modifytype}
           loading={loading}
           destroyOnClose
         />

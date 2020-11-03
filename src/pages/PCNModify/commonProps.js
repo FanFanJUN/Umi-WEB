@@ -29,6 +29,13 @@ export const PCNMasterdatalist = {
 export const ChangecontentList = {
   store: {
     url: `${smBaseUrl}/api/smPcnChangesService/findByPage`,
+    params: {
+      filters: [{
+        fieldName:'changeTypeCode',
+        value: '02',
+        operator:'EQ'
+      }],
+    },
     type: 'POST'
   },
   reader: {

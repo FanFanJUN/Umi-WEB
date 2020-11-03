@@ -17,8 +17,7 @@ function CreateStrategy() {
   const [editData, setEditData] = useState([]);
   const [loading, triggerLoading] = useState(false);
   const [visible, setvisible] = useState(false);
-  const [configure, setConfigure] = useState([]);
-  const [supplierName, setsupplierName] = useState();
+  const [modifytype, setModifytype] = useState('');
   const { query } = router.useLocation();
   const { frameElementId, frameElementSrc = "", Opertype = "" } = query;
 
@@ -33,6 +32,7 @@ function CreateStrategy() {
     const { data, success, message: msg } = await findPCNSupplierId({pcnTitleId:id});
     if (success) {
       setEditData(data)
+      setModifytype(data.smPcnChangeTypeCode)
       triggerLoading(false);
       return
     }
@@ -122,6 +122,7 @@ function CreateStrategy() {
             <Modifyinfo
                 editformData={editData.smPcnDetailVos}
                 wrappedComponentRef={ModifyinfoRef}
+                modifytype={modifytype}
                 isEdit={true}
             />
             </div>

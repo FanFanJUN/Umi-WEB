@@ -30,6 +30,7 @@ const HeadFormRef = forwardRef(({
     form,
     isView,
     editformData,
+    onOk = () => null,
 }, ref) => {
     useImperativeHandle(ref, () => ({
         form,
@@ -49,6 +50,10 @@ const HeadFormRef = forwardRef(({
             } 
         })
         return modifyinfluen ? modifyinfluen : false
+    }
+    function afterSelect(val) {
+        //setSetupval(val.value)
+        onOk(val.value);
     }
     return (
         <div >
@@ -89,6 +94,7 @@ const HeadFormRef = forwardRef(({
                                                 style={{ width: '100%' }}
                                                 name='smPcnChangeTypeName' 
                                                 field={['smPcnChangeTypeCode']} 
+                                                afterSelect={afterSelect}
                                                 form={form} 
                                             />
                                         )

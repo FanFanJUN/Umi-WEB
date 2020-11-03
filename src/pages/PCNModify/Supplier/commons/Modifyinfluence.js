@@ -38,6 +38,7 @@ const ModifyinfluenceRef = forwardRef(({
     const [attachId, setAttachId] = useState('')
     const [materiel, setmateriel] = useState([])
     const [materielid, setmaterielid] = useState('')
+    const [companyCode, setCompanyCode] = useState('')
     const [materieldetailsid, setmaterieldetailsid] = useState('')
     const [seemateriel, setSeemateriel] = useState('')
     useEffect(() => {
@@ -188,7 +189,7 @@ const ModifyinfluenceRef = forwardRef(({
                     smPcnPart: item.smPcnPart,
                     key: keys
                 })
-                console.log(newsdata)
+                //console.log(newsdata)
                 setDataSource(newsdata);
                 // item.smPcnAnalysisMaterielVoList.map((item, index) => {
                 //     MaterielVoList.push({
@@ -203,24 +204,46 @@ const ModifyinfluenceRef = forwardRef(({
     }
     // 新增的
     function selectanalysis(val) {
-        keys ++ ;
         let newsdata = [];
         [...newsdata] = dataSource;
-        val.map((item, index) => {
+        if (newsdata.length > 0) {
+            let result = newsdata.some(item =>{
+                if(item.materielCategoryCode === val[0].materielCategoryCode && 
+                    item.companyCode === val[0].corporation.code && 
+                    item.purchaseOrgCode === val[0].purchaseOrgCode){
+                   return true 
+               } 
+            })
+            if (result) {
+                message.error('当前数据已存在，请重新选择！')
+            }else {
+                addTodata(val)
+            }
+        }else {
+            addTodata(val)
+        }
+        
+    }
+    // 新增添加数据
+    function addTodata(val) {
+        let newsdata = [];
+        [...newsdata] = dataSource;
+        keys ++ ;
+        val.map(ins => {
             newsdata.push({
                 key: keys,
-                smOriginalFactoryCode:item.originSupplierCode,
-                smOriginalFactoryName:item.originSupplierName,
-                materielCategoryId: item.materielCategory && item.materielCategory.name,
-                companyCode: item.corporation.code,
-                companyName: item.corporation.name,
-                purchaseOrgCode: item.purchaseOrgCode,
-                purchaseOrgName: item.purchaseOrg.name,
-                materielCategoryCode: item.materielCategoryCode,
+                smOriginalFactoryCode:ins.originSupplierCode,
+                smOriginalFactoryName:ins.originSupplierName,
+                materielCategoryId: ins.materielCategory && ins.materielCategory.name,
+                companyCode: ins.corporation.code,
+                companyName: ins.corporation.name,
+                purchaseOrgCode: ins.purchaseOrgCode,
+                purchaseOrgName: ins.purchaseOrg.name,
+                materielCategoryCode: ins.materielCategoryCode,
                 smPcnAnalysisMaterielVoList:[]
             })
-            setDataSource(newsdata);
         })
+        setDataSource(newsdata);
         uploadTable()
     }
     // 获取选择的物料
@@ -274,7 +297,9 @@ const ModifyinfluenceRef = forwardRef(({
     // 选择物料
     function showMateriel() {
         let id = selectedRows[0].materielCategoryCode
+        let code = selectedRows[0].companyCode
         setmaterielid(id)
+        setCompanyCode(code)
         getMatermodRef.current.handleModalVisible(true);
     }
     // 查看物料
@@ -411,6 +436,7 @@ const ModifyinfluenceRef = forwardRef(({
                     <MaterielModal
                         materselect={materselect}
                         materielCategoryCode={materielid}
+                        companyCode={companyCode}
                         iseditMater={selectedRows} 
                         isEdit={isEdit}
                         wrappedComponentRef={getMatermodRef} 

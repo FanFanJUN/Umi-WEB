@@ -1,5 +1,6 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useState } from 'react';
 import { Modal, Form, Row, Col, Input, } from 'antd';
+import { smBaseUrl} from '../../../../utils/commonUrl';
 import { Fieldclassification } from '@/utils/commonProps'
 import { ComboGrid, ComboList } from 'suid';
 import UploadFile from '../../../../components/Upload/index'
@@ -27,7 +28,8 @@ const ModifyForm = forwardRef(
             loading,
             dataSource,
             isView,
-            title
+            title,
+            modifytype
         },
         ref,
     ) => {
@@ -90,8 +92,22 @@ const ModifyForm = forwardRef(
                                 <ComboList
                                     showSearch={false}
                                     style={{ width: '100%' }}
-                                    {...ChangecontentList}
+                                    //{...ChangecontentList}
                                     name='smChangeValue'
+                                    store={{
+                                        url: `${smBaseUrl}/api/smPcnChangesService/findByPage`,
+                                        params: {
+                                            filters: [{
+                                              fieldName:'changeTypeCode',
+                                              value: modifytype,
+                                              operator:'EQ'
+                                            }],
+                                        },
+                                        type: 'POST'
+                                    }}
+                                    reader={{
+                                        name: 'changeContent'
+                                    }}
                                     form={form}
                                     afterSelect={changevalue}
                                 />
