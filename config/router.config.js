@@ -9,6 +9,14 @@ export default [
     ],
   },
   {
+    path: '/material',
+    component: '../layouts/LoginLayout',
+    title: '实物认定',
+    routes: [
+      { path: '/material/MasterData/index',component: './MaterialCognizance/MasterData',title: '实物认定主数据'}
+    ]
+  },
+  {
     path: '/gradeSystem',
     component: '../layouts/LoginLayout',
     title: '系统打分主数据',

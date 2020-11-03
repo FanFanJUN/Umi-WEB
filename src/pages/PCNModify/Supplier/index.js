@@ -23,7 +23,7 @@ function SupplierConfigure() {
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [searchValue, setSearchValue] = useState({});
-    const [loading, triggerLoading] = useState(false);
+    // const [loading, triggerLoading] = useState(true);
     const [attachId, setAttachId] = useState('');
     const [seniorSearchvalue, setSeniorsearchvalue] = useState('');
     /** 按钮可用性判断变量集合 BEGIN*/
@@ -187,15 +187,12 @@ function SupplierConfigure() {
             title: '是否确认删除',
             onOk: async () => {
                 let params = selectedRows[0].id;
-                triggerLoading(true)
                 const { success, message: msg } = await deleteBatchById({pcnTitleId:params});
                 if (success) {
                     message.success('删除成功！');
                     uploadTable();
-                    triggerLoading(false)
                 } else {
                     message.error(msg);
-                    triggerLoading(false)
                 }
             },
             onCancel() {
@@ -219,15 +216,12 @@ function SupplierConfigure() {
             status = 0
             statustype = false
         }
-        triggerLoading(true)
         const { success, message: msg } = await PCNSupplierSubmit({pcnTitleId:id,smDocunmentStatus:status});
         if (success) {
             message.success(`${statustype ? '提交' : '撤回'}成功！`);
             uploadTable();
-            triggerLoading(false)
         } else {
             message.error(msg);
-            triggerLoading(false)
         }
     }
     // 快速查询

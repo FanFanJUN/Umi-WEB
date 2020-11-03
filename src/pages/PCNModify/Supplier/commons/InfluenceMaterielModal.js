@@ -52,8 +52,9 @@ const getAgentregRef = forwardRef(({
         setRows(rows);
     }
     function handleOk() {
-        const empty = selectedRowKeys.length === 0;
-        if (selectedRowKeys.length !== 1) {
+        //const empty = selectedRowKeys.length > 0;
+        console.log(selectedRowKeys.length)
+        if (selectedRowKeys.length === 0) {
             message.error('请选择一行数据！');
         } else {
             //隐藏供应商选择框
@@ -220,7 +221,7 @@ const getAgentregRef = forwardRef(({
                 ref={tableRef}
                 rowKey={(item) => item.id}
                 checkbox={{
-                    multiSelect: false
+                    multiSelect: true
                 }}
                 allowCancelSelect
                 size='small'

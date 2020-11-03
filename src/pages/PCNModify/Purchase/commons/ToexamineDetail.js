@@ -85,24 +85,27 @@ const getToexamine = forwardRef(({
               return !isEmpty(record) && !isEmpty(record.smSupplierAuditResultStatus) ? record.smSupplierAuditResultStatus === 0 ? '通过' : '不通过' : '';
           }
           return <span>
-              <FormItem style={{ marginBottom: 0 }}>
-                  {
-                      getFieldDecorator(`smSupplierAuditResultStatus[${index}]`,{initialValue: record ? record.smSupplierAuditResultStatus : ''}),
-                      getFieldDecorator(`smSupplierAuditResultStatusName[${index}]`, {
-                          initialValue: record ? record.smSupplierAuditResultStatus : '',
-                          rules: [{ required: true, message: '请选择审核结果!', whitespace: true }],
-                      })( 
-                          <ComboList 
-                            form={form}
-                            {...SupplierResulteList}
-                            showSearch={false}
-                            //afterSelect={afterSelect}
-                            name={`smSupplierAuditResultStatusName[${index}]`}
-                            field={[`smSupplierAuditResultStatus[${index}]`]}
-                          />
-                      )
-                  }
-              </FormItem>
+            {
+              record.smSupplierAuditStatus === 1 ? <FormItem style={{ marginBottom: 0 }}>
+                {
+                    getFieldDecorator(`smSupplierAuditResultStatus[${index}]`,{initialValue: record ? record.smSupplierAuditResultStatus : ''}),
+                    getFieldDecorator(`smSupplierAuditResultStatusName[${index}]`, {
+                        initialValue: record ? record.smSupplierAuditResultStatus : '',
+                        rules: [{ required: true, message: '请选择审核结果!', whitespace: true }],
+                    })( 
+                        <ComboList 
+                          form={form}
+                          {...SupplierResulteList}
+                          showSearch={false}
+                          //afterSelect={afterSelect}
+                          name={`smSupplierAuditResultStatusName[${index}]`}
+                          field={[`smSupplierAuditResultStatus[${index}]`]}
+                        />
+                    )
+                }
+            </FormItem> : null
+            }
+              
           </span>;
       }
       },
@@ -116,20 +119,23 @@ const getToexamine = forwardRef(({
           return <UploadFile type="show" entityId={text}/>
         }
         return <span>
-          <FormItem style={{ marginBottom: 0 }}>
-            {
-              getFieldDecorator(`smSupplierAuditConfirmerEnclosure[${index}]`, {
-                  initialValue: record ? record.smSupplierAuditConfirmerEnclosure : '',
-                  rules: [{ required: true, message: '请上传附件!'}],
-              })( 
-                <UploadFile
-                    title={"附件上传"}
-                    entityId={record ? record.smSupplierAuditConfirmerEnclosure : null}
-                    type={isView ? "show" : ""}
-                />
-              )
-            }
-          </FormItem>
+          {
+            record.smSupplierAuditStatus === 1 ?  <FormItem style={{ marginBottom: 0 }}>
+              {
+                getFieldDecorator(`smSupplierAuditConfirmerEnclosure[${index}]`, {
+                    initialValue: record ? record.smSupplierAuditConfirmerEnclosure : '',
+                    rules: [{ required: true, message: '请上传附件!'}],
+                })( 
+                  <UploadFile
+                      title={"附件上传"}
+                      entityId={record ? record.smSupplierAuditConfirmerEnclosure : null}
+                      type={isView ? "show" : ""}
+                  />
+                )
+              }
+            </FormItem> : null
+          }
+         
         </span>
       }
     }
