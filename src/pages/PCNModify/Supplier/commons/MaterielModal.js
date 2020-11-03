@@ -15,6 +15,7 @@ const getMatermodRef = forwardRef(({
     iseditMater,
     implement,
     materselect = () => null,
+    companyCode
 }, ref,) => {
     useImperativeHandle(ref, () => ({ 
         handleModalVisible,
@@ -46,7 +47,7 @@ const getMatermodRef = forwardRef(({
                     }
                 ],
                 secondaryClassificationCode:materielCategoryCode,
-                companyCodeList:[]
+                companyCodeList:[companyCode]
             },
             type: 'POST'
         }

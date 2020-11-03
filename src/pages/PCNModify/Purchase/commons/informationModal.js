@@ -3,8 +3,9 @@ import { Modal, Form, Row, Col, Input,Radio,message } from 'antd';
 import { Fieldclassification } from '@/utils/commonProps'
 import { ExtTable, ComboList,AuthButton } from 'suid';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
-import TrustinforModal from './TrustinforModal'
+// import TrustinforModal from './TrustinforModal'
 import UserSelect from '../../UserSelect/index'
+import { isEmpty } from '../../../../utils';
 const { create, Item } = Form;
 const formLayout = {
     labelCol: {
@@ -18,6 +19,7 @@ const getInformation = forwardRef(({
     form,
     type,
     editData,
+    alonedata,
     determine = () => null,
 },ref,) => {
         useImperativeHandle(ref, () => ({ 
@@ -29,9 +31,10 @@ const getInformation = forwardRef(({
         const { getFieldDecorator, validateFieldsAndScroll, getFieldValue, setFieldsValue } = form;
         const [visible, setvisible] = useState(false);
         const [trust, settrust] = useState(false);
+        const [cognizance, setCognizance] = useState(true);
         useEffect(() => {
-
-        }, []);
+            handleCogn(editData)
+        }, [editData]);
         const columns = [
             {
                 title: '物料分类',
@@ -77,6 +80,15 @@ const getInformation = forwardRef(({
                 },
               },
         ]
+
+        function handleCogn(val) {
+            val.map(item => {
+                if (!isEmpty(item.smInKindStatus)) {
+                    setCognizance(true)
+                }
+            })
+        }
+        
         function handleModalVisible (flag) {
             settrust(false)
             setvisible(!!flag)
@@ -91,8 +103,8 @@ const getInformation = forwardRef(({
                             smInKindManId: val.smInKindManName[0].id,
                             smInKindManCode: val.smInKindManName[0].code,
                             smInKindManName: val.smInKindManName[0].userName,
-                            smTrustCompanyCode: val.smTrustCompanyCode,
-                            smTrustPurchasCode: val.smTrustPurchasCode
+                            // smTrustCompanyCode: val.smTrustCompanyCode,
+                            // smTrustPurchasCode: val.smTrustPurchasCode
                         }
                         editData.map(item => {
                             newdata.push({...item,...cognizance})
@@ -110,8 +122,8 @@ const getInformation = forwardRef(({
                     smInKindManId: '',
                     smInKindManCode: '',
                     smInKindManName: '',
-                    smTrustCompanyCode: '',
-                    smTrustPurchasCode: ''
+                    // smTrustCompanyCode: '',
+                    // smTrustPurchasCode: ''
                 }
                 editData.map(item => {
                     newdata.push({...item,...cognizance})
@@ -197,46 +209,7 @@ const getInformation = forwardRef(({
                                 )}
                             </Item>
                         </Col>
-                    </Row>
-                    <Row style={{ display: trust === false ? 'none' : 'block'}}>
-                        <Col span={12} push={2}>
-                            <AuthButton type="primary" onClick={() => showtrustModal()}>选择信任信息</AuthButton>  
-                        </Col>
-                    </Row>
-                    <Row style={{ display: trust === false ? 'none' : 'block'}}>
-                        <Col span={10}>
-                            <Item {...formLayout} label="信任公司">
-                                {getFieldDecorator('smTrustCompanyCode', {
-                                    initialValue: editData && editData.smTrustCompanyCode,
-                                    rules: [
-                                        {
-                                            required: true,
-                                            message: '请选采购组织代码',
-                                        },
-                                    ],
-                                })(
-                                    <Input disabled />
-                                )}
-                            </Item>
-                        </Col>
-                        <Col span={10}>
-                            <Item {...formLayout} label="信任采购组织">
-                                {getFieldDecorator('smTrustPurchasCode', {
-                                    initialValue: editData && editData.smTrustPurchasCode,
-                                    rules: [
-                                        {
-                                            required: true,
-                                            message: '请选采购组织代码',
-                                        },
-                                    ],
-                                })(
-                                    <Input disabled />
-                                )}
-                            </Item>
-                        </Col>
-                    </Row>
-                    <Row style={{ display: trust === false ? 'none' : 'block'}}>
-                        <Col span={10}>
+                        <Col span={12} style={{ display: trust === false ? 'none' : 'block'}}>
                             <Item {...formLayout} label="实物认定确认人">
                                 {getFieldDecorator('smInKindManName', {
                                     initialValue: editData && editData.smInKindManName,
@@ -260,12 +233,79 @@ const getInformation = forwardRef(({
                             </Item>
                         </Col>
                     </Row>
+                    {/* {cognizance ? <>
+                        <Row style={{ display: trust === false ? 'none' : 'block'}}>
+                            <Col span={12} push={2}>
+                                <AuthButton type="primary" onClick={() => showtrustModal()}>选择信任信息</AuthButton>  
+                            </Col>
+                        </Row>
+                        <Row style={{ display: trust === false ? 'none' : 'block'}}>
+                            <Col span={10}>
+                                <Item {...formLayout} label="信任公司">
+                                    {getFieldDecorator('smTrustCompanyCode', {
+                                        initialValue: editData && editData.smTrustCompanyCode,
+                                        // rules: [
+                                        //     {
+                                        //         required: true,
+                                        //         message: '请选采购组织代码',
+                                        //     },
+                                        // ],
+                                    })(
+                                        <Input disabled />
+                                    )}
+                                </Item>
+                            </Col>
+                            <Col span={10}>
+                                <Item {...formLayout} label="信任采购组织">
+                                    {getFieldDecorator('smTrustPurchasCode', {
+                                        initialValue: editData && editData.smTrustPurchasCode,
+                                        // rules: [
+                                        //     {
+                                        //         required: true,
+                                        //         message: '请选采购组织代码',
+                                        //     },
+                                        // ],
+                                    })(
+                                        <Input disabled />
+                                    )}
+                                </Item>
+                            </Col>
+                        </Row>
+                    </> : null} */}
+                    
+                    {/* <Row style={{ display: trust === false ? 'none' : 'block'}}>
+                        <Col span={10}>
+                            <Item {...formLayout} label="实物认定确认人">
+                                {getFieldDecorator('smInKindManName', {
+                                    initialValue: editData && editData.smInKindManName,
+                                    rules: [
+                                        {
+                                            required: true,
+                                            message: '请选择实物认定确认人',
+                                        },
+                                    ],
+                                })(
+                                    <UserSelect name="smInKindManName" style={{width:"100%",zIndex:10}}
+                                        disabled={type === 'detail'}
+                                        wrapperStyle={{width:950}}
+                                        reader={{name:'userName',field:['code']}} 
+                                        form={form}
+                                        multiple={false}
+                                        field={['smInKindManId']}
+                                        placeholder="请选择实物认定确认人"
+                                    />
+                                )}
+                            </Item>
+                        </Col>
+                    </Row> */}
                 </Modal>
-                <TrustinforModal
+                {/* <TrustinforModal
+                    alonedata={alonedata}
                     editData={editData}
+                    cognizance={cognizance}
                     hanldTrust={hanldTrustfrom}
                     wrappedComponentRef={getTrustinfor}
-                />
+                /> */}
             </>
         );
     },

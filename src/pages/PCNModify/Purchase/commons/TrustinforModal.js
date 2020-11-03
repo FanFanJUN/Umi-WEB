@@ -8,10 +8,12 @@ import Header from '@/components/Header';
 import styles from '../index.less';
 import {findCanChooseSupplier} from '@/services/SupplierModifyService'
 const { create } = Form;
+
 const getTrustinfor = forwardRef(({
     form,
     hanldTrust = () => null,
-    editData
+    editData,
+    alonedata
 }, ref,) => {
     useImperativeHandle(ref, () => ({ 
         handleModalVisible,
@@ -28,7 +30,56 @@ const getTrustinfor = forwardRef(({
     const [current, setcurrent] = useState([]);
     useEffect(() => {
         //getSupplierlist()
-    }, []);
+        screenCompany(alonedata,editData)
+    }, [alonedata,editData]);
+
+    // 数据助理
+    function screenCompany(alonedata,editData) {
+        // console.log(alonedata)
+        // console.log(editData)
+        let Analysisdata = alonedata.smPcnAnalysisVos
+        if (Analysisdata) {
+            // Analysisdata.map((item,index) => {
+            //     editData.map((items,indexs) => {
+            //         if (item.id === items.id) {
+            //             //allmateriel.push(item)
+            //             Analysisdata.splice(item,1)
+            //             console.log(Analysisdata)
+            //         }
+            //     })
+            // })
+            let allmateriel = []
+            // for (var i = 0; i < Analysisdata.length; i ++) {
+            //     for(var j = 0; i < editData.length; j ++) {
+            //         if (Analysisdata[i].materielCategoryCode === editData[j].materielCategoryCode) {
+            //             allmateriel.push(editData[j])
+            //             break;
+            //         }
+            //     }
+            // }
+            
+            // for(var i=0;i < Analysisdata.length;i++) { 
+            //     for(var j=0;j < editData.length;j++) { 
+            //         if(editData[j].materielCategoryCode === Analysisdata[i].materielCategoryCode){ 
+            //             console.log(231)
+            //             editData.splice(editData[j],1); 
+            //             j=j-1; 
+            //         }
+            //     } 
+            // }
+            // console.log(editData)
+            Analysisdata.forEach((item,index) => {
+                editData.forEach((items,indexs) => {
+                    if(item.materielCategoryCode === items.materielCategoryCode){ 
+                        Analysisdata.splice(index,1); 
+                    }
+                })
+            })
+            //console.log(Analysisdata)
+        }
+        
+    }
+    // 显示
     function handleModalVisible (flag) {
         setvisible(!!flag)
     };
