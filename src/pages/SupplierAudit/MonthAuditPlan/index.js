@@ -9,24 +9,16 @@ import { Button, Input, message, Modal } from 'antd';
 import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
 import { ExtTable, utils, WorkFlow } from 'suid';
 import { StartFlow } from 'seid';
-import {
-    ApplyOrganizationProps,
-    AuditCauseManagementConfig,
-    AuditTypeManagementConfig,
-    CompanyConfig,
-    FindByFiltersConfig,
-} from '../mainData/commomService';
+import { ApplyOrganizationProps, CompanyConfig, } from '../mainData/commomService';
 import {
     DeleteDataSharingList,
     judge,
-    ShareDistributionProps,
     ShareStatusProps,
     flowProps
 } from '../../QualitySynergy/commonProps';
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
 import { openNewTab, getUserAccount } from '../../../utils';
-import { materialClassProps } from '../../../utils/commonProps';
 
 const { FlowHistoryButton } = WorkFlow;
 const { authAction } = utils;
@@ -36,9 +28,15 @@ const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 
 export default function () {
 
-
+    const headerRef = useRef(null);
     const tableRef = useRef(null);
-
+    const [data, setData] = useState({
+        quickSearchValue: '',
+        epTechnicalShareDemandSearchBo: {},
+        selectedRowKeys: [],
+        selectedRows: [],
+        flowId: ''
+    });
     useEffect(() => {
         window.parent.frames.addEventListener('message', listenerParentClose, false);
         return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
@@ -50,17 +48,6 @@ export default function () {
             tableRef.current.remoteDataRefresh();
         }
     };
-
-    const [data, setData] = useState({
-        checkedCreate: false,
-        checkedDistribution: false,
-        quickSearchValue: '',
-        epTechnicalShareDemandSearchBo: {},
-        selectedRowKeys: [],
-        selectedRows: [],
-        flowId: ''
-    });
-
 
     const redirectToPage = (type) => {
         switch (type) {
@@ -83,7 +70,22 @@ export default function () {
         setData(v => ({ ...v, quickSearchValue: value }));
         tableRef.current.manualSelectedRows();
         tableRef.current.remoteDataRefresh();
-        console.log(value, 'value');
+    };
+    // 高级查询搜索
+    const handleAdvancedSearch = (value) => {
+        console.log(value)
+        delete value.flowStatus_name;
+        delete value.purchaseTeamCode_name;
+        // delete value.applyDepartmentCode_name;
+        delete value.applyCorporationCode_name;
+        delete value.materialSecondClassifyCode_name;
+        delete value.allotSupplierState_name;
+        delete value.reviewTypeCode_name;
+        value.applyDate = value.applyDate?value.applyDate.formate("YYYY-MM-DD") : ''
+        setData(v => ({ ...v, epTechnicalShareDemandSearchBo: {...value} }));
+        tableRef.current.manualSelectedRows();
+        tableRef.current.remoteDataRefresh();
+        headerRef.current.hide();
     };
 
     // 删除
@@ -111,10 +113,6 @@ export default function () {
         });
     };
 
-    // 高级查询搜索
-    const handleAdvancedSearch = (value) => {
-        console.log(value, '高级查询');
-    };
     // 提交审核验证
     const handleBeforeStartFlow = async () => {
 
@@ -138,15 +136,10 @@ export default function () {
 
     // 高级查询配置
     const formItems = [
-        { title: '公司', key: 'applyCorporationCode', type: 'list', props: CompanyConfig, rules: { rules: [{ required: true, message: '请选择公司' }], } },
-        { title: '采购组织', key: 'purchaseOrgCode', type: 'list', props: FindByFiltersConfig, rules: { rules: [{ required: true, message: '请选择采购组织' }], } },
+        { title: '公司', key: 'applyCorporationCode', type: 'list', props: CompanyConfig },
         { title: '申请部门', key: 'applyDepartmentCode', type: 'tree', props: ApplyOrganizationProps },
         { title: '申请人', key: 'applyName', props: { placeholder: '输入申请人' } },
-        { title: '申请日期', key: 'applyDate', type: 'datePicker', props: { placeholder: '输入申请人' } },
-        { title: '供应商', key: 'allotSupplierState', type: 'list', props: ShareDistributionProps },
-        { title: '物料二次分类', key: 'materialSecondClassifyCode', type: 'tree', props: materialClassProps },
-        { title: '审核类型', key: 'reviewTypeCode', type: 'list', props: AuditTypeManagementConfig },
-        { title: '审核原因', key: 'reviewReasonCode', type: 'list', props: AuditCauseManagementConfig },
+        { title: '申请日期', key: 'applyDate', type: 'datePicker', props: { placeholder: '选择申请日期' } },
         { title: '状态', key: 'state', type: 'list', props: ShareStatusProps },
         { title: '审批状态', key: 'flowStatus', type: 'list', props: flowProps },
     ];
@@ -294,6 +287,7 @@ export default function () {
             <Header
                 left={headerLeft}
                 right={headerRight}
+                ref={headerRef}
                 content={
                     <AdvancedForm formItems={formItems} onOk={handleAdvancedSearch} />
                 }
@@ -307,8 +301,6 @@ export default function () {
                         columns={columns}
                         store={{
                             params: {
-                                ...data.checkedCreate ? { onlyOwn: data.checkedCreate } : null,
-                                ...data.checkedDistribution ? { onlyAllocation: data.checkedDistribution } : null,
                                 quickSearchValue: data.quickSearchValue,
                                 ...data.epTechnicalShareDemandSearchBo,
                             },

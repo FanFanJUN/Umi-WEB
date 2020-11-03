@@ -13,7 +13,6 @@ import { Form, Button, Modal } from 'antd';
 import { ExtTable } from 'suid';
 import AddModal from './AddModal';
 import BatchEditModal from './BatchEditModal';
-// import AuditContentModal from "./AuditContentModal";
 import AuditContentModal from "../../AuditRequirementsManagement/add/component/content";
 import PersonManage from "./PersonManage";
 import Team from "../../AuditRequirementsManagement/add/component/team";
@@ -191,7 +190,7 @@ let LineInfo = forwardRef((props, ref) => {
       item.treeData = buildTreeData(item.fatherList, item.sonList);
       item.lineNum = getRandom(10);
       item.reviewPlanMonthLinenum = ((Array(4).join(0) + (index + 1)).slice(-4) + '0');
-      // 采购组织/专业组暂时写死
+      // 采购组织暂时写死
       item.purchaseTeamCode = '2520';
       item.purchaseTeamId = 'B2A7879B-9358-11EA-B42A-0242C0A84414';
       item.purchaseTeamName = '电视公司零采采购组织';
