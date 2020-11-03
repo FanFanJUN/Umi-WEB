@@ -13,16 +13,16 @@ import { Form, Button, Modal } from 'antd';
 import { ExtTable } from 'suid';
 import AddModal from './AddModal';
 import BatchEditModal from './BatchEditModal';
-import AuditContentModal from "../../AuditRequirementsManagement/add/component/content";
-import PersonManage from "./PersonManage";
-import Team from "../../AuditRequirementsManagement/add/component/team";
+import AuditContentModal from '../../AuditRequirementsManagement/add/component/content';
+import PersonManage from './PersonManage';
+import Team from '../../AuditRequirementsManagement/add/component/team';
 import { getRandom } from '../../../QualitySynergy/commonProps';
 
 let LineInfo = forwardRef((props, ref) => {
 
   useImperativeHandle(ref, () => ({
-    getTableList
-  }))
+    getTableList,
+  }));
   const tableRef = useRef(null);
 
   const [data, setData] = useState({
@@ -35,7 +35,7 @@ let LineInfo = forwardRef((props, ref) => {
   const [batchEditVisible, setBatchEditVisible] = useState(false);
   const [contentModalData, setContentData] = useState({});
   const [teamModalData, setTeamData] = useState({});
-  const [personModalData, setPersonData] = useState({})
+  const [personModalData, setPersonData] = useState({});
 
   const columns = [
     {
@@ -47,7 +47,7 @@ let LineInfo = forwardRef((props, ref) => {
               visible: true,
               treeData: item.treeData,
               applyCorporationCode: item.applyCorporationCode,
-              type: 'detail'
+              type: 'detail',
             });
           }} key="content">内容</a>
           <a onClick={(e) => {
@@ -57,7 +57,7 @@ let LineInfo = forwardRef((props, ref) => {
               treeData: item.treeData,
               reviewTeamGroupBoList: item.reviewTeamGroupBoList,
               reviewTypeCode: item.reviewTypeCode,
-              type: 'detail'
+              type: 'detail',
             });
           }} style={{ margin: '0 3px' }} key="group">小组</a>
           <a onClick={(e) => {
@@ -65,21 +65,23 @@ let LineInfo = forwardRef((props, ref) => {
             setPersonData({
               visible: true,
               isView: true,
-              originData: item.coordinationMemberBoList ? item.coordinationMemberBoList : []
+              originData: item.coordinationMemberBoList ? item.coordinationMemberBoList : [],
             });
           }} key="xietong">协同</a>
-        </div>
-      }
+        </div>;
+      },
     },
-    { title: '需求公司', dataIndex: 'applyCorporationName', width: 140, ellipsis: true, },
+    { title: '需求公司', dataIndex: 'applyCorporationName', width: 140, ellipsis: true },
     { title: '采购组织', dataIndex: 'purchaseTeamName', ellipsis: true, width: 140 },
     { title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 140 },
     { title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 140 },
     { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 140 },
     { title: '物料级别', dataIndex: 'materialGradeName', ellipsis: true, width: 140 },
-    { title: '生产厂地址', dataIndex: 'data2', ellipsis: true, width: 180, render:(text, item)=>{
-      return item.countryName + item.provinceName + item.cityName + item.countyName + item.address
-    }},
+    {
+      title: '生产厂地址', dataIndex: 'data2', ellipsis: true, width: 180, render: (text, item) => {
+        return item.countryName + item.provinceName + item.cityName + item.countyName + item.address;
+      },
+    },
     { title: '供应商联系人', dataIndex: 'contactUserName', ellipsis: true, width: 140 },
     { title: '供应商联系电话', dataIndex: 'contactUserTel', ellipsis: true, width: 140 },
     { title: '审核类型', dataIndex: 'reviewTypeName', ellipsis: true, width: 140 },
@@ -91,45 +93,47 @@ let LineInfo = forwardRef((props, ref) => {
     {
       title: '来源类型', dataIndex: 'sourceType', ellipsis: true, width: 140, render: (text) => {
         switch (text) {
-          case "Review_Plan_YEAR_LINE":
-            return "年度计划行";
-          case "ADMISSION_RECOMMENDATION":
-            return "准入推荐";
-          case "RECOMMENDATION_REQUIREMENTS":
-            return "推荐需求";
+          case 'Review_Plan_YEAR_LINE':
+            return '年度计划行';
+          case 'ADMISSION_RECOMMENDATION':
+            return '准入推荐';
+          case 'RECOMMENDATION_REQUIREMENTS':
+            return '推荐需求';
         }
-      }
+      },
     },
     { title: '来源单号', dataIndex: 'sourceCode', ellipsis: true, width: 140 },
     { title: '来源单行号', dataIndex: 'sourceLinenum', ellipsis: true, width: 140 },
-  ].map(item => ({ ...item, align: 'center' }))
+  ].map(item => ({ ...item, align: 'center' }));
 
   const { isView } = props;
+
   function getTableList() {
     return dataSource;
   }
+
   const handleBtn = (type) => {
     switch (type) {
-      case "annual":
-      case "recommand":
-      case "demand":
+      case 'annual':
+      case 'recommand':
+      case 'demand':
         setModalData({
           visible: true,
-          type
+          type,
         });
         break;
-      case "edit":
+      case 'edit':
         setBatchEditVisible(true);
         break;
-      case "contenM":
+      case 'contenM':
         setContentData({
           visible: true,
           applyCorporationCode: data.selectRows[0]?.applyCorporationCode,
           treeData: data.selectRows[0]?.treeData,
-          type: 'edit'
+          type: 'edit',
         });
         break;
-      case "teamM":
+      case 'teamM':
         setTeamData({
           visible: true,
           treeData: data.selectRows[0]?.treeData,
@@ -137,17 +141,17 @@ let LineInfo = forwardRef((props, ref) => {
           reviewTypeCode: data.selectRows[0]?.reviewTypeCode,
         });
         break;
-      case "personM":
+      case 'personM':
         setPersonData({
           visible: true,
-          originData: (data.selectRows.length === 1)&&data.selectRows[0].coordinationMemberBoList ? data.selectRows[0].coordinationMemberBoList : []
+          originData: (data.selectRows.length === 1) && data.selectRows[0].coordinationMemberBoList ? data.selectRows[0].coordinationMemberBoList : [],
         });
         break;
       default:
         break;
     }
 
-  }
+  };
 // 审核小组管理弹框-确定
   const teamOk = (value) => {
     let newData = JSON.parse(JSON.stringify(dataSource));
@@ -156,32 +160,32 @@ let LineInfo = forwardRef((props, ref) => {
         newData[index].reviewTeamGroupBoList = value;
       }
     });
-    setDataSource(newData)
-    setTeamData(v => ({...v, visible: false}))
+    setDataSource(newData);
+    setTeamData(v => ({ ...v, visible: false }));
     tableRef.current.manualSelectedRows();
-  }
+  };
   // 编辑和明细时构造treeData
   const buildTreeData = (fatherList, sonList) => {
-    if(!fatherList || !sonList)return[];
-    let arr = JSON.parse(JSON.stringify(fatherList))
+    if (!fatherList || !sonList) return [];
+    let arr = JSON.parse(JSON.stringify(fatherList));
     arr.map(item => {
-      item.id = item.systemId
-      item.key = item.systemId
-      item.title = item.systemName
+      item.id = item.systemId;
+      item.key = item.systemId;
+      item.title = item.systemName;
       if (!item.children) {
-        item.children = []
+        item.children = [];
       }
       sonList.forEach(value => {
-        value.id = value.systemId
-        value.key = value.systemId
-        value.title = value.systemName
+        value.id = value.systemId;
+        value.key = value.systemId;
+        value.title = value.systemName;
         if (value.parentId === item.systemId) {
-          item.children.push(value)
+          item.children.push(value);
         }
-      })
-    })
-    return arr
-  }
+      });
+    });
+    return arr;
+  };
   // 新增弹框-确定
   const handleAddOk = (value) => {
     // console.log('行数据', value)
@@ -195,15 +199,15 @@ let LineInfo = forwardRef((props, ref) => {
       item.purchaseTeamId = 'B2A7879B-9358-11EA-B42A-0242C0A84414';
       item.purchaseTeamName = '电视公司零采采购组织';
 
-      if(item.reviewTeamGroupBoList) {
-        for(var i=0; i<item.reviewTeamGroupBoList.length; i++) {
+      if (item.reviewTeamGroupBoList) {
+        for (var i = 0; i < item.reviewTeamGroupBoList.length; i++) {
           // console.log(item.reviewTeamGroupBoList[i])
           let lineObj = item.reviewTeamGroupBoList[i];
           lineObj.lineNum = getRandom(10);
-          if(lineObj.reviewTeamMemberBoList) {
-            for(let j = 0; j < lineObj.reviewTeamMemberBoList.length; j++) {
+          if (lineObj.reviewTeamMemberBoList) {
+            for (let j = 0; j < lineObj.reviewTeamMemberBoList.length; j++) {
               let obj = lineObj.reviewTeamMemberBoList[j];
-              if(obj.memberRole === "GROUP_LEADER" && !groupObj.leaderName) {
+              if (obj.memberRole === 'GROUP_LEADER' && !groupObj.leaderName) {
                 groupObj.leaderId = obj.memberId;
                 groupObj.leaderName = obj.memberName;
                 groupObj.leaderTel = obj.memberTel;
@@ -220,73 +224,73 @@ let LineInfo = forwardRef((props, ref) => {
       }
       let newItem = Object.assign(item, groupObj);
       return newItem;
-    })
+    });
     newList = dataSource.concat(newList);
     setDataSource(newList);
     setModalData({ visible: false });
-  }
+  };
   // 删除行数据
   const handleDelete = () => {
     Modal.confirm({
-      title: "删除",
-      content: "是否确认删除选中数据",
-      onOk: ()=>{
+      title: '删除',
+      content: '是否确认删除选中数据',
+      onOk: () => {
         let newList = dataSource.filter(item => {
           return !data.selectedRowKeys.includes(item.lineNum);
-        })
-        newList = newList.map((item, index)=> {
+        });
+        newList = newList.map((item, index) => {
           item.lineNum = getRandom(10);
           item.reviewPlanMonthLinenum = ((Array(4).join(0) + (index + 1)).slice(-4) + '0');
           return item;
-        })
+        });
         setDataSource(newList);
         tableRef.current.manualSelectedRows();
-      }
-    })
-  }
+      },
+    });
+  };
   // 批量编辑弹框-确定
   const getBatchFormValue = (value) => {
     let newList = dataSource.map(item => {
-      if(data.selectedRowKeys.includes(item.lineNum)) {
+      if (data.selectedRowKeys.includes(item.lineNum)) {
         return {
           ...item,
-          ...value
-        }
+          ...value,
+        };
       }
       return item;
-    })
+    });
     tableRef.current.manualSelectedRows();
     setDataSource(newList);
-  }
+  };
   // 审核内容管理弹框-确定
   const contentModalOk = (treeData) => {
     let newList = dataSource.map(item => {
-      if(data.selectedRowKeys.includes(item.lineNum)) {
+      if (data.selectedRowKeys.includes(item.lineNum)) {
         item.fatherList = treeData;
         item.sonList = [];
         treeData.forEach(v => {
-          item.sonList = item.sonList.concat(v.children)
-        })
+          item.sonList = item.sonList.concat(v.children);
+        });
         item.treeData = buildTreeData(item.fatherList, item.sonList);
       }
       return item;
-    })
+    });
     // console.log('整合的数据', newList);
     setDataSource(newList);
-    setContentData({ visible: false })
-  }
+    setContentData({ visible: false });
+  };
   // 协同人员管理弹框-确定
   const personModalOk = (personData) => {
-    setPersonData({ visible: false});
+    setPersonData({ visible: false });
     let newList = dataSource.map(item => {
-      if(data.selectedRowKeys.includes(item.lineNum)) {
-        item.coordinationMemberBoList = personData
+      if (data.selectedRowKeys.includes(item.lineNum)) {
+        item.coordinationMemberBoList = personData;
       }
-      return item
-    })
+      return item;
+    });
     // console.log('整合的数据', newList);
     setDataSource(newList);
-  }
+  };
   return (
     <div className={styles.wrapper}>
       <div className={styles.bgw}>
@@ -297,11 +301,21 @@ let LineInfo = forwardRef((props, ref) => {
               <Button onClick={() => handleBtn('annual')} type='primary'>从年度计划新增</Button>
               <Button onClick={() => handleBtn('recommand')} type='primary'>从准入推荐新增</Button>
               <Button onClick={() => handleBtn('demand')} type='primary'>从审核需求新增</Button>
-              <Button onClick={() => { handleBtn('edit') }} disabled={data.selectRows.length===0}>批量编辑</Button>
-              <Button onClick={() => { handleDelete() }} disabled={data.selectRows.length===0}>删除</Button>
-              <Button onClick={() => { handleBtn('contenM')}} disabled={data.selectRows.length===0}>审核内容管理</Button>
-              <Button onClick={() => { handleBtn('teamM') }} disabled={data.selectRows.length!==1}>审核小组管理</Button>
-              <Button onClick={() => { handleBtn('personM') }} disabled={data.selectRows.length===0}>协同人员管理</Button>
+              <Button onClick={() => {
+                handleBtn('edit');
+              }} disabled={data.selectRows.length === 0}>批量编辑</Button>
+              <Button onClick={() => {
+                handleDelete();
+              }} disabled={data.selectRows.length === 0}>删除</Button>
+              <Button onClick={() => {
+                handleBtn('contenM');
+              }} disabled={data.selectRows.length === 0}>审核内容管理</Button>
+              <Button onClick={() => {
+                handleBtn('teamM');
+              }} disabled={data.selectRows.length !== 1}>审核小组管理</Button>
+              <Button onClick={() => {
+                handleBtn('personM');
+              }} disabled={data.selectRows.length === 0}>协同人员管理</Button>
             </div>
           }
           <ExtTable
@@ -313,7 +327,7 @@ let LineInfo = forwardRef((props, ref) => {
             size='small'
             onSelectRow={(keys, rows) => {
               // console.log("选中改变", keys, rows)
-              setData(() => ({ selectedRowKeys: keys, selectRows: rows }))
+              setData(() => ({ selectedRowKeys: keys, selectRows: rows }));
             }}
             selectedRowKeys={data.selectedRowKeys}
             columns={columns}
@@ -326,15 +340,19 @@ let LineInfo = forwardRef((props, ref) => {
       {addModalData.visible && <AddModal
         visible={addModalData.visible}
         type={addModalData.type}
-        handleCancel={() => { setModalData({ visible: false }) }}
+        handleCancel={() => {
+          setModalData({ visible: false });
+        }}
         handleOk={handleAddOk}
         lineData={dataSource}
       />}
       {/* 批量编辑 */}
-      { batchEditVisible && <BatchEditModal
+      {batchEditVisible && <BatchEditModal
         visible={batchEditVisible}
-        onCancel={() => { setBatchEditVisible(false) }}
-        originData={data.selectRows.length ===1 ? data.selectRows[0] : {}}
+        onCancel={() => {
+          setBatchEditVisible(false);
+        }}
+        originData={data.selectRows.length === 1 ? data.selectRows[0] : {}}
         onOk={getBatchFormValue}
       />
       }
@@ -351,9 +369,9 @@ let LineInfo = forwardRef((props, ref) => {
       {/* 审核小组管理 */}
       {teamModalData.visible && <Team
         onOk={teamOk}
-        type={teamModalData.type}
+        type={teamModalData.type ? teamModalData.type : 'add'}
         treeData={teamModalData.treeData}
-        reviewTeamGroupBoList={teamModalData.reviewTeamGroupBoList}
+        reviewTeamGroupBoList={teamModalData.reviewTeamGroupBoList ? teamModalData.reviewTeamGroupBoList : []}
         reviewTypeCode={teamModalData.reviewTypeCode}
         onCancel={() => setTeamData({ visible: false })}
         visible={teamModalData.visible}
@@ -364,12 +382,14 @@ let LineInfo = forwardRef((props, ref) => {
         visible={personModalData.visible}
         originData={personModalData.originData}
         isView={personModalData.isView}
-        onCancel={() => { setPersonData({ visible: false }) }}
+        onCancel={() => {
+          setPersonData({ visible: false });
+        }}
         onOk={personModalOk}
       />
       }
     </div>
   );
-})
+});
 
 export default Form.create()(LineInfo);
