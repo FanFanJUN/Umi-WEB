@@ -13,7 +13,9 @@ export default [
     component: '../layouts/LoginLayout',
     title: '实物认定',
     routes: [
-      { path: '/material/MasterData/index',component: './MaterialCognizance/MasterData',title: '实物认定主数据'}
+      { path: '/material/MasterData/index',component: './MaterialCognizance/MasterData',title: '实物认定主数据'},
+      { path: '/material/Cognizance/index',component: './MaterialCognizance/Cognizance',title: '实物认定计划'},
+      { path: '/material/Cognizance/AdmitEdit/index',component: './MaterialCognizance/Cognizance/AdmitEdit/index',title: '实物认定计划'}
     ]
   },
   {

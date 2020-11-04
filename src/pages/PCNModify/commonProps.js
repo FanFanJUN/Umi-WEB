@@ -91,9 +91,9 @@ export const SupplierBilltypeList = {
     name: 'name',
     field: ['code'],
   },
-  style: {
-    width: '100%',
-  },
+  // style: {
+  //   width: '100%',
+  // },
   placeholder: '选择单据状态',
 }
 // 单据状态
@@ -121,8 +121,11 @@ export const BilltypeList = {
       name: '变更完成',
     }
   ],
+  reader: {
+    name: 'name',
+    field: ['code'],
+  },
   placeholder: '选择单据状态',
-  ...commonProps,
 }
 // 审核状态
 export const ToexamineList = {

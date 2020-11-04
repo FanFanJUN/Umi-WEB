@@ -5,7 +5,7 @@ import { Form, Button, message, Modal, Row, Col, Card, Empty } from 'antd';
 import { baseUrl } from '../../../utils/commonUrl';
 import { ExtTable, utils } from 'suid';
 import { AutoSizeLayout } from '../../../components';
-import styles from './index.less';
+import styles from '../index.less';
 import ModalFrom from './ModalFrom'
 const { authAction } = utils;
 
