@@ -21,7 +21,8 @@ import { getRandom } from '../../../QualitySynergy/commonProps';
 let LineInfo = forwardRef((props, ref) => {
 
   useImperativeHandle(ref, () => ({
-    getTableList,
+    getTableList:() => dataSource.concat(deleteLine),
+    getDeleteArr: () => deleteArr
   }));
   const tableRef = useRef(null);
   const { originData, isView } = props;
@@ -31,6 +32,8 @@ let LineInfo = forwardRef((props, ref) => {
   });
 
   const [dataSource, setDataSource] = useState([]);
+  const [deleteLine, setDeleteLine] = useState([]);//删除的行数据
+  const [deleteArr, setDeleteArr] = useState([]);//组合头上数据deleteArr，标记小组成员，协同人员的删除
   const [addModalData, setModalData] = useState({});
   const [batchEditVisible, setBatchEditVisible] = useState(false);
   const [contentModalData, setContentData] = useState({});
@@ -42,6 +45,7 @@ let LineInfo = forwardRef((props, ref) => {
       let newList = originData.map(item => {
         item.lineNum = getRandom(10);
         item.treeData = buildTreeData(item.fatherList, item.sonList);
+        item.reviewTeamGroupBoList = item.reviewTeamGroupBoList ? item.reviewTeamGroupBoList.map(v=>({...v, lineNum: getRandom(10)})) : []
         return item;
       })
       console.log('originData', newList)
@@ -57,13 +61,23 @@ let LineInfo = forwardRef((props, ref) => {
             setTimeout(() => {
               setData(v => ({ ...v, treeData: item.treeData }));
             }, 300);
-            setContentData(v => ({ ...v, visible: true, type: 'detail' }));
+            setContentData(v => ({ 
+              ...v, 
+              visible: true, 
+              type: 'detail',
+              applyCorporationCode: item.applyCorporationCode,
+              treeData: item.treeData ? item.treeData : [],
+             }));
           }} key="content">内容</a>
           <a onClick={(e) => {
             e.stopPropagation();
-            let arr = JSON.parse(JSON.stringify(item.reviewTeamGroupBoList ? item.reviewTeamGroupBoList : []));
-            arr = arr.map(item => ({ ...item, lineNum: getRandom(10) }));
-            setTeamData(v => ({ ...v, reviewTeamGroupBoList: arr, visible: true, type: 'detail', treeData: item.treeData ? item.treeData : []}));
+            setTeamData(v => ({ 
+              ...v,
+              reviewTeamGroupBoList: item.reviewTeamGroupBoList ? item.reviewTeamGroupBoList : [], 
+              visible: true, 
+              type: 'detail', 
+              treeData: item.treeData ? item.treeData : []
+            }));
           }} style={{ margin: '0 3px' }} key="group">小组</a>
           <a onClick={(e) => {
             e.stopPropagation();
@@ -111,10 +125,6 @@ let LineInfo = forwardRef((props, ref) => {
     { title: '来源单行号', dataIndex: 'sourceLinenum', ellipsis: true, width: 140 },
   ].map(item => ({ ...item, align: 'center' }));
 
-  function getTableList() {
-    return dataSource;
-  }
-
   const handleBtn = (type) => {
     switch (type) {
       case 'annual':
@@ -133,7 +143,6 @@ let LineInfo = forwardRef((props, ref) => {
           visible: true,
           applyCorporationCode: data.selectRows[0]?.applyCorporationCode,
           treeData: data.selectRows[0]?.treeData,
-          type: 'edit',
         });
         break;
       case 'teamM':
@@ -142,6 +151,7 @@ let LineInfo = forwardRef((props, ref) => {
           treeData: data.selectRows[0]?.treeData,
           reviewTeamGroupBoList: data.selectRows[0]?.reviewTeamGroupBoList,
           reviewTypeCode: data.selectRows[0]?.reviewTypeCode,
+          type: 'edit',
         });
         break;
       case 'personM':
@@ -243,6 +253,12 @@ let LineInfo = forwardRef((props, ref) => {
       content: '是否确认删除选中数据',
       onOk: () => {
         let newList = dataSource.filter(item => {
+          if (item.id && data.selectedRowKeys.includes(item.lineNum)) {
+            let arr = JSON.parse(JSON.stringify(deleteLine))
+            item.whetherDeleted = true
+            arr.push(item)
+            setDeleteLine(arr)
+          }
           return !data.selectedRowKeys.includes(item.lineNum);
         });
         newList = newList.map((item, index) => {
@@ -267,7 +283,6 @@ let LineInfo = forwardRef((props, ref) => {
       }
       return item;
     });
-    tableRef.current.manualSelectedRows();
     setDataSource(newList);
   };
 
@@ -380,6 +395,8 @@ let LineInfo = forwardRef((props, ref) => {
       {/* 审核小组管理 */}
       {teamModalData.visible && <Team
         onOk={teamOk}
+        deleteArr={deleteArr}
+        setDeleteArr={setDeleteArr}
         type={teamModalData.type ? teamModalData.type : 'add'}
         treeData={teamModalData.treeData}
         reviewTeamGroupBoList={teamModalData.reviewTeamGroupBoList ? teamModalData.reviewTeamGroupBoList : []}
@@ -391,6 +408,8 @@ let LineInfo = forwardRef((props, ref) => {
       {/* 协同人员管理 */}
       {personModalData.visible && <PersonManage
         visible={personModalData.visible}
+        deleteArr={deleteArr}
+        setDeleteArr={setDeleteArr}
         originData={personModalData.originData}
         isView={personModalData.isView}
         onCancel={() => {

@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Affix, Button, Form, message, Spin, Modal } from 'antd';
-import { StartFlow } from 'seid';
+import { WorkFlow } from "suid";
 import classnames from 'classnames';
 import BaseInfo from "./BaseInfo";
 import styles from '../../../Supplier/Editor/index.less';
 import { router } from 'dva';
 import { closeCurrent, getMobile, getUserId, getUserName } from '@/utils';
 import LineInfo from './LineInfo';
-import { insertMonthBo, findOneOverride } from "../service";
+import { insertMonthBo, findOneOverride, upDateMonthBo } from "../service";
+const { StartFlow } = WorkFlow;
 
 const Index = (props) => {
     const { form } = props;
@@ -76,7 +77,9 @@ const Index = (props) => {
             if (err) return;
             let saveData = { ...values };
             let lineData = tableRef.current.getTableList();
+            let deleteArr = tableRef.current.getDeleteArr();
             saveData.lineBoList = lineData;
+            saveData.deleteList = deleteArr;
             if (!saveData.attachRelatedIds) {
                 saveData.attachRelatedIds = [];
             }
@@ -85,7 +88,14 @@ const Index = (props) => {
                 return;
             }
             setLoading(true);
-            const res = await insertMonthBo(saveData);
+            let res = {};
+            if (query.pageState === "add") {
+                res = await insertMonthBo(saveData);
+            } else {
+                saveData = { ...editData, ...saveData };
+                res = await upDateMonthBo(saveData);
+                res.data = saveData.id;
+            }
             if (res.success) {
                 if (type === "save") {
                     setLoading(false);
@@ -95,6 +105,7 @@ const Index = (props) => {
                     }, 3000)
                 } else {
                     // 处理提交审核
+                    console.log("这里返回的数据", res.data)
                     return res.data;
                 }
             } else {
@@ -105,23 +116,29 @@ const Index = (props) => {
         });
     }
     // 提交审核验证
-    const handleBeforeStartFlow = () => {
+    const handleBeforeStartFlow = async () => {
+        const id = await handleSave("publish");
+        console.log("获取到的id是多少", id)
         return new Promise(function (resolve, reject) {
-            (async function () {
-                const id = await handleSave("publish");
-                if (id) {
-                    resolve({
-                        success: true,
-                        message: '保存单据成功',
-                        data: { businessKey: id },
-                    });
-                }
-            })()
+            if (id) {
+                resolve({
+                    success: data,
+                    message: msg,
+                    data: {
+                        businessKey: id
+                    }
+                })
+                return
+            }
+            resolve({
+                success: data,
+                message: '数据校验不通过，请检查评价指标是否填写完整'
+            })
         })
     }
     // 提交审核完成更新列表
     function handleComplete() {
-
+        setLoading(false);
     }
     return <>
         <Spin spinning={loading}>
@@ -129,17 +146,23 @@ const Index = (props) => {
                 <div className={classnames(styles.fbc, styles.affixHeader)}>
                     <span>{data.title}</span>
                     {
-                        data.type !== 'detail' && <div>
+                        data.type !== 'detail' && <div style={{ display: "flex", alignItems: 'center' }}>
                             <Button className={styles.btn} onClick={handleBack}>返回</Button>
                             <Button className={styles.btn} onClick={() => handleSave('save')}>暂存</Button>
-                            {/* <Button className={styles.btn} type='primary' onClick={() => handleSave('publish')} >提交</Button> */}
                             <StartFlow
-                                style={{ marginRight: '5px' }}
+                                className={styles.btn}
+                                type='primary'
                                 beforeStart={handleBeforeStartFlow}
-                                butTitle="提交"
+                                // startComplete={handleBack}
                                 callBack={handleComplete}
-                                businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewRequirement'
-                            ></StartFlow>
+                                businessKey={query?.id}
+                                disabled={loading}
+                                businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewPlanMonth'
+                            >
+                                {
+                                    loading => <Button loading={loading} type='primary'>提交</Button>
+                                }
+                            </StartFlow>
                         </div>
                     }
                 </div>

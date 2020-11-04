@@ -1,11 +1,11 @@
 // 协同人员管理
 import React, { useState, useEffect, useRef } from "react";
-import { Button } from "antd";
+import { Button, Modal } from "antd";
 import { ExtModal, ExtTable } from "suid";
 import AddPersonModal from "./addPersonModal";
 
 
-const PersonManage = ({ visible, onOk, onCancel, originData, isView }) => {
+const PersonManage = ({ visible, onOk, onCancel, originData, isView, deleteArr, setDeleteArr }) => {
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [selectedRows, setSelectedRows] = useState([]);
     const [dataSource, setDataSource] = useState([]);
@@ -14,7 +14,7 @@ const PersonManage = ({ visible, onOk, onCancel, originData, isView }) => {
     const buttonClick = (type) => {
         switch (type) {
             case "add":
-                setAddData({ visible: true,})
+                setAddData({ visible: true, })
                 break;
             case "edit":
                 setAddData({
@@ -28,7 +28,7 @@ const PersonManage = ({ visible, onOk, onCancel, originData, isView }) => {
                 break;
         }
     }
-    useEffect(()=>{
+    useEffect(() => {
         let dataList = originData.map((item, index) => {
             item.rowKey = index;
             return item;
@@ -36,19 +36,40 @@ const PersonManage = ({ visible, onOk, onCancel, originData, isView }) => {
         setDataSource(dataList)
     }, originData)
     const columns = [
-        { title: '部门', dataIndex: 'departmentName', width: 160  },
-        { title: '员工编号', dataIndex: 'employeeNo', width: 100  },
-        { title: '姓名', dataIndex: 'memberName', width: 120  },
-        { title: '联系电话', dataIndex: 'memberTel', width: 100  },
+        { title: '部门', dataIndex: 'departmentName', width: 160 },
+        { title: '员工编号', dataIndex: 'employeeNo', width: 100 },
+        { title: '姓名', dataIndex: 'memberName', width: 120 },
+        { title: '联系电话', dataIndex: 'memberTel', width: 100 },
     ]
     const personHandleOK = (value) => {
-        console.log("新增数据", value)
         let newList = [].concat(dataSource);
         newList.push({
             rowKey: dataSource.length,
             ...value
         })
         setDataSource(newList)
+    }
+    const handleDelet = () => {
+        Modal.confirm({
+            title: '删除',
+            content: '是否确认删除选中数据',
+            onOk: () => {
+                let newList = dataSource.filter(item => {
+                    if (item.id && selectedRowKeys.includes(item.rowKey)) {
+                        let arr = JSON.parse(JSON.stringify(deleteArr));
+                        arr.push({ id: item.id, type: 'COORDINATION' });
+                        setDeleteArr(arr);
+                    }
+                    return !selectedRowKeys.includes(item.rowKey);
+                });
+                newList = newList.map((item, index) => {
+                    item.lineNum = index;
+                    return item;
+                });
+                setDataSource(newList);
+                tableRef.current.manualSelectedRows();
+            },
+        });
     }
     return <>
         <ExtModal
@@ -57,14 +78,14 @@ const PersonManage = ({ visible, onOk, onCancel, originData, isView }) => {
             visible={visible}
             title={'协同人员管理'}
             onCancel={onCancel}
-            onOk={()=>{onOk(dataSource)}}
+            onOk={() => { onOk(dataSource) }}
             {...isView && { footer: null }}
             destroyOnClose={true}
         >
-            <div style={{display:isView?"none":"block", margin: '10px 0'}}>
+            <div style={{ display: isView ? "none" : "block", margin: '10px 0' }}>
                 <Button type='primary' onClick={() => buttonClick('add')}>新增</Button>
                 <Button style={{ marginLeft: '5px' }} onClick={() => buttonClick('edit')} disabled={selectedRows.length !== 1}>编辑</Button>
-                <Button style={{ marginLeft: '5px' }} onClick={() => buttonClick('delete')}  disabled={selectedRows.length === 0}>删除</Button>
+                <Button style={{ marginLeft: '5px' }} onClick={handleDelet} disabled={selectedRows.length === 0}>删除</Button>
             </div>
             <ExtTable
                 rowKey={(v) => v.rowKey}
@@ -72,7 +93,7 @@ const PersonManage = ({ visible, onOk, onCancel, originData, isView }) => {
                 showSearch={false}
                 checkbox={{ multiSelect: true }}
                 size='small'
-                onSelectRow={(keys, rows)=>{
+                onSelectRow={(keys, rows) => {
                     setSelectedRowKeys(keys);
                     setSelectedRows(rows);
                 }}
@@ -85,7 +106,7 @@ const PersonManage = ({ visible, onOk, onCancel, originData, isView }) => {
                 visible={addModalData.visible}
                 isEdit={addModalData.isEdit}
                 personHandleOK={personHandleOK}
-                onCancel={()=>{setAddData({visible: false})}}
+                onCancel={() => { setAddData({ visible: false }) }}
                 originData={addModalData.originData}
             />
             }

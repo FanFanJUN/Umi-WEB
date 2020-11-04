@@ -38,12 +38,22 @@ export async function listAllOrgnazationWithDataAuth(params) {
     });
 }
 
-// 新增月度计划-保存
+// 月度计划-明细
 export async function findOneOverride(params) {
     const requestUrl = `${recommendUrl}/api/reviewPlanMonthService/findOneOverride`;
     return request({
         url: requestUrl,
         method: 'GET',
         params,
+    });
+}
+
+// 新增月度计划-编辑-保存
+export async function upDateMonthBo(params) {
+    const requestUrl = `${recommendUrl}/api/reviewPlanMonthService/update`;
+    return request({
+        url: requestUrl,
+        method: 'POST',
+        data: params,
     });
 }

@@ -123,7 +123,8 @@ export default function () {
     };
     // 提交审核完成更新列表
     function handleComplete() {
-
+        tableRef.current.manualSelectedRows();
+        tableRef.current.remoteDataRefresh();
     }
     // 终止审核
     const handleStopFlow = () => {
@@ -244,7 +245,7 @@ export default function () {
                 businessKey={data.flowId}
                 callBack={handleComplete}
                 disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length === 0}
-                businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewRequirement'
+                businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewPlanMonth'
                 key='SUPPLIER_AUDIT_MONTH_INFLOW'
               >提交审核</StartFlow>)
         }
