@@ -211,7 +211,7 @@ const BaseInfo = (props) => {
                   })(
                     <Upload
                       entityId={type === 'add' ? null : data.fileList}
-                      type={type === 'detail' ? 'show' : ''}
+                      type={isView ? 'show' : ''}
                       showColor={isView ? true : false}
                     />
                   )
