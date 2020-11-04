@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:00:19
- * @LastEditTime: 2020-11-04 17:19:42
+ * @LastEditTime: 2020-11-04 17:25:56
  * @Description:  年度审核计划管理
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/index.js
  */
@@ -293,7 +293,7 @@ export default function () {
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 key='TECHNICAL_DATA_SHARING_DELETE'
-                disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', 'DRAFT') || data.selectedRowKeys.length > 1}
+                disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', 'DRAFT') || !judge(data.selectedRows, 'flowStatus', 'INIT')}
             >删除</Button>)
         }
         {
