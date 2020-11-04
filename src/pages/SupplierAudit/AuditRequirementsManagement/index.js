@@ -127,7 +127,7 @@ export default function() {
           } else {
             message.error(res.message);
           }
-        });
+        }).catch(err => message.error(err.message))
       },
     });
   };

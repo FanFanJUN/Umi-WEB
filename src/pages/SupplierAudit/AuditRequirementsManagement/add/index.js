@@ -161,8 +161,8 @@ const Index = () => {
     });
     const lineBoList = await intendedAuditInformationRef.current.getDataSource();
     const deleteArr = await intendedAuditInformationRef.current.getDeleteArr();
+    insertData.lineBoList = [...lineBoList, ...deleteLine];
     if (data.type === 'add') {
-      insertData.lineBoList = [...lineBoList, ...deleteLine];
       return new Promise(function(resolve, reject) {
         AddAuditRequirementsManagement(insertData).then(res => {
           if (res.success) {
@@ -181,9 +181,10 @@ const Index = () => {
       let updateData = Object.assign(data.editData, insertData);
       updateData.deleteList = deleteArr;
       return new Promise(function(resolve, reject) {
-        UpdateAuditRequirementsManagement(insertData).then(res => {
+        UpdateAuditRequirementsManagement(updateData).then(res => {
           if (res.success) {
-            const data = { businessKey: insertData.id };
+            console.log(insertData, 'insertData')
+            const data = { businessKey: updateData.id };
             resolve({
               success: true,
               message: res.message,
@@ -199,6 +200,7 @@ const Index = () => {
   };
 
   const handleComplete = () => {
+    console.log('触发')
     handleBack();
   };
 
@@ -213,12 +215,17 @@ const Index = () => {
                 <Button className={styles.btn} onClick={handleBack}>返回</Button>
                 <Button className={styles.btn} onClick={() => handleSave('add')}>暂存</Button>
                 <StartFlow
-                  style={{ marginRight: '5px' }}
+                  className={styles.btn}
+                  type='primary'
                   beforeStart={handleBeforeStartFlow}
-                  needStartConfirm={true}
                   callBack={handleComplete}
+                  disabled={false}
                   businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewRequirement'
-                />
+                >
+                  {
+                    loading => <Button loading={loading} type='primary'>提交</Button>
+                  }
+                </StartFlow>
               </div>
             }
           </div>
