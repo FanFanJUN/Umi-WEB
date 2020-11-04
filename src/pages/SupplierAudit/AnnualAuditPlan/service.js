@@ -3,13 +3,13 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-22 10:13:27
- * @LastEditTime: 2020-11-02 10:33:43
+ * @LastEditTime: 2020-11-04 17:09:50
  * @Description: 接口 集
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/service.js
  */
 import request from '@/utils/request';
-import { recommendUrl, smBaseUrl } from '@/utils/commonUrl';
-import { baseUrl } from '../../../utils/commonUrl';
+import { baseUrl, gatewayUrl, recommendUrl, smBaseUrl } from '../../../utils/commonUrl';
+import { FLOW_HOST } from '../../../utils/constants';
 
 // 合格供应商名录
 export async function getSupplierSupplyList(params) {
@@ -53,17 +53,26 @@ export async function deleteReviewPlanYear(params) {
 export async function submitReviewPlanYear(params) {
     const url = `${recommendUrl}/api/reviewPlanYearService/pushTasksToDo`;
     return request({
-      url,
-      method: 'GET',
-      params,
+        url,
+        method: 'GET',
+        params,
     });
-  }
+}
 // 审核类型
 export async function findReviewTypesByCode(params) {
     const url = `${baseUrl}/reviewType/findBySearchPage`;
     return request({
-      url,
-      method: 'POST',
-      data: params,
+        url,
+        method: 'POST',
+        data: params,
     });
-  }
+}
+// 终止审批流程
+export const endFlow = async (params = {}) => {
+    const url = `${gatewayUrl}${FLOW_HOST}/flowInstance/checkAndEndByBusinessId`
+    return request({
+        url,
+        method: 'POST',
+        params,
+    })
+}  
