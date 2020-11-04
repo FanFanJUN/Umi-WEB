@@ -48,12 +48,22 @@ export async function findOneOverride(params) {
     });
 }
 
-// 新增月度计划-编辑-保存
+// 月度计划-编辑-保存
 export async function upDateMonthBo(params) {
     const requestUrl = `${recommendUrl}/api/reviewPlanMonthService/update`;
     return request({
         url: requestUrl,
         method: 'POST',
         data: params,
+    });
+}
+
+// 月度计划-删除
+export async function deletePlanMonth(params) {
+    const requestUrl = `${recommendUrl}/api/reviewPlanMonthService/deleteReviewPlanMonth`;
+    return request({
+        url: requestUrl,
+        method: 'GET',
+        params,
     });
 }

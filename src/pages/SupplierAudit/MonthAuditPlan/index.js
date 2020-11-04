@@ -17,9 +17,11 @@ import {
     ShareStatusProps,
     flowProps
 } from '../../QualitySynergy/commonProps';
+import { deletePlanMonth } from "./service";
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
 import { openNewTab, getUserAccount } from '../../../utils';
+import ChangeHistory from "./component/ChangeHistory";
 
 const { FlowHistoryButton } = WorkFlow;
 const { authAction } = utils;
@@ -38,6 +40,7 @@ export default function () {
         selectedRows: [],
         flowId: ''
     });
+    const [historyVisible, setHistoryV] = useState(false);
     useEffect(() => {
         window.parent.frames.addEventListener('message', listenerParentClose, false);
         return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
@@ -61,6 +64,12 @@ export default function () {
             case 'detail':
                 openNewTab(`supplierAudit/MonthAuditPlanEda?pageState=detail&id=${data.selectedRows[0].reviewPlanMonthCode}`, '月度审核计划管理-明细', false);
                 break;
+            case 'change':
+                openNewTab(`supplierAudit/MonthAuditPlanEda?pageState=change&id=${data.selectedRows[0].reviewPlanMonthCode}`, '月度审核计划管理-变更', false);
+                break;
+            case "changehistory":
+                setHistoryV(true);
+                break;
             default:
                 break;
         }
@@ -82,11 +91,11 @@ export default function () {
         delete value.materialSecondClassifyCode_name;
         delete value.allotSupplierState_name;
         delete value.reviewTypeCode_name;
-        value.applyDate = value.applyDate?moment(value.applyDate).format('YYYY-MM-DD ') : ''
-        value.ApplyDateStart = value.applyDate? value.applyDate + "00:00:00" : ''
-        value.ApplyDateEnd = value.applyDate? value.applyDate + "23:59:59" : ''
+        value.applyDate = value.applyDate ? moment(value.applyDate).format('YYYY-MM-DD ') : ''
+        value.ApplyDateStart = value.applyDate ? value.applyDate + "00:00:00" : ''
+        value.ApplyDateEnd = value.applyDate ? value.applyDate + "23:59:59" : ''
         delete value.applyDate;
-        setData(v => ({ ...v, epTechnicalShareDemandSearchBo: {...value} }));
+        setData(v => ({ ...v, epTechnicalShareDemandSearchBo: { ...value } }));
         tableRef.current.manualSelectedRows();
         tableRef.current.remoteDataRefresh();
         headerRef.current.hide();
@@ -101,14 +110,14 @@ export default function () {
             okType: 'danger',
             cancelText: '否',
             onOk: () => {
-                DeleteDataSharingList({
-                    ids: data.selectedRowKeys.toString(),
+                console.log([...data.selectedRowKeys])
+                deletePlanMonth({
+                    ids: JSON.stringify(data.selectedRowKeys),
                 }).then(res => {
                     if (res.success) {
                         message.success(res.message);
                         tableRef.current.manualSelectedRows();
                         tableRef.current.remoteDataRefresh();
-
                     } else {
                         message.error(res.message);
                     }
@@ -129,27 +138,27 @@ export default function () {
     // 终止审核
     const handleStopFlow = () => {
         Modal.confirm({
-          title: '终止审核',
-          content: '是否终止审核？',
-          okText: '确定',
-          cancelText: '取消',
-          onOk: async () => {
-            setData(v => ({ ...v, spinning: true }));
-            const { flowId } = data;
-            const { success, message: msg } = await EndFlow({
-              businessId: flowId,
-            });
-            if (success) {
-              message.success(msg);
-              setData(v => ({ ...v, spinning: false }));
-              tableRef.current.manualSelectedRows();
-              tableRef.current.remoteDataRefresh();
-              return;
-            }
-            message.error(msg);
-          },
+            title: '终止审核',
+            content: '是否终止审核？',
+            okText: '确定',
+            cancelText: '取消',
+            onOk: async () => {
+                setData(v => ({ ...v, spinning: true }));
+                const { flowId } = data;
+                const { success, message: msg } = await EndFlow({
+                    businessId: flowId,
+                });
+                if (success) {
+                    message.success(msg);
+                    setData(v => ({ ...v, spinning: false }));
+                    tableRef.current.manualSelectedRows();
+                    tableRef.current.remoteDataRefresh();
+                    return;
+                }
+                message.error(msg);
+            },
         });
-      };
+    };
 
     // 高级查询配置
     const formItems = [
@@ -213,7 +222,9 @@ export default function () {
                 key='SUPPLIER_AUDIT_MONTH_EDIT'
                 disabled={
                     data.selectedRowKeys.length !== 1
-                    // || data.selectedRows[0]?.state !== 'DRAFT'
+                    || data.selectedRows[0]?.state !== 'DRAFT'
+                    || data.selectedRows[0]?.flowStatus !== 'INIT'
+                    || data.selectedRows[0]?.applyAccount !== getUserAccount()
                 }
             >编辑</Button>)
         }
@@ -225,6 +236,7 @@ export default function () {
                 key='SUPPLIER_AUDIT_MONTH_DELETE'
                 disabled={!(data.selectedRowKeys.length !== 0
                     && judge(data.selectedRows, 'state', 'DRAFT')
+                    && judge(data.selectedRows, 'flowStatus', 'INIT')
                     && judge(data.selectedRows, 'applyAccount', getUserAccount()))}
             >删除</Button>)
         }
@@ -247,7 +259,7 @@ export default function () {
                 disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length === 0}
                 businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewPlanMonth'
                 key='SUPPLIER_AUDIT_MONTH_INFLOW'
-              >提交审核</StartFlow>)
+            >提交审核</StartFlow>)
         }
         {
             authAction(<FlowHistoryButton
@@ -256,9 +268,9 @@ export default function () {
                 ignore={DEVELOPER_ENV}
                 disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
                 key='SUPPLIER_AUDIT_MONTH_HISTORY'
-              >
+            >
                 <Button className={styles.btn} disabled={data.selectedRowKeys.length !== 1}>审核历史</Button>
-              </FlowHistoryButton>)
+            </FlowHistoryButton>)
         }
         {
             authAction(<Button
@@ -268,12 +280,16 @@ export default function () {
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 key='TECHNICAL_DATA_SHARING_ALLOT'
-              >终止审核</Button>)
+            >终止审核</Button>)
         }
         {
             authAction(<Button
                 onClick={() => redirectToPage('change')}
                 className={styles.btn}
+                disabled={
+                    data.selectedRowKeys.length !== 1 
+                    // || data.selectedRows[0]?.flowStatus !== 'COMPLETED'
+                }
                 ignore={DEVELOPER_ENV}
                 key='SUPPLIER_AUDIT_MONTH_CHANGE'
             >变更</Button>)
@@ -282,6 +298,7 @@ export default function () {
             authAction(<Button
                 onClick={() => redirectToPage('changehistory')}
                 className={styles.btn}
+                disabled={data.selectedRowKeys.length !== 1}
                 ignore={DEVELOPER_ENV}
                 key='SUPPLIER_AUDIT_MONTH_CHANGE_LIST'
             >变更历史</Button>)
@@ -337,6 +354,12 @@ export default function () {
                     />
                 }
             </AutoSizeLayout>
+
+            {historyVisible && <ChangeHistory
+                visible={historyVisible}
+                handleCancel={()=>{setHistoryV(false)}}
+                id={data.selectedRowKeys[0]}
+            />}
         </Fragment>
     );
 }

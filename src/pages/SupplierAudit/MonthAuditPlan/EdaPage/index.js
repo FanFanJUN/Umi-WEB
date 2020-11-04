@@ -7,6 +7,7 @@ import styles from '../../../Supplier/Editor/index.less';
 import { router } from 'dva';
 import { closeCurrent, getMobile, getUserId, getUserName } from '@/utils';
 import LineInfo from './LineInfo';
+import ChangeInfo from "../component/ChangeInfo"
 import { insertMonthBo, findOneOverride, upDateMonthBo } from "../service";
 const { StartFlow } = WorkFlow;
 
@@ -40,7 +41,11 @@ const Index = (props) => {
                 break;
             case 'detail':
                 getDetail();
-                setData((value) => ({ ...value, type: pageState, isView: true, title: `月度审核计划管理-明细` }));
+                setData((value) => ({ ...value, type: pageState, isView: true, title: `月度审核计划明细: ${id}` }));
+                break;
+            case 'change':
+                getDetail();
+                setData((value) => ({ ...value, type: pageState, isView: true, title: `变更月度审核计划: ${id}` }));
                 break;
             default:
                 setData((value) => ({ ...value, type: pageState, isView: false, title: '月度审核计划管理-新增' }));
@@ -153,9 +158,9 @@ const Index = (props) => {
                 <div className={classnames(styles.fbc, styles.affixHeader)}>
                     <span>{data.title}</span>
                     {
-                        data.type !== 'detail' && <div style={{ display: "flex", alignItems: 'center' }}>
+                        (data.type !== 'detail' || data.type === 'change') && <div style={{ display: "flex", alignItems: 'center' }}>
                             <Button className={styles.btn} onClick={handleBack}>返回</Button>
-                            <Button className={styles.btn} onClick={() => handleSave('save')}>暂存</Button>
+                            {data.type !== 'change' && <Button className={styles.btn} onClick={() => handleSave('save')}>暂存</Button>}
                             <StartFlow
                                 className={styles.btn}
                                 type='primary'
@@ -181,6 +186,9 @@ const Index = (props) => {
                 isView={data.isView}
                 originData={editData}
             />
+            {
+                data.type === "change" && <ChangeInfo originData={{}}/>
+            }
             <LineInfo
                 type={data.type}
                 isView={data.isView}
