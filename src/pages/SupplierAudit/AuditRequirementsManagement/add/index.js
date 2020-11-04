@@ -11,7 +11,9 @@ import {
   FindOneAuditRequirementsManagement,
   GetAllAuditType, UpdateAuditRequirementsManagement,
 } from '../../mainData/commomService';
-import { StartFlow } from 'seid';
+import { WorkFlow } from 'suid';
+
+const { StartFlow } = WorkFlow;
 
 const Index = () => {
   const baseInfoRef = useRef(null);
@@ -106,7 +108,7 @@ const Index = () => {
     closeCurrent();
   };
 
-  const handleSave = async (type) => {
+  const handleSave = async () => {
     let insertData = await baseInfoRef.current.getBaseInfoData((err, values) => {
       if (!err) {
         return values;
@@ -123,7 +125,7 @@ const Index = () => {
             AddAuditRequirementsManagement(insertData).then(res => {
               if (res.success) {
                 message.success(res.message);
-                handleBack();
+                // handleBack();
               } else {
                 message.error(res.message);
               }
@@ -134,7 +136,7 @@ const Index = () => {
             UpdateAuditRequirementsManagement(updateData).then(res => {
               if (res.success) {
                 message.success(res.message);
-                handleBack();
+                // handleBack();
               } else {
                 message.error(res.message);
               }
@@ -150,12 +152,54 @@ const Index = () => {
     // console.log(baseInfoData)
   };
 
-  const handleBeforeStartFlow = () => {
+  const handleBeforeStartFlow = async () => {
+    console.log('触发');
+    let insertData = await baseInfoRef.current.getBaseInfoData((err, values) => {
+      if (!err) {
+        return values;
+      }
+    });
+    const lineBoList = await intendedAuditInformationRef.current.getDataSource();
+    const deleteArr = await intendedAuditInformationRef.current.getDeleteArr();
+    if (data.type === 'add') {
+      insertData.lineBoList = [...lineBoList, ...deleteLine];
+      return new Promise(function(resolve, reject) {
+        AddAuditRequirementsManagement(insertData).then(res => {
+          if (res.success) {
+            const data = { businessKey: res.data };
+            resolve({
+              success: true,
+              message: res.message,
+              data,
+            });
+          } else {
+            message.error(res.message);
+          }
+        }).catch(err => reject(err));
+      });
+    } else {
+      let updateData = Object.assign(data.editData, insertData);
+      updateData.deleteList = deleteArr;
+      return new Promise(function(resolve, reject) {
+        UpdateAuditRequirementsManagement(insertData).then(res => {
+          if (res.success) {
+            const data = { businessKey: insertData.id };
+            resolve({
+              success: true,
+              message: res.message,
+              data,
+            });
+          } else {
+            message.error(res.message);
+          }
+        }).catch(err => reject(err));
+      });
+    }
 
   };
 
   const handleComplete = () => {
-
+    handleBack();
   };
 
   return (
@@ -170,14 +214,10 @@ const Index = () => {
                 <Button className={styles.btn} onClick={() => handleSave('add')}>暂存</Button>
                 <StartFlow
                   style={{ marginRight: '5px' }}
-                  needConfirm={handleBeforeStartFlow}
-                  businessKey={data.flowId}
+                  beforeStart={handleBeforeStartFlow}
+                  needStartConfirm={true}
                   callBack={handleComplete}
-                  startButtonProps={{
-                    type: 'primary'
-                  }}
                   businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewRequirement'
-                  key='SRM-SM-SUPPLIERMODEL_EXAMINE'
                 />
               </div>
             }

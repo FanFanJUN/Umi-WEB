@@ -466,7 +466,7 @@ export const DeleteAuditRequirementsManagement = async (params = {}) => {
   const url = `${recommendUrl}/api/reviewRequirementService/delete`;
   return request({
     url,
-    method: 'POST',
+    method: 'DELETE',
     data: params,
   });
 };

@@ -85,25 +85,6 @@ export default function() {
     console.log(value, 'value');
   };
 
-
-  const submitOrRecall = (type) => {
-    if (type === 'submit') {
-      SubmitDataSharingList({
-        ids: data.selectedRowKeys.toString(),
-      }).then(res => {
-        if (res.success) {
-          message.success('提交成功');
-          tableRef.current.manualSelectedRows();
-          tableRef.current.remoteDataRefresh();
-        } else {
-          message.error(res.message);
-        }
-      });
-    } else {
-
-    }
-  };
-
   const endFlow = () => {
     Modal.confirm({
       title: '终止审核',
@@ -137,9 +118,8 @@ export default function() {
       okType: 'danger',
       cancelText: '否',
       onOk: () => {
-        DeleteAuditRequirementsManagement({
-          reviewRequirementCode: data.selectedRows[0].reviewRequirementCode,
-        }).then(res => {
+        const codeArr = data.selectedRows.map(item => item.reviewRequirementCode)
+        DeleteAuditRequirementsManagement(codeArr).then(res => {
           if (res.success) {
             message.success(res.message);
             tableRef.current.manualSelectedRows();
@@ -261,7 +241,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='TECHNICAL_DATA_SHARING_EDIT'
-        disabled={!judge(data.selectedRows, 'state', 'DRAFT') || data.selectedRowKeys.length === 0}
+        disabled={!judge(data.selectedRows, 'state', 'DRAFT') || data.selectedRowKeys.length !== 1}
       >编辑</Button>)
     }
     {
@@ -326,8 +306,6 @@ export default function() {
     />
   </div>;
 
-  console.log(judge(data.selectedRows, 'flowStatus', 'INIT'));
-
   const onSelectRow = (value, rows) => {
     console.log(value, rows);
     const [flowData = {}] = rows;
@@ -363,7 +341,7 @@ export default function() {
             allowCancelSelect={true}
             remotePaging={true}
             checkbox={{
-              multiSelect: false,
+              multiSelect: true,
             }}
             ref={tableRef}
             showSearch={false}

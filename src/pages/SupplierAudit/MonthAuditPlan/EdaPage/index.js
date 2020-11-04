@@ -72,48 +72,55 @@ const Index = (props) => {
         closeCurrent();
     };
 
+    const getAllData = () => {
+      return form.validateFieldsAndScroll((err, values) => {
+        if (err) return;
+        let saveData = { ...values };
+        let lineData = tableRef.current.getTableList();
+        let deleteArr = tableRef.current.getDeleteArr();
+        saveData.lineBoList = lineData;
+        saveData.deleteList = deleteArr;
+        if (!saveData.attachRelatedIds) {
+          saveData.attachRelatedIds = [];
+        }
+        if (lineData.length === 0) {
+          message.info('请至少添加一条行信息');
+        } else {
+          return saveData
+        }
+      });
+    }
+
     const handleSave = async (type) => {
-        form.validateFieldsAndScroll(async (err, values) => {
-            if (err) return;
-            let saveData = { ...values };
-            let lineData = tableRef.current.getTableList();
-            let deleteArr = tableRef.current.getDeleteArr();
-            saveData.lineBoList = lineData;
-            saveData.deleteList = deleteArr;
-            if (!saveData.attachRelatedIds) {
-                saveData.attachRelatedIds = [];
-            }
-            if (lineData.length === 0) {
-                message.info('请至少添加一条行信息');
-                return;
-            }
-            setLoading(true);
-            let res = {};
-            if (query.pageState === "add") {
-                res = await insertMonthBo(saveData);
-            } else {
-                saveData = { ...editData, ...saveData };
-                res = await upDateMonthBo(saveData);
-                res.data = saveData.id;
-            }
-            if (res.success) {
-                if (type === "save") {
-                    setLoading(false);
-                    message.success("保存成功");
-                    setTimeout(() => {
-                        // handleBack();
-                    }, 3000)
-                } else {
-                    // 处理提交审核
-                    console.log("这里返回的数据", res.data)
-                    return res.data;
-                }
-            } else {
-                setLoading(false);
-                message.error(res.message);
-                return false;
-            }
-        });
+      let saveData = await getAllData()
+      console.log(saveData, 'saveData')
+        setLoading(true);
+        let res = {};
+        if (query.pageState === "add") {
+          res = await insertMonthBo(saveData);
+        } else {
+          saveData = { ...editData, ...saveData };
+          console.log(saveData,'触发2')
+          res = await upDateMonthBo(saveData);
+          res.data = saveData.id;
+        }
+        if (res.success) {
+          if (type === "save") {
+            setLoading(false);
+            message.success("保存成功");
+            setTimeout(() => {
+              // handleBack();
+            }, 3000)
+          } else {
+            // 处理提交审核
+            console.log("这里返回的数据", res.data, res)
+            return res.data;
+          }
+        } else {
+          setLoading(false);
+          message.error(res.message);
+          return false;
+        }
     }
     // 提交审核验证
     const handleBeforeStartFlow = async () => {
@@ -123,7 +130,7 @@ const Index = (props) => {
             if (id) {
                 resolve({
                     success: data,
-                    message: msg,
+                    message: '保存成功',
                     data: {
                         businessKey: id
                     }
