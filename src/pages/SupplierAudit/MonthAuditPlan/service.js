@@ -58,6 +58,16 @@ export async function upDateMonthBo(params) {
     });
 }
 
+// 月度计划-变更-提交
+export async function insertChangeMonthBo(params) {
+    const requestUrl = `${recommendUrl}/api/reviewPlanMonthChangeService/insert`;
+    return request({
+        url: requestUrl,
+        method: 'POST',
+        data: params,
+    });
+}
+
 // 月度计划-删除
 export async function deletePlanMonth(params) {
     const requestUrl = `${recommendUrl}/api/reviewPlanMonthService/deleteReviewPlanMonth`;

@@ -8,12 +8,13 @@ import { router } from 'dva';
 import { closeCurrent, getMobile, getUserId, getUserName } from '@/utils';
 import LineInfo from './LineInfo';
 import ChangeInfo from "../component/ChangeInfo"
-import { insertMonthBo, findOneOverride, upDateMonthBo } from "../service";
+import { insertMonthBo, findOneOverride, upDateMonthBo, insertChangeMonthBo } from "../service";
 const { StartFlow } = WorkFlow;
 
 const Index = (props) => {
     const { form } = props;
     const tableRef = useRef(null);
+    const changeRef = useRef(null);
     const [data, setData] = useState({
         id: '',
         spinLoading: false,
@@ -78,53 +79,67 @@ const Index = (props) => {
     };
 
     const getAllData = () => {
-      return form.validateFieldsAndScroll((err, values) => {
-        if (err) return;
-        let saveData = { ...values };
+        let saveData = { ...editData };
         let lineData = tableRef.current.getTableList();
         let deleteArr = tableRef.current.getDeleteArr();
         saveData.lineBoList = lineData;
         saveData.deleteList = deleteArr;
-        if (!saveData.attachRelatedIds) {
-          saveData.attachRelatedIds = [];
-        }
-        if (lineData.length === 0) {
-          message.info('请至少添加一条行信息');
+        // 变更时
+        if (query.pageState === "change") {
+            const changeInfo = changeRef.current.getData();
+            if (!changeInfo) {
+                return false;
+            } else {
+                Object.assign(saveData, changeInfo);
+                return saveData;
+            }
         } else {
-          return saveData
+            return form.validateFieldsAndScroll((err, values) => {
+                if (err) return;
+                Object.assign(saveData, values)
+                if (!saveData.attachRelatedIds) {
+                    saveData.attachRelatedIds = [];
+                }
+                if (lineData.length === 0) {
+                    message.info('请至少添加一条行信息');
+                } else {
+                    console.log("这里的saveData", saveData)
+                    return saveData
+                }
+            });
         }
-      });
     }
 
     const handleSave = async (type) => {
-      let saveData = await getAllData()
-      console.log(saveData, 'saveData')
+        let saveData = await getAllData();
+        if (!saveData) return;
         setLoading(true);
         let res = {};
         if (query.pageState === "add") {
-          res = await insertMonthBo(saveData);
+            res = await insertMonthBo(saveData);
+        } else if (query.pageState === "edit") {
+            saveData = { ...editData, ...saveData };
+            res = await upDateMonthBo(saveData);
+            res.data = saveData.id;
         } else {
-          saveData = { ...editData, ...saveData };
-          console.log(saveData,'触发2')
-          res = await upDateMonthBo(saveData);
-          res.data = saveData.id;
+            res = await insertChangeMonthBo(saveData);
         }
         if (res.success) {
-          if (type === "save") {
-            setLoading(false);
-            message.success("保存成功");
-            setTimeout(() => {
-              // handleBack();
-            }, 3000)
-          } else {
-            // 处理提交审核
-            console.log("这里返回的数据", res.data, res)
-            return res.data;
-          }
+            if (type === "save") {
+                setLoading(false);
+                message.success("保存成功");
+                setTimeout(() => {
+                    // handleBack();
+                }, 3000)
+            } else {
+                // 处理提交审核
+                console.log("这里返回的数据", res.data, res)
+                return res.data;
+            }
         } else {
-          setLoading(false);
-          message.error(res.message);
-          return false;
+            setLoading(false);
+            message.error(res.message);
+            return false;
         }
     }
     // 提交审核验证
@@ -187,7 +202,7 @@ const Index = (props) => {
                 originData={editData}
             />
             {
-                data.type === "change" && <ChangeInfo originData={{}}/>
+                data.type === "change" && <ChangeInfo originData={{}} wrappedComponentRef={changeRef} />
             }
             <LineInfo
                 type={data.type}

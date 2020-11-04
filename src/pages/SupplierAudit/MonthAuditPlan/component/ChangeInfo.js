@@ -7,7 +7,7 @@
  * @Description:  基本信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BaseInfo.js
  */
-import React, { useEffect, useImperativeHandle } from 'react';
+import React, { useEffect, useImperativeHandle, forwardRef } from 'react';
 import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/edit/BaseInfo.less';
 import { Col, Form, Row, Input } from 'antd';
 import Upload from '../../Upload';
@@ -31,10 +31,21 @@ const formLongLayout = {
     },
 };
 
-const ChangeInfo = (props) => {
-
+const ChangeInfo = forwardRef((props, ref) => {
+    useImperativeHandle(ref, () => ({
+        getData:() => {
+            let changeInfo = {}
+            form.validateFieldsAndScroll((err, values) => {
+                if(!err) {
+                    changeInfo = {...values}
+                } else {
+                    changeInfo = false
+                }
+            })
+            return changeInfo;
+        }
+    }));
     const { form, originData: data} = props;
-
     const { getFieldDecorator, setFieldsValue } = form;
     return (
         <div className={styles.wrapper}>
@@ -59,7 +70,9 @@ const ChangeInfo = (props) => {
                         <Col span={24}>
                             <FormItem label="变更原因" {...formLongLayout}>
                                 {
-                                    getFieldDecorator('changeReason')(
+                                    getFieldDecorator('changeReason', {
+                                        rules: [{ required: true, message: '变更原因不能为空',},],
+                                    })(
                                         <Input.TextArea rows={6} style={{ width: '100%' }} />
                                     )
                                 }
@@ -70,5 +83,5 @@ const ChangeInfo = (props) => {
             </div>
         </div >
     );
-}
+})
 export default Form.create()(ChangeInfo);
