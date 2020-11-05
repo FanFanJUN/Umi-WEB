@@ -8,6 +8,8 @@ const Index = () => {
 
   const { query } = router.useLocation();
 
+  console.log(query, router.useLocation(),  'queery')
+
   const handleClose = () => {
     closeCurrent();
   }
