@@ -31,6 +31,7 @@ const Index = (props) => {
   const [deleteLine, setDeleteLine] = useState([]);
 
   const [data, setData] = useState({
+    reviewRequirementCode: '',
     lineBoList: [],
     editData: {},
     allAuditType: [],
@@ -46,9 +47,9 @@ const Index = (props) => {
     // 获取所有审核类型
     getAuditType();
     const { id, pageState } = query;
-    let state = pageState
+    let state = pageState;
     if (props.isInFlow) {
-      state = 'detail'
+      state = 'detail';
     }
     switch (state) {
       case 'add':
@@ -61,12 +62,12 @@ const Index = (props) => {
           ...value,
           type: state,
           isView: false,
-          title: `审核需求管理-编辑 ${id}`,
+          title: `审核需求管理-编辑`,
         }));
         break;
       case 'detail':
         findOne(id);
-        setData((value) => ({ ...value, type: state, isView: true, title: `审核需求管理-明细 ${id}` }));
+        setData((value) => ({ ...value, type: state, isView: true, title: `审核需求管理-明细` }));
         break;
     }
   }, []);
@@ -74,7 +75,7 @@ const Index = (props) => {
   const findOne = (id) => {
     setData(v => ({ ...v, spinLoading: true }));
     FindOneAuditRequirementsManagement({
-      reviewRequirementCode: id,
+      id,
     }).then(res => {
       if (res.success) {
         setCompanyCode(res.data.applyCorporationCode);
@@ -84,7 +85,7 @@ const Index = (props) => {
         message.error(res.message);
       }
       console.log(res);
-    });
+    }).catch(err => message.error(err.message));
   };
 
   const getAuditType = () => {
@@ -185,7 +186,7 @@ const Index = (props) => {
       return new Promise(function(resolve, reject) {
         UpdateAuditRequirementsManagement(updateData).then(res => {
           if (res.success) {
-            console.log(insertData, 'insertData')
+            console.log(insertData, 'insertData');
             const data = { businessKey: updateData.id };
             resolve({
               success: true,
@@ -212,7 +213,8 @@ const Index = (props) => {
           <div className={classnames(styles.fbc, styles.affixHeader)}>
             <span>{data.title}</span>
             {
-              data.type !== 'detail' && <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+              data.type !== 'detail' &&
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <Button className={styles.btn} onClick={handleBack}>返回</Button>
                 <Button className={styles.btn} onClick={() => handleSave('add')}>暂存</Button>
                 <StartFlow
