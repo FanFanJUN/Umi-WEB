@@ -30,6 +30,7 @@ const HeadFormRef = forwardRef(({
     form,
     isView,
     editformData,
+    onOk = () => null,
 }, ref) => {
     useImperativeHandle(ref, () => ({
         form,
@@ -50,6 +51,10 @@ const HeadFormRef = forwardRef(({
         })
         return modifyinfluen ? modifyinfluen : false
     }
+    function afterSelect(val) {
+        //setSetupval(val.value)
+        onOk(val.value);
+    }
     return (
         <div >
             <div >
@@ -58,7 +63,7 @@ const HeadFormRef = forwardRef(({
                         <Col span={10}>
                             <Item label='供应商名称' {...formLayout}>
                                 {
-                                    isView ? <span>{authorizations ? authorizations.userName : ''}</span> :
+                                    isView ? <span>{editformData ? editformData.smSupplierName : ''}</span> :
                                     getFieldDecorator("smSupplierName", {
                                         initialValue: authorizations.userName,
                                         rules: [{ required: true, message: "请选择供应商名称", }]
@@ -89,6 +94,7 @@ const HeadFormRef = forwardRef(({
                                                 style={{ width: '100%' }}
                                                 name='smPcnChangeTypeName' 
                                                 field={['smPcnChangeTypeCode']} 
+                                                afterSelect={afterSelect}
                                                 form={form} 
                                             />
                                         )

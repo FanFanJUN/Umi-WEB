@@ -279,22 +279,22 @@ const CommonconfigRef = forwardRef(({
                         {
                           isView ?
                             <span>{editData && editData.supplierVo && editData.supplierVo.supplierCategory ? editData.supplierVo.supplierCategory.code + ' ' + editData.supplierVo.supplierCategory.name : ''}</span> :
-                            getFieldDecorator('supplierVo.supplierCategoryId'),
-                          getFieldDecorator('supplierVo.supplierCategoryName', {
-                            initialValue: editData && editData.supplierVo ? editData.supplierVo.supplierCategoryName : '',
-                            rules: [{ required: item.verifi === '0', message: '请选择供应商分类', whitespace: true }],
-                          })(
-                            <ComboTree
-                              
-                              disabled={item.verifi === '2'}
-                              {...purchaseCompanyPropsreg}
-                              form={form} showSearch={false}
-                              name='supplierVo.supplierCategoryName'
-                              field={['supplierVo.supplierCategoryId']}
-                              afterSelect={(item) => handletypeSelect(item)}
-
-                            />,
-                          )
+                            getFieldDecorator('supplierVo.supplierCategoryId',{
+                              initialValue: editData && editData.supplierVo ? editData.supplierVo.supplierCategoryId : ''
+                            }),
+                            getFieldDecorator('supplierVo.supplierCategoryName', {
+                              initialValue: editData && editData.supplierVo ? editData.supplierVo.supplierCategoryName : '',
+                              rules: [{ required: item.verifi === '0', message: '请选择供应商分类', whitespace: true }],
+                            })(
+                              <ComboTree
+                                disabled={item.verifi === '2'}
+                                {...purchaseCompanyPropsreg}
+                                form={form} showSearch={false}
+                                name='supplierVo.supplierCategoryName'
+                                field={['supplierVo.supplierCategoryId']}
+                                afterSelect={(item) => handletypeSelect(item)}
+                              />,
+                            )
                         }
                       </FormItem>
                     </Col> : null}

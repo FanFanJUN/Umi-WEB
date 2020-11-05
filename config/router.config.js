@@ -9,6 +9,16 @@ export default [
     ],
   },
   {
+    path: '/material',
+    component: '../layouts/LoginLayout',
+    title: '实物认定',
+    routes: [
+      { path: '/material/MasterData/index',component: './MaterialCognizance/MasterData',title: '实物认定主数据'},
+      { path: '/material/Cognizance/index',component: './MaterialCognizance/Cognizance',title: '实物认定计划'},
+      { path: '/material/Cognizance/AdmitEdit/index',component: './MaterialCognizance/Cognizance/AdmitEdit/index',title: '实物认定计划'}
+    ]
+  },
+  {
     path: '/gradeSystem',
     component: '../layouts/LoginLayout',
     title: '系统打分主数据',
@@ -103,6 +113,11 @@ export default [
       { path: '/supplierAudit/ReviewCityConf', component: './SupplierAudit/mainData/ReviewCityConf', title: '审核地区城市配置-主数据' },
       { path: '/supplierAudit/AuditRequirementsManagementDetail', component: './SupplierAudit/AuditRequirementsManagementDetail', title: '审核需求管理明细' },
       { path: '/supplierAudit/AuditRequirementsManagement', component: './SupplierAudit/AuditRequirementsManagement', title: '审核需求管理' },
+
+      { path: '/supplierAudit/AuditRequirementsManagementFlow', component: './SupplierAudit/FlowList', title: '审核需求管理流程中' },
+      { path: '/supplierAudit/monthAuditInFlow', component: './SupplierAudit/FlowList/monthAuditInFlow', title: '月度审核计划流程中' },
+      { path: '/supplierAudit/MonthAuditPlanInFlow', component: './SupplierAudit/FlowList/monthAuditPlanInFlow', title: '月度审核计划变更流程中' },
+
       { path: '/supplierAudit/AuditRequirementsManagementAdd', component: './SupplierAudit/AuditRequirementsManagement/add', title: '审核需求管理新增' },
       { path: '/supplierAudit/AnnualAuditPlan', component: './SupplierAudit/AnnualAuditPlan', title: '年度审核计划管理' },
       { path: '/supplierAudit/AnnualAuditPlanEda', component: './SupplierAudit/AnnualAuditPlan/EdaPage', title: '年度审核计划管理新增' },
@@ -110,6 +125,7 @@ export default [
       { path: '/supplierAudit/MonthAuditPlan', component: './SupplierAudit/MonthAuditPlan', title: '月度审核计划管理' },
       { path: '/supplierAudit/MonthAuditPlanEda', component: './SupplierAudit/MonthAuditPlan/EdaPage', title: '月度审核计划管理新增' },
       { path: '/supplierAudit/detailList', component: './SupplierAudit/MonthAuditPlan/detailList', title: '月度审核计划明细' },
+      { path: '/supplierAudit/MonthAuditChangeDetail', component: './SupplierAudit/MonthAuditPlan/component/changeDetail', title: '月度审核计划变更明细' },
     ]
   },
   {

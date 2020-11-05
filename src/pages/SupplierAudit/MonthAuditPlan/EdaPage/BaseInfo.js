@@ -9,11 +9,11 @@
  */
 import React, { useEffect, useImperativeHandle } from 'react';
 import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/edit/BaseInfo.less';
-import { ComboList, ComboTree, ExtModal } from 'suid';
-import { Col, Form, Modal, Row, Input, DatePicker, InputNumber } from 'antd';
+import { ComboList, ComboTree } from 'suid';
+import { Col, Form, Row, Input, Select, InputNumber } from 'antd';
 import Upload from '../../Upload';
 import { AllCompanyConfig, ApplyOrganizationProps } from '../../AnnualAuditPlan/propsParams';
-import { isEmptyArray, guid, hideFormItem, filterEmptyFileds, getDocIdForArray } from '@/utils/utilTool';
+import {  hideFormItem, getDocIdForArray } from '@/utils/utilTool';
 
 const FormItem = Form.Item;
 
@@ -147,7 +147,7 @@ const BaseInfo = (props) => {
           <Row>
             <Col span={12}>
               <FormItem label="月度" {...formLayout}>
-                {isView ? <span>{data.applyMonth}</span> : getFieldDecorator('applyMonth', {
+                {isView ? <span>{data.applyMonth + "月"}</span> : getFieldDecorator('applyMonth', {
                   initialValue: type === 'add' ? '' : data.applyMonth,
                   rules: [
                     {
@@ -156,7 +156,20 @@ const BaseInfo = (props) => {
                     },
                   ],
                 })(
-                  <InputNumber style={{ width: '100%' }} min={0} />
+                  <Select placeholder='选择月' style={{width: '50%'}}>
+                      <Select.Option value={1}>1月</Select.Option>
+                      <Select.Option value={2}>2月</Select.Option>
+                      <Select.Option value={3}>3月</Select.Option>
+                      <Select.Option value={4}>4月</Select.Option>
+                      <Select.Option value={5}>5月</Select.Option>
+                      <Select.Option value={6}>6月</Select.Option>
+                      <Select.Option value={7}>7月</Select.Option>
+                      <Select.Option value={8}>8月</Select.Option>
+                      <Select.Option value={9}>9月</Select.Option>
+                      <Select.Option value={10}>10月</Select.Option>
+                      <Select.Option value={11}>11月</Select.Option>
+                      <Select.Option value={12}>12月</Select.Option>
+                  </Select>
                 )}
               </FormItem>
             </Col>
@@ -194,11 +207,11 @@ const BaseInfo = (props) => {
               <FormItem {...formLongLayout} label={'附件'}>
                 {
                   getFieldDecorator('attachRelatedIds', {
-                    initialValue: type === 'add' ? '' : getDocIdForArray(data.attachRelatedIds),
+                    initialValue: type === 'add' ? '' : getDocIdForArray(data.fileList),
                   })(
                     <Upload
-                      entityId={type === 'add' ? null : data.attachRelatedInfo}
-                      type={type === 'detail' ? 'show' : ''}
+                      entityId={type === 'add' ? null : data.fileList}
+                      type={isView ? 'show' : ''}
                       showColor={isView ? true : false}
                     />
                   )

@@ -37,3 +37,43 @@ export async function listAllOrgnazationWithDataAuth(params) {
         method: 'GET',
     });
 }
+
+// 月度计划-明细
+export async function findOneOverride(params) {
+    const requestUrl = `${recommendUrl}/api/reviewPlanMonthService/findOneOverride`;
+    return request({
+        url: requestUrl,
+        method: 'GET',
+        params,
+    });
+}
+
+// 月度计划-编辑-保存
+export async function upDateMonthBo(params) {
+    const requestUrl = `${recommendUrl}/api/reviewPlanMonthService/update`;
+    return request({
+        url: requestUrl,
+        method: 'POST',
+        data: params,
+    });
+}
+
+// 月度计划-变更-提交
+export async function insertChangeMonthBo(params) {
+    const requestUrl = `${recommendUrl}/api/reviewPlanMonthChangeService/insert`;
+    return request({
+        url: requestUrl,
+        method: 'POST',
+        data: params,
+    });
+}
+
+// 月度计划-删除
+export async function deletePlanMonth(params) {
+    const requestUrl = `${recommendUrl}/api/reviewPlanMonthService/deleteReviewPlanMonth`;
+    return request({
+        url: requestUrl,
+        method: 'GET',
+        params,
+    });
+}

@@ -8,6 +8,7 @@ import AutoSizeLayout from '../../../../components/AutoSizeLayout';
 import styles from '../index.less';
 import UploadFile from '../../../../components/Upload/index'
 
+
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 const { create } = Form;
 const { authAction, storage } = utils;
@@ -16,6 +17,7 @@ const ModifyinfoRef = forwardRef(({
   form,
   editformData = [],
   headerInfo,
+  modifytype,
   isEdit
 }, ref) => {
   useImperativeHandle(ref, () => ({
@@ -34,7 +36,6 @@ const ModifyinfoRef = forwardRef(({
   const [loading, triggerLoading] = useState(false);
   const [attachId, setAttachId] = useState('')
   const [title, setTitle] = useState('新增变更详情');
-  
   useEffect(() => {
     hanldModify(editformData)
   }, [editformData])
@@ -79,6 +80,8 @@ const ModifyinfoRef = forwardRef(({
     }
   ].map(_ => ({ ..._, align: 'center' }))
   const empty = selectRowKeys.length === 0;
+  //变更类型
+  //const contype = isEmpty(modifytype);
   // 编辑处理数据
   function hanldModify(val) {
     keys ++ ;
@@ -104,10 +107,16 @@ const ModifyinfoRef = forwardRef(({
   }
   // 新增
   function showModal() {
-    setTitle('新增变更详情')
-    setVisible(true)
-    setModalType(false)
-    uploadTable()
+    if (isEmpty(modifytype)) {
+      message.error('请先选择变更类型')
+      return false
+    }else {
+      setTitle('新增变更详情')
+      setVisible(true)
+      setModalType(false)
+      uploadTable()
+    }
+    
   }
   // 编辑
   function handleEdit() {
@@ -235,6 +244,7 @@ const ModifyinfoRef = forwardRef(({
           dataSource={initialValue}
           title={title}
           wrappedComponentRef={ModifyfromRef}
+          modifytype={modifytype}
           loading={loading}
           destroyOnClose
         />

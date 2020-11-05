@@ -23,7 +23,7 @@ function SupplierConfigure() {
     const [onlyMe, setOnlyMe] = useState(true);
     const [selectedRows, setRows] = useState([]);
     const [searchValue, setSearchValue] = useState({});
-    const [visible, setVisible] = useState(false);
+    const [jurisdiction, setJurisdiction] = useState(1);
     const [recommen, setrecommen] = useState([]);
     const [loading, triggerLoading] = useState(false);
     const [attachId, setAttachId] = useState('');
@@ -121,7 +121,7 @@ function SupplierConfigure() {
 
     const dataSource = {
         store: {
-            url: `${smBaseUrl}/api/smPcnTitleService/findByPurchasePage?onlyMeStatus=1`,
+            url: `${smBaseUrl}/api/smPcnTitleService/findByPurchasePage?onlyMeStatus=` + jurisdiction,
             //url: `${smBaseUrl}/api/smPcnTitleService/findByPurchasePage`,
             params: {
                 ...searchValue,
@@ -137,41 +137,7 @@ function SupplierConfigure() {
             type: 'POST'
         }
     }
-    const searchbank = ['name'];
-    // 右侧搜索
-    const searchBtnCfg = (
-        <>
-            <ComboList
-                style={{ width: 340 }}
-                searchProperties={searchbank}
-                {...BilltypeList}
-                afterSelect={cooperationChange}
-                rowKey="code"
-                //showSearch={false}
-                allowClear={true}
-                afterClear={clearinput}
-                reader={{
-                    name: 'name',
-                }}
-                className={styles.btn}
-            />
-            <Search
-                placeholder='请输入变更单号'
-                className={styles.btn}
-                onSearch={handleQuickSerach}
-                allowClear
-            />
-        </>
-    )
-    // 高级查询配置
-    const formItems = [
-        { title: '供应商代码', key: 'materialCode',  props: { placeholder: '输入供应商代码' } },
-        { title: '供应商名称', key: 'materialName',  props: { placeholder: '输入供应商名称' } },
-        { title: '单据状态', key: 'smDocunmentStatus', type: 'list', props: BilltypeList },
-        { title: '审核状态', key: 'flowStatus', type: 'list', props: ToexamineList },
-        { title: '变更类型', key: 'smPcnChangeTypeCode', type: 'list', props: PCNMasterdatalist },
-        { title: '战略采购', key: 'smSourcing', type: 'list', props: seniorStrategypurchase },
-    ];
+    
     useEffect(() => {
         window.parent.frames.addEventListener('message', listenerParentClose, false);
         return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
@@ -241,6 +207,8 @@ function SupplierConfigure() {
     // 仅我的
     function handleOnlyMeChange(e) {
         setOnlyMe(e.target.checked)
+        e.target.checked === true ? setJurisdiction(1) : setJurisdiction(0)
+        uploadTable();
     }
     // 查询
     function handleQuickSerach(value) {
@@ -293,7 +261,6 @@ function SupplierConfigure() {
         uploadTable();
     }
     function cooperationChange(val) {
-        console.log(val)
         let search = []
         search.push({
             fieldName:'smSubmitStatus',
@@ -309,75 +276,115 @@ function SupplierConfigure() {
         setSeniorsearchValue('')
         uploadTable();
     }
+    // 左侧
+    const HeaderLeftButtons = (
+        <div style={{ width: '50%', display: 'flex', height: '100%', alignItems: 'center' }}>
+            {
+                authAction(
+                    <Button
+                        ignore={DEVELOPER_ENV}
+                        key='SRM-SM-PCNPURCHASE-EDIT'
+                        className={styles.btn}
+                        onClick={handleCheckEdit}
+                        disabled={empty || underWay || !isSelf}
+                    >编辑
+                    </Button>
+                )
+            }
+            {
+                authAction(
+                    <Button
+                        ignore={DEVELOPER_ENV}
+                        key='SRM-SM-PCNPURCHASE-DETAIL'
+                        className={styles.btn}
+                        onClick={handleCheckDetail}
+                        disabled={empty}
+                    >明细
+                    </Button>
+                )
+            }
+            {
+                authAction(
+                    <StartFlow
+                        className={styles.btn}
+                        ignore={DEVELOPER_ENV}
+                        businessKey={flowId}
+                        callBack={handleComplete}
+                        disabled={empty || underWay || !Toexamine || !isSelf}
+                        businessModelCode='com.ecmp.srm.sm.entity.pcn.SmPcnTitle'
+                        key='SRM-SM-PCNPURCHASE-EXAMINE'
+                    >提交审核</StartFlow>
+                )
+            }
+            {/* {
+                authAction(
+                    <Button
+                        className={styles.btn}
+                        disabled={empty || !underWay || !isSelf || completed}
+                        onClick={stopApprove}
+                        ignore={DEVELOPER_ENV}
+                        key='SRM-SM-SUPPLIERMODEL_STOP_APPROVAL'
+                    >终止审核</Button>
+                )
+            } */}
+            {
+                authAction(
+                    <FlowHistoryButton
+                        businessId={flowId}
+                        flowMapUrl='flow-web/design/showLook'
+                        ignore={DEVELOPER_ENV}
+                        key='SRM-SM-PCNPURCHASE-HISTORY'
+                    >
+                        <Button className={styles.btn} disabled={empty || !underWay}>审核历史</Button>
+                    </FlowHistoryButton>
+                )
+            }
+        </div>
+    ) 
+    const searchbank = ['name'];
+    // 右侧搜索
+    const HeaderRightButtons = (
+        <div style={{ display: 'flex'}}>
+            <Checkbox className={styles.btn} onChange={handleOnlyMeChange} checked={onlyMe} 
+            style={{width: '80px'}}>仅我的</Checkbox>
+            <ComboList
+                //style={{ width: 340 }}
+                style={{width:'200px' }}
+                searchProperties={searchbank}
+                {...BilltypeList}
+                afterSelect={cooperationChange}
+                rowKey="code"
+                showSearch={false}
+                allowClear={true}
+                afterClear={clearinput}
+                reader={{
+                    name: 'name',
+                }}
+                className={styles.btn}
+            />
+            <Search
+                placeholder='请输入变更单号'
+                className={styles.btn}
+                onSearch={handleQuickSerach}
+                allowClear
+                style={{ width: '240px'}}
+            />
+        </div>
+    )
+    // 高级查询配置
+    const formItems = [
+        { title: '供应商代码', key: 'materialCode',  props: { placeholder: '输入供应商代码' } },
+        { title: '供应商名称', key: 'materialName',  props: { placeholder: '输入供应商名称' } },
+        { title: '单据状态', key: 'smDocunmentStatus', type: 'list', props: BilltypeList },
+        { title: '审核状态', key: 'flowStatus', type: 'list', props: ToexamineList },
+        { title: '变更类型', key: 'smPcnChangeTypeCode', type: 'list', props: PCNMasterdatalist },
+        { title: '战略采购', key: 'smSourcing', type: 'list', props: seniorStrategypurchase },
+    ];
     return (
         <>
             <Header
-                left={
-                    <>
-                        {
-                            authAction(
-                                <Button
-                                    ignore={DEVELOPER_ENV}
-                                    key='SRM-SM-PCNPURCHASE-EDIT'
-                                    className={styles.btn}
-                                    onClick={handleCheckEdit}
-                                    disabled={empty || underWay || !isSelf}
-                                >编辑
-                                </Button>
-                            )
-                        }
-                        {
-                            authAction(
-                                <Button
-                                    ignore={DEVELOPER_ENV}
-                                    key='SRM-SM-PCNPURCHASE-DETAIL'
-                                    className={styles.btn}
-                                    onClick={handleCheckDetail}
-                                    disabled={empty}
-                                >明细
-                                </Button>
-                            )
-                        }
-                        {
-                            authAction(
-                                <StartFlow
-                                    className={styles.btn}
-                                    ignore={DEVELOPER_ENV}
-                                    businessKey={flowId}
-                                    callBack={handleComplete}
-                                    disabled={empty || underWay || !Toexamine}
-                                    businessModelCode='com.ecmp.srm.sm.entity.pcn.SmPcnTitle'
-                                    key='SRM-SM-PCNPURCHASE-EXAMINE'
-                                >提交审核</StartFlow>
-                            )
-                        }
-                        {/* {
-                            authAction(
-                                <Button
-                                    className={styles.btn}
-                                    disabled={empty || !underWay || !isSelf || completed}
-                                    onClick={stopApprove}
-                                    ignore={DEVELOPER_ENV}
-                                    key='SRM-SM-SUPPLIERMODEL_STOP_APPROVAL'
-                                >终止审核</Button>
-                            )
-                        } */}
-                        {
-                            authAction(
-                                <FlowHistoryButton
-                                    businessId={flowId}
-                                    flowMapUrl='flow-web/design/showLook'
-                                    ignore={DEVELOPER_ENV}
-                                    key='SRM-SM-PCNPURCHASE-HISTORY'
-                                >
-                                    <Button className={styles.btn} disabled={empty || !underWay}>审核历史</Button>
-                                </FlowHistoryButton>
-                            )
-                        }
-                        {/* <Checkbox className={styles.btn} onChange={handleOnlyMeChange} checked={onlyMe}>仅我的</Checkbox> */}
-                    </>
-                }
-                right={searchBtnCfg}
+                left= {HeaderLeftButtons}
+                right={HeaderRightButtons}
                 advanced
                 ref={headerRef}
                 content={

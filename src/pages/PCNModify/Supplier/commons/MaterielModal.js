@@ -8,6 +8,7 @@ import Header from '@/components/Header';
 import styles from '../index.less';
 import {findCanChooseSupplier} from '@/services/SupplierModifyService'
 const { create } = Form;
+let dataSource;
 const getMatermodRef = forwardRef(({
     form,
     materielCategoryCode,
@@ -15,6 +16,8 @@ const getMatermodRef = forwardRef(({
     iseditMater,
     implement,
     materselect = () => null,
+    companyCode,
+    plement
 }, ref,) => {
     useImperativeHandle(ref, () => ({ 
         handleModalVisible,
@@ -31,9 +34,12 @@ const getMatermodRef = forwardRef(({
     const [current, setcurrent] = useState([]);
     //const [dataSource, setdataSource] = useState([])
     useEffect(() => {
-        //getSupplierlist()
+        // getSupplierlist(plement,companyCode,materielCategoryCode)
+        // console.log(companyCode)
+        // console.log(materielCategoryCode)
     }, []);
-    const dataSource = {
+    
+    dataSource = {
         store: {
             url: `${baseUrl}/materialSrm/findBySecondaryClassificationAndCompany`,
             params: {
@@ -45,14 +51,11 @@ const getMatermodRef = forwardRef(({
                         direction: 'DESC'
                     }
                 ],
-                secondaryClassificationCode:materielCategoryCode,
-                companyCodeList:[]
+                secondaryClassificationCode: materielCategoryCode,
+                companyCodeList: companyCode
             },
             type: 'POST'
         }
-    }
-    function getSupplierlist() {
-        console.log(materielCategoryCode)
     }
     function handleModalVisible (flag) {
         setvisible(!!flag)
@@ -67,34 +70,38 @@ const getMatermodRef = forwardRef(({
         } else {
             //隐藏供应商选择框
             if (isEdit) {
-               iseditMater[0].smPcnAnalysisMaterielVoList = selectedRows;
-                // oddmater.map((item) =>  {
-                //     selectmater.materialGroupCode = item.materialGroupCode,
-                //     selectmater.materialGroupDesc = item.materialGroupDesc,
-                //     selectmater.materialCode = item.materialCode,
-                //     selectmater.materialStandardDesc = item.materialStandardDesc,
-                //     // selectmater.push({
-                //     //     materialGroupCode: item.materialGroupCode,
-                //     //     materialGroupDesc: item.materialGroupDesc,
-                //     //     materialCode: item.materialCode,
-                //     //     materialStandardDesc: item.materialStandardDesc
-                //     // })
-
-                // })
-                //selectedRows.push(iseditMater)
-                // let isEditchoice = iseditMater[0].smPcnAnalysisMaterielVoList
-                // console.log(iseditMater)
-                materselect(iseditMater)
+                handleMater()
             } else if (implement) {
                 materselect(selectedRows)
             }else {
-                iseditMater[0].smPcnAnalysisMaterielVoList = selectedRows
-                materselect(iseditMater)
+                handleMater()
             }
-            handleModalVisible(false);
-            cleanSelectedRecord();
+            
         }
     }
+    // 新增编辑处理物料
+    function handleMater () {
+        let repeatdata = iseditMater[0].smPcnAnalysisMaterielVoList;
+        let result = false
+        repeatdata.map(item =>{
+            for (let items of selectedRows) {
+                if (item.materielCode === items.materialCode){
+                    selectedRows.splice(items,1)
+                    result = true 
+                } 
+            }
+        })
+        if (result) {
+            message.error('当前数据已存在，请重新选择！')
+        }
+        selectedRows.map(item => {
+            repeatdata.push(item)
+        })
+        iseditMater[0].smPcnAnalysisMaterielVoList = repeatdata
+        materselect(iseditMater)
+        handleModalVisible(false);
+        cleanSelectedRecord();
+    } 
     // 清除选中项
     function cleanSelectedRecord() {
         setRows([]);
@@ -127,12 +134,12 @@ const getMatermodRef = forwardRef(({
           {
             title: "物料分类代码",
             width: 150,
-            dataIndex: "materialGroupCode"
+            dataIndex: "codePath"
           },
           {
             title: "物料分类",
             width: 260,
-            dataIndex: "materialGroupDesc"
+            dataIndex: "namePath"
           },
           {
             title: "物料代码",

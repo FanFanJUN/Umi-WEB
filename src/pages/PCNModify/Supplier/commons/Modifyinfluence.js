@@ -38,6 +38,7 @@ const ModifyinfluenceRef = forwardRef(({
     const [attachId, setAttachId] = useState('')
     const [materiel, setmateriel] = useState([])
     const [materielid, setmaterielid] = useState('')
+    const [companyCode, setCompanyCode] = useState('')
     const [materieldetailsid, setmaterieldetailsid] = useState('')
     const [seemateriel, setSeemateriel] = useState('')
     useEffect(() => {
@@ -48,14 +49,16 @@ const ModifyinfluenceRef = forwardRef(({
     if (alone) {
         columns.push(
             {
-                title: "执行结果",
+                title: "确认结果",
                 width: 100,
                 dataIndex: 'SmPcnAnalysisVo',
                 render: function (text, record, row) {
                     if (text === 0) {
                         return <div>同意</div>;
-                    } else {
+                    } else if (text === 1){
                         return <div className="successColor">不同意</div>;
+                    }else {
+                        return <div></div>;
                     }
                 },
             },
@@ -188,7 +191,7 @@ const ModifyinfluenceRef = forwardRef(({
                     smPcnPart: item.smPcnPart,
                     key: keys
                 })
-                console.log(newsdata)
+                //console.log(newsdata)
                 setDataSource(newsdata);
                 // item.smPcnAnalysisMaterielVoList.map((item, index) => {
                 //     MaterielVoList.push({
@@ -203,41 +206,66 @@ const ModifyinfluenceRef = forwardRef(({
     }
     // 新增的
     function selectanalysis(val) {
-        keys ++ ;
         let newsdata = [];
         [...newsdata] = dataSource;
-        val.map((item, index) => {
+        if (newsdata.length > 0) {
+            let result = false
+            newsdata.map(item =>{
+                val.map((items,index) => {
+                    if (item.materielCategoryCode === items.materielCategoryCode && 
+                        item.companyCode === items.corporation.code && 
+                        item.purchaseOrgCode === items.purchaseOrgCode){
+                        val.splice(index,1)
+                        result = true
+                    }    
+                })
+               
+            })
+            if (result) {
+                message.error('当前数据已存在，请重新选择！')
+                addTodata(val)
+            }else {
+                addTodata(val)
+            }
+        }else {
+            addTodata(val)
+        }
+        
+    }
+    // 新增添加数据
+    function addTodata(val) {
+        let newsdata = [];
+        [...newsdata] = dataSource;
+        val.map(ins => {
+            keys ++ ;
             newsdata.push({
                 key: keys,
-                smOriginalFactoryCode:item.originSupplierCode,
-                smOriginalFactoryName:item.originSupplierName,
-                materielCategoryId: item.materielCategory && item.materielCategory.name,
-                companyCode: item.corporation.code,
-                companyName: item.corporation.name,
-                purchaseOrgCode: item.purchaseOrgCode,
-                purchaseOrgName: item.purchaseOrg.name,
-                materielCategoryCode: item.materielCategoryCode,
+                smOriginalFactoryCode:ins.originSupplierCode,
+                smOriginalFactoryName:ins.originSupplierName,
+                materielCategoryId: ins.materielCategory && ins.materielCategory.name,
+                companyCode: ins.corporation.code,
+                companyName: ins.corporation.name,
+                purchaseOrgCode: ins.purchaseOrgCode,
+                purchaseOrgName: ins.purchaseOrg.name,
+                materielCategoryCode: ins.materielCategoryCode,
                 smPcnAnalysisMaterielVoList:[]
             })
-            setDataSource(newsdata);
         })
+        setDataSource(newsdata);
         uploadTable()
     }
     // 获取选择的物料
     function materselect(val) {
-        console.log(val)
-        // matkey ++ ;
-        // console.log(matkey)
         let newsdata = [];
         val.map((item) => {
             item.smPcnAnalysisMaterielVoList.map((items) => {
-
                 newsdata.push({
                     key: matkey++,
-                    materielTypeCode: items.materialGroupCode,
-                    materielName: items.materialGroupDesc,
-                    materielCode: items.materialCode,
-                    materielTypeName: items.materialDesc
+                    id:items.id,
+                    materielTypeCode: items.codePath || items.materielTypeCode,
+                    materielName: items.namePath || items.materielName,
+                    materielCode: items.materialCode || items.materielCode,
+                    materielTypeName: items.materialDesc || items.materielTypeName
                 })
             })
             item.smPcnAnalysisMaterielVoList = newsdata
@@ -274,7 +302,10 @@ const ModifyinfluenceRef = forwardRef(({
     // 选择物料
     function showMateriel() {
         let id = selectedRows[0].materielCategoryCode
+        let matercode = [];
+        matercode.push(selectedRows[0].companyCode)
         setmaterielid(id)
+        setCompanyCode(matercode)
         getMatermodRef.current.handleModalVisible(true);
     }
     // 查看物料
@@ -404,13 +435,14 @@ const ModifyinfluenceRef = forwardRef(({
                 <div>
                     {/****** 新增 */}
                     <InfluenceMaterielModal
-                        modifyanalysis={selectanalysis} 
+                        modifyanalysis={selectanalysis}
                         wrappedComponentRef={getModelRef}
                     />
                     {/******* 选择物料*/}
                     <MaterielModal
                         materselect={materselect}
                         materielCategoryCode={materielid}
+                        companyCode={companyCode}
                         iseditMater={selectedRows} 
                         isEdit={isEdit}
                         wrappedComponentRef={getMatermodRef} 

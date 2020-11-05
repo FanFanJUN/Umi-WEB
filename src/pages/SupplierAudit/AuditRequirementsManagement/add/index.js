@@ -11,9 +11,11 @@ import {
   FindOneAuditRequirementsManagement,
   GetAllAuditType, UpdateAuditRequirementsManagement,
 } from '../../mainData/commomService';
-import { StartFlow } from 'seid';
+import { WorkFlow } from 'suid';
 
-const Index = () => {
+const { StartFlow } = WorkFlow;
+
+const Index = (props) => {
   const baseInfoRef = useRef(null);
 
   const intendedAuditInformationRef = useRef(null);
@@ -29,10 +31,10 @@ const Index = () => {
   const [deleteLine, setDeleteLine] = useState([]);
 
   const [data, setData] = useState({
+    reviewRequirementCode: '',
     lineBoList: [],
     editData: {},
     allAuditType: [],
-    id: '',
     spinLoading: false,
     isView: false,
     loading: false,
@@ -44,25 +46,35 @@ const Index = () => {
   useEffect(() => {
     // 获取所有审核类型
     getAuditType();
-    const { id, pageState, reviewRequirementCode } = query;
-    switch (pageState) {
+    const { id, pageState } = query;
+    let state = pageState;
+    if (!state) {
+      state = 'flowDetail';
+    }
+    if (props.isInFlow) {
+      state = 'detail';
+    }
+    switch (state) {
       case 'add':
         getUser();
-        setData((value) => ({ ...value, type: pageState, isView: false, title: '审核需求管理-新增' }));
+        setData((value) => ({ ...value, type: state, isView: false, title: '审核需求管理-新增' }));
         break;
       case 'edit':
-        findOne(reviewRequirementCode);
+        findOne(id);
         setData((value) => ({
           ...value,
-          type: pageState,
-          id,
+          type: state,
           isView: false,
-          title: `审核需求管理-编辑 ${reviewRequirementCode}`,
+          title: `审核需求管理-编辑`,
         }));
         break;
       case 'detail':
-        findOne(reviewRequirementCode);
-        setData((value) => ({ ...value, type: pageState, isView: true, title: `审核需求管理-明细 ${reviewRequirementCode}` }));
+        findOne(id);
+        setData((value) => ({ ...value, type: state, isView: true, title: `审核需求管理-明细` }));
+        break;
+      case 'flowDetail':
+        findOne(id);
+        setData((value) => ({ ...value, type: 'detail', isView: true, title: `审核需求管理-明细` }));
         break;
     }
   }, []);
@@ -70,7 +82,7 @@ const Index = () => {
   const findOne = (id) => {
     setData(v => ({ ...v, spinLoading: true }));
     FindOneAuditRequirementsManagement({
-      reviewRequirementCode: id,
+      id,
     }).then(res => {
       if (res.success) {
         setCompanyCode(res.data.applyCorporationCode);
@@ -80,7 +92,7 @@ const Index = () => {
         message.error(res.message);
       }
       console.log(res);
-    });
+    }).catch(err => message.error(err.message));
   };
 
   const getAuditType = () => {
@@ -106,7 +118,7 @@ const Index = () => {
     closeCurrent();
   };
 
-  const handleSave = async (type) => {
+  const handleSave = async () => {
     let insertData = await baseInfoRef.current.getBaseInfoData((err, values) => {
       if (!err) {
         return values;
@@ -123,7 +135,7 @@ const Index = () => {
             AddAuditRequirementsManagement(insertData).then(res => {
               if (res.success) {
                 message.success(res.message);
-                handleBack();
+                // handleBack();
               } else {
                 message.error(res.message);
               }
@@ -134,7 +146,7 @@ const Index = () => {
             UpdateAuditRequirementsManagement(updateData).then(res => {
               if (res.success) {
                 message.success(res.message);
-                handleBack();
+                // handleBack();
               } else {
                 message.error(res.message);
               }
@@ -150,12 +162,55 @@ const Index = () => {
     // console.log(baseInfoData)
   };
 
-  const handleBeforeStartFlow = () => {
+  const handleBeforeStartFlow = async () => {
+    console.log('触发');
+    let insertData = await baseInfoRef.current.getBaseInfoData((err, values) => {
+      if (!err) {
+        return values;
+      }
+    });
+    const lineBoList = await intendedAuditInformationRef.current.getDataSource();
+    const deleteArr = await intendedAuditInformationRef.current.getDeleteArr();
+    insertData.lineBoList = [...lineBoList, ...deleteLine];
+    if (data.type === 'add') {
+      return new Promise(function(resolve, reject) {
+        AddAuditRequirementsManagement(insertData).then(res => {
+          if (res.success) {
+            const data = { businessKey: res.data };
+            resolve({
+              success: true,
+              message: res.message,
+              data,
+            });
+          } else {
+            message.error(res.message);
+          }
+        }).catch(err => reject(err));
+      });
+    } else {
+      let updateData = Object.assign(data.editData, insertData);
+      updateData.deleteList = deleteArr;
+      return new Promise(function(resolve, reject) {
+        UpdateAuditRequirementsManagement(updateData).then(res => {
+          if (res.success) {
+            console.log(insertData, 'insertData');
+            const data = { businessKey: updateData.id };
+            resolve({
+              success: true,
+              message: res.message,
+              data,
+            });
+          } else {
+            message.error(res.message);
+          }
+        }).catch(err => reject(err));
+      });
+    }
 
   };
 
   const handleComplete = () => {
-
+    handleBack();
   };
 
   return (
@@ -165,20 +220,22 @@ const Index = () => {
           <div className={classnames(styles.fbc, styles.affixHeader)}>
             <span>{data.title}</span>
             {
-              data.type !== 'detail' && <div>
+              data.type !== 'detail' &&
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <Button className={styles.btn} onClick={handleBack}>返回</Button>
                 <Button className={styles.btn} onClick={() => handleSave('add')}>暂存</Button>
                 <StartFlow
-                  style={{ marginRight: '5px' }}
-                  needConfirm={handleBeforeStartFlow}
-                  businessKey={data.flowId}
+                  className={styles.btn}
+                  type='primary'
+                  beforeStart={handleBeforeStartFlow}
                   callBack={handleComplete}
-                  startButtonProps={{
-                    type: 'primary'
-                  }}
+                  disabled={false}
                   businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewRequirement'
-                  key='SRM-SM-SUPPLIERMODEL_EXAMINE'
-                />
+                >
+                  {
+                    loading => <Button loading={loading} type='primary'>提交</Button>
+                  }
+                </StartFlow>
               </div>
             }
           </div>

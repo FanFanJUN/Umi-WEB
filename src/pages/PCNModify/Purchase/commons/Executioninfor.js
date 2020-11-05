@@ -3,7 +3,7 @@ import { ExtTable, utils, ToolBar,AuthButton  } from 'suid';
 import { Form, Row, Col, Input, DatePicker,message  } from 'antd';
 import Header from '@/components/Header';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
-import MaterielModal from '../../Supplier/commons/MaterielModal'
+import MaterielModal from './MaterielModal'
 import styles from '../index.less';
 import moment from 'moment';
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
@@ -23,8 +23,7 @@ const getExecutioninfor = forwardRef(({
   form,
   isView,
   editData = [],
-  headerInfo,
-  materielid
+  headerInfo
 }, ref) => {
   useImperativeHandle(ref, () => ({
     form,
@@ -38,6 +37,9 @@ const getExecutioninfor = forwardRef(({
   const [materiel, setMateriel] = useState([]);
   const [selectRowKeys, setRowKeys] = useState([]);
   const [selectedRows, setRows] = useState([]);
+  const [companyCode, setCompanyCode] = useState('');
+  const [materielid, setMaterielID] = useState('');
+  const [Tabledata, setTabledata] = useState('');
   const [attachId, setAttachId] = useState('')
   const empty = selectRowKeys.length === 0;
 
@@ -45,19 +47,32 @@ const getExecutioninfor = forwardRef(({
     handleimplement(editData)
   }, [editData])
   // 
-  async function handleimplement(val) {
+  function handleimplement(val) {
     if (val) {
       setDataSource(val.smPcnExecutInfoVo)
       setImplement(val)
       if (val.smPcnExecutInfoVo) {
-        let newdata = [];
-        val.smPcnExecutInfoVo.smPcnExecutInfoDataVos.map((item,index) => {
-          newdata.push({
-            key: index,
-            ...item
+        if (val.smPcnExecutInfoVo.smPcnExecutInfoDataVos) {
+          let newdata = [];
+          val.smPcnExecutInfoVo.smPcnExecutInfoDataVos.map((item,index) => {
+            newdata.push({
+              key: index,
+              ...item
+            })
           })
+          
+          setMateriel(newdata)
+        }
+       
+      }
+      if (val.smPcnAnalysisVos) {
+        let newdata = []; let matid = [];
+        val.smPcnAnalysisVos.map((item,index) => {
+          newdata.push(item.companyCode)
+          matid.push(item.materielCategoryCode)
         })
-        setMateriel(newdata)
+        setCompanyCode(newdata)
+        setMaterielID(matid)
       }
     }
   }
@@ -119,6 +134,8 @@ const getExecutioninfor = forwardRef(({
   }
   // 物料新增
   function showExecution() {
+    const tabledata = tabformRef.current.data;
+    setTabledata(tabledata)
     getMatermodRef.current.handleModalVisible(true);
   }
   // 物料删除
@@ -131,8 +148,8 @@ const getExecutioninfor = forwardRef(({
     val.map( (item,index)=> {
       newdata.push({
         key: index,
-        materielTypeCode: item.materialCode,
-        materielTypeName: item.materialDesc,
+        materielTypeCode: item.materialCode || item.materielTypeCode,
+        materielTypeName: item.materialDesc || item.materielTypeName,
       })
     })
     setMateriel(newdata)
@@ -239,10 +256,12 @@ const getExecutioninfor = forwardRef(({
         />
         }
       </AutoSizeLayout>
-      <MaterielModal 
+      <MaterielModal
+        companyCode={companyCode} 
         materselect={handleMateriel}
         implement={true}
         materielCategoryCode={materielid}
+        tabledata={Tabledata}
         wrappedComponentRef={getMatermodRef} 
       />
     </>

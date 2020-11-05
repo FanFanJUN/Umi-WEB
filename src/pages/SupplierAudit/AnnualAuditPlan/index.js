@@ -3,33 +3,25 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:00:19
- * @LastEditTime: 2020-11-02 10:10:14
+ * @LastEditTime: 2020-11-04 17:25:56
  * @Description:  年度审核计划管理
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/index.js
  */
 import React, { useState, useRef, useEffect, Fragment } from 'react';
 import Header from '../../../components/Header';
 import AdvancedForm from '../../../components/AdvancedForm';
-import { Button, Checkbox, Input, message, Modal, Tooltip } from 'antd';
+import { Button, Input, message, Modal } from 'antd';
 import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
 import { StartFlow } from 'seid';
-import { BarCode, ComboList, ExtTable, utils } from 'suid';
+import { WorkFlow, ExtTable, utils } from 'suid';
 import {
     ApplyOrganizationProps,
-    AuditCauseManagementConfig,
-    AuditTypeManagementConfig,
     CompanyConfig,
     FindByFiltersConfig,
 } from '../mainData/commomService';
 import {
-    BUConfigNoFrostHighSearch,
-    DeleteDataSharingList,
-    MaterialConfig,
-    MaterialGroupConfig, RecallDataSharingList,
+    RecallDataSharingList,
     ShareDistributionProps,
-    ShareStatusProps,
-    StrategicPurchaseConfig,
-    SubmitDataSharingList,
 } from '../../QualitySynergy/commonProps';
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
@@ -37,11 +29,12 @@ import { openNewTab } from '../../../utils';
 import { judge } from '../../../utils/utilTool';
 import { materialClassProps } from '../../../utils/commonProps';
 import moment from 'moment';
-import { deleteReviewPlanYear, submitReviewPlanYear } from './service';
+import { deleteReviewPlanYear, endFlow, submitReviewPlanYear } from './service';
 import { stateProps, flowProps, reviewTypesProps, reviewReasonsProps } from './propsParams';
 
 const { authAction } = utils;
 const { Search } = Input;
+const { FlowHistoryButton } = WorkFlow;
 
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 
@@ -91,36 +84,43 @@ export default function () {
             case 'submit':
                 submitOrRecall('submit');
                 break;
-            case 'recall':
-                recallList();
+            case 'endFlow':
+                toEndFlow();
                 break;
             default:
                 break;
         }
     };
 
-    // 撤回选中单据
-    const recallList = () => {
+    // 提交审核完成更新列表
+    function handleComplete() {
+        tableRef.current.manualSelectedRows();
+        tableRef.current.remoteDataRefresh();
+    }
+
+    const toEndFlow = () => {
         Modal.confirm({
-            title: '撤回',
-            content: '是否撤回选中的数据',
-            okText: '是',
-            cancelText: '否',
-            onOk: () => {
-                RecallDataSharingList({
-                    ids: data.selectedRowKeys.toString(),
-                }).then(res => {
-                    if (res.success) {
-                        message.success(res.message);
-                        tableRef.current.manualSelectedRows();
-                        tableRef.current.remoteDataRefresh();
-                    } else {
-                        message.error(res.message);
-                    }
+            title: '终止审核',
+            content: '是否终止审核？',
+            okText: '确定',
+            cancelText: '取消',
+            onOk: async () => {
+                setData(v => ({ ...v, spinning: true }));
+                const flowId = data.selectedRowKeys[0];
+                const { success, message: msg } = await endFlow({
+                    businessId: flowId,
                 });
+                if (success) {
+                    message.success(msg);
+                    setData(v => ({ ...v, spinning: false }));
+                    handleComplete();
+                } else {
+                    message.error(msg);
+                }
             },
         });
     };
+
 
     const handleQuickSearch = (value) => {
         setData(v => ({ ...v, quickSearchValue: value }));
@@ -293,7 +293,7 @@ export default function () {
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 key='TECHNICAL_DATA_SHARING_DELETE'
-                disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', 'DRAFT') || data.selectedRowKeys.length > 1}
+                disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', 'DRAFT') || !judge(data.selectedRows, 'flowStatus', 'INIT')}
             >删除</Button>)
         }
         {
@@ -308,30 +308,33 @@ export default function () {
         {
             authAction(<StartFlow
                 className={styles.btn}
+                style={{ marginRight: '5px' }}
                 ignore={DEVELOPER_ENV}
                 businessKey={data.selectedRowKeys[0]}
-                // callBack={handleComplete}
-                disabled={!checkOnlyOneSelect}
+                callBack={handleComplete}
+                disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || !checkOnlyOneSelect}
                 businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewPlanYear'
                 key='SRM-SM-ACCOUNTSUPPLIER-EXAMINE'
             >提交审核</StartFlow>)
         }
         {
-            authAction(<Button
-                onClick={() => redirectToPage('recall')}
-                className={styles.btn}
+            authAction(<FlowHistoryButton
+                businessId={data.selectedRowKeys[0]}
+                flowMapUrl='flow-web/design/showLook'
                 ignore={DEVELOPER_ENV}
-                key='TECHNICAL_DATA_SHARING_UNDO'
-                disabled={!checkOnlyOneSelect}
-            >审核历史</Button>)
+                key='SRM-SM-SUPPLIERMODEL_HISTORY'
+                disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || !checkOnlyOneSelect}
+            >
+                <Button className={styles.btn} disabled={data.selectedRowKeys.length !== 1}>审核历史</Button>
+            </FlowHistoryButton>)
         }
         {
             authAction(<Button
-                onClick={() => redirectToPage('allot')}
+                onClick={() => redirectToPage('endFlow')}
                 className={styles.btn}
+                disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || !checkOnlyOneSelect}
                 ignore={DEVELOPER_ENV}
                 key='TECHNICAL_DATA_SHARING_ALLOT'
-                disabled={!checkOnlyOneSelect}
             >终止审核</Button>)
         }
     </>;

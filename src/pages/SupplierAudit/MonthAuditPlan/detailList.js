@@ -15,7 +15,9 @@ import {
     AuditTypeManagementConfig,
     CompanyConfig,
     FindByFiltersConfig,
+    SupplierConfig,
 } from '../mainData/commomService';
+import { reviewWaysProps, reviewOrganizeProps } from "../AnnualAuditPlan/propsParams"
 import {
     ShareDistributionProps,
     ShareStatusProps,
@@ -69,15 +71,15 @@ export default function () {
 
     // 高级查询配置
     const formItems = [
-        { title: '需求公司', key: 'materialCode', type: 'list', props: CompanyConfig, rules: { rules: [{ required: true, message: '请选择公司' }], } },
-        { title: '采购组织', key: 'materialGroupCode', type: 'list', props: FindByFiltersConfig, rules: { rules: [{ required: true, message: '请选择采购组织' }], } },
+        { title: '需求公司', key: 'materialCode', type: 'list', props: CompanyConfig },
+        { title: '采购组织', key: 'materialGroupCode', type: 'list', props: FindByFiltersConfig},
         { title: '物料分类', key: 'state', type: 'tree', props: materialClassProps },
-        { title: '供应商', key: 'state2', type: 'tree', props: materialClassProps },
+        { title: '供应商', key: 'state2', type: 'tree', props: SupplierConfig },
         { title: '代理商', key: 'state3', type: 'tree', props: materialClassProps },
         { title: '审核类型', key: 'state4', type: 'list', props: AuditTypeManagementConfig },
         { title: '审核原因', key: 'state5', type: 'list', props: AuditCauseManagementConfig },
-        { title: '审核方式', key: 'state6', type: 'list', props: AuditCauseManagementConfig },
-        { title: '审核组织形式', key: 'state7', type: 'list', props: AuditCauseManagementConfig },
+        { title: '审核方式', key: 'state6', type: 'list', props: reviewWaysProps },
+        { title: '审核组织形式', key: 'state7', type: 'list', props: reviewOrganizeProps },
         { title: '专业组', key: 'state8', type: 'list', props: AuditCauseManagementConfig },
         { title: '审核小组组长', key: 'buCode', props: { placeholder: '输入审核小组组长' } },
         { title: '协同人员', key: 'applyPeopleName', props: { placeholder: '输入协同人员' } },

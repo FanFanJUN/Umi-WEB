@@ -122,6 +122,7 @@ const Team = (props) => {
   };
 
   const handleOk = (value) => {
+    console.log(value, 'values')
     if (data.type === 'add') {
       value.lineNum = getRandom(10);
       value.reviewTeamMemberBoList = [];

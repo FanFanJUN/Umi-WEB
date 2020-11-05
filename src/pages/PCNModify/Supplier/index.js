@@ -23,7 +23,7 @@ function SupplierConfigure() {
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [searchValue, setSearchValue] = useState({});
-    const [loading, triggerLoading] = useState(false);
+    // const [loading, triggerLoading] = useState(true);
     const [attachId, setAttachId] = useState('');
     const [seniorSearchvalue, setSeniorsearchvalue] = useState('');
     /** 按钮可用性判断变量集合 BEGIN*/
@@ -40,6 +40,10 @@ function SupplierConfigure() {
     // 删除草稿
     const isdelete = signleFlowStatus === 'INIT'
 
+    useEffect(() => {
+        window.parent.frames.addEventListener('message', listenerParentClose, false);
+        return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
+    }, []);
     const columns = [
         {
             title: '单据状态',
@@ -108,42 +112,7 @@ function SupplierConfigure() {
             type: 'POST'
         }
     }
-    const searchbank = ['name'];
-    // 右侧搜索
-    const searchBtnCfg = (
-        <>
-            <ComboList
-                searchProperties={searchbank}
-                {...SupplierBilltypeList}
-                afterSelect={cooperationChange}
-                rowKey="code"
-                //showSearch={false}
-                allowClear={true}
-                afterClear={clearinput}
-                reader={{
-                    name: 'name',
-                }}
-                className={styles.btn}
-            />
-            <Search
-                placeholder='请输入变更单号'
-                className={styles.btn}
-                onSearch={handleQuickSerach}
-                allowClear
-            />
-        </>
-    )
-    // 高级查询配置
-    const formItems = [
-        { title: '供应商代码', key: 'materialCode',  props: { placeholder: '输入供应商代码' } },
-        { title: '供应商名称', key: 'materialName',  props: { placeholder: '输入供应商名称' } },
-        { title: '单据状态', key: 'materialGroupCode', type: 'list', props: SupplierBilltypeList },
-        { title: '变更类型', key: 'applyPersonName', type: 'list', props: PCNMasterdatalist },
-    ];
-    useEffect(() => {
-        window.parent.frames.addEventListener('message', listenerParentClose, false);
-        return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
-    }, []);
+   
 
     function listenerParentClose(event) {
         const { data = {} } = event;
@@ -187,15 +156,12 @@ function SupplierConfigure() {
             title: '是否确认删除',
             onOk: async () => {
                 let params = selectedRows[0].id;
-                triggerLoading(true)
                 const { success, message: msg } = await deleteBatchById({pcnTitleId:params});
                 if (success) {
                     message.success('删除成功！');
                     uploadTable();
-                    triggerLoading(false)
                 } else {
                     message.error(msg);
-                    triggerLoading(false)
                 }
             },
             onCancel() {
@@ -219,15 +185,12 @@ function SupplierConfigure() {
             status = 0
             statustype = false
         }
-        triggerLoading(true)
         const { success, message: msg } = await PCNSupplierSubmit({pcnTitleId:id,smDocunmentStatus:status});
         if (success) {
             message.success(`${statustype ? '提交' : '撤回'}成功！`);
             uploadTable();
-            triggerLoading(false)
         } else {
             message.error(msg);
-            triggerLoading(false)
         }
     }
     // 快速查询
@@ -284,86 +247,122 @@ function SupplierConfigure() {
         setSeniorsearchvalue('')
         uploadTable();
     }
+    // 左侧
+    const HeaderLeftButtons = (
+        <div style={{ width: '50%', display: 'flex', height: '100%', alignItems: 'center' }}>
+            {
+                authAction(
+                    <Button type='primary' 
+                        ignore={DEVELOPER_ENV} 
+                        key='SRM-SM-PCNSUPPLIER-ADD' 
+                        className={styles.btn} 
+                        onClick={AddModel}
+                        //disabled={empty}
+                        >新增
+                    </Button>
+                )
+            }
+            {
+                authAction(
+                    <Button
+                        ignore={DEVELOPER_ENV}
+                        key='SRM-SM-PCNSUPPLIER-EDIT'
+                        className={styles.btn}
+                        onClick={handleCheckEdit}
+                        disabled={empty || !underWay || !isSelf}
+                    >编辑
+                    </Button>
+                )
+            }
+            {
+                authAction(
+                    <Button 
+                        ignore={DEVELOPER_ENV} 
+                        key='SRM-SM-PCNSUPPLIER-DELETE' 
+                        className={styles.btn} 
+                        onClick={handleDelete} 
+                        disabled={empty || !underWay || !isSelf}
+                        >删除
+                    </Button>
+                )
+            }
+            {
+                authAction(
+                    <Button
+                        ignore={DEVELOPER_ENV}
+                        key='SRM-SM-PCNSUPPLIER-DETAIL'
+                        className={styles.btn}
+                        onClick={handleCheckDetail}
+                        disabled={empty}
+                    >明细
+                    </Button>
+                )
+            }
+            {
+                authAction(
+                    <Button
+                        ignore={DEVELOPER_ENV}
+                        key='SRM-SM-PCNSUPPLIER-SUBMIT'
+                        className={styles.btn}
+                        onClick={handleSubmit}
+                        disabled={empty || !underWay || !isSelf}
+                    >提交
+                    </Button>
+                )
+            }
+            {
+                authAction(
+                    <Button
+                        ignore={DEVELOPER_ENV}
+                        key='SRM-SM-PCNSUPPLIER-WITHDRAW'
+                        className={styles.btn}
+                        onClick={handleSubmit}
+                        disabled={empty || !completed || !isSelf}
+                    >撤回
+                    </Button>
+                )
+            }
+        </div>
+    ) 
+    const searchbank = ['name'];
+    // 右侧搜索
+    const HeaderRightButtons = (
+        <div style={{ display: 'flex'}}>
+            <ComboList
+                style={{width:'240px' }}
+                searchProperties={searchbank}
+                {...SupplierBilltypeList}
+                afterSelect={cooperationChange}
+                rowKey="code"
+                showSearch={false}
+                allowClear={true}
+                afterClear={clearinput}
+                reader={{
+                    name: 'name',
+                }}
+                className={styles.btn}
+            />
+            <Search
+                placeholder='请输入变更单号'
+                className={styles.btn}
+                onSearch={handleQuickSerach}
+                allowClear
+                style={{ width: '240px'}}
+            />
+        </div>
+    )
+    // 高级查询配置
+    const formItems = [
+        { title: '供应商代码', key: 'materialCode',  props: { placeholder: '输入供应商代码' } },
+        { title: '供应商名称', key: 'materialName',  props: { placeholder: '输入供应商名称' } },
+        { title: '单据状态', key: 'materialGroupCode', type: 'list', props: SupplierBilltypeList },
+        { title: '变更类型', key: 'applyPersonName', type: 'list', props: PCNMasterdatalist },
+    ];
     return (
         <>
             <Header
-                left={
-                    <>
-                        {
-                            authAction(
-                                <Button type='primary' 
-                                    ignore={DEVELOPER_ENV} 
-                                    key='SRM-SM-PCNSUPPLIER-ADD' 
-                                    className={styles.btn} 
-                                    onClick={AddModel}
-                                    //disabled={empty}
-                                    >新增
-                                </Button>
-                            )
-                        }
-                        {
-                            authAction(
-                                <Button
-                                    ignore={DEVELOPER_ENV}
-                                    key='SRM-SM-PCNSUPPLIER-EDIT'
-                                    className={styles.btn}
-                                    onClick={handleCheckEdit}
-                                    disabled={empty || !underWay || !isSelf}
-                                >编辑
-                                </Button>
-                            )
-                        }
-                        {
-                            authAction(
-                                <Button 
-                                    ignore={DEVELOPER_ENV} 
-                                    key='SRM-SM-PCNSUPPLIER-DELETE' 
-                                    className={styles.btn} 
-                                    onClick={handleDelete} 
-                                    disabled={empty || !underWay || !isSelf}
-                                    >删除
-                                </Button>
-                            )
-                        }
-                        {
-                            authAction(
-                                <Button
-                                    ignore={DEVELOPER_ENV}
-                                    key='SRM-SM-PCNSUPPLIER-DETAIL'
-                                    className={styles.btn}
-                                    onClick={handleCheckDetail}
-                                    disabled={empty}
-                                >明细
-                                </Button>
-                            )
-                        }
-                        {
-                            authAction(
-                                <Button
-                                    ignore={DEVELOPER_ENV}
-                                    key='SRM-SM-PCNSUPPLIER-SUBMIT'
-                                    className={styles.btn}
-                                    onClick={handleSubmit}
-                                    disabled={empty || !underWay || !isSelf}
-                                >提交
-                                </Button>
-                            )
-                        }
-                        {
-                            authAction(
-                                <Button
-                                    ignore={DEVELOPER_ENV}
-                                    key='SRM-SM-PCNSUPPLIER-WITHDRAW'
-                                    className={styles.btn}
-                                    onClick={handleSubmit}
-                                    disabled={empty || !completed || !isSelf}
-                                >撤回
-                                </Button>
-                            )
-                        }
-                    </>
-                }
-                right={searchBtnCfg}
+                left={HeaderLeftButtons}
+                right={HeaderRightButtons}
                 advanced
                 ref={headerRef}
                 content={

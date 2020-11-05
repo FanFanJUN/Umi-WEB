@@ -103,7 +103,7 @@ function CreateStrategy() {
                                         wrappedComponentRef={getExecutioninfor}
                                         headerInfo={false}
                                         isView={false}
-                                        materielid={materielid}
+                                        //materielid={materielid}
                                     />
                                 </TabPane>
                             </Tabs>

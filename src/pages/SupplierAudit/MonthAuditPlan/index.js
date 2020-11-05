@@ -9,24 +9,19 @@ import { Button, Input, message, Modal } from 'antd';
 import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
 import { ExtTable, utils, WorkFlow } from 'suid';
 import { StartFlow } from 'seid';
-import {
-    ApplyOrganizationProps,
-    AuditCauseManagementConfig,
-    AuditTypeManagementConfig,
-    CompanyConfig,
-    FindByFiltersConfig,
-} from '../mainData/commomService';
+import moment from "moment";
+import { ApplyOrganizationProps, CompanyConfig, } from '../mainData/commomService';
 import {
     DeleteDataSharingList,
     judge,
-    ShareDistributionProps,
     ShareStatusProps,
     flowProps
 } from '../../QualitySynergy/commonProps';
+import { deletePlanMonth } from "./service";
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
 import { openNewTab, getUserAccount } from '../../../utils';
-import { materialClassProps } from '../../../utils/commonProps';
+import ChangeHistory from "./component/ChangeHistory";
 
 const { FlowHistoryButton } = WorkFlow;
 const { authAction } = utils;
@@ -36,9 +31,16 @@ const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 
 export default function () {
 
-
+    const headerRef = useRef(null);
     const tableRef = useRef(null);
-
+    const [data, setData] = useState({
+        quickSearchValue: '',
+        epTechnicalShareDemandSearchBo: {},
+        selectedRowKeys: [],
+        selectedRows: [],
+        flowId: ''
+    });
+    const [historyVisible, setHistoryV] = useState(false);
     useEffect(() => {
         window.parent.frames.addEventListener('message', listenerParentClose, false);
         return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
@@ -51,17 +53,6 @@ export default function () {
         }
     };
 
-    const [data, setData] = useState({
-        checkedCreate: false,
-        checkedDistribution: false,
-        quickSearchValue: '',
-        epTechnicalShareDemandSearchBo: {},
-        selectedRowKeys: [],
-        selectedRows: [],
-        flowId: ''
-    });
-
-
     const redirectToPage = (type) => {
         switch (type) {
             case 'add':
@@ -73,6 +64,12 @@ export default function () {
             case 'detail':
                 openNewTab(`supplierAudit/MonthAuditPlanEda?pageState=detail&id=${data.selectedRowKeys[0]}`, '月度审核计划管理-明细', false);
                 break;
+            case 'change':
+                openNewTab(`supplierAudit/MonthAuditPlanEda?pageState=change&id=${data.selectedRowKeys[0]}`, '月度审核计划管理-变更', false);
+                break;
+            case "changehistory":
+                setHistoryV(true);
+                break;
             default:
                 break;
         }
@@ -83,7 +80,25 @@ export default function () {
         setData(v => ({ ...v, quickSearchValue: value }));
         tableRef.current.manualSelectedRows();
         tableRef.current.remoteDataRefresh();
-        console.log(value, 'value');
+    };
+    // 高级查询搜索
+    const handleAdvancedSearch = (value) => {
+        console.log(value)
+        delete value.flowStatus_name;
+        delete value.purchaseTeamCode_name;
+        // delete value.applyDepartmentCode_name;
+        delete value.applyCorporationCode_name;
+        delete value.materialSecondClassifyCode_name;
+        delete value.allotSupplierState_name;
+        delete value.reviewTypeCode_name;
+        value.applyDate = value.applyDate ? moment(value.applyDate).format('YYYY-MM-DD ') : ''
+        value.ApplyDateStart = value.applyDate ? value.applyDate + "00:00:00" : ''
+        value.ApplyDateEnd = value.applyDate ? value.applyDate + "23:59:59" : ''
+        delete value.applyDate;
+        setData(v => ({ ...v, epTechnicalShareDemandSearchBo: { ...value } }));
+        tableRef.current.manualSelectedRows();
+        tableRef.current.remoteDataRefresh();
+        headerRef.current.hide();
     };
 
     // 删除
@@ -95,14 +110,14 @@ export default function () {
             okType: 'danger',
             cancelText: '否',
             onOk: () => {
-                DeleteDataSharingList({
-                    ids: data.selectedRowKeys.toString(),
+                console.log([...data.selectedRowKeys])
+                deletePlanMonth({
+                    ids: JSON.stringify(data.selectedRowKeys),
                 }).then(res => {
                     if (res.success) {
                         message.success(res.message);
                         tableRef.current.manualSelectedRows();
                         tableRef.current.remoteDataRefresh();
-
                     } else {
                         message.error(res.message);
                     }
@@ -111,42 +126,46 @@ export default function () {
         });
     };
 
-    // 高级查询搜索
-    const handleAdvancedSearch = (value) => {
-        console.log(value, '高级查询');
-    };
     // 提交审核验证
     const handleBeforeStartFlow = async () => {
 
     };
     // 提交审核完成更新列表
     function handleComplete() {
-
+        tableRef.current.manualSelectedRows();
+        tableRef.current.remoteDataRefresh();
     }
     // 终止审核
-    const handleStopFlow = ()=>{
+    const handleStopFlow = () => {
         Modal.confirm({
             title: '终止审核',
-            content: '是否确定终止审核选中数据',
-            okText: '是',
-            cancelText: '否',
-            onOk: () => {
-              console.log("终止！")
+            content: '是否终止审核？',
+            okText: '确定',
+            cancelText: '取消',
+            onOk: async () => {
+                setData(v => ({ ...v, spinning: true }));
+                const { flowId } = data;
+                const { success, message: msg } = await EndFlow({
+                    businessId: flowId,
+                });
+                if (success) {
+                    message.success(msg);
+                    setData(v => ({ ...v, spinning: false }));
+                    tableRef.current.manualSelectedRows();
+                    tableRef.current.remoteDataRefresh();
+                    return;
+                }
+                message.error(msg);
             },
-          });
-    }
+        });
+    };
 
     // 高级查询配置
     const formItems = [
-        { title: '公司', key: 'applyCorporationCode', type: 'list', props: CompanyConfig, rules: { rules: [{ required: true, message: '请选择公司' }], } },
-        { title: '采购组织', key: 'purchaseOrgCode', type: 'list', props: FindByFiltersConfig, rules: { rules: [{ required: true, message: '请选择采购组织' }], } },
+        { title: '公司', key: 'applyCorporationCode', type: 'list', props: CompanyConfig },
         { title: '申请部门', key: 'applyDepartmentCode', type: 'tree', props: ApplyOrganizationProps },
         { title: '申请人', key: 'applyName', props: { placeholder: '输入申请人' } },
-        { title: '申请日期', key: 'applyDate', type: 'datePicker', props: { placeholder: '输入申请人' } },
-        { title: '供应商', key: 'allotSupplierState', type: 'list', props: ShareDistributionProps },
-        { title: '物料二次分类', key: 'materialSecondClassifyCode', type: 'tree', props: materialClassProps },
-        { title: '审核类型', key: 'reviewTypeCode', type: 'list', props: AuditTypeManagementConfig },
-        { title: '审核原因', key: 'reviewReasonCode', type: 'list', props: AuditCauseManagementConfig },
+        { title: '申请日期', key: 'applyDate', type: 'datePicker', props: { placeholder: '选择申请日期' } },
         { title: '状态', key: 'state', type: 'list', props: ShareStatusProps },
         { title: '审批状态', key: 'flowStatus', type: 'list', props: flowProps },
     ];
@@ -203,7 +222,9 @@ export default function () {
                 key='SUPPLIER_AUDIT_MONTH_EDIT'
                 disabled={
                     data.selectedRowKeys.length !== 1
-                    // || data.selectedRows[0]?.state !== 'DRAFT'
+                    || data.selectedRows[0]?.state !== 'DRAFT'
+                    || data.selectedRows[0]?.flowStatus !== 'INIT'
+                    || data.selectedRows[0]?.applyAccount !== getUserAccount()
                 }
             >编辑</Button>)
         }
@@ -215,6 +236,7 @@ export default function () {
                 key='SUPPLIER_AUDIT_MONTH_DELETE'
                 disabled={!(data.selectedRowKeys.length !== 0
                     && judge(data.selectedRows, 'state', 'DRAFT')
+                    && judge(data.selectedRows, 'flowStatus', 'INIT')
                     && judge(data.selectedRows, 'applyAccount', getUserAccount()))}
             >删除</Button>)
         }
@@ -234,16 +256,17 @@ export default function () {
                 needConfirm={handleBeforeStartFlow}
                 businessKey={data.flowId}
                 callBack={handleComplete}
-                disabled={data.selectedRowKeys.length !== 1}
-                businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewRequirement'
+                disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length === 0}
+                businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewPlanMonth'
                 key='SUPPLIER_AUDIT_MONTH_INFLOW'
             >提交审核</StartFlow>)
         }
         {
             authAction(<FlowHistoryButton
-                businessId={'96CD244D-18F6-11EB-8657-0242C0A84402'}
+                businessId={data.flowId}
                 flowMapUrl='flow-web/design/showLook'
                 ignore={DEVELOPER_ENV}
+                disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
                 key='SUPPLIER_AUDIT_MONTH_HISTORY'
             >
                 <Button className={styles.btn} disabled={data.selectedRowKeys.length !== 1}>审核历史</Button>
@@ -252,15 +275,21 @@ export default function () {
         {
             authAction(<Button
                 onClick={handleStopFlow}
+                loading={data.spinning}
+                disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='SUPPLIER_AUDIT_MONTH_STOP'
+                key='TECHNICAL_DATA_SHARING_ALLOT'
             >终止审核</Button>)
         }
         {
             authAction(<Button
                 onClick={() => redirectToPage('change')}
                 className={styles.btn}
+                disabled={
+                    data.selectedRowKeys.length !== 1 
+                    // || data.selectedRows[0]?.flowStatus !== 'COMPLETED'
+                }
                 ignore={DEVELOPER_ENV}
                 key='SUPPLIER_AUDIT_MONTH_CHANGE'
             >变更</Button>)
@@ -269,6 +298,7 @@ export default function () {
             authAction(<Button
                 onClick={() => redirectToPage('changehistory')}
                 className={styles.btn}
+                disabled={data.selectedRowKeys.length !== 1}
                 ignore={DEVELOPER_ENV}
                 key='SUPPLIER_AUDIT_MONTH_CHANGE_LIST'
             >变更历史</Button>)
@@ -284,16 +314,12 @@ export default function () {
         />
     </div>;
 
-    const onSelectRow = (value, rows) => {
-        console.log(value, rows);
-        setData((v) => ({ ...v, selectedRowKeys: value, selectedRows: rows }));
-    };
-
     return (
         <Fragment>
             <Header
                 left={headerLeft}
                 right={headerRight}
+                ref={headerRef}
                 content={
                     <AdvancedForm formItems={formItems} onOk={handleAdvancedSearch} />
                 }
@@ -307,8 +333,6 @@ export default function () {
                         columns={columns}
                         store={{
                             params: {
-                                ...data.checkedCreate ? { onlyOwn: data.checkedCreate } : null,
-                                ...data.checkedDistribution ? { onlyAllocation: data.checkedDistribution } : null,
                                 quickSearchValue: data.quickSearchValue,
                                 ...data.epTechnicalShareDemandSearchBo,
                             },
@@ -322,11 +346,21 @@ export default function () {
                         }}
                         ref={tableRef}
                         showSearch={false}
-                        onSelectRow={onSelectRow}
+                        onSelectRow={(value, rows) => {
+                            console.log(value, rows);
+                            setData((v) => ({ ...v, selectedRowKeys: value, selectedRows: rows, flowId: value[0] }));
+                        }}
                         selectedRowKeys={data.selectedRowKeys}
                     />
                 }
             </AutoSizeLayout>
+
+            {historyVisible && <ChangeHistory
+                visible={historyVisible}
+                handleCancel={()=>{setHistoryV(false)}}
+                id={data.selectedRowKeys[0]}
+                code={data.selectedRows[0]?.reviewPlanMonthCode}
+            />}
         </Fragment>
     );
 }

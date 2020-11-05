@@ -31,6 +31,7 @@ const getCustomerOpin = forwardRef(({
     setCustomer(editData)
     setDataSource(editData.smPcnAnalysisVos)
   }, [editData])
+
   const columns = [
     {
       title: '物料分类',
@@ -85,24 +86,27 @@ const getCustomerOpin = forwardRef(({
               return !isEmpty(record) && !isEmpty(record.smCustomerResultConfirm) ? record.smCustomerResultConfirm === 0 ? '通过' : '不通过' : '';
           }
           return <span>
-              <FormItem style={{ marginBottom: 0 }}>
-                  {
-                      getFieldDecorator(`smCustomerResultConfirm[${index}]`,{initialValue: record ? record.smCustomerResultConfirm : ''}),
-                      getFieldDecorator(`smCustomerResultConfirmName[${index}]`, {
-                          initialValue: record ? record.smCustomerResultConfirmName : '',
-                          rules: [{ required: true, message: '请选择客户结果!', whitespace: true }],
-                      })( 
-                        <ComboList 
-                            form={form}
-                            {...SupplierResulteList}
-                            showSearch={false}
-                            //afterSelect={afterSelect}
-                            name={`smCustomerResultConfirmName[${index}]`}
-                            field={[`smCustomerResultConfirm[${index}]`]}
-                        />
-                      )
-                  }
-              </FormItem>
+              {
+                record.smCustomerConfirm === 1 ?  
+                <FormItem style={{ marginBottom: 0 }}>
+                {
+                    getFieldDecorator(`smCustomerResultConfirm[${index}]`,{initialValue: record ? record.smCustomerResultConfirm : ''}),
+                    getFieldDecorator(`smCustomerResultConfirmName[${index}]`, {
+                        initialValue: record ? record.smCustomerResultConfirmName : '',
+                        rules: [{ required: true, message: '请选择客户结果!', whitespace: true }],
+                    })( 
+                      <ComboList 
+                          form={form}
+                          {...SupplierResulteList}
+                          showSearch={false}
+                          //afterSelect={afterSelect}
+                          name={`smCustomerResultConfirmName[${index}]`}
+                          field={[`smCustomerResultConfirm[${index}]`]}
+                      />
+                    )
+                }
+                </FormItem> : null
+              }
           </span>;
       }
     },
@@ -116,20 +120,22 @@ const getCustomerOpin = forwardRef(({
           return <UploadFile type="show" entityId={text}/>
         }
         return <span>
-          <FormItem style={{ marginBottom: 0 }}>
-            {
-              getFieldDecorator(`customerEnclosure[${index}]`, {
-                  initialValue: record ? record.customerEnclosure : '',
-                  rules: [{ required: true, message: '请上传附件!'}],
-              })( 
-                <UploadFile
-                    title={"附件上传"}
-                    entityId={record ? record.customerEnclosure : null}
-                    type={isView ? "show" : ""}
-                />
-              )
-            }
-          </FormItem>
+          {
+            record.smCustomerConfirm === 1 ? <FormItem style={{ marginBottom: 0 }}>
+              {
+                getFieldDecorator(`customerEnclosure[${index}]`, {
+                    initialValue: record ? record.customerEnclosure : '',
+                    rules: [{ required: true, message: '请上传附件!'}],
+                })( 
+                  <UploadFile
+                      title={"附件上传"}
+                      entityId={record ? record.customerEnclosure : null}
+                      type={isView ? "show" : ""}
+                  />
+                )
+              }
+            </FormItem> : null
+          }
         </span>
       }
     }
@@ -144,13 +150,15 @@ const getCustomerOpin = forwardRef(({
     }else {
       form.validateFieldsAndScroll((err, values) => {
         let handledata = dataTransfer2(material, values)
-        handledata.forEach((item,index) => {
-          material.forEach((items,ins)=> {
-            items.customerAttachments = item.customerEnclosure
-            items.smCustomerResultConfirm = item.smCustomerResultConfirm
-          })
-          
-        })
+        for (let item of handledata) {
+          for (let items of material) {
+            if (item.id === items.id) {
+              items.customerAttachments = item.customerEnclosure
+              items.smCustomerResultConfirm = item.smCustomerResultConfirm
+            }
+            
+          }
+        }
         if (!err) {
           customer.smPcnAnalysisVos = material
           result = customer

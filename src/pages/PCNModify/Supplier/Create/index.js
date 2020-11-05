@@ -17,7 +17,7 @@ function CreateStrategy() {
   const [againdata, setAgaindata] = useState({});
   const [loading, triggerLoading] = useState(false);
   const [visible, setvisible] = useState(false);
-  const [configure, setConfigure] = useState([]);
+  const [modifytype, setModifytype] = useState('');
   const { query } = router.useLocation();
   const { frameElementId, frameElementSrc = "", Opertype = "" } = query;
 
@@ -46,7 +46,6 @@ function CreateStrategy() {
       message.error('变更影响不能为空！');
       return false;
     }
-    console.log(modifyanalysisVal)
     scienceEnviron = modifyinfo()
     if (!scienceEnviron) {
       message.error('影响选择不能为空！');
@@ -58,7 +57,6 @@ function CreateStrategy() {
       smPcnAnalysisVos: modifyanalysisVal,
       ...scienceEnviron
     }
-    console.log(params)
     triggerLoading(true)
     const {success, message: msg } = await saveBatchVo(params)
     if (success) {
@@ -75,6 +73,9 @@ function CreateStrategy() {
   }
   function handleCancel() {
     setvisible(false)
+  }
+  function handleSetup(val) {
+    setModifytype(val)
   }
   return (
     <Spin spinning={loading} tip='处理中...'>
@@ -96,7 +97,8 @@ function CreateStrategy() {
             <div className={styles.title}>基本信息</div>
             <div >
             <BaseInfo
-                wrappedComponentRef={BaseinfoRef}
+              onOk={handleSetup}
+              wrappedComponentRef={BaseinfoRef}
             />
             </div>
         </div>
@@ -104,7 +106,8 @@ function CreateStrategy() {
             <div className={styles.title}>变更信息</div>
             <div >
             <Modifyinfo
-                wrappedComponentRef={ModifyinfoRef}
+              modifytype={modifytype}
+              wrappedComponentRef={ModifyinfoRef}
             />
             </div>
         </div>

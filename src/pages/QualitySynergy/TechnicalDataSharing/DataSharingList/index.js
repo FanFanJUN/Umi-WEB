@@ -3,7 +3,8 @@ import Header from '../../../../components/Header';
 import AdvancedForm from '../../../../components/AdvancedForm';
 import { Button, Checkbox, Input, message, Modal } from 'antd';
 import styles from './index.less';
-import { ComboList, ExtTable, utils } from 'suid';
+import { DataExport, ExtTable, utils } from 'suid';
+import moment from "moment";
 import {
   BUConfigNoFrostHighSearch,
   DeleteDataSharingList,
@@ -27,7 +28,7 @@ const { Search } = Input;
 
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 
-export default function() {
+export default function () {
 
 
   const tableRef = useRef(null);
@@ -205,7 +206,7 @@ export default function() {
     { title: '分配供应商状态', dataIndex: 'allotSupplierState', width: 160 },
     { title: '来源', dataIndex: 'source', width: 70 },
     { title: '分享需求号', dataIndex: 'shareDemanNumber', ellipsis: true, width: 180 },
-    { title: '物料代码', dataIndex: 'materialCode', ellipsis: true, width: 160, render: (text, item)=>item.source === 'SRM' ? text : ''},
+    { title: '物料代码', dataIndex: 'materialCode', ellipsis: true, width: 160, render: (text, item) => item.source === 'SRM' ? text : '' },
     { title: '物料描述', dataIndex: 'materialName', ellipsis: true },
     { title: '物料组代码', dataIndex: 'materialGroupCode', ellipsis: true },
     { title: '物料组描述', dataIndex: 'materialGroupName', ellipsis: true },
@@ -223,20 +224,55 @@ export default function() {
     { title: '申请日期', dataIndex: 'applyDate', ellipsis: true, width: 160 },
   ].map(item => ({ ...item, align: 'center' }));
 
-  const visibleSupplier = () => {
-    console.log('查看供应商');
-  };
-
   const onChangeCreate = (e) => {
-    setData(v => ({...v, checkedCreate: e.target.checked}))
+    setData(v => ({ ...v, checkedCreate: e.target.checked }))
     tableRef.current.remoteDataRefresh();
   }
 
   const onChangeDistribution = (e) => {
-    setData(v => ({...v, checkedDistribution: e.target.checked}))
+    setData(v => ({ ...v, checkedDistribution: e.target.checked }))
     tableRef.current.remoteDataRefresh();
   }
 
+  // 导出
+  const explainResponse = res => {
+    let arr = [];
+    res.data.rows.map(item => {
+      arr.push({
+        '状态': item.state,
+        '分配供应商状态': item.allotSupplierState,
+        '来源': item.source,
+        '分享需求号': item.shareDemanNumber,
+        '物料代码': item.materialCode,
+        '物料描述': item.materialName,
+        '物料组代码': item.materialGroupCode,
+        '物料组描述': item.materialGroupName,
+        '战略采购代码': item.strategicPurchaseCode,
+        '战略采购名称': item.strategicPurchaseName,
+        '业务单元代码': item.buCode,
+        '业务单元名称': item.buName,
+        '申请人': item.applyPeopleName,
+        '申请人联系方式': item.applyPersonPhone,
+        '申请日期': item.applyDate,
+      });
+    });
+    if (res.success) {
+      return arr;
+    }
+    return [];
+  };
+  // 获取导出的数据
+  const requestParams = {
+    data: {
+      ...data.checkedCreate ? { onlyOwn: data.checkedCreate } : null,
+      ...data.checkedDistribution ? { onlyAllocation: data.checkedDistribution } : null,
+      quickSearchValue: data.quickSearchValue,
+      ...data.epTechnicalShareDemandSearchBo,
+      pageInfo: { page: 1, rows: 100000 }
+    },
+    url: `${recommendUrl}/api/epTechnicalShareDemandService/findByPage`,
+    method: 'POST',
+  };
 
   const headerLeft = <>
     {
@@ -283,7 +319,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='TECHNICAL_DATA_SHARING_SUBMIT'
-        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', '草稿') || !judge(data.selectedRows, 'strategicPurchaseCode')}
+        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', '草稿')}    /*先提交后分配战略采购 秦老师20.11.05提*/
       >提交</Button>)
     }
     {
@@ -304,7 +340,7 @@ export default function() {
           data.selectedRowKeys.length !== 1 ||
           !data.selectedRows.every(item => item.strategicPurchaseCode) ||
           !judge(data.selectedRows, 'state', '生效') ||
-          (data.selectedRows.length > 1 && data.selectedRows.some(item=>item.allotSupplierState === '已分配'))
+          (data.selectedRows.length > 1 && data.selectedRows.some(item => item.allotSupplierState === '已分配'))
         }
         key='TECHNICAL_DATA_SHARING_ALLOT'
       >分配供应商</Button>)
@@ -314,12 +350,21 @@ export default function() {
         onClick={() => redirectToPage('govern')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        disabled={data.selectedRowKeys.length === 0 
+        disabled={data.selectedRowKeys.length === 0
           // || data.selectedRows.every(item => item.strategicPurchaseCode)
-        || !judge(data.selectedRows, 'state', '生效')
+          || !judge(data.selectedRows, 'state', '生效')
         }
         key='TECHNICAL_DATA_SHARING_GOVERN'
       >指派战略采购</Button>)
+    }
+    {
+      authAction(<DataExport.Button
+        requestParams={requestParams}
+        explainResponse={explainResponse}
+        filenameFormat={'技术资料分享' + moment().format('YYYYMMDD')}
+        key='TECHNICAL_DATA_SHARING_EXPORT'
+        ignore={DEVELOPER_ENV}
+      >导出</DataExport.Button>)
     }
   </>;
 
@@ -360,7 +405,7 @@ export default function() {
         left={headerLeft}
         right={headerRight}
         content={
-          <AdvancedForm formItems={formItems} onOk={handleAdvancedSearch}/>
+          <AdvancedForm formItems={formItems} onOk={handleAdvancedSearch} />
         }
         advanced
       />
@@ -372,8 +417,8 @@ export default function() {
             columns={columns}
             store={{
               params: {
-                ...data.checkedCreate ? {onlyOwn: data.checkedCreate} : null,
-                ...data.checkedDistribution ? {onlyAllocation: data.checkedDistribution} : null,
+                ...data.checkedCreate ? { onlyOwn: data.checkedCreate } : null,
+                ...data.checkedDistribution ? { onlyAllocation: data.checkedDistribution } : null,
                 quickSearchValue: data.quickSearchValue,
                 ...data.epTechnicalShareDemandSearchBo,
               },

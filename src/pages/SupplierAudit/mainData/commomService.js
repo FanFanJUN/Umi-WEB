@@ -1,5 +1,6 @@
 import { baseUrl, basicServiceUrl, gatewayUrl, recommendUrl, smBaseUrl } from '../../../utils/commonUrl';
 import request from '../../../utils/request';
+import { FLOW_HOST } from '../../../utils/constants';
 
 /**
  * 判断为空
@@ -349,7 +350,7 @@ export const DocumentAuditCauseManagementConfig = {
 };
 // 月度计划-从年度审核计划-新增
 export const reviewPlanYearConfig = {
-  placeholder: '选择审核原因',
+  placeholder: '选择年度审核计划',
   store: {
     type: 'POST',
     autoLoad: false,
@@ -450,12 +451,22 @@ export const AuditTypeManagementConfig = {
   },
 };
 
+// 终止审批流程
+export const EndFlow = async (params={}) => {
+  const url = `${gatewayUrl}${FLOW_HOST}/flowInstance/checkAndEndByBusinessId`
+  return request({
+    url,
+    method: 'POST',
+    params,
+  })
+}
+
 // 审核需求管理delete
 export const DeleteAuditRequirementsManagement = async (params = {}) => {
   const url = `${recommendUrl}/api/reviewRequirementService/delete`;
   return request({
     url,
-    method: 'POST',
+    method: 'DELETE',
     data: params,
   });
 };

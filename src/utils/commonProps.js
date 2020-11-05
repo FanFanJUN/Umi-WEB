@@ -995,6 +995,7 @@ export const oddunionPayCodeConfig = {
   }, {
     title: '名称',
     dataIndex: 'name',
+    width:420
   }],
   dataService: listUnionPayCode,
   key: 'code',

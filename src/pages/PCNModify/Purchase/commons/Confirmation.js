@@ -23,6 +23,7 @@ const formLayout = {
     },
 };
 const { storage } = utils
+let typeid = []
 const getconfirmFromRef = forwardRef(({
 	form,
   isView,
@@ -65,6 +66,7 @@ const getconfirmFromRef = forwardRef(({
     async function editToexamine(val) {
       if (val) {
         let materieldata = editData.smPcnAnalysisVos;
+        console.log(materieldata)
         setDataSource(materieldata)
         setPurchase(editData.smPcnConfirmPlanVo)
       }
@@ -160,18 +162,18 @@ const getconfirmFromRef = forwardRef(({
               } 
             },
           },
-          {
-            title: '信任公司',
-            dataIndex: 'smTrustCompanyCode',
-            align: 'center',
-            width: 180,
-          },
-          {
-            title: '信任采购组织',
-            dataIndex: 'smTrustPurchasCode',
-            align: 'center',
-            width: 160
-          },
+          // {
+          //   title: '信任公司',
+          //   dataIndex: 'smTrustCompanyCode',
+          //   align: 'center',
+          //   width: 180,
+          // },
+          // {
+          //   title: '信任采购组织',
+          //   dataIndex: 'smTrustPurchasCode',
+          //   align: 'center',
+          //   width: 160
+          // },
           {
             title: '实物认定确认人',
             dataIndex: 'smInKindManName',
@@ -219,7 +221,7 @@ const getconfirmFromRef = forwardRef(({
     ]
 	// 获取表单参数
 	function getBaseInfo() {
-    let result = false;
+    let result = false,alltype=[];
     let purchasetab = tabformRef.current.data;
     if (purchasetab.length > 0 ) {
       form.validateFieldsAndScroll((err, val) => {
@@ -231,52 +233,88 @@ const getconfirmFromRef = forwardRef(({
           }
           editData.smPcnConfirmPlanVo = {...editData.smPcnConfirmPlanVo,...purchase}
           result = editData
-          if (opinion === 2) {
-            let verificatab = verifformRef.current.data;
-            if (verificatab.length > 0) {
-              verificatab.map(item => {
-                console.log(item)
-                if (!isEmpty(item.smInKindStatus) || !isEmpty(item.smCustomerConfirm) || !isEmpty(item.smSupplierAuditStatus)) {
-                  let newverifica = verifformRef.current.data
-                  if (item.smInKindStatus === 0 && item.smCustomerConfirm === 0 && item.smSupplierAuditStatus === 0) {
-                    message.error('验证方案不能全部为否！')
-                  }else {
-                    editData.smPcnAnalysisVos.map((orig,indexs) => {
-                      newverifica.map((items,index) => {
-                        if (orig.id === items.id) {
-                          editData.smPcnAnalysisVos.splice(indexs,1,items)
-                        }
-                        
-                      })
-                    })
-                    result = editData
+          let verificatab = verifformRef.current.data;
+          if (opinion === 2 && verificatab.length > 0) {
+            for (let item of verificatab) {
+              if (isEmpty(item.smInKindStatus) || isEmpty(item.smCustomerConfirm) || isEmpty(item.smSupplierAuditStatus)) {
+                message.error('请将验证方案数据填写完整！')
+                result = false
+                return false
+              } else {
+                let result = verificatab.some(item =>{
+                  if (item.smInKindStatus === 0 && item.smCustomerConfirm === 0 && item.smSupplierAuditStatus === 0){
+                    return true 
                   }
-                  
-                  
-                }else{
-                  message.error('验证数据最少有一行编辑数据！')
-                  result = false
+                })
+                if (result) {
+                  message.error('当验证方案不能全部为否！')
                   return false
+                }else {
+                    //addTodata(val)
+                  let newverifica = verifformRef.current.data
+                  editData.smPcnAnalysisVos.map((orig,indexs) => {
+                    newverifica.map((items,index) => {
+                      if (orig.id === items.id) {
+                        editData.smPcnAnalysisVos.splice(indexs,1,items)
+                      }
+                    })
+                  })
+                  result = editData
                 }
-              })
+                // if (item.smInKindStatus === 0 && item.smCustomerConfirm === 0 && item.smSupplierAuditStatus === 0) {
+                //   if (verificatab.length > 1) {
+                //     alltype.push(true)
+                //   }else {
+                //     message.error('验证方案不能全部为否！')
+                //     result = false
+                //     return false
+                //   }
+                // }else {
+                //   console.log(231)
+                //   // if (verificatab.length > 1) {
+                //   //   console.log(56)
+                //   //   alltype.push(true)
+                //   // } 
+                // }
+              }
             }
+            // let global;
+            // if (alltype.length > 1) {
+            //   global = isAllEqual(alltype)
+            //   if (global) {
+            //     message.error('验证方案不能全部为否！')
+            //     result = false
+            //     return false
+            //   }else {
+            //     let newverifica = verifformRef.current.data
+            //     editData.smPcnAnalysisVos.map((orig,indexs) => {
+            //       newverifica.map((items,index) => {
+            //         if (orig.id === items.id) {
+            //           editData.smPcnAnalysisVos.splice(indexs,1,items)
+            //         }
+            //       })
+            //     })
+            //     result = editData
+            //   }
+            // }
           }
         }
       })
+      console.log(result)
       return result;
     }else {
       message.error('采购小组成员最少有一行数据！')
       return false;
     }
-	}
-
-	function ficationInfo(id) {
-		console.log(id)
-		onClickfication(id)
-	}
-	function setSupplier(name) {
-		console.log(name)
-		Dyformname(name)
+  }
+  function isAllEqual(array) {
+    if (array.length > 0) {
+        return !array.some(function (value, index) {
+            return value !== array[0];
+        });
+    } else {
+        return true;
+    }
   }
   // 采购小组新增
   function showPurchase() {
@@ -322,6 +360,7 @@ const getconfirmFromRef = forwardRef(({
   }
   // 验证方案
   function handleSelectedRows(rowKeys, rows) {
+    //console.log(rows)
     setRowKeys(rowKeys);
     setRows(rows);
   }
@@ -343,6 +382,7 @@ const getconfirmFromRef = forwardRef(({
   // 编辑客户信息
   function handlecustomer(val) {
     const newdata = [...dataSource]
+    console.log(newdata)
     newdata.map((item, index) => {
       val.map((items,indexs) => {
         if (item.id === items.id) {
@@ -535,7 +575,8 @@ const getconfirmFromRef = forwardRef(({
                     }
                 ></Modal>
                 {/**认定信息 */}
-                <InformationModal 
+                <InformationModal
+                  alonedata={editData} 
                   editData={selectedRows}
                   determine={handleinfor}  
                   wrappedComponentRef={getInformation}

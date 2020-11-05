@@ -203,7 +203,7 @@ const QualificationRef = forwardRef(({
         {
             title: '证书编号',
             dataIndex: 'certificateNo',
-            width: 260,
+            width: 280,
             render: (text, record, index) => {
                 if (isView) {
                     return text;
@@ -217,7 +217,7 @@ const QualificationRef = forwardRef(({
                                 message: '请输入证书编号!',
                             }],
                         })(
-                            <Input placeholder={'请输入证书编号，若没有，则填写无'}/>,
+                            <Input placeholder={'若没有，则填写无'}/>,
                         )}
                 </FormItem>;
             },
@@ -225,7 +225,7 @@ const QualificationRef = forwardRef(({
         {
             title: '认证机构',
             dataIndex: 'institution',
-            width: 260,
+            width: 280,
             render: (text, record, index) => {
                 if (isView) {
                     return text;
@@ -239,7 +239,7 @@ const QualificationRef = forwardRef(({
                                 message: '请输入认证机构!',
                             }],
                         })(
-                            <Input placeholder={'请输入认证机构，若没有，则填写无'}/>,
+                            <Input placeholder={'若没有，则填写无'}/>,
                         )}
                 </FormItem>;
             },

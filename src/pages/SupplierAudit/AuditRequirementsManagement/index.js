@@ -1,20 +1,19 @@
 import React, { useState, useRef, useEffect, Fragment } from 'react';
 import Header from '../../../components/Header';
 import AdvancedForm from '../../../components/AdvancedForm';
-import { Button, Input, message, Modal } from 'antd';
+import { Button, Input, message, Modal, Spin } from 'antd';
 import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
 import { ExtTable, utils, WorkFlow } from 'suid';
 import {
   ApplyOrganizationProps,
   AuditCauseManagementConfig,
   AuditTypeManagementConfig,
-  CompanyConfig, DeleteAuditRequirementsManagement,
+  CompanyConfig, DeleteAuditRequirementsManagement, EndFlow,
   FindByFiltersConfig, SupplierConfig,
 } from '../mainData/commomService';
 import {
-  DeleteDataSharingList, flowProps,
-  RecallDataSharingList, stateProps,
-  SubmitDataSharingList,
+  flowProps, judge,
+  stateProps,
 } from '../../QualitySynergy/commonProps';
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
@@ -47,6 +46,7 @@ export default function() {
   };
 
   const [data, setData] = useState({
+    spinning: false,
     flowId: '',
     checkedCreate: false,
     checkedDistribution: false,
@@ -63,44 +63,18 @@ export default function() {
         openNewTab('supplierAudit/AuditRequirementsManagementAdd?pageState=add', '审核需求管理-新增', false);
         break;
       case 'edit':
-        openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=edit&reviewRequirementCode=${data.selectedRows[0].reviewRequirementCode}&id=${data.selectedRows[0].id}`, '审核需求管理-编辑', false);
+        openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=edit&id=${data.selectedRows[0].id}`, '审核需求管理-编辑', false);
         break;
       case 'detail':
-        openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=detail&reviewRequirementCode=${data.selectedRows[0].reviewRequirementCode}&id=${data.selectedRows[0].id}`, '审核需求管理-明细', false);
+        openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=detail&id=${data.selectedRows[0].id}`, '审核需求管理-明细', false);
         break;
       case 'delete':
         deleteList();
         break;
-      case 'submit':
-        submitOrRecall('submit');
-        break;
-      case 'recall':
-        recallList();
+      case 'endFlow':
+        endFlow();
         break;
     }
-  };
-
-  // 撤回选中单据
-  const recallList = () => {
-    Modal.confirm({
-      title: '撤回',
-      content: '是否撤回选中的数据',
-      okText: '是',
-      cancelText: '否',
-      onOk: () => {
-        RecallDataSharingList({
-          ids: data.selectedRowKeys.toString(),
-        }).then(res => {
-          if (res.success) {
-            message.success(res.message);
-            tableRef.current.manualSelectedRows();
-            tableRef.current.remoteDataRefresh();
-          } else {
-            message.error(res.message);
-          }
-        });
-      },
-    });
   };
 
   const handleQuickSearch = (value) => {
@@ -110,23 +84,28 @@ export default function() {
     console.log(value, 'value');
   };
 
-
-  const submitOrRecall = (type) => {
-    if (type === 'submit') {
-      SubmitDataSharingList({
-        ids: data.selectedRowKeys.toString(),
-      }).then(res => {
-        if (res.success) {
-          message.success('提交成功');
+  const endFlow = () => {
+    Modal.confirm({
+      title: '终止审核',
+      content: '是否终止审核？',
+      okText: '确定',
+      cancelText: '取消',
+      onOk: async () => {
+        setData(v => ({ ...v, spinning: true }));
+        const { flowId } = data;
+        const { success, message: msg } = await EndFlow({
+          businessId: flowId,
+        });
+        if (success) {
+          message.success(msg);
+          setData(v => ({ ...v, spinning: false }));
           tableRef.current.manualSelectedRows();
           tableRef.current.remoteDataRefresh();
-        } else {
-          message.error(res.message);
+          return;
         }
-      });
-    } else {
-
-    }
+        message.error(msg);
+      },
+    });
   };
 
   // 删除
@@ -138,9 +117,8 @@ export default function() {
       okType: 'danger',
       cancelText: '否',
       onOk: () => {
-        DeleteAuditRequirementsManagement({
-          reviewRequirementCode: data.selectedRows[0].reviewRequirementCode,
-        }).then(res => {
+        const codeArr = data.selectedRows.map(item => item.reviewRequirementCode);
+        DeleteAuditRequirementsManagement(codeArr).then(res => {
           if (res.success) {
             message.success(res.message);
             tableRef.current.manualSelectedRows();
@@ -148,7 +126,7 @@ export default function() {
           } else {
             message.error(res.message);
           }
-        });
+        }).catch(err => message.error(err.message));
       },
     });
   };
@@ -241,7 +219,8 @@ export default function() {
 
   // 提交审核完成更新列表
   function handleComplete() {
-
+    tableRef.current.manualSelectedRows();
+    tableRef.current.remoteDataRefresh();
   }
 
 
@@ -261,7 +240,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='TECHNICAL_DATA_SHARING_EDIT'
-        disabled={data.selectedRowKeys.length !== 1}
+        disabled={!judge(data.selectedRows, 'state', 'DRAFT') || data.selectedRowKeys.length !== 1 || !judge(data.selectedRows, 'flowStatus', 'INIT')}
       >编辑</Button>)
     }
     {
@@ -284,21 +263,22 @@ export default function() {
     }
     {
       authAction(<StartFlow
-        style={{marginRight:'5px'}}
+        style={{ marginRight: '5px' }}
         ignore={DEVELOPER_ENV}
         needConfirm={handleBeforeStartFlow}
         businessKey={data.flowId}
         callBack={handleComplete}
-        disabled={data.selectedRowKeys.length !== 1}
+        disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length === 0}
         businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewRequirement'
         key='SRM-SM-SUPPLIERMODEL_EXAMINE'
       >提交审核</StartFlow>)
     }
     {
       authAction(<FlowHistoryButton
-        businessId={'96CD244D-18F6-11EB-8657-0242C0A84402'}
+        businessId={data.flowId}
         flowMapUrl='flow-web/design/showLook'
         ignore={DEVELOPER_ENV}
+        disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
         key='SRM-SM-SUPPLIERMODEL_HISTORY'
       >
         <Button className={styles.btn} disabled={data.selectedRowKeys.length !== 1}>审核历史</Button>
@@ -306,7 +286,9 @@ export default function() {
     }
     {
       authAction(<Button
-        onClick={() => redirectToPage('allot')}
+        onClick={() => redirectToPage('endFlow')}
+        loading={data.spinning}
+        disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='TECHNICAL_DATA_SHARING_ALLOT'
@@ -358,7 +340,7 @@ export default function() {
             allowCancelSelect={true}
             remotePaging={true}
             checkbox={{
-              multiSelect: false,
+              multiSelect: true,
             }}
             ref={tableRef}
             showSearch={false}
