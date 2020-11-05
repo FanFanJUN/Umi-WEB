@@ -7,7 +7,8 @@ import styles from '../../../Supplier/Editor/index.less';
 import { router } from 'dva';
 import { closeCurrent, getMobile, getUserId, getUserName } from '@/utils';
 import LineInfo from './LineInfo';
-import ChangeInfo from "../component/ChangeInfo"
+import ChangeInfo from "../component/ChangeInfo";
+import ChangeLineInfo from "../component/ChangeLineInfo";
 import { insertMonthBo, findOneOverride, upDateMonthBo, insertChangeMonthBo } from "../service";
 const { StartFlow } = WorkFlow;
 
@@ -27,7 +28,11 @@ const Index = (props) => {
     const [loading, setLoading] = useState(false);
 
     const { query } = router.useLocation();
-
+    useEffect(() => {
+        if (query.pageState !== "add") {
+            getDetail();
+        }
+    }, [])
     useEffect(() => {
         const { id, pageState } = query;
         switch (pageState) {
@@ -37,26 +42,23 @@ const Index = (props) => {
                 break;
             case 'edit':
                 getUser();
-                getDetail();
                 setData((value) => ({ ...value, type: pageState, id, isView: false, title: '月度审核计划管理-编辑' }));
                 break;
             case 'detail':
-                getDetail();
-                setData((value) => ({ ...value, type: pageState, isView: true, title: `月度审核计划明细: ${id}` }));
+                setData((value) => ({ ...value, type: pageState, isView: true, title: `月度审核计划明细: ${editData.reviewPlanMonthCode}` }));
                 break;
             case 'change':
-                getDetail();
-                setData((value) => ({ ...value, type: pageState, isView: true, title: `变更月度审核计划: ${id}` }));
+                setData((value) => ({ ...value, type: pageState, isView: true, title: `变更月度审核计划: ${editData.reviewPlanMonthCode}` }));
                 break;
             default:
                 setData((value) => ({ ...value, type: pageState, isView: false, title: '月度审核计划管理-新增' }));
                 break;
         }
-    }, []);
+    }, [editData]);
 
     const getDetail = async () => {
         setLoading(true);
-        const res = await findOneOverride({
+        let res = await findOneOverride({
             id: query.id
         });
         setLoading(false);
@@ -77,7 +79,7 @@ const Index = (props) => {
     const handleBack = () => {
         closeCurrent();
     };
-// 处理数据
+    // 处理数据
     const getAllData = () => {
         let saveData = { ...editData };
         let lineData = tableRef.current.getTableList();
@@ -109,12 +111,12 @@ const Index = (props) => {
         } else {
             const baseInfo = {};
             form.validateFieldsAndScroll((err, values) => {
-                if (err){
+                if (err) {
                     baseInfo = false;
                 }
-                baseInfo = {...values}
+                baseInfo = { ...values }
             });
-            if(!baseInfo)return false;
+            if (!baseInfo) return false;
             saveData.lineBoList = lineData;
             saveData.deleteList = deleteArr;
             if (!saveData.attachRelatedIds) {
@@ -124,10 +126,10 @@ const Index = (props) => {
             return saveData;
         }
     }
-// 新增保存，编辑保存，变更保存
+    // 新增保存，编辑保存，变更保存
     const handleSave = async (type) => {
         let saveData = await getAllData();
-        if (!saveData) return;
+        if (!saveData) return false;
         setLoading(true);
         let res = {};
         if (query.pageState === "add") {
@@ -183,7 +185,7 @@ const Index = (props) => {
     function handleComplete() {
         setLoading(false);
         message.success("提交成功");
-        setTimeout(()=>{
+        setTimeout(() => {
             handleBack()
         }, 3000)
     }
@@ -201,10 +203,10 @@ const Index = (props) => {
                                 type='primary'
                                 beforeStart={handleBeforeStartFlow}
                                 startComplete={handleComplete}
-                                onCancel={()=>{setLoading(false);}}
+                                onCancel={() => { setLoading(false); }}
                                 businessKey={query?.id}
                                 disabled={loading}
-                                businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewPlanMonth'
+                                businessModelCode={data.type === 'change' ? 'com.ecmp.srm.sam.entity.sr.ReviewPlanMonthChange' : 'com.ecmp.srm.sam.entity.sr.ReviewPlanMonth'}
                             >
                                 {
                                     loading => <Button loading={loading} type='primary'>提交</Button>
@@ -214,6 +216,13 @@ const Index = (props) => {
                     }
                 </div>
             </Affix>
+            {
+                data.type === "change" && <ChangeInfo
+                    originData={{}}
+                    isView={false}
+                    wrappedComponentRef={changeRef}
+                />
+            }
             <BaseInfo
                 form={form}
                 userInfo={data.userInfo}
@@ -221,9 +230,6 @@ const Index = (props) => {
                 isView={data.isView}
                 originData={editData}
             />
-            {
-                data.type === "change" && <ChangeInfo originData={{}} wrappedComponentRef={changeRef} />
-            }
             <LineInfo
                 type={data.type}
                 isView={data.isView}

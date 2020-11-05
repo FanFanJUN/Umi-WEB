@@ -9,7 +9,7 @@
  */
 import React, { useEffect, useRef, useState, useImperativeHandle, forwardRef } from 'react';
 import styles from '../index.less';
-import { Form, Button, Modal } from 'antd';
+import { Form, Button, Modal, message } from 'antd';
 import { ExtTable } from 'suid';
 import AddModal from './AddModal';
 import BatchEditModal from './BatchEditModal';
@@ -252,20 +252,29 @@ let LineInfo = forwardRef((props, ref) => {
       title: '删除',
       content: '是否确认删除选中数据',
       onOk: () => {
+        let tag = false;
+        let arr = JSON.parse(JSON.stringify(deleteLine))
         let newList = dataSource.filter(item => {
           if (item.id && data.selectedRowKeys.includes(item.lineNum)) {
-            let arr = JSON.parse(JSON.stringify(deleteLine))
+            // 已创建审核实施计划的行不可删除和编辑
+            if(props.type === "change" && item.whetherOccupied){
+              tag = true;
+            }
             item.whetherDeleted = true
             arr.push(item)
-            setDeleteLine(arr)
           }
           return !data.selectedRowKeys.includes(item.lineNum);
         });
+        if(tag) {
+          message.warning("存在已创建审核实施计划的行，不可删除");
+          return;
+        }
         newList = newList.map((item, index) => {
           item.lineNum = getRandom(10);
           item.reviewPlanMonthLinenum = ((Array(4).join(0) + (index + 1)).slice(-4) + '0');
           return item;
         });
+        setDeleteLine(arr)
         setDataSource(newList);
         tableRef.current.manualSelectedRows();
       },
@@ -320,31 +329,36 @@ let LineInfo = forwardRef((props, ref) => {
     setDataSource(newList);
     tableRef.current.manualSelectedRows();
   };
+
+  // 变更时-检查选中数据是否可删除/编辑
+  function checkSelect() {
+    return data.selectRows.some(item => item.whetherOccupied);
+  }
   return (
     <div className={styles.wrapper}>
       <div className={styles.bgw}>
         <div className={styles.title}>拟审核信息</div>
         <div className={styles.content}>
           {
-            !isView && <div className={styles.listBtn}>
+            (!isView || props.type === "change")&& <div className={styles.listBtn}>
               <Button onClick={() => handleBtn('annual')} type='primary'>从年度计划新增</Button>
               <Button onClick={() => handleBtn('recommand')} type='primary'>从准入推荐新增</Button>
               <Button onClick={() => handleBtn('demand')} type='primary'>从审核需求新增</Button>
               <Button onClick={() => {
                 handleBtn('edit');
-              }} disabled={data.selectRows.length === 0}>批量编辑</Button>
+              }} disabled={data.selectRows.length === 0 || checkSelect()}>批量编辑</Button>
               <Button onClick={() => {
                 handleDelete();
-              }} disabled={data.selectRows.length === 0}>删除</Button>
+              }} disabled={data.selectRows.length === 0 || checkSelect()}>删除</Button>
               <Button onClick={() => {
                 handleBtn('contenM');
-              }} disabled={data.selectRows.length === 0}>审核内容管理</Button>
+              }} disabled={data.selectRows.length === 0 || checkSelect()}>审核内容管理</Button>
               <Button onClick={() => {
                 handleBtn('teamM');
-              }} disabled={data.selectRows.length !== 1}>审核小组管理</Button>
+              }} disabled={data.selectRows.length !== 1 || checkSelect()}>审核小组管理</Button>
               <Button onClick={() => {
                 handleBtn('personM');
-              }} disabled={data.selectRows.length === 0}>协同人员管理</Button>
+              }} disabled={data.selectRows.length === 0 || checkSelect()}>协同人员管理</Button>
             </div>
           }
           <ExtTable

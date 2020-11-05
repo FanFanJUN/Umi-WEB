@@ -359,6 +359,7 @@ export default function () {
                 visible={historyVisible}
                 handleCancel={()=>{setHistoryV(false)}}
                 id={data.selectedRowKeys[0]}
+                code={data.selectedRows[0]?.reviewPlanMonthCode}
             />}
         </Fragment>
     );

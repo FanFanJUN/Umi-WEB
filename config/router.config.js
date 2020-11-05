@@ -50,6 +50,8 @@ export default [
       { path: '/supplierAudit/AuditRequirementsManagement', component: './SupplierAudit/AuditRequirementsManagement', title: '审核需求管理' },
 
       { path: '/supplierAudit/AuditRequirementsManagementFlow', component: './SupplierAudit/FlowList', title: '审核需求管理流程中' },
+      { path: '/supplierAudit/monthAuditInFlow', component: './SupplierAudit/FlowList/monthAuditInFlow', title: '月度审核计划流程中' },
+      { path: '/supplierAudit/MonthAuditPlanInFlow', component: './SupplierAudit/FlowList/monthAuditPlanInFlow', title: '月度审核计划变更流程中' },
 
       { path: '/supplierAudit/AuditRequirementsManagementAdd', component: './SupplierAudit/AuditRequirementsManagement/add', title: '审核需求管理新增' },
       { path: '/supplierAudit/AnnualAuditPlan', component: './SupplierAudit/AnnualAuditPlan', title: '年度审核计划管理' },
@@ -58,6 +60,7 @@ export default [
       { path: '/supplierAudit/MonthAuditPlan', component: './SupplierAudit/MonthAuditPlan', title: '月度审核计划管理' },
       { path: '/supplierAudit/MonthAuditPlanEda', component: './SupplierAudit/MonthAuditPlan/EdaPage', title: '月度审核计划管理新增' },
       { path: '/supplierAudit/detailList', component: './SupplierAudit/MonthAuditPlan/detailList', title: '月度审核计划明细' },
+      { path: '/supplierAudit/MonthAuditChangeDetail', component: './SupplierAudit/MonthAuditPlan/component/changeDetail', title: '月度审核计划变更明细' },
     ]
   },
   {

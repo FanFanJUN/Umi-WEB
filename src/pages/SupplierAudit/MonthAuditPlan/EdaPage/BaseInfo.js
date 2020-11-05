@@ -147,7 +147,7 @@ const BaseInfo = (props) => {
           <Row>
             <Col span={12}>
               <FormItem label="月度" {...formLayout}>
-                {isView ? <span>{data.applyMonth}</span> : getFieldDecorator('applyMonth', {
+                {isView ? <span>{data.applyMonth + "月"}</span> : getFieldDecorator('applyMonth', {
                   initialValue: type === 'add' ? '' : data.applyMonth,
                   rules: [
                     {

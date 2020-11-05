@@ -45,7 +45,7 @@ const ChangeInfo = forwardRef((props, ref) => {
             return changeInfo;
         }
     }));
-    const { form, originData: data} = props;
+    const { form, originData: data, isView} = props;
     const { getFieldDecorator, setFieldsValue } = form;
     return (
         <div className={styles.wrapper}>
@@ -57,10 +57,9 @@ const ChangeInfo = forwardRef((props, ref) => {
                             <FormItem {...formLayout} label={'变更附件'}>
                                 {
                                     getFieldDecorator('changeFileId', {
-                                        initialValue: '',
-                                        // initialValue: getDocIdForArray(data.changeFileId),
+                                        initialValue: isView ? getDocIdForArray(data.changeFileId) : "",
                                     })(
-                                        <Upload entityId={data.changeFileId} />
+                                        <Upload entityId={data.changeFileId} type={isView ? 'show' : ''}/>
                                     )
                                 }
                             </FormItem>
@@ -69,8 +68,7 @@ const ChangeInfo = forwardRef((props, ref) => {
                     <Row>
                         <Col span={24}>
                             <FormItem label="变更原因" {...formLongLayout}>
-                                {
-                                    getFieldDecorator('changeReason', {
+                                {isView ? <span>{data.changeReason}</span> : getFieldDecorator('changeReason', {
                                         initialValue: [],
                                         rules: [{ required: true, message: '变更原因不能为空',},],
                                     })(
