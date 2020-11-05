@@ -48,6 +48,9 @@ const Index = (props) => {
     getAuditType();
     const { id, pageState } = query;
     let state = pageState;
+    if (!state) {
+      state = 'flowDetail';
+    }
     if (props.isInFlow) {
       state = 'detail';
     }
@@ -66,6 +69,10 @@ const Index = (props) => {
         }));
         break;
       case 'detail':
+        findOne(id);
+        setData((value) => ({ ...value, type: state, isView: true, title: `审核需求管理-明细` }));
+        break;
+      case 'flowDetail':
         findOne(id);
         setData((value) => ({ ...value, type: state, isView: true, title: `审核需求管理-明细` }));
         break;
