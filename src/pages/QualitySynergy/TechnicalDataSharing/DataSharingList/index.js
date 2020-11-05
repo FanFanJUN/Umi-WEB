@@ -361,7 +361,7 @@ export default function () {
       authAction(<DataExport.Button
         requestParams={requestParams}
         explainResponse={explainResponse}
-        filenameFormat={'技术资料分享明细' + moment().format('YYYYMMDD')}
+        filenameFormat={'技术资料分享' + moment().format('YYYYMMDD')}
         key='TECHNICAL_DATA_SHARING_EXPORT'
         ignore={DEVELOPER_ENV}
       >导出</DataExport.Button>)
