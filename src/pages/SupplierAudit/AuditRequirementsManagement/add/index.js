@@ -15,7 +15,7 @@ import { WorkFlow } from 'suid';
 
 const { StartFlow } = WorkFlow;
 
-const Index = () => {
+const Index = (props) => {
   const baseInfoRef = useRef(null);
 
   const intendedAuditInformationRef = useRef(null);
@@ -47,16 +47,20 @@ const Index = () => {
     // 获取所有审核类型
     getAuditType();
     const { id, pageState, reviewRequirementCode } = query;
-    switch (pageState) {
+    let state = pageState
+    if (props.isInFlow) {
+      state = 'detail'
+    }
+    switch (state) {
       case 'add':
         getUser();
-        setData((value) => ({ ...value, type: pageState, isView: false, title: '审核需求管理-新增' }));
+        setData((value) => ({ ...value, type: state, isView: false, title: '审核需求管理-新增' }));
         break;
       case 'edit':
         findOne(reviewRequirementCode);
         setData((value) => ({
           ...value,
-          type: pageState,
+          type: state,
           id,
           isView: false,
           title: `审核需求管理-编辑 ${reviewRequirementCode}`,
@@ -64,7 +68,7 @@ const Index = () => {
         break;
       case 'detail':
         findOne(reviewRequirementCode);
-        setData((value) => ({ ...value, type: pageState, isView: true, title: `审核需求管理-明细 ${reviewRequirementCode}` }));
+        setData((value) => ({ ...value, type: state, isView: true, title: `审核需求管理-明细 ${reviewRequirementCode}` }));
         break;
     }
   }, []);
@@ -200,7 +204,6 @@ const Index = () => {
   };
 
   const handleComplete = () => {
-    console.log('触发')
     handleBack();
   };
 
@@ -211,7 +214,7 @@ const Index = () => {
           <div className={classnames(styles.fbc, styles.affixHeader)}>
             <span>{data.title}</span>
             {
-              data.type !== 'detail' && <div>
+              data.type !== 'detail' && <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                 <Button className={styles.btn} onClick={handleBack}>返回</Button>
                 <Button className={styles.btn} onClick={() => handleSave('add')}>暂存</Button>
                 <StartFlow
