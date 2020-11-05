@@ -17,7 +17,7 @@ const getMatermodRef = forwardRef(({
     implement,
     materselect = () => null,
     companyCode,
-    plement
+    tabledata
 }, ref,) => {
     useImperativeHandle(ref, () => ({ 
         handleModalVisible,
@@ -67,31 +67,24 @@ const getMatermodRef = forwardRef(({
             message.error('请选择一行数据！');
         } else {
             //隐藏供应商选择框
-            if (isEdit) {
-               iseditMater[0].smPcnAnalysisMaterielVoList = selectedRows;
-                // oddmater.map((item) =>  {
-                //     selectmater.materialGroupCode = item.materialGroupCode,
-                //     selectmater.materialGroupDesc = item.materialGroupDesc,
-                //     selectmater.materialCode = item.materialCode,
-                //     selectmater.materialStandardDesc = item.materialStandardDesc,
-                //     // selectmater.push({
-                //     //     materialGroupCode: item.materialGroupCode,
-                //     //     materialGroupDesc: item.materialGroupDesc,
-                //     //     materialCode: item.materialCode,
-                //     //     materialStandardDesc: item.materialStandardDesc
-                //     // })
+            let result = false;
+            tabledata.map(item =>{
+                selectedRows.map((items,index) => {
+                    if (item.materielTypeCode === items.materialCode){
+                        selectedRows.splice(index,1)
+                        result = true 
+                    } 
+                })
+                
+            }) 
 
-                // })
-                //selectedRows.push(iseditMater)
-                // let isEditchoice = iseditMater[0].smPcnAnalysisMaterielVoList
-                // console.log(iseditMater)
-                materselect(iseditMater)
-            } else if (implement) {
-                materselect(selectedRows)
-            }else {
-                iseditMater[0].smPcnAnalysisMaterielVoList = selectedRows
-                materselect(iseditMater)
+            if (result) {
+               message.error('当前数据已存在，请重新选择！')
             }
+            selectedRows.map(item => {
+                tabledata.push(item)
+            })
+            materselect(tabledata)
             handleModalVisible(false);
             cleanSelectedRecord();
         }
