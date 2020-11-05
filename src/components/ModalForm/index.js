@@ -1,9 +1,17 @@
 import { useState, useImperativeHandle, forwardRef } from 'react';
-import styles from './index.less'
 import { ExtModal } from 'suid';
-import { Form, Input, Row, Col } from 'antd';
+import {
+  Form,
+  Input,
+  Row,
+  Col,
+  DatePicker,
+  InputNumber,
+  Select
+} from 'antd';
 import PropTypes from 'prop-types';
 
+const { Option } = Select;
 const { Item: FormItem, create } = Form;
 const formLayout = {
   labelCol: {
@@ -17,12 +25,16 @@ const formLayout = {
 const ShowLabel = ({ value, ...props }) => <div {...props}>{value}</div>
 
 const FormItemTypes = {
-  label: ShowLabel
+  label: ShowLabel,
+  datePicker: DatePicker,
+  number: InputNumber,
+  select: Select
 }
 const ModalForm = forwardRef(({
   fields = [],
   title = '表单',
   onOk = () => null,
+  confirmLoading = false,
   form
 }, ref) => {
   useImperativeHandle(ref, () => ({
@@ -52,8 +64,8 @@ const ModalForm = forwardRef(({
     return value
   }
   async function handleOk() {
-    const value = await validateFieldsAndScroll()
-
+    const values = await validateFieldsAndScroll()
+    onOk(values)
   }
   return (
     <ExtModal
@@ -64,19 +76,54 @@ const ModalForm = forwardRef(({
       cancelText='取消'
       onOk={handleOk}
       onCancel={hide}
+      width={'80vw'}
+      confirmLoading={confirmLoading}
     >
       <Form {...formLayout}>
-        <Row>
+        <Row gutter={[12, 0]}>
           {
-            fields.map(field => {
-              const Item = FormItemTypes[field.type] || Input;
-              return (
-                <FormItem label={field.label}>
-                  {
-                    getFieldDecorator(field.name, field.option)(<Item style={{ width: '100%' }} />)
-                  }
-                </FormItem>
-              )
+            fields.map((field, keyIndex) => {
+              const { type, name, option, label, labelOptions = [] } = field;
+              const Item = FormItemTypes[type] || Input;
+              switch (type) {
+                case 'select':
+                  return (
+                    <Col
+                      key={`${name}-${keyIndex}`}
+                      span={12}
+                    >
+                      <FormItem label={label}>
+                        {
+                          getFieldDecorator(name, option)(<Item style={{ width: '100%' }}>
+                            {
+                              labelOptions.map((lbo, indexKey) => (
+                                <Option
+                                  key={`${name}-${indexKey}`}
+                                  value={lbo.value}
+                                >
+                                  {lbo.text}
+                                </Option>
+                              ))
+                            }
+                          </Item>)
+                        }
+                      </FormItem>
+                    </Col>
+                  )
+                default:
+                  return (
+                    <Col
+                      key={`${name}-${keyIndex}`}
+                      span={12}
+                    >
+                      <FormItem label={label}>
+                        {
+                          getFieldDecorator(name, option)(<Item style={{ width: '100%' }} />)
+                        }
+                      </FormItem>
+                    </Col>
+                  )
+              }
             })
           }
         </Row>

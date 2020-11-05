@@ -414,6 +414,23 @@ export const documentMaterialClassProps = {
   }
 }
 
+export const materialProps = {
+  store: {
+    url: `${baseUrl}/materialSrm/listByPage`,
+    type: 'post'
+  },
+  reader: {
+    name: 'materialDesc',
+    field: ['materialCode'],
+    description: 'materialCode'
+  },
+  placeholder: '选择物料',
+  style: {
+    width: '100%'
+  },
+  remotePaging: true
+}
+
 // 二次分类物料组数据
 export const materialClassProps = {
   store: {
@@ -460,7 +477,8 @@ export const corporationProps = {
   },
   style: {
     width: '100%'
-  }
+  },
+  placeholder: '选择公司'
 }
 
 // 供应商分类
@@ -1052,6 +1070,7 @@ export const purchaseOrgConfig = {
     width: '100%'
   },
   remotePaging: true,
+  placeholder: '选择采购组织'
 }
 // 数据字典
 export const getListByTypeId = (id) => {

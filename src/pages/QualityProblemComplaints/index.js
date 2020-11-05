@@ -1,5 +1,5 @@
 /**
- * 实现功能：入厂验收批次合格率主数据
+ * 实现功能：质量问题投诉主数据
  * @author hezhi
  * @date 2020-09-23
  */
@@ -11,11 +11,11 @@ import { Header, AutoSizeLayout, ModalForm, AdvancedForm } from '../../component
 import { useTableProps } from '../../utils/hooks';
 import { commonUrl, downloadBlobFile, commonProps } from '../../utils'
 import {
-  acceptCheck as CHECK_METHOD,
-  acceptExport as EXPORT_METHOD,
-  acceptSaveList as SAVE_LIST_METHOD,
-  acceptSaveOne as SAVE_ONE_METHOD,
-  acceptRemove as REMOVE_METHOD
+  qualityProblemComplaintsCheck as CHECK_METHOD,
+  qualityProblemComplaintsExport as EXPORT_METHOD,
+  qualityProblemComplaintsSaveList as SAVE_LIST_METHOD,
+  qualityProblemComplaintsSaveOne as SAVE_ONE_METHOD,
+  qualityProblemComplaintsRemove as REMOVE_METHOD
 } from '../../services/gradeSystem';
 const { recommendUrl } = commonUrl;
 const {
@@ -35,14 +35,15 @@ const minxinSupplierProps = {
   placeholder: '选择供应商'
 };
 const { Search } = Input;
-const MAIN_KEY_PREFIX = 'ACCEPT_FYP_MAIN_'
-const TABLE_DATASOURCE_QUERY_PATH = `${recommendUrl}/api/bafIncomingPassRateService/findByPage`;
+/** 配置修改部分 begin */
+const MAIN_KEY_PREFIX = 'QUALITY_PROBLEM_COMPLAINTS_MAIN_'
+const TABLE_DATASOURCE_QUERY_PATH = `${recommendUrl}/api/bafQualityProblemComplaintsService/findByPage`;
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const { authAction, getUUID } = utils;
-const FILENAME = '入厂验收批次合格率上传模板.xlsx';
-const DOWNLOADNAME = '入厂验收批次合格率.xlsx'
+const FILENAME = '质量问题投诉上传模板.xlsx';
+const DOWNLOADNAME = '质量问题投诉.xlsx'
 const SEARCH_PLACEHOLDER = '供应商代码或名称';
-const quickSearchProperties = ['supplierCode', 'supplierName'];
+const quickSearchProperties = [];
 const sortOrders = [];
 const FORMITEMS = [
   {
@@ -133,15 +134,44 @@ const FIELDS = [
     type: 'label'
   },
   {
-    name: 'unqualified',
-    label: '不合格批次',
-    type: 'number'
+    name: 'generalQualityProblem',
+    label: '一般质量问题次数',
+    type: 'number',
+    option: {
+      rules: [
+        {
+          required: true,
+          message: '一般质量问题次数不能为空'
+        }
+      ]
+    }
   },
   {
-    name: 'total',
-    label: '检验总批次',
-    type: 'number'
-  }
+    name: 'majorQualityProblem',
+    label: '重大质量问题次数',
+    type: 'number',
+    option: {
+      rules: [
+        {
+          required: true,
+          message: '重大质量问题次数不能为空'
+        }
+      ]
+    }
+  },
+  {
+    name: 'marketQualityProblem',
+    label: '市场质量问题次数',
+    type: 'number',
+    option: {
+      rules: [
+        {
+          required: true,
+          message: '市场质量问题次数不能为空'
+        }
+      ]
+    }
+  },
 ];
 const COLUMNS = [
   {
@@ -189,12 +219,16 @@ const COLUMNS = [
     dataIndex: 'month'
   },
   {
-    title: '不合格批次',
-    dataIndex: 'unqualified'
+    title: '一般质量问题次数',
+    dataIndex: 'generalQualityProblem',
   },
   {
-    title: '检验总批次',
-    dataIndex: 'total'
+    title: '重大质量问题次数',
+    dataIndex: 'majorQualityProblem',
+  },
+  {
+    title: '市场质量问题次数',
+    dataIndex: 'marketQualityProblem',
   }
 ];
 const TFL = [
@@ -215,6 +249,7 @@ const TFL = [
     fileName: FILENAME
   }
 ];
+/** 配置修改部分 end */
 function AcceptFYPMain() {
   const [tableState, sets] = useTableProps();
   const [spinning, setSpinning] = useState(false);
@@ -344,16 +379,24 @@ function AcceptFYPMain() {
     headerRef.current.hide()
   }
   // 导出
-  async function handleExport() {
-    const { success, message: msg, data } = await EXPORT_METHOD({
-      ...searchValue
+  function handleExport() {
+    Modal.confirm({
+      title: '导出数据',
+      content: '是否导出当前查询条件下数据？',
+      okText: '导出',
+      cancelText: '取消',
+      onOk: async () => {
+        const { success, message: msg, data } = await EXPORT_METHOD({
+          ...searchValue
+        })
+        if (success) {
+          downloadBlobFile(data, DOWNLOADNAME);
+          message.success('导出成功')
+          return
+        }
+        message.error(msg)
+      }
     })
-    if (success) {
-      downloadBlobFile(data, DOWNLOADNAME);
-      message.success('导出成功')
-      return
-    }
-    message.error(msg)
   }
   const left = (
     <>

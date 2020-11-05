@@ -1,5 +1,5 @@
 /**
- * 实现功能：入厂验收批次合格率主数据
+ * 实现功能：交货异常事故次数主数据
  * @author hezhi
  * @date 2020-09-23
  */
@@ -11,11 +11,11 @@ import { Header, AutoSizeLayout, ModalForm, AdvancedForm } from '../../component
 import { useTableProps } from '../../utils/hooks';
 import { commonUrl, downloadBlobFile, commonProps } from '../../utils'
 import {
-  acceptCheck as CHECK_METHOD,
-  acceptExport as EXPORT_METHOD,
-  acceptSaveList as SAVE_LIST_METHOD,
-  acceptSaveOne as SAVE_ONE_METHOD,
-  acceptRemove as REMOVE_METHOD
+  deliveryCheck as CHECK_METHOD,
+  deliveryExport as EXPORT_METHOD,
+  deliverySaveList as SAVE_LIST_METHOD,
+  deliverySaveOne as SAVE_ONE_METHOD,
+  deliveryRemove as REMOVE_METHOD
 } from '../../services/gradeSystem';
 const { recommendUrl } = commonUrl;
 const {
@@ -35,12 +35,12 @@ const minxinSupplierProps = {
   placeholder: '选择供应商'
 };
 const { Search } = Input;
-const MAIN_KEY_PREFIX = 'ACCEPT_FYP_MAIN_'
-const TABLE_DATASOURCE_QUERY_PATH = `${recommendUrl}/api/bafIncomingPassRateService/findByPage`;
+const MAIN_KEY_PREFIX = 'DELIVERY_ANOMALY_MAIN_'
+const TABLE_DATASOURCE_QUERY_PATH = `${recommendUrl}/api/samBafAbnormalDeliveryService/findByPage`;
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const { authAction, getUUID } = utils;
-const FILENAME = '入厂验收批次合格率上传模板.xlsx';
-const DOWNLOADNAME = '入厂验收批次合格率.xlsx'
+const FILENAME = '交货异常事故次数上传模板.xlsx';
+const DOWNLOADNAME = '交货异常事故次数.xlsx'
 const SEARCH_PLACEHOLDER = '供应商代码或名称';
 const quickSearchProperties = ['supplierCode', 'supplierName'];
 const sortOrders = [];
@@ -135,12 +135,28 @@ const FIELDS = [
   {
     name: 'unqualified',
     label: '不合格批次',
-    type: 'number'
+    type: 'number',
+    option: {
+      rules: [
+        {
+          required: true,
+          message: '不合格批次不能为空'
+        }
+      ]
+    }
   },
   {
     name: 'total',
     label: '检验总批次',
-    type: 'number'
+    type: 'number',
+    option: {
+      rules: [
+        {
+          required: true,
+          message: '检验总批次不能为空'
+        }
+      ]
+    }
   }
 ];
 const COLUMNS = [
@@ -344,16 +360,24 @@ function AcceptFYPMain() {
     headerRef.current.hide()
   }
   // 导出
-  async function handleExport() {
-    const { success, message: msg, data } = await EXPORT_METHOD({
-      ...searchValue
+  function handleExport() {
+    Modal.confirm({
+      title: '导出数据',
+      content: '是否导出当前查询条件下数据？',
+      okText: '导出',
+      cancelText: '取消',
+      onOk: async () => {
+        const { success, message: msg, data } = await EXPORT_METHOD({
+          ...searchValue
+        })
+        if (success) {
+          downloadBlobFile(data, DOWNLOADNAME);
+          message.success('导出成功')
+          return
+        }
+        message.error(msg)
+      }
     })
-    if (success) {
-      downloadBlobFile(data, DOWNLOADNAME);
-      message.success('导出成功')
-      return
-    }
-    message.error(msg)
   }
   const left = (
     <>
