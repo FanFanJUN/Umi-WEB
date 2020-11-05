@@ -150,13 +150,15 @@ const getToexamine = forwardRef(({
     }else {
       form.validateFieldsAndScroll((err, values) => {
         let handledata = dataTransfer2(examine, values)
-        handledata.forEach((item,index) => {
-          examine.forEach((items,ins)=> {
-            items.smSupplierAuditConfirmerAttachments = item.smSupplierAuditConfirmerEnclosure
-            items.smSupplierAuditResultStatus = item.smSupplierAuditResultStatus
-          })
-          
-        })
+        for (let item of handledata) {
+          for (let items of examine) {
+            if (item.id === items.id) {
+              items.smSupplierAuditConfirmerAttachments = item.smSupplierAuditConfirmerEnclosure
+              items.smSupplierAuditResultStatus = item.smSupplierAuditResultStatus
+            }
+            
+          }
+        }
         if (!err) {
           toexamine.smPcnAnalysisVos = examine
           result = toexamine

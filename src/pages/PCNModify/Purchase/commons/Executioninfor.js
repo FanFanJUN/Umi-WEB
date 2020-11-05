@@ -3,7 +3,7 @@ import { ExtTable, utils, ToolBar,AuthButton  } from 'suid';
 import { Form, Row, Col, Input, DatePicker,message  } from 'antd';
 import Header from '@/components/Header';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
-import MaterielModal from '../../Supplier/commons/MaterielModal'
+import MaterielModal from './MaterielModal'
 import styles from '../index.less';
 import moment from 'moment';
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
@@ -23,8 +23,7 @@ const getExecutioninfor = forwardRef(({
   form,
   isView,
   editData = [],
-  headerInfo,
-  materielid
+  headerInfo
 }, ref) => {
   useImperativeHandle(ref, () => ({
     form,
@@ -38,6 +37,8 @@ const getExecutioninfor = forwardRef(({
   const [materiel, setMateriel] = useState([]);
   const [selectRowKeys, setRowKeys] = useState([]);
   const [selectedRows, setRows] = useState([]);
+  const [companyCode, setCompanyCode] = useState('');
+  const [materielid, setMaterielID] = useState('');
   const [attachId, setAttachId] = useState('')
   const empty = selectRowKeys.length === 0;
 
@@ -45,7 +46,7 @@ const getExecutioninfor = forwardRef(({
     handleimplement(editData)
   }, [editData])
   // 
-  async function handleimplement(val) {
+  function handleimplement(val) {
     if (val) {
       setDataSource(val.smPcnExecutInfoVo)
       setImplement(val)
@@ -58,9 +59,19 @@ const getExecutioninfor = forwardRef(({
               ...item
             })
           })
+          
           setMateriel(newdata)
         }
        
+      }
+      if (val.smPcnAnalysisVos) {
+        let newdata = []; let matid = [];
+        val.smPcnAnalysisVos.map((item,index) => {
+          newdata.push(item.companyCode)
+          matid.push(item.materielCategoryCode)
+        })
+        setCompanyCode(newdata)
+        setMaterielID(matid)
       }
     }
   }
@@ -242,11 +253,13 @@ const getExecutioninfor = forwardRef(({
         />
         }
       </AutoSizeLayout>
-      <MaterielModal 
+      <MaterielModal
+        companyCode={companyCode} 
         materselect={handleMateriel}
         implement={true}
         materielCategoryCode={materielid}
         wrappedComponentRef={getMatermodRef} 
+        plement={true}
       />
     </>
   )

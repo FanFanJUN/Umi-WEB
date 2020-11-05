@@ -49,7 +49,7 @@ const ModifyinfluenceRef = forwardRef(({
     if (alone) {
         columns.push(
             {
-                title: "执行结果",
+                title: "确认结果",
                 width: 100,
                 dataIndex: 'SmPcnAnalysisVo',
                 render: function (text, record, row) {
@@ -232,8 +232,8 @@ const ModifyinfluenceRef = forwardRef(({
     function addTodata(val) {
         let newsdata = [];
         [...newsdata] = dataSource;
-        keys ++ ;
         val.map(ins => {
+            keys ++ ;
             newsdata.push({
                 key: keys,
                 smOriginalFactoryCode:ins.originSupplierCode,
@@ -252,19 +252,16 @@ const ModifyinfluenceRef = forwardRef(({
     }
     // 获取选择的物料
     function materselect(val) {
-        console.log(val)
-        // matkey ++ ;
-        // console.log(matkey)
         let newsdata = [];
         val.map((item) => {
             item.smPcnAnalysisMaterielVoList.map((items) => {
-
                 newsdata.push({
                     key: matkey++,
-                    materielTypeCode: items.materialGroupCode,
-                    materielName: items.materialGroupDesc,
-                    materielCode: items.materialCode,
-                    materielTypeName: items.materialDesc
+                    id:items.id,
+                    materielTypeCode: items.codePath || items.materielTypeCode,
+                    materielName: items.namePath || items.materielName,
+                    materielCode: items.materialCode || items.materielCode,
+                    materielTypeName: items.materialDesc || items.materielTypeName
                 })
             })
             item.smPcnAnalysisMaterielVoList = newsdata
@@ -301,9 +298,10 @@ const ModifyinfluenceRef = forwardRef(({
     // 选择物料
     function showMateriel() {
         let id = selectedRows[0].materielCategoryCode
-        let code = selectedRows[0].companyCode
+        let matercode = [];
+        matercode.push(selectedRows[0].companyCode)
         setmaterielid(id)
-        setCompanyCode(code)
+        setCompanyCode(matercode)
         getMatermodRef.current.handleModalVisible(true);
     }
     // 查看物料

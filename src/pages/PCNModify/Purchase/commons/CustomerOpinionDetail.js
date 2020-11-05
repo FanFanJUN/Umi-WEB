@@ -31,6 +31,7 @@ const getCustomerOpin = forwardRef(({
     setCustomer(editData)
     setDataSource(editData.smPcnAnalysisVos)
   }, [editData])
+
   const columns = [
     {
       title: '物料分类',
@@ -86,7 +87,8 @@ const getCustomerOpin = forwardRef(({
           }
           return <span>
               {
-                record.smCustomerConfirm === 1 ? <FormItem style={{ marginBottom: 0 }}>
+                record.smCustomerConfirm === 1 ?  
+                <FormItem style={{ marginBottom: 0 }}>
                 {
                     getFieldDecorator(`smCustomerResultConfirm[${index}]`,{initialValue: record ? record.smCustomerResultConfirm : ''}),
                     getFieldDecorator(`smCustomerResultConfirmName[${index}]`, {
@@ -105,7 +107,6 @@ const getCustomerOpin = forwardRef(({
                 }
                 </FormItem> : null
               }
-              
           </span>;
       }
     },
@@ -149,13 +150,15 @@ const getCustomerOpin = forwardRef(({
     }else {
       form.validateFieldsAndScroll((err, values) => {
         let handledata = dataTransfer2(material, values)
-        handledata.forEach((item,index) => {
-          material.forEach((items,ins)=> {
-            items.customerAttachments = item.customerEnclosure
-            items.smCustomerResultConfirm = item.smCustomerResultConfirm
-          })
-          
-        })
+        for (let item of handledata) {
+          for (let items of material) {
+            if (item.id === items.id) {
+              items.customerAttachments = item.customerEnclosure
+              items.smCustomerResultConfirm = item.smCustomerResultConfirm
+            }
+            
+          }
+        }
         if (!err) {
           customer.smPcnAnalysisVos = material
           result = customer
