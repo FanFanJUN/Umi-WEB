@@ -40,7 +40,6 @@ function CreateStrategy() {
         let modifydata = getBaseInfo();
         if (modifydata) {
             modifydata.smDocunmentStatus = 1
-            console.log(modifydata)
             triggerLoading(true)
             const {success, message: msg } = await savePurchaseVo(modifydata)
             if (success) {

@@ -1,17 +1,16 @@
 import React, { createRef, useState, useRef, useEffect } from 'react';
-import { Button, Modal, message, Spin, Affix } from 'antd';
+import { Button, Modal, message, Spin, Affix,Tabs } from 'antd';
 import { router } from 'dva';
-import BaseInfo from '../commons/BaseInfo'
-import PlanInfo from '../commons/PlanInfo'
-import Distributioninfo from '../commons/Distributioninfo'
+import Carrytask from '../commons/Carrytask'
+import Missionplan from '../commons/Missionplan'
 import classnames from 'classnames';
-import styles from '../index.less';
+import styles from '../../index.less';
 import { closeCurrent ,isEmpty} from '../../../../utils';
 import {findPCNSupplierId,saveBatchVo} from '../../../../services/pcnModifyService'
+const TabPane = Tabs.TabPane;
 function CreateStrategy() {
-  const BaseinfoRef = useRef(null);
-  const ModifyinfoRef = useRef(null);
-  const DistributionRef = useRef(null);
+  const getCarrytaskRef = useRef(null);
+  const getMissionplanRef = useRef(null);
   const [editData, setEditData] = useState([]);
   const [loading, triggerLoading] = useState(false);
   const [visible, setvisible] = useState(false);
@@ -21,7 +20,7 @@ function CreateStrategy() {
 
     // 获取配置列表项
   useEffect(() => {
-    infoPCNdetails()
+    //infoPCNdetails()
   }, []);
   // 详情
   async function infoPCNdetails() {
@@ -89,11 +88,14 @@ function CreateStrategy() {
   function handleCancel() {
     setvisible(false)
   }
+  function tabClickHandler(params) {
+    //setdefaultActiveKey(params)
+  }
   return (
     <Spin spinning={loading} tip='处理中...'>
       <Affix offsetTop={0}>
         <div className={classnames([styles.header, styles.flexBetweenStart])}>
-          <span className={styles.title}>物料认定计划新增</span>
+          <span className={styles.title}>实物认定任务执行</span>
           <div className={styles.flexCenter}>
             <Button className={styles.btn} onClick={handleBack}>返回</Button>
             <Button className={styles.btn} onClick={handleSave}>保存</Button>
@@ -103,36 +105,20 @@ function CreateStrategy() {
       </Affix>
 
       <div className={styles.wrapper}>
-        <div className={styles.bgw}>
-            <div className={styles.title}>基本信息</div>
-            <div >
-            <BaseInfo
-                editformData={editData}
-                wrappedComponentRef={BaseinfoRef}
-            />
-            </div>
-        </div>
-        <div className={styles.bgw}>
-            <div className={styles.title}>认定计划信息</div>
-            <div >
-            <PlanInfo
-                editformData={editData.smPcnDetailVos}
-                wrappedComponentRef={ModifyinfoRef}
-                modifytype={modifytype}
-            />
-            </div>
-        </div>
-        <div className={styles.bgw}>
-            <div className={styles.title}>分配计划详情</div>
-            <div >
-            <Distributioninfo
-                editformData={editData.smPcnAnalysisVos}
-                wrappedComponentRef={DistributionRef}
-                isEdit={true}
-                isView={false}
-            />
-            </div>
-        </div>
+        <Tabs className="tabstext" onTabClick={(params)=>tabClickHandler(params)} style={{ background: '#fff' }}>
+            <TabPane forceRender tab="执行任务" key="1">
+                <Carrytask
+                    editData={editData}
+                    wrappedComponentRef={getCarrytaskRef}
+                />
+            </TabPane>
+            <TabPane forceRender tab="实物认定计划" key="2">
+                <Missionplan
+                    editData={editData} 
+                    wrappedComponentRef={getMissionplanRef}
+                />
+            </TabPane>
+        </Tabs>
       </div>
     </Spin>
   )

@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useRef ,useState} from 'react';
-import { Modal, Form, Button, message, Input,Row,Col } from 'antd';
+import { Modal, Form, Button, message, Input,Row,Col ,Checkbox} from 'antd';
 import { Fieldclassification ,countryListConfig} from '@/utils/commonProps'
 import { ExtTable } from 'suid';
 import { openNewTab, getFrameElement } from '@/utils';
@@ -16,7 +16,7 @@ const formLayout = {
         span: 16
     }
 }
-const getMatermodRef = forwardRef(({
+const getRecommendRef = forwardRef(({
     form,
     materielCategoryCode,
     isEdit,
@@ -38,7 +38,7 @@ const getMatermodRef = forwardRef(({
     const [selectedRows, setRows] = useState([]);
     const [visible, setvisible] = useState(false);
     const [current, setcurrent] = useState([]);
-    //const [dataSource, setdataSource] = useState([])
+    const [onlyMe, setOnlyMe] = useState(true);
     useEffect(() => {
         //getSupplierlist()
     }, []);
@@ -71,22 +71,23 @@ const getMatermodRef = forwardRef(({
         setRows(rows);
     }
     function handleOk() {
-        if (selectedRowKeys.length === 0) {
-            message.error('请选择一行数据！');
-        } else {
-            //隐藏供应商选择框
-            if (isEdit) {
-               iseditMater[0].smPcnAnalysisMaterielVoList = selectedRows;
-                materselect(iseditMater)
-            } else if (implement) {
-                materselect(selectedRows)
-            }else {
-                iseditMater[0].smPcnAnalysisMaterielVoList = selectedRows
-                materselect(iseditMater)
-            }
-            handleModalVisible(false);
-            cleanSelectedRecord();
-        }
+        // if (selectedRowKeys.length === 0) {
+        //     message.error('请选择一行数据！');
+        // } else {
+        //     //隐藏供应商选择框
+        //     if (isEdit) {
+        //        iseditMater[0].smPcnAnalysisMaterielVoList = selectedRows;
+        //         materselect(iseditMater)
+        //     } else if (implement) {
+        //         materselect(selectedRows)
+        //     }else {
+        //         iseditMater[0].smPcnAnalysisMaterielVoList = selectedRows
+        //         materselect(iseditMater)
+        //     }
+        //     handleModalVisible(false);
+        //     cleanSelectedRecord();
+        // }
+        handleModalVisible(false);
     }
     // 清除选中项
     function cleanSelectedRecord() {
@@ -115,6 +116,12 @@ const getMatermodRef = forwardRef(({
     }
     function pageChange(val) {
         setcurrent(val.current)
+    }
+       // 仅我的
+    function handleOnlyMeChange(e) {
+        setOnlyMe(e.target.checked)
+        // e.target.checked === true ? setJurisdiction(1) : setJurisdiction(0)
+        // uploadTable();
     }
     const columns = [
           {
@@ -188,15 +195,18 @@ const getMatermodRef = forwardRef(({
                         </Item>
                     </Col>
                     <Col span={10}>
-                        <Item label='原厂名称' {...formLayout}>
+                        <Item label='仅我的' {...formLayout}>
                             {
                                 getFieldDecorator("createdDate", {
                                     initialValue: '',
                                 })(
-                                    <Input disabled />
+                                    <Checkbox className={styles.btn} onChange={handleOnlyMeChange} checked={onlyMe} ></Checkbox>
+                                    
                                 )
                             }
+                            <Button type="primary">查询</Button>
                         </Item>
+                        
                     </Col>
                 </Row>
             </div>
@@ -223,4 +233,4 @@ const getMatermodRef = forwardRef(({
 },
 );
 
-export default create()(getMatermodRef);
+export default create()(getRecommendRef);

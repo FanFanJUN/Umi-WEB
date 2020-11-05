@@ -4,7 +4,7 @@ import { Input, Button, message, Modal, Checkbox } from 'antd';
 import { openNewTab, getFrameElement, isEmpty } from '@/utils';
 import { StartFlow } from 'seid';
 import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
-import styles from './index.less';
+import styles from '../index.less';
 import { smBaseUrl } from '@/utils/commonUrl';
 // import { PCNMasterdatalist} from "../commonProps"
 // import { deleteBatchById,PCNSupplierSubmit} from '../../../services/pcnModifyService'
@@ -46,7 +46,7 @@ function SupplierConfigure() {
     }, []);
     const columns = [
         {
-            title: '单据类型',
+            title: '预警',
             dataIndex: 'smDocunmentStatus',
             key: 'smDocunmentStatus',
             width: 100,
@@ -59,7 +59,7 @@ function SupplierConfigure() {
             },
         },
         {
-            title: '计划状态',
+            title: '任务状态',
             dataIndex: 'smDocunmentStatus',
             key: 'smDocunmentStatus',
             width: 100,
@@ -72,7 +72,7 @@ function SupplierConfigure() {
             },
         },
         {
-            title: '认定结果',
+            title: '是否通过',
             width: 200,
             dataIndex: 'smPcnCode',
         },
@@ -82,62 +82,62 @@ function SupplierConfigure() {
             dataIndex: 'smSupplierCode',
         },
         {
-            title: '物料分类',
+            title: '计划说明',
             width: 220,
             dataIndex: 'smSupplierName',
         },
         {
-            title: '供应商代码',
+            title: '认定阶段',
             width: 180,
             dataIndex: 'smPcnChangeTypeName',
         },
         {
-            title: '供应商名称',
+            title: '认定任务',
             width: 220,
             dataIndex: 'smContacts',
         },
         {
-            title: '原厂代码',
+            title: '计划时间',
             width: 220,
             dataIndex: 'smContactNumber',
         },
         {
-            title: '原厂名称',
+            title: '公司名称',
             width: 180,
             dataIndex: 'createdDate',
-        },
-        {
-            title: '公司',
-            width: 220,
-            dataIndex: 'smSupplierName',
         },
         {
             title: '采购组织',
+            width: 220,
+            dataIndex: 'smSupplierName',
+        },
+        {
+            title: '供应商名称',
             width: 180,
             dataIndex: 'smPcnChangeTypeName',
         },
         {
-            title: '计划说明',
+            title: '原厂',
             width: 220,
             dataIndex: 'smContacts',
         },
         {
-            title: '制定计划部门',
+            title: '物料分类',
             width: 220,
             dataIndex: 'smContactNumber',
         },
         {
-            title: '制定人',
+            title: '制定计划部门',
             width: 180,
             dataIndex: 'createdDate',
         },
         {
-            title: '联系电话',
+            title: '制定人',
             width: 220,
             dataIndex: 'smContactNumber',
         },
         {
-            title: '创建时间',
+            title: '执行人',
             width: 180,
             dataIndex: 'createdDate',
         }
@@ -191,11 +191,7 @@ function SupplierConfigure() {
     // 新增
     function AddModel() {
         //openNewTab(`pcnModify/Supplier/create/index`, 'PCN变更新建变更单', false)
-        openNewTab(`material/Cognizance/AdmitEdit/index`, '物料认定计划新增', false)
-    }
-    // 手工新增
-    function ManualEditAddModel() {
-        openNewTab(`material/Cognizance/ManualEdit/index`, '手工物料认定计划新增', false)
+        openNewTab(`material/Enforcement/Edit/index`, '实物认定任务执行', false)
     }
     // 编辑
     function handleCheckEdit() {
@@ -311,43 +307,7 @@ function SupplierConfigure() {
                         className={styles.btn} 
                         onClick={AddModel}
                         //disabled={empty}
-                        >从准入单创建
-                    </Button>
-                )
-            }
-            {
-                authAction(
-                    <Button type='primary' 
-                        ignore={DEVELOPER_ENV} 
-                        key='SRM-SM-PCNSUPPLIER-ADD' 
-                        className={styles.btn} 
-                        onClick={ManualEditAddModel}
-                        //disabled={empty}
-                        >手工创建
-                    </Button>
-                )
-            }
-            {
-                authAction(
-                    <Button
-                        ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNSUPPLIER-EDIT'
-                        className={styles.btn}
-                        onClick={handleCheckEdit}
-                        disabled={empty || !underWay || !isSelf}
-                    >编辑
-                    </Button>
-                )
-            }
-            {
-                authAction(
-                    <Button 
-                        ignore={DEVELOPER_ENV} 
-                        key='SRM-SM-PCNSUPPLIER-DELETE' 
-                        className={styles.btn} 
-                        onClick={handleDelete} 
-                        disabled={empty || !underWay || !isSelf}
-                        >删除
+                        >执行任务
                     </Button>
                 )
             }
@@ -371,31 +331,7 @@ function SupplierConfigure() {
                         className={styles.btn}
                         onClick={handleSubmit}
                         disabled={empty || !underWay || !isSelf}
-                    >发布
-                    </Button>
-                )
-            }
-            {
-                authAction(
-                    <Button
-                        ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNSUPPLIER-WITHDRAW'
-                        className={styles.btn}
-                        onClick={handleSubmit}
-                        disabled={empty || !completed || !isSelf}
-                    >取消
-                    </Button>
-                )
-            }
-            {
-                authAction(
-                    <Button
-                        ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNSUPPLIER-WITHDRAW'
-                        className={styles.btn}
-                        onClick={handleSubmit}
-                        disabled={empty || !completed || !isSelf}
-                    >确认认定结果
+                    >提交
                     </Button>
                 )
             }

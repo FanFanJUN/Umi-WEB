@@ -202,11 +202,7 @@ const UserSelect = forwardRef(({
         })
       })
     }
-    console.log(12312)
     !multiple && triggerVisible(false)
-    console.log(concatRows)
-    // onChange(concatRows)
-    // onRowsChange(concatRows)
   }
   function handleCloseTab(item) {
     const ks = value.filter(i => i[rdk] !== item[rdk]).map(item => item[rdk]);

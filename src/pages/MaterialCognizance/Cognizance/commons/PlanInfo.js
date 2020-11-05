@@ -2,8 +2,9 @@ import React, { forwardRef, useImperativeHandle, useEffect, useState,useRef } fr
 import { Form, Row, Input, Col, DatePicker, Radio, Button } from 'antd';
 import { utils, ComboList} from 'suid';
 import { onlyNumber} from '@/utils'
+import RecommendModle from './recommendModle'
+import MaterielModal from '../../../PCNModify/Supplier/commons/MaterielModal'
 import UploadFile from '../../../../components/Upload/index'
-import recommendModle from './recommendModle'
 const { Item, create } = Form;
 const { TextArea } = Input;
 const { storage } = utils;
@@ -20,13 +21,15 @@ const HeadFormRef = forwardRef(({
     isView,
     editformData,
     onOk = () => null,
+    manual
 }, ref) => {
     useImperativeHandle(ref, () => ({
         form,
         basefrom
     }));
     const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
-    const getMatermodRef = useRef(null);
+    const getRecommendRef = useRef(null);
+    const getMatermodRef = useRef(null)
     const authorizations = storage.sessionStorage.get("Authorization");
     const [configure, setConfigure] = useState([]);
     useEffect(() => {
@@ -46,8 +49,12 @@ const HeadFormRef = forwardRef(({
         onOk(val.value);
     }
     function handleSingle() {
-        console.log(getMatermodRef)
-        //getMatermodRef.current.handleModalVisible(true);
+        if (manual) {
+            getMatermodRef.current.handleModalVisible(true);
+        }else {
+            getRecommendRef.current.handleModalVisible(true);
+        }
+        
     }
     return (
         <>
@@ -62,7 +69,7 @@ const HeadFormRef = forwardRef(({
                             })(
                                 <Input
                                     style={{
-                                        width: !isView ? '80%' : '100%',
+                                        width: !isView ? '75%' : '100%',
                                         marginRight: !isView ? '1%' : '0%',
                                     }}
                                     disabled
@@ -71,7 +78,7 @@ const HeadFormRef = forwardRef(({
                             )}
                             {!isView ?
                             <Button
-                                style={{width: '18%'}}
+                                style={{width: '24%'}}
                                 onClick={() => handleSingle()}
                             >选择</Button> : ''}
                     </Item>
@@ -240,9 +247,12 @@ const HeadFormRef = forwardRef(({
             </Row>
                       
         </div>
-        <recommendModle 
-            wrappedComponentRef={getMatermodRef} 
+        <RecommendModle 
+            wrappedComponentRef={getRecommendRef} 
         /> 
+        <MaterielModal 
+            wrappedComponentRef={getMatermodRef} 
+        />
        </>  
     )
 }
