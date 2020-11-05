@@ -59,13 +59,13 @@ export default function () {
                 openNewTab('supplierAudit/MonthAuditPlanEda?pageState=add', '月度审核计划管理-新增', false);
                 break;
             case 'edit':
-                openNewTab(`supplierAudit/MonthAuditPlanEda?pageState=edit&id=${data.selectedRows[0].reviewPlanMonthCode}`, '月度审核计划管理-编辑', false);
+                openNewTab(`supplierAudit/MonthAuditPlanEda?pageState=edit&id=${data.selectedRowKeys[0]}`, '月度审核计划管理-编辑', false);
                 break;
             case 'detail':
-                openNewTab(`supplierAudit/MonthAuditPlanEda?pageState=detail&id=${data.selectedRows[0].reviewPlanMonthCode}`, '月度审核计划管理-明细', false);
+                openNewTab(`supplierAudit/MonthAuditPlanEda?pageState=detail&id=${data.selectedRowKeys[0]}`, '月度审核计划管理-明细', false);
                 break;
             case 'change':
-                openNewTab(`supplierAudit/MonthAuditPlanEda?pageState=change&id=${data.selectedRows[0].reviewPlanMonthCode}`, '月度审核计划管理-变更', false);
+                openNewTab(`supplierAudit/MonthAuditPlanEda?pageState=change&id=${data.selectedRowKeys[0]}`, '月度审核计划管理-变更', false);
                 break;
             case "changehistory":
                 setHistoryV(true);

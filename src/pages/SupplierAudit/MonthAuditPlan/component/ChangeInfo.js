@@ -71,6 +71,7 @@ const ChangeInfo = forwardRef((props, ref) => {
                             <FormItem label="变更原因" {...formLongLayout}>
                                 {
                                     getFieldDecorator('changeReason', {
+                                        initialValue: [],
                                         rules: [{ required: true, message: '变更原因不能为空',},],
                                     })(
                                         <Input.TextArea rows={6} style={{ width: '100%' }} />

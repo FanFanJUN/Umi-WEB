@@ -176,7 +176,7 @@ let LineInfo = forwardRef((props, ref) => {
     });
     setDataSource(newData);
     setTeamData(v => ({ ...v, visible: false }));
-    // tableRef.current.manualSelectedRows();
+    tableRef.current.manualSelectedRows();
   };
 
   // 编辑和明细时构造treeData
@@ -284,6 +284,7 @@ let LineInfo = forwardRef((props, ref) => {
       return item;
     });
     setDataSource(newList);
+    tableRef.current.manualSelectedRows();
   };
 
   // 审核内容管理弹框-确定
@@ -302,6 +303,7 @@ let LineInfo = forwardRef((props, ref) => {
     // console.log('整合的数据', newList);
     setDataSource(newList);
     setContentData({ visible: false });
+    tableRef.current.manualSelectedRows();
   };
 
   // 协同人员管理弹框-确定
@@ -316,6 +318,7 @@ let LineInfo = forwardRef((props, ref) => {
     });
     // console.log('整合的数据', newList);
     setDataSource(newList);
+    tableRef.current.manualSelectedRows();
   };
   return (
     <div className={styles.wrapper}>

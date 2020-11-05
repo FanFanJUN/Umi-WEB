@@ -57,7 +57,7 @@ const Index = (props) => {
     const getDetail = async () => {
         setLoading(true);
         const res = await findOneOverride({
-            reviewPlanMonthCode: query.id
+            id: query.id
         });
         setLoading(false);
         if (res) {
@@ -77,39 +77,54 @@ const Index = (props) => {
     const handleBack = () => {
         closeCurrent();
     };
-
+// 处理数据
     const getAllData = () => {
         let saveData = { ...editData };
         let lineData = tableRef.current.getTableList();
+        console.log("获取到的表格数据", lineData)
         let deleteArr = tableRef.current.getDeleteArr();
-        saveData.lineBoList = lineData;
-        saveData.deleteList = deleteArr;
+        if (lineData.length === 0) {
+            message.info('请至少添加一条行信息');
+            return false;
+        }
         // 变更时
         if (query.pageState === "change") {
             const changeInfo = changeRef.current.getData();
             if (!changeInfo) {
                 return false;
             } else {
+                if (!changeInfo.changeFileId) {
+                    changeInfo.changeFileId = [];
+                }
+                delete saveData.lineBoList;
+                saveData.reviewPlanMonthLineChangeBos = lineData.map(item => {
+                    item.reviewPlanMonthLineId = item.id;
+                    delete item.id;
+                    item.reviewPlanMonthChangeLinenum = item.reviewPlanMonthLinenum;
+                    return item;
+                })
                 Object.assign(saveData, changeInfo);
                 return saveData;
             }
         } else {
-            return form.validateFieldsAndScroll((err, values) => {
-                if (err) return;
-                Object.assign(saveData, values)
-                if (!saveData.attachRelatedIds) {
-                    saveData.attachRelatedIds = [];
+            const baseInfo = {};
+            form.validateFieldsAndScroll((err, values) => {
+                if (err){
+                    baseInfo = false;
                 }
-                if (lineData.length === 0) {
-                    message.info('请至少添加一条行信息');
-                } else {
-                    console.log("这里的saveData", saveData)
-                    return saveData
-                }
+                baseInfo = {...values}
             });
+            if(!baseInfo)return false;
+            saveData.lineBoList = lineData;
+            saveData.deleteList = deleteArr;
+            if (!saveData.attachRelatedIds) {
+                saveData.attachRelatedIds = [];
+            }
+            Object.assign(saveData, baseInfo);
+            return saveData;
         }
     }
-
+// 新增保存，编辑保存，变更保存
     const handleSave = async (type) => {
         let saveData = await getAllData();
         if (!saveData) return;
@@ -118,11 +133,11 @@ const Index = (props) => {
         if (query.pageState === "add") {
             res = await insertMonthBo(saveData);
         } else if (query.pageState === "edit") {
-            saveData = { ...editData, ...saveData };
             res = await upDateMonthBo(saveData);
             res.data = saveData.id;
         } else {
             res = await insertChangeMonthBo(saveData);
+            res.data = saveData.id;
         }
         if (res.success) {
             if (type === "save") {
@@ -156,16 +171,21 @@ const Index = (props) => {
                     }
                 })
                 return
+            } else {
+                reject({
+                    success: data,
+                    message: '提交失败，请检查数据是否填写完整'
+                })
             }
-            resolve({
-                success: data,
-                message: '数据校验不通过，请检查评价指标是否填写完整'
-            })
         })
     }
     // 提交审核完成更新列表
     function handleComplete() {
         setLoading(false);
+        message.success("提交成功");
+        setTimeout(()=>{
+            handleBack()
+        }, 3000)
     }
     return <>
         <Spin spinning={loading}>
@@ -180,8 +200,8 @@ const Index = (props) => {
                                 className={styles.btn}
                                 type='primary'
                                 beforeStart={handleBeforeStartFlow}
-                                // startComplete={handleBack}
-                                callBack={handleComplete}
+                                startComplete={handleComplete}
+                                onCancel={()=>{setLoading(false);}}
                                 businessKey={query?.id}
                                 disabled={loading}
                                 businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewPlanMonth'

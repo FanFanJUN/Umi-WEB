@@ -350,7 +350,7 @@ export const DocumentAuditCauseManagementConfig = {
 };
 // 月度计划-从年度审核计划-新增
 export const reviewPlanYearConfig = {
-  placeholder: '选择审核原因',
+  placeholder: '选择年度审核计划',
   store: {
     type: 'POST',
     autoLoad: false,
