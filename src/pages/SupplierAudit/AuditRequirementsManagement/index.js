@@ -64,10 +64,10 @@ export default function() {
         openNewTab('supplierAudit/AuditRequirementsManagementAdd?pageState=add', '审核需求管理-新增', false);
         break;
       case 'edit':
-        openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=edit&reviewRequirementCode=${data.selectedRows[0].reviewRequirementCode}&id=${data.selectedRows[0].id}`, '审核需求管理-编辑', false);
+        openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=edit&id=${data.selectedRows[0].reviewRequirementCode}`, '审核需求管理-编辑', false);
         break;
       case 'detail':
-        openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=detail&reviewRequirementCode=${data.selectedRows[0].reviewRequirementCode}&id=${data.selectedRows[0].id}`, '审核需求管理-明细', false);
+        openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=detail&id=${data.selectedRows[0].reviewRequirementCode}`, '审核需求管理-明细', false);
         break;
       case 'delete':
         deleteList();
@@ -241,7 +241,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='TECHNICAL_DATA_SHARING_EDIT'
-        disabled={!judge(data.selectedRows, 'state', 'DRAFT') || data.selectedRowKeys.length !== 1}
+        disabled={!judge(data.selectedRows, 'state', 'DRAFT') || data.selectedRowKeys.length !== 1 || !judge(data.selectedRows, 'flowStatus', 'INIT')}
       >编辑</Button>)
     }
     {

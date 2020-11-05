@@ -34,7 +34,6 @@ const Index = (props) => {
     lineBoList: [],
     editData: {},
     allAuditType: [],
-    id: '',
     spinLoading: false,
     isView: false,
     loading: false,
@@ -46,7 +45,7 @@ const Index = (props) => {
   useEffect(() => {
     // 获取所有审核类型
     getAuditType();
-    const { id, pageState, reviewRequirementCode } = query;
+    const { id, pageState } = query;
     let state = pageState
     if (props.isInFlow) {
       state = 'detail'
@@ -57,18 +56,17 @@ const Index = (props) => {
         setData((value) => ({ ...value, type: state, isView: false, title: '审核需求管理-新增' }));
         break;
       case 'edit':
-        findOne(reviewRequirementCode);
+        findOne(id);
         setData((value) => ({
           ...value,
           type: state,
-          id,
           isView: false,
-          title: `审核需求管理-编辑 ${reviewRequirementCode}`,
+          title: `审核需求管理-编辑 ${id}`,
         }));
         break;
       case 'detail':
-        findOne(reviewRequirementCode);
-        setData((value) => ({ ...value, type: state, isView: true, title: `审核需求管理-明细 ${reviewRequirementCode}` }));
+        findOne(id);
+        setData((value) => ({ ...value, type: state, isView: true, title: `审核需求管理-明细 ${id}` }));
         break;
     }
   }, []);
