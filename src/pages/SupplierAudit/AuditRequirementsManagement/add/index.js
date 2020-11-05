@@ -74,7 +74,7 @@ const Index = (props) => {
         break;
       case 'flowDetail':
         findOne(id);
-        setData((value) => ({ ...value, type: state, isView: true, title: `审核需求管理-明细` }));
+        setData((value) => ({ ...value, type: 'detail', isView: true, title: `审核需求管理-明细` }));
         break;
     }
   }, []);
