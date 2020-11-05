@@ -39,6 +39,7 @@ const getExecutioninfor = forwardRef(({
   const [selectedRows, setRows] = useState([]);
   const [companyCode, setCompanyCode] = useState('');
   const [materielid, setMaterielID] = useState('');
+  const [Tabledata, setTabledata] = useState('');
   const [attachId, setAttachId] = useState('')
   const empty = selectRowKeys.length === 0;
 
@@ -133,6 +134,8 @@ const getExecutioninfor = forwardRef(({
   }
   // 物料新增
   function showExecution() {
+    const tabledata = tabformRef.current.data;
+    setTabledata(tabledata)
     getMatermodRef.current.handleModalVisible(true);
   }
   // 物料删除
@@ -145,8 +148,8 @@ const getExecutioninfor = forwardRef(({
     val.map( (item,index)=> {
       newdata.push({
         key: index,
-        materielTypeCode: item.materialCode,
-        materielTypeName: item.materialDesc,
+        materielTypeCode: item.materialCode || item.materielTypeCode,
+        materielTypeName: item.materialDesc || item.materielTypeName,
       })
     })
     setMateriel(newdata)
@@ -258,8 +261,8 @@ const getExecutioninfor = forwardRef(({
         materselect={handleMateriel}
         implement={true}
         materielCategoryCode={materielid}
+        tabledata={Tabledata}
         wrappedComponentRef={getMatermodRef} 
-        plement={true}
       />
     </>
   )

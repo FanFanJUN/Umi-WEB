@@ -70,33 +70,38 @@ const getMatermodRef = forwardRef(({
         } else {
             //隐藏供应商选择框
             if (isEdit) {
-               iseditMater[0].smPcnAnalysisMaterielVoList = selectedRows;
-               materselect(iseditMater)
+                handleMater()
             } else if (implement) {
                 materselect(selectedRows)
             }else {
-                let repeatdata = iseditMater[0].smPcnAnalysisMaterielVoList;
-                let result = repeatdata.some(item =>{
-                    for (let items of selectedRows) {
-                        if (item.id === items.id){
-                            selectedRows.splice(items,1)
-                            return true 
-                        } 
-                    }
-                })
-                if (result) {
-                    message.error('当前数据已存在，请重新选择！')
-                }
-                selectedRows.map(item => {
-                    repeatdata.push(item)
-                })
-                iseditMater[0].smPcnAnalysisMaterielVoList = repeatdata
-                materselect(iseditMater)
+                handleMater()
             }
-            handleModalVisible(false);
-            cleanSelectedRecord();
+            
         }
     }
+    // 新增编辑处理物料
+    function handleMater () {
+        let repeatdata = iseditMater[0].smPcnAnalysisMaterielVoList;
+        let result = false
+        repeatdata.map(item =>{
+            for (let items of selectedRows) {
+                if (item.materielCode === items.materialCode){
+                    selectedRows.splice(items,1)
+                    result = true 
+                } 
+            }
+        })
+        if (result) {
+            message.error('当前数据已存在，请重新选择！')
+        }
+        selectedRows.map(item => {
+            repeatdata.push(item)
+        })
+        iseditMater[0].smPcnAnalysisMaterielVoList = repeatdata
+        materselect(iseditMater)
+        handleModalVisible(false);
+        cleanSelectedRecord();
+    } 
     // 清除选中项
     function cleanSelectedRecord() {
         setRows([]);

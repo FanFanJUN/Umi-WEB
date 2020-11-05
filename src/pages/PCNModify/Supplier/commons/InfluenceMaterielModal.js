@@ -11,6 +11,7 @@ const { create } = Form;
 const getAgentregRef = forwardRef(({
     form,
     modifyanalysis = () => null,
+    materieldata
 }, ref,) => {
     useImperativeHandle(ref, () => ({ 
         handleModalVisible,

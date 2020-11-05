@@ -209,17 +209,21 @@ const ModifyinfluenceRef = forwardRef(({
         let newsdata = [];
         [...newsdata] = dataSource;
         if (newsdata.length > 0) {
-            let result = newsdata.some(item =>{
-                for (let items of val) {
+            let result = false
+            newsdata.map(item =>{
+                val.map((items,index) => {
                     if (item.materielCategoryCode === items.materielCategoryCode && 
                         item.companyCode === items.corporation.code && 
                         item.purchaseOrgCode === items.purchaseOrgCode){
-                        return true 
-                    } 
-                }
+                        val.splice(index,1)
+                        result = true
+                    }    
+                })
+               
             })
             if (result) {
                 message.error('当前数据已存在，请重新选择！')
+                addTodata(val)
             }else {
                 addTodata(val)
             }
@@ -431,7 +435,7 @@ const ModifyinfluenceRef = forwardRef(({
                 <div>
                     {/****** 新增 */}
                     <InfluenceMaterielModal
-                        modifyanalysis={selectanalysis} 
+                        modifyanalysis={selectanalysis}
                         wrappedComponentRef={getModelRef}
                     />
                     {/******* 选择物料*/}
