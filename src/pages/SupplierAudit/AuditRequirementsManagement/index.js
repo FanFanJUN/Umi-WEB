@@ -12,9 +12,8 @@ import {
   FindByFiltersConfig, SupplierConfig,
 } from '../mainData/commomService';
 import {
-  DeleteDataSharingList, flowProps, judge,
-  RecallDataSharingList, stateProps,
-  SubmitDataSharingList,
+  flowProps, judge,
+  stateProps,
 } from '../../QualitySynergy/commonProps';
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
@@ -64,10 +63,10 @@ export default function() {
         openNewTab('supplierAudit/AuditRequirementsManagementAdd?pageState=add', '审核需求管理-新增', false);
         break;
       case 'edit':
-        openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=edit&id=${data.selectedRows[0].reviewRequirementCode}`, '审核需求管理-编辑', false);
+        openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=edit&id=${data.selectedRows[0].id}`, '审核需求管理-编辑', false);
         break;
       case 'detail':
-        openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=detail&id=${data.selectedRows[0].reviewRequirementCode}`, '审核需求管理-明细', false);
+        openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=detail&id=${data.selectedRows[0].id}`, '审核需求管理-明细', false);
         break;
       case 'delete':
         deleteList();
@@ -118,7 +117,7 @@ export default function() {
       okType: 'danger',
       cancelText: '否',
       onOk: () => {
-        const codeArr = data.selectedRows.map(item => item.reviewRequirementCode)
+        const codeArr = data.selectedRows.map(item => item.reviewRequirementCode);
         DeleteAuditRequirementsManagement(codeArr).then(res => {
           if (res.success) {
             message.success(res.message);
@@ -127,7 +126,7 @@ export default function() {
           } else {
             message.error(res.message);
           }
-        }).catch(err => message.error(err.message))
+        }).catch(err => message.error(err.message));
       },
     });
   };

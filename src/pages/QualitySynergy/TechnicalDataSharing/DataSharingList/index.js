@@ -319,7 +319,7 @@ export default function () {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='TECHNICAL_DATA_SHARING_SUBMIT'
-        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', '草稿') || !judge(data.selectedRows, 'strategicPurchaseCode')}
+        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', '草稿')}    /*先提交后分配战略采购 秦老师20.11.05提*/
       >提交</Button>)
     }
     {
