@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useRef ,useState} from 'react';
-import { Modal, Form, Button, message, Input, } from 'antd';
+import { Modal, Form, Button, message, Input,Row,Col } from 'antd';
 import { Fieldclassification ,countryListConfig} from '@/utils/commonProps'
 import { ExtTable } from 'suid';
 import { openNewTab, getFrameElement } from '@/utils';
@@ -7,8 +7,15 @@ import { smBaseUrl ,baseUrl} from '@/utils/commonUrl';
 import Header from '@/components/Header';
 import styles from '../index.less';
 import {findCanChooseSupplier} from '@/services/SupplierModifyService'
-const { create } = Form;
-let dataSource;
+const { Item,create } = Form;
+const formLayout = {
+    labelCol: {
+        span: 8
+    },
+    wrapperCol: {
+        span: 16
+    }
+}
 const getMatermodRef = forwardRef(({
     form,
     materielCategoryCode,
@@ -16,8 +23,7 @@ const getMatermodRef = forwardRef(({
     iseditMater,
     implement,
     materselect = () => null,
-    companyCode,
-    plement
+    companyCode
 }, ref,) => {
     useImperativeHandle(ref, () => ({ 
         handleModalVisible,
@@ -34,12 +40,9 @@ const getMatermodRef = forwardRef(({
     const [current, setcurrent] = useState([]);
     //const [dataSource, setdataSource] = useState([])
     useEffect(() => {
-        // getSupplierlist(plement,companyCode,materielCategoryCode)
-        // console.log(companyCode)
-        // console.log(materielCategoryCode)
+        //getSupplierlist()
     }, []);
-    
-    dataSource = {
+    const dataSource = {
         store: {
             url: `${baseUrl}/materialSrm/findBySecondaryClassificationAndCompany`,
             params: {
@@ -51,11 +54,14 @@ const getMatermodRef = forwardRef(({
                         direction: 'DESC'
                     }
                 ],
-                secondaryClassificationCode: materielCategoryCode,
-                companyCodeList: companyCode
+                secondaryClassificationCode:materielCategoryCode,
+                companyCodeList:companyCode
             },
             type: 'POST'
         }
+    }
+    function getSupplierlist() {
+        console.log(materielCategoryCode)
     }
     function handleModalVisible (flag) {
         setvisible(!!flag)
@@ -71,26 +77,11 @@ const getMatermodRef = forwardRef(({
             //隐藏供应商选择框
             if (isEdit) {
                iseditMater[0].smPcnAnalysisMaterielVoList = selectedRows;
-               materselect(iseditMater)
+                materselect(iseditMater)
             } else if (implement) {
                 materselect(selectedRows)
             }else {
-                let repeatdata = iseditMater[0].smPcnAnalysisMaterielVoList;
-                let result = repeatdata.some(item =>{
-                    for (let items of selectedRows) {
-                        if (item.id === items.id){
-                            selectedRows.splice(items,1)
-                            return true 
-                        } 
-                    }
-                })
-                if (result) {
-                    message.error('当前数据已存在，请重新选择！')
-                }
-                selectedRows.map(item => {
-                    repeatdata.push(item)
-                })
-                iseditMater[0].smPcnAnalysisMaterielVoList = repeatdata
+                iseditMater[0].smPcnAnalysisMaterielVoList = selectedRows
                 materselect(iseditMater)
             }
             handleModalVisible(false);
@@ -147,19 +138,6 @@ const getMatermodRef = forwardRef(({
             dataIndex: "materialDesc"
           },
     ].map(_ => ({ ..._, align: 'center' }));
-    // 右侧搜索
-    const searchBtnCfg = (
-        <>
-            <Input
-                style={{width:260}}
-                placeholder='请输入物料代码或物料描述'
-                className={styles.btn}
-                onChange={SerachValue}
-                allowClear
-            />
-            <Button type='primary' onClick={handleQuickSerach}>查询</Button>
-        </>
-    )
     return (
         <Modal
             width={1000}
@@ -167,19 +145,61 @@ const getMatermodRef = forwardRef(({
             centered
             destroyOnClose={true}
             maskClosable={false}
-            title={"选择物料"}
+            title={"供应商推荐准入信息"}
             visible={visible}
             onCancel={() => handleModalVisible(false)}
             onOk={handleOk}
         >
-
-            <Header
-                left={false}
-                right={searchBtnCfg}
-                advanced={false}
-                extra={false}
-                ref={headerRef}
-            />
+            <div>
+                <Row>
+                    <Col span={10}>
+                        <Item {...formLayout} label='公司名称' >
+                            {
+                                getFieldDecorator('supplierVo.name', {
+                                    initialValue: '',
+                                })(
+                                    <Input />
+                                        
+                                )}
+                        </Item>
+                    </Col>
+                    <Col span={10}>
+                        <Item label='采购组织名称' {...formLayout}>
+                            {
+                                getFieldDecorator("smSupplierName", {
+                                    initialValue: '',
+                                })(
+                                    <Input disabled />
+                                )
+                            }
+                        </Item>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={10}>
+                        <Item label='供应商名称' {...formLayout}>
+                            {
+                                getFieldDecorator("createdDate", {
+                                    initialValue: '',
+                                })(
+                                    <Input disabled />
+                                )
+                            }
+                        </Item>
+                    </Col>
+                    <Col span={10}>
+                        <Item label='原厂名称' {...formLayout}>
+                            {
+                                getFieldDecorator("createdDate", {
+                                    initialValue: '',
+                                })(
+                                    <Input disabled />
+                                )
+                            }
+                        </Item>
+                    </Col>
+                </Row>
+            </div>
             <ExtTable
                 columns={columns}
                 showSearch={false}

@@ -241,45 +241,66 @@ const getconfirmFromRef = forwardRef(({
                 result = false
                 return false
               } else {
-                
-                if (item.smInKindStatus === 0 && item.smCustomerConfirm === 0 && item.smSupplierAuditStatus === 0) {
-                  if (verificatab.length > 1) {
-                    alltype.push(true)
-                  }else {
-                    message.error('验证方案不能全部为否！')
-                    result = false
-                    return false
+                let result = verificatab.some(item =>{
+                  if (item.smInKindStatus === 0 && item.smCustomerConfirm === 0 && item.smSupplierAuditStatus === 0){
+                    return true 
                   }
-                }else {
-                  // if (verificatab.length > 1) {
-                  //   console.log(56)
-                  //   alltype.push(true)
-                  // } 
-                }
-              }
-            }
-            let global;
-            if (alltype.length > 1) {
-              global = isAllEqual(alltype)
-              if (global) {
-                message.error('验证方案不能全部为否！')
-                result = false
-                return false
-              }else {
-                let newverifica = verifformRef.current.data
-                editData.smPcnAnalysisVos.map((orig,indexs) => {
-                  newverifica.map((items,index) => {
-                    if (orig.id === items.id) {
-                      editData.smPcnAnalysisVos.splice(indexs,1,items)
-                    }
-                  })
                 })
-                result = editData
+                if (result) {
+                  message.error('当验证方案不能全部为否！')
+                  return false
+                }else {
+                    //addTodata(val)
+                  let newverifica = verifformRef.current.data
+                  editData.smPcnAnalysisVos.map((orig,indexs) => {
+                    newverifica.map((items,index) => {
+                      if (orig.id === items.id) {
+                        editData.smPcnAnalysisVos.splice(indexs,1,items)
+                      }
+                    })
+                  })
+                  result = editData
+                }
+                // if (item.smInKindStatus === 0 && item.smCustomerConfirm === 0 && item.smSupplierAuditStatus === 0) {
+                //   if (verificatab.length > 1) {
+                //     alltype.push(true)
+                //   }else {
+                //     message.error('验证方案不能全部为否！')
+                //     result = false
+                //     return false
+                //   }
+                // }else {
+                //   console.log(231)
+                //   // if (verificatab.length > 1) {
+                //   //   console.log(56)
+                //   //   alltype.push(true)
+                //   // } 
+                // }
               }
             }
+            // let global;
+            // if (alltype.length > 1) {
+            //   global = isAllEqual(alltype)
+            //   if (global) {
+            //     message.error('验证方案不能全部为否！')
+            //     result = false
+            //     return false
+            //   }else {
+            //     let newverifica = verifformRef.current.data
+            //     editData.smPcnAnalysisVos.map((orig,indexs) => {
+            //       newverifica.map((items,index) => {
+            //         if (orig.id === items.id) {
+            //           editData.smPcnAnalysisVos.splice(indexs,1,items)
+            //         }
+            //       })
+            //     })
+            //     result = editData
+            //   }
+            // }
           }
         }
       })
+      console.log(result)
       return result;
     }else {
       message.error('采购小组成员最少有一行数据！')

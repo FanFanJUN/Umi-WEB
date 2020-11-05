@@ -310,7 +310,7 @@ function SupplierConfigure() {
                         ignore={DEVELOPER_ENV}
                         businessKey={flowId}
                         callBack={handleComplete}
-                        disabled={empty || underWay || !Toexamine}
+                        disabled={empty || underWay || !Toexamine || !isSelf}
                         businessModelCode='com.ecmp.srm.sm.entity.pcn.SmPcnTitle'
                         key='SRM-SM-PCNPURCHASE-EXAMINE'
                     >提交审核</StartFlow>

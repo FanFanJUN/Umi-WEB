@@ -65,7 +65,7 @@ function SupplierConfigure() {
                 if (text === 'INIT' && record.saveStatus === 0) {
                     return <div>草稿</div>;
                 } else if (text === 'INIT' && record.saveStatus === 1) {
-                    return <div>已保存</div>;
+                    return <div>待提交审批</div>;
                 } else if (text === 'INPROCESS') {
                     return <div className="doingColor">审批中</div>;
                 } else {
@@ -128,7 +128,7 @@ function SupplierConfigure() {
                 if (text === 'INIT' && record.saveStatus === 0) {
                     return <div>草稿</div>;
                 } else if (text === 'INIT' && record.saveStatus === 1) {
-                    return <div>已保存</div>;
+                    return <div>待提交审批</div>;
                 } else if (text === 'INPROCESS') {
                     return <div className="doingColor">审批中</div>;
                 } else {

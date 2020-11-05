@@ -175,13 +175,15 @@ const getResultsIden = forwardRef(({
     }else {
       form.validateFieldsAndScroll((err, values) => {
         let handledata = dataTransfer2(material, values)
-        handledata.forEach((item,index) => {
-          material.forEach((items,ins)=> {
-            items.kindManAttachments = item.kindManEnclosure
-            items.smInKindResultStatus = item.smInKindResultStatus
-          })
-          
-        })
+        for (let item of handledata) {
+          for (let items of material) {
+            if (item.id === items.id) {
+              items.kindManAttachments = item.kindManEnclosure
+              items.smInKindResultStatus = item.smInKindResultStatus
+            }
+            
+          }
+        }
         if (!err) {
           cognizance.smPcnAnalysisVos = material
           result = cognizance
