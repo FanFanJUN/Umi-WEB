@@ -221,7 +221,7 @@ const getconfirmFromRef = forwardRef(({
     ]
 	// 获取表单参数
 	function getBaseInfo() {
-    let result = false,alltype=[];
+    let result = false,resultype,alltype = [];
     let purchasetab = tabformRef.current.data;
     if (purchasetab.length > 0 ) {
       form.validateFieldsAndScroll((err, val) => {
@@ -241,16 +241,29 @@ const getconfirmFromRef = forwardRef(({
                 result = false
                 return false
               } else {
-                let result = verificatab.some(item =>{
-                  if (item.smInKindStatus === 0 && item.smCustomerConfirm === 0 && item.smSupplierAuditStatus === 0){
-                    return true 
-                  }
-                })
-                if (result) {
+                if (verificatab.length === 1) {
+                  resultype = verificatab.some(item => {
+                    if (item.smInKindStatus === 0 && item.smCustomerConfirm === 0 && item.smSupplierAuditStatus === 0){
+                      return true 
+                    }
+                  })
+                }else {
+                  let global;
+                  verificatab.map(item =>{
+                    if (item.smInKindStatus === 0 && item.smCustomerConfirm === 0 && item.smSupplierAuditStatus === 0){
+                      alltype.push(true)                     
+                    }else {
+                      alltype.push(false)
+                    }
+                    global = isAllEqual(alltype)
+                  })
+                  resultype = global
+                }
+                if (resultype) {
                   message.error('当验证方案不能全部为否！')
+                  result = false
                   return false
                 }else {
-                    //addTodata(val)
                   let newverifica = verifformRef.current.data
                   editData.smPcnAnalysisVos.map((orig,indexs) => {
                     newverifica.map((items,index) => {
@@ -300,7 +313,6 @@ const getconfirmFromRef = forwardRef(({
           }
         }
       })
-      console.log(result)
       return result;
     }else {
       message.error('采购小组成员最少有一行数据！')
@@ -309,11 +321,11 @@ const getconfirmFromRef = forwardRef(({
   }
   function isAllEqual(array) {
     if (array.length > 0) {
-        return !array.some(function (value, index) {
-            return value !== array[0];
-        });
+      return !array.some(function (value, index) {
+        return value !== array[0];
+      });
     } else {
-        return true;
+      return true;
     }
   }
   // 采购小组新增

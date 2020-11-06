@@ -119,6 +119,7 @@ function CreateStrategy() {
                 editformData={editData.smPcnDetailVos}
                 wrappedComponentRef={ModifyinfoRef}
                 modifytype={modifytype}
+                manual={true}
             />
             </div>
         </div>

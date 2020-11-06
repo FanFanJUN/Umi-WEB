@@ -41,7 +41,7 @@ const getMatermodRef = forwardRef(({
     
     dataSource = {
         store: {
-            url: `${baseUrl}/materialSrm/findBySecondaryClassificationAndCompany`,
+            url: `${baseUrl}/api/materialSrmService/findBySecondaryClassificationListAndCompany`,
             params: {
                 quickSearchValue: searchValue,
                 ///quickSearchProperties: ['materialCode','materialDesc'],
@@ -51,7 +51,7 @@ const getMatermodRef = forwardRef(({
                         direction: 'DESC'
                     }
                 ],
-                secondaryClassificationCode: materielCategoryCode,
+                secondaryClassificationCodes: materielCategoryCode,
                 companyCodeList: companyCode
             },
             type: 'POST'
@@ -83,24 +83,32 @@ const getMatermodRef = forwardRef(({
     function handleMater () {
         let repeatdata = iseditMater[0].smPcnAnalysisMaterielVoList;
         let result = false
-        repeatdata.map(item =>{
-            for (let items of selectedRows) {
-                if (item.materielCode === items.materialCode){
-                    selectedRows.splice(items,1)
-                    result = true 
-                } 
+        if (repeatdata) {
+            repeatdata.map(item =>{
+                for (let items of selectedRows) {
+                    if (item.materielCode === items.materialCode){
+                        selectedRows.splice(items,1)
+                        result = true 
+                    } 
+                }
+            })
+            if (result) {
+                message.error('当前数据已存在，请重新选择！')
             }
-        })
-        if (result) {
-            message.error('当前数据已存在，请重新选择！')
+            selectedRows.map(item => {
+                repeatdata.push(item)
+            })
+            iseditMater[0].smPcnAnalysisMaterielVoList = repeatdata
+            materselect(iseditMater)
+            handleModalVisible(false);
+            cleanSelectedRecord();
+        }else {
+            console.log(123)
+            iseditMater[0].smPcnAnalysisMaterielVoList = selectedRows;
+            materselect(iseditMater)
+            handleModalVisible(false);
+            cleanSelectedRecord();
         }
-        selectedRows.map(item => {
-            repeatdata.push(item)
-        })
-        iseditMater[0].smPcnAnalysisMaterielVoList = repeatdata
-        materselect(iseditMater)
-        handleModalVisible(false);
-        cleanSelectedRecord();
     } 
     // 清除选中项
     function cleanSelectedRecord() {

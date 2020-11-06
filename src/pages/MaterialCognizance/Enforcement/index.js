@@ -6,15 +6,14 @@ import { StartFlow } from 'seid';
 import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
 import styles from './index.less';
 import { smBaseUrl } from '@/utils/commonUrl';
-import { PCNMasterdatalist} from "../commonProps"
-import { deleteBatchById,PCNSupplierSubmit} from '../../../services/pcnModifyService'
-import {SupplierBilltypeList} from '../commonProps'
+// import { PCNMasterdatalist} from "../commonProps"
+// import { deleteBatchById,PCNSupplierSubmit} from '../../../services/pcnModifyService'
+// import {SupplierBilltypeList} from '../commonProps'
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 const { Search } = Input
-const confirm = Modal.confirm;
 const { authAction, storage } = utils;
 const { FlowHistoryButton } = WorkFlow;
-function SupplierConfigure() {
+function MissionExecution() {
     const getModelRef = useRef(null)
     const tableRef = useRef(null)
     const headerRef = useRef(null)
@@ -46,52 +45,98 @@ function SupplierConfigure() {
     }, []);
     const columns = [
         {
-            title: '单据状态',
+            title: '预警',
             dataIndex: 'smDocunmentStatus',
             key: 'smDocunmentStatus',
             width: 100,
             render: function (text, record, row) {
                 if (text === 0) {
                     return <div>草稿</div>;
-                } else if (text === 1){
+                } else {
                     return <div className="successColor">已提交</div>;
-                } else if (text === 2) {
-                    return <div className="successColor">已完成</div>;
                 }
             },
         },
         {
-            title: 'PCN变更单号',
+            title: '任务状态',
+            dataIndex: 'smDocunmentStatus',
+            key: 'smDocunmentStatus',
+            width: 100,
+            render: function (text, record, row) {
+                if (text === 0) {
+                    return <div>草稿</div>;
+                } else {
+                    return <div className="successColor">已提交</div>;
+                }
+            },
+        },
+        {
+            title: '是否通过',
             width: 200,
             dataIndex: 'smPcnCode',
         },
         {
-            title: '供应商代码',
+            title: '认定计划号',
             width: 140,
             dataIndex: 'smSupplierCode',
         },
         {
-            title: '供应商名称',
+            title: '计划说明',
             width: 220,
             dataIndex: 'smSupplierName',
         },
         {
-            title: '变更类型',
+            title: '认定阶段',
             width: 180,
             dataIndex: 'smPcnChangeTypeName',
         },
         {
-            title: '联系人',
+            title: '认定任务',
             width: 220,
             dataIndex: 'smContacts',
         },
         {
-            title: '联系电话',
+            title: '计划时间',
             width: 220,
             dataIndex: 'smContactNumber',
         },
         {
-            title: '创建日期',
+            title: '公司名称',
+            width: 180,
+            dataIndex: 'createdDate',
+        },
+        {
+            title: '采购组织',
+            width: 220,
+            dataIndex: 'smSupplierName',
+        },
+        {
+            title: '供应商名称',
+            width: 180,
+            dataIndex: 'smPcnChangeTypeName',
+        },
+        {
+            title: '原厂',
+            width: 220,
+            dataIndex: 'smContacts',
+        },
+        {
+            title: '物料分类',
+            width: 220,
+            dataIndex: 'smContactNumber',
+        },
+        {
+            title: '制定计划部门',
+            width: 180,
+            dataIndex: 'createdDate',
+        },
+        {
+            title: '制定人',
+            width: 220,
+            dataIndex: 'smContactNumber',
+        },
+        {
+            title: '执行人',
             width: 180,
             dataIndex: 'createdDate',
         }
@@ -144,36 +189,13 @@ function SupplierConfigure() {
     }
     // 新增
     function AddModel() {
-        openNewTab(`pcnModify/Supplier/create/index`, 'PCN变更新建变更单', false)
-    }
-    // 编辑
-    function handleCheckEdit() {
-        // const [key] = selectedRowKeys;
-        let id = selectedRows[0].id;
-        openNewTab(`pcnModify/Supplier/Edit/index?id=${id}`, 'PCN变更编辑变更单', false)
-    }
-    // 删除
-    async function handleDelete() {
-        confirm({
-            title: '是否确认删除',
-            onOk: async () => {
-                let params = selectedRows[0].id;
-                const { success, message: msg } = await deleteBatchById({pcnTitleId:params});
-                if (success) {
-                    message.success('删除成功！');
-                    uploadTable();
-                } else {
-                    message.error(msg);
-                }
-            },
-            onCancel() {
-            },
-        });
+        //openNewTab(`pcnModify/Supplier/create/index`, 'PCN变更新建变更单', false)
+        openNewTab(`material/Enforcement/Edit/index`, '实物认定任务执行', false)
     }
     // 明细
     function handleCheckDetail() {
-        let id = selectedRows[0].id;
-        openNewTab(`pcnModify/Supplier/Detail/index?id=${id}&alone=true`, 'PCN变更单明细', false)
+        //let id = selectedRows[0].id;
+        //openNewTab(`pcnModify/Supplier/Detail/index?id=${id}&alone=true`, 'PCN变更单明细', false)
     }
     // 提交
     async function handleSubmit() {
@@ -187,13 +209,13 @@ function SupplierConfigure() {
             status = 0
             statustype = false
         }
-        const { success, message: msg } = await PCNSupplierSubmit({pcnTitleId:id,smDocunmentStatus:status});
-        if (success) {
-            message.success(`${statustype ? '提交' : '撤回'}成功！`);
-            uploadTable();
-        } else {
-            message.error(msg);
-        }
+        // const { success, message: msg } = await PCNSupplierSubmit({pcnTitleId:id,smDocunmentStatus:status});
+        // if (success) {
+        //     message.success(`${statustype ? '提交' : '撤回'}成功！`);
+        //     uploadTable();
+        // } else {
+        //     message.error(msg);
+        // }
     }
     // 快速查询
     function handleQuickSerach(value) {
@@ -243,12 +265,6 @@ function SupplierConfigure() {
         headerRef.current.hide();
         uploadTable();
     }
-     // 清空泛虹公司
-     function clearinput() {
-        setSearchValue('')
-        setSeniorsearchvalue('')
-        uploadTable();
-    }
     // 左侧
     const HeaderLeftButtons = (
         <div style={{ width: '50%', display: 'flex', height: '100%', alignItems: 'center' }}>
@@ -260,31 +276,7 @@ function SupplierConfigure() {
                         className={styles.btn} 
                         onClick={AddModel}
                         //disabled={empty}
-                        >新增
-                    </Button>
-                )
-            }
-            {
-                authAction(
-                    <Button
-                        ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNSUPPLIER-EDIT'
-                        className={styles.btn}
-                        onClick={handleCheckEdit}
-                        disabled={empty || !underWay || !isSelf}
-                    >编辑
-                    </Button>
-                )
-            }
-            {
-                authAction(
-                    <Button 
-                        ignore={DEVELOPER_ENV} 
-                        key='SRM-SM-PCNSUPPLIER-DELETE' 
-                        className={styles.btn} 
-                        onClick={handleDelete} 
-                        disabled={empty || !underWay || !isSelf}
-                        >删除
+                        >执行任务
                     </Button>
                 )
             }
@@ -312,40 +304,14 @@ function SupplierConfigure() {
                     </Button>
                 )
             }
-            {
-                authAction(
-                    <Button
-                        ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNSUPPLIER-WITHDRAW'
-                        className={styles.btn}
-                        onClick={handleSubmit}
-                        disabled={empty || !completed || !isSelf}
-                    >撤回
-                    </Button>
-                )
-            }
         </div>
     ) 
     const searchbank = ['name'];
     // 右侧搜索
     const HeaderRightButtons = (
         <div style={{ display: 'flex'}}>
-            <ComboList
-                style={{width:'240px' }}
-                searchProperties={searchbank}
-                {...SupplierBilltypeList}
-                afterSelect={cooperationChange}
-                rowKey="code"
-                showSearch={false}
-                allowClear={true}
-                afterClear={clearinput}
-                reader={{
-                    name: 'name',
-                }}
-                className={styles.btn}
-            />
             <Search
-                placeholder='请输入变更单号'
+                placeholder='请输入认定计划号或计划说明'
                 className={styles.btn}
                 onSearch={handleQuickSerach}
                 allowClear
@@ -355,10 +321,16 @@ function SupplierConfigure() {
     )
     // 高级查询配置
     const formItems = [
-        { title: '供应商代码', key: 'materialCode',  props: { placeholder: '输入供应商代码' } },
-        { title: '供应商名称', key: 'materialName',  props: { placeholder: '输入供应商名称' } },
-        { title: '单据状态', key: 'materialGroupCode', type: 'list', props: SupplierBilltypeList },
-        { title: '变更类型', key: 'applyPersonName', type: 'list', props: PCNMasterdatalist },
+        { title: '制定计划部门', key: 'materialCode',  props: { placeholder: '输入供应商代码' } },
+        { title: '制定人', key: 'materialName',  props: { placeholder: '输入供应商名称' } },
+        { title: '供应商名称', key: 'materialCode',  props: { placeholder: '输入供应商代码' } },
+        { title: '物料分类', key: 'materialName',  props: { placeholder: '输入供应商名称' } },
+        { title: '公司名称', key: 'materialCode',  props: { placeholder: '输入供应商代码' } },
+        { title: '单据类型', key: 'materialName',  props: { placeholder: '输入供应商名称' } },
+        { title: '计划状态', key: 'materialCode',  props: { placeholder: '输入供应商代码' } },
+        { title: '认定结果', key: 'materialName',  props: { placeholder: '输入供应商名称' } },
+        // { title: '单据状态', key: 'materialGroupCode', type: 'list', props: SupplierBilltypeList },
+        // { title: '变更类型', key: 'applyPersonName', type: 'list', props: PCNMasterdatalist },
     ];
     return (
         <>
@@ -397,4 +369,4 @@ function SupplierConfigure() {
     )
 }
 
-export default SupplierConfigure
+export default MissionExecution

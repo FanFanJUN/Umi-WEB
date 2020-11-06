@@ -193,6 +193,10 @@ function SupplierConfigure() {
         //openNewTab(`pcnModify/Supplier/create/index`, 'PCN变更新建变更单', false)
         openNewTab(`material/Cognizance/AdmitEdit/index`, '物料认定计划新增', false)
     }
+    // 手工新增
+    function ManualEditAddModel() {
+        openNewTab(`material/Cognizance/ManualEdit/index`, '手工物料认定计划新增', false)
+    }
     // 编辑
     function handleCheckEdit() {
         // const [key] = selectedRowKeys;
@@ -317,7 +321,7 @@ function SupplierConfigure() {
                         ignore={DEVELOPER_ENV} 
                         key='SRM-SM-PCNSUPPLIER-ADD' 
                         className={styles.btn} 
-                        onClick={AddModel}
+                        onClick={ManualEditAddModel}
                         //disabled={empty}
                         >手工创建
                     </Button>
