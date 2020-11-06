@@ -35,6 +35,10 @@ const Index = (props) => {
     }, [])
     useEffect(() => {
         const { id, pageState } = query;
+        if(!pageState){
+            // 来自工作流
+            pageState = props.pageState;
+        }
         switch (pageState) {
             case 'add':
                 getUser();
@@ -49,6 +53,9 @@ const Index = (props) => {
                 break;
             case 'change':
                 setData((value) => ({ ...value, type: pageState, isView: true, title: `变更月度审核计划: ${editData.reviewPlanMonthCode}` }));
+                break;
+            case 'isInflow':
+                setData((value) => ({ ...value, type: pageState, isView: true, title: `月度审核计划明细: ${editData.reviewPlanMonthCode}` }));
                 break;
             default:
                 setData((value) => ({ ...value, type: pageState, isView: false, title: '月度审核计划管理-新增' }));
