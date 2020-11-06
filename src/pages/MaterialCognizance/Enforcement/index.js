@@ -4,17 +4,16 @@ import { Input, Button, message, Modal, Checkbox } from 'antd';
 import { openNewTab, getFrameElement, isEmpty } from '@/utils';
 import { StartFlow } from 'seid';
 import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
-import styles from '../index.less';
+import styles from './index.less';
 import { smBaseUrl } from '@/utils/commonUrl';
 // import { PCNMasterdatalist} from "../commonProps"
 // import { deleteBatchById,PCNSupplierSubmit} from '../../../services/pcnModifyService'
 // import {SupplierBilltypeList} from '../commonProps'
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 const { Search } = Input
-const confirm = Modal.confirm;
 const { authAction, storage } = utils;
 const { FlowHistoryButton } = WorkFlow;
-function SupplierConfigure() {
+function MissionExecution() {
     const getModelRef = useRef(null)
     const tableRef = useRef(null)
     const headerRef = useRef(null)
@@ -193,34 +192,10 @@ function SupplierConfigure() {
         //openNewTab(`pcnModify/Supplier/create/index`, 'PCN变更新建变更单', false)
         openNewTab(`material/Enforcement/Edit/index`, '实物认定任务执行', false)
     }
-    // 编辑
-    function handleCheckEdit() {
-        // const [key] = selectedRowKeys;
-        let id = selectedRows[0].id;
-        openNewTab(`pcnModify/Supplier/Edit/index?id=${id}`, 'PCN变更编辑变更单', false)
-    }
-    // 删除
-    async function handleDelete() {
-        // confirm({
-        //     title: '是否确认删除',
-        //     onOk: async () => {
-        //         let params = selectedRows[0].id;
-        //         const { success, message: msg } = await deleteBatchById({pcnTitleId:params});
-        //         if (success) {
-        //             message.success('删除成功！');
-        //             uploadTable();
-        //         } else {
-        //             message.error(msg);
-        //         }
-        //     },
-        //     onCancel() {
-        //     },
-        // });
-    }
     // 明细
     function handleCheckDetail() {
-        let id = selectedRows[0].id;
-        openNewTab(`pcnModify/Supplier/Detail/index?id=${id}&alone=true`, 'PCN变更单明细', false)
+        //let id = selectedRows[0].id;
+        //openNewTab(`pcnModify/Supplier/Detail/index?id=${id}&alone=true`, 'PCN变更单明细', false)
     }
     // 提交
     async function handleSubmit() {
@@ -288,12 +263,6 @@ function SupplierConfigure() {
         })
         setSeniorsearchvalue(newdata)
         headerRef.current.hide();
-        uploadTable();
-    }
-     // 清空泛虹公司
-     function clearinput() {
-        setSearchValue('')
-        setSeniorsearchvalue('')
         uploadTable();
     }
     // 左侧
@@ -400,4 +369,4 @@ function SupplierConfigure() {
     )
 }
 
-export default SupplierConfigure
+export default MissionExecution

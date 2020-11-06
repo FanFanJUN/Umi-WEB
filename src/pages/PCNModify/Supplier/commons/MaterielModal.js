@@ -41,7 +41,7 @@ const getMatermodRef = forwardRef(({
     
     dataSource = {
         store: {
-            url: `${baseUrl}/materialSrm/findBySecondaryClassificationAndCompany`,
+            url: `${baseUrl}/api/materialSrmService/findBySecondaryClassificationListAndCompany`,
             params: {
                 quickSearchValue: searchValue,
                 ///quickSearchProperties: ['materialCode','materialDesc'],
@@ -51,7 +51,7 @@ const getMatermodRef = forwardRef(({
                         direction: 'DESC'
                     }
                 ],
-                secondaryClassificationCode: materielCategoryCode,
+                secondaryClassificationCodes: materielCategoryCode,
                 companyCodeList: companyCode
             },
             type: 'POST'

@@ -53,8 +53,10 @@ function SupplierConfigure() {
             render: function (text, record, row) {
                 if (text === 0) {
                     return <div>草稿</div>;
-                } else {
+                } else if (text === 1){
                     return <div className="successColor">已提交</div>;
+                } else if (text === 2) {
+                    return <div className="successColor">已完成</div>;
                 }
             },
         },

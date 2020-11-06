@@ -51,7 +51,7 @@ const ModifyinfluenceRef = forwardRef(({
             {
                 title: "确认结果",
                 width: 100,
-                dataIndex: 'SmPcnAnalysisVo',
+                dataIndex: 'pcnResult',
                 render: function (text, record, row) {
                     if (text === 0) {
                         return <div>同意</div>;
@@ -301,10 +301,11 @@ const ModifyinfluenceRef = forwardRef(({
     }
     // 选择物料
     function showMateriel() {
-        let id = selectedRows[0].materielCategoryCode
+        let materid = [];
         let matercode = [];
         matercode.push(selectedRows[0].companyCode)
-        setmaterielid(id)
+        materid.push(selectedRows[0].materielCategoryCode)
+        setmaterielid(materid)
         setCompanyCode(matercode)
         getMatermodRef.current.handleModalVisible(true);
     }

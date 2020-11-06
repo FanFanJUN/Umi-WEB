@@ -189,7 +189,7 @@ const getExecutioninfor = forwardRef(({
             <Col span={16}>
                 <FormItem {...formLayout} label="PCN变更执行日期">
                     {
-                      isView ? <span>{dataSource ? dataSource.executDate : ''}</span> :
+                      isView ? <span>{dataSource && dataSource.executDate ? (dataSource.executDate).substring(0, 10): ''}</span> :
                       getFieldDecorator('executDate', {
                         initialValue: dataSource ? dataSource.executDate : '',
                         rules: [
