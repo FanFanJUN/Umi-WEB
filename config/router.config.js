@@ -27,7 +27,72 @@ export default [
         path: '/gradeSystem/acceptFYP',
         component: './AcceptFYPMain',
         title: '入厂验收批次合格率'
-      }
+      },
+      {
+        path: '/gradeSystem/deliveryAnomaly',
+        component: './DeliveryAnomaly',
+        title: '交货异常事故次数'
+      },
+      {
+        path: '/gradeSystem/businessProblem',
+        component: './BusinessProblem',
+        title: '商务问题响应'
+      },
+      {
+        path: '/gradeSystem/orderConfirmation',
+        component: './OrderConfirmation',
+        title: '订单及时确认率'
+      },
+      {
+        path: '/gradeSystem/consignmentOrders',
+        component: './ConsignmentOrders',
+        title: '寄售订单比例'
+      },
+      {
+        path: '/gradeSystem/timelyDeliveryRate',
+        component: './TimelyDeliveryRate',
+        title: '交货及时率'
+      },
+      {
+        path: '/gradeSystem/sampleProblemRate',
+        component: './SampleProblemRate',
+        title: '送样情况'
+      },
+      {
+        path: '/gradeSystem/environmentalProblem',
+        component: './EnvironmentalProblem',
+        title: '环境问题'
+      },
+      {
+        path: '/gradeSystem/agreementSigned',
+        component: './AgreementSigned',
+        title: '质量赔偿和环保协议签订'
+      },
+      {
+        path: '/gradeSystem/qualityTechnology',
+        component: './QualityTechnology',
+        title: '质量、技术方面的协作'
+      },
+      {
+        path: '/gradeSystem/pcnChangeNotInformed',
+        component: './PcnChangeNotInformed',
+        title: 'PCN变更未告知次数'
+      },
+      {
+        path: '/gradeSystem/qualityProblemComplaints',
+        component: './QualityProblemComplaints',
+        title: '质量问题投诉'
+      },
+      {
+        path: '/gradeSystem/defectRate',
+        component: './DefectRate',
+        title: '不良率'
+      },
+      {
+        path: '/gradeSystem/targetDefectRate',
+        component: './TargetDefectRate',
+        title: '目标不良率'
+      },
     ]
   },
   /**供应商审核 */

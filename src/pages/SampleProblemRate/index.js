@@ -1,5 +1,5 @@
 /**
- * 实现功能：入厂验收批次合格率主数据
+ * 实现功能：送样情况主数据
  * @author hezhi
  * @date 2020-09-23
  */
@@ -11,11 +11,11 @@ import { Header, AutoSizeLayout, ModalForm, AdvancedForm } from '../../component
 import { useTableProps } from '../../utils/hooks';
 import { commonUrl, downloadBlobFile, commonProps } from '../../utils'
 import {
-  acceptCheck as CHECK_METHOD,
-  acceptExport as EXPORT_METHOD,
-  acceptSaveList as SAVE_LIST_METHOD,
-  acceptSaveOne as SAVE_ONE_METHOD,
-  acceptRemove as REMOVE_METHOD
+  sampleProblemRateCheck as CHECK_METHOD,
+  sampleProblemRateExport as EXPORT_METHOD,
+  sampleProblemRateSaveList as SAVE_LIST_METHOD,
+  sampleProblemRateSaveOne as SAVE_ONE_METHOD,
+  sampleProblemRateRemove as REMOVE_METHOD
 } from '../../services/gradeSystem';
 const { recommendUrl } = commonUrl;
 const {
@@ -35,14 +35,14 @@ const minxinSupplierProps = {
   placeholder: '选择供应商'
 };
 const { Search } = Input;
-const MAIN_KEY_PREFIX = 'ACCEPT_FYP_MAIN_'
-const TABLE_DATASOURCE_QUERY_PATH = `${recommendUrl}/api/bafIncomingPassRateService/findByPage`;
+const MAIN_KEY_PREFIX = 'SAMPLE_PROBLEM_RATE_MAIN_'
+const TABLE_DATASOURCE_QUERY_PATH = `${recommendUrl}/api/bafSampleProblemRateService/findByPage`;
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const { authAction, getUUID } = utils;
-const FILENAME = '入厂验收批次合格率上传模板.xlsx';
-const DOWNLOADNAME = '入厂验收批次合格率.xlsx'
+const FILENAME = '送样情况上传模板.xlsx';
+const DOWNLOADNAME = '送样情况.xlsx'
 const SEARCH_PLACEHOLDER = '供应商代码或名称';
-const quickSearchProperties = ['supplierCode', 'supplierName'];
+const quickSearchProperties = [];
 const sortOrders = [];
 const FORMITEMS = [
   {
@@ -133,14 +133,43 @@ const FIELDS = [
     type: 'label'
   },
   {
-    name: 'unqualified',
-    label: '不合格批次',
-    type: 'number'
+    name: 'deliveryNumber',
+    label: '送样次数',
+    type: 'number',
+    option: {
+      rules: [
+        {
+          required: true,
+          message: '送样次数不能为空'
+        }
+      ]
+    }
   },
   {
-    name: 'total',
-    label: '检验总批次',
-    type: 'number'
+    name: 'deliveryDelay',
+    label: '送样不及时次数',
+    type: 'number',
+    option: {
+      rules: [
+        {
+          required: true,
+          message: '送样不及时次数不能为空'
+        }
+      ]
+    }
+  },
+  {
+    name: 'sampleProblem',
+    label: '送样问题次数',
+    type: 'number',
+    option: {
+      rules: [
+        {
+          required: true,
+          message: '送样问题次数不能为空'
+        }
+      ]
+    }
   }
 ];
 const COLUMNS = [
@@ -189,12 +218,16 @@ const COLUMNS = [
     dataIndex: 'month'
   },
   {
-    title: '不合格批次',
-    dataIndex: 'unqualified'
+    title: '送样次数',
+    dataIndex: 'deliveryNumber',
   },
   {
-    title: '检验总批次',
-    dataIndex: 'total'
+    title: '送样不及时次数',
+    dataIndex: 'deliveryDelay',
+  },
+  {
+    title: '送样问题次数',
+    dataIndex: 'sampleProblem',
   }
 ];
 const TFL = [
@@ -344,16 +377,24 @@ function AcceptFYPMain() {
     headerRef.current.hide()
   }
   // 导出
-  async function handleExport() {
-    const { success, message: msg, data } = await EXPORT_METHOD({
-      ...searchValue
+  function handleExport() {
+    Modal.confirm({
+      title: '导出数据',
+      content: '是否导出当前查询条件下数据？',
+      okText: '导出',
+      cancelText: '取消',
+      onOk: async () => {
+        const { success, message: msg, data } = await EXPORT_METHOD({
+          ...searchValue
+        })
+        if (success) {
+          downloadBlobFile(data, DOWNLOADNAME);
+          message.success('导出成功')
+          return
+        }
+        message.error(msg)
+      }
     })
-    if (success) {
-      downloadBlobFile(data, DOWNLOADNAME);
-      message.success('导出成功')
-      return
-    }
-    message.error(msg)
   }
   const left = (
     <>
