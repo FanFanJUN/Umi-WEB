@@ -209,7 +209,7 @@ let LineInfo = forwardRef((props, ref) => {
       let groupObj = {};
       item.treeData = buildTreeData(item.fatherList, item.sonList);
       item.lineNum = getRandom(10);
-      item.reviewPlanMonthLinenum = ((Array(4).join(0) + (index + 1)).slice(-4) + '0');
+      item.reviewPlanMonthLinenum = ((Array(4).join(0) + (index + 1 + dataSource.length)).slice(-4) + '0');
       // 采购组织暂时写死
       item.purchaseTeamCode = '2520';
       item.purchaseTeamId = 'B2A7879B-9358-11EA-B42A-0242C0A84414';
