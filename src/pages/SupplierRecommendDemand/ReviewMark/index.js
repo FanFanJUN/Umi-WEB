@@ -9,7 +9,7 @@ import styles from './index.less';
 import DetailRecommendDemand from '../DetailRecommendDemand';
 import SupplierRecommendFillInData from '../RecommendData/DataFillIn';
 import SelfAssessment from '../RecommendData/SelfAssessment';
-import { Tabs, Affix, Skeleton } from 'antd';
+import { Tabs, Affix, Skeleton, message } from 'antd';
 import { WorkFlow } from 'suid';
 import Review from '../Review';
 import { router } from 'dva';

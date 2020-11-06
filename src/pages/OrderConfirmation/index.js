@@ -1,5 +1,5 @@
 /**
- * 实现功能：入厂验收批次合格率主数据
+ * 实现功能：订单及时确认率主数据
  * @author hezhi
  * @date 2020-09-23
  */
@@ -9,13 +9,14 @@ import { utils, ExtTable, DataImport } from 'suid';
 import { Button, Input, Spin, message, Modal } from 'antd';
 import { Header, AutoSizeLayout, ModalForm, AdvancedForm } from '../../components';
 import { useTableProps } from '../../utils/hooks';
+import moment from 'moment';
 import { commonUrl, downloadBlobFile, commonProps } from '../../utils'
 import {
-  acceptCheck as CHECK_METHOD,
-  acceptExport as EXPORT_METHOD,
-  acceptSaveList as SAVE_LIST_METHOD,
-  acceptSaveOne as SAVE_ONE_METHOD,
-  acceptRemove as REMOVE_METHOD
+  orderConfirmationCheck as CHECK_METHOD,
+  orderConfirmationExport as EXPORT_METHOD,
+  orderConfirmationSaveList as SAVE_LIST_METHOD,
+  orderConfirmationSaveOne as SAVE_ONE_METHOD,
+  orderConfirmationRemove as REMOVE_METHOD
 } from '../../services/gradeSystem';
 const { recommendUrl } = commonUrl;
 const {
@@ -23,7 +24,8 @@ const {
   originFactoryProps,
   materialClassProps,
   corporationProps,
-  purchaseOrgConfig
+  purchaseOrgConfig,
+  materialProps
 } = commonProps;
 const minxinSupplierProps = {
   ...supplierProps,
@@ -35,12 +37,12 @@ const minxinSupplierProps = {
   placeholder: '选择供应商'
 };
 const { Search } = Input;
-const MAIN_KEY_PREFIX = 'ACCEPT_FYP_MAIN_'
-const TABLE_DATASOURCE_QUERY_PATH = `${recommendUrl}/api/bafIncomingPassRateService/findByPage`;
+const MAIN_KEY_PREFIX = 'ORDER_CONFIRMATION_MAIN_'
+const TABLE_DATASOURCE_QUERY_PATH = `${recommendUrl}/api/bafTimelyOrderConfirmationRateService/findByPage`;
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const { authAction, getUUID } = utils;
-const FILENAME = '入厂验收批次合格率上传模板.xlsx';
-const DOWNLOADNAME = '入厂验收批次合格率.xlsx'
+const FILENAME = '订单及时确认率上传模板.xlsx';
+const DOWNLOADNAME = '订单及时确认率.xlsx'
 const SEARCH_PLACEHOLDER = '供应商代码或名称';
 const quickSearchProperties = ['supplierCode', 'supplierName'];
 const sortOrders = [];
@@ -56,6 +58,12 @@ const FORMITEMS = [
     key: 'Q_EQ_originCode',
     type: 'list',
     props: originFactoryProps
+  },
+  {
+    title: '物料',
+    key: 'Q_EQ_materialCode',
+    type: 'list',
+    props: materialProps
   },
   {
     title: '物料分类',
@@ -98,6 +106,16 @@ const FIELDS = [
     type: 'label'
   },
   {
+    name: 'materialCode',
+    label: '物料代码',
+    type: 'label'
+  },
+  {
+    name: 'materialName',
+    label: '物料名称',
+    type: 'label'
+  },
+  {
     name: 'materialCategoryCode',
     label: '物料分类代码',
     type: 'label'
@@ -128,19 +146,43 @@ const FIELDS = [
     type: 'label'
   },
   {
-    name: 'month',
-    label: '月度',
-    type: 'label'
+    name: 'orderCreateDate',
+    label: '订单创建时间',
+    type: 'datePicker',
+    option: {
+      rules: [
+        {
+          required: true,
+          message: '订单创建时间不能为空'
+        }
+      ]
+    }
   },
   {
-    name: 'unqualified',
-    label: '不合格批次',
-    type: 'number'
+    name: 'timelyLine',
+    label: '及时确认行项数',
+    type: 'number',
+    option: {
+      rules: [
+        {
+          required: true,
+          message: '及时确认行项数不能为空'
+        }
+      ]
+    }
   },
   {
-    name: 'total',
-    label: '检验总批次',
-    type: 'number'
+    name: 'totalLine',
+    label: '总行项数',
+    type: 'number',
+    option: {
+      rules: [
+        {
+          required: true,
+          message: '总行项数不能为空'
+        }
+      ]
+    }
   }
 ];
 const COLUMNS = [
@@ -185,16 +227,19 @@ const COLUMNS = [
     dataIndex: 'purchaseOrgName'
   },
   {
-    title: '月度',
-    dataIndex: 'month'
+    dataIndex: 'orderCreateDate',
+    title: '订单创建时间',
+    render(text) {
+      return moment(text).format('YYYY-MM-DD')
+    }
   },
   {
-    title: '不合格批次',
-    dataIndex: 'unqualified'
+    dataIndex: 'timelyLine',
+    title: '及时确认行项数'
   },
   {
-    title: '检验总批次',
-    dataIndex: 'total'
+    dataIndex: 'totalLine',
+    title: '总行项数'
   }
 ];
 const TFL = [
@@ -289,7 +334,8 @@ function AcceptFYPMain() {
   async function showEditorModal() {
     await formRef.current.show()
     await formRef.current.setFormValues({
-      ...singleRow
+      ...singleRow,
+      orderCreateDate: moment(singleRow?.orderCreateDate)
     })
   }
   // 编辑后保存数据
@@ -344,16 +390,24 @@ function AcceptFYPMain() {
     headerRef.current.hide()
   }
   // 导出
-  async function handleExport() {
-    const { success, message: msg, data } = await EXPORT_METHOD({
-      ...searchValue
+  function handleExport() {
+    Modal.confirm({
+      title: '导出数据',
+      content: '是否导出当前查询条件下数据？',
+      okText: '导出',
+      cancelText: '取消',
+      onOk: async () => {
+        const { success, message: msg, data } = await EXPORT_METHOD({
+          ...searchValue
+        })
+        if (success) {
+          downloadBlobFile(data, DOWNLOADNAME);
+          message.success('导出成功')
+          return
+        }
+        message.error(msg)
+      }
     })
-    if (success) {
-      downloadBlobFile(data, DOWNLOADNAME);
-      message.success('导出成功')
-      return
-    }
-    message.error(msg)
   }
   const left = (
     <>
