@@ -1,5 +1,5 @@
 /**
- * 实现功能：质量问题投诉主数据
+ * 实现功能：审核结果等级主数据
  * @author hezhi
  * @date 2020-09-23
  */
@@ -10,12 +10,13 @@ import { Button, Input, Spin, message, Modal } from 'antd';
 import { Header, AutoSizeLayout, ModalForm, AdvancedForm } from '../../components';
 import { useTableProps } from '../../utils/hooks';
 import { commonUrl, downloadBlobFile, commonProps } from '../../utils'
+import moment from 'moment';
 import {
-  qualityProblemComplaintsCheck as CHECK_METHOD,
-  qualityProblemComplaintsExport as EXPORT_METHOD,
-  qualityProblemComplaintsSaveList as SAVE_LIST_METHOD,
-  qualityProblemComplaintsSaveOne as SAVE_ONE_METHOD,
-  qualityProblemComplaintsRemove as REMOVE_METHOD
+  supplierExamineGradeCheck as CHECK_METHOD,
+  supplierExamineGradeExport as EXPORT_METHOD,
+  supplierExamineGradeSaveList as SAVE_LIST_METHOD,
+  supplierExamineGradeSaveOne as SAVE_ONE_METHOD,
+  supplierExamineGradeRemove as REMOVE_METHOD
 } from '../../services/gradeSystem';
 const { recommendUrl } = commonUrl;
 const {
@@ -36,14 +37,14 @@ const minxinSupplierProps = {
 };
 const { Search } = Input;
 /** 配置修改部分 begin */
-const MAIN_KEY_PREFIX = 'QUALITY_PROBLEM_COMPLAINTS_MAIN_'
-const TABLE_DATASOURCE_QUERY_PATH = `${recommendUrl}/api/bafQualityProblemComplaintsService/findByPage`;
+const MAIN_KEY_PREFIX = 'DEFECT_RATE_MAIN_'
+const TABLE_DATASOURCE_QUERY_PATH = `${recommendUrl}/api/bafSupplierExamineGradeService/findByPage`;
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const { authAction, getUUID } = utils;
-const FILENAME = '质量问题投诉上传模板.xlsx';
-const DOWNLOADNAME = '质量问题投诉.xlsx'
+const FILENAME = '审核结果等级上传模板.xlsx';
+const DOWNLOADNAME = '审核结果等级.xlsx'
 const SEARCH_PLACEHOLDER = '供应商代码或名称';
-const quickSearchProperties = ['supplierCode','supplierName'];
+const quickSearchProperties = ['supplierCode', 'supplierName'];
 const sortOrders = [];
 const FORMITEMS = [
   {
@@ -109,69 +110,53 @@ const FIELDS = [
     type: 'label'
   },
   {
-    name: 'corporationCode',
-    label: '公司代码',
-    type: 'label'
-  },
-  {
-    name: 'corporationName',
-    label: '公司名称',
-    type: 'label'
-  },
-  {
-    name: 'purchaseOrgCode',
-    label: '采购组织代码',
-    type: 'label'
-  },
-  {
-    name: 'purchaseOrgName',
-    label: '采购组织名称',
-    type: 'label'
-  },
-  {
-    name: 'month',
-    label: '月度',
-    type: 'label'
-  },
-  {
-    name: 'generalQualityProblem',
-    label: '一般质量问题次数',
-    type: 'number',
+    name: 'examineDate',
+    label: '审核日期',
+    type: 'datePicker',
     option: {
       rules: [
         {
           required: true,
-          message: '一般质量问题次数不能为空'
+          message: '审核日期不能为空'
         }
       ]
     }
   },
   {
-    name: 'majorQualityProblem',
-    label: '重大质量问题次数',
-    type: 'number',
+    name: 'grade',
+    label: '审核结果等级',
+    type: 'select',
+    labelOptions: [
+      {
+        value: 'A',
+        text: 'A'
+      },
+      {
+        value: 'B',
+        text: 'B'
+      },
+      {
+        value: 'C',
+        text: 'C'
+      },
+      {
+        value: 'D',
+        text: 'D'
+      },
+      {
+        value: 'E',
+        text: 'E'
+      },
+    ],
     option: {
       rules: [
         {
           required: true,
-          message: '重大质量问题次数不能为空'
+          message: '审核结果等级不能为空'
         }
       ]
     }
-  },
-  {
-    name: 'marketQualityProblem',
-    label: '市场质量问题次数',
-    type: 'number',
-    option: {
-      rules: [
-        {
-          required: true,
-          message: '市场质量问题次数不能为空'
-        }
-      ]
-    }
-  },
+  }
 ];
 const COLUMNS = [
   {
@@ -199,37 +184,17 @@ const COLUMNS = [
     dataIndex: 'materialCategoryName'
   },
   {
-    title: '公司代码',
-    dataIndex: 'corporationCode'
+    title: '审核日期',
+    dataIndex: 'examineDate',
+    render(text) {
+      return moment(text).format('YYYY-MM-DD')
+    }
   },
   {
-    title: '公司名称',
-    dataIndex: 'corporationName'
+    title: '审核结果等级',
+    dataIndex: 'grade',
+    width: 150
   },
-  {
-    title: '采购组织代码',
-    dataIndex: 'purchaseOrgCode'
-  },
-  {
-    title: '采购组织名称',
-    dataIndex: 'purchaseOrgName'
-  },
-  {
-    title: '月度',
-    dataIndex: 'month'
-  },
-  {
-    title: '一般质量问题次数',
-    dataIndex: 'generalQualityProblem',
-  },
-  {
-    title: '重大质量问题次数',
-    dataIndex: 'majorQualityProblem',
-  },
-  {
-    title: '市场质量问题次数',
-    dataIndex: 'marketQualityProblem',
-  }
 ];
 const TFL = [
   {
@@ -324,7 +289,8 @@ function AcceptFYPMain() {
   async function showEditorModal() {
     await formRef.current.show()
     await formRef.current.setFormValues({
-      ...singleRow
+      ...singleRow,
+      examineDate: moment(singleRow.examineDate)
     })
   }
   // 编辑后保存数据

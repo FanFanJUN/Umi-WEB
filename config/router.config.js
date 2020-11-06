@@ -26,7 +26,7 @@ export default [
       {
         path: '/gradeSystem/acceptFYP',
         component: './AcceptFYPMain',
-        title: '入厂验收批次合格率'
+        title: '来料验收批次合格率'
       },
       {
         path: '/gradeSystem/deliveryAnomaly',
@@ -92,6 +92,21 @@ export default [
         path: '/gradeSystem/targetDefectRate',
         component: './TargetDefectRate',
         title: '目标不良率'
+      },
+      {
+        path: '/gradeSystem/supplierExamineGrade',
+        component: './SupplierExamineGrade',
+        title: '审核结果等级'
+      },
+      {
+        path: '/gradeSystem/ruleMapMethod',
+        component: './RuleMapMethod',
+        title: '计算方式对应指标'
+      },
+      {
+        path: '/gradeSystem/materialCategoryUnit',
+        component: './MaterialCategoryUnit',
+        title: '物料单位转换关系'
       },
     ]
   },

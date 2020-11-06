@@ -43,7 +43,7 @@ const { authAction, getUUID } = utils;
 const FILENAME = '环境问题上传模板.xlsx';
 const DOWNLOADNAME = '环境问题.xlsx'
 const SEARCH_PLACEHOLDER = '供应商代码或名称';
-const quickSearchProperties = [];
+const quickSearchProperties = ['supplierCode','supplierName'];
 const sortOrders = [];
 const FORMITEMS = [
   {
@@ -353,7 +353,8 @@ function AcceptFYPMain() {
       cancelText: '取消',
       onOk: async () => {
         const { success, message: msg, data } = await EXPORT_METHOD({
-          ...searchValue
+          ...searchValue,
+          quickSearchProperties
         })
         if (success) {
           downloadBlobFile(data, DOWNLOADNAME);

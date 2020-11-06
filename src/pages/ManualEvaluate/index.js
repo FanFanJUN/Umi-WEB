@@ -7,7 +7,7 @@
 import { useRef, useEffect } from 'react';
 import styles from './index.less';
 import { ExtTable, WorkFlow, utils } from 'suid';
-import { Button, Input, Modal, message } from 'antd';
+import { Button, Input, Modal, message, Checkbox } from 'antd';
 import { Header, AutoSizeLayout, AdvancedForm } from '../../components';
 import { useTableProps } from '../../utils/hooks';
 import { recommendUrl } from '../../utils/commonUrl';
@@ -17,7 +17,7 @@ import { stopApprove } from '../../services/api';
 const { Search } = Input;
 const { StartFlow, FlowHistoryButton } = WorkFlow;
 
-const { authAction } = utils;
+const { authAction, storage } = utils;
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
 
 function ManualEvaluate() {
@@ -27,14 +27,18 @@ function ManualEvaluate() {
   const {
     selectedRowKeys,
     selectedRows,
-    searchValue
+    searchValue,
+    onlyMe,
   } = tableState;
   const {
     setRowKeys,
     handleSelectedRows,
-    setSearchValue
+    setSearchValue,
+    setOnlyMe
   } = sets;
   const [singleRow = {}] = selectedRows;
+  const authorizations = storage.sessionStorage.get("Authorization");
+  const account = authorizations?.account;
   const {
     seEvaluationProject = {},
     flowStatus, // 审核状态
@@ -96,6 +100,16 @@ function ManualEvaluate() {
       type: 'POST',
       params: {
         ...searchValue,
+        filters: searchValue.filters ?
+          searchValue.filters.concat([{
+            fieldName: 'creatorAccount',
+            operator: 'EQ',
+            value: onlyMe ? account : undefined
+          }]) : [{
+            fieldName: 'creatorAccount',
+            operator: 'EQ',
+            value: onlyMe ? account : undefined
+          }],
         quickSearchProperties: ['seEvaluationProject.docNumber', 'seEvaluationProject.projectName']
       }
     },
@@ -242,6 +256,7 @@ function ManualEvaluate() {
           </FlowHistoryButton>
         )
       }
+      <Checkbox className={styles.btn} onChange={handleOnlyMeChange} checked={onlyMe}>仅我的</Checkbox>
     </>
   )
   const right = (
@@ -262,6 +277,11 @@ function ManualEvaluate() {
     setSearchValue({
       quickSearchValue: v
     })
+    uploadTable()
+  }
+  // 切换仅查看我
+  function handleOnlyMeChange(e) {
+    setOnlyMe(e.target.checked)
     uploadTable()
   }
   // 处理高级搜索
