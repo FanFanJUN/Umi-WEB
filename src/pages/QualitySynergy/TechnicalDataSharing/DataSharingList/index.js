@@ -252,7 +252,7 @@ export default function () {
         '业务单元代码': item.buCode,
         '业务单元名称': item.buName,
         '申请人': item.applyPeopleName,
-        '申请人联系方式': item.applyPersonPhone,
+        '申请人联系方式': item.applyPeoplePhone,
         '申请日期': item.applyDate,
       });
     });
