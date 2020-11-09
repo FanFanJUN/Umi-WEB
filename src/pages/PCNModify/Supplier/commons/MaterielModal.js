@@ -103,7 +103,6 @@ const getMatermodRef = forwardRef(({
             handleModalVisible(false);
             cleanSelectedRecord();
         }else {
-            console.log(123)
             iseditMater[0].smPcnAnalysisMaterielVoList = selectedRows;
             materselect(iseditMater)
             handleModalVisible(false);
