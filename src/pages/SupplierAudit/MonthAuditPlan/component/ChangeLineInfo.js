@@ -1,3 +1,11 @@
+/*
+ * @Author: 黄永翠
+ * @Date: 2020-11-05 15:12:46
+ * @LastEditTime: 2020-11-09 16:07:23
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \srm-sm-web\src\pages\SupplierAudit\MonthAuditPlan\component\ChangeLineInfo.js
+ */
 import React, { Fragment, useRef, useState } from 'react';
 import { recommendUrl } from '@/utils/commonUrl';
 import { ExtTable, utils } from 'suid';
@@ -6,34 +14,29 @@ import styles from '../index.less';
 const Index = (props) => {
 
     const columns = [
-        { title: '审核类型代码', dataIndex: 'reviewTypeCode', width: 200 },
-        { title: '审核类型名称', dataIndex: 'reviewTypeName', ellipsis: true },
-        { title: '结论代码', dataIndex: 'conclusionCode', ellipsis: true },
-        { title: '结论名称', dataIndex: 'conclusionName', ellipsis: true },
-        {
-            title: '是否通过', dataIndex: 'whetherPass', ellipsis: true, render: function (text, context) {
-                return text ? '是' : '否';
-            }
-        },
-        { title: '排序号', dataIndex: 'rank', ellipsis: true },
-        { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (value) => value ? '是' : '否' },
+        { title: '操作内容', dataIndex: 'reviewTypeCode', width: 200 },
+        { title: '对象', dataIndex: 'reviewTypeName', ellipsis: true },
+        { title: '更改字段', dataIndex: 'conclusionCode', ellipsis: true },
+        { title: '更改前', dataIndex: 'conclusionName', ellipsis: true },
+        { title: '更改后', dataIndex: 'rank', ellipsis: true },
     ].map(item => ({ ...item, align: 'center' }));
 
     return (<div className={styles.wrapper}>
         <div className={styles.bgw}>
-            <div className={styles.title}>拟审核信息</div>
+            <div className={styles.title}>变更明细</div>
             <div className={styles.content}>
                 <ExtTable
                     rowKey={(v) => v.id}
                     columns={columns}
                     store={{
                         url: `${recommendUrl}/api/reviewPlanMonthChangeService/findHistoryPageByChangId`,
-                        type: 'POST',
+                        type: 'GET',
                         params: {
-                            businessId: props.id
+                            id: props.id
                         }
                     }}
-                    remotePaging={true}
+                    showSearch={false}
+                    remotePaging={false}
                     checkbox={false}
                 />
             </div>

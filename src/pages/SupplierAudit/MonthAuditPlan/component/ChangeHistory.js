@@ -1,9 +1,22 @@
+/*
+ * @Author: your name
+ * @Date: 2020-11-04 16:24:34
+ * @LastEditTime: 2020-11-09 16:28:54
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \srm-sm-web\src\pages\SupplierAudit\MonthAuditPlan\component\ChangeHistory.js
+ */
 // 从年度审核新增
 import React, { useState, useRef } from "react";
 import {  Button } from "antd";
-import { ExtTable, ExtModal } from 'suid';
+import { ExtTable, ExtModal, WorkFlow } from 'suid';
+import { StartFlow } from 'seid';
 import { recommendUrl } from '@/utils/commonUrl';
 import { openNewTab } from '../../../../utils';
+import Upload from "../../Upload";
+import { deleteChangeById } from "../service";
+
+const { FlowHistoryButton } = WorkFlow;
 
 const ChangeHistory = (props) => {
     const { visible, handleCancel } = props
@@ -12,10 +25,22 @@ const ChangeHistory = (props) => {
     const [selectRows, setselectRows] = useState([]);
 
     const columns = [
-        { title: '变更单号', dataIndex: 'changeCode', width: 140, ellipsis: true },
-        { title: '流程状态', dataIndex: 'flowState', ellipsis: true, width: 140 },
+        { title: '变更单号', dataIndex: 'changeCode', width: 200, ellipsis: true },
+        { title: '流程状态', dataIndex: 'flowState', ellipsis: true, width: 140, render: v=>{
+            switch (v) {
+                case 'INIT':
+                    return '未进入流程';
+                case 'INPROCESS':
+                    return '流程中';
+                case 'COMPLETED':
+                    return '流程处理完成';
+            }
+        } },
         { title: '变更原因', dataIndex: 'changeReason', ellipsis: true, width: 140 },
-        { title: '附件', dataIndex: 'changeFileId', ellipsis: true, width: 140 },
+        // { title: '附件', dataIndex: 'changeFileId', ellipsis: true, width: 140, render:(text)=>{
+        //     return <Upload entityId={text} type={'show'} />
+        //     return text;
+        // } },
         { title: '变更人', dataIndex: 'applyName', ellipsis: true, width: 140 },
         { title: '变更时间', dataIndex: 'applyDate', ellipsis: true, width: 140 },
         { title: '链接', dataIndex: 'id', ellipsis: true, width: 140, render:(text)=><a onClick={(e)=>{
@@ -33,6 +58,14 @@ const ChangeHistory = (props) => {
                 break;
         }
     }
+    const handleDelete = async () => {
+        const res = await deleteChangeById({id: selectedRowKeys[0]})
+        console.log(res)
+    }
+    const handleComplete = () => {
+        tableRef.current.manualSelectedRows();
+        tableRef.current.remoteDataRefresh();
+    }
     return <ExtModal
         width={'60vw'}
         maskClosable={false}
@@ -43,10 +76,20 @@ const ChangeHistory = (props) => {
         destroyOnClose
     >
         <div>
-            <Button onClick={()=>{handleBtn("view")}} style={{margin: "0 3px"}} key="view" disabled={selectRows.length !== 1}>查看</Button>
-            <Button onClick={()=>{handleBtn("delete")}} style={{margin: "0 3px"}} key="delete">删除</Button>
-            <Button onClick={()=>{handleBtn("publish")}} style={{margin: "0 3px"}} key="publish">提交审核</Button>
-            <Button onClick={()=>{handleBtn("history")}} style={{margin: "0 3px"}} key="history">审核历史</Button>
+            <Button onClick={()=>{handleBtn("view")}} key="view" disabled={selectRows.length !== 1}>查看</Button>
+            <Button onClick={handleDelete} style={{margin: "0 6px"}} key="delete">删除</Button>
+            <StartFlow
+                businessKey={selectedRowKeys[0] ? selectedRowKeys[0] : ''}
+                callBack={handleComplete}
+                disabled={selectedRowKeys.length !== 1 || selectRows[0].flowState != "INIT" }
+                businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewPlanMonthChange'
+            >提交审核</StartFlow>
+            <FlowHistoryButton
+                businessId={selectedRowKeys[0]}
+                flowMapUrl='flow-web/design/showLook'
+            >
+                <Button disabled={selectedRowKeys.length !== 1 || selectRows[0].flowState == "INIT"} style={{ margin: '0 6px' }}>审核历史</Button>
+            </FlowHistoryButton>
         </div>
         <ExtTable
             style={{ marginTop: '10px' }}
@@ -54,7 +97,7 @@ const ChangeHistory = (props) => {
             allowCancelSelect={true}
             showSearch={false}
             remotePaging
-            checkbox={{ multiSelect: true }}
+            checkbox={{ multiSelect: false }}
             size='small'
             onSelectRow={(key, rows) => {
                 setselectedRowKeys(key);

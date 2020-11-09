@@ -106,10 +106,10 @@ const Index = (props) => {
                     changeInfo.changeFileId = [];
                 }
                 delete saveData.lineBoList;
-                saveData.reviewPlanMonthLineChangeBos = lineData.map(item => {
+                saveData.reviewPlanMonthLineChangeBos = lineData.concat(deleteArr).map((item, index) => {
                     item.reviewPlanMonthLineId = item.id;
                     delete item.id;
-                    item.reviewPlanMonthChangeLinenum = item.reviewPlanMonthLinenum;
+                    item.reviewPlanMonthChangeLinenum = ((Array(4).join(0) + (index + 1)).slice(-4) + '0');
                     return item;
                 })
                 Object.assign(saveData, changeInfo);
@@ -145,8 +145,8 @@ const Index = (props) => {
             res = await upDateMonthBo(saveData);
             res.data = saveData.id;
         } else {
+            // 变更暂存
             res = await insertChangeMonthBo(saveData);
-            res.data = saveData.id;
         }
         if (res.success) {
             if (type === "save") {
@@ -156,8 +156,7 @@ const Index = (props) => {
                     // handleBack();
                 }, 3000)
             } else {
-                // 处理提交审核
-                console.log("这里返回的数据", res.data, res)
+                // 处理提交审核---返回数据id
                 return res.data;
             }
         } else {
@@ -193,7 +192,7 @@ const Index = (props) => {
         setLoading(false);
         message.success("提交成功");
         setTimeout(() => {
-            handleBack()
+            // handleBack()
         }, 3000)
     }
     return <>
@@ -204,7 +203,7 @@ const Index = (props) => {
                     {
                         (data.type !== 'detail' || data.type === 'change') && <div style={{ display: "flex", alignItems: 'center' }}>
                             <Button className={styles.btn} onClick={handleBack}>返回</Button>
-                            {data.type !== 'change' && <Button className={styles.btn} onClick={() => handleSave('save')}>暂存</Button>}
+                            <Button className={styles.btn} onClick={() => handleSave('save')}>暂存</Button>
                             <StartFlow
                                 className={styles.btn}
                                 type='primary'
