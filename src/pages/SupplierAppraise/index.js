@@ -18,7 +18,7 @@ import { stopApprove } from '../../services/api';
 const { Search } = Input;
 const { authAction, storage } = utils;
 const { StartFlow, FlowHistoryButton } = WorkFlow;
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 function SupplierRevaluate() {
   const [states, sets] = useTableProps();
   const tableRef = useRef(null);

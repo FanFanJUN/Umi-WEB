@@ -8,7 +8,7 @@ import AutoSizeLayout from '../../../../components/AutoSizeLayout';
 import styles from '../index.less';
 
 
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { create } = Form;
 const { authAction, storage } = utils;
 let keys = 1;

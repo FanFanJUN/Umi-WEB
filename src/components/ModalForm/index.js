@@ -1,5 +1,9 @@
 import { useState, useImperativeHandle, forwardRef } from 'react';
-import { ExtModal } from 'suid';
+import {
+  ExtModal,
+  ComboTree,
+  ComboList
+} from 'suid';
 import {
   Form,
   Input,
@@ -28,7 +32,9 @@ const FormItemTypes = {
   label: ShowLabel,
   datePicker: DatePicker,
   number: InputNumber,
-  select: Select
+  select: Select,
+  comboList: ComboList,
+  comboTree: ComboTree
 }
 const ModalForm = forwardRef(({
   fields = [],
@@ -83,7 +89,7 @@ const ModalForm = forwardRef(({
         <Row gutter={[12, 0]}>
           {
             fields.map((field, keyIndex) => {
-              const { type, name, option, label, labelOptions = [] } = field;
+              const { type, name, option, label, labelOptions = [], props = {}, readers = [] } = field;
               const Item = FormItemTypes[type] || Input;
               switch (type) {
                 case 'select':
@@ -118,7 +124,8 @@ const ModalForm = forwardRef(({
                     >
                       <FormItem label={label}>
                         {
-                          getFieldDecorator(name, option)(<Item style={{ width: '100%' }} />)
+                          readers.map(field => getFieldDecorator(field.name)),
+                          getFieldDecorator(name, option)(<Item style={{ width: '100%' }} {...props} form={form} />)
                         }
                       </FormItem>
                     </Col>

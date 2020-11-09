@@ -1,4 +1,9 @@
-import { smBaseUrl, baseUrl, supplierManagerBaseUrl } from './commonUrl';
+import {
+  smBaseUrl,
+  baseUrl,
+  supplierManagerBaseUrl,
+  commonsUrl
+} from './commonUrl';
 import {
   listChineseProvinces,
   listCityByProvince,
@@ -11,6 +16,21 @@ import {
   listUnionPayCode
 } from '../services/supplierRegister'
 import { searchListByKey } from '../components/utils/CommonUtils';
+// 标准单位主数据
+export const standardUnitProps = {
+  store: {
+    url: `${commonsUrl}/unit/findByPage`,
+    type: 'post'
+  },
+  style: { width: '100%' },
+  reader: {
+    name: 'name',
+    field: ['code'],
+    description: 'code'
+  },
+  remotePaging: true,
+  placeholder: '选择单位'
+}
 // 认定物料类别数据字典
 export const fimlyMaterialClassifyProps = {
   store: {
@@ -543,6 +563,43 @@ export const evaluateSystemProps = {
   placeholder: '请选择评价体系'
 }
 
+// 供应商评价指标
+export const supplierEvRuleProps = {
+  store: {
+    url: `${baseUrl}/supplierEvlRule/supplierEvlRuleListByPage`,
+    type: 'post'
+  },
+  reader: {
+    name: 'name',
+    field: ['code'],
+    description: 'code'
+  },
+  style: {
+    width: '100%'
+  },
+  placeholder: '选择评价指标',
+  remotePaging: true
+}
+
+// 计算方式数据字典
+export const formulaModeProps = {
+  store: {
+    url: `${baseUrl}/dataDictionaryItem/getDictByTypeCode`,
+    params: {
+      dictTypeCode: 'calculate_method'
+    },
+    type: 'get'
+  },
+  style: { width: '100%' },
+  reader: {
+    name: 'name',
+    field: ['value'],
+    description: 'value'
+  },
+  remotePaging: true,
+  placeholder: '选择计算方式'
+}
+
 // 通过公司代码查询评价体系主数据
 export const evaluateSystemFormCodeProps = {
   store: {
@@ -995,7 +1052,7 @@ export const oddunionPayCodeConfig = {
   }, {
     title: '名称',
     dataIndex: 'name',
-    width:420
+    width: 420
   }],
   dataService: listUnionPayCode,
   key: 'code',

@@ -29,7 +29,7 @@ export default [
       {
         path: '/gradeSystem/acceptFYP',
         component: './AcceptFYPMain',
-        title: '入厂验收批次合格率'
+        title: '来料验收批次合格率'
       },
       {
         path: '/gradeSystem/deliveryAnomaly',
@@ -96,6 +96,21 @@ export default [
         component: './TargetDefectRate',
         title: '目标不良率'
       },
+      {
+        path: '/gradeSystem/supplierExamineGrade',
+        component: './SupplierExamineGrade',
+        title: '审核结果等级'
+      },
+      {
+        path: '/gradeSystem/ruleMapMethod',
+        component: './RuleMapMethod',
+        title: '计算方式对应指标'
+      },
+      {
+        path: '/gradeSystem/materialCategoryUnit',
+        component: './MaterialCategoryUnit',
+        title: '物料单位转换关系'
+      },
     ]
   },
   /**供应商审核 */
@@ -131,6 +146,8 @@ export default [
       { path: '/supplierAudit/MonthAuditChangeDetail', component: './SupplierAudit/MonthAuditPlan/component/changeDetail', title: '月度审核计划变更明细' },
       { path: '/supplierAudit/AuditImplementationPlan', component: './SupplierAudit/AuditImplementationPlan', title: '审核实施计划管理' },
       { path: '/supplierAudit/AuditImplementationPlan/editPage', component: './SupplierAudit/AuditImplementationPlan/editPage', title: '审核实施计划管理-新增' },
+
+      { path: '/supplierAudit/AdministrationManagementDemand', component: './SupplierAudit/AdministrationManagementDemand', title: '实施审核管理-需求方' },
     ]
   },
   {

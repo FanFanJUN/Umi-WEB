@@ -1,5 +1,5 @@
 /**
- * 实现功能：入厂验收批次合格率主数据
+ * 实现功能：来料验收批次合格率主数据
  * @author hezhi
  * @date 2020-09-23
  */
@@ -39,8 +39,8 @@ const MAIN_KEY_PREFIX = 'ACCEPT_FYP_MAIN_'
 const TABLE_DATASOURCE_QUERY_PATH = `${recommendUrl}/api/bafIncomingPassRateService/findByPage`;
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const { authAction, getUUID } = utils;
-const FILENAME = '入厂验收批次合格率上传模板.xlsx';
-const DOWNLOADNAME = '入厂验收批次合格率.xlsx'
+const FILENAME = '来料验收批次合格率上传模板.xlsx';
+const DOWNLOADNAME = '来料验收批次合格率.xlsx'
 const SEARCH_PLACEHOLDER = '供应商代码或名称';
 const quickSearchProperties = ['supplierCode', 'supplierName'];
 const sortOrders = [];
@@ -134,13 +134,42 @@ const FIELDS = [
   },
   {
     name: 'unqualified',
-    label: '不合格批次',
-    type: 'number'
+    label: '入厂验收不合格批次',
+    type: 'number',
+    option: {
+      rules: [
+        {
+          required: true,
+          message: '入厂验收不合格批次不能为空'
+        }
+      ]
+    }
+  },
+  {
+    name: 'inspectionFreeUnqualified',
+    label: '免检监督检验不合格批次',
+    type: 'number',
+    option: {
+      rules: [
+        {
+          required: true,
+          message: '免检监督检验不合格批次不能为空'
+        }
+      ]
+    }
   },
   {
     name: 'total',
-    label: '检验总批次',
-    type: 'number'
+    label: '到货总批次',
+    type: 'number',
+    option: {
+      rules: [
+        {
+          required: true,
+          message: '到货总批次不能为空'
+        }
+      ]
+    }
   }
 ];
 const COLUMNS = [
@@ -189,8 +218,12 @@ const COLUMNS = [
     dataIndex: 'month'
   },
   {
-    title: '不合格批次',
+    title: '入厂验收不合格批次',
     dataIndex: 'unqualified'
+  },
+  {
+    title: '免检监督检验不合格批次',
+    dataIndex: 'inspectionFreeUnqualified',
   },
   {
     title: '检验总批次',
@@ -346,7 +379,8 @@ function AcceptFYPMain() {
   // 导出
   async function handleExport() {
     const { success, message: msg, data } = await EXPORT_METHOD({
-      ...searchValue
+      ...searchValue,
+      quickSearchProperties
     })
     if (success) {
       downloadBlobFile(data, DOWNLOADNAME);

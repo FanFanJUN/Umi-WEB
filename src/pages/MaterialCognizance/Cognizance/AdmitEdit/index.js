@@ -25,17 +25,17 @@ function CreateStrategy() {
   }, []);
   // 详情
   async function infoPCNdetails() {
-    triggerLoading(true);
-    let id = query.id;
-    const { data, success, message: msg } = await findPCNSupplierId({pcnTitleId:id});
-    if (success) {
-      setEditData(data)
-      setModifytype(data.smPcnChangeTypeCode)
-      triggerLoading(false);
-      return
-    }
-    triggerLoading(false);
-    message.error(msg) 
+    // triggerLoading(true);
+    // let id = query.id;
+    // const { data, success, message: msg } = await findPCNSupplierId({pcnTitleId:id});
+    // if (success) {
+    //   setEditData(data)
+    //   setModifytype(data.smPcnChangeTypeCode)
+    //   triggerLoading(false);
+    //   return
+    // }
+    // triggerLoading(false);
+    // message.error(msg) 
   }
   // 保存
   async function handleSave() {

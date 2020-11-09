@@ -1,7 +1,7 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useRef ,useState} from 'react';
 import { Modal, Form, Button, message, Input,Row,Col ,Checkbox} from 'antd';
 import { Fieldclassification ,countryListConfig} from '@/utils/commonProps'
-import { ExtTable } from 'suid';
+import { ExtTable ,ComboList} from 'suid';
 import { openNewTab, getFrameElement } from '@/utils';
 import { smBaseUrl ,baseUrl} from '@/utils/commonUrl';
 import Header from '@/components/Header';
@@ -125,22 +125,72 @@ const getRecommendRef = forwardRef(({
     }
     const columns = [
           {
-            title: "物料分类代码",
+            title: "审核状态",
             width: 150,
             dataIndex: "codePath"
           },
           {
-            title: "物料分类",
+            title: "公司领导审核状态",
             width: 260,
             dataIndex: "namePath"
           },
           {
-            title: "物料代码",
+            title: "准入单号",
             width: 160,
             dataIndex: "materialCode"
           },
           {
-            title: "物料描述",
+            title: "物料分类",
+            width: 280,
+            dataIndex: "materialDesc"
+          },
+          {
+            title: "供应商代码",
+            width: 150,
+            dataIndex: "codePath"
+          },
+          {
+            title: "供应商名称",
+            width: 260,
+            dataIndex: "namePath"
+          },
+          {
+            title: "原厂代码",
+            width: 160,
+            dataIndex: "materialCode"
+          },
+          {
+            title: "原厂名称",
+            width: 280,
+            dataIndex: "materialDesc"
+          },
+          {
+            title: "公司代码",
+            width: 150,
+            dataIndex: "codePath"
+          },
+          {
+            title: "公司名称",
+            width: 260,
+            dataIndex: "namePath"
+          },
+          {
+            title: "采购组织代码",
+            width: 160,
+            dataIndex: "materialCode"
+          },
+          {
+            title: "采购组织名称",
+            width: 280,
+            dataIndex: "materialDesc"
+          },
+          {
+            title: "认定物料类别",
+            width: 160,
+            dataIndex: "materialCode"
+          },
+          {
+            title: "认定类型",
             width: 280,
             dataIndex: "materialDesc"
           },
@@ -160,7 +210,7 @@ const getRecommendRef = forwardRef(({
             <div>
                 <Row>
                     <Col span={10}>
-                        <Item {...formLayout} label='公司名称' >
+                        <Item {...formLayout} label='推荐准入单' >
                             {
                                 getFieldDecorator('supplierVo.name', {
                                     initialValue: '',
@@ -171,12 +221,12 @@ const getRecommendRef = forwardRef(({
                         </Item>
                     </Col>
                     <Col span={10}>
-                        <Item label='采购组织名称' {...formLayout}>
+                        <Item label='供应商名称' {...formLayout}>
                             {
                                 getFieldDecorator("smSupplierName", {
                                     initialValue: '',
                                 })(
-                                    <Input disabled />
+                                    <Input />
                                 )
                             }
                         </Item>
@@ -184,12 +234,28 @@ const getRecommendRef = forwardRef(({
                 </Row>
                 <Row>
                     <Col span={10}>
-                        <Item label='供应商名称' {...formLayout}>
+                        <Item label='物料分类' {...formLayout}>
                             {
                                 getFieldDecorator("createdDate", {
                                     initialValue: '',
                                 })(
-                                    <Input disabled />
+                                    <ComboList
+                                        style={{ width: 280 }}
+                                        store={{
+                                            autoLoad: false,
+                                            url: `${baseUrl}/api/materialSrmService/findBySecondaryClassificationListAndCompany`,
+                                            params: {
+                                                secondaryClassificationCodes:[],
+                                                companyCodeList: []
+                                            },
+                                            type: 'POST'
+                                        }}
+                                        rowKey="name"
+                                            reader={{
+                                            name: 'remark',
+                                            description: 'name',
+                                        }}
+                                    />
                                 )
                             }
                         </Item>

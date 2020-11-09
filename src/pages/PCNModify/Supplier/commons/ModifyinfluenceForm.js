@@ -153,6 +153,7 @@ const HeadFormRef = forwardRef(({
                                             style={{
                                                 width: "100%"
                                             }}
+                                            maxLength={100}
                                             placeholder="请输入其他物料或整机的影响"
                                             disabled={isView === true}
                                         />

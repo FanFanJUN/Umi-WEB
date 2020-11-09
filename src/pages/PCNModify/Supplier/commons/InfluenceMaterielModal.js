@@ -40,7 +40,7 @@ const getAgentregRef = forwardRef(({
                         direction: 'DESC'
                     }
                 ],
-                
+                //Quick_value: searchValue,
             },
             type: 'POST'
         }
@@ -187,7 +187,7 @@ const getAgentregRef = forwardRef(({
         <>
             <Input
                 style={{width:260}}
-                placeholder='请输入物料代码或名称查询'
+                placeholder='请输入物料分类代码或名称查询'
                 className={styles.btn}
                 onChange={SerachValue}
                 allowClear

@@ -12,7 +12,7 @@ import styles from './index.less';
 import { smBaseUrl } from '@/utils/commonUrl';
 import { RecommendationList ,stopApproveingOrder} from "@/services/supplierRegister"
 import {oddcorporationSupplierConfig,corporationSupplierConfig} from '../../utils/commonProps'
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { Search } = Input
 const { authAction, storage } = utils;
 const { FlowHistoryButton } = WorkFlow;

@@ -8,7 +8,7 @@ import styles from './index.less';
 import { smBaseUrl } from '@/utils/commonUrl';
 import { stopApproveingOrder } from "../../../services/pcnModifyService"
 import {BilltypeList,ToexamineList,PCNMasterdatalist,seniorStrategypurchase} from '../commonProps'
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { Search } = Input
 const confirm = Modal.confirm;
 const { authAction, storage } = utils;

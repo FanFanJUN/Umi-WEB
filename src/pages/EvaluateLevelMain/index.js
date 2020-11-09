@@ -13,7 +13,7 @@ import CommonForm from './Form';
 import { queryEvaluateLevelMain, saveEvaluateLevelMain, removeEvaluateLevelMain } from '../../services/evaluate';
 
 const { authAction } = utils;
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 function EvaluateLevelMain() {
   const [tableState, sets] = useTableProps();
   const [type, setType] = useState('create');

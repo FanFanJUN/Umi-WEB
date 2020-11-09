@@ -66,7 +66,6 @@ const getconfirmFromRef = forwardRef(({
     async function editToexamine(val) {
       if (val) {
         let materieldata = editData.smPcnAnalysisVos;
-        console.log(materieldata)
         setDataSource(materieldata)
         setPurchase(editData.smPcnConfirmPlanVo)
       }
@@ -221,7 +220,7 @@ const getconfirmFromRef = forwardRef(({
     ]
 	// 获取表单参数
 	function getBaseInfo() {
-    let result = false,resultype,alltype = [];
+    let result = false,resultype,alltype = [],everytype;
     let purchasetab = tabformRef.current.data;
     if (purchasetab.length > 0 ) {
       form.validateFieldsAndScroll((err, val) => {
@@ -249,17 +248,18 @@ const getconfirmFromRef = forwardRef(({
                   })
                 }else {
                   let global;
-                  verificatab.map(item =>{
+                  for (let item of verificatab) {
                     if (item.smInKindStatus === 0 && item.smCustomerConfirm === 0 && item.smSupplierAuditStatus === 0){
                       alltype.push(true)                     
-                    }else {
+                    } else {
                       alltype.push(false)
                     }
-                    global = isAllEqual(alltype)
-                  })
+                  }
+                  global = isAllEqual(alltype)
+                  everytype = alltype.every(verifid)
                   resultype = global
                 }
-                if (resultype) {
+                if (resultype && everytype) {
                   message.error('当验证方案不能全部为否！')
                   result = false
                   return false
@@ -274,43 +274,10 @@ const getconfirmFromRef = forwardRef(({
                   })
                   result = editData
                 }
-                // if (item.smInKindStatus === 0 && item.smCustomerConfirm === 0 && item.smSupplierAuditStatus === 0) {
-                //   if (verificatab.length > 1) {
-                //     alltype.push(true)
-                //   }else {
-                //     message.error('验证方案不能全部为否！')
-                //     result = false
-                //     return false
-                //   }
-                // }else {
-                //   console.log(231)
-                //   // if (verificatab.length > 1) {
-                //   //   console.log(56)
-                //   //   alltype.push(true)
-                //   // } 
-                // }
               }
             }
-            // let global;
-            // if (alltype.length > 1) {
-            //   global = isAllEqual(alltype)
-            //   if (global) {
-            //     message.error('验证方案不能全部为否！')
-            //     result = false
-            //     return false
-            //   }else {
-            //     let newverifica = verifformRef.current.data
-            //     editData.smPcnAnalysisVos.map((orig,indexs) => {
-            //       newverifica.map((items,index) => {
-            //         if (orig.id === items.id) {
-            //           editData.smPcnAnalysisVos.splice(indexs,1,items)
-            //         }
-            //       })
-            //     })
-            //     result = editData
-            //   }
-            // }
           }
+          
         }
       })
       return result;
@@ -326,6 +293,13 @@ const getconfirmFromRef = forwardRef(({
       });
     } else {
       return true;
+    }
+  }
+  function verifid (value, index, ar) {
+    if (value === true) {
+        return true;
+    }else {
+        return false;
     }
   }
   // 采购小组新增

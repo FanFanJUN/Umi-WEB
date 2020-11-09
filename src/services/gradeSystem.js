@@ -612,3 +612,103 @@ export const targetDefectRateRemove = params => createServiceRequest({
 })
 
 /** 目标不良率主数据 end  */
+
+/**********************************/
+
+/** 审核结果等级主数据 begin  */
+// 导出
+export const supplierExamineGradeExport = params => createServiceRequest({
+  path: '/bafController/exportBafSupplierExamineGrade',
+  params,
+  method: 'POST',
+  hack: true,
+  responseType: 'blob'
+})
+
+// 保存导入
+export const supplierExamineGradeSaveList = params => createServiceRequest({
+  path: '/api/bafSupplierExamineGradeService/saveList',
+  params,
+  method: 'POST'
+})
+
+// 检查导入的数据
+export const supplierExamineGradeCheck = params => createServiceRequest({
+  path: '/api/bafSupplierExamineGradeService/checkImportData',
+  params,
+  method: 'POST'
+})
+
+// 保存一条数据
+export const supplierExamineGradeSaveOne = params => createServiceRequest({
+  path: '/api/bafSupplierExamineGradeService/save',
+  params,
+  method: 'POST'
+})
+
+// 删除数据
+export const supplierExamineGradeRemove = params => createServiceRequest({
+  path: '/api/bafSupplierExamineGradeService/deleteList',
+  params,
+  method: 'POST'
+})
+
+/** 审核结果等级主数据 end  */
+
+/**********************************/
+
+/** 计算方式对应指标主数据 begin  */
+
+// 保存一条数据
+export const ruleMapMethodSaveOne = params => createServiceRequest({
+  path: '/api/samBafRuleMapMethodService/save',
+  params,
+  method: 'POST'
+})
+
+// 删除数据
+export const ruleMapMethodRemove = params => createServiceRequest({
+  path: '/api/samBafRuleMapMethodService/deleteOne',
+  params,
+  method: 'DELETE',
+  hack: true
+})
+
+/** 计算方式对应指标主数据 end  */
+
+/**********************************/
+
+/** 物料单位转换关系主数据 begin  */
+
+// 保存一条数据
+export const materialCategoryUnitSaveOne = params => createServiceRequest({
+  path: '/api/samBafMaterialCategoryUnitService/save',
+  params,
+  method: 'POST'
+})
+
+// 删除数据
+export const materialCategoryUnitRemove = params => createServiceRequest({
+  path: '/api/samBafMaterialCategoryUnitService/deleteOne',
+  params,
+  method: 'DELETE',
+  hack: true
+})
+
+// 右侧的新增编辑
+export const unitRightSaveOne = params => createServiceRequest({
+  path: '/api/samBafActualUnitConversionService/save',
+  params,
+  method: 'POST'
+})
+
+// 右侧的删除数据
+export const unitRightRemove = params => createServiceRequest({
+  path: '/api/samBafActualUnitConversionService/deleteOne',
+  params,
+  method: 'DELETE',
+  hack: true
+})
+
+
+/** 物料单位转换关系主数据 end  */

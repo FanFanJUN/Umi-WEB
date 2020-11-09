@@ -1,6 +1,6 @@
 
 import React, { forwardRef, useImperativeHandle, useEffect, useRef, useState } from 'react';
-import { Form, message } from 'antd';
+import { Form, message ,Spin} from 'antd';
 import { utils, ExtTable, AuthButton,DetailCard } from 'suid';
 import classnames from 'classnames';
 import styles from '../index.less';
@@ -39,6 +39,7 @@ const getpcnModifyRef = forwardRef(({
     const [stafvisible, setStafvisible] = useState(false);
     const [informationvisib, setInformationvisib] = useState(false);
     const [showAttach, triggerShowAttach] = useState(false);
+    const [loading, triggerLoading] = useState(false);
     const empty = selectRowKeys.length === 0;
 	useEffect(() => {
 		
@@ -57,7 +58,7 @@ const getpcnModifyRef = forwardRef(({
         }
 	}
 	return (
-		<div>
+		<Spin spinning={loading} tip='处理中...'>
             <DetailCard title="基本信息">
                 <BaseInfo
                     editformData={editData}
@@ -93,7 +94,7 @@ const getpcnModifyRef = forwardRef(({
             }
             
             
-		</div>
+		</Spin>
 	)
 })
 const CommonForm = create()(getpcnModifyRef)

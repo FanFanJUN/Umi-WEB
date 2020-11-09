@@ -368,7 +368,8 @@ function AcceptFYPMain() {
       cancelText: '取消',
       onOk: async () => {
         const { success, message: msg, data } = await EXPORT_METHOD({
-          ...searchValue
+          ...searchValue,
+          quickSearchProperties
         })
         if (success) {
           downloadBlobFile(data, DOWNLOADNAME);

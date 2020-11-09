@@ -11,7 +11,7 @@ import { Importvalidity } from '../../../services/ImportSupplier';
 import UploadFile from '../../../components/Upload/index'
 import { onLineTarget } from '../../../../config/proxy.config';
 import { baseUrl } from '../../../utils/commonUrl';
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { create } = Form;
 const { authAction, storage } = utils;
 let keys = 1;

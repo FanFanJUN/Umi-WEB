@@ -36,28 +36,16 @@ const minxinSupplierProps = {
 };
 const { Search } = Input;
 /** 配置修改部分 begin */
-const MAIN_KEY_PREFIX = 'DEFECT_RATE_MAIN_'
+const MAIN_KEY_PREFIX = 'TARGET_DEFECT_RATE_MAIN_'
 const TABLE_DATASOURCE_QUERY_PATH = `${recommendUrl}/api/samBafTargetDefectRateService/findByPage`;
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const { authAction, getUUID } = utils;
 const FILENAME = '目标不良率上传模板.xlsx';
 const DOWNLOADNAME = '目标不良率.xlsx'
-const SEARCH_PLACEHOLDER = '供应商代码或名称';
-const quickSearchProperties = [];
+const SEARCH_PLACEHOLDER = '物料分类代码或名称';
+const quickSearchProperties = ['materialCategoryCode', 'materialCategoryName'];
 const sortOrders = [];
 const FORMITEMS = [
-  {
-    title: '供应商',
-    key: 'Q_EQ_supplierCode',
-    type: 'list',
-    props: minxinSupplierProps
-  },
-  {
-    title: '原厂',
-    key: 'Q_EQ_originCode',
-    type: 'list',
-    props: originFactoryProps
-  },
   {
     title: '物料分类',
     key: 'Q_EQ_materialCategoryCode',
@@ -78,26 +66,6 @@ const FORMITEMS = [
   }
 ];
 const FIELDS = [
-  {
-    name: 'supplierCode',
-    label: '供应商代码',
-    type: 'label'
-  },
-  {
-    name: 'supplierName',
-    label: '供应商名称',
-    type: 'label'
-  },
-  {
-    name: 'originCode',
-    label: '原厂代码',
-    type: 'label'
-  },
-  {
-    name: 'originName',
-    label: '原厂名称',
-    type: 'label'
-  },
   {
     name: 'materialCategoryCode',
     label: '物料分类代码',
@@ -129,11 +97,6 @@ const FIELDS = [
     type: 'label'
   },
   {
-    name: 'month',
-    label: '月度',
-    type: 'label'
-  },
-  {
     name: 'targetDefectRate',
     label: '目标不良率(PPM)',
     type: 'number',
@@ -148,22 +111,6 @@ const FIELDS = [
   }
 ];
 const COLUMNS = [
-  {
-    title: '供应商代码',
-    dataIndex: 'supplierCode'
-  },
-  {
-    title: '供应商名称',
-    dataIndex: 'supplierName'
-  },
-  {
-    title: '原厂代码',
-    dataIndex: 'originCode'
-  },
-  {
-    title: '原厂名称',
-    dataIndex: 'originName'
-  },
   {
     title: '物料分类代码',
     dataIndex: 'materialCategoryCode'
@@ -189,12 +136,9 @@ const COLUMNS = [
     dataIndex: 'purchaseOrgName'
   },
   {
-    title: '月度',
-    dataIndex: 'month'
-  },
-  {
     title: '目标不良率(PPM)',
     dataIndex: 'targetDefectRate',
+    width: 150
   },
 ];
 const TFL = [
@@ -353,7 +297,8 @@ function AcceptFYPMain() {
       cancelText: '取消',
       onOk: async () => {
         const { success, message: msg, data } = await EXPORT_METHOD({
-          ...searchValue
+          ...searchValue,
+          quickSearchProperties
         })
         if (success) {
           downloadBlobFile(data, DOWNLOADNAME);

@@ -7,7 +7,7 @@ import { smBaseUrl } from '@/utils/commonUrl';
 import EditFrom from './EdItFrom'
 import {MasterDeleted,MasterdataSave,Importvalidity,MasterfrozenList} from '../../../services/pcnModifyService' 
 import { onLineTarget } from '../../../../config/proxy.config';
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const host = process.env.NODE_ENV === 'production' ? '' : onLineTarget;
 const { Search } = Input
 const confirm = Modal.confirm;

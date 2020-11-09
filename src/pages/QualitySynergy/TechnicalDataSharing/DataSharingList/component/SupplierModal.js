@@ -9,7 +9,7 @@ import { request } from 'suid/es/utils';
 import { CommonTable } from './CommonTable';
 
 const FormItem = Form.Item;
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development';
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const formItemLayoutLong = {
   labelCol: { span: 10 },
   wrapperCol: { span: 14 },
