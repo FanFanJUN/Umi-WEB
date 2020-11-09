@@ -1,9 +1,9 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useState } from 'react';
 import { Form, Row, Input, Col, DatePicker, Radio, Button } from 'antd';
-import { utils, ComboList} from 'suid';
+import { utils, ComboTree} from 'suid';
 import { onlyNumber} from '@/utils'
 import moment from 'moment';
-// import { PCNMasterdatalist } from '../../commonProps'
+import { orgnazationProps } from '../../commonProps'
 const { Item, create } = Form;
 const { storage } = utils;
 const formLayout = {
@@ -63,16 +63,16 @@ const HeadFormRef = forwardRef(({
                                                 }
                                             ]
                                         })(
-                                            // <ComboList disabled={isView === true}
-                                            //     {...PCNMasterdatalist}
-                                            //     showSearch={false}
-                                            //     style={{ width: '100%' }}
-                                            //     name='smPcnChangeTypeName' 
-                                            //     field={['smPcnChangeTypeCode']} 
-                                            //     afterSelect={afterSelect}
-                                            //     form={form} 
-                                            // />
-                                            <Input disabled />
+                                            <ComboTree disabled={isView === true}
+                                                {...orgnazationProps}
+                                                showSearch={false}
+                                                style={{ width: '100%' }}
+                                                name='smPcnChangeTypeName' 
+                                                field={['smPcnChangeTypeCode']} 
+                                                afterSelect={afterSelect}
+                                                form={form} 
+                                            />
+                                            //<Input disabled />
                                         )
                                     )
                                     

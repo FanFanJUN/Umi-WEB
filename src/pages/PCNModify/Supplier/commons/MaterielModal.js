@@ -164,7 +164,7 @@ const getMatermodRef = forwardRef(({
         <>
             <Input
                 style={{width:260}}
-                placeholder='请输入物料代码或物料描述'
+                placeholder='请输入物料分类或代码'
                 className={styles.btn}
                 onChange={SerachValue}
                 allowClear
@@ -187,7 +187,7 @@ const getMatermodRef = forwardRef(({
 
             <Header
                 left={false}
-                right={searchBtnCfg}
+                right={false}
                 advanced={false}
                 extra={false}
                 ref={headerRef}

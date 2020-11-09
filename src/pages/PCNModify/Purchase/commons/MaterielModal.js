@@ -167,7 +167,7 @@ const getMatermodRef = forwardRef(({
 
             <Header
                 left={false}
-                right={searchBtnCfg}
+                right={false}
                 advanced={false}
                 extra={false}
                 ref={headerRef}

@@ -220,7 +220,7 @@ const getconfirmFromRef = forwardRef(({
     ]
 	// 获取表单参数
 	function getBaseInfo() {
-    let result = false,resultype,alltype = [];
+    let result = false,resultype,alltype = [],everytype;
     let purchasetab = tabformRef.current.data;
     if (purchasetab.length > 0 ) {
       form.validateFieldsAndScroll((err, val) => {
@@ -251,14 +251,15 @@ const getconfirmFromRef = forwardRef(({
                   for (let item of verificatab) {
                     if (item.smInKindStatus === 0 && item.smCustomerConfirm === 0 && item.smSupplierAuditStatus === 0){
                       alltype.push(true)                     
-                    }else {
+                    } else {
                       alltype.push(false)
                     }
                   }
                   global = isAllEqual(alltype)
+                  everytype = alltype.every(verifid)
                   resultype = global
                 }
-                if (resultype) {
+                if (resultype && everytype) {
                   message.error('当验证方案不能全部为否！')
                   result = false
                   return false
@@ -292,6 +293,13 @@ const getconfirmFromRef = forwardRef(({
       });
     } else {
       return true;
+    }
+  }
+  function verifid (value, index, ar) {
+    if (value === true) {
+        return true;
+    }else {
+        return false;
     }
   }
   // 采购小组新增
