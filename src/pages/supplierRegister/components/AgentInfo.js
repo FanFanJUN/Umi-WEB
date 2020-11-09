@@ -11,7 +11,7 @@ import AgentApprvoEditModal from './AgentApprvoEditModal'
 import { getMaxLineNum,getLineCode } from '@/utils/index';
 import { SaveSupplierRegister, DetailSupplierRegister } from "@/services/supplierConfig"
 import { getCNCountryIdInfo} from '../../../services/supplierRegister';
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { create } = Form;
 const { authAction, storage } = utils;
 let keys = 1;

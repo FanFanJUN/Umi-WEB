@@ -9,7 +9,7 @@ import { smBaseUrl } from '@/utils/commonUrl';
 import { PCNMasterdatalist} from "../commonProps"
 import { deleteBatchById,PCNSupplierSubmit} from '../../../services/pcnModifyService'
 import {SupplierBilltypeList} from '../commonProps'
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { Search } = Input
 const confirm = Modal.confirm;
 const { authAction, storage } = utils;

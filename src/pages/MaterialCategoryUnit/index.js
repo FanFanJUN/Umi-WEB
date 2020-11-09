@@ -23,7 +23,7 @@ const {
 } = commonProps;
 const { Search } = Input;
 /** 配置修改部分 begin */
-const MAIN_KEY_PREFIX = 'RULE_MAP_METHOD_MAIN_'
+const MAIN_KEY_PREFIX = 'MATERIAL_CATEGORY_UNIT_MAIN_'
 const TABLE_DATASOURCE_QUERY_PATH = `${recommendUrl}/api/samBafMaterialCategoryUnitService/findByPage`;
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const { authAction } = utils;

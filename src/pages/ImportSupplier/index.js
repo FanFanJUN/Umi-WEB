@@ -11,7 +11,7 @@ import styles from './index.less';
 import { smBaseUrl } from '@/utils/commonUrl';
 import {deleteBatchById,stopApproveingOrder} from '../../services/ImportSupplier'
 import {corporationSupplierConfig} from '../../utils/commonProps'
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
 const { authAction, storage } = utils;

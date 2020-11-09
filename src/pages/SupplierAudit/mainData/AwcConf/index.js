@@ -21,7 +21,7 @@ import { requestGetFrozenApi, requestPostApi } from '../mainDataService';
 
 const { authAction } = utils;
 
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development';
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 
 const Index = () => {
 

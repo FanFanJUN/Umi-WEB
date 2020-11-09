@@ -6,7 +6,7 @@ import AutoSizeLayout from '../../../../components/AutoSizeLayout';
 import UploadFile from '../../../../components/Upload/index'
 import {SupplierResulteList} from '../../commonProps'
 import { dataTransfer2 } from '../../../supplierRegister/CommonUtils'
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { create } = Form;
 const FormItem = Form.Item;
 const { authAction, storage } = utils;

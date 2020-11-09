@@ -9,7 +9,7 @@ import styles from './index.less';
 import CommonForm from './CommonForm'
 import { smBaseUrl } from '@/utils/commonUrl';
 import { infoSuppliermaster,SaveSupplierRegister, DetailSupplierRegister } from "@/services/supplierConfig"
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { Search } = Input
 const FormItem = Form.Item;
 const { Item, create } = Form;

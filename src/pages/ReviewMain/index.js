@@ -7,14 +7,16 @@
 import { useState, useRef } from 'react';
 import styles from './index.less';
 import { useTableProps } from '../../utils/hooks';
-import { ExtTable, DataImport } from 'suid';
+import { ExtTable, DataImport, utils } from 'suid';
 import { Button, message, Spin, Modal, Input } from 'antd';
 import { Header, AutoSizeLayout } from '../../components';
 import { donwloadExcelDataImportTemplate, checkExCelData, saveExcelData, removeData, exportData } from '../../services/reviewMain';
 import { downloadBlobFile } from '../../utils';
 import { recommendUrl } from '../../utils/commonUrl';
 const { Search } = Input;
+const { authAction } = utils;
 
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 function ReviewMain() {
   const [state, sets] = useTableProps();
   const [count, setCount] = useState(0);
@@ -99,35 +101,59 @@ function ReviewMain() {
   }
   const left = (
     <>
-      <Button onClick={handleExport} className={styles.btn}>导出</Button>
-      <DataImport
-        key={`data-import-${count}`}
-        templateFileList={[
-          {
-            download: async () => {
-              message.loading()
-              const { success, data, message: msg } = await donwloadExcelDataImportTemplate();
-              message.destroy()
-              if (success) {
-                downloadBlobFile(data, '评审人配置批量上传模板.xlsx')
-                message.success('下载成功')
-                return
+      {
+        authAction(
+          <Button
+            key='REVIEW_MAIN_EXPORT'
+            ignore={DEVELOPER_ENV}
+            onClick={handleExport}
+            className={styles.btn}
+          >导出</Button>
+        )
+      }
+      {
+        authAction(
+          <DataImport
+            key='REVIEW_MAIN_IMPORT'
+            ignore={DEVELOPER_ENV}
+            templateFileList={[
+              {
+                download: async () => {
+                  message.loading()
+                  const { success, data, message: msg } = await donwloadExcelDataImportTemplate();
+                  message.destroy()
+                  if (success) {
+                    downloadBlobFile(data, '评审人配置批量上传模板.xlsx')
+                    message.success('下载成功')
+                    return
+                  }
+                  message.error(msg)
+                },
+                fileName: '评审人配置批量上传模板.xlsx',
+                key: 'contract'
               }
-              message.error(msg)
-            },
-            fileName: '评审人配置批量上传模板.xlsx',
-            key: 'contract'
-          }
-        ]}
-        uploadBtnText='导入'
-        validateAll={false}
-        tableProps={{
-          columns: columns
-        }}
-        validateFunc={validateFunc}
-        importFunc={importFunc}
-      ></DataImport>
-      <Button onClick={handleRemove} className={styles.btn} disabled={empty}>删除</Button>
+            ]}
+            uploadBtnText='导入'
+            validateAll={false}
+            tableProps={{
+              columns: columns
+            }}
+            validateFunc={validateFunc}
+            importFunc={importFunc}
+          />
+        )
+      }
+      {
+        authAction(
+          <Button
+            onClick={handleRemove}
+            className={styles.btn}
+            disabled={empty}
+            key='REVIEW_MAIN_REMOVE'
+            ignore={DEVELOPER_ENV}
+          >删除</Button>
+        )
+      }
     </>
   );
   const right = (

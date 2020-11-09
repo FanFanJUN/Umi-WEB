@@ -9,7 +9,7 @@ import InfluenceMaterielModal from './InfluenceMaterielModal'
 import MaterielModal from './MaterielModal'
 import SeeMaterielModal from './SeeMaterielModal'
 import {Safetyregulationslist,Strategicprocurementlist} from '../../commonProps'
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { create } = Form;
 const FormItem = Form.Item;
 const { authAction, storage } = utils;

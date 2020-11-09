@@ -9,7 +9,7 @@ import styles from '../index.less';
 import ModalFrom from './ModalFrom'
 const { authAction } = utils;
 
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development';
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 
 const Index = () => {
   const tableLeftRef = useRef(null);

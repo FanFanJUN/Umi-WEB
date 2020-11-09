@@ -6,7 +6,7 @@ import AutoSizeLayout from '../../../../components/AutoSizeLayout';
 import MaterielModal from './MaterielModal'
 import styles from '../index.less';
 import moment from 'moment';
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { create } = Form;
 const FormItem = Form.Item;
 const { TextArea } = Input;

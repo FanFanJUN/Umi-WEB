@@ -37,7 +37,7 @@ const minxinSupplierProps = {
 };
 const { Search } = Input;
 /** 配置修改部分 begin */
-const MAIN_KEY_PREFIX = 'DEFECT_RATE_MAIN_'
+const MAIN_KEY_PREFIX = 'SUPPLIER_EXAMINE_GRADE_MAIN_'
 const TABLE_DATASOURCE_QUERY_PATH = `${recommendUrl}/api/bafSupplierExamineGradeService/findByPage`;
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const { authAction, getUUID } = utils;

@@ -15,7 +15,7 @@ import { AutoSizeLayout } from '../../../../components';
 const { authAction } = utils;
 const { create, Item: FormItem } = Form;
 const { confirm } = Modal;
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development';
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const formLayout = {
     labelCol: { span: 8, },
     wrapperCol: { span: 14, },

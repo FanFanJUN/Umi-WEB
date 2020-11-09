@@ -8,7 +8,7 @@ import AutoSizeLayout from '@/components/AutoSizeLayout';
 import styles from './index.less';
 import { smBaseUrl} from '@/utils/commonUrl';
 import {queryStrategyTableList} from "@/services/supplierConfig"
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { Search } = Input
 const { authAction, storage } = utils;
 function SupplierConfigure() {

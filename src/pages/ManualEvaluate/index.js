@@ -18,7 +18,7 @@ const { Search } = Input;
 const { StartFlow, FlowHistoryButton } = WorkFlow;
 
 const { authAction, storage } = utils;
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 
 function ManualEvaluate() {
   const tableRef = useRef(null)

@@ -19,7 +19,7 @@ const minxinSupplierProps = {
   },
   placeholder: '选择供应商'
 };
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { Search } = Input;
 const { FlowHistoryButton } = WorkFlow;
 export default function () {

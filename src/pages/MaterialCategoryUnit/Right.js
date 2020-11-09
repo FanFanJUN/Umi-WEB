@@ -20,7 +20,7 @@ const {
   standardUnitProps
 } = commonProps;
 /** 配置修改部分 begin */
-const MAIN_KEY_PREFIX = 'RULE_MAP_METHOD_MAIN_'
+const MAIN_KEY_PREFIX = 'MATERIAL_CATEGORY_UNIT_MAIN_'
 const TABLE_DATASOURCE_QUERY_PATH = `${recommendUrl}/api/samBafActualUnitConversionService/findListByMaterialCategoryUnitId`;
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const { authAction } = utils;
@@ -172,7 +172,7 @@ function Right({
         authAction(
           <Button
             ignore={DEVELOPER_ENV}
-            key={`${MAIN_KEY_PREFIX}CREATE`}
+            key={`${MAIN_KEY_PREFIX}RIGHT_CREATE`}
             className={styles.btn}
             onClick={showCreateModal}
             disabled={!queryId}
@@ -186,7 +186,7 @@ function Right({
           <Button
             className={styles.btn}
             ignore={DEVELOPER_ENV}
-            key={`${MAIN_KEY_PREFIX}EDITOR`}
+            key={`${MAIN_KEY_PREFIX}RIGHT_EDITOR`}
             disabled={empty || noSingle}
             onClick={showEditorModal}
           >编辑</Button>
@@ -197,7 +197,7 @@ function Right({
           <Button
             className={styles.btn}
             ignore={DEVELOPER_ENV}
-            key={`${MAIN_KEY_PREFIX}REMOVE`}
+            key={`${MAIN_KEY_PREFIX}RIGHT_REMOVE`}
             onClick={handleRemove}
             disabled={empty}
           >删除</Button>

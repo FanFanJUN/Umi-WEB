@@ -23,7 +23,7 @@ import { downloadBlobFile } from '../../../utils';
 
 const { useLocation } = router;
 const { Item } = Form
-const DEVELOPER_ENV = process.env.NODE_ENV === 'development'
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const SelfAssessment = forwardRef(({
   form,
   updateGlobalStatus = () => null,
