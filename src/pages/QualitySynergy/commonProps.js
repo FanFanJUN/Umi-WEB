@@ -17,6 +17,23 @@ export const checkDecimal = (c) => {
   return r.test(c);
 }
 
+// 适用状态
+export const ApplicableStateProps = {
+  allowClear: true,
+  dataSource: [
+    {
+      code: 'true',
+      name: '是',
+    },
+    {
+      code: 'false',
+      name: '否',
+    },
+  ],
+  placeholder: '选择适用状态',
+  ...commonProps,
+}
+
 // 技术图纸
 export const TechnicalDrawings = {
   allowClear: true,

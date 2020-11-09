@@ -144,6 +144,8 @@ export default [
       { path: '/supplierAudit/MonthAuditPlanEda', component: './SupplierAudit/MonthAuditPlan/EdaPage', title: '月度审核计划管理新增' },
       { path: '/supplierAudit/detailList', component: './SupplierAudit/MonthAuditPlan/detailList', title: '月度审核计划明细' },
       { path: '/supplierAudit/MonthAuditChangeDetail', component: './SupplierAudit/MonthAuditPlan/component/changeDetail', title: '月度审核计划变更明细' },
+
+      { path: '/supplierAudit/AdministrationManagementDemand', component: './SupplierAudit/AdministrationManagementDemand', title: '实施审核管理-需求方' },
     ]
   },
   {
