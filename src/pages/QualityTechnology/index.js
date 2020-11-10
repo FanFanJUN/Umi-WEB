@@ -129,6 +129,11 @@ const FIELDS = [
     type: 'label'
   },
   {
+    name: 'month',
+    label: '月度',
+    type: 'label'
+  },
+  {
     name: 'cooperationTime',
     label: '协作次数',
     type: 'number',
@@ -182,6 +187,10 @@ const COLUMNS = [
   {
     title: '采购组织名称',
     dataIndex: 'purchaseOrgName'
+  },
+  {
+    title: '月度',
+    dataIndex: 'month'
   },
   {
     title: '协作次数',

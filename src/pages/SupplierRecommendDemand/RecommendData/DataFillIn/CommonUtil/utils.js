@@ -21,19 +21,19 @@ const FormItem = Form.Item;
   * @returns serchObj
   */
 export function filterEmptyFileds(filedsValue) {
-    if (!filedsValue) {
-        throw new Error('请传入表单数据！');
-    } else {
-        const serchObj = {};
-        Object.keys(filedsValue).forEach(key => {
-            if (key && filedsValue[key]) {
-                serchObj[key] = filedsValue[key];
-            } else if (filedsValue[key] === false) {
-                serchObj[key] = filedsValue[key];
-            }
-        });
-        return serchObj;
-    }
+  if (!filedsValue) {
+    throw new Error('请传入表单数据！');
+  } else {
+    const serchObj = {};
+    Object.keys(filedsValue).forEach(key => {
+      if (key && filedsValue[key]) {
+        serchObj[key] = filedsValue[key];
+      } else if (filedsValue[key] === false) {
+        serchObj[key] = filedsValue[key];
+      }
+    });
+    return serchObj;
+  }
 }
 /**
 * @description 空值判断
@@ -44,10 +44,10 @@ export function filterEmptyFileds(filedsValue) {
 * @returns
 */
 export function checkNull(value) {
-    if (!value || value == null || typeof value === 'undefined' || value === '') {
-        return true;
-    }
-    return false;
+  if (!value || value == null || typeof value === 'undefined' || value === '') {
+    return true;
+  }
+  return false;
 }
 /**
 * @description 空数组[]判断
@@ -58,14 +58,14 @@ export function checkNull(value) {
 * @returns {boolean}
 */
 export function isEmptyArray(array) {
-    if (checkNull(array)) {
-        return true;
-    }
-    // Object.prototype.toString.call(o) === '[object Array]'
-    if (Object.prototype.toString.call(array).slice(8, -1) === 'Array' && array.length === 0) {
-        return true;
-    }
-    return false;
+  if (checkNull(array)) {
+    return true;
+  }
+  // Object.prototype.toString.call(o) === '[object Array]'
+  if (Object.prototype.toString.call(array).slice(8, -1) === 'Array' && array.length === 0) {
+    return true;
+  }
+  return false;
 }
 /**
  * @description 空对象{}判断
@@ -76,14 +76,14 @@ export function isEmptyArray(array) {
  * @returns {boolean}
  */
 export function isEmptyObject(object) {
-    if (checkNull(object)) {
-        return true;
-    }
-    // Object.prototype.toString.call(o) === '[object Object]'
-    if (Object.prototype.toString.call(object).slice(8, -1) === 'Object' && Object.keys(object).length === 0) {
-        return true;
-    }
-    return false;
+  if (checkNull(object)) {
+    return true;
+  }
+  // Object.prototype.toString.call(o) === '[object Object]'
+  if (Object.prototype.toString.call(object).slice(8, -1) === 'Object' && Object.keys(object).length === 0) {
+    return true;
+  }
+  return false;
 }
 
 /**
@@ -94,16 +94,16 @@ export function isEmptyObject(object) {
  * @returns 
  */
 export function guid() {
-    return 'xxxx-xxxx-xxxx-xxxx-xxxx'.replace(/[xy]/g, (c) => {
-        const r = Math.random() * 16 | 0;
-        const v = c === 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-    });
+  return 'xxxx-xxxx-xxxx-xxxx-xxxx'.replace(/[xy]/g, (c) => {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
 }
 
 //避免数字为0而出现的bug
 export const numberInitialValue = (value) => {
-    return checkNull(value) ? '' : value.toString()
+  return checkNull(value) ? '' : value.toString()
 };
 
 /**
@@ -112,18 +112,18 @@ export const numberInitialValue = (value) => {
  * @return {type} 
  */
 export const hideFormItem = (getFieldDecorator) => {
-    return (name, initialValue) =>
-        <div style={{ display: 'none' }}>
-            <FormItem>
-                {
-                    getFieldDecorator(name, {
-                        initialValue: numberInitialValue(initialValue),
-                    })(
-                        <Input type={"hidden"} />
-                    )
-                }
-            </FormItem>
-        </div>
+  return (name, initialValue) =>
+    <div style={{ display: 'none' }}>
+      <FormItem>
+        {
+          getFieldDecorator(name, {
+            initialValue: numberInitialValue(initialValue),
+          })(
+            <Input type={"hidden"} />
+          )
+        }
+      </FormItem>
+    </div>
 };
 
 
@@ -136,13 +136,13 @@ export const hideFormItem = (getFieldDecorator) => {
  * @returns 
  */
 export function getDocId(list) {
-    if (!isEmptyArray(list)) {
-        let temp = [];
-        list.forEach(function (item, index) {
-            temp.push(item.id)
-        });
-        return temp;
-    } else {
-        return '';
-    }
+  if (!isEmptyArray(list)) {
+    let temp = [];
+    list.forEach(function (item, index) {
+      temp.push(item.id)
+    });
+    return temp;
+  } else {
+    return '';
+  }
 };

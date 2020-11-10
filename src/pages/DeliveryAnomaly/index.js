@@ -133,27 +133,27 @@ const FIELDS = [
     type: 'label'
   },
   {
-    name: 'unqualified',
-    label: '不合格批次',
+    name: 'below',
+    label: '损失50万元以上次数',
     type: 'number',
     option: {
       rules: [
         {
           required: true,
-          message: '不合格批次不能为空'
+          message: '损失50万元以上次数不能为空'
         }
       ]
     }
   },
   {
-    name: 'total',
-    label: '检验总批次',
+    name: 'above',
+    label: '损失50万元以下次数',
     type: 'number',
     option: {
       rules: [
         {
           required: true,
-          message: '检验总批次不能为空'
+          message: '损失50万元以下次数不能为空'
         }
       ]
     }
@@ -205,12 +205,12 @@ const COLUMNS = [
     dataIndex: 'month'
   },
   {
-    title: '不合格批次',
-    dataIndex: 'unqualified'
+    dataIndex: 'below',
+    title: '损失50万元以上次数'
   },
   {
-    title: '检验总批次',
-    dataIndex: 'total'
+    dataIndex: 'above',
+    title: '损失50万元以下次数'
   }
 ];
 const TFL = [

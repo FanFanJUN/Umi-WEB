@@ -102,11 +102,11 @@ function ManualEvaluate() {
         ...searchValue,
         filters: searchValue.filters ?
           searchValue.filters.concat([{
-            fieldName: 'creatorAccount',
+            fieldName: 'scorerCode',
             operator: 'EQ',
             value: onlyMe ? account : undefined
           }]) : [{
-            fieldName: 'creatorAccount',
+            fieldName: 'scorerCode',
             operator: 'EQ',
             value: onlyMe ? account : undefined
           }],
