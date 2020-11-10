@@ -378,16 +378,25 @@ function AcceptFYPMain() {
   }
   // 导出
   async function handleExport() {
-    const { success, message: msg, data } = await EXPORT_METHOD({
-      ...searchValue,
-      quickSearchProperties
+    Modal.confirm({
+      title: '导出数据',
+      content: '是否导出当前查询条件下数据？',
+      okText: '导出',
+      cancelText: '取消',
+      onOk: async () => {
+        const search = {
+          ...searchValue,
+          quickSearchProperties
+        }
+        const { success, message: msg, data } = await EXPORT_METHOD({ search })
+        if (success) {
+          downloadBlobFile(data, DOWNLOADNAME);
+          message.success('导出成功')
+          return
+        }
+        message.error(msg)
+      }
     })
-    if (success) {
-      downloadBlobFile(data, DOWNLOADNAME);
-      message.success('导出成功')
-      return
-    }
-    message.error(msg)
   }
   const left = (
     <>

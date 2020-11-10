@@ -42,7 +42,7 @@ const { authAction, getUUID } = utils;
 const FILENAME = '商务问题响应上传模板.xlsx';
 const DOWNLOADNAME = '商务问题响应.xlsx'
 const SEARCH_PLACEHOLDER = '供应商代码或名称';
-const quickSearchProperties = ['supplierCode','supplierName'];
+const quickSearchProperties = ['supplierCode', 'supplierName'];
 const sortOrders = [];
 const FORMITEMS = [
   {
@@ -384,10 +384,11 @@ function AcceptFYPMain() {
       okText: '导出',
       cancelText: '取消',
       onOk: async () => {
-        const { success, message: msg, data } = await EXPORT_METHOD({
+        const search = {
           ...searchValue,
           quickSearchProperties
-        })
+        }
+        const { success, message: msg, data } = await EXPORT_METHOD({ search })
         if (success) {
           downloadBlobFile(data, DOWNLOADNAME);
           message.success('导出成功')
