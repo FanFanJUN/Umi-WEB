@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-11-04 16:24:34
- * @LastEditTime: 2020-11-10 10:01:52
+ * @LastEditTime: 2020-11-10 15:25:54
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\MonthAuditPlan\component\ChangeHistory.js
@@ -9,27 +9,10 @@
 // 从年度审核新增
 import React, { useState, useEffect } from "react";
 import { ExtTable, ExtModal } from 'suid';
-import { findHistoryPageByChangId } from "../service";
-import { message } from 'antd';
+import { recommendUrl } from '@/utils/commonUrl';
 
 const ChangeLineModal = (props) => {
     const { visible, handleCancel } = props
-
-    const [dataSource, setDataSource] = useState([]);
-    useEffect(()=>{
-        (async function(){
-            const res = await findHistoryPageByChangId({id: props.id});
-            if(res.success) {
-                const dataList = res.data.map((item, index)=> {
-                    item.id = index + 1;
-                    return item;
-                })
-                setDataSource(dataList)
-            } else {
-                message.error(res.message)
-            }
-        })()
-    }, [])
 
     const columns = [
         { title: '操作内容', dataIndex: 'operationType', render:text=>{
@@ -60,8 +43,15 @@ const ChangeLineModal = (props) => {
             showSearch={false}
             checkbox={false}
             size='small'
+            remotePaging
             columns={columns}
-            dataSource={dataSource}
+            store={{
+                url: `${recommendUrl}/api/reviewPlanMonthChangeService/findChangeHistoryPageById`,
+                type: 'POST',
+                params: {
+                    businessId: props.id
+                }
+            }}
         />
     </ExtModal>
 

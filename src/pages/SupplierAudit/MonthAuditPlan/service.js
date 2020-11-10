@@ -101,7 +101,7 @@ export async function deletePlanMonth(params) {
     const requestUrl = `${recommendUrl}/api/reviewPlanMonthService/deleteReviewPlanMonth`;
     return request({
         url: requestUrl,
-        method: 'GET',
-        params,
+        method: 'POST',
+        data:params,
     });
 }

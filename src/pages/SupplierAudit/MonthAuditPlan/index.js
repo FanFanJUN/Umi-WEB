@@ -111,9 +111,7 @@ export default function () {
             cancelText: '否',
             onOk: () => {
                 console.log([...data.selectedRowKeys])
-                deletePlanMonth({
-                    ids: JSON.stringify(data.selectedRowKeys),
-                }).then(res => {
+                deletePlanMonth(data.selectedRowKeys).then(res => {
                     if (res.success) {
                         message.success(res.message);
                         tableRef.current.manualSelectedRows();
@@ -343,7 +341,6 @@ export default function () {
                         ref={tableRef}
                         showSearch={false}
                         onSelectRow={(value, rows) => {
-                            console.log(value, rows);
                             setData((v) => ({ ...v, selectedRowKeys: value, selectedRows: rows, flowId: value[0] }));
                         }}
                         selectedRowKeys={data.selectedRowKeys}
