@@ -2,7 +2,7 @@ import React, { forwardRef, useImperativeHandle, useEffect, useRef ,useState} fr
 import { Modal, Form, Button, message, Input, } from 'antd';
 import { Fieldclassification ,countryListConfig} from '@/utils/commonProps'
 import { ExtTable } from 'suid';
-import { openNewTab, getFrameElement } from '@/utils';
+import { isEmpty } from '@/utils';
 import { smBaseUrl ,baseUrl} from '@/utils/commonUrl';
 import Header from '@/components/Header';
 import styles from '../index.less';
@@ -44,8 +44,13 @@ const getMatermodRef = forwardRef(({
         store: {
             url: `${baseUrl}/api/materialSrmService/findBySecondaryClassificationListAndCompany`,
             params: {
-                quickSearchValue: searchValue,
+                //quickSearchValue: searchValue,
                 ///quickSearchProperties: ['materialCode','materialDesc'],
+                search:{
+                    pageInfo:{page:1,rows:30},
+                    quickSearchProperties:[ "materialCode", "materialDesc"],
+                    quickSearchValue: searchValue
+                },
                 sortOrders: [
                     {
                         property: '',
@@ -118,8 +123,13 @@ const getMatermodRef = forwardRef(({
     }
     // 输入框值
     function SerachValue(v) {
-        setSearchValue(v.target.value)
+        //setSearchValue(v.target.value)
         //tableRef.current.handlerSearchChange(v)
+        if (isEmpty(v.target.value)) {
+            setSearchValue('')
+        }else {
+            setSearchValue(v.target.value)
+        }
     }
     // 查询
     function handleQuickSerach() {
@@ -138,12 +148,6 @@ const getMatermodRef = forwardRef(({
     }
     function pageChange(val) {
         setcurrent(val.current)
-    }
-    function handlerSearch(v) {
-        tableRef.current.handlerSearch(v);
-    }
-    function handlerPressEnter() {
-        tableRef.current.handlerPressEnter();
     }
     const columns = [
           {
@@ -172,7 +176,7 @@ const getMatermodRef = forwardRef(({
         <>
             <Input
                 style={{width:260}}
-                placeholder='请输入物料分类或代码'
+                placeholder='请输入物料代码或描述'
                 className={styles.btn}
                 onChange={SerachValue}
                 allowClear
@@ -195,7 +199,7 @@ const getMatermodRef = forwardRef(({
 
             <Header
                 left={false}
-                right={false}
+                right={searchBtnCfg}
                 advanced={false}
                 extra={false}
                 ref={headerRef}
@@ -216,6 +220,7 @@ const getMatermodRef = forwardRef(({
                 selectedRowKeys={selectedRowKeys}
                 onChange={pageChange}
                 //dataSource={dataSource}
+               // onTableRef={(ref)=>tableRef(ref.data)}
                 {...dataSource}
             />
       </Modal>
