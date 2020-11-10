@@ -1,18 +1,22 @@
 /*
+ * @Author: 黄永翠
+ * @Date: 2020-11-09 09:27:25
+ * @Description: 审核实施计划管理
+ */
+/*
  * @Description:  月度审核计划管理
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/MonthAuditPlan/index.js
  */
 import React, { useState, useRef, useEffect, Fragment } from 'react';
-import Header from '../../../components/Header';
-import AdvancedForm from '../../../components/AdvancedForm';
 import { Button, Input, message, Modal } from 'antd';
-import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
 import { ExtTable, utils, WorkFlow } from 'suid';
 import { StartFlow } from 'seid';
 import moment from "moment";
+import Header from '../../../components/Header';
+import AdvancedForm from '../../../components/AdvancedForm';
+import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
 import { ApplyOrganizationProps, CompanyConfig, } from '../mainData/commomService';
 import {
-    DeleteDataSharingList,
     judge,
     ShareStatusProps,
     flowProps
@@ -21,7 +25,8 @@ import { deletePlanMonth } from "./service";
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
 import { openNewTab, getUserAccount } from '../../../utils';
-import ChangeHistory from "./component/ChangeHistory";
+import ChangeHistory from "../MonthAuditPlan/component/ChangeHistory";
+import AddNodal from "./components/addModal";
 
 const { FlowHistoryButton } = WorkFlow;
 const { authAction } = utils;
@@ -41,6 +46,7 @@ export default function () {
         flowId: ''
     });
     const [historyVisible, setHistoryV] = useState(false);
+    const [addVisible, setAddV] = useState(false);
     useEffect(() => {
         window.parent.frames.addEventListener('message', listenerParentClose, false);
         return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
@@ -56,7 +62,7 @@ export default function () {
     const redirectToPage = (type) => {
         switch (type) {
             case 'add':
-                openNewTab('supplierAudit/MonthAuditPlanEda?pageState=add', '月度审核计划管理-新增', false);
+                setAddV(true);
                 break;
             case 'edit':
                 openNewTab(`supplierAudit/MonthAuditPlanEda?pageState=edit&id=${data.selectedRowKeys[0]}`, '月度审核计划管理-编辑', false);
@@ -126,6 +132,10 @@ export default function () {
         });
     };
 
+    // 提交审核验证
+    const handleBeforeStartFlow = async () => {
+
+    };
     // 提交审核完成更新列表
     function handleComplete() {
         tableRef.current.manualSelectedRows();
@@ -249,6 +259,7 @@ export default function () {
             authAction(<StartFlow
                 style={{ marginRight: '5px' }}
                 ignore={DEVELOPER_ENV}
+                needConfirm={handleBeforeStartFlow}
                 businessKey={data.flowId}
                 callBack={handleComplete}
                 disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length === 0}
@@ -282,9 +293,8 @@ export default function () {
                 onClick={() => redirectToPage('change')}
                 className={styles.btn}
                 disabled={
-                    data.selectedRowKeys.length !== 1 
+                    data.selectedRowKeys.length !== 1
                     || data.selectedRows[0]?.flowStatus !== 'COMPLETED'
-                    || data.selectedRows[0]?.state === 'CHANGING'
                 }
                 ignore={DEVELOPER_ENV}
                 key='SUPPLIER_AUDIT_MONTH_CHANGE'
@@ -303,7 +313,7 @@ export default function () {
 
     const headerRight = <div style={{ display: 'flex', alignItems: 'center' }}>
         <Search
-            placeholder='请输入月度审核计划号或拟制说明查询'
+            placeholder='请输入审核实施计划号查询'
             className={styles.btn}
             onSearch={handleQuickSearch}
             allowClear
@@ -353,10 +363,15 @@ export default function () {
 
             {historyVisible && <ChangeHistory
                 visible={historyVisible}
-                handleCancel={()=>{setHistoryV(false)}}
+                handleCancel={() => { setHistoryV(false) }}
                 id={data.selectedRowKeys[0]}
                 code={data.selectedRows[0]?.reviewPlanMonthCode}
             />}
+            { addVisible && <AddNodal
+                    visible={addVisible}
+                    handleCancel={() => { setAddV(false) }}
+                />
+            }
         </Fragment>
     );
 }

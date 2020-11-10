@@ -8,6 +8,7 @@ import Header from '@/components/Header';
 import styles from '../index.less';
 import {findCanChooseSupplier} from '@/services/SupplierModifyService'
 const { create } = Form;
+const Search = Input.Search;
 let dataSource;
 const getMatermodRef = forwardRef(({
     form,
@@ -99,6 +100,9 @@ const getMatermodRef = forwardRef(({
     function SerachValue(v) {
         setSearchValue(v.target.value)
     }
+    function handlerSearch(v) {
+        tableRef.handlerSearch(v);
+    }
     // 查询
     function handleQuickSerach() {
         let search = "";
@@ -109,6 +113,9 @@ const getMatermodRef = forwardRef(({
     function uploadTable() {
         cleanSelectedRecord()
         tableRef.current.remoteDataRefresh()
+    }
+    function handlerPressEnter() {
+        tableRef.handlerPressEnter();
     }
     // 清除选中项
     function cleanSelectedRecord() {
@@ -141,16 +148,23 @@ const getMatermodRef = forwardRef(({
     ].map(_ => ({ ..._, align: 'center' }));
     // 右侧搜索
     const searchBtnCfg = (
-        <>
-            <Input
-                style={{width:260}}
-                placeholder='请输入物料代码或物料描述'
-                className={styles.btn}
-                onChange={SerachValue}
-                allowClear
-            />
-            <Button type='primary' onClick={handleQuickSerach}>查询</Button>
-        </>
+        // <>
+        //     <Input
+        //         style={{width:260}}
+        //         placeholder='请输入物料代码或物料描述'
+        //         className={styles.btn}
+        //         onChange={SerachValue}
+        //         allowClear
+        //     />
+        //     <Button type='primary' onClick={handleQuickSerach}>查询</Button>
+        // </>
+        <Search
+            placeholder="可输入姓名关键字查询"
+            onChange={e => SerachValue(e.target.value)}
+            onSearch={handlerSearch}
+            onPressEnter={handlerPressEnter}
+            style={{ width: 280, marginLeft: 8 }}
+        />
     )
     return (
         <Modal
@@ -167,7 +181,7 @@ const getMatermodRef = forwardRef(({
 
             <Header
                 left={false}
-                right={searchBtnCfg}
+                right={false}
                 advanced={false}
                 extra={false}
                 ref={headerRef}

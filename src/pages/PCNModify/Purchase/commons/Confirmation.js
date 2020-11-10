@@ -14,6 +14,7 @@ import AuditinforModal from './AuditinforModal'
 import {isEmpty } from '../../../../utils';
 const { create } = Form;
 const FormItem = Form.Item;
+let keys = 0;
 const formLayout = {
     labelCol: {
         span: 3,
@@ -220,7 +221,7 @@ const getconfirmFromRef = forwardRef(({
     ]
 	// 获取表单参数
 	function getBaseInfo() {
-    let result = false,resultype,alltype = [];
+    let result = false,resultype,alltype = [],everytype;
     let purchasetab = tabformRef.current.data;
     if (purchasetab.length > 0 ) {
       form.validateFieldsAndScroll((err, val) => {
@@ -240,25 +241,44 @@ const getconfirmFromRef = forwardRef(({
                 result = false
                 return false
               } else {
-                if (verificatab.length === 1) {
-                  resultype = verificatab.some(item => {
-                    if (item.smInKindStatus === 0 && item.smCustomerConfirm === 0 && item.smSupplierAuditStatus === 0){
-                      return true 
-                    }
-                  })
-                }else {
-                  let global;
-                  for (let item of verificatab) {
-                    if (item.smInKindStatus === 0 && item.smCustomerConfirm === 0 && item.smSupplierAuditStatus === 0){
-                      alltype.push(true)                     
-                    }else {
-                      alltype.push(false)
-                    }
+                // if (verificatab.length === 1) {
+                //   let global;
+                //   for (let item of verificatab) {
+                //     if (item.smInKindStatus === 0 && item.smCustomerConfirm === 0 && item.smSupplierAuditStatus === 0){
+                //       alltype.push(true)                     
+                //     } else {
+                //       alltype.push(false)
+                //     }
+                //   }
+                //   global = isAllEqual(alltype)
+                //   everytype = alltype.every(verifid)
+                //   resultype = global
+                 
+                // }else {
+                //   let global;
+                //   for (let item of verificatab) {
+                //     if (item.smInKindStatus === 0 && item.smCustomerConfirm === 0 && item.smSupplierAuditStatus === 0){
+                //       alltype.push(true)                     
+                //     } else {
+                //       alltype.push(false)
+                //     }
+                //   }
+                //   global = isAllEqual(alltype)
+                //   everytype = alltype.every(verifid)
+                //   resultype = global
+                // }
+                let global;
+                for (let item of verificatab) {
+                  if (item.smInKindStatus === 0 && item.smCustomerConfirm === 0 && item.smSupplierAuditStatus === 0){
+                    alltype.push(true)                     
+                  } else {
+                    alltype.push(false)
                   }
-                  global = isAllEqual(alltype)
-                  resultype = global
                 }
-                if (resultype) {
+                global = isAllEqual(alltype)
+                everytype = alltype.every(verifid)
+                resultype = global
+                if (resultype && everytype) {
                   message.error('当验证方案不能全部为否！')
                   result = false
                   return false
@@ -294,6 +314,13 @@ const getconfirmFromRef = forwardRef(({
       return true;
     }
   }
+  function verifid (value, index, ar) {
+    if (value === true) {
+        return true;
+    }else {
+        return false;
+    }
+  }
   // 采购小组新增
   function showPurchase() {
     setStafvisible(true)
@@ -315,8 +342,47 @@ const getconfirmFromRef = forwardRef(({
   }
   // 获取采购小组数据
   function handleStaff(val) {
-    setStaffData(val)
+    let newsdata = [];
+    [...newsdata] = staffData;
+      if (newsdata.length > 0) {
+        let result = false
+        newsdata.map(item =>{
+          val.map((items,index) => {
+            if (item.emloyeeName === items.emloyeeName && 
+              item.emloyeeNumber === items.emloyeeNumber){
+              val.splice(index,1)
+              result = true
+            }    
+          })
+          
+        })
+        if (result) {
+          message.error('当前数据已存在，请重新选择！')
+          addTodata(val)
+        }else {
+          addTodata(val)
+        }
+    }else {
+      addTodata(val)
+    }
+    // setStaffData(val)
+    // setStafvisible(false)
+  }
+   // 新增添加数据
+  function addTodata(val) {
+    let newsdata = [];
+    [...newsdata] = staffData;
+    val.map(ins => {
+      keys ++ ;
+      newsdata.push({
+        key: keys,
+        emloyeeName:ins.emloyeeName,
+        emloyeeNumber:ins.emloyeeNumber,
+      })
+    })
+    setStaffData(newsdata);
     setStafvisible(false)
+    uploadTable()
   }
   // 采购小组删除
   function PurchaseRemove() {

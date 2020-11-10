@@ -216,6 +216,11 @@ export const getUserEmail = () => {
   return info?.email
 }
 
+export const getUserAuthorityPolicy = () => {
+  const info = storage.sessionStorage.get('Authorization') || {};
+  return info?.authorityPolicy
+}
+
 export const getMobile = () => {
   const info = storage.sessionStorage.get('Authorization') || {};
   return info?.mobile

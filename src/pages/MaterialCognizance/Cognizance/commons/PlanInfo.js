@@ -88,7 +88,7 @@ const HeadFormRef = forwardRef(({
                         {
                             isView ? <span>{editformData ? editformData.smSupplierName : ''}</span> :
                             getFieldDecorator("smSupplierName", {
-                                initialValue: authorizations.userName,
+                                initialValue: '',
                                 rules: [{ required: true, message: "请选择采购组织名称", }]
                             })(
                                 <Input disabled />

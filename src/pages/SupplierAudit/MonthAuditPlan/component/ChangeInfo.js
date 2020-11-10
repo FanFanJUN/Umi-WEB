@@ -1,9 +1,9 @@
 /*
  * @Author: Li Cai
- * @LastEditors: Li Cai
+ * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:40
- * @LastEditTime: 2020-10-30 15:36:23
+ * @LastEditTime: 2020-11-09 14:29:29
  * @Description:  基本信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BaseInfo.js
  */
@@ -55,13 +55,7 @@ const ChangeInfo = forwardRef((props, ref) => {
                     <Row>
                         <Col span={12}>
                             <FormItem {...formLayout} label={'变更附件'}>
-                                {
-                                    getFieldDecorator('changeFileId', {
-                                        initialValue: isView ? getDocIdForArray(data.changeFileId) : "",
-                                    })(
-                                        <Upload entityId={data.changeFileId} type={isView ? 'show' : ''}/>
-                                    )
-                                }
+                                <Upload entityId={data.documnetInfos} type={isView ? 'show' : ''}/>
                             </FormItem>
                         </Col>
                     </Row>
