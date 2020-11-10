@@ -46,7 +46,12 @@ function CSRQuestionnaire({
       render(text, record, index) {
         const { selectConfigList } = record;
         return (
-          <RadioGroup disabled={type === 'detail'} value={text} onChange={(e) => handleLineChange(e, index, 'selectValue')}>
+          <RadioGroup
+            disabled={type === 'detail'}
+            value={text}
+            onChange={(e) =>
+              handleLineChange(e, index, 'selectValue')}
+          >
             {
               selectConfigList.map((item, k) => <Radio value={k} key={`${k}-value-key`}>{item}</Radio>)
             }
@@ -94,7 +99,6 @@ function CSRQuestionnaire({
     setDataSource(newDataSource)
   }
   function handleUploadFile(ids, index) {
-    console.log()
     const newDataSource = dataSource.map((item, n) => {
       if (n === index) {
         return ({

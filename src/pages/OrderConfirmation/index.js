@@ -203,6 +203,14 @@ const COLUMNS = [
     dataIndex: 'originName'
   },
   {
+    dataIndex: 'materialCode',
+    title: '物料代码',
+  },
+  {
+    dataIndex: 'materialName',
+    title: '物料名称',
+  },
+  {
     title: '物料分类代码',
     dataIndex: 'materialCategoryCode'
   },

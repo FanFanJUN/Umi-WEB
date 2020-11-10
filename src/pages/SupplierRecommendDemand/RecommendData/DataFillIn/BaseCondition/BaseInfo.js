@@ -34,7 +34,7 @@ const formLayoutCol = {
 
 
 const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
-
+  const DISABLED = type === 'detail'
   const [designCapability, setdesignCapability] = useState('');
   const [actualCapacity, setactualCapacity] = useState('');
 
@@ -70,7 +70,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                       },
                     ],
                   })(
-                    <DatePicker style={{ width: '100%' }} />,
+                    <DatePicker style={{ width: '100%' }} disabled={DISABLED} />,
                   )}
                 </FormItem>
               </Col>
@@ -194,7 +194,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                       },
                     ],
                   })(
-                    <Input placeholder='请输入企业邮箱' />
+                    <Input placeholder='请输入企业邮箱' disabled={DISABLED} />
                   )}
                 </FormItem>
               </Col>
@@ -210,7 +210,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                         message: '法定代表人不能为空',
                       },
                     ],
-                  })(<Input placeholder='请输入法定代表人' />)}
+                  })(<Input placeholder='请输入法定代表人' disabled={DISABLED} />)}
                 </FormItem>
               </Col>
               <Col span={12}>
@@ -224,7 +224,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                       },
                     ],
                   })(
-                    <Input placeholder='可以与企业、销售分公司、代理商同名' />
+                    <Input placeholder='可以与企业、销售分公司、代理商同名' disabled={DISABLED} />
                   )}
                 </FormItem>
               </Col>
@@ -241,7 +241,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                       },
                     ],
                   })(
-                    <InputNumber placeholder='请输入设计产能' style={{ width: '100%' }} />
+                    <InputNumber placeholder='请输入设计产能' style={{ width: '100%' }} disabled={DISABLED} />
                   )}
                 </FormItem>
               </Col>
@@ -256,7 +256,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                         message: '实际产能不能为空',
                       },
                     ],
-                  })(<InputNumber placeholder='请输入实际产能' style={{ width: '100%' }} />)}
+                  })(<InputNumber placeholder='请输入实际产能' style={{ width: '100%' }} disabled={DISABLED} />)}
                 </FormItem>
               </Col>
             </Row>
@@ -264,7 +264,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
               <Col span={12}>
                 <FormItem label="现有产能利用率" {...formLayout}>
                   {getFieldDecorator('actualCapacityFactor', {
-                    initialValue: (data.actualCapacityFactor*100),
+                    initialValue: (data.actualCapacityFactor * 100),
                   })(<Input style={{ width: '100%' }} addonAfter='%' disabled />)}
                 </FormItem>
               </Col>
@@ -274,7 +274,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                 <FormItem label="公司总人数" {...formLayout}>
                   {getFieldDecorator('headCount', {
                     initialValue: type === 'add' ? '' : data.headCount,
-                  })(<InputNumber placeholder='请输入公司总人数' style={{ width: '100%' }} />)}
+                  })(<InputNumber placeholder='请输入公司总人数' style={{ width: '100%' }} disabled={DISABLED} />)}
                 </FormItem>
               </Col>
               <Col span={12}>
@@ -282,7 +282,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                   {getFieldDecorator('bachelorDegree', {
                     initialValue: type === 'add' ? '' : data.bachelorDegree,
                   })(
-                    <InputNumber placeholder='请输入本科以上学历人数' style={{ width: '100%' }} />
+                    <InputNumber placeholder='请输入本科以上学历人数' style={{ width: '100%' }} disabled={DISABLED} />
                   )}
                 </FormItem>
               </Col>
@@ -292,7 +292,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                 <FormItem label="大专" {...formLayout}>
                   {getFieldDecorator('juniorCollege', {
                     initialValue: type === 'add' ? '' : data.juniorCollege,
-                  })(<InputNumber placeholder='请输入大专人数' style={{ width: '100%' }} />)}
+                  })(<InputNumber placeholder='请输入大专人数' style={{ width: '100%' }} disabled={DISABLED} />)}
                 </FormItem>
               </Col>
               <Col span={12}>
@@ -300,7 +300,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                   {getFieldDecorator('technicalSecondary', {
                     initialValue: type === 'add' ? '' : data.technicalSecondary,
                   })(
-                    <InputNumber placeholder='请输入中专及以下人数' style={{ width: '100%' }} />
+                    <InputNumber placeholder='请输入中专及以下人数' style={{ width: '100%' }} disabled={DISABLED} />
                   )}
                 </FormItem>
               </Col>
@@ -310,7 +310,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                 <FormItem label="管理人员" {...formLayout}>
                   {getFieldDecorator('manager', {
                     initialValue: type === 'add' ? '' : data.manager,
-                  })(<InputNumber placeholder='请输入管理人员人数' style={{ width: '100%' }} />)}
+                  })(<InputNumber placeholder='请输入管理人员人数' style={{ width: '100%' }} disabled={DISABLED} />)}
                 </FormItem>
               </Col>
               <Col span={12}>
@@ -318,7 +318,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                   {getFieldDecorator('salesman', {
                     initialValue: type === 'add' ? '' : data.salesman,
                   })(
-                    <InputNumber placeholder='请输入销售人员人数' style={{ width: '100%' }} />
+                    <InputNumber placeholder='请输入销售人员人数' style={{ width: '100%' }} disabled={DISABLED} />
                   )}
                 </FormItem>
               </Col>
@@ -328,7 +328,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                 <FormItem label="质量控制" {...formLayout}>
                   {getFieldDecorator('qualityControl', {
                     initialValue: type === 'add' ? '' : data.qualityControl,
-                  })(<InputNumber placeholder='请输入质量控制人数' style={{ width: '100%' }} />)}
+                  })(<InputNumber placeholder='请输入质量控制人数' style={{ width: '100%' }} disabled={DISABLED} />)}
                 </FormItem>
               </Col>
               <Col span={12}>
@@ -336,7 +336,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                   {getFieldDecorator('technicist', {
                     initialValue: type === 'add' ? '' : data.technicist,
                   })(
-                    <InputNumber placeholder='请输入技术人员人数' style={{ width: '100%' }} />
+                    <InputNumber placeholder='请输入技术人员人数' style={{ width: '100%' }} disabled={DISABLED} />
                   )}
                 </FormItem>
               </Col>
@@ -346,14 +346,14 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                 <FormItem label="客服人员" {...formLayout}>
                   {getFieldDecorator('supportStaff', {
                     initialValue: type === 'add' ? '' : data.supportStaff,
-                  })(<InputNumber placeholder='请输入客服人员人数' style={{ width: '100%' }} />)}
+                  })(<InputNumber placeholder='请输入客服人员人数' style={{ width: '100%' }} disabled={DISABLED} />)}
                 </FormItem>
               </Col>
               <Col span={12}>
                 <FormItem label="其他" {...formLayout}>
                   {getFieldDecorator('otherStaff', {
                     initialValue: type === 'add' ? '' : data.otherStaff,
-                  })(<InputNumber style={{ width: '100%' }} />)}
+                  })(<InputNumber style={{ width: '100%' }} disabled={DISABLED} />)}
                 </FormItem>
               </Col>
             </Row>
