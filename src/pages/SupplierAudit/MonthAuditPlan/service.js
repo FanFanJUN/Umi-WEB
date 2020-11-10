@@ -68,15 +68,6 @@ export async function insertChangeMonthBo(params) {
     });
 }
 
-// 月度计划-变更-提交
-export async function findHistoryPageByChangId(params) {
-    const requestUrl = `${recommendUrl}/api/reviewPlanMonthChangeService/findHistoryPageByChangId`;
-    return request({
-        url: requestUrl,
-        method: 'POST',
-        data: params,
-    });
-}
 // 月度计划-变更-变更信息
 export async function findReasonByChangId(params) {
     const requestUrl = `${recommendUrl}/api/reviewPlanMonthChangeService/findReasonByChangId`;
@@ -89,6 +80,15 @@ export async function findReasonByChangId(params) {
 // 月度计划-变更-删除
 export async function deleteChangeById(params) {
     const requestUrl = `${recommendUrl}/api/reviewPlanMonthChangeService/deleteById`;
+    return request({
+        url: requestUrl,
+        method: 'GET',
+        params,
+    });
+}
+// 月度计划-变更-获取百更明细
+export async function findHistoryPageByChangId(params) {
+    const requestUrl = `${recommendUrl}/api/reviewPlanMonthChangeService/findHistoryPageByChangId`;
     return request({
         url: requestUrl,
         method: 'GET',
