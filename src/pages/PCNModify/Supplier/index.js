@@ -355,8 +355,8 @@ function SupplierConfigure() {
     )
     // 高级查询配置
     const formItems = [
-        { title: '供应商代码', key: 'materialCode',  props: { placeholder: '输入供应商代码' } },
-        { title: '供应商名称', key: 'materialName',  props: { placeholder: '输入供应商名称' } },
+        // { title: '供应商代码', key: 'materialCode',  props: { placeholder: '输入供应商代码' } },
+        // { title: '供应商名称', key: 'materialName',  props: { placeholder: '输入供应商名称' } },
         { title: '单据状态', key: 'materialGroupCode', type: 'list', props: SupplierBilltypeList },
         { title: '变更类型', key: 'applyPersonName', type: 'list', props: PCNMasterdatalist },
     ];

@@ -20,6 +20,7 @@ const getCustomerOpin = forwardRef(({
     getCustomerform
   }));
   const { getFieldDecorator, setFieldsValue, validateFieldsAndScroll } = form;
+  const authorizations = storage.sessionStorage.get("Authorization");
   const tabformRef = useRef(null)
   const [dataSource, setDataSource] = useState([]);
   const [customer, setCustomer] = useState([]);
@@ -76,6 +77,12 @@ const getCustomerOpin = forwardRef(({
         } 
       },
     },
+    {
+      title: '客户确认人',
+      dataIndex: 'smCustomerConfirmsName',
+      align: 'center',
+      width: 180,
+    },
       {
         title: '客户意见',
         dataIndex: 'smCustomerResultConfirm',
@@ -87,7 +94,7 @@ const getCustomerOpin = forwardRef(({
           }
           return <span>
               {
-                record.smCustomerConfirm === 1 ?  
+                record.smCustomerConfirm === 1 && record.smCustomerConfirmsName === authorizations.userName ?  
                 <FormItem style={{ marginBottom: 0 }}>
                 {
                     getFieldDecorator(`smCustomerResultConfirm[${index}]`,{initialValue: record ? record.smCustomerResultConfirm : ''}),
@@ -121,7 +128,7 @@ const getCustomerOpin = forwardRef(({
         }
         return <span>
           {
-            record.smCustomerConfirm === 1 ? <FormItem style={{ marginBottom: 0 }}>
+            record.smCustomerConfirm === 1 && record.smCustomerConfirmsName === authorizations.userName? <FormItem style={{ marginBottom: 0 }}>
               {
                 getFieldDecorator(`customerEnclosure[${index}]`, {
                     initialValue: record ? record.customerEnclosure : '',

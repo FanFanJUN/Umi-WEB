@@ -2,7 +2,7 @@ import React, { forwardRef, useImperativeHandle, useEffect, useRef ,useState} fr
 import { Modal, Form, Button, message, Input, } from 'antd';
 import { Fieldclassification ,countryListConfig} from '@/utils/commonProps'
 import { ExtTable } from 'suid';
-import { openNewTab, getFrameElement } from '@/utils';
+import { isEmpty } from '@/utils';
 import { smBaseUrl ,baseUrl} from '@/utils/commonUrl';
 import Header from '@/components/Header';
 import styles from '../index.less';
@@ -42,8 +42,13 @@ const getMatermodRef = forwardRef(({
         store: {
             url: `${baseUrl}/api/materialSrmService/findBySecondaryClassificationListAndCompany`,
             params: {
-                quickSearchValue: searchValue,
+                //quickSearchValue: searchValue,
                 ///quickSearchProperties: ['materialCode','materialDesc'],
+                search:{
+                    pageInfo:{page:1,rows:30},
+                    quickSearchProperties:[ "materialCode", "materialDesc"],
+                    quickSearchValue: searchValue
+                },
                 sortOrders: [
                     {
                         property: '',
@@ -98,10 +103,11 @@ const getMatermodRef = forwardRef(({
     }
     // 输入框值
     function SerachValue(v) {
-        setSearchValue(v.target.value)
-    }
-    function handlerSearch(v) {
-        tableRef.handlerSearch(v);
+        if (isEmpty(v.target.value)) {
+            setSearchValue('')
+        }else {
+            setSearchValue(v.target.value)
+        }
     }
     // 查询
     function handleQuickSerach() {
@@ -113,9 +119,6 @@ const getMatermodRef = forwardRef(({
     function uploadTable() {
         cleanSelectedRecord()
         tableRef.current.remoteDataRefresh()
-    }
-    function handlerPressEnter() {
-        tableRef.handlerPressEnter();
     }
     // 清除选中项
     function cleanSelectedRecord() {
@@ -148,23 +151,16 @@ const getMatermodRef = forwardRef(({
     ].map(_ => ({ ..._, align: 'center' }));
     // 右侧搜索
     const searchBtnCfg = (
-        // <>
-        //     <Input
-        //         style={{width:260}}
-        //         placeholder='请输入物料代码或物料描述'
-        //         className={styles.btn}
-        //         onChange={SerachValue}
-        //         allowClear
-        //     />
-        //     <Button type='primary' onClick={handleQuickSerach}>查询</Button>
-        // </>
-        <Search
-            placeholder="可输入姓名关键字查询"
-            onChange={e => SerachValue(e.target.value)}
-            onSearch={handlerSearch}
-            onPressEnter={handlerPressEnter}
-            style={{ width: 280, marginLeft: 8 }}
-        />
+        <>
+            <Input
+                style={{width:260}}
+                placeholder='请输入物料代码或描述'
+                className={styles.btn}
+                onChange={SerachValue}
+                allowClear
+            />
+            <Button type='primary' onClick={handleQuickSerach}>查询</Button>
+        </>
     )
     return (
         <Modal
@@ -181,7 +177,7 @@ const getMatermodRef = forwardRef(({
 
             <Header
                 left={false}
-                right={false}
+                right={searchBtnCfg}
                 advanced={false}
                 extra={false}
                 ref={headerRef}
