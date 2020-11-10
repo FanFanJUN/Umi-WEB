@@ -64,7 +64,6 @@ const StaffForm = forwardRef(
                         val.emloyeeNumber.map((items,indexs)=> {
                             if (index === indexs) {
                                 newdata.push({
-                                    key: index,
                                     emloyeeName:item.userName,
                                     emloyeeNumber:items
                                 })

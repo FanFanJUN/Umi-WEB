@@ -8,6 +8,7 @@ import Header from '@/components/Header';
 import styles from '../index.less';
 import {findCanChooseSupplier} from '@/services/SupplierModifyService'
 const { create } = Form;
+const Search = Input.Search;
 let dataSource;
 const getMatermodRef = forwardRef(({
     form,
@@ -118,6 +119,7 @@ const getMatermodRef = forwardRef(({
     // 输入框值
     function SerachValue(v) {
         setSearchValue(v.target.value)
+        //tableRef.current.handlerSearchChange(v)
     }
     // 查询
     function handleQuickSerach() {
@@ -136,6 +138,12 @@ const getMatermodRef = forwardRef(({
     }
     function pageChange(val) {
         setcurrent(val.current)
+    }
+    function handlerSearch(v) {
+        tableRef.current.handlerSearch(v);
+    }
+    function handlerPressEnter() {
+        tableRef.current.handlerPressEnter();
     }
     const columns = [
           {

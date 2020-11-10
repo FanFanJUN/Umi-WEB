@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, Fragment } from 'react';
 import Header from '../../../components/Header';
 import AdvancedForm from '../../../components/AdvancedForm';
-import { Button, Input, message, Modal, Spin } from 'antd';
+import { Button, Input } from 'antd';
 import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
 import { ExtTable, utils, WorkFlow } from 'suid';
 import {
@@ -17,9 +17,11 @@ import {
 } from '../../QualitySynergy/commonProps';
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
-import { openNewTab } from '../../../utils';
 import { materialClassProps } from '../../../utils/commonProps';
 import ResultsEntry from './component/ResultsEntry';
+import GenerationEntry from './component/GenerationEntry';
+import CheckLeaderOpinion from './component/CheckLeaderOpinion';
+import VerificationResults from './component/VerificationResults';
 
 const { authAction } = utils;
 const { Search } = Input;
@@ -44,6 +46,10 @@ export default function() {
   };
 
   const [data, setData] = useState({
+    resultAddVisible: false,
+    generationEntryVisible: false,
+    checkLeaderOpinionVisible: false,
+    verificationResultsVisible: true,
     spinning: false,
     flowId: '',
     checkedCreate: false,
@@ -57,20 +63,17 @@ export default function() {
 
   const redirectToPage = (type) => {
     switch (type) {
-      case 'add':
-        openNewTab('supplierAudit/AuditRequirementsManagementAdd?pageState=add', '审核需求管理-新增', false);
+      case 'resultAdd':
+        setData(v => ({...v, resultAddVisible: true}))
         break;
-      case 'edit':
-        openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=edit&id=${data.selectedRows[0].id}`, '审核需求管理-编辑', false);
+      case 'generationEntry':
+        setData(v => ({...v, generationEntryVisible: true}))
         break;
-      case 'detail':
-        openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=detail&id=${data.selectedRows[0].id}`, '审核需求管理-明细', false);
+      case 'checkLeaderOpinion':
+        setData(v => ({...v, checkLeaderOpinionVisible: true}))
         break;
-      case 'delete':
-        deleteList();
-        break;
-      case 'endFlow':
-        endFlow();
+      case 'verificationResults':
+        setData(v => ({...v, verificationResultsVisible: true}))
         break;
     }
   };
@@ -82,56 +85,9 @@ export default function() {
     console.log(value, 'value');
   };
 
-  const endFlow = () => {
-    Modal.confirm({
-      title: '终止审核',
-      content: '是否终止审核？',
-      okText: '确定',
-      cancelText: '取消',
-      onOk: async () => {
-        setData(v => ({ ...v, spinning: true }));
-        const { flowId } = data;
-        const { success, message: msg } = await EndFlow({
-          businessId: flowId,
-        });
-        if (success) {
-          message.success(msg);
-          setData(v => ({ ...v, spinning: false }));
-          tableRef.current.manualSelectedRows();
-          tableRef.current.remoteDataRefresh();
-          return;
-        }
-        message.error(msg);
-      },
-    });
-  };
-
-  // 删除
-  const deleteList = () => {
-    Modal.confirm({
-      title: '删除',
-      content: '是否删除选中的数据',
-      okText: '是',
-      okType: 'danger',
-      cancelText: '否',
-      onOk: () => {
-        const codeArr = data.selectedRows.map(item => item.reviewRequirementCode);
-        DeleteAuditRequirementsManagement(codeArr).then(res => {
-          if (res.success) {
-            message.success(res.message);
-            tableRef.current.manualSelectedRows();
-            tableRef.current.remoteDataRefresh();
-          } else {
-            message.error(res.message);
-          }
-        }).catch(err => message.error(err.message));
-      },
-    });
-  };
 
   // 高级查询搜索
   const handleAdvancedSearch = (value) => {
-
     setData(v => ({ ...v, epTechnicalShareDemandSearchBo: value }));
     tableRef.current.manualSelectedRows();
     tableRef.current.remoteDataRefresh();
@@ -139,29 +95,10 @@ export default function() {
 
   // 高级查询配置
   const formItems = [
-    {
-      title: '公司',
-      key: 'applyCorporationCode',
-      type: 'list',
-      props: CompanyConfig,
-      rules: { rules: [{ required: true, message: '请选择公司' }] },
-    },
-    {
-      title: '采购组织',
-      key: 'purchaseOrgCode',
-      type: 'list',
-      props: FindByFiltersConfig,
-      rules: { rules: [{ required: true, message: '请选择采购组织' }] },
-    },
-    { title: '申请部门', key: 'applyDepartmentCode', type: 'tree', props: ApplyOrganizationProps },
-    { title: '申请人', key: 'applyName', props: { placeholder: '输入申请人' } },
-    { title: '申请日期', key: 'applyDateStart', type: 'datePicker', props: { placeholder: '输入申请日期' } },
-    { title: '供应商', key: 'supplierCode', type: 'list', props: SupplierConfig },
+    { title: '需求公司', key: 'applyCorporationCode', type: 'list', props: CompanyConfig, },
+    { title: '采购组织', key: 'purchaseOrgCode', type: 'list', props: FindByFiltersConfig, },
     { title: '物料分类', key: 'materialSecondClassifyCode', type: 'tree', props: materialClassProps },
-    { title: '审核类型', key: 'reviewTypeCode', type: 'list', props: AuditTypeManagementConfig },
-    { title: '审核原因', key: 'reviewReasonCode', type: 'list', props: AuditCauseManagementConfig },
-    { title: '状态', key: 'state', type: 'list', props: stateProps },
-    { title: '审批状态', key: 'flowState', type: 'list', props: flowProps },
+    { title: '审核小组组长', key: 'flowState', type: 'list', props: flowProps },
   ];
 
   const columns = [
@@ -214,7 +151,7 @@ export default function() {
     {
       authAction(<Button
         type='primary'
-        onClick={() => redirectToPage('add')}
+        onClick={() => redirectToPage('resultAdd')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='TECHNICAL_DATA_SHARING_ADD'
@@ -222,7 +159,7 @@ export default function() {
     }
     {
       authAction(<Button
-        onClick={() => redirectToPage('edit')}
+        onClick={() => redirectToPage('generationEntry')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='TECHNICAL_DATA_SHARING_EDIT'
@@ -234,25 +171,22 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='TECHNICAL_DATA_SHARING_DELETE'
-        disabled={data.selectedRowKeys.length === 0}
       >撤回</Button>)
     }
     {
       authAction(<Button
-        onClick={() => redirectToPage('detail')}
+        onClick={() => redirectToPage('checkLeaderOpinion')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='TECHNICAL_DATA_SHARING_DETAIL'
-        disabled={data.selectedRowKeys.length !== 1}
       >查看组长意见</Button>)
     }
     {
       authAction(<Button
-        onClick={() => redirectToPage('detail')}
+        onClick={() => redirectToPage('verificationResults')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='TECHNICAL_DATA_SHARING_DETAIL'
-        disabled={data.selectedRowKeys.length !== 1}
       >审核结果确认</Button>)
     }
     {
@@ -261,7 +195,6 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='TECHNICAL_DATA_SHARING_DETAIL'
-        disabled={data.selectedRowKeys.length !== 1}
       >审核结果查看</Button>)
     }
   </>;
@@ -319,8 +252,20 @@ export default function() {
         }
       </AutoSizeLayout>
       <ResultsEntry
-        onCancel={() => setData(v => ({...v, visible: false}))}
-        visible={true}
+        onCancel={() => setData(v => ({...v, resultAddVisible: false}))}
+        visible={data.resultAddVisible}
+      />
+      <GenerationEntry
+        onCancel={() => setData(v => ({...v, generationEntryVisible: false}))}
+        visible={data.generationEntryVisible}
+      />
+      <CheckLeaderOpinion
+        onCancel={() => setData(v => ({...v, checkLeaderOpinionVisible: false}))}
+        visible={data.checkLeaderOpinionVisible}
+      />
+      <VerificationResults
+        onCancel={() => setData(v => ({...v, verificationResultsVisible: false}))}
+        visible={data.verificationResultsVisible}
       />
     </Fragment>
   );

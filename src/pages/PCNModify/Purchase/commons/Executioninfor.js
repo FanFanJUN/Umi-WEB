@@ -114,7 +114,8 @@ const getExecutioninfor = forwardRef(({
               <FormItem style={{ marginBottom: 0 }}>
                   {
                       getFieldDecorator(`batch[${index}]`, {
-                          initialValue: record ? record.batch : '',
+                        initialValue: record ? record.batch : '',
+                        rules: [{ required: true, message: '请填写批次!'}],
                       })( 
                           <Input 
                             placeholder='请输入批次'
