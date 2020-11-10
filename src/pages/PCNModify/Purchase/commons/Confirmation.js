@@ -557,8 +557,8 @@ const getconfirmFromRef = forwardRef(({
                                     ],
                                 })(
                                     <Radio.Group disabled={isView === true} onChange={(e) => opinionChange(e)}>
-                                        <Radio value={0}>不同意变更</Radio>
-                                        <Radio value={1}>立即执行变更</Radio>
+                                        <Radio value={0}>不需要验证</Radio>
+                                        {/* <Radio value={1}>立即执行变更</Radio> */}
                                         <Radio value={2}>需要验证</Radio>
                                     </Radio.Group>
                                 )}

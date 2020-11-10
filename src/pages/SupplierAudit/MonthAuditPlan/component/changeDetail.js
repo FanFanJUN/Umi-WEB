@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-11-05 16:27:34
- * @LastEditTime: 2020-11-09 14:27:49
+ * @LastEditTime: 2020-11-10 10:16:37
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\MonthAuditPlan\component\changeDetail.js
@@ -14,6 +14,7 @@ import ChangeLineInfo from "./ChangeLineInfo";
 import BaseInfo from "../EdaPage/BaseInfo";
 import LineInfo from "../EdaPage/LineInfo";
 import { findOneOverride, findReasonByChangId } from "../service";
+import styles from "../index.less";
 const { TabPane } = Tabs;
 
 export default Form.create()((props) => {
@@ -52,7 +53,7 @@ export default Form.create()((props) => {
     }
 
     return <Spin spinning={loading}>
-        <Tabs defaultActiveKey="1" onChange={callback}>
+        <Tabs defaultActiveKey="1" onChange={callback} className={styles.antd_tabs_me}>
             <TabPane tab="变更信息" key="1">
                 <ChangeInfo
                     originData={changeInfo}

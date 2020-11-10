@@ -20,6 +20,7 @@ const getToexamine = forwardRef(({
     getExamineform
   }));
   const { getFieldDecorator, setFieldsValue, validateFieldsAndScroll } = form;
+  const authorizations = storage.sessionStorage.get("Authorization");
   const tabformRef = useRef(null)
   const [toexamine, setToexamine] = useState([]);
   const [dataSource, setDataSource] = useState([]);
@@ -75,6 +76,12 @@ const getToexamine = forwardRef(({
         } 
       },
     },
+    {
+      title: '审核确认人',
+      dataIndex: 'smSupplierAuditConfirmerName',
+      align: 'center',
+      width: 180,
+    },
       {
         title: '审核结果',
         dataIndex: 'smSupplierAuditResultStatus',
@@ -86,7 +93,7 @@ const getToexamine = forwardRef(({
           }
           return <span>
             {
-              record.smSupplierAuditStatus === 1 ? <FormItem style={{ marginBottom: 0 }}>
+              record.smSupplierAuditStatus === 1 && record.smSupplierAuditConfirmerName === authorizations.userName ? <FormItem style={{ marginBottom: 0 }}>
                 {
                     getFieldDecorator(`smSupplierAuditResultStatus[${index}]`,{initialValue: record ? record.smSupplierAuditResultStatus : ''}),
                     getFieldDecorator(`smSupplierAuditResultStatusName[${index}]`, {
@@ -120,7 +127,7 @@ const getToexamine = forwardRef(({
         }
         return <span>
           {
-            record.smSupplierAuditStatus === 1 ?  <FormItem style={{ marginBottom: 0 }}>
+            record.smSupplierAuditStatus === 1 && record.smSupplierAuditConfirmerName === authorizations.userName ?  <FormItem style={{ marginBottom: 0 }}>
               {
                 getFieldDecorator(`smSupplierAuditConfirmerEnclosure[${index}]`, {
                     initialValue: record ? record.smSupplierAuditConfirmerEnclosure : '',

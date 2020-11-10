@@ -35,10 +35,6 @@ const Index = (props) => {
     }, [])
     useEffect(() => {
         const { id, pageState } = query;
-        if(!pageState){
-            // 来自工作流
-            pageState = props.pageState;
-        }
         switch (pageState) {
             case 'add':
                 getUser();
@@ -201,7 +197,7 @@ const Index = (props) => {
                 <div className={classnames(styles.fbc, styles.affixHeader)}>
                     <span>{data.title}</span>
                     {
-                        (data.type !== 'detail' || data.type === 'change') && <div style={{ display: "flex", alignItems: 'center' }}>
+                        (data.type === 'add' || data.type === 'change' || data.type === 'edit') && <div style={{ display: "flex", alignItems: 'center' }}>
                             <Button className={styles.btn} onClick={handleBack}>返回</Button>
                             <Button className={styles.btn} onClick={() => handleSave('save')}>暂存</Button>
                             <StartFlow

@@ -1,18 +1,20 @@
 /*
- * @Author: 黄永翠
- * @Date: 2020-11-05 15:12:46
- * @LastEditTime: 2020-11-10 10:02:56
+ * @Author: your name
+ * @Date: 2020-11-04 16:24:34
+ * @LastEditTime: 2020-11-10 10:01:52
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
- * @FilePath: \srm-sm-web\src\pages\SupplierAudit\MonthAuditPlan\component\ChangeLineInfo.js
+ * @FilePath: \srm-sm-web\src\pages\SupplierAudit\MonthAuditPlan\component\ChangeHistory.js
  */
-import React, { useEffect, useState } from 'react';
-import { ExtTable } from 'suid';
-import styles from '../index.less';
+// 从年度审核新增
+import React, { useState, useEffect } from "react";
+import { ExtTable, ExtModal } from 'suid';
 import { findHistoryPageByChangId } from "../service";
 import { message } from 'antd';
 
-const Index = (props) => {
+const ChangeLineModal = (props) => {
+    const { visible, handleCancel } = props
+
     const [dataSource, setDataSource] = useState([]);
     useEffect(()=>{
         (async function(){
@@ -37,32 +39,32 @@ const Index = (props) => {
                 default:
                     return ''
             }
-        }},
+        } },
         { title: '行号', dataIndex: 'type', ellipsis: true },
         { title: '更改字段', dataIndex: 'field', ellipsis: true },
         { title: '更改前', dataIndex: 'fieldBeforValue', ellipsis: true, render:(text)=>text&&text!=="null"?text:'' },
         { title: '更改后', dataIndex: 'fieldAfterValue', ellipsis: true, render:(text)=>text&&text!=="null"?text:'' },
-    ].map(item => ({ ...item, align: 'center' }));
+    ].map(item => ({ ...item, align: 'center' }))
 
-    return (<div className={styles.wrapper}>
-        <div className={styles.bgw}>
-            <div className={styles.title}>变更明细</div>
-            <div className={styles.content}>
-                <ExtTable
-                    rowKey={(v, index) => {console.log(v); return v.id}}
-                    columns={columns}
-                    dataSource={dataSource}
-                    showSearch={false}
-                    remotePaging={false}
-                    checkbox={false}
-                />
-            </div>
-        </div>
+    return <ExtModal
+        width={'50vw'}
+        maskClosable={false}
+        visible={visible}
+        title="变更明细"
+        onCancel={handleCancel}
+        footer={null}
+        destroyOnClose
+    >
+        <ExtTable
+            rowKey='id'
+            showSearch={false}
+            checkbox={false}
+            size='small'
+            columns={columns}
+            dataSource={dataSource}
+        />
+    </ExtModal>
 
-    </div>
+}
 
-    );
-
-};
-
-export default Index;
+export default ChangeLineModal;

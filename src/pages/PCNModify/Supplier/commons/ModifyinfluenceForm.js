@@ -156,6 +156,7 @@ const HeadFormRef = forwardRef(({
                                             maxLength={100}
                                             placeholder="请输入其他物料或整机的影响"
                                             disabled={isView === true}
+                                            autoSize={{ minRows: 3, maxRows: 5 }}
                                         />
                                     )
                                 }

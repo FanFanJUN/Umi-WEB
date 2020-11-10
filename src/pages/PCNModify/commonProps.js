@@ -86,6 +86,10 @@ export const SupplierBilltypeList = {
       code: '1',
       name: '已提交',
     },
+    {
+      code: '2',
+      name: '已完成',
+    },
   ],
   reader: {
     name: 'name',
@@ -140,8 +144,8 @@ export const ToexamineList = {
       name: '审核中',
     },
     {
-      code: 'successColor',
-      name: '已审核',
+      code: 'COMPLETED',
+      name: '审核完成',
     }
   ],
   placeholder: '选择审核状态',

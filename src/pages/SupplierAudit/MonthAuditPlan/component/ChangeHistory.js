@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-11-04 16:24:34
- * @LastEditTime: 2020-11-09 16:28:54
+ * @LastEditTime: 2020-11-10 11:01:36
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\MonthAuditPlan\component\ChangeHistory.js
@@ -15,6 +15,7 @@ import { recommendUrl } from '@/utils/commonUrl';
 import { openNewTab } from '../../../../utils';
 import Upload from "../../Upload";
 import { deleteChangeById } from "../service";
+import ChangeLineModal from "./ChangeLineModal";
 
 const { FlowHistoryButton } = WorkFlow;
 
@@ -23,6 +24,7 @@ const ChangeHistory = (props) => {
     const tableRef = useRef(null)
     const [selectedRowKeys, setselectedRowKeys] = useState([]);
     const [selectRows, setselectRows] = useState([]);
+    const [detailData, setDetailData] = useState({});
 
     const columns = [
         { title: '变更单号', dataIndex: 'changeCode', width: 200, ellipsis: true },
@@ -45,7 +47,10 @@ const ChangeHistory = (props) => {
         { title: '变更时间', dataIndex: 'applyDate', ellipsis: true, width: 140 },
         { title: '链接', dataIndex: 'id', ellipsis: true, width: 140, render:(text)=><a onClick={(e)=>{
             e.stopPropagation();
-            console.log("查看")
+            setDetailData({
+                visible: true,
+                id: text
+            })
         }}>变更明细</a> },
     ].map(item => ({ ...item, align: 'center' }))
 
@@ -58,13 +63,18 @@ const ChangeHistory = (props) => {
                 break;
         }
     }
-    const handleDelete = async () => {
-        const res = await deleteChangeById({id: selectedRowKeys[0]})
-        console.log(res)
-    }
-    const handleComplete = () => {
+    const refresh = () => {
         tableRef.current.manualSelectedRows();
         tableRef.current.remoteDataRefresh();
+    }
+    const handleDelete = async () => {
+        const res = await deleteChangeById({id: selectedRowKeys[0]})
+        if(res.success) {
+            message.success("删除成功");
+            refresh();
+        } else {
+            message.error(res.message);
+        }
     }
     return <ExtModal
         width={'60vw'}
@@ -77,10 +87,10 @@ const ChangeHistory = (props) => {
     >
         <div>
             <Button onClick={()=>{handleBtn("view")}} key="view" disabled={selectRows.length !== 1}>查看</Button>
-            <Button onClick={handleDelete} style={{margin: "0 6px"}} key="delete">删除</Button>
+            <Button onClick={handleDelete} style={{margin: "0 6px"}} key="delete" disabled={selectRows.length === 0 || !selectRows.every(item=>item.flowState == "INIT")}>删除</Button>
             <StartFlow
                 businessKey={selectedRowKeys[0] ? selectedRowKeys[0] : ''}
-                callBack={handleComplete}
+                callBack={refresh}
                 disabled={selectedRowKeys.length !== 1 || selectRows[0].flowState != "INIT" }
                 businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewPlanMonthChange'
             >提交审核</StartFlow>
@@ -114,6 +124,11 @@ const ChangeHistory = (props) => {
             }}
             columns={columns}
         />
+        {detailData.visible && <ChangeLineModal
+            visible={detailData.visible}
+            id={detailData.id}
+            onCancel={()=>{setDetailData({visible: false})}}
+        />}
     </ExtModal>
 
 }

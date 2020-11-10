@@ -20,6 +20,7 @@ const getResultsIden = forwardRef(({
     getmaterialform
   }));
   const { getFieldDecorator, setFieldsValue, validateFieldsAndScroll } = form;
+  const authorizations = storage.sessionStorage.get("Authorization");
   const tabformRef = useRef(null)
   const [cognizance, setCognizance] = useState([]);
   const [dataSource, setDataSource] = useState([]);
@@ -101,6 +102,12 @@ const getResultsIden = forwardRef(({
     //   width: 180
     // },
     {
+      title: '实物认定确认人',
+      dataIndex: 'smInKindManName',
+      align: 'center',
+      width: 180,
+    },
+    {
       title: '实物认定结果',
       dataIndex: 'smInKindResultStatus',
       align: 'center',
@@ -111,7 +118,7 @@ const getResultsIden = forwardRef(({
           }
           return <span>
               {
-                record.smInKindStatus === 1 ? <FormItem style={{ marginBottom: 0 }}>
+                record.smInKindStatus === 1 && record.smInKindManName === authorizations.userName ? <FormItem style={{ marginBottom: 0 }}>
                   {
                       getFieldDecorator(`smInKindResultStatus[${index}]`,{initialValue: record ? record.smInKindResultStatus : ''}),
                       getFieldDecorator(`smInKindResultStatusName[${index}]`, {
@@ -146,7 +153,7 @@ const getResultsIden = forwardRef(({
           }
           return <span>
             {
-              record.smInKindStatus === 1 ? <FormItem style={{ marginBottom: 0 }}>
+              record.smInKindStatus === 1 && record.smInKindManName === authorizations.userName ? <FormItem style={{ marginBottom: 0 }}>
                 {
                   getFieldDecorator(`kindManEnclosure[${index}]`, {
                       initialValue: record ? record.kindManEnclosure : '',
