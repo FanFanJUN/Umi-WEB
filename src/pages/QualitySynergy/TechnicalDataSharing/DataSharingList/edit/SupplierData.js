@@ -1,3 +1,4 @@
+
 import React from 'react';
 import styles from './BaseInfo.less';
 import { ExtTable } from 'suid';
@@ -16,6 +17,7 @@ const SupplierData = (props) => {
     { title: '资料下载截止日期', dataIndex: 'downloadAbortDate', ellipsis: true, width: 160 },
     { title: '供应商下载状态', dataIndex: 'fileDownloadState', width: 160, render: v => v ? v : '未下载' },
     { title: '供应商下载日期', dataIndex: 'fileDownloadDate', width: 150 },
+    { title: '下载数量', dataIndex: 'downloadCount', ellipsis: true, },
   ].map(item => ({ ...item, align: 'center' }));
 
   return (

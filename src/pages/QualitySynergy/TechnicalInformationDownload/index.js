@@ -78,6 +78,7 @@ export default function() {
     { title: '文件版本', dataIndex: 'fileVersion', ellipsis: true, },
     { title: '图纸状态', dataIndex: 'drawFlag', ellipsis: true, },
     { title: '技术资料附件', dataIndex: 'technicalDataFileIdList', width: 120, render: (v, data) => <Upload type='show' entityId={v} downloadClick={() => changeDownloadStatus(data)}/>},
+    { title: '下载数量', dataIndex: 'downloadCount', ellipsis: true, },
     { title: '样品需求数量', dataIndex: 'sampleRequirementNum', ellipsis: true, },
     { title: '计量单位', dataIndex: 'measureUnit', ellipsis: true, },
     { title: '样品需求日期', dataIndex: 'sampleRequirementDate', ellipsis: true, },
