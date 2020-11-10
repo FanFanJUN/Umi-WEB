@@ -13,6 +13,7 @@ import {
   ShareDownloadStatus,
   StrategicPurchaseConfig, UpdateShareDownLoadState,
 } from '../commonProps';
+import { getUserAuthorityPolicy } from "@/utils";
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl, smBaseUrl } from '../../../utils/commonUrl';
 import Upload from '../compoent/Upload';
@@ -91,6 +92,11 @@ export default function() {
     { title: '备注', dataIndex: 'remark', ellipsis: true, width: 160 },
   ].map(item => ({ ...item, align: 'center' }));
 
+  const columnsOther = [
+    { title: '供应商代码', dataIndex: 'supplierCode', ellipsis: true, width: 180, align: 'center'},
+    { title: '供应商名字', dataIndex: 'supplierName', ellipsis: true, width: 220, align: 'center'},
+    { dataIndex: 'null', width: 20}
+  ]
   const onChange = (e) => {
     setData(v => ({...v, checked: e.target.checked}))
     tableRef.current.manualSelectedRows();
@@ -154,7 +160,7 @@ export default function() {
           (h) => <ExtTable
             rowKey={(v) => v.key}
             height={h}
-            columns={columns}
+            columns={getUserAuthorityPolicy() === "NormalUser" ? columns : columns.concat(columnsOther)}
             store={{
               params: {
                 ...data.checked ? {fileDownloadState: '未下载'} : null,
