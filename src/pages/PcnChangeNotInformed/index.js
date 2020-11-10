@@ -43,7 +43,7 @@ const { authAction, getUUID } = utils;
 const FILENAME = 'PCN变更未告知次数上传模板.xlsx';
 const DOWNLOADNAME = 'PCN变更未告知次数.xlsx'
 const SEARCH_PLACEHOLDER = '供应商代码或名称';
-const quickSearchProperties = ['supplierCode','supplierName'];
+const quickSearchProperties = ['supplierCode', 'supplierName'];
 const sortOrders = [];
 const FORMITEMS = [
   {
@@ -345,17 +345,18 @@ function AcceptFYPMain() {
     headerRef.current.hide()
   }
   // 导出
-  function handleExport() {
+  async function handleExport() {
     Modal.confirm({
       title: '导出数据',
       content: '是否导出当前查询条件下数据？',
       okText: '导出',
       cancelText: '取消',
       onOk: async () => {
-        const { success, message: msg, data } = await EXPORT_METHOD({
+        const search = {
           ...searchValue,
           quickSearchProperties
-        })
+        }
+        const { success, message: msg, data } = await EXPORT_METHOD({ search })
         if (success) {
           downloadBlobFile(data, DOWNLOADNAME);
           message.success('导出成功')
