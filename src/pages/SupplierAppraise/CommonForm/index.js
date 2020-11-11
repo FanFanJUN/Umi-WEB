@@ -237,7 +237,6 @@ const CommonForm = forwardRef(({
   }
   // 处理删除
   function handleRemove() {
-    console.log(tableCommonProps)
     Modal.confirm({
       title: '删除',
       content: '确定要删除当前选中项？',
@@ -325,18 +324,21 @@ const CommonForm = forwardRef(({
   // 处理参数
   async function getAllValues() {
     const vs = await validateFieldsAndScroll();
-    if (checkedKeys.length === 0) {
-      message.error('请至少选择一个评价体系节点')
-      return
-    }
-    const { createdDate, ...fds } = vs;
-    // 应用期间
-    const formatFields = {
-      ...fds,
-      seCorporationPurchaseOrgList: tableCommonProps.dataSource,
-      selectedEvlSystems: ses
-    }
-    return formatFields
+    return new Promise((resolve, reject) => {
+      if (checkedKeys.length === 0) {
+        message.error('请至少选择一个评价体系节点')
+        reject('评价体系节点未选择')
+        return
+      }
+      const { createdDate, ...fds } = vs;
+      // 应用期间
+      const formatFields = {
+        ...fds,
+        seCorporationPurchaseOrgList: tableCommonProps.dataSource,
+        selectedEvlSystems: ses
+      }
+      resolve(formatFields)
+    })
   }
   const ses = getTreeDataSourceRows(systemView, checkedKeys);
   async function getInitialValue() {

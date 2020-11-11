@@ -29,10 +29,23 @@ export const orgnazationProps = {
 
 
 
-// PCN变更主数据
-export const PCNMasterdatalist = {
+// 认定阶段主数据
+export const IdentifiedPhaselist = {
   store: {
-    url: `${smBaseUrl}/pubController/findDataDictionaryItemListByTypeCode?typeCode=PCNBGLX`,
+    url: `${smBaseUrl}/pubController/findDataDictionaryItemListByTypeCode?typeCode=identified_phase`,
+    type: 'POST'
+  },
+  reader: {
+    name: 'name',
+    field: ['value'],
+    description: 'value'
+  },
+  // remotePaging: true,
+  placeholder: '选择变更类型'
+}
+export const IdentifiedTasklist = {
+  store: {
+    url: `${smBaseUrl}/pubController/findDataDictionaryItemListByTypeCode?typeCode=identified_task`,
     type: 'POST'
   },
   reader: {

@@ -4,7 +4,7 @@ import { router } from 'dva';
 import Carrytask from '../commons/Carrytask'
 import Missionplan from '../commons/Missionplan'
 import classnames from 'classnames';
-import styles from '../../index.less';
+import styles from '../index.less';
 import { closeCurrent ,isEmpty} from '../../../../utils';
 import {findPCNSupplierId,saveBatchVo} from '../../../../services/pcnModifyService'
 const TabPane = Tabs.TabPane;

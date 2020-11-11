@@ -5,7 +5,7 @@ import TaskInfo from '../commons/TaskInfo'
 import Brasstacks from '../commons/Brasstacks'
 import Taskhistory from '../commons/Taskhistory'
 import classnames from 'classnames';
-import styles from '../../index.less';
+import styles from '../index.less';
 import { closeCurrent ,isEmpty} from '../../../../utils';
 import {findPCNSupplierId,saveBatchVo} from '../../../../services/pcnModifyService'
 function CreateStrategy() {
