@@ -60,7 +60,11 @@ const MproCertification = ({ type, data, setTableData }) => {
         return text && moment(text).format('YYYY-MM-DD');
       }, inputType: 'DatePicker', editable: true
     },
-    { title: '最新年审', dataIndex: 'newestAnnualReview', ellipsis: true, editable: true },
+    {
+      title: '最新年审', dataIndex: 'newestAnnualReview', ellipsis: true, render: (text) => {
+        return text && moment(text).format('YYYY-MM-DD')
+      }, inputType: 'DatePicker', editable: true
+    },
     { title: '附件', dataIndex: 'attachmentIds', ellipsis: true, editable: true, inputType: 'UploadFile' },
     {
       title: '计划取得时间', dataIndex: 'planObtainTime', ellipsis: true, render: (text) => {
@@ -89,7 +93,11 @@ const MproCertification = ({ type, data, setTableData }) => {
         return text && moment(text).format('YYYY-MM-DD');
       }, inputType: 'DatePicker', editable: true, width: 150
     },
-    { title: '最新年审', dataIndex: 'newestAnnualReview', ellipsis: true, editable: true },
+    {
+      title: '最新年审', dataIndex: 'newestAnnualReview', ellipsis: true, render: (text) => {
+        return text && moment(text).format('YYYY-MM-DD')
+      }, inputType: 'DatePicker', editable: true
+    },
     { title: '附件', dataIndex: 'attachmentIds', ellipsis: true, editable: true, inputType: 'UploadFile' },
     {
       title: '计划取得时间', dataIndex: 'planObtainTime', ellipsis: true, render: (text) => {
@@ -127,7 +135,7 @@ const MproCertification = ({ type, data, setTableData }) => {
         allowCancelSelect
         showSearch={false}
         remotePaging
-        rowKey='id'
+        rowKey='guid'
         size='small'
         isEditTable
         isToolBar={type === 'add'}
@@ -141,7 +149,7 @@ const MproCertification = ({ type, data, setTableData }) => {
         allowCancelSelect
         showSearch={false}
         remotePaging
-        rowKey='id'
+        rowKey='guid'
         size='small'
         isEditTable
         isToolBar={type === 'add'}

@@ -296,7 +296,7 @@ const EditableTable = (props) => {
     // newArray.push({ id: guid() });
     const id = guid();
     const newData = isEmptyArray(newArray) ?
-      [{ id, guid: guid(), recommendDemandId }] : [{ id, guid: guid(), recommendDemandId }, ...newArray];
+      [{ guid: id, recommendDemandId }] : [{ guid: id, recommendDemandId }, ...newArray];
     setNewData(newData, tableType); // 新增数据 + 所属哪个Table
     setEditingKey(id); // 新增处于编辑行
     setButtonDisabled(true); // 未保存无法操作
