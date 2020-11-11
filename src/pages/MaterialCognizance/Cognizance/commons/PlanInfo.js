@@ -3,7 +3,7 @@ import { Form, Row, Input, Col, DatePicker, Radio, Button } from 'antd';
 import { utils, ComboList} from 'suid';
 import { onlyNumber} from '@/utils'
 import RecommendModle from './recommendModle'
-import MaterielModal from '../../../PCNModify/Supplier/commons/MaterielModal'
+import InfluenceMaterielModal from '../../../PCNModify/Supplier/commons/InfluenceMaterielModal'
 import UploadFile from '../../../../components/Upload/index'
 const { Item, create } = Form;
 const { TextArea } = Input;
@@ -29,7 +29,7 @@ const HeadFormRef = forwardRef(({
     }));
     const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
     const getRecommendRef = useRef(null);
-    const getMatermodRef = useRef(null)
+    const getModelRef = useRef(null)
     const authorizations = storage.sessionStorage.get("Authorization");
     const [configure, setConfigure] = useState([]);
     useEffect(() => {
@@ -50,7 +50,7 @@ const HeadFormRef = forwardRef(({
     }
     function handleSingle() {
         if (manual) {
-            getMatermodRef.current.handleModalVisible(true);
+            //getMatermodRef.current.handleModalVisible(true);
         }else {
             getRecommendRef.current.handleModalVisible(true);
         }
@@ -250,8 +250,9 @@ const HeadFormRef = forwardRef(({
         <RecommendModle 
             wrappedComponentRef={getRecommendRef} 
         /> 
-        <MaterielModal 
-            wrappedComponentRef={getMatermodRef} 
+         <InfluenceMaterielModal
+            //modifyanalysis={selectanalysis}
+            wrappedComponentRef={getModelRef}
         />
        </>  
     )

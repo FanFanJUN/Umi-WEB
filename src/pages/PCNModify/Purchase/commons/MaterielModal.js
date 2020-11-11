@@ -45,7 +45,7 @@ const getMatermodRef = forwardRef(({
                 //quickSearchValue: searchValue,
                 ///quickSearchProperties: ['materialCode','materialDesc'],
                 search:{
-                    pageInfo:{page:1,rows:30},
+                    pageInfo:{page:current,rows:30},
                     quickSearchProperties:[ "materialCode", "materialDesc"],
                     quickSearchValue: searchValue
                 },

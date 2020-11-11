@@ -19,7 +19,7 @@ const commonFormRef = forwardRef(({
     title,
     onOk = () => null,
     modifydata={},
-    type
+    type,
 },ref,) => {
         useImperativeHandle(ref, () => ({ 
             handleModalVisible,
@@ -64,7 +64,7 @@ const commonFormRef = forwardRef(({
             <>
                 <Modal
                     visible={visible}
-                    title={'新增'}
+                    title={title}
                     onCancel={() => handleModalVisible(false)}
                     destroyOnClose={true}
                     width="45vw"
