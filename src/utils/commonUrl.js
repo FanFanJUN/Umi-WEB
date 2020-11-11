@@ -42,7 +42,7 @@ export const commonsUrl = '/api-gateway/srm-commons-data'
 export const supplierManagerBaseUrl = "/srm-sm-web";
 // /api-gateway/srm-commons-data/currency/findByPage
 
-
+export const samBaseUrl = "/srm-sam-web";
 export const host = ""
 
 // 老组件分页

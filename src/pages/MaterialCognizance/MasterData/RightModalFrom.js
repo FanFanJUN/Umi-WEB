@@ -2,8 +2,7 @@ import React, { forwardRef, useImperativeHandle, useEffect,useRef, useState } fr
 import { Modal, Form, Row, Col, Input,message } from 'antd';
 import { ComboList } from 'suid';
 import {onlyNumber} from '../../../utils'
-import {IdentifiedPhaselist} from '../commonProps' 
-import {MasterdataSave} from '../../../services/MaterialService'
+import {IdentifiedTasklist} from '../commonProps'
 const { create, Item } = Form;
 const { TextArea } = Input;
 const formLayout = {
@@ -14,7 +13,7 @@ const formLayout = {
         span: 18
     },
 };
-const commonFormRef = forwardRef(({
+const commonRightFormRef = forwardRef(({
     form,
     title,
     onOk = () => null,
@@ -35,7 +34,7 @@ const commonFormRef = forwardRef(({
         };
         function afterSelect(val) {
             form.setFieldsValue({
-                'identificationStage': val.name,
+                'taskDesc': val.name,
             });
         }
         function handleSubmit() {
@@ -52,13 +51,15 @@ const commonFormRef = forwardRef(({
             });
         }
         async function masterSave(params) {
-            const { success, message: msg } = await MasterdataSave(params);
-            if (success) {
-                message.success('保存成功');
-                onOk();
-            } else {
-                message.error(msg);
-            }
+            let data = [];
+            // data.push(params)
+            // const { success, message: msg } = await MasterdataSave(data);
+            // if (success) {
+            //     message.success('保存成功');
+            //     onOk();
+            // } else {
+            //     message.error(msg);
+            // }
         }
         return (
             <>
@@ -73,20 +74,20 @@ const commonFormRef = forwardRef(({
                 >  
                     <Row>
                         <Col span={20}>
-                            <Item {...formLayout} label="代码">
-                                {getFieldDecorator('stageCode', {
-                                    initialValue: modifydata && modifydata.stageCode,
+                            <Item {...formLayout} label="任务代码">
+                                {getFieldDecorator('taskCode', {
+                                    initialValue: modifydata && modifydata.taskCode,
                                     rules: [
                                         {
                                             required: true,
-                                            message: '请输入代码',
+                                            message: '请输入任务代码',
                                         },
                                     ],
                                 })(
                                     <ComboList
                                         showSearch={false}
                                         style={{ width: '100%' }}
-                                        {...IdentifiedPhaselist}
+                                        {...IdentifiedTasklist}
                                         name='changeTypeName'
                                         field={['stageCode']}
                                         afterSelect={afterSelect}
@@ -98,17 +99,17 @@ const commonFormRef = forwardRef(({
                     </Row>
                     <Row>
                         <Col span={20}>
-                            <Item {...formLayout} label="认定阶段描述">
-                                {getFieldDecorator('identificationStage', {
-                                    initialValue: modifydata && modifydata.identificationStage,
+                            <Item {...formLayout} label="任务描述">
+                                {getFieldDecorator('taskDesc', {
+                                    initialValue: modifydata && modifydata.taskDesc,
                                     rules: [
                                         {
                                             required: true,
-                                            message: '请输入认定阶段描述',
+                                            message: '请输入任务描述',
                                         },
                                     ],
                                 })(
-                                    <Input placeholder="请输入认定阶段描述" disabled />
+                                    <Input placeholder="请输入任务描述" />
                                 )}
                             </Item>
                         </Col>
@@ -136,4 +137,4 @@ const commonFormRef = forwardRef(({
     },
 );
 
-export default create()(commonFormRef);
+export default create()(commonRightFormRef);
