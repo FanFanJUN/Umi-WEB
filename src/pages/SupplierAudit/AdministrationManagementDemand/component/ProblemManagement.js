@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ComboList, ExtModal, ExtTable } from 'suid';
 import styles from './index.less';
 import { Button, Col, Form, Input, InputNumber, Row } from 'antd';
@@ -28,26 +28,23 @@ const formLayout = {
 const ProblemManagement = (props) => {
 
   const columns = [
-    { title: '部门/过程', dataIndex: 'reviewRequirementCode', width: 150 },
-    { title: '问题描述', dataIndex: 'reviewRequirementName', ellipsis: true, width: 300 },
-    { title: '严重程度', dataIndex: 'applyCorporationName', ellipsis: true, width: 180 },
-    { title: '要求整改完成日期', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200 },
+    { title: '部门/过程', dataIndex: 'departmentProcess', width: 150 },
+    { title: '问题描述', dataIndex: 'problemDescription', ellipsis: true, width: 300 },
+    { title: '严重程度', dataIndex: ' orderSeverity', ellipsis: true, width: 180 },
+    { title: '要求整改完成日期', dataIndex: 'requestCompletionDateRectification', ellipsis: true, width: 200 },
   ].map(item => ({ ...item, align: 'center' }));
 
   const tableRef = useRef(null);
 
-  const { type, form, userInfo, isView, editData } = props;
+  const { editData } = props;
 
-  const { getFieldDecorator, setFieldsValue, getFieldValue } = props.form;
+  const { getFieldDecorator } = props.form;
 
   const [data, setData] = useState({
-    dataSource: [{
-      lineNum: 1,
-      orgName: 'true',
-    }],
+    dataSource: [],
     type: 'add',
     title: '新增',
-    visible: true,
+    visible: false,
     selectedRowKeys: [],
     selectedRowRows: [],
   });
@@ -61,6 +58,12 @@ const ProblemManagement = (props) => {
   const onOk = () => {
 
   };
+
+  useEffect(() => {
+    if (editData) {
+      setData(v => ({ ...v, dataSource: editData.problemList }));
+    }
+  }, [editData]);
 
   const clearSelected = () => {
 
@@ -76,6 +79,11 @@ const ProblemManagement = (props) => {
         setData(v => ({ ...v, visible: true, title: '新增', type }));
     }
   };
+
+  const handleOk = (value) => {
+    setData(v => ({...v, dataSource: [...data.dataSource, value]}))
+    console.log(value)
+  }
 
   return (
     <ExtModal
@@ -96,8 +104,8 @@ const ProblemManagement = (props) => {
               <Col span={12}>
                 <FormItem {...formLongLayout} label={'指标名称'}>
                   {
-                    getFieldDecorator('attachRelatedIds', {
-                      initialValue: type === 'add' ? '' : editData.fileList,
+                    getFieldDecorator('indexicalInformation', {
+                      initialValue: editData.indexicalInformation,
                     })(
                       <Input disabled={true} placeholder="请输入指标名称" style={{ width: '100' }}/>,
                     )
@@ -107,8 +115,8 @@ const ProblemManagement = (props) => {
               <Col span={12}>
                 <FormItem {...formLongLayout} label={'指标定义'}>
                   {
-                    getFieldDecorator('attachRelatedIds', {
-                      initialValue: type === 'add' ? '' : editData.fileList,
+                    getFieldDecorator('indexDefinition', {
+                      initialValue: editData.indexDefinition,
                     })(
                       <Input disabled={true} placeholder="请输入指标定义" style={{ width: '100' }}/>,
                     )
@@ -120,8 +128,8 @@ const ProblemManagement = (props) => {
               <Col span={24}>
                 <FormItem {...formLayout} label={'评分标准'}>
                   {
-                    getFieldDecorator('attachRelatedIds', {
-                      initialValue: type === 'add' ? '' : editData.fileList,
+                    getFieldDecorator('standardEvaluation', {
+                      initialValue: editData.standardEvaluation,
                     })(
                       <Input.TextArea disabled={true} rows={4} placeholder="请输入评分标准" style={{ width: '100%' }}/>,
                     )
@@ -163,6 +171,7 @@ const ProblemManagement = (props) => {
         title={data.title}
         visible={data.visible}
         onCancel={() => setData(v => ({ ...v, visible: false }))}
+        onOk={handleOk}
       />
     </ExtModal>
   );

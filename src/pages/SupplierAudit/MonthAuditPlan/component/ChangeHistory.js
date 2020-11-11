@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-11-04 16:24:34
- * @LastEditTime: 2020-11-10 11:01:36
+ * @LastEditTime: 2020-11-10 14:02:40
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\MonthAuditPlan\component\ChangeHistory.js
@@ -57,7 +57,7 @@ const ChangeHistory = (props) => {
     const handleBtn = (type) => {
         switch(type) {
             case "view":
-                openNewTab(`supplierAudit/MonthAuditChangeDetail?id=${selectedRowKeys[0]}&orderId=${props.id}`, '月度审核计划变更单详情', false);
+                openNewTab(`supplierAudit/MonthAuditChangeDetail?id=${selectedRowKeys[0]}`, '月度审核计划变更单详情', false);
                 break;
             default:
                 break;
@@ -127,7 +127,7 @@ const ChangeHistory = (props) => {
         {detailData.visible && <ChangeLineModal
             visible={detailData.visible}
             id={detailData.id}
-            onCancel={()=>{setDetailData({visible: false})}}
+            handleCancel={()=>{setDetailData({visible: false})}}
         />}
     </ExtModal>
 

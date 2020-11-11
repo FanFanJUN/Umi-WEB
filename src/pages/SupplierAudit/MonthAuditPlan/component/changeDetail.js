@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-11-05 16:27:34
- * @LastEditTime: 2020-11-10 10:16:37
+ * @LastEditTime: 2020-11-10 14:01:00
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\MonthAuditPlan\component\changeDetail.js
@@ -30,22 +30,24 @@ export default Form.create()((props) => {
     // 获取单据数据
     async function getOrderDetail() {
         setLoading(true);
-        let res = await findOneOverride({
-            id: query.orderId
-        });
+        // 获取变更信息
         let changeRes = await findReasonByChangId({
             id: query.id
         })
         setLoading(false);
-        if (res) {
-            setEditData(res.data)
+        if (changeRes.success) {
+            setChangeInfo(changeRes.data);
+            // 获取原单据信息
+            let res = await findOneOverride({
+                id: changeRes.data.reviewPlanMonthId
+            });
+            if (res.success) {
+                setEditData(res.data)
+            } else {
+                message.error(res.message);
+            }
         } else {
-            message.error(res.message);
-        }
-        if (changeRes) {
-            setChangeInfo(changeRes.data)
-        } else {
-            message.error(res.message);
+            message.error(changeRes.message);
         }
     }
     function callback(key) {

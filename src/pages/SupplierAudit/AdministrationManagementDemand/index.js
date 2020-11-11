@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, Fragment } from 'react';
 import Header from '../../../components/Header';
 import AdvancedForm from '../../../components/AdvancedForm';
-import { Button, Input } from 'antd';
+import { Button, Checkbox, Input } from 'antd';
 import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
 import { ExtTable, utils, WorkFlow } from 'suid';
 import {
@@ -49,7 +49,7 @@ export default function() {
     resultAddVisible: false,
     generationEntryVisible: false,
     checkLeaderOpinionVisible: false,
-    verificationResultsVisible: true,
+    verificationResultsVisible: false,
     spinning: false,
     flowId: '',
     checkedCreate: false,
@@ -64,16 +64,16 @@ export default function() {
   const redirectToPage = (type) => {
     switch (type) {
       case 'resultAdd':
-        setData(v => ({...v, resultAddVisible: true}))
+        setData(v => ({ ...v, resultAddVisible: true }));
         break;
       case 'generationEntry':
-        setData(v => ({...v, generationEntryVisible: true}))
+        setData(v => ({ ...v, generationEntryVisible: true }));
         break;
       case 'checkLeaderOpinion':
-        setData(v => ({...v, checkLeaderOpinionVisible: true}))
+        setData(v => ({ ...v, checkLeaderOpinionVisible: true }));
         break;
       case 'verificationResults':
-        setData(v => ({...v, verificationResultsVisible: true}))
+        setData(v => ({ ...v, verificationResultsVisible: true }));
         break;
     }
   };
@@ -95,8 +95,8 @@ export default function() {
 
   // 高级查询配置
   const formItems = [
-    { title: '需求公司', key: 'applyCorporationCode', type: 'list', props: CompanyConfig, },
-    { title: '采购组织', key: 'purchaseOrgCode', type: 'list', props: FindByFiltersConfig, },
+    { title: '需求公司', key: 'applyCorporationCode', type: 'list', props: CompanyConfig },
+    { title: '采购组织', key: 'purchaseOrgCode', type: 'list', props: FindByFiltersConfig },
     { title: '物料分类', key: 'materialSecondClassifyCode', type: 'tree', props: materialClassProps },
     { title: '审核小组组长', key: 'flowState', type: 'list', props: flowProps },
   ];
@@ -106,33 +106,17 @@ export default function() {
       title: '状态', dataIndex: 'state', width: 80, render: v => {
         switch (v) {
           case 'DRAFT':
-            return '草稿';
+            return '未填报';
           case 'EFFECT':
-            return '生效';
-          case 'CHANGING':
-            return '变更中';
+            return '已填报';
         }
       },
     },
-    {
-      title: '审批状态', dataIndex: 'flowStatus', width: 200, render: v => {
-        switch (v) {
-          case 'INIT':
-            return '未进入流程';
-          case 'INPROCESS':
-            return '流程中';
-          case 'COMPLETED':
-            return '流程处理完成';
-        }
-      },
-    },
-    { title: '审核需求号', dataIndex: 'reviewRequirementCode', width: 200 },
-    { title: '申请说明', dataIndex: 'reviewRequirementName', ellipsis: true, width: 250 },
-    { title: '申请公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 200 },
-    { title: '申请部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200 },
-    { title: '采购组织', dataIndex: 'orgName', ellipsis: true, width: 200 },
-    { title: '申请人员', dataIndex: 'applyName', ellipsis: true, width: 200 },
-    { title: '申请时间', dataIndex: 'applyDate', ellipsis: true, width: 200 },
+    { title: '审核需求计划号', dataIndex: 'reviewRequirementCode', width: 200 },
+    { title: '供应商', dataIndex: 'reviewRequirementName', ellipsis: true, width: 250 },
+    { title: '物料分类', dataIndex: 'applyCorporationName', ellipsis: true, width: 200 },
+    { title: '审核时间', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200 },
+    { title: '组长', dataIndex: 'orgName', ellipsis: true, width: 200 },
   ].map(item => ({ ...item, align: 'center' }));
 
   // 提交审核验证
@@ -199,7 +183,11 @@ export default function() {
     }
   </>;
 
-  const headerRight = <div style={{ display: 'flex', alignItems: 'center' }}>
+  const headerRight = <div style={{ width: '100%', display: 'flex', alignItems: 'center' }}>
+    <div style={{width: '95%'}}>
+      <Checkbox>已填报</Checkbox>
+      <Checkbox defaultChecked={true}>未填报</Checkbox>
+    </div>
     <Search
       placeholder='请输入审核实施计划号或供应商名称'
       className={styles.btn}
@@ -252,19 +240,19 @@ export default function() {
         }
       </AutoSizeLayout>
       <ResultsEntry
-        onCancel={() => setData(v => ({...v, resultAddVisible: false}))}
+        onCancel={() => setData(v => ({ ...v, resultAddVisible: false }))}
         visible={data.resultAddVisible}
       />
       <GenerationEntry
-        onCancel={() => setData(v => ({...v, generationEntryVisible: false}))}
+        onCancel={() => setData(v => ({ ...v, generationEntryVisible: false }))}
         visible={data.generationEntryVisible}
       />
       <CheckLeaderOpinion
-        onCancel={() => setData(v => ({...v, checkLeaderOpinionVisible: false}))}
+        onCancel={() => setData(v => ({ ...v, checkLeaderOpinionVisible: false }))}
         visible={data.checkLeaderOpinionVisible}
       />
       <VerificationResults
-        onCancel={() => setData(v => ({...v, verificationResultsVisible: false}))}
+        onCancel={() => setData(v => ({ ...v, verificationResultsVisible: false }))}
         visible={data.verificationResultsVisible}
       />
     </Fragment>

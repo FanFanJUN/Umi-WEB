@@ -3,7 +3,11 @@ import { ComboList, ComboTree, ExtModal, ExtTable } from 'suid';
 import styles from './index.less';
 import { Button, Col, Form, Input, InputNumber, Row } from 'antd';
 import BU from '../../../QualitySynergy/mainData/BU';
-import { ApplyOrganizationProps } from '../../mainData/commomService';
+import {
+  ApplyOrganizationProps, AuditTypeManagementConfig,
+  SelectionStrategyConfig,
+  UserByDepartmentNameConfig,
+} from '../../mainData/commomService';
 
 const FormItem = Form.Item;
 
@@ -27,27 +31,11 @@ const formLayout = {
 
 const ProblemAdd = (props) => {
 
-  const columns = [
-    { title: '部门/过程', dataIndex: 'reviewRequirementCode', width: 150 },
-    { title: '问题描述', dataIndex: 'reviewRequirementName', ellipsis: true, width: 300 },
-    { title: '严重程度', dataIndex: 'applyCorporationName', ellipsis: true, width: 180 },
-    { title: '要求整改完成日期', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200 },
-  ].map(item => ({ ...item, align: 'center' }));
-
-  const tableRef = useRef(null);
-
   const { type, form, userInfo, isView, title, editData } = props;
 
   const { getFieldDecorator, setFieldsValue, getFieldValue } = props.form;
 
   const [data, setData] = useState({
-    dataSource: [{
-      lineNum: 1,
-      orgName: 'true',
-    }],
-    visible: false,
-    selectedRowKeys: [],
-    selectedRowRows: [],
   });
 
   const { visible } = props;
@@ -57,12 +45,29 @@ const ProblemAdd = (props) => {
   };
 
   const onOk = () => {
-
+    props.form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        props.onOk(values);
+      }
+    });
   };
 
   const clearSelected = () => {
 
   };
+
+
+  const hideFormItem = (name, initialValue) => (
+    <FormItem>
+      {
+        getFieldDecorator(name, {
+          initialValue: initialValue,
+        })(
+          <Input type={'hidden'}/>,
+        )
+      }
+    </FormItem>
+  );
 
   return (
     <ExtModal
@@ -79,8 +84,8 @@ const ProblemAdd = (props) => {
         <Col span={12}>
           <FormItem {...formLongLayout} label={'部门/过程'}>
             {
-              getFieldDecorator('attachRelatedIds', {
-                initialValue: type === 'add' ? '' : editData.fileList,
+              getFieldDecorator('departmentProcess', {
+                initialValue: type === 'add' ? '' : editData.departmentProcess,
                 rules: [
                   {
                     required: true,
@@ -98,8 +103,8 @@ const ProblemAdd = (props) => {
         <Col span={24}>
           <FormItem {...formLayout} label={'问题描述'}>
             {
-              getFieldDecorator('attachRelatedIds', {
-                initialValue: type === 'add' ? '' : editData.fileList,
+              getFieldDecorator('problemDescription', {
+                initialValue: type === 'add' ? '' : editData.problemDescription,
                 rules: [
                   {
                     required: true,
@@ -117,8 +122,8 @@ const ProblemAdd = (props) => {
         <Col span={12}>
           <FormItem {...formLongLayout} label={'严重程度'}>
             {
-              getFieldDecorator('applyDepartmentName', {
-                initialValue: type === 'add' ? '' : editData.fileList,
+              getFieldDecorator('orderSeverity', {
+                initialValue: type === 'add' ? '' : editData.orderSeverity,
                 rules: [
                   {
                     required: true,
@@ -130,8 +135,8 @@ const ProblemAdd = (props) => {
                   allowClear={true}
                   style={{ width: '100%' }}
                   form={form}
-                  name={'applyDepartmentName'}
-                  {...ApplyOrganizationProps}
+                  name={'orderSeverity'}
+                  {...AuditTypeManagementConfig}
                 />,
               )
             }
@@ -142,8 +147,8 @@ const ProblemAdd = (props) => {
         <Col span={12}>
           <FormItem {...formLongLayout} label={'要求整改完成日期'}>
             {
-              getFieldDecorator('applyDepartmentCode', {
-                initialValue: type === 'add' ? '' : editData.fileList,
+              getFieldDecorator('requestCompletionDateRectification', {
+                initialValue: type === 'add' ? '' : editData.requestCompletionDateRectification,
                 rules: [
                   {
                     required: true,
@@ -155,8 +160,8 @@ const ProblemAdd = (props) => {
                   allowClear={true}
                   style={{ width: '100%' }}
                   form={form}
-                  name={'applyDepartmentCode'}
-                  {...ApplyOrganizationProps}
+                  name={'requestCompletionDateRectification'}
+                  {...AuditTypeManagementConfig}
                 />,
               )
             }

@@ -1,6 +1,8 @@
 import React, { useRef, useState } from 'react';
 import { Button, Tabs } from 'antd';
 import { ComboList, ComboTree, ExtModal, ExtTable } from 'suid';
+import ScoreOverview from './component/ScoreOverview';
+import IssuesManagement from './component/IssuesManagement';
 
 const { TabPane } = Tabs;
 
@@ -111,21 +113,6 @@ const dataSource = [
 
 const VerificationResults = (props) => {
 
-  const columns = [
-    { title: '', dataIndex: 'id', width: 1, render: v => {}},
-    { title: '类别', dataIndex: 'title', width: 200, required: true, },
-    { title: '指标名称', dataIndex: 'newAmount', ellipsis: true, width: 100 },
-    { title: '指标定义', dataIndex: 'cumulative', ellipsis: true, width: 400 },
-    { title: '评分标准', dataIndex: 'cure', ellipsis: true, width: 400 },
-    { title: '标准分', dataIndex: 'died', width: 100,},
-    { title: '自评得分', dataIndex: 'orgName', width: 100,},
-    { title: '不适用', dataIndex: 'orgName', width: 100,},
-    { title: '审核得分', dataIndex: 'orgName', width: 100,},
-    { title: '百分比', dataIndex: 'orgName', width: 100,},
-    { title: '评定等级', dataIndex: 'orgName', width: 100,},
-    { title: '风险等级', dataIndex: 'orgName', width: 100,},
-  ].map(item => ({ ...item, align: 'center' }));
-
   const { type, editData, visible } = props;
 
   const [data, setData] = useState({});
@@ -143,8 +130,8 @@ const VerificationResults = (props) => {
   };
 
   const callback = (value) => {
-    console.log(value)
-  }
+    console.log(value);
+  };
 
   return (
     <ExtModal
@@ -159,20 +146,10 @@ const VerificationResults = (props) => {
     >
       <Tabs defaultActiveKey="1" onChange={callback}>
         <TabPane tab="评分概览" key="1">
-          <Button>按评审人查看评分</Button>
-          <Button>查看供应商自评</Button>
-          <ExtTable
-            bordered={true}
-            style={{marginTop: '5px'}}
-            showSearch={false}
-            columns={columns}
-            dataSource={dataSource}
-            defaultExpandAllRows={true}
-            lineNumber={false}
-          />
+          <ScoreOverview/>
         </TabPane>
         <TabPane tab="问题管理" key="2">
-          Content of Tab Pane 2
+          <IssuesManagement/>
         </TabPane>
         <TabPane tab="审核意见" key="3">
           Content of Tab Pane 3
