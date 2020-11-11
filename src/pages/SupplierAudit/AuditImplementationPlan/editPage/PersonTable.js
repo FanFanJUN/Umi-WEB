@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:46:10
- * @LastEditTime: 2020-11-09 15:33:04
+ * @LastEditTime: 2020-11-11 14:11:36
  * @LastEditors: Please set LastEditors
  * @Description: 审核实施计划-协同人员
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\PersonTable.js
@@ -25,7 +25,7 @@ const PersonTable = (props) => {
         <div className={styles.wrapper}>
             <div className={styles.bgw}>
                 <div className={styles.title}>协同人员</div>
-                <div className={styles.content}>
+                <div className={styles.content}  style={{paddingLeft: "10vw"}}>
                     <ExtTable
                         rowKey={(v) => v.id}
                         allowCancelSelect={true}

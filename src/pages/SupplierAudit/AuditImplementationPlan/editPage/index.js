@@ -1,7 +1,7 @@
 /*
  * @Author:黄永翠
  * @Date: 2020-11-09 09:38:38
- * @LastEditTime: 2020-11-09 15:34:43
+ * @LastEditTime: 2020-11-11 14:04:00
  * @LastEditors: Please set LastEditors
  * @Description:审核实施计划-明细
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\index.js
@@ -61,7 +61,11 @@ const Index = (props) => {
         }
     }, [editData])
     const handleSave = (type) => {
-
+        form.validateFieldsAndScroll((err, values) => {
+            if (!err) {
+               console.log('values', values)
+            }
+        });
     }
     // 提交审核验证
     const handleBeforeStartFlow = async () => {
@@ -135,7 +139,10 @@ const Index = (props) => {
         {/* 协同人员 */}
         <PersonTable />
         {/* 审核计划 */}
-        <AuditPlan />
+        <AuditPlan
+            type={data.type}
+            form={form}
+        />
     </Spin>
 }
 

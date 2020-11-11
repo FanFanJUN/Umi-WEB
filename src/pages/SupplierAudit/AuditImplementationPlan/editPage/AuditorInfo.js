@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:44:12
- * @LastEditTime: 2020-11-09 15:52:34
+ * @LastEditTime: 2020-11-11 14:11:25
  * @LastEditors: Please set LastEditors
  * @Description: 审核实施计划-审核人员
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\AuditorInfo.js
@@ -46,7 +46,7 @@ const AuditorInfo = (props) => {
         <div className={styles.wrapper}>
             <div className={styles.bgw}>
                 <div className={styles.title}>审核人员</div>
-                <div className={styles.content}>
+                <div className={styles.content} style={{paddingLeft: "10vw"}}>
                     <Row>
                         <Col span={8}>
                             <FormItem label="审核小组组长" {...formLayout}>

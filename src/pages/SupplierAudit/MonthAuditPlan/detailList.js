@@ -71,52 +71,74 @@ export default function () {
 
     // 高级查询配置
     const formItems = [
-        { title: '需求公司', key: 'materialCode', type: 'list', props: CompanyConfig },
-        { title: '采购组织', key: 'materialGroupCode', type: 'list', props: FindByFiltersConfig},
-        { title: '物料分类', key: 'state', type: 'tree', props: materialClassProps },
-        { title: '供应商', key: 'state2', type: 'tree', props: SupplierConfig },
-        { title: '代理商', key: 'state3', type: 'tree', props: materialClassProps },
-        { title: '审核类型', key: 'state4', type: 'list', props: AuditTypeManagementConfig },
-        { title: '审核原因', key: 'state5', type: 'list', props: AuditCauseManagementConfig },
-        { title: '审核方式', key: 'state6', type: 'list', props: reviewWaysProps },
-        { title: '审核组织形式', key: 'state7', type: 'list', props: reviewOrganizeProps },
-        { title: '专业组', key: 'state8', type: 'list', props: AuditCauseManagementConfig },
-        { title: '审核小组组长', key: 'buCode', props: { placeholder: '输入审核小组组长' } },
-        { title: '协同人员', key: 'applyPeopleName', props: { placeholder: '输入协同人员' } },
+        { title: '需求公司', key: 'lineApplyCorporationCode', type: 'list', props: CompanyConfig },
+        { title: '采购组织', key: 'purchaseTeamCode', type: 'list', props: FindByFiltersConfig},
+        { title: '物料分类', key: 'materialGroupCode', type: 'tree', props: materialClassProps },
+        { title: '供应商', key: 'supplierCode', type: 'tree', props: SupplierConfig },
+        { title: '代理商', key: 'agentCode', type: 'tree', props: materialClassProps },
+        { title: '审核类型', key: 'reviewTypeCode', type: 'list', props: AuditTypeManagementConfig },
+        { title: '审核原因', key: 'reviewReasonCode', type: 'list', props: AuditCauseManagementConfig },
+        { title: '审核方式', key: 'reviewWayCode', type: 'list', props: reviewWaysProps },
+        { title: '审核组织形式', key: 'reviewOrganizedWayCode', type: 'list', props: reviewOrganizeProps },
+        { title: '专业组', key: 'specialtyTeamCode', type: 'list', props: AuditCauseManagementConfig },
+        { title: '审核小组组长', key: 'leaderName', props: { placeholder: '输入审核小组组长' } },
+        { title: '协同人员', key: 'memberName', props: { placeholder: '输入协同人员' } },
     ];
 
     const columns = [
-        { title: '状态', dataIndex: 'state', width: 80 },
-        { title: '审批状态', dataIndex: 'allotSupplierState', width: 200 },
-        { title: '月度审核计划号', dataIndex: 'source', width: 200 },
-        { title: '月度', dataIndex: 'shareDemanNumber', ellipsis: true, width: 250 },
-        { title: '拟制说明', dataIndex: 'materialName', ellipsis: true, width: 200 },
-        { title: '拟制公司', dataIndex: 'materialGroupCode', ellipsis: true, width: 200 },
-        { title: '拟制部门', dataIndex: 'materialGroupName', ellipsis: true, width: 200 },
-        { title: '拟制人', dataIndex: 'strategicPurchaseCode', ellipsis: true, width: 200 },
-        { title: '拟制日期', dataIndex: 'strategicPurchaseName', ellipsis: true, width: 200 },
-        { title: '需求公司代码', dataIndex: 'corporationCode', width: 140, ellipsis: true, },
-        { title: '需求公司名称', dataIndex: 'corporationCode1', width: 140, ellipsis: true, },
-        { title: '采购组织代码', dataIndex: 'purchaseOrgCode', ellipsis: true, width: 140 },
-        { title: '采购组织名称', dataIndex: 'purchaseOrgCode1', ellipsis: true, width: 140 },
-        { title: '审核原因', dataIndex: 'measureUnit51', ellipsis: true, width: 140 },
-        { title: '审核组织形式', dataIndex: 'measureUnit52', ellipsis: true, width: 140 },
-        { title: '审核方式', dataIndex: 'measureUnit53', ellipsis: true, width: 140 },
-        { title: '审核内容', dataIndex: 'measureUnit54', ellipsis: true, width: 140 },
-        { title: '组长', dataIndex: 'measureUnit55', ellipsis: true, width: 140 },
+        { title: '状态', dataIndex: 'state', width: 80, render: (text) => {
+            switch (text) {
+                case "DRAFT":
+                    return "草稿";
+                case "EFFECT":
+                    return "生效";
+                case "CHANGING":
+                    return "变更中";
+            }
+        } },
+        { title: '审批状态', dataIndex: 'flowStatus', width: 200, render: v => {
+            switch (v) {
+                case 'INIT':
+                    return '未进入流程';
+                case 'INPROCESS':
+                    return '流程中';
+                case 'COMPLETED':
+                    return '流程处理完成';
+            }
+        }, },
+        { title: '月度审核计划号', dataIndex: 'reviewPlanMonthCode', width: 200 },
+        { title: '月度', dataIndex: 'applyMonth', ellipsis: true, width: 250 },
+        { title: '拟制说明', dataIndex: 'reviewPlanMonthName', ellipsis: true, width: 200 },
+        { title: '拟制公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 200 },
+        { title: '拟制部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200 },
+        { title: '拟制人', dataIndex: 'applyName', ellipsis: true, width: 200 },
+        { title: '拟制日期', dataIndex: 'applyDate', ellipsis: true, width: 200 },
+        { title: '需求公司代码', dataIndex: 'applyCorporationCode', width: 140, ellipsis: true, },
+        { title: '需求公司名称', dataIndex: 'applyCorporationName', width: 140, ellipsis: true, },
+        { title: '采购组织代码', dataIndex: 'purchaseTeamCode', ellipsis: true, width: 140 },
+        { title: '采购组织名称', dataIndex: 'purchaseTeamName', ellipsis: true, width: 140 },
+        { title: '审核类型', dataIndex: 'reviewTypeName', ellipsis: true, width: 140 },
+        { title: '审核原因', dataIndex: 'reviewReasonName', ellipsis: true, width: 140 },
+        { title: '审核组织形式', dataIndex: 'reviewOrganizedWayName', ellipsis: true, width: 140 },
+        { title: '审核方式', dataIndex: 'reviewWayName', ellipsis: true, width: 140 },
+        { title: '审核内容', dataIndex: 'treeData', ellipsis: true, width: 140 },
+        { title: '组长', dataIndex: 'leaderName', ellipsis: true, width: 140 },
         { title: '组员', dataIndex: 'measureUnit56', ellipsis: true, width: 140 },
-        { title: '专业组', dataIndex: 'measureUnit57', ellipsis: true, width: 140 },
-        { title: '物料分类代码', dataIndex: 'measureUnit58', ellipsis: true, width: 140 },
-        { title: '物料分类名称', dataIndex: 'measureUnit59', ellipsis: true, width: 140 },
-        { title: '供应商代码', dataIndex: 'measureUnit1', ellipsis: true, width: 140 },
-        { title: '供应商名称', dataIndex: 'measureUnit2', ellipsis: true, width: 140 },
-        { title: '代理商代码', dataIndex: 'measureUnit3', ellipsis: true, width: 140 },
-        { title: '代理商名称', dataIndex: 'measureUnit4', ellipsis: true, width: 140 },
-        { title: '生产厂地址', dataIndex: 'measureUnit5', ellipsis: true, width: 140 },
-        { title: '供应商联系人', dataIndex: 'measureUnit6', ellipsis: true, width: 140 },
-        { title: '供应商联系方式', dataIndex: 'measureUnit7', ellipsis: true, width: 140 },
-        { title: '备注', dataIndex: 'measureUnit8', ellipsis: true, width: 140 },
-        { title: '已创建审核实施计划', dataIndex: 'measureUnit9', ellipsis: true, width: 140 },
+        { title: '专业组', dataIndex: 'specialtyTeamName', ellipsis: true, width: 140 },
+        { title: '物料分类代码', dataIndex: 'materialGroupCode', ellipsis: true, width: 140 },
+        { title: '物料分类名称', dataIndex: 'materialGroupName', ellipsis: true, width: 140 },
+        { title: '供应商代码', dataIndex: 'supplierCode', ellipsis: true, width: 140 },
+        { title: '供应商名称', dataIndex: 'supplierName', ellipsis: true, width: 140 },
+        { title: '代理商代码', dataIndex: 'agentCode', ellipsis: true, width: 140 },
+        { title: '代理商名称', dataIndex: 'agentName', ellipsis: true, width: 140 },
+        { title: '生产厂地址', dataIndex: 'address', ellipsis: true, width: 140, render: (text, item) => {
+            return item.countryName + item.provinceName + item.cityName + item.countyName + item.address;
+          },
+        },
+        { title: '供应商联系人', dataIndex: 'contactUserName', ellipsis: true, width: 140 },
+        { title: '供应商联系方式', dataIndex: 'contactUserTel', ellipsis: true, width: 140 },
+        { title: '备注', dataIndex: 'remark', ellipsis: true, width: 140 },
+        { title: '已创建审核实施计划', dataIndex: 'whetherOccupied', ellipsis: true, width: 140, render:(text)=>text ? "是" : "否"},
     ].map(item => ({ ...item, align: 'center' }));
 
     // 导出
@@ -216,7 +238,7 @@ export default function () {
                                 quickSearchValue: data.quickSearchValue,
                                 ...data.epTechnicalShareDemandSearchBo,
                             },
-                            url: `${recommendUrl}/api/epTechnicalShareDemandService/findByPage`,
+                            url: `${recommendUrl}/api/reviewPlanMonthService/findDetailedReviewPlanMonthAndLine`,
                             type: 'POST',
                         }}
                         allowCancelSelect={true}
