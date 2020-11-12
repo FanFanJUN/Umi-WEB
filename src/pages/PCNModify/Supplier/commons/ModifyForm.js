@@ -97,11 +97,18 @@ const ModifyForm = forwardRef(
                                     store={{
                                         url: `${smBaseUrl}/api/smPcnChangesService/findByPage`,
                                         params: {
-                                            filters: [{
-                                              fieldName:'changeTypeCode',
-                                              value: modifytype,
-                                              operator:'EQ'
-                                            }],
+                                            filters: [
+                                                {
+                                                    fieldName:'changeTypeCode',
+                                                    value: modifytype,
+                                                    operator:'EQ'
+                                                },
+                                                {
+                                                    fieldName:'frozen',
+                                                    value: 0,
+                                                    operator:'EQ'
+                                                }
+                                            ],
                                         },
                                         type: 'POST'
                                     }}

@@ -11,23 +11,6 @@ const commonProps = {
   },
   placeholder: '请选择'
 };
-// 组织机构
-export const orgnazationProps = {
-  store: {
-    url: `${baseUrl}/basic/listAllOrgnazation`,
-    type: 'GET'
-  },
-  style: {
-    width: '100%'
-  },
-  reader: {
-    name: 'name',
-    field: ['code']
-  },
-  placeholder: '选择申请部门'
-}
-
-
 
 // 认定阶段主数据
 export const IdentifiedPhaselist = {
@@ -56,6 +39,91 @@ export const IdentifiedTasklist = {
   // remotePaging: true,
   placeholder: '选择变更类型'
 }
+// 认定类型
+export const CognizanceTypelist = {
+  store: {
+    url: `${baseUrl}/dataDictionaryItem/getDictByTypeCode?dictTypeCode=identified_type`,
+    type: 'POST'
+  },
+  reader: {
+    name: 'name',
+    field: ['value'],
+    description: 'value'
+  },
+  // remotePaging: true,
+  placeholder: '选择变更类型'
+}
+
+// 认定物料类别
+
+export const MaterielCognlist = {
+  store: {
+    url: `${baseUrl}/dataDictionaryItem/getDictByTypeCode?dictTypeCode=identified_material_category`,
+    type: 'POST'
+  },
+  reader: {
+    name: 'name',
+    field: ['value'],
+    description: 'value'
+  },
+  // remotePaging: true,
+  placeholder: '选择变更类型'
+}
+//任务类型
+export const Tasktypelist = {
+  store: {
+    url: `${smBaseUrl}/pubController/findDataDictionaryItemListByTypeCode?typeCode=identefied_task_type`,
+    type: 'POST'
+  },
+  reader: {
+    name: 'name',
+    field: ['value'],
+    description: 'value'
+  },
+  // remotePaging: true,
+  placeholder: '选择变更类型'
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 组织机构
+export const orgnazationProps = {
+  store: {
+    url: `${baseUrl}/basic/listAllOrgnazation`,
+    type: 'GET'
+  },
+  style: {
+    width: '100%'
+  },
+  reader: {
+    name: 'name',
+    field: ['code']
+  },
+  placeholder: '选择申请部门'
+}
+
+
+
+
 // 变更信息
 export const ChangecontentList = {
   store: {

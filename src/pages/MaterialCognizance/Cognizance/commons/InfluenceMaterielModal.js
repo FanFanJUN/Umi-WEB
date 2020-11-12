@@ -2,23 +2,16 @@ import React, { forwardRef, useImperativeHandle, useEffect, useRef ,useState} fr
 import { Modal, Form, Button, message, Input, } from 'antd';
 import { Fieldclassification ,countryListConfig} from '@/utils/commonProps'
 import { ExtTable } from 'suid';
-import { isEmpty } from '@/utils';
-import { smBaseUrl ,baseUrl} from '@/utils/commonUrl';
+import { isEmpty} from '@/utils';
+import { smBaseUrl,baseUrl } from '@/utils/commonUrl';
 import Header from '@/components/Header';
 import styles from '../index.less';
 import {findCanChooseSupplier} from '@/services/SupplierModifyService'
 const { create } = Form;
-const Search = Input.Search;
-let dataSource;
-const getMatermodRef = forwardRef(({
+const getAgentregRef = forwardRef(({
     form,
-    materielCategoryCode,
-    isEdit,
-    iseditMater,
-    implement,
-    materselect = () => null,
-    companyCode,
-    tabledata
+    modifyanalysis = () => null,
+    materieldata
 }, ref,) => {
     useImperativeHandle(ref, () => ({ 
         handleModalVisible,
@@ -32,31 +25,22 @@ const getMatermodRef = forwardRef(({
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [visible, setvisible] = useState(false);
-    const [current, setcurrent] = useState(1);
-    //const [dataSource, setdataSource] = useState([])
+    const [current, setcurrent] = useState([]);
+    // const [dataSource, setdataSource] = useState([])
     useEffect(() => {
-
+        //getSupplierlist()
     }, []);
-    
-    dataSource = {
+    const dataSource = {
         store: {
-            url: `${baseUrl}/api/materialSrmService/findBySecondaryClassificationListAndCompany`,
+            url: `${smBaseUrl}/supplierSupplyList/listPageVo?valid=1&page=1&rows=30&Quick_value=` + searchValue,
             params: {
-                //quickSearchValue: searchValue,
-                ///quickSearchProperties: ['materialCode','materialDesc'],
-                search:{
-                    pageInfo:{page:current,rows:30},
-                    quickSearchProperties:[ "materialCode", "materialDesc"],
-                    quickSearchValue: searchValue
-                },
                 sortOrders: [
                     {
-                        property: '',
+                        property: 'materielCategory',
                         direction: 'DESC'
                     }
                 ],
-                secondaryClassificationCodes:materielCategoryCode,
-                companyCodeList: companyCode
+                //Quick_value: searchValue,
             },
             type: 'POST'
         }
@@ -69,29 +53,14 @@ const getMatermodRef = forwardRef(({
         setRows(rows);
     }
     function handleOk() {
+        //const empty = selectedRowKeys.length > 0;
         if (selectedRowKeys.length === 0) {
             message.error('请选择一行数据！');
         } else {
             //隐藏供应商选择框
-            let result = false;
-            tabledata.map(item =>{
-                selectedRows.map((items,index) => {
-                    if (item.materielTypeCode === items.materialCode){
-                        selectedRows.splice(index,1)
-                        result = true 
-                    } 
-                })
-                
-            }) 
-
-            if (result) {
-               message.error('当前数据已存在，请重新选择！')
-            }
-            selectedRows.map(item => {
-                tabledata.push(item)
-            })
-            materselect(tabledata)
+            modifyanalysis(selectedRows)
             handleModalVisible(false);
+            setSearchValue('');
             cleanSelectedRecord();
         }
     }
@@ -108,6 +77,7 @@ const getMatermodRef = forwardRef(({
         }else {
             setSearchValue(v.target.value)
         }
+        
     }
     // 查询
     function handleQuickSerach() {
@@ -127,34 +97,107 @@ const getMatermodRef = forwardRef(({
     function pageChange(val) {
         setcurrent(val.current)
     }
+    function clearinput() {
+        setSearchValue('')
+        uploadTable();
+    }
     const columns = [
-          {
+        {
+            title: "供应商代码",
+            width: 150,
+            dataIndex: "supplierCode"
+        },
+        {
+            title: "供应商名称",
+            width: 260,
+            dataIndex: "supplier.name"
+        },
+        {
+            title: "原厂代码",
+            width: 150,
+            dataIndex: "originSupplierCode"
+        },
+        {
+            title: "原厂名称",
+            width: 220,
+            dataIndex: "originSupplierName"
+        },
+        {
             title: "物料分类代码",
             width: 150,
-            dataIndex: "codePath"
-          },
-          {
-            title: "物料分类",
-            width: 260,
-            dataIndex: "namePath"
-          },
-          {
-            title: "物料代码",
+            dataIndex: "materielCategoryCode"
+        },
+        {
+            title: "物料分类名称",
+            width: 150,
+            dataIndex: "materielCategory.name"
+        },
+        {
+            title: "采购专业组",
             width: 160,
-            dataIndex: "materialCode"
-          },
-          {
-            title: "物料描述",
-            width: 280,
-            dataIndex: "materialDesc"
-          },
+            dataIndex: "purchaseProfessionalGroup"
+        },
+        {
+            title: "物料级别",
+            width: 140,
+            dataIndex: "materialGrade"
+        },
+        {
+            title: "评定等级",
+            width: 140,
+            dataIndex: "cooperationLevelName"
+        },
+        {
+            title: "公司代码",
+            width: 150,
+            dataIndex: "corporation.code"
+        },
+        {
+            title: "公司名称",
+            width: 240,
+            dataIndex: "corporation.name"
+        },
+        {
+            title: "采购组织代码",
+            width: 140,
+            dataIndex: "purchaseOrgCode"
+        },
+        {
+            title: "采购组织名称",
+            width: 240,
+            dataIndex: "purchaseOrg.name"
+        },
+        {
+            title: "开始日期",
+            width: 150,
+            dataIndex: "startDate",
+            render: (text) => {
+                return text.substring(0, 10);
+            },
+        },
+        {
+            title: "过期日期",
+            width: 150,
+            dataIndex: "endDate",
+            render: (text) => {
+                return text.substring(0, 10);
+            },
+        },
+        {
+            title: "冻结",
+            width: 150,
+            dataIndex: "frozen",
+            render: (text, record, index) => (
+                <div>{record.frozen ? '是' : '否'}</div>
+            ),
+        }
     ].map(_ => ({ ..._, align: 'center' }));
     // 右侧搜索
     const searchBtnCfg = (
         <>
             <Input
                 style={{width:260}}
-                placeholder='请输入物料代码或描述'
+                placeholder='请输入物料分类代码或名称查询'
                 className={styles.btn}
                 onChange={SerachValue}
                 allowClear
@@ -169,7 +212,7 @@ const getMatermodRef = forwardRef(({
             centered
             destroyOnClose={true}
             maskClosable={false}
-            title={"选择物料"}
+            title={"选择影响物料"}
             visible={visible}
             onCancel={() => handleModalVisible(false)}
             onOk={handleOk}
@@ -188,7 +231,7 @@ const getMatermodRef = forwardRef(({
                 ref={tableRef}
                 rowKey={(item) => item.id}
                 checkbox={{
-                    multiSelect: true
+                    multiSelect: false
                 }}
                 allowCancelSelect
                 size='small'
@@ -197,7 +240,6 @@ const getMatermodRef = forwardRef(({
                 onSelectRow={handleSelectedRows}
                 selectedRowKeys={selectedRowKeys}
                 onChange={pageChange}
-                //dataSource={dataSource}
                 {...dataSource}
             />
       </Modal>
@@ -205,4 +247,4 @@ const getMatermodRef = forwardRef(({
 },
 );
 
-export default create()(getMatermodRef);
+export default create()(getAgentregRef);

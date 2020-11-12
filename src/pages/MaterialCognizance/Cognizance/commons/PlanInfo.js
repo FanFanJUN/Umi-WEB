@@ -3,8 +3,9 @@ import { Form, Row, Input, Col, DatePicker, Radio, Button } from 'antd';
 import { utils, ComboList} from 'suid';
 import { onlyNumber} from '@/utils'
 import RecommendModle from './recommendModle'
-import InfluenceMaterielModal from '../../../PCNModify/Supplier/commons/InfluenceMaterielModal'
+import InfluenceMaterielModal from '../commons/InfluenceMaterielModal'
 import UploadFile from '../../../../components/Upload/index'
+import {CognizanceTypelist,MaterielCognlist} from '../../commonProps'
 const { Item, create } = Form;
 const { TextArea } = Input;
 const { storage } = utils;
@@ -49,12 +50,22 @@ const HeadFormRef = forwardRef(({
         onOk(val.value);
     }
     function handleSingle() {
-        if (manual) {
-            //getMatermodRef.current.handleModalVisible(true);
-        }else {
-            getRecommendRef.current.handleModalVisible(true);
-        }
-        
+        // if (manual) {
+        //     //getMatermodRef.current.handleModalVisible(true);
+        // }else {
+        //     getModelRef.current.handleModalVisible(true);
+        // }
+        getModelRef.current.handleModalVisible(true);
+    }
+    function selectanalysis(record) {
+        console.log(record)
+        form.setFieldsValue({
+            'corporationName': record[0].corporation.name,
+            'smSupplierName': record[0].purchaseOrg.name,
+            'createdDate': record[0].supplier.name,
+            'originSupplierName': record[0].originSupplierName,
+            'materielCategory': record[0].materielCategory.name
+        });
     }
     return (
         <>
@@ -63,7 +74,7 @@ const HeadFormRef = forwardRef(({
                 <Col span={10}>
                     <Item {...formLayout} label='公司名称' >
                         {isView ? <span>{}</span> :
-                            getFieldDecorator('supplierVo.name', {
+                            getFieldDecorator('corporationName', {
                                 initialValue: '',
                                 rules: [{required: true, message: "请输入公司名称！",}]
                             })(
@@ -119,15 +130,9 @@ const HeadFormRef = forwardRef(({
                 <Col span={10}>
                     <Item label='原厂名称' {...formLayout}>
                         {
-                            isView ? <span>{editformData ?  editformData.createdDate : ''}</span> :
-                            getFieldDecorator("createdDate", {
+                            isView ? <span>{editformData ?  editformData.originSupplierName : ''}</span> :
+                            getFieldDecorator("originSupplierName", {
                                 initialValue: '',
-                                rules: [
-                                    {
-                                        required: true,
-                                        message: '请输入原厂名称'
-                                    }
-                                ]
                             })(
                                 <Input disabled />
                             )
@@ -139,8 +144,8 @@ const HeadFormRef = forwardRef(({
                 <Col span={10}>
                     <Item label='物料分类' {...formLayout}>
                         {
-                            isView ? <span>{editformData ?  editformData.createdDate : ''}</span> :
-                            getFieldDecorator("createdDate", {
+                            isView ? <span>{editformData ?  editformData.materielCategory : ''}</span> :
+                            getFieldDecorator("materielCategory", {
                                 initialValue: '',
                                 rules: [
                                     {
@@ -167,7 +172,15 @@ const HeadFormRef = forwardRef(({
                                     }
                                 ]
                             })(
-                                <Input disabled />
+                                <ComboList disabled={isView === true}
+                                    {...MaterielCognlist}
+                                    showSearch={false}
+                                    style={{ width: '100%' }}
+                                    name='smPcnChangeTypeName' 
+                                    field={['smPcnChangeTypeCode']} 
+                                    afterSelect={afterSelect}
+                                    form={form} 
+                                />
                             )
                         }
                     </Item>
@@ -187,7 +200,15 @@ const HeadFormRef = forwardRef(({
                                     }
                                 ]
                             })(
-                                <Input disabled />
+                                <ComboList disabled={isView === true}
+                                    {...CognizanceTypelist}
+                                    showSearch={false}
+                                    style={{ width: '100%' }}
+                                    name='smPcnChangeTypeName' 
+                                    field={['smPcnChangeTypeCode']} 
+                                    afterSelect={afterSelect}
+                                    form={form} 
+                                />
                             )
                         }
                     </Item>
@@ -230,20 +251,22 @@ const HeadFormRef = forwardRef(({
                         }
                     </Item>
                 </Col>
-                <Col span={10}>
-                    <Item label='准入单号' {...formLayout}>
-                        {
-                            isView ? <span>{editformData ?  editformData.createdDate : ''}</span> :
-                            getFieldDecorator("createdDate", {
-                                initialValue: '',
-                            })(
-                                <TextArea style={{width: "100%"}}
-                                    placeholder="请输入计划说明"
-                                />
-                            )
-                        }
-                    </Item>
-                </Col>
+                {
+                    !manual ?  <Col span={10}>
+                        <Item label='准入单号' {...formLayout}>
+                            {
+                                isView ? <span>{editformData ?  editformData.createdDate : ''}</span> :
+                                getFieldDecorator("createdDate", {
+                                    initialValue: '',
+                                })(
+                                    <TextArea style={{width: "100%"}}
+                                        placeholder="请输入计划说明"
+                                    />
+                                )
+                            }
+                        </Item>
+                    </Col> : null
+                }
             </Row>
                       
         </div>
@@ -251,7 +274,7 @@ const HeadFormRef = forwardRef(({
             wrappedComponentRef={getRecommendRef} 
         /> 
          <InfluenceMaterielModal
-            //modifyanalysis={selectanalysis}
+            modifyanalysis={selectanalysis}
             wrappedComponentRef={getModelRef}
         />
        </>  

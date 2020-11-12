@@ -17,7 +17,8 @@ const ModifyinfoRef = forwardRef(({
   editformData = [],
   headerInfo,
   modifytype,
-  isEdit
+  isEdit,
+  isView
 }, ref) => {
   useImperativeHandle(ref, () => ({
     getmodifyform,
@@ -38,7 +39,41 @@ const ModifyinfoRef = forwardRef(({
   useEffect(() => {
     hanldModify(editformData)
   }, [editformData])
-
+  // 明细表格
+  let columnsdetail = [];
+  if (isView) {
+    columnsdetail.push(
+      {
+        title: '计划时间',
+        dataIndex: 'smChangeValue',
+        align: 'center',
+        width: 180
+      },
+      {
+        title: '是否超期',
+        dataIndex: 'smChangeDescriptionBefore',
+        align: 'center',
+        width: 220,
+      },
+      {
+        title: '是否催办',
+        dataIndex: 'smChangeDescriptionAfter',
+        align: 'center',
+        width: 220,
+      },
+    );
+  }
+  let columnsother = [];
+  if (!isView) {
+    columnsdetail.push(
+      {
+        title: '计划完成天数',
+        align: 'center',
+        dataIndex: 'smChangeProve',
+        width: 220,
+      },
+    );
+  }
   const columns = [
     {
       title: '认定阶段',
@@ -76,12 +111,8 @@ const ModifyinfoRef = forwardRef(({
       align: 'center',
       width: 90
     },
-    {
-        title: '计划完成天数',
-        align: 'center',
-        dataIndex: 'smChangeProve',
-        width: 220,
-    },
+    ...columnsother,
+    ...columnsdetail,
     {
         title: '备注',
         dataIndex: 'attachmentId',
@@ -206,7 +237,7 @@ const ModifyinfoRef = forwardRef(({
         <AuthButton type="primary" className={styles.btn} onClick={() => showModal()}>新增</AuthButton>
       }
       {
-        <AuthButton className={styles.btn} onClick={() => handleEdit()} disabled={empty} >编辑</AuthButton>
+        <AuthButton className={styles.btn} onClick={() => handleEdit()}>编辑</AuthButton>
       }
       {
         <AuthButton className={styles.btn} disabled={empty} onClick={handleRemove}>删除</AuthButton>
