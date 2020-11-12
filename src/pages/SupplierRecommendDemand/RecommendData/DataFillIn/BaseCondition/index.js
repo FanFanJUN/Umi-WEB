@@ -17,6 +17,7 @@ import MproCertification from './MproCertification';
 import { router } from 'dva';
 import { findrBaseInfoById, saveBaseInfo } from '../../../../../services/dataFillInApi';
 import { filterEmptyFileds } from '../CommonUtil/utils';
+import moment from 'moment';
 
 const BaseCondition = ({ form, updateGlobalStatus }) => {
 
@@ -25,15 +26,22 @@ const BaseCondition = ({ form, updateGlobalStatus }) => {
   const [proData, setProData] = useState([]);
   const [otherData, setOtherData] = useState([]);
   const { query: { id, type = 'add' } } = router.useLocation();
-
+  (proData, otherData)
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const res = await findrBaseInfoById({ supplierRecommendDemandId: '676800B6-F19D-11EA-9F88-0242C0A8442E' });
-      if (res.success) {
-        res.data && setData(res.data);
+      const { success, data, message: msg } = await findrBaseInfoById({ supplierRecommendDemandId: id });
+      if (success) {
+        // const { productCertifications, otherCertifications, ...other } = data
+        await setData({ ...data });
+        await form.setFieldsValue({
+          ...data,
+          setUpTime: moment(data.setUpTime)
+        })
+        await setProData(data.productCertifications)
+        await setOtherData(data.otherCertifications)
       } else {
-        message.error(res.message);
+        message.error(msg);
       }
       setLoading(false);
     };
@@ -42,7 +50,6 @@ const BaseCondition = ({ form, updateGlobalStatus }) => {
 
   function handleSave() {
     form.validateFieldsAndScroll((error, value) => {
-      console.log(value);
       if (error) return;
       const saveParams = {
         ...value,
@@ -50,6 +57,7 @@ const BaseCondition = ({ form, updateGlobalStatus }) => {
         supplierContacts: data.supplierContacts,
         managementSystems: data.managementSystems,
         recommendDemandId: id,
+        id: data.id,
         actualCapacityFactor: (value.designCapability / value.actualCapacity).toFixed(2), // 现有产能利用率 设计产能/实际产能
         productCertifications: proData || [],
         otherCertifications: otherData || [],

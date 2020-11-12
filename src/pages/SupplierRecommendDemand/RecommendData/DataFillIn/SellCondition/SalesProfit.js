@@ -7,8 +7,8 @@
  * @Description: 销售收入及利润 Table
  * @Connect: 1981824361@qq.com
  */
-import { useEffect, useState, useRef, Fragment } from 'react';
-import { Button, Divider, Form } from 'antd';
+import { useState } from 'react';
+import { Form } from 'antd';
 import EditTable from '../CommonUtil/EditTable';
 
 const SalesProfit = ({ data, type, setTableData }) => {
@@ -16,51 +16,51 @@ const SalesProfit = ({ data, type, setTableData }) => {
 
   const columns = [
     {
-      "title": "年度",
-      "dataIndex": "year",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "年度",
+      dataIndex: "year",
+      ellipsis: true,
+      editable: true,
+      // inputType: 'in',
       //  required: false
     },
     {
-      "title": "销售金额",
-      "dataIndex": "salesAmount",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "销售金额",
+      dataIndex: "salesAmount",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
     },
     {
-      "title": "利润",
-      "dataIndex": "profit",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "利润",
+      dataIndex: "profit",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
     },
     {
-      "title": "币种",
-      "dataIndex": "currencyName",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'selectwithService',
+      title: "币种",
+      dataIndex: "currencyName",
+      ellipsis: true,
+      editable: true,
+      inputType: 'selectwithService',
     }
   ];
 
   function setNewData(newData) {
-    console.log(newData);
+    (newData);
     setDataSource(newData);
     setTableData(newData, 'supplierSalesProceeds');
   }
-  return <Fragment>
+  return (
     <EditTable
       dataSource={dataSource || []}
       columns={columns}
-      rowKey='id'
+      rowKey='guid'
       setNewData={setNewData}
       isEditTable={type === 'add'}
       isToolBar={type === 'add'}
     />
-  </Fragment>
+  )
 }
 
 export default Form.create()(SalesProfit);

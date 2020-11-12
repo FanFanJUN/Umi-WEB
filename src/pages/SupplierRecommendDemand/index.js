@@ -1,6 +1,7 @@
 import {
   useState,
-  useRef
+  useRef,
+  useEffect
 } from 'react';
 import styles from './index.less';
 import { Header, AutoSizeLayout, AdvancedForm } from '../../components'
@@ -239,7 +240,7 @@ export default () => {
     const { pathname } = window.location;
     openNewTab(`supplier/recommend/demand/editor?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '编辑供应商推荐需求', false)
   }
-  
+
   // 填报信息确认页签打开
   function handleOpenInfomationConfirm() {
     const [key] = selectedRowKeys;
@@ -351,6 +352,17 @@ export default () => {
       }
     })
   }
+  // 监听二级路由关闭更新列表
+  function listenerParentClose(event) {
+    const { data = {} } = event;
+    if (data.tabAction === 'close') {
+      tableRef.current.remoteDataRefresh()
+    }
+  }
+  useEffect(() => {
+    window.parent.frames.addEventListener('message', listenerParentClose, false);
+    return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
+  }, [])
   return (
     <div>
       <Header

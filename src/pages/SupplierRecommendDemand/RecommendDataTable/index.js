@@ -2,7 +2,7 @@ import react, { useState, useRef } from 'react';
 import styles from './index.less';
 import { Header, AutoSizeLayout } from '../../../components';
 import { ExtTable } from 'suid';
-import { Input, Select, Button } from 'antd';
+import { Input, Select, Button, Modal } from 'antd';
 import { openNewTab, getFrameElement, commonUrl } from '../../../utils';
 const { recommendUrl } = commonUrl;
 const { Search } = Input
@@ -73,9 +73,9 @@ function RecommendDataTable() {
   const left = (
     <>
       <Button className={styles.btn} onClick={handleFillIn} disabled={empty}>填报</Button>
-      <Button className={styles.btn} disabled={empty}>明细</Button>
+      <Button className={styles.btn} disabled={empty} onClick={checkDetail}>明细</Button>
       <Button className={styles.btn} disabled={empty}>撤回</Button>
-      <Button className={styles.btn} disabled={empty}>查看意见</Button>
+      <Button className={styles.btn} disabled={empty} onClick={checkOpinion}>查看意见</Button>
     </>
   )
   const right = (
@@ -95,9 +95,26 @@ function RecommendDataTable() {
   }
   // 记录列表选中项
   function handleSelectedRows(rowKeys, rows) {
-    console.log(rowKeys, rows)
     setRowKeys(rowKeys);
     setRows(rows)
+  }
+  // 查看意见
+  function checkOpinion() {
+    // const store = {
+    //   url: ``
+    // }
+    Modal.confirm({
+      title: '查看意见',
+      content: <ExtTable />,
+      wdith: '60vw'
+    })
+  }
+  // 查看明细
+  function checkDetail() {
+    const { id = '' } = FRAMELEEMENT;
+    const [key] = selectedRowKeys;
+    const { pathname } = window.location;
+    openNewTab(`supplier/recommend/demand/detail?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '供应商推荐需求明细', false)
   }
   return (
     <div>

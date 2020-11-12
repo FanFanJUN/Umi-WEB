@@ -160,7 +160,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
       // }
     }
     form.validateFieldsAndScroll((error, value) => {
-      console.log(value);
+      (value);
       if (error) return;
       const saveParams = {
         ...value,
@@ -275,7 +275,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
             <div className={styles.bgw}>
               <div className={styles.title}>交货管控</div>
               <div className={styles.content}>
-                <Divider>紧急交货</Divider>
+                <Divider orientation='left'>紧急交货</Divider>
                 <Row>
                   <Col span={12}>
                     <FormItem label="是否愿意承接紧急订单" {...formLayout}>
@@ -294,7 +294,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     </FormItem>
                   </Col>
                 </Row>
-                <Divider>库存能力</Divider>
+                <Divider orientation='left'>库存能力</Divider>
                 <Row>
                   <Col span={12}>
                     <FormItem label="是否根据要求维持一定库存(含质量安全库存)" {...formLayout}>
@@ -342,7 +342,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     </FormItem>
                   </Col>
                 </Row>
-                <Divider>备货流程、系统</Divider>
+                <Divider orientation='left'>备货流程、系统</Divider>
                 <Row>
                   <Col span={12}>
                     <FormItem label="建有备货流程、系统" {...formLayout}>
@@ -378,7 +378,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     </FormItem>
                   </Col>
                 </Row>
-                <Divider>交货流程、系统</Divider>
+                <Divider orientation='left'>交货流程、系统</Divider>
                 <Row>
                   <Col span={12}>
                     <FormItem label="建有交货流程、系统" {...formLayout}>
@@ -414,7 +414,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     </FormItem>
                   </Col>
                 </Row>
-                <Divider>紧急交货的流程、系统</Divider>
+                <Divider orientation='left'>紧急交货的流程、系统</Divider>
                 <Row>
                   <Col span={12}>
                     <FormItem label="紧急交货的流程、系统" {...formLayout}>
@@ -450,7 +450,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     </FormItem>
                   </Col>
                 </Row>
-                <Divider>客户满意度、客户投诉处理流程、系统</Divider>
+                <Divider orientation='left'>客户满意度、客户投诉处理流程、系统</Divider>
                 <Row>
                   <Col span={12}>
                     <FormItem label="客户满意度、客户投诉处理流程、系统" {...formLayout}>
@@ -486,7 +486,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     </FormItem>
                   </Col>
                 </Row>
-                <Divider>物料存储</Divider>
+                <Divider orientation='left'>物料存储</Divider>
                 <Row>
                   <Col span={12}>
                     <FormItem label="生产过程中物料的暂存、仓储中物料、成品的存放区域是否与其供货能力相适应" {...formLayout}>
@@ -523,7 +523,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     </FormItem>
                   </Col>
                 </Row>
-                <Divider>延误处理</Divider>
+                <Divider orientation='left'>延误处理</Divider>
                 <Row>
                   <Col span={12}>
                     <FormItem label="保证在交货延误时能够尽早通知用户的良好预警措施" {...formLayout}>
@@ -566,7 +566,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
             <div className={styles.bgw}>
               <div className={styles.title}>物流</div>
               <div className={styles.content}>
-                <Divider>汽运</Divider>
+                <Divider orientation='left'>汽运</Divider>
                 <EditableFormTable
                   dataSource={[]}
                   columns={columnsForCarTransport}
@@ -574,7 +574,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                 // isEditTable
                 // setNewData={setNewData}
                 />
-                <Divider>空运</Divider>
+                <Divider orientation='left'>空运</Divider>
                 <Row>
                   <Col span={12}>
                     <FormItem label="是否存在空运" {...formLayout}>
@@ -621,7 +621,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     </FormItem>
                   </Col>
                 </Row>
-                <Divider>发运</Divider>
+                <Divider orientation='left'>发运</Divider>
                 <Row>
                   <Col span={12}>
                     <FormItem label="在发运数量上是否能够灵活处理" {...formLayout}>
@@ -640,7 +640,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     </FormItem>
                   </Col>
                 </Row>
-                <Divider>危化品处理</Divider>
+                <Divider orientation='left'>危化品处理</Divider>
                 <Row>
                   <Col span={12}>
                     <FormItem label="是否选择具有危险化学品合法运输资质的承运方" {...formLayout}>
@@ -686,7 +686,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                 <EditableFormTable
                   dataSource={keyMaterialSuppliers}
                   columns={columnsForKeyMat}
-                  rowKey='id'
+                  rowKey='guid'
                   isEditTable={type === 'add'}
                   isToolBar={type === 'add'}
                   setNewData={setNewData}

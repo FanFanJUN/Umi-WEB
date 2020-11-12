@@ -33,6 +33,7 @@ const EditableCell = (params) => {
       inputDisabled,
       inputDefaultValue,
       selectOptions,
+      props,
     }
   } = params;
   const { getFieldDecorator } = form;
@@ -49,7 +50,7 @@ const EditableCell = (params) => {
       case 'InputNumber':
         return <InputNumber disabled={inputDisabled} min={0} />
       case 'DatePicker':
-        return <DatePicker />
+        return <DatePicker {...props}/>
       case 'Select':
         if (selectOptions) {
           return <Select
@@ -161,10 +162,8 @@ const EditableCell = (params) => {
 }
 
 const EditableTable = (props) => {
-
   const { form, dataSource, columns, rowKey, isEditTable = false, isToolBar = false, setNewData,
     recommendDemandId = '676800B6-F19D-11EA-9F88-0242C0A8442E', tableType } = props;
-
   const [editingKey, setEditingKey] = useState('');
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const tableRef = useRef(null);
@@ -216,7 +215,7 @@ const EditableTable = (props) => {
           <a disabled={editingKey !== ''} onClick={() => edit(record[rowKey])} key='edit'>
             编辑
                     </a>
-          <Divider type="vertical" />
+          <Divider orientation='left' type="vertical" />
           <Popconfirm title="确定删除？" onConfirm={() => deleteRow(record[rowKey], 'delete')}>
             <a disabled={editingKey !== ''} key='delete' style={editingKey !== '' ? { color: 'rgba(0, 0, 0, 0.25)' } : { color: 'red' }}>
               删除
@@ -255,6 +254,7 @@ const EditableTable = (props) => {
           inputDisabled: col.inputDisabled,
           inputDefaultValue: col.inputDefaultValue,
           selectOptions: col.selectOptions, // 下拉选类型
+          props: col.props
         }} />
       }
     };
@@ -265,10 +265,8 @@ const EditableTable = (props) => {
       if (error) {
         return;
       }
-      console.log(row);
       const newData = [...dataSource];
       const index = newData.findIndex(item => key === item[rowKey]);
-      console.log(index);
       if (index > -1) {
         const item = newData[index];
         newData.splice(index, 1, {

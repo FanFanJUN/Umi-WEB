@@ -111,6 +111,22 @@ const FormContext = forwardRef(({
   const [attachment, setAttachment] = useState(null);
   const [systemView, setSystemView] = useState(null);
   const [selectedRowKeys, setRowKeys] = useState([]);
+  const checkbox = type === 'detail' ? false : { multiSelect: true };
+  const left = type === 'detail' ? null : (
+    <>
+      <Button
+        style={{ margin: '0 6px' }}
+        onClick={() => {
+          recRef.current.show()
+        }}
+        disabled={type === 'detail'}
+      >新增</Button>
+      <Button
+        onClick={handleRemoveSelectedRows}
+        disabled={type === 'detail' || empty}
+      >删除</Button>
+    </>
+  )
   // const [selectedRows, setRows] = useState([]);
   const recRef = createRef(null);
   const {
@@ -434,28 +450,14 @@ const FormContext = forwardRef(({
             <FormItem label='拟推荐公司(多个)' {...formLayoutAlone} required>
             </FormItem>
             <Header
-              left={
-                <>
-                  <Button
-                    style={{ margin: '0 6px' }}
-                    onClick={() => {
-                      recRef.current.show()
-                    }}
-                    disabled={type === 'detail'}
-                  >新增</Button>
-                  <Button
-                    onClick={handleRemoveSelectedRows}
-                    disabled={type === 'detail' || empty}
-                  >删除</Button>
-                </>
-              }
+              left={left}
             ></Header>
             <ExtTable
               showSearch={false}
               dataSource={recommendCompany}
               columns={recommendColumns}
               rowKey={item => `${item.identifyTypeCode}-${item.purchaseOrgCode}`}
-              checkbox={{ multiSelect: true }}
+              checkbox={checkbox}
               selectedRowKeys={selectedRowKeys}
               onSelectRow={handleSelectedRows}
             ></ExtTable>

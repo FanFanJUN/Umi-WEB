@@ -62,7 +62,7 @@ const DWC = ({ form, updateGlobalStatus }) => {
 
   function handleSave() {
     form.validateFieldsAndScroll((error, value) => {
-      console.log(value);
+      (value);
       if (error) return;
       const saveParams = {
         ...value,
@@ -81,9 +81,9 @@ const DWC = ({ form, updateGlobalStatus }) => {
   }
 
   function handleChange(e) {
-    // console.log(getFieldValue('otherPayCondition'));
+    // (getFieldValue('otherPayCondition'));
     // if (e && e.target.value !== 'RMB' && getFieldValue('otherPayCondition')) {
-    //     console.log(getFieldValue('otherPayCondition'));
+    //     (getFieldValue('otherPayCondition'));
     //     resetFields(['otherPayCondition']);
     // }
   }
@@ -107,7 +107,7 @@ const DWC = ({ form, updateGlobalStatus }) => {
             <div className={styles.bgw}>
               <div className={styles.title}>合作意愿</div>
               <div className={styles.content}>
-                <Divider>协议</Divider>
+                <Divider orientation='left'>协议</Divider>
                 <Row>
                   <Col span={12}>
                     <FormItem label="签订质量协议" {...formLayout}>
@@ -201,7 +201,7 @@ const DWC = ({ form, updateGlobalStatus }) => {
                     </FormItem>
                   </Col>
                 </Row>
-                <Divider>付款条件</Divider>
+                <Divider orientation='left'>付款条件</Divider>
                 <Row>
                   <Col span={24}>
                     <FormItem label="付款条件" {...formLayoutCol}>

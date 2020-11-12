@@ -164,7 +164,7 @@ const QuotationAndGPCA = ({ updateGlobalStatus }) => {
                 <EditTable
                   dataSource={dataSource}
                   columns={columns}
-                  rowKey='id'
+                  rowKey='guid'
                   setNewData={setNewData}
                   isEditTable={type === 'add'}
                   isToolBar={type === 'add'}

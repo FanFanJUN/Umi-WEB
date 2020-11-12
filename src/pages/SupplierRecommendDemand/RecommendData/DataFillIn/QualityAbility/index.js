@@ -307,7 +307,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
             // }
         }
         form.validateFieldsAndScroll((error, value) => {
-            console.log(value);
+            (value);
             if (error) return;
             const saveParams = {
                 ...value,
@@ -368,7 +368,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                         <div className={styles.bgw}>
                             <div className={styles.title}>企业质量保证能力</div>
                             <div className={styles.content}>
-                                <Divider>检测范围</Divider>
+                                <Divider orientation='left'>检测范围</Divider>
                                 <Row>
                                     <Col span={12}>
                                         <FormItem label="材料入厂检验" {...formLayout}>
@@ -421,11 +421,11 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                                         </FormItem>
                                     </Col>
                                 </Row>
-                                <Divider>重点控制工序</Divider>
+                                <Divider orientation='left'>重点控制工序</Divider>
                                 <EditableFormTable
                                     dataSource={keyControlProcesses}
                                     columns={columnsForKeyControl}
-                                    rowKey='id'
+                                    rowKey='guid'
                                     setNewData={setNewData}
                                     isEditTable={type === 'add'}
                                     isToolBar={type === 'add'}
@@ -551,7 +551,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                                         </FormItem>
                                     </Col>
                                 </Row>
-                                <Divider>关键检测、实验设备（仪器、仪表、可靠性实验设备等）</Divider>
+                                <Divider orientation='left'>关键检测、实验设备（仪器、仪表、可靠性实验设备等）</Divider>
                                 <Row>
                                     <Col span={12}>
                                         <FormItem label="设备清单" {...formLayout}>
@@ -575,7 +575,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                                 <EditableFormTable
                                     dataSource={keyTestingEquipments}
                                     columns={columnsForProKeyPro}
-                                    rowKey='id'
+                                    rowKey='guid'
                                     setNewData={setNewData}
                                     tableType='keyTestingEquipments'
                                     isEditTable={type === 'add'}
@@ -602,13 +602,13 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                                 <EditableFormTable
                                     dataSource={cannotTestItems}
                                     columns={columnsForProject}
-                                    rowKey='id'
+                                    rowKey='guid'
                                     isEditTable={type === 'add'}
                                     isToolBar={type === 'add'}
                                     setNewData={setNewData}
                                     tableType='cannotTestItems'
                                 />
-                                <Divider>不检测项目</Divider>
+                                <Divider orientation='left'>不检测项目</Divider>
                                 <Row>
                                     <Col span={12}>
                                         <FormItem label="例举" {...formLayout}>
@@ -624,7 +624,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                                         </FormItem>
                                     </Col>
                                 </Row>
-                                <Divider>次年加强检测的手段、措施</Divider>
+                                <Divider orientation='left'>次年加强检测的手段、措施</Divider>
                                 <Row>
                                     <Col span={12}>
                                         <FormItem label="从硬件上计划进哪些检测设备（仪表仪器" {...formLayout}>
@@ -655,7 +655,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                                         </FormItem>
                                     </Col>
                                 </Row>
-                                <Divider>产品质量控制流程简介及成品出货检验规范</Divider>
+                                <Divider orientation='left'>产品质量控制流程简介及成品出货检验规范</Divider>
                                 <Row>
                                     <Col span={12}>
                                         <FormItem label="产品质量控制流程简介" {...formLayout}>
@@ -720,31 +720,31 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                                         </FormItem>
                                     </Col>
                                 </Row>
-                                <Divider>成品检验项目</Divider>
+                                <Divider orientation='left'>成品检验项目</Divider>
                                 <EditableFormTable
                                     dataSource={finishedProductTestingItems}
                                     columns={columnsForFinishPro}
-                                    rowKey='id'
+                                    rowKey='guid'
                                     isEditTable={type === 'add'}
                                     isToolBar={type === 'add'}
                                     setNewData={setNewData}
                                     tableType='finishedProductTestingItems'
                                 />
-                                <Divider>原材料质量状况</Divider>
+                                <Divider orientation='left'>原材料质量状况</Divider>
                                 <EditableFormTable
                                     dataSource={materialQualities}
                                     columns={columnsForQuality}
-                                    rowKey='id'
+                                    rowKey='guid'
                                     isEditTable={type === 'add'}
                                     isToolBar={type === 'add'}
                                     setNewData={setNewData}
                                     tableType='materialQualities'
                                 />
-                                <Divider>成品质量状况</Divider>
+                                <Divider orientation='left'>成品质量状况</Divider>
                                 <EditableFormTable
                                     dataSource={finishedProductQualities}
                                     columns={columnsForFinishQua}
-                                    rowKey='id'
+                                    rowKey='guid'
                                 />
                             </div>
                         </div>

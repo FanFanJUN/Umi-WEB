@@ -273,7 +273,7 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
             // }
         }
         form.validateFieldsAndScroll((error, value) => {
-            console.log(value);
+            (value);
             if (error) return;
             const saveParams = {
                 ...value,
@@ -334,7 +334,7 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
                                 <EditableFormTable
                                     dataSource={productionCapacities}
                                     columns={columnsForProCapacity}
-                                    rowKey='id'
+                                    rowKey='guid'
                                     setNewData={setNewData}
                                     isEditTable={type === 'add'}
                                     isToolBar={type === 'add'}
@@ -350,7 +350,7 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
                                 <EditableFormTable
                                     dataSource={data.currentProductionSituations}
                                     columns={columnsForProSitu}
-                                    rowKey='id'
+                                    rowKey='guid'
                                 // setNewData={setNewData}
                                 />
                             </div>
@@ -380,7 +380,7 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
                                 <EditableFormTable
                                     dataSource={keyProductEquipments}
                                     columns={columnsForEqu}
-                                    rowKey='id'
+                                    rowKey='guid'
                                     setNewData={setNewData}
                                     isEditTable={type === 'add'}
                                     isToolBar={type === 'add'}
@@ -396,7 +396,7 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
                                 <EditableFormTable
                                     dataSource={data.productManufacturingIntroductions}
                                     columns={columnsForOther}
-                                    rowKey='id'
+                                    rowKey='guid'
                                 />
                             </div>
                         </div>
@@ -408,7 +408,7 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
                                 <EditableFormTable
                                     dataSource={technologyEquipments}
                                     columns={columnsForKeyProcess}
-                                    rowKey='id'
+                                    rowKey='guid'
                                     isEditTable={type === 'add'}
                                     isToolBar={type === 'add'}
                                     setNewData={setNewData}

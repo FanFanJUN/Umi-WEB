@@ -8,7 +8,7 @@
  * @Connect: 1981824361@qq.com
  */
 import React from 'react';
-import { useState, Fragment } from 'react';
+import { useState } from 'react';
 import { Divider, Form, Row, Col, Input, Radio } from 'antd';
 import EditableFormTable from '../CommonUtil/EditTable';
 
@@ -47,64 +47,56 @@ const MarketCompetitive = React.forwardRef(({ form, data, type, setTableData }, 
     setsupplierMajorCompetitors(newData);
     setTableData(newData, 'supplierMajorCompetitors');
   }
-  const FormInfo = () => {
-    return (
-      <Fragment>
-        <Row>
-          <Col span={24}>
-            <FormItem label="行业知名度" {...formLayout}>
-              {getFieldDecorator('industryVisibility', {
-                initialValue: type === 'add' ? 'JOINT_VENTURES_INTERNATIONA_FAMOUS' : data.industryVisibility,
-              })(<Radio.Group>
-                <Radio value={'INTERNATIONAL_FAMOUS'}>行业内的国际知名企业</Radio>
-                <Radio value={'JOINT_VENTURES_INTERNATIONA_FAMOUS'}>行业内国际知名企业在中国的合资企业</Radio>
-                <Radio value={'DOMESTIC_FAMOUS'}>行业内的国内知名企业</Radio>
-                <Radio value={'ALL_NOT'}>都不是</Radio>
-              </Radio.Group>)}
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col span={24}>
-            <FormItem label="企业的主要竞争优势" {...formLayout}>
-              {getFieldDecorator('competitiveEdge', {
-                initialValue: type === 'add' ? '' : data.competitiveEdge,
-                rules: [
-                  {
-                    required: true,
-                    message: '企业的主要竞争优势不能为空',
-                  },
-                ],
-              })(<Input.TextArea placeholder="请输入主要竞争优势" style={{ width: '100%' }} />)}
-            </FormItem>
-          </Col>
-        </Row>
-      </Fragment>
-    )
-  }
 
-  return <Fragment>
+  return (
     <div>
-      <FormInfo />
-      <Divider>市场地位</Divider>
+      <Row>
+        <Col span={24}>
+          <FormItem label="行业知名度" {...formLayout}>
+            {getFieldDecorator('industryVisibility', {
+              initialValue: type === 'add' ? 'JOINT_VENTURES_INTERNATIONA_FAMOUS' : data.industryVisibility,
+            })(<Radio.Group>
+              <Radio value={'INTERNATIONAL_FAMOUS'}>行业内的国际知名企业</Radio>
+              <Radio value={'JOINT_VENTURES_INTERNATIONA_FAMOUS'}>行业内国际知名企业在中国的合资企业</Radio>
+              <Radio value={'DOMESTIC_FAMOUS'}>行业内的国内知名企业</Radio>
+              <Radio value={'ALL_NOT'}>都不是</Radio>
+            </Radio.Group>)}
+          </FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={24}>
+          <FormItem label="企业的主要竞争优势" {...formLayout}>
+            {getFieldDecorator('competitiveEdge', {
+              initialValue: type === 'add' ? '' : data.competitiveEdge,
+              rules: [
+                {
+                  required: true,
+                  message: '企业的主要竞争优势不能为空',
+                },
+              ],
+            })(<Input.TextArea placeholder="请输入主要竞争优势" style={{ width: '100%' }} />)}
+          </FormItem>
+        </Col>
+      </Row>
+      <Divider orientation='left' orientation='left'>市场地位</Divider>
       <EditableFormTable
         columns={columnsForMarket}
-        rowKey='id'
-        // {...tableProps}
+        rowKey='guid'
         dataSource={data.marketPositions}
       />
-      <Divider>主要竞争对手排名</Divider>
+      <Divider orientation='left' orientation='left'>主要竞争对手排名</Divider>
       <EditableFormTable
         columns={columnsForRank}
         bordered
-        rowKey='id'
+        rowKey='guid'
         isEditTable={type === 'add'}
         isToolBar={type === 'add'}
         dataSource={supplierMajorCompetitors || []}
         setNewData={setNewData}
       />
     </div>
-  </Fragment>
+  )
 })
 
 export default MarketCompetitive;

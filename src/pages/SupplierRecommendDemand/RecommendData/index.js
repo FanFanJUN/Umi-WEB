@@ -7,7 +7,6 @@
  * @Description: 
  * @Connect: 1981824361@qq.com
  */
-import { useEffect, useState } from 'react';
 import styles from './index.less'
 import { Tabs, Button, Affix, Checkbox } from 'antd';
 import classnames from 'classnames';
@@ -17,6 +16,7 @@ import Explain from './Explain';
 import SelfAssessment from './SelfAssessment';
 import { queryDataFillStatus } from '../../../services/recommend';
 import { useGlobalStatus } from '../../../utils/hooks';
+import { closeCurrent } from '../../../utils';
 const { TabPane } = Tabs;
 function RecommendData() {
   const { query } = useLocation();
@@ -40,7 +40,7 @@ function RecommendData() {
         <div className={classnames(styles.fbc, styles.affixHeader)}>
           <span>推荐资料填报</span>
           <div>
-            <Button className={styles.btn}>返回</Button>
+            <Button className={styles.btn} onClick={closeCurrent}>返回</Button>
             <Button className={styles.btn}>提交</Button>
           </div>
         </div>
@@ -49,7 +49,7 @@ function RecommendData() {
         renderTabBar={(props, DefaultTabBar) => {
           return <Affix offsetTop={56}><DefaultTabBar {...props} style={{ background: '#fff', padding: '0 24px' }} /></Affix>
         }}
-        defaultActiveKey='dataFillIn'
+        defaultActiveKey='explain'
       >
         <TabPane key='explain' tab='填表说明'>
           <Explain />

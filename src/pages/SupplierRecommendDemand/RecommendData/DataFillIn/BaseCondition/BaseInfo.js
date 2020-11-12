@@ -173,13 +173,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
               <Col span={12}>
                 <FormItem label="邮政编码" {...formLayout}>
                   {getFieldDecorator('postalCode', {
-                    initialValue: data.postalCode,
-                    rules: [
-                      {
-                        required: true,
-                        message: '邮政编码不能为空',
-                      },
-                    ],
+                    initialValue: data.postalCode
                   })(<Input disabled placeholder='请输入邮政编码' />)}
                 </FormItem>
               </Col>

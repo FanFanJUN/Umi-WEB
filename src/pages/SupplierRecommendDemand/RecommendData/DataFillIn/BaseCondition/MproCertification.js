@@ -7,16 +7,15 @@
  * @Description: 管理体系及产品认证
  * @Connect: 1981824361@qq.com
  */
-import { useEffect, useState, useRef, Fragment } from 'react';
-import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
-import { Button, Divider } from 'antd';
+import { useState, useRef, Fragment, useEffect } from 'react';
+import { Divider } from 'antd';
 import moment from 'moment';
 import EditableFormTable from '../CommonUtil/EditTable';
 
 const MproCertification = ({ type, data, setTableData }) => {
-
-  const [proData, setProData] = useState(data.productCertifications);
-  const [otherData, setOtherData] = useState(data.productCertifications);
+  const { productCertifications, otherCertifications } = data;
+  const [proData, setProData] = useState([]);
+  const [otherData, setOtherData] = useState([]);
 
   const tableRef = useRef(null);
 
@@ -116,9 +115,22 @@ const MproCertification = ({ type, data, setTableData }) => {
     setTableData(newData, 'other');
   }
 
+  useEffect(() => {
+    if (!otherCertifications || !productCertifications) return
+    const o = otherCertifications.map(item => ({
+      ...item,
+      guid: item?.id
+    }))
+    const p = productCertifications.map(item => ({
+      ...item,
+      guid: item?.id
+    }))
+    setOtherData(o)
+    setProData(p)
+  }, [productCertifications, otherCertifications])
   return <Fragment>
     <div>
-      <Divider>管理体系</Divider>
+      <Divider orientation='left'>管理体系</Divider>
       <EditableFormTable
         columns={columnsForMan}
         bordered
@@ -128,7 +140,7 @@ const MproCertification = ({ type, data, setTableData }) => {
         rowKey={(item) => item.id}
         size='small'
       />
-      <Divider>产品认证</Divider>
+      <Divider orientation='left'>产品认证</Divider>
       <EditableFormTable
         columns={columnsForPro}
         bordered
@@ -142,7 +154,7 @@ const MproCertification = ({ type, data, setTableData }) => {
         setNewData={setProNewData}
         dataSource={proData || []}
       />
-      <Divider>其他认证</Divider>
+      <Divider orientation='left'>其他认证</Divider>
       <EditableFormTable
         columns={columnsForOther}
         bordered

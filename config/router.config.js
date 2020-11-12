@@ -265,13 +265,6 @@ export default [
       { path: '/supplier/selfRegister/OutSideRegisterListView', component: './selfRegister/OutSideRegisterListView', title: '我的注册信息' },
       /**我的详细信息 */
       { path: '/supplier/supplierRegister/MySupplierInfo', component: './supplierRegister/MySupplierInfo', title: '我的详细信息' },
-      /* add Example
-      {
-        path: '/path',
-        component: './Page',
-        title: "**页面"
-      }
-      */
       {
         path: '/supplier/recommend/demand',
         component: './SupplierRecommendDemand',
@@ -286,6 +279,11 @@ export default [
         path: '/supplier/recommend/demand/editor',
         component: './SupplierRecommendDemand/EditorRecommendDemand',
         title: '编辑供应商推荐需求'
+      },
+      {
+        path: '/supplier/recommend/demand/detail',
+        component: './SupplierRecommendDemand/DetailRecommendDemand',
+        title: '供应商推荐需求明细'
       },
       {
         path: '/supplier/recommend/fillIn/data',
