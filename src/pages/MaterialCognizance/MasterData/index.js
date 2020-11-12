@@ -8,52 +8,110 @@ import { AutoSizeLayout } from '../../../components';
 import styles from './index.less';
 import ModalFrom from './ModalFrom'
 import RightModalFrom from './RightModalFrom'
+import {deleteBatchByLeftId,deleteRightId} from '../../../services/MaterialService'
+import {isEmpty} from '../../../utils'
 const { authAction } = utils;
-
+const confirm = Modal.confirm;
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 
 const Index = () => {
   const tableLeftRef = useRef(null);
-  const tableRightRef = useRef();
+  const tableRightRef = useRef(null);
   const commonFormRef = useRef(null)
   const commonRightFormRef= useRef(null)
   const [rightselectRows, setRightSelectRows] = useState([]);
   const [rightselectedRowKeys, setRightSelectedRowKeys] = useState([]);
   const [leftselectRows, setLeftSelectRows] = useState([]);
   const [leftselectedRowKeys, setLeftSelectedRowKeys] = useState([]);
+  const [tabtitle, setTabtitle] = useState(false);
+  const [selectType, setSelectType] = useState(false);
+  const [righttitle, setRightTabtitle] = useState(false);
+  const [taaskType, setTaaskType] = useState(false);
+  const [stageids, setStageids] = useState('');
+
+  // 阶段表格
   const columnsforLeft = [
     { title: '代码', dataIndex: 'stageCode', width: 160 },
     { title: '认定阶段', dataIndex: 'identificationStage', width: 160 },
     { title: '排序号', dataIndex: 'changeSort',  width: 100  },
   ].map(_ => ({ ..._, align: 'center' }));
 
+  // 任务表格
   const columnsforRight = [
-    { title: '代码', dataIndex: 'buCode', width: 120 },
-    { title: '认定任务', dataIndex: 'orderNo',  width: 200  },
-    { title: '排序号', dataIndex: 'orderNo',  width: 120  },
+    { title: '代码', dataIndex: 'taskCode', width: 120 },
+    { title: '认定任务', dataIndex: 'taskDesc',  width: 200  },
+    { title: '排序号', dataIndex: 'changeSort',  width: 120  },
   ].map(_ => ({ ..._, align: 'center' }));
 
+  // 阶段新增
   async function handleLeftAdd () {
+    setTabtitle('新增')
+    setSelectType(false)
+    cleanSelectedRecord()
     commonFormRef.current.handleModalVisible(true)
   }
+  // 阶段编辑
   async function handlelLeftEdit() {
-
+    setTabtitle('编辑')
+    setSelectType(true)
+    commonFormRef.current.handleModalVisible(true)
   }
+  // 阶段删除
   async function handlelLeftDelete () {
-
+    confirm({
+      title: '是否确认删除',
+      onOk: async () => {
+          let params = leftselectRows[0].id;
+          const { success, message: msg } = await deleteBatchByLeftId({stageId:params});
+          if (success) {
+              message.success('删除成功！');
+              uploadTable();
+          } else {
+              message.error(msg);
+          }
+      },
+      onCancel() {
+      },
+    });
   }
+  // 任务新增
   async function handleRightAdd() {
-
+    setRightTabtitle('新增')
+    setTaaskType(false)
+    tableRightRef.current.manualSelectedRows([])
+    commonRightFormRef.current.handleModalVisible(true)
   }
+  // 任务编辑
   async function handleRightEdit() {
-
+    setRightTabtitle('编辑')
+    setTaaskType(true)
+    commonRightFormRef.current.handleModalVisible(true)
   }
+  // 任务删除
   async function handleRightDelete() {
-
+    confirm({
+      title: '是否确认删除',
+      onOk: async () => {
+          let params = leftselectRows[0].id;
+          const { success, message: msg } = await deleteRightId(params);
+          if (success) {
+              message.success('删除成功！');
+              RightCleanSelect();
+              RightCleanSelect()
+          } else {
+              message.error(msg);
+          }
+      },
+      onCancel() {
+      },
+    });
   }
-  function leftonSelectRow(value, rows) {
+  async function leftonSelectRow(value, rows) {
     setLeftSelectRows(rows);
     setLeftSelectedRowKeys(value);
+    if (tableRightRef.current) {
+      tableRightRef.current.remoteDataRefresh()
+    }
   }
   function rightonSelectRow (value, rows) {
     setRightSelectRows(rows);
@@ -68,9 +126,19 @@ const Index = () => {
     tableLeftRef.current.remoteDataRefresh()
   }
   function cleanSelectedRecord() {
-    setLeftSelectRows([])
-    setLeftSelectedRowKeys([])
+    // setLeftSelectRows([])
+    // setLeftSelectedRowKeys([])
     tableLeftRef.current.manualSelectedRows([])
+  }
+  async function handleTask() {
+    RightCleanSelect()
+  }
+  function RightCleanSelect() {
+    setRightSelectRows([])
+    setRightSelectedRowKeys([])
+    tableRightRef.current.remoteDataRefresh()
+    tableRightRef.current.manualSelectedRows([])
+    commonRightFormRef.current.handleModalVisible(false)
   }
 
   const HeaderLeftButtons = () => {
@@ -174,6 +242,9 @@ const Index = () => {
               }
             </AutoSizeLayout>
             <ModalFrom
+              title={tabtitle}
+              modifydata={leftselectRows[0]}
+              type={selectType}
               onOk={masterSave} 
               wrappedComponentRef={commonFormRef}
             />
@@ -195,11 +266,8 @@ const Index = () => {
                         checkbox={true}
                         remotePaging={true}
                         store={{
-                          url: `${samBaseUrl}/reviewCity/findBySearchPage`,
+                          url: `${recommendUrl}/api/samPhysicalIdentificationTaskService/findByStageId?stageId=` + leftselectRows[0].id,
                           type: 'POST',
-                          params: {
-                            areaID: leftselectRows[leftselectRows.length - 1].id
-                          }
                         }}
                         height={h}
                         showSearch={false}
@@ -214,7 +282,11 @@ const Index = () => {
                     }
                   </AutoSizeLayout>
                   <RightModalFrom
-                    onOk={masterSave} 
+                    title={righttitle}
+                    leftId={leftselectRows[0].id}
+                    modifydata={rightselectRows[0]}
+                    type={taaskType}
+                    onOk={handleTask} 
                     wrappedComponentRef={commonRightFormRef}
                   />
                 </div>

@@ -6,10 +6,9 @@ import {
 } from 'react';
 import { Button, message } from 'antd';
 import { ExtTable, ExtModal, ComboList } from 'suid';
-import { Header } from '../../../../components'
 import { commonProps } from '../../../../utils';
 import styles from './index.less';
-import { smBaseUrl, baseUrl } from '../../../../utils/commonUrl';
+import { baseUrl } from '../../../../utils/commonUrl';
 
 const { corporationProps, thatTypeProps } = commonProps;
 const columns = [

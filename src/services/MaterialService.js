@@ -32,13 +32,41 @@ function createServiceRequest(option) {
   })
 }
 
-// PCN主数据-保存
+// 认定阶段保存
 
 export const MasterdataSave = params => {
-    return request({
-        url: `${recommendUrl}/api/samPhysicalIdentificationStageService/save`,
-        data:params,
-        method: 'POST',
-    })
-  }
+  return request({
+      url: `${recommendUrl}/api/samPhysicalIdentificationStageService/save`,
+      data:params,
+      method: 'POST',
+  })
+}
+// 阶段删除
+export const deleteBatchByLeftId = (params) => {
+  return request({
+    headers:{'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+    url: `${recommendUrl}/api/samPhysicalIdentificationStageService/deleteSanPhyStageId`,
+    params,
+    method: 'POST',
+  })
+};
 
+// 任务保存
+export const TaskdataSave = params => {
+  return request({
+      url: `${recommendUrl}/api/samPhysicalIdentificationTaskService/save`,
+      data:params,
+      method: 'POST',
+  })
+}
+
+// 任务删除
+export const deleteRightId = (params) => {
+  return request({
+    //headers:{'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+    url: `${recommendUrl}/api/samPhysicalIdentificationTaskService/delete`,
+    params,
+    method: 'DELETE',
+    hack: true
+  })
+};

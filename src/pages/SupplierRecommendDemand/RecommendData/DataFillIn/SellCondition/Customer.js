@@ -35,9 +35,79 @@ const formLayout2 = {
   },
 };
 
+const OverallSit = ({
+  data,
+  DISABLED,
+  getFieldDecorator,
+  type
+}) => {
+  return (
+    <Row>
+      <Col span={12}>
+        <FormItem label="现在所有客户数量（个）" {...formLayout2}>
+          {getFieldDecorator('customersNumber', {
+            initialValue: type === 'add' ? '' : data.customersNumber,
+            rules: [
+              {
+                required: true,
+                message: '客户数量不能为空'
+              }
+            ]
+          })(<InputNumber placeholder="请输入现在所有客户数量" style={{ width: '100%' }} disabled={DISABLED} />)}
+        </FormItem>
+      </Col>
+      <Col span={12}>
+        <FormItem label="其中最大客户所占销售额(%)" {...formLayout2}>
+          {getFieldDecorator('maxCustomerRate', {
+            initialValue: type === 'add' ? '' : data.shareDemanNumber,
+            rules: [
+              {
+                required: true,
+                message: '销售额不能为空'
+              }
+            ]
+          })(
+            <InputNumber style={{ width: '100%' }} disabled={DISABLED} />,
+          )}
+        </FormItem>
+      </Col>
+    </Row>
+  )
+}
+
+const CustermerInfo = ({
+  type,
+  data,
+  DISABLED,
+  getFieldDecorator
+}) => {
+  return (
+    <Row>
+      <Col span={12}>
+        <FormItem label="情况介绍" {...formLayout}>
+          {getFieldDecorator('situationDescription', {
+            initialValue: type === 'add' ? '' : data.situationDescription,
+          })(<Input.TextArea placeholder="请输入情况介绍" style={{ width: '100%' }} disabled={DISABLED} />)}
+        </FormItem>
+      </Col>
+      <Col span={12}>
+        <FormItem label="资料" {...formLayout}>
+          {getFieldDecorator('situationAttachmentIds', {
+          })(
+            <UploadFile style={{ width: '100%' }}
+              showColor={type !== 'add' ? true : false}
+              type={DISABLED ? 'show' : null}
+              entityId={data.situationAttachmentIds} />,
+          )}
+        </FormItem>
+      </Col>
+    </Row>
+  )
+}
+
 const Customer = React.forwardRef(({ form, type, data, setTableData }, ref) => {
   const DISABLED = type === 'detail';
-  const { getFieldDecorator, setFieldsValue } = form;
+  const { getFieldDecorator } = form;
   const [changhongSaleInfos, setchanghongSaleInfos] = useState(data.changhongSaleInfos);
   const [mainCustomers, setmainCustomers] = useState(data.mainCustomers);
   const [exportSituations, setexportSituations] = useState(data.exportSituations);
@@ -89,54 +159,6 @@ const Customer = React.forwardRef(({ form, type, data, setTableData }, ref) => {
     { title: '证据', dataIndex: 'proof', ellipsis: true, },
   ].map(item => ({ ...item, align: 'center' }));
 
-  const OverallSit = () => {
-    return (
-      <Row>
-        <Col span={12}>
-          <FormItem label="现在所有客户数量（个）" {...formLayout2}>
-            {getFieldDecorator('customersNumber', {
-              initialValue: type === 'add' ? '' : data.customersNumber,
-            })(<InputNumber placeholder="请输入现在所有客户数量" style={{ width: '100%' }} disabled={DISABLED} />)}
-          </FormItem>
-        </Col>
-        <Col span={12}>
-          <FormItem label="其中最大客户所占销售额(%)" {...formLayout2}>
-            {getFieldDecorator('maxCustomerRate', {
-              initialValue: type === 'add' ? '' : data.shareDemanNumber,
-            })(
-              <Input style={{ width: '100%' }} disabled={DISABLED} />,
-            )}
-          </FormItem>
-        </Col>
-      </Row>
-    )
-  }
-
-  const CustermerInfo = () => {
-    return (
-      <Row>
-        <Col span={12}>
-          <FormItem label="情况介绍" {...formLayout}>
-            {getFieldDecorator('situationDescription', {
-              initialValue: type === 'add' ? '' : data.situationDescription,
-            })(<Input.TextArea placeholder="请输入情况介绍" style={{ width: '100%' }} disabled={DISABLED} />)}
-          </FormItem>
-        </Col>
-        <Col span={12}>
-          <FormItem label="资料" {...formLayout}>
-            {getFieldDecorator('situationAttachmentIds', {
-            })(
-              <UploadFile style={{ width: '100%' }}
-                showColor={type !== 'add' ? true : false}
-                type={DISABLED ? 'show' : null}
-                entityId={data.situationAttachmentIds} />,
-            )}
-          </FormItem>
-        </Col>
-      </Row>
-    )
-  }
-
   function setNewData(newData, type) {
     switch (type) {
       case 'changhongSaleInfos':
@@ -157,15 +179,15 @@ const Customer = React.forwardRef(({ form, type, data, setTableData }, ref) => {
     setTableData(newData, type);
   }
 
-  return <Fragment>
+  return (
     <div>
-      <Divider>总体情况</Divider>
-      <OverallSit />
-      <Divider>长虹集团</Divider>
+      <Divider orientation='left'>总体情况</Divider>
+      <OverallSit data={data} DISABLED={DISABLED} getFieldDecorator={getFieldDecorator} type={type}/>
+      <Divider orientation='left'>长虹集团</Divider>
       <EditableFormTable
         columns={columnsForGroup}
         ref={tableRef}
-        rowKey='id'
+        rowKey='guid'
         size='small'
         isToolBar={type === 'add'}
         isEditTable={type === 'add'}
@@ -173,19 +195,19 @@ const Customer = React.forwardRef(({ form, type, data, setTableData }, ref) => {
         setNewData={setNewData}
         tableType='changhongSaleInfos'
       />
-      <Divider>其他主要客户情况</Divider>
+      <Divider orientation='left'>其他主要客户情况</Divider>
       <EditableFormTable
         columns={columnsForMajorcustomers}
         bordered
         ref={tableRef}
-        rowKey='id'
+        rowKey='guid'
         isToolBar={type === 'add'}
         isEditTable={type === 'add'}
         dataSource={mainCustomers || []}
         setNewData={setNewData}
         tableType='mainCustomers'
       />
-      <Divider>出口情况</Divider>
+      <Divider orientation='left'>出口情况</Divider>
       <ExtTable
         columns={columnsForExpSitu}
         bordered
@@ -194,31 +216,31 @@ const Customer = React.forwardRef(({ form, type, data, setTableData }, ref) => {
         remotePaging
         checkbox={{ multiSelect: false }}
         ref={tableRef}
-        rowKey='id'
+        rowKey='guid'
         dataSource={exportSituations || []}
         tableType='exportSituations'
       />
-      <Divider>客户合作情况介绍和资料</Divider>
-      <CustermerInfo />
-      <Divider>主要客户近半年内的订单或合同及证明材料</Divider>
+      <Divider orientation='left' orientation='left'>客户合作情况介绍和资料</Divider>
+      <CustermerInfo type={type} data={data} DISABLED={DISABLED} getFieldDecorator={getFieldDecorator}/>
+      <Divider orientation='left' orientation='left'>主要客户近半年内的订单或合同及证明材料</Divider>
       <EditableFormTable
         columns={columnsForOrder}
         bordered
         checkbox={{ multiSelect: false }}
         ref={tableRef}
-        rowKey='id'
+        rowKey='guid'
         isToolBar={type === 'add'}
         isEditTable={type === 'add'}
         dataSource={supplierOrderInfos || []}
         setNewData={setNewData}
         tableType='supplierOrderInfos'
       />
-      <Divider>未来三年发展规划</Divider>
+      <Divider orientation='left' orientation='left'>未来三年发展规划</Divider>
       <EditableFormTable
         columns={columnsForDevPlan}
         bordered
         ref={tableRef}
-        rowKey='id'
+        rowKey='guid'
         isToolBar={type === 'add'}
         isEditTable={type === 'add'}
         dataSource={threeYearPlans || []}
@@ -226,7 +248,7 @@ const Customer = React.forwardRef(({ form, type, data, setTableData }, ref) => {
         tableType='threeYearPlans'
       />
     </div>
-  </Fragment>
+  )
 })
 
 export default Customer;

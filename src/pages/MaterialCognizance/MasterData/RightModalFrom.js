@@ -3,6 +3,7 @@ import { Modal, Form, Row, Col, Input,message } from 'antd';
 import { ComboList } from 'suid';
 import {onlyNumber} from '../../../utils'
 import {IdentifiedTasklist} from '../commonProps'
+import {TaskdataSave} from '../../../services/MaterialService'
 const { create, Item } = Form;
 const { TextArea } = Input;
 const formLayout = {
@@ -18,7 +19,8 @@ const commonRightFormRef = forwardRef(({
     title,
     onOk = () => null,
     modifydata={},
-    type
+    type,
+    leftId
 },ref,) => {
         useImperativeHandle(ref, () => ({ 
             handleModalVisible,
@@ -44,6 +46,7 @@ const commonRightFormRef = forwardRef(({
                     if (type) {
                         params= { ...modifydata, ...val }
                     }else {
+                        val.stageId = leftId;
                         params = val
                     }
                     masterSave(params)
@@ -51,21 +54,19 @@ const commonRightFormRef = forwardRef(({
             });
         }
         async function masterSave(params) {
-            let data = [];
-            // data.push(params)
-            // const { success, message: msg } = await MasterdataSave(data);
-            // if (success) {
-            //     message.success('保存成功');
-            //     onOk();
-            // } else {
-            //     message.error(msg);
-            // }
+            const { success, message: msg } = await TaskdataSave(params);
+            if (success) {
+                message.success('保存成功');
+                onOk();
+            } else {
+                message.error(msg);
+            }
         }
         return (
             <>
                 <Modal
                     visible={visible}
-                    title={'新增'}
+                    title={title}
                     onCancel={() => handleModalVisible(false)}
                     destroyOnClose={true}
                     width="45vw"
@@ -89,7 +90,7 @@ const commonRightFormRef = forwardRef(({
                                         style={{ width: '100%' }}
                                         {...IdentifiedTasklist}
                                         name='changeTypeName'
-                                        field={['stageCode']}
+                                        field={['taskCode']}
                                         afterSelect={afterSelect}
                                         form={form}
                                     />
@@ -109,7 +110,7 @@ const commonRightFormRef = forwardRef(({
                                         },
                                     ],
                                 })(
-                                    <Input placeholder="请输入任务描述" />
+                                    <Input placeholder="请输入任务描述" disabled />
                                 )}
                             </Item>
                         </Col>

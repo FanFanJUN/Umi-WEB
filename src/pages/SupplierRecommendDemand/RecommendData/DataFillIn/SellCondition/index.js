@@ -47,7 +47,6 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
 
   function handleSave() {
     form.validateFieldsAndScroll((error, value) => {
-      console.log(value);
       if (error) return;
       const saveParams = {
         ...value,
@@ -114,7 +113,7 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
         >
           <div className={styles.wrapper}>
             <div className={styles.bgw}>
-              <div className={styles.title}>销售收入及利润</div>
+              <div className={styles.title}>销售收入及利润 <span className={styles.hint}>（至少提供近三年）</span></div>
               <div className={styles.content}>
                 <SalesProfit type={type} data={supplierSalesProceeds} setTableData={setTableData} />
               </div>

@@ -231,7 +231,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
 
   function handleSave() {
     form.validateFieldsAndScroll((error, value) => {
-      console.log(value);
+      (value);
       if (error) return;
       const saveParams = {
         ...value,
@@ -371,7 +371,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                     </FormItem>
                   </Col>
                 </Row>
-                <Divider>已完成的新产品开发</Divider>
+                <Divider orientation='left'>已完成的新产品开发</Divider>
                 <Row>
                   <Col span={24}>
                     <FormItem label="前一年新产品的销售额占总销售额的比重" {...formLayout}>
@@ -414,9 +414,9 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                 <EditableFormTable
                   dataSource={newProducts || []}
                   columns={columnsForFinish}
-                  rowKey='id'
+                  rowKey='guid'
                 />
-                <Divider>正在进行和计划进行的设计开发</Divider>
+                <Divider orientation='left'>正在进行和计划进行的设计开发</Divider>
                 <EditableFormTable
                   dataSource={processingDesigns || []}
                   columns={columnsForProcess}

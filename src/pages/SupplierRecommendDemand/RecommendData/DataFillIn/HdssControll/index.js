@@ -90,7 +90,7 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
       }
     }
     form.validateFieldsAndScroll((error, value) => {
-      console.log(value);
+      (value);
       if (error) return;
       const saveParams = {
         ...value,
@@ -149,13 +149,13 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                 <EditableFormTable
                   dataSource={tableTata || []}
                   columns={columns}
-                  rowKey='id'
+                  rowKey='guid'
                   setNewData={setNewData}
                   isEditTable={type === 'add'}
                   isToolBar={type === 'add'}
                   recommendDemandId={id}
                 />
-                <Divider>RoHS</Divider>
+                <Divider orientation='left'>RoHS</Divider>
                 <Row>
                   <Col span={24}>
                     <FormItem label="RoHS管控标准" {...formLayout}>
@@ -198,7 +198,7 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                     </FormItem>
                   </Col>
                 </Row>
-                <Divider>REACH</Divider>
+                <Divider orientation='left'>REACH</Divider>
                 <Row>
                   <Col span={24}>
                     <FormItem label="化学品注册、评估、许可和限制" {...formLayout}>

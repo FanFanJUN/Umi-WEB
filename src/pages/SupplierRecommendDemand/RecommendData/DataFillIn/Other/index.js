@@ -57,7 +57,7 @@ const Other = ({ form, updateGlobalStatus }) => {
 
     function handleSave() {
         form.validateFieldsAndScroll((error, value) => {
-            console.log(value);
+            (value);
             if (error) return;
             const saveParams = {
                 ...value,
@@ -287,7 +287,7 @@ const Other = ({ form, updateGlobalStatus }) => {
                                 <EditableFormTable
                                     dataSource={equityStructures || []}
                                     columns={columns}
-                                    rowKey='id'
+                                    rowKey='guid'
                                     setNewData={setNewData}
                                     isEditTable={type === 'add'}
                                     isToolBar={type === 'add'}

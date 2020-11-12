@@ -566,8 +566,11 @@ export const evaluateSystemProps = {
 // 供应商评价指标
 export const supplierEvRuleProps = {
   store: {
-    url: `${baseUrl}/supplierEvlRule/supplierEvlRuleListByPage`,
-    type: 'post'
+    url: `${baseUrl}/api/supplierEvlRuleService/findListByPages`,
+    type: 'post',
+    params: {
+      autoCalculate: true
+    }
   },
   reader: {
     name: 'name',

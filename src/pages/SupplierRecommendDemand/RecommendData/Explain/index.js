@@ -27,7 +27,9 @@ function Explain() {
         </li>
       </ul>
       <div className={styles.commonTitle}>拟推荐产品</div>
-      <ExtTable />
+      <ExtTable
+        showSearch={false}
+      />
     </div>
   )
 }

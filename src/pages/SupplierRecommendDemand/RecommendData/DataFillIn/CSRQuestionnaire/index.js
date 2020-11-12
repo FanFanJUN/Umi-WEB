@@ -101,7 +101,7 @@ function CSRQuestionnaire({
       if (success) {
         setDataSource(data.map((item, k) => ({ ...item, lineIndex: k + 1 })))
       }
-      // console.log(success, data)
+      // (success, data)
     }
     getFormData()
   }, [])
