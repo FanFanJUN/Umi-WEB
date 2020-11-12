@@ -35,7 +35,7 @@ function Editor() {
           <div className={styles.fbc}>
             <span className={styles.title}>编辑评价项目</span>
             <div className={styles.fec}>
-              <Button className={styles.btn}>返回</Button>
+              <Button className={styles.btn} onClick={closeCurrent}>返回</Button>
               <Button className={styles.btn} type='primary' onClick={handleSave}>保存</Button>
             </div>
           </div>
