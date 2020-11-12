@@ -46,8 +46,8 @@ export default function () {
         { title: '分配供应商状态', dataIndex: 'allotSupplierState', width: 160 },
         { title: '来源', dataIndex: 'source', width: 70 },
         { title: '分享需求号', dataIndex: 'shareDemanNumber', ellipsis: true, width: 180 },
-        { title: '分享需求行号', dataIndex: 'technicalLineNumber', ellipsis: true, width: 180 },
-        { title: '物料代码', dataIndex: 'materialCode', ellipsis: true },
+        { title: '分享需求行号', dataIndex: 'technicalLineNumber', ellipsis: true, width: 120 },
+        { title: '物料代码', dataIndex: 'materialCode', ellipsis: true, render: (text, item) => item.source === 'SRM' ? text : '' },
         { title: '物料描述', dataIndex: 'materialName', ellipsis: true },
         { title: '物料组代码', dataIndex: 'materialGroupCode', ellipsis: true },
         { title: '物料组描述', dataIndex: 'materialGroupName', ellipsis: true },
@@ -113,7 +113,7 @@ export default function () {
         data: {
             quickSearchValue: data.quickSearchValue,
             ...data.epTechnicalShareDemandSearchBo,
-            pageInfo: {page: 1, rows: 100000}
+            pageInfo: { page: 1, rows: 100000 }
         },
         method: 'POST',
     };
@@ -133,7 +133,7 @@ export default function () {
         <Search
             placeholder='请输入物料、物料组或分享需求号查询'
             style={{ marginRight: '10px' }}
-            onSearch={(v)=>{handleQuickSearch(v)}}
+            onSearch={(v) => { handleQuickSearch(v) }}
             allowClear
         />
     </div>;
@@ -190,7 +190,10 @@ export default function () {
                         type: 'POST',
                     }}
                     remotePaging={true}
-                    checkbox={false}
+                    checkbox={{
+                        multiSelect: true,
+                    }}
+                    allowCancelSelect={true}
                     ref={tableRef}
                     showSearch={false}
                 />

@@ -70,7 +70,8 @@ export default function() {
         <div style={{width: '20px', height: '20px', borderRadius: '50%', background: v}} />
       </div>},
     { title: '资料下载截止日期', dataIndex: 'downloadAbortDate', width: 180 },
-    // { title: '物料代码', dataIndex: 'materialCode', ellipsis: true, },
+    { title: '来源', dataIndex: 'source', width: 70 },
+    { title: '物料代码', dataIndex: 'materialCode', ellipsis: true, render: (text, item) => item.source === 'SRM' ? text : ''},
     { title: '物料描述', dataIndex: 'materialName', ellipsis: true, width: 180},
     { title: '物料组代码', dataIndex: 'materialGroupCode', ellipsis: true, },
     { title: '物料组描述', dataIndex: 'materialGroupName', ellipsis: true, },
