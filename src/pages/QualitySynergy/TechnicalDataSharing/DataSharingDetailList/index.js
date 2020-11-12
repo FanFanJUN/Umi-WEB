@@ -113,7 +113,7 @@ export default function () {
         data: {
             quickSearchValue: data.quickSearchValue,
             ...data.epTechnicalShareDemandSearchBo,
-            pageInfo: {page: 1, rows: 100000}
+            pageInfo: { page: 1, rows: 100000 }
         },
         method: 'POST',
     };
@@ -133,7 +133,7 @@ export default function () {
         <Search
             placeholder='请输入物料、物料组或分享需求号查询'
             style={{ marginRight: '10px' }}
-            onSearch={(v)=>{handleQuickSearch(v)}}
+            onSearch={(v) => { handleQuickSearch(v) }}
             allowClear
         />
     </div>;
@@ -190,7 +190,10 @@ export default function () {
                         type: 'POST',
                     }}
                     remotePaging={true}
-                    checkbox={false}
+                    checkbox={{
+                        multiSelect: true,
+                    }}
+                    allowCancelSelect={true}
                     ref={tableRef}
                     showSearch={false}
                 />
