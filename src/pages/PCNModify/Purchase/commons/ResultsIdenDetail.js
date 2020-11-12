@@ -6,6 +6,7 @@ import UploadFile from '../../../../components/Upload/index'
 import {SupplierResulteList} from '../../commonProps'
 import { dataTransfer2 } from '../../../supplierRegister/CommonUtils'
 import {isEmpty} from '../../../../utils'
+import Input from 'antd/es/input';
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { create } = Form;
 const FormItem = Form.Item;
@@ -117,26 +118,26 @@ const getResultsIden = forwardRef(({
             return !isEmpty(record) && !isEmpty(record.smInKindResultStatus) ? record.smInKindResultStatus === 0 ? '通过' : '不通过' : '';
           }
           return <span>
-              {
-                record.smInKindStatus === 1 && record.smInKindManName === authorizations.userName ? <FormItem style={{ marginBottom: 0 }}>
-                  {
-                      getFieldDecorator(`smInKindResultStatus[${index}]`,{initialValue: record ? record.smInKindResultStatus : ''}),
-                      getFieldDecorator(`smInKindResultStatusName[${index}]`, {
-                          initialValue: record ? record.smInKindResultStatusName : '',
-                          rules: [{ required: true, message: '请选择实物认定结果!', whitespace: true }],
-                      })( 
-                          <ComboList 
-                              form={form}
-                              {...SupplierResulteList}
-                              showSearch={false}
-                              //afterSelect={afterSelect}
-                              name={`smInKindResultStatusName[${index}]`}
-                              field={[`smInKindResultStatus[${index}]`]}
-                          />
-                      )
-                  }
-              </FormItem> : null
-              }
+            {
+              record.smInKindStatus === 1 && record.smInKindManName === authorizations.userName ? <FormItem style={{ marginBottom: 0 }}>
+                {
+                    getFieldDecorator(`smInKindResultStatus[${index}]`,{initialValue: record ? record.smInKindResultStatus : ''}),
+                    getFieldDecorator(`smInKindResultStatusName[${index}]`, {
+                        initialValue: record ? record.smInKindResultStatusName : '',
+                        rules: [{ required: true, message: '请选择实物认定结果!', whitespace: true }],
+                    })( 
+                        <ComboList 
+                            form={form}
+                            {...SupplierResulteList}
+                            showSearch={false}
+                            //afterSelect={afterSelect}
+                            name={`smInKindResultStatusName[${index}]`}
+                            field={[`smInKindResultStatus[${index}]`]}
+                        />
+                    )
+                }
+            </FormItem> : !isEmpty(record) && !isEmpty(record.smInKindResultStatus) ? record.smInKindResultStatus === 0 ? '通过' : '不通过' : ''
+          }
               
           </span>;
       }
@@ -166,7 +167,7 @@ const getResultsIden = forwardRef(({
                     />
                   )
                 }
-              </FormItem> : null
+              </FormItem> : <UploadFile type="show" entityId={text}/>
             }
             
           </span>
@@ -184,7 +185,7 @@ const getResultsIden = forwardRef(({
         let handledata = dataTransfer2(material, values)
         for (let item of handledata) {
           for (let items of material) {
-            if (item.id === items.id) {
+            if (item.id === items.id && !isEmpty(item.smInKindResultStatus)) {
               items.kindManAttachments = item.kindManEnclosure
               items.smInKindResultStatus = item.smInKindResultStatus
             }

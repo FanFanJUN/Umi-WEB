@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:43:10
- * @LastEditTime: 2020-11-09 15:41:01
+ * @LastEditTime: 2020-11-11 14:12:05
  * @LastEditors: Please set LastEditors
  * @Description: 审核实施计划-审核范围
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\AuditScope.js
@@ -39,7 +39,7 @@ const AuditScope = (props) => {
             <div className={styles.bgw}>
                 <div className={styles.title}>审核范围</div>
                 <div className={styles.content}>
-                    <div style={{ width: '40%', height: '200px' }}>
+                    <div style={{ margin: "0 0 10vw 10vw" }}>
                         <Tree
                             defaultExpandAll={true}
                             checkable

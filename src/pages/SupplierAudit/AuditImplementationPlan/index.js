@@ -27,6 +27,7 @@ import { recommendUrl } from '../../../utils/commonUrl';
 import { openNewTab, getUserAccount } from '../../../utils';
 import ChangeHistory from "../MonthAuditPlan/component/ChangeHistory";
 import AddNodal from "./components/addModal";
+import ChangeLaderModal from "./components/changeLeader";
 
 const { FlowHistoryButton } = WorkFlow;
 const { authAction } = utils;
@@ -47,6 +48,8 @@ export default function () {
     });
     const [historyVisible, setHistoryV] = useState(false);
     const [addVisible, setAddV] = useState(false);
+    const [changeVisible, setChangeV] = useState(false);
+
     useEffect(() => {
         window.parent.frames.addEventListener('message', listenerParentClose, false);
         return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
@@ -75,6 +78,9 @@ export default function () {
                 break;
             case "changehistory":
                 setHistoryV(true);
+                break;
+            case "changeLeader":
+                setChangeV(true);
                 break;
             default:
                 break;
@@ -137,7 +143,7 @@ export default function () {
 
     };
     // 提交审核完成更新列表
-    function handleComplete() {
+    function refresh() {
         tableRef.current.manualSelectedRows();
         tableRef.current.remoteDataRefresh();
     }
@@ -217,7 +223,7 @@ export default function () {
                 onClick={() => redirectToPage('add')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='SUPPLIER_AUDIT_MONTH_ADD'
+                key='SUPPLIER_AUDIT_IMPLEMENT_ADD'
             >新增</Button>)
         }
         {
@@ -225,7 +231,7 @@ export default function () {
                 onClick={() => redirectToPage('edit')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='SUPPLIER_AUDIT_MONTH_EDIT'
+                key='SUPPLIER_AUDIT_IMPLEMENT_EDIT'
                 disabled={
                     data.selectedRowKeys.length !== 1
                     || data.selectedRows[0]?.state !== 'DRAFT'
@@ -239,7 +245,7 @@ export default function () {
                 onClick={deleteList}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='SUPPLIER_AUDIT_MONTH_DELETE'
+                key='SUPPLIER_AUDIT_IMPLEMENT_DELETE'
                 disabled={!(data.selectedRowKeys.length !== 0
                     && judge(data.selectedRows, 'state', 'DRAFT')
                     && judge(data.selectedRows, 'flowStatus', 'INIT')
@@ -251,7 +257,7 @@ export default function () {
                 onClick={() => redirectToPage('detail')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='SUPPLIER_AUDIT_MONTH_DETAIL'
+                key='SUPPLIER_AUDIT_IMPLEMENT_DETAIL'
                 disabled={data.selectedRowKeys.length !== 1}
             >明细</Button>)
         }
@@ -261,10 +267,10 @@ export default function () {
                 ignore={DEVELOPER_ENV}
                 needConfirm={handleBeforeStartFlow}
                 businessKey={data.flowId}
-                callBack={handleComplete}
+                callBack={refresh}
                 disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length === 0}
                 businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewPlanMonth'
-                key='SUPPLIER_AUDIT_MONTH_INFLOW'
+                key='SUPPLIER_AUDIT_IMPLEMENT_INFLOW'
             >提交审核</StartFlow>)
         }
         {
@@ -273,7 +279,7 @@ export default function () {
                 flowMapUrl='flow-web/design/showLook'
                 ignore={DEVELOPER_ENV}
                 disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
-                key='SUPPLIER_AUDIT_MONTH_HISTORY'
+                key='SUPPLIER_AUDIT_IMPLEMENT_HISTORY'
             >
                 <Button className={styles.btn} disabled={data.selectedRowKeys.length !== 1}>审核历史</Button>
             </FlowHistoryButton>)
@@ -285,7 +291,7 @@ export default function () {
                 disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='TECHNICAL_DATA_SHARING_ALLOT'
+                key='SUPPLIER_AUDIT_IMPLEMENT_STOP'
             >终止审核</Button>)
         }
         {
@@ -297,7 +303,7 @@ export default function () {
                     || data.selectedRows[0]?.flowStatus !== 'COMPLETED'
                 }
                 ignore={DEVELOPER_ENV}
-                key='SUPPLIER_AUDIT_MONTH_CHANGE'
+                key='SUPPLIER_AUDIT_IMPLEMENT_CHANGE'
             >变更</Button>)
         }
         {
@@ -306,8 +312,17 @@ export default function () {
                 className={styles.btn}
                 disabled={data.selectedRowKeys.length !== 1}
                 ignore={DEVELOPER_ENV}
-                key='SUPPLIER_AUDIT_MONTH_CHANGE_LIST'
+                key='SUPPLIER_AUDIT_IMPLEMENT_CHANGE_LIST'
             >变更历史</Button>)
+        }
+        {
+            authAction(<Button
+                onClick={() => redirectToPage('changeLeader')}
+                className={styles.btn}
+                disabled={data.selectedRowKeys.length !== 1}
+                ignore={DEVELOPER_ENV}
+                key='SUPPLIER_AUDIT_IMPLEMENT_CHANGE_LEADER'
+            >变更组长</Button>)
         }
     </>;
 
@@ -370,6 +385,13 @@ export default function () {
             { addVisible && <AddNodal
                     visible={addVisible}
                     handleCancel={() => { setAddV(false) }}
+                />
+            }
+            { changeVisible && <ChangeLaderModal 
+                    visible={changeVisible}
+                    handleOk={()=>{refresh()}}
+                    originData={data.selectedRows[0]}
+                    handleCancel={() => { setChangeV(false) }}
                 />
             }
         </Fragment>

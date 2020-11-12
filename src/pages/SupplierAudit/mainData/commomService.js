@@ -220,6 +220,7 @@ export const ApplyOrganizationProps = {
   store: {
     url: `${baseUrl}/basic/listAllOrgnazationWithDataAuth`,
   },
+  rowKey: 'code',
   reader: {
     name: 'name',
     field: ['code', 'id'],

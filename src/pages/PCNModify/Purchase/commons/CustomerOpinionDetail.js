@@ -112,7 +112,7 @@ const getCustomerOpin = forwardRef(({
                       />
                     )
                 }
-                </FormItem> : null
+                </FormItem> : !isEmpty(record) && !isEmpty(record.smCustomerResultConfirm) ? record.smCustomerResultConfirm === 0 ? '通过' : '不通过' : ''
               }
           </span>;
       }
@@ -141,7 +141,7 @@ const getCustomerOpin = forwardRef(({
                   />
                 )
               }
-            </FormItem> : null
+            </FormItem> : <UploadFile type="show" entityId={text}/>
           }
         </span>
       }
@@ -159,7 +159,7 @@ const getCustomerOpin = forwardRef(({
         let handledata = dataTransfer2(material, values)
         for (let item of handledata) {
           for (let items of material) {
-            if (item.id === items.id) {
+            if (item.id === items.id && !isEmpty(item.smCustomerResultConfirm)) {
               items.customerAttachments = item.customerEnclosure
               items.smCustomerResultConfirm = item.smCustomerResultConfirm
             }

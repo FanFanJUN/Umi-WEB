@@ -10,14 +10,9 @@ import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/in
 import { ExtTable, utils, WorkFlow } from 'suid';
 import { StartFlow } from 'seid';
 import moment from "moment";
-import { ApplyOrganizationProps, CompanyConfig, } from '../mainData/commomService';
-import {
-    DeleteDataSharingList,
-    judge,
-    ShareStatusProps,
-    flowProps
-} from '../../QualitySynergy/commonProps';
-import { deletePlanMonth } from "./service";
+import { CompanyConfig, } from '../mainData/commomService';
+import { judge } from '../../QualitySynergy/commonProps';
+import { deletePlanMonth, ShareStatusProps, flowProps, ApplyOrganizationProps } from "./service";
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
 import { openNewTab, getUserAccount } from '../../../utils';
@@ -84,16 +79,13 @@ export default function () {
     // 高级查询搜索
     const handleAdvancedSearch = (value) => {
         console.log(value)
-        delete value.flowStatus_name;
-        delete value.purchaseTeamCode_name;
-        // delete value.applyDepartmentCode_name;
-        delete value.applyCorporationCode_name;
-        delete value.materialSecondClassifyCode_name;
-        delete value.allotSupplierState_name;
-        delete value.reviewTypeCode_name;
         value.applyDate = value.applyDate ? moment(value.applyDate).format('YYYY-MM-DD ') : ''
         value.ApplyDateStart = value.applyDate ? value.applyDate + "00:00:00" : ''
         value.ApplyDateEnd = value.applyDate ? value.applyDate + "23:59:59" : ''
+        delete value.flowStatus_name;
+        delete value.applyCorporationCode_name;
+        delete value.applyDepartmentCode_name;
+        delete value.state_name
         delete value.applyDate;
         setData(v => ({ ...v, epTechnicalShareDemandSearchBo: { ...value } }));
         tableRef.current.manualSelectedRows();
@@ -178,7 +170,7 @@ export default function () {
             }
         },
         {
-            title: '审批状态', dataIndex: 'flowStatus', width: 200, render: v => {
+            title: '审批状态', dataIndex: 'flowStatus', width: 180, render: v => {
                 switch (v) {
                     case 'INIT':
                         return '未进入流程';
@@ -189,12 +181,12 @@ export default function () {
                 }
             },
         },
-        { title: '月度审核计划号', dataIndex: 'reviewPlanMonthCode', width: 200 },
-        { title: '月度', dataIndex: 'applyMonth', ellipsis: true, width: 250 },
+        { title: '月度审核计划号', dataIndex: 'reviewPlanMonthCode', width: 180 },
+        { title: '月度', dataIndex: 'applyMonth', ellipsis: true, width: 80, render:(text)=>text ? (text + "月") : ''},
         { title: '拟制说明', dataIndex: 'reviewPlanMonthName', ellipsis: true, width: 200 },
         { title: '拟制公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 200 },
         { title: '拟制部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200 },
-        { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 200 },
+        { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 120 },
         { title: '拟制时间', dataIndex: 'applyDate', ellipsis: true, width: 200 },
     ].map(item => ({ ...item, align: 'center' }));
 

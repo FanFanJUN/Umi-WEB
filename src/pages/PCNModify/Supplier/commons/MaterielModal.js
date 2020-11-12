@@ -32,7 +32,7 @@ const getMatermodRef = forwardRef(({
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [visible, setvisible] = useState(false);
-    const [current, setcurrent] = useState([]);
+    const [current, setcurrent] = useState(1);
     //const [dataSource, setdataSource] = useState([])
     useEffect(() => {
         // getSupplierlist(plement,companyCode,materielCategoryCode)
@@ -47,7 +47,7 @@ const getMatermodRef = forwardRef(({
                 //quickSearchValue: searchValue,
                 ///quickSearchProperties: ['materialCode','materialDesc'],
                 search:{
-                    pageInfo:{page:1,rows:30},
+                    pageInfo:{page:current,rows:30},
                     quickSearchProperties:[ "materialCode", "materialDesc"],
                     quickSearchValue: searchValue
                 },
@@ -147,6 +147,7 @@ const getMatermodRef = forwardRef(({
         setRowKeys([])
     }
     function pageChange(val) {
+        console.log(val)
         setcurrent(val.current)
     }
     const columns = [

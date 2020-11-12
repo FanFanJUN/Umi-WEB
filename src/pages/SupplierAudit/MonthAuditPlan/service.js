@@ -102,6 +102,80 @@ export async function deletePlanMonth(params) {
     return request({
         url: requestUrl,
         method: 'POST',
-        data:params,
+        data: params,
     });
 }
+
+const commonProps = {
+    reader: {
+        name: 'name',
+        field: ['code'],
+    },
+    style: {
+        width: '100%',
+    },
+};
+
+export const ShareStatusProps = {
+    allowClear: true,
+    dataSource: [
+        {
+            code: 'DRAFT',
+            name: '草稿',
+        },
+        {
+            code: 'EFFECT',
+            name: '生效',
+        },
+        {
+            code: 'CHANGING',
+            name: '变更中',
+        },
+    ],
+    placeholder: '选择状态',
+    ...commonProps,
+};
+
+// 审批流程
+export const flowProps = {
+    allowClear: true,
+    dataSource: [
+        {
+            code: 'INIT',
+            name: '未进入流程',
+        },
+        {
+            code: 'INPROCESS',
+            name: '流程中',
+        },
+        {
+            code: 'COMPLETED',
+            name: '流程处理完成',
+        },
+    ],
+    placeholder: '选择审批状态',
+    ...commonProps,
+}
+
+// 采购组织数据
+export const ApplyOrganizationProps = {
+    store: {
+        url: `${baseUrl}/basic/listAllOrgnazationWithDataAuth`,
+    },
+    rowKey: 'code',
+    reader: {
+        name: 'name',
+        field: ['code'],
+    },
+    placeholder: '请选择申请部门',
+    style: {
+        width: '100%',
+    },
+    treeNodeProps: (node) => {
+        if (node.nodeLevel === 0) {
+            return {
+                selectable: false,
+            };
+        }
+    },
+};

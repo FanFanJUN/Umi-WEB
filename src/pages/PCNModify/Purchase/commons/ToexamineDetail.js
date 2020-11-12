@@ -110,7 +110,7 @@ const getToexamine = forwardRef(({
                         />
                     )
                 }
-            </FormItem> : null
+            </FormItem> : !isEmpty(record) && !isEmpty(record.smSupplierAuditResultStatus) ? record.smSupplierAuditResultStatus === 0 ? '通过' : '不通过' : ''
             }
               
           </span>;
@@ -140,7 +140,7 @@ const getToexamine = forwardRef(({
                   />
                 )
               }
-            </FormItem> : null
+            </FormItem> : <UploadFile type="show" entityId={text}/>
           }
          
         </span>
@@ -159,7 +159,7 @@ const getToexamine = forwardRef(({
         let handledata = dataTransfer2(examine, values)
         for (let item of handledata) {
           for (let items of examine) {
-            if (item.id === items.id) {
+            if (item.id === items.id && !isEmpty(item.smSupplierAuditResultStatus)) {
               items.smSupplierAuditConfirmerAttachments = item.smSupplierAuditConfirmerEnclosure
               items.smSupplierAuditResultStatus = item.smSupplierAuditResultStatus
             }
