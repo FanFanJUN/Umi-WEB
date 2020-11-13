@@ -127,7 +127,7 @@ function DataFillIn({
       <Tooltip title="返回顶部">
         <BackTop visibilityHeight={400} />
       </Tooltip>
-      <Tabs tabPosition='left' onChange={(activeKey) => handleChange(activeKey)}>
+      <Tabs tabPosition='left' onChange={(activeKey) => handleChange(activeKey)} animated={false}>
         {/* 基本情况 */}
         <TabPane key='baseCondition' tab={baseConditionTab}>
           <BaseCondition updateGlobalStatus={updateGlobalStatus} />

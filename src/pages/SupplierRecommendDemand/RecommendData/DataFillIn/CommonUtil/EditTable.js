@@ -9,11 +9,11 @@
  */
 import React, { useState, useRef, Fragment } from 'react';
 import { Input, InputNumber, Popconfirm, Form, Divider, Button, DatePicker, Select, message, Alert, Row, Col } from 'antd';
-import { ExtTable, ComboList, ComboGrid } from 'suid';
+import { ExtTable, ComboList, ComboGrid, YearPicker } from 'suid';
 import PropTypes, { any } from 'prop-types';
 import AutoSizeLayout from '../../../../supplierRegister/SupplierAutoLayout';
 import { guid, isEmptyArray, checkNull, hideFormItem, getDocId } from './utils';
-import UploadFile from './UploadFile';
+import UploadFile from '../../../../../components/Upload';
 import { currencyTableProps } from '../../../../../utils/commonProps';
 import moment from 'moment';
 
@@ -50,7 +50,9 @@ const EditableCell = (params) => {
       case 'InputNumber':
         return <InputNumber disabled={inputDisabled} min={0} />
       case 'DatePicker':
-        return <DatePicker {...props}/>
+        return <DatePicker {...props} />
+      case 'YearPicker':
+        return <YearPicker {...props} form={form} />
       case 'Select':
         if (selectOptions) {
           return <Select
@@ -71,7 +73,7 @@ const EditableCell = (params) => {
           <Option value={false}>否</Option>
         </Select>
       case 'UploadFile':
-        return <UploadFile entityId={a} />
+        return <UploadFile entityId={record.attachmentId} />
       case 'TextArea':
         return <Input.TextArea disabled={inputDisabled} />
       case 'hideForm':
@@ -112,10 +114,13 @@ const EditableCell = (params) => {
       } else if (inputType === 'percentInput') {
         return `${a}%`;
       } else if (inputType === 'UploadFile') {
-        return <UploadFile type='show' entityId={a} />
+        return <UploadFile type='show' entityId={record?.attachmentId} />
       } else {
         return a;
       }
+    }
+    if (inputType === 'UploadFile') {
+      return <UploadFile type='show' entityId={record?.attachmentId} />
     }
   }
 
@@ -126,11 +131,12 @@ const EditableCell = (params) => {
       return inputDefaultValue;
     } else {
       if (inputType === 'DatePicker') {
-        return moment(a);
+        
+        return !!a ? moment(a) : ''
       }
-      //  else if (inputType === 'UploadFile') {
-      //     return getDocId(a);
-      // }
+      else if (inputType === 'UploadFile') {
+        return record?.attachmentId;
+      }
       return record[dataIndex];
     }
   }
@@ -229,6 +235,7 @@ const EditableTable = (props) => {
     title: '操作',
     dataIndex: 'operation',
     editable: false,
+    fixed: 'left',
     render: (text, record) => {
 
       return finalCol(record);

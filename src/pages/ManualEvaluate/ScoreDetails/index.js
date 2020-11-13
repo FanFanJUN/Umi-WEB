@@ -41,8 +41,13 @@ function ScoreDetails() {
       dataIndex: 'definition'
     },
     {
+      title: '得分状态',
+      dataIndex: 'scoreStatusRemark'
+    },
+    {
       title: '计算方式',
       dataIndex: 'autoCalculate',
+      width: 150,
       render(text) {
         switch (text) {
           case null:

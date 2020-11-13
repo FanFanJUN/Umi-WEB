@@ -75,7 +75,7 @@ function RecommendDataTable() {
     <>
       <Button className={styles.btn} onClick={handleFillIn} disabled={empty}>填报</Button>
       <Button className={styles.btn} disabled={empty} onClick={checkDetail}>明细</Button>
-      <Button className={styles.btn} disabled={empty}>撤回</Button>
+      <Button className={styles.btn} disabled={empty} onClick={handleWithdraw}>撤回</Button>
       <Button className={styles.btn} disabled={empty} onClick={checkOpinion}>查看意见</Button>
     </>
   )
@@ -89,7 +89,7 @@ function RecommendDataTable() {
     </>
   )
   const footer = (
-    <Button>知道了</Button>
+    <Button onClick={closeCheckOpinion} type='primary'>知道了</Button>
   )
   function handleFillIn() {
     const { id = '' } = FRAMELEEMENT;
@@ -107,8 +107,9 @@ function RecommendDataTable() {
     await toggleDetailModal(true)
   }
   // 关闭查看意见窗口
-  async function closeCheckOpinion() {
-    await toggleDetailModal(false)
+  function closeCheckOpinion() {
+    console.log('sssskj')
+    toggleDetailModal(false)
   }
   // 查看明细
   function checkDetail() {
@@ -120,7 +121,9 @@ function RecommendDataTable() {
 
   // 撤回
   function handleWithdraw() {
-    Modal  
+    Modal.confirm({
+      title: '撤回'
+    })
   }
   return (
     <div>
@@ -147,7 +150,7 @@ function RecommendDataTable() {
         centered
         title='查看意见'
       >
-        <ExtTable 
+        <ExtTable
           showSearch={false}
         />
       </Modal>

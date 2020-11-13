@@ -29,18 +29,62 @@ const MarketCompetitive = React.forwardRef(({ form, data, type, setTableData }, 
   const { getFieldDecorator } = form;
 
   const columnsForMarket = [
-    { title: '产品', dataIndex: 'product', ellipsis: true, },
-    { title: '年产值', dataIndex: 'yearAnnualValue', ellipsis: true, },
-    { title: '币种', dataIndex: 'currencyName', ellipsis: true, },
-    { title: '市场占有率', dataIndex: 'marketShare', ellipsis: true, },
+    {
+      title: '产品',
+      dataIndex: 'product',
+      ellipsis: true,
+    },
+    {
+      title: '年产值',
+      dataIndex: 'yearAnnualValue',
+      ellipsis: true,
+    },
+    {
+      title: '币种',
+      dataIndex: 'currencyName',
+      ellipsis: true,
+    },
+    {
+      title: '市场占有率',
+      dataIndex: 'marketShare',
+      ellipsis: true,
+    },
   ].map(item => ({ ...item, align: 'center' }));
   const columnsForRank = [
-    { title: '产品', dataIndex: 'product', ellipsis: true, },
-    { title: '竞争对手', dataIndex: 'competitor', ellipsis: true, },
-    { title: '年销售额', dataIndex: 'annualTurnover', ellipsis: true, inputType: 'InputNumber' },
-    { title: '币种', dataIndex: 'currencyName', ellipsis: true, inputType: 'selectwithService' },
-    { title: '年销量', dataIndex: 'annualSales', ellipsis: true, inputType: 'InputNumber' },
-    { title: '市场占有率', dataIndex: 'marketShare', ellipsis: true, inputType: 'percentInput' },
+    {
+      title: '产品',
+      dataIndex: 'product',
+      ellipsis: true,
+    },
+    {
+      title: '竞争对手',
+      dataIndex: 'competitor',
+      ellipsis: true,
+    },
+    {
+      title: '年销售额',
+      dataIndex: 'annualTurnover',
+      ellipsis: true,
+      inputType: 'InputNumber'
+    },
+    {
+      title: '币种',
+      dataIndex: 'currencyName',
+      ellipsis: true,
+      inputType: 'selectwithService'
+    },
+    {
+      title: '年销量',
+      dataIndex: 'annualSales',
+      ellipsis: true,
+      inputType: 'InputNumber'
+    },
+    {
+      title: '市场占有率',
+      dataIndex: 'marketShare',
+      ellipsis: true,
+      inputType: 'percentInput'
+    },
   ].map(item => ({ ...item, align: 'center' }));
 
   function setNewData(newData) {

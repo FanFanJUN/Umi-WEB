@@ -110,7 +110,13 @@ function ManualEvaluate() {
             operator: 'EQ',
             value: onlyMe ? account : undefined
           }],
-        quickSearchProperties: ['seEvaluationProject.docNumber', 'seEvaluationProject.projectName']
+        quickSearchProperties: ['seEvaluationProject.docNumber', 'seEvaluationProject.projectName'],
+        sortOrders: [
+          {
+            property: 'docNumber',
+            direction: 'DESC'
+          }
+        ]
       }
     },
     remotePaging: true,
