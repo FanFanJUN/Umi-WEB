@@ -1,9 +1,9 @@
 /*
  * @Author: Li Cai
- * @LastEditors: Li Cai
+ * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-12 14:44:24
- * @LastEditTime: 2020-10-21 14:32:58
+ * @LastEditTime: 2020-11-13 15:33:14
  * @Description: 审核地区城市配置
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/mainData/ReviewCityConf/index.js
  */
@@ -150,7 +150,7 @@ const Index = () => {
           onClick={() => buttonLeftClick('add')}
           className={styles.btn}
           ignore={DEVELOPER_ENV}
-          key='QUALITYSYNERGY_BUCOR_ADD'
+          key='SUPPLIER_AUDIT_CITY_CONFIG_ADD'
         >新增</Button>)
       }
       {
@@ -159,7 +159,7 @@ const Index = () => {
           className={styles.btn}
           ignore={DEVELOPER_ENV}
           disabled={leftselectedRowKeys.length === 0 || leftselectedRowKeys.length > 1}
-          key='QUALITYSYNERGY_BUCOR_EDIT'
+          key='SUPPLIER_AUDIT_CITY_CONFIG_EDIT'
         >编辑</Button>)
       }
       {
@@ -168,9 +168,10 @@ const Index = () => {
           className={styles.btn}
           ignore={DEVELOPER_ENV}
           disabled={leftselectedRowKeys.length === 0}
-          key='QUALITYSYNERGY_BUCOR_DELETE'
+          key='SUPPLIER_AUDIT_CITY_CONFIG_DELETE'
         >删除</Button>)
       }
+      {/* 冻结按钮配置：SUPPLIER_AUDIT_CITY_CONFIG_FORST */}
     </div>)
   };
 
