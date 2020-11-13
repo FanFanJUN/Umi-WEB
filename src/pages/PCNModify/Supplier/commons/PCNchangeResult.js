@@ -36,13 +36,25 @@ const HeadFormRef = forwardRef(({
         form.validateFieldsAndScroll((err, values) => {
             let technology,quality,other
             if (values.technicalAgreement) {
-                technology = values.technicalAgreement === 'undefined' ? 0 : 1;
+                if (values.technicalAgreement != 1) {
+                    technology = 0;
+                }else {
+                    technology = 1
+                }
             }
-            if (values.technicalAgreement) {
-                quality = values.qualityAgreement === 'undefined' ? 0 : 1;
+            if (values.qualityAgreement) {
+                if (values.qualityAgreement != 1) {
+                    quality = 0;
+                }else {
+                    quality = 1
+                }
             }
-            if (values.technicalAgreement) {
-                other = values.otherAgreement === 'undefined' ? 0 : 1;
+            if (values.otherAgreement) {
+                if (values.otherAgreement != 1) {
+                    other = 0;
+                }else {
+                    other = 1
+                }
             }
             if (!err) {
                 //values.resultAttachments = values.resultEnclosure

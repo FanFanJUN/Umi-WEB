@@ -49,7 +49,7 @@ export default function() {
     resultAddVisible: false,
     generationEntryVisible: false,
     checkLeaderOpinionVisible: false,
-    verificationResultsVisible: false,
+    verificationResultsVisible: true,
     spinning: false,
     flowId: '',
     checkedCreate: false,

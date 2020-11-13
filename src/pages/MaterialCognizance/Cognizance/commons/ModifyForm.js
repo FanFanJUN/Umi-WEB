@@ -3,9 +3,10 @@ import { Modal, Form, Row, Col, Input, } from 'antd';
 import { smBaseUrl} from '../../../../utils/commonUrl';
 import { Fieldclassification } from '@/utils/commonProps'
 import { ComboGrid, ComboList } from 'suid';
-// import {ChangecontentList} from '../../commonProps'
-// import {getRelationDocId} from '../../../../services/pcnModifyService'
-// import { baseUrl } from '../../../utils/commonUrl';
+import { recommendUrl} from '../../../../utils/commonUrl';
+import UserSelect from '../../../PCNModify/UserSelect/index'
+import {Tasktypelist} from '../../commonProps'
+import {onlyNumber} from '../../../../utils'
 const { create, Item } = Form;
 const { TextArea } = Input;
 const formLayout = {
@@ -35,6 +36,7 @@ const ModifyForm = forwardRef(
         useImperativeHandle(ref, () => ({ form }));
         const { getFieldDecorator, validateFieldsAndScroll, getFieldValue, setFieldsValue } = form;
         const [initialValue, setInitialValue] = useState({});
+        const [taskid, setTaskid] = useState({});
         useEffect(() => {
             if (type) {
                 setInitialValue(dataSource)
@@ -55,7 +57,14 @@ const ModifyForm = forwardRef(
         }
         // 变更内容
         function changevalue(val) {
-            form.setFieldsValue({ smChangeProve: val.changeRequiredSubmission})
+            setTaskid(val.id)
+        }
+        // 执行部门
+        function personliable(val) {
+            form.setFieldsValue({ smChangeDescriptionAfter: val[0].organization.name}) 
+        }
+        function awfssa() {
+            form.setFieldsValue({ smChangeDescriptionAfter: ''}) 
         }
         return (
             <Modal
@@ -86,18 +95,11 @@ const ModifyForm = forwardRef(
                                     //{...ChangecontentList}
                                     name='smChangeValue'
                                     store={{
-                                        url: `${smBaseUrl}/api/smPcnChangesService/findByPage`,
-                                        params: {
-                                            filters: [{
-                                              fieldName:'changeTypeCode',
-                                              value: modifytype,
-                                              operator:'EQ'
-                                            }],
-                                        },
+                                        url: `${recommendUrl}/api/samPhysicalIdentificationStageService/findByPage`,
                                         type: 'POST'
                                     }}
                                     reader={{
-                                        name: 'changeContent'
+                                        name: 'identificationStage'
                                     }}
                                     form={form}
                                     afterSelect={changevalue}
@@ -122,18 +124,11 @@ const ModifyForm = forwardRef(
                                     //{...ChangecontentList}
                                     name='smChangeValue'
                                     store={{
-                                        url: `${smBaseUrl}/api/smPcnChangesService/findByPage`,
-                                        params: {
-                                            filters: [{
-                                              fieldName:'changeTypeCode',
-                                              value: modifytype,
-                                              operator:'EQ'
-                                            }],
-                                        },
+                                        url: `${recommendUrl}/api/samPhysicalIdentificationTaskService/findByStageId?stageId=` + taskid,
                                         type: 'POST'
                                     }}
                                     reader={{
-                                        name: 'changeContent'
+                                        name: 'taskDesc'
                                     }}
                                     form={form}
                                     afterSelect={changevalue}
@@ -157,24 +152,9 @@ const ModifyForm = forwardRef(
                                 <ComboList
                                     showSearch={false}
                                     style={{ width: '100%' }}
-                                    //{...ChangecontentList}
+                                    {...Tasktypelist}
                                     name='smChangeValue'
-                                    store={{
-                                        url: `${smBaseUrl}/api/smPcnChangesService/findByPage`,
-                                        params: {
-                                            filters: [{
-                                              fieldName:'changeTypeCode',
-                                              value: modifytype,
-                                              operator:'EQ'
-                                            }],
-                                        },
-                                        type: 'POST'
-                                    }}
-                                    reader={{
-                                        name: 'changeContent'
-                                    }}
                                     form={form}
-                                    afterSelect={changevalue}
                                 />
                             )}
                         </Item>
@@ -195,6 +175,7 @@ const ModifyForm = forwardRef(
                                         width: "100%"
                                     }}
                                     placeholder="请输入排序号"
+                                    onBlur={onlyNumber} 
                                 />
                             )}
                         </Item>
@@ -203,7 +184,7 @@ const ModifyForm = forwardRef(
                 <Row>
                     <Col span={12}>
                         <Item {...formLayout} label="执行责任人">
-                            {getFieldDecorator('smChangeDescriptionAfter', {
+                            {getFieldDecorator('smInKindManName', {
                                 initialValue: initialValue && initialValue.smChangeDescriptionAfter,
                                 rules: [
                                     {
@@ -212,27 +193,16 @@ const ModifyForm = forwardRef(
                                     },
                                 ],
                             })(
-                                <ComboList
-                                    showSearch={false}
-                                    style={{ width: '100%' }}
-                                    //{...ChangecontentList}
-                                    name='smChangeValue'
-                                    store={{
-                                        url: `${smBaseUrl}/api/smPcnChangesService/findByPage`,
-                                        params: {
-                                            filters: [{
-                                              fieldName:'changeTypeCode',
-                                              value: modifytype,
-                                              operator:'EQ'
-                                            }],
-                                        },
-                                        type: 'POST'
-                                    }}
-                                    reader={{
-                                        name: 'changeContent'
-                                    }}
+                                <UserSelect name="smInKindManName" style={{width:"100%",zIndex:10}}
+                                    disabled={type === 'detail'}
+                                    wrapperStyle={{width:950}}
+                                    reader={{name:'userName',field:['code']}} 
                                     form={form}
-                                    afterSelect={changevalue}
+                                    multiple={false}
+                                    onRowsChange={personliable}
+                                    onChange={awfssa}
+                                    field={['smInKindManId']}
+                                    placeholder="请选择执行责任人"
                                 />
                             )}
                         </Item>
@@ -244,11 +214,11 @@ const ModifyForm = forwardRef(
                                 rules: [
                                     {
                                         required: true,
-                                        message: '请填写执行部门',
+                                        message: '请选择执行部门',
                                     },
                                 ],
                             })(
-                                <Input disabled placeholder="请输入执行部门" />
+                                <Input disabled placeholder="请选择执行部门" />
                             )}
                         </Item>
                     </Col>
@@ -265,7 +235,7 @@ const ModifyForm = forwardRef(
                                     },
                                 ],
                             })(
-                                <Input placeholder="请输入计划完成天数" />
+                                <Input onBlur={onlyNumber} placeholder="请输入计划完成天数"  />
                             )}
                         </Item>
                     </Col>
