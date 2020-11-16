@@ -1,7 +1,7 @@
 /*
  * @Author:黄永翠
  * @Date: 2020-11-09 09:38:38
- * @LastEditTime: 2020-11-11 14:04:00
+ * @LastEditTime: 2020-11-16 21:00:53
  * @LastEditors: Please set LastEditors
  * @Description:审核实施计划-明细
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\index.js
@@ -19,6 +19,7 @@ import AuditScope from "./AuditScope";
 import AuditorInfo from "./AuditorInfo";
 import PersonTable from "./PersonTable";
 import AuditPlan from "./AuditPlan";
+import { mergeContent } from "../service";
 
 const { StartFlow } = WorkFlow;
 
@@ -42,6 +43,7 @@ const Index = (props) => {
         switch (pageState) {
             case 'add':
                 setData({ type: pageState, isView: false, title: '审核实施计划管理-新增' });
+                getOriginData();
                 break;
             case 'edit':
                 setData({ type: pageState, id, isView: false, title: '审核实施计划管理-编辑' });
@@ -60,6 +62,21 @@ const Index = (props) => {
                 break;
         }
     }, [editData])
+
+    // 新增时获取初始数据
+    async function getOriginData() {
+        let res = {};
+        const ids = query.ids && query.ids.split(",");
+        if(query.pageState === "add") {
+            res = await mergeContent({lineId: ids})
+            if(res.success){
+                setEditData(res.data);
+            } else {
+                message.error(res.message);
+            }
+        }
+    }
+    
     const handleSave = (type) => {
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
@@ -131,11 +148,17 @@ const Index = (props) => {
             originData={editData}
         />
         {/* 拟审核信息 */}
-        <AuditInfo />
+        <AuditInfo originData={{}} />
         {/* 审核范围 */}
         <AuditScope />
         {/* 审核人员 */}
-        <AuditorInfo />
+        <AuditorInfo 
+            type="add"
+            treeData={[]}
+            reviewTeamGroupBoList={[]}
+            reviewTypeCode="a"
+            deleteArr={[]}
+        />
         {/* 协同人员 */}
         <PersonTable />
         {/* 审核计划 */}

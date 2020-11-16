@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:49:50
- * @LastEditTime: 2020-11-11 14:06:33
+ * @LastEditTime: 2020-11-16 17:10:16
  * @LastEditors: Please set LastEditors
  * @Description: I审核实施计划-审核计划
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\AuditPlan.js
@@ -57,7 +57,7 @@ const AuditPlan = (props) => {
                                         <Checkbox.Group style={{ width: '100%' }} style={{paddingTop: "20px"}}>
                                             {
                                                 seleted.map(item => <Row style={{margin: "6px 0"}}>
-                                                    <Checkbox value={item.code}>{item.value}</Checkbox>
+                                                    <Checkbox value={item.code} key={item.code}>{item.value}</Checkbox>
                                                 </Row>)
                                             }
                                         </Checkbox.Group>

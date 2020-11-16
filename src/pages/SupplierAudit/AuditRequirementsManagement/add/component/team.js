@@ -83,7 +83,8 @@ const Team = (props) => {
               if (item.children && item.children.length !== 0) {
                 item.children.map(v => {
                   v.systemId = v.id;
-                  item.systemCode = item.code;
+                  // item.systemCode = item.code;
+                  v.systemCode = v.code;
                   v.systemName = v.name;
                   v.key = v.id;
                   v.title = v.name;

@@ -356,7 +356,7 @@ export const reviewPlanYearConfig = {
     type: 'POST',
     autoLoad: false,
     params: {
-      // state: 'EFFECT'
+      state: 'EFFECT'
     },
     url: `${recommendUrl}/api/reviewPlanYearService/findByPage`,
   },
@@ -366,6 +366,27 @@ export const reviewPlanYearConfig = {
     field: ['reviewPlanYearCode', 'id'],
     name: 'reviewPlanYearName',
     description: 'reviewPlanYearCode',
+  },
+};
+
+// 审核实施计划-从月度审核计划-新增
+export const reviewPlanMonthConfig = {
+  placeholder: '选择月度审核计划',
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    params: {
+      state: 'EFFECT',
+      flowStatus: 'COMPLETED',
+    },
+    url: `${recommendUrl}/api//reviewPlanMonthService/findByPage`,
+  },
+  remotePaging: true,
+  rowKey: 'reviewPlanMonthCode',
+  reader: {
+    name: 'reviewPlanMonthName',
+    field: ['reviewPlanMonthCode'],
+    description: 'reviewPlanMonthCode',
   },
 };
 

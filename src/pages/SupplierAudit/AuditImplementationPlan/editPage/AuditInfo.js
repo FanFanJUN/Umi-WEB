@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:37:22
- * @LastEditTime: 2020-11-09 14:46:22
+ * @LastEditTime: 2020-11-16 20:38:08
  * @LastEditors: Please set LastEditors
  * @Description: 审核实施计划-拟审核信息
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\AuditInfo.js
@@ -27,7 +27,7 @@ const formItemLayoutLong = {
 };
 
 const AuditInfo = (props) => {
-    const { isView } = props;
+    const { isView, originData } = props;
     const [tabList, setTableList] = useState([{id: 1, reviewPlanMonthCode: "00010"}]);
     const columns = [
         { title: '月度审核计划行号', dataIndex: 'reviewPlanMonthCode', width: 140, align: "center" },
