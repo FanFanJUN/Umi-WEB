@@ -1,7 +1,7 @@
 /*
  * @Author:黄永翠
  * @Date: 2020-11-09 09:38:38
- * @LastEditTime: 2020-11-16 21:00:53
+ * @LastEditTime: 2020-11-16 21:05:53
  * @LastEditors: Please set LastEditors
  * @Description:审核实施计划-明细
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\index.js
@@ -61,7 +61,7 @@ const Index = (props) => {
                 setData({ type: pageState, isView: false, title: '审核实施计划管理-新增' });
                 break;
         }
-    }, [editData])
+    }, [])
 
     // 新增时获取初始数据
     async function getOriginData() {
