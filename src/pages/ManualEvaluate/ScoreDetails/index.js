@@ -34,11 +34,13 @@ function ScoreDetails() {
     },
     {
       title: '指标名称',
-      dataIndex: 'ruleName'
+      dataIndex: 'ruleName',
+      width: 150
     },
     {
       title: '指标定义',
-      dataIndex: 'definition'
+      dataIndex: 'definition',
+      width: 250,
     },
     {
       title: '得分状态',

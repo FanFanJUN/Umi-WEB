@@ -18,10 +18,12 @@ import { router } from 'dva';
 import { filterEmptyFileds } from '../CommonUtil/utils';
 
 const SellCondition = ({ form, updateGlobalStatus }) => {
+  const customerRef = useRef(null);
   const [data, setData] = useState({});
   const [supplierSalesProceeds, setsupplierSalesProceeds] = useState([]); // 销售收入及利润
   const [changhongSaleInfos, setchanghongSaleInfos] = useState([]);
   const [mainCustomers, setmainCustomers] = useState([]);
+  const [exportSituations, setexportSituations] = useState([]);
   const [supplierOrderInfos, setsupplierOrderInfos] = useState([]);
   const [threeYearPlans, setthreeYearPlans] = useState([]);
   const [supplierMajorCompetitors, setsupplierMajorCompetitors] = useState();
@@ -33,14 +35,17 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const res = await findSalesSituationById({ supplierRecommendDemandId: id });
-      if (res.success) {
-        res.data && setData(res.data);
-        res.data && setsupplierSalesProceeds(res.data.supplierSalesProceeds || []);
-      } else {
-        message.error(res.message);
-      }
+      const { success, data, message: msg } = await findSalesSituationById({ supplierRecommendDemandId: id });
       setLoading(false);
+      if (success) {
+        const { supplierCertificates, supplierSalesProceeds, changhongSaleInfos, mainCustomers, ...other } = data
+        await setData({ ...data });
+        await setsupplierSalesProceeds(supplierSalesProceeds);
+        await setchanghongSaleInfos(changhongSaleInfos)
+        await setmainCustomers(mainCustomers)
+        return
+      }
+      message.error(msg);
     };
     fetchData();
   }, []);
@@ -58,6 +63,7 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
         supplierOrderInfos: supplierOrderInfos || [],
         threeYearPlans: threeYearPlans || [],
         recommendDemandId: id,
+        id: data.id,
         supplierMajorCompetitors: supplierMajorCompetitors || [],
         supplierSalesProceeds
       };
@@ -134,6 +140,7 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
                   data={data}
                   form={form}
                   setTableData={setTableData}
+                  wrappedComponentRef={customerRef}
                 />
               </div>
             </div>

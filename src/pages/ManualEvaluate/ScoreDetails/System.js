@@ -16,7 +16,14 @@ const formLayout = {
     span: 18,
   }
 };
-
+const formLayoutAlone = {
+  labelCol: {
+    span: 3
+  },
+  wrapperCol: {
+    span: 21
+  }
+}
 function SystemDetail() {
   const [dataSource, setDataSource] = useState([]);
   const [loading, toggleLoading] = useState(false);
@@ -25,32 +32,20 @@ function SystemDetail() {
   const { query } = useLocation();
   const columns = [
     {
-      title: '类别',
-      dataIndex: 'systemName'
+      title: '开始区间计算符',
+      dataIndex: 'markStartCalSign'
     },
     {
-      title: '指标名称',
-      dataIndex: 'ruleName'
+      title: '开始区间',
+      dataIndex: 'markStart'
     },
     {
-      title: '指标定义',
-      dataIndex: 'definition'
+      title: '结束区间计算符',
+      dataIndex: 'markEndCalSign'
     },
     {
-      title: '计算方式',
-      dataIndex: 'autoCalculate',
-      render(text) {
-        switch (text) {
-          case undefined:
-            return ''
-          case true:
-            return '人工打分'
-          case false:
-            return '系统打分'
-          default:
-            return '未知方式'
-        }
-      }
+      title: '结束区间',
+      dataIndex: 'markEnd'
     },
     {
       title: '分值',
@@ -62,13 +57,23 @@ function SystemDetail() {
     const { success, data, message: msg } = await queryEvaluateScoreDetail(query);
     toggleLoading(false)
     if (success) {
-      const { seEvaluationResult, seScoreItems, ...infos } = data;
-      await setDataSource(seScoreItems)
+      const {
+        seEvaluationResult,
+        samSupplierEvlSysRule,
+        samSupplierAutoScoreStandards,
+        score,
+        value,
+        // ...infos
+      } = data;
+      await setDataSource(samSupplierAutoScoreStandards)
       const uuid = utils.getUUID();
-      await setFormInfo({
+      const infos = {
         ...seEvaluationResult,
-        ...infos
-      })
+        ...samSupplierEvlSysRule,
+        score,
+        value
+      }
+      await setFormInfo(infos)
       await setTabKey(uuid)
       return
     }
@@ -119,8 +124,34 @@ function SystemDetail() {
               <span>{formInfo.materialCategoryCode}</span>
             </FormItem>
           </Col>
+          <Col span={12}>
+            <FormItem label='指标名称'>
+              <span>{formInfo.ruleName}</span>
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem label='计算方式'>
+              <span>{formInfo.autoCalculate ? '系统打分' : '人工打分'}</span>
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem label='分值'>
+              <span>{formInfo.score}</span>
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem label='指标值'>
+              <span>{formInfo.value}</span>
+            </FormItem>
+          </Col>
+          <Col span={24}>
+            <FormItem label='指标定义' {...formLayoutAlone}>
+              <span>{formInfo.definition}</span>
+            </FormItem>
+          </Col>
         </Row>
       </Form>
+      <div className={styles.commonTitle}>评分标准</div>
       <Table
         key={tabKey}
         dataSource={dataSource}
