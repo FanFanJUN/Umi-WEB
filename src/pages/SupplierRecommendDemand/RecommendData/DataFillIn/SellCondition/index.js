@@ -33,7 +33,7 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const res = await findSalesSituationById({ supplierRecommendDemandId: id || '676800B6-F19D-11EA-9F88-0242C0A8442E' });
+      const res = await findSalesSituationById({ supplierRecommendDemandId: id });
       if (res.success) {
         res.data && setData(res.data);
         res.data && setsupplierSalesProceeds(res.data.supplierSalesProceeds || []);
@@ -57,8 +57,9 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
         mainCustomers: mainCustomers || [],
         supplierOrderInfos: supplierOrderInfos || [],
         threeYearPlans: threeYearPlans || [],
-        recommendDemandId: id || '676800B6-F19D-11EA-9F88-0242C0A8442E',
+        recommendDemandId: id,
         supplierMajorCompetitors: supplierMajorCompetitors || [],
+        supplierSalesProceeds
       };
       saveSupplierSalesSituation(filterEmptyFileds(saveParams)).then((res) => {
         if (res && res.success) {
@@ -115,7 +116,12 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
             <div className={styles.bgw}>
               <div className={styles.title}>销售收入及利润 <span className={styles.hint}>（至少提供近三年）</span></div>
               <div className={styles.content}>
-                <SalesProfit type={type} data={supplierSalesProceeds} setTableData={setTableData} />
+                <SalesProfit
+                  type={type}
+                  data={supplierSalesProceeds}
+                  form={form}
+                  setTableData={setTableData}
+                />
               </div>
             </div>
           </div>
@@ -123,7 +129,12 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
             <div className={styles.bgw}>
               <div className={styles.title}>客户</div>
               <div className={styles.content}>
-                <Customer type={type} data={data} form={form} setTableData={setTableData} />
+                <Customer
+                  type={type}
+                  data={data}
+                  form={form}
+                  setTableData={setTableData}
+                />
               </div>
             </div>
           </div>
@@ -131,7 +142,12 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
             <div className={styles.bgw}>
               <div className={styles.title}>市场地位及竞争状况</div>
               <div className={styles.content}>
-                <MarketCompetitive type={type} data={data} form={form} setTableData={setTableData} />
+                <MarketCompetitive
+                  type={type}
+                  data={data}
+                  form={form}
+                  setTableData={setTableData}
+                />
               </div>
             </div>
           </div>

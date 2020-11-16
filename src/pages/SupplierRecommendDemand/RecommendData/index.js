@@ -50,6 +50,7 @@ function RecommendData() {
           return <Affix offsetTop={56}><DefaultTabBar {...props} style={{ background: '#fff', padding: '0 24px' }} /></Affix>
         }}
         defaultActiveKey='explain'
+        animated={false}
       >
         <TabPane key='explain' tab='填表说明'>
           <Explain />

@@ -569,7 +569,13 @@ export const supplierEvRuleProps = {
     url: `${baseUrl}/api/supplierEvlRuleService/findListByPages`,
     type: 'post',
     params: {
-      autoCalculate: true
+      filters: [
+        {
+          fieldName: 'autoCalculate',
+          operator: 'EQ',
+          value: true
+        }
+      ]
     }
   },
   reader: {

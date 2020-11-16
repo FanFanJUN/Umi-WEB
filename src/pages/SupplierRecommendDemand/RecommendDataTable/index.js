@@ -12,6 +12,7 @@ function RecommendDataTable() {
   const tableRef = useRef(null);
   const [selectedRowKeys, setRowKeys] = useState([]);
   const [selectedRows, setRows] = useState([]);
+  const [detailModal, toggleDetailModal] = useState(false);
   const [searchValue, setSearchValue] = useState({});
   const FRAMELEEMENT = getFrameElement();
   const [signleRow = {}] = selectedRows;
@@ -74,7 +75,7 @@ function RecommendDataTable() {
     <>
       <Button className={styles.btn} onClick={handleFillIn} disabled={empty}>填报</Button>
       <Button className={styles.btn} disabled={empty} onClick={checkDetail}>明细</Button>
-      <Button className={styles.btn} disabled={empty}>撤回</Button>
+      <Button className={styles.btn} disabled={empty} onClick={handleWithdraw}>撤回</Button>
       <Button className={styles.btn} disabled={empty} onClick={checkOpinion}>查看意见</Button>
     </>
   )
@@ -86,6 +87,9 @@ function RecommendDataTable() {
       </Select>
       <Search />
     </>
+  )
+  const footer = (
+    <Button onClick={closeCheckOpinion} type='primary'>知道了</Button>
   )
   function handleFillIn() {
     const { id = '' } = FRAMELEEMENT;
@@ -99,15 +103,13 @@ function RecommendDataTable() {
     setRows(rows)
   }
   // 查看意见
-  function checkOpinion() {
-    // const store = {
-    //   url: ``
-    // }
-    Modal.confirm({
-      title: '查看意见',
-      content: <ExtTable />,
-      wdith: '60vw'
-    })
+  async function checkOpinion() {
+    await toggleDetailModal(true)
+  }
+  // 关闭查看意见窗口
+  function closeCheckOpinion() {
+    console.log('sssskj')
+    toggleDetailModal(false)
   }
   // 查看明细
   function checkDetail() {
@@ -115,6 +117,13 @@ function RecommendDataTable() {
     const [key] = selectedRowKeys;
     const { pathname } = window.location;
     openNewTab(`supplier/recommend/demand/detail?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '供应商推荐需求明细', false)
+  }
+
+  // 撤回
+  function handleWithdraw() {
+    Modal.confirm({
+      title: '撤回'
+    })
   }
   return (
     <div>
@@ -128,6 +137,23 @@ function RecommendDataTable() {
           />
         }
       </AutoSizeLayout>
+      <Modal
+        visible={detailModal}
+        bodyStyle={{
+          height: '60vh',
+          overflowY: 'scroll'
+        }}
+        destroyOnClose
+        width='60vw'
+        onCancel={closeCheckOpinion}
+        footer={footer}
+        centered
+        title='查看意见'
+      >
+        <ExtTable
+          showSearch={false}
+        />
+      </Modal>
     </div>
   )
 }

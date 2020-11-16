@@ -109,9 +109,18 @@ function SupplierConfigure() {
             // }
         },
         {
-            title: '供应商类型',
-            width: 100,
+            title: '供应商分类',
+            width: 200,
             dataIndex: 'supplier.supplierTypeRemark',
+            render: (text, record, index) => {
+                if (record.supplier) {
+                return <div>{record.supplier.supplierCategory.name} {record.supplier.supplierCategory.code}</div>;
+                }else {
+                    return <div></div>;
+                }
+                console.log(record.supplier.supplierCategory.code)
+                
+            },
         },
         {
             title: '推荐信息',
@@ -122,11 +131,11 @@ function SupplierConfigure() {
                 return <a onClick={() => showRecommend(record.supplierId)}>查看</a>;
             },
         },
-        {
-            title: '状态',
-            width: 100,
-            dataIndex: 'supplier.supplierStatusRemark',
-        },
+        // {
+        //     title: '供应商状态',
+        //     width: 100,
+        //     dataIndex: 'supplier.supplierStatusRemark',
+        // },
     ].map(_ => ({ ..._, align: 'center' }))
     /**推荐信息弹窗表格 */
   const tableProps = {

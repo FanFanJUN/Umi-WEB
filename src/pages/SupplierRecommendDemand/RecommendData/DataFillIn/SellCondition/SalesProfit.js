@@ -20,6 +20,10 @@ const SalesProfit = ({ data, type, setTableData }) => {
       dataIndex: "year",
       ellipsis: true,
       editable: true,
+      inputType: 'YearPicker',
+      props: {
+        // mode: 'year'
+      }
       // inputType: 'in',
       //  required: false
     },
@@ -47,7 +51,6 @@ const SalesProfit = ({ data, type, setTableData }) => {
   ];
 
   function setNewData(newData) {
-    (newData);
     setDataSource(newData);
     setTableData(newData, 'supplierSalesProceeds');
   }

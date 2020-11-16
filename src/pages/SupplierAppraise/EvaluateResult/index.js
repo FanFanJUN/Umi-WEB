@@ -56,17 +56,17 @@ function EvaluateResult() {
       dataIndex: 'purchaseTeamAdvice'
     },
     {
-      title: '领导决定',
-      dataIndex: 'leaderAdviceName'
-    },
-    {
       title: '采购份额调整',
       dataIndex: 'shareAdjustOpinion'
     },
     {
       title: '新产品应用意见',
       dataIndex: 'newProductOpinion'
-    }
+    },
+    {
+      title: '领导决定',
+      dataIndex: 'leaderAdviceName'
+    },
   ]
   function handleCheckScoreDetail(evaluationResultId) {
     openNewTab(`supplier/appraise/project/evaluate/result/score/details?evaluationProjectId=${query?.id}&evaluationResultId=${evaluationResultId}`, '综合得分', false)
