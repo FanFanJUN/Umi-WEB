@@ -54,13 +54,16 @@ function ManualDetail() {
     const { success, data, message: msg } = await queryEvaluateScoreDetail(query);
     toggleLoading(false)
     if (success) {
-      const { seEvaluationResult, seScoreItems, ...infos } = data;
+      const { seEvaluationResult, seScoreItems, samSupplierEvlSysRule, score, value } = data;
       await setDataSource(seScoreItems)
       const uuid = utils.getUUID();
-      await setFormInfo({
+      const infos = {
         ...seEvaluationResult,
-        ...infos
-      })
+        ...samSupplierEvlSysRule,
+        score,
+        value
+      }
+      await setFormInfo(infos)
       await setTabKey(uuid)
       return
     }
@@ -133,7 +136,7 @@ function ManualDetail() {
           </Col>
           <Col span={12}>
             <FormItem label='多人评分规则'>
-              <span>{formInfo.multipleScoreRule}</span>
+              <span>{formInfo.mutiScoreStandardRemark}</span>
             </FormItem>
           </Col>
         </Row>

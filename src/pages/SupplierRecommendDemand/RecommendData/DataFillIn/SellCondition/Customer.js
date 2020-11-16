@@ -105,15 +105,38 @@ const CustermerInfo = ({
   )
 }
 
-const Customer = React.forwardRef(({ form, type, data, setTableData }, ref) => {
+const Customer = React.forwardRef(({
+  form,
+  type,
+  data,
+  setTableData
+}, ref) => {
   const DISABLED = type === 'detail';
   const { getFieldDecorator } = form;
-  const [changhongSaleInfos, setchanghongSaleInfos] = useState(data.changhongSaleInfos);
-  const [mainCustomers, setmainCustomers] = useState(data.mainCustomers);
-  const [exportSituations, setexportSituations] = useState(data.exportSituations);
-  const [supplierOrderInfos, setsupplierOrderInfos] = useState(data.supplierOrderInfos);
-  const [threeYearPlans, setthreeYearPlans] = useState(data.threeYearPlans);
-
+  // const {
+  //   changhongSaleInfos,
+  //   mainCustomers,
+  //   exportSituations,
+  //   supplierOrderInfos,
+  //   threeYearPlans
+  // } = data;
+  const changhongSaleInfos = data?.changhongSaleInfos?.map(item => ({ ...item, guid: item.id }))
+  const mainCustomers = data?.mainCustomers?.map(item => ({ ...item, guid: item.id }))
+  const exportSituations = data?.exportSituations?.map(item => ({ ...item, guid: item.id }))
+  const supplierOrderInfos = data?.supplierOrderInfos?.map(item => ({ ...item, guid: item.id }))
+  const threeYearPlans = data?.threeYearPlans?.map(item => ({ ...item, guid: item.id }))
+  // const [changhongSaleInfos, setchanghongSaleInfos] = useState(data.changhongSaleInfos);
+  // const [mainCustomers, setmainCustomers] = useState(data.mainCustomers);
+  // const [exportSituations, setexportSituations] = useState(data.exportSituations);
+  // const [supplierOrderInfos, setsupplierOrderInfos] = useState(data.supplierOrderInfos);
+  // const [threeYearPlans, setthreeYearPlans] = useState(data.threeYearPlans);
+  // useImperativeHandle(ref, ({
+  //   setchanghongSaleInfos,
+  //   setmainCustomers,
+  //   setexportSituations,
+  //   setsupplierOrderInfos,
+  //   setthreeYearPlans
+  // }))
   const tableRef = useRef(null);
 
   const columnsForGroup = [
@@ -275,22 +298,22 @@ const Customer = React.forwardRef(({ form, type, data, setTableData }, ref) => {
   ].map(item => ({ ...item, align: 'center' }));
 
   function setNewData(newData, type) {
-    switch (type) {
-      case 'changhongSaleInfos':
-        setchanghongSaleInfos(newData);
-        break;
-      case 'mainCustomers':
-        setmainCustomers(newData);
-        break;
-      case 'supplierOrderInfos':
-        setsupplierOrderInfos(newData);
-        break;
-      case 'threeYearPlans':
-        setthreeYearPlans(newData);
-        break;
-      default:
-        break;
-    }
+    // switch (type) {
+    //   case 'changhongSaleInfos':
+    //     setchanghongSaleInfos(newData);
+    //     break;
+    //   case 'mainCustomers':
+    //     setmainCustomers(newData);
+    //     break;
+    //   case 'supplierOrderInfos':
+    //     setsupplierOrderInfos(newData);
+    //     break;
+    //   case 'threeYearPlans':
+    //     setthreeYearPlans(newData);
+    //     break;
+    //   default:
+    //     break;
+    // }
     setTableData(newData, type);
   }
 
