@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:49:50
- * @LastEditTime: 2020-11-17 16:07:34
+ * @LastEditTime: 2020-11-17 20:52:43
  * @LastEditors: Please set LastEditors
  * @Description: I审核实施计划-审核计划
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\AuditPlan.js
@@ -33,7 +33,7 @@ const formLongLayout = {
   };
 
 const AuditPlan = (props) => {
-    const { form, type, isView } = props;
+    const { form, type, isView, originData={} } = props;
     // 数组存储的审核准则
     const [seleteList, setSelecteList] = useState([]);
     // 以code为key值存储的审核准则对象
@@ -124,11 +124,11 @@ const AuditPlan = (props) => {
                             <FormItem {...formLongLayout} label={'详细计划附件'}>
                                 {
                                     getFieldDecorator('reviewPlanFileId', {
-                                        initialValue: type === 'add' ? '' : getDocIdForArray(data.fileList),
+                                        initialValue: type === 'add' ? '' : getDocIdForArray(originData.fileList),
                                         rules: [{ required: true, message: '详细计划附件不能为空',},]
                                     })(
                                         <Upload
-                                            entityId={type === 'add' ? null : data.fileList}
+                                            entityId={type === 'add' ? null : originData.fileList}
                                             type={isView ? 'show' : ''}
                                             showColor={isView ? true : false}
                                         />

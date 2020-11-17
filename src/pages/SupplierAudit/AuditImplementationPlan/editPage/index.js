@@ -1,7 +1,7 @@
 /*
  * @Author:黄永翠
  * @Date: 2020-11-09 09:38:38
- * @LastEditTime: 2020-11-17 17:46:01
+ * @LastEditTime: 2020-11-17 21:04:03
  * @LastEditors: Please set LastEditors
  * @Description:审核实施计划-明细
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\index.js
@@ -22,7 +22,7 @@ import AuditScope from "./AuditScope";
 import AuditorInfo from "./AuditorInfo";
 import PersonTable from "./PersonTable";
 import AuditPlan from "./AuditPlan";
-import { mergeContent, addReviewImplementPlan } from "../service";
+import { mergeContent, addReviewImplementPlan, findDetailsByReviewImplementPlanId } from "../service";
 
 const { StartFlow } = WorkFlow;
 const pickpropertys = [
@@ -62,6 +62,7 @@ const Index = (props) => {
                 break;
             case 'detail':
                 setData({ type: pageState, isView: true, title: `审核实施计划明细: ${editData.reviewPlanMonthCode}` });
+                etDetail();
                 break;
             case 'change':
                 setData({ type: pageState, isView: true, title: `变更审核实施计划: ${editData.reviewPlanMonthCode}` });
@@ -118,6 +119,16 @@ const Index = (props) => {
             } else {
                 message.error(res.message);
             }
+        }
+    }
+
+    // 获取明细
+    async function etDetail() {
+        const res = await findDetailsByReviewImplementPlanId({id: query.id});
+        if(res.success) {
+            // setEditData(res.data);
+        } else {
+            message.error(res.message);
         }
     }
 
@@ -197,7 +208,7 @@ const Index = (props) => {
             <div className={classnames(styles.fbc, styles.affixHeader)}>
                 <span>{data.title}</span>
                 {
-                    (data.type !== 'detail' || data.type === 'change') && <div style={{ display: "flex", alignItems: 'center' }}>
+                    (data.type !== 'detail' || data.type === 'change' || data.type === 'edit') && <div style={{ display: "flex", alignItems: 'center' }}>
                         <Button className={styles.btn} onClick={() => { closeCurrent() }}>返回</Button>
                         {data.type !== 'change' && <Button className={styles.btn} onClick={() => handleSave('save')}>暂存</Button>}
                         <StartFlow
@@ -208,7 +219,7 @@ const Index = (props) => {
                             onCancel={() => { setLoading(false); }}
                             businessKey={query?.id}
                             disabled={loading}
-                            businessModelCode={data.type === 'change' ? 'com.ecmp.srm.sam.entity.sr.ReviewPlanMonthChange' : 'com.ecmp.srm.sam.entity.sr.ReviewPlanMonth'}
+                            businessModelCode={data.type === 'change' ? 'com.ecmp.srm.sam.entity.sr.ReviewImplementPlanChange' : 'com.ecmp.srm.sam.entity.sr.ReviewImplementPlan'}
                         >
                             {
                                 loading => <Button loading={loading} type='primary'>提交</Button>
