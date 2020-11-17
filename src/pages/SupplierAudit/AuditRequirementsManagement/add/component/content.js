@@ -3,6 +3,7 @@ import { ComboList, ComboTree, ExtModal, ExtTable } from 'suid';
 import { Col, Form, Input, Row, message } from 'antd';
 import { EvaluationSystemConfig } from '../../../mainData/commomService';
 import ShuttleBox from '../../../common/ShuttleBox';
+import ShuttleBoxNew from '../../../common/ShuttleBoxNew';
 
 const FormItem = Form.Item;
 
@@ -14,7 +15,8 @@ const formItemLayoutLong = {
 const Content = (props) => {
 
   const [data, setData] = useState({
-    leftTreeData: undefined,
+    header: [{}],
+    leftTreeData: [],
     treeData: [],
   });
 
@@ -58,7 +60,7 @@ const Content = (props) => {
         getFieldDecorator(name, {
           initialValue: initialValue,
         })(
-          <Input type={'hidden'}/>,
+          <Input type={'hidden'} />,
         )
       }
     </FormItem>
@@ -105,6 +107,7 @@ const Content = (props) => {
                       allowClear={true}
                       style={{ width: '100%' }}
                       form={form}
+                      defaultExpandAll={false}
                       name={'systemName'}
                       afterSelect={systemSelect}
                       field={['systemCode', 'systemId']}
@@ -122,12 +125,18 @@ const Content = (props) => {
         </Row>
       </Form>
       <div style={{ height: '300px', width: '100%' }}>
-        <ShuttleBox
+        <ShuttleBoxNew
           rightTreeData={treeData}
           type={type === 'detail' && 'show'}
           onChange={getTreeData}
           leftTreeData={data.leftTreeData}
         />
+        {/*<ShuttleBox*/}
+        {/*  rightTreeData={treeData}*/}
+        {/*  type={type === 'detail' && 'show'}*/}
+        {/*  onChange={getTreeData}*/}
+        {/*  leftTreeData={data.leftTreeData}*/}
+        {/*/>*/}
       </div>
     </ExtModal>
   );

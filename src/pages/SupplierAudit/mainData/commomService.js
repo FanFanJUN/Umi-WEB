@@ -1,7 +1,6 @@
 import { baseUrl, basicServiceUrl, gatewayUrl, recommendUrl, smBaseUrl } from '../../../utils/commonUrl';
 import request from '../../../utils/request';
 import { FLOW_HOST } from '../../../utils/constants';
-
 /**
  * 判断为空
  */
@@ -128,7 +127,7 @@ export const EvaluationSystemConfig = {
     width: '100%',
   },
   treeNodeProps: (node) => {
-    if (node.children.length === 0) {
+    if (node.nodeLevel !== 0) {
       return {
         selectable: false,
       };
@@ -200,7 +199,7 @@ export const UserByDepartmentConfig = {
   reader: {
     name: 'code',
     description: 'userName',
-    field: ["code", "id"]
+    field: ['code', 'id'],
   },
 };
 // 根据部门查员工-取name
@@ -211,7 +210,7 @@ export const UserByDepartmentNameConfig = {
   reader: {
     name: 'userName',
     description: 'code',
-    field: ["code", "id", "mobile"]
+    field: ['code', 'id', 'mobile'],
   },
 };
 
@@ -356,7 +355,7 @@ export const reviewPlanYearConfig = {
     type: 'POST',
     autoLoad: false,
     params: {
-      state: 'EFFECT'
+      state: 'EFFECT',
     },
     url: `${recommendUrl}/api/reviewPlanYearService/findByPage`,
   },
@@ -474,14 +473,14 @@ export const AuditTypeManagementConfig = {
 };
 
 // 终止审批流程
-export const EndFlow = async (params={}) => {
-  const url = `${gatewayUrl}${FLOW_HOST}/flowInstance/checkAndEndByBusinessId`
+export const EndFlow = async (params = {}) => {
+  const url = `${gatewayUrl}${FLOW_HOST}/flowInstance/checkAndEndByBusinessId`;
   return request({
     url,
     method: 'POST',
     params,
-  })
-}
+  });
+};
 
 // 审核需求管理delete
 export const DeleteAuditRequirementsManagement = async (params = {}) => {
