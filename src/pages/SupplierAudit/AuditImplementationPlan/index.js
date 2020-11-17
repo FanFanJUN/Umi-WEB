@@ -357,7 +357,7 @@ export default function () {
                                 quickSearchValue: data.quickSearchValue,
                                 ...data.epTechnicalShareDemandSearchBo,
                             },
-                            url: `${recommendUrl}/api/reviewPlanMonthService/findByPage`,
+                            url: `${recommendUrl}/api/reviewImplementPlanService/findReviewImplementPlanPage`,
                             type: 'POST',
                         }}
                         allowCancelSelect={true}

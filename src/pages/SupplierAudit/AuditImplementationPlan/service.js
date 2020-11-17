@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-11-09 09:32:51
- * @LastEditTime: 2020-11-16 17:10:46
+ * @LastEditTime: 2020-11-17 15:25:39
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\service.js
@@ -25,5 +25,15 @@ export async function deletePlanMonth(params) {
         url: requestUrl,
         method: 'GET',
         params,
+    });
+}
+
+// 审核实施计划-新增
+export async function addReviewImplementPlan(params) {
+    const requestUrl = `${recommendUrl}/api/reviewImplementPlanService/addReviewImplementPlan`;
+    return request({
+        url: requestUrl,
+        method: 'POST',
+        data: params,
     });
 }

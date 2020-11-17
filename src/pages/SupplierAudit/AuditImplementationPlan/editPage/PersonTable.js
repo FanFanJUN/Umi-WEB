@@ -1,25 +1,31 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:46:10
- * @LastEditTime: 2020-11-11 14:11:36
+ * @LastEditTime: 2020-11-17 10:38:30
  * @LastEditors: Please set LastEditors
  * @Description: 审核实施计划-协同人员
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\PersonTable.js
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Pagination } from "antd";
 import { ExtTable } from "suid";
 import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/edit/BaseInfo.less';
 
 const PersonTable = (props) => {
-    const [dataSource, setDataSource] = useState([{ id: 1, departmentName: '研发' }]);
+    const [dataSource, setDataSource] = useState([]);
     const columns = [
         { title: '部门', dataIndex: 'departmentName', width: 160 },
         { title: '员工编号', dataIndex: 'employeeNo', width: 100 },
         { title: '姓名', dataIndex: 'memberName', width: 120 },
         { title: '联系电话', dataIndex: 'memberTel', width: 100 },
     ]
+
+    useEffect(()=>{
+        if(props.originData) {
+            setDataSource(props.originData)
+        }
+    }, [props.originData])
 
     return (
         <div className={styles.wrapper}>

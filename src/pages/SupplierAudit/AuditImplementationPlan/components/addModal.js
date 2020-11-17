@@ -1,7 +1,7 @@
 // 从年度审核新增
 import React, { useState, useRef } from "react";
-import { Form, Row, Col, Button, Select, Spin, message } from "antd";
-import { ExtTable, ExtModal, ComboList, ComboTree, } from 'suid';
+import { Form, Row, Col, Button, Spin, message } from "antd";
+import { ExtTable, ExtModal, ComboList } from 'suid';
 import {
     reviewPlanMonthConfig,
 } from '../../mainData/commomService';
@@ -10,7 +10,6 @@ import { openNewTab, getUserAccount } from '@/utils';
 import { findRequirementLine, findYearLineLine } from "../service"
 
 const FormItem = Form.Item;
-const { Option } = Select;
 const formItemLayoutLong = {
     labelCol: { span: 8 },
     wrapperCol: { span: 16 },
@@ -44,19 +43,20 @@ const AddModal = (props) => {
             return;
         } else if(selectRows.length > 1) {
             // 多选时满足-选中行的供应商、代理商、审核方式、审核体系、审核小组组长相同
-            const {supplierCode, agentName, reviewWayCode, leaderEmployeeNo} = selectRows[0];
+            const {supplierCode, agentName, reviewWayCode, leaderEmployeeNo, allReviewEvlSystemId} = selectRows[0];
             let tag = selectRows.every(item => {
                 return (item.supplierCode == supplierCode && 
                     item.agentName == agentName && 
                     item.reviewWayCode == reviewWayCode && 
                     item.leaderEmployeeNo == leaderEmployeeNo &&
-                    item.leaderEmployeeNo == leaderEmployeeNo)
+                    item.allReviewEvlSystemId == allReviewEvlSystemId)
             })
             if(!tag){
                 message.error("选中行的供应商、代理商、审核方式、审核体系、审核小组组长不相同!请重新选择");
                 return;
             }
         }
+        sessionStorage.setItem('selectedMonthLIne', JSON.stringify(selectRows));
         openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=add&ids=${selectedRowKeys.join()}`, '审核实施计划-新增', false);
     }
 

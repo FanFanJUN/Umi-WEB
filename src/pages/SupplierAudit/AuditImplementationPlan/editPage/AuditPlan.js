@@ -1,17 +1,18 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:49:50
- * @LastEditTime: 2020-11-16 17:10:16
+ * @LastEditTime: 2020-11-17 16:07:34
  * @LastEditors: Please set LastEditors
  * @Description: I审核实施计划-审核计划
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\AuditPlan.js
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/edit/BaseInfo.less';
 import { Col, Form, Row, DatePicker, Checkbox } from 'antd';
 import Upload from '../../Upload';
 import { getDocIdForArray } from '@/utils/utilTool';
+import { reviewStandard } from "../../mainData/commomService";
 
 const FormItem = Form.Item;
 const formLayout = {
@@ -33,14 +34,38 @@ const formLongLayout = {
 
 const AuditPlan = (props) => {
     const { form, type, isView } = props;
-    const [seleted, setSelected] = useState([
-        { code: 'A', value: 'SO9001标准' },
-        { code: 'B', value: '与产品相关的法律法规、合同' },
-        { code: 'C', value: '长虹公司的产品要求（技术协议）、质量环保赔偿协议' },
-        { code: 'D', value: '长虹对供应商的有害物质管理、环境行为和职业健康安全管理要求' },
-        { code: 'F', value: '长虹对供应商的技术、成本、物流管理要求等' },
-    ])
+    // 数组存储的审核准则
+    const [seleteList, setSelecteList] = useState([]);
+    // 以code为key值存储的审核准则对象
+    const [listObj, setListObj] = useState({})
     const { getFieldDecorator, setFieldsValue } = form;
+
+    useEffect(()=>{
+        reviewStandard().then(res => {
+            let listObj = {};
+            res.data.forEach(item => {
+                listObj[item.code] = {
+                    standardCode: item.code,
+                    standardName: item.name,
+                };
+            })
+            setListObj(listObj);
+            setSelecteList(res.data);
+            // 默认全部选中审核准则
+            setFieldsValue({
+                reviewPlanStandardBos: Object.values(listObj)
+            })
+        })
+    }, [])
+
+    const handleChange = (values) => {
+        let checkList = values.map(item => {
+            return listObj[item];
+        })
+        setFieldsValue({
+            reviewPlanStandardBos: checkList
+        })
+    }
     return (
         <div className={styles.wrapper}>
             <div className={styles.bgw}>
@@ -48,16 +73,17 @@ const AuditPlan = (props) => {
                 <div className={styles.content}>
                     <Row>
                         <Col span={12}>
-                            <FormItem label="拟制公司" {...formLayout}>
+                            <FormItem label="审核准则" {...formLayout}>
                                 {
+                                    getFieldDecorator("reviewPlanStandardBos"),
                                     getFieldDecorator("selected", {
-                                        initialValue: ["A", "B", "C", "D", "F"],
+                                        initialValue: seleteList.map(item => item.code),
                                         rules: [{ required: true, message: '至少选择一项',},]
                                     })(
-                                        <Checkbox.Group style={{ width: '100%' }} style={{paddingTop: "20px"}}>
+                                        <Checkbox.Group style={{ width: '100%' }} style={{paddingTop: "20px"}} onChange={handleChange}>
                                             {
-                                                seleted.map(item => <Row style={{margin: "6px 0"}}>
-                                                    <Checkbox value={item.code} key={item.code}>{item.value}</Checkbox>
+                                                seleteList.map(item => <Row style={{margin: "6px 0"}} key={item.code}>
+                                                    <Checkbox value={item.code} key={item.code}>{item.name}</Checkbox>
                                                 </Row>)
                                             }
                                         </Checkbox.Group>
@@ -71,7 +97,7 @@ const AuditPlan = (props) => {
                         <Col span={12}>
                             <FormItem {...formLayout} label={'审核时间从'}>
                                 {
-                                    getFieldDecorator('startTime', {
+                                    getFieldDecorator('reviewDateStart', {
                                         initialValue: null,
                                         rules: [{ required: true, message: '审核时间不能为空',},]
                                     })(
@@ -83,7 +109,7 @@ const AuditPlan = (props) => {
                         <Col span={12}>
                             <FormItem {...formLayout} label={'审核时间到'}>
                                 {
-                                    getFieldDecorator('endTime', {
+                                    getFieldDecorator('reviewDateEnd', {
                                         initialValue: null,
                                         rules: [{ required: true, message: '审核时间不能为空',},]
                                     })(
@@ -97,7 +123,7 @@ const AuditPlan = (props) => {
                         <Col span={24}>
                             <FormItem {...formLongLayout} label={'详细计划附件'}>
                                 {
-                                    getFieldDecorator('detailFiles', {
+                                    getFieldDecorator('reviewPlanFileId', {
                                         initialValue: type === 'add' ? '' : getDocIdForArray(data.fileList),
                                         rules: [{ required: true, message: '详细计划附件不能为空',},]
                                     })(

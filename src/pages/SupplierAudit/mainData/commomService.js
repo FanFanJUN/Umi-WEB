@@ -682,3 +682,12 @@ export const ManagementAuditModeDelete = async (params) => {
     params: params,
   });
 };
+
+// 获取审核准则-未冻结
+export async function reviewStandard(params) {
+  const requestUrl = `${baseUrl}/api/reviewStandardService/findAllUnfrozen`;
+  return request({
+      url: requestUrl,
+      method: 'GET',
+  });
+}
