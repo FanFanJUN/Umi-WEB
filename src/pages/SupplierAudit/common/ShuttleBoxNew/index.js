@@ -3,7 +3,6 @@ import { Tree } from 'antd';
 
 const ShuttleBoxNew = (props) => {
 
-
   const [data, setData] = useState({
     leftCheckedKeys: [],
     leftData: [],
@@ -11,7 +10,23 @@ const ShuttleBoxNew = (props) => {
     rightTreeData: [],
   });
 
+  let leftData = JSON.parse(JSON.stringify(data.leftData));
+
   const { type, rightTreeData, leftTreeData } = props;
+
+  useEffect(() => {
+    destruction(data.rightTreeData)
+    props.onChange(leftData)
+  }, [data.rightTreeData])
+
+  useEffect(() => {
+    console.log(props.rightTreeData)
+    if (props.rightTreeData && props.rightTreeData.length !== 0) {
+      let arr = JSON.parse(JSON.stringify(props.rightTreeData))
+      arr = recursion(arr);
+      setData(v => ({...v, rightTreeData: arr}))
+    }
+  }, [props.rightTreeData])
 
   useEffect(() => {
     setData(v => ({ ...v, rightCheckedKeys: [], leftCheckedKeys: [] }));
@@ -50,15 +65,15 @@ const ShuttleBoxNew = (props) => {
   // 添加方法
   const addClick = () => {
     let arr = JSON.parse(JSON.stringify(data.leftSelectData));
-    console.log(arr, 'arr');
     arr = recursion(arr);
-
-    setData(v => ({ ...v, rightTreeData: arr }));
+    setData(v => ({ ...v, rightTreeData: arr,  leftSelectData: [], leftCheckedKeys: [], rightCheckedKeys: [], rightCheck: [] }));
   };
 
   // 删除方法
   const deleteClick = () => {
-
+    let arr = JSON.parse(JSON.stringify(data.rightCheck));
+    arr = recursion(arr);
+    setData(v => ({ ...v, rightTreeData: arr,  leftSelectData: [], leftCheckedKeys: [], rightCheckedKeys: [], rightCheck: []}));
   };
 
   //找到子节点
@@ -77,7 +92,6 @@ const ShuttleBoxNew = (props) => {
 
   // 递归
   const recursion = (arr) => {
-    console.log(arr);
     let newArr = JSON.parse(JSON.stringify(arr));
     newArr.forEach(item => {
       item.systemId = item.id;
@@ -90,7 +104,6 @@ const ShuttleBoxNew = (props) => {
       }
       findSon(item, newArr);
     });
-    console.log(newArr, 'newArr');
     let data = [];
     newArr.forEach(item => {
       if (!item.parentId) {
@@ -101,67 +114,44 @@ const ShuttleBoxNew = (props) => {
   };
 
 
-  const destruction = async (arr, newArr) => {
-    console.log(newArr, 'newArr');
-    arr.forEach(item => {
+  const destruction = (arr) => {
+    arr.map(item => {
       if (Array.isArray(item.children) && item.children.length !== 0) {
-        newArr = [...newArr, ...item.children];
-        destruction(item.children, newArr);
+        leftData = [...leftData, ...item.children];
+        destruction(item.children, leftData);
       }
     });
   };
 
   // 左边节点选中
   const leftCheck = (keys, values) => {
-    let selectData = [];
-    let newArr = JSON.parse(JSON.stringify(data.leftData));
-    newArr = destruction(data.leftData, newArr);
-    console.log(newArr, 'arr');
-    // arr.forEach((item, index) => {
-    //   values.halfCheckedKeys.map(value => {
-    //     console.log(value, item)
-    //     if (value === item.key) {
-    //       selectData.push(item)
-    //     }
-    //   })
-    // })
-    console.log(selectData);
+    let selectData = values.checkedNodes.map(item => item.props)
+    destruction(data.leftData)
+    if (values.halfCheckedKeys.length !== 0) {
+      leftData.forEach((item) => {
+        values.halfCheckedKeys.map(value => {
+          if (value === item.key) {
+            selectData.push(item)
+          }
+        })
+      })
+    }
     setData(v => ({ ...v, leftSelectData: selectData, leftCheckedKeys: keys }));
-
-    // if (newLeftTreeData.id) {
-    //   newLeftTreeData.children = [];
-    //   newLeftTreeData.systemId = newLeftTreeData.id;
-    //   newLeftTreeData.systemCode = newLeftTreeData.code;
-    //   newLeftTreeData.systemName = newLeftTreeData.name;
-    //   newLeftTreeData.key = newLeftTreeData.id;
-    //   newLeftTreeData.title = newLeftTreeData.name;
-    //   arr.map(item => {
-    //     if (item.id !== newLeftTreeData.id) {
-    //       let newItem = JSON.parse(JSON.stringify(item));
-    //       newItem.systemId = newItem.id;
-    //       newItem.systemCode = newItem.code;
-    //       newItem.systemName = newItem.name;
-    //       newItem.key = newItem.id;
-    //       newItem.title = newItem.name;
-    //       newLeftTreeData.children.push(newItem);
-    //     }
-    //   });
-    //   setData(v => ({ ...v, leftSelectData: [newLeftTreeData], leftCheckedKeys: keys }));
-    // } else {
-    //   arr.map((item, index) => {
-    //     newLeftTreeData.map(value => {
-    //       if (item.id === value.id) {
-    //         arr.splice(index, 1);
-    //       }
-    //     });
-    //   });
-    //   setData(v => ({ ...v, leftSelectData: arr, leftCheckedKeys: keys }));
-    // }
   };
 
   // 右边节点选中
   const rightCheck = (keys, values) => {
-    console.log(keys, values);
+    let selectData = values.checkedNodes.map(item => item.props)
+    destruction(data.rightTreeData)
+    let newLeftData = JSON.parse(JSON.stringify(leftData))
+    newLeftData.map((item, index) => {
+      selectData.map(value => {
+        if (item.systemId === value.systemId) {
+          newLeftData.splice(index, 1)
+        }
+      })
+    })
+    setData(v => ({...v, rightCheck: newLeftData, rightCheckedKeys: keys}))
   };
 
   return (
@@ -171,6 +161,7 @@ const ShuttleBoxNew = (props) => {
         <Tree
           style={{ zIndex: '10' }}
           defaultExpandAll={true}
+          defaultExpandParent={true}
           checkable
           checkedKeys={data.leftCheckedKeys}
           onCheck={leftCheck}
@@ -197,6 +188,7 @@ const ShuttleBoxNew = (props) => {
         <span style={{ fontSize: '15px', fontWeight: 'bold', marginLeft: '15px' }}>已选择</span>
         <Tree
           defaultExpandAll={true}
+          defaultExpandParent={true}
           checkable
           checkedKeys={data.rightCheckedKeys}
           onCheck={rightCheck}
