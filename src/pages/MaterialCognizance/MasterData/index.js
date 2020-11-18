@@ -92,8 +92,8 @@ const Index = () => {
     confirm({
       title: '是否确认删除',
       onOk: async () => {
-          let params = leftselectRows[0].id;
-          const { success, message: msg } = await deleteRightId(params);
+          let params = rightselectRows[0].id;
+          const { success, message: msg } = await deleteRightId({taskId:params});
           if (success) {
               message.success('删除成功！');
               RightCleanSelect();

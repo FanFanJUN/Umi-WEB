@@ -238,7 +238,6 @@ function CreateStrategy() {
     }
     wholeData.saveStatus = '0';
     let saveData = wholeData;
-    console.log(saveData)
     triggerLoading(true)
     const { success, message: msg } = await TemporarySupplierRegister(saveData);
     if (success) {

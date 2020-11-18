@@ -97,7 +97,7 @@ const Index = () => {
         onClick={() => buttonClick('add')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='QUALITYSYNERGY_BUCOR_ADD'
+        key='SUPPLIER_AUDIT_ORGANIZATION_ADD'
       >新增</Button>)
     }
     {
@@ -106,7 +106,7 @@ const Index = () => {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={selectedRowKeys.length === 0 || selectedRowKeys.length > 1}
-        key='QUALITYSYNERGY_BUCOR_EDIT'
+        key='SUPPLIER_AUDIT_ORGANIZATION_EDIT'
       >编辑</Button>)
     }
     {/*{*/}
@@ -115,7 +115,7 @@ const Index = () => {
     {/*    className={styles.btn}*/}
     {/*    ignore={DEVELOPER_ENV}*/}
     {/*    disabled={selectRows.length === 0}*/}
-    {/*    key='QUALITYSYNERGY_BUCOR_DELETE'*/}
+    {/*    key='SUPPLIER_AUDIT_ORGANIZATION_DELETE'*/}
     {/*  >删除</Button>)*/}
     {/*}*/}
     {
@@ -123,7 +123,7 @@ const Index = () => {
         onClick={() => buttonClick('frost')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='QUALITYSYNERGY_BUCOR_FORST'
+        key='SUPPLIER_AUDIT_ORGANIZATION_FORST'
         disabled={selectRows.length === 0 || judgeButtonDisabled(selectRows)}
       >{selectRows[0]?.frozen ? '解冻' : '冻结'}</Button>)
     }

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ExtTable, WorkFlow, ExtModal, utils, ComboList,ScrollBar } from 'suid';
-import { Input, Button, message, Modal,Form } from 'antd';
+import { ExtTable, WorkFlow, ExtModal, utils, ComboList, ScrollBar } from 'suid';
+import { Input, Button, message, Modal, Form } from 'antd';
 import { openNewTab, getFrameElement } from '@/utils';
 import SearchTable from './components/SearchTable'
 import { StartFlow } from 'seid';
@@ -10,8 +10,8 @@ import Header from '@/components/Header';
 import AutoSizeLayout from '@/components/AutoSizeLayout';
 import styles from './index.less';
 import { smBaseUrl } from '@/utils/commonUrl';
-import { RecommendationList ,stopApproveingOrder} from "@/services/supplierRegister"
-import {oddcorporationSupplierConfig,corporationSupplierConfig} from '../../utils/commonProps'
+import { RecommendationList, stopApproveingOrder } from "@/services/supplierRegister"
+import { oddcorporationSupplierConfig, corporationSupplierConfig } from '../../utils/commonProps'
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { Search } = Input
 const { authAction, storage } = utils;
@@ -34,7 +34,7 @@ function SupplierConfigure() {
     const [singleRow = {}] = selectedRows;
     /** 按钮可用性判断变量集合 BEGIN*/
     const [signleRow = {}] = selectedRows;
-    const { flowStatus: signleFlowStatus, id: flowId, creatorId ,saveStatus: typeStatus} = signleRow;
+    const { flowStatus: signleFlowStatus, id: flowId, creatorId, saveStatus: typeStatus } = signleRow;
     // 已提交审核状态
     const underWay = signleFlowStatus !== 'INIT';
     // 审核完成状态
@@ -62,12 +62,12 @@ function SupplierConfigure() {
             title: '审批状态',
             dataIndex: 'flowStatus',
             width: 100,
-            render: function(text, record, row) {
+            render: function (text, record, row) {
                 if (text === 'INIT' && record.saveStatus === 0) {
                     return <div>草稿</div>;
                 } else if (text === 'INIT' && record.saveStatus === 1) {
                     return <div>待提交审批</div>;
-                }else if (text === 'INPROCESS') {
+                } else if (text === 'INPROCESS') {
                     return <div>审批中</div>;
                 } else if (text === 'COMPLETED') {
                     return <div>审批完成</div>;
@@ -114,12 +114,12 @@ function SupplierConfigure() {
             dataIndex: 'supplier.supplierTypeRemark',
             render: (text, record, index) => {
                 if (record.supplier) {
-                return <div>{record.supplier.supplierCategory.name} {record.supplier.supplierCategory.code}</div>;
-                }else {
+                    return <div>{record.supplier.supplierCategory.name} {record.supplier.supplierCategory.code}</div>;
+                } else {
                     return <div></div>;
                 }
                 console.log(record.supplier.supplierCategory.code)
-                
+
             },
         },
         {
@@ -138,51 +138,51 @@ function SupplierConfigure() {
         // },
     ].map(_ => ({ ..._, align: 'center' }))
     /**推荐信息弹窗表格 */
-  const tableProps = {
-    fixedHeader,
-    columns: [
-      {
-        title: '推荐单号',
-        dataIndex: 'code',
-        width: 180,
-        align: 'center',
-    },
-    {
-        title: '准入公司',
-        dataIndex: 'corporation.name',
-        width: 260,
-        align: 'center',
-        align: 'center',
-    },
-    {
-        title: '物料分类',
-        dataIndex: 'materielCategory',
-        width: 240,
-        align: 'center',
-    },
-    {
-        title: '推荐人',
-        dataIndex: 'creatorName',
-        width: 120,
-        align: 'center',
-    },
-    {
-        title: '推荐状态',
-        dataIndex: 'flowStatus',
-        width: 140,
-        align: 'center',
-        render: function(text, record, row) {
-            if (text === 'init') {
-                return <div>未提交审批</div>;
-            } else if (text === 'inProcess') {
-                return <div className="doingColor">审批中</div>;
-            } else {
-                return <div className="successColor">审批完成</div>;
-            }
-        },
-    },
-    ]
-  }
+    const tableProps = {
+        fixedHeader,
+        columns: [
+            {
+                title: '推荐单号',
+                dataIndex: 'code',
+                width: 180,
+                align: 'center',
+            },
+            {
+                title: '准入公司',
+                dataIndex: 'corporation.name',
+                width: 260,
+                align: 'center',
+                align: 'center',
+            },
+            {
+                title: '物料分类',
+                dataIndex: 'materielCategory',
+                width: 240,
+                align: 'center',
+            },
+            {
+                title: '推荐人',
+                dataIndex: 'creatorName',
+                width: 120,
+                align: 'center',
+            },
+            {
+                title: '推荐状态',
+                dataIndex: 'flowStatus',
+                width: 140,
+                align: 'center',
+                render: function (text, record, row) {
+                    if (text === 'init') {
+                        return <div>未提交审批</div>;
+                    } else if (text === 'inProcess') {
+                        return <div className="doingColor">审批中</div>;
+                    } else {
+                        return <div className="successColor">审批完成</div>;
+                    }
+                },
+            },
+        ]
+    }
     /* 按钮禁用状态控制 */
     const FRAMEELEMENT = getFrameElement();
     //const empty = selectedRowKeys.length === 0;
@@ -192,11 +192,11 @@ function SupplierConfigure() {
             url: `${smBaseUrl}/api/supplierSelfService/findVoListByPage`,
             params: {
                 quickSearchValue: searchValue,
-                quickSearchProperties: ['companyName','supplierName'],
+                quickSearchProperties: ['companyName', 'supplierName'],
                 sortOrders: [
                     {
-                      property: 'createdDate',
-                      direction: 'DESC'
+                        property: 'createdDate',
+                        direction: 'DESC'
                     }
                 ]
             },
@@ -274,7 +274,7 @@ function SupplierConfigure() {
         setrecommen([])
         setVisible(true)
         triggerLoading(true)
-        const { data, success, message: msg } = await RecommendationList({supplierId});
+        const { data, success, message: msg } = await RecommendationList({ supplierId });
         if (success) {
             triggerLoading(false)
             setrecommen(data)
@@ -283,7 +283,7 @@ function SupplierConfigure() {
         }
         triggerLoading(false)
         message.error(msg)
-        
+
     }
     // 记录列表选中
     function handleSelectedRows(rowKeys, rows) {
@@ -345,28 +345,28 @@ function SupplierConfigure() {
         uploadTable()
     }
     // 终止审核
-  function stopApprove() {
-    Modal.confirm({
-      title: '终止审批流程',
-      content: '流程终止后无法恢复，是否继续？',
-      onOk: handleStopApproveRecord,
-      okText: '确定',
-      cancelText: '取消'
-    })
-  }
-  async function handleStopApproveRecord() {
-    const [row] = selectedRows
-    const { id: flowId } = row
-    const { success, message: msg } = await stopApproveingOrder({
-      businessId: flowId
-    })
-    if (success) {
-      message.success(msg)
-      uploadTable()
-      return
+    function stopApprove() {
+        Modal.confirm({
+            title: '终止审批流程',
+            content: '流程终止后无法恢复，是否继续？',
+            onOk: handleStopApproveRecord,
+            okText: '确定',
+            cancelText: '取消'
+        })
     }
-    message.error(msg)
-  }
+    async function handleStopApproveRecord() {
+        const [row] = selectedRows
+        const { id: flowId } = row
+        const { success, message: msg } = await stopApproveingOrder({
+            businessId: flowId
+        })
+        if (success) {
+            message.success(msg)
+            uploadTable()
+            return
+        }
+        message.error(msg)
+    }
     return (
         <>
             <Header
@@ -386,13 +386,13 @@ function SupplierConfigure() {
                         } */}
                         {
                             authAction(
-                                <Button 
-                                    ignore={DEVELOPER_ENV} 
-                                    key='SRM-SM-SUPPLIER-REGISTER-DETAIL' 
-                                    className={styles.btn} 
-                                    onClick={handleCheckDetail} 
+                                <Button
+                                    ignore={DEVELOPER_ENV}
+                                    key='SRM-SM-SUPPLIER-REGISTER-DETAIL'
+                                    className={styles.btn}
+                                    onClick={handleCheckDetail}
                                     disabled={empty}
-                                    >明细
+                                >明细
                                 </Button>
                             )
                         }
@@ -430,7 +430,7 @@ function SupplierConfigure() {
                                     ignore={DEVELOPER_ENV}
                                     key='SRM-SM-SUPPLIER-REGISTER-HISTORY'
                                 >
-                                    <Button className={styles.btn} disabled={empty || !underWay }>审核历史</Button>
+                                    <Button className={styles.btn} disabled={empty || !underWay}>审核历史</Button>
                                 </FlowHistoryButton>
                             )
                         }
@@ -473,18 +473,18 @@ function SupplierConfigure() {
                 footer={null}
                 bodyStyle={{ height: 380, padding: 0 }}
                 title="推荐信息"
-                >
+            >
                 <ScrollBar>
                     <ExtTable
                         //loading={true}
                         showSearch={false}
                         dataSource={recommen}
-                        {...tableProps} 
+                        {...tableProps}
                     />
                 </ScrollBar>
-                
+
             </ExtModal>
-    
+
         </>
     )
 }

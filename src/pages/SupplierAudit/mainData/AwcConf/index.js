@@ -1,9 +1,9 @@
 /*
  * @Author: Li Cai
- * @LastEditors: Li Cai
+ * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-12 14:44:24
- * @LastEditTime: 2020-10-19 16:00:20
+ * @LastEditTime: 2020-11-13 15:23:12
  * @Description: 审核类型、是否通过和结论配置
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/mainData/AwcConf/index.js
  */
@@ -127,7 +127,7 @@ const Index = () => {
         onClick={() => buttonClick('add')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='QUALITYSYNERGY_BUCOR_ADD'
+        key='SUPPLIER_AUDIT_AWC_CONFIG_ADD'
       >新增</Button>)
     }
     {
@@ -136,7 +136,7 @@ const Index = () => {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={selectedRowKeys.length === 0 || selectedRowKeys.length > 1}
-        key='QUALITYSYNERGY_BUCOR_EDIT'
+        key='SUPPLIER_AUDIT_AWC_CONFIG_EDIT'
       >编辑</Button>)
     }
     {
@@ -145,7 +145,7 @@ const Index = () => {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={selectRows.length === 0}
-        key='QUALITYSYNERGY_BUCOR_DELETE'
+        key='SUPPLIER_AUDIT_AWC_CONFIG_DELETE'
       >删除</Button>) */
     }
     {
@@ -153,7 +153,7 @@ const Index = () => {
         onClick={() => buttonClick('frost')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='QUALITYSYNERGY_BUCOR_FORST'
+        key='SUPPLIER_AUDIT_AWC_CONFIG_FORST'
         disabled={selectRows.length === 0 || judgeButtonDisabled(selectRows)}
       >{selectRows[0]?.frozen ? '解冻' : '冻结'}</Button>)
     }

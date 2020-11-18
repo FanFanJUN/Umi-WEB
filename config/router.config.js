@@ -16,7 +16,9 @@ export default [
       { path: '/material/MasterData/index', component: './MaterialCognizance/MasterData', title: '实物认定主数据' },
       { path: '/material/Cognizance/index', component: './MaterialCognizance/Cognizance', title: '实物认定计划' },
       { path: '/material/Cognizance/AdmitEdit/index', component: './MaterialCognizance/Cognizance/AdmitEdit/index', title: '实物认定计划' },
-      { path: '/material/Cognizance/ManualEdit/index', component: './MaterialCognizance/Cognizance/ManualEdit/index', title: '手工单创建' },
+      { path: '/material/Cognizance/ManualAdd/index', component: './MaterialCognizance/Cognizance/ManualAdd/index', title: '手工单创建' },
+      { path: '/material/Cognizance/ManualEdit/index', component: './MaterialCognizance/Cognizance/ManualEdit/index', title: '实物认定计划编辑' },
+      { path: '/material/Cognizance/ManualDetail/index', component: './MaterialCognizance/Cognizance/ManualDetail/index', title: '实物认定计划明细' },
       { path: '/material/Enforcement/index', component: './MaterialCognizance/Enforcement', title: '实物认定执行' },
       { path: '/material/Enforcement/Edit/index', component: './MaterialCognizance/Enforcement/Edit/index', title: '实物认定执行' }
     ]
@@ -135,6 +137,7 @@ export default [
       { path: '/supplierAudit/AuditRequirementsManagementFlow', component: './SupplierAudit/FlowList', title: '审核需求管理流程中' },
       { path: '/supplierAudit/monthAuditInFlow', component: './SupplierAudit/FlowList/monthAuditInFlow', title: '月度审核计划流程中' },
       { path: '/supplierAudit/monthAuditChangeInFlow', component: './SupplierAudit/FlowList/monthAuditChangeInFlow', title: '月度审核计划变更流程中' },
+      { path: '/supplierAudit/AuditImplementationPlanInflow', component: './SupplierAudit/FlowList/AuditImplementationPlanInflow', title: '审核实施计划流程中' },
 
       { path: '/supplierAudit/AuditRequirementsManagementAdd', component: './SupplierAudit/AuditRequirementsManagement/add', title: '审核需求管理新增' },
       { path: '/supplierAudit/AnnualAuditPlan', component: './SupplierAudit/AnnualAuditPlan', title: '年度审核计划管理' },
@@ -146,8 +149,9 @@ export default [
       { path: '/supplierAudit/MonthAuditChangeDetail', component: './SupplierAudit/MonthAuditPlan/component/changeDetail', title: '月度审核计划变更明细' },
       { path: '/supplierAudit/AuditImplementationPlan', component: './SupplierAudit/AuditImplementationPlan', title: '审核实施计划管理' },
       { path: '/supplierAudit/AuditImplementationPlan/editPage', component: './SupplierAudit/AuditImplementationPlan/editPage', title: '审核实施计划管理-新增' },
-
       { path: '/supplierAudit/AdministrationManagementDemand', component: './SupplierAudit/AdministrationManagementDemand', title: '实施审核管理-需求方' },
+      { path: '/supplierAudit/AuditReportManagement/index', component: './SupplierAudit/AuditReportManagement', title: '审核报告管理' },
+      { path: '/supplierAudit/AuditReportManagementAdd', component: './SupplierAudit/AuditReportManagement/editPage', title: '审核报告管理新增' },
     ]
   },
   {

@@ -1,7 +1,7 @@
 /*
  * @Author:黄永翠
  * @Date: 2020-11-09 09:38:38
- * @LastEditTime: 2020-11-11 14:04:00
+ * @LastEditTime: 2020-11-17 21:04:03
  * @LastEditors: Please set LastEditors
  * @Description:审核实施计划-明细
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\index.js
@@ -11,19 +11,32 @@ import { Affix, Button, Form, message, Spin, Modal } from 'antd';
 import { WorkFlow } from "suid";
 import { router } from 'dva';
 import classnames from 'classnames';
+import moment from 'moment';
+import { pick } from "lodash"
 import { closeCurrent, getMobile, getUserId, getUserName } from '@/utils';
 import styles from '../../../Supplier/Editor/index.less';
+import { getRandom } from '../../../QualitySynergy/commonProps';
 import BaseInfo from "./BaseInfo";
 import AuditInfo from "./AuditInfo";
 import AuditScope from "./AuditScope";
 import AuditorInfo from "./AuditorInfo";
 import PersonTable from "./PersonTable";
 import AuditPlan from "./AuditPlan";
+import { mergeContent, addReviewImplementPlan, findDetailsByReviewImplementPlanId } from "../service";
 
 const { StartFlow } = WorkFlow;
-
+const pickpropertys = [
+    'reviewPlanMonthCode',
+    'reviewWayId', 'reviewWayCode', 'reviewWayName',
+    'supplierId', 'supplierCode', 'supplierName',
+    'agentName', 'agentCode', 'agentId',
+    'countryId', 'countryCode', 'countryName', 'provinceId', 'provinceCode', 'provinceName', 
+    'cityId', 'cityCode', 'cityName', 'countyId', 'countyCode', 'countyName', 'address',
+    'contactUserName', 'contactUserTel', 'leaderId', 'leaderName', 'leaderEmployeeNo'
+]
 const Index = (props) => {
     const { form } = props;
+    const tableRef = useRef(null);
     const [editData, setEditData] = useState({});
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState({
@@ -42,12 +55,14 @@ const Index = (props) => {
         switch (pageState) {
             case 'add':
                 setData({ type: pageState, isView: false, title: '审核实施计划管理-新增' });
+                getOriginData();
                 break;
             case 'edit':
                 setData({ type: pageState, id, isView: false, title: '审核实施计划管理-编辑' });
                 break;
             case 'detail':
                 setData({ type: pageState, isView: true, title: `审核实施计划明细: ${editData.reviewPlanMonthCode}` });
+                etDetail();
                 break;
             case 'change':
                 setData({ type: pageState, isView: true, title: `变更审核实施计划: ${editData.reviewPlanMonthCode}` });
@@ -59,11 +74,101 @@ const Index = (props) => {
                 setData({ type: pageState, isView: false, title: '审核实施计划管理-新增' });
                 break;
         }
-    }, [editData])
+    }, []);
+    // 编辑和明细时构造treeData
+    const buildTreeData = (fatherList, sonList) => {
+        if (!fatherList || !sonList) return [];
+        let arr = JSON.parse(JSON.stringify(fatherList));
+        arr.map(item => {
+            item.id = item.systemId;
+            item.key = item.systemId;
+            item.title = item.systemName;
+            if (!item.children) {
+                item.children = [];
+            }
+            sonList.forEach(value => {
+                value.id = value.systemId;
+                value.key = value.systemId;
+                value.title = value.systemName;
+                if (value.parentId === item.systemId) {
+                    item.children.push(value);
+                }
+            });
+        });
+        return arr;
+    };
+
+    // 新增时获取初始数据
+    async function getOriginData() {
+        let res = {};
+        const ids = query.ids && query.ids.split(",");
+        if (query.pageState === "add") {
+            res = await mergeContent({ lineId: ids })
+            if (res.success) {
+                let resData = {...res.data};
+                resData.treeData = buildTreeData(resData.fatherList, resData.sonList);
+                resData.reviewTeamGroupBoList = Object.values(resData.reviewTeamGroupBoMap);
+                resData.reviewTeamGroupBoList = resData.reviewTeamGroupBoList.map(item => {
+                    return {
+                        ...item,
+                        lineNum: getRandom(10)
+                    }
+                })
+                console.log("整合的数据", resData);
+                setEditData(resData);
+            } else {
+                message.error(res.message);
+            }
+        }
+    }
+
+    // 获取明细
+    async function etDetail() {
+        const res = await findDetailsByReviewImplementPlanId({id: query.id});
+        if(res.success) {
+            // setEditData(res.data);
+        } else {
+            message.error(res.message);
+        }
+    }
+
     const handleSave = (type) => {
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-               console.log('values', values)
+                let sessionLins = JSON.parse(sessionStorage.getItem('selectedMonthLIne'));
+                let pickObj = pick(sessionLins[0], pickpropertys);
+                let saveData = {...values, ...editData, ...pickObj};
+                saveData.reviewImplementPlanLineBos = sessionLins.map(item => ({
+                    ...item, 
+                    reviewImplementPlanLinenum: item.reviewPlanMonthLinenum,
+                    reviewPlanMonthLineId: item.id
+                }));
+                saveData.reviewDateStart = moment(saveData.reviewDateStart).format('YYYY-MM-DD hh:mm:ss');
+                saveData.reviewDateEnd = moment(saveData.reviewDateEnd).format('YYYY-MM-DD hh:mm:ss');
+                let lineData = tableRef.current.getTableList();
+                saveData.reviewTeamGroupBoMap = lineData;
+                saveData.sonList = saveData.sonList.map(item =>{
+                    item.reviewEvlRuleBoList = item.ruleList;
+                    delete item.ruleList;
+                    return item;
+                });
+                if(!saveData.attachRelatedId){
+                    saveData.attachRelatedId = [];
+                }
+                delete saveData.treeData;
+                delete saveData.selected;
+                console.log('保存的数据saveData', saveData);
+                addReviewImplementPlan(saveData).then(res => {
+                    console.log("保存接口调用返回", res)
+                    if(res.success) {
+                        message.success("保存成功")
+                    } else {
+                        message.error(res.message);
+                    }
+                })
+                
+            } else {
+                message.warning("请检查数据是否填写完整！")
             }
         });
     }
@@ -103,7 +208,7 @@ const Index = (props) => {
             <div className={classnames(styles.fbc, styles.affixHeader)}>
                 <span>{data.title}</span>
                 {
-                    (data.type !== 'detail' || data.type === 'change') && <div style={{ display: "flex", alignItems: 'center' }}>
+                    (data.type !== 'detail' || data.type === 'change' || data.type === 'edit') && <div style={{ display: "flex", alignItems: 'center' }}>
                         <Button className={styles.btn} onClick={() => { closeCurrent() }}>返回</Button>
                         {data.type !== 'change' && <Button className={styles.btn} onClick={() => handleSave('save')}>暂存</Button>}
                         <StartFlow
@@ -114,7 +219,7 @@ const Index = (props) => {
                             onCancel={() => { setLoading(false); }}
                             businessKey={query?.id}
                             disabled={loading}
-                            businessModelCode={data.type === 'change' ? 'com.ecmp.srm.sam.entity.sr.ReviewPlanMonthChange' : 'com.ecmp.srm.sam.entity.sr.ReviewPlanMonth'}
+                            businessModelCode={data.type === 'change' ? 'com.ecmp.srm.sam.entity.sr.ReviewImplementPlanChange' : 'com.ecmp.srm.sam.entity.sr.ReviewImplementPlan'}
                         >
                             {
                                 loading => <Button loading={loading} type='primary'>提交</Button>
@@ -133,11 +238,18 @@ const Index = (props) => {
         {/* 拟审核信息 */}
         <AuditInfo />
         {/* 审核范围 */}
-        <AuditScope />
+        <AuditScope treeData={editData.treeData} />
         {/* 审核人员 */}
-        <AuditorInfo />
+        <AuditorInfo
+            type="add"
+            treeData={editData.treeData}
+            wrappedComponentRef={tableRef}
+            reviewTeamGroupBoList={editData.reviewTeamGroupBoList ? editData.reviewTeamGroupBoList : []}
+            reviewTypeCode="a"
+            deleteArr={[]}
+        />
         {/* 协同人员 */}
-        <PersonTable />
+        <PersonTable originData={editData.coordinationMemberBoList} />
         {/* 审核计划 */}
         <AuditPlan
             type={data.type}

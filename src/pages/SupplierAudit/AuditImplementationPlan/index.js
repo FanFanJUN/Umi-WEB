@@ -68,13 +68,13 @@ export default function () {
                 setAddV(true);
                 break;
             case 'edit':
-                openNewTab(`supplierAudit/MonthAuditPlanEda?pageState=edit&id=${data.selectedRowKeys[0]}`, '月度审核计划管理-编辑', false);
+                openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=edit&id=${data.selectedRowKeys[0]}`, '月度审核计划管理-编辑', false);
                 break;
             case 'detail':
-                openNewTab(`supplierAudit/MonthAuditPlanEda?pageState=detail&id=${data.selectedRowKeys[0]}`, '月度审核计划管理-明细', false);
+                openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=detail&id=${data.selectedRowKeys[0]}`, '月度审核计划管理-明细', false);
                 break;
             case 'change':
-                openNewTab(`supplierAudit/MonthAuditPlanEda?pageState=change&id=${data.selectedRowKeys[0]}`, '月度审核计划管理-变更', false);
+                openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=change&id=${data.selectedRowKeys[0]}`, '月度审核计划管理-变更', false);
                 break;
             case "changehistory":
                 setHistoryV(true);
@@ -188,15 +188,22 @@ export default function () {
                 switch (text) {
                     case "DRAFT":
                         return "草稿";
-                    case "EFFECT":
-                        return "生效";
+                    case "REVIEWING":
+                        return "评审中";
+                    case "END_REVIEWING":
+                        return "评审完成";
                     case "CHANGING":
                         return "变更中";
+                    case "CONFIRM":
+                        return "审核结果确认完成";
+                    case "REPORTED":
+                        return "已产生报告";
                 }
             }
         },
+        { title: '作废', dataIndex: 'data1', ellipsis: true, width: 80, render:text=>text?"是":"否" },
         {
-            title: '审批状态', dataIndex: 'flowStatus', width: 200, render: v => {
+            title: '审批状态', dataIndex: 'flowStatus', width: 180, render: v => {
                 switch (v) {
                     case 'INIT':
                         return '未进入流程';
@@ -207,12 +214,11 @@ export default function () {
                 }
             },
         },
-        { title: '月度审核计划号', dataIndex: 'reviewPlanMonthCode', width: 200 },
-        { title: '月度', dataIndex: 'applyMonth', ellipsis: true, width: 250 },
-        { title: '拟制说明', dataIndex: 'reviewPlanMonthName', ellipsis: true, width: 200 },
-        { title: '拟制公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 200 },
-        { title: '拟制部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200 },
-        { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 200 },
+        { title: '审核实施计划号', dataIndex: 'reviewPlanMonthCode', width: 180 },
+        { title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 250 },
+        { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 200 },
+        { title: '审核时间', dataIndex: 'reviewDateStart', ellipsis: true, width: 200, render: (text, item)=>(text.slice(0,10) + '~' + item.reviewDateEnd.slice(0,10)) },
+        { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 140 },
         { title: '拟制时间', dataIndex: 'applyDate', ellipsis: true, width: 200 },
     ].map(item => ({ ...item, align: 'center' }));
 
@@ -269,7 +275,7 @@ export default function () {
                 businessKey={data.flowId}
                 callBack={refresh}
                 disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length === 0}
-                businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewPlanMonth'
+                businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewImplementPlan'
                 key='SUPPLIER_AUDIT_IMPLEMENT_INFLOW'
             >提交审核</StartFlow>)
         }
@@ -357,7 +363,7 @@ export default function () {
                                 quickSearchValue: data.quickSearchValue,
                                 ...data.epTechnicalShareDemandSearchBo,
                             },
-                            url: `${recommendUrl}/api/reviewPlanMonthService/findByPage`,
+                            url: `${recommendUrl}/api/reviewImplementPlanService/findReviewImplementPlanPage`,
                             type: 'POST',
                         }}
                         allowCancelSelect={true}

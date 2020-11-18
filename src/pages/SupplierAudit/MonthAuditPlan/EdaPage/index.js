@@ -112,26 +112,28 @@ const Index = (props) => {
                 return saveData;
             }
         } else {
-            const baseInfo = {};
+            let baseInfo = {};
             form.validateFieldsAndScroll((err, values) => {
                 if (err) {
                     baseInfo = false;
+                } else {
+                    baseInfo = { ...values }
                 }
-                baseInfo = { ...values }
             });
             if (!baseInfo) return false;
+            Object.assign(saveData, baseInfo);
             saveData.lineBoList = lineData;
             saveData.deleteList = deleteArr;
             if (!saveData.attachRelatedIds) {
                 saveData.attachRelatedIds = [];
             }
-            Object.assign(saveData, baseInfo);
             return saveData;
         }
     }
     // 新增保存，编辑保存，变更保存
     const handleSave = async (type) => {
         let saveData = await getAllData();
+        console.log("整合的数据", saveData)
         if (!saveData) return false;
         setLoading(true);
         let res = {};
