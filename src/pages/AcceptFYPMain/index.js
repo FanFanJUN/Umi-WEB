@@ -160,13 +160,13 @@ const FIELDS = [
   },
   {
     name: 'total',
-    label: '到货总批次',
+    label: '检验总批次',
     type: 'number',
     option: {
       rules: [
         {
           required: true,
-          message: '到货总批次不能为空'
+          message: '检验总批次不能为空'
         }
       ]
     }
@@ -196,6 +196,10 @@ const COLUMNS = [
   {
     title: '物料分类名称',
     dataIndex: 'materialCategoryName'
+  },
+  {
+    title: '业务单元',
+    dataIndex: 'buName'
   },
   {
     title: '公司代码',

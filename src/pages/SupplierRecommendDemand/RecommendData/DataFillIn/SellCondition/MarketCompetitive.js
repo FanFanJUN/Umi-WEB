@@ -11,6 +11,7 @@ import React from 'react';
 import { useState } from 'react';
 import { Divider, Form, Row, Col, Input, Radio } from 'antd';
 import EditableFormTable from '../CommonUtil/EditTable';
+import { useEffect } from 'react';
 
 const FormItem = Form.Item;
 const formLayout = {
@@ -24,7 +25,7 @@ const formLayout = {
 
 const MarketCompetitive = React.forwardRef(({ form, data, type, setTableData }, ref) => {
 
-  const [supplierMajorCompetitors, setsupplierMajorCompetitors] = useState(data.supplierMajorCompetitors);
+  const [supplierMajorCompetitors, setsupplierMajorCompetitors] = useState([]);
 
   const { getFieldDecorator } = form;
 
@@ -53,7 +54,7 @@ const MarketCompetitive = React.forwardRef(({ form, data, type, setTableData }, 
   const columnsForRank = [
     {
       title: '产品',
-      dataIndex: 'product',
+      dataIndex: 'productName',
       ellipsis: true,
     },
     {
@@ -91,7 +92,10 @@ const MarketCompetitive = React.forwardRef(({ form, data, type, setTableData }, 
     setsupplierMajorCompetitors(newData);
     setTableData(newData, 'supplierMajorCompetitors');
   }
-
+  useEffect(() => {
+    const { supplierMajorCompetitors = [] } = data;
+    setsupplierMajorCompetitors(supplierMajorCompetitors?.map(item => ({ ...item, guid: item.id })))
+  }, [data])
   return (
     <div>
       <Row>

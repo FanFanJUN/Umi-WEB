@@ -7,14 +7,13 @@
  * @Description: 客户相关
  * @Connect: 1981824361@qq.com
  */
-import React, { useImperativeHandle } from 'react';
-import { useEffect, useState, useRef, Fragment } from 'react';
-import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar, } from 'suid';
-import { Button, Divider, Form, InputNumber, Row, Col, Input } from 'antd';
+import React, { useEffect, useState, useImperativeHandle } from 'react';
+import { useRef } from 'react';
+import { ExtTable } from 'suid';
+import { Divider, Form, InputNumber, Row, Col, Input } from 'antd';
 import moment from 'moment';
-import styles from '../../DataFillIn/index.less';
 import EditableFormTable from '../CommonUtil/EditTable';
-import UploadFile from '../CommonUtil/UploadFile';
+import UploadFile from '../../../../../components/Upload';
 
 const FormItem = Form.Item;
 const formLayout = {
@@ -97,7 +96,7 @@ const CustermerInfo = ({
             <UploadFile style={{ width: '100%' }}
               showColor={type !== 'add' ? true : false}
               type={DISABLED ? 'show' : null}
-              entityId={data.situationAttachmentIds} />,
+              entityId={data.situationAttachmentId} />,
           )}
         </FormItem>
       </Col>
@@ -113,30 +112,23 @@ const Customer = React.forwardRef(({
 }, ref) => {
   const DISABLED = type === 'detail';
   const { getFieldDecorator } = form;
-  // const {
-  //   changhongSaleInfos,
-  //   mainCustomers,
-  //   exportSituations,
-  //   supplierOrderInfos,
-  //   threeYearPlans
-  // } = data;
-  const changhongSaleInfos = data?.changhongSaleInfos?.map(item => ({ ...item, guid: item.id }))
-  const mainCustomers = data?.mainCustomers?.map(item => ({ ...item, guid: item.id }))
-  const exportSituations = data?.exportSituations?.map(item => ({ ...item, guid: item.id }))
-  const supplierOrderInfos = data?.supplierOrderInfos?.map(item => ({ ...item, guid: item.id }))
-  const threeYearPlans = data?.threeYearPlans?.map(item => ({ ...item, guid: item.id }))
-  // const [changhongSaleInfos, setchanghongSaleInfos] = useState(data.changhongSaleInfos);
-  // const [mainCustomers, setmainCustomers] = useState(data.mainCustomers);
-  // const [exportSituations, setexportSituations] = useState(data.exportSituations);
-  // const [supplierOrderInfos, setsupplierOrderInfos] = useState(data.supplierOrderInfos);
-  // const [threeYearPlans, setthreeYearPlans] = useState(data.threeYearPlans);
-  // useImperativeHandle(ref, ({
-  //   setchanghongSaleInfos,
-  //   setmainCustomers,
-  //   setexportSituations,
-  //   setsupplierOrderInfos,
-  //   setthreeYearPlans
-  // }))
+  // const changhongSaleInfos = data?.changhongSaleInfos?.map(item => ({ ...item, guid: item.id }))
+  // const mainCustomers = data?.mainCustomers?.map(item => ({ ...item, guid: item.id }))
+  // const exportSituations = data?.exportSituations?.map(item => ({ ...item, guid: item.id }))
+  // const supplierOrderInfos = data?.supplierOrderInfos?.map(item => ({ ...item, guid: item.id }))
+  // const threeYearPlans = data?.threeYearPlans?.map(item => ({ ...item, guid: item.id }))
+  const [changhongSaleInfos, setchanghongSaleInfos] = useState([]);
+  const [mainCustomers, setmainCustomers] = useState([]);
+  const [exportSituations, setexportSituations] = useState([]);
+  const [supplierOrderInfos, setsupplierOrderInfos] = useState([]);
+  const [threeYearPlans, setthreeYearPlans] = useState([]);
+  useImperativeHandle(ref, ({
+    setchanghongSaleInfos,
+    setmainCustomers,
+    setexportSituations,
+    setsupplierOrderInfos,
+    setthreeYearPlans
+  }))
   const tableRef = useRef(null);
 
   const columnsForGroup = [
@@ -298,25 +290,38 @@ const Customer = React.forwardRef(({
   ].map(item => ({ ...item, align: 'center' }));
 
   function setNewData(newData, type) {
-    // switch (type) {
-    //   case 'changhongSaleInfos':
-    //     setchanghongSaleInfos(newData);
-    //     break;
-    //   case 'mainCustomers':
-    //     setmainCustomers(newData);
-    //     break;
-    //   case 'supplierOrderInfos':
-    //     setsupplierOrderInfos(newData);
-    //     break;
-    //   case 'threeYearPlans':
-    //     setthreeYearPlans(newData);
-    //     break;
-    //   default:
-    //     break;
-    // }
+    switch (type) {
+      case 'changhongSaleInfos':
+        setchanghongSaleInfos(newData);
+        break;
+      case 'mainCustomers':
+        setmainCustomers(newData);
+        break;
+      case 'supplierOrderInfos':
+        setsupplierOrderInfos(newData);
+        break;
+      case 'threeYearPlans':
+        setthreeYearPlans(newData);
+        break;
+      default:
+        break;
+    }
     setTableData(newData, type);
   }
-
+  useEffect(() => {
+    const {
+      changhongSaleInfos = [],
+      mainCustomers = [],
+      exportSituations = [],
+      supplierOrderInfos = [],
+      threeYearPlans = []
+    } = data;
+    setchanghongSaleInfos(changhongSaleInfos.map(item => ({ ...item, guid: item.id })))
+    setmainCustomers(mainCustomers.map(item => ({ ...item, guid: item.id })))
+    setexportSituations(exportSituations.map(item => ({ ...item, guid: item.id })))
+    setsupplierOrderInfos(supplierOrderInfos.map(item => ({ ...item, guid: item.id })))
+    setthreeYearPlans(threeYearPlans.map(item => ({ ...item, guid: item.id })))
+  }, [data])
   return (
     <div>
       <Divider orientation='left'>总体情况</Divider>

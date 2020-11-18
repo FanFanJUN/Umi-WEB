@@ -43,7 +43,7 @@ const { authAction, getUUID } = utils;
 const FILENAME = '不良率上传模板.xlsx';
 const DOWNLOADNAME = '不良率.xlsx'
 const SEARCH_PLACEHOLDER = '供应商代码或名称';
-const quickSearchProperties = ['supplierCode','supplierName'];
+const quickSearchProperties = ['supplierCode', 'supplierName'];
 const sortOrders = [];
 const FORMITEMS = [
   {
@@ -184,6 +184,10 @@ const COLUMNS = [
   {
     title: '物料分类名称',
     dataIndex: 'materialCategoryName'
+  },
+  {
+    title: '业务单元',
+    dataIndex: 'buName'
   },
   {
     title: '公司代码',

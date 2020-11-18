@@ -11,7 +11,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Button, Spin, PageHeader, Radio, Row, Col, Input, InputNumber, Divider, message } from 'antd';
 import styles from '../../DataFillIn/index.less';
 import EditableFormTable from '../CommonUtil/EditTable';
-import UploadFile from '../CommonUtil/UploadFile';
+import UploadFile from '../../../../../components/Upload';
 import { router } from 'dva';
 import { requestGetApi, requestPostApi } from '../../../../../services/dataFillInApi';
 import { filterEmptyFileds, checkNull, isEmptyArray } from '../CommonUtil/utils';
@@ -35,23 +35,23 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
 
   const { query: { id, type = 'add' } } = router.useLocation();
 
-  const { getFieldDecorator, getFieldValue } = form;
+  const { getFieldDecorator, getFieldValue, setFieldsValue } = form;
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const res = await requestGetApi({ supplierRecommendDemandId: id, tabKey: 'hdssControllTab' });
-      if (res.success) {
-        res.data && setData(res.data);
-        res.data && setTableTata(res.data.environmentalTestingEquipments);
-      } else {
-        message.error(res.message);
-      }
+      const { success, message: msg, data } = await requestGetApi({ supplierRecommendDemandId: id, tabKey: 'hdssControllTab' });
       setLoading(false);
+      if (success) {
+        const { environmentalTestingEquipments = [], ...other } = data;
+        await setFieldsValue(other)
+        await setData(data);
+        await setTableTata(environmentalTestingEquipments.map(item => ({ ...item, guid: item.id })));
+        return
+      }
+      message.error(res.message);
     };
-    if (type !== 'add') {
-      fetchData();
-    }
+    fetchData();
   }, []);
 
   const columns = [
@@ -83,7 +83,7 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
   ];
 
   function handleSave() {
-    if (getFieldValue('haveEnvironmentalTestingEquipment')) {
+    if (getFieldValue('haveenvironmentalTestingEquipments ')) {
       if (isEmptyArray(tableTata)) {
         message.info('列表至少填写一条设备信息！');
         return;
@@ -96,8 +96,9 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
         ...value,
         tabKey: 'hdssControllTab',
         rohsFileId: value.rohsFileId ? (value.rohsFileId)[0] : null,
-        recommendDemandId: id || '676800B6-F19D-11EA-9F88-0242C0A8442E',
+        recommendDemandId: id,
         environmentalTestingEquipments: tableTata || [],
+        id: data.id
       };
       requestPostApi(filterEmptyFileds(saveParams)).then((res) => {
         if (res && res.success) {
@@ -136,8 +137,8 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                 <Row>
                   <Col span={24}>
                     <FormItem label="有无自有环保检测设备" {...formLayout}>
-                      {getFieldDecorator('haveEnvironmentalTestingEquipment', {
-                        initialValue: type === 'add' ? true : data.haveEnvironmentalTestingEquipment,
+                      {getFieldDecorator('haveenvironmentalTestingEquipments ', {
+                        initialValue: type === 'add' ? true : data.haveenvironmentalTestingEquipments,
                       })(
                         <Radio.Group value={'1'}>
                           <Radio value={true}>有</Radio>
@@ -229,7 +230,7 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                       })(<UploadFile
                         showColor={type !== 'add' ? true : false}
                         type={type === 'add' ? '' : 'show'}
-                        entityId={data.attachmentIds} />)}
+                        entityId={data.attachmentId} />)}
                     </FormItem>
                   </Col>
                 </Row>
