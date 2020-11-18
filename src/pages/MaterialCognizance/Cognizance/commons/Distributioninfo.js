@@ -1,4 +1,4 @@
-import React, { forwardRef, useState, useRef, useEffect, useImperativeHandle, useCallback } from 'react';
+import React, { forwardRef, useState, useRef, useEffect, useImperativeHandle } from 'react';
 import { ExtTable, WorkFlow, ExtModal, utils, ToolBar, AuthButton } from 'suid';
 import { Form, Button, message, Checkbox, Modal } from 'antd';
 import { openNewTab, getFrameElement, isEmpty } from '@/utils';
@@ -41,8 +41,12 @@ const ModifyinfoRef = forwardRef(({
   const { key: defaultype } = signleRow;
   const isdelete = defaultype === 1;
   useEffect(() => {
+    hanldcreate()
+  }, [])
+
+  useEffect(() => {
     hanldModify(editformData)
-  }, [editformData, hanldModify])
+  }, [editformData])
   // 明细表格
   let columnsdetail = [];
   if (isView) {
@@ -101,73 +105,58 @@ const ModifyinfoRef = forwardRef(({
       title: '排序号',
       align: 'center',
       dataIndex: 'sort',
-      width: 220,
+      width: 100,
     },
     {
       title: '执行责任人',
       align: 'center',
       dataIndex: 'responsiblePartyName',
-      width: 220,
-      render: function (text, record, row) {
-        if (record.responsiblePartyName) {
-          if (record.responsiblePartyName.length > 0) {
-            return <div>{record.responsiblePartyName[0].userName}</div>;
-          }
-        } else if (text === 1) {
-          //return <div className="successColor">已发布</div>;
-        }
-      },
+      width: 160,
     },
     {
       title: '执行部门',
       dataIndex: 'executiveDepartmentName',
       align: 'center',
-      width: 90
+      width: 200
     },
     ...columnsother,
     ...columnsdetail,
     {
       title: '备注',
-      dataIndex: 'attachmentId',
+      dataIndex: 'remark',
       align: 'center',
-      width: 90
+      width: 300
     }
   ].map(_ => ({ ..._, align: 'center' }))
 
-  const hanldModify = useCallback(
-    async function hanldModify(val) {
-      if (isEdit && val.length === 0) {
-        let defaulted = [{
-          key: keys,
-          stageName: '认定方案',
-          stageCode: '04',
-          taskName: '制定认定方案',
-          taskCode: '00',
-          taskTypeName: '判断型任务',
-          taskTypeCode: '01',
-          sort: 1
-        }];
-        setDataSource(defaulted);
-      } else {
-        let newsdata = [];
-        val.map((item, index) => {
-          newsdata.push({
-            ...item,
-            key: keys++
-          })
-          setDataSource(newsdata);
-        })
-      }
+  async function hanldcreate() {
+    if (isEdit) {
+      let defaulted = [{
+        key: keys,
+        stageName: '认定方案',
+        stageCode: '04',
+        taskName: '制定认定方案',
+        taskCode: '00',
+        taskTypeName: '判断型任务',
+        taskTypeCode: '01',
+        sort: 1,
+        executionStatus: 0
+      }];
+      setDataSource(defaulted);
     }
-  )
-
-
-  // 编辑处理数据
-
-  // async function hanldModify(val) {
-
-
-  // }
+  }
+  async function hanldModify(val) {
+    if (isEdit && val.length !== 0) {
+      let newsdata = [];
+      val.map((item, index) => {
+        newsdata.push({
+          ...item,
+          key: keys++
+        })
+        setDataSource(newsdata);
+      })
+    }
+  }
   // 记录列表选中
   function handleSelectedRows(rowKeys, rows) {
     setRowKeys(rowKeys);
@@ -263,13 +252,11 @@ const ModifyinfoRef = forwardRef(({
       } else {
         let newdata = [];
         changeinfor.map(item => {
-          console.log(item.responsiblePartyId[0])
           newdata.push({
             responsiblePartyId: item.responsiblePartyId[0],
             ...item
           })
         })
-        console.log(newdata)
         return newdata;
       }
 

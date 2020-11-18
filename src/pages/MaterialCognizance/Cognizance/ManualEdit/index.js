@@ -1,4 +1,4 @@
-import React, { createRef, useState, useRef, useEffect } from 'react';
+import React, { createRef, useState, useRef, useEffect, useCallback } from 'react';
 import { Button, Modal, message, Spin, Affix } from 'antd';
 import { router } from 'dva';
 import BaseInfo from '../commons/BaseInfo'
@@ -7,7 +7,7 @@ import Distributioninfo from '../commons/Distributioninfo'
 import classnames from 'classnames';
 import styles from '../index.less';
 import { closeCurrent, isEmpty } from '../../../../utils';
-import { ManualSaveVo } from '../../../../services/pcnModifyService'
+import { AdmissionDetails, ManualSaveVo } from '../../../../services/MaterialService'
 function CreateStrategy() {
   const BaseinfoRef = useRef(null);
   const ModifyinfoRef = useRef(null);
@@ -21,9 +21,23 @@ function CreateStrategy() {
 
   // 获取配置列表项
   useEffect(() => {
+    infoMaterieldetails()
+  }, [infoMaterieldetails]);
 
-  }, []);
-
+  const infoMaterieldetails = useCallback(
+    async function hanldModify() {
+      triggerLoading(true);
+      let id = query.id;
+      const { data, success, message: msg } = await AdmissionDetails({ planId: id });
+      if (success) {
+        setEditData(data)
+        triggerLoading(false);
+        return
+      }
+      triggerLoading(false);
+      message.error(msg)
+    }
+  )
   // 保存
   async function handleSave() {
     let baseinfo, planinfo, distributioninfo;
@@ -48,19 +62,19 @@ function CreateStrategy() {
     let params = {
       ...baseinfo,
       ...planinfo,
-      SamSupplierIdentificationPlanVo: distributioninfo,
+      detailsVos: distributioninfo,
     }
-    // let editparams = {...editData, ...params}
-    // console.log(editparams)
-    // triggerLoading(true)
-    // const {success, message: msg } = await ManualSaveVo(editparams)
-    // if (success) {
-    //     triggerLoading(false)
-    //     closeCurrent()
-    // } else {
-    //     triggerLoading(false)
-    //     message.error(msg);
-    // }
+    let editparams = { ...editData, ...params }
+    console.log(editparams)
+    triggerLoading(true)
+    const { success, message: msg } = await ManualSaveVo(editparams)
+    if (success) {
+      triggerLoading(false)
+      closeCurrent()
+    } else {
+      triggerLoading(false)
+      message.error(msg);
+    }
   }
   // 返回
   function handleBack() {
@@ -87,6 +101,7 @@ function CreateStrategy() {
           <div className={styles.title}>基本信息</div>
           <div >
             <BaseInfo
+              editformData={editData}
               wrappedComponentRef={BaseinfoRef}
             />
           </div>
@@ -97,6 +112,7 @@ function CreateStrategy() {
             <PlanInfo
               wrappedComponentRef={ModifyinfoRef}
               modifytype={modifytype}
+              editformData={editData}
               manual={true}
             />
           </div>
@@ -105,7 +121,7 @@ function CreateStrategy() {
           <div className={styles.title}>分配计划详情</div>
           <div >
             <Distributioninfo
-              editformData={editData}
+              editformData={editData.detailsVos}
               wrappedComponentRef={DistributionRef}
               isEdit={true}
               isView={false}

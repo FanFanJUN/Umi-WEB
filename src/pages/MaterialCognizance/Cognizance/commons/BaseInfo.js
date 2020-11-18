@@ -80,7 +80,7 @@ const HeadFormRef = forwardRef(({
                         <Col span={10}>
                             <Item label='创建人' {...formLayout}>
                                 {
-                                    isView ? <span>{editformData ? editformData.createdName : ''}</span> :
+                                    isView ? <span>{editformData ? editformData.creatorName : ''}</span> :
                                         getFieldDecorator("createdName", {
                                             initialValue: authorizations.userName,
                                         })(

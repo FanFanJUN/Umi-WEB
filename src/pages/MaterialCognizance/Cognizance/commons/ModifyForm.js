@@ -81,6 +81,7 @@ const ModifyForm = forwardRef(
             form.setFieldsValue({ executiveDepartmentName: '' })
         }
         function handlExecutor(val) {
+            console.log(val)
             form.setFieldsValue({
                 'executiveDepartmentName': val.organization.name,
                 'executiveDepartmentId': val.organization.id,
@@ -225,10 +226,9 @@ const ModifyForm = forwardRef(
                                         name={'responsiblePartyName'}
                                         field={['responsiblePartyId']}
                                         store={{
-                                            data: {
-                                                pageInfo: { page: 1, rows: 30 },
+                                            params: {
                                                 includeFrozen: false,
-                                                includeSubNode: true,
+                                                includeSubNode: false,
                                                 quickSearchProperties: ['code', 'user.userName'],
                                                 organizationId: '',
                                                 sortOrders: [{ property: 'code', direction: 'ASC' }],
@@ -282,11 +282,11 @@ const ModifyForm = forwardRef(
                         </Item>
                     </Col>
                     <Col span={12}>
-                        <Item {...formLayout} label="备注">
+                        <Item {...formLayout} label="备注信息">
                             {getFieldDecorator('remark', {
                                 initialValue: initialValue ? initialValue.remark : '',
                             })(
-                                <TextArea placeholder="请输入备注" />
+                                <TextArea placeholder="请输入备注信息" maxLength={100} />
                             )}
                         </Item>
                     </Col>

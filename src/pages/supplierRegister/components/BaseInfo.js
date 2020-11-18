@@ -5,7 +5,7 @@ import { Form, Row, Input, Col, DatePicker, Radio } from 'antd';
 import { utils, ComboList, ComboTree } from 'suid';
 import DynamicForm from './DynamicForm'
 import styles from './index.less';
-import {isEmpty} from '../../../utils'
+import { isEmpty } from '../../../utils'
 const { create } = Form;
 const FormItem = Form.Item;
 const { storage } = utils
@@ -70,6 +70,9 @@ const BaseinfoRef = forwardRef(({
 			}
 			if (values.extendVo) {
 				let { extendVo } = values;
+				if (values.supplierVo) {
+					values.supplierVo.name = values.supplierVo.name.trim()
+				}
 				if (values.regFund) {
 					extendVo.regFund = values.regFund.number;
 					extendVo.currencyId = values.regFund.currency;
@@ -126,14 +129,18 @@ const BaseinfoRef = forwardRef(({
 			});
 			delete values.attachments;
 			if (!err) {
-				let {extendVo} = values;
+				let { extendVo } = values;
+				if (values.supplierVo) {
+					values.supplierVo.name = values.supplierVo.name.trim()
+				}
 				if (values.regFund) {
 					extendVo.regFund = values.regFund.number;
 					extendVo.currencyId = values.regFund.currency;
-				} 
+				}
+
 				if (values.register) {
 					if (!isEmpty(values.register.province.label) && !isEmpty(values.register.city.label) &&
-					!isEmpty(values.register.area.label) && !isEmpty(values.register.street)) {
+						!isEmpty(values.register.area.label) && !isEmpty(values.register.street)) {
 						extendVo.registerProvinceName = values.register.province.label;
 						extendVo.registerProvinceId = values.register.province.key;
 						extendVo.registerRegionId = values.register.city.key;
@@ -141,13 +148,13 @@ const BaseinfoRef = forwardRef(({
 						extendVo.registerDistrictId = values.register.area.key;
 						extendVo.registerDistrictName = values.register.area.label;
 						extendVo.registerStreet = values.register.street;
-					}else {
+					} else {
 						return false
 					}
 				}
 				if (values.office) {
 					if (!isEmpty(values.office.province.label) && !isEmpty(values.office.city.label) &&
-					!isEmpty(values.office.area.label) && !isEmpty(values.office.street)) {
+						!isEmpty(values.office.area.label) && !isEmpty(values.office.street)) {
 						extendVo.officeProvinceId = values.office.province.key;
 						extendVo.officeProvinceName = values.office.province.label;
 						extendVo.officeRegionId = values.office.city.key;
@@ -155,12 +162,12 @@ const BaseinfoRef = forwardRef(({
 						extendVo.officeDistrictId = values.office.area.key;
 						extendVo.officeDistrictName = values.office.area.label;
 						extendVo.officeStreet = values.office.street;
-					}else {
+					} else {
 						return false
 					}
-			
+
 				}
-				
+
 				delete values.register;
 				delete values.office;
 				result = values;
