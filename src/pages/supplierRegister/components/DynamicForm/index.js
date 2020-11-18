@@ -110,7 +110,6 @@ const CommonconfigRef = forwardRef(({
   // 设置表单参数
   function setHeaderFields(fields) {
     const { attachmentId = null, ...fs } = fields;
-    console.log(fields)
     // setTimeout(() => {
     //   setsupplierName(fields.supplierVo.name)
     // }, 100);
@@ -119,12 +118,11 @@ const CommonconfigRef = forwardRef(({
   }
   //注册地址同步办公地址
   function registerChange(value) {
-    console.log(value)
     form.setFieldsValue({ office: value });
   }
   //检查供应商名称
   async function handleCheckName() {
-    const name = form.getFieldValue('supplierVo.name');
+    const name = form.getFieldValue('supplierVo.name').trim();
     setsupplierName(name)
     setName(name);
     name.trim();

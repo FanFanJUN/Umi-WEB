@@ -7,7 +7,7 @@ import Distributioninfo from '../commons/Distributioninfo'
 import classnames from 'classnames';
 import styles from '../index.less';
 import { closeCurrent, isEmpty } from '../../../../utils';
-import { ManualSaveVo } from '../../../../services/pcnModifyService'
+import { ManualSaveVo } from '../../../../services/MaterialService'
 function CreateStrategy() {
   const BaseinfoRef = useRef(null);
   const ModifyinfoRef = useRef(null);
@@ -48,19 +48,18 @@ function CreateStrategy() {
     let params = {
       ...baseinfo,
       ...planinfo,
-      SamSupplierIdentificationPlanVo: distributioninfo,
+      detailsVos: distributioninfo,
     }
-    // let editparams = {...editData, ...params}
-    // console.log(editparams)
-    // triggerLoading(true)
-    // const {success, message: msg } = await ManualSaveVo(editparams)
-    // if (success) {
-    //     triggerLoading(false)
-    //     closeCurrent()
-    // } else {
-    //     triggerLoading(false)
-    //     message.error(msg);
-    // }
+    console.log(params)
+    triggerLoading(true)
+    const { success, message: msg } = await ManualSaveVo(params)
+    if (success) {
+      triggerLoading(false)
+      closeCurrent()
+    } else {
+      triggerLoading(false)
+      message.error(msg);
+    }
   }
   // 返回
   function handleBack() {
@@ -73,7 +72,7 @@ function CreateStrategy() {
     <Spin spinning={loading} tip='处理中...'>
       <Affix offsetTop={0}>
         <div className={classnames([styles.header, styles.flexBetweenStart])}>
-          <span className={styles.title}>物料认定计划编辑</span>
+          <span className={styles.title}>物料认定计划新增</span>
           <div className={styles.flexCenter}>
             <Button className={styles.btn} onClick={handleBack}>返回</Button>
             <Button className={styles.btn} onClick={handleSave}>保存</Button>

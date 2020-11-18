@@ -281,8 +281,7 @@ const Bankformef = forwardRef(({
     if (!bankInfo || bankInfo.length === 0) {
       return false;
     }else {
-      bankInfo.forEach(item => {
-
+      for (let item of bankInfo) {
         if (isEmpty(item.countryName) || isEmpty(item.unionpayCode) || isEmpty(item.bankName) || isEmpty(item.bankAccount) || 
           isEmpty(item.paymentName) || isEmpty(item.bankOwner) || isEmpty(item.openingPermitId)) {
             sendbank = false;
@@ -291,7 +290,7 @@ const Bankformef = forwardRef(({
           sendbank = true;
           return bankInfo;
         }
-      })
+      }
     }
     return sendbank ? bankInfo : false
   }

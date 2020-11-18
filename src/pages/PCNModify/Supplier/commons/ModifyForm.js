@@ -197,6 +197,7 @@ const ModifyForm = forwardRef(
                                 <TextArea
                                     disabled
                                     placeholder="请输入证明材料"
+                                    autoSize={{ minRows: 5, maxRows: 10 }}
                                 />
                             )}
                         </Item>

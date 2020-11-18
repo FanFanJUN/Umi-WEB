@@ -1,8 +1,8 @@
 import { request } from '@/utils';
-import { smBaseUrl,recommendUrl} from '@/utils/commonUrl';
-import { BASE_URL,FLOW_HOST } from '../utils/constants';
-import {convertDataToFormData} from '../utils'
-import { utils} from 'suid';
+import { smBaseUrl, recommendUrl } from '@/utils/commonUrl';
+import { BASE_URL, FLOW_HOST } from '../utils/constants';
+import { convertDataToFormData } from '../utils'
+import { utils } from 'suid';
 import httpUtils from '../utils/FeatchUtils'
 const { storage } = utils;
 const authorizations = storage.sessionStorage.get("Authorization");
@@ -36,15 +36,15 @@ function createServiceRequest(option) {
 
 export const MasterdataSave = params => {
   return request({
-      url: `${recommendUrl}/api/samPhysicalIdentificationStageService/save`,
-      data:params,
-      method: 'POST',
+    url: `${recommendUrl}/api/samPhysicalIdentificationStageService/save`,
+    data: params,
+    method: 'POST',
   })
 }
 // 阶段删除
 export const deleteBatchByLeftId = (params) => {
   return request({
-    headers:{'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+    headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
     url: `${recommendUrl}/api/samPhysicalIdentificationStageService/deleteSanPhyStageId`,
     params,
     method: 'POST',
@@ -54,9 +54,9 @@ export const deleteBatchByLeftId = (params) => {
 // 任务保存
 export const TaskdataSave = params => {
   return request({
-      url: `${recommendUrl}/api/samPhysicalIdentificationTaskService/save`,
-      data:params,
-      method: 'POST',
+    url: `${recommendUrl}/api/samPhysicalIdentificationTaskService/save`,
+    data: params,
+    method: 'POST',
   })
 }
 
@@ -64,9 +64,27 @@ export const TaskdataSave = params => {
 export const deleteRightId = (params) => {
   return request({
     //headers:{'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-    url: `${recommendUrl}/api/samPhysicalIdentificationTaskService/delete`,
+    url: `${recommendUrl}/api/samPhysicalIdentificationTaskService/deleteByTaskId`,
     params,
-    method: 'DELETE',
+    method: 'POST',
+    hack: true
+  })
+};
+// 实物认定手工保存
+export const ManualSaveVo = params => {
+  return request({
+    url: `${recommendUrl}/api/samSupplierIdentificationPlanService/insertDentificationPlan`,
+    data: params,
+    method: 'POST',
+  })
+}
+// 认定计划明细
+export const AdmissionDetails = (params) => {
+  return request({
+    headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+    url: `${recommendUrl}/api/samSupplierIdentificationPlanService/findByPlanId`,
+    params,
+    method: 'POST',
     hack: true
   })
 };

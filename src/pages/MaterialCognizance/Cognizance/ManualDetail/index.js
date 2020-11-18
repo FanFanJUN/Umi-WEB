@@ -7,7 +7,7 @@ import Distributioninfo from '../commons/Distributioninfo'
 import classnames from 'classnames';
 import styles from '../index.less';
 import { closeCurrent, isEmpty } from '../../../../utils';
-import { ManualSaveVo } from '../../../../services/pcnModifyService'
+import { AdmissionDetails } from '../../../../services/MaterialService'
 function CreateStrategy() {
   const BaseinfoRef = useRef(null);
   const ModifyinfoRef = useRef(null);
@@ -19,64 +19,33 @@ function CreateStrategy() {
   const { query } = router.useLocation();
   const { frameElementId, frameElementSrc = "", Opertype = "" } = query;
 
-  // 获取配置列表项
   useEffect(() => {
+    Admissiontails()
+  }, [Admissiontails]);
 
-  }, []);
-
-  // 保存
-  async function handleSave() {
-    let baseinfo, planinfo, distributioninfo;
-    const { basefrom } = BaseinfoRef.current;
-    const { planfrom } = ModifyinfoRef.current;
-    const { displanfrom } = DistributionRef.current;
-    baseinfo = basefrom();
-    if (!baseinfo) {
-      message.error('基础信息不能为空！');
-      return false;
+  async function Admissiontails() {
+    triggerLoading(true);
+    let id = query.id;
+    const { data, success, message: msg } = await AdmissionDetails({ planId: id });
+    if (success) {
+      setEditData(data)
+      triggerLoading(false);
+      return
     }
-    planinfo = planfrom()
-    if (!planinfo) {
-      message.error('认定计划信息不能为空！');
-      return false;
-    }
-    distributioninfo = displanfrom()
-    if (!distributioninfo) {
-      message.error('分配计划详情不能为空！');
-      return false;
-    }
-    let params = {
-      ...baseinfo,
-      ...planinfo,
-      SamSupplierIdentificationPlanVo: distributioninfo,
-    }
-    // let editparams = {...editData, ...params}
-    // console.log(editparams)
-    // triggerLoading(true)
-    // const {success, message: msg } = await ManualSaveVo(editparams)
-    // if (success) {
-    //     triggerLoading(false)
-    //     closeCurrent()
-    // } else {
-    //     triggerLoading(false)
-    //     message.error(msg);
-    // }
+    triggerLoading(false);
+    message.error(msg)
   }
   // 返回
   function handleBack() {
     closeCurrent()
   }
-  function handleCancel() {
-    setvisible(false)
-  }
   return (
     <Spin spinning={loading} tip='处理中...'>
       <Affix offsetTop={0}>
         <div className={classnames([styles.header, styles.flexBetweenStart])}>
-          <span className={styles.title}>物料认定计划编辑</span>
+          <span className={styles.title}>物料认定计划明细</span>
           <div className={styles.flexCenter}>
             <Button className={styles.btn} onClick={handleBack}>返回</Button>
-            <Button className={styles.btn} onClick={handleSave}>保存</Button>
           </div>
         </div>
 
@@ -88,6 +57,7 @@ function CreateStrategy() {
           <div >
             <BaseInfo
               wrappedComponentRef={BaseinfoRef}
+              isView={true}
             />
           </div>
         </div>
@@ -97,7 +67,7 @@ function CreateStrategy() {
             <PlanInfo
               wrappedComponentRef={ModifyinfoRef}
               modifytype={modifytype}
-              manual={true}
+              isView={true}
             />
           </div>
         </div>
@@ -108,7 +78,7 @@ function CreateStrategy() {
               editformData={editData}
               wrappedComponentRef={DistributionRef}
               isEdit={true}
-              isView={false}
+              headerInfo={true}
             />
           </div>
         </div>

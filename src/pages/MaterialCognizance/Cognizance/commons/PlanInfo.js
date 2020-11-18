@@ -1,11 +1,12 @@
-import React, { forwardRef, useImperativeHandle, useEffect, useState,useRef } from 'react';
+import React, { forwardRef, useImperativeHandle, useEffect, useState, useRef } from 'react';
 import { Form, Row, Input, Col, DatePicker, Radio, Button } from 'antd';
-import { utils, ComboList} from 'suid';
-import { onlyNumber} from '@/utils'
+import { utils, ComboList } from 'suid';
+import { onlyNumber } from '@/utils'
 import RecommendModle from './recommendModle'
 import InfluenceMaterielModal from '../commons/InfluenceMaterielModal'
 import UploadFile from '../../../../components/Upload/index'
-import {CognizanceTypelist,MaterielCognlist} from '../../commonProps'
+import { CognizanceTypelist, MaterielCognlist } from '../../commonProps'
+import { isEmpty } from '@/utils';
 const { Item, create } = Form;
 const { TextArea } = Input;
 const { storage } = utils;
@@ -26,7 +27,7 @@ const HeadFormRef = forwardRef(({
 }, ref) => {
     useImperativeHandle(ref, () => ({
         form,
-        basefrom
+        planfrom
     }));
     const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
     const getRecommendRef = useRef(null);
@@ -36,12 +37,15 @@ const HeadFormRef = forwardRef(({
     useEffect(() => {
 
     }, [])
-    function basefrom() {
+    function planfrom() {
         let modifyinfluen = false;
         form.validateFieldsAndScroll(async (err, val) => {
             if (!err) {
+                if (isEmpty(val.attachment)) {
+                    val.attachment = []
+                }
                 modifyinfluen = val;
-            } 
+            }
         })
         return modifyinfluen ? modifyinfluen : false
     }
@@ -60,224 +64,268 @@ const HeadFormRef = forwardRef(({
     function selectanalysis(record) {
         console.log(record)
         form.setFieldsValue({
-            'corporationName': record[0].corporation.name,
-            'smSupplierName': record[0].purchaseOrg.name,
-            'createdDate': record[0].supplier.name,
-            'originSupplierName': record[0].originSupplierName,
-            'materielCategory': record[0].materielCategory.name
+            'companyCode': record[0].corporation.code,
+            'companyName': record[0].corporation.name,
+            'purchaseCode': record[0].purchaseOrg.code,
+            'purchaseName': record[0].purchaseOrg.name,
+            'supplierCode': record[0].supplier.code,
+            'supplierName': record[0].supplier.name,
+            'originalFactoryCode': record[0].originSupplierCode,
+            'originalFactoryName': record[0].originSupplierName,
+            'materielTypeName': record[0].materielCategory.name,
+            'materielTypeCode': record[0].materielCategory.code,
         });
     }
     return (
         <>
-        <div >
-            <Row>
-                <Col span={10}>
-                    <Item {...formLayout} label='公司名称' >
-                        {isView ? <span>{}</span> :
-                            getFieldDecorator('corporationName', {
-                                initialValue: '',
-                                rules: [{required: true, message: "请输入公司名称！",}]
-                            })(
-                                <Input
-                                    style={{
-                                        width: !isView ? '75%' : '100%',
-                                        marginRight: !isView ? '1%' : '0%',
-                                    }}
-                                    disabled
-                                    placeholder={'请公司名称'}/>
-                                    
-                            )}
+            <div >
+                <Row>
+                    <Col span={10}>
+                        <Item {...formLayout} label='公司名称' >
+                            {isView ? <span>{editformData ? editformData.companyName : null}</span> :
+                                (getFieldDecorator('companyCode', {
+                                    initialValue: editformData ? editformData.companyCode : ''
+                                }),
+                                    getFieldDecorator('companyName', {
+                                        initialValue: editformData ? editformData.companyName : '',
+                                        rules: [{ required: true, message: "请输入公司名称！", }]
+                                    })(
+                                        <Input
+                                            style={{
+                                                width: !isView ? '75%' : '100%',
+                                                marginRight: !isView ? '1%' : '0%',
+                                            }}
+                                            disabled
+                                            placeholder={'请公司名称'} />
+
+                                    ))
+                            }
                             {!isView ?
-                            <Button
-                                style={{width: '24%'}}
-                                onClick={() => handleSingle()}
-                            >选择</Button> : ''}
-                    </Item>
-                </Col>
-                <Col span={10}>
-                    <Item label='采购组织名称' {...formLayout}>
-                        {
-                            isView ? <span>{editformData ? editformData.smSupplierName : ''}</span> :
-                            getFieldDecorator("smSupplierName", {
-                                initialValue: '',
-                                rules: [{ required: true, message: "请选择采购组织名称", }]
-                            })(
-                                <Input disabled />
-                            )
-                        }
-                    </Item>
-                </Col>
-            </Row>
-            <Row>
-                <Col span={10}>
-                    <Item label='供应商名称' {...formLayout}>
-                        {
-                            isView ? <span>{editformData ?  editformData.createdDate : ''}</span> :
-                            getFieldDecorator("createdDate", {
-                                initialValue: '',
-                                rules: [
-                                    {
-                                        required: true,
-                                        message: '请输入供应商名称'
-                                    }
-                                ]
-                            })(
-                                <Input disabled />
-                            )
-                        }
-                    </Item>
-                </Col>
-                <Col span={10}>
-                    <Item label='原厂名称' {...formLayout}>
-                        {
-                            isView ? <span>{editformData ?  editformData.originSupplierName : ''}</span> :
-                            getFieldDecorator("originSupplierName", {
-                                initialValue: '',
-                            })(
-                                <Input disabled />
-                            )
-                        }
-                    </Item>
-                </Col>
-            </Row>
-            <Row>
-                <Col span={10}>
-                    <Item label='物料分类' {...formLayout}>
-                        {
-                            isView ? <span>{editformData ?  editformData.materielCategory : ''}</span> :
-                            getFieldDecorator("materielCategory", {
-                                initialValue: '',
-                                rules: [
-                                    {
-                                        required: true,
-                                        message: '请输入物料分类'
-                                    }
-                                ]
-                            })(
-                                <Input disabled />
-                            )
-                        }
-                    </Item>
-                </Col>
-                <Col span={10}>
-                    <Item label='认定物料类别' {...formLayout}>
-                        {
-                            isView ? <span>{editformData ?  editformData.createdDate : ''}</span> :
-                            getFieldDecorator("createdDate", {
-                                initialValue: '',
-                                rules: [
-                                    {
-                                        required: true,
-                                        message: '请输入认定物料类别'
-                                    }
-                                ]
-                            })(
-                                <ComboList disabled={isView === true}
-                                    {...MaterielCognlist}
-                                    showSearch={false}
-                                    style={{ width: '100%' }}
-                                    name='smPcnChangeTypeName' 
-                                    field={['smPcnChangeTypeCode']} 
-                                    afterSelect={afterSelect}
-                                    form={form} 
-                                />
-                            )
-                        }
-                    </Item>
-                </Col>
-            </Row>
-            <Row>
-                <Col span={10}>
-                    <Item label='认定类型' {...formLayout}>
-                        {
-                            isView ? <span>{editformData ?  editformData.createdDate : ''}</span> :
-                            getFieldDecorator("createdDate", {
-                                initialValue: '',
-                                rules: [
-                                    {
-                                        required: true,
-                                        message: '请输入认定类型'
-                                    }
-                                ]
-                            })(
-                                <ComboList disabled={isView === true}
-                                    {...CognizanceTypelist}
-                                    showSearch={false}
-                                    style={{ width: '100%' }}
-                                    name='smPcnChangeTypeName' 
-                                    field={['smPcnChangeTypeCode']} 
-                                    afterSelect={afterSelect}
-                                    form={form} 
-                                />
-                            )
-                        }
-                    </Item>
-                </Col>
-                <Col span={10}>
-                    <Item label='计划说明' {...formLayout}>
-                        {
-                            isView ? <span>{editformData ?  editformData.createdDate : ''}</span> :
-                            getFieldDecorator("createdDate", {
-                                initialValue: '',
-                                rules: [
-                                    {
-                                        required: true,
-                                        message: '请输入计划说明'
-                                    }
-                                ]
-                            })(
-                                <TextArea style={{width: "100%"}}
-                                    placeholder="请输入计划说明"
-                                />
-                            )
-                        }
-                    </Item>
-                </Col>
-            </Row>
-            <Row>
-                <Col span={10}>
-                    <Item label='附件' {...formLayout}>
-                        {
-                            isView ? <span>{editformData ?  editformData.createdDate : ''}</span> :
-                            getFieldDecorator("createdDate", {
-                                initialValue: '',
-                            })(
-                                <UploadFile
-                                    title={"附件上传"}
-                                    entityId={editformData ? editformData.attachmentId : null}
-                                    type={isView ? "show" : ""}
-                                />
-                            )
-                        }
-                    </Item>
-                </Col>
-                {
-                    !manual ?  <Col span={10}>
-                        <Item label='准入单号' {...formLayout}>
+                                <Button
+                                    style={{ width: '24%' }}
+                                    onClick={() => handleSingle()}
+                                >选择</Button> : ''}
+                        </Item>
+                    </Col>
+                    <Col span={10}>
+                        <Item label='采购组织名称' {...formLayout}>
                             {
-                                isView ? <span>{editformData ?  editformData.createdDate : ''}</span> :
-                                getFieldDecorator("createdDate", {
-                                    initialValue: '',
-                                })(
-                                    <TextArea style={{width: "100%"}}
-                                        placeholder="请输入计划说明"
-                                    />
-                                )
+                                isView ? <span>{editformData ? editformData.purchaseName : ''}</span> :
+                                    (
+                                        getFieldDecorator('purchaseCode', {
+                                            initialValue: editformData ? editformData.purchaseCode : ''
+                                        }),
+                                        getFieldDecorator("purchaseName", {
+                                            initialValue: '',
+                                            rules: [{ required: true, message: "请选择采购组织名称", }]
+                                        })(
+                                            <Input disabled />
+                                        )
+                                    )
+
                             }
                         </Item>
-                    </Col> : null
-                }
-            </Row>
-                      
-        </div>
-        <RecommendModle 
-            wrappedComponentRef={getRecommendRef} 
-        /> 
-         <InfluenceMaterielModal
-            modifyanalysis={selectanalysis}
-            wrappedComponentRef={getModelRef}
-        />
-       </>  
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={10}>
+                        <Item label='供应商名称' {...formLayout}>
+                            {
+                                isView ? <span>{editformData ? editformData.supplierCode : ''}</span> :
+                                    (
+                                        getFieldDecorator('supplierCode', {
+                                            initialValue: editformData ? editformData.purchaseCode : ''
+                                        }),
+                                        getFieldDecorator("supplierName", {
+                                            initialValue: '',
+                                            rules: [
+                                                {
+                                                    required: true,
+                                                    message: '请输入供应商名称'
+                                                }
+                                            ]
+                                        })(
+                                            <Input disabled />
+                                        )
+                                    )
+
+                            }
+                        </Item>
+                    </Col>
+                    <Col span={10}>
+                        <Item label='原厂名称' {...formLayout}>
+                            {
+                                isView ? <span>{editformData ? editformData.originalFactoryName : ''}</span> :
+                                    (
+                                        getFieldDecorator('originalFactoryCode', {
+                                            initialValue: editformData ? editformData.originalFactoryCode : ''
+                                        }),
+                                        getFieldDecorator("originalFactoryName", {
+                                            initialValue: '',
+                                        })(
+                                            <Input disabled />
+                                        )
+                                    )
+
+                            }
+                        </Item>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={10}>
+                        <Item label='物料分类' {...formLayout}>
+                            {
+                                isView ? <span>{editformData ? editformData.materielTypeName : ''}</span> :
+                                    (
+                                        getFieldDecorator('materielTypeCode', {
+                                            initialValue: editformData ? editformData.materielTypeCode : ''
+                                        }),
+                                        getFieldDecorator("materielTypeName", {
+                                            initialValue: '',
+                                            rules: [
+                                                {
+                                                    required: true,
+                                                    message: '请输入物料分类'
+                                                }
+                                            ]
+                                        })(
+                                            <Input disabled />
+                                        )
+                                    )
+
+                            }
+                        </Item>
+                    </Col>
+                    <Col span={10}>
+                        <Item label='认定物料类别' {...formLayout}>
+                            {
+                                isView ? <span>{editformData ? editformData.identifiedMaterialCategoryName : ''}</span> :
+                                    (
+                                        getFieldDecorator('identifiedMaterialCategoryId', { initialValue: editformData ? editformData.identifiedMaterialCategoryId : "" }),
+                                        getFieldDecorator("identifiedMaterialCategoryName", {
+                                            initialValue: '',
+                                            rules: [
+                                                {
+                                                    required: true,
+                                                    message: '请选择认定物料类别'
+                                                }
+                                            ]
+                                        })(
+                                            <ComboList disabled={isView === true}
+                                                {...MaterielCognlist}
+                                                showSearch={false}
+                                                style={{ width: '100%' }}
+                                                name='identifiedMaterialCategoryName'
+                                                field={['identifiedMaterialCategoryId']}
+                                                afterSelect={afterSelect}
+                                                form={form}
+                                            />
+                                        )
+                                    )
+
+                            }
+                        </Item>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={10}>
+                        <Item label='认定类型' {...formLayout}>
+                            {
+                                isView ? <span>{editformData ? editformData.identificationTypeId : ''}</span> :
+                                    (
+                                        getFieldDecorator('identificationTypeId', { initialValue: editformData ? editformData.identificationTypeId : "" }),
+                                        getFieldDecorator("identificationTypeName", {
+                                            initialValue: '',
+                                            rules: [
+                                                {
+                                                    required: true,
+                                                    message: '请选择认定类型'
+                                                }
+                                            ]
+                                        })(
+                                            <ComboList disabled={isView === true}
+                                                {...CognizanceTypelist}
+                                                showSearch={false}
+                                                style={{ width: '100%' }}
+                                                name='identificationTypeName'
+                                                field={['identificationTypeId']}
+                                                afterSelect={afterSelect}
+                                                form={form}
+                                            />
+                                        )
+                                    )
+
+                            }
+                        </Item>
+                    </Col>
+                    <Col span={10}>
+                        <Item label='计划说明' {...formLayout}>
+                            {
+                                isView ? <span>{editformData ? editformData.planDesc : ''}</span> :
+                                    (
+                                        getFieldDecorator("planDesc", {
+                                            initialValue: '',
+                                            rules: [
+                                                {
+                                                    required: true,
+                                                    message: '请输入计划说明'
+                                                }
+                                            ]
+                                        })(
+                                            <TextArea style={{ width: "100%" }}
+                                                placeholder="请输入计划说明"
+                                            />
+                                        )
+                                    )
+
+                            }
+                        </Item>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={10}>
+                        <Item label='附件' {...formLayout}>
+                            {
+                                isView ? <span>{editformData ? editformData.enclosureId : ''}</span> :
+                                    getFieldDecorator("attachment", {
+                                        initialValue: '',
+                                    })(
+                                        <UploadFile
+                                            title={"附件上传"}
+                                            entityId={editformData ? editformData.enclosureId : null}
+                                            type={isView ? "show" : ""}
+                                        />
+                                    )
+                            }
+                        </Item>
+                    </Col>
+                    {
+                        !manual ? <Col span={10}>
+                            <Item label='准入单号' {...formLayout}>
+                                {
+                                    isView ? <span>{editformData ? editformData.admittanceNo : ''}</span> :
+                                        getFieldDecorator("admittanceNo", {
+                                            initialValue: '',
+                                        })(
+                                            <TextArea style={{ width: "100%" }}
+                                                placeholder="请输入计划说明"
+                                            />
+                                        )
+                                }
+                            </Item>
+                        </Col> : null
+                    }
+                </Row>
+
+            </div>
+            <RecommendModle
+                wrappedComponentRef={getRecommendRef}
+            />
+            <InfluenceMaterielModal
+                modifyanalysis={selectanalysis}
+                wrappedComponentRef={getModelRef}
+            />
+        </>
     )
 }
 )
