@@ -37,7 +37,7 @@ const BaseInfoForm = React.forwardRef(({ form, userInfo, isView, editData,type }
   useImperativeHandle(ref, () => ({
     getFormValue
   }));
-  const { getFieldDecorator, getFieldValue } = form;
+  const { getFieldDecorator } = form;
   const getFormValue=()=>{
     let result = false;
     form.validateFieldsAndScroll((err, values) => {
@@ -57,7 +57,7 @@ const BaseInfoForm = React.forwardRef(({ form, userInfo, isView, editData,type }
               <FormItem label="拟制部门" {...formLayout}>
                 {isView ? <span>{editData.applyDepartmentName}</span> :
                   (
-                    getFieldDecorator('applyDepartmentId', { initialValue: editData ? editData.applyDepartmentId : '' }),
+                    getFieldDecorator('applyDepartmentId', { initialValue: type === 'add' ? '': editData.applyDepartmentId }),
                       getFieldDecorator('applyDepartmentName', {
                         initialValue: type === 'add' ? '': editData.applyDepartmentName,
                         rules: [
@@ -72,7 +72,7 @@ const BaseInfoForm = React.forwardRef(({ form, userInfo, isView, editData,type }
                           style={{ width: '100%' }}
                           form={form}
                           name={'applyDepartmentName'}
-                          field={['applyDepartmentId']}
+                          field={['applyDepartmentCode', 'applyDepartmentId']}
                           {...ApplyOrganizationProps}
                         />,
                       )

@@ -39,6 +39,8 @@ const AddModal = forwardRef(({}, ref,) => {
         return;
     }
     openNewTab('supplierAudit/AuditReportManagementAdd?pageState=add&id='+selectedRowKeys.id, '审核报告管理-新增', false);
+    tableRef.current.manualSelectedRows();
+    setVisible(false)
   };
 
   return <ExtModal
