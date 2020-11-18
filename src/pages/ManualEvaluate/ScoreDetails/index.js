@@ -71,6 +71,9 @@ function ScoreDetails() {
         if (text === null) {
           return ''
         }
+        if(!!record?.systemName) {
+          return ''
+        }
         return <Button type='link' onClick={() => checkEvaluateDetail(record?.ruleScoreId, type)}>{text}</Button>
       }
     }

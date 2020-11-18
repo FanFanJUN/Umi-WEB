@@ -60,12 +60,6 @@ const FORMITEMS = [
     props: originFactoryProps
   },
   {
-    title: '物料',
-    key: 'Q_EQ_materialCode',
-    type: 'list',
-    props: materialProps
-  },
-  {
     title: '物料分类',
     key: 'Q_EQ_materialCategoryCode',
     type: 'tree',
@@ -106,16 +100,6 @@ const FIELDS = [
     type: 'label'
   },
   {
-    name: 'materialCode',
-    label: '物料代码',
-    type: 'label'
-  },
-  {
-    name: 'materialName',
-    label: '物料名称',
-    type: 'label'
-  },
-  {
     name: 'materialCategoryCode',
     label: '物料分类代码',
     type: 'label'
@@ -146,14 +130,14 @@ const FIELDS = [
     type: 'label'
   },
   {
-    name: 'orderCreateDate',
-    label: '订单创建时间',
-    type: 'datePicker',
+    name: 'month',
+    label: '月度',
+    type: 'monthPicker',
     option: {
       rules: [
         {
           required: true,
-          message: '订单创建时间不能为空'
+          message: '月度不能为空'
         }
       ]
     }
@@ -239,10 +223,10 @@ const COLUMNS = [
     dataIndex: 'purchaseOrgName'
   },
   {
-    dataIndex: 'orderCreateDate',
-    title: '订单创建时间',
+    dataIndex: 'month',
+    title: '月度',
     render(text) {
-      return moment(text).format('YYYY-MM-DD')
+      return moment(text).format('YYYY-MM')
     }
   },
   {
@@ -347,7 +331,7 @@ function AcceptFYPMain() {
     await formRef.current.show()
     await formRef.current.setFormValues({
       ...singleRow,
-      orderCreateDate: moment(singleRow?.orderCreateDate)
+      month: moment(singleRow?.month)
     })
   }
   // 编辑后保存数据

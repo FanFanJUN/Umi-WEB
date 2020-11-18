@@ -27,17 +27,18 @@ const QuotationAndGPCA = ({ updateGlobalStatus }) => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const res = await requestGetApi({ supplierRecommendDemandId: id, tabKey: 'quotationAndGPCATab' });
-      if (res.success) {
-        res.data && setData(res.data);
-      } else {
-        message.error(res.message);
-      }
+      const { data, message: msg, success } = await requestGetApi({ supplierRecommendDemandId: id, tabKey: 'quotationAndGPCATab' });
       setLoading(false);
+      if (success) {
+        const { costAnalyses = [], supplyCostStructure = true } = data;
+        await setData(data);
+        await setSupplyCostStructure(supplyCostStructure)
+        await setDataSource(costAnalyses.map(item=>({ ...item, guid: item.id })))
+        return
+      }
+      message.error(msg)
     };
-    if (type !== 'add') {
-      fetchData();
-    }
+    fetchData();
   }, []);
 
   const columns = [
@@ -111,15 +112,17 @@ const QuotationAndGPCA = ({ updateGlobalStatus }) => {
     },
   ];
 
-  function onChange(value) {
+  function onChange({ target: { value } }) {
     setSupplyCostStructure(value);
   }
 
   function handleSave() {
     const saveParams = {
       recommendDemandId: id,
-      key: 'quotationAndGPCATab',
-      supplyCostStructure
+      tabKey: 'quotationAndGPCATab',
+      supplyCostStructure,
+      costAnalyses: dataSource,
+      id: data.id
     };
     requestPostApi(filterEmptyFileds(saveParams)).then((res) => {
       if (res && res.success) {
@@ -134,7 +137,7 @@ const QuotationAndGPCA = ({ updateGlobalStatus }) => {
   function setNewData(newData) {
     setDataSource(newData);
   }
-
+  console.log(data)
   return (
     <div>
       <Spin spinning={loading}>
@@ -145,9 +148,7 @@ const QuotationAndGPCA = ({ updateGlobalStatus }) => {
           }}
           title="报价单及成分分析表"
           extra={type === 'add' ? [
-            <Button key="save" type="primary" style={{ marginRight: '12px' }} onClick={handleSave}>
-              保存
-                        </Button>,
+            <Button key="save" type="primary" style={{ marginRight: '12px' }} onClick={handleSave}>保存</Button>,
           ] : null}
         >
           <div className={styles.wrapper}>
@@ -156,7 +157,7 @@ const QuotationAndGPCA = ({ updateGlobalStatus }) => {
               <div className={styles.content}>
                 <Row style={{ marginBottom: '10px' }}>
                   <span style={{ marginRight: '18px' }}>能够且愿意向长虹提供完整的成本结构:</span>
-                  <Radio.Group onChange={(value) => onChange(value)} value={type === 'add' ? supplyCostStructure : data.supplyCostStructure}>
+                  <Radio.Group onChange={(value) => onChange(value)} value={supplyCostStructure}>
                     <Radio value={true}>是</Radio>
                     <Radio value={false}>否</Radio>
                   </Radio.Group>
