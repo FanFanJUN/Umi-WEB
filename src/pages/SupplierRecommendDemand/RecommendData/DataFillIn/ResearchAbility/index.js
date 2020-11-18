@@ -13,8 +13,8 @@ import styles from '../../DataFillIn/index.less';
 import EditableFormTable from '../CommonUtil/EditTable';
 import { router } from 'dva';
 import moment from 'moment';
-import { findRdCapabilityById, requestGetApi, requestPostApi } from '../../../../../services/dataFillInApi';
-import { filterEmptyFileds, checkNull } from '../CommonUtil/utils';
+import { requestGetApi, requestPostApi } from '../../../../../services/dataFillInApi';
+import { filterEmptyFileds } from '../CommonUtil/utils';
 
 const FormItem = Form.Item;
 const formLayout = {
@@ -45,17 +45,22 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
 
   const { query: { id, type = 'add' } } = router.useLocation();
 
-  const { getFieldDecorator } = form;
+  const { getFieldDecorator, setFieldsValue } = form;
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const res = await requestGetApi({ supplierRecommendDemandId: id || '1', tabKey: 'researchAbilityTab' });
-      if (res.success) {
-        res.data && setData(res.data);
-        res.data && setnewProducts(res.data.newProducts);
+      const { data, success, message: msg } = await requestGetApi({ supplierRecommendDemandId: id, tabKey: 'researchAbilityTab' });
+      if (success) {
+        const { newProducts, patentsAwards, processingDesigns, productStandards, ...other } = data;
+        await setData(data)
+        await setFieldsValue(other)
+        await setnewProducts(newProducts.map(item => ({ ...item, guid: item.id })));
+        await setpatentsAwards(patentsAwards.map(item => ({ ...item, guid: item.id })))
+        await setprocessingDesigns(processingDesigns.map(item => ({ ...item, guid: item.id })))
+        await setproductStandards(productStandards.map(item => ({ ...item, guid: item.id })))
       } else {
-        message.error(res.message);
+        message.error(msg);
       }
       setLoading(false);
     };
@@ -235,11 +240,12 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
       if (error) return;
       const saveParams = {
         ...value,
-        patentsAwards: patentsAwards || [],
-        processingDesigns: processingDesigns || [],
-        productStandards: productStandards || [],
-        newProducts: data.newProducts || [],
-        recommendDemandId: id || '676800B6-F19D-11EA-9F88-0242C0A8442E',
+        patentsAwards: patentsAwards,
+        processingDesigns: processingDesigns,
+        productStandards: productStandards,
+        newProducts: data.newProducts,
+        recommendDemandId: id,
+        id: data.id
       };
       requestPostApi(filterEmptyFileds({ tabKey: 'researchAbilityTab', ...saveParams })).then((res) => {
         if (res && res.success) {
@@ -262,9 +268,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
           }}
           title="研发能力"
           extra={type === 'add' ? [
-            <Button key="save" type="primary" style={{ marginRight: '12px' }} onClick={handleSave}>
-              保存
-                        </Button>,
+            <Button key="save" type="primary" style={{ marginRight: '12px' }} onClick={handleSave}>保存</Button>,
           ] : null}
         >
           <div className={styles.wrapper}>
@@ -333,13 +337,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                   <Col span={24}>
                     <FormItem label="是否愿意为客户的技术开发提供技术支持" {...formLayout}>
                       {getFieldDecorator('canTechnicalSupport', {
-                        initialValue: type === 'add' ? true : data.canTechnicalSupport,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
+                        initialValue: type === 'add' ? true : data.canTechnicalSupport
                       })(
                         <Radio.Group>
                           <Radio value={true}>是</Radio>
@@ -353,19 +351,12 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="前一年新产品的个数占总产品个数的比重" {...formLayout}>
                       {getFieldDecorator('numberRate', {
                         initialValue: type === 'add' ? '' : data.numberRate,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
                       })(
                         <InputNumber
                           min={0}
                           max={100}
                           formatter={value => `${value}%`}
                           parser={value => value && value.replace('%', '')}
-                          // onChange={onChange}
                           style={{ width: '50%' }}
                         />)}
                     </FormItem>
@@ -391,23 +382,37 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                 <Row>
                   <Col span={24}>
                     <FormItem label="样品开发周期" {...formLayout}>
-                      {getFieldDecorator('devMaxCycle', {
-                        initialValue: type === 'add' ? '' : data.devMaxCycle,
-                      })(
-                        <span>最长 <InputNumber style={{ width: '20%' }} />天 </span>
-                      )}
-                                            &nbsp;&nbsp;&nbsp;
-                                            {getFieldDecorator('devAverageCycle', {
-                        initialValue: type === 'add' ? '' : data.devAverageCycle,
-                      })(
-                        <span>最长 <InputNumber style={{ width: '20%' }} />天 </span>
-                      )}
-                                            &nbsp;&nbsp;&nbsp;
-                                            {getFieldDecorator('devMinCycle', {
-                        initialValue: type === 'add' ? '' : data.devMinCycle,
-                      })(
-                        <span>平均 <InputNumber style={{ width: '20%' }} />天 </span>
-                      )}
+                      <div>
+                        <span className={styles.rightMargin}>最长</span>
+                        {getFieldDecorator('devMaxCycle', {
+                          initialValue: type === 'add' ? '' : data.devMaxCycle,
+                        })(
+                          <InputNumber style={{ width: '20%' }} />
+                        )}
+                        <span className={styles.leftMargin}>天</span>
+                      </div>
+                      <div>
+                        <span className={styles.rightMargin}>最短</span>
+                        {
+                          getFieldDecorator('devAverageCycle', {
+                            initialValue: type === 'add' ? '' : data.devAverageCycle,
+                          })(
+                            <InputNumber style={{ width: '20%' }} />
+                          )
+                        }
+                        <span className={styles.leftMargin}>天</span>
+                      </div>
+                      <div>
+                        <span className={styles.rightMargin}>平均</span>
+                        {
+                          getFieldDecorator('devMinCycle', {
+                            initialValue: type === 'add' ? '' : data.devMinCycle,
+                          })(
+                            <InputNumber style={{ width: '20%' }} />
+                          )
+                        }
+                        <span className={styles.leftMargin}>天</span>
+                      </div>
                     </FormItem>
                   </Col>
                 </Row>

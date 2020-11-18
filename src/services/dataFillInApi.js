@@ -16,12 +16,12 @@ import request from '../utils/request';
  * @return {type} 
  */
 export async function findrBaseInfoById(params) {
-    const url = `${recommendUrl}/api/samSupplierBaseInfoService/findSupplierBaseInfoByRecommendDemandId`;
-    return request({
-        url,
-        method: 'GET',
-        params,
-    });
+  const url = `${recommendUrl}/api/samSupplierBaseInfoService/findSupplierBaseInfoByRecommendDemandId`;
+  return request({
+    url,
+    method: 'GET',
+    params,
+  });
 }
 
 /**
@@ -30,12 +30,12 @@ export async function findrBaseInfoById(params) {
  * @return {type} 
  */
 export async function saveBaseInfo(params) {
-    const url = `${recommendUrl}/api/samSupplierBaseInfoService/saveSupplierBaseInfo`;
-    return request({
-        url,
-        method: 'POST',
-        data: params,
-    });
+  const url = `${recommendUrl}/api/samSupplierBaseInfoService/saveSupplierBaseInfo`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
 }
 
 /**
@@ -44,12 +44,12 @@ export async function saveBaseInfo(params) {
  * @return {type} 
  */
 export async function findSalesSituationById(params) {
-    const url = `${recommendUrl}/api/supplierSalesSituationService/findSupplierSalesSituationByRecommendDemandId`;
-    return request({
-        url,
-        method: 'GET',
-        params,
-    });
+  const url = `${recommendUrl}/api/supplierSalesSituationService/findSupplierSalesSituationByRecommendDemandId`;
+  return request({
+    url,
+    method: 'GET',
+    params,
+  });
 }
 /**
  * @description: 销售情况 保存
@@ -57,12 +57,12 @@ export async function findSalesSituationById(params) {
  * @return {type} 
  */
 export async function saveSupplierSalesSituation(params) {
-    const url = `${recommendUrl}/api/supplierSalesSituationService/saveSupplierSalesSituation`;
-    return request({
-        url,
-        method: 'POST',
-        data: params,
-    });
+  const url = `${recommendUrl}/api/supplierSalesSituationService/saveSupplierSalesSituation`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
 }
 /**
  * @description: 公用查询 GET
@@ -70,45 +70,47 @@ export async function saveSupplierSalesSituation(params) {
  * @return {type} 
  */
 export async function requestGetApi(params) {
-    let requestApi = '';
-    switch (params.tabKey) {
-        // 研发能力
-        case 'researchAbilityTab':
-            requestApi = '/rdCapabilityService/findRdCapabilityByRecommendDemandId';
-            break;
-        // 报价单及成分分析表
-        case 'quotationAndGPCATab':
-            requestApi = '/costAnalysisService/findCostAnalysisByRecommendDemandId';
-            break;
-        // 产品有害物质管控
-        case 'hdssControllTab':
-            requestApi = '/harmfulControlService/findHarmfulControlByRecommendDemandId';
-            break;
-        // 合作意愿
-        case 'DWCTab':
-            requestApi = '/cooperativeWillingnessService/findSupplierBaseInfoByRecommendDemandId';
-            break;
-        // 其他附加资料
-        case 'otherTab':
-            requestApi = '/otherFileService/findOtherFileByRecommendDemandId';
-            break;
-        // 供应链管理能力 
-        case 'managerAbilityTab':
-            requestApi = '/supplyChainCapabilityService/findSupplyChainCapabilityByRecommendDemandId';
-            break;
-        // 质量能力
-        case 'qualityAbilityTab':
-            requestApi = '/qualityControlService/findQualityControlByRecommendDemandId';
-            break;
-        default:
-            break;
-    }
-    const url = `${recommendUrl}/api${requestApi}`;
-    return request({
-        url,
-        method: 'GET',
-        params,
-    });
+  let requestApi = '';
+  switch (params.tabKey) {
+    // 研发能力
+    case 'researchAbilityTab':
+      requestApi = '/rdCapabilityService/findRdCapabilityByRecommendDemandId';
+      break;
+    // 报价单及成分分析表
+    case 'quotationAndGPCATab':
+      requestApi = '/costAnalysisService/findCostAnalysisByRecommendDemandId';
+      break;
+    // 产品有害物质管控
+    case 'hdssControllTab':
+      requestApi = '/harmfulControlService/findHarmfulControlByRecommendDemandId';
+      break;
+    // 合作意愿
+    case 'DWCTab':
+      requestApi = '/cooperativeWillingnessService/findSupplierBaseInfoByRecommendDemandId';
+      break;
+    // 其他附加资料
+    case 'otherTab':
+      requestApi = '/otherFileService/findOtherFileByRecommendDemandId';
+      break;
+    // 供应链管理能力 
+    case 'managerAbilityTab':
+      requestApi = '/supplyChainCapabilityService/findSupplyChainCapabilityByRecommendDemandId';
+      break;
+    // 质量能力
+    case 'qualityAbilityTab':
+      requestApi = '/qualityControlService/findQualityControlByRecommendDemandId';
+      break;
+    case 'manufactureAbilityTab':
+      requestApi = '/productionCapacityService/findManufacturingCapacityVoByRecommendDemandId'
+    default:
+      break;
+  }
+  const url = `${recommendUrl}/api${requestApi}`;
+  return request({
+    url,
+    method: 'GET',
+    params,
+  });
 }
 /**
  * @description: 公用 Post 接口保存
@@ -116,43 +118,45 @@ export async function requestGetApi(params) {
  * @return {type} 
  */
 export async function requestPostApi(params) {
-    let requestApi = '';
-    switch (params.tabKey) {
-        // 研发能力
-        case 'researchAbilityTab':
-            requestApi = '/rdCapabilityService/saveRdCapability';
-            break;
-        // 报价单及成分分析表
-        case 'quotationAndGPCATab':
-            requestApi = '/costAnalysisService/saveCostAnalysis';
-            break;
-        // 产品有害物质管控
-        case 'hdssControllTab':
-            requestApi = '/harmfulControlService/saveHarmfulControl';
-            break;
-        // 合作意愿
-        case 'DWCTab':
-            requestApi = '/cooperativeWillingnessService/saveCooperativeWillingness';
-            break;
-        // 其他附加资料
-        case 'otherTab':
-            requestApi = '/otherFileService/saveOtherFile';
-            break;
-        // 供应链管理能力
-        case 'managerAbilityTab':
-            requestApi = '/supplyChainCapabilityService/saveSupplyChainCapability';
-            break;
-        // 质量能力
-        case 'qualityAbilityTab':
-            requestApi = '/qualityControlService/saveQualityControl';
-            break;
-        default:
-            break;
-    }
-    const url = `${recommendUrl}/api${requestApi}`;
-    return request({
-        url,
-        method: 'POST',
-        data: params,
-    });
+  let requestApi = '';
+  switch (params.tabKey) {
+    // 研发能力
+    case 'researchAbilityTab':
+      requestApi = '/rdCapabilityService/saveRdCapability';
+      break;
+    // 报价单及成分分析表
+    case 'quotationAndGPCATab':
+      requestApi = '/costAnalysisService/saveCostAnalysis';
+      break;
+    // 产品有害物质管控
+    case 'hdssControllTab':
+      requestApi = '/harmfulControlService/saveHarmfulControl';
+      break;
+    // 合作意愿
+    case 'DWCTab':
+      requestApi = '/cooperativeWillingnessService/saveCooperativeWillingness';
+      break;
+    // 其他附加资料
+    case 'otherTab':
+      requestApi = '/otherFileService/saveOtherFile';
+      break;
+    // 供应链管理能力
+    case 'managerAbilityTab':
+      requestApi = '/supplyChainCapabilityService/saveSupplyChainCapability';
+      break;
+    // 质量能力
+    case 'qualityAbilityTab':
+      requestApi = '/qualityControlService/saveQualityControl';
+      break;
+    case 'manufactureAbilityTab':
+      requestApi = '/productionCapacityService/saveManufacturingCapacity'
+    default:
+      break;
+  }
+  const url = `${recommendUrl}/api${requestApi}`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
 }

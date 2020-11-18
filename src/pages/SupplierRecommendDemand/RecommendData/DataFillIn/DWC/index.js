@@ -42,22 +42,21 @@ const DWC = ({ form, updateGlobalStatus }) => {
 
   const { query: { id, type = 'add' } } = router.useLocation();
 
-  const { getFieldDecorator, resetFields, getFieldValue } = form;
+  const { getFieldDecorator, resetFields, getFieldValue, setFieldsValue } = form;
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const res = await requestGetApi({ supplierRecommendDemandId: '676800B6-F19D-11EA-9F88-0242C0A8442E', tabKey: 'DWCTab' });
-      if (res.success) {
-        res.data && setData(res.data);
-      } else {
-        message.error(res.message);
-      }
+      const { data, message: msg, success } = await requestGetApi({ supplierRecommendDemandId: id, tabKey: 'DWCTab' });
       setLoading(false);
+      if (success) {
+        await setData(data);
+        await setFieldsValue(data);
+        return
+      }
+      message.error(res.message);
     };
-    if (type !== 'add') {
-      fetchData();
-    }
+    fetchData();
   }, []);
 
   function handleSave() {
@@ -66,7 +65,8 @@ const DWC = ({ form, updateGlobalStatus }) => {
       if (error) return;
       const saveParams = {
         ...value,
-        recommendDemandId: id || '676800B6-F19D-11EA-9F88-0242C0A8442E',
+        recommendDemandId: id,
+        id: data.id,
         tabKey: 'DWCTab',
       };
       requestPostApi(filterEmptyFileds(saveParams)).then((res) => {
@@ -98,9 +98,7 @@ const DWC = ({ form, updateGlobalStatus }) => {
           }}
           title="合作意愿"
           extra={type === 'add' ? [
-            <Button key="save" type="primary" style={{ marginRight: '12px' }} onClick={() => handleSave()}>
-              保存
-                        </Button>,
+            <Button key="save" type="primary" style={{ marginRight: '12px' }} onClick={() => handleSave()}>保存</Button>,
           ] : null}
         >
           <div className={styles.wrapper}>

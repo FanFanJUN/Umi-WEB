@@ -40,7 +40,7 @@ const EditableCell = (params) => {
   const HideFormItem = hideFormItem(getFieldDecorator);
 
   function afterSelect(val) {
-    form.setFieldsValue({ currencyCode: val.code });
+    form.setFieldsValue({ currencyId: val.id });
   }
 
   // 编辑样式
@@ -85,6 +85,8 @@ const EditableCell = (params) => {
           max={100}
           formatter={value => `${value}%`}
           parser={value => value.replace('%', '')} />
+      case 'comboList':
+        return <ComboList {...props} form={form} />
       default:
         return <Input disabled={inputDisabled} />;
     }
@@ -131,7 +133,7 @@ const EditableCell = (params) => {
       return inputDefaultValue;
     } else {
       if (inputType === 'DatePicker') {
-        
+
         return !!a ? moment(a) : ''
       }
       else if (inputType === 'UploadFile') {
@@ -156,7 +158,7 @@ const EditableCell = (params) => {
             // initialValue有false
             initialValue: getInit(),
           })(getInput())}
-          {dataIndex === 'currencyName' ? HideFormItem('currencyCode', record.currencyCode) : null}
+          {dataIndex === 'currencyName' ? HideFormItem('currencyId', record.currencyId) : null}
         </Form.Item>
       ) : (
           <div style={{ textAlign: 'center' }}>{getRecordData()}</div>
@@ -169,7 +171,7 @@ const EditableCell = (params) => {
 
 const EditableTable = (props) => {
   const { form, dataSource, columns, rowKey, isEditTable = false, isToolBar = false, setNewData,
-    recommendDemandId = '676800B6-F19D-11EA-9F88-0242C0A8442E', tableType } = props;
+    recommendDemandId, tableType } = props;
   const [editingKey, setEditingKey] = useState('');
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const tableRef = useRef(null);

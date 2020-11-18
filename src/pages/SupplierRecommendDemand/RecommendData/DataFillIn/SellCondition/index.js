@@ -40,7 +40,8 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
       if (success) {
         const { supplierCertificates, supplierSalesProceeds, changhongSaleInfos, mainCustomers, ...other } = data
         await setData({ ...data });
-        await setsupplierSalesProceeds(supplierSalesProceeds);
+        await form.setFieldsValue({ ...data })
+        await setsupplierSalesProceeds(supplierSalesProceeds.map(item => ({ ...item, guid: item.id })));
         await setchanghongSaleInfos(changhongSaleInfos)
         await setmainCustomers(mainCustomers)
         return
@@ -74,7 +75,7 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
         } else {
           message.error(res.message);
         }
-      });
+      })
     });
   }
 
@@ -94,6 +95,9 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
         break;
       case 'supplierMajorCompetitors':
         setsupplierMajorCompetitors(newData);
+        break;
+      case 'supplierSalesProceeds':
+        setsupplierSalesProceeds(newData);
         break;
       default:
         break;

@@ -173,6 +173,10 @@ const COLUMNS = [
     dataIndex: 'materialCategoryName'
   },
   {
+    title: '业务单元',
+    dataIndex: 'buName'
+  },
+  {
     title: '公司代码',
     dataIndex: 'corporationCode'
   },
