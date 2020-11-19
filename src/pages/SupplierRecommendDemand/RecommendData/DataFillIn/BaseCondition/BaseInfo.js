@@ -62,7 +62,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
               <Col span={12}>
                 <FormItem label="成立时间" {...formLayout}>
                   {getFieldDecorator('setUpTime', {
-                    initialValue: type === 'add' ? '' : data.setUpTime && moment(data.setUpTime),
+                    initialValue: type === 'add' ? undefined : data.setUpTime && moment(data.setUpTime),
                     rules: [
                       {
                         required: true,

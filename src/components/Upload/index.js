@@ -56,10 +56,42 @@ class UploadFile extends React.Component {
     }
     return fileIcon.defaultIcon
   }
+  // 通过ids获取附件信息
 
   //从后台获取附件信息
-  updateFile = () => {
-    if (this.entityId) {
+  updateFile = async () => {
+    // 2020年11月19日，为了组件能在传入ids和entityId的两种情况下正常显示附件列表，扩展该功能
+    // 2020年11月19日 begin
+    if (!!this.entityId && Array.isArray(this.entityId)) {
+      let completeUploadFile = [];
+      let fileList = [];
+      const flsRequestes = this.entityId.map(item => {
+        return request.get(`${baseUrl}/getDocumentByRefIdOrDocId?paramId=${item}`)
+      })
+      const values = await Promise.all(flsRequestes);
+      const fls = values.map(({ data }) => {
+        const [f] = data;
+        return f
+      })
+      fileList = fls.map(f => ({
+        uid: f.id,
+        name: f.fileName,
+        status: 'done',
+        response: [f.id],
+        url: `${host}${baseUrl}/supplierRegister/download?docId=${f.id}`,
+        thumbUrl: `${ATTACMENT_HOST}/preview?docId=${encodeURIComponent(f.id)}`,
+        uploadedTime: f.uploadedTime,
+        uploadUserName: f.uploadUserName
+      }))
+      completeUploadFile = fls.map(f => f.id)
+      this.setState({ fileList, completeUploadFile })
+      if (this.props.onChange) {
+        this.props.onChange(completeUploadFile.length === 0 ? null : completeUploadFile)
+      }
+      return
+    }
+    // 2020年11月19日 end
+    if (!!this.entityId && !Array.isArray(this.entityId)) {
       let completeUploadFile = [];
       let fileList = [];
       request.get(`${baseUrl}/supplierRegister/getEntityDocumentInfos?entityId=` + encodeURIComponent(this.entityId))
@@ -72,7 +104,7 @@ class UploadFile extends React.Component {
                 status: 'done', // 状态有：uploading done error removed
                 response: [item.id], // 服务端响应内容
                 url: host + baseUrl + '/supplierRegister/download?docId=' + encodeURIComponent(item.id), // 下载链接额外的 HTML 属性
-                thumbUrl: `${ATTACMENT_HOST}/preview?docId=` + encodeURIComponent(item.id),
+                thumbUrl: `${ATTACMENT_HOST}/preview?docId=${encodeURIComponent(item.id)}`,
                 uploadedTime: item.uploadedTime,
                 uploadUserName: item.uploadUserName
               });
@@ -119,7 +151,6 @@ class UploadFile extends React.Component {
           item.thumbUrl = `${ATTACMENT_HOST}/preview?docId=` + item.response[0]
         }
       })
-      console.log(fileList)
       this.setState({ fileList, completeUploadFile });
     } else {
       this.handleRemove(file)

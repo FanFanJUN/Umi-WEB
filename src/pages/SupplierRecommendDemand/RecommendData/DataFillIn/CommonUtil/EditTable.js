@@ -36,7 +36,6 @@ const EditableCell = (config) => {
       props,
     }
   } = config;
-  console.log(record)
   const { getFieldDecorator } = form;
   const HideFormItem = hideFormItem(getFieldDecorator);
 
@@ -370,6 +369,10 @@ EditableTable.protoType = {
   type: PropTypes.any,
   // 页面所属 TABLE 标志
   tableType: PropTypes.string,
+  // 是否复制第一行数据指定字段（默认产品代码产品名称）
+  copyLine: PropTypes.bool,
+  // 需要复制数据的指定字段（默认产品代码产品名称）
+  copyLineKeys: PropTypes.array
 }
 
 export default React.memo(EditableFormTable);

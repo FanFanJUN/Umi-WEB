@@ -42,8 +42,8 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
         await setData({ ...data });
         await form.setFieldsValue({ ...data })
         await setsupplierSalesProceeds(supplierSalesProceeds.map(item => ({ ...item, guid: item.id })));
-        await setchanghongSaleInfos(changhongSaleInfos)
-        await setmainCustomers(mainCustomers)
+        await setchanghongSaleInfos(changhongSaleInfos.map(item => ({ ...item, guid: item.id })))
+        await setmainCustomers(mainCustomers.map(item => ({ ...item, guid: item.id })))
         return
       }
       message.error(msg);
