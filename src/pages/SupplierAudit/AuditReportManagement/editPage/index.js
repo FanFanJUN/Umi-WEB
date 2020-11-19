@@ -14,11 +14,17 @@ import { FindOneAuditRequirementsManagement } from '../../mainData/commomService
 import classnames from 'classnames';
 import styles from '../../../Supplier/Editor/index.less';
 import BaseInfoForm from '../components/BaseInfoForm';
+import AuditInfoForm from '../components/AuditInfoForm';
+import AuditScopeForm from '../components/AuditScopeForm';
+import AuditorInfoFrom from '../components/AuditorInfoForm';
+import CollaboratorForm from '../components/CollaboratorForm';
+import AuditPlanForm from '../components/AuditPlanForm';
+import AuditScoreForm from '../components/AuditScoreForm';
+import AuditQuestions from '../components/AuditQuestions';
+import AuditComments from '../components/AuditComments';
 
-const auditReportManagementView = forwardRef(({}, ref,) => {
-  useImperativeHandle(ref, () => ({
-
-  }));
+const auditReportManagementView = forwardRef(({}, ref) => {
+  useImperativeHandle(ref, () => ({}));
   const { query } = router.useLocation();
   const getBaseInfoFormRef = useRef(null);
   const getUser = () => {
@@ -43,7 +49,7 @@ const auditReportManagementView = forwardRef(({}, ref,) => {
     switch (state) {
       case 'add':
         getUser();
-        setData((value) => ({ ...value, type: state, isView: false, title: '审核需求管理-新增' }));
+        setData((value) => ({ ...value, type: state, isView: false, title: '审核报告管理-新增' }));
         break;
       case 'edit':
         findOne(id);
@@ -82,11 +88,12 @@ const auditReportManagementView = forwardRef(({}, ref,) => {
   };
 
   const handleSave = async () => {
-   let baseInfoVal =  getBaseInfoFormRef.current.getFormValue();
+    let baseInfoVal = getBaseInfoFormRef.current.getFormValue();
     if (!baseInfoVal) {
-      message.error("请将基本信息填写完全！");
+      message.error('请将基本信息填写完全！');
       return false;
     }
+    console.log(baseInfoVal);
   };
 
   return (
@@ -112,6 +119,50 @@ const auditReportManagementView = forwardRef(({}, ref,) => {
           isView={data.isView}
           wrappedComponentRef={getBaseInfoFormRef}
         />
+        <AuditInfoForm
+          editData={data.editData}
+        />
+        <AuditScopeForm
+          editData={
+            ['0-1-0', '0-0-1']
+          }
+        />
+        <AuditorInfoFrom
+          editData={
+            [{
+              id: '1',
+              reviewGroup: 'A',
+              rank: '1',
+              groupLeader: 'zz',
+              groupData: [{ id: '001', memberName: '姓名1', employeeNo: '编号1', checkId: ['0-1-0', '0-0-1'] }, {
+                id: '002',
+                memberName: '姓名2',
+                employeeNo: '编号2',
+              }],
+            },
+              {
+                id: '2',
+                reviewGroup: 'B',
+                rank: '2',
+                groupLeader: 'yy',
+                groupData: [{ id: '003', memberName: '姓名3', employeeNo: '编号3' }, {
+                  id: '004',
+                  memberName: '姓名4',
+                  employeeNo: '编号4',
+                }],
+              }]
+          }/>
+        <CollaboratorForm
+          editData={[]}
+        />
+        <AuditPlanForm
+          editData={data.editData}/>
+        <AuditScoreForm
+          editData={[]}/>
+        <AuditQuestions
+          editData={[]}/>
+        <AuditComments
+          editData={data.editData}/>
       </Spin>
     </div>
   );

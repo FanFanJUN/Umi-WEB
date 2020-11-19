@@ -605,7 +605,7 @@ export const formulaModeProps = {
     field: ['value'],
     description: 'value'
   },
-  remotePaging: true,
+  // remotePaging: true,
   placeholder: '选择计算方式'
 }
 

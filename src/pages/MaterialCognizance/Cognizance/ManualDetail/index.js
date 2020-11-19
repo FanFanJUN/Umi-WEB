@@ -1,4 +1,4 @@
-import React, { createRef, useState, useRef, useEffect, useCallback } from 'react';
+import React, { createRef, useState, useRef, useEffect } from 'react';
 import { Button, Modal, message, Spin, Affix } from 'antd';
 import { router } from 'dva';
 import BaseInfo from '../commons/BaseInfo'
@@ -7,7 +7,7 @@ import Distributioninfo from '../commons/Distributioninfo'
 import classnames from 'classnames';
 import styles from '../index.less';
 import { closeCurrent, isEmpty } from '../../../../utils';
-import { AdmissionDetails, ManualSaveVo } from '../../../../services/MaterialService'
+import { AdmissionDetails } from '../../../../services/MaterialService'
 function CreateStrategy() {
   const BaseinfoRef = useRef(null);
   const ModifyinfoRef = useRef(null);
@@ -19,78 +19,33 @@ function CreateStrategy() {
   const { query } = router.useLocation();
   const { frameElementId, frameElementSrc = "", Opertype = "" } = query;
 
-  // 获取配置列表项
   useEffect(() => {
-    infoMaterieldetails()
-  }, [infoMaterieldetails]);
+    Admissiontails()
+  }, []);
 
-  const infoMaterieldetails = useCallback(
-    async function hanldModify() {
-      triggerLoading(true);
-      let id = query.id;
-      const { data, success, message: msg } = await AdmissionDetails({ planId: id });
-      if (success) {
-        setEditData(data)
-        triggerLoading(false);
-        return
-      }
-      triggerLoading(false);
-      message.error(msg)
-    }
-  )
-  // 保存
-  async function handleSave() {
-    let baseinfo, planinfo, distributioninfo;
-    const { basefrom } = BaseinfoRef.current;
-    const { planfrom } = ModifyinfoRef.current;
-    const { displanfrom } = DistributionRef.current;
-    baseinfo = basefrom();
-    if (!baseinfo) {
-      message.error('基础信息不能为空！');
-      return false;
-    }
-    planinfo = planfrom()
-    if (!planinfo) {
-      message.error('认定计划信息不能为空！');
-      return false;
-    }
-    distributioninfo = displanfrom()
-    if (!distributioninfo) {
-      message.error('分配计划详情不能为空！');
-      return false;
-    }
-    let params = {
-      ...baseinfo,
-      ...planinfo,
-      detailsVos: distributioninfo,
-    }
-    let editparams = { ...editData, ...params }
-    console.log(editparams)
-    triggerLoading(true)
-    const { success, message: msg } = await ManualSaveVo(editparams)
+  async function Admissiontails() {
+    triggerLoading(true);
+    let id = query.id;
+    const { data, success, message: msg } = await AdmissionDetails({ planId: id });
     if (success) {
-      triggerLoading(false)
-      closeCurrent()
-    } else {
-      triggerLoading(false)
-      message.error(msg);
+      setEditData(data)
+      triggerLoading(false);
+      return
     }
+    triggerLoading(false);
+    message.error(msg)
   }
   // 返回
   function handleBack() {
     closeCurrent()
   }
-  function handleCancel() {
-    setvisible(false)
-  }
   return (
     <Spin spinning={loading} tip='处理中...'>
       <Affix offsetTop={0}>
         <div className={classnames([styles.header, styles.flexBetweenStart])}>
-          <span className={styles.title}>物料认定计划编辑</span>
+          <span className={styles.title}>物料认定计划明细</span>
           <div className={styles.flexCenter}>
             <Button className={styles.btn} onClick={handleBack}>返回</Button>
-            <Button className={styles.btn} onClick={handleSave}>保存</Button>
           </div>
         </div>
 
@@ -103,6 +58,7 @@ function CreateStrategy() {
             <BaseInfo
               editformData={editData}
               wrappedComponentRef={BaseinfoRef}
+              isView={true}
             />
           </div>
         </div>
@@ -110,10 +66,10 @@ function CreateStrategy() {
           <div className={styles.title}>认定计划信息</div>
           <div >
             <PlanInfo
+              editformData={editData}
               wrappedComponentRef={ModifyinfoRef}
               modifytype={modifytype}
-              editformData={editData}
-              manual={true}
+              isView={true}
             />
           </div>
         </div>
@@ -124,7 +80,7 @@ function CreateStrategy() {
               editformData={editData.detailsVos}
               wrappedComponentRef={DistributionRef}
               isEdit={true}
-              isView={false}
+              headerInfo={true}
             />
           </div>
         </div>

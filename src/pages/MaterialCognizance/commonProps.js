@@ -48,7 +48,6 @@ export const CognizanceTypelist = {
   reader: {
     name: 'name',
     field: ['value'],
-    description: 'value'
   },
   // remotePaging: true,
   placeholder: '选择变更类型'
@@ -64,7 +63,6 @@ export const MaterielCognlist = {
   reader: {
     name: 'name',
     field: ['value'],
-    description: 'value'
   },
   // remotePaging: true,
   placeholder: '选择变更类型'
@@ -78,48 +76,209 @@ export const Tasktypelist = {
   reader: {
     name: 'name',
     field: ['value'],
-    description: 'value'
   },
   // remotePaging: true,
   placeholder: '选择变更类型'
 }
+// 认定阶段
+export const Identification = {
+  remotePaging: true,
+  rowKey: 'code',
+  reader: {
+    field: ['stageCode',],
+    name: 'identificationStage',
+  },
+};
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// 认定任务
+export const Identificationtask = {
+  remotePaging: true,
+  rowKey: 'code',
+  reader: {
+    field: ['taskCode',],
+    name: 'taskDesc',
+  },
+};
+export const UserByDepartmentConfig = {
+  placeholder: '选择员工编号',
+  remotePaging: true,
+  rowKey: 'code',
+  reader: {
+    name: 'code',
+    description: 'userName',
+    field: ["code", "id"]
+  },
+};
 
 // 组织机构
-export const orgnazationProps = {
+export const OrganizationList = {
   store: {
-    url: `${baseUrl}/basic/listAllOrgnazation`,
+    url: `/api-gateway/basic-service/organization/findAllAuthTreeEntityData`,
     type: 'GET'
-  },
-  style: {
-    width: '100%'
   },
   reader: {
     name: 'name',
-    field: ['code']
+    field: ['id'],
   },
-  placeholder: '选择申请部门'
+  // remotePaging: true,
+  placeholder: '请选择制定计划部门'
 }
+// 制定人
+export const MakerList = {
+  remotePaging: true,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `/api-gateway/basic-service/employee/findByUserQueryParam`,
+    params: {
+      includeFrozen: false,
+      includeSubNode: false,
+      quickSearchProperties: ['code', 'user.userName'],
+      organizationId: '',
+      sortOrders: [{ property: 'code', direction: 'ASC' }],
+    }
+  },
+  rowKey: 'userName',
+  reader: {
+    name: 'userName',
+    field: ['id'],
+    description: 'code',
+  },
+  placeholder: '请选择制定人'
+}
+//公司
+export const Jurisdictionjurisdiction = {
+  store: {
+    url: `/api-gateway/basic-service/corporation/findAllAuthEntityData`,
+    type: 'GET'
+  },
+  reader: {
+    name: 'name',
+    field: ['id'],
+  },
+  // remotePaging: true,
+  placeholder: '请选择公司名称'
+}
+
+// 物料
+export const Materieljurisdiction = {
+  store: {
+    url: `${baseUrl}/SecondaryClassificationMaterialGroup/listAllGeneralTree`,
+    type: 'GET'
+  },
+  reader: {
+    name: 'name',
+    field: ['id'],
+  },
+  treeNodeProps: (node) => {
+    if (node.nodeLevel === 0) {
+      return {
+        selectable: false
+      }
+    } else if (node.nodeLevel === 1) {
+      return {
+        selectable: false
+      }
+    }
+  },
+  // remotePaging: true,
+  placeholder: '请选择物料分类'
+}
+// 单据类型
+export const BilltypeList = {
+  showSearch: false,
+  allowClear: true,
+  dataSource: [
+    {
+      code: '1',
+      name: '从准入单创建',
+    },
+    {
+      code: '0',
+      name: '手工创建',
+    },
+  ],
+  reader: {
+    name: 'name',
+    field: ['code'],
+  },
+  placeholder: '请选择单据类型',
+}
+// 计划状态
+export const PlantypeList = {
+  showSearch: false,
+  allowClear: true,
+  dataSource: [
+    {
+      code: '0',
+      name: '草稿',
+    },
+    {
+      code: '1',
+      name: '已发布',
+    },
+    {
+      code: '2',
+      name: '取消发布',
+    },
+    {
+      code: '3',
+      name: '已完成',
+    },
+    {
+      code: '4',
+      name: '已终止',
+    }
+  ],
+  reader: {
+    name: 'name',
+    field: ['code'],
+  },
+  placeholder: '请选择计划状态',
+}
+
+// 认定结果
+export const Identificationresults = {
+  showSearch: false,
+  allowClear: true,
+  dataSource: [
+    {
+      code: '0',
+      name: '认定中',
+    },
+    {
+      code: '1',
+      name: '认定合格',
+    },
+    {
+      code: '2',
+      name: '认定不合格',
+    }
+  ],
+  reader: {
+    name: 'name',
+    field: ['code'],
+  },
+  placeholder: '请选择认定结果',
+}
+// 计划详情责任人
+
+export const PersonliableList = {
+  placeholder: '选择责任人',
+  remotePaging: true,
+  rowKey: 'userName',
+  reader: {
+    name: 'userName',
+    description: 'code',
+    field: ["id"]
+  },
+};
+
+
+
+
+
+
 
 
 
@@ -130,9 +289,9 @@ export const ChangecontentList = {
     url: `${smBaseUrl}/api/smPcnChangesService/findByPage`,
     params: {
       filters: [{
-        fieldName:'changeTypeCode',
+        fieldName: 'changeTypeCode',
         value: '02',
-        operator:'EQ'
+        operator: 'EQ'
       }],
     },
     type: 'POST'
@@ -167,65 +326,13 @@ export const Strategicprocurementlist = {
   },
   reader: {
     name: 'name',
-    field: ['id','code'],
+    field: ['id', 'code'],
     description: 'code'
   },
   // remotePaging: true,
   placeholder: '选择战略采购'
 }
-// 供应商单据状态
-export const SupplierBilltypeList = {
-  allowClear: true,
-  dataSource: [
-    {
-      code: '0',
-      name: '草稿',
-    },
-    {
-      code: '1',
-      name: '已提交',
-    },
-  ],
-  reader: {
-    name: 'name',
-    field: ['code'],
-  },
-  // style: {
-  //   width: '100%',
-  // },
-  placeholder: '选择单据状态',
-}
-// 单据状态
-export const BilltypeList = {
-  allowClear: true,
-  dataSource: [
-    {
-      code: '0',
-      name: '草稿',
-    },
-    {
-      code: '1',
-      name: '验证中',
-    },
-    {
-      code: '2',
-      name: '变更不通过',
-    },
-    {
-      code: '3',
-      name: '变更通过',
-    },
-    {
-      code: '4',
-      name: '变更完成',
-    }
-  ],
-  reader: {
-    name: 'name',
-    field: ['code'],
-  },
-  placeholder: '选择单据状态',
-}
+
 // 审核状态
 export const ToexamineList = {
   allowClear: true,

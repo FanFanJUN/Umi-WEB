@@ -10,7 +10,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Form, Button, Spin, PageHeader, Row, Col, Divider, Radio, Input, InputNumber, message } from 'antd';
 import styles from '../../DataFillIn/index.less';
-import UploadFile from '../CommonUtil/UploadFile';
+import UploadFile from '../../../../../components/Upload';
 import EditableFormTable from '../CommonUtil/EditTable';
 import { requestPostApi, requestGetApi } from '../../../../../services/dataFillInApi';
 import { filterEmptyFileds } from '../CommonUtil/utils';
@@ -34,23 +34,23 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
 
   const { query: { id, type = 'add' } } = router.useLocation();
 
-  const { getFieldDecorator, getFieldValue } = form;
+  const { getFieldDecorator, getFieldValue, setFieldsValue } = form;
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const res = await requestGetApi({ supplierRecommendDemandId: id, tabKey: 'managerAbilityTab' });
-      if (res.success) {
-        res.data && setData(res.data);
-        res.data && setkeyMaterialSuppliers(res.data.keyMaterialSuppliers);
+      const { data, message: msg, success } = await requestGetApi({ supplierRecommendDemandId: id, tabKey: 'managerAbilityTab' });
+      if (success) {
+        const { keyMaterialSuppliers = [], ...other } = data;
+        await setFieldsValue(other)
+        await setData(data);
+        await setkeyMaterialSuppliers(keyMaterialSuppliers.map(item => ({ ...item, guid: item.id })));
       } else {
-        message.error(res.message);
+        message.error(msg);
       }
       setLoading(false);
     };
-    if (type !== 'add') {
-      fetchData();
-    }
+    fetchData();
   }, []);
 
   const columnsForCarTransport = [
@@ -228,7 +228,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                       })(<UploadFile
                         showColor={type !== 'add' ? true : false}
                         type={type !== 'add'}
-                        entityId={data.costControlPlanFileIds}
+                        entityId={data.costControlPlanFileId}
                       />)}
                     </FormItem>
                   </Col>
@@ -263,7 +263,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                       })(<UploadFile
                         showColor={type !== 'add' ? true : false}
                         type={type !== 'add'}
-                        entityId={data.costAccountingListFileIds}
+                        entityId={data.costAccountingListFileId}
                       />)}
                     </FormItem>
                   </Col>
@@ -373,7 +373,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                       })(<UploadFile
                         showColor={type !== 'add' ? true : false}
                         type={type !== 'add'}
-                        entityId={data.stockUpProcessFileIds}
+                        entityId={data.stockUpProcessFileId}
                       />)}
                     </FormItem>
                   </Col>
@@ -409,7 +409,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                       })(<UploadFile
                         showColor={type !== 'add' ? true : false}
                         type={type !== 'add'}
-                        entityId={data.deliveryProcessFileIds}
+                        entityId={data.deliveryProcessFileId}
                       />)}
                     </FormItem>
                   </Col>
@@ -445,7 +445,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                       })(<UploadFile
                         showColor={type !== 'add' ? true : false}
                         type={type !== 'add'}
-                        entityId={data.urgentDeliveryProcessFileIds}
+                        entityId={data.urgentDeliveryProcessFileId}
                       />)}
                     </FormItem>
                   </Col>
@@ -481,7 +481,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                       })(<UploadFile
                         showColor={type !== 'add' ? true : false}
                         type={type !== 'add'}
-                        entityId={data.rohsFileId}
+                        entityId={data.customerProcessFileId}
                       />)}
                     </FormItem>
                   </Col>
@@ -554,7 +554,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                       })(<UploadFile
                         showColor={type !== 'add' ? true : false}
                         type={type !== 'add'}
-                        entityId={data.rohsFileId}
+                        entityId={data.delayDeliveryNoticeCustomerFileId}
                       />)}
                     </FormItem>
                   </Col>
@@ -671,7 +671,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                       })(<UploadFile
                         showColor={type !== 'add' ? true : false}
                         type={type !== 'add'}
-                        entityId={data.dangerousChemicalShipperFileIds}
+                        entityId={data.dangerousChemicalShipperFileId}
                       />)}
                     </FormItem>
                   </Col>

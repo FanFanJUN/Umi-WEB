@@ -64,15 +64,18 @@ const COLUMNS = [
   },
   {
     title: '指标名称',
-    dataIndex: 'ruleName'
+    dataIndex: 'ruleName',
+    width: 250
   },
   {
     title: '计算方式代码',
-    dataIndex: 'methodValue'
+    dataIndex: 'methodValue',
+    width: 250
   },
   {
     title: '计算方式名称',
-    dataIndex: 'methodName'
+    dataIndex: 'methodName',
+    width: 250
   }
 ];
 /** 配置修改部分 end */

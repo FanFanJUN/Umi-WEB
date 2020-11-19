@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ComboList, ComboTree, ExtModal, ExtTable } from 'suid';
-import { Col, Form, Input, Row, message } from 'antd';
+import { Col, Form, Input, Row, message, Tree } from 'antd';
 import { EvaluationSystemConfig } from '../../../mainData/commomService';
 import ShuttleBox from '../../../common/ShuttleBox';
 import ShuttleBoxNew from '../../../common/ShuttleBoxNew';
@@ -112,7 +112,7 @@ const Content = (props) => {
                       afterSelect={systemSelect}
                       field={['systemCode', 'systemId']}
                       cascadeParams={{
-                        systemUseType: 'SupplierEvaluation',
+                        systemUseType: 'SupplierApprove',
                         corpCode: props.applyCorporationCode,
                       }}
                       {...EvaluationSystemConfig}

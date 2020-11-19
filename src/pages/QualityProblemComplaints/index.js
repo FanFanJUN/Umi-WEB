@@ -43,7 +43,7 @@ const { authAction, getUUID } = utils;
 const FILENAME = '质量问题投诉上传模板.xlsx';
 const DOWNLOADNAME = '质量问题投诉.xlsx'
 const SEARCH_PLACEHOLDER = '供应商代码或名称';
-const quickSearchProperties = ['supplierCode','supplierName'];
+const quickSearchProperties = ['supplierCode', 'supplierName'];
 const sortOrders = [];
 const FORMITEMS = [
   {
@@ -197,6 +197,10 @@ const COLUMNS = [
   {
     title: '物料分类名称',
     dataIndex: 'materialCategoryName'
+  },
+  {
+    title: '业务单元',
+    dataIndex: 'buName'
   },
   {
     title: '公司代码',

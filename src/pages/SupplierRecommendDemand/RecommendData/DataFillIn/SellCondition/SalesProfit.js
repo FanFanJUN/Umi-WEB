@@ -7,13 +7,15 @@
  * @Description: 销售收入及利润 Table
  * @Connect: 1981824361@qq.com
  */
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Form } from 'antd';
 import EditTable from '../CommonUtil/EditTable';
 
-const SalesProfit = ({ data, type, setTableData }) => {
-  const [dataSource, setDataSource] = useState(data);
-
+const SalesProfit = ({ data=[], type, setTableData }) => {
+  useEffect(() => {
+    setDataSource(data)
+  }, [data])
+  const [dataSource, setDataSource] = useState([]);
   const columns = [
     {
       title: "年度",
@@ -56,7 +58,7 @@ const SalesProfit = ({ data, type, setTableData }) => {
   }
   return (
     <EditTable
-      dataSource={dataSource || []}
+      dataSource={dataSource}
       columns={columns}
       rowKey='guid'
       setNewData={setNewData}

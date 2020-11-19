@@ -16,7 +16,9 @@ export default [
       { path: '/material/MasterData/index', component: './MaterialCognizance/MasterData', title: '实物认定主数据' },
       { path: '/material/Cognizance/index', component: './MaterialCognizance/Cognizance', title: '实物认定计划' },
       { path: '/material/Cognizance/AdmitEdit/index', component: './MaterialCognizance/Cognizance/AdmitEdit/index', title: '实物认定计划' },
-      { path: '/material/Cognizance/ManualEdit/index', component: './MaterialCognizance/Cognizance/ManualEdit/index', title: '手工单创建' },
+      { path: '/material/Cognizance/ManualAdd/index', component: './MaterialCognizance/Cognizance/ManualAdd/index', title: '手工单创建' },
+      { path: '/material/Cognizance/ManualEdit/index', component: './MaterialCognizance/Cognizance/ManualEdit/index', title: '实物认定计划编辑' },
+      { path: '/material/Cognizance/ManualDetail/index', component: './MaterialCognizance/Cognizance/ManualDetail/index', title: '实物认定计划明细' },
       { path: '/material/Enforcement/index', component: './MaterialCognizance/Enforcement', title: '实物认定执行' },
       { path: '/material/Enforcement/Edit/index', component: './MaterialCognizance/Enforcement/Edit/index', title: '实物认定执行' }
     ]
@@ -150,6 +152,8 @@ export default [
       { path: '/supplierAudit/AdministrationManagementDemand', component: './SupplierAudit/AdministrationManagementDemand', title: '实施审核管理-需求方' },
       { path: '/supplierAudit/AuditReportManagement/index', component: './SupplierAudit/AuditReportManagement', title: '审核报告管理' },
       { path: '/supplierAudit/AuditReportManagementAdd', component: './SupplierAudit/AuditReportManagement/editPage', title: '审核报告管理新增' },
+      { path: '/supplierAudit/AuditReportManagementEdit', component: './SupplierAudit/AuditReportManagement/editPage', title: '审核报告管理编辑' },
+      { path: '/supplierAudit/AuditReportManagementDetail', component: './SupplierAudit/AuditReportManagement/editPage', title: '审核报告管理明细' },
     ]
   },
   {

@@ -5,7 +5,8 @@ import { openNewTab, getFrameElement, isEmpty } from '@/utils';
 import { StartFlow } from 'seid';
 import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
 import styles from './index.less';
-import { smBaseUrl } from '@/utils/commonUrl';
+import { recommendUrl } from '@/utils/commonUrl';
+import classnames from 'classnames';
 // import { PCNMasterdatalist} from "../commonProps"
 // import { deleteBatchById,PCNSupplierSubmit} from '../../../services/pcnModifyService'
 // import {SupplierBilltypeList} from '../commonProps'
@@ -50,21 +51,24 @@ function MissionExecution() {
             key: 'smDocunmentStatus',
             width: 100,
             render: function (text, record, row) {
-                if (text === 0) {
-                    return <div>草稿</div>;
-                } else {
-                    return <div className="successColor">已提交</div>;
-                }
+                return <div className={classnames({
+                    [styles.circle]: true,
+                    [styles.red]: (text === 'A'),
+                    [styles.yellow]: (text === 'B'),
+                    [styles.green]: (text === 'C'),
+                })} >已提交</div>;
             },
         },
         {
             title: '任务状态',
-            dataIndex: 'smDocunmentStatus',
-            key: 'smDocunmentStatus',
+            dataIndex: 'taskStatus',
+            key: 'taskStatus',
             width: 100,
             render: function (text, record, row) {
                 if (text === 0) {
-                    return <div>草稿</div>;
+                    return <div>执行中</div>;
+                } else if (text === 1) {
+                    return <div>已执行</div>;
                 } else {
                     return <div className="successColor">已提交</div>;
                 }
@@ -73,78 +77,85 @@ function MissionExecution() {
         {
             title: '是否通过',
             width: 200,
-            dataIndex: 'smPcnCode',
+            dataIndex: 'passStatus',
+            render: function (text, record, row) {
+                if (text === 0) {
+                    return <div>不通过</div>;
+                } else {
+                    return <div className="successColor">通过</div>;
+                }
+            },
         },
         {
             title: '认定计划号',
             width: 140,
-            dataIndex: 'smSupplierCode',
+            dataIndex: 'identificationPlanNo',
         },
         {
             title: '计划说明',
             width: 220,
-            dataIndex: 'smSupplierName',
+            dataIndex: 'planDescription',
         },
         {
             title: '认定阶段',
             width: 180,
-            dataIndex: 'smPcnChangeTypeName',
+            dataIndex: 'identificationStageName',
         },
         {
             title: '认定任务',
             width: 220,
-            dataIndex: 'smContacts',
+            dataIndex: 'identificationTaskName',
         },
         {
             title: '计划时间',
             width: 220,
-            dataIndex: 'smContactNumber',
+            dataIndex: 'planTime',
         },
         {
             title: '公司名称',
             width: 180,
-            dataIndex: 'createdDate',
+            dataIndex: 'companyName',
         },
         {
             title: '采购组织',
             width: 220,
-            dataIndex: 'smSupplierName',
+            dataIndex: 'purchaseName',
         },
         {
             title: '供应商名称',
             width: 180,
-            dataIndex: 'smPcnChangeTypeName',
+            dataIndex: 'supplierName',
         },
         {
             title: '原厂',
             width: 220,
-            dataIndex: 'smContacts',
+            dataIndex: 'originalFactoryName',
         },
         {
             title: '物料分类',
             width: 220,
-            dataIndex: 'smContactNumber',
+            dataIndex: 'materielTypeName',
         },
         {
             title: '制定计划部门',
-            width: 180,
-            dataIndex: 'createdDate',
+            width: 240,
+            dataIndex: 'departmentName',
         },
         {
             title: '制定人',
             width: 220,
-            dataIndex: 'smContactNumber',
+            dataIndex: 'drafterName',
         },
         {
             title: '执行人',
             width: 180,
-            dataIndex: 'createdDate',
+            dataIndex: 'executorName',
         }
     ].map(_ => ({ ..._, align: 'center' }))
 
     const dataSource = {
         store: {
-            url: `${smBaseUrl}/api/smPcnTitleService/findBySupplierPage`,
+            url: `${recommendUrl}/api/samIdentifyPlanImplementationService/findByPage`,
             params: {
                 ...searchValue,
                 quickSearchProperties: ['smPcnCode'],
@@ -154,12 +165,12 @@ function MissionExecution() {
                         direction: 'DESC'
                     }
                 ],
-                filters:seniorSearchvalue
+                filters: seniorSearchvalue
             },
             type: 'POST'
         }
     }
-   
+
 
     function listenerParentClose(event) {
         const { data = {} } = event;
@@ -170,9 +181,9 @@ function MissionExecution() {
     function cooperationChange(val) {
         let search = []
         search.push({
-            fieldName:'smDocunmentStatus',
+            fieldName: 'smDocunmentStatus',
             value: val.code,
-            operator:'EQ'
+            operator: 'EQ'
         })
         setSeniorsearchvalue(search)
         uploadTable();
@@ -205,7 +216,7 @@ function MissionExecution() {
         if (status === 0) {
             status = 1
             statustype = true
-        }else {
+        } else {
             status = 0
             statustype = false
         }
@@ -239,26 +250,26 @@ function MissionExecution() {
         searchvalue.map(item => {
             newdata.push(
                 {
-                    fieldName:'smSupplierCode',
+                    fieldName: 'smSupplierCode',
                     value: item.smSupplierCode,
-                    operator:'EQ'
+                    operator: 'EQ'
                 },
                 {
-                    fieldName:'smSupplierName',
+                    fieldName: 'smSupplierName',
                     value: item.smSupplierName,
-                    operator:'EQ'
+                    operator: 'EQ'
                 },
                 {
-                    fieldName:'smDocunmentStatus',
+                    fieldName: 'smDocunmentStatus',
                     value: item.smDocunmentStatus,
-                    operator:'EQ'
+                    operator: 'EQ'
                 },
                 {
-                    fieldName:'smPcnChangeTypeCode',
+                    fieldName: 'smPcnChangeTypeCode',
                     value: item.smPcnChangeTypeCode,
-                    operator:'EQ'
+                    operator: 'EQ'
                 }
-    
+
             )
         })
         setSeniorsearchvalue(newdata)
@@ -270,13 +281,13 @@ function MissionExecution() {
         <div style={{ width: '50%', display: 'flex', height: '100%', alignItems: 'center' }}>
             {
                 authAction(
-                    <Button type='primary' 
-                        ignore={DEVELOPER_ENV} 
-                        key='SRM-SM-PCNSUPPLIER-ADD' 
-                        className={styles.btn} 
+                    <Button type='primary'
+                        ignore={DEVELOPER_ENV}
+                        key='SRM-SM-PCNSUPPLIER-ADD'
+                        className={styles.btn}
                         onClick={AddModel}
-                        //disabled={empty}
-                        >执行任务
+                    //disabled={empty}
+                    >执行任务
                     </Button>
                 )
             }
@@ -305,30 +316,30 @@ function MissionExecution() {
                 )
             }
         </div>
-    ) 
+    )
     const searchbank = ['name'];
     // 右侧搜索
     const HeaderRightButtons = (
-        <div style={{ display: 'flex'}}>
+        <div style={{ display: 'flex' }}>
             <Search
                 placeholder='请输入认定计划号或计划说明'
                 className={styles.btn}
                 onSearch={handleQuickSerach}
                 allowClear
-                style={{ width: '240px'}}
+                style={{ width: '240px' }}
             />
         </div>
     )
     // 高级查询配置
     const formItems = [
-        { title: '制定计划部门', key: 'materialCode',  props: { placeholder: '输入供应商代码' } },
-        { title: '制定人', key: 'materialName',  props: { placeholder: '输入供应商名称' } },
-        { title: '供应商名称', key: 'materialCode',  props: { placeholder: '输入供应商代码' } },
-        { title: '物料分类', key: 'materialName',  props: { placeholder: '输入供应商名称' } },
-        { title: '公司名称', key: 'materialCode',  props: { placeholder: '输入供应商代码' } },
-        { title: '单据类型', key: 'materialName',  props: { placeholder: '输入供应商名称' } },
-        { title: '计划状态', key: 'materialCode',  props: { placeholder: '输入供应商代码' } },
-        { title: '认定结果', key: 'materialName',  props: { placeholder: '输入供应商名称' } },
+        { title: '制定计划部门', key: 'materialCode', props: { placeholder: '输入供应商代码' } },
+        { title: '制定人', key: 'materialName', props: { placeholder: '输入供应商名称' } },
+        { title: '供应商名称', key: 'materialCode', props: { placeholder: '输入供应商代码' } },
+        { title: '物料分类', key: 'materialName', props: { placeholder: '输入供应商名称' } },
+        { title: '公司名称', key: 'materialCode', props: { placeholder: '输入供应商代码' } },
+        { title: '单据类型', key: 'materialName', props: { placeholder: '输入供应商名称' } },
+        { title: '计划状态', key: 'materialCode', props: { placeholder: '输入供应商代码' } },
+        { title: '认定结果', key: 'materialName', props: { placeholder: '输入供应商名称' } },
         // { title: '单据状态', key: 'materialGroupCode', type: 'list', props: SupplierBilltypeList },
         // { title: '变更类型', key: 'applyPersonName', type: 'list', props: PCNMasterdatalist },
     ];

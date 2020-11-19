@@ -8,11 +8,11 @@
  * @Connect: 1981824361@qq.com
  */
 import React, { useState, useRef, Fragment } from 'react';
-import { Input, InputNumber, Popconfirm, Form, Divider, Button, DatePicker, Select, message, Alert, Row, Col } from 'antd';
+import { Input, InputNumber, Popconfirm, Form, Divider, Button, DatePicker, Select } from 'antd';
 import { ExtTable, ComboList, ComboGrid, YearPicker } from 'suid';
-import PropTypes, { any } from 'prop-types';
+import PropTypes from 'prop-types';
 import AutoSizeLayout from '../../../../supplierRegister/SupplierAutoLayout';
-import { guid, isEmptyArray, checkNull, hideFormItem, getDocId } from './utils';
+import { guid, isEmptyArray, hideFormItem } from './utils';
 import UploadFile from '../../../../../components/Upload';
 import { currencyTableProps } from '../../../../../utils/commonProps';
 import moment from 'moment';
@@ -20,7 +20,7 @@ import moment from 'moment';
 const EditableContext = React.createContext();
 const { Option } = Select;
 
-const EditableCell = (params) => {
+const EditableCell = (config) => {
   const {
     params: {
       editing,
@@ -35,14 +35,14 @@ const EditableCell = (params) => {
       selectOptions,
       props,
     }
-  } = params;
+  } = config;
+  console.log(record)
   const { getFieldDecorator } = form;
   const HideFormItem = hideFormItem(getFieldDecorator);
 
   function afterSelect(val) {
-    form.setFieldsValue({ currencyCode: val.code });
+    form.setFieldsValue({ currencyId: val.id });
   }
-
   // 编辑样式
   const getInput = () => {
     const a = record[dataIndex];
@@ -85,6 +85,8 @@ const EditableCell = (params) => {
           max={100}
           formatter={value => `${value}%`}
           parser={value => value.replace('%', '')} />
+      case 'comboList':
+        return <ComboList {...props} form={form} />
       default:
         return <Input disabled={inputDisabled} />;
     }
@@ -103,7 +105,7 @@ const EditableCell = (params) => {
           });
           return selectObj[0].name;
         } else {
-          // 默认 参数
+          // 默认参数
           if (a === true) {
             return '是';
           }
@@ -114,13 +116,13 @@ const EditableCell = (params) => {
       } else if (inputType === 'percentInput') {
         return `${a}%`;
       } else if (inputType === 'UploadFile') {
-        return <UploadFile type='show' entityId={record?.attachmentId} />
+        return <UploadFile type='show' entityId={!!record?.attachmentId ? record?.attachmentId : a} />
       } else {
         return a;
       }
     }
     if (inputType === 'UploadFile') {
-      return <UploadFile type='show' entityId={record?.attachmentId} />
+      return <UploadFile type='show' entityId={!!record?.attachmentId ? record?.attachmentId : a} />
     }
   }
 
@@ -131,7 +133,7 @@ const EditableCell = (params) => {
       return inputDefaultValue;
     } else {
       if (inputType === 'DatePicker') {
-        
+
         return !!a ? moment(a) : ''
       }
       else if (inputType === 'UploadFile') {
@@ -156,7 +158,7 @@ const EditableCell = (params) => {
             // initialValue有false
             initialValue: getInit(),
           })(getInput())}
-          {dataIndex === 'currencyName' ? HideFormItem('currencyCode', record.currencyCode) : null}
+          {dataIndex === 'currencyName' ? HideFormItem('currencyId', record.currencyId) : null}
         </Form.Item>
       ) : (
           <div style={{ textAlign: 'center' }}>{getRecordData()}</div>
@@ -168,8 +170,19 @@ const EditableCell = (params) => {
 }
 
 const EditableTable = (props) => {
-  const { form, dataSource, columns, rowKey, isEditTable = false, isToolBar = false, setNewData,
-    recommendDemandId = '676800B6-F19D-11EA-9F88-0242C0A8442E', tableType } = props;
+  const {
+    form,
+    dataSource,
+    columns,
+    rowKey,
+    isEditTable = false,
+    isToolBar = false,
+    setNewData,
+    recommendDemandId,
+    tableType,
+    copyLine = false,
+    copyLineKeys = ['productCode', 'productName']
+  } = props;
   const [editingKey, setEditingKey] = useState('');
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const tableRef = useRef(null);
@@ -218,14 +231,10 @@ const EditableTable = (props) => {
       </span>
     ) : (
         <Fragment>
-          <a disabled={editingKey !== ''} onClick={() => edit(record[rowKey])} key='edit'>
-            编辑
-                    </a>
+          <a disabled={editingKey !== ''} onClick={() => edit(record[rowKey])} key='edit'>编辑</a>
           <Divider orientation='left' type="vertical" />
           <Popconfirm title="确定删除？" onConfirm={() => deleteRow(record[rowKey], 'delete')}>
-            <a disabled={editingKey !== ''} key='delete' style={editingKey !== '' ? { color: 'rgba(0, 0, 0, 0.25)' } : { color: 'red' }}>
-              删除
-                        </a>
+            <a disabled={editingKey !== ''} key='delete' style={editingKey !== '' ? { color: 'rgba(0, 0, 0, 0.25)' } : { color: 'red' }}>删除</a>
           </Popconfirm>
         </Fragment>
       );
@@ -300,8 +309,15 @@ const EditableTable = (props) => {
     });
     // newArray.push({ id: guid() });
     const id = guid();
+    const isEmpty = isEmptyArray(newArray);
+    const copyItems = (copyLine && !isEmpty) ? copyLineKeys.reduce((prev, cur) => {
+      return {
+        ...prev,
+        [cur]: newArray[0][cur]
+      }
+    }, {}) : {}
     const newData = isEmptyArray(newArray) ?
-      [{ guid: id, recommendDemandId }] : [{ guid: id, recommendDemandId }, ...newArray];
+      [{ guid: id, recommendDemandId, ...copyItems }] : [{ guid: id, recommendDemandId, ...copyItems }, ...newArray];
     setNewData(newData, tableType); // 新增数据 + 所属哪个Table
     setEditingKey(id); // 新增处于编辑行
     setButtonDisabled(true); // 未保存无法操作

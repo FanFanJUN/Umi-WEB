@@ -46,7 +46,7 @@ const AuditReportManagement = forwardRef(({}, ref,) => {
   const [data, setData] = useState({
     spinning: false,
     flowId: '',
-    checkedCreate: false,
+    checkedCreate: true,
     quickSearchValue: '',
     advancedSearchValue: {},
     selectedRowKeys: [],
@@ -67,10 +67,10 @@ const AuditReportManagement = forwardRef(({}, ref,) => {
         showModal();
         break;
       case 'edit':
-        openNewTab('supplierAudit/AuditReportManagementView?pageState=edit&id='+data.selectedRows[0].id, '审核报告管理-编辑', false);
+        openNewTab('supplierAudit/AuditReportManagementEdit?pageState=edit&id='+data.selectedRows[0].id, '审核报告管理-编辑', false);
         break;
       case 'detail':
-        openNewTab('supplierAudit/AuditReportManagementView?pageState=detail&id='+data.selectedRows[0].id, '审核报告管理-明细', false);
+        openNewTab('supplierAudit/AuditReportManagementDetail?pageState=detail&id='+data.selectedRows[0].id, '审核报告管理-明细', false);
         break;
       case 'delete':
         deleteList();
@@ -359,6 +359,6 @@ const AuditReportManagement = forwardRef(({}, ref,) => {
       />
     </Fragment>
   );
-})
+});
 
 export default AuditReportManagement;

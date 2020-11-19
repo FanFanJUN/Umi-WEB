@@ -24,7 +24,7 @@ import {
   ValiditySupplierRegister
 } from '@/services/SupplierModifyService'
 import styles from '../../supplierRegister/components/index.less';
-import { closeCurrent,isEmpty} from '../../../utils';
+import { closeCurrent, isEmpty } from '../../../utils';
 
 function CreateStrategy() {
   const BaseinfoRef = useRef(null);
@@ -74,7 +74,7 @@ function CreateStrategy() {
           if (data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo === undefined) {
             setvisible(true)
           }
-        }else {
+        } else {
           if (data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo) {
             let mobile = data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo.mobile;
             let email = data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo.email;
@@ -91,7 +91,7 @@ function CreateStrategy() {
       triggerLoading(false);
       message.error(msg)
     }
-  
+
   }
   async function initConfigurationTable(typeId) {
     triggerLoading(true);
@@ -178,7 +178,7 @@ function CreateStrategy() {
       }
     }
     let enclosurelist = [], basedata, baseexten, accountData,
-      automaticdata, automaticincome, automThreeYear, rangeValinfo,othersatt = [];
+      automaticdata, automaticincome, automThreeYear, rangeValinfo, othersatt = [];
     if (baseVal && baseVal.supplierVo) {
       baseVal.supplierVo.id = editData.supplierVo.id;
       baseVal.extendVo.id = editData.extendVo.id;
@@ -196,7 +196,7 @@ function CreateStrategy() {
     }
     if (qualifications) {
       enclosurelist = [...othersatt, ...qualifications.proCertVos];
-    }else {
+    } else {
       enclosurelist = othersatt
     }
     if (businessInfoVal && businessInfoVal.supplierVo) {
@@ -238,7 +238,6 @@ function CreateStrategy() {
     }
     wholeData.saveStatus = '0';
     let saveData = wholeData;
-    console.log(saveData)
     triggerLoading(true)
     const { success, message: msg } = await TemporarySupplierRegister(saveData);
     if (success) {
@@ -246,7 +245,7 @@ function CreateStrategy() {
       triggerLoading(false)
       closeCurrent()
       return
-    }else {
+    } else {
       message.error(msg);
     }
     triggerLoading(false)
@@ -341,7 +340,7 @@ function CreateStrategy() {
           return false;
         }
       }
-      if (item.operationCode !== '3'  && item.fieldCode === 'bankInfoVos') {
+      if (item.operationCode !== '3' && item.fieldCode === 'bankInfoVos') {
         const { getbankform } = Bankformef.current; //银行信息
         bankVal = getbankform()
         if (!bankVal) {
@@ -361,7 +360,7 @@ function CreateStrategy() {
           return false;
         }
       }
-      if (item.operationCode !== '3'  && item.fieldCode === 'genCertVos') {
+      if (item.operationCode !== '3' && item.fieldCode === 'genCertVos') {
         const { getqualificationsInfo } = QualificationRef.current; // 通用资质
         qualifications = getqualificationsInfo()
         if (!qualifications) {
@@ -369,14 +368,14 @@ function CreateStrategy() {
           return false;
         }
       }
-      if (item.operationCode !== '3'  && item.fieldCode === 'proCertVos') {
+      if (item.operationCode !== '3' && item.fieldCode === 'proCertVos') {
         const { getspecialpurpose } = QualispecialRef.current; // 专用资质
         proCertVos = getspecialpurpose() || [];
       }
     }
     //console.log(authorizedClientVal)
     let enclosurelist = [], basedata, accountData, baseexten, automaticdata, automaticincome,
-      automThreeYear, rangeValinfo,othersatt = [];
+      automThreeYear, rangeValinfo, othersatt = [];
     if (baseVal && baseVal.supplierVo) {
       baseVal.supplierVo.id = editData.supplierVo.id;
       baseVal.extendVo.id = editData.extendVo.id;
@@ -394,7 +393,7 @@ function CreateStrategy() {
     }
     if (qualifications) {
       enclosurelist = [...othersatt, ...qualifications.proCertVos];
-    }else {
+    } else {
       enclosurelist = othersatt
     }
     if (businessInfoVal && businessInfoVal.supplierVo) {
@@ -440,10 +439,10 @@ function CreateStrategy() {
     const { success, message: msg } = await ValiditySupplierRegister(wholeData);
     if (success) {
       getModelRef.current.handleModalVisible(true);
-    }else {
+    } else {
       message.error(msg);
     }
-    
+
   }
   async function createSave(val) {
     let params = { ...wholeData, ...val };
@@ -575,13 +574,13 @@ function CreateStrategy() {
 
                   <div className={styles.title}>银行信息</div>
                   <div>
-                  <myContext.Provider value={supplierName}>
-                    <Bank
-                      editData={editData}
-                      wrappedComponentRef={Bankformef}
-                    />
-                  </myContext.Provider>
-                    
+                    <myContext.Provider value={supplierName}>
+                      <Bank
+                        editData={editData}
+                        wrappedComponentRef={Bankformef}
+                      />
+                    </myContext.Provider>
+
                   </div>
                 </div>
               );
@@ -654,12 +653,12 @@ function CreateStrategy() {
           wrappedComponentRef={getModelRef}
         />
         <Modal
-            title="提示"
-            visible={visible}
-            onOk={handleOk}
-            onCancel={handleCancel}
-            >
-            <p>请先到供应商账号的个人设置中绑定手机和邮箱，再变更其他信息，否则无法保存变更信息</p>
+          title="提示"
+          visible={visible}
+          onOk={handleOk}
+          onCancel={handleCancel}
+        >
+          <p>请先到供应商账号的个人设置中绑定手机和邮箱，再变更其他信息，否则无法保存变更信息</p>
         </Modal>
       </div>
     </Spin>

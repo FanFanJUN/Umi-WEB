@@ -17,6 +17,7 @@ import PropTypes from 'prop-types';
 
 const { Option } = Select;
 const { Item: FormItem, create } = Form;
+const { MonthPicker } = DatePicker;
 const formLayout = {
   labelCol: {
     span: 8
@@ -31,6 +32,7 @@ const ShowLabel = ({ value, ...props }) => <div {...props}>{value}</div>
 const FormItemTypes = {
   label: ShowLabel,
   datePicker: DatePicker,
+  monthPicker: MonthPicker,
   number: InputNumber,
   select: Select,
   comboList: ComboList,

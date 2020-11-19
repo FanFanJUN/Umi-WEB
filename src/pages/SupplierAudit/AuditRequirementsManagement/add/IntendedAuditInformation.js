@@ -119,29 +119,22 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
 
   // 编辑和明细时构造treeData
   const buildTreeData = (fatherList, sonList) => {
-    let arr = JSON.parse(JSON.stringify(fatherList))
+    let arr = JSON.parse(JSON.stringify([...fatherList, ...sonList]))
     arr.map(item => {
       item.id = item.systemId
       item.key = item.systemId
       item.title = item.systemName
+      item.name = item.systemName
+      item.code = item.systemCode
       if (!item.children) {
         item.children = []
       }
-      sonList.forEach(value => {
-        value.id = value.systemId
-        value.key = value.systemId
-        value.title = value.systemName
-        if (value.parentId === item.systemId) {
-          item.children.push(value)
-        }
-      })
     })
     return arr
   }
 
   // 打开内容界面
   const showContent = (value=undefined, type='add') => {
-    console.log(value, 'value')
     if (value) {
       setTimeout(() => {
         setData(v =>({...v, treeData: value}))
@@ -165,19 +158,11 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
   };
 
   const contentOk = (value) => {
-    console.log(value);
     let newData = JSON.parse(JSON.stringify(data.dataSource));
-    let arr = [];
-    value.map(item => {
-      item.children.map(v => {
-        arr.push(v);
-      });
-    });
     newData.map((item, index) => {
       if (item.lineNum === data.selectedRowKeys[0]) {
         newData[index].treeData = value;
-        newData[index].fatherList = value;
-        newData[index].sonList = arr;
+        newData[index].sonList = value;
       }
     });
     setData(v => ({
