@@ -457,6 +457,23 @@ export const reviewRequirementConfig = {
   },
 };
 
+// 审核类型-含code,name,id
+export const AuditTypeAllConfig = {
+  placeholder: '选择审核类型',
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${baseUrl}/reviewType/findBySearchPage`,
+  },
+  remotePaging: true,
+  rowKey: 'code',
+  reader: {
+    field: ['code', 'id'],
+    name: 'name',
+    description: 'code',
+  },
+};
+
 // 审核类型
 export const AuditTypeManagementConfig = {
   placeholder: '选择审核类型',
@@ -469,6 +486,23 @@ export const AuditTypeManagementConfig = {
   rowKey: 'code',
   reader: {
     field: ['code'],
+    name: 'name',
+    description: 'code',
+  },
+};
+
+// 结论及是否通过
+export const conclusionAndWeatherPassConfig = {
+  placeholder: '选择结论及是否通过',
+  store: {
+    type: 'GET',
+    autoLoad: false,
+    url: `${baseUrl}/api/conclusionAndWhetherPassService/findAllUnfrozen`,
+  },
+  remotePaging: true,
+  rowKey: 'code',
+  reader: {
+    field: ['code', 'id', 'whetherPass'],
     name: 'name',
     description: 'code',
   },
@@ -692,3 +726,5 @@ export async function reviewStandard(params) {
       method: 'GET',
   });
 }
+
+

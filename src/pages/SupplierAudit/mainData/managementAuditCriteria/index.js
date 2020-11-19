@@ -190,6 +190,7 @@ const Index = () => {
           {
             name: '名称',
             code: 'name',
+            unlimited: 200
           },
           {
             name: '代码',
@@ -203,7 +204,7 @@ const Index = () => {
         propData={{
           visible: data.visible,
           type: data.type,
-          title: '审核类型管理系新增',
+          title: data.title,
         }}
       />
     </Fragment>

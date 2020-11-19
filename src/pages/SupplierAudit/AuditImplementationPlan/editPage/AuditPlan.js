@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:49:50
- * @LastEditTime: 2020-11-19 14:10:14
+ * @LastEditTime: 2020-11-19 17:16:13
  * @LastEditors: Please set LastEditors
  * @Description: I审核实施计划-审核计划
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\AuditPlan.js
@@ -13,6 +13,7 @@ import { Col, Form, Row, DatePicker, Checkbox } from 'antd';
 import Upload from '../../Upload';
 import { getDocIdForArray } from '@/utils/utilTool';
 import { reviewStandard } from "../../mainData/commomService";
+import moment from "moment";
 
 const FormItem = Form.Item;
 const formLayout = {
@@ -35,12 +36,13 @@ const formLongLayout = {
 const AuditPlan = (props) => {
     const { form, type, isView, originData = {} } = props;
     // 数组存储的审核准则
-    const [seleteList, setSelecteList] = useState([]);
+    const [seleteList, setSelecteList] = useState([]); //  对象数组
+    const [checkedList, setCheckedList] = useState([]);// 选中数据code数组
     // 以code为key值存储的审核准则对象
     const [listObj, setListObj] = useState({})
     const { getFieldDecorator, setFieldsValue } = form;
     useEffect(() => {
-        if (type === "add") {
+        if (type !== "detail") {
             reviewStandard().then(res => {
                 let listObj = {};
                 res.data.forEach(item => {
@@ -52,6 +54,9 @@ const AuditPlan = (props) => {
                 setListObj(listObj);
                 setSelecteList(res.data);
                 // 默认全部选中审核准则
+                if(type === "add") {
+                    setCheckedList(seleteList.map(item => item.code));
+                }
                 setFieldsValue({
                     reviewPlanStandardBos: Object.values(listObj)
                 })
@@ -61,8 +66,10 @@ const AuditPlan = (props) => {
 
     useEffect(() => {
         if (type !== "add") {
-            setSelecteList(originData.reviewPlanStandardBos ? originData.reviewPlanStandardBos : []);
-
+            if(type === "detail") {
+                setSelecteList(originData.reviewPlanStandardBos ? originData.reviewPlanStandardBos : []);
+            }
+            setCheckedList(originData.reviewPlanStandardBos ? originData.reviewPlanStandardBos.map(item=>item.standardCode) : [])
         }
     }, [originData])
 
@@ -74,7 +81,6 @@ const AuditPlan = (props) => {
             reviewPlanStandardBos: checkList
         })
     }
-    console.log('seleteList-originData', originData, isView)
     return (
         <div className={styles.wrapper}>
             <div className={styles.bgw}>
@@ -93,7 +99,7 @@ const AuditPlan = (props) => {
                                     [
                                         getFieldDecorator("reviewPlanStandardBos"),
                                         getFieldDecorator("selected", {
-                                            initialValue: seleteList.map(item => item.code),
+                                            initialValue: checkedList,
                                             rules: [{ required: true, message: '至少选择一项', },]
                                         })(
                                             <Checkbox.Group style={{ width: '100%' }} style={{ paddingTop: "20px" }} onChange={handleChange}>
@@ -114,7 +120,7 @@ const AuditPlan = (props) => {
                             <FormItem {...formLayout} label={'审核时间从'}>
                                 {
                                     getFieldDecorator('reviewDateStart', {
-                                        initialValue: null,
+                                        initialValue: type === "edit" ? moment(originData.reviewDateStart) : null,
                                         rules: [{ required: true, message: '审核时间不能为空', },]
                                     })(
                                         isView ? <span>{originData.reviewDateStart}</span> :
@@ -127,7 +133,7 @@ const AuditPlan = (props) => {
                             <FormItem {...formLayout} label={'审核时间到'}>
                                 {
                                     getFieldDecorator('reviewDateEnd', {
-                                        initialValue: null,
+                                        initialValue: type === "edit" ? moment(originData.reviewDateEnd) : null,
                                         rules: [{ required: true, message: '审核时间不能为空', },]
                                     })(
                                         isView ? <span>{originData.reviewDateEnd}</span> :

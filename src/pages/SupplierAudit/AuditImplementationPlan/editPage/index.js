@@ -1,7 +1,7 @@
 /*
  * @Author:黄永翠
  * @Date: 2020-11-09 09:38:38
- * @LastEditTime: 2020-11-19 14:03:07
+ * @LastEditTime: 2020-11-19 17:33:50
  * @LastEditors: Please set LastEditors
  * @Description:审核实施计划-明细
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\index.js
@@ -22,7 +22,7 @@ import AuditScope from "./AuditScope";
 import AuditorInfo from "./AuditorInfo";
 import PersonTable from "./PersonTable";
 import AuditPlan from "./AuditPlan";
-import { mergeContent, addReviewImplementPlan, findDetailsByReviewImplementPlanId } from "../service";
+import { mergeContent, addReviewImplementPlan, updateReviewImplementPlan, findDetailsByReviewImplementPlanId } from "../service";
 
 const { StartFlow } = WorkFlow;
 const pickpropertys = [
@@ -138,12 +138,13 @@ const Index = (props) => {
         setLoading(false);
     }
 
-    const handleSave = (type) => {
+    const getAllData = () => {
+        let saveData = false;
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 let sessionLins = JSON.parse(sessionStorage.getItem('selectedMonthLIne'));
                 let pickObj = pick(sessionLins[0], pickpropertys);
-                let saveData = {...values, ...editData, ...pickObj};
+                saveData = {...editData, ...pickObj, ...values};
                 saveData.reviewImplementPlanLineBos = sessionLins.map(item => ({
                     ...item, 
                     reviewImplementPlanLinenum: item.reviewPlanMonthLinenum,
@@ -164,23 +165,34 @@ const Index = (props) => {
                 delete saveData.treeData;
                 delete saveData.selected;
                 console.log('保存的数据saveData', saveData);
-                addReviewImplementPlan(saveData).then(res => {
-                    console.log("保存接口调用返回", res)
-                    if(res.success) {
-                        message.success("保存成功")
-                    } else {
-                        message.error(res.message);
-                    }
-                })
-                
             } else {
                 message.warning("请检查数据是否填写完整！")
             }
         });
+        return saveData
+    }
+
+    const handleSave = async (type) => {
+        let saveData = getAllData();
+        let res = {};
+        if(type === "add") {
+            res = await addReviewImplementPlan(saveData);
+        } else {
+            res = await updateReviewImplementPlan(saveData);
+        }
+        if(res.success) {
+            message.success("保存成功")
+            if(type === "publish") {
+                return res.data;
+            }
+        } else {
+            message.error(res.message);
+        }
+        
     }
     // 提交审核验证
     const handleBeforeStartFlow = async () => {
-        // const id = await handleSave("publish");
+        const id = await handleSave("publish");
         console.log("获取到的id是多少", id)
         return new Promise(function (resolve, reject) {
             if (id) {

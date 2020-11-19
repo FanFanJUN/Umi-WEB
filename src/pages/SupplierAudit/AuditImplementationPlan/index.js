@@ -15,13 +15,13 @@ import moment from "moment";
 import Header from '../../../components/Header';
 import AdvancedForm from '../../../components/AdvancedForm';
 import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
-import { ApplyOrganizationProps, CompanyConfig, } from '../mainData/commomService';
+import { ApplyOrganizationProps, CompanyConfig, EndFlow } from '../mainData/commomService';
 import {
     judge,
     ShareStatusProps,
     flowProps
 } from '../../QualitySynergy/commonProps';
-import { deletePlanMonth } from "./service";
+import { deleteReviewImplementPlan } from "./service";
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
 import { openNewTab, getUserAccount } from '../../../utils';
@@ -123,8 +123,8 @@ export default function () {
             cancelText: '否',
             onOk: () => {
                 console.log([...data.selectedRowKeys])
-                deletePlanMonth({
-                    ids: JSON.stringify(data.selectedRowKeys),
+                deleteReviewImplementPlan({
+                    ids: data.selectedRowKeys,
                 }).then(res => {
                     if (res.success) {
                         message.success(res.message);
