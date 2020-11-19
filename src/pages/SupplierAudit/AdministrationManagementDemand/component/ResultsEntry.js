@@ -1,44 +1,49 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ComboList, ExtModal, ExtTable } from 'suid';
-import { Button, Input, InputNumber } from 'antd';
-import { ApplicableStateArr, ApplicableStateProps } from '../../../QualitySynergy/commonProps';
+import { Button, Input, InputNumber, message } from 'antd';
+import { ApplicableStateArr, ApplicableStateProps, getRandom } from '../../../QualitySynergy/commonProps';
 import Upload from '../../../QualitySynergy/compoent/Upload';
 import ProblemManagement from './ProblemManagement';
+import {
+  ResultsEntryApi,
+  SaveResultsEntryApi, SubmitResultsEntryApi,
+} from '../../AuditRequirementsManagement/commonApi';
+import { recommendUrl } from '../../../../utils/commonUrl';
 
 const ResultsEntry = (props) => {
 
   const columns = [
-    { title: '指标名称', dataIndex: 'indexicalInformation', width: 150 },
-    { title: '指标定义', dataIndex: 'indexDefinition', ellipsis: true, width: 150 },
-    { title: '评分标准', dataIndex: 'standardEvaluation', ellipsis: true, width: 180 },
-    { title: '标准分', dataIndex: 'standardScore', ellipsis: true, width: 100 },
+    { title: '指标名称', dataIndex: 'ruleName', width: 150 },
+    { title: '指标定义', dataIndex: 'definition', ellipsis: true, width: 150 },
+    { title: '评分标准', dataIndex: 'scoringStandard', ellipsis: true, width: 180 },
+    { title: '标准分', dataIndex: 'highestScore', ellipsis: true, width: 100 },
     {
       title: '不适用',
-      dataIndex: 'isApplicable',
+      dataIndex: 'whetherApply',
       width: 80,
       render: (v, data) => <ComboList
         onClick={e => e.stopPropagation()}
-        afterSelect={value => isApplicableChange(value, data)}
-        value={ApplicableStateArr[v]} {...ApplicableStateProps}/>,
+        afterSelect={value => whetherApplyChange(value, data)}
+        value={ApplicableStateArr[v]} {...ApplicableStateProps} />,
     },
     {
       title: '评审得分',
-      dataIndex: 'reviewScores',
+      dataIndex: 'reviewScore',
       width: 100,
-      render: (v, data) => <InputNumber value={v} max={data.standardScore}
-                                        onChange={value => reviewScoresChange(value, data)} min={0}/>,
+      render: (v, data) => <InputNumber value={v} max={data.highestScore}
+                                        onChange={value => reviewScoreChange(value, data)} min={0} />,
     },
     {
       title: '情况记录',
-      dataIndex: 'caseRecord',
+      dataIndex: 'remark',
       width: 200,
-      render: (v, data) => <Input value={v} onChange={value => caseRecordChange(value, data)}/>,
+      render: (v, data) => <Input value={v} onChange={value => remarkChange(value, data)} />,
     },
     {
       title: '附件',
-      dataIndex: 'fileList',
+      dataIndex: 'attachRelatedId',
       width: 200,
-      render: (v, data) => <Upload entityId={v} onChange={(value) => fileListChange(value, data)}/>,
+      render: (v, data) => <Upload entityId={v} onChange={(value) => attachRelatedIdChange(value, data)} />,
     },
     {
       title: '问题',
@@ -50,30 +55,36 @@ const ResultsEntry = (props) => {
 
   const tableRef = useRef(null);
 
+  const [loading, setLoading] = useState(false);
+
   const [data, setData] = useState({
-    dataSource: [{
-      lineNum: 1,
-      caseRecord: '123',
-      reviewScores: '321',
-      isApplicable: 'true',
-      standardScore: 100,
-      indexDefinition: '指标定义',
-      standardEvaluation: '评分标准',
-      indexicalInformation: '指标信息',
-      fileList: null,
-      problemList: [{
-        lineNum: 123,
-        departmentProcess: '1',
-        problemDescription: '2',
-        orderSeverity: 3,
-        requestCompletionDateRectification: 4,
-      }],
-    }],
+    dataSource: [],
     editData: {},
     visible: false,
     selectedRowKeys: [],
     selectedRowRows: [],
   });
+
+  useEffect(() => {
+    if (props.visible) {
+      getTableData(props.id);
+    }
+  }, [props.visible]);
+
+  const getTableData = (reviewImplementManagementId) => {
+    setLoading(true);
+    ResultsEntryApi({ reviewImplementManagementId }).then(res => {
+      if (res.success) {
+        let newData = JSON.parse(JSON.stringify(res.data));
+        newData = newData.map(item => ({ ...item, lineNum: getRandom(10) }));
+        console.log(newData);
+        setData(v => ({ ...v, dataSource: newData }));
+        setLoading(false);
+      } else {
+        message.error(res.message);
+      }
+    }).catch(err => message.error(err.message));
+  };
 
   const showProblemManagement = (e, data) => {
     e.stopPropagation();
@@ -91,20 +102,23 @@ const ResultsEntry = (props) => {
     setData(v => ({ ...v, dataSource: newDataSource }));
   };
 
-  const fileListChange = (value, rows) => {
-    changeRowsValue(value, 'fileList', rows.lineNum);
+  const attachRelatedIdChange = (value, rows) => {
+    changeRowsValue(value, 'attachRelatedId', rows.lineNum);
+
   };
 
-  const caseRecordChange = (e, rows) => {
-    changeRowsValue(e.target.value, 'caseRecord', rows.lineNum);
+  const remarkChange = (e, rows) => {
+    changeRowsValue(e.target.value, 'remark', rows.lineNum);
+
   };
 
-  const reviewScoresChange = (value, rows) => {
-    changeRowsValue(value, 'reviewScores', rows.lineNum);
+  const reviewScoreChange = (value, rows) => {
+    changeRowsValue(value, 'reviewScore', rows.lineNum);
+
   };
 
-  const isApplicableChange = (value, rows) => {
-    changeRowsValue(value.code, 'isApplicable', rows.lineNum);
+  const whetherApplyChange = (value, rows) => {
+    changeRowsValue(value.code, 'whetherApply', rows.lineNum);
   };
 
   const { visible } = props;
@@ -113,17 +127,52 @@ const ResultsEntry = (props) => {
     props.onCancel();
   };
 
-  const onOk = () => {
-
+  const onOk = (type) => {
+    const servers = type === 'save' ? SaveResultsEntryApi : SubmitResultsEntryApi
+    servers(data.dataSource).then(res => {
+      if (res.success) {
+        message.success('保存成功')
+        props.onOk()
+      }else {
+        message.error(res.message)
+      }
+    }).catch(err => {
+      message.error(err.message)
+    })
   };
 
   const clearSelected = () => {
-
+    setData(v => ({ ...v, dataSource: [] }));
   };
 
   const handleSelectedRows = (keys, rows) => {
+    console.log(rows);
     setData(v => ({ ...v, selectedRowKeys: keys, selectedRowRows: rows }));
   };
+
+  const handleOk = (value) => {
+    let newData = JSON.parse(JSON.stringify(data.dataSource));
+    newData.map((item, index) => {
+      console.log(item, value);
+      if (item.lineNum === value.lineNum) {
+        newData[index] = value;
+      }
+    });
+    setData(v => ({ ...v, dataSource: newData, visible: false }));
+    refreshTable();
+  };
+
+  // 刷新table
+  const refreshTable = () => {
+    tableRef.current.manualSelectedRows();
+    tableRef.current.remoteDataRefresh();
+  };
+
+  // 导出数据
+  const exportData = () => {
+    const url = `/service.api/${recommendUrl}/srController/downloadResultTemplate?reviewImplementManagementId=${props.id}`
+    window.open(url)
+  }
 
   return (
     <ExtModal
@@ -136,18 +185,20 @@ const ResultsEntry = (props) => {
       afterClose={clearSelected}
       footer={<div>
         <Button onClick={onCancel}>取消</Button>
-        <Button type={'primary'} onClick={onOk}>暂存</Button>
-        <Button onClick={onOk}>提交</Button>
+        <Button type={'primary'} onClick={() => onOk('save')}>暂存</Button>
+        <Button onClick={() => onOk('submit')}>提交</Button>
       </div>}
     >
       <div>
         <Button type='primary'>批量导入</Button>
+        <Button style={{marginLeft: '5px'}} key="downLoad" onClick={exportData}>批量导出</Button>
       </div>
       <ExtTable
         style={{ marginTop: '10px' }}
         rowKey={(v) => v.lineNum}
         allowCancelSelect={true}
         showSearch={false}
+        loading={loading}
         remotePaging
         checkbox={{ multiSelect: false }}
         size='small'
@@ -159,6 +210,7 @@ const ResultsEntry = (props) => {
       />
       <ProblemManagement
         type={'add'}
+        onOk={handleOk}
         editData={data.editData}
         onCancel={() => setData(v => ({ ...v, visible: false }))}
         visible={data.visible}

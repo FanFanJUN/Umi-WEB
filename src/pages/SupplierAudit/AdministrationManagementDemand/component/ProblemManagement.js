@@ -4,6 +4,9 @@ import styles from './index.less';
 import { Button, Col, Form, Input, InputNumber, Row } from 'antd';
 import BU from '../../../QualitySynergy/mainData/BU';
 import ProblemAdd from './ProblemAdd';
+import { getRandom } from '../../../QualitySynergy/commonProps';
+import { OrderSeverityArr } from '../../AuditRequirementsManagement/commonApi';
+import { recommendUrl } from '../../../../utils/commonUrl';
 
 const FormItem = Form.Item;
 
@@ -28,10 +31,10 @@ const formLayout = {
 const ProblemManagement = (props) => {
 
   const columns = [
-    { title: '部门/过程', dataIndex: 'departmentProcess', width: 150 },
-    { title: '问题描述', dataIndex: 'problemDescription', ellipsis: true, width: 300 },
-    { title: '严重程度', dataIndex: ' orderSeverity', ellipsis: true, width: 180 },
-    { title: '要求整改完成日期', dataIndex: 'requestCompletionDateRectification', ellipsis: true, width: 200 },
+    { title: '部门/过程', dataIndex: 'department', width: 150 },
+    { title: '问题描述', dataIndex: 'problemDescribe', ellipsis: true, width: 300 },
+    { title: '严重程度', dataIndex: 'severity', width: 180, render: v => OrderSeverityArr[v] },
+    { title: '要求整改完成日期', dataIndex: 'demandCompletionTime', ellipsis: true, width: 200 },
   ].map(item => ({ ...item, align: 'center' }));
 
   const tableRef = useRef(null);
@@ -45,6 +48,7 @@ const ProblemManagement = (props) => {
     type: 'add',
     title: '新增',
     visible: false,
+    deleteArr: [],
     selectedRowKeys: [],
     selectedRowRows: [],
   });
@@ -56,17 +60,21 @@ const ProblemManagement = (props) => {
   };
 
   const onOk = () => {
-
+    let newData = JSON.parse(JSON.stringify(props.editData))
+    newData.problemList = data.dataSource
+    props.onOk(newData)
   };
 
   useEffect(() => {
-    if (editData) {
-      setData(v => ({ ...v, dataSource: editData.problemList }));
+    if (editData.problemList) {
+      let arr = JSON.parse(JSON.stringify(editData.problemList))
+      arr = arr.map(item => ({ ...item, lineNum: getRandom(10) }));
+      setData(v => ({ ...v, dataSource: arr }));
     }
-  }, [editData]);
+  }, [props.visible]);
 
   const clearSelected = () => {
-
+    setData(v => ({...v, dataSource: []}))
   };
 
   const handleSelectedRows = (keys, rows) => {
@@ -77,12 +85,49 @@ const ProblemManagement = (props) => {
     switch (type) {
       case 'add':
         setData(v => ({ ...v, visible: true, title: '新增', type }));
+        break
+      case 'edit':
+        setData(v => ({ ...v, visible: true, title: '编辑', type, editData: data.selectedRowRows[0] }));
+        break
+      case 'delete':
+        deleteFun()
+        break
     }
   };
 
   const handleOk = (value) => {
-    setData(v => ({...v, dataSource: [...data.dataSource, value]}))
-    console.log(value)
+    let arr = JSON.parse(JSON.stringify(data.dataSource));
+    if (data.type === 'add') {
+      value.ruleCode = editData.ruleCode
+      value.ruleName = editData.ruleName
+      arr.push(value);
+    } else {
+      arr.map((item, index) => {
+        if (item.lineNum === data.selectedRowKeys[0]) {
+          arr[index] = value;
+        }
+      });
+    }
+    setData(v => ({ ...v, dataSource: arr, visible: false }));
+    refreshTable()
+  };
+
+  // 刷新table
+  const refreshTable = () => {
+    tableRef.current.manualSelectedRows();
+    tableRef.current.remoteDataRefresh();
+  };
+
+  const deleteFun = () => {
+    let arr = data.dataSource.slice()
+    arr.map((item, index) => {
+      data.selectedRowKeys.map(value => {
+        if (item.lineNum === value) {
+          arr.splice(index, 1)
+        }
+      })
+    })
+    setData(v => ({...v, dataSource: arr}))
   }
 
   return (
@@ -104,10 +149,10 @@ const ProblemManagement = (props) => {
               <Col span={12}>
                 <FormItem {...formLongLayout} label={'指标名称'}>
                   {
-                    getFieldDecorator('indexicalInformation', {
-                      initialValue: editData.indexicalInformation,
+                    getFieldDecorator('ruleName', {
+                      initialValue: editData.ruleName,
                     })(
-                      <Input disabled={true} placeholder="请输入指标名称" style={{ width: '100' }}/>,
+                      <Input disabled={true} placeholder="请输入指标名称" style={{ width: '100' }} />,
                     )
                   }
                 </FormItem>
@@ -115,10 +160,10 @@ const ProblemManagement = (props) => {
               <Col span={12}>
                 <FormItem {...formLongLayout} label={'指标定义'}>
                   {
-                    getFieldDecorator('indexDefinition', {
-                      initialValue: editData.indexDefinition,
+                    getFieldDecorator('definition', {
+                      initialValue: editData.definition,
                     })(
-                      <Input disabled={true} placeholder="请输入指标定义" style={{ width: '100' }}/>,
+                      <Input disabled={true} placeholder="请输入指标定义" style={{ width: '100' }} />,
                     )
                   }
                 </FormItem>
@@ -128,10 +173,10 @@ const ProblemManagement = (props) => {
               <Col span={24}>
                 <FormItem {...formLayout} label={'评分标准'}>
                   {
-                    getFieldDecorator('standardEvaluation', {
-                      initialValue: editData.standardEvaluation,
+                    getFieldDecorator('scoringStandard', {
+                      initialValue: editData.scoringStandard,
                     })(
-                      <Input.TextArea disabled={true} rows={4} placeholder="请输入评分标准" style={{ width: '100%' }}/>,
+                      <Input.TextArea disabled={true} rows={4} placeholder="请输入评分标准" style={{ width: '100%' }} />,
                     )
                   }
                 </FormItem>
@@ -144,9 +189,11 @@ const ProblemManagement = (props) => {
           <div className={styles.content}>
             <div>
               <Button style={{ marginRight: '5px' }} onClick={() => showProblemAdd('add')}>新增</Button>
-              <Button style={{ marginRight: '5px' }}>编辑</Button>
-              <Button style={{ marginRight: '5px' }}>删除</Button>
-              <Button>批导入</Button>
+              <Button style={{ marginRight: '5px' }} disabled={data.selectedRowKeys.length !== 1}
+                      onClick={() => showProblemAdd('edit')}>编辑</Button>
+              <Button style={{ marginRight: '5px' }} disabled={data.selectedRowKeys.length === 0} onClick={() => showProblemAdd('delete')}>删除</Button>
+              <Button style={{marginRight: '5px'}}>批导入</Button>
+              <Button onClick={() => window.open(`/service.api/${recommendUrl}/srController/downloadProblemTemplate`)}>批导出</Button>
             </div>
             <ExtTable
               style={{ marginTop: '10px' }}
@@ -155,7 +202,7 @@ const ProblemManagement = (props) => {
               allowCancelSelect={true}
               showSearch={false}
               remotePaging
-              checkbox={{ multiSelect: false }}
+              checkbox={{ multiSelect: true }}
               size='small'
               onSelectRow={handleSelectedRows}
               selectedRowKeys={data.selectedRowKeys}
@@ -170,6 +217,7 @@ const ProblemManagement = (props) => {
         type={data.type}
         title={data.title}
         visible={data.visible}
+        editData={data.editData}
         onCancel={() => setData(v => ({ ...v, visible: false }))}
         onOk={handleOk}
       />
