@@ -49,6 +49,7 @@ function CreateStrategy() {
       ...baseinfo,
       ...planinfo,
       detailsVos: distributioninfo,
+      documentType: 0
     }
     console.log(params)
     triggerLoading(true)
@@ -104,7 +105,6 @@ function CreateStrategy() {
           <div className={styles.title}>分配计划详情</div>
           <div >
             <Distributioninfo
-              editformData={editData}
               wrappedComponentRef={DistributionRef}
               isEdit={true}
               isView={false}

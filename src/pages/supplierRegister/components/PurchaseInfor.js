@@ -169,12 +169,14 @@ const PurchaseInfor = forwardRef(({
           setDataSource(filterdata)
           return item;
         }
+        filterdata.length === 0 ? setDataSource([]) : setDataSource(filterdata)
       } else if (!isEmpty(purchase) && isEmpty(company)) {
         if (item.purchaseOrgCode.indexOf(purchase) > -1 || item.purchaseOrgName.indexOf(purchase) > -1) {
           filterdata.push(item)
           setDataSource(filterdata)
           return item;
         }
+        filterdata.length === 0 ? setDataSource([]) : setDataSource(filterdata)
       } else {
         setDataSource(editData.supplierFinanceViews)
       }

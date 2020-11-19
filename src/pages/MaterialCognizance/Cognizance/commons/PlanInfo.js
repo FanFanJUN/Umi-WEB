@@ -116,7 +116,7 @@ const HeadFormRef = forwardRef(({
                                             initialValue: editformData ? editformData.purchaseCode : ''
                                         }),
                                         getFieldDecorator("purchaseName", {
-                                            initialValue: '',
+                                            initialValue: editformData ? editformData.purchaseName : '',
                                             rules: [{ required: true, message: "请选择采购组织名称", }]
                                         })(
                                             <Input disabled />
@@ -137,7 +137,7 @@ const HeadFormRef = forwardRef(({
                                             initialValue: editformData ? editformData.purchaseCode : ''
                                         }),
                                         getFieldDecorator("supplierName", {
-                                            initialValue: '',
+                                            initialValue: editformData ? editformData.supplierName : '',
                                             rules: [
                                                 {
                                                     required: true,
@@ -161,7 +161,7 @@ const HeadFormRef = forwardRef(({
                                             initialValue: editformData ? editformData.originalFactoryCode : ''
                                         }),
                                         getFieldDecorator("originalFactoryName", {
-                                            initialValue: '',
+                                            initialValue: editformData ? editformData.originalFactoryName : '',
                                         })(
                                             <Input disabled />
                                         )
@@ -181,7 +181,7 @@ const HeadFormRef = forwardRef(({
                                             initialValue: editformData ? editformData.materielTypeCode : ''
                                         }),
                                         getFieldDecorator("materielTypeName", {
-                                            initialValue: '',
+                                            initialValue: editformData ? editformData.materielTypeName : '',
                                             rules: [
                                                 {
                                                     required: true,
@@ -203,7 +203,7 @@ const HeadFormRef = forwardRef(({
                                     (
                                         getFieldDecorator('identifiedMaterialCategoryId', { initialValue: editformData ? editformData.identifiedMaterialCategoryId : "" }),
                                         getFieldDecorator("identifiedMaterialCategoryName", {
-                                            initialValue: '',
+                                            initialValue: editformData ? editformData.identifiedMaterialCategoryName : "",
                                             rules: [
                                                 {
                                                     required: true,
@@ -235,7 +235,7 @@ const HeadFormRef = forwardRef(({
                                     (
                                         getFieldDecorator('identificationTypeId', { initialValue: editformData ? editformData.identificationTypeId : "" }),
                                         getFieldDecorator("identificationTypeName", {
-                                            initialValue: '',
+                                            initialValue: editformData ? editformData.identificationTypeName : "",
                                             rules: [
                                                 {
                                                     required: true,
@@ -264,7 +264,7 @@ const HeadFormRef = forwardRef(({
                                 isView ? <span>{editformData ? editformData.planDesc : ''}</span> :
                                     (
                                         getFieldDecorator("planDesc", {
-                                            initialValue: '',
+                                            initialValue: editformData ? editformData.planDesc : '',
                                             rules: [
                                                 {
                                                     required: true,
@@ -274,6 +274,7 @@ const HeadFormRef = forwardRef(({
                                         })(
                                             <TextArea style={{ width: "100%" }}
                                                 placeholder="请输入计划说明"
+                                                maxLength={100}
                                             />
                                         )
                                     )
@@ -286,16 +287,16 @@ const HeadFormRef = forwardRef(({
                     <Col span={10}>
                         <Item label='附件' {...formLayout}>
                             {
-                                isView ? <span>{editformData ? editformData.enclosureId : ''}</span> :
-                                    getFieldDecorator("attachment", {
-                                        initialValue: '',
-                                    })(
-                                        <UploadFile
-                                            title={"附件上传"}
-                                            entityId={editformData ? editformData.enclosureId : null}
-                                            type={isView ? "show" : ""}
-                                        />
-                                    )
+                                getFieldDecorator("attachment", {
+                                    initialValue: [],
+                                })(
+                                    <UploadFile
+                                        title={"附件上传"}
+                                        entityId={editformData ? editformData.enclosureId : null}
+                                        type={isView ? "show" : ""}
+                                    />
+                                )
+
                             }
                         </Item>
                     </Col>

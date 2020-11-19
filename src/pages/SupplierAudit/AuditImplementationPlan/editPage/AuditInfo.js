@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:37:22
- * @LastEditTime: 2020-11-17 14:35:22
+ * @LastEditTime: 2020-11-19 09:21:26
  * @LastEditors: Please set LastEditors
  * @Description: 审核实施计划-拟审核信息
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\AuditInfo.js
@@ -28,11 +28,11 @@ const formItemLayoutLong = {
 };
 
 const AuditInfo = (props) => {
-    const { isView } = props;
+    const { isView, type, originData={} } = props;
     const [tabList, setTableList] = useState([]);
     const [formData, setFormData] = useState({});
     const columns = [
-        { title: '月度审核计划行号', dataIndex: 'reviewPlanMonthCode', width: 140, align: "center" },
+        { title: '审核实施计划行号', dataIndex: 'reviewImplementPlanLinenum', width: 140, align: "center" },
         { title: '需求公司', dataIndex: 'applyCorporationName', width: 140, align: "center" },
         { title: '采购组织', dataIndex: 'purchaseTeamName', align: "center", width: 140 },
         { title: '物料分类', dataIndex: 'materialGroupName', align: "center", width: 140 },
@@ -43,10 +43,16 @@ const AuditInfo = (props) => {
     ];
 
     useEffect(()=>{
-        let selectedLine = JSON.parse(sessionStorage.getItem('selectedMonthLIne'));
-        setTableList(selectedLine);
-        setFormData(selectedLine[0]);
-    }, [])
+        if(type === "add") {
+            let selectedLine = JSON.parse(sessionStorage.getItem('selectedMonthLIne'));
+            setTableList(selectedLine);
+            setFormData(selectedLine[0]);
+        } else {
+            setTableList(originData.reviewImplementPlanLineBos ? originData.reviewImplementPlanLineBos : []);
+            setFormData(originData);
+        }
+        
+    }, [type, originData])
     return (
         <div className={styles.wrapper}>
             <div className={styles.bgw}>
@@ -56,14 +62,14 @@ const AuditInfo = (props) => {
                         <Col span={12}>
                             <FormItem  {...formLayout} label={'月度审核计划号'}>
                                 {
-                                    isView ? <span>{'1'}</span> : <Input disabled={true} value={formData.reviewPlanMonthCode} />
+                                    isView ? <span>{formData.reviewPlanMonthCode}</span> : <Input disabled={true} value={formData.reviewPlanMonthCode} />
                                 }
                             </FormItem>
                         </Col>
                         <Col span={12}>
                             <FormItem  {...formLayout} label={'审核方式'}>
                                 {
-                                    isView ? <span>{'1'}</span> : <Input disabled={true} value={formData.reviewWayName} />
+                                    isView ? <span>{formData.reviewWayName}</span> : <Input disabled={true} value={formData.reviewWayName} />
                                 }
                             </FormItem>
                         </Col>
@@ -72,14 +78,14 @@ const AuditInfo = (props) => {
                         <Col span={12}>
                             <FormItem  {...formLayout} label={'供应商'}>
                                 {
-                                    isView ? <span>{'1'}</span> : <Input disabled={true} value={formData.supplierName} />
+                                    isView ? <span>{formData.supplierName}</span> : <Input disabled={true} value={formData.supplierName} />
                                 }
                             </FormItem>
                         </Col>
                         <Col span={12}>
                             <FormItem  {...formLayout} label={'代理商'}>
                                 {
-                                    isView ? <span>{'1'}</span> : <Input disabled={true} value={formData.agentName} />
+                                    isView ? <span>{formData.agentName}</span> : <Input disabled={true} value={formData.agentName} />
                                 }
                             </FormItem>
                         </Col>
@@ -88,7 +94,7 @@ const AuditInfo = (props) => {
                         <Col span={24}>
                             <FormItem  {...formItemLayoutLong} label={'生产厂地址'}>
                                 {
-                                    isView ? <span>{'1'}</span> : <div>
+                                    isView ? <span>{formData.countryName + formData.provinceName + formData.cityName + formData.countyName + formData.address}</span> : <div>
                                         <Input disabled={true} value={formData.countryName} style={{ width: "10%" }} />
                                         <Input disabled={true} value={formData.provinceName} style={{ width: "10%", margin: "0 3px" }} />
                                         <Input disabled={true} value={formData.cityName} style={{ width: "10%" }} />
@@ -103,14 +109,14 @@ const AuditInfo = (props) => {
                         <Col span={12}>
                             <FormItem  {...formLayout} label={'供应商联系人'}>
                                 {
-                                    isView ? <span>{'1'}</span> : <Input disabled={true} value={formData.contactUserName} />
+                                    isView ? <span>{formData.contactUserName}</span> : <Input disabled={true} value={formData.contactUserName} />
                                 }
                             </FormItem>
                         </Col>
                         <Col span={12}>
                             <FormItem  {...formLayout} label={'供应商联系方式'}>
                                 {
-                                    isView ? <span>{'1'}</span> : <Input disabled={true} value={formData.contactUserTel} />
+                                    isView ? <span>{formData.contactUserTel}</span> : <Input disabled={true} value={formData.contactUserTel} />
                                 }
                             </FormItem>
                         </Col>

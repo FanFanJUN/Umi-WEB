@@ -1,7 +1,7 @@
 /*
  * @Author:黄永翠
  * @Date: 2020-11-09 09:38:38
- * @LastEditTime: 2020-11-17 21:04:03
+ * @LastEditTime: 2020-11-19 10:27:40
  * @LastEditors: Please set LastEditors
  * @Description:审核实施计划-明细
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\index.js
@@ -41,11 +41,20 @@ const Index = (props) => {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState({
         isView: false,
-        type: 'add',
+        type: 'detail',
         title: '',
     });
 
     const { query } = router.useLocation();
+
+    useEffect(() => {
+        if (query.pageState !== "add") {
+            getDetail();
+        } else {
+            getOriginData();
+        }
+    }, [])
+
     useEffect(() => {
         const { id, pageState } = query;
         if (!pageState) {
@@ -55,26 +64,24 @@ const Index = (props) => {
         switch (pageState) {
             case 'add':
                 setData({ type: pageState, isView: false, title: '审核实施计划管理-新增' });
-                getOriginData();
                 break;
             case 'edit':
                 setData({ type: pageState, id, isView: false, title: '审核实施计划管理-编辑' });
                 break;
             case 'detail':
-                setData({ type: pageState, isView: true, title: `审核实施计划明细: ${editData.reviewPlanMonthCode}` });
-                etDetail();
+                setData({ type: pageState, isView: true, title: `审核实施计划明细: ${editData.reviewImplementPlanCode}` });
                 break;
             case 'change':
-                setData({ type: pageState, isView: true, title: `变更审核实施计划: ${editData.reviewPlanMonthCode}` });
+                setData({ type: pageState, isView: true, title: `变更审核实施计划: ${editData.reviewImplementPlanCode}` });
                 break;
             case 'isInflow':
-                setData({ type: pageState, isView: true, title: `审核实施计划明细: ${editData.reviewPlanMonthCode}` });
+                setData({ type: pageState, isView: true, title: `审核实施计划明细: ${editData.reviewImplementPlanCode}` });
                 break;
             default:
                 setData({ type: pageState, isView: false, title: '审核实施计划管理-新增' });
                 break;
         }
-    }, []);
+    }, [editData]);
     // 编辑和明细时构造treeData
     const buildTreeData = (fatherList, sonList) => {
         if (!fatherList || !sonList) return [];
@@ -108,12 +115,6 @@ const Index = (props) => {
                 let resData = {...res.data};
                 resData.treeData = buildTreeData(resData.fatherList, resData.sonList);
                 resData.reviewTeamGroupBoList = Object.values(resData.reviewTeamGroupBoMap);
-                resData.reviewTeamGroupBoList = resData.reviewTeamGroupBoList.map(item => {
-                    return {
-                        ...item,
-                        lineNum: getRandom(10)
-                    }
-                })
                 console.log("整合的数据", resData);
                 setEditData(resData);
             } else {
@@ -123,13 +124,18 @@ const Index = (props) => {
     }
 
     // 获取明细
-    async function etDetail() {
-        const res = await findDetailsByReviewImplementPlanId({id: query.id});
+    async function getDetail() {
+        setLoading(true);
+        let res = await findDetailsByReviewImplementPlanId({id: query.id});
         if(res.success) {
-            // setEditData(res.data);
+            let resData = {...res.data};
+            resData.treeData = buildTreeData(resData.fatherList, resData.sonList);
+            console.log("获取到的数据res", resData)
+            setEditData(resData);
         } else {
             message.error(res.message);
         }
+        setLoading(false);
     }
 
     const handleSave = (type) => {
@@ -236,16 +242,20 @@ const Index = (props) => {
             originData={editData}
         />
         {/* 拟审核信息 */}
-        <AuditInfo />
+        <AuditInfo 
+            type={data.type} 
+            isView={data.isView}
+            originData={editData} 
+        />
         {/* 审核范围 */}
         <AuditScope treeData={editData.treeData} />
         {/* 审核人员 */}
         <AuditorInfo
-            type="add"
+            type={data.type}
             treeData={editData.treeData}
             wrappedComponentRef={tableRef}
             reviewTeamGroupBoList={editData.reviewTeamGroupBoList ? editData.reviewTeamGroupBoList : []}
-            reviewTypeCode="a"
+            orgLeaderName={editData.leaderName}
             deleteArr={[]}
         />
         {/* 协同人员 */}
@@ -253,7 +263,9 @@ const Index = (props) => {
         {/* 审核计划 */}
         <AuditPlan
             type={data.type}
+            isView={data.isView}
             form={form}
+            originData={editData} 
         />
     </Spin>
 }

@@ -88,3 +88,33 @@ export const AdmissionDetails = (params) => {
     hack: true
   })
 };
+
+// 实物认定计划删除
+export const MaterialObjectDelete = (params) => {
+  return request({
+    headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+    url: `${recommendUrl}/api/samSupplierIdentificationPlanService/deletePlanVo`,
+    params,
+    method: 'POST',
+  })
+};
+
+// 实物认定发布、取消发布
+export const MaterialRelease = params => {
+  return request({
+    headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+    url: `${recommendUrl}/api/samSupplierIdentificationPlanService/publishAndUnpublicPlan`,
+    params,
+    method: 'POST',
+  })
+}
+
+// 确认认定结果
+export const CognizanceRelease = params => {
+  return request({
+    headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+    url: `${recommendUrl}/api/samSupplierIdentificationPlanService/confirmPlan`,
+    params,
+    method: 'POST',
+  })
+}

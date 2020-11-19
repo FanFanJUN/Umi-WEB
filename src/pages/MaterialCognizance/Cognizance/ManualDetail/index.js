@@ -21,7 +21,7 @@ function CreateStrategy() {
 
   useEffect(() => {
     Admissiontails()
-  }, [Admissiontails]);
+  }, []);
 
   async function Admissiontails() {
     triggerLoading(true);
@@ -56,6 +56,7 @@ function CreateStrategy() {
           <div className={styles.title}>基本信息</div>
           <div >
             <BaseInfo
+              editformData={editData}
               wrappedComponentRef={BaseinfoRef}
               isView={true}
             />
@@ -65,6 +66,7 @@ function CreateStrategy() {
           <div className={styles.title}>认定计划信息</div>
           <div >
             <PlanInfo
+              editformData={editData}
               wrappedComponentRef={ModifyinfoRef}
               modifytype={modifytype}
               isView={true}
@@ -75,7 +77,7 @@ function CreateStrategy() {
           <div className={styles.title}>分配计划详情</div>
           <div >
             <Distributioninfo
-              editformData={editData}
+              editformData={editData.detailsVos}
               wrappedComponentRef={DistributionRef}
               isEdit={true}
               headerInfo={true}

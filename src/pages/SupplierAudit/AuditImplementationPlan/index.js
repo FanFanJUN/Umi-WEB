@@ -214,7 +214,7 @@ export default function () {
                 }
             },
         },
-        { title: '审核实施计划号', dataIndex: 'reviewPlanMonthCode', width: 180 },
+        { title: '审核实施计划号', dataIndex: 'reviewImplementPlanCode', width: 180 },
         { title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 250 },
         { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 200 },
         { title: '审核时间', dataIndex: 'reviewDateStart', ellipsis: true, width: 200, render: (text, item)=>(text.slice(0,10) + '~' + item.reviewDateEnd.slice(0,10)) },

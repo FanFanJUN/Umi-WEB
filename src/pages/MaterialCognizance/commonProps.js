@@ -125,15 +125,25 @@ export const OrganizationList = {
 }
 // 制定人
 export const MakerList = {
+  remotePaging: true,
   store: {
+    type: 'POST',
+    autoLoad: false,
     url: `/api-gateway/basic-service/employee/findByUserQueryParam`,
-    type: 'GET'
+    params: {
+      includeFrozen: false,
+      includeSubNode: false,
+      quickSearchProperties: ['code', 'user.userName'],
+      organizationId: '',
+      sortOrders: [{ property: 'code', direction: 'ASC' }],
+    }
   },
+  rowKey: 'userName',
   reader: {
-    name: 'name',
+    name: 'userName',
     field: ['id'],
+    description: 'code',
   },
-  // remotePaging: true,
   placeholder: '请选择制定人'
 }
 //公司
@@ -158,7 +168,7 @@ export const Materieljurisdiction = {
   },
   reader: {
     name: 'name',
-    field: ['value'],
+    field: ['id'],
   },
   treeNodeProps: (node) => {
     if (node.nodeLevel === 0) {
@@ -180,11 +190,11 @@ export const BilltypeList = {
   allowClear: true,
   dataSource: [
     {
-      code: '0',
+      code: '1',
       name: '从准入单创建',
     },
     {
-      code: '1',
+      code: '0',
       name: '手工创建',
     },
   ],

@@ -7,7 +7,7 @@ import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
 import styles from './index.less';
 import { recommendUrl } from '@/utils/commonUrl';
 // import { PCNMasterdatalist} from "../commonProps"
-// import { deleteBatchById,PCNSupplierSubmit} from '../../../services/pcnModifyService'
+import { MaterialObjectDelete, MaterialRelease, CognizanceRelease } from '../../../services/MaterialService'
 import {
     OrganizationList,
     Jurisdictionjurisdiction,
@@ -36,7 +36,7 @@ function SupplierConfigure() {
     const [seniorSearchvalue, setSeniorsearchvalue] = useState('');
     /** 按钮可用性判断变量集合 BEGIN*/
     const [signleRow = {}] = selectedRows;
-    const { smDocunmentStatus: signleFlowStatus, id: flowId, creatorId } = signleRow;
+    const { planningStatus: signleFlowStatus, id: flowId, creatorId } = signleRow;
     // 草稿
     const underWay = signleFlowStatus === 0;
     // 已提交
@@ -47,7 +47,8 @@ function SupplierConfigure() {
     const isSelf = currentUserId === creatorId;
     // 删除草稿
     const isdelete = signleFlowStatus === 'INIT'
-
+    // 认定结果
+    const iscogn = signleFlowStatus === 1
     useEffect(() => {
         window.parent.frames.addEventListener('message', listenerParentClose, false);
         return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
@@ -57,7 +58,7 @@ function SupplierConfigure() {
             title: '单据类型',
             dataIndex: 'documentType',
             key: 'documentType',
-            width: 100,
+            width: 140,
             render: function (text, record, row) {
                 if (text === 0) {
                     return <div>手工单</div>;
@@ -70,7 +71,7 @@ function SupplierConfigure() {
             title: '计划状态',
             dataIndex: 'planningStatus',
             key: 'planningStatus',
-            width: 100,
+            width: 140,
             render: function (text, record, row) {
                 if (text === 0) {
                     return <div>草稿</div>;
@@ -148,7 +149,7 @@ function SupplierConfigure() {
         {
             title: '制定人',
             width: 180,
-            dataIndex: 'createdName',
+            dataIndex: 'creatorName',
         },
         {
             title: '联系电话',
@@ -167,7 +168,7 @@ function SupplierConfigure() {
             url: `${recommendUrl}/api/samSupplierIdentificationPlanService/findByPage`,
             params: {
                 ...searchValue,
-                quickSearchProperties: ['smPcnCode'],
+                quickSearchProperties: ['planNo', 'planDesc'],
                 sortOrders: [
                     {
                         property: 'createdDate',
@@ -220,30 +221,30 @@ function SupplierConfigure() {
     }
     // 删除
     async function handleDelete() {
-        // confirm({
-        //     title: '是否确认删除',
-        //     onOk: async () => {
-        //         let params = selectedRows[0].id;
-        //         const { success, message: msg } = await deleteBatchById({pcnTitleId:params});
-        //         if (success) {
-        //             message.success('删除成功！');
-        //             uploadTable();
-        //         } else {
-        //             message.error(msg);
-        //         }
-        //     },
-        //     onCancel() {
-        //     },
-        // });
+        confirm({
+            title: '是否确认删除',
+            onOk: async () => {
+                let params = selectedRows[0].id;
+                const { success, message: msg } = await MaterialObjectDelete({ planId: params });
+                if (success) {
+                    message.success('删除成功！');
+                    uploadTable();
+                } else {
+                    message.error(msg);
+                }
+            },
+            onCancel() {
+            },
+        });
     }
     // 明细
     function handleCheckDetail() {
         let id = selectedRows[0].id;
         openNewTab(`material/Cognizance/ManualDetail/index?id=${id}&alone=true`, '实物认定计划明细', false)
     }
-    // 提交
-    async function handleSubmit() {
-        let status = selectedRows[0].smDocunmentStatus;
+    // 发布
+    async function handleRelease() {
+        let status = selectedRows[0].planningStatus;
         let id = selectedRows[0].id;
         let statustype = false;
         if (status === 0) {
@@ -253,13 +254,24 @@ function SupplierConfigure() {
             status = 0
             statustype = false
         }
-        // const { success, message: msg } = await PCNSupplierSubmit({pcnTitleId:id,smDocunmentStatus:status});
-        // if (success) {
-        //     message.success(`${statustype ? '提交' : '撤回'}成功！`);
-        //     uploadTable();
-        // } else {
-        //     message.error(msg);
-        // }
+        const { success, message: msg } = await MaterialRelease({ planId: id, planningStatus: status });
+        if (success) {
+            message.success(`${statustype ? '发布' : '取消'}成功！`);
+            uploadTable();
+        } else {
+            message.error(msg);
+        }
+    }
+    // 确认认定结果
+    async function handleConfirm() {
+        let id = selectedRows[0].id;
+        const { success, message: msg } = await CognizanceRelease({ planId: id });
+        if (success) {
+            message.success(`确认认定结果成功！`);
+            uploadTable();
+        } else {
+            message.error(msg);
+        }
     }
     // 快速查询
     function handleQuickSerach(value) {
@@ -268,38 +280,64 @@ function SupplierConfigure() {
     }
     // 处理高级搜索
     function handleAdvnacedSearch(value) {
-        value.smDocunmentStatus = value.materialGroupCode;
-        value.smPcnChangeTypeCode = value.applyPersonName;
-        value.smSupplierCode = value.materialCode;
-        value.smSupplierName = value.materialName;
-        delete value.applyPersonName;
-        delete value.applyPersonName_name;
-        delete value.materialCode;
-        delete value.materialGroupCode;
-        delete value.materialGroupCode_name;
+        console.log(JSON.stringify(value))
+        value.createDepartmentId = value.createDepartmentId;
+        value.materialName = value.materialName;
+        value.supplierName = value.supplierName;
+        value.materielTypeName = value.materielTypeId_name;
+        value.companyName = value.companyName;
+        value.documentType = value.documentType;
+        value.planningStatus = value.planningStatus;
+        value.identificationStatus = value.identificationStatus;
+        delete value.createDepartmentId_name;
+        delete value.materialName_name;
+        delete value.companyName_name;
+        delete value.documentType_name;
+        delete value.planningStatus_name;
+        delete value.identificationStatus_name;
         let searchvalue = [];
         searchvalue.push(value);
         let newdata = [];
         searchvalue.map(item => {
             newdata.push(
                 {
-                    fieldName: 'smSupplierCode',
-                    value: item.smSupplierCode,
+                    fieldName: 'createDepartmentId',
+                    value: item.createDepartmentId,
                     operator: 'EQ'
                 },
                 {
-                    fieldName: 'smSupplierName',
-                    value: item.smSupplierName,
+                    fieldName: 'creatorName',
+                    value: item.creatorName,
                     operator: 'EQ'
                 },
                 {
-                    fieldName: 'smDocunmentStatus',
-                    value: item.smDocunmentStatus,
+                    fieldName: 'supplierName',
+                    value: item.supplierName,
                     operator: 'EQ'
                 },
                 {
-                    fieldName: 'smPcnChangeTypeCode',
-                    value: item.smPcnChangeTypeCode,
+                    fieldName: 'materielTypeName',
+                    value: item.materielTypeName,
+                    operator: 'EQ'
+                },
+                {
+                    fieldName: 'companyName',
+                    value: item.companyName,
+                    operator: 'EQ'
+                },
+                {
+                    fieldName: 'documentType',
+                    value: item.documentType,
+                    operator: 'EQ'
+                },
+                {
+                    fieldName: 'planningStatus',
+                    value: item.planningStatus,
+                    operator: 'EQ'
+                },
+                {
+                    fieldName: 'identificationStatus',
+                    value: item.identificationStatus,
                     operator: 'EQ'
                 }
 
@@ -384,7 +422,7 @@ function SupplierConfigure() {
                         ignore={DEVELOPER_ENV}
                         key='SRM-SM-PCNSUPPLIER-SUBMIT'
                         className={styles.btn}
-                        onClick={handleSubmit}
+                        onClick={handleRelease}
                         disabled={empty || !underWay || !isSelf}
                     >发布
                     </Button>
@@ -396,7 +434,7 @@ function SupplierConfigure() {
                         ignore={DEVELOPER_ENV}
                         key='SRM-SM-PCNSUPPLIER-WITHDRAW'
                         className={styles.btn}
-                        onClick={handleSubmit}
+                        onClick={handleRelease}
                         disabled={empty || !completed || !isSelf}
                     >取消
                     </Button>
@@ -408,8 +446,8 @@ function SupplierConfigure() {
                         ignore={DEVELOPER_ENV}
                         key='SRM-SM-PCNSUPPLIER-WITHDRAW'
                         className={styles.btn}
-                        onClick={handleSubmit}
-                        disabled={empty || !completed || !isSelf}
+                        onClick={handleConfirm}
+                        disabled={empty || !isSelf || !iscogn}
                     >确认认定结果
                     </Button>
                 )
@@ -431,14 +469,14 @@ function SupplierConfigure() {
     )
     // 高级查询配置
     const formItems = [
-        { title: '制定计划部门', key: 'materialCoded', type: 'tree', props: OrganizationList },
+        { title: '制定计划部门', key: 'createDepartmentId', type: 'tree', props: OrganizationList },
         { title: '制定人', key: 'materialName', type: 'list', props: MakerList },
-        { title: '供应商名称', key: 'materialCode', props: { placeholder: '输入供应商名称' } },
-        { title: '物料分类', key: 'materialName', type: 'tree', props: Materieljurisdiction },
-        { title: '公司名称', key: 'materialCode', type: 'list', props: Jurisdictionjurisdiction },
-        { title: '单据类型', key: 'materialName', type: 'list', props: BilltypeList },
-        { title: '计划状态', key: 'materialCode', type: 'list', props: PlantypeList },
-        { title: '认定结果', key: 'materialName', type: 'list', props: Identificationresults }
+        { title: '供应商名称', key: 'supplierName', props: { placeholder: '输入供应商名称' } },
+        { title: '物料分类', key: 'materielTypeId', type: 'tree', props: Materieljurisdiction },
+        { title: '公司名称', key: 'companyName', type: 'list', props: Jurisdictionjurisdiction },
+        { title: '单据类型', key: 'documentType', type: 'list', props: BilltypeList },
+        { title: '计划状态', key: 'planningStatus', type: 'list', props: PlantypeList },
+        { title: '认定结果', key: 'identificationStatus', type: 'list', props: Identificationresults }
     ];
     return (
         <>
