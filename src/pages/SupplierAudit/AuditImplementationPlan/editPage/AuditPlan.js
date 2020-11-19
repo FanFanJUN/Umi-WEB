@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:49:50
- * @LastEditTime: 2020-11-17 20:52:43
+ * @LastEditTime: 2020-11-19 09:51:21
  * @LastEditors: Please set LastEditors
  * @Description: I审核实施计划-审核计划
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\AuditPlan.js
@@ -41,21 +41,25 @@ const AuditPlan = (props) => {
     const { getFieldDecorator, setFieldsValue } = form;
 
     useEffect(()=>{
-        reviewStandard().then(res => {
-            let listObj = {};
-            res.data.forEach(item => {
-                listObj[item.code] = {
-                    standardCode: item.code,
-                    standardName: item.name,
-                };
+        if(type === "add") {
+            reviewStandard().then(res => {
+                let listObj = {};
+                res.data.forEach(item => {
+                    listObj[item.code] = {
+                        standardCode: item.code,
+                        standardName: item.name,
+                    };
+                })
+                setListObj(listObj);
+                setSelecteList(res.data);
+                // 默认全部选中审核准则
+                setFieldsValue({
+                    reviewPlanStandardBos: Object.values(listObj)
+                })
             })
-            setListObj(listObj);
-            setSelecteList(res.data);
-            // 默认全部选中审核准则
-            setFieldsValue({
-                reviewPlanStandardBos: Object.values(listObj)
-            })
-        })
+        } else {
+            setSelecteList(originData.reviewPlanStandardBos ? originData.reviewPlanStandardBos : []);
+        }
     }, [])
 
     const handleChange = (values) => {
@@ -74,7 +78,13 @@ const AuditPlan = (props) => {
                     <Row>
                         <Col span={12}>
                             <FormItem label="审核准则" {...formLayout}>
-                                {
+                                { isView ? <div>
+                                    {
+                                        seleteList.map(item => <Row style={{margin: "6px 0"}} key={item.code}>
+                                        <span>{item.name}</span>
+                                    </Row>)
+                                    }
+                                </div> :
                                     getFieldDecorator("reviewPlanStandardBos"),
                                     getFieldDecorator("selected", {
                                         initialValue: seleteList.map(item => item.code),
@@ -101,6 +111,7 @@ const AuditPlan = (props) => {
                                         initialValue: null,
                                         rules: [{ required: true, message: '审核时间不能为空',},]
                                     })(
+                                        isView ? <span>{originData.reviewDateStart}</span> :
                                         <DatePicker placeholder="请选择" style={{width: "100%"}} />
                                     )
                                 }
@@ -113,6 +124,7 @@ const AuditPlan = (props) => {
                                         initialValue: null,
                                         rules: [{ required: true, message: '审核时间不能为空',},]
                                     })(
+                                        isView ? <span>{originData.reviewDateEnd}</span> :
                                         <DatePicker placeholder="请选择" style={{width: "100%"}}/>
                                     )
                                 }

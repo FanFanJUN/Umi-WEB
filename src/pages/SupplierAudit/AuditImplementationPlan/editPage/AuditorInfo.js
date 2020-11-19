@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:44:12
- * @LastEditTime: 2020-11-17 16:44:30
+ * @LastEditTime: 2020-11-19 09:14:14
  * @LastEditors: Please set LastEditors
  * @Description: 审核实施计划-审核人员
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\AuditorInfo.js
@@ -53,11 +53,13 @@ const fieldsConfig = [
 const AuditorInfo = forwardRef((props, ref) => {
 
   useImperativeHandle(ref, () => ({
-    getTableList:() => teamData.dataSource
+    getTableList: () => teamData.dataSource
   }));
 
   const teamTableRef = useRef(null);
   const contentTableRef = useRef(null);
+
+  const { reviewTeamGroupBoList, type, orgLeaderName } = props;
 
   const [teamData, setTeamData] = useState({
     dataSource: [],
@@ -84,8 +86,16 @@ const AuditorInfo = forwardRef((props, ref) => {
   });
 
   useEffect(() => {
-    setTeamData(v => ({ ...v, dataSource: props.reviewTeamGroupBoList }));
-  }, [props.reviewTeamGroupBoList]);
+    setTeamData(v => ({
+      ...v,
+      dataSource: reviewTeamGroupBoList.map(item => {
+        return {
+          ...item,
+          lineNum: getRandom(10)
+        }
+      })
+    }));
+  }, [reviewTeamGroupBoList]);
 
   useEffect(() => {
     if (contentData.dataSource && contentData.dataSource.length !== 0) {
@@ -314,7 +324,7 @@ const AuditorInfo = forwardRef((props, ref) => {
           <Row>
             <Col span={8}>
               <FormItem label="审核小组组长" {...formLayout}>
-                <Input disabled={true} value={JSON.parse(sessionStorage.getItem('selectedMonthLIne'))[0].leaderName} />
+                <Input disabled={true} value={type === "add" ? JSON.parse(sessionStorage.getItem('selectedMonthLIne'))[0].leaderName : orgLeaderName} />
               </FormItem>
             </Col>
           </Row>
