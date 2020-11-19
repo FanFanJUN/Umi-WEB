@@ -1,23 +1,27 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ComboList, ComboTree, ExtModal, ExtTable } from 'suid';
-import { ApplicableStateProps } from '../../../QualitySynergy/commonProps';
-import { Checkbox } from 'antd';
+import { ExtModal, ExtTable } from 'suid';
+import { Checkbox, message, Button } from 'antd';
+import { CheckGroupLeadersOpinion } from '../../AuditRequirementsManagement/commonApi';
 
 const CheckLeaderOpinion = (props) => {
 
+  const demandColumns = [
+    { title: '被退回人', dataIndex: 'memberName', width: 150 },
+    { title: '指标', dataIndex: 'ruleName', ellipsis: true, width: 150 },
+  ].map(item => ({ ...item, align: 'center' }));
+
   const columns = [
-    { title: '被退回人', dataIndex: 'reviewRequirementCode', width: 150 },
-    { title: '指标', dataIndex: 'reviewRequirementName', ellipsis: true, width: 150 },
-    { title: '意见', dataIndex: 'applyCorporationName', ellipsis: true, width: 400 },
-    { title: '提出人', dataIndex: 'applyDepartmentName', ellipsis: true, width: 150 },
-    { title: '提出时间', dataIndex: 'orgName', width: 200,},
+    { title: '意见', dataIndex: 'suggestion', ellipsis: true, width: 400 },
+    { title: '提出人', dataIndex: 'leaderName', ellipsis: true, width: 150 },
+    { title: '提出时间', dataIndex: 'proposeTime', width: 200 },
   ].map(item => ({ ...item, align: 'center' }));
 
   const tableRef = useRef(null);
 
-  const { type, editData, visible } = props;
+  const { visible, type, reviewImplementPlanCode } = props;
 
   const [data, setData] = useState({
+    loading: false,
     checked: true,
     dataSource: [],
     selectedRowKeys: [],
@@ -26,24 +30,33 @@ const CheckLeaderOpinion = (props) => {
 
   useEffect(() => {
     if (props.visible) {
-      getTableData()
+      getTableData(props.id);
     }
-  }, [props.visible])
+  }, [props.visible]);
 
-  const getTableData = () => {
-
-  }
+  const getTableData = (reviewImplementManagementId) => {
+    setData(v => ({ ...v, loading: true }));
+    CheckGroupLeadersOpinion({
+      ownMe: data.checked,
+      reviewImplementManagementId,
+      reviewImplementPlanCode,
+    }).then(res => {
+      if (res.success) {
+        setData(v => ({ ...v, dataSource: res.data, loading: false }));
+      } else {
+        message.error(res.message);
+      }
+    }).catch(err => {
+      message.error(err.message);
+    });
+  };
 
   const onCancel = () => {
     props.onCancel();
   };
 
-  const onOk = () => {
-
-  };
-
   const clearSelected = () => {
-
+    setData(v => ({ ...v, dataSource: [] }));
   };
 
   const handleSelectedRows = (keys, rows) => {
@@ -51,8 +64,9 @@ const CheckLeaderOpinion = (props) => {
   };
 
   const onChange = (e) => {
-    setData(v => ({...v, checked: e.target.checked}))
-  }
+    setData(v => ({ ...v, checked: e.target.checked }));
+    getTableData();
+  };
 
   return (
     <ExtModal
@@ -61,16 +75,19 @@ const CheckLeaderOpinion = (props) => {
       visible={visible}
       title={'查看组长意见'}
       onCancel={onCancel}
-      onOk={onOk}
+      footer={<Button type='primary' onClick={onCancel}>关闭</Button>}
       destroyOnClose={true}
       afterClose={clearSelected}
     >
-      <div>
-        <Checkbox onChange={onChange} checked={data.checked}>仅我的</Checkbox>
-      </div>
+      {
+        type === 'demand' && <div>
+          <Checkbox onChange={onChange} checked={data.checked}>仅我的</Checkbox>
+        </div>
+      }
       <ExtTable
         style={{ marginTop: '10px' }}
         rowKey={(v) => v.lineNum}
+        loading={data.loading}
         allowCancelSelect={true}
         showSearch={false}
         remotePaging
@@ -78,7 +95,7 @@ const CheckLeaderOpinion = (props) => {
         size='small'
         onSelectRow={handleSelectedRows}
         selectedRowKeys={data.selectedRowKeys}
-        columns={columns}
+        columns={type === 'demand' ? [...demandColumns, ...columns] : columns}
         ref={tableRef}
         dataSource={data.dataSource}
       />

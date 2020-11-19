@@ -171,7 +171,7 @@ const ProblemAdd = (props) => {
                   },
                 ],
               })(
-                <DatePicker />
+                <DatePicker style={{width: '100%'}}/>
               )
             }
           </FormItem>

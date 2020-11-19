@@ -96,3 +96,24 @@ export const WithdrawResultsEntryApi = async (params = {}) => {
     params,
   });
 };
+
+// 查看组长意见
+export const CheckGroupLeadersOpinion = async (params = {}) => {
+  console.log(params)
+  const url = `${recommendUrl}/api/reviewImplementManagementService/findLeaderSuggestion`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+};
+
+// 问题管理
+export const IssuesManagementApi = async (params = {}) => {
+  const url = `${recommendUrl}/api/reviewProblemService/findProblemList`;
+  return request({
+    url,
+    method: 'GET',
+    params
+  });
+};

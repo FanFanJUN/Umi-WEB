@@ -45,7 +45,7 @@ const VerificationResults = (props) => {
           <ScoreOverview/>
         </TabPane>
         <TabPane tab="问题管理" key="2">
-          <IssuesManagement/>
+          <IssuesManagement type={'demand'}/>
         </TabPane>
         <TabPane tab="审核意见" key="3">
           <AuditOpinion

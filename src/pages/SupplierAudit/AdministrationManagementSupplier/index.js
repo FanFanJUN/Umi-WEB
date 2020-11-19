@@ -18,11 +18,9 @@ import {
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
 import { materialClassProps } from '../../../utils/commonProps';
-import ResultsEntry from './component/ResultsEntry';
-import GenerationEntry from './component/GenerationEntry';
-import CheckLeaderOpinion from './component/CheckLeaderOpinion';
-import VerificationResults from './component/VerificationResults';
 import { WithdrawResultsEntryApi } from '../AuditRequirementsManagement/commonApi';
+import CheckLeaderOpinion from '../AdministrationManagementDemand/component/CheckLeaderOpinion';
+import IssuesManagementModal from './component/IssuesManagementModal';
 
 const { authAction } = utils;
 const { Search } = Input;
@@ -51,10 +49,9 @@ export default function() {
   };
 
   const [data, setData] = useState({
-    resultAddVisible: false,
-    generationEntryVisible: false,
+    issuesManagementVisible: false,
     checkLeaderOpinionVisible: false,
-    verificationResultsVisible: false,
+    selfAssessmentVisible: false,
     spinning: false,
     reviewImplementPlanCode: '',
     resultsId: '',
@@ -72,17 +69,14 @@ export default function() {
 
   const redirectToPage = (type) => {
     switch (type) {
-      case 'resultAdd':
-        setData(v => ({ ...v, resultAddVisible: true }));
-        break;
-      case 'generationEntry':
-        setData(v => ({ ...v, generationEntryVisible: true }));
+      case 'selfAssessment':
+        setData(v => ({ ...v, selfAssessmentVisible: true }));
         break;
       case 'checkLeaderOpinion':
         setData(v => ({ ...v, checkLeaderOpinionVisible: true }));
         break;
-      case 'verificationResults':
-        setData(v => ({ ...v, verificationResultsVisible: true }));
+      case 'issuesManagement':
+        setData(v => ({ ...v, issuesManagementVisible: true }));
         break;
       case 'recall':
         handleRecall();
@@ -156,21 +150,12 @@ export default function() {
     {
       authAction(<Button
         type='primary'
-        onClick={() => redirectToPage('resultAdd')}
+        onClick={() => redirectToPage('selfAssessment')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={data.selectedRowKeys.length === 0}
         key='TECHNICAL_DATA_SHARING_ADD'
-      >结果录入</Button>)
-    }
-    {
-      authAction(<Button
-        onClick={() => redirectToPage('generationEntry')}
-        className={styles.btn}
-        ignore={DEVELOPER_ENV}
-        disabled={data.selectedRowKeys.length === 0}
-        key='TECHNICAL_DATA_SHARING_EDIT'
-      >代录入</Button>)
+      >自评</Button>)
     }
     {
       authAction(<Button
@@ -188,23 +173,16 @@ export default function() {
         ignore={DEVELOPER_ENV}
         key='TECHNICAL_DATA_SHARING_DETAIL'
         disabled={data.selectedRowKeys.length === 0}
-      >查看组长意见</Button>)
+      >查看退回信息</Button>)
     }
     {
       authAction(<Button
-        onClick={() => redirectToPage('verificationResults')}
+        onClick={() => redirectToPage('issuesManagement')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
+        disabled={data.selectedRowKeys.length === 0}
         key='TECHNICAL_DATA_SHARING_DETAIL'
-      >审核结果确认</Button>)
-    }
-    {
-      authAction(<Button
-        onClick={() => redirectToPage('detail')}
-        className={styles.btn}
-        ignore={DEVELOPER_ENV}
-        key='TECHNICAL_DATA_SHARING_DETAIL'
-      >审核结果查看</Button>)
+      >问题管理</Button>)
     }
   </>;
 
@@ -280,28 +258,16 @@ export default function() {
           />
         }
       </AutoSizeLayout>
-      <ResultsEntry
-        onOk={resultsEntryOk}
-        id={data.resultsId}
-        onCancel={() => setData(v => ({ ...v, resultAddVisible: false }))}
-        visible={data.resultAddVisible}
-      />
-      <GenerationEntry
-        onOk={generationOk}
-        onCancel={() => setData(v => ({ ...v, generationEntryVisible: false }))}
-        reviewImplementPlanCode={data.reviewImplementPlanCode}
-        visible={data.generationEntryVisible}
-      />
       <CheckLeaderOpinion
         onCancel={() => setData(v => ({ ...v, checkLeaderOpinionVisible: false }))}
         id={data.resultsId}
-        type={'demand'}
         reviewImplementPlanCode={data.reviewImplementPlanCode}
         visible={data.checkLeaderOpinionVisible}
       />
-      <VerificationResults
-        onCancel={() => setData(v => ({ ...v, verificationResultsVisible: false }))}
-        visible={data.verificationResultsVisible}
+      <IssuesManagementModal
+        onCancel={() => setData(v => ({ ...v, issuesManagementVisible: false }))}
+        reviewImplementPlanCode={data.reviewImplementPlanCode}
+        visible={data.issuesManagementVisible}
       />
     </Fragment>
   );
