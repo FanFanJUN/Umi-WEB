@@ -1,13 +1,16 @@
 import React, { useRef, useState } from 'react';
 import { ComboList, ComboTree, ExtModal, ExtTable } from 'suid';
 import styles from './index.less';
-import { Button, Col, Form, Input, InputNumber, Row } from 'antd';
+import { Button, Col, DatePicker, Form, Input, InputNumber, Row } from 'antd';
 import BU from '../../../QualitySynergy/mainData/BU';
 import {
-  ApplyOrganizationProps, AuditTypeManagementConfig,
+  ApplyOrganizationProps, AuditTypeManagementConfig, PersonnelTypeConfig,
   SelectionStrategyConfig,
   UserByDepartmentNameConfig,
 } from '../../mainData/commomService';
+import { OrderSeverityConfig } from '../../AuditRequirementsManagement/commonApi';
+import moment from 'moment/moment';
+import { getRandom } from '../../../QualitySynergy/commonProps';
 
 const FormItem = Form.Item;
 
@@ -47,6 +50,15 @@ const ProblemAdd = (props) => {
   const onOk = () => {
     props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
+        if (type === 'add') {
+          values.lineNum = getRandom(10)
+          values.whetherDeleted = false
+          values.demandCompletionTime = moment(values.demandCompletionTime).format('YYYY-MM-DD')
+        } else {
+          values.demandCompletionTime =  values.demandCompletionTime._d ? moment(values.demandCompletionTime).format('YYYY-MM-DD') : values.demandCompletionTime
+          values = Object.assign(editData, values)
+          console.log(Object.assign(editData, values))
+        }
         props.onOk(values);
       }
     });
@@ -84,8 +96,8 @@ const ProblemAdd = (props) => {
         <Col span={12}>
           <FormItem {...formLongLayout} label={'部门/过程'}>
             {
-              getFieldDecorator('departmentProcess', {
-                initialValue: type === 'add' ? '' : editData.departmentProcess,
+              getFieldDecorator('department', {
+                initialValue: type === 'add' ? '' : editData.department,
                 rules: [
                   {
                     required: true,
@@ -103,8 +115,8 @@ const ProblemAdd = (props) => {
         <Col span={24}>
           <FormItem {...formLayout} label={'问题描述'}>
             {
-              getFieldDecorator('problemDescription', {
-                initialValue: type === 'add' ? '' : editData.problemDescription,
+              getFieldDecorator('problemDescribe', {
+                initialValue: type === 'add' ? '' : editData.problemDescribe,
                 rules: [
                   {
                     required: true,
@@ -118,12 +130,15 @@ const ProblemAdd = (props) => {
           </FormItem>
         </Col>
       </Row>
+      <Col span={0}>
+        {hideFormItem('severity', type === 'add' ? '' : editData.severity)}
+      </Col>
       <Row>
         <Col span={12}>
           <FormItem {...formLongLayout} label={'严重程度'}>
             {
-              getFieldDecorator('orderSeverity', {
-                initialValue: type === 'add' ? '' : editData.orderSeverity,
+              getFieldDecorator('severityName', {
+                initialValue: type === 'add' ? '' : editData.severityName,
                 rules: [
                   {
                     required: true,
@@ -131,13 +146,13 @@ const ProblemAdd = (props) => {
                   },
                 ],
               })(
-                <ComboTree
-                  allowClear={true}
+                <ComboList
                   style={{ width: '100%' }}
                   form={form}
-                  name={'orderSeverity'}
-                  {...AuditTypeManagementConfig}
-                />,
+                  field={['severity']}
+                  name={'severityName'}
+                  {...OrderSeverityConfig}
+                />
               )
             }
           </FormItem>
@@ -147,8 +162,8 @@ const ProblemAdd = (props) => {
         <Col span={12}>
           <FormItem {...formLongLayout} label={'要求整改完成日期'}>
             {
-              getFieldDecorator('requestCompletionDateRectification', {
-                initialValue: type === 'add' ? '' : editData.requestCompletionDateRectification,
+              getFieldDecorator('demandCompletionTime', {
+                initialValue: type === 'add' ? null : moment(editData.demandCompletionTime),
                 rules: [
                   {
                     required: true,
@@ -156,13 +171,7 @@ const ProblemAdd = (props) => {
                   },
                 ],
               })(
-                <ComboTree
-                  allowClear={true}
-                  style={{ width: '100%' }}
-                  form={form}
-                  name={'requestCompletionDateRectification'}
-                  {...AuditTypeManagementConfig}
-                />,
+                <DatePicker style={{width: '100%'}}/>
               )
             }
           </FormItem>

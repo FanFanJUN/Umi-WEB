@@ -1,17 +1,22 @@
 import React, { useRef, useState } from 'react';
-import { Button, Tabs } from 'antd';
+import { Button, message, Tabs } from 'antd';
 import { ComboList, ComboTree, ExtModal, ExtTable } from 'suid';
 import ScoreOverview from './component/ScoreOverview';
 import IssuesManagement from './component/IssuesManagement';
 import AuditOpinion from './component/AuditOpinion';
+import { VerificationAuditOpinionApi } from '../../AuditRequirementsManagement/commonApi';
 
 const { TabPane } = Tabs;
 
 const VerificationResults = (props) => {
 
-  const { type, editData, visible } = props;
+  const { type, editData, visible, reviewImplementPlanCode } = props;
 
-  const [data, setData] = useState({});
+  const [data, setData] = useState({
+    activeKey: '1',
+    // 问题管理表格数据
+    issuesArr: [],
+  });
 
   const onCancel = () => {
     props.onCancel();
@@ -25,8 +30,26 @@ const VerificationResults = (props) => {
 
   };
 
-  const callback = (value) => {
-    console.log(value);
+  const issuesChange = (value) => {
+    setData(v => ({ ...v, issuesArr: value }));
+  };
+
+  const onTabClick = (value) => {
+    // if (value === '3') {
+    //   VerificationAuditOpinionApi({
+    //     reviewImplementPlanCode,
+    //   }).then(res => {
+    //     if (res.success) {
+    //       setData(v => ({ ...v, activeKey: value.toString() }));
+    //     } else {
+    //       message.error(res.message)
+    //     }
+    //   }).catch(err => {
+    //     message.error(err.message)
+    //   })
+    // } else {
+      setData(v => ({ ...v, activeKey: value.toString() }));
+    // }
   };
 
   return (
@@ -40,12 +63,19 @@ const VerificationResults = (props) => {
       destroyOnClose={true}
       afterClose={clearSelected}
     >
-      <Tabs defaultActiveKey="1" onChange={callback}>
+      <Tabs defaultActiveKey={'1'} activeKey={data.activeKey} onTabClick={onTabClick}>
         <TabPane tab="评分概览" key="1">
-          <ScoreOverview/>
+          <ScoreOverview
+            reviewImplementPlanCode={props.reviewImplementPlanCode}
+          />
         </TabPane>
         <TabPane tab="问题管理" key="2">
-          <IssuesManagement/>
+          <IssuesManagement
+            id={props.id}
+            reviewImplementPlanCode={props.reviewImplementPlanCode}
+            onChange={issuesChange}
+            type={'demand'}
+          />
         </TabPane>
         <TabPane tab="审核意见" key="3">
           <AuditOpinion

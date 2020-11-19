@@ -1,9 +1,12 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ComboList, ComboTree, ExtModal, ExtTable } from 'suid';
 import styles from './index.less';
 import { Button, Col, Form, Input, InputNumber, Row } from 'antd';
 import BU from '../../../QualitySynergy/mainData/BU';
-import { ApplyOrganizationProps } from '../../mainData/commomService';
+import { ApplyOrganizationProps, EvaluationSystemConfig } from '../../mainData/commomService';
+import { ActualGraderConfig } from '../../AuditRequirementsManagement/commonApi';
+import { getRandom } from '../../../QualitySynergy/commonProps';
+import moment from 'moment/moment';
 
 const FormItem = Form.Item;
 
@@ -27,24 +30,37 @@ const formLayout = {
 
 const GenerationEntry = (props) => {
 
-  const { type, editData, visible, form } = props;
+  const { visible, form, reviewImplementPlanCode } = props;
 
-  const { getFieldDecorator, setFieldsValue, getFieldValue } = props.form;
-
-  const [data, setData] = useState({
-  });
+  const { getFieldDecorator } = props.form;
 
   const onCancel = () => {
     props.onCancel();
   };
 
   const onOk = () => {
-
+    props.form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        props.onOk(values.id);
+      }
+    });
   };
 
   const clearSelected = () => {
 
   };
+
+  const hideFormItem = (name, initialValue) => (
+    <FormItem>
+      {
+        getFieldDecorator(name, {
+          initialValue: initialValue,
+        })(
+          <Input type={'hidden'} />,
+        )
+      }
+    </FormItem>
+  );
 
   return (
     <ExtModal
@@ -58,10 +74,13 @@ const GenerationEntry = (props) => {
       afterClose={clearSelected}
     >
       <Row>
+        <Col span={0}>
+          {hideFormItem('id', '')}
+        </Col>
         <Col span={12}>
           <FormItem {...formLongLayout} label={'实际打分人员'}>
             {
-              getFieldDecorator('attachRelatedIds', {
+              getFieldDecorator('leaderName', {
                 initialValue: '',
                 rules: [
                   {
@@ -70,12 +89,17 @@ const GenerationEntry = (props) => {
                   },
                 ],
               })(
-                <ComboTree
+                <ComboList
                   allowClear={true}
                   style={{ width: '100%' }}
                   form={form}
-                  name={'applyDepartmentName'}
-                  {...ApplyOrganizationProps}
+                  defaultExpandAll={false}
+                  name={'leaderName'}
+                  field={['id']}
+                  cascadeParams={{
+                    reviewImplementPlanCode,
+                  }}
+                  {...ActualGraderConfig}
                 />,
               )
             }

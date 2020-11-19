@@ -150,6 +150,9 @@ export default [
       { path: '/supplierAudit/AuditImplementationPlan', component: './SupplierAudit/AuditImplementationPlan', title: '审核实施计划管理' },
       { path: '/supplierAudit/AuditImplementationPlan/editPage', component: './SupplierAudit/AuditImplementationPlan/editPage', title: '审核实施计划管理-新增' },
       { path: '/supplierAudit/AdministrationManagementDemand', component: './SupplierAudit/AdministrationManagementDemand', title: '实施审核管理-需求方' },
+
+      { path: '/supplierAudit/AdministrationManagementSupplier', component: './SupplierAudit/AdministrationManagementSupplier', title: '实施审核管理-供应商' },
+
       { path: '/supplierAudit/AuditReportManagement/index', component: './SupplierAudit/AuditReportManagement', title: '审核报告管理' },
       { path: '/supplierAudit/AuditReportManagementAdd', component: './SupplierAudit/AuditReportManagement/editPage', title: '审核报告管理新增' },
       { path: '/supplierAudit/AuditReportManagementEdit', component: './SupplierAudit/AuditReportManagement/editPage', title: '审核报告管理编辑' },

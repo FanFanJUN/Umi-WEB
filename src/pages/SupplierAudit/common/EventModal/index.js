@@ -139,7 +139,7 @@ const EventModal = (props) => {
                                              message: `请输入${item.name}`
                                            },
                                          ],
-                                       })(<ComboList form={form} field={item.field} name={item.code} {...item.config} />)
+                                       })(<ComboList key={item.code} form={form} field={item.field} name={item.code} {...item.config} />)
                                      }
                                    </FormItem>
                                  </Col>
