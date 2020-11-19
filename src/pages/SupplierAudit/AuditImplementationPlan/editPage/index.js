@@ -1,7 +1,7 @@
 /*
  * @Author:黄永翠
  * @Date: 2020-11-09 09:38:38
- * @LastEditTime: 2020-11-19 10:15:09
+ * @LastEditTime: 2020-11-19 10:27:40
  * @LastEditors: Please set LastEditors
  * @Description:审核实施计划-明细
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\index.js
@@ -50,6 +50,8 @@ const Index = (props) => {
     useEffect(() => {
         if (query.pageState !== "add") {
             getDetail();
+        } else {
+            getOriginData();
         }
     }, [])
 
@@ -62,7 +64,6 @@ const Index = (props) => {
         switch (pageState) {
             case 'add':
                 setData({ type: pageState, isView: false, title: '审核实施计划管理-新增' });
-                getOriginData();
                 break;
             case 'edit':
                 setData({ type: pageState, id, isView: false, title: '审核实施计划管理-编辑' });

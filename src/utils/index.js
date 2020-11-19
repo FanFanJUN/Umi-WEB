@@ -10,16 +10,18 @@ import moment from "moment";
 const { getUUID, storage } = utils;
 
 export function closeCurrent() {
-  if (window.self.frameElement) {
-    let currentId = window.self.frameElement.id;
-    if (window.top.homeView && typeof window.top.homeView.getTabPanel === 'function') {
-      window.top.homeView.getTabPanel().close(currentId);
+  request.get('/srm-baf-web/srmCommon/refreshGt', { username: getUserInfo().account }).finally(() => {
+    if (window.self.frameElement) {
+      let currentId = window.self.frameElement.id;
+      if (window.top.homeView && (typeof window.top.homeView.getTabPanel) === 'function') {
+        window.top.homeView.getTabPanel().close(currentId);
+      } else {
+        mainTabAction.tabClose(currentId);
+      }
     } else {
-      mainTabAction.tabClose(currentId);
+      window.close()
     }
-  } else {
-    window.close()
-  }
+  })
 }
 
 const defaultAppCode = [

@@ -36,7 +36,7 @@ const BaseCondition = ({ form, updateGlobalStatus }) => {
         await setData({ ...data });
         await form.setFieldsValue({
           ...data,
-          setUpTime: moment(data.setUpTime)
+          setUpTime: !!data?.setUpTime ? moment(data.setUpTime) : undefined
         })
         await setProData(data.productCertifications)
         await setOtherData(data.otherCertifications)
