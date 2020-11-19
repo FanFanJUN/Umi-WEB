@@ -91,6 +91,16 @@ const Index = (props) => {
         if (lineData.length === 0) {
             message.info('请至少添加一条行信息');
             return false;
+        } else {
+            let reviewPlanMonthLinenum = "";
+            let tag = lineData.some(item => {
+                if(!item.reviewWayId || !item.reviewOrganizedWayId)reviewPlanMonthLinenum = item.reviewPlanMonthLinenum
+                return (!item.reviewWayId || !item.reviewOrganizedWayId)
+            })
+            if(tag) {
+                message.error("行" + reviewPlanMonthLinenum + "：审核方式或审核组织形式不能为空，请进行编辑完善");
+                return false;
+            }
         }
         // 变更时
         if (query.pageState === "change") {
@@ -166,6 +176,7 @@ const Index = (props) => {
     // 提交审核验证
     const handleBeforeStartFlow = async () => {
         const id = await handleSave("publish");
+        if(!id) return false;
         console.log("获取到的id是多少", id)
         return new Promise(function (resolve, reject) {
             if (id) {

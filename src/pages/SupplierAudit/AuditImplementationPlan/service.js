@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-11-09 09:32:51
- * @LastEditTime: 2020-11-19 17:38:46
+ * @LastEditTime: 2020-11-19 19:19:13
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\service.js
@@ -41,6 +41,16 @@ export async function addReviewImplementPlan(params) {
 // 审核实施计划-编辑
 export async function updateReviewImplementPlan(params) {
     const requestUrl = `${recommendUrl}/api/reviewImplementPlanService/updateReviewImplementPlan`;
+    return request({
+        url: requestUrl,
+        method: 'POST',
+        data: params,
+    });
+}
+
+// 审核实施计划-变更
+export async function changeReviewImplementPlanInsert(params) {
+    const requestUrl = `${recommendUrl}/api/reviewImplementPlanChangeService/insert`;
     return request({
         url: requestUrl,
         method: 'POST',

@@ -123,9 +123,7 @@ export default function () {
             cancelText: '否',
             onOk: () => {
                 console.log([...data.selectedRowKeys])
-                deleteReviewImplementPlan({
-                    ids: data.selectedRowKeys,
-                }).then(res => {
+                deleteReviewImplementPlan(data.selectedRowKeys).then(res => {
                     if (res.success) {
                         message.success(res.message);
                         tableRef.current.manualSelectedRows();

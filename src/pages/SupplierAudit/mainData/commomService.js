@@ -220,6 +220,7 @@ export const UserByDepartmentNameConfig = {
 export const ApplyOrganizationProps = {
   store: {
     url: `${baseUrl}/basic/listAllOrgnazationWithDataAuth`,
+    autoLoad: true,
   },
   rowKey: 'code',
   reader: {
