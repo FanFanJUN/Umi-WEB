@@ -323,6 +323,7 @@ const Team = (props) => {
   const getLeftTreeData = () => {
     if (contentData.selectedRowKeys && contentData.selectedRowKeys.length !== 0) {
       let arr = [...props.treeData, ...data.defaultSystem];
+      console.log(props.treeData)
       if (arr.length > 1) {
         arr = duplicateRemoval(arr, 'key');
       }

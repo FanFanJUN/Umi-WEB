@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ComboList, ComboTree, ExtModal, ExtTable } from 'suid';
 import { ApplicableStateProps } from '../../../QualitySynergy/commonProps';
 import { Checkbox } from 'antd';
@@ -23,6 +23,16 @@ const CheckLeaderOpinion = (props) => {
     selectedRowKeys: [],
     selectedRowRows: [],
   });
+
+  useEffect(() => {
+    if (props.visible) {
+      getTableData()
+    }
+  }, [props.visible])
+
+  const getTableData = () => {
+
+  }
 
   const onCancel = () => {
     props.onCancel();

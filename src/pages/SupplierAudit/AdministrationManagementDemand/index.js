@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, Fragment } from 'react';
 import Header from '../../../components/Header';
 import AdvancedForm from '../../../components/AdvancedForm';
-import { Button, Checkbox, Input } from 'antd';
+import { Button, Checkbox, Input, message } from 'antd';
 import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
 import { ExtTable, utils, WorkFlow } from 'suid';
 import {
@@ -22,14 +22,19 @@ import ResultsEntry from './component/ResultsEntry';
 import GenerationEntry from './component/GenerationEntry';
 import CheckLeaderOpinion from './component/CheckLeaderOpinion';
 import VerificationResults from './component/VerificationResults';
+import { WithdrawResultsEntryApi } from '../AuditRequirementsManagement/commonApi';
 
 const { authAction } = utils;
 const { Search } = Input;
 
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 
-export default function() {
+const managementStateConfig = {
+  'NOT_COMPLETED': '未填报',
+  'COMPLETED': '已填报',
+};
 
+export default function() {
 
   const tableRef = useRef(null);
 
@@ -49,8 +54,10 @@ export default function() {
     resultAddVisible: false,
     generationEntryVisible: false,
     checkLeaderOpinionVisible: false,
-    verificationResultsVisible: true,
+    verificationResultsVisible: false,
     spinning: false,
+    reviewImplementPlanCode: '',
+    resultsId: '',
     flowId: '',
     checkedCreate: false,
     checkedDistribution: false,
@@ -59,6 +66,8 @@ export default function() {
     selectedRowKeys: [],
     selectedRows: [],
   });
+
+  const [managementState, setManagementState] = useState(false);
 
 
   const redirectToPage = (type) => {
@@ -75,22 +84,38 @@ export default function() {
       case 'verificationResults':
         setData(v => ({ ...v, verificationResultsVisible: true }));
         break;
+      case 'recall':
+        handleRecall();
+        break;
     }
+  };
+
+  // 撤回
+  const handleRecall = () => {
+    WithdrawResultsEntryApi({
+      id: data.selectedRowKeys[0],
+    }).then(res => {
+      if (res.success) {
+        message.success('撤回成功!');
+        refreshTable()
+      } else {
+        message.error(res.message);
+      }
+    }).catch(err => {
+      message.error(err.message);
+    });
   };
 
   const handleQuickSearch = (value) => {
     setData(v => ({ ...v, quickSearchValue: value }));
-    tableRef.current.manualSelectedRows();
-    tableRef.current.remoteDataRefresh();
-    console.log(value, 'value');
+    refreshTable();
   };
 
 
   // 高级查询搜索
   const handleAdvancedSearch = (value) => {
     setData(v => ({ ...v, epTechnicalShareDemandSearchBo: value }));
-    tableRef.current.manualSelectedRows();
-    tableRef.current.remoteDataRefresh();
+    refreshTable();
   };
 
   // 高级查询配置
@@ -98,25 +123,16 @@ export default function() {
     { title: '需求公司', key: 'applyCorporationCode', type: 'list', props: CompanyConfig },
     { title: '采购组织', key: 'purchaseOrgCode', type: 'list', props: FindByFiltersConfig },
     { title: '物料分类', key: 'materialSecondClassifyCode', type: 'tree', props: materialClassProps },
-    { title: '审核小组组长', key: 'flowState', type: 'list', props: flowProps },
+    { title: '审核小组组长', key: 'leaderName' },
   ];
 
   const columns = [
-    {
-      title: '状态', dataIndex: 'state', width: 80, render: v => {
-        switch (v) {
-          case 'DRAFT':
-            return '未填报';
-          case 'EFFECT':
-            return '已填报';
-        }
-      },
-    },
-    { title: '审核需求计划号', dataIndex: 'reviewRequirementCode', width: 200 },
-    { title: '供应商', dataIndex: 'reviewRequirementName', ellipsis: true, width: 250 },
-    { title: '物料分类', dataIndex: 'applyCorporationName', ellipsis: true, width: 200 },
-    { title: '审核时间', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200 },
-    { title: '组长', dataIndex: 'orgName', ellipsis: true, width: 200 },
+    { title: '状态', dataIndex: 'state', width: 80, render: v => managementStateConfig[v] },
+    { title: '审核需求计划号', dataIndex: 'reviewImplementPlanCode', width: 200, render: v => <a>{v}</a> },
+    { title: '供应商', dataIndex: 'supplierName', width: 300, render: (v, data) => `${v} ${data.supplierCode}` },
+    { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 200 },
+    { title: '审核时间', dataIndex: 'reviewDateStart', width: 400, render: (v, data) => `${v} - ${data.reviewDateEnd}` },
+    { title: '组长', dataIndex: 'leaderName', ellipsis: true, width: 200 },
   ].map(item => ({ ...item, align: 'center' }));
 
   // 提交审核验证
@@ -124,10 +140,15 @@ export default function() {
 
   };
 
-  // 提交审核完成更新列表
-  function handleComplete() {
+  // 刷新table
+  const refreshTable = () => {
     tableRef.current.manualSelectedRows();
     tableRef.current.remoteDataRefresh();
+  };
+
+  // 提交审核完成更新列表
+  function handleComplete() {
+
   }
 
 
@@ -138,6 +159,7 @@ export default function() {
         onClick={() => redirectToPage('resultAdd')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
+        disabled={data.selectedRowKeys.length === 0}
         key='TECHNICAL_DATA_SHARING_ADD'
       >结果录入</Button>)
     }
@@ -146,14 +168,16 @@ export default function() {
         onClick={() => redirectToPage('generationEntry')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
+        disabled={data.selectedRowKeys.length === 0}
         key='TECHNICAL_DATA_SHARING_EDIT'
       >代录入</Button>)
     }
     {
       authAction(<Button
-        onClick={() => redirectToPage('delete')}
+        onClick={() => redirectToPage('recall')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
+        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', 'COMPLETED')}
         key='TECHNICAL_DATA_SHARING_DELETE'
       >撤回</Button>)
     }
@@ -184,9 +208,15 @@ export default function() {
   </>;
 
   const headerRight = <div style={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-    <div style={{width: '95%'}}>
-      <Checkbox>已填报</Checkbox>
-      <Checkbox defaultChecked={true}>未填报</Checkbox>
+    <div style={{ width: '95%' }}>
+      <Checkbox checked={managementState} onClick={e => {
+        setManagementState(e.target.checked);
+        refreshTable();
+      }}>已填报</Checkbox>
+      <Checkbox checked={!managementState} onClick={e => {
+        setManagementState(!e.target.checked);
+        refreshTable();
+      }}>未填报</Checkbox>
     </div>
     <Search
       placeholder='请输入审核实施计划号或供应商名称'
@@ -196,9 +226,20 @@ export default function() {
     />
   </div>;
 
-  const onSelectRow = (value, rows) => {
-    console.log(value, rows);
+  // 结果录入成功触发
+  const resultsEntryOk = () => {
+    setData(v => ({ ...v, resultAddVisible: false, generationEntryVisible: false }));
+    refreshTable();
+  };
 
+  const onSelectRow = (keys, rows) => {
+    const reviewImplementPlanCode = rows[0] ? rows[0].reviewImplementPlanCode ? rows[0].reviewImplementPlanCode : '' : '';
+    setData(v => ({ ...v, selectedRowKeys: keys, selectedRows: rows, resultsId: keys[0], reviewImplementPlanCode }));
+  };
+
+  const generationOk = (id) => {
+    console.log(id);
+    setData(v => ({ ...v, resultsId: id, resultAddVisible: true }));
   };
 
   return (
@@ -207,7 +248,7 @@ export default function() {
         left={headerLeft}
         right={headerRight}
         content={
-          <AdvancedForm formItems={formItems} onOk={handleAdvancedSearch}/>
+          <AdvancedForm formItems={formItems} onOk={handleAdvancedSearch} />
         }
         advanced
       />
@@ -219,18 +260,17 @@ export default function() {
             columns={columns}
             store={{
               params: {
-                ...data.checkedCreate ? { onlyOwn: data.checkedCreate } : null,
-                ...data.checkedDistribution ? { onlyAllocation: data.checkedDistribution } : null,
+                managementState: managementState ? 'COMPLETED' : 'NOT_COMPLETED',
                 quickSearchValue: data.quickSearchValue,
                 ...data.epTechnicalShareDemandSearchBo,
               },
-              url: `${recommendUrl}/api/reviewRequirementService/findByPage`,
+              url: `${recommendUrl}/api/reviewImplementManagementService/findByPage`,
               type: 'POST',
             }}
             allowCancelSelect={true}
             remotePaging={true}
             checkbox={{
-              multiSelect: true,
+              multiSelect: false,
             }}
             ref={tableRef}
             showSearch={false}
@@ -240,11 +280,15 @@ export default function() {
         }
       </AutoSizeLayout>
       <ResultsEntry
+        onOk={resultsEntryOk}
+        id={data.resultsId}
         onCancel={() => setData(v => ({ ...v, resultAddVisible: false }))}
         visible={data.resultAddVisible}
       />
       <GenerationEntry
+        onOk={generationOk}
         onCancel={() => setData(v => ({ ...v, generationEntryVisible: false }))}
+        reviewImplementPlanCode={data.reviewImplementPlanCode}
         visible={data.generationEntryVisible}
       />
       <CheckLeaderOpinion
