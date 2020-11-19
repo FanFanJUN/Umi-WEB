@@ -8,7 +8,11 @@ import { onLineTarget } from '../../config/proxy.config';
 import request from './request';
 import moment from "moment";
 const { getUUID, storage } = utils;
+const { localStorage } = storage;
 
+export function getUserInfo() {
+  return localStorage.get('Authorization') || {};
+}
 export function closeCurrent() {
   request.get('/srm-baf-web/srmCommon/refreshGt', { username: getUserInfo().account }).finally(() => {
     if (window.self.frameElement) {

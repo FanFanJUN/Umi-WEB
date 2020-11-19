@@ -48,29 +48,28 @@ const BaseCondition = ({ form, updateGlobalStatus }) => {
     fetchData();
   }, []);
 
-  function handleSave() {
-    form.validateFieldsAndScroll((error, value) => {
-      if (error) return;
-      const saveParams = {
-        ...value,
-        supplierCertificates: data.supplierCertificates,
-        supplierContacts: data.supplierContacts,
-        managementSystems: data.managementSystems,
-        recommendDemandId: id,
-        id: data.id,
-        actualCapacityFactor: (value.designCapability / value.actualCapacity).toFixed(2), // 现有产能利用率 设计产能/实际产能
-        productCertifications: proData || [],
-        otherCertifications: otherData || [],
-      };
-      saveBaseInfo(filterEmptyFileds(saveParams)).then((res) => {
-        if (res && res.success) {
-          message.success('保存基本情况成功');
-          updateGlobalStatus();
-        } else {
-          message.error(res.message);
-        }
-      })
-    })
+  async function handleSave() {
+    const value = await form.validateFieldsAndScroll()
+    console.log('error')
+    const saveParams = {
+      ...value,
+      supplierCertificates: data.supplierCertificates,
+      supplierContacts: data.supplierContacts,
+      managementSystems: data.managementSystems,
+      recommendDemandId: id,
+      id: data.id,
+      actualCapacityFactor: (value.designCapability / value.actualCapacity).toFixed(2), // 现有产能利用率 设计产能/实际产能
+      productCertifications: proData || [],
+      otherCertifications: otherData || [],
+    };
+    const params = filterEmptyFileds(saveParams);
+    const { success, message: msg } = await saveBaseInfo(params);
+    if (success) {
+      message.success('保存基本情况成功');
+      updateGlobalStatus();
+      return
+    }
+    message.error(msg);
   }
 
   function setTableData(newData, type) {
@@ -95,7 +94,7 @@ const BaseCondition = ({ form, updateGlobalStatus }) => {
               key="save"
               type="primary"
               style={{ marginRight: '12px' }}
-              onClick={() => handleSave()}
+              onClick={handleSave}
             >保存</Button>
           ] : null}
         >
