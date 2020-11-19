@@ -11,6 +11,51 @@ const commonProps = {
     width: '100%',
   },
 };
+export const whetherArr = {
+  'true' : '是',
+  'false' : '否'
+}
+
+// 验证结果
+export const VerificationResultConfig = {
+  allowClear: true,
+  dataSource: [
+    {
+      code: 'true',
+      name: '是',
+    },
+    {
+      code: 'false',
+      name: '否',
+    },
+  ],
+  placeholder: '选择验证结果',
+  ...commonProps,
+};
+
+
+// 验证类型
+export const AuthenticationTypeArr = {
+  'DOC_CHECK' : '文档验证',
+  'SCENE_CHECK' : '现场验证'
+}
+
+// 验证类型
+export const AuthenticationTypeConfig = {
+  allowClear: true,
+  dataSource: [
+    {
+      code: 'DOC_CHECK',
+      name: '文档验证',
+    },
+    {
+      code: 'SCENE_CHECK',
+      name: '现场验证',
+    },
+  ],
+  placeholder: '选择验证类型',
+  ...commonProps,
+};
 
 export const OrderSeverityArr = {
   'SERIOUS_NOT_FIT': '严重不符合',
@@ -115,5 +160,65 @@ export const IssuesManagementApi = async (params = {}) => {
     url,
     method: 'GET',
     params
+  });
+};
+
+// 问题管理保存(供应商)
+export const SaveIssuesManagementSupplierApi = async (params = {}) => {
+  const url = `${recommendUrl}/api/reviewProblemService/dealProblem`;
+  return request({
+    url,
+    method: 'POST',
+    data: params
+  });
+};
+
+// 发送问题(需求方)
+export const SendProblemApi = async (params = {}) => {
+  const url = `${recommendUrl}/api/reviewProblemService/sendRemind`;
+  return request({
+    url,
+    method: 'GET',
+    params
+  });
+};
+
+// 验证问题
+export const validationProblemApi = async (params = {}) => {
+  const url = `${recommendUrl}/api/reviewProblemService/checkProblem`;
+  return request({
+    url,
+    method: 'post',
+    data: params
+  });
+};
+
+// 验证审核意见
+export const VerificationAuditOpinionApi = async (params = {}) => {
+  const url = `${recommendUrl}/api/reviewImplementManagementService/checkConfirm`;
+  return request({
+    url,
+    method: 'GET',
+    params
+  });
+};
+
+// 按评审人查看评分
+export const ViewScoreByReviewerApi = async (params = {}) => {
+  const url = `${recommendUrl}/api/reviewResultService/findForMember`;
+  return request({
+    url,
+    method: 'GET',
+    params
+  });
+};
+
+// 退回
+export const SendBackApi = async (params = {}) => {
+  const url = `${recommendUrl}/api/reviewImplementManagementService/insertLeaderSuggestion`;
+  return request({
+    url,
+    method: 'POST',
+    data: params
   });
 };
