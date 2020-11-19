@@ -1,7 +1,7 @@
 /*
  * @Author:黄永翠
  * @Date: 2020-11-09 09:38:38
- * @LastEditTime: 2020-11-19 10:27:40
+ * @LastEditTime: 2020-11-19 14:03:07
  * @LastEditors: Please set LastEditors
  * @Description:审核实施计划-明细
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\index.js
@@ -40,9 +40,9 @@ const Index = (props) => {
     const [editData, setEditData] = useState({});
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState({
-        isView: false,
-        type: 'detail',
-        title: '',
+        type: "detail",
+        isView: true,
+        title: "审核实施计划"
     });
 
     const { query } = router.useLocation();

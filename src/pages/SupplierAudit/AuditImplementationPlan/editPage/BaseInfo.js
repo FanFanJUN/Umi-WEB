@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:40
- * @LastEditTime: 2020-11-17 15:12:10
+ * @LastEditTime: 2020-11-19 13:42:20
  * @Description:  审核实施计划-基本信息
  */
 import React from 'react';
@@ -148,10 +148,10 @@ const BaseInfo = (props) => {
               <FormItem {...formLongLayout} label={'附件'}>
                 {
                   getFieldDecorator('attachRelatedId', {
-                    initialValue: type === 'add' ? '' : getDocIdForArray(data.fileList),
+                    initialValue: type === 'add' ? '' : getDocIdForArray(data.attachRelateds),
                   })(
                     <Upload
-                      entityId={type === 'add' ? null : data.fileList}
+                      entityId={type === 'add' ? null : data.attachRelateds}
                       type={isView ? 'show' : ''}
                       showColor={isView ? true : false}
                     />

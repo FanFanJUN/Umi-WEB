@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:49:50
- * @LastEditTime: 2020-11-19 09:51:21
+ * @LastEditTime: 2020-11-19 14:10:14
  * @LastEditors: Please set LastEditors
  * @Description: I审核实施计划-审核计划
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\AuditPlan.js
@@ -25,23 +25,22 @@ const formLayout = {
 };
 const formLongLayout = {
     labelCol: {
-      span: 4,
+        span: 4,
     },
     wrapperCol: {
-      span: 20,
+        span: 20,
     },
-  };
+};
 
 const AuditPlan = (props) => {
-    const { form, type, isView, originData={} } = props;
+    const { form, type, isView, originData = {} } = props;
     // 数组存储的审核准则
     const [seleteList, setSelecteList] = useState([]);
     // 以code为key值存储的审核准则对象
     const [listObj, setListObj] = useState({})
     const { getFieldDecorator, setFieldsValue } = form;
-
-    useEffect(()=>{
-        if(type === "add") {
+    useEffect(() => {
+        if (type === "add") {
             reviewStandard().then(res => {
                 let listObj = {};
                 res.data.forEach(item => {
@@ -57,10 +56,15 @@ const AuditPlan = (props) => {
                     reviewPlanStandardBos: Object.values(listObj)
                 })
             })
-        } else {
-            setSelecteList(originData.reviewPlanStandardBos ? originData.reviewPlanStandardBos : []);
         }
-    }, [])
+    }, [type])
+
+    useEffect(() => {
+        if (type !== "add") {
+            setSelecteList(originData.reviewPlanStandardBos ? originData.reviewPlanStandardBos : []);
+
+        }
+    }, [originData])
 
     const handleChange = (values) => {
         let checkList = values.map(item => {
@@ -70,6 +74,7 @@ const AuditPlan = (props) => {
             reviewPlanStandardBos: checkList
         })
     }
+    console.log('seleteList-originData', originData, isView)
     return (
         <div className={styles.wrapper}>
             <div className={styles.bgw}>
@@ -78,28 +83,29 @@ const AuditPlan = (props) => {
                     <Row>
                         <Col span={12}>
                             <FormItem label="审核准则" {...formLayout}>
-                                { isView ? <div>
+                                {isView ? <div style={{ paddingTop: "20px" }}>
                                     {
-                                        seleteList.map(item => <Row style={{margin: "6px 0"}} key={item.code}>
-                                        <span>{item.name}</span>
-                                    </Row>)
+                                        seleteList && seleteList.map((item, index) => <Row style={{ height: "24px" }} key={item.standardCode}>
+                                            <span>{(index + 1) + ". " + item.standardName}</span>
+                                        </Row>)
                                     }
                                 </div> :
-                                    getFieldDecorator("reviewPlanStandardBos"),
-                                    getFieldDecorator("selected", {
-                                        initialValue: seleteList.map(item => item.code),
-                                        rules: [{ required: true, message: '至少选择一项',},]
-                                    })(
-                                        <Checkbox.Group style={{ width: '100%' }} style={{paddingTop: "20px"}} onChange={handleChange}>
-                                            {
-                                                seleteList.map(item => <Row style={{margin: "6px 0"}} key={item.code}>
-                                                    <Checkbox value={item.code} key={item.code}>{item.name}</Checkbox>
-                                                </Row>)
-                                            }
-                                        </Checkbox.Group>
-                                    )
+                                    [
+                                        getFieldDecorator("reviewPlanStandardBos"),
+                                        getFieldDecorator("selected", {
+                                            initialValue: seleteList.map(item => item.code),
+                                            rules: [{ required: true, message: '至少选择一项', },]
+                                        })(
+                                            <Checkbox.Group style={{ width: '100%' }} style={{ paddingTop: "20px" }} onChange={handleChange}>
+                                                {
+                                                    seleteList.map(item => <Row style={{ margin: "6px 0" }} key={item.code}>
+                                                        <Checkbox value={item.code} key={item.code}>{item.name}</Checkbox>
+                                                    </Row>)
+                                                }
+                                            </Checkbox.Group>
+                                        )
+                                    ]
                                 }
-
                             </FormItem>
                         </Col>
                     </Row>
@@ -109,10 +115,10 @@ const AuditPlan = (props) => {
                                 {
                                     getFieldDecorator('reviewDateStart', {
                                         initialValue: null,
-                                        rules: [{ required: true, message: '审核时间不能为空',},]
+                                        rules: [{ required: true, message: '审核时间不能为空', },]
                                     })(
                                         isView ? <span>{originData.reviewDateStart}</span> :
-                                        <DatePicker placeholder="请选择" style={{width: "100%"}} />
+                                            <DatePicker placeholder="请选择" style={{ width: "100%" }} />
                                     )
                                 }
                             </FormItem>
@@ -122,10 +128,10 @@ const AuditPlan = (props) => {
                                 {
                                     getFieldDecorator('reviewDateEnd', {
                                         initialValue: null,
-                                        rules: [{ required: true, message: '审核时间不能为空',},]
+                                        rules: [{ required: true, message: '审核时间不能为空', },]
                                     })(
                                         isView ? <span>{originData.reviewDateEnd}</span> :
-                                        <DatePicker placeholder="请选择" style={{width: "100%"}}/>
+                                            <DatePicker placeholder="请选择" style={{ width: "100%" }} />
                                     )
                                 }
                             </FormItem>
@@ -136,11 +142,11 @@ const AuditPlan = (props) => {
                             <FormItem {...formLongLayout} label={'详细计划附件'}>
                                 {
                                     getFieldDecorator('reviewPlanFileId', {
-                                        initialValue: type === 'add' ? '' : getDocIdForArray(originData.fileList),
-                                        rules: [{ required: true, message: '详细计划附件不能为空',},]
+                                        initialValue: type === 'add' ? '' : getDocIdForArray(originData.reviewPlanFiles),
+                                        rules: [{ required: true, message: '详细计划附件不能为空', },]
                                     })(
                                         <Upload
-                                            entityId={type === 'add' ? null : originData.fileList}
+                                            entityId={type === 'add' ? null : originData.reviewPlanFiles}
                                             type={isView ? 'show' : ''}
                                             showColor={isView ? true : false}
                                         />
