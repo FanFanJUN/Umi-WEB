@@ -278,8 +278,8 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                 <Row>
                   <Col span={12}>
                     <FormItem label="自主技术开发能力" {...formLayout}>
-                      {getFieldDecorator('selfRdCapability', {
-                        initialValue: type === 'add' ? 'FULLY' : data.selfRdCapability,
+                      {getFieldDecorator('selfRdCapabilityEnum', {
+                        initialValue: type === 'add' ? 'FULLY' : data.selfRdCapabilityEnum,
                         rules: [
                           {
                             required: true,

@@ -24,7 +24,7 @@ const formLayout = {
 };
 
 const MarketCompetitive = React.forwardRef(({ form, data, type, setTableData }, ref) => {
-
+  const DISABLED = type === 'detail';
   const [supplierMajorCompetitors, setsupplierMajorCompetitors] = useState([]);
 
   const { getFieldDecorator } = form;
@@ -104,7 +104,7 @@ const MarketCompetitive = React.forwardRef(({ form, data, type, setTableData }, 
           <FormItem label="行业知名度" {...formLayout}>
             {getFieldDecorator('industryVisibilityEnum', {
               initialValue: type === 'add' ? 'JOINT_VENTURES_INTERNATIONA_FAMOUS' : data.industryVisibilityEnum,
-            })(<Radio.Group>
+            })(<Radio.Group disabled={DISABLED}>
               <Radio value={'INTERNATIONAL_FAMOUS'}>行业内的国际知名企业</Radio>
               <Radio value={'JOINT_VENTURES_INTERNATIONA_FAMOUS'}>行业内国际知名企业在中国的合资企业</Radio>
               <Radio value={'DOMESTIC_FAMOUS'}>行业内的国内知名企业</Radio>
@@ -124,7 +124,7 @@ const MarketCompetitive = React.forwardRef(({ form, data, type, setTableData }, 
                   message: '企业的主要竞争优势不能为空',
                 },
               ],
-            })(<Input.TextArea placeholder="请输入主要竞争优势" style={{ width: '100%' }} />)}
+            })(<Input.TextArea placeholder="请输入主要竞争优势" style={{ width: '100%' }}  disabled={DISABLED}/>)}
           </FormItem>
         </Col>
       </Row>
