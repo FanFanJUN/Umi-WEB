@@ -177,7 +177,7 @@ const MproCertification = ({ type, data, setTableData }) => {
       title: '产品',
       dataIndex: 'productName',
       ellipsis: true,
-      editable: true
+      editable: false
     },
     {
       title: '认证类型',
@@ -316,6 +316,7 @@ const MproCertification = ({ type, data, setTableData }) => {
       <EditableFormTable
         columns={columnsForOther}
         bordered
+        copyLine={true}
         allowCancelSelect
         showSearch={false}
         remotePaging

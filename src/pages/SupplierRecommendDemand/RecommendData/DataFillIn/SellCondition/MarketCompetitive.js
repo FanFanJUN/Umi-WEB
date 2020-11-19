@@ -32,7 +32,7 @@ const MarketCompetitive = React.forwardRef(({ form, data, type, setTableData }, 
   const columnsForMarket = [
     {
       title: '产品',
-      dataIndex: 'product',
+      dataIndex: 'productName',
       ellipsis: true,
     },
     {
@@ -56,6 +56,7 @@ const MarketCompetitive = React.forwardRef(({ form, data, type, setTableData }, 
       title: '产品',
       dataIndex: 'productName',
       ellipsis: true,
+      editable: false
     },
     {
       title: '竞争对手',
@@ -94,15 +95,15 @@ const MarketCompetitive = React.forwardRef(({ form, data, type, setTableData }, 
   }
   useEffect(() => {
     const { supplierMajorCompetitors = [] } = data;
-    setsupplierMajorCompetitors(supplierMajorCompetitors?.map(item => ({ ...item, guid: item.id })))
+    setsupplierMajorCompetitors(supplierMajorCompetitors?.map(item => ({ ...item, guid: !!item.id ? item.id : item.guid })))
   }, [data])
   return (
     <div>
       <Row>
         <Col span={24}>
           <FormItem label="行业知名度" {...formLayout}>
-            {getFieldDecorator('industryVisibility', {
-              initialValue: type === 'add' ? 'JOINT_VENTURES_INTERNATIONA_FAMOUS' : data.industryVisibility,
+            {getFieldDecorator('industryVisibilityEnum', {
+              initialValue: type === 'add' ? 'JOINT_VENTURES_INTERNATIONA_FAMOUS' : data.industryVisibilityEnum,
             })(<Radio.Group>
               <Radio value={'INTERNATIONAL_FAMOUS'}>行业内的国际知名企业</Radio>
               <Radio value={'JOINT_VENTURES_INTERNATIONA_FAMOUS'}>行业内国际知名企业在中国的合资企业</Radio>
@@ -131,16 +132,17 @@ const MarketCompetitive = React.forwardRef(({ form, data, type, setTableData }, 
       <EditableFormTable
         columns={columnsForMarket}
         rowKey='guid'
-        dataSource={data.marketPositions}
+        dataSource={data.marketPositions?.map(item => ({ ...item, guid: item.id }))}
       />
       <Divider orientation='left' orientation='left'>主要竞争对手排名</Divider>
       <EditableFormTable
         columns={columnsForRank}
+        copyLine={true}
         bordered
         rowKey='guid'
         isEditTable={type === 'add'}
         isToolBar={type === 'add'}
-        dataSource={supplierMajorCompetitors || []}
+        dataSource={supplierMajorCompetitors}
         setNewData={setNewData}
       />
     </div>
