@@ -143,7 +143,7 @@ const ProblemTable = (props) => {
   return (
     <>
       {
-        props.type === 'show' && <Button disabled={data.selectedRowKeys.length === 0} onClick={handleBack}>退回</Button>
+        props.type === 'show' && <Button onClick={handleBack}>退回</Button>
       }
       <ExtTable
         style={{ marginTop: '10px' }}
@@ -161,9 +161,8 @@ const ProblemTable = (props) => {
         dataSource={data.dataSource}
       />
       <SendBack
-        params={{
-          reviewImplementManagementId: data.selectedRowRows[0] ? data.selectedRowRows[0].id : ''
-        }}
+        refresTable={refreshTable}
+        params={props.params}
         onCancel={() => setData(v => ({...v, sendBackVisible: false}))}
         visible={data.sendBackVisible}
       />
@@ -179,6 +178,7 @@ const ProblemTable = (props) => {
 };
 
 ProblemTable.defaultProps = {
+  params: {},
   loading: false,
   show: '',
 };

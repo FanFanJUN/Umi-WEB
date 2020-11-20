@@ -4,13 +4,13 @@ import { ComboList, ComboTree, ExtModal, ExtTable } from 'suid';
 import ScoreOverview from './component/ScoreOverview';
 import IssuesManagement from './component/IssuesManagement';
 import AuditOpinion from './component/AuditOpinion';
-import { VerificationAuditOpinionApi } from '../../AuditRequirementsManagement/commonApi';
+import { VerificationAuditOpinionApi } from '../commonApi';
 
 const { TabPane } = Tabs;
 
 const VerificationResults = (props) => {
 
-  const { type, editData, visible, reviewImplementPlanCode } = props;
+  const { isView, visible, reviewImplementPlanCode } = props;
 
   const [data, setData] = useState({
     activeKey: '1',
@@ -27,7 +27,7 @@ const VerificationResults = (props) => {
   };
 
   const clearSelected = () => {
-
+    setData(v => ({ ...v, activeKey: '1' }));
   };
 
   const issuesChange = (value) => {
@@ -35,21 +35,21 @@ const VerificationResults = (props) => {
   };
 
   const onTabClick = (value) => {
-    // if (value === '3') {
-    //   VerificationAuditOpinionApi({
-    //     reviewImplementPlanCode,
-    //   }).then(res => {
-    //     if (res.success) {
-    //       setData(v => ({ ...v, activeKey: value.toString() }));
-    //     } else {
-    //       message.error(res.message)
-    //     }
-    //   }).catch(err => {
-    //     message.error(err.message)
-    //   })
-    // } else {
+    if (value === '3' && !isView) {
+      VerificationAuditOpinionApi({
+        reviewImplementPlanCode,
+      }).then(res => {
+        if (res.success) {
+          setData(v => ({ ...v, activeKey: value.toString() }));
+        } else {
+          message.error(res.message)
+        }
+      }).catch(err => {
+        message.error(err.message)
+      })
+    } else {
       setData(v => ({ ...v, activeKey: value.toString() }));
-    // }
+    }
   };
 
   return (
@@ -71,6 +71,7 @@ const VerificationResults = (props) => {
         </TabPane>
         <TabPane tab="问题管理" key="2">
           <IssuesManagement
+            isView={isView}
             id={props.id}
             reviewImplementPlanCode={props.reviewImplementPlanCode}
             onChange={issuesChange}
