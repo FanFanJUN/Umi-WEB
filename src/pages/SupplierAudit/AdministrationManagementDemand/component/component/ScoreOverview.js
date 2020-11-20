@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button } from 'antd';
 import { ExtTable } from 'suid';
 import ViewScoreByReviewerView from '../component/ViewScoreByReviewerView';
+import SelfEvaluation from './SelfEvaluation';
 
 const ScoreOverview = (props) => {
 
@@ -25,18 +26,23 @@ const ScoreOverview = (props) => {
 
   const [data, setData] = useState({
     dataSource: [],
+    viewVendorSelfRatingVisible: false,
     viewScoreByReviewerVisible: false,
   });
 
   const viewScoreByReviewer = () => {
-    console.log('chufa');
     setData(v => ({ ...v, viewScoreByReviewerVisible: true }));
+  };
+
+  const viewVendorSelfRating = () => {
+    setData(v => ({ ...v, viewVendorSelfRatingVisible: true }));
+
   };
 
   return (
     <div>
       <Button onClick={viewScoreByReviewer}>按评审人查看评分</Button>
-      <Button style={{ marginLeft: '5px' }}>查看供应商自评</Button>
+      <Button onClick={viewVendorSelfRating} style={{ marginLeft: '5px' }}>查看供应商自评</Button>
       <ExtTable
         bordered={true}
         style={{ marginTop: '5px' }}
@@ -50,6 +56,12 @@ const ScoreOverview = (props) => {
         onCancel={() => setData(v => ({ ...v, viewScoreByReviewerVisible: false }))}
         reviewImplementPlanCode={props.reviewImplementPlanCode}
         visible={data.viewScoreByReviewerVisible}
+      />
+      <SelfEvaluation
+        type={'demand'}
+        reviewImplementPlanCode={props.reviewImplementPlanCode}
+        onCancel={() => setData(v => ({ ...v, viewVendorSelfRatingVisible: false }))}
+        visible={data.viewVendorSelfRatingVisible}
       />
     </div>
   );

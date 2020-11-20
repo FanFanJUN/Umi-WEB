@@ -19,7 +19,7 @@ import ResultsEntry from './component/ResultsEntry';
 import GenerationEntry from './component/GenerationEntry';
 import CheckLeaderOpinion from './component/CheckLeaderOpinion';
 import VerificationResults from './component/VerificationResults';
-import { WithdrawResultsEntryApi } from '../AuditRequirementsManagement/commonApi';
+import { WithdrawResultsEntryApi } from './commonApi';
 
 const { authAction } = utils;
 const { Search } = Input;
@@ -48,6 +48,7 @@ export default function() {
   };
 
   const [data, setData] = useState({
+    isView: false,
     resultAddVisible: false,
     generationEntryVisible: false,
     checkLeaderOpinionVisible: false,
@@ -79,7 +80,10 @@ export default function() {
         setData(v => ({ ...v, checkLeaderOpinionVisible: true }));
         break;
       case 'verificationResults':
-        setData(v => ({ ...v, verificationResultsVisible: true }));
+        setData(v => ({ ...v, verificationResultsVisible: true, isView: false }));
+        break;
+      case 'verificationResultsShow':
+        setData(v => ({ ...v, verificationResultsVisible: true, isView: true }));
         break;
       case 'recall':
         handleRecall();
@@ -94,7 +98,7 @@ export default function() {
     }).then(res => {
       if (res.success) {
         message.success('撤回成功!');
-        refreshTable()
+        refreshTable();
       } else {
         message.error(res.message);
       }
@@ -198,9 +202,10 @@ export default function() {
     }
     {
       authAction(<Button
-        onClick={() => redirectToPage('detail')}
+        onClick={() => redirectToPage('verificationResultsShow')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
+        disabled={data.selectedRowKeys.length === 0}
         key='TECHNICAL_DATA_SHARING_DETAIL'
       >审核结果查看</Button>)
     }
@@ -300,6 +305,7 @@ export default function() {
       <VerificationResults
         reviewImplementPlanCode={data.reviewImplementPlanCode}
         id={data.resultsId}
+        isView={data.isView}
         onCancel={() => setData(v => ({ ...v, verificationResultsVisible: false }))}
         visible={data.verificationResultsVisible}
       />

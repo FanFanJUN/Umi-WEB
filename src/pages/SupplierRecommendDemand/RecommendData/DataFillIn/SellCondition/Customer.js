@@ -129,8 +129,6 @@ const Customer = React.forwardRef(({
     setsupplierOrderInfos,
     setthreeYearPlans
   }))
-  const tableRef = useRef(null);
-
   const columnsForGroup = [
     {
       title: '供货BU名称',
@@ -235,11 +233,13 @@ const Customer = React.forwardRef(({
       title: '金额',
       dataIndex: 'money',
       ellipsis: true,
+      inputType: 'InputNumber'
     },
     {
       title: '币种',
       dataIndex: 'currencyName',
       ellipsis: true,
+      inputType: 'selectwithService'
     },
   ].map(item => ({ ...item, align: 'center' }));
   const columnsForOrder = [
@@ -303,6 +303,9 @@ const Customer = React.forwardRef(({
       case 'threeYearPlans':
         setthreeYearPlans(newData);
         break;
+      case 'exportSituations':
+        setexportSituations(newData)
+        break;
       default:
         break;
     }
@@ -329,7 +332,6 @@ const Customer = React.forwardRef(({
       <Divider orientation='left'>长虹集团</Divider>
       <EditableFormTable
         columns={columnsForGroup}
-        ref={tableRef}
         rowKey='guid'
         size='small'
         isToolBar={type === 'add'}
@@ -342,7 +344,6 @@ const Customer = React.forwardRef(({
       <EditableFormTable
         columns={columnsForMajorcustomers}
         bordered
-        ref={tableRef}
         rowKey='guid'
         isToolBar={type === 'add'}
         isEditTable={type === 'add'}
@@ -351,16 +352,14 @@ const Customer = React.forwardRef(({
         tableType='mainCustomers'
       />
       <Divider orientation='left'>出口情况</Divider>
-      <ExtTable
+      <EditableFormTable
         columns={columnsForExpSitu}
         bordered
-        allowCancelSelect
-        showSearch={false}
-        remotePaging
-        checkbox={{ multiSelect: false }}
-        ref={tableRef}
         rowKey='guid'
+        isToolBar={type === 'add'}
+        isEditTable={type === 'add'}
         dataSource={exportSituations || []}
+        setNewData={setNewData}
         tableType='exportSituations'
       />
       <Divider orientation='left' orientation='left'>客户合作情况介绍和资料</Divider>
@@ -370,7 +369,6 @@ const Customer = React.forwardRef(({
         columns={columnsForOrder}
         bordered
         checkbox={{ multiSelect: false }}
-        ref={tableRef}
         rowKey='guid'
         isToolBar={type === 'add'}
         isEditTable={type === 'add'}
@@ -382,7 +380,6 @@ const Customer = React.forwardRef(({
       <EditableFormTable
         columns={columnsForDevPlan}
         bordered
-        ref={tableRef}
         rowKey='guid'
         isToolBar={type === 'add'}
         isEditTable={type === 'add'}

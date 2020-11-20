@@ -288,7 +288,7 @@ function ManualEvaluate() {
           success: data,
           message: msg,
           data: {
-            businessKey: query?.flowId
+            businessKey: flowId
           }
         })
         return

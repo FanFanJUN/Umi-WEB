@@ -4,7 +4,7 @@ import styles from './index.less';
 import { Button, Col, Form, Input, InputNumber, Row } from 'antd';
 import BU from '../../../QualitySynergy/mainData/BU';
 import { ApplyOrganizationProps, EvaluationSystemConfig } from '../../mainData/commomService';
-import { ActualGraderConfig } from '../../AuditRequirementsManagement/commonApi';
+import { ActualGraderConfig } from '../commonApi';
 import { getRandom } from '../../../QualitySynergy/commonProps';
 import moment from 'moment/moment';
 
