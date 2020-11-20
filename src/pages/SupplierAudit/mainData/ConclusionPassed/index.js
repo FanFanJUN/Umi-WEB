@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-12 14:44:24
- * @LastEditTime: 2020-11-13 15:25:25
+ * @LastEditTime: 2020-11-19 16:24:27
  * @Description: 结论及是否通过
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/mainData/ConclusionPassed/index.js
  */
@@ -50,7 +50,7 @@ const Index = () => {
   ].map(item => ({ ...item, align: 'center' }));
 
   const fieldsConfig = [
-    { name: '结论代码', code: 'code', width: 200 },
+    { name: '结论代码', code: 'code', width: 200, unlimited: 100 },
     { name: '结论名称', code: 'name' },
     { name: '是否通过', code: 'whetherPass', type: 'selectWithData', data: [{ text: '是', value: true }, { text: '否', value: false }] },
     { name: '排序号', code: 'rank', type: 'inputNumber', min: 0 },

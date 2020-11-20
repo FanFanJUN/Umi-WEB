@@ -60,21 +60,21 @@ const ProblemManagement = (props) => {
   };
 
   const onOk = () => {
-    let newData = JSON.parse(JSON.stringify(props.editData))
-    newData.problemList = data.dataSource
-    props.onOk(newData)
+    let newData = JSON.parse(JSON.stringify(props.editData));
+    newData.problemList = data.dataSource;
+    props.onOk(newData);
   };
 
   useEffect(() => {
     if (editData.problemList) {
-      let arr = JSON.parse(JSON.stringify(editData.problemList))
+      let arr = JSON.parse(JSON.stringify(editData.problemList));
       arr = arr.map(item => ({ ...item, lineNum: getRandom(10) }));
       setData(v => ({ ...v, dataSource: arr }));
     }
   }, [props.visible]);
 
   const clearSelected = () => {
-    setData(v => ({...v, dataSource: []}))
+    setData(v => ({ ...v, dataSource: [] }));
   };
 
   const handleSelectedRows = (keys, rows) => {
@@ -85,21 +85,24 @@ const ProblemManagement = (props) => {
     switch (type) {
       case 'add':
         setData(v => ({ ...v, visible: true, title: '新增', type }));
-        break
+        break;
       case 'edit':
+        if (!data.selectedRowRows[0].severityName) {
+          data.selectedRowRows[0].severityName = OrderSeverityArr[data.selectedRowRows[0].severity];
+        }
         setData(v => ({ ...v, visible: true, title: '编辑', type, editData: data.selectedRowRows[0] }));
-        break
+        break;
       case 'delete':
-        deleteFun()
-        break
+        deleteFun();
+        break;
     }
   };
 
   const handleOk = (value) => {
     let arr = JSON.parse(JSON.stringify(data.dataSource));
     if (data.type === 'add') {
-      value.ruleCode = editData.ruleCode
-      value.ruleName = editData.ruleName
+      value.ruleCode = editData.ruleCode;
+      value.ruleName = editData.ruleName;
       arr.push(value);
     } else {
       arr.map((item, index) => {
@@ -109,7 +112,7 @@ const ProblemManagement = (props) => {
       });
     }
     setData(v => ({ ...v, dataSource: arr, visible: false }));
-    refreshTable()
+    refreshTable();
   };
 
   // 刷新table
@@ -119,16 +122,16 @@ const ProblemManagement = (props) => {
   };
 
   const deleteFun = () => {
-    let arr = data.dataSource.slice()
+    let arr = data.dataSource.slice();
     arr.map((item, index) => {
       data.selectedRowKeys.map(value => {
         if (item.lineNum === value) {
-          arr.splice(index, 1)
+          arr.splice(index, 1);
         }
-      })
-    })
-    setData(v => ({...v, dataSource: arr}))
-  }
+      });
+    });
+    setData(v => ({ ...v, dataSource: arr }));
+  };
 
   return (
     <ExtModal
@@ -187,14 +190,18 @@ const ProblemManagement = (props) => {
         <div className={styles.bgw}>
           <div className={styles.title}>问题</div>
           <div className={styles.content}>
-            <div>
-              <Button style={{ marginRight: '5px' }} onClick={() => showProblemAdd('add')}>新增</Button>
-              <Button style={{ marginRight: '5px' }} disabled={data.selectedRowKeys.length !== 1}
-                      onClick={() => showProblemAdd('edit')}>编辑</Button>
-              <Button style={{ marginRight: '5px' }} disabled={data.selectedRowKeys.length === 0} onClick={() => showProblemAdd('delete')}>删除</Button>
-              <Button style={{marginRight: '5px'}}>批导入</Button>
-              <Button onClick={() => window.open(`/service.api/${recommendUrl}/srController/downloadProblemTemplate`)}>批导出</Button>
-            </div>
+            {
+              props.type !== 'show' && <div>
+                <Button style={{ marginRight: '5px' }} onClick={() => showProblemAdd('add')}>新增</Button>
+                <Button style={{ marginRight: '5px' }} disabled={data.selectedRowKeys.length !== 1}
+                        onClick={() => showProblemAdd('edit')}>编辑</Button>
+                <Button style={{ marginRight: '5px' }} disabled={data.selectedRowKeys.length === 0}
+                        onClick={() => showProblemAdd('delete')}>删除</Button>
+                <Button style={{ marginRight: '5px' }}>批导入</Button>
+                <Button
+                  onClick={() => window.open(`/service.api/${recommendUrl}/srController/downloadProblemTemplate`)}>批导出</Button>
+              </div>
+            }
             <ExtTable
               style={{ marginTop: '10px' }}
               height={'25vh'}

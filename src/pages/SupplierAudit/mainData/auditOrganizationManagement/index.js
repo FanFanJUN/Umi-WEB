@@ -191,6 +191,7 @@ const Index = () => {
           {
             name: '名称',
             code: 'name',
+            unlimited: 100
           },
           {
             name: '代码',

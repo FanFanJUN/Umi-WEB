@@ -9,7 +9,7 @@ import {
 } from '../../../QualitySynergy/commonProps';
 import { AutoSizeLayout } from '../../../../components';
 import EventModal from '../../common/EventModal';
-import { AuditCauseManagementAdd, AuditCauseManagementFrozen, AuditTypeManagementConfig } from '../commomService';
+import { AuditCauseManagementAdd, AuditCauseManagementFrozen, AuditTypeAllConfig } from '../commomService';
 
 const { authAction } = utils;
 
@@ -192,6 +192,7 @@ const Index = () => {
           {
             name: '名称',
             code: 'name',
+            unlimited: 200
           },
           {
             name: '代码',
@@ -201,7 +202,7 @@ const Index = () => {
             name: '审核类型',
             type: 'comboList',
             code: 'reviewTypeName',
-            config: AuditTypeManagementConfig,
+            config: AuditTypeAllConfig,
             field: ['reviewTypeCode', 'reviewTypeId']
           },
           {

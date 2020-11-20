@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-12 14:44:24
- * @LastEditTime: 2020-11-13 15:23:12
+ * @LastEditTime: 2020-11-19 15:47:35
  * @Description: 审核类型、是否通过和结论配置
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/mainData/AwcConf/index.js
  */
@@ -18,6 +18,7 @@ import {
 import { AutoSizeLayout } from '../../../../components';
 import EventModal from '../../common/EventModal';
 import { requestGetFrozenApi, requestPostApi } from '../mainDataService';
+import { AuditTypeAllConfig, conclusionAndWeatherPassConfig } from '../commomService';
 
 const { authAction } = utils;
 
@@ -52,11 +53,26 @@ const Index = () => {
   ].map(item => ({ ...item, align: 'center' }));
 
   const fieldsConfig = [
-    { name: '审核类型代码', code: 'reviewTypeCode', width: 200 },
-    { name: '审核类型名称', code: 'reviewTypeName' },
-    { name: '结论代码', code: 'conclusionCode' },
-    { name: '结论名称', code: 'conclusionName' },
-    { name: '是否通过', code: 'whetherPass', type: 'selectWithData', data: [{ text: '是', value: true }, { text: '否', value: false }] },
+    {
+      name: '审核类型',
+      type: 'comboList',
+      code: 'reviewTypeName',
+      config: AuditTypeAllConfig,
+      field: ['reviewTypeCode', 'reviewTypeId']
+    },
+    {
+      name: '结论名称',
+      type: 'comboList',
+      code: 'conclusionName',
+      config: conclusionAndWeatherPassConfig,
+      field: ['conclusionCode', 'conclusionId', 'whetherPass']
+    },
+    { 
+      name: '是否通过', 
+      code: 'whetherPass', 
+      type: 'input',
+      disabled: true
+    },
     {
       name: '排序号',
       code: 'rank',

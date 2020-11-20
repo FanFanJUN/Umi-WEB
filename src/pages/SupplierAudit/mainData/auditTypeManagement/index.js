@@ -39,10 +39,10 @@ const Index = () => {
   const buttonClick = async (type) => {
     switch (type) {
       case 'add':
-        setData((value) => ({ ...value, visible: true, title: '审核类型管理系新增', type: 'add' }));
+        setData((value) => ({ ...value, visible: true, title: '审核类型新增', type: 'add' }));
         break;
       case 'edit':
-        setData((value) => ({ ...value, visible: true, title: '审核类型管理编辑', type: 'edit' }));
+        setData((value) => ({ ...value, visible: true, title: '审核类型编辑', type: 'edit' }));
         break;
       case 'delete':
         await deleteData();
@@ -203,7 +203,7 @@ const Index = () => {
         propData={{
           visible: data.visible,
           type: data.type,
-          title: '审核类型管理系新增',
+          title: data.title,
         }}
       />
     </Fragment>

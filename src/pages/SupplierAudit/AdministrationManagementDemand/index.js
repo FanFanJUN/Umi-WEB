@@ -5,9 +5,6 @@ import { Button, Checkbox, Input, message } from 'antd';
 import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
 import { ExtTable, utils, WorkFlow } from 'suid';
 import {
-  ApplyOrganizationProps,
-  AuditCauseManagementConfig,
-  AuditTypeManagementConfig,
   CompanyConfig, DeleteAuditRequirementsManagement, EndFlow,
   FindByFiltersConfig, SupplierConfig,
 } from '../mainData/commomService';
@@ -195,6 +192,7 @@ export default function() {
         onClick={() => redirectToPage('verificationResults')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
+        disabled={data.selectedRowKeys.length === 0}
         key='TECHNICAL_DATA_SHARING_DETAIL'
       >审核结果确认</Button>)
     }
@@ -300,6 +298,8 @@ export default function() {
         visible={data.checkLeaderOpinionVisible}
       />
       <VerificationResults
+        reviewImplementPlanCode={data.reviewImplementPlanCode}
+        id={data.resultsId}
         onCancel={() => setData(v => ({ ...v, verificationResultsVisible: false }))}
         visible={data.verificationResultsVisible}
       />

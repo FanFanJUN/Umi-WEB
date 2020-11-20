@@ -1,7 +1,7 @@
 /*
  * @Author:黄永翠
  * @Date: 2020-11-09 09:38:38
- * @LastEditTime: 2020-11-19 10:27:40
+ * @LastEditTime: 2020-11-19 21:01:33
  * @LastEditors: Please set LastEditors
  * @Description:审核实施计划-明细
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\index.js
@@ -22,7 +22,14 @@ import AuditScope from "./AuditScope";
 import AuditorInfo from "./AuditorInfo";
 import PersonTable from "./PersonTable";
 import AuditPlan from "./AuditPlan";
-import { mergeContent, addReviewImplementPlan, findDetailsByReviewImplementPlanId } from "../service";
+import ChangeInfo from "./ChangeInfo";
+import {
+    mergeContent,
+    addReviewImplementPlan,
+    updateReviewImplementPlan,
+    findDetailsByReviewImplementPlanId,
+    changeReviewImplementPlanInsert
+} from "../service";
 
 const { StartFlow } = WorkFlow;
 const pickpropertys = [
@@ -30,7 +37,7 @@ const pickpropertys = [
     'reviewWayId', 'reviewWayCode', 'reviewWayName',
     'supplierId', 'supplierCode', 'supplierName',
     'agentName', 'agentCode', 'agentId',
-    'countryId', 'countryCode', 'countryName', 'provinceId', 'provinceCode', 'provinceName', 
+    'countryId', 'countryCode', 'countryName', 'provinceId', 'provinceCode', 'provinceName',
     'cityId', 'cityCode', 'cityName', 'countyId', 'countyCode', 'countyName', 'address',
     'contactUserName', 'contactUserTel', 'leaderId', 'leaderName', 'leaderEmployeeNo'
 ]
@@ -40,9 +47,9 @@ const Index = (props) => {
     const [editData, setEditData] = useState({});
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState({
-        isView: false,
-        type: 'detail',
-        title: '',
+        type: "detail",
+        isView: true,
+        title: "审核实施计划"
     });
 
     const { query } = router.useLocation();
@@ -72,7 +79,7 @@ const Index = (props) => {
                 setData({ type: pageState, isView: true, title: `审核实施计划明细: ${editData.reviewImplementPlanCode}` });
                 break;
             case 'change':
-                setData({ type: pageState, isView: true, title: `变更审核实施计划: ${editData.reviewImplementPlanCode}` });
+                setData({ type: pageState, isView: false, title: `变更审核实施计划: ${editData.reviewImplementPlanCode}` });
                 break;
             case 'isInflow':
                 setData({ type: pageState, isView: true, title: `审核实施计划明细: ${editData.reviewImplementPlanCode}` });
@@ -112,7 +119,7 @@ const Index = (props) => {
         if (query.pageState === "add") {
             res = await mergeContent({ lineId: ids })
             if (res.success) {
-                let resData = {...res.data};
+                let resData = { ...res.data };
                 resData.treeData = buildTreeData(resData.fatherList, resData.sonList);
                 resData.reviewTeamGroupBoList = Object.values(resData.reviewTeamGroupBoMap);
                 console.log("整合的数据", resData);
@@ -126,9 +133,9 @@ const Index = (props) => {
     // 获取明细
     async function getDetail() {
         setLoading(true);
-        let res = await findDetailsByReviewImplementPlanId({id: query.id});
-        if(res.success) {
-            let resData = {...res.data};
+        let res = await findDetailsByReviewImplementPlanId({ id: query.id });
+        if (res.success) {
+            let resData = { ...res.data };
             resData.treeData = buildTreeData(resData.fatherList, resData.sonList);
             console.log("获取到的数据res", resData)
             setEditData(resData);
@@ -138,14 +145,15 @@ const Index = (props) => {
         setLoading(false);
     }
 
-    const handleSave = (type) => {
+    const getAllData = () => {
+        let saveData = false;
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 let sessionLins = JSON.parse(sessionStorage.getItem('selectedMonthLIne'));
                 let pickObj = pick(sessionLins[0], pickpropertys);
-                let saveData = {...values, ...editData, ...pickObj};
+                saveData = { ...editData, ...pickObj, ...values };
                 saveData.reviewImplementPlanLineBos = sessionLins.map(item => ({
-                    ...item, 
+                    ...item,
                     reviewImplementPlanLinenum: item.reviewPlanMonthLinenum,
                     reviewPlanMonthLineId: item.id
                 }));
@@ -153,49 +161,69 @@ const Index = (props) => {
                 saveData.reviewDateEnd = moment(saveData.reviewDateEnd).format('YYYY-MM-DD hh:mm:ss');
                 let lineData = tableRef.current.getTableList();
                 saveData.reviewTeamGroupBoMap = lineData;
-                saveData.sonList = saveData.sonList.map(item =>{
+                saveData.sonList = saveData.sonList.map(item => {
                     item.reviewEvlRuleBoList = item.ruleList;
                     delete item.ruleList;
                     return item;
                 });
-                if(!saveData.attachRelatedId){
+                if (!saveData.attachRelatedId) {
                     saveData.attachRelatedId = [];
+                }
+                if (!saveData.changeFileIdList) {
+                    saveData.changeFileIdList = [];
                 }
                 delete saveData.treeData;
                 delete saveData.selected;
                 console.log('保存的数据saveData', saveData);
-                addReviewImplementPlan(saveData).then(res => {
-                    console.log("保存接口调用返回", res)
-                    if(res.success) {
-                        message.success("保存成功")
-                    } else {
-                        message.error(res.message);
-                    }
-                })
-                
-            } else {
-                message.warning("请检查数据是否填写完整！")
             }
         });
+        return saveData
+    }
+
+    const handleSave = async (handleType) => {
+        let saveData = getAllData();
+        if(!saveData) return({id: false, message: "数据不完整"});
+        let res = {};
+        if (query.pageState === "add") {
+            res = await addReviewImplementPlan(saveData);
+        } else if (query.pageState === "edit") {
+            res = await updateReviewImplementPlan(saveData);
+        } else {
+            res = await changeReviewImplementPlanInsert(saveData);
+        }
+        if (res.success) {
+            if (handleType === "publish") {
+                return {id: res.data, message: "保存成功"};
+            } else {
+                message.success("保存成功")
+            }
+        } else {
+            if (handleType === "publish") {
+                return {id: false, message: res.message};
+            } else {
+                message.error(res.message);
+            }
+        }
+
     }
     // 提交审核验证
     const handleBeforeStartFlow = async () => {
-        // const id = await handleSave("publish");
-        console.log("获取到的id是多少", id)
+        const res = await handleSave("publish");
+        console.log("获取到的res是多少", res)
         return new Promise(function (resolve, reject) {
-            if (id) {
+            if (res.id) {
                 resolve({
                     success: data,
                     message: '保存成功',
                     data: {
-                        businessKey: id
+                        businessKey: res.id
                     }
                 })
                 return
             } else {
                 reject({
                     success: data,
-                    message: '提交失败，请检查数据是否填写完整'
+                    message: res.message
                 })
             }
         })
@@ -235,6 +263,13 @@ const Index = (props) => {
                 }
             </div>
         </Affix>
+        {
+            data.type === "change" && <ChangeInfo
+                form={form}
+                originData={{}}
+                isView={false}
+            />
+        }
         <BaseInfo
             form={form}
             type={data.type}
@@ -242,10 +277,10 @@ const Index = (props) => {
             originData={editData}
         />
         {/* 拟审核信息 */}
-        <AuditInfo 
-            type={data.type} 
+        <AuditInfo
+            type={data.type}
             isView={data.isView}
-            originData={editData} 
+            originData={editData}
         />
         {/* 审核范围 */}
         <AuditScope treeData={editData.treeData} />
@@ -265,7 +300,7 @@ const Index = (props) => {
             type={data.type}
             isView={data.isView}
             form={form}
-            originData={editData} 
+            originData={editData}
         />
     </Spin>
 }

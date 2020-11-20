@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React  from 'react';
 import { ExtModal } from 'suid';
 import { Col, DatePicker, Form, Input, Row } from 'antd';
 import moment from 'moment/moment';
@@ -26,13 +26,9 @@ const formLayout = {
 
 const AnswerQuestionModal = (props) => {
 
-  console.log(props.editData)
-
   const { editData } = props;
 
-  const { getFieldDecorator, setFieldsValue, getFieldValue } = props.form;
-
-  const [data, setData] = useState({});
+  const { getFieldDecorator } = props.form;
 
   const { visible } = props;
 
@@ -43,27 +39,12 @@ const AnswerQuestionModal = (props) => {
   const onOk = () => {
     props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
+        values.completionTime = moment(values.completionTime).format('YYYY-MM-DD')
+        values = Object.assign(props.editData, values)
         props.onOk(values)
       }
     });
   };
-
-  const clearSelected = () => {
-
-  };
-
-
-  const hideFormItem = (name, initialValue) => (
-    <FormItem>
-      {
-        getFieldDecorator(name, {
-          initialValue: initialValue,
-        })(
-          <Input type={'hidden'} />,
-        )
-      }
-    </FormItem>
-  );
 
   return (
     <ExtModal
@@ -74,7 +55,6 @@ const AnswerQuestionModal = (props) => {
       onCancel={onCancel}
       onOk={onOk}
       destroyOnClose={true}
-      afterClose={clearSelected}
     >
       <Row>
         <Col span={12}>
@@ -150,8 +130,8 @@ const AnswerQuestionModal = (props) => {
         <Col span={24}>
           <FormItem {...formLayout} label={'见证材料'}>
             {
-              getFieldDecorator('attachRelatedId', {
-                initialValue: !editData.attachRelatedId ? [] : editData.attachRelatedId,
+              getFieldDecorator('attachRelatedIds', {
+                initialValue: !editData.attachRelatedIds ? [] : editData.attachRelatedIds,
                 rules: [
                   {
                     required: true,
@@ -159,7 +139,7 @@ const AnswerQuestionModal = (props) => {
                   },
                 ],
               })(
-                <Upload entityId={editData.attachRelatedId ? null : editData.attachRelatedId} />,
+                <Upload entityId={editData.attachRelatedIds ? null : editData.attachRelatedIds} />,
               )
             }
           </FormItem>

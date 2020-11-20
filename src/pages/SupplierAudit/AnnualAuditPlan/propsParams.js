@@ -1,9 +1,9 @@
 /*
  * @Author: Li Cai
- * @LastEditors: Li Cai
+ * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-27 17:01:47
- * @LastEditTime: 2020-10-30 15:56:04
+ * @LastEditTime: 2020-11-19 20:22:00
  * @Description: 参数props
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/propsParams.js
  */
@@ -40,6 +40,7 @@ export const AllCompanyConfig = {
 export const ApplyOrganizationProps = {
   store: {
     url: `${baseUrl}/basic/listAllOrgnazationWithDataAuth`,
+    autoLoad: true,
   },
   reader: {
     name: 'name',

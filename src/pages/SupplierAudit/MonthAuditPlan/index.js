@@ -10,7 +10,7 @@ import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/in
 import { ExtTable, utils, WorkFlow } from 'suid';
 import { StartFlow } from 'seid';
 import moment from "moment";
-import { CompanyConfig, } from '../mainData/commomService';
+import { CompanyConfig, EndFlow} from '../mainData/commomService';
 import { judge } from '../../QualitySynergy/commonProps';
 import { deletePlanMonth, ShareStatusProps, flowProps, ApplyOrganizationProps } from "./service";
 import AutoSizeLayout from '../../../components/AutoSizeLayout';

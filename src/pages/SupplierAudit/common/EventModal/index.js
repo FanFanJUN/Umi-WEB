@@ -1,9 +1,9 @@
 /*
  * @Author: Li Cai
- * @LastEditors: Li Cai
+ * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-12 15:35:48
- * @LastEditTime: 2020-10-12 16:27:10
+ * @LastEditTime: 2020-11-19 16:37:20
  * @Description: 新增 编辑  可配置表单
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/common/EventModal/index.js
  */
@@ -94,7 +94,7 @@ const EventModal = (props) => {
                 return <Input
                     placeholder={item.placeholder ? item.placeholder : '请输入'}
                     autoComplete="off"
-                    maxLength={item.unlimited ? null : 128}
+                    maxLength={item.unlimited ? item.unlimited : item.disabled ? 50 : 30}
                     disabled={item.disabled ? item.disabled : false}
                 />;
         }
@@ -139,7 +139,7 @@ const EventModal = (props) => {
                                              message: `请输入${item.name}`
                                            },
                                          ],
-                                       })(<ComboList form={form} field={item.field} name={item.code} {...item.config} />)
+                                       })(<ComboList key={item.code} form={form} field={item.field} name={item.code} {...item.config} />)
                                      }
                                    </FormItem>
                                  </Col>
