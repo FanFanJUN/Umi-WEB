@@ -80,8 +80,8 @@ export default function () {
     const handleAdvancedSearch = (value) => {
         console.log(value)
         value.applyDate = value.applyDate ? moment(value.applyDate).format('YYYY-MM-DD ') : ''
-        value.ApplyDateStart = value.applyDate ? value.applyDate + "00:00:00" : ''
-        value.ApplyDateEnd = value.applyDate ? value.applyDate + "23:59:59" : ''
+        value.applyDateStart = value.applyDate ? value.applyDate + "00:00:00" : ''
+        value.applyDateEnd = value.applyDate ? value.applyDate + "23:59:59" : ''
         delete value.flowStatus_name;
         delete value.applyCorporationCode_name;
         delete value.applyDepartmentCode_name;

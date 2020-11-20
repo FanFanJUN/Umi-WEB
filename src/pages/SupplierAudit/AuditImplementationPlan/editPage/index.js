@@ -1,7 +1,7 @@
 /*
  * @Author:黄永翠
  * @Date: 2020-11-09 09:38:38
- * @LastEditTime: 2020-11-19 21:01:33
+ * @LastEditTime: 2020-11-20 14:45:17
  * @LastEditors: Please set LastEditors
  * @Description:审核实施计划-明细
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\index.js
@@ -149,16 +149,19 @@ const Index = (props) => {
         let saveData = false;
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                let sessionLins = JSON.parse(sessionStorage.getItem('selectedMonthLIne'));
-                let pickObj = pick(sessionLins[0], pickpropertys);
-                saveData = { ...editData, ...pickObj, ...values };
-                saveData.reviewImplementPlanLineBos = sessionLins.map(item => ({
-                    ...item,
-                    reviewImplementPlanLinenum: item.reviewPlanMonthLinenum,
-                    reviewPlanMonthLineId: item.id
-                }));
-                saveData.reviewDateStart = moment(saveData.reviewDateStart).format('YYYY-MM-DD hh:mm:ss');
-                saveData.reviewDateEnd = moment(saveData.reviewDateEnd).format('YYYY-MM-DD hh:mm:ss');
+                saveData = { ...editData, ...values };
+                if(query.pageState === "add") {
+                    let sessionLins = JSON.parse(sessionStorage.getItem('selectedMonthLIne'));
+                    let pickObj = pick(sessionLins[0], pickpropertys);
+                    saveData = { ...saveData, ...pickObj };
+                    saveData.reviewImplementPlanLineBos = sessionLins.map(item => ({
+                        ...item,
+                        reviewImplementPlanLinenum: item.reviewPlanMonthLinenum,
+                        reviewPlanMonthLineId: item.id
+                    }));
+                }
+                saveData.reviewDateStart = moment(saveData.reviewDateStart).format('YYYY-MM-DD') + " 00:00:00";
+                saveData.reviewDateEnd = moment(saveData.reviewDateEnd).format('YYYY-MM-DD') + " 23:59:59";
                 let lineData = tableRef.current.getTableList();
                 saveData.reviewTeamGroupBoMap = lineData;
                 saveData.sonList = saveData.sonList.map(item => {
@@ -169,9 +172,14 @@ const Index = (props) => {
                 if (!saveData.attachRelatedId) {
                     saveData.attachRelatedId = [];
                 }
-                if (!saveData.changeFileIdList) {
-                    saveData.changeFileIdList = [];
+                if(query.pageState === "change") {
+                    if (!saveData.changeFileIdList) {
+                        saveData.changeFileIdList = [];
+                    }
+                    saveData.attachRelatedList = saveData.attachRelatedId;
+                    saveData.reviewPlanFileList = saveData.reviewPlanFileId;
                 }
+                
                 delete saveData.treeData;
                 delete saveData.selected;
                 console.log('保存的数据saveData', saveData);
@@ -184,13 +192,16 @@ const Index = (props) => {
         let saveData = getAllData();
         if(!saveData) return({id: false, message: "数据不完整"});
         let res = {};
+        setLoading(true);
         if (query.pageState === "add") {
             res = await addReviewImplementPlan(saveData);
         } else if (query.pageState === "edit") {
             res = await updateReviewImplementPlan(saveData);
         } else {
+            // 变更添加
             res = await changeReviewImplementPlanInsert(saveData);
         }
+        setLoading(false);
         if (res.success) {
             if (handleType === "publish") {
                 return {id: res.data, message: "保存成功"};
@@ -233,7 +244,7 @@ const Index = (props) => {
         setLoading(false);
         message.success("提交成功");
         setTimeout(() => {
-            handleBack()
+            // closeCurrent();
         }, 3000)
     }
 

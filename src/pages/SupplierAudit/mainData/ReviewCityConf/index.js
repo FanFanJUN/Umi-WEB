@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-12 14:44:24
- * @LastEditTime: 2020-11-13 15:33:14
+ * @LastEditTime: 2020-11-20 16:16:08
  * @Description: 审核地区城市配置
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/mainData/ReviewCityConf/index.js
  */
@@ -12,9 +12,7 @@ import { Form, Button, message, Modal, Row, Col, Card, Empty } from 'antd';
 import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
 import { baseUrl } from '../../../../utils/commonUrl';
 import { ExtTable, utils } from 'suid';
-import {
-  AddBUCompanyOrganizationRelation, DeleteBUCompanyOrganizationRelation, FrostBUCompanyOrganizationRelation, judgeButtonDisabled,
-} from '../../../QualitySynergy/commonProps';
+import { provinceConfig } from '../commomService';
 import { AutoSizeLayout } from '../../../../components';
 import stylesRight from './index.less';
 import EventModal from '../../common/EventModal';
@@ -76,11 +74,15 @@ const Index = () => {
   const rightfieldsConfig = [
     {
       name: '代码',
-      code: 'xx',
+      type: "comboList",
+      code: 'reviewCityCode',
+      config: provinceConfig,
+      field: ['reviewCityId', 'reviewCityName', 'codePath', 'namePath']
     },
     {
       name: '名称',
-      code: 'xx',
+      code: 'reviewCityName',
+      disabled: true
     }
   ];
 
@@ -97,6 +99,22 @@ const Index = () => {
         break;
       case 'frost':
         await editData();
+        break;
+    }
+  };
+  const buttonRightClick = async (type) => {
+    switch (type) {
+      case 'add':
+        setData((value) => ({ ...value, rigthTitle: '城市新增', rightVisible: true, rightType: 'add' }));
+        break;
+      case 'edit':
+        setData((value) => ({ ...value, rightVisible: true, rigthTitle: '城市编辑', rightType: 'edit' }));
+        break;
+      case 'delete':
+        await deleteDataRight(true);
+        break;
+      case 'frost':
+        await editDataRight(true);
         break;
     }
   };
@@ -121,12 +139,49 @@ const Index = () => {
       cancelText: '否',
       async onOk() {
         const data = await requestDelApi({
-          ids: leftselectedRowKeys.toString(),
+          id: leftselectedRowKeys.toString(),
           key: 'LeftReviewCityConf'
         });
         if (data.success) {
           tableLeftRef.current.manualSelectedRows();
           tableLeftRef.current.remoteDataRefresh();
+        } else {
+          message.error(data.message)
+        }
+      },
+    });
+  };
+
+  const editDataRight = async () => {
+    const data = await requestPostApi({
+      ids: leftselectedRowKeys.toString(),
+      frozen: !leftselectRows[0]?.frozen,
+    });
+    if (data.success) {
+      tableLeftRef.current.manualSelectedRows();
+      tableLeftRef.current.remoteDataRefresh();
+    } else {
+      message.error(data.message)
+    }
+  };
+
+  const deleteDataRight = async () => {
+    Modal.confirm({
+      title: '删除',
+      content: '是否删除选中过的数据',
+      okText: '是',
+      okType: 'danger',
+      cancelText: '否',
+      async onOk() {
+        const data = await requestDelApi({
+          ids: leftselectedRowKeys.toString(),
+          key: 'RightReviewCityConf'
+        });
+        if (data.success) {
+          tableLeftRef.current.manualSelectedRows();
+          tableLeftRef.current.remoteDataRefresh();
+        } else {
+          message.error(data.message)
         }
       },
     });
@@ -150,7 +205,7 @@ const Index = () => {
           onClick={() => buttonLeftClick('add')}
           className={styles.btn}
           ignore={DEVELOPER_ENV}
-          key='SUPPLIER_AUDIT_CITY_CONFIG_ADD'
+          key='SUPPLIER_AUDIT_AREA_CONFIG_ADD'
         >新增</Button>)
       }
       {
@@ -159,7 +214,7 @@ const Index = () => {
           className={styles.btn}
           ignore={DEVELOPER_ENV}
           disabled={leftselectedRowKeys.length === 0 || leftselectedRowKeys.length > 1}
-          key='SUPPLIER_AUDIT_CITY_CONFIG_EDIT'
+          key='SUPPLIER_AUDIT_AREA_CONFIG_EDIT'
         >编辑</Button>)
       }
       {
@@ -168,6 +223,39 @@ const Index = () => {
           className={styles.btn}
           ignore={DEVELOPER_ENV}
           disabled={leftselectedRowKeys.length === 0}
+          key='SUPPLIER_AUDIT_AREA_CONFIG_DELETE'
+        >删除</Button>)
+      }
+      {/* 冻结按钮配置：SUPPLIER_AUDIT_AREA_CONFIG_FORST */}
+    </div>)
+  };
+
+  const HeaderRightButtons = () => {
+    return (<div style={{ width: '100%', display: 'flex', height: '100%', alignItems: 'center' }}>
+      {
+        authAction(<Button
+          type='primary'
+          onClick={() => buttonRightClick('add')}
+          className={styles.btn}
+          ignore={DEVELOPER_ENV}
+          key='SUPPLIER_AUDIT_CITY_CONFIG_ADD'
+        >新增</Button>)
+      }
+      {
+        authAction(<Button
+          onClick={() => buttonRightClick('edit')}
+          className={styles.btn}
+          ignore={DEVELOPER_ENV}
+          disabled={rightselectedRowKeys.length === 0 || rightselectedRowKeys.length > 1}
+          key='SUPPLIER_AUDIT_CITY_CONFIG_EDIT'
+        >编辑</Button>)
+      }
+      {
+        authAction(<Button
+          onClick={() => buttonRightClick('delete')}
+          className={styles.btn}
+          ignore={DEVELOPER_ENV}
+          disabled={rightselectedRowKeys.length === 0}
           key='SUPPLIER_AUDIT_CITY_CONFIG_DELETE'
         >删除</Button>)
       }
@@ -195,6 +283,7 @@ const Index = () => {
       const params = { ...value, id, key: 'LeftReviewCityConf' };
       requestPostApi(params).then(res => {
         if (res.success) {
+          message.success("操作成功！");
           setData((value) => ({ ...value, leftVisible: false }));
           tableLeftRef.current.manualSelectedRows();
           tableLeftRef.current.remoteDataRefresh();
@@ -203,11 +292,11 @@ const Index = () => {
         }
       });
     }
-    console.log(value, 'save');
   };
 
   const handleRightOk = async (value) => {
     if (data.rightType === 'add') {
+      value.areaId = leftselectedRowKeys[0];
       requestPostApi({ ...value, key: 'RightReviewCityConf' }).then(res => {
         if (res.success) {
           setData((value) => ({ ...value, rightVisible: false }));
@@ -222,6 +311,7 @@ const Index = () => {
       const params = { ...value, id, key: 'RightReviewCityConf' };
       requestPostApi(params).then(res => {
         if (res.success) {
+          message.success("操作成功！");
           setData((value) => ({ ...value, rightVisible: false }));
           tableRightRef.current.manualSelectedRows();
           tableRightRef.current.remoteDataRefresh();
@@ -306,7 +396,7 @@ const Index = () => {
                         onSelectRow={rightonSelectRow}
                         ref={tableRightRef}
                         toolBar={{
-                          // left: HeaderButtons('rightVisible', 'rigthTitle', 'rightselectedRowKeys', 'rightselectRows')
+                          left: HeaderRightButtons()
                         }}
                       />
                     }
