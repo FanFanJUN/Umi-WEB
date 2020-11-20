@@ -20,6 +20,7 @@ import GenerationEntry from './component/GenerationEntry';
 import CheckLeaderOpinion from './component/CheckLeaderOpinion';
 import VerificationResults from './component/VerificationResults';
 import { WithdrawResultsEntryApi } from './commonApi';
+import { openNewTab } from '../../../utils';
 
 const { authAction } = utils;
 const { Search } = Input;
@@ -129,7 +130,7 @@ export default function() {
 
   const columns = [
     { title: '状态', dataIndex: 'state', width: 80, render: v => managementStateConfig[v] },
-    { title: '审核需求计划号', dataIndex: 'reviewImplementPlanCode', width: 200, render: v => <a>{v}</a> },
+    { title: '审核需求计划号', dataIndex: 'reviewImplementPlanCode', width: 200, render: (v, data) => <a onClick={() => jumpOtherPage(data.reviewImplementPlanId)}>{v}</a> },
     { title: '供应商', dataIndex: 'supplierName', width: 300, render: (v, data) => `${v} ${data.supplierCode}` },
     { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 200 },
     { title: '审核时间', dataIndex: 'reviewDateStart', width: 400, render: (v, data) => `${v} - ${data.reviewDateEnd}` },
@@ -140,6 +141,10 @@ export default function() {
   const handleBeforeStartFlow = async () => {
 
   };
+
+  const jumpOtherPage = (id) => {
+    openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=detail&id=${id}`, '审核管理实施计划-明细', false);
+  }
 
   // 刷新table
   const refreshTable = () => {

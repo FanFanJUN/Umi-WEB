@@ -243,3 +243,13 @@ export const TheSelfAssessmentApi = async (params = {}) => {
     params
   });
 };
+
+// 获取自评时间
+export const GetSelfEvaluationTimeApi = async (params = {}) => {
+  const url = `${recommendUrl}/api/reviewImplementManagementService/findOneOverride`;
+  return request({
+    url,
+    method: 'GET',
+    params
+  });
+};
