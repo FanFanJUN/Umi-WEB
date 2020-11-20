@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, message } from 'antd';
-import { ExtTable } from 'suid';
+import { ExtTable, DataExport, DataImport } from 'suid';
+import moment from 'moment/moment';
 import EventModal from '../../../common/EventModal';
 import {
   AuthenticationTypeArr,
@@ -8,17 +9,18 @@ import {
   IssuesManagementApi,
   OrderSeverityArr,
   SendProblemApi, validationProblemApi, VerificationResultConfig, whetherArr,
-} from '../../../AuditRequirementsManagement/commonApi';
+} from '../../commonApi';
 import { getRandom } from '../../../../QualitySynergy/commonProps';
 import AnswerQuestionModal from '../../../AdministrationManagementSupplier/component/AnswerQuestionModal';
 import Upload from '../../../../QualitySynergy/compoent/Upload';
 import { getDocIdForArray } from '../../../../../utils/utilTool';
+import { recommendUrl } from '../../../../../utils/commonUrl';
 
 const IssuesManagement = (props) => {
 
   const tableRef = useRef(null);
 
-  const { type, id } = props;
+  const { type, id, isView } = props;
 
   const columns = [
     { title: '指标', dataIndex: 'ruleName', width: 200, required: true },
@@ -27,7 +29,7 @@ const IssuesManagement = (props) => {
     { title: '严重程度', dataIndex: 'severity', width: 180, render: v => OrderSeverityArr[v] },
     { title: '要求整改完成日期', dataIndex: 'demandCompletionTime', width: 200 },
     { title: '提出人', dataIndex: 'proposerName', width: 100 },
-    { title: '原因分析', dataIndex: 'reason', width: 100 },
+    { title: '问题分析', dataIndex: 'reason', width: 100 },
     {
       title: '纠正预防措施及见证附件', dataIndex: 'preventiveMeasures', width: 300, render: (v, data) => <>
         {v} {data.measures}
@@ -36,7 +38,7 @@ const IssuesManagement = (props) => {
     },
     { title: '完成时间', dataIndex: 'completionTime', width: 100 },
     { title: '验证类型', dataIndex: 'checkType', width: 100, render: v => AuthenticationTypeArr[v] },
-    { title: '验证结果', dataIndex: 'checkResult', width: 50, render: v => whetherArr[v] },
+    { title: '验证结果', dataIndex: 'checkResult', width: 100, render: v => whetherArr[v] },
   ].map(item => ({ ...item, align: 'center' }));
 
   useEffect(() => {
@@ -118,23 +120,24 @@ const IssuesManagement = (props) => {
     if (newData.checkResult) {
       newData.checkResult = whetherArr[newData.checkResult];
     }
-    console.log(newData)
+    console.log(newData);
     setData(v => ({
       ...v,
       selectKeys: keys,
       selectRows: rows,
       editData: rows[0] ? rows[0] : {},
       validationData: newData,
-      disabled: newData.attachRelatedIds ? newData.attachRelatedIds.length === 0 : true
+      disabled: newData.attachRelatedIds ? newData.attachRelatedIds.length === 0 : true,
     }));
   };
 
   const handleOk = value => {
-    let newData = Object.assign(data.validationData, value);
+    let validationData = JSON.parse(JSON.stringify(data.validationData));
+    let newData = Object.assign(validationData, value);
     validationProblemApi([newData]).then(res => {
       if (res.success) {
         setData(v => ({ ...v, visible: false }));
-        refreshTable();
+        getTableData();
         message.success(res.message);
       } else {
         message.error(res.message);
@@ -178,16 +181,109 @@ const IssuesManagement = (props) => {
     }).catch(err => message.error(err.message));
   };
 
+  const requestParams = {
+    params: {
+      reviewImplementPlanCode: props.reviewImplementPlanCode,
+    },
+    url: `${recommendUrl}/api/reviewProblemService/findProblemList`,
+  };
+
+  // 导出方法
+  const explainResponse = (res) => {
+    if (res.success) {
+      let newData = res.data ? res.data.slice() : [];
+      let arr = [{
+        'id': '编号',
+        'ruleName': '指标',
+        'department': '部门/过程',
+        'problemDescribe': '问题描述',
+        'severity': '严重程度',
+        'demandCompletionTime': '要求整改完成日期',
+        'proposerName': '提出人',
+        'reason': '原因分析',
+        'measures': '纠正措施',
+        'preventiveMeasures': '预防措施',
+        'completionTime': '完成时间',
+        'checkType': '验证类型',
+        'checkResult': '验证结果',
+      }];
+      newData.map(item => {
+        arr.push({
+          'id': item.id,
+          'ruleName': item.ruleName,
+          'department': item.department,
+          'problemDescribe': item.problemDescribe,
+          'severity': OrderSeverityArr[item.severity],
+          'demandCompletionTime': item.demandCompletionTime,
+          'proposerName': item.proposerName,
+          'reason': item.reason,
+          'measures': item.measures,
+          'preventiveMeasures': item.preventiveMeasures,
+          'completionTime': item.completionTime,
+          'checkType': AuthenticationTypeArr[item.checkType],
+          'checkResult': whetherArr[item.checkResult],
+        });
+      });
+      return arr;
+    }
+    return [];
+  };
+
+  const validateItem = (rows) => {
+    let newDataSource = JSON.parse(JSON.stringify(data.dataSource));
+    rows.map(item => {
+      const id = item['id'] ? item['id'] : '';
+      const object = {
+        reason: item['reason'] ? item['reason'] : '',
+        measures: item['measures'] ? item['measures'] : '',
+        preventiveMeasures: item['preventiveMeasures'] ? item['preventiveMeasures'] : '',
+        completionTime: item['completionTime'] ? item['completionTime'] : '',
+        key: item['key'],
+        validate: true,
+        status: '验证通过',
+        statusCode: 'success',
+        message: '验证通过',
+      };
+      newDataSource.map((value, index) => {
+        if (value.id === id) {
+          newDataSource[index] = Object.assign(value, object);
+        }
+      });
+    });
+    return newDataSource;
+  };
+
+  const importFunc = (value) => {
+    setData(v => ({ ...v, dataSource: value }));
+    refreshTable();
+  };
+
   return (
     <>
       {
-        type === 'demand' ? <>
+        type === 'demand' ? !isView && <>
           <Button onClick={sendProblem}>发送问题</Button>
           <Button disabled={data.disabled} style={{ marginLeft: '5px' }} onClick={handleClick}>验证管理</Button>
-        </> : <>
-          <Button onClick={answerQuestion} disabled={data.selectKeys.length === 0}>回答问题</Button>
-          <Button style={{ marginLeft: '5px' }} onClick={handleClick}>批量导入</Button>
         </>
+          : <div style={{ display: 'flex' }}>
+            <Button onClick={answerQuestion} disabled={data.selectKeys.length === 0}>回答问题</Button>
+            <DataExport.Button
+              style={{ marginLeft: '5px', marginRight: '5px' }} requestParams={requestParams}
+              explainResponse={explainResponse}
+              filenameFormat={'问题清单' + moment().format('YYYYMMDD')}
+            >
+              导出问题
+            </DataExport.Button>
+            <DataImport
+              tableProps={{
+                columns,
+                showSearch: false,
+              }}
+              validateAll={true}
+              importFunc={importFunc}
+              validateFunc={validateItem}
+            />,
+          </div>
       }
       <ExtTable
         style={{ marginTop: '10px' }}
@@ -216,7 +312,7 @@ const IssuesManagement = (props) => {
         }}
       />
       <AnswerQuestionModal
-        onCancel={() => setData(v => ({ ...v, answerQuestionVisible: false, editData: {} }))}
+        onCancel={() => setData(v => ({ ...v, answerQuestionVisible: false }))}
         onOk={AnswerQuestionOk}
         editData={data.editData}
         visible={data.answerQuestionVisible}

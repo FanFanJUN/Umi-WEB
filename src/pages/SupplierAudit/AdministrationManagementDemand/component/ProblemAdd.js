@@ -8,7 +8,7 @@ import {
   SelectionStrategyConfig,
   UserByDepartmentNameConfig,
 } from '../../mainData/commomService';
-import { OrderSeverityConfig } from '../../AuditRequirementsManagement/commonApi';
+import { OrderSeverityConfig } from '../commonApi';
 import moment from 'moment/moment';
 import { getRandom } from '../../../QualitySynergy/commonProps';
 

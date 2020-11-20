@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ExtModal } from 'suid';
 import IssuesManagement from '../../AdministrationManagementDemand/component/component/IssuesManagement'
-import { SaveIssuesManagementSupplierApi } from '../../AuditRequirementsManagement/commonApi';
+import { SaveIssuesManagementSupplierApi } from '../../AdministrationManagementDemand/commonApi';
 import { message, Modal } from 'antd';
 import { getRandom } from '../../../QualitySynergy/commonProps';
 

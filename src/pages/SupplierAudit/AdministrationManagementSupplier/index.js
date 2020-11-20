@@ -18,9 +18,10 @@ import {
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
 import { materialClassProps } from '../../../utils/commonProps';
-import { WithdrawResultsEntryApi } from '../AuditRequirementsManagement/commonApi';
+import { WithdrawResultsEntryApi } from '../AdministrationManagementDemand/commonApi';
 import CheckLeaderOpinion from '../AdministrationManagementDemand/component/CheckLeaderOpinion';
 import IssuesManagementModal from './component/IssuesManagementModal';
+import SelfEvaluation from '../AdministrationManagementDemand/component/component/SelfEvaluation';
 
 const { authAction } = utils;
 const { Search } = Input;
@@ -49,6 +50,7 @@ export default function() {
   };
 
   const [data, setData] = useState({
+    selfEvaluationVisible: false,
     issuesManagementVisible: false,
     checkLeaderOpinionVisible: false,
     selfAssessmentVisible: false,
@@ -69,8 +71,8 @@ export default function() {
 
   const redirectToPage = (type) => {
     switch (type) {
-      case 'selfAssessment':
-        setData(v => ({ ...v, selfAssessmentVisible: true }));
+      case 'selfEvaluation':
+        setData(v => ({ ...v, selfEvaluationVisible: true }));
         break;
       case 'checkLeaderOpinion':
         setData(v => ({ ...v, checkLeaderOpinionVisible: true }));
@@ -150,7 +152,7 @@ export default function() {
     {
       authAction(<Button
         type='primary'
-        onClick={() => redirectToPage('selfAssessment')}
+        onClick={() => redirectToPage('selfEvaluation')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={data.selectedRowKeys.length === 0}
@@ -216,11 +218,6 @@ export default function() {
     setData(v => ({ ...v, selectedRowKeys: keys, selectedRows: rows, resultsId: keys[0], reviewImplementPlanCode }));
   };
 
-  const generationOk = (id) => {
-    console.log(id);
-    setData(v => ({ ...v, resultsId: id, resultAddVisible: true }));
-  };
-
   return (
     <Fragment>
       <Header
@@ -268,6 +265,11 @@ export default function() {
         onCancel={() => setData(v => ({ ...v, issuesManagementVisible: false }))}
         reviewImplementPlanCode={data.reviewImplementPlanCode}
         visible={data.issuesManagementVisible}
+      />
+      <SelfEvaluation
+        onCancel={() => setData(v => ({ ...v, selfEvaluationVisible: false }))}
+        reviewImplementPlanCode={data.resultsId}
+        visible={data.selfEvaluationVisible}
       />
     </Fragment>
   );

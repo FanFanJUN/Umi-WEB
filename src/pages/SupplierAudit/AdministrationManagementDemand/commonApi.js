@@ -222,3 +222,24 @@ export const SendBackApi = async (params = {}) => {
     data: params
   });
 };
+
+// 查看供应商自评
+export const ViewVendorSelfRating = async (params = {}) => {
+  const url = `${recommendUrl}/api/reviewResultService/findForSupplier`;
+  return request({
+    url,
+    method: 'GET',
+    params
+  });
+};
+
+
+// 自评
+export const TheSelfAssessmentApi = async (params = {}) => {
+  const url = `${recommendUrl}/api/reviewResultService/findOneForSupplier`;
+  return request({
+    url,
+    method: 'GET',
+    params
+  });
+};

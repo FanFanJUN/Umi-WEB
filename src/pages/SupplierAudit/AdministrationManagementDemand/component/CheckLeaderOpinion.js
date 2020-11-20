@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ExtModal, ExtTable } from 'suid';
 import { Checkbox, message, Button } from 'antd';
-import { CheckGroupLeadersOpinion } from '../../AuditRequirementsManagement/commonApi';
+import { CheckGroupLeadersOpinion } from '../commonApi';
+import { getRandom } from '../../../QualitySynergy/commonProps';
 
 const CheckLeaderOpinion = (props) => {
 
@@ -42,6 +43,9 @@ const CheckLeaderOpinion = (props) => {
       reviewImplementPlanCode,
     }).then(res => {
       if (res.success) {
+        if (res.data && res.data.length !== 0) {
+          res.data = res.data.map(item => ({...item, lineNum: getRandom(10)}))
+        }
         setData(v => ({ ...v, dataSource: res.data, loading: false }));
       } else {
         message.error(res.message);

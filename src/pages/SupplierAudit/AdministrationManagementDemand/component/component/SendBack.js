@@ -1,22 +1,42 @@
 import React, { useState } from 'react';
 import { ExtModal } from 'suid';
-import { Row, Input, message } from 'antd';
-import { SendBackApi } from '../../../AuditRequirementsManagement/commonApi';
+import { Row, Input, message, Col, Form } from 'antd';
+import { SendBackApi } from '../../commonApi';
+
+const formLayout = {
+  labelCol: {
+    span: 4,
+  },
+  wrapperCol: {
+    span: 20,
+  },
+};
+
+const FormItem = Form.Item;
 
 const SendBack = (props) => {
 
   const { visible } = props;
 
-  const [data, setData] = useState('');
+  const { getFieldDecorator } = props.form;
 
   const handleOk = () => {
-    const params = Object.assign(props.params, {suggestion: data})
-    SendBackApi(params).then(res => {
-      if (res.success) {
-        message.success(res.message)
-        onCancel()
+    props.form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        const params = Object.assign(props.params, values);
+        SendBackApi(params).then(res => {
+          if (res.success) {
+            message.success(res.message);
+            onCancel();
+            props.refresTable()
+          } else {
+            message.error(res.message);
+          }
+        }).catch(err => {
+          message.error(err.messages);
+        });
       }
-    })
+    });
   };
 
   const onCancel = () => {
@@ -24,7 +44,7 @@ const SendBack = (props) => {
   };
 
   const clearSelected = () => {
-    setData('')
+    props.form.resetFields();
   };
 
   return (
@@ -39,11 +59,27 @@ const SendBack = (props) => {
       afterClose={clearSelected}
     >
       <Row>
-        <Input.TextArea row={6} value={data} onChange={e => setData(e.target.value)} />
+        <Col span={24}>
+          <FormItem {...formLayout} label={'意见'}>
+            {
+              getFieldDecorator('suggestion', {
+                initialValue: '',
+                rules: [
+                  {
+                    required: true,
+                    message: '意见不能为空',
+                  },
+                ],
+              })(
+                <Input.TextArea row={6} style={{ width: '100$' }} />,
+              )
+            }
+          </FormItem>
+        </Col>
       </Row>
     </ExtModal>
   );
 
 };
 
-export default SendBack;
+export default Form.create()(SendBack);

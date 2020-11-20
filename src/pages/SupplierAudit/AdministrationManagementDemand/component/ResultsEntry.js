@@ -6,12 +6,11 @@ import { getDocIdForArray } from '@/utils/utilTool';
 import {
   ResultsEntryApi,
   SaveResultsEntryApi, SubmitResultsEntryApi,
-} from '../../AuditRequirementsManagement/commonApi';
+} from '../commonApi';
 import { recommendUrl } from '../../../../utils/commonUrl';
 import ProblemTable from './component/ProblemTable';
 
 const ResultsEntry = (props) => {
-
 
   const [data, setData] = useState({
     dataSource: []

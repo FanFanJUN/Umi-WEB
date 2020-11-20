@@ -5,7 +5,7 @@ import { Button, Col, Form, Input, InputNumber, Row } from 'antd';
 import BU from '../../../QualitySynergy/mainData/BU';
 import ProblemAdd from './ProblemAdd';
 import { getRandom } from '../../../QualitySynergy/commonProps';
-import { OrderSeverityArr } from '../../AuditRequirementsManagement/commonApi';
+import { OrderSeverityArr } from '../commonApi';
 import { recommendUrl } from '../../../../utils/commonUrl';
 
 const FormItem = Form.Item;
