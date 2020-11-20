@@ -165,7 +165,7 @@ const Index = (props) => {
                 }, 3000)
             } else {
                 // 处理提交审核---返回数据id
-                return res.data;
+                return res.message;
             }
         } else {
             setLoading(false);
@@ -176,7 +176,6 @@ const Index = (props) => {
     // 提交审核验证
     const handleBeforeStartFlow = async () => {
         const id = await handleSave("publish");
-        if(!id) return false;
         console.log("获取到的id是多少", id)
         return new Promise(function (resolve, reject) {
             if (id) {
@@ -191,7 +190,7 @@ const Index = (props) => {
             } else {
                 reject({
                     success: data,
-                    message: '提交失败，请检查数据是否填写完整'
+                    message: '提交失败'
                 })
             }
         })

@@ -25,7 +25,7 @@ import { deleteReviewImplementPlan } from "./service";
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
 import { openNewTab, getUserAccount } from '../../../utils';
-import ChangeHistory from "../MonthAuditPlan/component/ChangeHistory";
+import ChangeHistory from "./components/ChangeHistory";
 import AddNodal from "./components/addModal";
 import ChangeLaderModal from "./components/changeLeader";
 
@@ -384,7 +384,7 @@ export default function () {
                 visible={historyVisible}
                 handleCancel={() => { setHistoryV(false) }}
                 id={data.selectedRowKeys[0]}
-                code={data.selectedRows[0]?.reviewPlanMonthCode}
+                code={data.selectedRows[0]?.reviewImplementPlanCode}
             />}
             { addVisible && <AddNodal
                     visible={addVisible}

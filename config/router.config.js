@@ -149,6 +149,7 @@ export default [
       { path: '/supplierAudit/MonthAuditChangeDetail', component: './SupplierAudit/MonthAuditPlan/component/changeDetail', title: '月度审核计划变更明细' },
       { path: '/supplierAudit/AuditImplementationPlan', component: './SupplierAudit/AuditImplementationPlan', title: '审核实施计划管理' },
       { path: '/supplierAudit/AuditImplementationPlan/editPage', component: './SupplierAudit/AuditImplementationPlan/editPage', title: '审核实施计划管理-新增' },
+      { path: '/supplierAudit/AuditIPChangeDetail', component: './SupplierAudit/AuditImplementationPlan/components/changeDetail', title: '审核实施计划变更明细' },
       { path: '/supplierAudit/AdministrationManagementDemand', component: './SupplierAudit/AdministrationManagementDemand', title: '实施审核管理-需求方' },
 
       { path: '/supplierAudit/AdministrationManagementSupplier', component: './SupplierAudit/AdministrationManagementSupplier', title: '实施审核管理-供应商' },
