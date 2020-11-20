@@ -303,6 +303,7 @@ export const AllFindByFiltersConfig = {
 
 // 采购组织
 export const FindByFiltersConfig = {
+  allowClear: true,
   placeholder: '选择采购组织',
   store: {
     type: 'POST',
@@ -411,6 +412,7 @@ export const AuditCauseManagementConfig = {
 
 // 有id的公司列表
 export const AllCompanyConfig = {
+  allowClear: true,
   placeholder: '选择公司',
   remotePaging: false,
   store: {
