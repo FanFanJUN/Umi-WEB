@@ -66,6 +66,7 @@ const VerificationResults = (props) => {
       <Tabs defaultActiveKey={'1'} activeKey={data.activeKey} onTabClick={onTabClick}>
         <TabPane tab="评分概览" key="1">
           <ScoreOverview
+            isView={isView}
             reviewImplementPlanCode={props.reviewImplementPlanCode}
           />
         </TabPane>

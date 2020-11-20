@@ -58,6 +58,7 @@ const ScoreOverview = (props) => {
         visible={data.viewScoreByReviewerVisible}
       />
       <SelfEvaluation
+        isView={props.isView}
         type={'demand'}
         reviewImplementPlanCode={props.reviewImplementPlanCode}
         onCancel={() => setData(v => ({ ...v, viewVendorSelfRatingVisible: false }))}
