@@ -26,7 +26,7 @@ const formLayout = {
 const MarketCompetitive = React.forwardRef(({ form, data, type, setTableData }, ref) => {
   const DISABLED = type === 'detail';
   const [supplierMajorCompetitors, setsupplierMajorCompetitors] = useState([]);
-
+  const [marketPositions, setmarketPositions] = useState([])
   const { getFieldDecorator } = form;
 
   const columnsForMarket = [
@@ -34,21 +34,25 @@ const MarketCompetitive = React.forwardRef(({ form, data, type, setTableData }, 
       title: '产品',
       dataIndex: 'productName',
       ellipsis: true,
+      editable: false
     },
     {
       title: '年产值',
       dataIndex: 'yearAnnualValue',
       ellipsis: true,
+      inputType: 'InputNumber'
     },
     {
       title: '币种',
       dataIndex: 'currencyName',
       ellipsis: true,
+      inputType: 'selectwithService'
     },
     {
       title: '市场占有率',
       dataIndex: 'marketShare',
       ellipsis: true,
+      inputType: 'percentInput'
     },
   ].map(item => ({ ...item, align: 'center' }));
   const columnsForRank = [
@@ -89,13 +93,21 @@ const MarketCompetitive = React.forwardRef(({ form, data, type, setTableData }, 
     },
   ].map(item => ({ ...item, align: 'center' }));
 
-  function setNewData(newData) {
-    setsupplierMajorCompetitors(newData);
-    setTableData(newData, 'supplierMajorCompetitors');
+  function setNewData(newData, type) {
+    switch (type) {
+      case 'supplierMajorCompetitors':
+        setsupplierMajorCompetitors(newData);
+        break;
+      case 'marketPositions':
+        setmarketPositions(newData)
+        break;
+    }
+    setTableData(newData, type);
   }
   useEffect(() => {
-    const { supplierMajorCompetitors = [] } = data;
+    const { supplierMajorCompetitors = [], marketPositions = [] } = data;
     setsupplierMajorCompetitors(supplierMajorCompetitors?.map(item => ({ ...item, guid: !!item.id ? item.id : item.guid })))
+    setmarketPositions(marketPositions?.map(item => ({ ...item, guid: !!item.id ? item.id : item.guid })))
   }, [data])
   return (
     <div>
@@ -124,7 +136,7 @@ const MarketCompetitive = React.forwardRef(({ form, data, type, setTableData }, 
                   message: '企业的主要竞争优势不能为空',
                 },
               ],
-            })(<Input.TextArea placeholder="请输入主要竞争优势" style={{ width: '100%' }}  disabled={DISABLED}/>)}
+            })(<Input.TextArea placeholder="请输入主要竞争优势" style={{ width: '100%' }} disabled={DISABLED} />)}
           </FormItem>
         </Col>
       </Row>
@@ -132,7 +144,12 @@ const MarketCompetitive = React.forwardRef(({ form, data, type, setTableData }, 
       <EditableFormTable
         columns={columnsForMarket}
         rowKey='guid'
-        dataSource={data.marketPositions?.map(item => ({ ...item, guid: item.id }))}
+        bordered
+        isEditTable={type === 'add'}
+        allowRemove={false}
+        dataSource={marketPositions}
+        setNewData={setNewData}
+        tableType='marketPositions'
       />
       <Divider orientation='left' orientation='left'>主要竞争对手排名</Divider>
       <EditableFormTable
@@ -144,6 +161,7 @@ const MarketCompetitive = React.forwardRef(({ form, data, type, setTableData }, 
         isToolBar={type === 'add'}
         dataSource={supplierMajorCompetitors}
         setNewData={setNewData}
+        tableType='supplierMajorCompetitors'
       />
     </div>
   )

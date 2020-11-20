@@ -23,7 +23,7 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
   const [supplierSalesProceeds, setsupplierSalesProceeds] = useState([]); // 销售收入及利润
   const [changhongSaleInfos, setchanghongSaleInfos] = useState([]);
   const [mainCustomers, setmainCustomers] = useState([]);
-  // const [exportSituations, setexportSituations] = useState([]);
+  const [exportSituations, setexportSituations] = useState([]);
   const [supplierOrderInfos, setsupplierOrderInfos] = useState([]);
   const [threeYearPlans, setthreeYearPlans] = useState([]);
   const [supplierMajorCompetitors, setsupplierMajorCompetitors] = useState();
@@ -45,12 +45,14 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
           mainCustomers,
           supplierOrderInfos,
           supplierMajorCompetitors,
-          threeYearPlans
+          threeYearPlans,
+          exportSituations
         } = data
         await setData({ ...data });
         await form.setFieldsValue({ ...data })
         await setsupplierSalesProceeds(supplierSalesProceeds.map(item => ({ ...item, guid: item.id })));
         await setthreeYearPlans(threeYearPlans.map(item => ({ ...item, guid: item.id })))
+        await setexportSituations(exportSituations.map(item => ({ ...item, guid: item.id })))
         await setsupplierMajorCompetitors(supplierMajorCompetitors.map(item => ({ ...item, guid: item.id })));
         await setsupplierOrderInfos(supplierOrderInfos.map(item => ({ ...item, guid: item.id })))
         await setchanghongSaleInfos(changhongSaleInfos.map(item => ({ ...item, guid: item.id })))
@@ -74,6 +76,7 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
       supplierOrderInfos: supplierOrderInfos || [],
       threeYearPlans: threeYearPlans || [],
       recommendDemandId: id,
+      exportSituations: exportSituations,
       id: data.id,
       supplierMajorCompetitors: supplierMajorCompetitors || [],
       supplierSalesProceeds
@@ -109,6 +112,12 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
         break;
       case 'supplierSalesProceeds':
         setsupplierSalesProceeds(newData);
+        break;
+      case 'exportSituations':
+        setexportSituations(newData)
+        break;
+      case 'marketPositions':
+        setmarketPositions(newData)
         break;
       default:
         break;
