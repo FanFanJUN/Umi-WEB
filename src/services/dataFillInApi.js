@@ -21,7 +21,10 @@ export async function findrBaseInfoById(params) {
     url,
     method: 'GET',
     params,
-  });
+  }).catch(error => ({
+    message: '请求异常，请联系管理员',
+    ...error,
+  }));
 }
 
 /**
@@ -35,7 +38,7 @@ export async function saveBaseInfo(params) {
     url,
     method: 'POST',
     data: params,
-  });
+  }).catch(error => ({ message: '请求异常，请联系管理员', ...error }));
 }
 
 /**
@@ -49,7 +52,7 @@ export async function findSalesSituationById(params) {
     url,
     method: 'GET',
     params,
-  });
+  }).catch(error => ({ message: '请求异常，请联系管理员', ...error }));
 }
 /**
  * @description: 销售情况 保存
@@ -62,7 +65,7 @@ export async function saveSupplierSalesSituation(params) {
     url,
     method: 'POST',
     data: params,
-  });
+  }).catch(error => ({ message: '请求异常，请联系管理员', ...error }));
 }
 /**
  * @description: 公用查询 GET
@@ -110,7 +113,7 @@ export async function requestGetApi(params) {
     url,
     method: 'GET',
     params,
-  });
+  }).catch(error => ({ message: '请求异常，请联系管理员', ...error }));
 }
 /**
  * @description: 公用 Post 接口保存
@@ -158,5 +161,5 @@ export async function requestPostApi(params) {
     url,
     method: 'POST',
     data: params,
-  });
+  }).catch(error => ({ message: '请求异常，请联系管理员', ...error }));
 }

@@ -21,8 +21,8 @@ function createServiceRequest(option) {
     ...option
   }).catch(error => {
     return ({
+      message: '请求异常，请联系管理员',
       ...error,
-      message: '请求异常，请联系管理员'
     })
   })
 }

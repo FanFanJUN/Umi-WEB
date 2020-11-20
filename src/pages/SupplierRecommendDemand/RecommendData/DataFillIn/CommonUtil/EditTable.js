@@ -72,7 +72,7 @@ const EditableCell = (config) => {
           <Option value={false}>否</Option>
         </Select>
       case 'UploadFile':
-        return <UploadFile entityId={record.attachmentId} />
+        return <UploadFile entityId={record[a]} />
       case 'TextArea':
         return <Input.TextArea disabled={inputDisabled} />
       case 'hideForm':
@@ -115,13 +115,17 @@ const EditableCell = (config) => {
       } else if (inputType === 'percentInput') {
         return `${a}%`;
       } else if (inputType === 'UploadFile') {
-        return <UploadFile type='show' entityId={!!record?.attachmentId ? record?.attachmentId : a} />
+        const idKey = dataIndex.substr(0, dataIndex.length - 1);
+        const entityId = !!a ? a : record[idKey]
+        return <UploadFile type='show' entityId={entityId} />
       } else {
         return a;
       }
     }
     if (inputType === 'UploadFile') {
-      return <UploadFile type='show' entityId={!!record?.attachmentId ? record?.attachmentId : a} />
+      const idKey = dataIndex.substr(0, dataIndex.length - 1);
+      const entityId = !!a ? a : record[idKey]
+      return <UploadFile type='show' entityId={entityId} />
     }
   }
 
@@ -176,7 +180,8 @@ const EditableTable = (props) => {
     rowKey,
     isEditTable = false,
     isToolBar = false,
-    setNewData,
+    allowRemove = true,
+    setNewData = () => null,
     recommendDemandId,
     tableType,
     copyLine = false,
@@ -222,7 +227,8 @@ const EditableTable = (props) => {
           )}
         </EditableContext.Consumer>
         {buttonDisabled ?
-          <a style={{ color: 'red' }} key='deteteKey' onClick={() => deleteRow(record[rowKey], 'editDelete')}>删除</a>
+          allowRemove ?
+            <a style={{ color: 'red' }} key='deteteKey' onClick={() => deleteRow(record[rowKey], 'editDelete')}>删除</a> : null
           :
           <Popconfirm title="确定取消？" onConfirm={() => cancel(record[rowKey])}>
             <a key='cancel'>取消</a>
@@ -232,9 +238,12 @@ const EditableTable = (props) => {
         <Fragment>
           <a disabled={editingKey !== ''} onClick={() => edit(record[rowKey])} key='edit'>编辑</a>
           <Divider orientation='left' type="vertical" />
-          <Popconfirm title="确定删除？" onConfirm={() => deleteRow(record[rowKey], 'delete')}>
-            <a disabled={editingKey !== ''} key='delete' style={editingKey !== '' ? { color: 'rgba(0, 0, 0, 0.25)' } : { color: 'red' }}>删除</a>
-          </Popconfirm>
+          {
+            allowRemove ?
+              <Popconfirm title="确定删除？" onConfirm={() => deleteRow(record[rowKey], 'delete')}>
+                <a disabled={editingKey !== ''} key='delete' style={editingKey !== '' ? { color: 'rgba(0, 0, 0, 0.25)' } : { color: 'red' }}>删除</a>
+              </Popconfirm> : null
+          }
         </Fragment>
       );
   }
@@ -245,7 +254,6 @@ const EditableTable = (props) => {
     editable: false,
     fixed: 'left',
     render: (text, record) => {
-
       return finalCol(record);
     },
   }, ...columns,].map(item => ({ ...item, align: 'center' })) : columns;
@@ -372,7 +380,9 @@ EditableTable.protoType = {
   // 是否复制第一行数据指定字段（默认产品代码产品名称）
   copyLine: PropTypes.bool,
   // 需要复制数据的指定字段（默认产品代码产品名称）
-  copyLineKeys: PropTypes.array
+  copyLineKeys: PropTypes.array,
+  // 是否允许删除行
+  allowRemove: PropTypes.bool,
 }
 
 export default React.memo(EditableFormTable);

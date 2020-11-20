@@ -23,7 +23,7 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
   const [supplierSalesProceeds, setsupplierSalesProceeds] = useState([]); // 销售收入及利润
   const [changhongSaleInfos, setchanghongSaleInfos] = useState([]);
   const [mainCustomers, setmainCustomers] = useState([]);
-  const [exportSituations, setexportSituations] = useState([]);
+  // const [exportSituations, setexportSituations] = useState([]);
   const [supplierOrderInfos, setsupplierOrderInfos] = useState([]);
   const [threeYearPlans, setthreeYearPlans] = useState([]);
   const [supplierMajorCompetitors, setsupplierMajorCompetitors] = useState();
@@ -34,14 +34,17 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
+      await setLoading(true);
       const { success, data, message: msg } = await findSalesSituationById({ supplierRecommendDemandId: id });
-      setLoading(false);
+      await setLoading(false);
       if (success) {
-        const { supplierCertificates, supplierSalesProceeds, changhongSaleInfos, mainCustomers, ...other } = data
+        const { supplierCertificates, supplierSalesProceeds, changhongSaleInfos, mainCustomers, supplierOrderInfos, supplierMajorCompetitors, threeYearPlans, ...other } = data
         await setData({ ...data });
         await form.setFieldsValue({ ...data })
         await setsupplierSalesProceeds(supplierSalesProceeds.map(item => ({ ...item, guid: item.id })));
+        await setthreeYearPlans(threeYearPlans.map(item => ({ ...item, guid: item.id })))
+        await setsupplierMajorCompetitors(supplierMajorCompetitors.map(item => ({ ...item, guid: item.id })));
+        await setsupplierOrderInfos(supplierOrderInfos.map(item => ({ ...item, guid: item.id })))
         await setchanghongSaleInfos(changhongSaleInfos.map(item => ({ ...item, guid: item.id })))
         await setmainCustomers(mainCustomers.map(item => ({ ...item, guid: item.id })))
         return
@@ -51,32 +54,32 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
     fetchData();
   }, []);
 
-  function handleSave() {
-    form.validateFieldsAndScroll((error, value) => {
-      if (error) return;
-      const saveParams = {
-        ...value,
-        supplierCertificates: data.supplierCertificates,
-        supplierContacts: data.supplierContacts,
-        managementSystems: data.managementSystems,
-        changhongSaleInfos: changhongSaleInfos || [],
-        mainCustomers: mainCustomers || [],
-        supplierOrderInfos: supplierOrderInfos || [],
-        threeYearPlans: threeYearPlans || [],
-        recommendDemandId: id,
-        id: data.id,
-        supplierMajorCompetitors: supplierMajorCompetitors || [],
-        supplierSalesProceeds
-      };
-      saveSupplierSalesSituation(filterEmptyFileds(saveParams)).then((res) => {
-        if (res && res.success) {
-          message.success('保存销售情况成功');
-          updateGlobalStatus();
-        } else {
-          message.error(res.message);
-        }
-      })
-    });
+  async function handleSave() {
+    const value = await form.validateFieldsAndScroll()
+    const saveParams = {
+      ...value,
+      supplierCertificates: data.supplierCertificates,
+      supplierContacts: data.supplierContacts,
+      managementSystems: data.managementSystems,
+      changhongSaleInfos: changhongSaleInfos || [],
+      mainCustomers: mainCustomers || [],
+      supplierOrderInfos: supplierOrderInfos || [],
+      threeYearPlans: threeYearPlans || [],
+      recommendDemandId: id,
+      id: data.id,
+      supplierMajorCompetitors: supplierMajorCompetitors || [],
+      supplierSalesProceeds
+    };
+    const params = filterEmptyFileds(saveParams);
+    await setLoading(true)
+    const { success, message: msg } = await saveSupplierSalesSituation(params)
+    await setLoading(false)
+    if (success) {
+      message.success('保存销售情况成功');
+      updateGlobalStatus();
+      return
+    }
+    message.error(msg);
   }
 
   function setTableData(newData, type) {
@@ -119,6 +122,7 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
               type="primary"
               style={{ marginRight: '12px' }}
               onClick={handleSave}
+              disabled={loading}
             >保存</Button>,
           ] : null}
         >
