@@ -70,87 +70,88 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
   // 专利/获奖情况
   const columns = [
     {
-      "title": "专利号/获奖证书",
-      "dataIndex": "patentsAwardsCertificate",
-      "ellipsis": true,
-      "editable": true,
+      title: "专利号/获奖证书",
+      dataIndex: "patentsAwardsCertificate",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "成果说明",
-      "dataIndex": "resultDescription",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'Input',
+      title: "成果说明",
+      dataIndex: "resultDescription",
+      ellipsis: true,
+      editable: true,
+      inputType: 'Input',
     },
     {
-      "title": "时间",
-      "dataIndex": "date",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'DatePicker',
+      title: "时间",
+      dataIndex: "date",
+      ellipsis: true,
+      editable: true,
+      inputType: 'DatePicker',
       width: 160,
     },
     {
-      "title": "专利所有者",
-      "dataIndex": "possessor",
-      "ellipsis": true,
-      "editable": true,
+      title: "专利所有者",
+      dataIndex: "possessor",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "是否涉及提供给长虹的产品",
-      "dataIndex": "involveChanghong",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'Select',
-      "width": 168,
+      title: "是否涉及提供给长虹的产品",
+      dataIndex: "involveChanghong",
+      ellipsis: true,
+      editable: true,
+      inputType: 'Select',
+      width: 168,
     }
   ];
 
   // 已完成的新产品开发
   const columnsForFinish = [
     {
-      "title": "产品名称",
-      "dataIndex": "productName",
-      "ellipsis": true,
+      title: "产品名称",
+      dataIndex: "productName",
+      ellipsis: true,
     },
     {
-      "title": "产品特点",
-      "dataIndex": "productFeature",
-      "ellipsis": true,
+      title: "产品特点",
+      dataIndex: "productFeature",
+      ellipsis: true,
     },
     {
-      "title": "新品销售金额",
-      "dataIndex": "salesPrice",
-      "ellipsis": true,
-      "editable": true,
+      title: "新品销售金额",
+      dataIndex: "salesPrice",
+      inputType: 'InputNumber',
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "总销售金额",
-      "dataIndex": "totalSalesMoney",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "总销售金额",
+      dataIndex: "totalSalesMoney",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
     },
     {
-      "title": "币种",
-      "dataIndex": "currencyName",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'Select',
+      title: "币种",
+      dataIndex: "currencyName",
+      ellipsis: true,
+      editable: true,
+      inputType: 'selectwithService',
     },
     {
-      "title": "获奖情况",
-      "dataIndex": "awardSituation",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'Input',
+      title: "获奖情况",
+      dataIndex: "awardSituation",
+      ellipsis: true,
+      editable: true,
+      inputType: 'Input',
     },
     {
-      "title": "设计定型日期",
-      "dataIndex": "designFinalizeDate",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'DatePicker',
+      title: "设计定型日期",
+      dataIndex: "designFinalizeDate",
+      ellipsis: true,
+      editable: true,
+      inputType: 'DatePicker',
       render: function (text, context) {
         return text && moment(text).format('YYYY-MM-DD');
       }
@@ -160,61 +161,61 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
   // 正在进行和计划进行的设计开发
   const columnsForProcess = [
     {
-      "title": "项目名称",
-      "dataIndex": "projectName",
-      "ellipsis": true,
-      "editable": true,
+      title: "项目名称",
+      dataIndex: "projectName",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "项目内容",
-      "dataIndex": "projectContent",
-      "ellipsis": true,
-      "editable": true,
+      title: "项目内容",
+      dataIndex: "projectContent",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "项目人员构成",
-      "dataIndex": "projectStaff",
-      "ellipsis": true,
-      "editable": true,
+      title: "项目人员构成",
+      dataIndex: "projectStaff",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "时间安排",
-      "dataIndex": "datePlan",
-      "ellipsis": true,
-      "editable": true,
+      title: "时间安排",
+      dataIndex: "datePlan",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "项目成果",
-      "dataIndex": "projectResult",
-      "ellipsis": true,
-      "editable": true,
+      title: "项目成果",
+      dataIndex: "projectResult",
+      ellipsis: true,
+      editable: true,
     }
   ];
   // 
   const columnsForProSta = [
     {
-      "title": "使用标准名称/编号",
-      "dataIndex": "standardName",
-      "ellipsis": true,
-      "editable": true,
+      title: "使用标准名称/编号",
+      dataIndex: "standardName",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "国家/行业标准名称、编号",
-      "dataIndex": "countryIndustryStandard",
-      "ellipsis": true,
-      "editable": true,
+      title: "国家/行业标准名称、编号",
+      dataIndex: "countryIndustryStandard",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "先进指标",
-      "dataIndex": "advancedIndicator",
-      "ellipsis": true,
-      "editable": true,
+      title: "先进指标",
+      dataIndex: "advancedIndicator",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "低于国家/行业标准的指标",
-      "dataIndex": "lowerIndicator",
-      "ellipsis": true,
-      "editable": true,
+      title: "低于国家/行业标准的指标",
+      dataIndex: "lowerIndicator",
+      ellipsis: true,
+      editable: true,
     },
   ];
 
@@ -229,33 +230,34 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
       case 'productStandards':
         setproductStandards(newData);
         break;
+      case 'newProducts':
+        setnewProducts(newData)
       default:
         break;
     }
   }
 
-  function handleSave() {
-    form.validateFieldsAndScroll((error, value) => {
-      (value);
-      if (error) return;
-      const saveParams = {
-        ...value,
-        patentsAwards: patentsAwards,
-        processingDesigns: processingDesigns,
-        productStandards: productStandards,
-        newProducts: data.newProducts,
-        recommendDemandId: id,
-        id: data.id
-      };
-      requestPostApi(filterEmptyFileds({ tabKey: 'researchAbilityTab', ...saveParams })).then((res) => {
-        if (res && res.success) {
-          message.success('保存研发能力成功');
-          updateGlobalStatus();
-        } else {
-          message.error(res.message);
-        }
-      });
-    });
+  async function handleSave() {
+    const value = await form.validateFieldsAndScroll();
+    const saveParams = {
+      ...value,
+      patentsAwards: patentsAwards,
+      processingDesigns: processingDesigns,
+      productStandards: productStandards,
+      newProducts: newProducts,
+      recommendDemandId: id,
+      id: data.id
+    };
+    const params = filterEmptyFileds({ tabKey: 'researchAbilityTab', ...saveParams });
+    setLoading(true)
+    const { success, message: msg } = await requestPostApi(params);
+    setLoading(false)
+    if (success) {
+      message.success('保存研发能力成功');
+      updateGlobalStatus();
+      return
+    }
+    message.error(msg);
   }
 
   return (
@@ -268,7 +270,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
           }}
           title="研发能力"
           extra={type === 'add' ? [
-            <Button key="save" type="primary" style={{ marginRight: '12px' }} onClick={handleSave}>保存</Button>,
+            <Button key="save" type="primary" style={{ marginRight: '12px' }} disabled={loading} onClick={handleSave}>保存</Button>,
           ] : null}
         >
           <div className={styles.wrapper}>
@@ -420,6 +422,10 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                   dataSource={newProducts || []}
                   columns={columnsForFinish}
                   rowKey='guid'
+                  setNewData={setNewData}
+                  tableType='newProducts'
+                  isEditTable={type === 'add'}
+                  allowRemove={false}
                 />
                 <Divider orientation='left'>正在进行和计划进行的设计开发</Divider>
                 <EditableFormTable

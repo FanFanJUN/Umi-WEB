@@ -43,8 +43,9 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
+      await setLoading(true);
       const { data, success, message: msg } = await requestGetApi({ supplierRecommendDemandId: id, tabKey: 'qualityAbilityTab' });
+      await setLoading(false);
       if (success) {
         const {
           keyControlProcesses = [],
@@ -63,10 +64,9 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
         await setfinishedProductQualities(finishedProductQualities.map(item => ({ ...item, guid: item.id })));
         await setmaterialQualities(materialQualities.map(item => ({ ...item, guid: item.id })));
         await setfinishedProductTestingItems(finishedProductTestingItems.map(item => ({ ...item, guid: item.id })));
-      } else {
-        message.error(msg);
+        return
       }
-      setLoading(false);
+      message.error(msg);
     };
     // if (type !== 'add') {
     fetchData();
@@ -87,6 +87,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
       "ellipsis": true,
       "editable": true,
       "inputType": 'Select',
+      width: 250
     },
   ];
   // 关键检测、实验设备

@@ -49,8 +49,7 @@ const BaseCondition = ({ form, updateGlobalStatus }) => {
   }, []);
 
   async function handleSave() {
-    const value = await form.validateFieldsAndScroll()
-    console.log('error')
+    const value = await form.validateFieldsAndScroll();
     const saveParams = {
       ...value,
       supplierCertificates: data.supplierCertificates,
@@ -63,7 +62,9 @@ const BaseCondition = ({ form, updateGlobalStatus }) => {
       otherCertifications: otherData || [],
     };
     const params = filterEmptyFileds(saveParams);
+    setLoading(true)
     const { success, message: msg } = await saveBaseInfo(params);
+    setLoading(false)
     if (success) {
       message.success('保存基本情况成功');
       updateGlobalStatus();
@@ -95,6 +96,7 @@ const BaseCondition = ({ form, updateGlobalStatus }) => {
               type="primary"
               style={{ marginRight: '12px' }}
               onClick={handleSave}
+              disabled={loading}
             >保存</Button>
           ] : null}
         >

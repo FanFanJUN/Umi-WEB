@@ -261,7 +261,7 @@ const Customer = React.forwardRef(({
     },
     {
       title: '应用经验证明材料',
-      dataIndex: 'applicationExperienceFileId',
+      dataIndex: 'applicationExperienceFileIds',
       ellipsis: true,
       inputType: 'UploadFile',
       editable: true,
