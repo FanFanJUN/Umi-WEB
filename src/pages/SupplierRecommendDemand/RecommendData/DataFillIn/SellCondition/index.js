@@ -38,7 +38,15 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
       const { success, data, message: msg } = await findSalesSituationById({ supplierRecommendDemandId: id });
       await setLoading(false);
       if (success) {
-        const { supplierCertificates, supplierSalesProceeds, changhongSaleInfos, mainCustomers, supplierOrderInfos, supplierMajorCompetitors, threeYearPlans, ...other } = data
+        const {
+          supplierCertificates,
+          supplierSalesProceeds,
+          changhongSaleInfos,
+          mainCustomers,
+          supplierOrderInfos,
+          supplierMajorCompetitors,
+          threeYearPlans
+        } = data
         await setData({ ...data });
         await form.setFieldsValue({ ...data })
         await setsupplierSalesProceeds(supplierSalesProceeds.map(item => ({ ...item, guid: item.id })));

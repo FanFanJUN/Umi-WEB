@@ -4,7 +4,7 @@
  * @date 2020-09-23
  */
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import styles from './index.less';
 import { ExtTable, WorkFlow, utils } from 'suid';
 import { Button, Input, Modal, message, Checkbox } from 'antd';
@@ -13,6 +13,7 @@ import { useTableProps } from '../../utils/hooks';
 import { recommendUrl } from '../../utils/commonUrl';
 import { evlStatusProps, evaluateSystemProps, orgnazationProps, evlEmu } from '../../utils/commonProps';
 import { formatYMDHmsToYMD, getFrameElement, openNewTab } from '../../utils';
+import { checkEvaluateData }  from '../../services/evaluate';
 import { stopApprove } from '../../services/api';
 const { Search } = Input;
 const { StartFlow, FlowHistoryButton } = WorkFlow;
@@ -36,6 +37,7 @@ function ManualEvaluate() {
     setSearchValue,
     setOnlyMe
   } = sets;
+  const [approveLoading, toggleApproveLoading] = useState(false)
   const [singleRow = {}] = selectedRows;
   const authorizations = storage.sessionStorage.get("Authorization");
   const account = authorizations?.account;
@@ -230,7 +232,9 @@ function ManualEvaluate() {
             ignore={DEVELOPER_ENV}
             key='MANUAL_EVALUATE_APPROVE'
             startComplete={uploadTable}
+            beforeStart={handleBeforeSubmit}
             businessKey={flowId}
+            disabled={approveLoading}
             businessModelCode='com.ecmp.srm.sam.entity.se.SeSubEvaluationProject'
           >
             {
@@ -273,6 +277,28 @@ function ManualEvaluate() {
       allowClear
     />
   )
+  // 提交审核前检查
+  async function handleBeforeSubmit() {
+    toggleApproveLoading(true)
+    const {success, message: msg, data} = await checkEvaluateData({ subEvaluationProjectId: flowId })
+    toggleApproveLoading(false)
+    return new Promise((resolve) => {
+      if (data) {
+        resolve({
+          success: data,
+          message: msg,
+          data: {
+            businessKey: query?.flowId
+          }
+        })
+        return
+      }
+      resolve({
+        success: data,
+        message: '数据校验不通过，请检查评分是否已经完成'
+      })
+    })
+  }
   // 清除选中项
   function cleanSelectedRecord() {
     setRowKeys([])
