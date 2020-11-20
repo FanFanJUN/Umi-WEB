@@ -336,6 +336,26 @@ export const SupplierConfig = {
   },
 };
 
+// 行政区域-获取市
+export const provinceConfig = {
+  placeholder: '选择城市',
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${gatewayUrl}${basicServiceUrl}/region/findByPage`,
+    params: {
+      filters: [{ fieldName: 'nodeLevel', fieldType: 'Integer', operator: 'EQ', value: 2 }],
+    },
+  },
+  remotePaging: true,
+  rowKey: 'code',
+  reader: {
+    field: ['id', 'name', 'codePath', 'namePath'],
+    name: 'name',
+    description: 'code',
+  },
+};
+
 // 单据审核原因
 export const DocumentAuditCauseManagementConfig = {
   placeholder: '选择审核原因',
