@@ -60,9 +60,11 @@ const ResultsEntry = (props) => {
         message.success('保存成功');
         props.onOk();
       } else {
+        setButLoading(false);
         message.error(res.message);
       }
     }).catch(err => {
+      setButLoading(false);
       message.error(err.message);
     });
   };

@@ -142,7 +142,7 @@ const ProblemTable = (props) => {
         dataSource={data.dataSource}
       />
       <SendBack
-        refresTable={refreshTable}
+        refresTable={() => props.onCancel()}
         params={props.params}
         onCancel={() => setData(v => ({ ...v, sendBackVisible: false }))}
         visible={data.sendBackVisible}

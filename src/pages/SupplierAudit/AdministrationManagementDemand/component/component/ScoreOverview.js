@@ -10,6 +10,11 @@ import TargetScoringDetailView from './TargetScoringDetailView';
 
 const ScoreOverview = (props) => {
 
+  let minLine = {
+    percentage: 100,
+  };
+
+
   const columns = [
     {
       title: '', dataIndex: 'id', width: 1, render: v => {
@@ -75,7 +80,10 @@ const ScoreOverview = (props) => {
       if (item.reviewRuleList) {
         item.children = [];
         let reviewRuleList = JSON.parse(JSON.stringify(item.reviewRuleList));
-        reviewRuleList = reviewRuleList.map(item => ({ ...item, id: getRandom(10) }));
+        reviewRuleList = reviewRuleList.map(item => {
+          minLine = item.percentage < minLine.percentage ? item : minLine;
+          return ({ ...item, id: getRandom(10) });
+        });
         item.children.push(...reviewRuleList);
       } else {
         buildTree(item.children ? item.children : []);
@@ -92,7 +100,9 @@ const ScoreOverview = (props) => {
       if (res.success) {
         let arr = res.data ? res.data : [];
         arr = buildTree(arr);
-        console.log(arr);
+        if (minLine.systemId) {
+          props.setAuditOpinionData(minLine)
+        }
         setData(v => ({ ...v, dataSource: arr }));
         setLoading(false);
       } else {
