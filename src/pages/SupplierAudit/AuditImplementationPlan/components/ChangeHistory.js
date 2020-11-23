@@ -1,19 +1,10 @@
-/*
- * @Author: your name
- * @Date: 2020-11-04 16:24:34
- * @LastEditTime: 2020-11-20 17:33:29
- * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: \srm-sm-web\src\pages\SupplierAudit\MonthAuditPlan\component\ChangeHistory.js
- */
-// 从年度审核新增
+
 import React, { useState, useRef } from "react";
-import {  Button } from "antd";
-import { ExtTable, ExtModal, WorkFlow, message } from 'suid';
+import {  Button, message } from "antd";
+import { ExtTable, ExtModal, WorkFlow } from 'suid';
 import { StartFlow } from 'seid';
 import { recommendUrl } from '@/utils/commonUrl';
-import { openNewTab } from '../../../../utils';
-import Upload from "../../Upload";
+import { openNewTab } from '@/utils';
 import { deleteChangeById } from "../service";
 import ChangeLineModal from "./ChangeLineModal";
 
@@ -28,7 +19,7 @@ const ChangeHistory = (props) => {
 
     const columns = [
         { title: '变更单号', dataIndex: 'changeCode', width: 200, ellipsis: true },
-        { title: '流程状态', dataIndex: 'flowState', ellipsis: true, width: 140, render: v=>{
+        { title: '流程状态', dataIndex: 'flowStatus', ellipsis: true, width: 140, render: v=>{
             switch (v) {
                 case 'INIT':
                     return '未进入流程';
@@ -57,7 +48,7 @@ const ChangeHistory = (props) => {
     const handleBtn = (type) => {
         switch(type) {
             case "view":
-                openNewTab(`supplierAudit/MonthAuditChangeDetail?id=${selectedRowKeys[0]}`, '月度审核计划变更单详情', false);
+                openNewTab(`supplierAudit/AuditIPChangeDetail?id=${selectedRowKeys[0]}`, '审核实施计划变更单详情', false);
                 break;
             default:
                 break;
@@ -87,18 +78,18 @@ const ChangeHistory = (props) => {
     >
         <div>
             <Button onClick={()=>{handleBtn("view")}} key="view" disabled={selectRows.length !== 1}>查看</Button>
-            <Button onClick={handleDelete} style={{margin: "0 6px"}} key="delete" disabled={selectRows.length === 0 || !selectRows.every(item=>item.flowState == "INIT")}>删除</Button>
+            <Button onClick={handleDelete} style={{margin: "0 6px"}} key="delete" disabled={selectRows.length === 0 || !selectRows.every(item=>item.flowStatus == "INIT")}>删除</Button>
             <StartFlow
                 businessKey={selectedRowKeys[0] ? selectedRowKeys[0] : ''}
                 callBack={refresh}
-                disabled={selectedRowKeys.length !== 1 || selectRows[0].flowState != "INIT" }
-                businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewPlanMonthChange'
+                disabled={selectedRowKeys.length !== 1 || selectRows[0].flowStatus != "INIT"}
+                businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewImplementPlanChange'
             >提交审核</StartFlow>
             <FlowHistoryButton
                 businessId={selectedRowKeys[0]}
                 flowMapUrl='flow-web/design/showLook'
             >
-                <Button disabled={selectedRowKeys.length !== 1 || selectRows[0].flowState == "INIT"} style={{ margin: '0 6px' }}>审核历史</Button>
+                <Button disabled={selectedRowKeys.length !== 1 || selectRows[0].flowStatus == "INIT"} style={{ margin: '0 6px' }}>审核历史</Button>
             </FlowHistoryButton>
         </div>
         <ExtTable
@@ -116,10 +107,10 @@ const ChangeHistory = (props) => {
             ref={tableRef}
             selectedRowKeys={selectedRowKeys}
             store={{
-                url: `${recommendUrl}/api/reviewPlanMonthChangeService/findPageById`,
+                url: `${recommendUrl}/api/reviewImplementPlanChangeService/findPageByCode`,
                 type: 'POST',
                 params: {
-                    reviewPlanMonthCode: props.code
+                    reviewImplementPlanCode: props.code
                 }
             }}
             columns={columns}

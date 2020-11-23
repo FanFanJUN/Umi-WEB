@@ -13,10 +13,12 @@ import ProblemTable from './component/ProblemTable';
 const ResultsEntry = (props) => {
 
   const [data, setData] = useState({
-    dataSource: []
-  })
+    dataSource: [],
+  });
 
-  const [loading, setLoading] =useState(false)
+  const [loading, setLoading] = useState(false);
+
+  const [butLoading, setButLoading] = useState(false);
 
   useEffect(() => {
     if (props.visible) {
@@ -25,7 +27,7 @@ const ResultsEntry = (props) => {
   }, [props.visible]);
 
   const getTableData = (reviewImplementManagementId) => {
-    setLoading(true)
+    setLoading(true);
     ResultsEntryApi({ reviewImplementManagementId }).then(res => {
       if (res.success) {
         let newData = JSON.parse(JSON.stringify(res.data));
@@ -35,7 +37,7 @@ const ResultsEntry = (props) => {
           attachRelatedIds: getDocIdForArray(item.fileList),
         }));
         setData(v => ({ ...v, dataSource: newData }));
-        setLoading(false)
+        setLoading(false);
       } else {
         message.error(res.message);
       }
@@ -50,9 +52,11 @@ const ResultsEntry = (props) => {
   };
 
   const onOk = (type) => {
+    setButLoading(true);
     const servers = type === 'save' ? SaveResultsEntryApi : SubmitResultsEntryApi;
     servers(data.dataSource).then(res => {
       if (res.success) {
+        setButLoading(false);
         message.success('保存成功');
         props.onOk();
       } else {
@@ -74,9 +78,9 @@ const ResultsEntry = (props) => {
   };
 
   const onChange = (value) => {
-    console.log('触发')
-    setData(v => ({...v, dataSource: value}))
-  }
+    console.log('触发');
+    setData(v => ({ ...v, dataSource: value }));
+  };
 
   return (
     <ExtModal
@@ -89,8 +93,8 @@ const ResultsEntry = (props) => {
       afterClose={clearSelected}
       footer={<div>
         <Button onClick={onCancel}>取消</Button>
-        <Button type={'primary'} onClick={() => onOk('save')}>暂存</Button>
-        <Button onClick={() => onOk('submit')}>提交</Button>
+        <Button type={'primary'} onClick={() => onOk('save')} loading={butLoading}>暂存</Button>
+        <Button onClick={() => onOk('submit')} loading={butLoading}>提交</Button>
       </div>}
     >
       <div>

@@ -243,3 +243,33 @@ export const TheSelfAssessmentApi = async (params = {}) => {
     params
   });
 };
+
+// 获取自评时间
+export const GetSelfEvaluationTimeApi = async (params = {}) => {
+  const url = `${recommendUrl}/api/reviewImplementManagementService/findOneOverride`;
+  return request({
+    url,
+    method: 'GET',
+    params
+  });
+};
+
+// 评分概览
+export const GetScoreOverviewApi = async (params = {}) => {
+  const url = `${recommendUrl}/api/reviewResultService/findForLeader`;
+  return request({
+    url,
+    method: 'GET',
+    params
+  });
+};
+
+// 指标评审得分详情
+export const GetTargetScoringDetailApi = async (params = {}) => {
+  const url = `${recommendUrl}/api/reviewResultService/findForRule`;
+  return request({
+    url,
+    method: 'GET',
+    params
+  });
+};

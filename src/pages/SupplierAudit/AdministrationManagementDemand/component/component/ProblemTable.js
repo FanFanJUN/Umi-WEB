@@ -21,28 +21,38 @@ const ProblemTable = (props) => {
       width: 80,
       render: (v, data) => type ? ApplicableStateArr[v] : <ComboList
         onClick={e => e.stopPropagation()}
-        afterSelect={value => whetherApplyChange(value, data)}
+        afterSelect={value => {
+          data.whetherApply = value.code;
+          // refreshTable();
+        }}
         value={ApplicableStateArr[v]} {...ApplicableStateProps} />,
     },
     {
       title: '评审得分',
       dataIndex: 'reviewScore',
       width: 100,
-      render: (v, data) => type ? v : <InputNumber value={v} max={data.highestScore}
-                                                   onChange={value => reviewScoreChange(value, data)} min={0} />,
+      render: (v, data) => type ? v : <InputNumber
+        // onBlur={refreshTable}
+        value={v} max={data.highestScore}
+        onChange={value => data.reviewScore = value}
+        min={0} />,
     },
     {
       title: '情况记录',
       dataIndex: 'remark',
       width: 200,
-      render: (v, data) => type ? v : <Input value={v} onChange={value => remarkChange(value, data)} />,
+      render: (v, data) => type ? v : <Input value={v} onChange={e => {
+        data.remark = e.target.value;
+        refreshTable();
+      }} />,
     },
     {
       title: '附件',
       dataIndex: 'attachRelatedIds',
       width: 200,
-      render: (v, data) => <Upload entityId={v} type={props.type}
-                                   onChange={(value) => attachRelatedIdChange(value, data)} />,
+      render: (v, data) => <Upload
+        entityId={v} type={props.type}
+        onChange={(value) => data.attachRelatedIds = value} />,
     },
     {
       title: '问题',
@@ -107,37 +117,8 @@ const ProblemTable = (props) => {
     setData(v => ({ ...v, visible: true, editData: data }));
   };
 
-  const changeRowsValue = (value, key, linNum) => {
-    let newDataSource = JSON.parse(JSON.stringify(data.dataSource));
-    newDataSource.map((item, index) => {
-      if (item.lineNum === linNum) {
-        newDataSource[index][key] = value;
-      }
-    });
-    setData(v => ({ ...v, dataSource: newDataSource }));
-  };
-
-  const attachRelatedIdChange = (value, rows) => {
-    changeRowsValue(value, 'attachRelatedIds', rows.lineNum);
-
-  };
-
-  const remarkChange = (e, rows) => {
-    changeRowsValue(e.target.value, 'remark', rows.lineNum);
-
-  };
-
-  const reviewScoreChange = (value, rows) => {
-    changeRowsValue(value, 'reviewScore', rows.lineNum);
-
-  };
-
-  const whetherApplyChange = (value, rows) => {
-    changeRowsValue(value.code, 'whetherApply', rows.lineNum);
-  };
-
   const handleBack = () => {
-    setData(v => ({...v, sendBackVisible: true}))
+    setData(v => ({ ...v, sendBackVisible: true }));
   };
 
   return (
@@ -163,7 +144,7 @@ const ProblemTable = (props) => {
       <SendBack
         refresTable={refreshTable}
         params={props.params}
-        onCancel={() => setData(v => ({...v, sendBackVisible: false}))}
+        onCancel={() => setData(v => ({ ...v, sendBackVisible: false }))}
         visible={data.sendBackVisible}
       />
       <ProblemManagement

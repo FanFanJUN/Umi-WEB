@@ -303,6 +303,7 @@ export const AllFindByFiltersConfig = {
 
 // 采购组织
 export const FindByFiltersConfig = {
+  allowClear: true,
   placeholder: '选择采购组织',
   store: {
     type: 'POST',
@@ -330,6 +331,26 @@ export const SupplierConfig = {
   rowKey: 'code',
   reader: {
     field: ['code'],
+    name: 'name',
+    description: 'code',
+  },
+};
+
+// 行政区域-获取市
+export const provinceConfig = {
+  placeholder: '选择城市',
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${gatewayUrl}${basicServiceUrl}/region/findByPage`,
+    params: {
+      filters: [{ fieldName: 'nodeLevel', fieldType: 'Integer', operator: 'EQ', value: 2 }],
+    },
+  },
+  remotePaging: true,
+  rowKey: 'code',
+  reader: {
+    field: ['id', 'name', 'codePath', 'namePath'],
     name: 'name',
     description: 'code',
   },
@@ -411,6 +432,7 @@ export const AuditCauseManagementConfig = {
 
 // 有id的公司列表
 export const AllCompanyConfig = {
+  allowClear: true,
   placeholder: '选择公司',
   remotePaging: false,
   store: {
