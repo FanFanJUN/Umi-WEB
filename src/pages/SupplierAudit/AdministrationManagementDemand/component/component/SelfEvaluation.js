@@ -11,6 +11,7 @@ import {
 import { getDocIdForArray } from '../../../../../utils/utilTool';
 import { ApplicableStateArr, ApplicableStateProps } from '../../../../QualitySynergy/commonProps';
 import Upload from '../../../../QualitySynergy/compoent/Upload';
+import SendBack from './SendBack';
 
 const SelfEvaluation = props => {
   let apiParams = [];
@@ -71,6 +72,7 @@ const SelfEvaluation = props => {
   const [data, setData] = useState({
     time: '',
     dataSource: [],
+    sendBackVisible: false
   });
 
   const [loading, setLoading] = useState(false);
@@ -172,6 +174,11 @@ const SelfEvaluation = props => {
     tableRef.current.remoteDataRefresh();
   };
 
+  // 退回
+  const sendBack = () => {
+    setData(v => ({...v, sendBackVisible: true}))
+  }
+
   return (
     <ExtModal
       width={'170vh'}
@@ -186,7 +193,7 @@ const SelfEvaluation = props => {
       {
         type ?
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            {!isView && <Button>退回</Button>}
+            {!isView && <Button onClick={sendBack}>退回</Button>}
             <span style={{ marginLeft: '50px' }}>自评时间:</span>
             <Input style={{ width: '350px', marginLeft: '5px' }}
                    disabled={true} value={data.time}/>
@@ -206,6 +213,14 @@ const SelfEvaluation = props => {
         dataSource={data.dataSource}
         defaultExpandAllRows={true}
         lineNumber={true}
+      />
+      <SendBack
+        refresTable={refreshTable}
+        params={{
+          reviewImplementManagementId: data.dataSource[0] ? data.dataSource[0].id : ''
+        }}
+        onCancel={() => setData(v => ({...v, sendBackVisible: false}))}
+        visible={data.sendBackVisible}
       />
     </ExtModal>
   );
