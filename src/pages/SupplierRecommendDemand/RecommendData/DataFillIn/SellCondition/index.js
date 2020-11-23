@@ -21,6 +21,7 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
   const customerRef = useRef(null);
   const [data, setData] = useState({});
   const [supplierSalesProceeds, setsupplierSalesProceeds] = useState([]); // 销售收入及利润
+  const [supplierCertificates, setsupplierCertificates] = useState([]);
   const [changhongSaleInfos, setchanghongSaleInfos] = useState([]);
   const [mainCustomers, setmainCustomers] = useState([]);
   const [exportSituations, setexportSituations] = useState([]);
@@ -39,7 +40,7 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
       await setLoading(false);
       if (success) {
         const {
-          supplierCertificates,
+          supplierCertificates = [],
           supplierSalesProceeds,
           changhongSaleInfos,
           mainCustomers,
@@ -52,6 +53,7 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
         await setData({ ...data });
         await form.setFieldsValue({ ...data })
         await setsupplierSalesProceeds(supplierSalesProceeds.map(item => ({ ...item, guid: item.id })));
+        await setsupplierCertificates(supplierCertificates.map(item => ({ ...item, guid: item.id })));
         await setthreeYearPlans(threeYearPlans.map(item => ({ ...item, guid: item.id })))
         await setexportSituations(exportSituations.map(item => ({ ...item, guid: item.id })))
         await setsupplierMajorCompetitors(supplierMajorCompetitors.map(item => ({ ...item, guid: item.id })));
@@ -70,7 +72,7 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
     const value = await form.validateFieldsAndScroll()
     const saveParams = {
       ...value,
-      supplierCertificates: data.supplierCertificates,
+      supplierCertificates: supplierCertificates,
       supplierContacts: data.supplierContacts,
       managementSystems: data.managementSystems,
       changhongSaleInfos: changhongSaleInfos || [],
@@ -121,6 +123,9 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
         break;
       case 'marketPositions':
         setmarketPositions(newData)
+        break;
+      case 'supplierCertificates':
+        setsupplierCertificates(newData)
         break;
       default:
         break;

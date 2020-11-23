@@ -144,26 +144,26 @@ const FIELDS = [
   },
   {
     name: 'timelyLine',
-    label: '及时确认行项数',
+    label: '寄售订单数量',
     type: 'number',
     option: {
       rules: [
         {
           required: true,
-          message: '及时确认行项数不能为空'
+          message: '寄售订单数量不能为空'
         }
       ]
     }
   },
   {
     name: 'totalLine',
-    label: '总行项数',
+    label: '所有订单数量',
     type: 'number',
     option: {
       rules: [
         {
           required: true,
-          message: '总行项数不能为空'
+          message: '所有订单数量不能为空'
         }
       ]
     }

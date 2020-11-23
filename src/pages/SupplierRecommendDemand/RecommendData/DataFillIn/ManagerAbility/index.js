@@ -7,8 +7,21 @@
  * @Description: 供应链管理能力 Tab
  * @Connect: 1981824361@qq.com
  */
-import React, { useState, useRef, useEffect } from 'react';
-import { Form, Button, Spin, PageHeader, Row, Col, Divider, Radio, Input, InputNumber, message } from 'antd';
+import { useState, useEffect } from 'react';
+import {
+  Form,
+  Button,
+  Spin,
+  PageHeader,
+  Row,
+  Col,
+  Divider,
+  Radio,
+  Input,
+  InputNumber,
+  message
+} from 'antd';
+import { utils } from 'suid';
 import styles from '../../DataFillIn/index.less';
 import UploadFile from '../../../../../components/Upload';
 import EditableFormTable from '../CommonUtil/EditTable';
@@ -30,6 +43,21 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
 
   const [data, setData] = useState({});
   const [keyMaterialSuppliers, setkeyMaterialSuppliers] = useState([]);
+  // 汽运
+  const [logisticsBusTransports, setlogisticsBusTransports] = useState([
+    {
+      deliveryType: '自有车辆运输',
+      guid: utils.getUUID()
+    },
+    {
+      deliveryType: '外包整车发运',
+      guid: utils.getUUID()
+    },
+    {
+      deliveryType: '外包零星发运',
+      guid: utils.getUUID()
+    }
+  ]);
   const [loading, setLoading] = useState(false);
 
   const { query: { id, type = 'add' } } = router.useLocation();
@@ -40,115 +68,126 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
     const fetchData = async () => {
       setLoading(true);
       const { data, message: msg, success } = await requestGetApi({ supplierRecommendDemandId: id, tabKey: 'managerAbilityTab' });
+      setLoading(false);
       if (success) {
-        const { keyMaterialSuppliers = [], ...other } = data;
+        const { keyMaterialSuppliers = [], logisticsBusTransports = [], ...other } = data;
         await setFieldsValue(other)
         await setData(data);
+        logisticsBusTransports.length > 0 && await setlogisticsBusTransports(logisticsBusTransports.map(item => ({ ...item, guid: item.id })))
         await setkeyMaterialSuppliers(keyMaterialSuppliers.map(item => ({ ...item, guid: item.id })));
-      } else {
-        message.error(msg);
+        return
       }
-      setLoading(false);
+      message.error(msg);
     };
     fetchData();
   }, []);
 
   const columnsForCarTransport = [
     {
-      "title": "运输方式",
-      "dataIndex": "deliveryType",
-      "ellipsis": true,
-      "editable": true,
+      title: "运输方式",
+      dataIndex: "deliveryType",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "运输距离（公里）",
-      "dataIndex": "deliveryDistance",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "运输距离（公里）",
+      dataIndex: "deliveryDistance",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
+      width: 150,
     },
     {
-      "title": "运输时间（小时）",
-      "dataIndex": "deliveryTime",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "运输时间（小时）",
+      dataIndex: "deliveryTime",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
+      width: 130,
     },
     {
-      "title": "发运频率（次/周）",
-      "dataIndex": "deliveryFrequency",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "发运频率（次/周）",
+      dataIndex: "deliveryFrequency",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
+      width: 140
     },
     {
-      "title": "正常情况交货期（天）",
-      "dataIndex": "normalDeliveryTime",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "正常情况交货期（天）",
+      dataIndex: "normalDeliveryTime",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
+      width: 160
     },
     {
-      "title": "紧急情况交货期（天）",
-      "dataIndex": "urgencyDeliveryTime",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "紧急情况交货期（天）",
+      dataIndex: "urgencyDeliveryTime",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
+      width: 170
     },
   ];
   // 关键原材料及供应商名单
   const columnsForKeyMat = [
     {
-      "title": "产品",
-      "dataIndex": "productName",
-      "ellipsis": true,
-      "editable": true,
+      title: "产品",
+      dataIndex: "productName",
+      ellipsis: true,
+      editable: false,
     },
     {
-      "title": "原材料名称及规格型号/牌号",
-      "dataIndex": "modelBrand",
-      "ellipsis": true,
-      "editable": true,
+      title: "原材料名称及规格型号/牌号",
+      dataIndex: "modelBrand",
+      ellipsis: true,
+      editable: true,
+      width: 200
     },
     {
-      "title": "用途",
-      "dataIndex": "useTo",
-      "ellipsis": true,
-      "editable": true,
+      title: "用途",
+      dataIndex: "useTo",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "品牌及供应商名称（自制可写“自制”）",
-      "dataIndex": "supplierName",
-      "ellipsis": true,
-      "editable": true,
+      title: "品牌及供应商名称（自制可写“自制”）",
+      dataIndex: "supplierName",
+      ellipsis: true,
+      editable: true,
+      width: 280
     },
     {
-      "title": "材料采购周期（天）",
-      "dataIndex": "procurementCycle",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "材料采购周期（天）",
+      dataIndex: "procurementCycle",
+      ellipsis: true,
+      editable: true,
+      width: 150,
+      inputType: 'InputNumber',
     },
     {
-      "title": "年采购金额",
-      "dataIndex": "purchaseAmount",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "年采购金额",
+      dataIndex: "purchaseAmount",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
     },
     {
-      "title": "币种",
-      "dataIndex": "currencyName",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'selectwithService',
+      title: "币种",
+      dataIndex: "currencyName",
+      ellipsis: true,
+      editable: true,
+      inputType: 'selectwithService',
+      width: 120
     },
     {
-      "title": "备注",
-      "dataIndex": "remark",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'TextArea',
+      title: "备注",
+      dataIndex: "remark",
+      ellipsis: true,
+      editable: true,
+      inputType: 'TextArea',
+      width: 150
     },
   ];
 
@@ -166,9 +205,10 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
         ...value,
         tabKey: 'managerAbilityTab',
         rohsFileId: value.rohsFileId ? (value.rohsFileId)[0] : null,
-        recommendDemandId: id || '676800B6-F19D-11EA-9F88-0242C0A8442E',
-        logisticsBusTransports: data.logisticsBusTransports || [],
-        keyMaterialSuppliers: keyMaterialSuppliers || [],
+        recommendDemandId: id,
+        id: data?.id,
+        logisticsBusTransports: logisticsBusTransports,
+        keyMaterialSuppliers: keyMaterialSuppliers,
       };
       requestPostApi(filterEmptyFileds(saveParams)).then((res) => {
         if (res && res.success) {
@@ -181,8 +221,15 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
     })
   }
 
-  function setNewData(newData) {
-    setkeyMaterialSuppliers(newData);
+  function setNewData(newData, type) {
+    switch (type) {
+      case 'logisticsBusTransports':
+        setlogisticsBusTransports(newData)
+        break;
+      case 'keyMaterialSuppliers':
+        setkeyMaterialSuppliers(newData);
+        break;
+    }
   }
 
   return (
@@ -195,9 +242,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
           }}
           title="供应链管理能力"
           extra={type === 'add' ? [
-            <Button key="save" type="primary" style={{ marginRight: '12px' }} onClick={() => handleSave()}>
-              保存
-                        </Button>,
+            <Button key="save" type="primary" style={{ marginRight: '12px' }} onClick={handleSave}>保存</Button>,
           ] : null}
         >
           <div className={styles.wrapper}>
@@ -568,11 +613,13 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
               <div className={styles.content}>
                 <Divider orientation='left'>汽运</Divider>
                 <EditableFormTable
-                  dataSource={[]}
+                  dataSource={logisticsBusTransports}
                   columns={columnsForCarTransport}
-                  rowKey='name1'
-                // isEditTable
-                // setNewData={setNewData}
+                  rowKey='guid'
+                  isEditTable={type === 'add'}
+                  allowRemove={false}
+                  setNewData={setNewData}
+                  tableType='logisticsBusTransports'
                 />
                 <Divider orientation='left'>空运</Divider>
                 <Row>
@@ -690,6 +737,8 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                   isEditTable={type === 'add'}
                   isToolBar={type === 'add'}
                   setNewData={setNewData}
+                  copyLine={true}
+                  tableType='keyMaterialSuppliers'
                 />
               </div>
             </div>

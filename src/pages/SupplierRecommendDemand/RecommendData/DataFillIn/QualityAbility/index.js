@@ -76,168 +76,168 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
   // 重点控制工序
   const columnsForKeyControl = [
     {
-      "title": "工序名称",
-      "dataIndex": "name",
-      "ellipsis": true,
-      "editable": true,
+      title: "工序名称",
+      dataIndex: "name",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "重点控制工序现场是否有标志和控制",
-      "dataIndex": "exsitFlagControl",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'Select',
+      title: "重点控制工序现场是否有标志和控制",
+      dataIndex: "exsitFlagControl",
+      ellipsis: true,
+      editable: true,
+      inputType: 'Select',
       width: 250
     },
   ];
   // 关键检测、实验设备
   const columnsForProKeyPro = [
     {
-      "title": "工厂名称",
-      "dataIndex": "factoryName",
-      "ellipsis": true,
-      "editable": true,
+      title: "工厂名称",
+      dataIndex: "factoryName",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "设备名称",
-      "dataIndex": "equipmentName",
-      "ellipsis": true,
-      "editable": true,
+      title: "设备名称",
+      dataIndex: "equipmentName",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "规格型号",
-      "dataIndex": "specificationModel",
-      "ellipsis": true,
-      "editable": true,
+      title: "规格型号",
+      dataIndex: "specificationModel",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "生产厂家",
-      "dataIndex": "manufacturer",
-      "ellipsis": true,
-      "editable": true,
+      title: "生产厂家",
+      dataIndex: "manufacturer",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "产地",
-      "dataIndex": "originPlace",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'Input',
+      title: "产地",
+      dataIndex: "originPlace",
+      ellipsis: true,
+      editable: true,
+      inputType: 'Input',
     },
     {
-      "title": "购买时间",
-      "dataIndex": "buyDate",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'DatePicker',
+      title: "购买时间",
+      dataIndex: "buyDate",
+      ellipsis: true,
+      editable: true,
+      inputType: 'DatePicker',
     },
     {
-      "title": "数量",
-      "dataIndex": "number",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "数量",
+      dataIndex: "number",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
     },
     {
-      "title": "检测项目",
-      "dataIndex": "testItem",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'Input',
+      title: "检测项目",
+      dataIndex: "testItem",
+      ellipsis: true,
+      editable: true,
+      inputType: 'Input',
     },
     {
-      "title": "精度",
-      "dataIndex": "accuracy",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "精度",
+      dataIndex: "accuracy",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
     },
     {
-      "title": "备注",
-      "dataIndex": "emark",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'TextArea',
+      title: "备注",
+      dataIndex: "remark",
+      ellipsis: true,
+      editable: true,
+      inputType: 'TextArea',
     }
   ];
 
   // 
   const columnsForProject = [
     {
-      "title": "无能力检测项目",
-      "dataIndex": "cannotTestItem",
-      "ellipsis": true,
-      "editable": true,
+      title: "无能力检测项目",
+      dataIndex: "cannotTestItem",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "委托实验部门（检测机构）",
-      "dataIndex": "testOrganization",
-      "ellipsis": true,
-      "editable": true,
+      title: "委托实验部门（检测机构）",
+      dataIndex: "testOrganization",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "检测周期",
-      "dataIndex": "testCycle",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "检测周期",
+      dataIndex: "testCycle",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
     },
     {
-      "title": "周期单位",
-      "dataIndex": "cycleUnit",
-      "ellipsis": true,
-      "editable": true,
+      title: "周期单位",
+      dataIndex: "cycleUnit",
+      ellipsis: true,
+      editable: true,
     },
   ];
 
   // 成品检验项目
   const columnsForFinishPro = [
     {
-      "title": "产品",
-      "dataIndex": "product",
-      "ellipsis": true,
-      "editable": true,
+      title: "产品",
+      dataIndex: "productName",
+      ellipsis: true,
+      editable: false,
     },
     {
-      "title": "检验项目",
-      "dataIndex": "testingItem",
-      "ellipsis": true,
-      "editable": true,
+      title: "检验项目",
+      dataIndex: "testingItem",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "自检/外检",
-      "dataIndex": "selfExternalInspection",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'Select',
+      title: "自检/外检",
+      dataIndex: "selfExternalInspection",
+      ellipsis: true,
+      editable: true,
+      inputType: 'Select',
       selectOptions: [
         { name: '自检', value: true },
         { name: '外检', value: false },
       ]
     },
     {
-      "title": "检验类型",
-      "dataIndex": "testingTypeEnum",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'Select',
+      title: "检验类型",
+      dataIndex: "testingTypeEnum",
+      ellipsis: true,
+      editable: true,
+      inputType: 'Select',
       selectOptions: [
         { name: '周期检验', value: 'PERIODIC_TEST' },
         { name: '逐批检验', value: 'BATCH_INSPECTION' },
       ]
     },
     {
-      "title": "检验周期",
-      "dataIndex": "testingCycle",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "检验周期",
+      dataIndex: "testingCycle",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
     },
     {
-      "title": "周期单位",
-      "dataIndex": "cycleUnitEnum",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'Select',
+      title: "周期单位",
+      dataIndex: "cycleUnitEnum",
+      ellipsis: true,
+      editable: true,
+      inputType: 'Select',
       selectOptions: [
         { name: '日', value: 'DAY' },
         { name: '月', value: 'MONTH' },
@@ -249,98 +249,96 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
   // 原材料质量状况
   const columnsForQuality = [
     {
-      "title": "产品",
-      "dataIndex": "product",
-      "ellipsis": true,
-      "editable": true,
+      title: "产品",
+      dataIndex: "productName",
+      ellipsis: true,
+      editable: false,
     },
     {
-      "title": "原材料名称及规格型号/牌号",
-      "dataIndex": "originModelBrand",
-      "ellipsis": true,
-      "editable": true,
+      title: "原材料名称及规格型号/牌号",
+      dataIndex: "originModelBrand",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "物料入厂验收合格率",
-      "dataIndex": "materialQualifiedRate",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'percentInput',
+      title: "物料入厂验收合格率",
+      dataIndex: "materialQualifiedRate",
+      ellipsis: true,
+      editable: true,
+      inputType: 'percentInput',
     },
     {
-      "title": "物料使用不良率",
-      "dataIndex": "materialUseBadRate",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'percentInput',
+      title: "物料使用不良率",
+      dataIndex: "materialUseBadRate",
+      ellipsis: true,
+      editable: true,
+      inputType: 'percentInput',
     },
   ];
 
   // 成品质量状况
   const columnsForFinishQua = [
     {
-      "title": "产品",
-      "dataIndex": "product",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "产品",
+      dataIndex: "productName",
+      ellipsis: true,
+      editable: false,
     },
     {
-      "title": "产品直通率",
-      "dataIndex": "productStraightInRate",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "产品直通率",
+      dataIndex: "productStraightInRate",
+      ellipsis: true,
+      editable: true,
+      inputType: 'percentInput',
     },
     {
-      "title": "成品检验合格率",
-      "dataIndex": "testQualifiedRate",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "成品检验合格率",
+      dataIndex: "testQualifiedRate",
+      ellipsis: true,
+      editable: true,
+      inputType: 'percentInput',
     },
     {
-      "title": "成品出厂合格率",
-      "dataIndex": "leaveFactoryQualifiedRate",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "成品出厂合格率",
+      dataIndex: "leaveFactoryQualifiedRate",
+      ellipsis: true,
+      editable: true,
+      inputType: 'percentInput',
     },
   ];
 
-  function handleSave() {
+  async function handleSave() {
     if (getFieldValue('haveEnvironmentalTestingEquipment')) {
       // if (isEmptyArray(tableTata)) {
       //     message.info('列表至少填写一条设备信息！');
       //     return;
       // }
     }
-    form.validateFieldsAndScroll((error, value) => {
-      (value);
-      if (error) return;
-      const saveParams = {
-        ...value,
-        tabKey: 'qualityAbilityTab',
-        rohsFileId: value.rohsFileId ? (value.rohsFileId)[0] : null,
-        recommendDemandId: id,
-        id: data.id,
-        keyControlProcesses,
-        keyTestingEquipments,
-        finishedProductQualities,
-        cannotTestItems,
-        materialQualities,
-        finishedProductTestingItems
-        // environmentalTestingEquipments: tableTata || [],
-      };
-      requestPostApi(filterEmptyFileds(saveParams)).then((res) => {
-        if (res && res.success) {
-          message.success('保存数据成功');
-          updateGlobalStatus();
-        } else {
-          message.error(res.message);
-        }
-      })
-    })
+    const value = await form.validateFieldsAndScroll();
+    const saveParams = {
+      ...value,
+      tabKey: 'qualityAbilityTab',
+      rohsFileId: value.rohsFileId ? (value.rohsFileId)[0] : null,
+      recommendDemandId: id,
+      id: data.id,
+      keyControlProcesses,
+      keyTestingEquipments,
+      finishedProductQualities,
+      cannotTestItems,
+      materialQualities,
+      finishedProductTestingItems,
+      // environmentalTestingEquipments: tableTata || [],
+    };
+    const params = filterEmptyFileds(saveParams)
+    setLoading(true)
+    const { success, message: msg } = await requestPostApi(params);
+    setLoading(false)
+    if (success) {
+      message.success(msg);
+      updateGlobalStatus();
+      return
+    }
+    message.error(msg)
   }
 
   function setNewData(newData, type) {
@@ -360,6 +358,8 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
       case 'finishedProductTestingItems':
         setfinishedProductTestingItems(newData);
         break;
+      case 'finishedProductQualities':
+        setfinishedProductQualities(newData);
       default:
         break;
     }
@@ -375,9 +375,15 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
           }}
           title="质量控制"
           extra={type === 'add' ? [
-            <Button key="save" type="primary" style={{ marginRight: '12px' }} onClick={() => handleSave()}>
-              保存
-                        </Button>,
+            <Button
+              key="save"
+              type="primary"
+              style={{
+                marginRight: '12px'
+              }}
+              disabled={loading}
+              onClick={handleSave}
+            >保存</Button>,
           ] : null}
         >
           <div className={styles.wrapper}>
@@ -699,7 +705,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                       })(<UploadFile
                         showColor={type !== 'add' ? true : false}
                         type={type !== 'add'}
-                        entityId={data.qualityControlBriefFileIds}
+                        entityId={data.qualityControlBriefFileId}
                       />)}
                     </FormItem>
                   </Col>
@@ -731,7 +737,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                       })(<UploadFile
                         showColor={type !== 'add' ? true : false}
                         type={type !== 'add'}
-                        entityId={data.finishedProductTestNormFileIds}
+                        entityId={data.finishedProductTestNormFileId}
                       />)}
                     </FormItem>
                   </Col>
@@ -761,6 +767,10 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                   dataSource={finishedProductQualities}
                   columns={columnsForFinishQua}
                   rowKey='guid'
+                  isEditTable={type === 'add'}
+                  allowRemove={false}
+                  setNewData={setNewData}
+                  tableType='finishedProductQualities'
                 />
               </div>
             </div>

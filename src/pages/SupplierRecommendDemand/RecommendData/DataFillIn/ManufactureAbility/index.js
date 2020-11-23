@@ -28,19 +28,17 @@ const formLayout = {
 };
 
 const ManufactureAbility = ({ form, updateGlobalStatus }) => {
-
   const [data, setData] = useState({});
   const [productionCapacities, setproductionCapacities] = useState([]);
   const [keyProductEquipments, setkeyProductEquipments] = useState([]);
   const [keyTechnologyEquipments, setkeyTechnologyEquipments] = useState([]);
-  const [productManufacturingIntroductions, setproductManufacturingIntroductions] = useState([])
+  const [productManufacturingIntroductions, setproductManufacturingIntroductions] = useState([]);
   const [currentProductionSituations, setcurrentProductionSituations] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const { query: { id, type = 'add' } } = router.useLocation();
 
   const { getFieldDecorator, getFieldValue, setFieldsValue } = form;
-
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -72,22 +70,22 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
   // 生产能力
   const columnsForProCapacity = [
     {
-      "title": "名称",
-      "dataIndex": "name",
-      "ellipsis": true,
-      "editable": true,
+      title: "名称",
+      dataIndex: "name",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "规格型号",
-      "dataIndex": "modelBrand",
-      "ellipsis": true,
-      "editable": true,
+      title: "规格型号",
+      dataIndex: "modelBrand",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "计量单位",
-      "dataIndex": "unitName",
-      "ellipsis": true,
-      "editable": true,
+      title: "计量单位",
+      dataIndex: "unitName",
+      ellipsis: true,
+      editable: true,
       inputType: 'comboList',
       props: {
         ...standardUnitProps,
@@ -96,190 +94,201 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
       }
     },
     {
-      "title": "月最大产量",
-      "dataIndex": "monthMaxYield",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "月最大产量",
+      dataIndex: "monthMaxYield",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
     },
     {
-      "title": "现在月产量",
-      "dataIndex": "nowMonthYield",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "现在月产量",
+      dataIndex: "nowMonthYield",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
     },
     {
-      "title": "上年度销售总额",
-      "dataIndex": "preYearSaleroom",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "上年度销售总额",
+      dataIndex: "preYearSaleroom",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
     }
   ];
 
   // 现有生产情况
   const columnsForProSitu = [
     {
-      "title": "产品",
-      "dataIndex": "product",
-      "ellipsis": true,
-      "inputType": 'InputNumber',
+      title: "产品",
+      dataIndex: "productName",
+      ellipsis: true,
+      editable: false
     },
     {
-      "title": "月生产能力",
-      "dataIndex": "monthProductCapacity",
-      "ellipsis": true,
-      "inputType": 'InputNumber',
+      title: "月生产能力",
+      dataIndex: "monthProductCapacity",
+      ellipsis: true,
+      inputType: 'InputNumber',
     },
     {
-      "title": "计量单位",
-      "dataIndex": "unit",
-      "ellipsis": true,
-      "inputType": 'InputNumber',
+      title: "计量单位",
+      dataIndex: "unitName",
+      ellipsis: true,
+      editable: true,
+      inputType: 'comboList',
+      props: {
+        ...standardUnitProps,
+        name: 'unitName',
+        field: ['unitCode']
+      }
     },
     {
-      "title": "占总产量％",
-      "dataIndex": "rateWithTotal",
-      "ellipsis": true,
-      "inputType": 'Input',
+      title: "占总产量％",
+      dataIndex: "rateWithTotal",
+      ellipsis: true,
+      inputType: 'Input',
     },
     {
-      "title": "产品交付周期(天）",
-      "dataIndex": "productDeliveryCycle",
-      "ellipsis": true,
-      "inputType": 'Input',
+      title: "产品交付周期(天）",
+      dataIndex: "productDeliveryCycle",
+      ellipsis: true,
+      inputType: 'InputNumber',
+      width: 150
     },
     // {
-    //     "title": "产品直通率",
-    //     "dataIndex": "offSeasonMonth",
-    //     "ellipsis": true,
-    //     "inputType": 'Input',
+    //     title: "产品直通率",
+    //     dataIndex: "offSeasonMonth",
+    //     ellipsis: true,
+    //     inputType: 'Input',
     // },
     {
-      "title": "旺季月份",
-      "dataIndex": "offSeasonMonth",
-      "ellipsis": true,
-      "inputType": 'Input',
+      title: "旺季月份",
+      dataIndex: "offSeasonMonth",
+      ellipsis: true,
+      inputType: 'Input',
     },
   ];
 
   // 关键生产设备
   const columnsForEqu = [
     {
-      "title": "工厂名称",
-      "dataIndex": "factoryName",
-      "ellipsis": true,
-      "editable": true,
+      title: "工厂名称",
+      dataIndex: "factoryName",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "生产设备、在线检测设备名称",
-      "dataIndex": "equipmentName",
-      "ellipsis": true,
-      "editable": true,
+      title: "生产设备、在线检测设备名称",
+      dataIndex: "equipmentName",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "规格型号",
-      "dataIndex": "model",
-      "ellipsis": true,
-      "editable": true,
+      title: "规格型号",
+      dataIndex: "model",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "生产厂家",
-      "dataIndex": "productFactory",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'Input',
+      title: "生产厂家",
+      dataIndex: "productFactory",
+      ellipsis: true,
+      editable: true,
+      inputType: 'Input',
     },
     {
-      "title": "产地",
-      "dataIndex": "productArea",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'Input',
+      title: "产地",
+      dataIndex: "productArea",
+      ellipsis: true,
+      editable: true,
+      inputType: 'Input',
     },
     {
-      "title": "购买时间",
-      "dataIndex": "buyTime",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'DatePicker',
+      title: "购买时间",
+      dataIndex: "buyTime",
+      ellipsis: true,
+      editable: true,
+      inputType: 'DatePicker',
     },
     {
-      "title": "数量",
-      "dataIndex": "number",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "数量",
+      dataIndex: "number",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
     },
     {
-      "title": "用于何工序及生产哪类配件",
-      "dataIndex": "useTo",
-      "ellipsis": true,
-      "editable": true,
+      title: "用于何工序及生产哪类配件",
+      dataIndex: "useTo",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "单班产量",
-      "dataIndex": "singleClassProduction",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "单班产量",
+      dataIndex: "singleClassProduction",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
     },
     {
-      "title": "目前状态",
-      "dataIndex": "currentStatus",
-      "ellipsis": true,
-      "editable": true,
+      title: "目前状态",
+      dataIndex: "currentStatus",
+      ellipsis: true,
+      editable: true,
     },
   ];
 
   // 产品制造工艺流程简介
   const columnsForOther = [
     {
-      "title": "产品",
-      "dataIndex": "product",
-      "ellipsis": true,
+      title: "产品",
+      dataIndex: "productName",
+      ellipsis: true,
+      editable: false
     },
     {
-      "title": "流程及材料说明",
-      "dataIndex": "attachmentIds",
-      "ellipsis": true,
-      "inputType": 'UploadFile',
+      title: "流程及材料说明",
+      dataIndex: "attachmentIds",
+      ellipsis: true,
+      inputType: 'UploadFile',
+      editable: true
     },
   ];
 
   // 关键工艺及关键工艺设备情况
   const columnsForKeyProcess = [
     {
-      "title": "产品",
-      "dataIndex": "product",
-      "ellipsis": true,
-      "editable": true,
+      title: "产品",
+      dataIndex: "productName",
+      ellipsis: true,
+      editable: false,
     },
     {
-      "title": "关键工序/工艺名称",
-      "dataIndex": "keyTechnologyName",
-      "ellipsis": true,
-      "editable": true,
+      title: "关键工序/工艺名称",
+      dataIndex: "keyTechnologyName",
+      ellipsis: true,
+      editable: true,
+      width: 200
     },
     {
-      "title": "工艺、技术要求",
-      "dataIndex": "technicalRequirement",
-      "ellipsis": true,
-      "editable": true,
+      title: "工艺、技术要求",
+      dataIndex: "technicalRequirement",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "设备精度、工艺水平",
-      "dataIndex": "technologicalLevel",
-      "ellipsis": true,
-      "editable": true,
+      title: "设备精度、工艺水平",
+      dataIndex: "technologicalLevel",
+      ellipsis: true,
+      editable: true,
+      width: 150
     },
     {
-      "title": "备注",
-      "dataIndex": "remark",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'TextArea',
+      title: "备注",
+      dataIndex: "remark",
+      ellipsis: true,
+      editable: true,
+      inputType: 'TextArea',
     },
   ];
 
@@ -296,10 +305,10 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
       const saveParams = {
         ...value,
         tabKey: 'manufactureAbilityTab',
-        productionCapacities: productionCapacities || [],
-        currentProductionSituations: data.currentProductionSituations || [],
-        productManufacturingIntroductions: data.productManufacturingIntroductions || [],
-        keyProductEquipments: keyProductEquipments || [],
+        productionCapacities: productionCapacities,
+        currentProductionSituations: currentProductionSituations,
+        productManufacturingIntroductions: productManufacturingIntroductions,
+        keyProductEquipments: keyProductEquipments,
         keyTechnologyEquipments: keyTechnologyEquipments,
         recommendDemandId: id,
         id: data.id
@@ -326,6 +335,12 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
       case 'keyTechnologyEquipments':
         setkeyTechnologyEquipments(newData);
         break;
+      case 'currentProductionSituations':
+        setcurrentProductionSituations(newData)
+        break;
+      case 'productManufacturingIntroductions':
+        setproductManufacturingIntroductions(newData)
+        break;
       default:
         break;
     }
@@ -341,9 +356,7 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
           }}
           title="制造能力"
           extra={type === 'add' ? [
-            <Button key="save" type="primary" style={{ marginRight: '12px' }} onClick={() => handleSave()}>
-              保存
-                        </Button>,
+            <Button key="save" type="primary" style={{ marginRight: '12px' }} onClick={() => handleSave()}>保存</Button>,
           ] : null}
         >
           <div className={styles.wrapper}>
@@ -370,7 +383,10 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
                   dataSource={currentProductionSituations}
                   columns={columnsForProSitu}
                   rowKey='guid'
-                // setNewData={setNewData}
+                  allowRemove={false}
+                  isEditTable={type === 'add'}
+                  setNewData={setNewData}
+                  tableType='currentProductionSituations'
                 />
               </div>
             </div>
@@ -416,6 +432,10 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
                   dataSource={productManufacturingIntroductions}
                   columns={columnsForOther}
                   rowKey='guid'
+                  setNewData={setNewData}
+                  isEditTable={type === 'add'}
+                  allowRemove={false}
+                  tableType='productManufacturingIntroductions'
                 />
               </div>
             </div>
@@ -430,6 +450,7 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
                   rowKey='guid'
                   isEditTable={type === 'add'}
                   isToolBar={type === 'add'}
+                  copyLine={true}
                   setNewData={setNewData}
                   tableType='keyTechnologyEquipments'
                 />
