@@ -137,11 +137,11 @@ const ProblemManagement = (props) => {
     <ExtModal
       width={'130vh'}
       maskClosable={false}
+      destroyOnClose={true}
       visible={visible}
       title={'问题管理'}
       onCancel={onCancel}
       onOk={onOk}
-      destroyOnClose={true}
       afterClose={clearSelected}
     >
       <div className={styles.wrapper}>

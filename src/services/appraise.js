@@ -97,7 +97,8 @@ export const sponsorAppraise = params => createServiceRequest({
   path: '/api/seEvaluationProjectService/publishEvaluationProject',
   params,
   method: 'POST',
-  hack: true
+  hack: true,
+  timeout: 0
 })
 
 // 撤回评价
@@ -113,7 +114,8 @@ export const generateResult = params => createServiceRequest({
   path: '/api/seEvaluationProjectService/generateEvaluationResult',
   params,
   method: 'POST',
-  hack: true
+  hack: true,
+  timeout: 0
 })
 
 // 评价结果采购小组审批导出

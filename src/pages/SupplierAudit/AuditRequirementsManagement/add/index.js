@@ -12,6 +12,7 @@ import {
   GetAllAuditType, UpdateAuditRequirementsManagement,
 } from '../../mainData/commomService';
 import { WorkFlow } from 'suid';
+import { openNewTab } from '../../../../components/utils/CommonUtils';
 
 const { StartFlow } = WorkFlow;
 
@@ -114,7 +115,7 @@ const Index = (props) => {
 
   const handleBack = () => {
     setData(v => ({ ...v, loading: false }));
-    // openNewTab(`qualitySynergy/DataSharingList`, '技术资料分享需求列表', true);
+    openNewTab(`qualitySynergy/DataSharingList`, '技术资料分享需求列表', true);
     closeCurrent();
   };
 
