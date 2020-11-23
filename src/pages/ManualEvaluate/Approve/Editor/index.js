@@ -8,7 +8,7 @@ import styles from './index.less';
 import { Affix, Button, Tabs, Spin, Upload, Modal, message } from 'antd';
 import { useLocation } from 'dva/router';
 import { Header, AutoSizeLayout } from '../../../../components';
-import { downloadBlobFile, sendResize, checkToken } from '../../../../utils';
+import { downloadBlobFile, sendResize, checkToken, closeCurrent } from '../../../../utils';
 import { ExtTable, WorkFlow } from 'suid';
 import CommonForm from '../../../SupplierAppraise/CommonForm';
 import { useTableProps } from '../../../../utils/hooks';
@@ -121,10 +121,10 @@ function Evaluate() {
         const { success, data, message: msg } = await exportEvaluateData({ evaluationProjectId: query?.id });
         if (success) {
           downloadBlobFile(data, '评价指标模板.xlsx')
-          message.success(msg)
+          message.success(`导出评价指标模板成功`)
           return
         }
-        message.error(msg)
+        message.error('导出评价指标模板失败')
       }
     })
   }
@@ -176,7 +176,13 @@ function Evaluate() {
     }
   }, [isReady])
   return (
-    <Approve>
+    <Approve
+      businessId={query?.id}
+      taskId={query?.taskId}
+      instanceId={query?.instanceId}
+      flowMapUrl="flow-web/design/showLook"
+      submitComplete={closeCurrent}
+    >
       <Tabs
         animated={false}
         onChange={sendResize}

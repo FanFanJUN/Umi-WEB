@@ -8,8 +8,6 @@
  * @Connect: 1981824361@qq.com
  */
 import React, { useEffect, useState, useImperativeHandle } from 'react';
-import { useRef } from 'react';
-import { ExtTable } from 'suid';
 import { Divider, Form, InputNumber, Row, Col, Input } from 'antd';
 import moment from 'moment';
 import EditableFormTable from '../CommonUtil/EditTable';
@@ -22,7 +20,7 @@ const formLayout = {
   },
   wrapperCol: {
     span: 16,
-  },
+  }
 };
 
 const formLayout2 = {
@@ -112,11 +110,6 @@ const Customer = React.forwardRef(({
 }, ref) => {
   const DISABLED = type === 'detail';
   const { getFieldDecorator } = form;
-  // const changhongSaleInfos = data?.changhongSaleInfos?.map(item => ({ ...item, guid: item.id }))
-  // const mainCustomers = data?.mainCustomers?.map(item => ({ ...item, guid: item.id }))
-  // const exportSituations = data?.exportSituations?.map(item => ({ ...item, guid: item.id }))
-  // const supplierOrderInfos = data?.supplierOrderInfos?.map(item => ({ ...item, guid: item.id }))
-  // const threeYearPlans = data?.threeYearPlans?.map(item => ({ ...item, guid: item.id }))
   const [changhongSaleInfos, setchanghongSaleInfos] = useState([]);
   const [mainCustomers, setmainCustomers] = useState([]);
   const [exportSituations, setexportSituations] = useState([]);
@@ -201,7 +194,6 @@ const Customer = React.forwardRef(({
       width: 250,
       inputType: 'InputNumber'
     },
-    // { title: '币种', dataIndex: 'name4', ellipsis: true, },
     {
       title: '企业占该客户同类物资采购份额',
       dataIndex: 'customerPurchaseRate',
@@ -358,13 +350,13 @@ const Customer = React.forwardRef(({
         rowKey='guid'
         isToolBar={type === 'add'}
         isEditTable={type === 'add'}
-        dataSource={exportSituations || []}
+        dataSource={exportSituations}
         setNewData={setNewData}
         tableType='exportSituations'
       />
-      <Divider orientation='left' orientation='left'>客户合作情况介绍和资料</Divider>
+      <Divider orientation='left'>客户合作情况介绍和资料</Divider>
       <CustermerInfo type={type} data={data} DISABLED={DISABLED} getFieldDecorator={getFieldDecorator} />
-      <Divider orientation='left' orientation='left'>主要客户近半年内的订单或合同及证明材料</Divider>
+      <Divider orientation='left'>主要客户近半年内的订单或合同及证明材料</Divider>
       <EditableFormTable
         columns={columnsForOrder}
         bordered
@@ -376,7 +368,7 @@ const Customer = React.forwardRef(({
         setNewData={setNewData}
         tableType='supplierOrderInfos'
       />
-      <Divider orientation='left' orientation='left'>未来三年发展规划</Divider>
+      <Divider orientation='left'>未来三年发展规划</Divider>
       <EditableFormTable
         columns={columnsForDevPlan}
         bordered

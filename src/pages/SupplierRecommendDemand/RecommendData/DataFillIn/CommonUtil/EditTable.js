@@ -8,7 +8,7 @@
  * @Connect: 1981824361@qq.com
  */
 import React, { useState, useRef, Fragment } from 'react';
-import { Input, InputNumber, Popconfirm, Form, Divider, Button, DatePicker, Select } from 'antd';
+import { Input, InputNumber, Popconfirm, Form, Divider, Button, DatePicker, Select, message } from 'antd';
 import { ExtTable, ComboList, ComboGrid, YearPicker } from 'suid';
 import PropTypes from 'prop-types';
 import AutoSizeLayout from '../../../../supplierRegister/SupplierAutoLayout';
@@ -175,7 +175,7 @@ const EditableCell = (config) => {
 const EditableTable = (props) => {
   const {
     form,
-    dataSource,
+    dataSource = [],
     columns,
     rowKey,
     isEditTable = false,
@@ -204,6 +204,11 @@ const EditableTable = (props) => {
   }
 
   function deleteRow(key, type) {
+    const len = dataSource.length;
+    if(copyLine && len === 1) {
+      message.error('当前列表至少需要保留一行数据')
+      return
+    }
     const newArray = dataSource.filter(item => {
       return item[rowKey] !== key;
     });
@@ -337,7 +342,7 @@ const EditableTable = (props) => {
           bordered
           size='small'
           height={400}
-          dataSource={dataSource || []}
+          dataSource={dataSource}
           columns={mergeColumns}
           ref={tableRef}
           showSearch={false}
