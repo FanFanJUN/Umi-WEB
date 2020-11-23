@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-12 14:44:24
- * @LastEditTime: 2020-11-20 16:16:08
+ * @LastEditTime: 2020-11-23 15:09:01
  * @Description: 审核地区城市配置
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/mainData/ReviewCityConf/index.js
  */
@@ -67,17 +67,17 @@ const Index = () => {
   ];
 
   const columnsforRight = [
-    { title: '代码', dataIndex: 'buCode', width: 200 },
-    { title: '名称', dataIndex: 'orderNo', ellipsis: true },
+    { title: '代码', dataIndex: 'reviewCityCode', width: 200 },
+    { title: '名称', dataIndex: 'reviewCityName', ellipsis: true },
   ];
 
   const rightfieldsConfig = [
     {
       name: '代码',
       type: "comboList",
-      code: 'reviewCityCode',
+      code: 'reviewCityName',
       config: provinceConfig,
-      field: ['reviewCityId', 'reviewCityName', 'codePath', 'namePath']
+      field: ['reviewCityId', 'reviewCityCode', 'codePath', 'namePath']
     },
     {
       name: '名称',
@@ -111,10 +111,10 @@ const Index = () => {
         setData((value) => ({ ...value, rightVisible: true, rigthTitle: '城市编辑', rightType: 'edit' }));
         break;
       case 'delete':
-        await deleteDataRight(true);
+        await deleteDataRight();
         break;
       case 'frost':
-        await editDataRight(true);
+        await editDataRight();
         break;
     }
   };
@@ -174,7 +174,7 @@ const Index = () => {
       cancelText: '否',
       async onOk() {
         const data = await requestDelApi({
-          ids: leftselectedRowKeys.toString(),
+          id: rightselectedRowKeys.toString(),
           key: 'RightReviewCityConf'
         });
         if (data.success) {
@@ -307,8 +307,8 @@ const Index = () => {
         }
       });
     } else {
-      const id = rightselectRows[rightselectRows.length - 1].id;
-      const params = { ...value, id, key: 'RightReviewCityConf' };
+      const { id, areaId} = rightselectRows[rightselectRows.length - 1];
+      const params = { ...value, id, areaId, key: 'RightReviewCityConf' };
       requestPostApi(params).then(res => {
         if (res.success) {
           message.success("操作成功！");

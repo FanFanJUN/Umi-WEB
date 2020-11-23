@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:44:12
- * @LastEditTime: 2020-11-19 09:14:14
+ * @LastEditTime: 2020-11-23 11:41:24
  * @LastEditors: Please set LastEditors
  * @Description: 审核实施计划-审核人员
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\AuditorInfo.js
@@ -294,6 +294,7 @@ const AuditorInfo = forwardRef((props, ref) => {
   };
 
   const getTreeData = (value) => {
+    console.log("点击穿梭框value", value)
     let newData = JSON.parse(JSON.stringify(contentData.dataSource));
     newData.map((item, index) => {
       if (item.lineNum === contentData.selectedRowKeys[0]) {

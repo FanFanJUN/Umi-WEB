@@ -1,7 +1,7 @@
 /*
  * @Author:黄永翠
  * @Date: 2020-11-09 09:38:38
- * @LastEditTime: 2020-11-20 14:45:17
+ * @LastEditTime: 2020-11-23 14:21:46
  * @LastEditors: Please set LastEditors
  * @Description:审核实施计划-明细
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\index.js
@@ -149,6 +149,8 @@ const Index = (props) => {
         let saveData = false;
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
+                console.log("初始editData变化了吗", editData);
+                console.log("表单数据", values)
                 saveData = { ...editData, ...values };
                 if(query.pageState === "add") {
                     let sessionLins = JSON.parse(sessionStorage.getItem('selectedMonthLIne'));
@@ -163,15 +165,12 @@ const Index = (props) => {
                 saveData.reviewDateStart = moment(saveData.reviewDateStart).format('YYYY-MM-DD') + " 00:00:00";
                 saveData.reviewDateEnd = moment(saveData.reviewDateEnd).format('YYYY-MM-DD') + " 23:59:59";
                 let lineData = tableRef.current.getTableList();
-                saveData.reviewTeamGroupBoMap = lineData;
+                saveData.reviewTeamGroupBoList = lineData;
                 saveData.sonList = saveData.sonList.map(item => {
                     item.reviewEvlRuleBoList = item.ruleList;
-                    delete item.ruleList;
+                    // delete item.ruleList;
                     return item;
                 });
-                if (!saveData.attachRelatedId) {
-                    saveData.attachRelatedId = [];
-                }
                 if(query.pageState === "change") {
                     if (!saveData.changeFileIdList) {
                         saveData.changeFileIdList = [];
@@ -179,8 +178,8 @@ const Index = (props) => {
                     saveData.attachRelatedList = saveData.attachRelatedId;
                     saveData.reviewPlanFileList = saveData.reviewPlanFileId;
                 }
-                
-                delete saveData.treeData;
+                // delete saveData.reviewTeamGroupBoMap
+                // delete saveData.treeData;
                 delete saveData.selected;
                 console.log('保存的数据saveData', saveData);
             }

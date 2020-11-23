@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-11-05 16:27:34
- * @LastEditTime: 2020-11-20 18:10:13
+ * @LastEditTime: 2020-11-23 17:04:48
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\MonthAuditPlan\component\changeDetail.js
@@ -35,12 +35,12 @@ export default Form.create()((props) => {
         setLoading(true);
         // 获取变更信息
         let changeRes = await findReasonByChangId({
-            businessId: query.id
+            id: query.id
         })
         if (changeRes.success) {
             setChangeInfo(changeRes.data);
             // 获取原单据信息
-            let res = await getDetail(changeRes.data.reviewPlanMonthId)
+            let res = await getDetail(changeRes.data.reviewImplementPlanId)
             if (res.success) {
                 setEditData(res.data)
             } else {

@@ -350,7 +350,7 @@ export const provinceConfig = {
   remotePaging: true,
   rowKey: 'code',
   reader: {
-    field: ['id', 'name', 'codePath', 'namePath'],
+    field: ['id', 'code', 'codePath', 'namePath'],
     name: 'name',
     description: 'code',
   },

@@ -311,7 +311,7 @@ const AddModal = (props) => {
     }
 
     return <ExtModal
-        width={'80vw'}
+        width={'60vw'}
         maskClosable={false}
         visible={visible}
         title={type === "annual" ? "从年度计划新增" : type === "recommand" ? "从准入推荐新增" : "从审核需求新增"}

@@ -165,7 +165,7 @@ const Index = (props) => {
                 }, 3000)
             } else {
                 // 处理提交审核---返回数据id
-                return res.message;
+                return query.pageState === "change" ? res.message : res.data;
             }
         } else {
             setLoading(false);

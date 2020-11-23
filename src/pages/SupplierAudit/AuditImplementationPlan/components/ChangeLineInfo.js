@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-11-20 17:17:02
- * @LastEditTime: 2020-11-20 18:12:21
+ * @LastEditTime: 2020-11-23 09:32:12
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\components\ChangeLineInfo.js
@@ -18,7 +18,8 @@ const Index = (props) => {
         (async function(){
             const res = await findHistoryPageByChangId({businessId: props.id});
             if(res.success) {
-                const dataList = res.data.map((item, index)=> {
+                if(!res.data.rows)return;
+                const dataList = res.data.rows.map((item, index)=> {
                     item.id = index + 1;
                     return item;
                 })
