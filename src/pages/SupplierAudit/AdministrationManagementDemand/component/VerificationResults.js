@@ -18,12 +18,18 @@ const VerificationResults = (props) => {
     issuesArr: [],
   });
 
+  const [auditOpinionData, setAuditOpinionData] = useState({});
+
   const onCancel = () => {
     props.onCancel();
   };
 
   const onOk = () => {
+    if (data.activeKey === '3') {
 
+    } else {
+      onCancel()
+    }
   };
 
   const clearSelected = () => {
@@ -42,11 +48,11 @@ const VerificationResults = (props) => {
         if (res.success) {
           setData(v => ({ ...v, activeKey: value.toString() }));
         } else {
-          message.error(res.message)
+          message.error(res.message);
         }
       }).catch(err => {
-        message.error(err.message)
-      })
+        message.error(err.message);
+      });
     } else {
       setData(v => ({ ...v, activeKey: value.toString() }));
     }
@@ -66,23 +72,25 @@ const VerificationResults = (props) => {
       <Tabs defaultActiveKey={'1'} activeKey={data.activeKey} onTabClick={onTabClick}>
         <TabPane tab="评分概览" key="1">
           <ScoreOverview
+            setAuditOpinionData={(value) => setAuditOpinionData(value)}
             isView={isView}
             id={props.id}
-            reviewImplementPlanCode={props.reviewImplementPlanCode}
+            reviewImplementPlanCode={reviewImplementPlanCode}
           />
         </TabPane>
         <TabPane tab="问题管理" key="2">
           <IssuesManagement
             isView={isView}
             id={props.id}
-            reviewImplementPlanCode={props.reviewImplementPlanCode}
+            reviewImplementPlanCode={reviewImplementPlanCode}
             onChange={issuesChange}
             type={'demand'}
           />
         </TabPane>
         <TabPane tab="审核意见" key="3">
           <AuditOpinion
-            editData={{}}
+            reviewImplementPlanCode={reviewImplementPlanCode}
+            editData={auditOpinionData}
           />
         </TabPane>
       </Tabs>

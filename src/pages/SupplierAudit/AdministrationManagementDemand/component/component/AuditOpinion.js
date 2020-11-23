@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
-import { Col, Form, Input, Row } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Col, Form, Input, message, Row } from 'antd';
 import { ComboList, ComboTree } from 'suid';
 import { AllCompanyConfig, ApplyOrganizationProps } from '../../../mainData/commomService';
 import Upload from '../../../../QualitySynergy/compoent/Upload';
+import { GetVerificationAuditOpinionDataApi, whetherArr } from '../../commonApi';
+import { getDocIdForArray } from '../../../../../utils/utilTool';
+
 const FormItem = Form.Item;
 
 const formLayout = {
@@ -24,20 +27,11 @@ const formLongLayout = {
 };
 const AuditOpinion = (props) => {
 
-  const { type, form, editData } = props;
+  const { editData, reviewImplementPlanCode } = props;
 
   const { getFieldDecorator, setFieldsValue, getFieldValue } = props.form;
 
-  const [data, setData] = useState({
-  })
-
-  const onSelectRow = (keys, rows) => {
-    setData(v => ({...v, selectKeys: keys, selectRows: rows}))
-  }
-
-  const handleOk = value => {
-    console.log(value)
-  }
+  const [data, setData] = useState({});
 
   const hideFormItem = (name, initialValue) => (
     <FormItem>
@@ -47,14 +41,28 @@ const AuditOpinion = (props) => {
     </FormItem>
   );
 
+  useEffect(() => {
+    GetVerificationAuditOpinionDataApi({
+      reviewImplementPlanCode,
+    }).then(res => {
+      if (res.success) {
+        const response = res.data[0] ? res.data[0] : {};
+        setData(response);
+        console.log(res.data);
+      } else {
+        message.error(res.message);
+      }
+    }).catch(err => message.error(err.message));
+  }, []);
+
   return (
     <>
       <Row>
         <Col span={12}>
           <FormItem label="审核综合评审得分" {...formLayout}>
             {
-              getFieldDecorator('attachRelatedIds', {
-                initialValue: '',
+              getFieldDecorator('reviewScore', {
+                initialValue: editData.reviewScore,
                 rules: [
                   {
                     required: true,
@@ -62,7 +70,7 @@ const AuditOpinion = (props) => {
                   },
                 ],
               })(
-                <Input disabled={true}/>
+                <Input disabled={true} />,
               )
             }
           </FormItem>
@@ -70,8 +78,8 @@ const AuditOpinion = (props) => {
         <Col span={12}>
           <FormItem label="评定等级" {...formLayout}>
             {
-              getFieldDecorator('attachRelatedIds', {
-                initialValue: '',
+              getFieldDecorator('performanceRating', {
+                initialValue: editData.performanceRating,
                 rules: [
                   {
                     required: true,
@@ -79,7 +87,7 @@ const AuditOpinion = (props) => {
                   },
                 ],
               })(
-                <Input disabled={true}/>
+                <Input disabled={true} />,
               )
             }
           </FormItem>
@@ -89,16 +97,10 @@ const AuditOpinion = (props) => {
         <Col span={12}>
           <FormItem label="风险等级" {...formLayout}>
             {
-              getFieldDecorator('attachRelatedIds', {
-                initialValue: '',
-                rules: [
-                  {
-                    required: true,
-                    message: '风险等级不能为空',
-                  },
-                ],
+              getFieldDecorator('riskRating', {
+                initialValue: editData.riskRating,
               })(
-                <Input disabled={true}/>
+                <Input disabled={true} />,
               )
             }
           </FormItem>
@@ -108,16 +110,10 @@ const AuditOpinion = (props) => {
         <Col span={12}>
           <FormItem label="是否通过" {...formLayout}>
             {
-              getFieldDecorator('attachRelatedIds', {
+              getFieldDecorator('whetherPass', {
                 initialValue: '',
-                rules: [
-                  {
-                    required: true,
-                    message: '是否通过不能为空',
-                  },
-                ],
               })(
-                <Input disabled={true}/>
+                <Input disabled={true} />,
               )
             }
           </FormItem>
@@ -125,16 +121,10 @@ const AuditOpinion = (props) => {
         <Col span={12}>
           <FormItem label="结论" {...formLayout}>
             {
-              getFieldDecorator('attachRelatedIds', {
-                initialValue: '',
-                rules: [
-                  {
-                    required: true,
-                    message: '结论不能为空',
-                  },
-                ],
+              getFieldDecorator('whetherPass', {
+                initialValue: whetherArr[data.whetherPass],
               })(
-                <Input disabled={true}/>
+                <Input disabled={true} />,
               )
             }
           </FormItem>
@@ -144,10 +134,10 @@ const AuditOpinion = (props) => {
         <Col span={24}>
           <FormItem label="备注" {...formLongLayout}>
             {
-              getFieldDecorator('attachRelatedIds', {
-                initialValue: '',
+              getFieldDecorator('remark', {
+                initialValue: data.remark,
               })(
-                <Input.TextArea rows={5} />
+                <Input.TextArea rows={5} />,
               )
             }
           </FormItem>
@@ -166,13 +156,13 @@ const AuditOpinion = (props) => {
                   },
                 ],
               })(
-                <Upload entityId={editData.fileList ? editData.fileList : null}/>,
+                <Upload entityId={editData.fileList ? getDocIdForArray(data.fileList) : null} />,
               )
             }
           </FormItem>
         </Col>
       </Row>
     </>
-  )
-}
+  );
+};
 export default Form.create()(AuditOpinion);

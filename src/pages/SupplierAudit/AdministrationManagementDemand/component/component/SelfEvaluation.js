@@ -34,7 +34,7 @@ const SelfEvaluation = props => {
       title: '不适用',
       dataIndex: 'whetherApply',
       width: 100,
-      render: (v, data) => isView ? ApplicableStateArr[v] : !data.children && <ComboList
+      render: (v, data) => type ? ApplicableStateArr[v] : !data.children && <ComboList
         onClick={e => e.stopPropagation()}
         afterSelect={value => {
           data.whetherApply = value.code;
@@ -46,7 +46,7 @@ const SelfEvaluation = props => {
       title: '自评得分',
       dataIndex: 'reviewScore',
       width: 100,
-      render: (v, data) => isView ? data.selfScore ? data.selfScore : v :
+      render: (v, data) => type ? data.selfScore ? data.selfScore : v :
         (!data.children ? <InputNumber
           onBlur={refreshTable}
           value={v} max={data.highestScore}
@@ -54,7 +54,7 @@ const SelfEvaluation = props => {
     },
     {
       title: '情况说明', dataIndex: 'remark', width: 200,
-      render: (v, data) => isView ? v : !data.children &&
+      render: (v, data) => type ? v : !data.children &&
         <Input value={v} onChange={e => {
           data.remark = e.target.value;
           refreshTable();
@@ -63,7 +63,7 @@ const SelfEvaluation = props => {
     {
       title: '附件', dataIndex: 'attachRelatedIds', width: 150,
       render: (v, data) => !data.children && <Upload
-        entityId={v} type={isView ? 'show' : ''}
+        entityId={v} type={type ? 'show' : ''}
         onChange={(value) => data.attachRelatedIds = value}
       />,
     },
@@ -215,9 +215,9 @@ const SelfEvaluation = props => {
         lineNumber={true}
       />
       <SendBack
-        refresTable={refreshTable}
+        refresTable={onCancel}
         params={{
-          reviewImplementManagementId: data.dataSource[0] ? data.dataSource[0].id : ''
+          reviewImplementManagementId: data.dataSource[0] ? data.dataSource[0].reviewImplementManagementId : ''
         }}
         onCancel={() => setData(v => ({...v, sendBackVisible: false}))}
         visible={data.sendBackVisible}
