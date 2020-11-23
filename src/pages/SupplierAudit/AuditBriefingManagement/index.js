@@ -1,17 +1,16 @@
 /**
- * @Description: 审核报告管理
+ * @Description: 审核简报管理
  * @Author: M!keW
- * @Date: 2020-11-16
+ * @Date: 2020-11-23
  */
 import React, { useState, useRef, useEffect, Fragment, forwardRef } from 'react';
 import Header from '../../../components/Header';
 import AdvancedForm from '../../../components/AdvancedForm';
-import { Button, Checkbox, Input, message, Modal } from 'antd';
+import { Button, Input, message, Modal } from 'antd';
 import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
 import { ExtTable, utils, WorkFlow } from 'suid';
 import {
-  CompanyConfig, DeleteAuditRequirementsManagement, EndFlow,
-  FindByFiltersConfig, SupplierConfig,
+  CompanyConfig, DeleteAuditRequirementsManagement, EndFlow
 } from '../mainData/commomService';
 import {
   flowProps, judge,
@@ -20,7 +19,6 @@ import {
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
 import { openNewTab } from '../../../utils';
-import { materialClassProps } from '../../../utils/commonProps';
 import { StartFlow } from 'seid';
 import AddModal from './components/AddModal';
 
@@ -29,7 +27,7 @@ const { authAction } = utils;
 const { Search } = Input;
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 
-const AuditReportManagement = forwardRef(({}, ref,) => {
+const AuditBriefingManagement = forwardRef(({}, ref,) => {
   const tableRef = useRef(null);
   useEffect(() => {
     window.parent.frames.addEventListener('message', listenerParentClose, false);
@@ -46,7 +44,6 @@ const AuditReportManagement = forwardRef(({}, ref,) => {
   const [data, setData] = useState({
     spinning: false,
     flowId: '',
-    checkedCreate: true,
     quickSearchValue: '',
     advancedSearchValue: {},
     selectedRowKeys: [],
@@ -55,11 +52,6 @@ const AuditReportManagement = forwardRef(({}, ref,) => {
   });
 
   const getModelRef = useRef(null);
-
-  const onChangeCreate = (e) => {
-    setData(v => ({ ...v, checkedCreate: e.target.checked }));
-    tableRef.current.remoteDataRefresh();
-  };
 
   const redirectToPage = (type) => {
     switch (type) {
@@ -161,24 +153,15 @@ const AuditReportManagement = forwardRef(({}, ref,) => {
   // 高级查询配置
   const formItems = [
     {
-      title: '需求公司',
+      title: '拟制公司',
       key: 'applyCorporationCode',
       type: 'list',
       props: CompanyConfig,
-    },
-    {
-      title: '采购组织',
-      key: 'purchaseOrgCode',
-      type: 'list',
-      props: FindByFiltersConfig,
     },
     { title: '拟制人', key: 'applyName', props: { placeholder: '输入拟制人' } },
     { title: '拟制日期', key: 'applyDateStart', type: 'datePicker', props: { placeholder: '选择拟制日期' } },
     { title: '状态', key: 'state', type: 'list', props: stateProps },
     { title: '审批状态', key: 'flowState', type: 'list', props: flowProps },
-    { title: '供应商', key: 'supplierCode', type: 'list', props: SupplierConfig },
-    { title: '代理商', key: 'supplierCode', type: 'list', props: SupplierConfig },
-    { title: '物料分类', key: 'materialSecondClassifyCode', type: 'tree', props: materialClassProps },
   ];
 
   const columns = [
@@ -206,11 +189,10 @@ const AuditReportManagement = forwardRef(({}, ref,) => {
         }
       },
     },
-    { title: '审核报告', dataIndex: 'reviewRequirementCode', width: 200 },
-    { title: '审核实施计划号', dataIndex: 'reviewRequirementCode', width: 200 },
-    { title: '需求公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 200 },
-    { title: '供应商', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200 },
-    { title: '物料分类', dataIndex: 'orgName', ellipsis: true, width: 200 },
+    { title: '审核简报编号', dataIndex: 'reviewRequirementCode', width: 200 },
+    { title: '统计期间', dataIndex: 'reviewRequirementCode', width: 200 },
+    { title: '拟制公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 200 },
+    { title: '拟制部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200 },
     { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 200 },
     { title: '拟制时间', dataIndex: 'applyDate', ellipsis: true, width: 200 },
   ].map(item => ({ ...item, align: 'center' }));
@@ -300,11 +282,8 @@ const AuditReportManagement = forwardRef(({}, ref,) => {
   </>;
 
   const headerRight = <div style={{ display: 'flex', alignItems: 'center' }}>
-    <div style={{ width: '100px' }}>
-      <Checkbox onChange={onChangeCreate} checked={data.checkedCreate}>仅我创建</Checkbox>
-    </div>
     <Search
-      placeholder='请输入审核报告或审核实施计划号'
+      placeholder='请输入审核简报编号查询'
       className={styles.btn}
       style={{ width: '280px' }}
       onSearch={handleQuickSearch}
@@ -335,7 +314,6 @@ const AuditReportManagement = forwardRef(({}, ref,) => {
             columns={columns}
             store={{
               params: {
-                ...data.checkedCreate ? { onlyOwn: data.checkedCreate } : null,
                 quickSearchValue: data.quickSearchValue,
                 ...data.advancedSearchValue,
               },
@@ -353,10 +331,10 @@ const AuditReportManagement = forwardRef(({}, ref,) => {
         }
       </AutoSizeLayout>
       <AddModal
-          wrappedComponentRef={getModelRef}
+        wrappedComponentRef={getModelRef}
       />
     </Fragment>
   );
 });
 
-export default AuditReportManagement;
+export default AuditBriefingManagement;
