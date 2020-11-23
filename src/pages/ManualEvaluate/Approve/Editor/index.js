@@ -121,10 +121,10 @@ function Evaluate() {
         const { success, data, message: msg } = await exportEvaluateData({ evaluationProjectId: query?.id });
         if (success) {
           downloadBlobFile(data, '评价指标模板.xlsx')
-          message.success(msg)
+          message.success(`导出评价指标模板成功`)
           return
         }
-        message.error(msg)
+        message.error('导出评价指标模板失败')
       }
     })
   }

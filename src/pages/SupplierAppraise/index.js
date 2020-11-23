@@ -469,6 +469,7 @@ function SupplierRevaluate() {
       }
     },
     columns,
+    remotePaging: true,
     selectedRowKeys,
     checkbox: {
       multiSelect: false
