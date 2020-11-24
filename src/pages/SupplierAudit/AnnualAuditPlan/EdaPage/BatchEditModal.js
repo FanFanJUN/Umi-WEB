@@ -1,9 +1,9 @@
 /*
  * @Author: Li Cai
- * @LastEditors: Li Cai
+ * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-23 17:00:19
- * @LastEditTime: 2020-11-02 11:06:47
+ * @LastEditTime: 2020-11-24 09:56:44
  * @Description: 批量编辑页面
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BatchEditModal.js
  */
@@ -40,6 +40,7 @@ const BatchEditModal = (props) => {
       const res = await findReviewTypesByCode({ quickSearchValue: 'Supervision_review' });
       if (res.success) {
         const obj = res.data.rows;
+        if(obj.length === 0)return;
         setFieldsValue({ reviewTypeId: obj[0].id, reviewTypeCode: obj[0].code, reviewTypeName: obj[0].name });
       } else {
         message.error('获取审核类型失败');

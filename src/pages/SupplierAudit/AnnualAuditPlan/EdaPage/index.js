@@ -1,15 +1,16 @@
 /*
  * @Author: Li Cai
- * @LastEditors: Li Cai
+ * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:04:51
- * @LastEditTime: 2020-11-02 13:45:44
+ * @LastEditTime: 2020-11-24 10:53:19
  * @Description: 新增  编辑  详情 page
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/index.js
  */
 import React, { useEffect, useRef, useState } from 'react';
 import { Affix, Button, Form, message, Spin } from 'antd';
 import classnames from 'classnames';
+import { WorkFlow } from "suid";
 import styles from '../../../Supplier/Editor/index.less';
 import { closeCurrent, getMobile, getUserId, getUserName, getAccount } from '@/utils';
 import { getUserInfoFromSession } from '@/utils/utilTool';
@@ -19,6 +20,7 @@ import LineInfo from './LineInfo';
 import { findDetailedById, reviewPlanYearAp } from '../service';
 import { isEmptyArray } from '../../../../utils/utilTool';
 
+const { StartFlow } = WorkFlow;
 const userInfo = getUserInfoFromSession();
 
 const Index = (props) => {
@@ -77,7 +79,8 @@ const Index = (props) => {
         closeCurrent();
     };
 
-    const handleSave = (buttonType) => {
+    const gatAllData = () => {
+        let allData = false;
         const finnalLineData = !isEmptyArray(lineData) ? lineData : originData.planYearLineVos;
         form.validateFieldsAndScroll((err, values) => {
             if (err) return;
@@ -104,32 +107,60 @@ const Index = (props) => {
             };
 
             if (!err) {
-                const allData = { ...originData, ...values, flowStatus: 'INIT', reviewPlanYearLineBos: finnalLineData };
-                if (buttonType === 'onlySave') {
-                    tohandleSave(allData);
-                } else {
-                    toSaveAndSubmit(allData);
-                }
+                allData = { ...originData, ...values, flowStatus: 'INIT', reviewPlanYearLineBos: finnalLineData };
             }
         });
+        return allData;
     }
 
-    function tohandleSave(allData) {
-        reviewPlanYearAp({ ...allData, type: data.type }).then((res) => {
+    async function tohandleSave(buttonType) {
+        const allData = gatAllData();
+        if(!allData)return;
+        setSpinLoading(true);
+        const res = reviewPlanYearAp({ ...allData, type: data.type });
+        if (buttonType === 'submit') {
+            return res.data;
+        } else {
             if (res.success) {
                 message.info(res.message);
             } else {
                 message.error(res.message);
             }
-        })
-    }
-
-    function toSaveAndSubmit() {
-
+        }
     }
 
     function setTablelineData(tableData) {
         setlineData(tableData);
+    }
+    // 提交审核验证
+    const handleBeforeStartFlow = async () => {
+        const id = await tohandleSave("submit");
+        return new Promise(function (resolve, reject) {
+            if (id) {
+                resolve({
+                    success: data,
+                    message: '提交成功',
+                    data: {
+                        businessKey: id
+                    }
+                })
+                return
+            } else {
+                reject({
+                    success: data,
+                    message: '提交失败'
+                })
+            }
+        })
+    }
+
+    // 提交审核完成更新列表
+    function handleComplete() {
+        setSpinLoading(false);
+        message.success("提交成功");
+        setTimeout(() => {
+            // handleBack()
+        }, 3000)
     }
 
     return (
@@ -139,10 +170,23 @@ const Index = (props) => {
                     <div className={classnames(styles.fbc, styles.affixHeader)}>
                         <span>{data.title}</span>
                         {
-                            data.type !== 'detail' && <div>
+                            data.type !== 'detail' && <div style={{display: "flex", alignItems: "center"}}>
                                 <Button className={styles.btn} onClick={handleBack}>返回</Button>
-                                <Button className={styles.btn} onClick={() => handleSave('onlySave')}>暂存</Button>
-                                <Button className={styles.btn} type='primary' onClick={() => handleSave('saveAndsubmit')} >提交</Button>
+                                <Button className={styles.btn} onClick={() => tohandleSave('onlySave')}>暂存</Button>
+                                <StartFlow
+                                    className={styles.btn}
+                                    type='primary'
+                                    beforeStart={handleBeforeStartFlow}
+                                    startComplete={handleComplete}
+                                    onCancel={() => { setSpinLoading(false); }}
+                                    businessKey={query?.id}
+                                    disabled={spinLoading}
+                                    businessModelCode={data.type === 'change' ? 'com.ecmp.srm.sam.entity.sr.ReviewPlanMonthChange' : 'com.ecmp.srm.sam.entity.sr.ReviewPlanMonth'}
+                                >
+                                    {
+                                        spinLoading => <Button loading={spinLoading} type='primary'>提交</Button>
+                                    }
+                                </StartFlow>
                             </div>
                         }
                     </div>
