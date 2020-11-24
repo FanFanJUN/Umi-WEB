@@ -152,3 +152,12 @@ export const evaluateResultLeaderImport = params => createServiceRequest({
     'Content-Type': 'multipart/form-data'
   }
 })
+
+// 评价结果导出
+export const exportAppraiseResult = params => createServiceRequest({
+  path: '/seController/exportEvaluationResult',
+  params,
+  method: 'POST',
+  hack: true,
+  responseType: 'blob'
+})

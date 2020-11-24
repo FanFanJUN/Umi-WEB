@@ -1,7 +1,39 @@
 import styles from './index.less';
 import { ExtTable } from 'suid';
+import { router } from 'dva';
+import { recommendUrl } from '../../../../utils/commonUrl';
+
+const { useLocation } = router;
 
 function Explain() {
+  const { query } = useLocation()
+  const columns = [
+    {
+      title: '公司',
+      dataIndex: 'corporationName',
+      width: 250
+    },
+    {
+      title: '采购组织',
+      dataIndex: 'purchaseOrgName',
+      width: 250
+    },
+    {
+      title: '产品名称',
+      dataIndex: 'materialCategoryName',
+      width: 150
+    }
+  ]
+  const tableProps = {
+    store: {
+      url: `${recommendUrl}/api/SupplierRecommendDemandLineService/findRecommendProductList?supplierRecommendDemandId=${query?.id}`,
+      type: 'POST',
+      params: {
+        supplierRecommendDemandId: query?.id
+      }
+    },
+    remotePaging: true
+  }
   return (
     <div className={styles.wrapper}>
       <div className={styles.commonTitle}>填表说明</div>
@@ -28,7 +60,11 @@ function Explain() {
       </ul>
       <div className={styles.commonTitle}>拟推荐产品</div>
       <ExtTable
+        {...tableProps}
         showSearch={false}
+        // dataSource={dataSource}
+        columns={columns}
+        bordered
       />
     </div>
   )

@@ -9,7 +9,8 @@ import {
   evaluateResultLeaderExport, // 领导审核导出
   evaluateResultLeaderImport, // 领导审核导入
   evaluateResultTeamExport, // 采购小组审核导出
-  evaluateResultTeamImport  // 采购小组审核导入
+  evaluateResultTeamImport,  // 采购小组审核导入
+  exportAppraiseResult, // 评价结果导出
 } from '../../../services/appraise';
 import { useTableProps } from '../../../utils/hooks';
 import PropTypes from 'prop-types';
@@ -126,6 +127,40 @@ const CommonTable = forwardRef(({
       }
     })
   }
+  // 导出评价结果
+  function handleExportAppraiseResult() {
+    Modal.confirm({
+      title: '导出评价结果',
+      content: '是否导出当前评价结果',
+      okText: '导出结果',
+      cancelText: '取消',
+      onOk: async () => {
+        const values = getFieldsValue();
+        const { quickSearchValue, ...fields } = values;
+        const keys = Object.keys(fields);
+        const fls = keys.map(item => {
+          const [operator, fieldName] = item.split('_');
+          return {
+            fieldName,
+            operator,
+            value: !!fieldName ? fields[item] : undefined
+          }
+        }).filter(item => !!item.value);
+        const { success, data, message: msg } = await exportAppraiseResult({
+          quickSearchValue,
+          filters: fls,
+          quickSearchProperties: ['supplierName', 'supplierCode'],
+          evaluationProjectId: query?.id
+        })
+        if (success) {
+          downloadBlobFile(data, '供应商评价结果.xlsx')
+          message.success(msg)
+          return
+        }
+        message.error(msg)
+      }
+    })
+  }
   return (
     <Spin spinning={loading}>
       <div>
@@ -196,6 +231,12 @@ const CommonTable = forwardRef(({
             <Item>
               <Button type='primary' onClick={handleSearch}>查询</Button>
             </Item>
+            {
+              type === 'detail' ?
+                < Item >
+                  <Button onClick={handleExportAppraiseResult}>导出评价结果</Button>
+                </Item> : null
+            }
           </Form>
         </div>
       </div>
@@ -206,7 +247,7 @@ const CommonTable = forwardRef(({
           )
         }
       </AutoSizeLayout>
-    </Spin>
+    </Spin >
   )
 })
 

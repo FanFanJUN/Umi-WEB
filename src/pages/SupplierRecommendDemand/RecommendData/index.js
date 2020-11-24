@@ -14,7 +14,6 @@ import { useLocation } from 'dva/router';
 import DataFillIn from './DataFillIn';
 import Explain from './Explain';
 import SelfAssessment from './SelfAssessment';
-import { queryDataFillStatus } from '../../../services/recommend';
 import { useGlobalStatus } from '../../../utils/hooks';
 import { closeCurrent } from '../../../utils';
 const { TabPane } = Tabs;

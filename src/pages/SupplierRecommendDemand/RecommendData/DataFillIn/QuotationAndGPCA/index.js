@@ -33,7 +33,7 @@ const QuotationAndGPCA = ({ updateGlobalStatus }) => {
         const { costAnalyses = [], supplyCostStructure = true } = data;
         await setData(data);
         await setSupplyCostStructure(supplyCostStructure)
-        await setDataSource(costAnalyses.map(item=>({ ...item, guid: item.id })))
+        await setDataSource(costAnalyses.map(item => ({ ...item, guid: item.id })))
         return
       }
       message.error(msg)
@@ -43,72 +43,72 @@ const QuotationAndGPCA = ({ updateGlobalStatus }) => {
 
   const columns = [
     {
-      "title": "产品名称",
-      "dataIndex": "productName",
-      "ellipsis": true,
-      "editable": true,
+      title: "产品名称",
+      dataIndex: "productName",
+      ellipsis: true,
+      editable: false,
     },
     {
-      "title": "型号/规格",
-      "dataIndex": "model",
-      "ellipsis": true,
-      "editable": true,
+      title: "型号/规格",
+      dataIndex: "model",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "原材料成本",
-      "dataIndex": "rawMaterialCost",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "原材料成本",
+      dataIndex: "rawMaterialCost",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
     },
     {
-      "title": "包装材料成本",
-      "dataIndex": "packageMaterialCost",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "包装材料成本",
+      dataIndex: "packageMaterialCost",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
     },
     {
-      "title": "设备用成本",
-      "dataIndex": "requirementCost",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "设备用成本",
+      dataIndex: "requirementCost",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
     },
     {
-      "title": "厂房使用成本",
-      "dataIndex": "plantUtilizationCost",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "厂房使用成本",
+      dataIndex: "plantUtilizationCost",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
     },
     {
-      "title": "工厂人工费用",
-      "dataIndex": "laborCost",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "工厂人工费用",
+      dataIndex: "laborCost",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
     },
     {
-      "title": "管理费用",
-      "dataIndex": "manageCost",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "管理费用",
+      dataIndex: "manageCost",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
     },
     {
-      "title": "运费",
-      "dataIndex": "transportCost",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "运费",
+      dataIndex: "transportCost",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
     },
     {
-      "title": "币种",
-      "dataIndex": "currencyName",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'selectwithService',
+      title: "币种",
+      dataIndex: "currencyName",
+      ellipsis: true,
+      editable: true,
+      inputType: 'selectwithService',
     },
   ];
 
@@ -166,6 +166,7 @@ const QuotationAndGPCA = ({ updateGlobalStatus }) => {
                   dataSource={dataSource}
                   columns={columns}
                   rowKey='guid'
+                  copyLine={true}
                   setNewData={setNewData}
                   isEditTable={type === 'add'}
                   isToolBar={type === 'add'}

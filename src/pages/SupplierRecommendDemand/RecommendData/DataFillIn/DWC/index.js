@@ -84,17 +84,14 @@ const DWC = ({ form, updateGlobalStatus }) => {
       return
     }
     message.error(msg);
-
   }
-
-  function handleChange(e) {
-    // (getFieldValue('otherPayCondition'));
-    // if (e && e.target.value !== 'RMB' && getFieldValue('otherPayCondition')) {
-    //     (getFieldValue('otherPayCondition'));
-    //     resetFields(['otherPayCondition']);
-    // }
+  function handleChange({ target: { value } }) {
+    if (value !== 'OTHER') {
+      setFieldsValue({
+        otherPayCondition: ''
+      })
+    }
   }
-  console.log(PCE)
   return (
     <div>
       <Spin spinning={loading}>
@@ -105,7 +102,15 @@ const DWC = ({ form, updateGlobalStatus }) => {
           }}
           title="合作意愿"
           extra={type === 'add' ? [
-            <Button key="save" type="primary" style={{ marginRight: '12px' }} onClick={() => handleSave()}>保存</Button>,
+            <Button
+              key="save"
+              type="primary"
+              disabled={loading}
+              style={{
+                marginRight: '12px'
+              }}
+              onClick={handleSave}
+            >保存</Button>,
           ] : null}
         >
           <div className={styles.wrapper}>
@@ -210,17 +215,14 @@ const DWC = ({ form, updateGlobalStatus }) => {
                 <Row>
                   <Col span={24}>
                     <FormItem label="付款条件" {...formLayoutCol}>
-                      {getFieldDecorator('payConditionEnum', {
-                        initialValue: type === 'add' ? 'RMB' : data.payConditionEnum,
-                      })(
+                      {getFieldDecorator('payConditionEnum')(
                         <Radio.Group onChange={handleChange}>
                           <Radio value={'RMB'}>月结90天6个月银行承兑(人民币)</Radio>
                           <Radio value={'FOREIGN_CURRENCY'}>月结60天现汇(外币结算)</Radio>
                           <Radio value={'OTHER'}>
-                            {getFieldDecorator('otherPayCondition', {
-                              initialValue: type === 'add' ? '' : data.otherPayCondition,
-                            })(
-                              <Input addonBefore='其他：' disabled={PCE==='OTHER'}/>
+                            <span>其他：</span>
+                            {getFieldDecorator('otherPayCondition')(
+                              <Input disabled={PCE !== 'OTHER'} />
                             )}
                           </Radio>
                         </Radio.Group>)}

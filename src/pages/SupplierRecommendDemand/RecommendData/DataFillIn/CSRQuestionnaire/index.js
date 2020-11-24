@@ -4,7 +4,7 @@
  * @date 2020.4.3
  */
 import React, { useState, useEffect } from 'react';
-import { Table, PageHeader, Button, Input, Radio, message } from 'antd';
+import { Table, PageHeader, Button, Input, Radio, message, Spin } from 'antd';
 import styles from '../index.less';
 import { queryCSRorEPEData, saveCSRorEPEData } from '../../../../../services/recommend';
 import { router } from 'dva';
@@ -16,14 +16,13 @@ function CSRQuestionnaire({
 }) {
   const [dataSource, setDataSource] = useState([]);
   const [loading, toggleLoading] = useState(false);
-  const [confirmLoading, toggleConfirmLoading] = useState(false);
   const headerExtra = [
     <Button
       className={styles.btn}
       type='primary'
       key='save'
       onClick={handleSave}
-      loading={confirmLoading}
+      disabled={loading}
     >保存</Button>
   ];
   const { query } = useLocation();
@@ -44,9 +43,15 @@ function CSRQuestionnaire({
       render(text, record, index) {
         const { selectConfigList } = record;
         return (
-          <RadioGroup disabled={type === 'detail'} value={text} onChange={(e) => handleLineChange(e, index, 'selectValue')}>
+          <RadioGroup
+            disabled={type === 'detail'}
+            value={text}
+            onChange={(e) => handleLineChange(e, index, 'selectValue')}
+          >
             {
-              selectConfigList.map((item, k) => <Radio value={k} key={`${k}-value-key`}>{item}</Radio>)
+              selectConfigList.map(
+                (item, k) => <Radio value={k} key={`${k}-value-key`}>{item}</Radio>
+              )
             }
           </RadioGroup>
         )
@@ -82,9 +87,9 @@ function CSRQuestionnaire({
     setDataSource(newDataSource)
   }
   async function handleSave() {
-    toggleConfirmLoading(true)
+    toggleLoading(true)
     const { success, message: msg } = await saveCSRorEPEData(dataSource);
-    toggleConfirmLoading(false)
+    toggleLoading(false)
     if (success) {
       message.success(msg)
       updateGlobalStatus()
@@ -94,19 +99,20 @@ function CSRQuestionnaire({
   }
   useEffect(() => {
     async function getFormData() {
+      toggleLoading(true)
       const { success, data } = await queryCSRorEPEData({
         supplierRecommendDemandId: id,
         csrConfigEnum: 'CSR'
       })
+      toggleLoading(false)
       if (success) {
         setDataSource(data.map((item, k) => ({ ...item, lineIndex: k + 1 })))
       }
-      // (success, data)
     }
     getFormData()
   }, [])
   return (
-    <div>
+    <Spin spinning={loading}>
       <PageHeader title='企业社会责任' extra={headerExtra} />
       <div className={styles.divider}></div>
       <Table
@@ -116,7 +122,7 @@ function CSRQuestionnaire({
         dataSource={dataSource}
         rowKey={(item, index) => `${index}-dataSource-line`}
       ></Table>
-    </div>
+    </Spin>
   )
 }
 
