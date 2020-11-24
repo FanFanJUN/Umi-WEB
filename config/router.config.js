@@ -138,6 +138,7 @@ export default [
       { path: '/supplierAudit/monthAuditInFlow', component: './SupplierAudit/FlowList/monthAuditInFlow', title: '月度审核计划流程中' },
       { path: '/supplierAudit/monthAuditChangeInFlow', component: './SupplierAudit/FlowList/monthAuditChangeInFlow', title: '月度审核计划变更流程中' },
       { path: '/supplierAudit/AuditImplementationPlanInflow', component: './SupplierAudit/FlowList/AuditImplementationPlanInflow', title: '审核实施计划流程中' },
+      { path: '/supplierAudit/AuditIPChangeInflow', component: './SupplierAudit/FlowList/AuditIPChangeInflow', title: '变更审核实施计划流程中' },
 
       { path: '/supplierAudit/AuditRequirementsManagementAdd', component: './SupplierAudit/AuditRequirementsManagement/add', title: '审核需求管理新增' },
       { path: '/supplierAudit/AnnualAuditPlan', component: './SupplierAudit/AnnualAuditPlan', title: '年度审核计划管理' },

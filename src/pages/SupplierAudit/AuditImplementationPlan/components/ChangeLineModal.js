@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-11-04 16:24:34
- * @LastEditTime: 2020-11-20 17:17:38
+ * @LastEditTime: 2020-11-23 10:04:54
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\MonthAuditPlan\component\ChangeHistory.js
@@ -45,7 +45,7 @@ const ChangeLineModal = (props) => {
             remotePaging
             columns={columns}
             store={{
-                url: `${recommendUrl}/api/reviewImplementPlanChangeService/findHistoryPageByChangId`,
+                url: `${recommendUrl}/api/reviewImplementPlanChangeService/findChangeHistoryPageById`,
                 type: 'POST',
                 params: {
                     businessId: props.id

@@ -350,7 +350,7 @@ export const provinceConfig = {
   remotePaging: true,
   rowKey: 'code',
   reader: {
-    field: ['id', 'name', 'codePath', 'namePath'],
+    field: ['id', 'code', 'codePath', 'namePath'],
     name: 'name',
     description: 'code',
   },
@@ -450,6 +450,7 @@ export const AllCompanyConfig = {
 
 // 公司列表
 export const CompanyConfig = {
+  allowClear: true,
   placeholder: '选择公司',
   remotePaging: false,
   store: {

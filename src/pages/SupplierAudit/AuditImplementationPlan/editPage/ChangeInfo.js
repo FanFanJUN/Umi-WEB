@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-11-19 19:13:29
- * @LastEditTime: 2020-11-19 19:16:51
+ * @LastEditTime: 2020-11-23 17:07:37
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\ChangeInfo.js
@@ -45,7 +45,7 @@ const ChangeInfo = (props, ref) => {
                                     getFieldDecorator('changeFileIdList', {
                                         initialValue: [],
                                     })(
-                                        <Upload entityId={data.documnetInfos} type={isView ? 'show' : ''}/>
+                                        <Upload entityId={data.changeFileInfo} type={isView ? 'show' : ''}/>
                                     )
                                 }
                             </FormItem>

@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-12 14:44:24
- * @LastEditTime: 2020-11-19 14:38:41
+ * @LastEditTime: 2020-11-23 17:35:03
  * @Description: 百分比、评定等级、风险等级配置
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/mainData/PrlConf/index.js
  */
@@ -51,35 +51,9 @@ const Index = () => {
           return "高";
       }
     } },
-    { title: '开始区间计算符', dataIndex: 'startSectionMark', ellipsis: true, render:(text)=>{
-      switch(text) {
-        case "A":
-          return "<";
-        case "B":
-          return "<=";
-        case "C":
-          return "=";
-        case "D":
-          return ">";
-        case "E":
-          return ">=";
-      }
-    }},
+    { title: '开始区间计算符', dataIndex: 'startSectionMark', ellipsis: true},
     { title: '开始区间', dataIndex: 'startSection', ellipsis: true },
-    { title: '结束区间计算符', dataIndex: 'endSectionMark', ellipsis: true, render:(text)=>{
-      switch(text) {
-        case "A":
-          return "<";
-        case "B":
-          return "<=";
-        case "C":
-          return "=";
-        case "D":
-          return ">";
-        case "E":
-          return ">=";
-      }
-    } },
+    { title: '结束区间计算符', dataIndex: 'endSectionMark', ellipsis: true},
     { title: '结束区间', dataIndex: 'endSection', ellipsis: true },
     { title: '名称', dataIndex: 'name', ellipsis: true },
     { title: '排序号', dataIndex: 'rank', ellipsis: true },
@@ -103,7 +77,7 @@ const Index = () => {
     name: '开始区间计算符',
     code: 'startSectionMark',
     type: 'selectWithData',
-    data: [{ text: '<', value: 'A' }, { text: '<=', value: 'B' }, { text: '=', value: 'C' }, { text: '>', value: 'D' }, { text: '>=', value: 'E' }]
+    data: [{ text: '<', value: '<' }, { text: '<=', value: '<=' }, { text: '=', value: '=' }, { text: '>', value: '>' }, { text: '>=', value: '>=' }]
   },
   {
     name: '开始区间',
@@ -114,7 +88,7 @@ const Index = () => {
     name: '结束区间计算符',
     code: 'endSectionMark',
     type: 'selectWithData',
-    data: [{ text: '<', value: 'A' }, { text: '<=', value: 'B' }, { text: '=', value: 'C' }, { text: '>', value: 'D' }, { text: '>=', value: 'E' }]
+    data: [{ text: '<', value: '<' }, { text: '<=', value: '<=' }, { text: '=', value: '=' }, { text: '>', value: '>' }, { text: '>=', value: '>=' }]
   },
   {
     name: '结束区间',

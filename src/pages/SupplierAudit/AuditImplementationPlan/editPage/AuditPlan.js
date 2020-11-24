@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:49:50
- * @LastEditTime: 2020-11-20 14:16:47
+ * @LastEditTime: 2020-11-23 14:31:32
  * @LastEditors: Please set LastEditors
  * @Description: I审核实施计划-审核计划
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\AuditPlan.js
@@ -106,7 +106,7 @@ const AuditPlan = (props) => {
                                         })(
                                             <Checkbox.Group style={{ width: '100%' }} style={{ paddingTop: "20px" }} onChange={handleChange}>
                                                 {
-                                                    seleteList.map(item => <Row style={{ margin: "6px 0" }} key={item.code}>
+                                                    seleteList.map(item => <Row style={{ margin: "6px 0" }} key={item.id}>
                                                         <Checkbox value={item.code} key={item.code}>{item.name}</Checkbox>
                                                     </Row>)
                                                 }
@@ -150,7 +150,7 @@ const AuditPlan = (props) => {
                             <FormItem {...formLongLayout} label={'详细计划附件'}>
                                 {
                                     getFieldDecorator('reviewPlanFileId', {
-                                        initialValue: type === 'add' ? '' : getDocIdForArray(originData.reviewPlanFiles),
+                                        initialValue: type === 'add' ? [] : getDocIdForArray(originData.reviewPlanFiles),
                                         rules: [{ required: true, message: '详细计划附件不能为空', },]
                                     })(
                                         <Upload

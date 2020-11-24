@@ -20,7 +20,10 @@ const ViewScoreByReviewerView = (props) => {
   });
 
   const clearSelected = () => {
-
+    setState({
+      data: [],
+      activeKey: '1',
+    });
   };
 
   useEffect(() => {
@@ -91,8 +94,9 @@ const ViewScoreByReviewerView = (props) => {
                     }));
                     return <TabPane tab={item.memberName} key={(index + 1).toString()}>
                       <ProblemTable
+                        onCancel={onCancel}
                         params={{
-                          reviewImplementManagementId: item.id
+                          reviewImplementManagementId: item.lineList[0] ? item.lineList[0].reviewImplementManagementId : '',
                         }}
                         onChange={onChange}
                         type={'show'}
