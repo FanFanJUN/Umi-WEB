@@ -29,13 +29,15 @@ const VerificationResults = (props) => {
 
   const onOk = async () => {
     if (data.activeKey === '3') {
-      const params = await submitDataRef.current.getInfo((err, values) => {
+      let params = await submitDataRef.current.getInfo((err, values) => {
         if (!err) {
           return values;
         }
       });
+      params = Object.assign(params, { reviewImplementManagementId: props.id });
       SubmitVerificationAuditOpinionDataApi(params).then(res => {
         if (res.success) {
+          props.refreshTable();
           onCancel();
         } else {
           message.error(res.messages);

@@ -56,29 +56,30 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
 
   const columns = [
     {
-      "title": "设备名称",
-      "dataIndex": "equipmentName",
-      "ellipsis": true,
-      "editable": true,
+      title: "设备名称",
+      dataIndex: "equipmentName",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "设备型号",
-      "dataIndex": "equipmentModel",
-      "ellipsis": true,
-      "editable": true,
+      title: "设备型号",
+      dataIndex: "equipmentModel",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "检测项目（元素）",
-      "dataIndex": "testingItem",
-      "ellipsis": true,
-      "editable": true,
+      title: "检测项目（元素）",
+      dataIndex: "testingItem",
+      ellipsis: true,
+      editable: true,
+      width: 150
     },
     {
-      "title": "备注",
-      "dataIndex": "remark",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'TextArea',
+      title: "备注",
+      dataIndex: "remark",
+      ellipsis: true,
+      editable: true,
+      inputType: 'TextArea',
     },
   ];
 
@@ -130,6 +131,7 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
               style={{
                 marginRight: '12px'
               }}
+              disabled={loading}
               onClick={handleSave}
             >保存</Button>,
           ] : null}

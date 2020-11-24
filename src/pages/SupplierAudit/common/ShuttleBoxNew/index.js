@@ -20,7 +20,6 @@ const ShuttleBoxNew = (props) => {
   }, [data.rightTreeData]);
 
   useEffect(() => {
-    console.log(props.rightTreeData, 'rightTreeData');
     if (props.rightTreeData && props.rightTreeData.length !== 0) {
       let arr = JSON.parse(JSON.stringify(props.rightTreeData));
       arr = recursion(arr);
@@ -45,7 +44,7 @@ const ShuttleBoxNew = (props) => {
 
   const constructArr = (data) => {
     if (data.children.length !== 0) {
-      data.systemId = data.id ? data.id : data.systemId;
+      data.systemId = data.systemId ? data.systemId : data.id;
       data.systemCode = data.code ? data.code : data.systemCode;
       data.systemName = data.name ? data.name : data.systemName;
       data.key = data.id ? data.id : data.systemId;
@@ -54,7 +53,7 @@ const ShuttleBoxNew = (props) => {
         constructArr(item);
       });
     } else {
-      data.systemId = data.id ? data.id : data.systemId;
+      data.systemId = data.systemId ? data.systemId : data.id;
       data.systemCode = data.code ? data.code : data.systemCode;
       data.systemName = data.name ? data.name : data.systemName;
       data.key = data.id ? data.id : data.systemId;
@@ -93,12 +92,12 @@ const ShuttleBoxNew = (props) => {
   //找到子节点
   const findSon = (data, arr) => {
     arr.forEach((item) => {
-      if (item.parentId === data.id) {
-        data.systemId = data.id ? data.id : data.systemId;
-        data.systemCode = data.code ? data.code : data.systemCode;
-        data.systemName = data.name ? data.name : data.systemName;
-        data.key = data.id ? data.id : data.systemId;
-        data.title = data.name ? data.name : data.systemName;
+      item.systemId = item.systemId ? item.systemId : item.id;
+      item.systemCode = item.code ? item.code : item.systemCode;
+      item.systemName = item.name ? item.name : item.systemName;
+      item.key = item.id ? item.id : item.systemId;
+      item.title = item.name ? item.name : item.systemName;
+      if (item.parentId === data.id || item.parentId === data.systemId) {
         data.children.push(item);
       }
     });
@@ -108,7 +107,7 @@ const ShuttleBoxNew = (props) => {
   const recursion = (arr) => {
     let newArr = JSON.parse(JSON.stringify(arr));
     newArr.forEach(item => {
-      item.systemId = item.id ? item.id : item.systemId;
+      item.systemId = item.systemId ? item.systemId : item.id;
       item.systemCode = item.code ? item.code : item.systemCode;
       item.systemName = item.name ? item.name : item.systemName;
       item.key = item.id ? item.id : item.systemId;

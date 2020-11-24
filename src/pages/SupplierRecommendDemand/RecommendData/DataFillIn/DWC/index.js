@@ -8,7 +8,18 @@
  * @Connect: 1981824361@qq.com
  */
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Spin, PageHeader, Radio, Row, Divider, Col, Input, DatePicker, message } from 'antd';
+import {
+  Form,
+  Button,
+  Spin,
+  PageHeader,
+  Radio,
+  Row,
+  Divider,
+  Col,
+  Input,
+  message
+} from 'antd';
 import styles from '../../DataFillIn/index.less';
 import { router } from 'dva';
 import { requestGetApi, requestPostApi } from '../../../../../services/dataFillInApi';
@@ -38,12 +49,9 @@ const isAgreeorNot = ['同意', '不同意'];
 const DWC = ({ form, updateGlobalStatus }) => {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
-  const [radioValue, setRadioValue] = useState('');
-
   const { query: { id, type = 'add' } } = router.useLocation();
-
-  const { getFieldDecorator, resetFields, getFieldValue, setFieldsValue } = form;
-
+  const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
+  const PCE = getFieldValue('payConditionEnum');
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -54,30 +62,29 @@ const DWC = ({ form, updateGlobalStatus }) => {
         await setFieldsValue(data);
         return
       }
-      message.error(res.message);
+      message.error(msg);
     };
     fetchData();
   }, []);
 
-  function handleSave() {
-    form.validateFieldsAndScroll((error, value) => {
-      (value);
-      if (error) return;
-      const saveParams = {
-        ...value,
-        recommendDemandId: id,
-        id: data.id,
-        tabKey: 'DWCTab',
-      };
-      requestPostApi(filterEmptyFileds(saveParams)).then((res) => {
-        if (res && res.success) {
-          message.success(res.message);
-          updateGlobalStatus();
-        } else {
-          message.error(res.message);
-        }
-      })
+  async function handleSave() {
+    const value = await form.validateFieldsAndScroll();
+    const params = filterEmptyFileds({
+      ...value,
+      recommendDemandId: id,
+      id: data.id,
+      tabKey: 'DWCTab',
     })
+    setLoading(true)
+    const { success, message: msg } = await requestPostApi(params)
+    setLoading(false)
+    if (success) {
+      message.success(msg);
+      updateGlobalStatus();
+      return
+    }
+    message.error(msg);
+
   }
 
   function handleChange(e) {
@@ -87,7 +94,7 @@ const DWC = ({ form, updateGlobalStatus }) => {
     //     resetFields(['otherPayCondition']);
     // }
   }
-
+  console.log(PCE)
   return (
     <div>
       <Spin spinning={loading}>
@@ -213,7 +220,7 @@ const DWC = ({ form, updateGlobalStatus }) => {
                             {getFieldDecorator('otherPayCondition', {
                               initialValue: type === 'add' ? '' : data.otherPayCondition,
                             })(
-                              <span>其他: <Input /></span>
+                              <Input addonBefore='其他：' disabled={PCE==='OTHER'}/>
                             )}
                           </Radio>
                         </Radio.Group>)}
