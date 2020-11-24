@@ -10,7 +10,7 @@ import { recommendUrl } from '@/utils/commonUrl';
 import { openNewTab } from '@/utils';
 import * as router from 'react-router-dom';
 import { closeCurrent, getMobile, getUserId, getUserName } from '../../../../utils';
-import { FindOneAuditRequirementsManagement } from '../../mainData/commomService';
+import { findForReportInsert, FindOneAuditRequirementsManagement } from '../../mainData/commomService';
 import classnames from 'classnames';
 import styles from '../../../Supplier/Editor/index.less';
 import BaseInfoForm from '../components/BaseInfoForm';
@@ -49,6 +49,7 @@ const auditReportManagementView = forwardRef(({}, ref) => {
     switch (state) {
       case 'add':
         getUser();
+        findInitOne(id);
         setData((value) => ({ ...value, type: state, isView: false, title: '审核报告管理-新增' }));
         break;
       case 'edit':
@@ -66,6 +67,20 @@ const auditReportManagementView = forwardRef(({}, ref) => {
         break;
     }
   }, []);
+
+  //新增获取默认值
+  const findInitOne = (id) => {
+    setData(v => ({ ...v, spinLoading: true }));
+    findForReportInsert({
+      id,
+    }).then(res => {
+      if (res.success) {
+        setData(v => ({ ...v, editData: res.data, spinLoading: false }));
+      } else {
+        message.error(res.message);
+      }
+    }).catch(err => message.error(err.message));
+  };
 
   //获取值
   const findOne = (id) => {
@@ -93,7 +108,8 @@ const auditReportManagementView = forwardRef(({}, ref) => {
       message.error('请将基本信息填写完全！');
       return false;
     }
-    console.log(baseInfoVal);
+    data.editData.baseInfoVo=baseInfoVal
+    console.log(data.editData);
   };
 
   return (
@@ -124,45 +140,29 @@ const auditReportManagementView = forwardRef(({}, ref) => {
         />
         <AuditScopeForm
           editData={
-            ['0-1-0', '0-0-1']
+            data.editData.sysList || []
           }
         />
         <AuditorInfoFrom
           editData={
-            [{
-              id: '1',
-              reviewGroup: 'A',
-              rank: '1',
-              groupLeader: 'zz',
-              groupData: [{ id: '001', memberName: '姓名1', employeeNo: '编号1', checkId: ['0-1-0', '0-0-1'] }, {
-                id: '002',
-                memberName: '姓名2',
-                employeeNo: '编号2',
-              }],
-            },
-              {
-                id: '2',
-                reviewGroup: 'B',
-                rank: '2',
-                groupLeader: 'yy',
-                groupData: [{ id: '003', memberName: '姓名3', employeeNo: '编号3' }, {
-                  id: '004',
-                  memberName: '姓名4',
-                  employeeNo: '编号4',
-                }],
-              }]
+            data.editData.reviewTeamGroupBoList || []
           }/>
         <CollaboratorForm
-          editData={[]}
+          editData={
+            data.editData.coordinationMemberBoList || []
+          }
         />
         <AuditPlanForm
+          reviewPlanStandardBos={data.editData.reviewPlanStandardBos || []}
           editData={data.editData}/>
         <AuditScoreForm
-          editData={[]}/>
+          editData={
+            data.editData.reviewResultForSupplierVos || []
+          }/>
         <AuditQuestions
-          editData={[]}/>
+          editData={data.editData.problemVoList || []}/>
         <AuditComments
-          editData={data.editData}/>
+          editData={data.editData.reviewSuggestionVo || {}}/>
       </Spin>
     </div>
   );
