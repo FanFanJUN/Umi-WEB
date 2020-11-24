@@ -116,8 +116,8 @@ export const EvaluationSystemConfig = {
   ///api/supplierEvlSystemService/findTreeByCorpCode
   // https://tecmp.changhong.com/srm-baf-web/supplierEvlSystem/findTreeByBusinessUnitId?businessUnitId=60B62845-9EF8-11EA-AD0D-0242C0A8440B
   store: {
-    type: 'POST',
-    url: `${baseUrl}/supplierEvlSystem/findTreeByBusinessUnitId`,
+    type: 'GET',
+    url: `${recommendUrl}/api/reviewEvlSystemService/findEvlSystem`,
   },
   reader: {
     field: ['code', 'id'],
