@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:04:51
- * @LastEditTime: 2020-11-24 10:53:19
+ * @LastEditTime: 2020-11-24 13:45:22
  * @Description: 新增  编辑  详情 page
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/index.js
  */
@@ -12,7 +12,7 @@ import { Affix, Button, Form, message, Spin } from 'antd';
 import classnames from 'classnames';
 import { WorkFlow } from "suid";
 import styles from '../../../Supplier/Editor/index.less';
-import { closeCurrent, getMobile, getUserId, getUserName, getAccount } from '@/utils';
+import { closeCurrent } from '@/utils';
 import { getUserInfoFromSession } from '@/utils/utilTool';
 import BaseInfo from './BaseInfo';
 import { router } from 'dva';
@@ -117,12 +117,17 @@ const Index = (props) => {
         const allData = gatAllData();
         if(!allData)return;
         setSpinLoading(true);
-        const res = reviewPlanYearAp({ ...allData, type: data.type });
+        const res = await reviewPlanYearAp({ ...allData, type: data.type });
         if (buttonType === 'submit') {
             return res.data;
         } else {
+            console.log("res", res)
+            setSpinLoading(false);
             if (res.success) {
-                message.info(res.message);
+                message.success("暂存成功");
+                setTimeout(()=>{
+                    closeCurrent();
+                }, 3000)
             } else {
                 message.error(res.message);
             }
@@ -159,7 +164,7 @@ const Index = (props) => {
         setSpinLoading(false);
         message.success("提交成功");
         setTimeout(() => {
-            // handleBack()
+            closeCurrent();
         }, 3000)
     }
 
@@ -181,7 +186,7 @@ const Index = (props) => {
                                     onCancel={() => { setSpinLoading(false); }}
                                     businessKey={query?.id}
                                     disabled={spinLoading}
-                                    businessModelCode={data.type === 'change' ? 'com.ecmp.srm.sam.entity.sr.ReviewPlanMonthChange' : 'com.ecmp.srm.sam.entity.sr.ReviewPlanMonth'}
+                                    businessModelCode={'com.ecmp.srm.sam.entity.sr.ReviewPlanYear'}
                                 >
                                     {
                                         spinLoading => <Button loading={spinLoading} type='primary'>提交</Button>
