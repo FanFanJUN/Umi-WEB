@@ -450,6 +450,7 @@ export const AllCompanyConfig = {
 
 // 公司列表
 export const CompanyConfig = {
+  allowClear: true,
   placeholder: '选择公司',
   remotePaging: false,
   store: {

@@ -377,7 +377,7 @@ function AcceptFYPMain() {
           ...searchValue,
           quickSearchProperties
         }
-        const { success, message: msg, data } = await EXPORT_METHOD({ search })
+        const { success, message: msg, data } = await EXPORT_METHOD(search)
         if (success) {
           downloadBlobFile(data, DOWNLOADNAME);
           message.success('导出成功')

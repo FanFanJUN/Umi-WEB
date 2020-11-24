@@ -11,7 +11,6 @@ import { Header, AutoSizeLayout, ModalForm } from '../../components';
 import { useTableProps } from '../../utils/hooks';
 import { commonUrl, commonProps } from '../../utils';
 import Right from './Right';
-import moment from 'moment';
 import {
   materialCategoryUnitSaveOne as SAVE_ONE_METHOD,
   materialCategoryUnitRemove as REMOVE_METHOD

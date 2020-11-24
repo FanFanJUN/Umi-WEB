@@ -30,7 +30,7 @@ const formLayout = {
 const HdssControll = ({ form, updateGlobalStatus }) => {
 
   const [data, setData] = useState({});
-  const [tableTata, setTableTata] = useState([]);
+  const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const { query: { id, type = 'add' } } = router.useLocation();
@@ -46,7 +46,7 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
         const { environmentalTestingEquipments = [], ...other } = data;
         await setFieldsValue(other)
         await setData(data);
-        await setTableTata(environmentalTestingEquipments.map(item => ({ ...item, guid: item.id })));
+        await setTableData(environmentalTestingEquipments.map(item => ({ ...item, guid: item.id })));
         return
       }
       message.error(res.message);
@@ -82,37 +82,36 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
     },
   ];
 
-  function handleSave() {
+  async function handleSave() {
     if (getFieldValue('haveenvironmentalTestingEquipments ')) {
-      if (isEmptyArray(tableTata)) {
-        message.info('列表至少填写一条设备信息！');
+      if (isEmptyArray(tableData)) {
+        message.error('列表至少填写一条设备信息！');
         return;
       }
     }
-    form.validateFieldsAndScroll((error, value) => {
-      (value);
-      if (error) return;
-      const saveParams = {
-        ...value,
-        tabKey: 'hdssControllTab',
-        rohsFileId: value.rohsFileId ? (value.rohsFileId)[0] : null,
-        recommendDemandId: id,
-        environmentalTestingEquipments: tableTata || [],
-        id: data.id
-      };
-      requestPostApi(filterEmptyFileds(saveParams)).then((res) => {
-        if (res && res.success) {
-          message.success('保存数据成功');
-          updateGlobalStatus();
-        } else {
-          message.error(res.message);
-        }
-      })
-    })
+    const value = await form.validateFieldsAndScroll();
+    const saveParams = {
+      ...value,
+      tabKey: 'hdssControllTab',
+      rohsFileId: value.rohsFileId ? (value.rohsFileId)[0] : null,
+      recommendDemandId: id,
+      environmentalTestingEquipments: tableData,
+      id: data.id
+    };
+    const params = filterEmptyFileds(saveParams);
+    setLoading(true)
+    const { success, message: msg } = await requestPostApi(params)
+    setLoading(false)
+    if (success) {
+      message.success(msg);
+      updateGlobalStatus();
+      return
+    }
+    message.error(msg);
   }
 
   function setNewData(newData) {
-    setTableTata(newData);
+    setTableData(newData);
   }
 
   return (
@@ -125,9 +124,14 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
           }}
           title="研发能力"
           extra={type === 'add' ? [
-            <Button key="save" type="primary" style={{ marginRight: '12px' }} onClick={() => handleSave()}>
-              保存
-                        </Button>,
+            <Button
+              key="save"
+              type="primary"
+              style={{
+                marginRight: '12px'
+              }}
+              onClick={handleSave}
+            >保存</Button>,
           ] : null}
         >
           <div className={styles.wrapper}>
@@ -148,7 +152,7 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                   </Col>
                 </Row>
                 <EditableFormTable
-                  dataSource={tableTata || []}
+                  dataSource={tableData || []}
                   columns={columns}
                   rowKey='guid'
                   setNewData={setNewData}
@@ -166,7 +170,8 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                         <Radio.Group value={'1'}>
                           <Radio value={true}>有</Radio>
                           <Radio value={false}>无</Radio>
-                        </Radio.Group>)}
+                        </Radio.Group>
+                      )}
                     </FormItem>
                   </Col>
                 </Row>
@@ -181,21 +186,23 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                           <Radio value={'ROHS_20'}>RoHS2.0</Radio>
                           <Radio value={'ROHS_10_HALOGEN_FREE'}>RoHS1.0+无卤</Radio>
                           <Radio value={'ROHS_20_HALOGEN_FREE'}>RoHS2.0+无卤</Radio>
-                        </Radio.Group>)}
+                        </Radio.Group>
+                      )}
                     </FormItem>
                   </Col>
                 </Row>
                 <Row>
                   <Col span={24}>
                     <FormItem label="RoHS检测报告" {...formLayout}>
-                      {getFieldDecorator('rohsFileId', {
+                      {getFieldDecorator('rohsFileIds', {
                         initialValue: type === 'add' ? '' : data.rohsFileId,
                       })(
                         <UploadFile
                           showColor={type !== 'add' ? true : false}
                           type={type !== 'add'}
                           entityId={data.rohsFileId}
-                        />)}
+                        />
+                      )}
                     </FormItem>
                   </Col>
                 </Row>
@@ -218,7 +225,7 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                     <FormItem label="备注" {...formLayout}>
                       {getFieldDecorator('remark', {
                         initialValue: type === 'add' ? '' : data.remark,
-                      })(<Input.TextArea></Input.TextArea>)}
+                      })(<Input.TextArea />)}
                     </FormItem>
                   </Col>
                 </Row>
@@ -227,10 +234,13 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                     <FormItem label="附件材料" {...formLayout}>
                       {getFieldDecorator('attachmentIds', {
                         initialValue: type === 'add' ? '' : data.attachmentIds,
-                      })(<UploadFile
-                        showColor={type !== 'add' ? true : false}
-                        type={type === 'add' ? '' : 'show'}
-                        entityId={data.attachmentId} />)}
+                      })(
+                        <UploadFile
+                          showColor={type !== 'add' ? true : false}
+                          type={type === 'add' ? '' : 'show'}
+                          entityId={data.attachmentId}
+                        />
+                      )}
                     </FormItem>
                   </Col>
                 </Row>

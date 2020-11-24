@@ -453,6 +453,7 @@ export const materialProps = {
 
 // 二次分类物料组数据
 export const materialClassProps = {
+  allowClear: true,
   store: {
     url: `${baseUrl}/SecondaryClassificationMaterialGroup/listAllGeneralTree`,
     params: { Q_EQ_frozen__Boolean: false }
