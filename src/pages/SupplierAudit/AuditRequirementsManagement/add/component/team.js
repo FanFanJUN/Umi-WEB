@@ -189,6 +189,7 @@ const Team = (props) => {
     let treeData = values[0]?.memberRuleBoList ? values[0].memberRuleBoList ? JSON.parse(JSON.stringify(values[0].memberRuleBoList)) : [] : [];
     treeData = treeData.map(item => ({
       ...item,
+      id: item.id ? item.id : item.systemId, 
       systemId: item.systemId ? item.systemId : item.id,
       systemCode: item.code ? item.code : item.systemCode,
       systemName: item.name ? item.name : item.systemName,
