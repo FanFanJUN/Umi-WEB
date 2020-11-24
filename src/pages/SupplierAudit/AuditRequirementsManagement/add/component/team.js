@@ -187,6 +187,16 @@ const Team = (props) => {
 
   const handleContentSelectedRows = (keys, values) => {
     let treeData = values[0]?.memberRuleBoList ? values[0].memberRuleBoList ? JSON.parse(JSON.stringify(values[0].memberRuleBoList)) : [] : [];
+    treeData = treeData.map(item => ({
+      ...item,
+      systemId: item.systemId ? item.systemId : item.id,
+      systemCode: item.code ? item.code : item.systemCode,
+      systemName: item.name ? item.name : item.systemName,
+      key: item.id ? item.id : item.systemId,
+      title: item.name ? item.name : item.systemName,
+      children: item.children ? item.children : []
+    }));
+    console.log(treeData, 'treeData111');
     setData(v => ({ ...v, leftTreeData: undefined, treeData: treeData }));
     setContentData(v => ({ ...v, selectedRows: values, selectedRowKeys: keys }));
   };
@@ -299,7 +309,7 @@ const Team = (props) => {
 
   const destructionTree = (arr) => {
     arr.map(item => {
-      item.systemId = item.id ? item.id : item.systemId;
+      item.systemId = item.systemId ? item.systemId : item.id;
       item.systemCode = item.code ? item.code : item.systemCode;
       item.systemName = item.name ? item.name : item.systemName;
       item.key = item.id ? item.id : item.systemId;
@@ -316,14 +326,15 @@ const Team = (props) => {
   //找到子节点
   const findSon = (data, arr) => {
     arr.forEach((item) => {
-      if (item.parentId === data.id) {
+      if (item.parentId === data.id || item.parentId === data.systemId) {
+        data.children = data.children ? data.children : [];
         data.children.push(item);
       }
     });
   };
 
   // 递归
-  const recursion = (arr) => {
+  const recursion = (arr, type = undefined) => {
     let newArr = JSON.parse(JSON.stringify(arr));
     newArr.forEach(item => {
       if (item.children && item.children.length !== 0) {
