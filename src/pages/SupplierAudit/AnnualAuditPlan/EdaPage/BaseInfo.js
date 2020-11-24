@@ -1,9 +1,9 @@
 /*
  * @Author: Li Cai
- * @LastEditors: Li Cai
+ * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:40
- * @LastEditTime: 2020-10-30 15:36:23
+ * @LastEditTime: 2020-11-24 10:01:09
  * @Description:  基本信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BaseInfo.js
  */
@@ -194,7 +194,7 @@ const BaseInfo = (props) => {
               <FormItem {...formLongLayout} label={'附件'}>
                 {
                   getFieldDecorator('attachRelatedId', {
-                    initialValue: type === 'add' ? '' : getDocIdForArray(data.attachRelatedId),
+                    initialValue: type === 'add' ? [] : getDocIdForArray(data.attachRelatedId),
                   })(
                     <Upload
                       entityId={type === 'add' ? null : data.attachRelatedInfo}
