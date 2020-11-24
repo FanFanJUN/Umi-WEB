@@ -12,9 +12,9 @@ const commonProps = {
   },
 };
 export const whetherArr = {
-  'true' : '是',
-  'false' : '否'
-}
+  'true': '是',
+  'false': '否',
+};
 
 // 验证结果
 export const VerificationResultConfig = {
@@ -36,9 +36,9 @@ export const VerificationResultConfig = {
 
 // 验证类型
 export const AuthenticationTypeArr = {
-  'DOC_CHECK' : '文档验证',
-  'SCENE_CHECK' : '现场验证'
-}
+  'DOC_CHECK': '文档验证',
+  'SCENE_CHECK': '现场验证',
+};
 
 // 验证类型
 export const AuthenticationTypeConfig = {
@@ -144,7 +144,7 @@ export const WithdrawResultsEntryApi = async (params = {}) => {
 
 // 查看组长意见
 export const CheckGroupLeadersOpinion = async (params = {}) => {
-  console.log(params)
+  console.log(params);
   const url = `${recommendUrl}/api/reviewImplementManagementService/findLeaderSuggestion`;
   return request({
     url,
@@ -159,7 +159,7 @@ export const IssuesManagementApi = async (params = {}) => {
   return request({
     url,
     method: 'GET',
-    params
+    params,
   });
 };
 
@@ -169,7 +169,7 @@ export const SaveIssuesManagementSupplierApi = async (params = {}) => {
   return request({
     url,
     method: 'POST',
-    data: params
+    data: params,
   });
 };
 
@@ -179,7 +179,7 @@ export const SendProblemApi = async (params = {}) => {
   return request({
     url,
     method: 'GET',
-    params
+    params,
   });
 };
 
@@ -189,7 +189,7 @@ export const validationProblemApi = async (params = {}) => {
   return request({
     url,
     method: 'post',
-    data: params
+    data: params,
   });
 };
 
@@ -199,7 +199,7 @@ export const VerificationAuditOpinionApi = async (params = {}) => {
   return request({
     url,
     method: 'GET',
-    params
+    params,
   });
 };
 
@@ -209,7 +209,17 @@ export const GetVerificationAuditOpinionDataApi = async (params = {}) => {
   return request({
     url,
     method: 'GET',
-    params
+    params,
+  });
+};
+
+// 意见审核提交
+export const SubmitVerificationAuditOpinionDataApi = async (params = {}) => {
+  const url = `${recommendUrl}/api/reviewImplementManagementService/confirmManagement`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
   });
 };
 
@@ -219,7 +229,7 @@ export const ViewScoreByReviewerApi = async (params = {}) => {
   return request({
     url,
     method: 'GET',
-    params
+    params,
   });
 };
 
@@ -229,7 +239,7 @@ export const SendBackApi = async (params = {}) => {
   return request({
     url,
     method: 'POST',
-    data: params
+    data: params,
   });
 };
 
@@ -239,7 +249,7 @@ export const ViewVendorSelfRating = async (params = {}) => {
   return request({
     url,
     method: 'GET',
-    params
+    params,
   });
 };
 
@@ -250,7 +260,7 @@ export const TheSelfAssessmentApi = async (params = {}) => {
   return request({
     url,
     method: 'GET',
-    params
+    params,
   });
 };
 
@@ -260,7 +270,7 @@ export const GetSelfEvaluationTimeApi = async (params = {}) => {
   return request({
     url,
     method: 'GET',
-    params
+    params,
   });
 };
 
@@ -270,7 +280,7 @@ export const GetScoreOverviewApi = async (params = {}) => {
   return request({
     url,
     method: 'GET',
-    params
+    params,
   });
 };
 
@@ -280,6 +290,6 @@ export const GetTargetScoringDetailApi = async (params = {}) => {
   return request({
     url,
     method: 'GET',
-    params
+    params,
   });
 };

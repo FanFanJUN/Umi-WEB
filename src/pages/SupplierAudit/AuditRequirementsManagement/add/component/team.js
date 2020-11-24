@@ -6,6 +6,8 @@ import { getRandom } from '../../../../QualitySynergy/commonProps';
 import ContentModal from './contentModal';
 import ShuttleBox from '../../../common/ShuttleBox';
 import { duplicateRemoval, GetDefaultSystem, PersonnelTypeArr, RoleArr } from '../../../mainData/commomService';
+import ShuttleBoxNew from '../../../common/ShuttleBoxNew';
+import { login } from '../../../../../services/api';
 
 const teamColumns = [
   { title: '组别', dataIndex: 'reviewGroup', ellipsis: true, width: 60 },
@@ -33,6 +35,9 @@ const fieldsConfig = [
 ];
 
 const Team = (props) => {
+
+  // 解构的tree
+  let destructionTreeArr = [];
 
   const teamTableRef = useRef(null);
 
@@ -73,25 +78,7 @@ const Team = (props) => {
           reviewTypeCode: props.reviewTypeCode,
         }).then(res => {
           if (res.success) {
-            let defaultSystem = JSON.parse(JSON.stringify(res.data));
-            defaultSystem.map(item => {
-              item.systemId = item.id;
-              item.systemCode = item.code;
-              item.systemName = item.name;
-              item.key = item.id;
-              item.title = item.name;
-              if (item.children && item.children.length !== 0) {
-                item.children.map(v => {
-                  v.systemId = v.id;
-                  // item.systemCode = item.code;
-                  v.systemCode = v.code;
-                  v.systemName = v.name;
-                  v.key = v.id;
-                  v.title = v.name;
-                });
-              }
-            });
-            setData(v => ({ ...v, defaultSystem }));
+            setData(v => ({ ...v, defaultSystem: res.data }));
           }
         }).catch(err => message.error(err.message));
       }
@@ -123,13 +110,14 @@ const Team = (props) => {
   };
 
   const handleOk = (value) => {
-    console.log(value, 'values')
+    console.log(value, 'values');
     if (data.type === 'add') {
       value.lineNum = getRandom(10);
       value.reviewTeamMemberBoList = [];
       setTeamData(v => ({ ...v, dataSource: [...teamData.dataSource, ...[value]] }));
     } else {
-      let newData = teamData.dataSource.slice();x
+      let newData = teamData.dataSource.slice();
+      x;
       teamData.dataSource.forEach((item, index) => {
         if (item.lineNum === data.selectRows[0].lineNum) {
           value.lineNum = item.lineNum;
@@ -149,8 +137,8 @@ const Team = (props) => {
     if (contentData.type === 'add') {
       if (value.memberRole === 'GROUP_LEADER') {
         if (contentData.dataSource.some(item => item.memberRole === 'GROUP_LEADER')) {
-          message.error('每个组只能有一个组长!')
-          return
+          message.error('每个组只能有一个组长!');
+          return;
         }
       }
       value.lineNum = getRandom(10);
@@ -199,16 +187,6 @@ const Team = (props) => {
 
   const handleContentSelectedRows = (keys, values) => {
     let treeData = values[0]?.memberRuleBoList ? values[0].memberRuleBoList ? JSON.parse(JSON.stringify(values[0].memberRuleBoList)) : [] : [];
-    treeData = treeData.map(item => {
-      if (!item.key) {
-        item.id = item.systemId;
-        item.key = item.systemId;
-        item.title = item.systemName;
-        return item;
-      } else {
-        return item;
-      }
-    });
     setData(v => ({ ...v, leftTreeData: undefined, treeData: treeData }));
     setContentData(v => ({ ...v, selectedRows: values, selectedRowKeys: keys }));
   };
@@ -319,14 +297,58 @@ const Team = (props) => {
     contentTableRef.current.remoteDataRefresh();
   };
 
+  const destructionTree = (arr) => {
+    arr.map(item => {
+      item.systemId = item.id ? item.id : item.systemId;
+      item.systemCode = item.code ? item.code : item.systemCode;
+      item.systemName = item.name ? item.name : item.systemName;
+      item.key = item.id ? item.id : item.systemId;
+      item.title = item.name ? item.name : item.systemName;
+      if (item.children && item.children.length !== 0) {
+        destructionTreeArr.push(item);
+        destructionTree(item.children);
+      } else {
+        destructionTreeArr.push(...arr);
+      }
+    });
+  };
+
+  //找到子节点
+  const findSon = (data, arr) => {
+    arr.forEach((item) => {
+      if (item.parentId === data.id) {
+        data.children.push(item);
+      }
+    });
+  };
+
+  // 递归
+  const recursion = (arr) => {
+    let newArr = JSON.parse(JSON.stringify(arr));
+    newArr.forEach(item => {
+      if (item.children && item.children.length !== 0) {
+        item.children = [];
+      }
+      findSon(item, newArr);
+    });
+    let data = [];
+    newArr.forEach(item => {
+      if (!item.parentId) {
+        data.push(item);
+      }
+    });
+    return data;
+  };
+
   // 构造左边树
   const getLeftTreeData = () => {
     if (contentData.selectedRowKeys && contentData.selectedRowKeys.length !== 0) {
-      let arr = [...props.treeData, ...data.defaultSystem];
-      console.log(props.treeData)
-      if (arr.length > 1) {
-        arr = duplicateRemoval(arr, 'key');
+      if (data.defaultSystem && data.defaultSystem.length !== 0) {
+        destructionTree(data.defaultSystem);
       }
+      let arr = [...props.treeData, ...destructionTreeArr];
+      arr = duplicateRemoval(arr, 'key');
+      arr = recursion(arr);
       setData(v => ({ ...v, leftTreeData: arr }));
     } else {
       message.error('请选择一名成员');
@@ -398,12 +420,18 @@ const Team = (props) => {
           </div>
           <div style={{ height: '230px' }}>
             <span style={{ fontSize: '15px', fontWeight: 'bold', marginLeft: '15px' }}>成员审核内容管理</span>
-            <ShuttleBox
-              type={props.type === 'detail' && 'show'}
+            <ShuttleBoxNew
               rightTreeData={data.treeData}
+              type={props.type === 'detail' && 'show'}
               onChange={getTreeData}
               leftTreeData={data.leftTreeData}
             />
+            {/*<ShuttleBox*/}
+            {/*  type={props.type === 'detail' && 'show'}*/}
+            {/*  rightTreeData={data.treeData}*/}
+            {/*  onChange={getTreeData}*/}
+            {/*  leftTreeData={data.leftTreeData}*/}
+            {/*/>*/}
           </div>
         </div>
       </div>

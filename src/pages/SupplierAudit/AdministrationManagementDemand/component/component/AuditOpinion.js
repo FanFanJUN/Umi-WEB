@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useImperativeHandle, useState } from 'react';
 import { Col, Form, Input, message, Row } from 'antd';
 import { ComboList, ComboTree } from 'suid';
 import { AllCompanyConfig, ApplyOrganizationProps } from '../../../mainData/commomService';
@@ -25,7 +25,7 @@ const formLongLayout = {
     span: 20,
   },
 };
-const AuditOpinion = (props) => {
+const AuditOpinion = React.forwardRef((props, ref) => {
 
   const { editData, reviewImplementPlanCode } = props;
 
@@ -40,6 +40,10 @@ const AuditOpinion = (props) => {
       })(<Input type={'hidden'} />)}
     </FormItem>
   );
+
+  useImperativeHandle(ref, () => ({
+    getInfo:  props.form.validateFieldsAndScroll
+  }));
 
   useEffect(() => {
     GetVerificationAuditOpinionDataApi({
@@ -164,5 +168,6 @@ const AuditOpinion = (props) => {
       </Row>
     </>
   );
-};
+});
+
 export default Form.create()(AuditOpinion);

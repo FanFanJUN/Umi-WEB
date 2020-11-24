@@ -15,18 +15,18 @@ const ShuttleBoxNew = (props) => {
   const { type, rightTreeData, leftTreeData } = props;
 
   useEffect(() => {
-    destruction(data.rightTreeData)
-    props.onChange(leftData)
-  }, [data.rightTreeData])
+    destruction(data.rightTreeData);
+    props.onChange(leftData);
+  }, [data.rightTreeData]);
 
   useEffect(() => {
-    console.log(props.rightTreeData)
+    console.log(props.rightTreeData, 'rightTreeData');
     if (props.rightTreeData && props.rightTreeData.length !== 0) {
-      let arr = JSON.parse(JSON.stringify(props.rightTreeData))
+      let arr = JSON.parse(JSON.stringify(props.rightTreeData));
       arr = recursion(arr);
-      setData(v => ({...v, rightTreeData: arr}))
+      setData(v => ({ ...v, rightTreeData: arr }));
     }
-  }, [props.rightTreeData])
+  }, [props.rightTreeData]);
 
   useEffect(() => {
     setData(v => ({ ...v, rightCheckedKeys: [], leftCheckedKeys: [] }));
@@ -45,20 +45,20 @@ const ShuttleBoxNew = (props) => {
 
   const constructArr = (data) => {
     if (data.children.length !== 0) {
-      data.systemId = data.id;
-      data.systemCode = data.code;
-      data.systemName = data.name;
-      data.key = data.id;
-      data.title = data.name;
+      data.systemId = data.id ? data.id : data.systemId;
+      data.systemCode = data.code ? data.code : data.systemCode;
+      data.systemName = data.name ? data.name : data.systemName;
+      data.key = data.id ? data.id : data.systemId;
+      data.title = data.name ? data.name : data.systemName;
       data?.children.forEach(item => {
         constructArr(item);
       });
     } else {
-      data.systemId = data.id;
-      data.systemCode = data.code;
-      data.systemName = data.name;
-      data.key = data.id;
-      data.title = data.name;
+      data.systemId = data.id ? data.id : data.systemId;
+      data.systemCode = data.code ? data.code : data.systemCode;
+      data.systemName = data.name ? data.name : data.systemName;
+      data.key = data.id ? data.id : data.systemId;
+      data.title = data.name ? data.name : data.systemName;
     }
   };
 
@@ -66,25 +66,39 @@ const ShuttleBoxNew = (props) => {
   const addClick = () => {
     let arr = JSON.parse(JSON.stringify(data.leftSelectData));
     arr = recursion(arr);
-    setData(v => ({ ...v, rightTreeData: arr,  leftSelectData: [], leftCheckedKeys: [], rightCheckedKeys: [], rightCheck: [] }));
+    setData(v => ({
+      ...v,
+      rightTreeData: arr,
+      leftSelectData: [],
+      leftCheckedKeys: [],
+      rightCheckedKeys: [],
+      rightCheck: [],
+    }));
   };
 
   // 删除方法
   const deleteClick = () => {
     let arr = JSON.parse(JSON.stringify(data.rightCheck));
     arr = recursion(arr);
-    setData(v => ({ ...v, rightTreeData: arr,  leftSelectData: [], leftCheckedKeys: [], rightCheckedKeys: [], rightCheck: []}));
+    setData(v => ({
+      ...v,
+      rightTreeData: arr,
+      leftSelectData: [],
+      leftCheckedKeys: [],
+      rightCheckedKeys: [],
+      rightCheck: [],
+    }));
   };
 
   //找到子节点
   const findSon = (data, arr) => {
     arr.forEach((item) => {
       if (item.parentId === data.id) {
-        item.systemId = item.id;
-        item.systemCode = item.code;
-        item.systemName = item.name;
-        item.key = item.id;
-        item.title = item.name;
+        data.systemId = data.id ? data.id : data.systemId;
+        data.systemCode = data.code ? data.code : data.systemCode;
+        data.systemName = data.name ? data.name : data.systemName;
+        data.key = data.id ? data.id : data.systemId;
+        data.title = data.name ? data.name : data.systemName;
         data.children.push(item);
       }
     });
@@ -94,11 +108,11 @@ const ShuttleBoxNew = (props) => {
   const recursion = (arr) => {
     let newArr = JSON.parse(JSON.stringify(arr));
     newArr.forEach(item => {
-      item.systemId = item.id;
-      item.systemCode = item.code;
-      item.systemName = item.name;
-      item.key = item.id;
-      item.title = item.name;
+      item.systemId = item.id ? item.id : item.systemId;
+      item.systemCode = item.code ? item.code : item.systemCode;
+      item.systemName = item.name ? item.name : item.systemName;
+      item.key = item.id ? item.id : item.systemId;
+      item.title = item.name ? item.name : item.systemName;
       if (item.children && item.children.length !== 0) {
         item.children = [];
       }
@@ -118,40 +132,40 @@ const ShuttleBoxNew = (props) => {
     arr.map(item => {
       if (Array.isArray(item.children) && item.children.length !== 0) {
         leftData = [...leftData, ...item.children];
-        destruction(item.children, leftData);
+        destruction(item.children);
       }
     });
   };
 
   // 左边节点选中
   const leftCheck = (keys, values) => {
-    let selectData = values.checkedNodes.map(item => item.props)
-    destruction(data.leftData)
+    let selectData = values.checkedNodes.map(item => item.props);
+    destruction(data.leftData);
     if (values.halfCheckedKeys.length !== 0) {
       leftData.forEach((item) => {
         values.halfCheckedKeys.map(value => {
           if (value === item.key) {
-            selectData.push(item)
+            selectData.push(item);
           }
-        })
-      })
+        });
+      });
     }
     setData(v => ({ ...v, leftSelectData: selectData, leftCheckedKeys: keys }));
   };
 
   // 右边节点选中
   const rightCheck = (keys, values) => {
-    let selectData = values.checkedNodes.map(item => item.props)
-    destruction(data.rightTreeData)
-    let newLeftData = JSON.parse(JSON.stringify(leftData))
+    let selectData = values.checkedNodes.map(item => item.props);
+    destruction(data.rightTreeData);
+    let newLeftData = JSON.parse(JSON.stringify(leftData));
     newLeftData.map((item, index) => {
       selectData.map(value => {
         if (item.systemId === value.systemId) {
-          newLeftData.splice(index, 1)
+          newLeftData.splice(index, 1);
         }
-      })
-    })
-    setData(v => ({...v, rightCheck: newLeftData, rightCheckedKeys: keys}))
+      });
+    });
+    setData(v => ({ ...v, rightCheck: newLeftData, rightCheckedKeys: keys }));
   };
 
   return (

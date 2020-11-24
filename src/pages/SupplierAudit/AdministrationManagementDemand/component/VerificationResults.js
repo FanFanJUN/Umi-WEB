@@ -4,11 +4,14 @@ import { ComboList, ComboTree, ExtModal, ExtTable } from 'suid';
 import ScoreOverview from './component/ScoreOverview';
 import IssuesManagement from './component/IssuesManagement';
 import AuditOpinion from './component/AuditOpinion';
-import { VerificationAuditOpinionApi } from '../commonApi';
+import { SubmitVerificationAuditOpinionDataApi, VerificationAuditOpinionApi } from '../commonApi';
+import BaseInfo from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/edit/BaseInfo';
 
 const { TabPane } = Tabs;
 
 const VerificationResults = (props) => {
+
+  const submitDataRef = useRef(null);
 
   const { isView, visible, reviewImplementPlanCode } = props;
 
@@ -24,11 +27,22 @@ const VerificationResults = (props) => {
     props.onCancel();
   };
 
-  const onOk = () => {
+  const onOk = async () => {
     if (data.activeKey === '3') {
-
+      const params = await submitDataRef.current.getInfo((err, values) => {
+        if (!err) {
+          return values;
+        }
+      });
+      SubmitVerificationAuditOpinionDataApi(params).then(res => {
+        if (res.success) {
+          onCancel();
+        } else {
+          message.error(res.messages);
+        }
+      }).catch(err => message.error(err.messages));
     } else {
-      onCancel()
+      onCancel();
     }
   };
 
@@ -89,6 +103,7 @@ const VerificationResults = (props) => {
         </TabPane>
         <TabPane tab="审核意见" key="3">
           <AuditOpinion
+            wrappedComponentRef={submitDataRef}
             reviewImplementPlanCode={reviewImplementPlanCode}
             editData={auditOpinionData}
           />
