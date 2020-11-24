@@ -200,7 +200,7 @@ export const consignmentOrdersExport = params => createServiceRequest({
   path: '/bafController/exportBafConsignmentOrderRate',
   params,
   method: 'POST',
-  hack: true,
+  // hack: true,
   responseType: 'blob'
 })
 
