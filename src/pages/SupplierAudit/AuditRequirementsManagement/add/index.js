@@ -87,6 +87,7 @@ const Index = (props) => {
     }).then(res => {
       if (res.success) {
         setCompanyCode(res.data.applyCorporationCode);
+        setApplyCorporationCode(res.data.applyCorporationCode);
         setOrganizationCode(res.data.purchaseOrgCode);
         setData(v => ({ ...v, editData: res.data, lineBoList: res.data.lineBoList, spinLoading: false }));
       } else {
@@ -136,7 +137,7 @@ const Index = (props) => {
             AddAuditRequirementsManagement(insertData).then(res => {
               if (res.success) {
                 message.success(res.message);
-                // handleBack();
+                handleBack();
               } else {
                 message.error(res.message);
               }
@@ -147,7 +148,7 @@ const Index = (props) => {
             UpdateAuditRequirementsManagement(updateData).then(res => {
               if (res.success) {
                 message.success(res.message);
-                // handleBack();
+                handleBack();
               } else {
                 message.error(res.message);
               }

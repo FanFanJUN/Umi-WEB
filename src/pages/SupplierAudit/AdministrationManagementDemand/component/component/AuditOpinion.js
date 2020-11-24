@@ -27,7 +27,7 @@ const formLongLayout = {
 };
 const AuditOpinion = React.forwardRef((props, ref) => {
 
-  const { editData, reviewImplementPlanCode } = props;
+  const { editData, reviewImplementPlanCode, isView } = props;
 
   const { getFieldDecorator, setFieldsValue, getFieldValue } = props.form;
 
@@ -66,7 +66,7 @@ const AuditOpinion = React.forwardRef((props, ref) => {
           <FormItem label="审核综合评审得分" {...formLayout}>
             {
               getFieldDecorator('reviewScore', {
-                initialValue: editData.reviewScore,
+                initialValue: isView ? data.reviewScore : editData.reviewScore,
                 rules: [
                   {
                     required: true,
@@ -83,7 +83,7 @@ const AuditOpinion = React.forwardRef((props, ref) => {
           <FormItem label="评定等级" {...formLayout}>
             {
               getFieldDecorator('performanceRating', {
-                initialValue: editData.performanceRating,
+                initialValue: isView ? data.performanceRating : editData.performanceRating,
                 rules: [
                   {
                     required: true,
@@ -102,7 +102,7 @@ const AuditOpinion = React.forwardRef((props, ref) => {
           <FormItem label="风险等级" {...formLayout}>
             {
               getFieldDecorator('riskRating', {
-                initialValue: editData.riskRating,
+                initialValue: isView ? data.riskRating : editData.riskRating,
               })(
                 <Input disabled={true} />,
               )
@@ -115,7 +115,7 @@ const AuditOpinion = React.forwardRef((props, ref) => {
           <FormItem label="是否通过" {...formLayout}>
             {
               getFieldDecorator('whetherPass', {
-                initialValue: '',
+                initialValue: whetherArr[data.whetherPass],
               })(
                 <Input disabled={true} />,
               )

@@ -21,6 +21,7 @@ import CheckLeaderOpinion from './component/CheckLeaderOpinion';
 import VerificationResults from './component/VerificationResults';
 import { WithdrawResultsEntryApi } from './commonApi';
 import { openNewTab } from '../../../utils';
+import { getUserId } from '../../../components/utils/CommonUtils';
 
 const { authAction } = utils;
 const { Search } = Input;
@@ -130,7 +131,12 @@ export default function() {
 
   const columns = [
     { title: '状态', dataIndex: 'state', width: 80, render: v => managementStateConfig[v] },
-    { title: '审核需求计划号', dataIndex: 'reviewImplementPlanCode', width: 200, render: (v, data) => <a onClick={() => jumpOtherPage(data.reviewImplementPlanId)}>{v}</a> },
+    {
+      title: '审核需求计划号',
+      dataIndex: 'reviewImplementPlanCode',
+      width: 200,
+      render: (v, data) => <a onClick={() => jumpOtherPage(data.reviewImplementPlanId)}>{v}</a>,
+    },
     { title: '供应商', dataIndex: 'supplierName', width: 300, render: (v, data) => `${v} ${data.supplierCode}` },
     { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 200 },
     { title: '审核时间', dataIndex: 'reviewDateStart', width: 400, render: (v, data) => `${v} - ${data.reviewDateEnd}` },
@@ -144,7 +150,7 @@ export default function() {
 
   const jumpOtherPage = (id) => {
     openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=detail&id=${id}`, '审核管理实施计划-明细', false);
-  }
+  };
 
   // 刷新table
   const refreshTable = () => {
@@ -162,10 +168,10 @@ export default function() {
     {
       authAction(<Button
         type='primary'
-        onClick={() => redirectToPage('resultAdd')}
+        onClick={() => redirectToPage('resultAdd')} s
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        disabled={data.selectedRowKeys.length === 0}
+        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'whetherConfirm', false)}
         key='TECHNICAL_DATA_SHARING_ADD'
       >结果录入</Button>)
     }
@@ -201,7 +207,9 @@ export default function() {
         onClick={() => redirectToPage('verificationResults')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        disabled={data.selectedRowKeys.length === 0}
+        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'whetherConfirm', false)
+        || !judge(data.selectedRows, 'leaderId', getUserId())
+        }
         key='TECHNICAL_DATA_SHARING_DETAIL'
       >审核结果确认</Button>)
     }
@@ -210,7 +218,7 @@ export default function() {
         onClick={() => redirectToPage('verificationResultsShow')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        disabled={data.selectedRowKeys.length === 0}
+        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'leaderId', getUserId())}
         key='TECHNICAL_DATA_SHARING_DETAIL'
       >审核结果查看</Button>)
     }
@@ -242,6 +250,7 @@ export default function() {
   };
 
   const onSelectRow = (keys, rows) => {
+    console.log(rows);
     const reviewImplementPlanCode = rows[0] ? rows[0].reviewImplementPlanCode ? rows[0].reviewImplementPlanCode : '' : '';
     setData(v => ({ ...v, selectedRowKeys: keys, selectedRows: rows, resultsId: keys[0], reviewImplementPlanCode }));
   };
@@ -308,6 +317,7 @@ export default function() {
         visible={data.checkLeaderOpinionVisible}
       />
       <VerificationResults
+        refreshTable={refreshTable}
         reviewImplementPlanCode={data.reviewImplementPlanCode}
         id={data.resultsId}
         isView={data.isView}

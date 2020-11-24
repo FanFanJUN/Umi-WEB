@@ -1,7 +1,7 @@
 /*
  * @Author:黄永翠
  * @Date: 2020-11-09 09:38:38
- * @LastEditTime: 2020-11-23 14:21:46
+ * @LastEditTime: 2020-11-24 14:35:49
  * @LastEditors: Please set LastEditors
  * @Description:审核实施计划-明细
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\index.js
@@ -241,7 +241,6 @@ const Index = (props) => {
     // 提交审核完成更新列表
     function handleComplete() {
         setLoading(false);
-        message.success("提交成功");
         setTimeout(() => {
             // closeCurrent();
         }, 3000)

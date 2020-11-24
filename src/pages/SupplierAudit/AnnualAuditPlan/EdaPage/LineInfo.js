@@ -1,9 +1,9 @@
 /*
  * @Author: Li Cai
- * @LastEditors: Li Cai
+ * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime: 2020-10-30 15:03:10
+ * @LastEditTime: 2020-11-24 15:04:20
  * @Description: 行信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
@@ -123,8 +123,8 @@ let LineInfo = (props, ref) => {
       item.applyCorporationId = item.corporation.id;
       item.applyCorporationName = item.corporation.name;
       // 采购组织=>占用采购组字段 数据库设计错误
-      item.purchaseTeamCode = item.purchaseOrg.name;
-      item.purchaseTeamName = item.purchaseOrg.code;
+      item.purchaseTeamCode = item.purchaseOrg.code;
+      item.purchaseTeamName = item.purchaseOrg.name;
       item.purchaseTeamId = item.purchaseOrg.id;
       // 供应商
       item.supplierCode = item.supplier.code;

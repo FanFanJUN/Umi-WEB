@@ -29,15 +29,12 @@ const formLongLayout = {
 };
 
 
-const AuditPlanForm = React.forwardRef(({ form, isView, editData, type }, ref) => {
+const AuditPlanForm = React.forwardRef(({ form, isView, editData, type,reviewPlanStandardBos }, ref) => {
   useImperativeHandle(ref, () => ({}));
-  const [selectData, setSelectData] = useState([
-    { code: 'A', value: 'SO9001标准' },
-    { code: 'B', value: '与产品相关的法律法规、合同' },
-    { code: 'C', value: '长虹公司的产品要求（技术协议）、质量环保赔偿协议' },
-    { code: 'D', value: '长虹对供应商的有害物质管理、环境行为和职业健康安全管理要求' },
-    { code: 'F', value: '长虹对供应商的技术、成本、物流管理要求等' },
-  ]);
+  const [selectData, setSelectData] = useState([]);
+  useEffect(() => {
+    setSelectData(reviewPlanStandardBos);
+  }, [reviewPlanStandardBos]);
   return (
     <div className={styles.wrapper}>
       <div className={styles.bgw}>
@@ -47,7 +44,7 @@ const AuditPlanForm = React.forwardRef(({ form, isView, editData, type }, ref) =
             <Col span={24}>
               <FormItem label="审核准则" {...formLongLayout}>
                 {selectData.map(item => {
-                  return <div>{item.value}</div>;
+                  return <div>{item.standardName}</div>;
                 })}
               </FormItem>
             </Col>
@@ -56,14 +53,14 @@ const AuditPlanForm = React.forwardRef(({ form, isView, editData, type }, ref) =
             <Col span={12}>
               <FormItem  {...formLayout} label={'审核时间从'}>
                 {
-                  <span>{'1'}</span>
+                  <span>{editData.reviewDateStart}</span>
                 }
               </FormItem>
             </Col>
             <Col span={12}>
               <FormItem  {...formLayout} label={'审核时间到'}>
                 {
-                  <span>{'1'}</span>
+                  <span>{editData.reviewDateEnd}</span>
                 }
               </FormItem>
             </Col>
@@ -73,9 +70,8 @@ const AuditPlanForm = React.forwardRef(({ form, isView, editData, type }, ref) =
               <FormItem {...formLayout} label={'详细计划附件'}>
                 {
                   <Upload
-                    entityId={editData.fileList}
+                    entityId={editData.reviewPlanFiles}
                     type={'show'}
-                    showColor={true}
                   />
                 }
               </FormItem>

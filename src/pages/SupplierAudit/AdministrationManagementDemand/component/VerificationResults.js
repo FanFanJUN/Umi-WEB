@@ -29,13 +29,15 @@ const VerificationResults = (props) => {
 
   const onOk = async () => {
     if (data.activeKey === '3') {
-      const params = await submitDataRef.current.getInfo((err, values) => {
+      let params = await submitDataRef.current.getInfo((err, values) => {
         if (!err) {
           return values;
         }
       });
+      params = Object.assign(params, { reviewImplementManagementId: props.id });
       SubmitVerificationAuditOpinionDataApi(params).then(res => {
         if (res.success) {
+          props.refreshTable();
           onCancel();
         } else {
           message.error(res.messages);
@@ -103,6 +105,7 @@ const VerificationResults = (props) => {
         </TabPane>
         <TabPane tab="审核意见" key="3">
           <AuditOpinion
+            isView={isView}
             wrappedComponentRef={submitDataRef}
             reviewImplementPlanCode={reviewImplementPlanCode}
             editData={auditOpinionData}

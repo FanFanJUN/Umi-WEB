@@ -11,6 +11,7 @@ import { ExtTable } from 'suid';
 const DirectoryTree = Tree.DirectoryTree;
 const TreeNode = Tree.TreeNode;
 const FormItem = Form.Item;
+let keys = [];
 
 const formLayout = {
   labelCol: {
@@ -24,80 +25,54 @@ const formLayout = {
 const AuditorInfoFrom = React.forwardRef(({ form, editData }, ref) => {
 
   useImperativeHandle(ref, () => ({}));
-
+  const [checkedKeys, setCheckedKeys] = useState([]);
   const teamTableRef = useRef(null);
   const contentTableRef = useRef(null);
-  const [initState, setInitState] = useState(false);
-  const [groupLeader, setGroupLeader] = useState(editData && editData.length > 0 ? editData[0].groupLeader : '');
+  const [groupLeader, setGroupLeader] = useState(null);
   const [teamData, setTeamData] = useState({
-    dataSource: editData,
-    selectedRowKeys: editData && editData.length > 0 ? editData[0].id : [],
-    selectedRows: editData && editData.length > 0 ? editData[0] : [],
+    dataSource: [],
+    selectedRowKeys: [],
+    selectedRows: [],
   });
   const [contentData, setContentData] = useState({
-    dataSource: editData && editData.length > 0 && editData[0].groupData && editData[0].groupData.length > 0 ? editData[0].groupData : [],
-    selectedRowKeys: editData && editData.length > 0 && editData[0].groupData && editData[0].groupData.length > 0 ? editData[0].groupData[0].id : [],
-    selectedRows: editData && editData.length > 0 && editData[0].groupData && editData[0].groupData.length > 0 ? editData[0].groupData[0] : [],
+    dataSource: [],
+    selectedRowKeys: [],
+    selectedRows: [],
   });
   const [treeData, setTreeData] = useState([]);
-  const [filterTreeData, setFilterTreeData] = useState([]);
-  const [checkedKeys, setCheckedKeys] = useState(
-    editData && editData.length > 0 && editData[0].groupData && editData[0].groupData.length > 0 && editData[0].groupData[0].checkId && editData[0].groupData[0].checkId.length > 0 ?
-      editData[0].groupData[0].checkId : [],
-  );
-  //初始化获取树的数据
-  const getTreeData = () => {
-    let res = [{
-      title: 'parent 0',
-      id: '0-0',
-      children: [
-        { title: 'leaf 0-0', id: '0-0-0', isLeaf: true },
-        { title: 'leaf 0-1', id: '0-0-1', isLeaf: true },
-      ],
-    },
-      {
-        title: 'parent 1',
-        id: '0-1',
-        children: [
-          { title: 'leaf 1-0', id: '0-1-0', isLeaf: true },
-          { title: 'leaf 1-1', id: '0-1-1', isLeaf: true },
-        ],
-      },
-    ];
-    setInitState(true);
-    setTreeData(res);
-  };
-  //只展示勾选的树
-  const transferData = () => {
-    if (treeData && treeData.length > 0) {
-      let dataSource = JSON.parse(JSON.stringify(treeData));
-      let findResultData = findCheckedData(checkedKeys, dataSource);
-      setFilterTreeData(findResultData);
+  useEffect(() => {
+    getInitData();
+  }, [editData]);
+
+  const getInitData = () => {
+    if (editData && editData.length > 0) {
+      setGroupLeader(editData[0].groupLeader);
+      setTeamData(v => ({ ...v, dataSource: editData, selectedRows: editData[0], selectedRowKeys: editData[0].id }));
+      if (editData[0].reviewTeamMemberBoList && editData[0].reviewTeamMemberBoList.length > 0) {
+        setContentData(v => ({
+          ...v,
+          dataSource: editData[0].reviewTeamMemberBoList,
+          selectedRows: editData[0].reviewTeamMemberBoList[0],
+          selectedRowKeys: editData[0].reviewTeamMemberBoList[0].id,
+        }));
+        if (editData[0].reviewTeamMemberBoList[0].memberRuleBoList && editData[0].reviewTeamMemberBoList[0].memberRuleBoList.length > 0) {
+          setTreeData(editData[0].reviewTeamMemberBoList[0].memberRuleBoList);
+          getCheckedKeys(editData[0].reviewTeamMemberBoList[0].memberRuleBoList);
+        }
+      }
     }
   };
 
-  //查找关键字节点
-  const findCheckedData = (checkedKeys, tree) => {
-    return tree.map(treeNode => {
-      //如果有子节点
-      if (treeNode.children && treeNode.children.length > 0) {
-        if (checkedKeys.indexOf(treeNode.id) > -1) {
-          return treeNode;
-        } else {
-          treeNode.children = findCheckedData(checkedKeys, treeNode.children);
-          if (treeNode.children && treeNode.children.length > 0) {
-            return treeNode;
-          }
-        }
-      } else {//没子节点
-        if (checkedKeys.indexOf(treeNode.id) > -1) {
-          return treeNode;
-        }
+  const getCheckedKeys = (tree) => {
+    tree.forEach(item => {
+      keys.push(item.id);
+      if (item.children && item.children.length > 0) {
+        getCheckedKeys(item.children);
       }
-      return null;
-    }).filter((treeNode, i, self) => treeNode);
+    });
+    keys = Array.from(new Set(keys));
+    setCheckedKeys(keys);
   };
-
   const renderTreeNodes = (data) => {
     if (data.length > 0) {
       return data.map((item) => {
@@ -105,14 +80,14 @@ const AuditorInfoFrom = React.forwardRef(({ form, editData }, ref) => {
           return (
             <TreeNode
               disableCheckbox={true}
-              title={item.title} key={item.id}>
+              title={item.systemName} key={item.id}>
               {renderTreeNodes(item.children)}
             </TreeNode>
           );
         }
         return <TreeNode
           disableCheckbox={true}
-          title={item.title}
+          title={item.systemName}
           key={item.id} isLeaf/>;
       });
     } else {
@@ -144,10 +119,10 @@ const AuditorInfoFrom = React.forwardRef(({ form, editData }, ref) => {
         setGroupLeader();
       }
       //设置右边第一个表格数据
-      if (values[0].groupData && values[0].groupData.length > 0) {
+      if (values[0].reviewTeamMemberBoList && values[0].reviewTeamMemberBoList.length > 0) {
         setContentData(v => ({
           ...v,
-          dataSource: values[0].groupData,
+          dataSource: values[0].reviewTeamMemberBoList,
           selectedRows: [],
           selectedRowKeys: [],
           // selectedRows: values[0].groupData[0],
@@ -161,11 +136,10 @@ const AuditorInfoFrom = React.forwardRef(({ form, editData }, ref) => {
         });
       }
       //设置右边树数据
-      if (values[0].groupData && values[0].groupData.length > 0 && values[0].groupData[0].checkId && values[0].groupData[0].checkId.length > 0) {
+      if (values[0].reviewTeamMemberBoList && values[0].reviewTeamMemberBoList.length > 0 && values[0].reviewTeamMemberBoList[0].memberRuleBoList && values[0].reviewTeamMemberBoList[0].memberRuleBoList.length > 0) {
         // setCheckedKeys(values[0].groupData[0].checkId);
       } else {
-        setCheckedKeys([]);
-        setFilterTreeData([]);
+        setTreeData([]);
       }
     } else {
       setGroupLeader();
@@ -174,25 +148,18 @@ const AuditorInfoFrom = React.forwardRef(({ form, editData }, ref) => {
         selectedRowKeys: [],
         selectedRows: [],
       });
-      setCheckedKeys([]);
-      setFilterTreeData([]);
+      setTreeData([]);
     }
   };
   const handleContentSelectedRows = (keys, values) => {
     setContentData(v => ({ ...v, selectedRows: values, selectedRowKeys: keys }));
-    if (values && values.length > 0 && values[0].checkId && values[0].checkId.length > 0) {
-      setCheckedKeys(values[0].checkId);
+    if (values && values.length > 0 && values[0].memberRuleBoList && values[0].memberRuleBoList.length > 0) {
+      setTreeData(values[0].memberRuleBoList);
     } else {
-      setCheckedKeys([]);
-      setFilterTreeData([]);
+      setTreeData([]);
     }
   };
-  useEffect(() => {
-    getTreeData();
-  }, []);
-  useEffect(() => {
-    transferData();
-  }, [checkedKeys, initState]);
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.bgw}>

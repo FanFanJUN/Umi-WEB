@@ -8,25 +8,27 @@ import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList
 import { Form } from 'antd';
 import { ExtTable } from 'suid';
 import Upload from '../../../../components/Upload';
+import { AuthenticationTypeArr, whetherArr } from '../../AdministrationManagementDemand/commonApi';
 
 const AuditQuestions = React.forwardRef(({ form, isView, editData, type }, ref) => {
   useImperativeHandle(ref, () => ({}));
   const columns = [
-    { title: '指标', dataIndex: 'title', width: 120, required: true },
-    { title: '部门/过程', dataIndex: 'newAmount', ellipsis: true, width: 100 },
-    { title: '问题描述', dataIndex: 'cumulative', ellipsis: true, width: 400 },
-    { title: '严重程度', dataIndex: 'cure', ellipsis: true, width: 120 },
-    { title: '需求整改完成日期', dataIndex: 'died', width: 140 },
-    { title: '提出人', dataIndex: 'orgName', width: 100 },
-    { title: '原因分析', dataIndex: 'orgName', width: 140 },
+    { title: '指标', dataIndex: 'ruleName', width: 180, required: true },
+    { title: '部门/过程', dataIndex: 'department', ellipsis: true, width: 100 },
+    { title: '问题描述', dataIndex: 'problemDescribe', ellipsis: true, width: 400 },
+    { title: '严重程度', dataIndex: 'severity', ellipsis: true, width: 120 },
+    { title: '需求整改完成日期', dataIndex: 'demandCompletionTime', width: 140 },
+    { title: '提出人', dataIndex: 'proposerName', width: 100 },
+    { title: '原因分析', dataIndex: 'reason', width: 140 },
     {
-      title: '纠正预防措施及见证附件', dataIndex: 'orgName', width: 180, render(text, record, index) {
-        return <Upload entityId={text} type={'show'}/>;
-      },
+      title: '纠正预防措施及见证附件', dataIndex: 'preventiveMeasures', width: 300, render: (v, data) => <>
+        {v} {data.measures}
+        <Upload type='show' entityId={data.attachRelatedIds} />
+      </>,
     },
-    { title: '完成时间', dataIndex: 'orgName', width: 100 },
-    { title: '验证类型', dataIndex: 'orgName', width: 100 },
-    { title: '验证结果', dataIndex: 'orgName', width: 100 },
+    { title: '完成时间', dataIndex: 'completionTime', width: 100 },
+    { title: '验证类型', dataIndex: 'checkType', width: 100, render: v => AuthenticationTypeArr[v] },
+    { title: '验证结果', dataIndex: 'checkResult', width: 100, render: v => whetherArr[v] },
   ].map(item => ({ ...item, align: 'center' }));
   return (
     <div className={styles.wrapper}>

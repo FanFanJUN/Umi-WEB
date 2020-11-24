@@ -116,8 +116,8 @@ export const EvaluationSystemConfig = {
   ///api/supplierEvlSystemService/findTreeByCorpCode
   // https://tecmp.changhong.com/srm-baf-web/supplierEvlSystem/findTreeByBusinessUnitId?businessUnitId=60B62845-9EF8-11EA-AD0D-0242C0A8440B
   store: {
-    type: 'POST',
-    url: `${baseUrl}/supplierEvlSystem/findTreeByBusinessUnitId`,
+    type: 'GET',
+    url: `${recommendUrl}/api/reviewEvlSystemService/findEvlSystem`,
   },
   reader: {
     field: ['code', 'id'],
@@ -750,5 +750,15 @@ export async function reviewStandard(params) {
       method: 'GET',
   });
 }
+
+// 审核报告管理新增获取默认值
+export const findForReportInsert = async (params = {}) => {
+  const url = `${recommendUrl}/api/reviewPlanMonthLineService/findForReportInsert`;
+  return request({
+    url,
+    method: 'GET',
+    params: params,
+  });
+};
 
 

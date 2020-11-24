@@ -1,9 +1,9 @@
 /*
  * @Author: Li Cai
- * @LastEditors: Li Cai
+ * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime: 2020-10-23 17:47:33
+ * @LastEditTime: 2020-11-24 15:59:58
  * @Description: 行信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
@@ -21,7 +21,7 @@ import { getRandom } from '../../../QualitySynergy/commonProps';
 let LineInfo = forwardRef((props, ref) => {
 
   useImperativeHandle(ref, () => ({
-    getTableList:() => dataSource.concat(deleteLine),
+    getTableList: () => dataSource.concat(deleteLine),
     getDeleteArr: () => deleteArr
   }));
   const tableRef = useRef(null);
@@ -40,15 +40,14 @@ let LineInfo = forwardRef((props, ref) => {
   const [teamModalData, setTeamData] = useState({});
   const [personModalData, setPersonData] = useState({});
 
-  useEffect(()=>{
-    if(originData && originData.length > 0) {
+  useEffect(() => {
+    if (originData && originData.length > 0) {
       let newList = originData.map(item => {
         item.lineNum = getRandom(10);
-        item.treeData = buildTreeData(item.fatherList, item.sonList);
-        item.reviewTeamGroupBoList = item.reviewTeamGroupBoList ? item.reviewTeamGroupBoList.map(v=>({...v, lineNum: getRandom(10)})) : []
+        item.treeData = buildTreeData(item.sonList);
+        item.reviewTeamGroupBoList = item.reviewTeamGroupBoList ? item.reviewTeamGroupBoList.map(v => ({ ...v, lineNum: getRandom(10) })) : []
         return item;
       })
-      console.log('originData', newList)
       setDataSource(newList);
     }
   }, [originData])
@@ -61,21 +60,21 @@ let LineInfo = forwardRef((props, ref) => {
             setTimeout(() => {
               setData(v => ({ ...v, treeData: item.treeData }));
             }, 300);
-            setContentData(v => ({ 
-              ...v, 
-              visible: true, 
+            setContentData(v => ({
+              ...v,
+              visible: true,
               type: 'detail',
               applyCorporationCode: item.applyCorporationCode,
               treeData: item.treeData ? item.treeData : [],
-             }));
+            }));
           }} key="content">内容</a>
           <a onClick={(e) => {
             e.stopPropagation();
-            setTeamData(v => ({ 
+            setTeamData(v => ({
               ...v,
-              reviewTeamGroupBoList: item.reviewTeamGroupBoList ? item.reviewTeamGroupBoList : [], 
-              visible: true, 
-              type: 'detail', 
+              reviewTeamGroupBoList: item.reviewTeamGroupBoList ? item.reviewTeamGroupBoList : [],
+              visible: true,
+              type: 'detail',
               treeData: item.treeData ? item.treeData : []
             }));
           }} style={{ margin: '0 3px' }} key="group">小组</a>
@@ -166,7 +165,7 @@ let LineInfo = forwardRef((props, ref) => {
 
   };
 
-// 审核小组管理弹框-确定
+  // 审核小组管理弹框-确定
   const teamOk = (value) => {
     let newData = JSON.parse(JSON.stringify(dataSource));
     newData.map((item, index) => {
@@ -180,24 +179,17 @@ let LineInfo = forwardRef((props, ref) => {
   };
 
   // 编辑和明细时构造treeData
-  const buildTreeData = (fatherList, sonList) => {
-    if (!fatherList || !sonList) return [];
-    let arr = JSON.parse(JSON.stringify(fatherList));
+  const buildTreeData = (sonList) => {
+    let arr = JSON.parse(JSON.stringify(sonList));
     arr.map(item => {
       item.id = item.systemId;
       item.key = item.systemId;
       item.title = item.systemName;
+      item.name = item.systemName;
+      item.code = item.systemCode;
       if (!item.children) {
         item.children = [];
       }
-      sonList.forEach(value => {
-        value.id = value.systemId;
-        value.key = value.systemId;
-        value.title = value.systemName;
-        if (value.parentId === item.systemId) {
-          item.children.push(value);
-        }
-      });
     });
     return arr;
   };
@@ -207,13 +199,13 @@ let LineInfo = forwardRef((props, ref) => {
     // console.log('行数据', value)
     let newList = value.map((item, index) => {
       let groupObj = {};
-      item.treeData = buildTreeData(item.fatherList, item.sonList);
+      item.treeData = buildTreeData(item.sonList);
       item.lineNum = getRandom(10);
       item.reviewPlanMonthLinenum = ((Array(4).join(0) + (index + 1 + dataSource.length)).slice(-4) + '0');
-      // 采购组织暂时写死
-      item.purchaseTeamCode = '2520';
-      item.purchaseTeamId = 'B2A7879B-9358-11EA-B42A-0242C0A84414';
-      item.purchaseTeamName = '电视公司零采采购组织';
+      // // 采购组织暂时写死
+      // item.purchaseTeamCode = '2520';
+      // item.purchaseTeamId = 'B2A7879B-9358-11EA-B42A-0242C0A84414';
+      // item.purchaseTeamName = '电视公司零采采购组织';
 
       if (item.reviewTeamGroupBoList) {
         for (var i = 0; i < item.reviewTeamGroupBoList.length; i++) {
@@ -257,7 +249,7 @@ let LineInfo = forwardRef((props, ref) => {
         let newList = dataSource.filter(item => {
           if (item.id && data.selectedRowKeys.includes(item.lineNum)) {
             // 已创建审核实施计划的行不可删除和编辑
-            if(props.type === "change" && item.whetherOccupied){
+            if (props.type === "change" && item.whetherOccupied) {
               tag = true;
             }
             item.whetherDeleted = true
@@ -265,7 +257,7 @@ let LineInfo = forwardRef((props, ref) => {
           }
           return !data.selectedRowKeys.includes(item.lineNum);
         });
-        if(tag) {
+        if (tag) {
           message.warning("存在已创建审核实施计划的行，不可删除");
           return;
         }
@@ -305,7 +297,7 @@ let LineInfo = forwardRef((props, ref) => {
         treeData.forEach(v => {
           item.sonList = item.sonList.concat(v.children);
         });
-        item.treeData = buildTreeData(item.fatherList, item.sonList);
+        item.treeData = buildTreeData(item.sonList);
       }
       return item;
     });
@@ -340,7 +332,7 @@ let LineInfo = forwardRef((props, ref) => {
         <div className={styles.title}>拟审核信息</div>
         <div className={styles.content}>
           {
-            (!isView || props.type === "change")&& <div className={styles.listBtn}>
+            (!isView || props.type === "change") && <div className={styles.listBtn}>
               <Button onClick={() => handleBtn('annual')} type='primary'>从年度计划新增</Button>
               <Button onClick={() => handleBtn('recommand')} type='primary'>从准入推荐新增</Button>
               <Button onClick={() => handleBtn('demand')} type='primary'>从审核需求新增</Button>
