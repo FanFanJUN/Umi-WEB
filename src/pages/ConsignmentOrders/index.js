@@ -222,12 +222,12 @@ const COLUMNS = [
     }
   },
   {
-    dataIndex: 'timelyLine',
-    title: '及时确认行项数'
+    dataIndex: 'consignment',
+    title: '寄售订单数量'
   },
   {
-    dataIndex: 'totalLine',
-    title: '总行项数'
+    dataIndex: 'totalNumber',
+    title: '所有订单数量 '
   }
 ];
 const TFL = [
