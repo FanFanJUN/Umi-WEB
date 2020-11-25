@@ -223,6 +223,16 @@ export const SubmitVerificationAuditOpinionDataApi = async (params = {}) => {
   });
 };
 
+// 意见审核查看
+export const ShowVerificationAuditOpinionDataApi = async (params = {}) => {
+  const url = `${recommendUrl}/api/reviewImplementManagementService/findReviewSuggestion`;
+  return request({
+    url,
+    method: 'GET',
+    params
+  });
+};
+
 // 按评审人查看评分
 export const ViewScoreByReviewerApi = async (params = {}) => {
   const url = `${recommendUrl}/api/reviewResultService/findForMember`;

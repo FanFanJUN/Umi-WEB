@@ -71,10 +71,10 @@ const AddBeAudited = (props) => {
   // 获取供应商联系人
   const getSupplierContact = (id) => {
     GetSupplierContact({
-      supplierId: id
-    }).then(res =>{
-      console.log(res, '联系人')
-    })
+      supplierId: id,
+    }).then(res => {
+      console.log(res, '联系人');
+    });
   };
 
   useEffect(() => {
@@ -96,7 +96,7 @@ const AddBeAudited = (props) => {
         getFieldDecorator(name, {
           initialValue: initialValue,
         })(
-          <Input type={'hidden'}/>,
+          <Input type={'hidden'} />,
         )
       }
     </FormItem>
@@ -112,6 +112,9 @@ const AddBeAudited = (props) => {
 
   const supplierStrategyChange = () => {
     setFieldsValue({
+      agentId: '',
+      agentCode: '',
+      agentName: '',
       supplierName: '',
       supplierCode: '',
       supplierId: '',
@@ -121,6 +124,8 @@ const AddBeAudited = (props) => {
   const supplierOk = (value) => {
     const { materielCategory, supplier, supplier: { supplierExtend } } = value;
     setFieldsValue({
+      agentCode: value.originSupplierCode,
+      agentName: value.originSupplierName,
       materialGroupName: materielCategory.name,
       materialGroupCode: materielCategory.code,
       materialGroupId: materielCategory.id,
@@ -137,7 +142,7 @@ const AddBeAudited = (props) => {
       countyName: supplierExtend.officeDistrictName,
       address: supplierExtend.officeStreet,
     });
-    getSupplierContact(value.supplierId)
+    getSupplierContact(value.supplierId);
     setData(v => ({ ...v, visible: false }));
     console.log(value);
   };
@@ -173,7 +178,7 @@ const AddBeAudited = (props) => {
                     },
                   ],
                 })(
-                  <Input disabled={true}/>,
+                  <Input disabled={true} />,
                 )
               }
             </FormItem>
@@ -275,6 +280,7 @@ const AddBeAudited = (props) => {
                       autoLoad: false,
                       url: `${smBaseUrl}/api/supplierService/findNormalSuppliersByInfo `,
                     }}
+                    placeholder={'选择正常供应商'}
                     {...NormalSupplierConfig}
                   />,
                 )
@@ -299,7 +305,28 @@ const AddBeAudited = (props) => {
                 getFieldDecorator('agentName', {
                   initialValue: editData.agentName ? editData.agentName : '',
                 })(
-                  <Input/>,
+                  <ComboList
+                    disabled={getFieldValue('supplierStrategyName') !== '正常供应商'}
+                    allowClear={true}
+                    style={getFieldValue('supplierStrategyName') !== '正常供应商' ? { width: '88%' } : { width: '100%' }}
+                    form={form}
+                    name={'agentName'}
+                    field={['agentCode', 'agentId']}
+                    afterSelect={supplierSelect}
+                    store={{
+                      params: {
+                        corpAndPurOrgs: [{
+                          corporationCode: props.companyCode,
+                          purchaseOrgCode: props.organizationCode,
+                        }],
+                      },
+                      type: 'POST',
+                      autoLoad: false,
+                      url: `${smBaseUrl}/api/supplierService/findNormalSuppliersByInfo `,
+                    }}
+                    placeholder={'选择代理商'}
+                    {...NormalSupplierConfig}
+                  />,
                 )
               }
             </FormItem>
@@ -484,7 +511,7 @@ const AddBeAudited = (props) => {
                     },
                   ],
                 })(
-                  <Input style={{ width: '40%' }} placeholder={'请输入详细地址'}/>,
+                  <Input style={{ width: '40%' }} placeholder={'请输入详细地址'} />,
                 )
               }
             </FormItem>
@@ -503,7 +530,7 @@ const AddBeAudited = (props) => {
                     },
                   ],
                 })(
-                  <Input/>,
+                  <Input />,
                 )
               }
             </FormItem>
@@ -520,7 +547,7 @@ const AddBeAudited = (props) => {
                     },
                   ],
                 })(
-                  <Input/>,
+                  <Input />,
                 )
               }
             </FormItem>
@@ -534,7 +561,7 @@ const AddBeAudited = (props) => {
                   initialValue: editData.contactUserTel ? editData.contactUserTel : '',
                   rules: [{ validator: length_200_n, message: '请勿超过200个汉字' }],
                 })(
-                  <Input.TextArea rows={5} style={{ width: '100%' }}/>,
+                  <Input.TextArea rows={5} style={{ width: '100%' }} />,
                 )
               }
             </FormItem>
