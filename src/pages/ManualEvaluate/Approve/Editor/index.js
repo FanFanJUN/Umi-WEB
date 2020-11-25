@@ -118,7 +118,7 @@ function Evaluate() {
       okText: '导出',
       cancelText: '取消',
       onOk: async () => {
-        const { success, data, message: msg } = await exportEvaluateData({ evaluationProjectId: query?.id });
+        const { success, data, message: msg } = await exportEvaluateData({ subEvaluationProjectId: query?.id });
         if (success) {
           downloadBlobFile(data, '评价指标模板.xlsx')
           message.success(`导出评价指标模板成功`)
@@ -131,7 +131,7 @@ function Evaluate() {
   async function handleImport(file) {
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('evaluationProjectId', query.id)
+    formData.append('subEvaluationProjectId', query.id)
     toggleLoading(true)
     const { success, data, message: msg } = await importEvaluateData(formData)
     toggleLoading(false)

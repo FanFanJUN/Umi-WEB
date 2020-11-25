@@ -1,7 +1,8 @@
+
 /**
- * 实现功能： 供应商推荐需求管理
+ * 实现功能： 供应商推荐准入管理
  * @author hezhi
- * @date 2020-09-23
+ * @date 2020-11-23
  */
 import {
   useState,
@@ -19,7 +20,12 @@ const { Search } = Input;
 const { StartFlow } = WorkFlow;
 const { storage } = utils;
 const { recommendUrl } = commonUrl;
-const { corporationProps, materialClassProps, statusProps, flowStatusProps } = commonProps
+const {
+  corporationProps,
+  materialClassProps,
+  statusProps,
+  flowStatusProps
+} = commonProps
 
 
 export default () => {
@@ -46,7 +52,7 @@ export default () => {
   const empty = selectedRowKeys.length === 0;
   const tableProps = {
     store: {
-      url: `${recommendUrl}/api/supplierRecommendDemandService/findByPage`,
+      url: `${recommendUrl}/api/recommendAccessService/findByPage`,
       params: {
         ...searchValue,
         filters: searchValue.filters ?
@@ -72,12 +78,20 @@ export default () => {
   }
   const left = (
     <>
-      <Button className={styles.btn} type='primary' onClick={handleCreate}>新增</Button>
-      <Button className={styles.btn} disabled={empty || underWay} onClick={handleEditor}>编辑</Button>
-      <Button className={styles.btn} disabled={empty || !fillInit} onClick={handleRemove}>删除</Button>
-      <Button className={styles.btn} disabled={empty || underWay || !fillInit} onClick={handleSubmitSupplierFillIn}>提交供应商填报</Button>
-      <Button className={styles.btn} disabled={empty} onClick={handleOpenInfomationConfirm}>填报信息确认</Button>
-      {/* <Button className={styles.btn} disabled={empty || !fillComplete}>提交审核</Button> */}
+      <Button
+        className={styles.btn}
+        type='primary'
+        onClick={handleCreate}>新增</Button>
+      <Button
+        className={styles.btn}
+        disabled={empty || underWay}
+        onClick={handleEditor}
+      >编辑</Button>
+      <Button
+        className={styles.btn}
+        disabled={empty || !fillInit}
+        onClick={handleRemove}
+      >删除</Button>
       <StartFlow
         businessModelCode='com.ecmp.srm.sam.entity.srd.SupplierRecommendDemand'
         businessKey={flowId}

@@ -23,12 +23,30 @@ import { openNewTab } from '../../../utils';
 import { materialClassProps } from '../../../utils/commonProps';
 import { StartFlow } from 'seid';
 import AddModal from './components/AddModal';
+import { supplierProps } from '../../../utils/commonProps';
 
 const { FlowHistoryButton } = WorkFlow;
 const { authAction } = utils;
 const { Search } = Input;
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
-
+const supplierPropsNew = {
+  ...supplierProps,
+  reader: {
+    name: 'name',
+    field: ['code'],
+    description: 'code'
+  },
+  placeholder: '选择供应商'
+};
+const agentList = {
+  ...supplierProps,
+  reader: {
+    name: 'name',
+    field: ['code'],
+    description: 'code'
+  },
+  placeholder: '选择代理商'
+};
 const AuditReportManagement = forwardRef(({}, ref,) => {
   const tableRef = useRef(null);
   useEffect(() => {
@@ -176,8 +194,8 @@ const AuditReportManagement = forwardRef(({}, ref,) => {
     { title: '拟制日期', key: 'applyDateStart', type: 'datePicker', props: { placeholder: '选择拟制日期' } },
     { title: '状态', key: 'state', type: 'list', props: stateProps },
     { title: '审批状态', key: 'flowState', type: 'list', props: flowProps },
-    { title: '供应商', key: 'supplierCode', type: 'list', props: SupplierConfig },
-    { title: '代理商', key: 'supplierCode', type: 'list', props: SupplierConfig },
+    { title: '供应商', key: 'supplierCode', type: 'list', props: supplierPropsNew },
+    { title: '代理商', key: 'agentCode', type: 'list', props: agentList },
     { title: '物料分类', key: 'materialSecondClassifyCode', type: 'tree', props: materialClassProps },
   ];
 

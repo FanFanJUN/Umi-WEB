@@ -761,4 +761,14 @@ export const findForReportInsert = async (params = {}) => {
   });
 };
 
+// 审核报告管理保存
+export const saveAuditReport = async (params) => {
+  const url = `${recommendUrl}/api/reviewPlanMonthLineService/saveAudit`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+};
+
 
