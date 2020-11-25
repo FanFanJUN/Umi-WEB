@@ -287,11 +287,6 @@ export default [
         title: '供应商推荐需求管理'
       },
       {
-        path: '/supplier/recommend/admittance',
-        component: './SupplierRAM',
-        title: '供应商推荐准入管理'
-      },
-      {
         path: '/supplier/recommend/demand/create',
         component: './SupplierRecommendDemand/CreateRecommendDemand',
         title: '新增供应商推荐需求'
@@ -336,6 +331,16 @@ export default [
         component: './SupplierRecommendDemand/FilterOpinion',
         title: '评审小组筛选意见'
       },
+      /**供应商推荐准入 begin */
+      {
+        path: '/supplier/recommend/admittance/manage',
+        component: './SupplierRAM',
+        title: '供应商推荐准入管理'
+      },
+      {
+        path: '/supplier/recommend/admittance/manage/create'
+      },
+      /**供应商推荐准入 end */
       //  企业社会责任调查表选项主数据
       {
         path: '/csr/config',
