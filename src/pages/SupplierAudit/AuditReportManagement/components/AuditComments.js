@@ -19,10 +19,8 @@ const formLayout = {
 };
 
 
-const AuditComments = React.forwardRef(({ form, isView, editData,type }, ref) => {
-  useImperativeHandle(ref, () => ({
-
-  }));
+const AuditComments = React.forwardRef(({ form, isView, editData, type }, ref) => {
+  useImperativeHandle(ref, () => ({}));
 
   return (
     <div className={styles.wrapper}>
@@ -33,14 +31,14 @@ const AuditComments = React.forwardRef(({ form, isView, editData,type }, ref) =>
             <Col span={12}>
               <FormItem  {...formLayout} label={'审核综合评审得分'}>
                 {
-                  <span>{'1'}</span>
+                  <span>{editData.reviewScore}</span>
                 }
               </FormItem>
             </Col>
             <Col span={12}>
               <FormItem  {...formLayout} label={'评定等级'}>
                 {
-                  <span>{'1'}</span>
+                  <span>{editData.performanceRating}</span>
                 }
               </FormItem>
             </Col>
@@ -49,14 +47,14 @@ const AuditComments = React.forwardRef(({ form, isView, editData,type }, ref) =>
             <Col span={12}>
               <FormItem  {...formLayout} label={'风险等级'}>
                 {
-                  <span>{'1'}</span>
+                  <span>{editData.riskRating}</span>
                 }
               </FormItem>
             </Col>
             <Col span={12}>
               <FormItem  {...formLayout} label={'结论'}>
                 {
-                  <span>{'1'}</span>
+                  <span>{editData.conclusion}</span>
                 }
               </FormItem>
             </Col>
@@ -65,7 +63,7 @@ const AuditComments = React.forwardRef(({ form, isView, editData,type }, ref) =>
             <Col span={12}>
               <FormItem  {...formLayout} label={'是否通过'}>
                 {
-                  <span>{'1'}</span>
+                  <span>{editData.whetherPass ? '是' : '否'}</span>
                 }
               </FormItem>
             </Col>

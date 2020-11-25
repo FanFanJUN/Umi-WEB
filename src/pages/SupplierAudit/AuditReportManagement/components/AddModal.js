@@ -38,7 +38,7 @@ const AddModal = forwardRef(({}, ref,) => {
         message.warning("至少选中一行！");
         return;
     }
-    openNewTab('supplierAudit/AuditReportManagementAdd?pageState=add&id='+selectedRowKeys.id, '审核报告管理-新增', false);
+    openNewTab('supplierAudit/AuditReportManagementAdd?pageState=add&id='+selectRows[0].id, '审核报告管理-新增', false);
     tableRef.current.manualSelectedRows();
     setVisible(false)
   };
@@ -68,7 +68,7 @@ const AddModal = forwardRef(({}, ref,) => {
         ref={tableRef}
         selectedRowKeys={selectedRowKeys}
         store={{
-          url: `${recommendUrl}/api/reviewRequirementService/findByPage`,
+          url: `${recommendUrl}/api/reviewPlanMonthLineService/findForReport`,
           type: 'POST',
         }}
         columns={columns}

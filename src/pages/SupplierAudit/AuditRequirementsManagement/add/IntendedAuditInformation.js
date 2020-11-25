@@ -104,7 +104,7 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
     if (type !== 'add') {
       let newData = JSON.parse(JSON.stringify(editData));
       newData.map(item => {
-        item.treeData = buildTreeData(item.sonList);
+        item.treeData = item.sonList;
         item.lineNum = getRandom(10);
       });
       setData(v => ({ ...v, dataSource: newData }));
@@ -119,22 +119,6 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
       selectRows: rows,
       treeData: rows.length !== 0 ? rows[0].treeData : [],
     }));
-  };
-
-  // 编辑和明细时构造treeData
-  const buildTreeData = (sonList) => {
-    let arr = JSON.parse(JSON.stringify(sonList));
-    arr.map(item => {
-      item.id = item.systemId;
-      item.key = item.systemId;
-      item.title = item.systemName;
-      item.name = item.systemName;
-      item.code = item.systemCode;
-      if (!item.children) {
-        item.children = [];
-      }
-    });
-    return arr;
   };
 
   // 打开内容界面
@@ -174,7 +158,6 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
       dataSource: newData,
       treeData: value,
       contentVisible: false,
-      selectRows: [],
       selectedRowKeys: [],
     }));
     tableRef.current.manualSelectedRows();

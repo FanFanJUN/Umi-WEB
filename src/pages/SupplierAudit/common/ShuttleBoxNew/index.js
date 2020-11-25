@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Tree } from 'antd';
+import { duplicateRemoval } from '../../mainData/commomService';
 
 const ShuttleBoxNew = (props) => {
 
@@ -10,32 +11,33 @@ const ShuttleBoxNew = (props) => {
     rightTreeData: [],
   });
 
-  let leftData = JSON.parse(JSON.stringify(data.leftData));
+  let leftData = [];
 
   const { type, rightTreeData, leftTreeData } = props;
 
   useEffect(() => {
     destruction(data.rightTreeData);
+    leftData = duplicateRemoval(leftData, 'key');
     props.onChange(leftData);
   }, [data.rightTreeData]);
 
   useEffect(() => {
-    if (props.rightTreeData && props.rightTreeData.length !== 0) {
-      let arr = JSON.parse(JSON.stringify(props.rightTreeData));
-      arr = recursion(arr);
-      setData(v => ({ ...v, rightTreeData: arr }));
-    }
+    leftData = [];
+    setData(v => ({ ...v, rightCheckedKeys: [], leftCheckedKeys: [] }));
+    let arr = recursion(props.rightTreeData);
+    setData(v => ({ ...v, rightTreeData: arr }));
   }, [props.rightTreeData]);
 
   useEffect(() => {
+    console.log(leftTreeData, 'leftTreeData');
     setData(v => ({ ...v, rightCheckedKeys: [], leftCheckedKeys: [] }));
     if (leftTreeData) {
-      let newData = JSON.parse(JSON.stringify(leftTreeData));
-      if (newData.children) {
-        constructArr(newData);
-        setData(v => ({ ...v, leftData: [newData] }));
+      if (leftTreeData.children) {
+        console.log('触发');
+        constructArr(leftTreeData);
+        setData(v => ({ ...v, leftData: [leftTreeData] }));
       } else {
-        setData(v => ({ ...v, leftData: newData }));
+        setData(v => ({ ...v, leftData: leftTreeData }));
       }
     } else {
       setData(v => ({ ...v, leftData: [] }));
@@ -78,6 +80,7 @@ const ShuttleBoxNew = (props) => {
   // 删除方法
   const deleteClick = () => {
     let arr = JSON.parse(JSON.stringify(data.rightCheck));
+    arr = duplicateRemoval(arr, 'systemId');
     arr = recursion(arr);
     setData(v => ({
       ...v,
@@ -93,11 +96,14 @@ const ShuttleBoxNew = (props) => {
   const findSon = (data, arr) => {
     arr.forEach((item) => {
       item.systemId = item.systemId ? item.systemId : item.id;
-      item.systemCode = item.code ? item.code : item.systemCode;
-      item.systemName = item.name ? item.name : item.systemName;
-      item.key = item.id ? item.id : item.systemId;
-      item.title = item.name ? item.name : item.systemName;
-      if (item.parentId === data.id || item.parentId === data.systemId) {
+      item.systemCode = item.systemCode ? item.systemCode : item.code;
+      item.systemName = item.systemName ? item.systemName : item.name;
+      item.key = item.systemId;
+      item.title = item.systemName;
+      if (item.parentId === data.systemId) {
+        if (!data.children) {
+          data.children = [];
+        }
         data.children.push(item);
       }
     });
@@ -108,10 +114,10 @@ const ShuttleBoxNew = (props) => {
     let newArr = JSON.parse(JSON.stringify(arr));
     newArr.forEach(item => {
       item.systemId = item.systemId ? item.systemId : item.id;
-      item.systemCode = item.code ? item.code : item.systemCode;
-      item.systemName = item.name ? item.name : item.systemName;
-      item.key = item.id ? item.id : item.systemId;
-      item.title = item.name ? item.name : item.systemName;
+      item.systemCode = item.systemCode ? item.systemCode : item.code;
+      item.systemName = item.systemName ? item.systemName : item.name;
+      item.key = item.systemId;
+      item.title = item.systemName;
       if (item.children && item.children.length !== 0) {
         item.children = [];
       }
@@ -129,9 +135,11 @@ const ShuttleBoxNew = (props) => {
 
   const destruction = (arr) => {
     arr.map(item => {
-      if (Array.isArray(item.children) && item.children.length !== 0) {
-        leftData = [...leftData, ...item.children];
+      if (item.children && item.children.length !== 0) {
+        leftData.push(item);
         destruction(item.children);
+      } else {
+        leftData.push(...arr);
       }
     });
   };
@@ -149,17 +157,17 @@ const ShuttleBoxNew = (props) => {
         });
       });
     }
+    selectData = duplicateRemoval(selectData, 'systemId');
     setData(v => ({ ...v, leftSelectData: selectData, leftCheckedKeys: keys }));
   };
 
   // 右边节点选中
-  const rightCheck = (keys, values) => {
-    let selectData = values.checkedNodes.map(item => item.props);
+  const rightCheck = (keys) => {
     destruction(data.rightTreeData);
     let newLeftData = JSON.parse(JSON.stringify(leftData));
     newLeftData.map((item, index) => {
-      selectData.map(value => {
-        if (item.systemId === value.systemId) {
+      keys.map(value => {
+        if (item.systemId === value) {
           newLeftData.splice(index, 1);
         }
       });

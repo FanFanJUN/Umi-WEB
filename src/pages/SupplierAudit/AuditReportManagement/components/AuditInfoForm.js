@@ -36,20 +36,20 @@ const AuditInfoForm = React.forwardRef(({ form, isView, editData,type }, ref) =>
   return (
     <div className={styles.wrapper}>
       <div className={styles.bgw}>
-        <div className={styles.title}>审核范围</div>
+        <div className={styles.title}>拟审核信息</div>
         <div className={styles.content}>
           <Row>
             <Col span={12}>
               <FormItem  {...formLayout} label={'月度审核计划号'}>
                 {
-                  <span>{'1'}</span>
+                  <span>{editData.reviewPlanMonthCode}</span>
                 }
               </FormItem>
             </Col>
             <Col span={12}>
               <FormItem  {...formLayout} label={'月度审核计划行号'}>
                 {
-                  <span>{'1'}</span>
+                  <span>{editData.reviewPlanMonthLinenum}</span>
                 }
               </FormItem>
             </Col>
@@ -58,14 +58,14 @@ const AuditInfoForm = React.forwardRef(({ form, isView, editData,type }, ref) =>
             <Col span={12}>
               <FormItem  {...formLayout} label={'审核实施计划号'}>
                 {
-                  <span>{'1'}</span>
+                  <span>{editData.reviewImplementPlanCode}</span>
                 }
               </FormItem>
             </Col>
             <Col span={12}>
               <FormItem  {...formLayout} label={'审核实施计划行号'}>
                 {
-                  <span>{'1'}</span>
+                  <span>{editData.reviewImplementPlanLinenum}</span>
                 }
               </FormItem>
             </Col>
@@ -74,14 +74,14 @@ const AuditInfoForm = React.forwardRef(({ form, isView, editData,type }, ref) =>
             <Col span={12}>
               <FormItem  {...formLayout} label={'审核类型'}>
                 {
-                  <span>{'1'}</span>
+                  <span>{editData.reviewTypeName}</span>
                 }
               </FormItem>
             </Col>
             <Col span={12}>
               <FormItem  {...formLayout} label={'审核原因'}>
                 {
-                  <span>{'1'}</span>
+                  <span>{editData.reviewReasonName}</span>
                 }
               </FormItem>
             </Col>
@@ -90,14 +90,14 @@ const AuditInfoForm = React.forwardRef(({ form, isView, editData,type }, ref) =>
             <Col span={12}>
               <FormItem  {...formLayout} label={'审核方式'}>
                 {
-                  <span>{'1'}</span>
+                  <span>{editData.reviewWayName}</span>
                 }
               </FormItem>
             </Col>
             <Col span={12}>
               <FormItem  {...formLayout} label={'审核组织方式'}>
                 {
-                  <span>{'1'}</span>
+                  <span>{editData.reviewOrganizedWayName}</span>
                 }
               </FormItem>
             </Col>
@@ -106,14 +106,14 @@ const AuditInfoForm = React.forwardRef(({ form, isView, editData,type }, ref) =>
             <Col span={12}>
               <FormItem  {...formLayout} label={'需求公司'}>
                 {
-                  <span>{'1'}</span>
+                  <span>{editData.applyCorporationName}</span>
                 }
               </FormItem>
             </Col>
             <Col span={12}>
               <FormItem  {...formLayout} label={'采购组织'}>
                 {
-                  <span>{'1'}</span>
+                  <span>{editData.purchaseTeamName}</span>
                 }
               </FormItem>
             </Col>
@@ -122,14 +122,14 @@ const AuditInfoForm = React.forwardRef(({ form, isView, editData,type }, ref) =>
             <Col span={12}>
               <FormItem  {...formLayout} label={'供应商'}>
                 {
-                  <span>{'1'}</span>
+                  <span>{editData.supplierName}</span>
                 }
               </FormItem>
             </Col>
             <Col span={12}>
               <FormItem  {...formLayout} label={'代理商'}>
                 {
-                  <span>{'1'}</span>
+                  <span>{editData.agentName}</span>
                 }
               </FormItem>
             </Col>
@@ -138,14 +138,14 @@ const AuditInfoForm = React.forwardRef(({ form, isView, editData,type }, ref) =>
             <Col span={12}>
               <FormItem  {...formLayout} label={'物料分类'}>
                 {
-                  <span>{'1'}</span>
+                  <span>{editData.materialGroupName}</span>
                 }
               </FormItem>
             </Col>
             <Col span={12}>
               <FormItem  {...formLayout} label={'物料级别'}>
                 {
-                  <span>{'1'}</span>
+                  <span>{editData.materialGradeName}</span>
                 }
               </FormItem>
             </Col>
@@ -154,7 +154,7 @@ const AuditInfoForm = React.forwardRef(({ form, isView, editData,type }, ref) =>
             <Col span={24}>
               <FormItem  {...formLongLayout} label={'生产厂地址'}>
                 {
-                  <span>{'1'}</span>
+                  <span>{editData.countryName + editData.provinceName + editData.cityName + editData.countyName + editData.address}</span>
                 }
               </FormItem>
             </Col>
@@ -163,14 +163,14 @@ const AuditInfoForm = React.forwardRef(({ form, isView, editData,type }, ref) =>
             <Col span={12}>
               <FormItem  {...formLayout} label={'供应商联系人'}>
                 {
-                  <span>{'1'}</span>
+                  <span>{editData.contactUserName}</span>
                 }
               </FormItem>
             </Col>
             <Col span={12}>
               <FormItem  {...formLayout} label={'供应商联系方式'}>
                 {
-                  <span>{'1'}</span>
+                  <span>{editData.contactUserTel}</span>
                 }
               </FormItem>
             </Col>

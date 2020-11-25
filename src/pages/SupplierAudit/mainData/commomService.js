@@ -751,4 +751,14 @@ export async function reviewStandard(params) {
   });
 }
 
+// 审核报告管理新增获取默认值
+export const findForReportInsert = async (params = {}) => {
+  const url = `${recommendUrl}/api/reviewPlanMonthLineService/findForReportInsert`;
+  return request({
+    url,
+    method: 'GET',
+    params: params,
+  });
+};
+
 

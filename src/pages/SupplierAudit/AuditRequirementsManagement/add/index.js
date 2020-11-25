@@ -116,7 +116,6 @@ const Index = (props) => {
 
   const handleBack = () => {
     setData(v => ({ ...v, loading: false }));
-    openNewTab(`qualitySynergy/DataSharingList`, '技术资料分享需求列表', true);
     closeCurrent();
   };
 

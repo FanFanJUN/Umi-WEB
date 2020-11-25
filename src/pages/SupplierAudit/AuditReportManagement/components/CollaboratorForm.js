@@ -12,7 +12,7 @@ import { ExtTable } from 'suid';
 const CollaboratorForm = React.forwardRef(({ form, isView, editData, type }, ref) => {
   useImperativeHandle(ref, () => ({}));
   const columns = [
-    { title: '部门', dataIndex: 'departmentName', width: 160 },
+    { title: '部门', dataIndex: 'departmentName', width: 220 },
     { title: '员工编号', dataIndex: 'employeeNo', width: 100 },
     { title: '姓名', dataIndex: 'memberName', width: 120 },
     { title: '联系电话', dataIndex: 'memberTel', width: 100 },

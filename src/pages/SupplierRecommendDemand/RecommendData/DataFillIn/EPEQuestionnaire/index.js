@@ -1,5 +1,5 @@
 /**
- * @description 企业社会责任调查表
+ * @description 企业生产环境情况
  * @author hezhi
  * @date 2020.4.3
  */

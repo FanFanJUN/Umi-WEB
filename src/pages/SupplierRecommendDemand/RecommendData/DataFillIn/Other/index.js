@@ -54,26 +54,24 @@ const Other = ({ form, updateGlobalStatus }) => {
     fetchData();
   }, []);
 
-  function handleSave() {
-    form.validateFieldsAndScroll((error, value) => {
-      (value);
-      if (error) return;
-      const saveParams = {
-        ...value,
-        tabKey: 'otherTab',
-        recommendDemandId: id,
-        equityStructures,
-        id: data.id
-      };
-      requestPostApi(filterEmptyFileds(saveParams)).then((res) => {
-        if (res && res.success) {
-          message.success(res.message);
-          updateGlobalStatus();
-        } else {
-          message.error(res.message);
-        }
-      })
+  async function handleSave() {
+    const value = await form.validateFieldsAndScroll()
+    const params = filterEmptyFileds({
+      ...value,
+      tabKey: 'otherTab',
+      recommendDemandId: id,
+      equityStructures,
+      id: data.id
     })
+    setLoading(true)
+    const { success, message: msg } = await requestPostApi(params)
+    setLoading(false)
+    if (success) {
+      message.success(msg);
+      updateGlobalStatus();
+      return
+    }
+    message.error(msg);
   }
 
   function setNewData(newData) {
@@ -82,45 +80,45 @@ const Other = ({ form, updateGlobalStatus }) => {
 
   const columns = [
     {
-      "title": "投资方 ",
-      "dataIndex": "investor",
-      "ellipsis": true,
-      "editable": true,
+      title: "投资方 ",
+      dataIndex: "investor",
+      ellipsis: true,
+      editable: true,
     },
     {
-      "title": "出资额",
-      "dataIndex": "capitalContribution",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'InputNumber',
+      title: "出资额",
+      dataIndex: "capitalContribution",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
     },
     {
-      "title": "币种",
-      "dataIndex": "currencyName",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'selectwithService',
+      title: "币种",
+      dataIndex: "currencyName",
+      ellipsis: true,
+      editable: true,
+      inputType: 'selectwithService',
     },
     {
-      "title": "出资比例",
-      "dataIndex": "capitalKey",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'percentInput',
+      title: "出资比例",
+      dataIndex: "capitalKey",
+      ellipsis: true,
+      editable: true,
+      inputType: 'percentInput',
     },
     {
-      "title": "出资方式",
-      "dataIndex": "capitalMethod",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'Input',
+      title: "出资方式",
+      dataIndex: "capitalMethod",
+      ellipsis: true,
+      editable: true,
+      inputType: 'Input',
     },
     {
-      "title": "备注",
-      "dataIndex": "remark",
-      "ellipsis": true,
-      "editable": true,
-      "inputType": 'TextArea',
+      title: "备注",
+      dataIndex: "remark",
+      ellipsis: true,
+      editable: true,
+      inputType: 'TextArea',
     }
   ];
   return (
@@ -133,9 +131,13 @@ const Other = ({ form, updateGlobalStatus }) => {
           }}
           title="其他附加资料"
           extra={type === 'add' ? [
-            <Button key="save" type="primary" style={{ marginRight: '12px' }} onClick={handleSave}>
-              保存
-                        </Button>,
+            <Button
+              key="save"
+              type="primary"
+              style={{ marginRight: '12px' }}
+              disabled={loading}
+              onClick={handleSave}
+            >保存</Button>,
           ] : null}
         >
           <div className={styles.wrapper}>
@@ -243,19 +245,11 @@ const Other = ({ form, updateGlobalStatus }) => {
                 <Row>
                   <Col span={24}>
                     <FormItem label="组织机构" {...formLayout}>
-                      {getFieldDecorator('organizations', {
-                        initialValue: type === 'add' ? '' : data.organizations,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
-                      })(
+                      {getFieldDecorator('organizationIds')(
                         <UploadFile
                           showColor={type !== 'add' ? true : false}
                           type={type === 'add' ? '' : 'show'}
-                          entityId={data.organization} />)}
+                          entityId={data.organizationId} />)}
                     </FormItem>
                   </Col>
                 </Row>

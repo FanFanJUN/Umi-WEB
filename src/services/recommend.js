@@ -226,3 +226,10 @@ export const saveFilterOpinion = params => createServiceRequest({
   params,
   method: 'POST'
 })
+
+// 填表说明拟推荐产品
+export const queryRecommendProductList = params => createServiceRequest({
+  path: '/api/SupplierRecommendDemandLineService/findRecommendProductList',
+  params,
+  method: 'POST'
+})
