@@ -189,7 +189,7 @@ export default function () {
         res.data.rows.map(item => {
             arr.push({
                 '状态': item.state === "DRAFT" ? "草稿" : item.state === "EFFECT" ? "生效" : "变更中",
-                '审批状态': item.flowStatus === "DRAFT" ? "草稿" : item.flowStatus === "EFFECT" ? "生效" : "变更中",
+                '审批状态': item.flowStatus === "INIT" ? "未进入流程" : item.flowStatus === "INPROCESS" ? "流程中" : "流程处理完成",
                 '月度审核计划号': item.reviewPlanMonthCode,
                 '月度': item.applyMonth,
                 '拟制说明': item.reviewPlanMonthName,
