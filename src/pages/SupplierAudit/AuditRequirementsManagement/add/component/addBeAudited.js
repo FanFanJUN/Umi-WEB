@@ -149,7 +149,7 @@ const AddBeAudited = (props) => {
 
   return (
     <ExtModal
-      width={'110vh'}
+      width={'180vh'}
       maskClosable={false}
       visible={visible}
       title={title}
