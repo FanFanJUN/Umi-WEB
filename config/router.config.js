@@ -115,6 +115,7 @@ export default [
       },
     ]
   },
+
   /**供应商审核 */
   {
     path: '/supplierAudit',
@@ -282,6 +283,11 @@ export default [
         path: '/supplier/recommend/demand',
         component: './SupplierRecommendDemand',
         title: '供应商推荐需求管理'
+      },
+      {
+        path: '/supplier/recommend/admittance',
+        component: './SupplierRAM',
+        title: '供应商推荐准入管理'
       },
       {
         path: '/supplier/recommend/demand/create',

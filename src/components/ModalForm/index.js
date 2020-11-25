@@ -91,14 +91,23 @@ const ModalForm = forwardRef(({
         <Row gutter={[12, 0]}>
           {
             fields.map((field, keyIndex) => {
-              const { type, name, option, label, formLayout = {
-                labelCol: {
-                  span: 8
+              const {
+                type,
+                name,
+                option,
+                label,
+                formLayout = {
+                  labelCol: {
+                    span: 8
+                  },
+                  wrapperCol: {
+                    span: 16
+                  }
                 },
-                wrapperCol: {
-                  span: 16
-                }
-              }, labelOptions = [], props = {}, readers = [] } = field;
+                labelOptions = [],
+                props = {},
+                readers = []
+              } = field;
               const Item = FormItemTypes[type] || Input;
               switch (type) {
                 case 'select':
