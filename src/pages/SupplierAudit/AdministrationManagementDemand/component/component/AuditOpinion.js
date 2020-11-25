@@ -3,7 +3,7 @@ import { Col, Form, Input, message, Row } from 'antd';
 import { ComboList, ComboTree } from 'suid';
 import { AllCompanyConfig, ApplyOrganizationProps } from '../../../mainData/commomService';
 import Upload from '../../../../QualitySynergy/compoent/Upload';
-import { GetVerificationAuditOpinionDataApi, whetherArr } from '../../commonApi';
+import { GetVerificationAuditOpinionDataApi, ShowVerificationAuditOpinionDataApi, whetherArr } from '../../commonApi';
 import { getDocIdForArray } from '../../../../../utils/utilTool';
 
 const FormItem = Form.Item;
@@ -27,7 +27,7 @@ const formLongLayout = {
 };
 const AuditOpinion = React.forwardRef((props, ref) => {
 
-  const { editData, reviewImplementPlanCode, isView } = props;
+  const { editData, reviewImplementPlanCode, isView, id } = props;
 
   const { getFieldDecorator, setFieldsValue, getFieldValue } = props.form;
 
@@ -46,17 +46,30 @@ const AuditOpinion = React.forwardRef((props, ref) => {
   }));
 
   useEffect(() => {
-    GetVerificationAuditOpinionDataApi({
-      reviewImplementPlanCode,
-    }).then(res => {
-      if (res.success) {
-        const response = res.data[0] ? res.data[0] : {};
-        setData(response);
-        console.log(res.data);
-      } else {
-        message.error(res.message);
-      }
-    }).catch(err => message.error(err.message));
+    if (isView) {
+      ShowVerificationAuditOpinionDataApi({
+        id,
+      }).then(res => {
+        if (res.success) {
+          setData(res.data ? res.data : {});
+          console.log(res.data);
+        } else {
+          message.error(res.message);
+        }
+      }).catch(err => message.error(err.message));
+    } else {
+      GetVerificationAuditOpinionDataApi({
+        reviewImplementPlanCode,
+      }).then(res => {
+        if (res.success) {
+          const response = res.data[0] ? res.data[0] : {};
+          setData(response);
+          console.log(res.data);
+        } else {
+          message.error(res.message);
+        }
+      }).catch(err => message.error(err.message));
+    }
   }, []);
 
   return (
@@ -160,7 +173,8 @@ const AuditOpinion = React.forwardRef((props, ref) => {
                   },
                 ],
               })(
-                <Upload entityId={editData.fileList ? getDocIdForArray(data.fileList) : null} type={isView ? 'show' : ''}/>,
+                <Upload entityId={editData.fileList ? getDocIdForArray(data.fileList) : null}
+                        type={isView ? 'show' : ''} />,
               )
             }
           </FormItem>

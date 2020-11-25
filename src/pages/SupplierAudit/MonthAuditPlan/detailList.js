@@ -244,7 +244,7 @@ export default function () {
                 requestParams={requestParams}
                 explainResponse={explainResponse}
                 filenameFormat={'月度审核计划明细' + moment().format('YYYYMMDD')}
-                key='SUPPLIER_AUDIT_MONTH_EXPORT'
+                key='SUPPLIER_AUDIT_MONTH_DETAIL_EXPORT'
                 ignore={DEVELOPER_ENV}
             >导出</DataExport.Button>)
         }

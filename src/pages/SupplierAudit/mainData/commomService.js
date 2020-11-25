@@ -161,7 +161,6 @@ export const CountryIdConfig = {
 
 // 正常供应商
 export const NormalSupplierConfig = {
-  placeholder: '选择正常供应商',
   remotePaging: true,
   rowKey: 'code',
   reader: {

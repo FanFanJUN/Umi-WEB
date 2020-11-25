@@ -106,6 +106,7 @@ const VerificationResults = (props) => {
         <TabPane tab="审核意见" key="3">
           <AuditOpinion
             isView={isView}
+            id={props.id}
             wrappedComponentRef={submitDataRef}
             reviewImplementPlanCode={reviewImplementPlanCode}
             editData={auditOpinionData}
