@@ -161,8 +161,9 @@ export default [
       { path: '/supplierAudit/AuditReportManagementAdd', component: './SupplierAudit/AuditReportManagement/editPage', title: '审核报告管理新增' },
       { path: '/supplierAudit/AuditReportManagementEdit', component: './SupplierAudit/AuditReportManagement/editPage', title: '审核报告管理编辑' },
       { path: '/supplierAudit/AuditReportManagementDetail', component: './SupplierAudit/AuditReportManagement/editPage', title: '审核报告管理明细' },
-      { path: '/supplierAudit/AuditReportManagement/approvePage/AuditReportApprovePage', component: './supplierAudit/AuditReportManagement/approvePage/AuditReportApprovePage', title: '审核报告管理流程信息' },
-      { path: '/supplierAudit/AuditReportManagement/approvePage/AuditReportApproveEditPage', component: './supplierAudit/AuditReportManagement/approvePage/AuditReportApproveEditPage', title: '审核报告管理流程编辑' },
+      { path: '/supplierAudit/AuditReportManagement/ApprovePage/AuditReportApprovePage', component: './SupplierAudit/AuditReportManagement/ApprovePage/AuditReportApprovePage', title: '审核报告管理流程信息' },
+      { path: '/supplierAudit/AuditReportManagement/ApprovePage/AuditReportApproveEditPage', component: './SupplierAudit/AuditReportManagement/ApprovePage/AuditReportApproveEditPage', title: '审核报告管理流程编辑' },
+      { path: '/supplierAudit/AuditReportManagement/ApprovePage/PurchaseTeamApprovePage', component: './SupplierAudit/AuditReportManagement/ApprovePage/PurchaseTeamApprovePage', title: '采购小组审批' },
       { path: '/supplierAudit/AuditBriefingManagement/index', component: './SupplierAudit/AuditBriefingManagement', title: '审核简报管理' },
     ]
   },
@@ -287,11 +288,6 @@ export default [
         title: '供应商推荐需求管理'
       },
       {
-        path: '/supplier/recommend/admittance',
-        component: './SupplierRAM',
-        title: '供应商推荐准入管理'
-      },
-      {
         path: '/supplier/recommend/demand/create',
         component: './SupplierRecommendDemand/CreateRecommendDemand',
         title: '新增供应商推荐需求'
@@ -336,6 +332,16 @@ export default [
         component: './SupplierRecommendDemand/FilterOpinion',
         title: '评审小组筛选意见'
       },
+      /**供应商推荐准入 begin */
+      {
+        path: '/supplier/recommend/admittance/manage',
+        component: './SupplierRAM',
+        title: '供应商推荐准入管理'
+      },
+      {
+        path: '/supplier/recommend/admittance/manage/create'
+      },
+      /**供应商推荐准入 end */
       //  企业社会责任调查表选项主数据
       {
         path: '/csr/config',
