@@ -241,7 +241,7 @@ export default function () {
                 ignore={DEVELOPER_ENV}
                 businessKey={data.flowId}
                 callBack={handleComplete}
-                disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length === 0}
+                disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length !== 1}
                 businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewPlanMonth'
                 key='SUPPLIER_AUDIT_MONTH_INFLOW'
             >提交审核</StartFlow>)

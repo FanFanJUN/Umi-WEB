@@ -108,9 +108,6 @@ const Index = (props) => {
             if (!changeInfo) {
                 return false;
             } else {
-                if (!changeInfo.changeFileId) {
-                    changeInfo.changeFileId = [];
-                }
                 delete saveData.lineBoList;
                 saveData.reviewPlanMonthLineChangeBos = lineData.concat(deleteArr).map((item, index) => {
                     item.reviewPlanMonthLineId = item.id;

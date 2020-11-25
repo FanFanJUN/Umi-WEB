@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:40
- * @LastEditTime: 2020-11-20 17:33:39
+ * @LastEditTime: 2020-11-25 14:07:02
  * @Description:  基本信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BaseInfo.js
  */
@@ -55,7 +55,13 @@ const ChangeInfo = forwardRef((props, ref) => {
                     <Row>
                         <Col span={12}>
                             <FormItem {...formLayout} label={'变更附件'}>
-                                <Upload entityId={data.documnetInfos} type={isView ? 'show' : ''}/>
+                                {
+                                    getFieldDecorator('changeFileId', {
+                                        initialValue: [],
+                                    })(
+                                        <Upload entityId={data.documnetInfos} type={isView ? 'show' : ''}/>
+                                    )
+                                }
                             </FormItem>
                         </Col>
                     </Row>
