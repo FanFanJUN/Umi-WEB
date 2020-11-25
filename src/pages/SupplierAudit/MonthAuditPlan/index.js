@@ -158,7 +158,7 @@ export default function () {
 
     const columns = [
         {
-            title: '状态', dataIndex: 'state', width: 80, render: (text) => {
+            title: '状态', dataIndex: 'state', width: 120, render: (text) => {
                 switch (text) {
                     case "DRAFT":
                         return "草稿";

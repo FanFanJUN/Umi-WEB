@@ -161,6 +161,8 @@ export default [
       { path: '/supplierAudit/AuditReportManagementAdd', component: './SupplierAudit/AuditReportManagement/editPage', title: '审核报告管理新增' },
       { path: '/supplierAudit/AuditReportManagementEdit', component: './SupplierAudit/AuditReportManagement/editPage', title: '审核报告管理编辑' },
       { path: '/supplierAudit/AuditReportManagementDetail', component: './SupplierAudit/AuditReportManagement/editPage', title: '审核报告管理明细' },
+      { path: '/supplierAudit/AuditReportManagement/approvePage/AuditReportApprovePage', component: './supplierAudit/AuditReportManagement/approvePage/AuditReportApprovePage', title: '审核报告管理流程信息' },
+      { path: '/supplierAudit/AuditReportManagement/approvePage/AuditReportApproveEditPage', component: './supplierAudit/AuditReportManagement/approvePage/AuditReportApproveEditPage', title: '审核报告管理流程编辑' },
       { path: '/supplierAudit/AuditBriefingManagement/index', component: './SupplierAudit/AuditBriefingManagement', title: '审核简报管理' },
     ]
   },

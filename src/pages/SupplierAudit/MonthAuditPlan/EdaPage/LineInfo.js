@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime: 2020-11-24 15:59:58
+ * @LastEditTime: 2020-11-25 10:48:01
  * @Description: 行信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
@@ -180,6 +180,7 @@ let LineInfo = forwardRef((props, ref) => {
 
   // 编辑和明细时构造treeData
   const buildTreeData = (sonList) => {
+    if(!sonList || sonList.length === 0) return [];
     let arr = JSON.parse(JSON.stringify(sonList));
     arr.map(item => {
       item.id = item.systemId;

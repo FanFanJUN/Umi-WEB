@@ -126,10 +126,10 @@ const BaseInfoForm = React.forwardRef(({ form, userInfo, isView, editData,type }
             <Col span={24}>
               <FormItem {...formLongLayout} label={'附件'}>
                 {
-                  getFieldDecorator('attachRelatedIds', {
-                    initialValue: type === 'add' ? null : editData.fileList,
+                  getFieldDecorator('basicInfDocIds', {
+                    initialValue: type === 'add' ? null : editData.basicInfDocFiles,
                   })(
-                    <Upload entityId={type === 'add' ? null : editData.fileList}
+                    <Upload entityId={type === 'add' ? null : editData.basicInfDocFiles}
                             type={type === 'detail' ? 'show' : ''}/>,
                   )
                 }
