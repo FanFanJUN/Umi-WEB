@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:00:19
- * @LastEditTime: 2020-11-25 15:52:28
+ * @LastEditTime: 2020-11-25 17:30:57
  * @Description:  年度审核计划管理
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/index.js
  */
@@ -217,8 +217,6 @@ export default function () {
                         return "草稿";
                     case "EFFECT":
                         return "生效";
-                    case "CHANGING":
-                        return "变更中";
                     default:
                         break;
                 }

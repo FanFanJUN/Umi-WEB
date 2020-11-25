@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:44:12
- * @LastEditTime: 2020-11-23 11:41:24
+ * @LastEditTime: 2020-11-25 16:54:58
  * @LastEditors: Please set LastEditors
  * @Description: 审核实施计划-审核人员
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\AuditorInfo.js
@@ -11,7 +11,7 @@ import React, { useState, useRef, useEffect, useImperativeHandle, forwardRef } f
 import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/edit/BaseInfo.less';
 import { Col, Form, Row, Input, Button, message } from 'antd';
 import { ExtTable } from "suid";
-import ShuttleBox from "../../common/ShuttleBox";
+import ShuttleBoxNew from "../../common/ShuttleBoxNew";
 import EventModal from '../../common/EventModal';
 import { getRandom } from '../../../QualitySynergy/commonProps';
 import ContentModal from '../../AuditRequirementsManagement/add/component/contentModal';
@@ -56,10 +56,14 @@ const AuditorInfo = forwardRef((props, ref) => {
     getTableList: () => teamData.dataSource
   }));
 
+  // 解构的tree
+  let destructionTreeArr = [];
+
   const teamTableRef = useRef(null);
+
   const contentTableRef = useRef(null);
 
-  const { reviewTeamGroupBoList, type, orgLeaderName } = props;
+  const { visible, type, orgLeaderName } = props;
 
   const [teamData, setTeamData] = useState({
     dataSource: [],
@@ -77,6 +81,7 @@ const AuditorInfo = forwardRef((props, ref) => {
   });
 
   const [data, setData] = useState({
+    defaultSystem: [],
     treeData: [],
     leftTreeData: undefined,
     selectRows: [],
@@ -86,16 +91,19 @@ const AuditorInfo = forwardRef((props, ref) => {
   });
 
   useEffect(() => {
-    setTeamData(v => ({
-      ...v,
-      dataSource: reviewTeamGroupBoList.map(item => {
-        return {
-          ...item,
-          lineNum: getRandom(10)
-        }
-      })
-    }));
-  }, [reviewTeamGroupBoList]);
+    if (visible) {
+      setTeamData(v => ({ ...v, dataSource: props.reviewTeamGroupBoList }));
+      if (props.type !== 'detail') {
+        GetDefaultSystem({
+          reviewTypeCode: props.reviewTypeCode,
+        }).then(res => {
+          if (res.success) {
+            setData(v => ({ ...v, defaultSystem: res.data }));
+          }
+        }).catch(err => message.error(err.message));
+      }
+    }
+  }, [visible]);
 
   useEffect(() => {
     if (contentData.dataSource && contentData.dataSource.length !== 0) {
@@ -116,13 +124,13 @@ const AuditorInfo = forwardRef((props, ref) => {
   };
 
   const handleOk = (value) => {
-    console.log(value, 'values')
     if (data.type === 'add') {
       value.lineNum = getRandom(10);
       value.reviewTeamMemberBoList = [];
       setTeamData(v => ({ ...v, dataSource: [...teamData.dataSource, ...[value]] }));
     } else {
-      let newData = teamData.dataSource.slice(); x
+      let newData = teamData.dataSource.slice();
+      x;
       teamData.dataSource.forEach((item, index) => {
         if (item.lineNum === data.selectRows[0].lineNum) {
           value.lineNum = item.lineNum;
@@ -138,12 +146,11 @@ const AuditorInfo = forwardRef((props, ref) => {
   };
 
   const contentAdd = (value) => {
-    console.log(value);
     if (contentData.type === 'add') {
       if (value.memberRole === 'GROUP_LEADER') {
         if (contentData.dataSource.some(item => item.memberRole === 'GROUP_LEADER')) {
-          message.error('每个组只能有一个组长!')
-          return
+          message.error('每个组只能有一个组长!');
+          return;
         }
       }
       value.lineNum = getRandom(10);
@@ -160,7 +167,6 @@ const AuditorInfo = forwardRef((props, ref) => {
     }
     contentTableRef.current.manualSelectedRows();
     contentTableRef.current.remoteDataRefresh();
-    console.log(contentData, value);
   };
 
   const handleTeamSelectedRows = (keys, values) => {
@@ -184,16 +190,16 @@ const AuditorInfo = forwardRef((props, ref) => {
 
   const handleContentSelectedRows = (keys, values) => {
     let treeData = values[0]?.memberRuleBoList ? values[0].memberRuleBoList ? JSON.parse(JSON.stringify(values[0].memberRuleBoList)) : [] : [];
-    treeData = treeData.map(item => {
-      if (!item.key) {
-        item.id = item.systemId;
-        item.key = item.systemId;
-        item.title = item.systemName;
-        return item;
-      } else {
-        return item;
-      }
-    });
+    treeData = treeData.map(item => ({
+      ...item,
+      id: item.id ? item.id : item.systemId,
+      systemId: item.systemId ? item.systemId : item.id,
+      systemCode: item.code ? item.code : item.systemCode,
+      systemName: item.name ? item.name : item.systemName,
+      key: item.id ? item.id : item.systemId,
+      title: item.name ? item.name : item.systemName,
+      children: item.children ? item.children : [],
+    }));
     setData(v => ({ ...v, leftTreeData: undefined, treeData: treeData }));
     setContentData(v => ({ ...v, selectedRows: values, selectedRowKeys: keys }));
   };
@@ -294,7 +300,6 @@ const AuditorInfo = forwardRef((props, ref) => {
   };
 
   const getTreeData = (value) => {
-    console.log("点击穿梭框value", value)
     let newData = JSON.parse(JSON.stringify(contentData.dataSource));
     newData.map((item, index) => {
       if (item.lineNum === contentData.selectedRowKeys[0]) {
@@ -305,13 +310,69 @@ const AuditorInfo = forwardRef((props, ref) => {
     contentTableRef.current.remoteDataRefresh();
   };
 
+  const destructionTree = (arr) => {
+    arr.map(item => {
+      item.systemId = item.systemId ? item.systemId : item.id;
+      item.systemCode = item.code ? item.code : item.systemCode;
+      item.systemName = item.name ? item.name : item.systemName;
+      item.key = item.id ? item.id : item.systemId;
+      item.title = item.name ? item.name : item.systemName;
+      if (item.children && item.children.length !== 0) {
+        destructionTreeArr.push(item);
+        destructionTree(item.children);
+      } else {
+        destructionTreeArr.push(...arr);
+      }
+    });
+  };
+
+  //找到子节点
+  const findSon = (data, arr) => {
+    arr.forEach((item) => {
+      item.systemId = item.systemId ? item.systemId : item.id;
+      item.systemCode = item.systemCode ? item.systemCode : item.code;
+      item.systemName = item.systemName ? item.systemName : item.name;
+      item.key = item.systemId;
+      item.title = item.systemName;
+      if (item.parentId === data.systemId) {
+        data.children = data.children ? data.children : [];
+        data.children.push(item);
+      }
+    });
+  };
+
+  // 递归
+  const recursion = (arr, type = undefined) => {
+    let newArr = JSON.parse(JSON.stringify(arr));
+    newArr.forEach(item => {
+      item.systemId = item.systemId ? item.systemId : item.id;
+      item.systemCode = item.systemCode ? item.systemCode : item.code;
+      item.systemName = item.systemName ? item.systemName : item.name;
+      item.key = item.systemId;
+      item.title = item.systemName;
+      if (item.children && item.children.length !== 0) {
+        item.children = [];
+      }
+      findSon(item, newArr);
+    });
+    let data = [];
+    newArr.forEach(item => {
+      if (!item.parentId) {
+        data.push(item);
+      }
+    });
+    return data;
+  };
+
   // 构造左边树
   const getLeftTreeData = () => {
     if (contentData.selectedRowKeys && contentData.selectedRowKeys.length !== 0) {
-      let arr = [...props.treeData];
-      if (arr.length > 1) {
-        arr = duplicateRemoval(arr, 'key');
+      if (data.defaultSystem && data.defaultSystem.length !== 0) {
+        destructionTree(data.defaultSystem);
       }
+      let arr = [...props.treeData, ...destructionTreeArr];
+      arr = duplicateRemoval(arr, 'systemId');
+      arr = recursion(arr);
       setData(v => ({ ...v, leftTreeData: arr }));
     } else {
       message.error('请选择一名成员');
@@ -382,12 +443,18 @@ const AuditorInfo = forwardRef((props, ref) => {
               </div>
               <div style={{ height: '230px' }}>
                 <span style={{ fontSize: '15px', fontWeight: 'bold', marginLeft: '15px' }}>成员审核内容管理</span>
-                <ShuttleBox
-                  type={props.type === 'detail' && 'show'}
+                <ShuttleBoxNew
                   rightTreeData={data.treeData}
+                  type={props.type === 'detail' && 'show'}
                   onChange={getTreeData}
                   leftTreeData={data.leftTreeData}
                 />
+                {/*<ShuttleBox*/}
+                {/*  type={props.type === 'detail' && 'show'}*/}
+                {/*  rightTreeData={data.treeData}*/}
+                {/*  onChange={getTreeData}*/}
+                {/*  leftTreeData={data.leftTreeData}*/}
+                {/*/>*/}
               </div>
             </div>
           </div>

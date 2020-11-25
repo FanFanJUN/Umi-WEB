@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:43:10
- * @LastEditTime: 2020-11-23 11:19:30
+ * @LastEditTime: 2020-11-25 16:53:52
  * @LastEditors: Please set LastEditors
  * @Description: 审核实施计划-审核范围
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\AuditScope.js
@@ -13,12 +13,55 @@ import { Tree } from 'antd';
 
 const AuditScope = (props) => {
     let { treeData } = props;
+    const [newTree, setNewTree] = useState([]);
     const [rightCheckedKeys, setRightCheckedKeys] = useState([]);
-    useEffect(()=>{
+    //找到子节点
+    const findSon = (data, arr) => {
+        arr.forEach((item) => {
+            item.systemId = item.systemId ? item.systemId : item.id;
+            item.systemCode = item.systemCode ? item.systemCode : item.code;
+            item.systemName = item.systemName ? item.systemName : item.name;
+            item.key = item.systemId;
+            item.title = item.systemName;
+            if (item.parentId === data.systemId) {
+                data.children = data.children ? data.children : [];
+                data.children.push(item);
+            }
+        });
+    };
+
+    // 构造树-递归
+    const recursion = (arr, type = undefined) => {
+        let newArr = JSON.parse(JSON.stringify(arr));
+        newArr.forEach(item => {
+            item.systemId = item.systemId ? item.systemId : item.id;
+            item.systemCode = item.systemCode ? item.systemCode : item.code;
+            item.systemName = item.systemName ? item.systemName : item.name;
+            item.key = item.systemId;
+            item.title = item.systemName;
+            if (item.children && item.children.length !== 0) {
+                item.children = [];
+            }
+            findSon(item, newArr);
+        });
+        let data = [];
+        newArr.forEach(item => {
+            if (!item.parentId) {
+                data.push(item);
+            }
+        });
+        return data;
+    };
+
+    useEffect(() => {
+        if(treeData && treeData.length > 0) {
+            let newTree = recursion(treeData);
+            setNewTree(newTree);
+        }
         let checkedKeys = treeData ? treeData.map(item => item.id) : [];
         setRightCheckedKeys(checkedKeys);
     }, [treeData])
-    // console.log()
+
     return (
         <div className={styles.wrapper}>
             <div className={styles.bgw}>
@@ -30,7 +73,7 @@ const AuditScope = (props) => {
                             checkable
                             disabled
                             checkedKeys={rightCheckedKeys}
-                            treeData={treeData}
+                            treeData={newTree}
                         />
                     </div>
                 </div>
