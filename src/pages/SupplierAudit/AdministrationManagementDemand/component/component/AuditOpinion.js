@@ -42,7 +42,7 @@ const AuditOpinion = React.forwardRef((props, ref) => {
   );
 
   useImperativeHandle(ref, () => ({
-    getInfo:  props.form.validateFieldsAndScroll
+    getInfo: props.form.validateFieldsAndScroll,
   }));
 
   useEffect(() => {
@@ -125,8 +125,8 @@ const AuditOpinion = React.forwardRef((props, ref) => {
         <Col span={12}>
           <FormItem label="结论" {...formLayout}>
             {
-              getFieldDecorator('whetherPass', {
-                initialValue: whetherArr[data.whetherPass],
+              getFieldDecorator('conclusionName', {
+                initialValue: data.conclusionName,
               })(
                 <Input disabled={true} />,
               )
@@ -141,7 +141,7 @@ const AuditOpinion = React.forwardRef((props, ref) => {
               getFieldDecorator('remark', {
                 initialValue: data.remark,
               })(
-                <Input.TextArea rows={5} />,
+                <Input.TextArea disabled={isView} rows={5} />,
               )
             }
           </FormItem>
@@ -160,7 +160,7 @@ const AuditOpinion = React.forwardRef((props, ref) => {
                   },
                 ],
               })(
-                <Upload entityId={editData.fileList ? getDocIdForArray(data.fileList) : null} />,
+                <Upload entityId={editData.fileList ? getDocIdForArray(data.fileList) : null} type={isView ? 'show' : ''}/>,
               )
             }
           </FormItem>
