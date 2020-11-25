@@ -304,7 +304,7 @@ function SupplierRevaluate() {
           <Button
             className={styles.btn}
             onClick={handleEditor}
-            disabled={empty || !allowRemove || resultGener}
+            disabled={empty || !allowRemove || resultGener || !isSelf}
             ignore={DEVELOPER_ENV}
             key='SUPPLIER_APPRAISE_EDITOR'
           >编辑</Button>
@@ -315,7 +315,7 @@ function SupplierRevaluate() {
           <Button
             className={styles.btn}
             onClick={handleRemove}
-            disabled={empty || !allowRemove}
+            disabled={empty || !allowRemove || !isSelf}
             ignore={DEVELOPER_ENV}
             key='SUPPLIER_APPRAISE_REMOVE'
           >删除</Button>
@@ -337,7 +337,7 @@ function SupplierRevaluate() {
           <Button
             className={styles.btn}
             onClick={handleAllocation}
-            disabled={empty || !needSelectScorer || complete || resultGener || evaluateIng}
+            disabled={empty || !needSelectScorer || complete || resultGener || evaluateIng || !isSelf}
             ignore={DEVELOPER_ENV}
             key='SUPPLIER_APPRAISE_ALLOT'
           >分配评审人</Button>
@@ -348,7 +348,7 @@ function SupplierRevaluate() {
           <Button
             className={styles.btn}
             onClick={handleAppraise}
-            disabled={empty || !allowRemove || resultGener}
+            disabled={empty || !allowRemove || resultGener || !isSelf}
             ignore={DEVELOPER_ENV}
             key='SUPPLIER_APPRAISE_START_EVALUATE'
           >发起评价</Button>
@@ -359,7 +359,7 @@ function SupplierRevaluate() {
           <Button
             className={styles.btn}
             onClick={handleWithdraw}
-            disabled={empty || allowRemove || complete || resultGener}
+            disabled={empty || allowRemove || complete || resultGener || !isSelf}
             ignore={DEVELOPER_ENV}
             key='SUPPLIER_APPRAISE_WITHDRAW'
           >撤回</Button>
@@ -369,7 +369,7 @@ function SupplierRevaluate() {
         authAction(
           <Button
             className={styles.btn}
-            disabled={empty || !complete}
+            disabled={empty || !complete || !isSelf}
             onClick={handleGenerateResult}
             ignore={DEVELOPER_ENV}
             key='SUPPLIER_APPRAISE_GENERATE_RESULT'
@@ -401,7 +401,7 @@ function SupplierRevaluate() {
               ld => (
                 <Button
                   className={styles.btn}
-                  disabled={empty || !flowInit || !resultGener}
+                  disabled={empty || !flowInit || !resultGener || !isSelf}
                   loading={ld}
                 >提交审核</Button>
               )
@@ -413,7 +413,7 @@ function SupplierRevaluate() {
         authAction(
           <Button
             className={styles.btn}
-            disabled={empty || !flowing}
+            disabled={empty || !flowing || !isSelf}
             onClick={handleStopApprove}
             ignore={DEVELOPER_ENV}
             key='SUPPLIER_APPRAISE_APPROVE_STOP'

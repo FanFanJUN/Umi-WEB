@@ -110,7 +110,6 @@ const Team = (props) => {
   };
 
   const handleOk = (value) => {
-    console.log(value, 'values');
     if (data.type === 'add') {
       value.lineNum = getRandom(10);
       value.reviewTeamMemberBoList = [];
@@ -133,7 +132,6 @@ const Team = (props) => {
   };
 
   const contentAdd = (value) => {
-    console.log(value);
     if (contentData.type === 'add') {
       if (value.memberRole === 'GROUP_LEADER') {
         if (contentData.dataSource.some(item => item.memberRole === 'GROUP_LEADER')) {
@@ -155,7 +153,6 @@ const Team = (props) => {
     }
     contentTableRef.current.manualSelectedRows();
     contentTableRef.current.remoteDataRefresh();
-    console.log(contentData, value);
   };
 
   const onCancel = () => {
@@ -189,15 +186,14 @@ const Team = (props) => {
     let treeData = values[0]?.memberRuleBoList ? values[0].memberRuleBoList ? JSON.parse(JSON.stringify(values[0].memberRuleBoList)) : [] : [];
     treeData = treeData.map(item => ({
       ...item,
-      id: item.id ? item.id : item.systemId, 
+      id: item.id ? item.id : item.systemId,
       systemId: item.systemId ? item.systemId : item.id,
       systemCode: item.code ? item.code : item.systemCode,
       systemName: item.name ? item.name : item.systemName,
       key: item.id ? item.id : item.systemId,
       title: item.name ? item.name : item.systemName,
-      children: item.children ? item.children : []
+      children: item.children ? item.children : [],
     }));
-    console.log(treeData, 'treeData111');
     setData(v => ({ ...v, leftTreeData: undefined, treeData: treeData }));
     setContentData(v => ({ ...v, selectedRows: values, selectedRowKeys: keys }));
   };
@@ -298,6 +294,7 @@ const Team = (props) => {
   };
 
   const getTreeData = (value) => {
+    console.log(value, 'getTreeData');
     let newData = JSON.parse(JSON.stringify(contentData.dataSource));
     newData.map((item, index) => {
       if (item.lineNum === contentData.selectedRowKeys[0]) {
@@ -327,7 +324,12 @@ const Team = (props) => {
   //找到子节点
   const findSon = (data, arr) => {
     arr.forEach((item) => {
-      if (item.parentId === data.id || item.parentId === data.systemId) {
+      item.systemId = item.systemId ? item.systemId : item.id;
+      item.systemCode = item.systemCode ? item.systemCode : item.code;
+      item.systemName = item.systemName ? item.systemName : item.name;
+      item.key = item.systemId;
+      item.title = item.systemName;
+      if (item.parentId === data.systemId) {
         data.children = data.children ? data.children : [];
         data.children.push(item);
       }
@@ -338,6 +340,11 @@ const Team = (props) => {
   const recursion = (arr, type = undefined) => {
     let newArr = JSON.parse(JSON.stringify(arr));
     newArr.forEach(item => {
+      item.systemId = item.systemId ? item.systemId : item.id;
+      item.systemCode = item.systemCode ? item.systemCode : item.code;
+      item.systemName = item.systemName ? item.systemName : item.name;
+      item.key = item.systemId;
+      item.title = item.systemName;
       if (item.children && item.children.length !== 0) {
         item.children = [];
       }
@@ -358,8 +365,9 @@ const Team = (props) => {
       if (data.defaultSystem && data.defaultSystem.length !== 0) {
         destructionTree(data.defaultSystem);
       }
+      console.log(props.treeData, destructionTreeArr, 'arrrrrrrs');
       let arr = [...props.treeData, ...destructionTreeArr];
-      arr = duplicateRemoval(arr, 'key');
+      arr = duplicateRemoval(arr, 'systemId');
       arr = recursion(arr);
       setData(v => ({ ...v, leftTreeData: arr }));
     } else {
