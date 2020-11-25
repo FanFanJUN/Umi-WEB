@@ -156,7 +156,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={data.selectedRowKeys.length === 0}
-        key='TECHNICAL_DATA_SHARING_ADD'
+        key='SUPPLIER_AUDIT_SUPPLIER_SELF_EVALUATION'
       >自评</Button>)
     }
     {
@@ -165,7 +165,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', 'COMPLETED')}
-        key='TECHNICAL_DATA_SHARING_DELETE'
+        key='SUPPLIER_AUDIT_SUPPLIER_WITHRAW'
       >撤回</Button>)
     }
     {
@@ -173,7 +173,7 @@ export default function() {
         onClick={() => redirectToPage('checkLeaderOpinion')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='TECHNICAL_DATA_SHARING_DETAIL'
+        key='SUPPLIER_AUDIT_SUPPLIER_VIEW'
         disabled={data.selectedRowKeys.length === 0}
       >查看退回信息</Button>)
     }
@@ -183,7 +183,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={data.selectedRowKeys.length === 0}
-        key='TECHNICAL_DATA_SHARING_DETAIL'
+        key='SUPPLIER_AUDIT_SUPPLIER_QUESTION'
       >问题管理</Button>)
     }
   </>;
