@@ -24,15 +24,18 @@ import AuditScoreForm from '../components/AuditScoreForm';
 import AuditQuestions from '../components/AuditQuestions';
 import AuditComments from '../components/AuditComments';
 import { WorkFlow } from 'suid';
+import OpinionModal from '../components/OpinionModal';
 
 const { StartFlow } = WorkFlow;
 
-const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isApproveEdit }, ref) => {
+const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isApproveEdit, purchaseApprove, leaderApprove }, ref) => {
   useImperativeHandle(ref, () => ({
     handleSave,
+    saveModalData
   }));
   const { query } = router.useLocation();
   const getBaseInfoFormRef = useRef(null);
+  const getModalRef = useRef(null);
   const getUser = () => {
     const userId = getUserId();
     const userName = getUserName();
@@ -68,6 +71,9 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
     } else if (pageState === 'detail' || isApproveDetail) {
       // findOne(id);
       setData((value) => ({ ...value, type: state, isView: true, title: `审核报告管理-明细` }));
+    } else if (purchaseApprove || leaderApprove) {
+      // findOne(id);
+      setData((value) => ({ ...value, type: state, isView: true, title: `审核报告管理-审批` }));
     }
   }, [query]);
 
@@ -125,7 +131,7 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
     }).catch(err => message.error(err.message));
   };
 
-
+  //提交
   const handleBeforeStartFlow = async () => {
     let baseInfoVal = await getBaseInfoFormRef.current.getFormValue();
     if (!baseInfoVal) {
@@ -147,6 +153,23 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
         }
       }).catch(err => reject(err));
     });
+  };
+
+  //审批意见
+  const showModal = () => {
+    getModalRef.current.handleModalVisible(true);
+  };
+
+  const saveModalData = async () => {
+    let modalData = await getModalRef.current.getFormValue();
+    console.log(modalData)
+    // saveAuditReport(data.editData).then(res => {
+    //   if (res.success) {
+    //     message.success(res.message);
+    //   } else {
+    //     message.error(res.message);
+    //   }
+    // }).catch(err => message.error(err.message));
   };
   return (
     <div>
@@ -172,6 +195,8 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
                   }
                 </StartFlow></div>
             }
+            {purchaseApprove || leaderApprove ? <Button type='primary' className={styles.btn}
+                                                        onClick={() => showModal()}>{purchaseApprove ? '小组意见' : (leaderApprove ? '领导意见' : '')}</Button> : null}
           </div>
         </Affix>
         <BaseInfoForm
@@ -209,6 +234,9 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
           editData={data.editData.problemVoList || []}/>
         <AuditComments
           editData={data.editData.reviewSuggestionVo || {}}/>
+        <OpinionModal
+          title={purchaseApprove ? '小组意见' : (leaderApprove ? '领导意见' : '')}
+          wrappedComponentRef={getModalRef}/>
       </Spin>
     </div>
   );

@@ -4,9 +4,10 @@
  * @Date: 2020-11-25
  */
 
-import React, { useState, useRef, forwardRef, useImperativeHandle } from 'react';
-import { Col, Form, Input, Row, Spin } from 'antd';
+import React, { useState, useRef, forwardRef, useImperativeHandle, useEffect } from 'react';
+import { Col, Form, Input, Radio, Row, Spin } from 'antd';
 import { ExtModal } from 'suid';
+import Upload from '../../../QualitySynergy/compoent/Upload';
 
 const FormItem = Form.Item;
 
@@ -24,28 +25,56 @@ const OpinionModal = forwardRef(({ form, title }, ref) => {
     getFormValue,
   }));
   const [visible, setVisible] = useState(false);
-
+  const [cleanFile, setCleanFile] = useState(false);
+  const [needOpinion, setNeedOpinion] = useState(false);
+  useEffect(() => {
+    setRequired();
+  }, [needOpinion]);
   const handleModalVisible = (flag) => {
     setVisible(!!flag);
   };
 
   const getFormValue = () => {
+    let result = false;
     form.validateFieldsAndScroll((err, values) => {
-      return values;
+      if(!err){
+        result = values;
+      }
     });
+    return result;
+  };
+
+  const onChange = (e) => {
+    if (e.target.value) {
+      setNeedOpinion(false);
+    } else {
+      setNeedOpinion(true);
+    }
+  };
+  const setRequired=()=>{
+    form.validateFields(['opinion'], {force: true})
   };
 
   const onCancel = () => {
-    form.resetFields();
+    form.setFieldsValue({
+      opinion: null,
+      docIds: [],
+    });
+    setCleanFile(true);
+    setVisible(false);
   };
   const onOk = () => {
-    setVisible(false);
+    form.validateFieldsAndScroll((err, values) => {
+      if(!err){
+        setVisible(false);
+      }
+    });
   };
 
   const { getFieldDecorator } = form;
 
   return <ExtModal
-    width={1000}
+    width={600}
     centered
     maskClosable={false}
     visible={visible}
@@ -55,10 +84,51 @@ const OpinionModal = forwardRef(({ form, title }, ref) => {
   >
     <Row>
       <Col span={24}>
-        <FormItem label="备注" {...formLayout}>
-          {getFieldDecorator('remark', {})(
+        <FormItem label="是否按审核意见执行" {...formLayout}>
+          {getFieldDecorator('remark', {
+            initialValue: true,
+            rules: [
+              {
+                required: true,
+                message: '请选择',
+              },
+            ],
+          })(
+            <Radio.Group onChange={onChange}>
+              <Radio value={true}>是</Radio>
+              <Radio value={false}>否</Radio>
+            </Radio.Group>,
+          )}
+        </FormItem>
+      </Col>
+    </Row>
+    <Row>
+      <Col span={24}>
+        <FormItem label="意见" {...formLayout}>
+          {getFieldDecorator('opinion', {
+            initialValue: '',
+            rules: [
+              {
+                required: needOpinion,
+                message: '请填写意见',
+              },
+            ],
+          })(
             <Input/>,
           )}
+        </FormItem>
+      </Col>
+    </Row>
+    <Row>
+      <Col span={24}>
+        <FormItem {...formLayout} label={'附件'}>
+          {
+            getFieldDecorator('docIds', {
+              initialValue: [],
+            })(
+              <Upload cleanFile={cleanFile}/>,
+            )
+          }
         </FormItem>
       </Col>
     </Row>

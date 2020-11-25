@@ -72,7 +72,7 @@ const AuditReportManagement = forwardRef(({}, ref,) => {
     modalVisible:false
   });
 
-  const getModelRef = useRef(null);
+  const getModalRef = useRef(null);
 
   const onChangeCreate = (e) => {
     setData(v => ({ ...v, checkedCreate: e.target.checked }));
@@ -107,7 +107,7 @@ const AuditReportManagement = forwardRef(({}, ref,) => {
 
   // 新增
   const showModal=()=> {
-    getModelRef.current.handleModalVisible(true);
+    getModalRef.current.handleModalVisible(true);
   };
 
   const endFlow = () => {
@@ -359,7 +359,7 @@ const AuditReportManagement = forwardRef(({}, ref,) => {
         }
       </AutoSizeLayout>
       <AddModal
-          wrappedComponentRef={getModelRef}
+          wrappedComponentRef={getModalRef}
       />
     </Fragment>
   );
