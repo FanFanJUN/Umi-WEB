@@ -5,12 +5,13 @@
  */
 
 import React, { useState, useRef, forwardRef, useImperativeHandle, useEffect } from 'react';
-import { Form, Spin, message, Affix, Button } from 'antd';
-import { recommendUrl } from '@/utils/commonUrl';
-import { openNewTab } from '@/utils';
+import { Form, Spin, message, Affix, Button, Modal } from 'antd';
 import * as router from 'react-router-dom';
 import { closeCurrent, getMobile, getUserId, getUserName } from '../../../../utils';
-import { findForReportInsert, FindOneAuditRequirementsManagement } from '../../mainData/commomService';
+import {
+  findForReportInsert,
+  FindOneAuditRequirementsManagement, saveAuditReport,
+} from '../../mainData/commomService';
 import classnames from 'classnames';
 import styles from '../../../Supplier/Editor/index.less';
 import BaseInfoForm from '../components/BaseInfoForm';
@@ -22,9 +23,14 @@ import AuditPlanForm from '../components/AuditPlanForm';
 import AuditScoreForm from '../components/AuditScoreForm';
 import AuditQuestions from '../components/AuditQuestions';
 import AuditComments from '../components/AuditComments';
+import { WorkFlow } from 'suid';
 
-const auditReportManagementView = forwardRef(({}, ref) => {
-  useImperativeHandle(ref, () => ({}));
+const { StartFlow } = WorkFlow;
+
+const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isApproveEdit }, ref) => {
+  useImperativeHandle(ref, () => ({
+    handleSave,
+  }));
   const { query } = router.useLocation();
   const getBaseInfoFormRef = useRef(null);
   const getUser = () => {
@@ -40,33 +46,30 @@ const auditReportManagementView = forwardRef(({}, ref) => {
     loading: false,
     type: 'add',
     title: '',
+    businessKey: null,
     userInfo: {},
   });
 
   useEffect(() => {
     const { id, pageState } = query;
     let state = pageState;
-    switch (state) {
-      case 'add':
-        getUser();
-        findInitOne(id);
-        setData((value) => ({ ...value, type: state, isView: false, title: '审核报告管理-新增' }));
-        break;
-      case 'edit':
-        findOne(id);
-        setData((value) => ({
-          ...value,
-          type: state,
-          isView: false,
-          title: `审核需求管理-编辑`,
-        }));
-        break;
-      case 'detail':
-        findOne(id);
-        setData((value) => ({ ...value, type: state, isView: true, title: `审核需求管理-明细` }));
-        break;
+    if (pageState === 'add') {
+      getUser();
+      findInitOne(id);
+      setData((value) => ({ ...value, type: state, isView: false, title: '审核报告管理-新增' }));
+    } else if (pageState === 'edit' || isApproveEdit) {
+      // findOne(id);
+      setData((value) => ({
+        ...value,
+        type: state,
+        isView: false,
+        title: `审核报告管理-编辑`,
+      }));
+    } else if (pageState === 'detail' || isApproveDetail) {
+      // findOne(id);
+      setData((value) => ({ ...value, type: state, isView: true, title: `审核报告管理-明细` }));
     }
-  }, []);
+  }, [query]);
 
   //新增获取默认值
   const findInitOne = (id) => {
@@ -102,16 +105,47 @@ const auditReportManagementView = forwardRef(({}, ref) => {
     closeCurrent();
   };
 
+  //保存
   const handleSave = async () => {
-    let baseInfoVal = getBaseInfoFormRef.current.getFormValue();
+    let baseInfoVal = await getBaseInfoFormRef.current.getFormValue();
     if (!baseInfoVal) {
       message.error('请将基本信息填写完全！');
       return false;
     }
-    data.editData.baseInfoVo=baseInfoVal
-    console.log(data.editData);
+    data.editData.arAuditReportManagBasicVo = baseInfoVal;
+    saveAuditReport(data.editData).then(res => {
+      if (res.success) {
+        message.success(res.message);
+        handleBack();
+      } else {
+        message.error(res.message);
+      }
+    }).catch(err => message.error(err.message));
   };
 
+
+  const handleBeforeStartFlow = async () => {
+    let baseInfoVal = await getBaseInfoFormRef.current.getFormValue();
+    if (!baseInfoVal) {
+      message.error('请将基本信息填写完全！');
+      return false;
+    }
+    data.editData.arAuditReportManagBasicVo = baseInfoVal;
+    return new Promise(function(resolve, reject) {
+      saveAuditReport(data.editData).then(res => {
+        if (res.success) {
+          const data = { businessKey: res.data };
+          resolve({
+            success: true,
+            message: res.message,
+            data,
+          });
+        } else {
+          message.error(res.message);
+        }
+      }).catch(err => reject(err));
+    });
+  };
   return (
     <div>
       <Spin spinning={data.spinLoading}>
@@ -119,12 +153,22 @@ const auditReportManagementView = forwardRef(({}, ref) => {
           <div className={classnames(styles.fbc, styles.affixHeader)}>
             <span className={styles.title}>{data.title}</span>
             {
-              data.type !== 'detail' &&
+              data.type !== 'detail' || !isApprove &&
               <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <Button className={styles.btn} onClick={handleBack}>返回</Button>
-                <Button className={styles.btn} onClick={() => handleSave('save')}>暂存</Button>
-                <Button className={styles.btn} type={'primary'} onClick={() => handleSave('submit')}>提交</Button>
-              </div>
+                <Button className={styles.btn} onClick={() => handleSave()}>暂存</Button>
+                <StartFlow
+                  className={styles.btn}
+                  type='primary'
+                  beforeStart={handleBeforeStartFlow}
+                  callBack={handleBack}
+                  disabled={false}
+                  businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewRequirement'
+                >
+                  {
+                    loading => <Button loading={loading} type='primary'>提交</Button>
+                  }
+                </StartFlow></div>
             }
           </div>
         </Affix>
@@ -168,4 +212,4 @@ const auditReportManagementView = forwardRef(({}, ref) => {
   );
 });
 
-export default Form.create()(auditReportManagementView);
+export default Form.create()(AuditReportManagementView);
