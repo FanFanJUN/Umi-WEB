@@ -353,24 +353,6 @@ export default () => {
     }
     message.error(msg)
   }
-  // 提交供应商填报
-  function handleSubmitSupplierFillIn() {
-    Modal.confirm({
-      title: '提交供应商填报',
-      content: '是否提交当前选中数据',
-      onOk: async () => {
-        const { success, message: msg } = await submitToSupplier({
-          supplierRecommendDemandId: flowId
-        })
-        if (success) {
-          message.success(msg)
-          uploadTable()
-          return
-        }
-        message.error(msg)
-      }
-    })
-  }
   // 监听二级路由关闭更新列表
   function listenerParentClose(event) {
     const { data = {} } = event;
