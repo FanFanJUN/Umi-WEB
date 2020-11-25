@@ -1,7 +1,7 @@
 /*
  * @Author:黄永翠
  * @Date: 2020-11-09 09:38:38
- * @LastEditTime: 2020-11-24 14:35:49
+ * @LastEditTime: 2020-11-25 10:47:52
  * @LastEditors: Please set LastEditors
  * @Description:审核实施计划-明细
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\index.js
@@ -90,24 +90,18 @@ const Index = (props) => {
         }
     }, [editData]);
     // 编辑和明细时构造treeData
-    const buildTreeData = (fatherList, sonList) => {
-        if (!fatherList || !sonList) return [];
-        let arr = JSON.parse(JSON.stringify(fatherList));
+    const buildTreeData = (sonList) => {
+        if(!sonList || sonList.length === 0) return [];
+        let arr = JSON.parse(JSON.stringify(sonList));
         arr.map(item => {
             item.id = item.systemId;
             item.key = item.systemId;
             item.title = item.systemName;
+            item.name = item.systemName;
+            item.code = item.systemCode;
             if (!item.children) {
                 item.children = [];
             }
-            sonList.forEach(value => {
-                value.id = value.systemId;
-                value.key = value.systemId;
-                value.title = value.systemName;
-                if (value.parentId === item.systemId) {
-                    item.children.push(value);
-                }
-            });
         });
         return arr;
     };
@@ -120,7 +114,7 @@ const Index = (props) => {
             res = await mergeContent({ lineId: ids })
             if (res.success) {
                 let resData = { ...res.data };
-                resData.treeData = buildTreeData(resData.fatherList, resData.sonList);
+                resData.treeData = buildTreeData(resData.sonList);
                 resData.reviewTeamGroupBoList = Object.values(resData.reviewTeamGroupBoMap);
                 console.log("整合的数据", resData);
                 setEditData(resData);
@@ -136,7 +130,7 @@ const Index = (props) => {
         let res = await findDetailsByReviewImplementPlanId({ id: query.id });
         if (res.success) {
             let resData = { ...res.data };
-            resData.treeData = buildTreeData(resData.fatherList, resData.sonList);
+            resData.treeData = buildTreeData(resData.sonList);
             console.log("获取到的数据res", resData)
             setEditData(resData);
         } else {
@@ -152,7 +146,7 @@ const Index = (props) => {
                 console.log("初始editData变化了吗", editData);
                 console.log("表单数据", values)
                 saveData = { ...editData, ...values };
-                if(query.pageState === "add") {
+                if (query.pageState === "add") {
                     let sessionLins = JSON.parse(sessionStorage.getItem('selectedMonthLIne'));
                     let pickObj = pick(sessionLins[0], pickpropertys);
                     saveData = { ...saveData, ...pickObj };
@@ -171,7 +165,7 @@ const Index = (props) => {
                     // delete item.ruleList;
                     return item;
                 });
-                if(query.pageState === "change") {
+                if (query.pageState === "change") {
                     if (!saveData.changeFileIdList) {
                         saveData.changeFileIdList = [];
                     }
@@ -189,7 +183,7 @@ const Index = (props) => {
 
     const handleSave = async (handleType) => {
         let saveData = getAllData();
-        if(!saveData) return({id: false, message: "数据不完整"});
+        if (!saveData) return ({ id: false, message: "数据不完整" });
         let res = {};
         setLoading(true);
         if (query.pageState === "add") {
@@ -203,13 +197,13 @@ const Index = (props) => {
         setLoading(false);
         if (res.success) {
             if (handleType === "publish") {
-                return {id: res.data, message: "保存成功"};
+                return { id: res.data, message: "保存成功" };
             } else {
                 message.success("保存成功")
             }
         } else {
             if (handleType === "publish") {
-                return {id: false, message: res.message};
+                return { id: false, message: res.message };
             } else {
                 message.error(res.message);
             }
