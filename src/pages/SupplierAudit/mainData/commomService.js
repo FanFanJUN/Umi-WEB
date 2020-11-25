@@ -230,13 +230,13 @@ export const ApplyOrganizationProps = {
   style: {
     width: '100%',
   },
-  treeNodeProps: (node) => {
-    if (node.nodeLevel === 0) {
-      return {
-        selectable: false,
-      };
-    }
-  },
+  // treeNodeProps: (node) => {
+  //   if (node.nodeLevel === 0) {
+  //     return {
+  //       selectable: false,
+  //     };
+  //   }
+  // },
 };
 
 // 二次分类物料组数据
