@@ -150,6 +150,14 @@ const FIELDS = [
     name: 'majorQualityProblem',
     label: '重大质量问题次数',
     type: 'number',
+    formLayout: {
+      labelCol: {
+        span: 12
+      },
+      wrapperCol: {
+        span: 12
+      }
+    },
     option: {
       rules: [
         {
@@ -172,6 +180,27 @@ const FIELDS = [
       ]
     }
   },
+  {
+    name: 'qualityProblemDealInvalid',
+    label: '质量问题处理不及时或无效次数',
+    formLayout: {
+      labelCol: {
+        span: 12
+      },
+      wrapperCol: {
+        span: 12
+      }
+    },
+    type: 'number',
+    option: {
+      rules: [
+        {
+          required: true,
+          message: '质量问题处理不及时或无效次数不能为空'
+        }
+      ]
+    }
+  }
 ];
 const COLUMNS = [
   {
@@ -233,6 +262,11 @@ const COLUMNS = [
   {
     title: '市场质量问题次数',
     dataIndex: 'marketQualityProblem',
+  },
+  {
+    title: '质量问题处理不及时或无效次数',
+    dataIndex: 'qualityProblemDealInvalid',
+    width: 250
   }
 ];
 const TFL = [

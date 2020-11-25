@@ -87,11 +87,18 @@ const ModalForm = forwardRef(({
       width={'80vw'}
       confirmLoading={confirmLoading}
     >
-      <Form {...formLayout}>
+      <Form>
         <Row gutter={[12, 0]}>
           {
             fields.map((field, keyIndex) => {
-              const { type, name, option, label, labelOptions = [], props = {}, readers = [] } = field;
+              const { type, name, option, label, formLayout = {
+                labelCol: {
+                  span: 8
+                },
+                wrapperCol: {
+                  span: 16
+                }
+              }, labelOptions = [], props = {}, readers = [] } = field;
               const Item = FormItemTypes[type] || Input;
               switch (type) {
                 case 'select':
@@ -100,9 +107,9 @@ const ModalForm = forwardRef(({
                       key={`${name}-${keyIndex}`}
                       span={12}
                     >
-                      <FormItem label={label}>
+                      <FormItem label={label} {...formLayout}>
                         {
-                          getFieldDecorator(name, option)(<Item style={{ width: '100%' }}>
+                          getFieldDecorator(name, option)(<Item style={{ width: '100%' }} {...props}>
                             {
                               labelOptions.map((lbo, indexKey) => (
                                 <Option
@@ -124,7 +131,7 @@ const ModalForm = forwardRef(({
                       key={`${name}-${keyIndex}`}
                       span={12}
                     >
-                      <FormItem label={label}>
+                      <FormItem label={label} {...formLayout}>
                         {
                           readers.map(field => getFieldDecorator(field.name)),
                           getFieldDecorator(name, option)(<Item style={{ width: '100%' }} {...props} form={form} />)
