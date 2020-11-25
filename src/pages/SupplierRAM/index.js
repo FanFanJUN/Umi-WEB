@@ -14,7 +14,7 @@ import { Header, AutoSizeLayout, AdvancedForm } from '../../components'
 import { ExtTable, utils, WorkFlow } from 'suid';
 import { Button, Input, Checkbox, Modal, message } from 'antd';
 import { commonProps, commonUrl, openNewTab, getFrameElement } from '../../utils';
-import { removeSupplierRecommendDemand, submitToSupplier } from '../../services/recommend';
+import { removeRecommendAccess, submitToSupplier } from '../../services/recommendAccess';
 import { stopApproveingOrder } from '../../services/supplier';
 const { Search } = Input;
 const { StartFlow } = WorkFlow;
@@ -109,7 +109,7 @@ export default () => {
   const right = (
     <>
       <Search
-        placeholder='需求单号或供应商名称'
+        placeholder='准入单号或供应商名称'
         allowClear
         onSearch={handleQuickSerach}
       />
@@ -137,7 +137,7 @@ export default () => {
       }
     },
     {
-      title: '需求单号',
+      title: '准入单号',
       dataIndex: 'docNumber'
     },
     {
@@ -181,7 +181,7 @@ export default () => {
   ].map(item => ({ ...item, align: 'center' }));
   const formItems = [
     {
-      title: '需求单号',
+      title: '准入单号',
       key: 'Q_LK_docNumber',
       props: {
         placeholder: '请输入采购单号'
@@ -250,14 +250,14 @@ export default () => {
   function handleCreate() {
     const { id = '' } = FRAMELEEMENT;
     const { pathname } = window.location;
-    openNewTab(`supplier/recommend/demand/create?frameElementId=${id}&frameElementSrc=${pathname}`, '新增供应商推荐需求', false)
+    openNewTab(`supplier/recommend/demand/create?frameElementId=${id}&frameElementSrc=${pathname}`, '新增供应商推荐准入', false)
   }
   // 处理编辑页签打开
   function handleEditor() {
     const [key] = selectedRowKeys;
     const { id = '' } = FRAMELEEMENT;
     const { pathname } = window.location;
-    openNewTab(`supplier/recommend/demand/editor?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '编辑供应商推荐需求', false)
+    openNewTab(`supplier/recommend/demand/editor?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '编辑供应商推荐准入', false)
   }
 
   // 填报信息确认页签打开
@@ -272,10 +272,10 @@ export default () => {
   async function handleRemove() {
     const [key] = selectedRowKeys;
     Modal.confirm({
-      title: '删除供应商推荐需求',
+      title: '删除供应商推荐准入',
       content: '删除后无法恢复，确定要删除当前所选数据？',
       onOk: async () => {
-        const { success, message: msg } = await removeSupplierRecommendDemand({
+        const { success, message: msg } = await removeRecommendAccess({
           supplierRecommendDemandId: key
         })
         if (success) {
