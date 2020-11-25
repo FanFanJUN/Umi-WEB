@@ -1,9 +1,9 @@
 /*
  * @Author: Li Cai
- * @LastEditors: Li Cai
+ * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:00:19
- * @LastEditTime: 2020-11-04 17:25:56
+ * @LastEditTime: 2020-11-25 15:52:28
  * @Description:  年度审核计划管理
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/index.js
  */
@@ -273,7 +273,7 @@ export default function () {
                 onClick={() => redirectToPage('add')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='TECHNICAL_DATA_SHARING_ADD'
+                key='SUPPLIER_AUDIT_YEAR_ADD'
             >新增</Button>)
         }
         {
@@ -281,7 +281,7 @@ export default function () {
                 onClick={() => redirectToPage('edit')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='TECHNICAL_DATA_SHARING_EDIT'
+                key='SUPPLIER_AUDIT_YEAR_EDIT'
                 disabled={
                     !checkOnlyOneSelect ||
                     data.selectedRows[0]?.state !== 'DRAFT' || data.selectedRows[0]?.flowStatus !== 'INIT'}
@@ -292,7 +292,7 @@ export default function () {
                 onClick={() => redirectToPage('delete')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='TECHNICAL_DATA_SHARING_DELETE'
+                key='SUPPLIER_AUDIT_YEAR_DELETE'
                 disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', 'DRAFT') || !judge(data.selectedRows, 'flowStatus', 'INIT')}
             >删除</Button>)
         }
@@ -301,7 +301,7 @@ export default function () {
                 onClick={() => redirectToPage('detail')}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='TECHNICAL_DATA_SHARING_DETAIL'
+                key='SUPPLIER_AUDIT_YEAR_DETAIL'
                 disabled={!checkOnlyOneSelect}
             >明细</Button>)
         }
@@ -314,7 +314,7 @@ export default function () {
                 callBack={handleComplete}
                 disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || !checkOnlyOneSelect}
                 businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewPlanYear'
-                key='SRM-SM-ACCOUNTSUPPLIER-EXAMINE'
+                key='SUPPLIER_AUDIT_YEAR_PUBLISH'
             >提交审核</StartFlow>)
         }
         {
@@ -322,7 +322,7 @@ export default function () {
                 businessId={data.selectedRowKeys[0]}
                 flowMapUrl='flow-web/design/showLook'
                 ignore={DEVELOPER_ENV}
-                key='SRM-SM-SUPPLIERMODEL_HISTORY'
+                key='SUPPLIER_AUDIT_YEAR_HISTORY'
                 disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || !checkOnlyOneSelect}
             >
                 <Button className={styles.btn} disabled={data.selectedRowKeys.length !== 1}>审核历史</Button>
@@ -334,7 +334,7 @@ export default function () {
                 className={styles.btn}
                 disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || !checkOnlyOneSelect}
                 ignore={DEVELOPER_ENV}
-                key='TECHNICAL_DATA_SHARING_ALLOT'
+                key='SUPPLIER_AUDIT_YEAR_ALLOT'
             >终止审核</Button>)
         }
     </>;

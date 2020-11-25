@@ -38,6 +38,8 @@ class UploadFile extends React.Component {
     } else if (!nextProps.entityId && this.props.entityId) {
       this.entityId = '';
       this.updateFile();
+    } else if (nextProps.cleanFile) {
+      this.setState({ fileList: [], completeUploadFile: [] });
     }
   }
 
@@ -140,7 +142,6 @@ class UploadFile extends React.Component {
         }
       }
       fileList.map(item => {
-        console.log(item, ';item')
         if (item.status === 'done') {
           item.url = host + baseUrl + '/supplierRegister/download?docId=' + item.response[0];
           item.thumbUrl = `${origin}/api-gateway/edm-service/preview` + '?docId=' + item.response[0];
@@ -330,7 +331,7 @@ class UploadFile extends React.Component {
             beforeUpload={this.beforeUpload}
             showUploadList={false}
             fileList={this.state.fileList}
-            action={window.location.origin + BASE_URL + baseUrl + "/supplierRegister/uploadNoAuth"}
+            action={window.location.origin + BASE_URL + baseUrl + '/supplierRegister/uploadNoAuth'}
             headers={this.getHeaders()}
             onChange={this.handleChange}
             style={{ width: '100%' }}
@@ -347,8 +348,9 @@ class UploadFile extends React.Component {
 }
 
 UploadFile.defaultProps = {
-  downloadClick: () => {}
-}
+  downloadClick: () => {
+  },
+};
 
 UploadFile.protoType = {
   //单据 id,根据这个 id 获取附件明细
