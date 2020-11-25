@@ -14,7 +14,7 @@ import {
   FindByFiltersConfig, SupplierConfig,
 } from '../mainData/commomService';
 import {
-  flowProps, judge,
+  flowProps, judge, reportStateProps,
   stateProps,
 } from '../../QualitySynergy/commonProps';
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
@@ -159,18 +159,6 @@ const AuditReportManagement = forwardRef(({}, ref,) => {
 
   // 高级查询搜索
   const handleAdvancedSearch = (value) => {
-    // value.materialCode = value.materialCode_name;
-    // value.materialGroupCode = value.materialGroupCode_name;
-    // value.strategicPurchaseCode = value.strategicPurchaseCode_name;
-    // value.buCode = value.buCode_name;
-    // value.state = value.state_name;
-    // value.allotSupplierState = value.allotSupplierState_name;
-    // delete value.materialCode_name;
-    // delete value.materialGroupCode_name;
-    // delete value.strategicPurchaseCode_name;
-    // delete value.buCode_name;
-    // delete value.state_name;
-    // delete value.allotSupplierState_name;
     setData(v => ({ ...v, advancedSearchValue: value }));
     tableRef.current.manualSelectedRows();
     tableRef.current.remoteDataRefresh();
@@ -192,16 +180,16 @@ const AuditReportManagement = forwardRef(({}, ref,) => {
     },
     { title: '拟制人', key: 'applyName', props: { placeholder: '输入拟制人' } },
     { title: '拟制日期', key: 'applyDateStart', type: 'datePicker', props: { placeholder: '选择拟制日期' } },
-    { title: '状态', key: 'state', type: 'list', props: stateProps },
+    { title: '状态', key: 'status', type: 'list', props: reportStateProps },
     { title: '审批状态', key: 'flowState', type: 'list', props: flowProps },
     { title: '供应商', key: 'supplierCode', type: 'list', props: supplierPropsNew },
     { title: '代理商', key: 'agentCode', type: 'list', props: agentList },
-    { title: '物料分类', key: 'materialSecondClassifyCode', type: 'tree', props: materialClassProps },
+    { title: '物料分类', key: 'materialGroupCode', type: 'tree', props: materialClassProps },
   ];
 
   const columns = [
     {
-      title: '状态', dataIndex: 'state', width: 80, render: v => {
+      title: '状态', dataIndex: 'status', width: 80, render: v => {
         switch (v) {
           case 'DRAFT':
             return '草稿';
@@ -224,13 +212,13 @@ const AuditReportManagement = forwardRef(({}, ref,) => {
         }
       },
     },
-    { title: '审核报告', dataIndex: 'reviewRequirementCode', width: 200 },
-    { title: '审核实施计划号', dataIndex: 'reviewRequirementCode', width: 200 },
+    { title: '审核报告', dataIndex: 'auditReportManagCode', width: 200 },
+    { title: '审核实施计划号', dataIndex: 'reviewImplementPlanCode', width: 200 },
     { title: '需求公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 200 },
-    { title: '供应商', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200 },
-    { title: '物料分类', dataIndex: 'orgName', ellipsis: true, width: 200 },
-    { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 200 },
-    { title: '拟制时间', dataIndex: 'applyDate', ellipsis: true, width: 200 },
+    { title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 200 },
+    { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 200 },
+    { title: '拟制人员', dataIndex: 'applyAccount', ellipsis: true, width: 200 },
+    { title: '拟制时间', dataIndex: 'applyName', ellipsis: true, width: 200 },
   ].map(item => ({ ...item, align: 'center' }));
 
   // 提交审核验证
@@ -353,11 +341,11 @@ const AuditReportManagement = forwardRef(({}, ref,) => {
             columns={columns}
             store={{
               params: {
-                ...data.checkedCreate ? { onlyOwn: data.checkedCreate } : null,
+                ...data.checkedCreate ? { onlyMy: data.checkedCreate } : null,
                 quickSearchValue: data.quickSearchValue,
                 ...data.advancedSearchValue,
               },
-              url: `${recommendUrl}/api/reviewRequirementService/findByPage`,
+              url: `${recommendUrl}/api/arAuditReportManagService/findListByPage`,
               type: 'POST',
             }}
             checkbox

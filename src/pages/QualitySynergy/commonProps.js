@@ -1035,3 +1035,20 @@ export const findMaterialCode = {
   },
   placeholder: '选择物料代码',
 };
+
+// 状态
+export const reportStateProps = {
+  allowClear: true,
+  dataSource: [
+    {
+      code: 'DRAFT',
+      name: '草稿',
+    },
+    {
+      code: 'EFFECT',
+      name: '生效',
+    },
+  ],
+  placeholder: '选择状态',
+  ...commonProps,
+}
