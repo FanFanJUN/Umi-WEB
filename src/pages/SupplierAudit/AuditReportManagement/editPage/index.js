@@ -116,7 +116,9 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
     saveAuditReport(data.editData).then(res => {
       if (res.success) {
         message.success(res.message);
-        handleBack();
+        if (!isApprove) {
+          handleBack();
+        }
       } else {
         message.error(res.message);
       }
