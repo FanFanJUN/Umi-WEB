@@ -7,9 +7,12 @@ const { create } = Form;
 function CommonForm({
   form
 }, ref) {
-  useImperativeHandle(ref, ({
-
+  useImperativeHandle(ref, () => ({
+    hide
   }))
+  function hide() {
+
+  }
   const { getFieldDecorator } = form;
   return (
     <div>
@@ -18,4 +21,6 @@ function CommonForm({
   )
 }
 
-export default forwardRef(create()(CommonForm))
+const ForwardRef = forwardRef(CommonForm)
+
+export default create()(ForwardRef)

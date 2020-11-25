@@ -339,7 +339,8 @@ export default [
         title: '供应商推荐准入管理'
       },
       {
-        path: '/supplier/recommend/admittance/manage/create'
+        path: '/supplier/recommend/admittance/manage/create',
+        component: './SupplierRAM/Create'
       },
       /**供应商推荐准入 end */
       //  企业社会责任调查表选项主数据
@@ -359,11 +360,13 @@ export default [
         title: '供应商评价项目'
       },
       {
-        path: '/supplier/appraise/project/team/approve', component: './SupplierAppraise/Approve/Team',
+        path: '/supplier/appraise/project/team/approve',
+        component: './SupplierAppraise/Approve/Team',
         title: '采购小组确认'
       },
       {
-        path: '/supplier/appraise/project/leader/approve', component: './SupplierAppraise/Approve/Leader',
+        path: '/supplier/appraise/project/leader/approve',
+        component: './SupplierAppraise/Approve/Leader',
         title: '领导确认'
       },
       {
