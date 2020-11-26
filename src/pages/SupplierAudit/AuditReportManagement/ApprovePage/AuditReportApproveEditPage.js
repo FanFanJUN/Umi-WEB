@@ -4,10 +4,12 @@
  * @Date: 2020-11-25
  */
 import React, { useRef } from 'react';
-import { WorkFlow } from 'suid'
+import { WorkFlow } from 'suid';
 import { router } from 'dva';
 import { closeCurrent } from '../../../../utils';
 import AuditReportManagementView from '../editPage';
+import { saveAuditReport } from '../../mainData/commomService';
+import { message } from 'antd';
 
 const AuditReportApproveEditPage = () => {
 
@@ -20,11 +22,29 @@ const AuditReportApproveEditPage = () => {
   };
 
   // 新增
-  const beforeSubmit =()=> {
-    getRef.current.handleSave();
+  const beforeSubmit = async () => {
+    let data = await getRef.current.getAllData();
+    if(!data){
+      return false
+    }
+    return new Promise(function(resolve, reject) {
+      saveAuditReport(data).then(res => {
+        if (res.success) {
+          const data = { businessKey: res.data };
+          resolve({
+            success: true,
+            message: res.message,
+            data,
+          });
+        } else {
+          message.error(res.message);
+        }
+      }).catch(err => reject(err));
+    });
   };
 
-  return(
+
+  return (
     <WorkFlow.Approve
       businessId={query.id}
       taskId={query.taskId}
@@ -40,8 +60,8 @@ const AuditReportApproveEditPage = () => {
       />
 
     </WorkFlow.Approve>
-  )
+  );
 
 };
 
-export default AuditReportApproveEditPage
+export default AuditReportApproveEditPage;
