@@ -35,7 +35,7 @@ const AddModal = forwardRef(({ form }, ref) => {
   const onOk = () => {
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        console.log(values);
+        openNewTab('supplierAudit/AuditBriefingManagementViewAdd?pageState=add&id='+values, '审核简报-新增', false);
         setVisible(false);
       } else {
         message.error('请完成表单填写');
