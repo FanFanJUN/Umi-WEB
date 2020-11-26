@@ -25,6 +25,7 @@ import AuditQuestions from '../components/AuditQuestions';
 import AuditComments from '../components/AuditComments';
 import { WorkFlow } from 'suid';
 import OpinionModal from '../components/OpinionModal';
+import OpinionModalForLeader from '../components/OpinionModalForLeader';
 
 const { StartFlow } = WorkFlow;
 
@@ -34,10 +35,12 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
     getModalData,
     handleBeforeStartFlow,
     getAllData,
+    getLeaderModalData
   }));
   const { query } = router.useLocation();
   const getBaseInfoFormRef = useRef(null);
   const getModalRef = useRef(null);
+  const getLeaderModalRef = useRef(null);
   const getUser = () => {
     const userId = getUserId();
     const userName = getUserName();
@@ -170,9 +173,22 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
   const showModal = () => {
     getModalRef.current.handleModalVisible(true);
   };
+  const showLeaderModal = () => {
+    getLeaderModalRef.current.handleModalVisible(true);
+  };
 
   const getModalData = async () => {
     let modalData = await getModalRef.current.getFormValue();
+    if (!modalData) {
+      message.error('请填写意见！');
+      return false;
+    } else {
+      return modalData;
+    }
+  };
+
+  const getLeaderModalData = async () => {
+    let modalData = await getLeaderModalRef.current.getFormValue();
     if (!modalData) {
       message.error('请填写意见！');
       return false;
@@ -205,9 +221,11 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
                     }
                   </StartFlow></div>
             }
-            {(purchaseApprove || leaderApprove) ? <Button type='primary' className={styles.btn}
-                                                          onClick={() => showModal()}>{purchaseApprove ? '小组意见' : (leaderApprove ? '领导意见' : '')}</Button> : null}
-          </div>
+            {purchaseApprove ? <Button type='primary' className={styles.btn}
+                                                          onClick={() => showModal()}>小组意见</Button> : null}
+            {leaderApprove ? <Button type='primary' className={styles.btn}
+                                                          onClick={() => showLeaderModal()}> 领导意见</Button> : null}
+                                                          </div>
         </Affix>
         <BaseInfoForm
           editData={data.editData.arAuditReportManagBasicVo || {}}
@@ -246,10 +264,12 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
         <AuditComments
           editData={data.editData.reviewSuggestionVo || {}}/>
         <OpinionModal
-          isLeader={!!leaderApprove}
-          editData={leaderApprove ? (data.editData || {}) : {}}
-          title={purchaseApprove ? '小组意见' : (leaderApprove ? '领导意见' : '')}
+          title={'小组意见'}
           wrappedComponentRef={getModalRef}/>
+        <OpinionModalForLeader
+          editData={data.editData || {}}
+          title={'领导意见'}
+          wrappedComponentRef={getLeaderModalRef}/>
       </Spin>
     </div>
   );
