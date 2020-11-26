@@ -780,3 +780,12 @@ export const findVoById = async (params = {}) => {
   });
 };
 
+// 审核报告delete
+export const deleteReportById = async (params = {}) => {
+  const url = `${recommendUrl}/api/arAuditReportManagService/deleteReportById`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+};

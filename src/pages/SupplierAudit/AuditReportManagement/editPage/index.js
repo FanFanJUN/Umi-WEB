@@ -59,7 +59,7 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
     if (pageState === 'add') {
       getUser();
       findInitOne(id);
-      setData((value) => ({ ...value, type: state, isView: false, title: '审核报告管理-新增' }));
+      setData((value) => ({ ...value, type: 'add', isView: false, title: '审核报告管理-新增' }));
     } else if (pageState === 'edit' || isApproveEdit) {
       findOne(id);
       setData((value) => ({
@@ -70,10 +70,10 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
       }));
     } else if (pageState === 'detail' || isApproveDetail) {
       findOne(id);
-      setData((value) => ({ ...value, type: state, isView: true, title: `审核报告管理-明细` }));
+      setData((value) => ({ ...value, type: 'detail', isView: true, title: `审核报告管理-明细` }));
     } else if (purchaseApprove || leaderApprove) {
       findOne(id);
-      setData((value) => ({ ...value, type: state, isView: true, title: `审核报告管理-审批` }));
+      setData((value) => ({ ...value, type: 'detail', isView: true, title: `审核报告管理-审批` }));
     }
   }, [query]);
 
@@ -162,14 +162,12 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
 
   const saveModalData = async () => {
     let modalData = await getModalRef.current.getFormValue();
-    console.log(modalData);
-    // saveAuditReport(data.editData).then(res => {
-    //   if (res.success) {
-    //     message.success(res.message);
-    //   } else {
-    //     message.error(res.message);
-    //   }
-    // }).catch(err => message.error(err.message));
+    if (!modalData) {
+      message.error('请填写意见！');
+      return false;
+    }else {
+      console.log(modalData)
+    }
   };
   return (
     <div>
@@ -178,22 +176,22 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
           <div className={classnames(styles.fbc, styles.affixHeader)}>
             <span className={styles.title}>{data.title}</span>
             {
-              (data.type !== 'detail' || !isApprove) &&
-              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <Button className={styles.btn} onClick={handleBack}>返回</Button>
-                <Button className={styles.btn} onClick={() => handleSave()}>暂存</Button>
-                <StartFlow
-                  className={styles.btn}
-                  type='primary'
-                  beforeStart={handleBeforeStartFlow}
-                  callBack={handleBack}
-                  disabled={false}
-                  businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewRequirement'
-                >
-                  {
-                    loading => <Button loading={loading} type='primary'>提交</Button>
-                  }
-                </StartFlow></div>
+              isApprove ? null : (data.type !== 'detail') &&
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  <Button className={styles.btn} onClick={handleBack}>返回</Button>
+                  <Button className={styles.btn} onClick={() => handleSave()}>暂存</Button>
+                  <StartFlow
+                    className={styles.btn}
+                    type='primary'
+                    beforeStart={handleBeforeStartFlow}
+                    callBack={handleBack}
+                    disabled={false}
+                    businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewRequirement'
+                  >
+                    {
+                      loading => <Button loading={loading} type='primary'>提交</Button>
+                    }
+                  </StartFlow></div>
             }
             {(purchaseApprove || leaderApprove) ? <Button type='primary' className={styles.btn}
                                                           onClick={() => showModal()}>{purchaseApprove ? '小组意见' : (leaderApprove ? '领导意见' : '')}</Button> : null}
@@ -236,6 +234,10 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
         <AuditComments
           editData={data.editData.reviewSuggestionVo || {}}/>
         <OpinionModal
+          // isLeader={!!leaderApprove}
+          // editData={leaderApprove ? (data.editData || {}) : {}}
+          isLeader={true}
+          editData={{remark:false}}
           title={purchaseApprove ? '小组意见' : (leaderApprove ? '领导意见' : '')}
           wrappedComponentRef={getModalRef}/>
       </Spin>

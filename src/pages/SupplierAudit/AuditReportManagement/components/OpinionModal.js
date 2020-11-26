@@ -19,7 +19,7 @@ const formLayout = {
     span: 14,
   },
 };
-const OpinionModal = forwardRef(({ form, title }, ref) => {
+const OpinionModal = forwardRef(({ isLeader, editData, form, title }, ref) => {
   useImperativeHandle(ref, () => ({
     handleModalVisible,
     getFormValue,
@@ -27,6 +27,9 @@ const OpinionModal = forwardRef(({ form, title }, ref) => {
   const [visible, setVisible] = useState(false);
   const [cleanFile, setCleanFile] = useState(false);
   const [needOpinion, setNeedOpinion] = useState(false);
+  useEffect(() => {
+    setNeedOpinion(!editData.needOpinion);
+  }, [editData]);
   useEffect(() => {
     setRequired();
   }, [needOpinion]);
@@ -37,7 +40,7 @@ const OpinionModal = forwardRef(({ form, title }, ref) => {
   const getFormValue = () => {
     let result = false;
     form.validateFieldsAndScroll((err, values) => {
-      if(!err){
+      if (!err) {
         result = values;
       }
     });
@@ -51,21 +54,25 @@ const OpinionModal = forwardRef(({ form, title }, ref) => {
       setNeedOpinion(true);
     }
   };
-  const setRequired=()=>{
-    form.validateFields(['opinion'], {force: true})
+  const setRequired = () => {
+    form.validateFields(['opinion'], { force: true });
   };
 
   const onCancel = () => {
     form.setFieldsValue({
+      remark: isLeader ? editData.remark : true,
       opinion: null,
       docIds: [],
     });
+    if (isLeader) {
+      setNeedOpinion(!editData.needOpinion);
+    }
     setCleanFile(true);
     setVisible(false);
   };
   const onOk = () => {
     form.validateFieldsAndScroll((err, values) => {
-      if(!err){
+      if (!err) {
         setVisible(false);
       }
     });
@@ -86,7 +93,7 @@ const OpinionModal = forwardRef(({ form, title }, ref) => {
       <Col span={24}>
         <FormItem label="是否按审核意见执行" {...formLayout}>
           {getFieldDecorator('remark', {
-            initialValue: true,
+            initialValue: isLeader ? editData.remark : true,
             rules: [
               {
                 required: true,

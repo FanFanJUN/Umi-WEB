@@ -10,7 +10,7 @@ import { Button, Checkbox, Input, message, Modal } from 'antd';
 import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
 import { ExtTable, utils, WorkFlow } from 'suid';
 import {
-  CompanyConfig, DeleteAuditRequirementsManagement, EndFlow,
+  CompanyConfig, deleteReportById, EndFlow,
   FindByFiltersConfig,
 } from '../mainData/commomService';
 import {
@@ -136,8 +136,7 @@ const AuditReportManagement = forwardRef(({}, ref) => {
       okType: 'danger',
       cancelText: '否',
       onOk: () => {
-        const codeArr = data.selectedRows.map(item => item.reviewRequirementCode);
-        DeleteAuditRequirementsManagement(codeArr).then(res => {
+        deleteReportById(data.selectedRows[0].id).then(res => {
           if (res.success) {
             message.success(res.message);
             tableRef.current.manualSelectedRows();
@@ -320,7 +319,7 @@ const AuditReportManagement = forwardRef(({}, ref) => {
               url: `${recommendUrl}/api/arAuditReportManagService/findListByPage`,
               type: 'POST',
             }}
-            checkbox
+            checkbox={{ multiSelect: false }}
             allowCancelSelect={true}
             remotePaging={true}
             ref={tableRef}
