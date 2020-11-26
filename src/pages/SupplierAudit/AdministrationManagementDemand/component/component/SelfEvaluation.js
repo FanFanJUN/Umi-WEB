@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ComboList, ExtModal, ExtTable } from 'suid';
-import { Button, Input, InputNumber, message } from 'antd';
+import { Button, Input, InputNumber, message, Upload as ImportUpload } from 'antd';
 import {
   GetSelfEvaluationTimeApi,
   SaveResultsEntryApi,
@@ -12,6 +12,8 @@ import { getDocIdForArray } from '../../../../../utils/utilTool';
 import { ApplicableStateArr, ApplicableStateProps } from '../../../../QualitySynergy/commonProps';
 import Upload from '../../../../QualitySynergy/compoent/Upload';
 import SendBack from './SendBack';
+import { recommendUrl } from '../../../../../utils/commonUrl';
+import { BASE_URL } from '../../../../../utils/constants';
 
 const SelfEvaluation = props => {
   let apiParams = [];
@@ -19,6 +21,10 @@ const SelfEvaluation = props => {
 
   // type为demand时为查看供应商自评、不存在时为自评
   const { type, visible, isView } = props;
+
+  const [fileList, setFileList] = useState([])
+
+  const [updateLoading, setUpdateLoading] = useState(false)
 
   const columns = [
     {
@@ -64,7 +70,9 @@ const SelfEvaluation = props => {
       title: '附件', dataIndex: 'attachRelatedIds', width: 150,
       render: (v, data) => !data.children && <Upload
         entityId={v} type={type ? 'show' : ''}
-        onChange={(value) => data.attachRelatedIds = value}
+        onChange={(value) => {
+          data.attachRelatedIds = value;
+        }}
       />,
     },
   ].map(item => ({ ...item, align: 'center' }));
@@ -179,6 +187,51 @@ const SelfEvaluation = props => {
     setData(v => ({...v, sendBackVisible: true}))
   }
 
+  const exportData = () => {
+    const url = `/service.api/${recommendUrl}/srController/downloadResultTemplate?reviewImplementManagementId=${props.reviewImplementPlanCode}`;
+    window.open(url);
+  }
+
+  // 文件上传之前(判断选中文件格式并封装fileList)
+  const beforeUpload = (file) => {
+    let sindex = file.name.lastIndexOf('.');
+    let ext = file.name.substring(sindex + 1, file.name.length);
+    if (sindex < 0) {
+      message.error('请上传excel文件');
+    } else {
+      if (ext !== 'xls' && ext !== 'xlsx') {
+        message.error('请上传excel文件');
+      } else {
+        setFileList([...fileList, file]);
+        console.log('fileList', file);
+      }
+    }
+  };
+
+  // 选择文件上传后返回的状态
+  const handleChange = (res) => {
+    const { status, response } = res.file;
+    if (status === 'uploading') {
+      setUpdateLoading(true);
+    }
+    if (status === 'done') {
+      if (response.status === 'SUCCESS') {
+        let newData = JSON.parse(JSON.stringify(response.data));
+        newData = buildTree(newData);
+        setData(v => ({...v, dataSource: newData}))
+        console.log(newData, '导入的数据');
+        message.success('导入成功')
+        setUpdateLoading(false);
+      } else if (response.status === 'FAILURE') {
+        message.error(response.message);
+        setUpdateLoading(false);
+      }
+    } else if (status === 'error') {
+      setUpdateLoading(false);
+      message.error('上传失败');
+    }
+  };
+
   return (
     <ExtModal
       width={'170vh'}
@@ -199,7 +252,23 @@ const SelfEvaluation = props => {
                    disabled={true} value={data.time}/>
           </div>
           : <>
-            <Button>批量导入</Button>
+            <Button style={{ marginRight: '5px' }} key="downLoad" onClick={exportData}>批量导出</Button>
+            <ImportUpload
+              name="file"
+              beforeUpload={beforeUpload}
+              showUploadList={false}
+              fileList={fileList}
+              action={window.location.origin + BASE_URL + `${recommendUrl}/srController/importResultForSupplier`}
+              data={{
+                reviewImplementManagementId: props.reviewImplementPlanCode,
+              }}
+              onChange={handleChange}
+              style={{ width: '100%' }}
+            >
+              <Button type='primary' style={{ marginLeft: 5 }} key="chooseFile" loading={updateLoading}>
+                批量录入
+              </Button>
+            </ImportUpload>
           </>
       }
       <ExtTable
