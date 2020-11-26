@@ -1,81 +1,78 @@
 /**
- * @Description: 评审得分
+ * @Description:  审核范围表单
  * @Author: M!keW
  * @Date: 2020-11-17
  */
 
 import React, { useEffect, useImperativeHandle, useState } from 'react';
 import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/edit/BaseInfo.less';
-import { Form } from 'antd';
-import { ExtTable } from 'suid';
-import { getRandom } from '../../../QualitySynergy/commonProps';
+import { Form, Tree } from 'antd';
 
-const AuditScoreForm = React.forwardRef(({ form, isView, editData, type }, ref) => {
+const DirectoryTree = Tree.DirectoryTree;
+const TreeNode = Tree.TreeNode;
+let keys = [];
+
+const AuditScopeForm = React.forwardRef(({ form, isView, editData, type }, ref) => {
   useImperativeHandle(ref, () => ({}));
-  const [dataSource, setDataSource] = useState([]);
   useEffect(() => {
-    transferData();
+    getTreeData();
   }, [editData]);
-  const transferData = () => {
+  const [treeData, setTreeData] = useState([]);
+  const [checkedKeys, setCheckedKeys] = useState([]);
+  //初始化获取树的数据
+  const getTreeData = () => {
+    setTreeData(editData);
     if (editData && editData.length > 0) {
       let tree = JSON.parse(JSON.stringify(editData));
-      getTreeData(tree);
+      getCheckedKeys(tree);
     }
   };
-
-  const getTreeData = (tree) => {
+  const getCheckedKeys = (tree) => {
     tree.forEach(item => {
-      if (!(item.children && item.children.length > 0) && item.reviewRuleList) {
-        let reviewRuleList = JSON.parse(JSON.stringify(item.reviewRuleList));
-        reviewRuleList = reviewRuleList.map(item => ({ ...item, id: getRandom(10) }));
-        item.children = [];
-        item.children.push(...reviewRuleList);
-      }
+      keys.push(item.id);
       if (item.children && item.children.length > 0) {
-        getTreeData(item.children);
+        getCheckedKeys(item.children);
       }
     });
-    setDataSource(tree);
+    keys = Array.from(new Set(keys));
+    setCheckedKeys(keys);
   };
-  const columns = [
-    {
-      title: '', dataIndex: 'id', width: 1, render: v => {
-      },
-    },
-    { title: '类别', dataIndex: 'systemName', width: 200, required: true },
-    { title: '指标名称', dataIndex: 'ruleName', ellipsis: true, width: 100 },
-    { title: '指标定义', dataIndex: 'definition', ellipsis: true, width: 400 },
-    { title: '评分标准', dataIndex: 'scoringStandard', ellipsis: true, width: 400 },
-    { title: '标准分', dataIndex: 'highestScore', width: 100 },
-    { title: '不适用', dataIndex: 'notApplyScore', width: 100 },
-    {
-      title: '审核得分',
-      dataIndex: ' reviewScore',
-      width: 100,
-      render: (text) => <a onClick={() => console.log('这是超链接')}>{text}</a>,
-    },
-    { title: '百分比', dataIndex: 'percentage', width: 100 },
-    { title: '评定等级', dataIndex: 'performanceRating', width: 100 },
-    { title: '风险等级', dataIndex: 'riskRating', width: 100 },
-  ].map(item => ({ ...item, align: 'center' }));
+  const renderTreeNodes = (data) => {
+    if (data.length > 0) {
+      return data.map((item) => {
+        if (item.children && item.children.length > 0) {
+          return (
+            <TreeNode
+              disableCheckbox={true}
+              title={item.systemName} key={item.id}>
+              {renderTreeNodes(item.children)}
+            </TreeNode>
+          );
+        }
+        return <TreeNode
+          disableCheckbox={true}
+          title={item.systemName}
+          key={item.id} isLeaf/>;
+      });
+    } else {
+      return;
+    }
+  };
   return (
     <div className={styles.wrapper}>
       <div className={styles.bgw}>
-        <div className={styles.title}>评审得分</div>
+        <div className={styles.title}>审核范围</div>
         <div className={styles.content}>
-          <ExtTable
-            bordered={true}
-            rowKey={(v) => v.id}
-            showSearch={false}
-            height={'500px'}
-            defaultExpandAllRows={true}
-            lineNumber={false}
-            columns={columns}
-            dataSource={dataSource}
-          />
+          {treeData && treeData.length > 0 && < DirectoryTree
+            defaultExpandAll
+            checkedKeys={checkedKeys}
+            checkable
+          >
+            {renderTreeNodes(treeData)}
+          </DirectoryTree>}
         </div>
       </div>
     </div>
   );
 });
-export default Form.create()(AuditScoreForm);
+export default Form.create()(AuditScopeForm);
