@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:49:50
- * @LastEditTime: 2020-11-25 16:54:20
+ * @LastEditTime: 2020-11-26 15:51:23
  * @LastEditors: Please set LastEditors
  * @Description: I审核实施计划-审核计划
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\AuditPlan.js
@@ -87,8 +87,8 @@ const AuditPlan = (props) => {
                 <div className={styles.title}>审核计划</div>
                 <div className={styles.content}>
                     <Row>
-                        <Col span={12}>
-                            <FormItem label="审核准则" {...formLayout}>
+                        <Col span={24}>
+                            <FormItem label="审核准则" {...formLongLayout}>
                                 {isView ? <div style={{ paddingTop: "20px" }}>
                                     {
                                         seleteList && seleteList.map((item, index) => <Row style={{ height: "24px" }} key={item.standardCode}>
