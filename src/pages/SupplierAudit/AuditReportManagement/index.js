@@ -11,11 +11,10 @@ import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/in
 import { ExtTable, utils, WorkFlow } from 'suid';
 import {
   CompanyConfig, DeleteAuditRequirementsManagement, EndFlow,
-  FindByFiltersConfig, SupplierConfig,
+  FindByFiltersConfig,
 } from '../mainData/commomService';
 import {
   flowProps, judge, reportStateProps,
-  stateProps,
 } from '../../QualitySynergy/commonProps';
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
@@ -34,20 +33,20 @@ const supplierPropsNew = {
   reader: {
     name: 'name',
     field: ['code'],
-    description: 'code'
+    description: 'code',
   },
-  placeholder: '选择供应商'
+  placeholder: '选择供应商',
 };
 const agentList = {
   ...supplierProps,
   reader: {
     name: 'name',
     field: ['code'],
-    description: 'code'
+    description: 'code',
   },
-  placeholder: '选择代理商'
+  placeholder: '选择代理商',
 };
-const AuditReportManagement = forwardRef(({}, ref,) => {
+const AuditReportManagement = forwardRef(({}, ref) => {
   const tableRef = useRef(null);
   useEffect(() => {
     window.parent.frames.addEventListener('message', listenerParentClose, false);
@@ -69,7 +68,7 @@ const AuditReportManagement = forwardRef(({}, ref,) => {
     advancedSearchValue: {},
     selectedRowKeys: [],
     selectedRows: [],
-    modalVisible:false
+    modalVisible: false,
   });
 
   const getModalRef = useRef(null);
@@ -85,16 +84,10 @@ const AuditReportManagement = forwardRef(({}, ref,) => {
         showModal();
         break;
       case 'edit':
-        openNewTab('supplierAudit/AuditReportManagementEdit?pageState=edit&id='+data.selectedRows[0].id, '审核报告管理-编辑', false);
+        openNewTab('supplierAudit/AuditReportManagementEdit?pageState=edit&id=' + data.selectedRows[0].id, '审核报告管理-编辑', false);
         break;
       case 'detail':
-        openNewTab('supplierAudit/AuditReportManagementDetail?pageState=detail&id='+data.selectedRows[0].id, '审核报告管理-明细', false);
-        break;
-      case 'delete':
-        deleteList();
-        break;
-      case 'endFlow':
-        endFlow();
+        openNewTab('supplierAudit/AuditReportManagementDetail?pageState=detail&id=' + data.selectedRows[0].id, '审核报告管理-明细', false);
         break;
     }
   };
@@ -106,7 +99,7 @@ const AuditReportManagement = forwardRef(({}, ref,) => {
   };
 
   // 新增
-  const showModal=()=> {
+  const showModal = () => {
     getModalRef.current.handleModalVisible(true);
   };
 
@@ -188,37 +181,15 @@ const AuditReportManagement = forwardRef(({}, ref,) => {
   ];
 
   const columns = [
-    {
-      title: '状态', dataIndex: 'status', width: 80, render: v => {
-        switch (v) {
-          case 'DRAFT':
-            return '草稿';
-          case 'EFFECT':
-            return '生效';
-          case 'CHANGING':
-            return '变更中';
-        }
-      },
-    },
-    {
-      title: '审批状态', dataIndex: 'flowStatus', width: 200, render: v => {
-        switch (v) {
-          case 'INIT':
-            return '未进入流程';
-          case 'INPROCESS':
-            return '流程中';
-          case 'COMPLETED':
-            return '流程处理完成';
-        }
-      },
-    },
+    { title: '状态', dataIndex: 'arAuditReportManagStatusRemark', width: 80 },
+    { title: '审批状态', dataIndex: 'flowStatusRemark', width: 200 },
     { title: '审核报告', dataIndex: 'auditReportManagCode', width: 200 },
     { title: '审核实施计划号', dataIndex: 'reviewImplementPlanCode', width: 200 },
     { title: '需求公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 200 },
     { title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 200 },
     { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 200 },
-    { title: '拟制人员', dataIndex: 'applyAccount', ellipsis: true, width: 200 },
-    { title: '拟制时间', dataIndex: 'applyName', ellipsis: true, width: 200 },
+    { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 200 },
+    { title: '拟制时间', dataIndex: 'createdDate', ellipsis: true, width: 200 },
   ].map(item => ({ ...item, align: 'center' }));
 
   // 提交审核验证
@@ -240,7 +211,7 @@ const AuditReportManagement = forwardRef(({}, ref,) => {
         onClick={() => redirectToPage('add')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='TECHNICAL_DATA_SHARING_ADD'
+        key='SRM-SM-AUDITREPORT-ADD'
       >新增</Button>)
     }
     {
@@ -248,17 +219,17 @@ const AuditReportManagement = forwardRef(({}, ref,) => {
         onClick={() => redirectToPage('edit')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='TECHNICAL_DATA_SHARING_EDIT'
-        disabled={!judge(data.selectedRows, 'state', 'DRAFT') || data.selectedRowKeys.length !== 1 || !judge(data.selectedRows, 'flowStatus', 'INIT')}
+        key='SRM-SM-AUDITREPORT-EDIT'
+        disabled={!judge(data.selectedRows, 'status', 'Draft') || data.selectedRowKeys.length !== 1 || !judge(data.selectedRows, 'flowStatus', 'INIT')}
       >编辑</Button>)
     }
     {
       authAction(<Button
-        onClick={() => redirectToPage('delete')}
+        onClick={() => deleteList()}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='TECHNICAL_DATA_SHARING_DELETE'
-        disabled={data.selectedRowKeys.length === 0}
+        key='SRM-SM-AUDITREPORT-DELETE'
+        disabled={!judge(data.selectedRows, 'status', 'Draft') || data.selectedRowKeys.length !== 1}
       >删除</Button>)
     }
     {
@@ -266,7 +237,7 @@ const AuditReportManagement = forwardRef(({}, ref,) => {
         onClick={() => redirectToPage('detail')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='TECHNICAL_DATA_SHARING_DETAIL'
+        key='SRM-SM-AUDITREPORT-DETAIL'
         disabled={data.selectedRowKeys.length !== 1}
       >明细</Button>)
     }
@@ -279,28 +250,29 @@ const AuditReportManagement = forwardRef(({}, ref,) => {
         callBack={handleComplete}
         disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length === 0}
         businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewRequirement'
-        key='SRM-SM-SUPPLIERMODEL_EXAMINE'
+        key='SRM-SM-AUDITREPORT-APPROVE'
       >提交审核</StartFlow>)
     }
     {
       authAction(<FlowHistoryButton
-        businessId={data.flowId}
+        businessId={data.id}
         flowMapUrl='flow-web/design/showLook'
         ignore={DEVELOPER_ENV}
         disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
-        key='SRM-SM-SUPPLIERMODEL_HISTORY'
+        key='SRM-SM-AUDITREPORT-APPROVEHISTORY'
       >
-        <Button className={styles.btn} disabled={data.selectedRowKeys.length !== 1}>审核历史</Button>
+        <Button className={styles.btn}
+                disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length !== 1}>审核历史</Button>
       </FlowHistoryButton>)
     }
     {
       authAction(<Button
-        onClick={() => redirectToPage('endFlow')}
+        onClick={() => endFlow()}
         loading={data.spinning}
         disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='TECHNICAL_DATA_SHARING_ALLOT'
+        key='SRM-SM-AUDITREPORT-ENDAPPROVE'
       >终止审核</Button>)
     }
   </>;
@@ -359,7 +331,7 @@ const AuditReportManagement = forwardRef(({}, ref,) => {
         }
       </AutoSizeLayout>
       <AddModal
-          wrappedComponentRef={getModalRef}
+        wrappedComponentRef={getModalRef}
       />
     </Fragment>
   );
