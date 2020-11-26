@@ -32,6 +32,8 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
   useImperativeHandle(ref, () => ({
     handleSave,
     saveModalData,
+    handleBeforeStartFlow,
+    getAllData
   }));
   const { query } = router.useLocation();
   const getBaseInfoFormRef = useRef(null);
@@ -111,6 +113,16 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
     closeCurrent();
   };
 
+  const getAllData = async () => {
+    let baseInfoVal = await getBaseInfoFormRef.current.getFormValue();
+    if (!baseInfoVal) {
+      message.error('请将基本信息填写完全！');
+      return false;
+    }
+    data.editData.arAuditReportManagBasicVo = baseInfoVal;
+    return data.editData
+  };
+
   //保存
   const handleSave = async () => {
     let baseInfoVal = await getBaseInfoFormRef.current.getFormValue();
@@ -164,8 +176,8 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
     if (!modalData) {
       message.error('请填写意见！');
       return false;
-    }else {
-      console.log(modalData)
+    } else {
+      console.log(modalData);
     }
   };
   return (
@@ -237,7 +249,7 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
           // isLeader={!!leaderApprove}
           // editData={leaderApprove ? (data.editData || {}) : {}}
           isLeader={true}
-          editData={{remark:false}}
+          editData={{ remark: false }}
           title={purchaseApprove ? '小组意见' : (leaderApprove ? '领导意见' : '')}
           wrappedComponentRef={getModalRef}/>
       </Spin>
