@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-12 14:44:24
- * @LastEditTime: 2020-11-23 15:09:01
+ * @LastEditTime: 2020-11-26 16:02:19
  * @Description: 审核地区城市配置
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/mainData/ReviewCityConf/index.js
  */
@@ -178,8 +178,8 @@ const Index = () => {
           key: 'RightReviewCityConf'
         });
         if (data.success) {
-          tableLeftRef.current.manualSelectedRows();
-          tableLeftRef.current.remoteDataRefresh();
+          tableRightRef.current.manualSelectedRows();
+          tableRightRef.current.remoteDataRefresh();
         } else {
           message.error(data.message)
         }
@@ -389,6 +389,9 @@ const Index = () => {
                           params: {
                             areaID: leftselectRows[leftselectRows.length - 1].id
                           }
+                        }}
+                        cascadeParams={{
+                          areaID: leftselectRows[leftselectRows.length - 1].id
                         }}
                         height={h}
                         searchPlaceHolder="输入城市名称查询"
