@@ -3,7 +3,7 @@ import { Button, Modal, message, Spin, Affix } from 'antd';
 import { router } from 'dva';
 import BaseInfo from '../commons/BaseInfo'
 import PlanInfo from '../commons/PlanInfo'
-import Distributioninfo from '../commons/Distributioninfo'
+import DetailsFrom from '../commons/DetailsFrom'
 import classnames from 'classnames';
 import styles from '../index.less';
 import { closeCurrent, isEmpty } from '../../../../utils';
@@ -74,13 +74,15 @@ function CreateStrategy() {
           </div>
         </div>
         <div className={styles.bgw}>
-          <div className={styles.title}>分配计划详情</div>
+          <div className={styles.title}>认定明细</div>
           <div >
-            <Distributioninfo
+            <DetailsFrom
               editformData={editData.detailsVos}
               wrappedComponentRef={DistributionRef}
               isEdit={true}
               headerInfo={true}
+              isView={true}
+              nodetype={true}
             />
           </div>
         </div>

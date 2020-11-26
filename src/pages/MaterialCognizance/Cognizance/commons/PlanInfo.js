@@ -23,7 +23,8 @@ const HeadFormRef = forwardRef(({
     isView,
     editformData,
     onOk = () => null,
-    manual
+    manual,
+    cancel
 }, ref) => {
     useImperativeHandle(ref, () => ({
         form,
@@ -62,7 +63,6 @@ const HeadFormRef = forwardRef(({
         getModelRef.current.handleModalVisible(true);
     }
     function selectanalysis(record) {
-        console.log(record)
         form.setFieldsValue({
             'companyCode': record[0].corporation.code,
             'companyName': record[0].corporation.name,
@@ -92,15 +92,15 @@ const HeadFormRef = forwardRef(({
                                     })(
                                         <Input
                                             style={{
-                                                width: !isView ? '75%' : '100%',
-                                                marginRight: !isView ? '1%' : '0%',
+                                                width: !isView && cancel !== '2' ? '75%' : '100%',
+                                                marginRight: !isView && cancel !== '2' ? '1%' : '0%',
                                             }}
                                             disabled
                                             placeholder={'请公司名称'} />
 
                                     ))
                             }
-                            {!isView ?
+                            {!isView && cancel !== '2' ?
                                 <Button
                                     style={{ width: '24%' }}
                                     onClick={() => handleSingle()}
@@ -131,7 +131,7 @@ const HeadFormRef = forwardRef(({
                     <Col span={10}>
                         <Item label='供应商名称' {...formLayout}>
                             {
-                                isView ? <span>{editformData ? editformData.supplierCode : ''}</span> :
+                                isView ? <span>{editformData ? editformData.supplierName : ''}</span> :
                                     (
                                         getFieldDecorator('supplierCode', {
                                             initialValue: editformData ? editformData.purchaseCode : ''
@@ -211,7 +211,7 @@ const HeadFormRef = forwardRef(({
                                                 }
                                             ]
                                         })(
-                                            <ComboList disabled={isView === true}
+                                            <ComboList disabled={isView === true || cancel === '2'}
                                                 {...MaterielCognlist}
                                                 showSearch={false}
                                                 style={{ width: '100%' }}
@@ -231,7 +231,7 @@ const HeadFormRef = forwardRef(({
                     <Col span={10}>
                         <Item label='认定类型' {...formLayout}>
                             {
-                                isView ? <span>{editformData ? editformData.identificationTypeId : ''}</span> :
+                                isView ? <span>{editformData ? editformData.identificationTypeName : ''}</span> :
                                     (
                                         getFieldDecorator('identificationTypeId', { initialValue: editformData ? editformData.identificationTypeId : "" }),
                                         getFieldDecorator("identificationTypeName", {
@@ -243,7 +243,7 @@ const HeadFormRef = forwardRef(({
                                                 }
                                             ]
                                         })(
-                                            <ComboList disabled={isView === true}
+                                            <ComboList disabled={isView === true || cancel === '2'}
                                                 {...CognizanceTypelist}
                                                 showSearch={false}
                                                 style={{ width: '100%' }}
@@ -275,6 +275,7 @@ const HeadFormRef = forwardRef(({
                                             <TextArea style={{ width: "100%" }}
                                                 placeholder="请输入计划说明"
                                                 maxLength={100}
+                                                disabled={cancel === '2'}
                                             />
                                         )
                                     )
@@ -293,7 +294,7 @@ const HeadFormRef = forwardRef(({
                                     <UploadFile
                                         title={"附件上传"}
                                         entityId={editformData ? editformData.enclosureId : null}
-                                        type={isView ? "show" : ""}
+                                        type={isView || cancel === '2' ? "show" : ""}
                                     />
                                 )
 
@@ -310,6 +311,7 @@ const HeadFormRef = forwardRef(({
                                         })(
                                             <TextArea style={{ width: "100%" }}
                                                 placeholder="请输入计划说明"
+                                                maxLength={100}
                                             />
                                         )
                                 }

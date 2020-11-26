@@ -7,7 +7,12 @@ import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
 import styles from './index.less';
 import { recommendUrl } from '@/utils/commonUrl';
 // import { PCNMasterdatalist} from "../commonProps"
-import { MaterialObjectDelete, MaterialRelease, CognizanceRelease } from '../../../services/MaterialService'
+import {
+    MaterialObjectDelete,
+    MaterialRelease,
+    CognizanceRelease,
+    ConfirmBilltype
+} from '../../../services/MaterialService'
 import {
     OrganizationList,
     Jurisdictionjurisdiction,
@@ -31,24 +36,26 @@ function SupplierConfigure() {
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [searchValue, setSearchValue] = useState({});
-    // const [loading, triggerLoading] = useState(true);
-    const [attachId, setAttachId] = useState('');
+    const [visible, setvisible] = useState(false);
+    const [tasktype, setTasktype] = useState('');
     const [seniorSearchvalue, setSeniorsearchvalue] = useState('');
     /** 按钮可用性判断变量集合 BEGIN*/
     const [signleRow = {}] = selectedRows;
     const { planningStatus: signleFlowStatus, id: flowId, creatorId } = signleRow;
-    // 草稿
-    const underWay = signleFlowStatus === 0;
+    // 草稿-取消发布
+    const underWay = signleFlowStatus === 0 || signleFlowStatus === 2;
+    // 删除草稿
+    const iddraft = signleFlowStatus === 0
     // 已提交
     const completed = signleFlowStatus === 1;
     // 未选中数据的状态
     const empty = selectedRowKeys.length === 0;
     // 是不是自己的单据
     const isSelf = currentUserId === creatorId;
-    // 删除草稿
-    const isdelete = signleFlowStatus === 'INIT'
     // 认定结果
     const iscogn = signleFlowStatus === 1
+    // 取消发布
+    const iscancel = signleFlowStatus === 2
     useEffect(() => {
         window.parent.frames.addEventListener('message', listenerParentClose, false);
         return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
@@ -78,6 +85,8 @@ function SupplierConfigure() {
                 } else if (text === 1) {
                     return <div className="successColor">已发布</div>;
                 } else if (text === 2) {
+                    return <div className="successColor">取消发布</div>;
+                } else if (text === 3) {
                     return <div className="successColor">已终止</div>;
                 } else {
                     return <div className="successColor">已完成</div>;
@@ -86,13 +95,15 @@ function SupplierConfigure() {
         },
         {
             title: '认定结果',
-            width: 200,
+            width: 140,
             dataIndex: 'identificationStatus',
             render: function (text, record, row) {
                 if (text === 0) {
-                    return <div>合格</div>;
+                    return <div>不合格</div>;
+                } else if (text === 1) {
+                    return <div className="successColor">合格</div>;
                 } else {
-                    return <div className="successColor">不合格</div>;
+                    return <div></div>;
                 }
             },
         },
@@ -103,22 +114,22 @@ function SupplierConfigure() {
         },
         {
             title: '物料分类',
-            width: 220,
+            width: 140,
             dataIndex: 'materielTypeName',
         },
         {
             title: '供应商代码',
-            width: 180,
+            width: 140,
             dataIndex: 'supplierCode',
         },
         {
             title: '供应商名称',
-            width: 220,
+            width: 200,
             dataIndex: 'supplierName',
         },
         {
             title: '原厂代码',
-            width: 220,
+            width: 140,
             dataIndex: 'originalFactoryCode',
         },
         {
@@ -151,11 +162,11 @@ function SupplierConfigure() {
             width: 180,
             dataIndex: 'creatorName',
         },
-        {
-            title: '联系电话',
-            width: 220,
-            dataIndex: 'phone',
-        },
+        // {
+        //     title: '联系电话',
+        //     width: 220,
+        //     dataIndex: 'phone',
+        // },
         {
             title: '创建时间',
             width: 180,
@@ -217,7 +228,8 @@ function SupplierConfigure() {
     // 编辑
     function handleCheckEdit() {
         let id = selectedRows[0].id;
-        openNewTab(`material/Cognizance/ManualEdit/index?id=${id}`, '实物认定计划变更', false)
+        let cancel = selectedRows[0].planningStatus;
+        openNewTab(`material/Cognizance/ManualEdit/index?id=${id}&cancel=${cancel}`, '实物认定计划变更', false)
     }
     // 删除
     async function handleDelete() {
@@ -247,7 +259,7 @@ function SupplierConfigure() {
         let status = selectedRows[0].planningStatus;
         let id = selectedRows[0].id;
         let statustype = false;
-        if (status === 0) {
+        if (status === 0 || status === 2) {
             status = 1
             statustype = true
         } else {
@@ -265,6 +277,25 @@ function SupplierConfigure() {
     // 确认认定结果
     async function handleConfirm() {
         let id = selectedRows[0].id;
+        const { success, data, message: msg } = await ConfirmBilltype({ planId: id });
+        if (success) {
+            if (data.executeStatus === 0) {
+                setTasktype('认定不合格')
+            }
+            if (data.executeStatus === 1 && data.taskStatus === 0) {
+                setTasktype('认定不合格')
+            }
+            if (data.executeStatus === 1 && data.taskStatus === 1) {
+                setTasktype('认定合格')
+            }
+            setvisible(true)
+        } else {
+            message.error(msg);
+        }
+    }
+    // 
+    async function handleOk() {
+        let id = selectedRows[0].id;
         const { success, message: msg } = await CognizanceRelease({ planId: id });
         if (success) {
             message.success(`确认认定结果成功！`);
@@ -272,6 +303,11 @@ function SupplierConfigure() {
         } else {
             message.error(msg);
         }
+        setvisible(false)
+    }
+    // 关闭确认结果
+    async function handleCancel() {
+        setvisible(false)
     }
     // 快速查询
     function handleQuickSerach(value) {
@@ -280,12 +316,11 @@ function SupplierConfigure() {
     }
     // 处理高级搜索
     function handleAdvnacedSearch(value) {
-        console.log(JSON.stringify(value))
         value.createDepartmentId = value.createDepartmentId;
-        value.materialName = value.materialName;
+        value.materialName = value.materialName_name;
         value.supplierName = value.supplierName;
         value.materielTypeName = value.materielTypeId_name;
-        value.companyName = value.companyName;
+        value.companyName = value.companyName_name;
         value.documentType = value.documentType;
         value.planningStatus = value.planningStatus;
         value.identificationStatus = value.identificationStatus;
@@ -307,13 +342,13 @@ function SupplierConfigure() {
                 },
                 {
                     fieldName: 'creatorName',
-                    value: item.creatorName,
+                    value: item.materialName,
                     operator: 'EQ'
                 },
                 {
                     fieldName: 'supplierName',
                     value: item.supplierName,
-                    operator: 'EQ'
+                    operator: 'LK'
                 },
                 {
                     fieldName: 'materielTypeName',
@@ -356,7 +391,7 @@ function SupplierConfigure() {
     // 左侧
     const HeaderLeftButtons = (
         <div style={{ width: '50%', display: 'flex', height: '100%', alignItems: 'center' }}>
-            {
+            {/* {
                 authAction(
                     <Button type='primary'
                         ignore={DEVELOPER_ENV}
@@ -367,7 +402,7 @@ function SupplierConfigure() {
                     >从准入单创建
                     </Button>
                 )
-            }
+            } */}
             {
                 authAction(
                     <Button type='primary'
@@ -399,7 +434,7 @@ function SupplierConfigure() {
                         key='SRM-SM-PCNSUPPLIER-DELETE'
                         className={styles.btn}
                         onClick={handleDelete}
-                        disabled={empty || !underWay || !isSelf}
+                        disabled={empty || !iddraft || !isSelf}
                     >删除
                     </Button>
                 )
@@ -436,7 +471,7 @@ function SupplierConfigure() {
                         className={styles.btn}
                         onClick={handleRelease}
                         disabled={empty || !completed || !isSelf}
-                    >取消
+                    >取消发布
                     </Button>
                 )
             }
@@ -511,6 +546,17 @@ function SupplierConfigure() {
                     />
                 }
             </AutoSizeLayout>
+            <Modal
+                title="提示"
+                visible={visible}
+                onOk={handleOk}
+                onCancel={handleCancel}
+            >
+                <p>
+                    {`确认认定结果后，将结束实物认定计划和认定任务，自动生成认定结果为`}
+                    <span style={{ color: 'red' }}>{tasktype}</span>{`且不可变更，是否继续？`}
+                </p>
+            </Modal>
         </>
     )
 }

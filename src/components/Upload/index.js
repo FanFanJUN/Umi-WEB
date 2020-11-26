@@ -31,9 +31,12 @@ class UploadFile extends React.Component {
       || nextProps.refresh) {
       this.entityId = nextProps.entityId
       this.updateFile()
+    } else {
+      if (this.state.completeUploadFile.length === 0 && this.state.fileList.length === 0) {
+        this.updateFile()
+      }
     }
   }
-
   //获得文件 icon
   getIcon(fileName, id) {
     if (fileName.toLocaleLowerCase().includes('doc')) {
@@ -117,6 +120,8 @@ class UploadFile extends React.Component {
           } else {
             this.setState({ completeUploadFile: [], fileList: [] })
           }
+        }).catch(error => {
+
         })
     } else {
       this.setState({ completeUploadFile: [], fileList: [] })

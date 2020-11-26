@@ -7,9 +7,13 @@ import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
 import styles from './index.less';
 import { recommendUrl } from '@/utils/commonUrl';
 import classnames from 'classnames';
-// import { PCNMasterdatalist} from "../commonProps"
-// import { deleteBatchById,PCNSupplierSubmit} from '../../../services/pcnModifyService'
-// import {SupplierBilltypeList} from '../commonProps'
+import {
+    OrganizationList,
+    Jurisdictionjurisdiction,
+    Materieljurisdiction,
+    MakerList,
+    Earlywarninglist
+} from '../commonProps'
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { Search } = Input
 const { authAction, storage } = utils;
@@ -23,22 +27,17 @@ function MissionExecution() {
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [searchValue, setSearchValue] = useState({});
-    // const [loading, triggerLoading] = useState(true);
-    const [attachId, setAttachId] = useState('');
+    const [jurisdiction, setJurisdiction] = useState(1);
+    const [onlyMe, setOnlyMe] = useState(true);
+    const [early, setEarly] = useState('');
     const [seniorSearchvalue, setSeniorsearchvalue] = useState('');
     /** 按钮可用性判断变量集合 BEGIN*/
     const [signleRow = {}] = selectedRows;
-    const { smDocunmentStatus: signleFlowStatus, id: flowId, creatorId } = signleRow;
-    // 草稿
+    const { taskStatus: signleFlowStatus, id: flowId, creatorId } = signleRow;
+    // 执行中
     const underWay = signleFlowStatus === 0;
-    // 已提交
-    const completed = signleFlowStatus === 1;
     // 未选中数据的状态
     const empty = selectedRowKeys.length === 0;
-    // 是不是自己的单据
-    const isSelf = currentUserId === creatorId;
-    // 删除草稿
-    const isdelete = signleFlowStatus === 'INIT'
 
     useEffect(() => {
         window.parent.frames.addEventListener('message', listenerParentClose, false);
@@ -47,16 +46,17 @@ function MissionExecution() {
     const columns = [
         {
             title: '预警',
-            dataIndex: 'smDocunmentStatus',
-            key: 'smDocunmentStatus',
+            dataIndex: 'earlyWarning',
+            key: 'earlyWarning',
             width: 100,
             render: function (text, record, row) {
-                return <div className={classnames({
-                    [styles.circle]: true,
-                    [styles.red]: (text === 'A'),
-                    [styles.yellow]: (text === 'B'),
-                    [styles.green]: (text === 'C'),
-                })} >已提交</div>;
+                if (record.taskStatus === 0) {
+                    return <div className={classnames({
+                        [styles.circle]: true,
+                        [styles.red]: (text === 1),
+                        [styles.yellow]: (text === 0),
+                    })} ></div>;
+                }
             },
         },
         {
@@ -69,20 +69,24 @@ function MissionExecution() {
                     return <div>执行中</div>;
                 } else if (text === 1) {
                     return <div>已执行</div>;
+                } else if (text === 2) {
+                    return <div>已提交</div>;
                 } else {
-                    return <div className="successColor">已提交</div>;
+                    return <div>已终止</div>;
                 }
             },
         },
         {
             title: '是否通过',
-            width: 200,
+            width: 100,
             dataIndex: 'passStatus',
             render: function (text, record, row) {
                 if (text === 0) {
                     return <div>不通过</div>;
-                } else {
+                } else if (text === 1) {
                     return <div className="successColor">通过</div>;
+                } else {
+                    return ''
                 }
             },
         },
@@ -93,27 +97,27 @@ function MissionExecution() {
         },
         {
             title: '计划说明',
-            width: 220,
+            width: 160,
             dataIndex: 'planDescription',
         },
         {
             title: '认定阶段',
-            width: 180,
+            width: 160,
             dataIndex: 'identificationStageName',
         },
         {
             title: '认定任务',
-            width: 220,
+            width: 160,
             dataIndex: 'identificationTaskName',
         },
         {
             title: '计划时间',
-            width: 220,
+            width: 160,
             dataIndex: 'planTime',
         },
         {
             title: '公司名称',
-            width: 180,
+            width: 220,
             dataIndex: 'companyName',
         },
         {
@@ -123,7 +127,7 @@ function MissionExecution() {
         },
         {
             title: '供应商名称',
-            width: 180,
+            width: 220,
             dataIndex: 'supplierName',
         },
         {
@@ -155,10 +159,10 @@ function MissionExecution() {
 
     const dataSource = {
         store: {
-            url: `${recommendUrl}/api/samIdentifyPlanImplementationService/findByPage`,
+            url: `${recommendUrl}/api/samIdentifyPlanImplementationService/findBySearch?onlyMe=` + jurisdiction + '&early=' + early,
             params: {
                 ...searchValue,
-                quickSearchProperties: ['smPcnCode'],
+                quickSearchProperties: ['identificationPlanNo'],
                 sortOrders: [
                     {
                         property: 'createdDate',
@@ -200,33 +204,13 @@ function MissionExecution() {
     }
     // 新增
     function AddModel() {
-        //openNewTab(`pcnModify/Supplier/create/index`, 'PCN变更新建变更单', false)
-        openNewTab(`material/Enforcement/Edit/index`, '实物认定任务执行', false)
+        let id = selectedRows[0].id;
+        openNewTab(`material/Enforcement/Edit/index?id=${id}`, '实物认定任务执行', false)
     }
     // 明细
     function handleCheckDetail() {
-        //let id = selectedRows[0].id;
-        //openNewTab(`pcnModify/Supplier/Detail/index?id=${id}&alone=true`, 'PCN变更单明细', false)
-    }
-    // 提交
-    async function handleSubmit() {
-        let status = selectedRows[0].smDocunmentStatus;
         let id = selectedRows[0].id;
-        let statustype = false;
-        if (status === 0) {
-            status = 1
-            statustype = true
-        } else {
-            status = 0
-            statustype = false
-        }
-        // const { success, message: msg } = await PCNSupplierSubmit({pcnTitleId:id,smDocunmentStatus:status});
-        // if (success) {
-        //     message.success(`${statustype ? '提交' : '撤回'}成功！`);
-        //     uploadTable();
-        // } else {
-        //     message.error(msg);
-        // }
+        openNewTab(`material/Enforcement/Details/index?id=${id}&alone=true`, '实物认定任务执行明细', false)
     }
     // 快速查询
     function handleQuickSerach(value) {
@@ -235,39 +219,53 @@ function MissionExecution() {
     }
     // 处理高级搜索
     function handleAdvnacedSearch(value) {
-        value.smDocunmentStatus = value.materialGroupCode;
-        value.smPcnChangeTypeCode = value.applyPersonName;
-        value.smSupplierCode = value.materialCode;
-        value.smSupplierName = value.materialName;
-        delete value.applyPersonName;
-        delete value.applyPersonName_name;
-        delete value.materialCode;
-        delete value.materialGroupCode;
-        delete value.materialGroupCode_name;
+        setEarly(value.earlyWarning)
+        value.departmentName = value.departmentName_name;
+        value.drafterName = value.drafterName_name;
+        value.executorName = value.executorName_name;
+        value.materielTypeId = value.materielTypeId_name;
+        value.companyName = value.companyName_name;
+        value.supplierName = value.supplierName;
+        delete value.earlyWarning_name;
+        delete value.createDepartmentId_name;
+        delete value.drafterName_name;
+        delete value.executorName_name;
+        delete value.materielTypeId_name;
+        delete value.companyName_name;
         let searchvalue = [];
         searchvalue.push(value);
         let newdata = [];
         searchvalue.map(item => {
             newdata.push(
                 {
-                    fieldName: 'smSupplierCode',
-                    value: item.smSupplierCode,
+                    fieldName: 'departmentName',
+                    value: item.departmentName,
                     operator: 'EQ'
                 },
                 {
-                    fieldName: 'smSupplierName',
-                    value: item.smSupplierName,
+                    fieldName: 'drafterName',
+                    value: item.drafterName,
                     operator: 'EQ'
                 },
                 {
-                    fieldName: 'smDocunmentStatus',
-                    value: item.smDocunmentStatus,
+                    fieldName: 'executorName',
+                    value: item.executorName,
                     operator: 'EQ'
                 },
                 {
-                    fieldName: 'smPcnChangeTypeCode',
-                    value: item.smPcnChangeTypeCode,
+                    fieldName: 'materielTypeName',
+                    value: item.materielTypeId,
                     operator: 'EQ'
+                },
+                {
+                    fieldName: 'companyName',
+                    value: item.companyName,
+                    operator: 'EQ'
+                },
+                {
+                    fieldName: 'supplierName',
+                    value: item.supplierName,
+                    operator: 'LK'
                 }
 
             )
@@ -276,17 +274,23 @@ function MissionExecution() {
         headerRef.current.hide();
         uploadTable();
     }
+    // 仅我的
+    function handleOnlyMeChange(e) {
+        setOnlyMe(e.target.checked)
+        e.target.checked === true ? setJurisdiction(1) : setJurisdiction(0)
+        uploadTable();
+    }
     // 左侧
     const HeaderLeftButtons = (
         <div style={{ width: '50%', display: 'flex', height: '100%', alignItems: 'center' }}>
             {
                 authAction(
-                    <Button type='primary'
+                    <Button
                         ignore={DEVELOPER_ENV}
                         key='SRM-SM-PCNSUPPLIER-ADD'
                         className={styles.btn}
                         onClick={AddModel}
-                    //disabled={empty}
+                        disabled={empty || !underWay}
                     >执行任务
                     </Button>
                 )
@@ -303,26 +307,16 @@ function MissionExecution() {
                     </Button>
                 )
             }
-            {
-                authAction(
-                    <Button
-                        ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNSUPPLIER-SUBMIT'
-                        className={styles.btn}
-                        onClick={handleSubmit}
-                        disabled={empty || !underWay || !isSelf}
-                    >提交
-                    </Button>
-                )
-            }
         </div>
     )
     const searchbank = ['name'];
     // 右侧搜索
     const HeaderRightButtons = (
         <div style={{ display: 'flex' }}>
+            <Checkbox className={styles.btn} onChange={handleOnlyMeChange} checked={onlyMe}
+                style={{ width: '80px' }}>仅我的</Checkbox>
             <Search
-                placeholder='请输入认定计划号或计划说明'
+                placeholder='请输入认定计划号'
                 className={styles.btn}
                 onSearch={handleQuickSerach}
                 allowClear
@@ -332,16 +326,13 @@ function MissionExecution() {
     )
     // 高级查询配置
     const formItems = [
-        { title: '制定计划部门', key: 'materialCode', props: { placeholder: '输入供应商代码' } },
-        { title: '制定人', key: 'materialName', props: { placeholder: '输入供应商名称' } },
-        { title: '供应商名称', key: 'materialCode', props: { placeholder: '输入供应商代码' } },
-        { title: '物料分类', key: 'materialName', props: { placeholder: '输入供应商名称' } },
-        { title: '公司名称', key: 'materialCode', props: { placeholder: '输入供应商代码' } },
-        { title: '单据类型', key: 'materialName', props: { placeholder: '输入供应商名称' } },
-        { title: '计划状态', key: 'materialCode', props: { placeholder: '输入供应商代码' } },
-        { title: '认定结果', key: 'materialName', props: { placeholder: '输入供应商名称' } },
-        // { title: '单据状态', key: 'materialGroupCode', type: 'list', props: SupplierBilltypeList },
-        // { title: '变更类型', key: 'applyPersonName', type: 'list', props: PCNMasterdatalist },
+        { title: '预警', key: 'earlyWarning', type: 'list', props: Earlywarninglist },
+        { title: '制定计划部门', key: 'departmentName', type: 'tree', props: OrganizationList },
+        { title: '制定人', key: 'drafterName', type: 'list', props: MakerList },
+        { title: '执行人', key: 'executorName', type: 'list', props: MakerList },
+        { title: '物料分类', key: 'materielTypeId', type: 'tree', props: Materieljurisdiction },
+        { title: '公司名称', key: 'companyName', type: 'list', props: Jurisdictionjurisdiction },
+        { title: '供应商名称', key: 'supplierName', props: { placeholder: '输入供应商名称' } },
     ];
     return (
         <>
