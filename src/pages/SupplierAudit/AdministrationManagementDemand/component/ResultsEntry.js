@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ComboList, ExtModal, ExtTable } from 'suid';
-import { Button, Input, InputNumber, message } from 'antd';
+import { Button, Input, Upload, message } from 'antd';
 import { getRandom } from '../../../QualitySynergy/commonProps';
 import { getDocIdForArray } from '@/utils/utilTool';
 import {
@@ -9,12 +9,17 @@ import {
 } from '../commonApi';
 import { recommendUrl } from '../../../../utils/commonUrl';
 import ProblemTable from './component/ProblemTable';
+import { BASE_URL } from '../../../../utils/constants';
 
 const ResultsEntry = (props) => {
 
   const [data, setData] = useState({
     dataSource: [],
   });
+
+  const [updateLoading, setUpdateLoading] = useState(false);
+
+  const [fileList, setFileList] = useState([]);
 
   const [loading, setLoading] = useState(false);
 
@@ -84,6 +89,57 @@ const ResultsEntry = (props) => {
     setData(v => ({ ...v, dataSource: value }));
   };
 
+  // 文件上传之前(判断选中文件格式并封装fileList)
+  const beforeUpload = (file) => {
+    let sindex = file.name.lastIndexOf('.');
+    let ext = file.name.substring(sindex + 1, file.name.length);
+    if (sindex < 0) {
+      message.error('请上传excel文件');
+    } else {
+      if (ext !== 'xls' && ext !== 'xlsx') {
+        message.error('请上传excel文件');
+      } else {
+        setFileList([...fileList, file]);
+        console.log('fileList', file);
+      }
+    }
+  };
+
+  // 选择文件上传后返回的状态
+  const handleChange = (res) => {
+    const { status, response } = res.file;
+    if (status === 'uploading') {
+      setUpdateLoading(true);
+    }
+    if (status === 'done') {
+      if (response.status === 'SUCCESS') {
+        let newData = JSON.parse(JSON.stringify(response.data));
+        let newDataSource = JSON.parse(JSON.stringify(data.dataSource));
+        newData.map((item) => {
+          newDataSource.map((value, index) => {
+            if (value.id === item.id) {
+              newDataSource[index] = ({
+                ...value,
+                whetherApply: item.whetherApply,
+                reviewScore: item.reviewScore,
+                remark: item.remark,
+              });
+            }
+          });
+        });
+        setData(v => ({ ...v, dataSource: newDataSource }));
+        console.log(newDataSource, '导入的数据');
+        setUpdateLoading(false);
+      } else if (response.status === 'FAILURE') {
+        message.error(response.message);
+        setUpdateLoading(false);
+      }
+    } else if (status === 'error') {
+      setUpdateLoading(false);
+      message.error('上传失败');
+    }
+  };
+
   return (
     <ExtModal
       width={'180vh'}
@@ -100,7 +156,22 @@ const ResultsEntry = (props) => {
       </div>}
     >
       <div>
-        <Button type='primary'>批量导入</Button>
+        <Upload
+          name="file"
+          beforeUpload={beforeUpload}
+          showUploadList={false}
+          fileList={fileList}
+          action={window.location.origin + BASE_URL + `${recommendUrl}/srController/importResult`}
+          data={{
+            reviewImplementManagementId: props.id,
+          }}
+          onChange={handleChange}
+          style={{ width: '100%' }}
+        >
+          <Button type='primary' style={{ marginLeft: 5 }} key="chooseFile" loading={updateLoading}>
+            批量录入
+          </Button>
+        </Upload>
         <Button style={{ marginLeft: '5px' }} key="downLoad" onClick={exportData}>批量导出</Button>
       </div>
       <ProblemTable

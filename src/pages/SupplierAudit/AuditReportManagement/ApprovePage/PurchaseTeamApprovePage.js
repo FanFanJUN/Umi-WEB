@@ -5,7 +5,8 @@
  */
 
 import React, { useRef } from 'react';
-import { WorkFlow } from 'suid'
+import { WorkFlow } from 'suid';
+import { message } from 'antd';
 import { router } from 'dva';
 import { closeCurrent } from '../../../../utils';
 import AuditReportManagementView from '../editPage';
@@ -13,27 +14,42 @@ import AuditReportManagementView from '../editPage';
 const PurchaseTeamApprovePage = () => {
 
   const { query } = router.useLocation();
-
+  const getRef = useRef(null);
   const handleClose = () => {
     closeCurrent();
   };
 
-  return(
+  // 保存小组意见
+  const beforeSubmit = async () => {
+    let data = await getRef.current.getAllData();
+    let teamData = await getRef.current.getModalData();
+    if(!data || !teamData){
+      return false
+    }
+    data.teamData=teamData;
+    console.log(data)
+  };
+
+  return (
     <WorkFlow.Approve
       businessId={query.id}
       taskId={query.taskId}
       instanceId={query.instanceId}
       flowMapUrl="flow-web/design/showLook"
       submitComplete={handleClose}
+      beforeSubmit={beforeSubmit}
     >
-      <AuditReportManagementView
-        isApprove
-        purchaseApprove
-      />
-
+      <div>
+        <span onClick={beforeSubmit}>点一下</span>
+        <AuditReportManagementView
+          isApprove
+          purchaseApprove
+          wrappedComponentRef={getRef}
+        />
+      </div>
     </WorkFlow.Approve>
-  )
+  );
 
 };
 
-export default PurchaseTeamApprovePage
+export default PurchaseTeamApprovePage;

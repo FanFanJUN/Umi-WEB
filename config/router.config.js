@@ -149,6 +149,7 @@ export default [
 
       { path: '/supplierAudit/AuditRequirementsManagementAdd', component: './SupplierAudit/AuditRequirementsManagement/add', title: '审核需求管理新增' },
       { path: '/supplierAudit/AnnualAuditPlan', component: './SupplierAudit/AnnualAuditPlan', title: '年度审核计划管理' },
+      { path: '/supplierAudit/AnnualDetailList', component: './SupplierAudit/AnnualAuditPlan/detailList', title: '年度审核计划明细' },
       { path: '/supplierAudit/AnnualAuditPlanEda', component: './SupplierAudit/AnnualAuditPlan/EdaPage', title: '年度审核计划管理新增' },
       { path: '/supplierAudit/AnnualAuditPlanDetail', component: './SupplierAudit/AnnualAuditPlan/EdaPage', title: '年度审核计划管理明细' },
       { path: '/supplierAudit/MonthAuditPlan', component: './SupplierAudit/MonthAuditPlan', title: '月度审核计划管理' },
@@ -169,6 +170,7 @@ export default [
       { path: '/supplierAudit/AuditReportManagement/ApprovePage/AuditReportApprovePage', component: './SupplierAudit/AuditReportManagement/ApprovePage/AuditReportApprovePage', title: '审核报告管理流程信息' },
       { path: '/supplierAudit/AuditReportManagement/ApprovePage/AuditReportApproveEditPage', component: './SupplierAudit/AuditReportManagement/ApprovePage/AuditReportApproveEditPage', title: '审核报告管理流程编辑' },
       { path: '/supplierAudit/AuditReportManagement/ApprovePage/PurchaseTeamApprovePage', component: './SupplierAudit/AuditReportManagement/ApprovePage/PurchaseTeamApprovePage', title: '采购小组审批' },
+      { path: '/supplierAudit/AuditReportManagement/ApprovePage/ApproveDetailPage', component: './SupplierAudit/AuditReportManagement/ApprovePage/ApproveDetailPage', title: '审核报告管理' },
       { path: '/supplierAudit/AuditBriefingManagement/index', component: './SupplierAudit/AuditBriefingManagement', title: '审核简报管理' },
     ]
   },

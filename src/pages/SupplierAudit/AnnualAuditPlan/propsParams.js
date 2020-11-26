@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-27 17:01:47
- * @LastEditTime: 2020-11-19 20:22:00
+ * @LastEditTime: 2020-11-26 15:19:47
  * @Description: 参数props
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/propsParams.js
  */
@@ -50,13 +50,13 @@ export const ApplyOrganizationProps = {
   style: {
     width: '100%'
   },
-  treeNodeProps: (node) => {
-    if (node.nodeLevel === 0) {
-      return {
-        selectable: false
-      }
-    }
-  }
+  // treeNodeProps: (node) => {
+  //   if (node.nodeLevel === 0) {
+  //     return {
+  //       selectable: false
+  //     }
+  //   }
+  // }
 }
 // 审核类型 reviewType
 export const reviewTypesProps = {
