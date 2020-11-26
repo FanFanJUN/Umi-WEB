@@ -230,7 +230,7 @@ const AuditReportManagement = forwardRef(({}, ref) => {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='SRM-SM-AUDITREPORT-DELETE'
-        disabled={!judge(data.selectedRows, 'status', 'Draft') || data.selectedRowKeys.length !== 1}
+        disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length !== 1}
       >删除</Button>)
     }
     {
@@ -246,7 +246,7 @@ const AuditReportManagement = forwardRef(({}, ref) => {
       authAction(<StartFlow
         style={{ marginRight: '5px' }}
         ignore={DEVELOPER_ENV}
-        needConfirm={handleBeforeStartFlow}
+        // needConfirm={handleBeforeStartFlow}
         businessKey={data.flowId}
         callBack={handleComplete}
         disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length === 0}

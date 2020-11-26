@@ -1,17 +1,16 @@
 /**
- * @Description: 采购小组审批
+ * @Description: 领导审批页面
  * @Author: M!keW
- * @Date: 2020-11-25
+ * @Date: 2020-11-26
  */
 
 import React, { useRef } from 'react';
 import { WorkFlow } from 'suid';
-import { message } from 'antd';
 import { router } from 'dva';
 import { closeCurrent } from '../../../../utils';
 import AuditReportManagementView from '../editPage';
 
-const PurchaseTeamApprovePage = () => {
+const LeaderApprovePage = () => {
 
   const { query } = router.useLocation();
   const getRef = useRef(null);
@@ -19,14 +18,14 @@ const PurchaseTeamApprovePage = () => {
     closeCurrent();
   };
 
-  // 保存小组意见
+  // 保存领导意见
   const beforeSubmit = async () => {
     let data = await getRef.current.getAllData();
-    let teamData = await getRef.current.getModalData();
-    if(!data || !teamData){
+    let leaderData = await getRef.current.getLeaderModalData();
+    if(!data || !leaderData){
       return false
     }
-    data.teamData=teamData;
+    data.leaderData=leaderData;
     console.log(data)
   };
 
@@ -43,7 +42,7 @@ const PurchaseTeamApprovePage = () => {
         <span onClick={beforeSubmit}>点一下</span>
         <AuditReportManagementView
           isApprove
-          purchaseApprove
+          leaderApprove
           wrappedComponentRef={getRef}
         />
       </div>
@@ -52,4 +51,4 @@ const PurchaseTeamApprovePage = () => {
 
 };
 
-export default PurchaseTeamApprovePage;
+export default LeaderApprovePage;

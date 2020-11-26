@@ -1,7 +1,7 @@
 /*
  * @Author:黄永翠
  * @Date: 2020-11-09 09:38:38
- * @LastEditTime: 2020-11-25 10:47:52
+ * @LastEditTime: 2020-11-26 15:13:00
  * @LastEditors: Please set LastEditors
  * @Description:审核实施计划-明细
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\index.js
@@ -143,8 +143,6 @@ const Index = (props) => {
         let saveData = false;
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                console.log("初始editData变化了吗", editData);
-                console.log("表单数据", values)
                 saveData = { ...editData, ...values };
                 if (query.pageState === "add") {
                     let sessionLins = JSON.parse(sessionStorage.getItem('selectedMonthLIne'));

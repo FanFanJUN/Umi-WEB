@@ -113,6 +113,11 @@ export default [
         component: './MaterialCategoryUnit',
         title: '物料单位转换关系'
       },
+      {
+        path: '/gradeSystem/vmiSituation',
+        component: './VMISituation',
+        title: '是否签订VIM协议'
+      }
     ]
   },
 
@@ -165,6 +170,7 @@ export default [
       { path: '/supplierAudit/AuditReportManagement/ApprovePage/AuditReportApprovePage', component: './SupplierAudit/AuditReportManagement/ApprovePage/AuditReportApprovePage', title: '审核报告管理流程信息' },
       { path: '/supplierAudit/AuditReportManagement/ApprovePage/AuditReportApproveEditPage', component: './SupplierAudit/AuditReportManagement/ApprovePage/AuditReportApproveEditPage', title: '审核报告管理流程编辑' },
       { path: '/supplierAudit/AuditReportManagement/ApprovePage/PurchaseTeamApprovePage', component: './SupplierAudit/AuditReportManagement/ApprovePage/PurchaseTeamApprovePage', title: '采购小组审批' },
+      { path: '/supplierAudit/AuditReportManagement/ApprovePage/LeaderApprovePage', component: './SupplierAudit/AuditReportManagement/ApprovePage/LeaderApprovePage', title: '领导审批' },
       { path: '/supplierAudit/AuditReportManagement/ApprovePage/ApproveDetailPage', component: './SupplierAudit/AuditReportManagement/ApprovePage/ApproveDetailPage', title: '审核报告管理' },
       { path: '/supplierAudit/AuditBriefingManagement/index', component: './SupplierAudit/AuditBriefingManagement', title: '审核简报管理' },
     ]
@@ -342,7 +348,8 @@ export default [
       },
       {
         path: '/supplier/recommend/admittance/manage/create',
-        component: './SupplierRAM/Create'
+        component: './SupplierRAM/Create',
+        title: '创建供应商推荐准入'
       },
       /**供应商推荐准入 end */
       //  企业社会责任调查表选项主数据

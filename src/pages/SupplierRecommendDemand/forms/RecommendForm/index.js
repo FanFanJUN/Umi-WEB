@@ -9,7 +9,6 @@ import styles from './index.less';
 const {
   corporationProps,
   orgnazationProps,
-  supplierProps,
   supplierProps_no_filter,
   materialClassProps,
   fimlyMaterialClassifyProps,
@@ -19,14 +18,6 @@ const {
 const { Group: RadioGroup } = Radio;
 const { Group: CheckboxGroup } = Checkbox;
 const { TextArea } = Input;
-const supplierProps_code = {
-  ...supplierProps,
-  reader: {
-    name: 'name',
-    field: ['code'],
-    description: 'name'
-  }
-}
 
 const recommendCheckbox = [
   {

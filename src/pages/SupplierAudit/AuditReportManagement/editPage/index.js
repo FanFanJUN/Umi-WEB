@@ -25,17 +25,22 @@ import AuditQuestions from '../components/AuditQuestions';
 import AuditComments from '../components/AuditComments';
 import { WorkFlow } from 'suid';
 import OpinionModal from '../components/OpinionModal';
+import OpinionModalForLeader from '../components/OpinionModalForLeader';
 
 const { StartFlow } = WorkFlow;
 
 const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isApproveEdit, purchaseApprove, leaderApprove }, ref) => {
   useImperativeHandle(ref, () => ({
     handleSave,
-    saveModalData,
+    getModalData,
+    handleBeforeStartFlow,
+    getAllData,
+    getLeaderModalData
   }));
   const { query } = router.useLocation();
   const getBaseInfoFormRef = useRef(null);
   const getModalRef = useRef(null);
+  const getLeaderModalRef = useRef(null);
   const getUser = () => {
     const userId = getUserId();
     const userName = getUserName();
@@ -111,6 +116,16 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
     closeCurrent();
   };
 
+  const getAllData = async () => {
+    let baseInfoVal = await getBaseInfoFormRef.current.getFormValue();
+    if (!baseInfoVal) {
+      message.error('请将基本信息填写完全！');
+      return false;
+    }
+    data.editData.arAuditReportManagBasicVo = baseInfoVal;
+    return data.editData;
+  };
+
   //保存
   const handleSave = async () => {
     let baseInfoVal = await getBaseInfoFormRef.current.getFormValue();
@@ -135,7 +150,6 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
   const handleBeforeStartFlow = async () => {
     let baseInfoVal = await getBaseInfoFormRef.current.getFormValue();
     if (!baseInfoVal) {
-      message.error('请将基本信息填写完全！');
       return false;
     }
     data.editData.arAuditReportManagBasicVo = baseInfoVal;
@@ -159,14 +173,27 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
   const showModal = () => {
     getModalRef.current.handleModalVisible(true);
   };
+  const showLeaderModal = () => {
+    getLeaderModalRef.current.handleModalVisible(true);
+  };
 
-  const saveModalData = async () => {
+  const getModalData = async () => {
     let modalData = await getModalRef.current.getFormValue();
     if (!modalData) {
       message.error('请填写意见！');
       return false;
-    }else {
-      console.log(modalData)
+    } else {
+      return modalData;
+    }
+  };
+
+  const getLeaderModalData = async () => {
+    let modalData = await getLeaderModalRef.current.getFormValue();
+    if (!modalData) {
+      message.error('请填写意见！');
+      return false;
+    } else {
+      return modalData;
     }
   };
   return (
@@ -184,7 +211,8 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
                     className={styles.btn}
                     type='primary'
                     beforeStart={handleBeforeStartFlow}
-                    callBack={handleBack}
+                    startComplete={handleBack}
+                    onCancel={handleBack}
                     disabled={false}
                     businessModelCode='com.ecmp.srm.sam.entity.ar.ArAuditReportManag'
                   >
@@ -193,9 +221,11 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
                     }
                   </StartFlow></div>
             }
-            {(purchaseApprove || leaderApprove) ? <Button type='primary' className={styles.btn}
-                                                          onClick={() => showModal()}>{purchaseApprove ? '小组意见' : (leaderApprove ? '领导意见' : '')}</Button> : null}
-          </div>
+            {purchaseApprove ? <Button type='primary' className={styles.btn}
+                                                          onClick={() => showModal()}>小组意见</Button> : null}
+            {leaderApprove ? <Button type='primary' className={styles.btn}
+                                                          onClick={() => showLeaderModal()}> 领导意见</Button> : null}
+                                                          </div>
         </Affix>
         <BaseInfoForm
           editData={data.editData.arAuditReportManagBasicVo || {}}
@@ -234,12 +264,12 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
         <AuditComments
           editData={data.editData.reviewSuggestionVo || {}}/>
         <OpinionModal
-          // isLeader={!!leaderApprove}
-          // editData={leaderApprove ? (data.editData || {}) : {}}
-          isLeader={true}
-          editData={{remark:false}}
-          title={purchaseApprove ? '小组意见' : (leaderApprove ? '领导意见' : '')}
+          title={'小组意见'}
           wrappedComponentRef={getModalRef}/>
+        <OpinionModalForLeader
+          editData={data.editData || {}}
+          title={'领导意见'}
+          wrappedComponentRef={getLeaderModalRef}/>
       </Spin>
     </div>
   );

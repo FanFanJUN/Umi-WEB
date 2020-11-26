@@ -69,6 +69,7 @@ export default function () {
         delete value.materialGroupCode_name;
         delete value.purchaseTeamCode_name;
         delete value.state_name
+        delete value.applyCorporationCode_name
         delete value.reviewReasonCode_name;
         delete value.reviewWayCode_name;
         delete value.supplierCode_name;
@@ -148,9 +149,9 @@ export default function () {
         res.data.rows.map(item => {
             arr.push({
                 '状态': item.state === "DRAFT" ? "草稿" : item.state === "EFFECT" ? "生效" : "变更中",
-                '审批状态': item.flowStatus === "DRAFT" ? "草稿" : item.flowStatus === "EFFECT" ? "生效" : "变更中",
+                '审批状态': item.flowStatus === "INIT" ? "未进入流程" : item.flowStatus === "INPROCESS" ? "流程中" : "流程处理完成",
                 '年度审核需求号': item.reviewPlanYearCode,
-                '年度': item.applyYear,
+                '年度': item.applyYear + "年",
                 '拟制说明': item.reviewPlanYearName,
                 '拟制部门': item.applyDepartmentName,
                 '拟制人': item.applyName,
@@ -184,7 +185,7 @@ export default function () {
     };
     // 获取导出的数据
     const requestParams = {
-        url: `${recommendUrl}/api/reviewPlanMonthService/findDetailedReviewPlanMonthAndLine`,
+        url: `${recommendUrl}/api/reviewPlanYearService/findDetailedReviewPlanYearAndLine`,
         data: {
             quickSearchValue: data.quickSearchValue,
             ...data.epTechnicalShareDemandSearchBo,
