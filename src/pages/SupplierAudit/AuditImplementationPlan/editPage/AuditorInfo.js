@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:44:12
- * @LastEditTime: 2020-11-25 16:54:58
+ * @LastEditTime: 2020-11-26 15:10:28
  * @LastEditors: Please set LastEditors
  * @Description: 审核实施计划-审核人员
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\AuditorInfo.js
@@ -63,7 +63,7 @@ const AuditorInfo = forwardRef((props, ref) => {
 
   const contentTableRef = useRef(null);
 
-  const { visible, type, orgLeaderName } = props;
+  const { reviewTeamGroupBoList, type, orgLeaderName } = props;
 
   const [teamData, setTeamData] = useState({
     dataSource: [],
@@ -91,19 +91,11 @@ const AuditorInfo = forwardRef((props, ref) => {
   });
 
   useEffect(() => {
-    if (visible) {
-      setTeamData(v => ({ ...v, dataSource: props.reviewTeamGroupBoList }));
-      if (props.type !== 'detail') {
-        GetDefaultSystem({
-          reviewTypeCode: props.reviewTypeCode,
-        }).then(res => {
-          if (res.success) {
-            setData(v => ({ ...v, defaultSystem: res.data }));
-          }
-        }).catch(err => message.error(err.message));
-      }
-    }
-  }, [visible]);
+      setTeamData(v => ({ 
+        ...v, 
+        dataSource: reviewTeamGroupBoList.map(item=>({...item, lineNum: getRandom(10)}))
+      }));
+  }, [reviewTeamGroupBoList]);
 
   useEffect(() => {
     if (contentData.dataSource && contentData.dataSource.length !== 0) {

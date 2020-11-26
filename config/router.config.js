@@ -113,6 +113,11 @@ export default [
         component: './MaterialCategoryUnit',
         title: '物料单位转换关系'
       },
+      {
+        path: '/gradeSystem/vmiSituation',
+        component: './VMISituation',
+        title: '是否签订VIM协议'
+      }
     ]
   },
 
@@ -343,7 +348,8 @@ export default [
       },
       {
         path: '/supplier/recommend/admittance/manage/create',
-        component: './SupplierRAM/Create'
+        component: './SupplierRAM/Create',
+        title: '创建供应商推荐准入'
       },
       /**供应商推荐准入 end */
       //  企业社会责任调查表选项主数据

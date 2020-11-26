@@ -712,3 +712,45 @@ export const unitRightRemove = params => createServiceRequest({
 
 
 /** 物料单位转换关系主数据 end  */
+
+/**********************************/
+
+/** 是否签订vmi协议主数据 begin  */
+// 导出
+export const vmiSituationExport = params => createServiceRequest({
+  path: '/bafController/exportBafVmiSigned',
+  params,
+  method: 'POST',
+  hack: true,
+  responseType: 'blob'
+})
+
+// 保存导入
+export const vmiSituationSaveList = params => createServiceRequest({
+  path: '/api/bafVmiSignedService/saveList',
+  params,
+  method: 'POST'
+})
+
+// 检查导入的数据
+export const vmiSituationCheck = params => createServiceRequest({
+  path: '/api/bafVmiSignedService/checkImportData',
+  params,
+  method: 'POST'
+})
+
+// 保存一条数据
+export const vmiSituationSaveOne = params => createServiceRequest({
+  path: '/api/bafVmiSignedService/save',
+  params,
+  method: 'POST'
+})
+
+// 删除数据
+export const vmiSituationRemove = params => createServiceRequest({
+  path: '/api/bafVmiSignedService/deleteList',
+  params,
+  method: 'POST'
+})
+
+/** 是否签订vmi协议主数据 end  */
