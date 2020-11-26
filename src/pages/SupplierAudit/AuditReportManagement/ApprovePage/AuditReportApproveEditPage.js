@@ -24,6 +24,9 @@ const AuditReportApproveEditPage = () => {
   // 新增
   const beforeSubmit = async () => {
     let data = await getRef.current.getAllData();
+    if(!data){
+      return false
+    }
     return new Promise(function(resolve, reject) {
       saveAuditReport(data.editData).then(res => {
         if (res.success) {

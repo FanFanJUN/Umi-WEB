@@ -20,8 +20,14 @@ const PurchaseTeamApprovePage = () => {
   };
 
   // 保存小组意见
-  const beforeSubmit = () => {
-   getRef.current.saveModalData();
+  const beforeSubmit = async () => {
+    let data = await getRef.current.getAllData();
+    let teamData = await getRef.current.getModalData();
+    if(!data || !teamData){
+      return false
+    }
+    data.teamData=teamData;
+    console.log(data)
   };
 
   return (

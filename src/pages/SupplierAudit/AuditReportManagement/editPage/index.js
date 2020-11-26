@@ -31,9 +31,9 @@ const { StartFlow } = WorkFlow;
 const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isApproveEdit, purchaseApprove, leaderApprove }, ref) => {
   useImperativeHandle(ref, () => ({
     handleSave,
-    saveModalData,
+    getModalData,
     handleBeforeStartFlow,
-    getAllData
+    getAllData,
   }));
   const { query } = router.useLocation();
   const getBaseInfoFormRef = useRef(null);
@@ -120,7 +120,7 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
       return false;
     }
     data.editData.arAuditReportManagBasicVo = baseInfoVal;
-    return data.editData
+    return data.editData;
   };
 
   //保存
@@ -171,13 +171,13 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
     getModalRef.current.handleModalVisible(true);
   };
 
-  const saveModalData = async () => {
+  const getModalData = async () => {
     let modalData = await getModalRef.current.getFormValue();
     if (!modalData) {
       message.error('请填写意见！');
       return false;
     } else {
-      console.log(modalData);
+      return modalData;
     }
   };
   return (
@@ -246,10 +246,8 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
         <AuditComments
           editData={data.editData.reviewSuggestionVo || {}}/>
         <OpinionModal
-          // isLeader={!!leaderApprove}
-          // editData={leaderApprove ? (data.editData || {}) : {}}
-          isLeader={true}
-          editData={{ remark: false }}
+          isLeader={!!leaderApprove}
+          editData={leaderApprove ? (data.editData || {}) : {}}
           title={purchaseApprove ? '小组意见' : (leaderApprove ? '领导意见' : '')}
           wrappedComponentRef={getModalRef}/>
       </Spin>

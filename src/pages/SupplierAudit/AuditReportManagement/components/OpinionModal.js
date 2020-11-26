@@ -28,7 +28,7 @@ const OpinionModal = forwardRef(({ isLeader, editData, form, title }, ref) => {
   const [cleanFile, setCleanFile] = useState(false);
   const [needOpinion, setNeedOpinion] = useState(false);
   useEffect(() => {
-    setNeedOpinion(!editData.needOpinion);
+    setNeedOpinion(!editData.remark);
   }, [editData]);
   useEffect(() => {
     setRequired();
@@ -65,7 +65,7 @@ const OpinionModal = forwardRef(({ isLeader, editData, form, title }, ref) => {
       docIds: [],
     });
     if (isLeader) {
-      setNeedOpinion(!editData.needOpinion);
+      setNeedOpinion(!editData.remark);
     }
     setCleanFile(true);
     setVisible(false);
