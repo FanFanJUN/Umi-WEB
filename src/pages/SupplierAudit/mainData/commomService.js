@@ -786,6 +786,6 @@ export const deleteReportById = async (params = {}) => {
   return request({
     url,
     method: 'POST',
-    data: params,
+    params: params,
   });
 };

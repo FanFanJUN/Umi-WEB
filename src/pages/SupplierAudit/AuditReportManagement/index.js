@@ -138,7 +138,7 @@ const AuditReportManagement = forwardRef(({}, ref) => {
       okType: 'danger',
       cancelText: '否',
       onOk: () => {
-        deleteReportById(data.selectedRows[0].id).then(res => {
+        deleteReportById({id:data.selectedRows[0].id}).then(res => {
           if (res.success) {
             message.success(res.message);
             tableRef.current.manualSelectedRows();
