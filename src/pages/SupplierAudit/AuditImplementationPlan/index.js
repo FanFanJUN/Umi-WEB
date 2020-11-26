@@ -57,6 +57,7 @@ export default function () {
 
     const listenerParentClose = (event) => {
         const { data = {} } = event;
+        console.log(data);
         if (data.tabAction === 'close') {
             tableRef.current.remoteDataRefresh();
         }

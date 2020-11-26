@@ -1,21 +1,21 @@
-import React, { forwardRef, useImperativeHandle, useEffect, useRef ,useState} from 'react';
+import React, { forwardRef, useImperativeHandle, useEffect, useRef, useState } from 'react';
 import { Modal, Form, Button, message, Input, } from 'antd';
-import { Fieldclassification ,countryListConfig} from '@/utils/commonProps'
+import { Fieldclassification, countryListConfig } from '@/utils/commonProps'
 import { ExtTable } from 'suid';
-import { isEmpty} from '@/utils';
-import { smBaseUrl,baseUrl } from '@/utils/commonUrl';
+import { isEmpty } from '@/utils';
+import { smBaseUrl, baseUrl } from '@/utils/commonUrl';
 import Header from '@/components/Header';
 import styles from '../index.less';
-import {findCanChooseSupplier} from '@/services/SupplierModifyService'
+import { findCanChooseSupplier } from '@/services/SupplierModifyService'
 const { create } = Form;
 const getAgentregRef = forwardRef(({
     form,
     modifyanalysis = () => null,
     materieldata
 }, ref,) => {
-    useImperativeHandle(ref, () => ({ 
+    useImperativeHandle(ref, () => ({
         handleModalVisible,
-        form 
+        form
     }));
     const tableRef = useRef(null)
     const headerRef = useRef(null)
@@ -25,14 +25,14 @@ const getAgentregRef = forwardRef(({
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [visible, setvisible] = useState(false);
-    const [current, setcurrent] = useState([]);
+    const [current, setcurrent] = useState(1);
     // const [dataSource, setdataSource] = useState([])
     useEffect(() => {
         //getSupplierlist()
     }, []);
     const dataSource = {
         store: {
-            url: `${smBaseUrl}/supplierSupplyList/listPageVo?valid=1&page=1&rows=30&Quick_value=` + searchValue,
+            url: `${smBaseUrl}/supplierSupplyList/listPageVo?valid=1&page=` + current + `&rows=30&Quick_value=` + searchValue,
             params: {
                 sortOrders: [
                     {
@@ -45,7 +45,7 @@ const getAgentregRef = forwardRef(({
             type: 'POST'
         }
     }
-    function handleModalVisible (flag) {
+    function handleModalVisible(flag) {
         setvisible(!!flag)
     };
     function handleSelectedRows(rowKeys, rows) {
@@ -74,10 +74,10 @@ const getAgentregRef = forwardRef(({
     function SerachValue(v) {
         if (isEmpty(v.target.value)) {
             setSearchValue('')
-        }else {
+        } else {
             setSearchValue(v.target.value)
         }
-        
+
     }
     // 查询
     function handleQuickSerach() {
@@ -104,12 +104,12 @@ const getAgentregRef = forwardRef(({
     const columns = [
         {
             title: "供应商代码",
-            width: 150,
+            width: 120,
             dataIndex: "supplierCode"
         },
         {
             title: "供应商名称",
-            width: 260,
+            width: 160,
             dataIndex: "supplier.name"
         },
         {
@@ -119,7 +119,7 @@ const getAgentregRef = forwardRef(({
         },
         {
             title: "原厂名称",
-            width: 220,
+            width: 120,
             dataIndex: "originSupplierName"
         },
         {
@@ -196,8 +196,8 @@ const getAgentregRef = forwardRef(({
     const searchBtnCfg = (
         <>
             <Input
-                style={{width:260}}
-                placeholder='请输入物料分类代码或名称查询'
+                style={{ width: 260 }}
+                placeholder='请输入供应商代码或名称查询'
                 className={styles.btn}
                 onChange={SerachValue}
                 allowClear
@@ -242,7 +242,7 @@ const getAgentregRef = forwardRef(({
                 onChange={pageChange}
                 {...dataSource}
             />
-      </Modal>
+        </Modal>
     );
 },
 );

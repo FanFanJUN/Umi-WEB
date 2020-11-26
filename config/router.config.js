@@ -20,7 +20,8 @@ export default [
       { path: '/material/Cognizance/ManualEdit/index', component: './MaterialCognizance/Cognizance/ManualEdit/index', title: '实物认定计划编辑' },
       { path: '/material/Cognizance/ManualDetail/index', component: './MaterialCognizance/Cognizance/ManualDetail/index', title: '实物认定计划明细' },
       { path: '/material/Enforcement/index', component: './MaterialCognizance/Enforcement', title: '实物认定执行' },
-      { path: '/material/Enforcement/Edit/index', component: './MaterialCognizance/Enforcement/Edit/index', title: '实物认定执行' }
+      { path: '/material/Enforcement/Edit/index', component: './MaterialCognizance/Enforcement/Edit/index', title: '实物认定执行任务' },
+      { path: '/material/Enforcement/Details/index', component: './MaterialCognizance/Enforcement/Details/index', title: '实物认定执行明细' },
     ]
   },
   {

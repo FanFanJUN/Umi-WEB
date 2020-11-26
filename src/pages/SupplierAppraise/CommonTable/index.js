@@ -154,7 +154,7 @@ const CommonTable = forwardRef(({
         })
         if (success) {
           downloadBlobFile(data, '供应商评价结果.xlsx')
-          message.success(msg)
+          message.success('导出成功')
           return
         }
         message.error(msg)

@@ -222,10 +222,10 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
                   </StartFlow></div>
             }
             {purchaseApprove ? <Button type='primary' className={styles.btn}
-                                                          onClick={() => showModal()}>小组意见</Button> : null}
+                                       onClick={() => showModal()}>小组意见</Button> : null}
             {leaderApprove ? <Button type='primary' className={styles.btn}
-                                                          onClick={() => showLeaderModal()}> 领导意见</Button> : null}
-                                                          </div>
+                                     onClick={() => showLeaderModal()}> 领导意见</Button> : null}
+          </div>
         </Affix>
         <BaseInfoForm
           editData={data.editData.arAuditReportManagBasicVo || {}}

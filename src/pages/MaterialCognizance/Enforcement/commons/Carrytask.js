@@ -1,130 +1,84 @@
-import React, { createRef, useState, useRef, useEffect } from 'react';
-import { Button, Modal, message, Spin, Affix } from 'antd';
+
+import React, { forwardRef, useImperativeHandle, useEffect, useRef, useState } from 'react';
+import { Form, message } from 'antd';
+import { utils, ExtTable, AuthButton, DetailCard } from 'suid';
+import classnames from 'classnames';
 import { router } from 'dva';
 import TaskInfo from '../commons/TaskInfo'
 import Brasstacks from '../commons/Brasstacks'
 import Taskhistory from '../commons/Taskhistory'
-import classnames from 'classnames';
+import { ImplementDetailsVo } from '../../../../services/MaterialService'
 import styles from '../index.less';
-import { closeCurrent ,isEmpty} from '../../../../utils';
-import {findPCNSupplierId,saveBatchVo} from '../../../../services/pcnModifyService'
-function CreateStrategy() {
+const { create } = Form;
+const formLayout = {
+  labelCol: {
+    span: 3,
+  },
+  wrapperCol: {
+    span: 21
+  },
+};
+const { storage } = utils
+const getpcnModifyRef = forwardRef(({
+  form,
+  editData
+}, ref) => {
+  useImperativeHandle(ref, () => ({
+    form,
+    carryform
+  }));
+  const { getFieldDecorator, setFieldsValue, getFieldValue, validateFieldsAndScroll } = form;
   const BaseinfoRef = useRef(null);
   const ModifyinfoRef = useRef(null);
   const TaskhistoryRef = useRef(null);
-  const [editData, setEditData] = useState([]);
-  const [loading, triggerLoading] = useState(false);
-  const [visible, setvisible] = useState(false);
-  const [modifytype, setModifytype] = useState('');
-  const { query } = router.useLocation();
-  const { frameElementId, frameElementSrc = "", Opertype = "" } = query;
-
-    // 获取配置列表项
   useEffect(() => {
-    infoPCNdetails()
+
   }, []);
-  // 详情
-  async function infoPCNdetails() {
-    triggerLoading(true);
-    let id = query.id;
-    const { data, success, message: msg } = await findPCNSupplierId({pcnTitleId:id});
-    if (success) {
-      setEditData(data)
-      setModifytype(data.smPcnChangeTypeCode)
-      triggerLoading(false);
-      return
-    }
-    triggerLoading(false);
-    message.error(msg) 
-  }
-  // 保存
-  async function handleSave() {
-    // let baseinfo,modifyVal,modifyanalysisVal,scienceEnviron;
-    // const { basefrom } = BaseinfoRef.current;
-    // const {getmodifyform} = ModifyinfoRef.current;
-    // const {getmodifyanalyform} = ModifyinfluenceRef.current;
-    // const {modifyinfo} = modifyinfluenceFormRef.current;
-    // baseinfo = basefrom();
-    // if (!baseinfo) {
-    //   message.error('基础信息不能为空！');
-    //   return false;
-    // }
-    // modifyVal = getmodifyform()
-    // if (!modifyVal) {
-    //   message.error('变更信息不能为空！');
-    //   return false;
-    // }
-    // modifyanalysisVal = getmodifyanalyform()
-    // if (!modifyanalysisVal) {
-    //   message.error('变更影响不能为空！');
-    //   return false;
-    // }
-    // scienceEnviron = modifyinfo()
-    // if (!scienceEnviron) {
-    //   message.error('影响选择不能为空！');
-    //   return false;
-    // }
-    // let params = {
-    //   ...baseinfo,
-    //   smPcnDetailVos: modifyVal,
-    //   smPcnAnalysisVos: modifyanalysisVal,
-    //   ...scienceEnviron
-    // }
-    // let editparams = {...editData, ...params}
-    // console.log(editparams)
-    // triggerLoading(true)
-    // const {success, message: msg } = await saveBatchVo(editparams)
-    // if (success) {
-    //     triggerLoading(false)
-    //     closeCurrent()
-    // } else {
-    //     triggerLoading(false)
-    //     message.error(msg);
-    // }
-  }
-  // 返回
-  function handleBack() {
-    closeCurrent()
-  }
-  function handleCancel() {
-    setvisible(false)
+  function carryform() {
+    let brasstacks, modifyinfluen = false;
+    const { modifyinfo } = ModifyinfoRef.current;
+    brasstacks = modifyinfo();
+    brasstacks ? modifyinfluen = brasstacks : modifyinfluen = false
+    return modifyinfluen;
+
   }
   return (
-    <Spin spinning={loading} tip='处理中...'>
+    <div>
       <div className={styles.wrapper}>
         <div className={styles.bgw}>
-            <div className={styles.title}>信息任务</div>
-            <div >
+          <div className={styles.title}>信息任务</div>
+          <div >
             <TaskInfo
-                editformData={editData}
-                wrappedComponentRef={BaseinfoRef}
+              editformData={editData}
+              wrappedComponentRef={BaseinfoRef}
+              isView={true}
             />
-            </div>
+          </div>
         </div>
         <div className={styles.bgw}>
-            <div className={styles.title}>任务实际执行</div>
-            <div >
+          <div className={styles.title}>任务实际执行</div>
+          <div >
             <Brasstacks
-                editformData={editData.smPcnDetailVos}
-                wrappedComponentRef={ModifyinfoRef}
-                modifytype={modifytype}
+              editformData={editData}
+              wrappedComponentRef={ModifyinfoRef}
             />
-            </div>
+          </div>
         </div>
         <div className={styles.bgw}>
-            <div className={styles.title}>任务执行历史</div>
-            <div >
+          <div className={styles.title}>任务执行历史</div>
+          <div >
             <Taskhistory
-                editformData={editData.smPcnAnalysisVos}
-                wrappedComponentRef={TaskhistoryRef}
-                isEdit={true}
-                isView={false}
+              editformData={editData}
+              wrappedComponentRef={TaskhistoryRef}
+              isEdit={true}
+              isView={false}
             />
-            </div>
+          </div>
         </div>
       </div>
-    </Spin>
+    </div>
   )
-}
+})
+const CommonForm = create()(getpcnModifyRef)
 
-export default CreateStrategy;
+export default CommonForm

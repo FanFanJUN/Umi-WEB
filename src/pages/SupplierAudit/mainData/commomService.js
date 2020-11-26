@@ -745,8 +745,8 @@ export const ManagementAuditModeDelete = async (params) => {
 export async function reviewStandard(params) {
   const requestUrl = `${baseUrl}/api/reviewStandardService/findAllUnfrozen`;
   return request({
-      url: requestUrl,
-      method: 'GET',
+    url: requestUrl,
+    method: 'GET',
   });
 }
 

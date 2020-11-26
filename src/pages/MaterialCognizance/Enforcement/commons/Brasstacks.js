@@ -1,10 +1,12 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useState } from 'react';
 import { Form, Row, Input, Col, DatePicker, Radio, message } from 'antd';
-import { utils, ComboList} from 'suid';
+import { utils, ComboList } from 'suid';
 // import { PCNMasterdatalist } from '../../commonProps'
 import UploadFile from '../../../../components/Upload/index'
 import moment from 'moment';
-const {create } = Form;
+import { basicServiceUrl, gatewayUrl } from '../../../../utils/commonUrl';
+import { PersonliableList } from '../../commonProps'
+const { create } = Form;
 const FormItem = Form.Item;
 const { TextArea } = Input;
 const { Group } = Radio;
@@ -19,20 +21,20 @@ const formLayout = {
 };
 const confirmRadioOptions = [
     {
-      label: '通过',
-      value: 1
+        label: '通过',
+        value: 1
     }, {
-      label: '不通过',
-      value: 0
+        label: '不通过',
+        value: 0
     }
 ]
 const RectificationRadio = [
     {
-      label: '是',
-      value: 1
+        label: '是',
+        value: 1
     }, {
-      label: '否',
-      value: 0
+        label: '否',
+        value: 0
     }
 ]
 const HeadFormRef = forwardRef(({
@@ -45,50 +47,48 @@ const HeadFormRef = forwardRef(({
         modifyinfo
     }));
     const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
-    const [configure, setConfigure] = useState([]);
+    const [data, setData] = useState([]);
     useEffect(() => {
-        setFieldsValue({
-            smEnvironmentalImpact: editformData && editformData.smEnvironmentalImpact,
-            smSafetyImpact: editformData && editformData.smSafetyImpact,
-            smSecurityImpac: editformData && editformData.smSecurityImpac,
-            smMachineImpact: editformData && editformData.smMachineImpact
-        })
-    }, [editformData])
-    // 
-    function scienceEnvir(e) {
-        console.log(e.target.value)
+        handledata()
+    }, [])
+    // 默认任务完成日期
+    function handledata() {
+        setData(moment().format('YYYY-MM-DD'))
     }
+    //获取表单值
     function modifyinfo() {
         let modifyinfluen = false;
         form.validateFieldsAndScroll(async (err, val) => {
             if (!err) {
+                val.completionDate = moment(val.completionDate).format('YYYY-MM-DD')
                 modifyinfluen = val;
-            } 
+            }
         })
         return modifyinfluen ? modifyinfluen : false
     }
     function disabledDate(current) {
-        return current && current < moment().endOf('day');
-      }
+        return current && current < moment().startOf('day');
+    }
     return (
         <div >
             <Row>
                 <Col span={15}>
                     <FormItem label='是否通过' {...formLayout}>
                         {
-                            getFieldDecorator('smEnvironmentalImpact', {
-                                //initialValue: editformData.smEnvironmentalImpact,
-                                rules: [
-                                    {
-                                        required: true,
-                                        message: '请选择环保影响',
-                                    },
-                                ],
-                            })(
-                                <Group 
-                                    disabled={isView === true}
-                                    options={confirmRadioOptions} />
-                            )
+                            isView ? <span>{editformData ? editformData.passStatus : ''}</span> :
+                                getFieldDecorator('passStatus', {
+                                    initialValue: editformData ? editformData.passStatus : '',
+                                    rules: [
+                                        {
+                                            required: true,
+                                            message: '请选择是否通过',
+                                        },
+                                    ],
+                                })(
+                                    <Group
+                                        disabled={isView === true}
+                                        options={confirmRadioOptions} />
+                                )
                         }
                     </FormItem>
                 </Col>
@@ -97,15 +97,16 @@ const HeadFormRef = forwardRef(({
                 <Col span={15}>
                     <FormItem label='是否整改' {...formLayout}>
                         {
-                            getFieldDecorator('smSafetyImpact', {
+                            getFieldDecorator('rectificationStatus', {
+                                initialValue: editformData ? editformData.rectificationStatus : '',
                                 rules: [
                                     {
                                         required: true,
-                                        message: '请选择安规影响',
+                                        message: '请选择是否整改',
                                     },
                                 ],
                             })(
-                                <Group 
+                                <Group
                                     disabled={isView === true}
                                     options={RectificationRadio} />
                             )
@@ -117,7 +118,8 @@ const HeadFormRef = forwardRef(({
                 <Col span={15}>
                     <FormItem label='本次任务完成日期' {...formLayout}>
                         {
-                            getFieldDecorator('smSecurityImpac', {
+                            getFieldDecorator('completionDate', {
+                                initialValue: moment(data, 'YYYY-MM-DD'),
                                 rules: [
                                     {
                                         required: true,
@@ -125,7 +127,7 @@ const HeadFormRef = forwardRef(({
                                     },
                                 ],
                             })(
-                                <DatePicker 
+                                <DatePicker
                                     format="YYYY-MM-DD"
                                     disabledDate={disabledDate}
                                     disabled={isView}
@@ -140,13 +142,8 @@ const HeadFormRef = forwardRef(({
                 <Col span={15}>
                     <FormItem label='执行责任人' {...formLayout}>
                         {
-                            getFieldDecorator('smMachineImpact', {
-                                rules: [
-                                    {
-                                        required: true,
-                                        message: '请选择其他物料或整机的影响',
-                                    },
-                                ],
+                            getFieldDecorator('executionMan', {
+                                initialValue: editformData && editformData.executorName,
                             })(
                                 <Input disabled />
                             )
@@ -158,10 +155,33 @@ const HeadFormRef = forwardRef(({
                 <Col span={15}>
                     <FormItem label='经办人' {...formLayout}>
                         {
-                            getFieldDecorator('smOtherImpact', {
-                                initialValue: editformData && editformData.smOtherImpact,
+                            getFieldDecorator('agentMan', {
+                                initialValue: editformData && editformData.executorName,
+                                rules: [
+                                    {
+                                        required: true,
+                                        message: '请选择本经办人',
+                                    },
+                                ],
                             })(
-                                <Input disabled />
+                                <ComboList
+                                    form={form}
+                                    style={{ width: "100%" }}
+                                    name={'agentMan'}
+                                    store={{
+                                        params: {
+                                            includeFrozen: false,
+                                            includeSubNode: false,
+                                            quickSearchProperties: ['code', 'user.userName'],
+                                            organizationId: '',
+                                            sortOrders: [{ property: 'code', direction: 'ASC' }],
+                                        },
+                                        type: 'POST',
+                                        autoLoad: false,
+                                        url: `${gatewayUrl}${basicServiceUrl}/employee/findByUserQueryParam`,
+                                    }}
+                                    {...PersonliableList}
+                                />
                             )
                         }
                     </FormItem>
@@ -171,16 +191,16 @@ const HeadFormRef = forwardRef(({
                 <Col span={15}>
                     <FormItem label='过程说明' {...formLayout}>
                         {
-                            getFieldDecorator('smOtherImpact', {
-                                initialValue: editformData && editformData.smOtherImpact,
+                            getFieldDecorator('processDescription', {
+                                initialValue: editformData && editformData.processDescription,
                                 rules: [
                                     {
                                         required: true,
-                                        message: '请选择其他物料或整机的影响',
+                                        message: '请输入过程说明',
                                     },
                                 ],
                             })(
-                                <TextArea disabled />
+                                <TextArea />
                             )
                         }
                     </FormItem>
@@ -198,7 +218,7 @@ const HeadFormRef = forwardRef(({
                             })(
                                 <UploadFile
                                     title={"附件上传"}
-                                    entityId={editformData ? editformData.attachmentId : null}
+                                    entityId={editformData ? editformData.enclosureId : null}
                                     type={isView ? "show" : ""}
                                 />
                             )

@@ -1,15 +1,15 @@
 import React, { forwardRef, useState, useRef, useEffect, useImperativeHandle } from 'react';
-import { ExtTable, WorkFlow, ExtModal, utils, ToolBar,AuthButton  } from 'suid';
+import { ExtTable, WorkFlow, ExtModal, utils, ToolBar, AuthButton } from 'suid';
 import { Form, Button, message, Checkbox, Modal } from 'antd';
-import { openNewTab, getFrameElement ,isEmpty} from '@/utils';
+import { openNewTab, getFrameElement, isEmpty } from '@/utils';
 import Header from '@/components/Header';
 //import AdvancedForm from '@/components/AdvancedForm';
 import AutoSizeLayout from '../SupplierAutoLayout';
 import styles from './index.less';
 import BankInfoModal from './BankInfoModal'
-import { getMaxLineNum,getLineCode } from '@/utils/index';
+import { getMaxLineNum, getLineCode } from '@/utils/index';
 import { SaveSupplierRegister, DetailSupplierRegister } from "@/services/supplierConfig"
-import { getCNCountryIdInfo} from '../../../services/supplierRegister';
+import { getCNCountryIdInfo } from '../../../services/supplierRegister';
 import UploadFile from '../../../components/Upload/index'
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { create } = Form;
@@ -41,7 +41,7 @@ const Bankformef = forwardRef(({
   const [visible, setVisible] = useState(false);
   const [loading, triggerLoading] = useState(false);
   const [attachId, setAttachId] = useState('')
-  
+
   let Modeltitle = '新增';
   useEffect(() => {
     getBankcodelist(editData);
@@ -118,13 +118,13 @@ const Bankformef = forwardRef(({
       dataIndex: 'openingPermitId',
       align: 'center',
       width: 90,
-      render: (value, record) => <UploadFile type="show" entityId={value}/>
+      render: (value, record) => <UploadFile type="show" entityId={value} />
     }
   ].map(_ => ({ ..._, align: 'center' }))
   const empty = selectRowKeys.length === 0;
   // 获取国家ID
   async function getCNCountryId() {
-    const { data,success, message: msg } = await getCNCountryIdInfo()
+    const { data, success, message: msg } = await getCNCountryIdInfo()
     if (success) {
       setCNCountryId(data)
       return
@@ -139,27 +139,26 @@ const Bankformef = forwardRef(({
         //设置行号，取（最大值+1）为当前行号
         if (bankInfoVos.length > 0) {
           if (!isEmpty(bankInfoVos)) {
-            console.log(bankInfoVos)
             bankInfoVos.forEach(item => {
               item.lineCode = getLineCode(lineCode++)
             })
           }
           let maxLineCode = getMaxLineNum(bankInfoVos);
-          lineCode = maxLineCode ++;
+          lineCode = maxLineCode++;
           // keys = keys ++
           // console.log(lineCode)
           // console.log(keys)
         }
-        setDataSource(bankInfoVos) 
-      } 
+        setDataSource(bankInfoVos)
+      }
     }
 
   }
   // 记录列表选中
   function handleSelectedRows(rowKeys, rows) {
     setRowKeys(rowKeys);
-    setRows(rows); ;
-     
+    setRows(rows);;
+
   }
   // 清除选中项
   function cleanSelectedRecord() {
@@ -179,7 +178,7 @@ const Bankformef = forwardRef(({
     let newsbank;
     if (selectedRows.length > 1) {
       newsbank = selectedRows.splice(1);
-    }else {
+    } else {
       newsbank = selectedRows
     }
     //setDataSource(newsbank) 
@@ -230,7 +229,6 @@ const Bankformef = forwardRef(({
   }
   // 数据处理
   function mergeData(formData) {
-    console.log(formData)
     const data = dataSource;
     const exist = data.find((value) => value.bankAccount === formData.bankAccount &&
       value.key !== formData.key);
@@ -248,10 +246,10 @@ const Bankformef = forwardRef(({
       cleanSelectedRecord();
       //setRows(formData)
       //this.setState({selectedRows: [formData]})
-    } else { 
+    } else {
       //生成行号
-      if (dataSource.length  === 0) {
-      }else {
+      if (dataSource.length === 0) {
+      } else {
         lineCode++
       }
       formData.lineCode = getLineCode(lineCode);
@@ -280,13 +278,13 @@ const Bankformef = forwardRef(({
     const bankInfo = tabformRef.current.data;
     if (!bankInfo || bankInfo.length === 0) {
       return false;
-    }else {
+    } else {
       for (let item of bankInfo) {
-        if (isEmpty(item.countryName) || isEmpty(item.unionpayCode) || isEmpty(item.bankName) || isEmpty(item.bankAccount) || 
+        if (isEmpty(item.countryName) || isEmpty(item.unionpayCode) || isEmpty(item.bankName) || isEmpty(item.bankAccount) ||
           isEmpty(item.paymentName) || isEmpty(item.bankOwner) || isEmpty(item.openingPermitId)) {
-            sendbank = false;
+          sendbank = false;
           return false;
-        }else {
+        } else {
           sendbank = true;
           return bankInfo;
         }
@@ -315,8 +313,8 @@ const Bankformef = forwardRef(({
   );
   return (
     <>
-      <Header  style={{ display: headerInfo === true ? 'none' : 'block',color: 'red' }}
-        left={ headerInfo ? '' : headerleft}
+      <Header style={{ display: headerInfo === true ? 'none' : 'block', color: 'red' }}
+        left={headerInfo ? '' : headerleft}
         advanced={false}
         extra={false}
       />
@@ -340,7 +338,7 @@ const Bankformef = forwardRef(({
             onSelectRow={handleSelectedRows}
             selectedRowKeys={selectRowKeys}
             dataSource={dataSource}
-            //{...dataSource}
+          //{...dataSource}
           />
         }
       </AutoSizeLayout>
