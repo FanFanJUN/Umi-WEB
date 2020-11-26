@@ -6,6 +6,7 @@ import Header from '@/components/Header';
 import ModifyForm from './ModifyForm';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
 import styles from '../index.less';
+import { map } from 'lodash';
 
 
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
@@ -33,13 +34,15 @@ const ModifyinfoRef = forwardRef(({
   const [initialValue, setInitialValue] = useState({});
   const [modalType, setModalType] = useState(false);
   const [showAttach, triggerShowAttach] = useState(false);
-  const [loading, triggerLoading] = useState(false);
-  const [attachId, setAttachId] = useState('')
+  const [attachId, setAttachId] = useState('1')
   const [title, setTitle] = useState('新增变更详情');
   const empty = selectRowKeys.length === 0;
   const [signleRow = {}] = selectedRows;
-  const { key: defaultype } = signleRow;
+  const { key: defaultype, executionStatus: implement } = signleRow;
+  // 认定方案
   const isdelete = defaultype === 1;
+  // 执行状态
+  const isimple = implement === 0;
   useEffect(() => {
     hanldcreate()
   }, [])
@@ -47,65 +50,45 @@ const ModifyinfoRef = forwardRef(({
   useEffect(() => {
     hanldModify(editformData)
   }, [editformData])
-  // 明细表格
-  let columnsdetail = [];
-  if (isView) {
-    columnsdetail.push(
-      {
-        title: '计划时间',
-        dataIndex: 'smChangeValue',
-        align: 'center',
-        width: 180
-      },
-      {
-        title: '是否超期',
-        dataIndex: 'smChangeDescriptionBefore',
-        align: 'center',
-        width: 220,
-      },
-      {
-        title: '是否催办',
-        dataIndex: 'smChangeDescriptionAfter',
-        align: 'center',
-        width: 220,
-      },
-    );
-  }
-  let columnsother = [];
-  if (!isView) {
-    columnsdetail.push(
-      {
-        title: '计划完成天数',
-        align: 'center',
-        dataIndex: 'planDay',
-        width: 220,
-      },
-    );
-  }
   const columns = [
     {
       title: '认定阶段',
       dataIndex: 'stageName',
       align: 'center',
-      width: 180
+      width: 160
     },
     {
       title: '认定任务',
       dataIndex: 'taskName',
       align: 'center',
-      width: 220,
+      width: 160,
     },
     {
       title: '任务类型',
       dataIndex: 'taskTypeName',
       align: 'center',
-      width: 220,
+      width: 160,
     },
     {
       title: '排序号',
       align: 'center',
       dataIndex: 'sort',
       width: 100,
+    },
+    {
+      title: '执行状态',
+      align: 'center',
+      dataIndex: 'executionStatus',
+      width: 100,
+      render: function (text, record, row) {
+        if (text === 0) {
+          return <div>未发布</div>;
+        } else if (text === 1) {
+          return <div className="successColor">执行中</div>;
+        } else if (text === 2) {
+          return <div className="successColor">已执行</div>;
+        }
+      },
     },
     {
       title: '执行责任人',
@@ -117,15 +100,19 @@ const ModifyinfoRef = forwardRef(({
       title: '执行部门',
       dataIndex: 'executiveDepartmentName',
       align: 'center',
-      width: 200
+      width: 160
     },
-    ...columnsother,
-    ...columnsdetail,
+    {
+      title: '计划完成天数',
+      align: 'center',
+      dataIndex: 'planDay',
+      width: 120,
+    },
     {
       title: '备注',
       dataIndex: 'remark',
       align: 'center',
-      width: 300
+      width: 200
     }
   ].map(_ => ({ ..._, align: 'center' }))
 
@@ -173,6 +160,7 @@ const ModifyinfoRef = forwardRef(({
     setTitle('新增分配计划详情')
     setVisible(true)
     setModalType(false)
+    setAttachId(1)
     uploadTable()
   }
   // 编辑
@@ -180,6 +168,7 @@ const ModifyinfoRef = forwardRef(({
     setTitle('编辑分配计划详情')
     setVisible(true)
     setModalType(true)
+    setAttachId(2)
     const [row] = selectedRows;
     setInitialValue({ ...row })
 
@@ -201,33 +190,35 @@ const ModifyinfoRef = forwardRef(({
     let newsdata = [];
     [...newsdata] = dataSource;
     if (newsdata.length > 0) {
-      newsdata.map(item => {
+      for (let item of newsdata) {
         if (item.stageCode === val.stageCode && item.taskCode === val.taskCode && !modalType) {
           message.error('当前数据已存在，请重新新增！')
           return false;
-        } else {
-          if (!modalType) {
-            console.log(keys)
-            newsdata.push({
-              ...val,
-              key: keys + 1
-            })
-            setDataSource(newsdata);
-          } else {
-            dataSource.map((item, index) => {
-              if (item.key === val.key) {
-                const copyData = dataSource.slice(0)
-                copyData[index] = val;
-                setDataSource(copyData)
-                setRows(copyData)
-              }
-            })
-          }
-          hideModal()
-          uploadTable()
         }
-      })
-
+      }
+      if (!modalType) {
+        keys = keys + 1;
+        newsdata.push({
+          ...val,
+          key: keys + 1,
+          executionStatus: 0,
+        })
+        setDataSource(newsdata);
+        hideModal()
+        uploadTable()
+        return false;
+      } else {
+        dataSource.map((item, index) => {
+          if (item.key === val.key) {
+            const copyData = dataSource.slice(0)
+            copyData[index] = val;
+            setDataSource(copyData)
+            setRows(copyData)
+          }
+        })
+      }
+      hideModal()
+      uploadTable()
     }
   }
   // 关闭弹窗
@@ -262,17 +253,16 @@ const ModifyinfoRef = forwardRef(({
 
     }
   }
-
   const headerleft = (
     <>
       {
         <AuthButton type="primary" className={styles.btn} onClick={() => showModal()}>新增</AuthButton>
       }
       {
-        <AuthButton className={styles.btn} disabled={empty} onClick={() => handleEdit()}>编辑</AuthButton>
+        <AuthButton className={styles.btn} disabled={empty || !isimple} onClick={() => handleEdit()}>编辑</AuthButton>
       }
       {
-        <AuthButton className={styles.btn} disabled={empty || isdelete} onClick={handleRemove}>删除</AuthButton>
+        <AuthButton className={styles.btn} disabled={empty || isdelete || !isimple} onClick={handleRemove}>删除</AuthButton>
       }
     </>
   );
@@ -317,11 +307,11 @@ const ModifyinfoRef = forwardRef(({
           onCancel={handleCancel}
           onOk={handleSubmit}
           type={modalType}
+          attachId={attachId}
           dataSource={initialValue}
           title={title}
           wrappedComponentRef={ModifyfromRef}
           modifytype={modifytype}
-          loading={loading}
           destroyOnClose
         />
         <Modal
@@ -334,8 +324,7 @@ const ModifyinfoRef = forwardRef(({
       </div>
     </>
   )
-}
-)
+})
 const CommonForm = create()(ModifyinfoRef)
 
 export default CommonForm

@@ -188,7 +188,7 @@ const SelfEvaluation = props => {
   }
 
   const exportData = () => {
-    const url = `${BASE_URL}/${recommendUrl}/srController/downloadResultTemplate?reviewImplementManagementId=${props.reviewImplementPlanCode}`;
+    const url = `${window.location.origin}${BASE_URL}/${recommendUrl}/srController/downloadResultTemplate?reviewImplementManagementId=${props.reviewImplementPlanCode}`;
     window.open(url);
   }
 

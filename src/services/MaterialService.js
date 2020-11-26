@@ -118,3 +118,51 @@ export const CognizanceRelease = params => {
     method: 'POST',
   })
 }
+// 认定执行任务明细
+export const TaskImplementDetailsVo = (params) => {
+  return request({
+    headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+    url: `${recommendUrl}/api/samIdentifyPlanImplementationService/findByImplementId`,
+    params,
+    method: 'POST',
+    hack: true
+  })
+};
+
+// 认定执行明细
+export const ImplementDetailsVo = (params) => {
+  return request({
+    headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+    url: `${recommendUrl}/api/samIdentifyPlanImplementationService/findDetailVoByImplementationId`,
+    params,
+    method: 'POST',
+    hack: true
+  })
+};
+// 实物认定执行保存
+export const CarrytaskSaveVo = params => {
+  return request({
+    url: `${recommendUrl}/api/samIdentifyPlanImplementationService/executeImplemention`,
+    data: params,
+    method: 'POST',
+  })
+}
+// 明细催办
+export const Urgingdetailed = params => {
+  return request({
+    headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+    url: `${recommendUrl}/api/samSupplierIdentificationPlanService/sendMailByImpId`,
+    params,
+    method: 'POST',
+  })
+}
+// 确认认定结果获取单据状态
+export const ConfirmBilltype = (params) => {
+  return request({
+    headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+    url: `${recommendUrl}/api/samSupplierIdentificationPlanService/checkConfirmPlan`,
+    params,
+    method: 'POST',
+    hack: true
+  })
+};
