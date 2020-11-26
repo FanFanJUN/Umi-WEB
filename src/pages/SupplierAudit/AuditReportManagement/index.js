@@ -10,7 +10,7 @@ import { Button, Checkbox, Input, message, Modal } from 'antd';
 import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
 import { ExtTable, utils, WorkFlow } from 'suid';
 import {
-  CompanyConfig, DeleteAuditRequirementsManagement, EndFlow,
+  CompanyConfig, deleteReportById, EndFlow,
   FindByFiltersConfig,
 } from '../mainData/commomService';
 import {
@@ -56,6 +56,7 @@ const AuditReportManagement = forwardRef(({}, ref) => {
   const listenerParentClose = (event) => {
     const { data = {} } = event;
     if (data.tabAction === 'close') {
+      tableRef.current.manualSelectedRows();
       tableRef.current.remoteDataRefresh();
     }
   };
@@ -75,6 +76,7 @@ const AuditReportManagement = forwardRef(({}, ref) => {
 
   const onChangeCreate = (e) => {
     setData(v => ({ ...v, checkedCreate: e.target.checked }));
+    tableRef.current.manualSelectedRows();
     tableRef.current.remoteDataRefresh();
   };
 
@@ -136,8 +138,7 @@ const AuditReportManagement = forwardRef(({}, ref) => {
       okType: 'danger',
       cancelText: '否',
       onOk: () => {
-        const codeArr = data.selectedRows.map(item => item.reviewRequirementCode);
-        DeleteAuditRequirementsManagement(codeArr).then(res => {
+        deleteReportById({id:data.selectedRows[0].id}).then(res => {
           if (res.success) {
             message.success(res.message);
             tableRef.current.manualSelectedRows();
@@ -249,13 +250,13 @@ const AuditReportManagement = forwardRef(({}, ref) => {
         businessKey={data.flowId}
         callBack={handleComplete}
         disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length === 0}
-        businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewRequirement'
+        businessModelCode='com.ecmp.srm.sam.entity.ar.ArAuditReportManag'
         key='SRM-SM-AUDITREPORT-APPROVE'
       >提交审核</StartFlow>)
     }
     {
       authAction(<FlowHistoryButton
-        businessId={data.id}
+        businessId={data.flowId}
         flowMapUrl='flow-web/design/showLook'
         ignore={DEVELOPER_ENV}
         disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
@@ -320,7 +321,7 @@ const AuditReportManagement = forwardRef(({}, ref) => {
               url: `${recommendUrl}/api/arAuditReportManagService/findListByPage`,
               type: 'POST',
             }}
-            checkbox
+            checkbox={{ multiSelect: false }}
             allowCancelSelect={true}
             remotePaging={true}
             ref={tableRef}

@@ -6,6 +6,7 @@
 
 import React, { useRef } from 'react';
 import { WorkFlow } from 'suid';
+import { message } from 'antd';
 import { router } from 'dva';
 import { closeCurrent } from '../../../../utils';
 import AuditReportManagementView from '../editPage';
@@ -20,7 +21,7 @@ const PurchaseTeamApprovePage = () => {
 
   // 保存小组意见
   const beforeSubmit = () => {
-    getRef.current.saveModalData();
+   getRef.current.saveModalData();
   };
 
   return (
