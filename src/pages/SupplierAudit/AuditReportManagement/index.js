@@ -56,6 +56,7 @@ const AuditReportManagement = forwardRef(({}, ref) => {
   const listenerParentClose = (event) => {
     const { data = {} } = event;
     if (data.tabAction === 'close') {
+      tableRef.current.manualSelectedRows();
       tableRef.current.remoteDataRefresh();
     }
   };
@@ -75,6 +76,7 @@ const AuditReportManagement = forwardRef(({}, ref) => {
 
   const onChangeCreate = (e) => {
     setData(v => ({ ...v, checkedCreate: e.target.checked }));
+    tableRef.current.manualSelectedRows();
     tableRef.current.remoteDataRefresh();
   };
 
@@ -248,7 +250,7 @@ const AuditReportManagement = forwardRef(({}, ref) => {
         businessKey={data.flowId}
         callBack={handleComplete}
         disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length === 0}
-        businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewRequirement'
+        businessModelCode='com.ecmp.srm.sam.entity.ar.ArAuditReportManag'
         key='SRM-SM-AUDITREPORT-APPROVE'
       >提交审核</StartFlow>)
     }

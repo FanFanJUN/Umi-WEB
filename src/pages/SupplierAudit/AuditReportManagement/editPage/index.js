@@ -186,7 +186,7 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
                     beforeStart={handleBeforeStartFlow}
                     callBack={handleBack}
                     disabled={false}
-                    businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewRequirement'
+                    businessModelCode='com.ecmp.srm.sam.entity.ar.ArAuditReportManag'
                   >
                     {
                       loading => <Button loading={loading} type='primary'>提交</Button>
