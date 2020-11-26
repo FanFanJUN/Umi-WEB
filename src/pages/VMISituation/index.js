@@ -146,7 +146,8 @@ const COLUMNS = [
     dataIndex: 'signed',
     render(text) {
       return !!text ? '是' : '否'
-    }
+    },
+    
   }
 ];
 const TFL = [
@@ -213,7 +214,6 @@ function AcceptFYPMain() {
   async function validateFunc(item) {
     toggleLoading(true)
     const transfromItems = TRANSFORM_PARAM ? item.map(t => formatTemplateBooleanParma(t, 'signed')) : item;
-    console.log(transfromItems)
     const { success, data, message: msg } = await CHECK_METHOD(transfromItems)
     toggleLoading(false)
     if (success) {
