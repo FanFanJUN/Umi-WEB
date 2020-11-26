@@ -377,7 +377,7 @@ const Team = (props) => {
 
   return (
     <ExtModal
-      width={'120vh'}
+      width={'180vh'}
       maskClosable={false}
       visible={visible}
       title={'审核小组管理'}
