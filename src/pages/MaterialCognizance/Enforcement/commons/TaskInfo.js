@@ -1,7 +1,7 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useState } from 'react';
 import { Form, Row, Input, Col, DatePicker, Radio, Button } from 'antd';
-import { utils, ComboList} from 'suid';
-import { onlyNumber} from '@/utils'
+import { utils, ComboList } from 'suid';
+import { onlyNumber } from '@/utils'
 import moment from 'moment';
 // import { PCNMasterdatalist } from '../../commonProps'
 const { Item, create } = Form;
@@ -18,11 +18,9 @@ const HeadFormRef = forwardRef(({
     form,
     isView,
     editformData,
-    onOk = () => null,
 }, ref) => {
     useImperativeHandle(ref, () => ({
         form,
-        basefrom
     }));
     const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
     const authorizations = storage.sessionStorage.get("Authorization");
@@ -30,19 +28,6 @@ const HeadFormRef = forwardRef(({
     useEffect(() => {
 
     }, [])
-    function basefrom() {
-        let modifyinfluen = false;
-        form.validateFieldsAndScroll(async (err, val) => {
-            if (!err) {
-                modifyinfluen = val;
-            } 
-        })
-        return modifyinfluen ? modifyinfluen : false
-    }
-    function afterSelect(val) {
-        //setSetupval(val.value)
-        onOk(val.value);
-    }
     return (
         <div >
             <div >
@@ -51,44 +36,14 @@ const HeadFormRef = forwardRef(({
                         <Col span={10}>
                             <Item label='认定阶段' {...formLayout}>
                                 {
-                                    isView ? <span>{editformData ? editformData.smPcnChangeTypeName : ''}</span> :
-                                    (
-                                        getFieldDecorator('smPcnChangeTypeCode',{initialValue: editformData ? editformData.smPcnChangeTypeCode : ""}),
-                                        getFieldDecorator('smPcnChangeTypeName', {
-                                            initialValue: editformData ? editformData.smPcnChangeTypeName : "",
-                                            rules: [
-                                                {
-                                                    required: true,
-                                                    message: '请选择变更类型'
-                                                }
-                                            ]
-                                        })(
-                                            // <ComboList disabled={isView === true}
-                                            //     {...PCNMasterdatalist}
-                                            //     showSearch={false}
-                                            //     style={{ width: '100%' }}
-                                            //     name='smPcnChangeTypeName' 
-                                            //     field={['smPcnChangeTypeCode']} 
-                                            //     afterSelect={afterSelect}
-                                            //     form={form} 
-                                            // />
-                                            <Input disabled />
-                                        )
-                                    )
-                                    
+                                    isView ? <span>{editformData ? editformData.identificationStageName : ''}</span> : ''
                                 }
                             </Item>
                         </Col>
                         <Col span={10}>
                             <Item label='认定任务' {...formLayout}>
                                 {
-                                    isView ? <span>{editformData ? editformData.smSupplierName : ''}</span> :
-                                    getFieldDecorator("smSupplierName", {
-                                        initialValue: authorizations.userName,
-                                        rules: [{ required: true, message: "请选择创建人", }]
-                                    })(
-                                        <Input disabled />
-                                    )
+                                    isView ? <span>{editformData ? editformData.identificationTaskName : ''}</span> : ''
                                 }
                             </Item>
                         </Col>
@@ -97,36 +52,14 @@ const HeadFormRef = forwardRef(({
                         <Col span={10}>
                             <Item label='执行部门' {...formLayout}>
                                 {
-                                    isView ? <span>{editformData ?  editformData.createdDate : ''}</span> :
-                                    getFieldDecorator("createdDate", {
-                                        initialValue: moment().format('YYYY-MM-DD'),
-                                        rules: [
-                                            {
-                                                required: true,
-                                                message: '请输入创建时间'
-                                            }
-                                        ]
-                                    })(
-                                        <Input disabled />
-                                    )
+                                    isView ? <span>{editformData ? editformData.departmentName : ''}</span> : ''
                                 }
                             </Item>
                         </Col>
                         <Col span={10}>
                             <Item label='任务类型' {...formLayout}>
                                 {
-                                    isView ? <span>{editformData ?  editformData.createdDate : ''}</span> :
-                                    getFieldDecorator("createdDate", {
-                                        initialValue: moment().format('YYYY-MM-DD'),
-                                        rules: [
-                                            {
-                                                required: true,
-                                                message: '请输入创建时间'
-                                            }
-                                        ]
-                                    })(
-                                        <Input disabled />
-                                    )
+                                    isView ? <span>{editformData ? editformData.taskTypeName : ''}</span> : ''
                                 }
                             </Item>
                         </Col>
@@ -135,36 +68,14 @@ const HeadFormRef = forwardRef(({
                         <Col span={10}>
                             <Item label='执行责任人' {...formLayout}>
                                 {
-                                    isView ? <span>{editformData ?  editformData.createdDate : ''}</span> :
-                                    getFieldDecorator("createdDate", {
-                                        initialValue: moment().format('YYYY-MM-DD'),
-                                        rules: [
-                                            {
-                                                required: true,
-                                                message: '请输入创建时间'
-                                            }
-                                        ]
-                                    })(
-                                        <Input disabled />
-                                    )
+                                    isView ? <span>{editformData ? editformData.executorName : ''}</span> : ''
                                 }
                             </Item>
                         </Col>
                         <Col span={10}>
                             <Item label='计划时间' {...formLayout}>
                                 {
-                                    isView ? <span>{editformData ?  editformData.createdDate : ''}</span> :
-                                    getFieldDecorator("createdDate", {
-                                        initialValue: moment().format('YYYY-MM-DD'),
-                                        rules: [
-                                            {
-                                                required: true,
-                                                message: '请输入创建时间'
-                                            }
-                                        ]
-                                    })(
-                                        <Input disabled />
-                                    )
+                                    isView ? <span>{editformData ? editformData.planTime : ''}</span> : ''
                                 }
                             </Item>
                         </Col>

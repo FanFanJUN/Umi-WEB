@@ -85,7 +85,7 @@ export const Identification = {
   remotePaging: true,
   rowKey: 'code',
   reader: {
-    field: ['stageCode',],
+    field: ['id', 'stageCode',],
     name: 'identificationStage',
   },
 };
@@ -223,11 +223,11 @@ export const PlantypeList = {
     },
     {
       code: '3',
-      name: '已完成',
+      name: '已终止',
     },
     {
       code: '4',
-      name: '已终止',
+      name: '已完成',
     }
   ],
   reader: {
@@ -244,16 +244,12 @@ export const Identificationresults = {
   dataSource: [
     {
       code: '0',
-      name: '认定中',
+      name: '不合格',
     },
     {
       code: '1',
-      name: '认定合格',
+      name: '合格',
     },
-    {
-      code: '2',
-      name: '认定不合格',
-    }
   ],
   reader: {
     name: 'name',
@@ -273,6 +269,30 @@ export const PersonliableList = {
     field: ["id"]
   },
 };
+// 预警状态
+export const Earlywarninglist = {
+  allowClear: true,
+  showSearch: false,
+  dataSource: [
+    {
+      code: '0',
+      name: '未报警',
+    },
+    {
+      code: '1',
+      name: '报警',
+    },
+  ],
+  placeholder: '选择预警状态',
+  ...commonProps,
+}
+
+
+
+
+
+
+
 
 
 

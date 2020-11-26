@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useState, useCallback } from 'react';
-import { Modal, Form, Row, Col, Input, } from 'antd';
+import { Modal, Form, Row, Col, Input, InputNumber } from 'antd';
 import { smBaseUrl } from '../../../../utils/commonUrl';
 import { Fieldclassification } from '@/utils/commonProps'
 import { ComboGrid, ComboList } from 'suid';
@@ -30,9 +30,8 @@ const ModifyForm = forwardRef(
             type,
             loading,
             dataSource,
-            isView,
             title,
-            modifytype
+            attachId
         },
         ref,
     ) => {
@@ -44,22 +43,24 @@ const ModifyForm = forwardRef(
         const [others, setOthers] = useState(true);
         useEffect(() => {
             handleDate(dataSource)
-        }, [dataSource, handleDate, visible]);
-
-        const handleDate = useCallback(
-            function handleDate(value) {
-                if (type) {
-                    setInitialValue(value)
-                } else {
-                    setInitialValue({})
-                }
-                if (type && value.key === 1) {
-                    setEdit(true)
-                } else {
-                    setEdit(false)
-                }
+        }, [dataSource, visible]);
+        // 处理认定任务
+        function handleDate(value) {
+            if (type && attachId === 2) {
+                setInitialValue(value)
+                setOthers(false)
+                setTaskid(value.stageId)
+            } else {
+                setOthers(true)
+                setInitialValue({})
             }
-        )
+            if (type && value.key === 1) {
+                setEdit(true)
+            } else {
+                setEdit(false)
+            }
+        }
+        // 表单值
         function handleSubmit() {
             validateFieldsAndScroll(async (err, val) => {
                 if (!err) {
@@ -71,17 +72,13 @@ const ModifyForm = forwardRef(
         function changevalue(val) {
             setOthers(false)
             setTaskid(val.id)
+            form.setFieldsValue({
+                'taskCode': '',
+                'taskName': '',
+            })
         }
         // 执行部门
-        function personliable(val) {
-            console.log(val)
-
-        }
-        function handleminate() {
-            form.setFieldsValue({ executiveDepartmentName: '' })
-        }
         function handlExecutor(val) {
-            console.log(val)
             form.setFieldsValue({
                 'executiveDepartmentName': val.organization.name,
                 'executiveDepartmentId': val.organization.id,
@@ -102,9 +99,10 @@ const ModifyForm = forwardRef(
                     <Col span={12}>
                         <Item {...formLayout} label="认定阶段">
                             {
+                                getFieldDecorator('stageId', { initialValue: dataSource ? dataSource.stageId : '' }),
                                 getFieldDecorator('stageCode', { initialValue: dataSource ? dataSource.stageCode : '' }),
                                 getFieldDecorator('stageName', {
-                                    initialValue: dataSource ? dataSource.stageName : '',
+                                    initialValue: initialValue ? initialValue.stageName : '',
                                     rules: [{ required: true, message: '请选择认定阶段' }],
                                 })(
                                     <ComboList
@@ -115,7 +113,7 @@ const ModifyForm = forwardRef(
                                             url: `${recommendUrl}/api/samPhysicalIdentificationStageService/findByPage`,
                                             type: 'POST'
                                         }}
-                                        field={['stageCode']}
+                                        field={['stageId', 'stageCode']}
                                         form={form}
                                         afterSelect={changevalue}
                                         {...Identification}
@@ -150,7 +148,7 @@ const ModifyForm = forwardRef(
                                         }}
                                         field={['taskCode']}
                                         form={form}
-                                        afterSelect={changevalue}
+                                        //afterSelect={changevalue}
                                         disabled={edit || others}
                                     />
                                 )}
@@ -188,18 +186,17 @@ const ModifyForm = forwardRef(
                             {getFieldDecorator('sort', {
                                 initialValue: initialValue ? initialValue.sort : '',
                                 rules: [
-                                    {
-                                        required: true,
-                                        message: '请填写排序号',
-                                    },
+                                    { required: true, message: '请填写排序号' },
+                                    { pattern: RegExp(/^[1-9]\d*$/, "g"), message: '只能是数字' },
                                 ],
+
                             })(
                                 <Input
                                     style={{
                                         width: "100%"
                                     }}
                                     placeholder="请输入排序号"
-                                    onBlur={onlyNumber}
+                                    // onBlur={onlyNumber}
                                     disabled={edit}
                                 />
                             )}
@@ -271,13 +268,11 @@ const ModifyForm = forwardRef(
                             {getFieldDecorator('planDay', {
                                 initialValue: initialValue ? initialValue.planDay : '',
                                 rules: [
-                                    {
-                                        required: true,
-                                        message: '请输入计划完成天数',
-                                    },
+                                    { required: true, message: '请输入计划完成天数' },
+                                    { pattern: RegExp(/^[1-9]\d*$/, "g"), message: '只能是数字' },
                                 ],
                             })(
-                                <Input onBlur={onlyNumber} placeholder="请输入计划完成天数" />
+                                <Input placeholder="请输入计划完成天数" />
                             )}
                         </Item>
                     </Col>

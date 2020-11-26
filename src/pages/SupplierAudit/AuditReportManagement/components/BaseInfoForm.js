@@ -130,7 +130,7 @@ const BaseInfoForm = React.forwardRef(({ form, userInfo, isView, editData,type }
                     initialValue: type === 'add' ? null : editData.basicInfDocFiles,
                   })(
                     <Upload entityId={type === 'add' ? null : editData.basicInfDocFiles}
-                            type={isView ? 'show' : ''}/>,
+                            type={type === 'detail' ? 'show' : ''}/>,
                   )
                 }
               </FormItem>

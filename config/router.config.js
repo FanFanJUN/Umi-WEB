@@ -20,7 +20,8 @@ export default [
       { path: '/material/Cognizance/ManualEdit/index', component: './MaterialCognizance/Cognizance/ManualEdit/index', title: '实物认定计划编辑' },
       { path: '/material/Cognizance/ManualDetail/index', component: './MaterialCognizance/Cognizance/ManualDetail/index', title: '实物认定计划明细' },
       { path: '/material/Enforcement/index', component: './MaterialCognizance/Enforcement', title: '实物认定执行' },
-      { path: '/material/Enforcement/Edit/index', component: './MaterialCognizance/Enforcement/Edit/index', title: '实物认定执行' }
+      { path: '/material/Enforcement/Edit/index', component: './MaterialCognizance/Enforcement/Edit/index', title: '实物认定执行任务' },
+      { path: '/material/Enforcement/Details/index', component: './MaterialCognizance/Enforcement/Details/index', title: '实物认定执行明细' },
     ]
   },
   {
@@ -170,8 +171,10 @@ export default [
       { path: '/supplierAudit/AuditReportManagement/ApprovePage/AuditReportApprovePage', component: './SupplierAudit/AuditReportManagement/ApprovePage/AuditReportApprovePage', title: '审核报告管理流程信息' },
       { path: '/supplierAudit/AuditReportManagement/ApprovePage/AuditReportApproveEditPage', component: './SupplierAudit/AuditReportManagement/ApprovePage/AuditReportApproveEditPage', title: '审核报告管理流程编辑' },
       { path: '/supplierAudit/AuditReportManagement/ApprovePage/PurchaseTeamApprovePage', component: './SupplierAudit/AuditReportManagement/ApprovePage/PurchaseTeamApprovePage', title: '采购小组审批' },
+      { path: '/supplierAudit/AuditReportManagement/ApprovePage/LeaderApprovePage', component: './SupplierAudit/AuditReportManagement/ApprovePage/LeaderApprovePage', title: '领导审批' },
       { path: '/supplierAudit/AuditReportManagement/ApprovePage/ApproveDetailPage', component: './SupplierAudit/AuditReportManagement/ApprovePage/ApproveDetailPage', title: '审核报告管理' },
       { path: '/supplierAudit/AuditBriefingManagement/index', component: './SupplierAudit/AuditBriefingManagement', title: '审核简报管理' },
+      { path: '/supplierAudit/AuditBriefingManagementViewAdd', component: './SupplierAudit/AuditBriefingManagement/editPage', title: '审核简报-新增' },
     ]
   },
   {

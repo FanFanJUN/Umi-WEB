@@ -103,6 +103,7 @@ function CreateStrategy() {
             <BaseInfo
               editformData={editData}
               wrappedComponentRef={BaseinfoRef}
+              cancel={query.cancel}
             />
           </div>
         </div>
@@ -114,6 +115,7 @@ function CreateStrategy() {
               modifytype={modifytype}
               editformData={editData}
               manual={true}
+              cancel={query.cancel}
             />
           </div>
         </div>

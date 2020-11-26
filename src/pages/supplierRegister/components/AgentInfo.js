@@ -1,16 +1,16 @@
 import React, { forwardRef, useState, useRef, useEffect, useImperativeHandle } from 'react';
-import { ExtTable, WorkFlow, ExtModal, utils, ToolBar,AuthButton } from 'suid';
-import { Form, Button, message, Checkbox, Modal} from 'antd';
-import { openNewTab, getFrameElement ,isEmpty} from '@/utils';
+import { ExtTable, WorkFlow, ExtModal, utils, ToolBar, AuthButton } from 'suid';
+import { Form, Button, message, Checkbox, Modal } from 'antd';
+import { openNewTab, getFrameElement, isEmpty } from '@/utils';
 import Header from '@/components/Header';
 import UploadFile from '../../../components/Upload/index'
 import AutoSizeLayout from '../SupplierAutoLayout';
 import styles from './index.less';
 import AgentInfoEditModal from './AgentInfoEditModal'
 import AgentApprvoEditModal from './AgentApprvoEditModal'
-import { getMaxLineNum,getLineCode } from '@/utils/index';
+import { getMaxLineNum, getLineCode } from '@/utils/index';
 import { SaveSupplierRegister, DetailSupplierRegister } from "@/services/supplierConfig"
-import { getCNCountryIdInfo} from '../../../services/supplierRegister';
+import { getCNCountryIdInfo } from '../../../services/supplierRegister';
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { create } = Form;
 const { authAction, storage } = utils;
@@ -75,7 +75,7 @@ const Agentformef = forwardRef(({
       title: '原厂地址',
       align: 'center',
       dataIndex: 'originalAddress',
-      width:200
+      width: 200
     },
     {
       title: '营业执照',
@@ -157,16 +157,16 @@ const Agentformef = forwardRef(({
     }
   ].map(_ => ({ ..._, align: 'center' }));
   const empty = selectRowKeys.length === 0;
-  
+
   function getBankcodelist(val) {
     let supplierAgents = val.supplierAgents;
-      if (supplierAgents === undefined) {
-        supplierAgents = [];
-      }else {
-        supplierAgents = val.supplierAgents;
-        supplierAgents.forEach(item => item.key = keys++);
-        setDataSource(supplierAgents)
-      }
+    if (supplierAgents === undefined) {
+      supplierAgents = [];
+    } else {
+      supplierAgents = val.supplierAgents;
+      supplierAgents.forEach(item => item.key = keys++);
+      setDataSource(supplierAgents)
+    }
   }
   // 记录列表选中
   function handleSelectedRows(rowKeys, rows) {
@@ -181,8 +181,8 @@ const Agentformef = forwardRef(({
     setRowKeys([]);
     setRows([]);
   }
-   // 新增
-   function showModal() {
+  // 新增
+  function showModal() {
     let rowselect = [];
     setRows(rowselect);
     setInitialValue(rowselect)
@@ -195,7 +195,7 @@ const Agentformef = forwardRef(({
     let newsagent;
     if (selectedRows.length > 1) {
       newsagent = selectedRows.splice(1);
-    }else {
+    } else {
       newsagent = selectedRows
     }
     console.log(newsagent)
@@ -277,17 +277,17 @@ const Agentformef = forwardRef(({
     const agentInfo = tabformRef.current.data;
     if (!agentInfo || agentInfo.length === 0) {
       return false;
-    }else {
-      agentInfo.map(item => {
-        if (isEmpty(item.originalCode) || isEmpty(item.originalCompanyName) || isEmpty(item.agentBrand) || isEmpty(item.countryName) || 
+    } else {
+      for (let item of agentInfo) {
+        if (isEmpty(item.originalCode) || isEmpty(item.originalCompanyName) || isEmpty(item.agentBrand) || isEmpty(item.countryName) ||
           isEmpty(item.originalAddress) || isEmpty(item.businessLicenseDocId) || isEmpty(item.powerAttorneyDocId)) {
-            sendbank = false;
+          sendbank = false;
           return false;
-        }else {
+        } else {
           sendbank = true;
           return agentInfo;
         }
-      })
+      }
     }
     return sendbank ? agentInfo : false
   }
@@ -298,38 +298,38 @@ const Agentformef = forwardRef(({
     // setFieldsValue(fs)
   }
   const headerleft = (
-    <> 
-        {
-          <AuthButton type="primary" className={styles.btn} onClick={() => showModal()}>新增</AuthButton>
-        }
-        {
-          <AuthButton className={styles.btn} onClick={() => handleEdit()} disabled={empty} >编辑</AuthButton>
-        }
-        {
-          <AuthButton className={styles.btn} disabled={empty} onClick={handleRemove}>删除</AuthButton>
-        }
+    <>
+      {
+        <AuthButton type="primary" className={styles.btn} onClick={() => showModal()}>新增</AuthButton>
+      }
+      {
+        <AuthButton className={styles.btn} onClick={() => handleEdit()} disabled={empty} >编辑</AuthButton>
+      }
+      {
+        <AuthButton className={styles.btn} disabled={empty} onClick={handleRemove}>删除</AuthButton>
+      }
     </>
   );
   const agentleft = (
     <>
-        {
-          authAction(
-            <AuthButton className={styles.btn} disabled={empty} onClick={handleEdit}>删除</AuthButton>
-          )
-        }
+      {
+        authAction(
+          <AuthButton className={styles.btn} disabled={empty} onClick={handleEdit}>删除</AuthButton>
+        )
+      }
     </>
   );
   return (
     <>
       <Header
-        left={ headerInfo ? '' : agenthead ? agentleft :headerleft}
+        left={headerInfo ? '' : agenthead ? agentleft : headerleft}
         advanced={false}
         extra={false}
       />
       <AutoSizeLayout>
         {
           (height) => <ExtTable
-            columns={agenthead ? purchaseColumns :columns}
+            columns={agenthead ? purchaseColumns : columns}
             showSearch={false}
             ref={tabformRef}
             rowKey={(item) => item.key}
@@ -351,13 +351,13 @@ const Agentformef = forwardRef(({
             onSelectRow={handleSelectedRows}
             selectedRowKeys={selectRowKeys}
             dataSource={dataSource}
-            //{...dataSource}
+          //{...dataSource}
           />
         }
       </AutoSizeLayout>
       <div>
-        {agenthead ? 
-          <AgentApprvoEditModal 
+        {agenthead ?
+          <AgentApprvoEditModal
             visible={visible}
             onCancel={handleCancel}
             onOk={handleSubmit}
@@ -378,25 +378,25 @@ const Agentformef = forwardRef(({
             loading={loading}
             destroyOnClose
           />
-        :
-        <AgentInfoEditModal
-          visible={visible}
-          onCancel={handleCancel}
-          onOk={handleSubmit}
-          type={modalType}
-          initialValues={initialValue}
-          CNCountryId={CNCountryId}
-          wrappedComponentRef={agentModelRef}
-          isView={isView}
-          edit={edit}
-          saveData={false}
-          editData={editData}
-          mergeData={mergeData}
-          loading={loading}
-          destroyOnClose
-        />
-      }
-        
+          :
+          <AgentInfoEditModal
+            visible={visible}
+            onCancel={handleCancel}
+            onOk={handleSubmit}
+            type={modalType}
+            initialValues={initialValue}
+            CNCountryId={CNCountryId}
+            wrappedComponentRef={agentModelRef}
+            isView={isView}
+            edit={edit}
+            saveData={false}
+            editData={editData}
+            mergeData={mergeData}
+            loading={loading}
+            destroyOnClose
+          />
+        }
+
       </div>
 
 

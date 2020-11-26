@@ -18,7 +18,7 @@ const HeadFormRef = forwardRef(({
     form,
     isView,
     editformData,
-    onOk = () => null,
+    cancel
 }, ref) => {
     useImperativeHandle(ref, () => ({
         form,
@@ -61,7 +61,7 @@ const HeadFormRef = forwardRef(({
                                                     }
                                                 ]
                                             })(
-                                                <ComboTree disabled={isView === true}
+                                                <ComboTree disabled={isView === true || cancel === '2'}
                                                     {...OrganizationList}
                                                     showSearch={false}
                                                     style={{ width: '100%' }}
