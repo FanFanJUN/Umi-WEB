@@ -256,7 +256,7 @@ const AuditReportManagement = forwardRef(({}, ref) => {
     }
     {
       authAction(<FlowHistoryButton
-        businessId={data.id}
+        businessId={data.flowId}
         flowMapUrl='flow-web/design/showLook'
         ignore={DEVELOPER_ENV}
         disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
