@@ -445,5 +445,18 @@ export const DELAY = timeout => new Promise(resolve => {
   setTimeout(resolve, timeout)
 })
 
+const trueConditions = [
+  '是',
+  '有'
+]
+
+export const formatTemplateBooleanParma = (item, paramKey) => {
+  const r = trueConditions.includes(item[paramKey]);
+  return {
+    ...item,
+    [paramKey]: r
+  }
+}
+
 export { default as request } from './request';
 export { constants, userAuth as userUtils, commonProps, commonUrl };
