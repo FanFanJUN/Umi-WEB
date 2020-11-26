@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:49:50
- * @LastEditTime: 2020-11-23 14:31:32
+ * @LastEditTime: 2020-11-25 16:54:20
  * @LastEditors: Please set LastEditors
  * @Description: I审核实施计划-审核计划
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\AuditPlan.js
@@ -54,9 +54,7 @@ const AuditPlan = (props) => {
                 setListObj(listObj);
                 setSelecteList(res.data);
                 // 默认全部选中审核准则
-                console.log("默认选择", type)
                 if(type === "add") {
-                    console.log("进入了嘛！", res.data.map(item => item.code))
                     setCheckedList(res.data.map(item => item.code));
                 }
                 setFieldsValue({

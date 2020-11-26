@@ -1,9 +1,9 @@
 /*
  * @Author: Li Cai
- * @LastEditors: Li Cai
+ * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-22 10:13:27
- * @LastEditTime: 2020-11-04 17:09:50
+ * @LastEditTime: 2020-11-25 17:27:28
  * @Description: 接口 集
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/service.js
  */
@@ -76,3 +76,24 @@ export const endFlow = async (params = {}) => {
         params,
     })
 }  
+export const ShareStatusProps = {
+    allowClear: true,
+    dataSource: [
+        {
+            code: 'DRAFT',
+            name: '草稿',
+        },
+        {
+            code: 'EFFECT',
+            name: '生效',
+        },
+    ],
+    placeholder: '选择状态',
+    reader: {
+        name: 'name',
+        field: ['code'],
+    },
+    style: {
+        width: '100%',
+    },
+};

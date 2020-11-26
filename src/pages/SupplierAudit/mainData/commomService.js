@@ -762,7 +762,7 @@ export const findForReportInsert = async (params = {}) => {
 
 // 审核报告管理保存
 export const saveAuditReport = async (params) => {
-  const url = `${recommendUrl}/api/reviewPlanMonthLineService/saveAudit`;
+  const url = `${recommendUrl}/api/arAuditReportManagService/saveVo`;
   return request({
     url,
     method: 'POST',
@@ -770,4 +770,13 @@ export const saveAuditReport = async (params) => {
   });
 };
 
+// 审核报告管理findOne
+export const findVoById = async (params = {}) => {
+  const url = `${recommendUrl}/api/arAuditReportManagService/findVoById`;
+  return request({
+    url,
+    method: 'GET',
+    params: params,
+  });
+};
 

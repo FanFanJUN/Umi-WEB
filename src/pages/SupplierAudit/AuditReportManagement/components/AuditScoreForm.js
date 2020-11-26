@@ -25,9 +25,10 @@ const AuditScoreForm = React.forwardRef(({ form, isView, editData, type }, ref) 
 
   const getTreeData = (tree) => {
     tree.forEach(item => {
-      if ( !(item.children&&item.children.length>0) && item.reviewRuleList) {
+      if (!(item.children && item.children.length > 0) && item.reviewRuleList) {
         let reviewRuleList = JSON.parse(JSON.stringify(item.reviewRuleList));
         reviewRuleList = reviewRuleList.map(item => ({ ...item, id: getRandom(10) }));
+        item.children = [];
         item.children.push(...reviewRuleList);
       }
       if (item.children && item.children.length > 0) {
