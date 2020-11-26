@@ -28,7 +28,7 @@ const AuditReportApproveEditPage = () => {
       return false
     }
     return new Promise(function(resolve, reject) {
-      saveAuditReport(data.editData).then(res => {
+      saveAuditReport(data).then(res => {
         if (res.success) {
           const data = { businessKey: res.data };
           resolve({
