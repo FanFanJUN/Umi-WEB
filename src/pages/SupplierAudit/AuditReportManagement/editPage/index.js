@@ -135,7 +135,6 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
   const handleBeforeStartFlow = async () => {
     let baseInfoVal = await getBaseInfoFormRef.current.getFormValue();
     if (!baseInfoVal) {
-      message.error('请将基本信息填写完全！');
       return false;
     }
     data.editData.arAuditReportManagBasicVo = baseInfoVal;
@@ -184,7 +183,8 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
                     className={styles.btn}
                     type='primary'
                     beforeStart={handleBeforeStartFlow}
-                    callBack={handleBack}
+                    startComplete={handleBack}
+                    onCancel={handleBack}
                     disabled={false}
                     businessModelCode='com.ecmp.srm.sam.entity.ar.ArAuditReportManag'
                   >

@@ -246,7 +246,7 @@ const AuditReportManagement = forwardRef(({}, ref) => {
       authAction(<StartFlow
         style={{ marginRight: '5px' }}
         ignore={DEVELOPER_ENV}
-        needConfirm={handleBeforeStartFlow}
+        // needConfirm={handleBeforeStartFlow}
         businessKey={data.flowId}
         callBack={handleComplete}
         disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length === 0}
