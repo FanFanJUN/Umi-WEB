@@ -72,7 +72,7 @@ const Content = (props) => {
 
   return (
     <ExtModal
-      width={'90vh'}
+      width={'180vh'}
       maskClosable={false}
       visible={visible}
       title={'审核内容管理'}
