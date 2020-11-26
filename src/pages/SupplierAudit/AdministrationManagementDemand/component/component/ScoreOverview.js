@@ -101,6 +101,8 @@ const ScoreOverview = (props) => {
         let arr = res.data ? res.data : [];
         arr = buildTree(arr);
         if (minLine.systemId) {
+          console.log(minLine, 'minLine')
+          minLine.reviewScore = arr[0].percentage
           props.setAuditOpinionData(minLine)
         }
         setData(v => ({ ...v, dataSource: arr }));

@@ -22,13 +22,13 @@ const formLayout = {
   },
 };
 
-const AuditorInfoFrom = React.forwardRef(({ form, editData }, ref) => {
+const AuditorInfoFrom = React.forwardRef(({ form, editData,leaderName }, ref) => {
 
   useImperativeHandle(ref, () => ({}));
   const [checkedKeys, setCheckedKeys] = useState([]);
   const teamTableRef = useRef(null);
   const contentTableRef = useRef(null);
-  const [groupLeader, setGroupLeader] = useState(null);
+  // const [groupLeader, setGroupLeader] = useState(null);
   const [teamData, setTeamData] = useState({
     dataSource: [],
     selectedRowKeys: [],
@@ -46,7 +46,7 @@ const AuditorInfoFrom = React.forwardRef(({ form, editData }, ref) => {
 
   const getInitData = () => {
     if (editData && editData.length > 0) {
-      setGroupLeader(editData[0].groupLeader);
+      // setGroupLeader(editData[0].groupLeader);
       setTeamData(v => ({ ...v, dataSource: editData, selectedRows: editData[0], selectedRowKeys: editData[0].id }));
       if (editData[0].reviewTeamMemberBoList && editData[0].reviewTeamMemberBoList.length > 0) {
         setContentData(v => ({
@@ -113,11 +113,11 @@ const AuditorInfoFrom = React.forwardRef(({ form, editData }, ref) => {
     setTeamData(v => ({ ...v, selectedRows: values, selectedRowKeys: keys }));
     if (values && values.length > 0) {
       //设置组长名
-      if (values[0].groupLeader) {
-        setGroupLeader(values[0].groupLeader);
-      } else {
-        setGroupLeader();
-      }
+      // if (values[0].groupLeader) {
+      //   setGroupLeader(values[0].groupLeader);
+      // } else {
+      //   setGroupLeader();
+      // }
       //设置右边第一个表格数据
       if (values[0].reviewTeamMemberBoList && values[0].reviewTeamMemberBoList.length > 0) {
         setContentData(v => ({
@@ -142,7 +142,7 @@ const AuditorInfoFrom = React.forwardRef(({ form, editData }, ref) => {
         setTreeData([]);
       }
     } else {
-      setGroupLeader();
+      // setGroupLeader();
       setContentData({
         dataSource: [],
         selectedRowKeys: [],
@@ -159,7 +159,6 @@ const AuditorInfoFrom = React.forwardRef(({ form, editData }, ref) => {
       setTreeData([]);
     }
   };
-
   return (
     <div className={styles.wrapper}>
       <div className={styles.bgw}>
@@ -168,7 +167,7 @@ const AuditorInfoFrom = React.forwardRef(({ form, editData }, ref) => {
           <Row>
             <Col span={12}>
               <FormItem label="审核小组组长" {...formLayout}>
-                <span>{groupLeader}</span>
+                <span style={{fontWeight: 'bold'}}>{leaderName}</span>
               </FormItem>
             </Col>
           </Row>

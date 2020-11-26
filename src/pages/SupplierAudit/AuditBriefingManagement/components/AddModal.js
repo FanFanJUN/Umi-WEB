@@ -3,7 +3,7 @@
  * @Author: M!keW
  * @Date: 2020-11-23
  */
-import React, { useState, useRef, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, useRef, forwardRef, useImperativeHandle, useEffect } from 'react';
 import { Col, Form, Row, InputNumber, message, DatePicker } from 'antd';
 import { ComboList, ExtModal, YearPicker } from 'suid';
 import { openNewTab } from '@/utils';
@@ -32,10 +32,21 @@ const AddModal = forwardRef(({ form }, ref) => {
     setVisible(!!flag);
   };
 
+  //变化校验
+  const yearChange = () => {
+    setTimeout(() => {
+      form.validateFields(['thisPeriod'], { force: true });
+    }, 100);
+  };
+  const periodChange = () => {
+    setTimeout(() => {
+      form.validateFields(['nextPeriod'], { force: true });
+    }, 100);
+  };
   const onOk = () => {
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        openNewTab('supplierAudit/AuditBriefingManagementViewAdd?pageState=add&id='+values, '审核简报-新增', false);
+        openNewTab('supplierAudit/AuditBriefingManagementViewAdd?pageState=add&id=' + values, '审核简报-新增', false);
         setVisible(false);
       } else {
         message.error('请完成表单填写');
@@ -43,9 +54,7 @@ const AddModal = forwardRef(({ form }, ref) => {
     });
   };
   const { getFieldDecorator } = form;
-  const disabledDateStart = (current) => {
-    return moment(current.format('YYYY-MM')) >= (moment(form.getFieldValue('thisPeriod')[1].format('YYYY-MM')));
-  };
+
   //校验是否在年内
   const checkInYear = (rule, value, callback) => {
     if (value && value.length > 0) {
@@ -63,7 +72,7 @@ const AddModal = forwardRef(({ form }, ref) => {
         callback('请选择该年度月份');
         return false;
       }
-      if(value[0].month()<=form.getFieldValue('thisPeriod')[1].month()){
+      if (value[0].month() <= form.getFieldValue('thisPeriod')[1].month()) {
         callback('下期月份应该在本期截止之前');
         return false;
       }
@@ -112,6 +121,7 @@ const AddModal = forwardRef(({ form }, ref) => {
             rules: [{ required: true, message: '年份不能为空!' }],
           })(
             <YearPicker
+              onChange={yearChange}
               style={{ width: '100%' }}
               format='YYYY年'
             />)}
@@ -136,6 +146,7 @@ const AddModal = forwardRef(({ form }, ref) => {
             rules: [{ required: true, message: '本期不能为空!' }, { validator: checkInYear }],
           })(
             <MonthPicker
+              onChange={periodChange}
               disabled={!form.getFieldValue('year')}/>,
           )}
         </FormItem>

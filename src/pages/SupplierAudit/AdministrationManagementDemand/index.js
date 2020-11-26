@@ -218,7 +218,8 @@ export default function() {
         onClick={() => redirectToPage('verificationResultsShow')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'leaderId', getUserId())}
+        disabled={data.selectedRowKeys.length === 0
+        || !judge(data.selectedRows, 'leaderId', getUserId())}
         key='SUPPLIER_AUDIT_DEMAND_VIEW_RESULT'
       >审核结果查看</Button>)
     }

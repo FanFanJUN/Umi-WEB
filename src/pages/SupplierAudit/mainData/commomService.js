@@ -161,7 +161,6 @@ export const CountryIdConfig = {
 
 // 正常供应商
 export const NormalSupplierConfig = {
-  placeholder: '选择正常供应商',
   remotePaging: true,
   rowKey: 'code',
   reader: {
@@ -231,13 +230,13 @@ export const ApplyOrganizationProps = {
   style: {
     width: '100%',
   },
-  treeNodeProps: (node) => {
-    if (node.nodeLevel === 0) {
-      return {
-        selectable: false,
-      };
-    }
-  },
+  // treeNodeProps: (node) => {
+  //   if (node.nodeLevel === 0) {
+  //     return {
+  //       selectable: false,
+  //     };
+  //   }
+  // },
 };
 
 // 二次分类物料组数据
@@ -746,8 +745,8 @@ export const ManagementAuditModeDelete = async (params) => {
 export async function reviewStandard(params) {
   const requestUrl = `${baseUrl}/api/reviewStandardService/findAllUnfrozen`;
   return request({
-      url: requestUrl,
-      method: 'GET',
+    url: requestUrl,
+    method: 'GET',
   });
 }
 
@@ -763,7 +762,7 @@ export const findForReportInsert = async (params = {}) => {
 
 // 审核报告管理保存
 export const saveAuditReport = async (params) => {
-  const url = `${recommendUrl}/api/reviewPlanMonthLineService/saveAudit`;
+  const url = `${recommendUrl}/api/arAuditReportManagService/saveVo`;
   return request({
     url,
     method: 'POST',
@@ -771,4 +770,22 @@ export const saveAuditReport = async (params) => {
   });
 };
 
+// 审核报告管理findOne
+export const findVoById = async (params = {}) => {
+  const url = `${recommendUrl}/api/arAuditReportManagService/findVoById`;
+  return request({
+    url,
+    method: 'GET',
+    params: params,
+  });
+};
 
+// 审核报告delete
+export const deleteReportById = async (params = {}) => {
+  const url = `${recommendUrl}/api/arAuditReportManagService/deleteReportById`;
+  return request({
+    url,
+    method: 'POST',
+    params: params,
+  });
+};

@@ -15,6 +15,7 @@ import {
 import classnames from 'classnames';
 import styles from '../../../Supplier/Editor/index.less';
 import { WorkFlow } from 'suid';
+import AuditTable from '../components/AuditTable';
 
 
 const { StartFlow } = WorkFlow;
@@ -50,18 +51,18 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
     if (pageState === 'add') {
       getUser();
       // findInitOne(id);
-      setData((value) => ({ ...value, type: 'add', isView: false, title: '审核报告管理-新增' }));
+      setData((value) => ({ ...value, type: 'add', isView: false, title: '审核简报-新增' }));
     } else if (pageState === 'edit' || isApproveEdit) {
       // findOne(id);
       setData((value) => ({
         ...value,
         type: state,
         isView: false,
-        title: `审核报告管理-编辑`,
+        title: `审核简报-编辑`,
       }));
     } else if (pageState === 'detail' || isApproveDetail) {
       // findOne(id);
-      setData((value) => ({ ...value, type: 'detail', isView: true, title: `审核报告管理-明细` }));
+      setData((value) => ({ ...value, type: 'detail', isView: true, title: `审核简报-明细` }));
     }
   }, [query]);
 
@@ -180,7 +181,7 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
             }
           </div>
         </Affix>
-
+        <AuditTable/>
       </Spin>
     </div>
   );
