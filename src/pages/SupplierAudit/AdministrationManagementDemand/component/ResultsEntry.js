@@ -80,7 +80,7 @@ const ResultsEntry = (props) => {
 
   // 导出数据
   const exportData = () => {
-    const url = `/service.api/${recommendUrl}/srController/downloadResultTemplate?reviewImplementManagementId=${props.id}`;
+    const url = `${BASE_URL}/${recommendUrl}/srController/downloadResultTemplate?reviewImplementManagementId=${props.id}`;
     window.open(url);
   };
 
