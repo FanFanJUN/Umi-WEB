@@ -158,7 +158,7 @@ const Index = (props) => {
                 setLoading(false);
                 message.success("保存成功");
                 setTimeout(() => {
-                    // handleBack();
+                    handleBack();
                 }, 3000)
             } else {
                 // 处理提交审核---返回数据id
