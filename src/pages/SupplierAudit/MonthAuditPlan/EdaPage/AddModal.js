@@ -11,7 +11,7 @@ import {
     reviewRequirementConfig
 } from '../../mainData/commomService';
 import { recommendUrl } from '@/utils/commonUrl';
-import { findRequirementLine, findYearLineLine } from "../service"
+import { findRequirementLine, findYearLineLine, findRecommendAccessByDataAuth } from "../service"
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -101,7 +101,7 @@ const AddModal = (props) => {
                     usedType: 2,
                     ...cascadeParams
                 },
-                url: `${recommendUrl}/api/reviewRequirementLineService/findForList`,
+                url: `${recommendUrl}/api/recommendAccessService/findRecommendAccessLineWithAuthByPage`,
                 type: 'POST',
             }
         }
@@ -220,13 +220,13 @@ const AddModal = (props) => {
                                         form={form}
                                         name={'name'}
                                         field={['code', 'id']}
-                                        {...AuditCauseManagementConfig}
+                                        {...findRecommendAccessByDataAuth}
                                     />,
                                 )
                             }
                         </FormItem>
                     </Col>
-                    <Col style={{ textAlign: 'center' }} onClick={handleSearch}><Button type="primary">查询</Button></Col>
+                    <Col  span={12} style={{ textAlign: 'center' }} onClick={handleSearch}><Button type="primary">查询</Button></Col>
                 </Row>
             </Form>
         } else if (type === "demand") {

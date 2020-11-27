@@ -3,17 +3,18 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:40
- * @LastEditTime: 2020-11-24 10:01:09
+ * @LastEditTime: 2020-11-27 10:02:47
  * @Description:  基本信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BaseInfo.js
  */
 import React, { useEffect, useImperativeHandle } from 'react';
-import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/edit/BaseInfo.less';
-import { ComboList, ComboTree, ExtModal } from 'suid';
-import { Col, Form, Modal, Row, Input, DatePicker, InputNumber } from 'antd';
+import { ComboList, ComboTree } from 'suid';
+import { Col, Form, Row, Input, InputNumber } from 'antd';
 import Upload from '../../Upload';
+import { phoneOrTel } from "@/utils";
+import {  hideFormItem, getDocIdForArray } from '@/utils/utilTool';
 import { AllCompanyConfig, ApplyOrganizationProps } from '../propsParams';
-import { isEmptyArray, guid, hideFormItem, filterEmptyFileds, getDocIdForArray } from '@/utils/utilTool';
+import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/edit/BaseInfo.less';
 
 const FormItem = Form.Item;
 
@@ -129,10 +130,8 @@ const BaseInfo = (props) => {
                 {isView ? <span>{data.applyTel}</span> : getFieldDecorator('applyTel', {
                   initialValue: type === 'add' ? userInfo.userMobile : data.applyTel,
                   rules: [
-                    {
-                      required: true,
-                      message: '申请人联系方式不能为空',
-                    },
+                    { required: true, message: '申请人联系方式不能为空',},
+                    { validator: phoneOrTel, message: '请输入手机或者座机号' }
                   ],
                 })(
                   <Input
@@ -147,7 +146,7 @@ const BaseInfo = (props) => {
           <Row>
             <Col span={12}>
               <FormItem label="年度" {...formLayout}>
-                {isView ? <span>{data.applyYear}</span> : getFieldDecorator('applyYear', {
+                {isView ? <span>{data.applyYear + " 年"}</span> : getFieldDecorator('applyYear', {
                   initialValue: type === 'add' ? '' : data.applyYear,
                   rules: [
                     {
@@ -183,6 +182,7 @@ const BaseInfo = (props) => {
               <FormItem label="备注" {...formLongLayout}>
                 {isView ? <span>{data.remark}</span> : getFieldDecorator('remark', {
                   initialValue: type === 'add' ? '' : data.remark,
+                  rules: [{ max: 200, message: '输入长度不能超过200' },],
                 })(
                   <Input.TextArea rows={6} style={{ width: '100%' }} />
                 )}

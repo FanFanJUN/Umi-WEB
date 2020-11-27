@@ -1,9 +1,9 @@
 /*
  * @Author: Li Cai
- * @LastEditors: Li Cai
+ * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-23 17:00:19
- * @LastEditTime: 2020-10-23 17:46:46
+ * @LastEditTime: 2020-11-27 09:23:27
  * @Description: 批量编辑页面
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BatchEditModal.js
  */
@@ -278,6 +278,9 @@ const BatchEditModal = (props) => {
                     form={form}
                     name={'countyName'}
                     field={['countyId', 'countyCode']}
+                    cascadeParams={{
+                      nodeId: getFieldValue('cityId'),
+                    }}
                     store={{
                       params: {
                         includeSelf: false,
