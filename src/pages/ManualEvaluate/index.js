@@ -115,7 +115,7 @@ function ManualEvaluate() {
         quickSearchProperties: ['seEvaluationProject.docNumber', 'seEvaluationProject.projectName'],
         sortOrders: [
           {
-            property: 'docNumber',
+            property: 'createdDate',
             direction: 'DESC'
           }
         ]
