@@ -52,14 +52,14 @@ const OpinionModal = forwardRef(({ form, title }, ref) => {
     }
   };
   const setRequired = () => {
-    form.validateFields(['opinion'], { force: true });
+    form.validateFields(['purchasingTeamOpinion'], { force: true });
   };
 
   const onCancel = () => {
     form.setFieldsValue({
-      remark: true,
-      opinion: null,
-      docIds: [],
+      whetherFollowAuditConclusion: true,
+      purchasingTeamOpinion: null,
+      purchasingTeamOpinionDocIds: [],
     });
     setCleanFile(true);
     setVisible(false);
@@ -86,7 +86,7 @@ const OpinionModal = forwardRef(({ form, title }, ref) => {
     <Row>
       <Col span={24}>
         <FormItem label="是否按审核意见执行" {...formLayout}>
-          {getFieldDecorator('remark', {
+          {getFieldDecorator('whetherFollowAuditConclusion', {
             initialValue: true,
             rules: [
               {
@@ -106,7 +106,7 @@ const OpinionModal = forwardRef(({ form, title }, ref) => {
     <Row>
       <Col span={24}>
         <FormItem label="意见" {...formLayout}>
-          {getFieldDecorator('opinion', {
+          {getFieldDecorator('purchasingTeamOpinion', {
             initialValue: '',
             rules: [
               {
@@ -124,7 +124,7 @@ const OpinionModal = forwardRef(({ form, title }, ref) => {
       <Col span={24}>
         <FormItem {...formLayout} label={'附件'}>
           {
-            getFieldDecorator('docIds', {
+            getFieldDecorator('purchasingTeamOpinionDocIds', {
               initialValue: [],
             })(
               <Upload cleanFile={cleanFile}/>,
