@@ -789,3 +789,23 @@ export const deleteReportById = async (params = {}) => {
     params: params,
   });
 };
+
+// 小组保存
+export const savePurchasingTeamOpinion = async (params) => {
+  const url = `${recommendUrl}/api/arAuditReportManagService/savePurchasingTeamOpinion`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+};
+
+// 领导保存
+export const saveLeaderDecision = async (params) => {
+  const url = `${recommendUrl}/api/arAuditReportManagService/saveLeaderDecision`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+};

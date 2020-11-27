@@ -6,10 +6,11 @@
 
 import React, { useRef } from 'react';
 import { WorkFlow } from 'suid';
-import { message } from 'antd';
 import { router } from 'dva';
 import { closeCurrent } from '../../../../utils';
 import AuditReportManagementView from '../editPage';
+import {  savePurchasingTeamOpinion } from '../../mainData/commomService';
+import { message } from 'antd';
 
 const PurchaseTeamApprovePage = () => {
 
@@ -26,8 +27,21 @@ const PurchaseTeamApprovePage = () => {
     if(!data || !teamData){
       return false
     }
-    data.teamData=teamData;
-    console.log(data)
+    let endData = Object.assign(data, teamData);
+    return new Promise(function(resolve, reject) {
+      savePurchasingTeamOpinion(endData).then(res => {
+        if (res.success) {
+          const data = { businessKey: res.data };
+          resolve({
+            success: true,
+            message: res.message,
+            data,
+          });
+        } else {
+          message.error(res.message);
+        }
+      }).catch(err => reject(err));
+    });
   };
 
   return (
@@ -40,7 +54,6 @@ const PurchaseTeamApprovePage = () => {
       beforeSubmit={beforeSubmit}
     >
       <div>
-        <span onClick={beforeSubmit}>点一下</span>
         <AuditReportManagementView
           isApprove
           purchaseApprove
