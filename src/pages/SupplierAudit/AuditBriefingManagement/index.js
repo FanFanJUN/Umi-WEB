@@ -59,10 +59,10 @@ const AuditBriefingManagement = forwardRef(({}, ref,) => {
         showModal();
         break;
       case 'edit':
-        openNewTab('supplierAudit/AuditReportManagementEdit?pageState=edit&id='+data.selectedRows[0].id, '审核报告管理-编辑', false);
+        openNewTab('supplierAudit/AuditBriefingManagementViewEdit?pageState=edit&id='+data.selectedRows[0].id, '审核报告管理-编辑', false);
         break;
       case 'detail':
-        openNewTab('supplierAudit/AuditReportManagementDetail?pageState=detail&id='+data.selectedRows[0].id, '审核报告管理-明细', false);
+        openNewTab('supplierAudit/AuditBriefingManagementViewDetail?pageState=detail&id='+data.selectedRows[0].id, '审核报告管理-明细', false);
         break;
       case 'delete':
         deleteList();

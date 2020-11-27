@@ -175,6 +175,8 @@ export default [
       { path: '/supplierAudit/AuditReportManagement/ApprovePage/ApproveDetailPage', component: './SupplierAudit/AuditReportManagement/ApprovePage/ApproveDetailPage', title: '审核报告管理' },
       { path: '/supplierAudit/AuditBriefingManagement/index', component: './SupplierAudit/AuditBriefingManagement', title: '审核简报管理' },
       { path: '/supplierAudit/AuditBriefingManagementViewAdd', component: './SupplierAudit/AuditBriefingManagement/editPage', title: '审核简报-新增' },
+      { path: '/supplierAudit/AuditBriefingManagementViewEdit', component: './SupplierAudit/AuditBriefingManagement/editPage', title: '审核简报-编辑' },
+      { path: '/supplierAudit/AuditBriefingManagementViewDetail', component: './SupplierAudit/AuditBriefingManagement/editPage', title: '审核简报-明细' },
     ]
   },
   {
