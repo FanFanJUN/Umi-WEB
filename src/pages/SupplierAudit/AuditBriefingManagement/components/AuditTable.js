@@ -108,12 +108,9 @@ const AuditTable = React.forwardRef(({ form, isView, editData, type }, ref) => {
     getModelRef.current.handleModalVisible(false);
     uploadTable();
   };
-  console.log(tableData)
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.bgw}>
-        <div className={styles.content}>
-          <span>3.供应商审核不足及改善</span>
+    <div>
+          <span style={{ paddingBottom: '10px', fontSize: '14px' }}>3、供应商审核不足及改善</span>
           <Header
             left={headerLeft}
             advanced={false}
@@ -147,8 +144,6 @@ const AuditTable = React.forwardRef(({ form, isView, editData, type }, ref) => {
             editData={modalType ? selectedRows[0] : {}}
             wrappedComponentRef={getModelRef}
           />
-        </div>
-      </div>
     </div>
   );
 });

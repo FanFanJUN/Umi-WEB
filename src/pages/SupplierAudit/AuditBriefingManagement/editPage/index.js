@@ -15,7 +15,11 @@ import {
 import classnames from 'classnames';
 import styles from '../../../Supplier/Editor/index.less';
 import { WorkFlow } from 'suid';
-import AuditTable from '../components/AuditTable';
+import BaseInfoForm from '../components/BaseInfoForm';
+import PeriodForm from '../components/PeriodForm';
+import TotalInfoForm from '../components/TotalInfoForm';
+import ThisPeriodForm from '../components/ThisPeriodForm';
+import NextPeriodForm from '../components/NextPeriodForm';
 
 
 const { StartFlow } = WorkFlow;
@@ -181,8 +185,20 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
             }
           </div>
         </Affix>
-        <AuditTable
-          editData={[{ departmentName: '11', 'memberName': '11', employeeNo: '11', memberTel: '11', check: '11' }]}/>
+        <BaseInfoForm
+          editData={data.editData.arAuditReportManagBasicVo || {}}
+          userInfo={data.userInfo}
+          type={data.type}
+          isView={data.isView}
+          wrappedComponentRef={getBaseInfoFormRef}/>
+        <PeriodForm
+          editData={data.editData}/>
+        <TotalInfoForm
+          editData={data.editData}/>
+        <ThisPeriodForm
+          editData={data.editData}/>
+        <NextPeriodForm
+          editData={data.editData}/>
       </Spin>
     </div>
   );
