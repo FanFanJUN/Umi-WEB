@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:49:50
- * @LastEditTime: 2020-11-26 15:51:23
+ * @LastEditTime: 2020-11-27 10:23:26
  * @LastEditors: Please set LastEditors
  * @Description: I审核实施计划-审核计划
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\AuditPlan.js
@@ -123,7 +123,7 @@ const AuditPlan = (props) => {
                                         initialValue: (type === "edit" || type === "change") ? moment(originData.reviewDateStart) : null,
                                         rules: [{ required: true, message: '审核时间不能为空', },]
                                     })(
-                                        isView ? <span>{originData.reviewDateStart}</span> :
+                                        isView ? <span>{originData.reviewDateStart && originData.reviewDateStart.slice(0, 10)}</span> :
                                             <DatePicker placeholder="请选择" style={{ width: "100%" }} />
                                     )
                                 }
@@ -136,7 +136,7 @@ const AuditPlan = (props) => {
                                         initialValue: (type === "edit" || type === "change") ? moment(originData.reviewDateEnd) : null,
                                         rules: [{ required: true, message: '审核时间不能为空', },]
                                     })(
-                                        isView ? <span>{originData.reviewDateEnd}</span> :
+                                        isView ? <span>{originData.reviewDateEnd && originData.reviewDateEnd.slice(0, 10)}</span> :
                                             <DatePicker placeholder="请选择" style={{ width: "100%" }} />
                                     )
                                 }
