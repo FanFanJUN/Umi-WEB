@@ -181,7 +181,8 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
             }
           </div>
         </Affix>
-        <AuditTable/>
+        <AuditTable
+          editData={[{ departmentName: '11', 'memberName': '11', employeeNo: '11', memberTel: '11', check: '11' }]}/>
       </Spin>
     </div>
   );

@@ -4,7 +4,7 @@
  * @Date: 2020-11-26
  */
 
-import React, { useImperativeHandle, useRef, useState } from 'react';
+import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
 import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/edit/BaseInfo.less';
 import { AuthButton, ExtTable, utils } from 'suid';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
@@ -24,6 +24,9 @@ const AuditTable = React.forwardRef(({ form, isView, editData, type }, ref) => {
   const empty = selectRowKeys.length === 0;
   const [modalType, setModalType] = useState(false);//判断是新增还是编辑
   const [isTableView, setIsTableView] = useState(false);//判断是否为明细
+  useEffect(() => {
+    transferData();
+  }, [editData]);
   const columns = [
     { title: '改善事项描述', dataIndex: 'departmentName', width: 220 },
     { title: '原因分析', dataIndex: 'employeeNo', width: 100 },
@@ -46,6 +49,15 @@ const AuditTable = React.forwardRef(({ form, isView, editData, type }, ref) => {
     }
   </>;
 
+
+  //初始化赋值
+  const transferData = () => {
+    if (editData && editData.length > 0) {
+      let newsData = editData.map((item, index) => ({ key: index, ...item }));
+      keys = editData.length - 1;
+      setTableData(newsData)
+    }
+  };
   // 记录列表选中
   const handleSelectedRows = (rowKeys, rows) => {
     setRowKeys(rowKeys);
@@ -70,21 +82,20 @@ const AuditTable = React.forwardRef(({ form, isView, editData, type }, ref) => {
   //删除
   const handleDelete = () => {
     const filterData = tableData.filter(item => item.key !== selectedRows[0].key);
-    keys--;
     setTableData(filterData);
     uploadTable();
   };
   //新增数据
   const handleOk = (value) => {
-    let newsdata = [];
-    [...newsdata] = tableData;
+    let newsData = [];
+    [...newsData] = tableData;
     //新增
     if (!modalType) {
-      newsdata.push({
+      newsData.push({
         ...value,
         key: ++keys,
       });
-      setTableData(newsdata);
+      setTableData(newsData);
     } else {
       tableData.forEach((item, index) => {
         if (item.key === value.key) {
@@ -97,6 +108,7 @@ const AuditTable = React.forwardRef(({ form, isView, editData, type }, ref) => {
     getModelRef.current.handleModalVisible(false);
     uploadTable();
   };
+  console.log(tableData)
   return (
     <div className={styles.wrapper}>
       <div className={styles.bgw}>
