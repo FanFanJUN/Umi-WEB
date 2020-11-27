@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-12 14:44:24
- * @LastEditTime: 2020-11-23 17:35:03
+ * @LastEditTime: 2020-11-26 17:56:46
  * @Description: 百分比、评定等级、风险等级配置
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/mainData/PrlConf/index.js
  */
@@ -39,18 +39,7 @@ const Index = () => {
 
   const columns = [
     { title: '评定等级', dataIndex: 'performanceRatingKey', width: 200 },
-    { title: '风险等级', dataIndex: 'riskRatingKey', ellipsis: true, render:(text)=>{
-      switch(text) {
-        case "A":
-          return "低";
-        case "B":
-          return "中低";
-        case "C":
-          return "中";
-        case "D":
-          return "高";
-      }
-    } },
+    { title: '风险等级', dataIndex: 'riskRatingKey', ellipsis: true},
     { title: '开始区间计算符', dataIndex: 'startSectionMark', ellipsis: true},
     { title: '开始区间', dataIndex: 'startSection', ellipsis: true },
     { title: '结束区间计算符', dataIndex: 'endSectionMark', ellipsis: true},
@@ -71,7 +60,7 @@ const Index = () => {
     name: '风险等级',
     code: 'riskRatingKey',
     type: 'selectWithData',
-    data: [{ text: '低', value: 'A' }, { text: '中低', value: 'B' }, { text: '中', value: 'C' }, { text: '高', value: 'D' }]
+    data: [{ text: '低', value: '低' }, { text: '中低', value: '中低' }, { text: '中', value: '中' }, { text: '高', value: '高' }]
   },
   {
     name: '开始区间计算符',

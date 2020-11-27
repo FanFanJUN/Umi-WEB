@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-11-05 16:27:34
- * @LastEditTime: 2020-11-23 17:04:48
+ * @LastEditTime: 2020-11-26 17:38:02
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\MonthAuditPlan\component\changeDetail.js
@@ -80,13 +80,9 @@ export default Form.create()((props) => {
         });
         return arr;
     };
-
-    function callback(key) {
-        console.log(key);
-    }
-
+    
     return <Spin spinning={loading}>
-        <Tabs defaultActiveKey="1" onChange={callback} className={styles.antd_tabs_me}>
+        <Tabs defaultActiveKey="1" className={styles.antd_tabs_me}>
             <TabPane tab="变更信息" key="1">
                 <ChangeInfo
                     originData={changeInfo}
