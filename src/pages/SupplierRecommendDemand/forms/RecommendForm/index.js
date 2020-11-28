@@ -130,7 +130,6 @@ const FormContext = forwardRef(({
   const empty = selectedRowKeys.length === 0;
   const originSupplierId = getFieldValue('supplierId')
   function handleSelectRecommendCompany(select) {
-    // console.log(select)
     setRecommendCompany(select)
   }
   function handleSelectRecommendCompanyAndContinue(select) {

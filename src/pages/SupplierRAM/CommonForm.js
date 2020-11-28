@@ -1,7 +1,8 @@
 import {
   forwardRef,
   useImperativeHandle,
-  useState
+  useState,
+  useRef
 } from 'react';
 import {
   Form,
@@ -9,10 +10,12 @@ import {
   Col,
   Input,
   Table,
-  DatePicker
+  DatePicker,
+  Button
 } from 'antd';
 import styles from './index.less';
 import { ComboList } from 'suid';
+import SelectRecommendData from './SelectRecommendData';
 import { commonProps, getUserName } from '../../utils';
 import moment from 'moment';
 const { orgnazationProps, corporationProps } = commonProps;
@@ -32,6 +35,7 @@ function CommonForm({
   useImperativeHandle(ref, () => ({
     setFormValue
   }))
+  const sRef = useRef(null);
   const [recommendLine, setRecommendLine] = useState([]);
   const [demandLine, setDemandLine] = useState([]);
   const { getFieldDecorator, setFieldsValue } = form;
@@ -60,20 +64,24 @@ function CommonForm({
       title: '是否实物认定',
       dataIndex: 'objectRecognition',
       render(text) {
-        return !!text ? '是' : '否'
+        const isBoolean = typeof text === 'boolean';
+        if (isBoolean) {
+          return !!text ? '是' : '否'
+        }
+        return '未选择'
       }
     },
     {
-      title: '开始时间',
-      dataIndex: 'startTime',
-      render(text) {
-        return <DatePicker value/>
+      title: '是否信任',
+      dataIndex: 'trust',
+      render(text = null) {
+        const isBoolean = typeof text === 'boolean';
+        if (isBoolean) {
+          return !!text ? '是' : '否'
+        }
+        return '未选择'
       }
-    },
-    {
-      title: '结束时间',
-      dataIndex: 'endTime'
-    },
+    }
   ];
   const demandColumns = [
     {
@@ -106,6 +114,12 @@ function CommonForm({
     }))
     await setRecommendLine(recommendAccessLines);
     await setDemandLine(addLineNumberDemands);
+  }
+  function handleCreateRecommendInfo() {
+    sRef?.current?.show()
+  }
+  function handleSelectRecommendData(items) {
+    setRecommendLine(items)
   }
   return (
     <Form {...formLayout}>
@@ -236,11 +250,20 @@ function CommonForm({
         </Col>
       </Row>
       <div className={styles.tableWrapper}>
+        <div className={styles.verticalPadding}>
+          <Button className={styles.btn} onClick={handleCreateRecommendInfo} type='primary'>新增</Button>
+          <Button className={styles.btn}>删除</Button>
+        </div>
         <Table
           bordered
           dataSource={recommendLine}
           columns={recommendColumns}
           size='small'
+        />
+        <SelectRecommendData
+          wrappedComponentRef={sRef}
+          initialDataSource={recommendLine}
+          onOk={handleSelectRecommendData}
         />
       </div>
       <div className={styles.commonTitle}>推荐需求单</div>

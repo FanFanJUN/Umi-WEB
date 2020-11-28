@@ -44,6 +44,14 @@ function Evaluate() {
       width: 200
     },
     {
+      title: '业务单元代码',
+      dataIndex: 'buCode'
+    },
+    {
+      title: '业务单元名称',
+      dataIndex: 'buName'
+    },
+    {
       title: '公司代码',
       dataIndex: 'corporationCode'
     },

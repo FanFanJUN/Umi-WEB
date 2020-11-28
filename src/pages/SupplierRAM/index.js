@@ -250,22 +250,14 @@ export default () => {
   function handleCreate() {
     const { id = '' } = FRAMELEEMENT;
     const { pathname } = window.location;
-    openNewTab(`supplier/recommend/demand/create?frameElementId=${id}&frameElementSrc=${pathname}`, '新增供应商推荐准入', false)
+    openNewTab(`supplier/recommend/admittance/manage/create?frameElementId=${id}&frameElementSrc=${pathname}`, '新增供应商推荐准入', false)
   }
   // 处理编辑页签打开
   function handleEditor() {
     const [key] = selectedRowKeys;
     const { id = '' } = FRAMELEEMENT;
     const { pathname } = window.location;
-    openNewTab(`supplier/recommend/demand/editor?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '编辑供应商推荐准入', false)
-  }
-
-  // 填报信息确认页签打开
-  function handleOpenInfomationConfirm() {
-    const [key] = selectedRowKeys;
-    const { id = '' } = FRAMELEEMENT;
-    const { pathname } = window.location;
-    openNewTab(`supplier/recommend/fillIn/infomation/confirm?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}&type=detail`, '填报信息确认', false)
+    openNewTab(`supplier/recommend/admittance/editor?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '编辑供应商推荐准入', false)
   }
 
   // 处理删除

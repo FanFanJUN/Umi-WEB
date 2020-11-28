@@ -81,6 +81,14 @@ const columns = [
 ];
 const businessColumns = [
   {
+    title: '业务单元代码',
+    dataIndex: 'buCode'
+  },
+  {
+    title: '业务单元名称',
+    dataIndex: 'buName'
+  },
+  {
     title: '公司代码',
     dataIndex: 'corporationCode'
   },
@@ -778,7 +786,7 @@ const CommonForm = forwardRef(({
         </Row>
         <Row>
           <Col span={24}>
-            <div style={{ padding: 12 }}>
+            {/* <div style={{ padding: 12 }}>
               {
                 evlValue === 'CORP_AND_PURCHASE_ORG' ? (
                   <>
@@ -800,7 +808,7 @@ const CommonForm = forwardRef(({
                   </>
                 ) : null
               }
-            </div>
+            </div> */}
             <ExtTable
               {...tableCommonProps}
               showSearch={false}

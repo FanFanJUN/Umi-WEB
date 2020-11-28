@@ -161,7 +161,6 @@ export default [
       { path: '/supplierAudit/AuditImplementationPlan/editPage', component: './SupplierAudit/AuditImplementationPlan/editPage', title: '审核实施计划管理-新增' },
       { path: '/supplierAudit/AuditIPChangeDetail', component: './SupplierAudit/AuditImplementationPlan/components/changeDetail', title: '审核实施计划变更明细' },
       { path: '/supplierAudit/AdministrationManagementDemand', component: './SupplierAudit/AdministrationManagementDemand', title: '实施审核管理-需求方' },
-
       { path: '/supplierAudit/AdministrationManagementSupplier', component: './SupplierAudit/AdministrationManagementSupplier', title: '实施审核管理-供应商' },
 
       { path: '/supplierAudit/AuditReportManagement/index', component: './SupplierAudit/AuditReportManagement', title: '审核报告管理' },
@@ -457,7 +456,17 @@ export default [
       { path: '/supplier/ImportSupplier/Detail/index', component: './ImportSupplier/Detail/index', title: '无账号供应商明细' },
       { path: '/supplier/ImportSupplier/ApprovePage/ImportSupplierApproveEdit', component: './ImportSupplier/ApprovePage/ImportSupplierApproveEdit', title: '无账号供应商流程修改' },
       { path: '/supplier/ImportSupplier/ApprovePage/ImportSupplierApprovePage', component: './ImportSupplier/ApprovePage/ImportSupplierApprovePage', title: '无账号供应商流程审核' },
-      { path: '/supplier/ImportSupplier/ApprovePage/ImportSupplierApproveDetail', component: './ImportSupplier/ApprovePage/ImportSupplierApproveDetail', title: '无账号供应商流程明细' }
+      { path: '/supplier/ImportSupplier/ApprovePage/ImportSupplierApproveDetail', component: './ImportSupplier/ApprovePage/ImportSupplierApproveDetail', title: '无账号供应商流程明细' },
+      {
+        path: '/supplier/recommend/admittance/manage',
+        component: './SupplierRAM',
+        title: '供应商准入管理'
+      },
+      {
+        path: '/supplier/recommend/admittance/manage/create',
+        component: './SupplierRAM/Create',
+        title: '创建供应商准入管理'
+      },
     ],
   }
 ];

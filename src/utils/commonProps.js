@@ -301,10 +301,6 @@ export const evlLevelEmu = [
   {
     value: 'BU',
     label: '业务单元层级'
-  },
-  {
-    value: 'CORP_AND_PURCHASE_ORG',
-    label: '公司和采购组织层级'
   }
 ]
 
