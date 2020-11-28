@@ -11,7 +11,7 @@ import {
     reviewRequirementConfig
 } from '../../mainData/commomService';
 import { recommendUrl } from '@/utils/commonUrl';
-import { findRequirementLine, findYearLineLine } from "../service"
+import { findRequirementLine, findYearLineLine, findRecommendAccessByDataAuth } from "../service"
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -28,16 +28,8 @@ const AddModal = (props) => {
     const [cascadeParams, setCascadeParams] = useState({});
     const [selectRows, setselectRows] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [selectedTear, setSelectedYear] = useState("")
-
-    const columns = [
-        { title: '需求公司', dataIndex: 'applyCorporationName', width: 140, ellipsis: true },
-        { title: '采购组织', dataIndex: 'purchaseOrgName', ellipsis: true, width: 140 },
-        { title: '供应商', dataIndex: 'supplierCode', ellipsis: true, width: 140 },
-        { title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 140 },
-        { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 140 },
-    ].map(item => ({ ...item, align: 'center' }))
-
+    const [selectedTear, setSelectedYear] = useState("");
+    
     const getColums = () => {
         switch (type) {
             case "annual":
@@ -47,11 +39,21 @@ const AddModal = (props) => {
                             return text ? (selectedTear + "年" + text + "月") : ""
                         }
                     },
-                ].concat(columns);
+                    { title: '需求公司', dataIndex: 'applyCorporationName', width: 140, ellipsis: true },
+                    { title: '采购组织', dataIndex: 'purchaseTeamName', ellipsis: true, width: 140 },
+                    { title: '供应商', dataIndex: 'supplierCode', ellipsis: true, width: 140 },
+                    { title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 140 },
+                    { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 140 },
+                ];
             case "recommand":
                 return [
                     { title: '准入推荐号', dataIndex: 'data2', ellipsis: true, width: 140 },
-                ].concat(columns);
+                    { title: '需求公司', dataIndex: 'applyCorporationName', width: 140, ellipsis: true },
+                    { title: '采购组织', dataIndex: 'purchaseOrgName', ellipsis: true, width: 140 },
+                    { title: '供应商', dataIndex: 'supplierCode', ellipsis: true, width: 140 },
+                    { title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 140 },
+                    { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 140 },
+                ];
             case "demand":
                 return [
                     {
@@ -98,36 +100,54 @@ const AddModal = (props) => {
         } else {
             return {
                 params: {
-                    usedType: 2,
+                    filters: [{
+                        "fieldName": "recommendAccessId",
+                        "value": '',
+                        "operator": "EQ",
+                        "fieldType": "string"
+                    }],
                     ...cascadeParams
                 },
-                url: `${recommendUrl}/api/reviewRequirementLineService/findForList`,
+                url: `${recommendUrl}/api/recommendAccessService/findRecommendAccessLineWithAuthByPage`,
                 type: 'POST',
             }
         }
     }
     const onOk = async () => {
-        if(selectRows.length === 0) {
+        if (selectRows.length === 0) {
             message.warning("至少选中一行！");
             return;
         }
-        let res = {};
-        setLoading(true);
-        if (type === "demand") {
-            res = await findRequirementLine({
-                ids: selectedRowKeys.join()
+        if (type === "recommand") {
+            let newList = selectRows.map(item => {
+                return {
+                    ...item,
+                    sourceType: "ADMISSION_RECOMMENDATION",
+                    sourceLineId: item.id,
+                    id: ''
+                }
             })
-        } else if (type === "annual") {
-            res = await findYearLineLine({
-                ids: selectedRowKeys.join()
-            })
-        }
-        setLoading(false);
-        if (res.success) {
-            handleOk(res.data);
+            handleOk(newList);
         } else {
-            message.error(res.message);
+            let res = {};
+            setLoading(true);
+            if (type === "demand") {
+                res = await findRequirementLine({
+                    ids: selectedRowKeys.join()
+                })
+            } else if (type === "annual") {
+                res = await findYearLineLine({
+                    ids: selectedRowKeys.join()
+                })
+            }
+            setLoading(false);
+            if (res.success) {
+                handleOk(res.data);
+            } else {
+                message.error(res.message);
+            }
         }
+
     }
 
     function handleSearch() {
@@ -220,13 +240,13 @@ const AddModal = (props) => {
                                         form={form}
                                         name={'name'}
                                         field={['code', 'id']}
-                                        {...AuditCauseManagementConfig}
+                                        {...findRecommendAccessByDataAuth}
                                     />,
                                 )
                             }
                         </FormItem>
                     </Col>
-                    <Col style={{ textAlign: 'center' }} onClick={handleSearch}><Button type="primary">查询</Button></Col>
+                    <Col span={12} style={{ textAlign: 'center' }} onClick={handleSearch}><Button type="primary">查询</Button></Col>
                 </Row>
             </Form>
         } else if (type === "demand") {

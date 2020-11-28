@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-11-09 09:32:51
- * @LastEditTime: 2020-11-23 15:53:59
+ * @LastEditTime: 2020-11-26 17:20:33
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\service.js
@@ -80,11 +80,11 @@ export async function findReasonByChangId(params) {
 
 // 审核实施计划-变更明细-获取行
 export async function findHistoryPageByChangId(params) {
-    const requestUrl = `${recommendUrl}/api/reviewImplementPlanChangeService/findChangeHistoryPageById`;
+    const requestUrl = `${recommendUrl}/api/reviewImplementPlanChangeService/findHistoryPageByChangId`;
     return request({
         url: requestUrl,
-        method: 'POST',
-        data: params,
+        method: 'GET',
+        params,
     });
 }
 

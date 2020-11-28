@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime: 2020-11-25 10:48:01
+ * @LastEditTime: 2020-11-27 16:04:41
  * @Description: 行信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
@@ -293,11 +293,7 @@ let LineInfo = forwardRef((props, ref) => {
   const contentModalOk = (treeData) => {
     let newList = dataSource.map(item => {
       if (data.selectedRowKeys.includes(item.lineNum)) {
-        item.fatherList = treeData;
-        item.sonList = [];
-        treeData.forEach(v => {
-          item.sonList = item.sonList.concat(v.children);
-        });
+        item.sonList =treeData;
         item.treeData = buildTreeData(item.sonList);
       }
       return item;

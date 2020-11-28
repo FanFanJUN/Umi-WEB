@@ -9,6 +9,8 @@ import { WorkFlow } from 'suid';
 import { router } from 'dva';
 import { closeCurrent } from '../../../../utils';
 import AuditReportManagementView from '../editPage';
+import { saveLeaderDecision } from '../../mainData/commomService';
+import { message } from 'antd';
 
 const LeaderApprovePage = () => {
 
@@ -25,10 +27,22 @@ const LeaderApprovePage = () => {
     if(!data || !leaderData){
       return false
     }
-    data.leaderData=leaderData;
-    console.log(data)
+    let endData = Object.assign(data, leaderData);
+    return new Promise(function(resolve, reject) {
+      saveLeaderDecision(endData).then(res => {
+        if (res.success) {
+          const data = { businessKey: res.data };
+          resolve({
+            success: true,
+            message: res.message,
+            data,
+          });
+        } else {
+          message.error(res.message);
+        }
+      }).catch(err => reject(err));
+    });
   };
-
   return (
     <WorkFlow.Approve
       businessId={query.id}

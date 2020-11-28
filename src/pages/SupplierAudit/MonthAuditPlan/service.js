@@ -171,11 +171,28 @@ export const ApplyOrganizationProps = {
     style: {
         width: '100%',
     },
-    treeNodeProps: (node) => {
-        if (node.nodeLevel === 0) {
-            return {
-                selectable: false,
-            };
-        }
-    },
+    // treeNodeProps: (node) => {
+    //     if (node.nodeLevel === 0) {
+    //         return {
+    //             selectable: false,
+    //         };
+    //     }
+    // },
 };
+
+// 获取有权限的准入推荐号
+export const findRecommendAccessByDataAuth = {
+    placeholder: '选择准入推荐号',
+    store: {
+      type: 'POST',
+      autoLoad: false,
+      url: `${recommendUrl}/api/recommendAccessService/findRecommendAccessByDataAuth`,
+    },
+    remotePaging: true,
+    rowKey: 'code',
+    reader: {
+      field: ['code'],
+      name: 'name',
+      description: 'code',
+    },
+  };
