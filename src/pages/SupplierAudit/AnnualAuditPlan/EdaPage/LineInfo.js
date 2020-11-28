@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime: 2020-11-24 15:04:20
+ * @LastEditTime: 2020-11-27 10:03:43
  * @Description: 行信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
@@ -65,7 +65,7 @@ let LineInfo = (props, ref) => {
     },
     { title: '物料级别', dataIndex: 'materialGradeName', ellipsis: true, width: 140 },
     {
-      title: '生产厂地址', dataIndex: 'address', ellipsis: true, width: 140, render: (v, data) => {
+      title: '生产厂地址', dataIndex: 'address', ellipsis: true, width: 200, render: (v, data) => {
         return data.countryName && `${data.countryName + data.provinceName + data.cityName + data.countyName + data.address}`;
       }
     },
@@ -74,7 +74,7 @@ let LineInfo = (props, ref) => {
     { title: '审核类型', dataIndex: 'reviewTypeName', ellipsis: true, width: 140 },
     { title: '审核原因', dataIndex: 'reviewReasonName', ellipsis: true, width: 140 },
     { title: '审核方式', dataIndex: 'reviewWayName', ellipsis: true, width: 140 },
-    { title: '预计审核月度', dataIndex: 'reviewMonth', ellipsis: true, width: 140 },
+    { title: '预计审核月度', dataIndex: 'reviewMonth', ellipsis: true, width: 140, render: text => text + " 月" },
     { title: '专业组', dataIndex: 'specialtyTeamName', ellipsis: true, width: 140 },
     { title: '备注', dataIndex: 'remark', ellipsis: true, width: 140 },
   ].map(item => ({ ...item, align: 'center' }))
@@ -171,10 +171,10 @@ let LineInfo = (props, ref) => {
     const newBatchData = batchEditList.map((item) => {
       return { ...item, ...formValue };
     });
-    console.log([...newBatchData, ...leftTableData]);
     setDataSource([...newBatchData, ...leftTableData]);;
     setlineData([...newBatchData, ...leftTableData]);
     setBatchVisible();
+    tableRef.current.manualSelectedRows();
   }
 
   return (
@@ -220,6 +220,7 @@ let LineInfo = (props, ref) => {
           visible={batchEditVisible}
           onCancel={setBatchVisible}
           onOk={getBatchFormValue}
+          originData={data.selectRows[0]}
         />
       }
     </div>

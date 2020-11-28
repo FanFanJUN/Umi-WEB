@@ -267,7 +267,7 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
           title={'小组意见'}
           wrappedComponentRef={getModalRef}/>
         <OpinionModalForLeader
-          editData={data.editData || {}}
+          editData={data.editData.purchasingTeamOpinionBo || {}}
           title={'领导意见'}
           wrappedComponentRef={getLeaderModalRef}/>
       </Spin>

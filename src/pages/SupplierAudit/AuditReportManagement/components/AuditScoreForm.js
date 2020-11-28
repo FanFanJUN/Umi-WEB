@@ -42,7 +42,7 @@ const AuditScoreForm = React.forwardRef(({ form, isView, editData, type }, ref) 
       title: '', dataIndex: 'id', width: 1, render: v => {
       },
     },
-    { title: '类别', dataIndex: 'systemName', width: 200, required: true },
+    { title: '类别', dataIndex: 'systemName', width: 200},
     { title: '指标名称', dataIndex: 'ruleName', ellipsis: true, width: 100 },
     { title: '指标定义', dataIndex: 'definition', ellipsis: true, width: 400 },
     { title: '评分标准', dataIndex: 'scoringStandard', ellipsis: true, width: 400 },

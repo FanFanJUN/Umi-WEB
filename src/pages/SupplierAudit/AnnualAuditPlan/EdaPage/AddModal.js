@@ -97,6 +97,9 @@ const AddModal = (props) => {
         form.validateFieldsAndScroll((err, values) => {
             if (err) return;
             if (!err) {
+                delete values.Q_EQ_purchaseOrgName;
+                delete values.materialGradeAndName;
+                delete values.Q_EQ_corporationName;
                 setCascadeParams(values);
             }
         });
@@ -172,10 +175,10 @@ const AddModal = (props) => {
                             }
                         </FormItem>
                     </Col>
-                    {HideFormItem('materialGrade')}
                     <Col span={8}>
                         <FormItem {...formItemLayoutLong} label={'物料级别'}>
                             {
+                                getFieldDecorator('materialGrade'),
                                 getFieldDecorator('materialGradeAndName')(
                                     <ComboList
                                         allowClear

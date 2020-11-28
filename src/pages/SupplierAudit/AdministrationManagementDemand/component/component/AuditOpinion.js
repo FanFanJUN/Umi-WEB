@@ -79,7 +79,7 @@ const AuditOpinion = React.forwardRef((props, ref) => {
           <FormItem label="审核综合评审得分" {...formLayout}>
             {
               getFieldDecorator('reviewScore', {
-                initialValue: isView ? data.reviewScore : editData.reviewScore,
+                initialValue: isView ? `${data.reviewScore}%` : `${editData.reviewScore}%`,
                 rules: [
                   {
                     required: true,

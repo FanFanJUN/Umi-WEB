@@ -1149,6 +1149,7 @@ export const getListByTypeId = (id) => {
     reader: {
       name: 'name',
       description: 'value',
-    }
+      field: ['value'],
+    },
   };
 }

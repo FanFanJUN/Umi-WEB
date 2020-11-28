@@ -28,7 +28,7 @@ const OpinionModalForLeader = forwardRef(({ editData, form, title }, ref) => {
   const [cleanFile, setCleanFile] = useState(false);
   const [needOpinion, setNeedOpinion] = useState(false);
   useEffect(() => {
-    setNeedOpinion(!editData.remarkLeader);
+    setNeedOpinion(!editData.whetherFollowAuditConclusion);
   }, [editData]);
   useEffect(() => {
     setRequired();
@@ -60,11 +60,11 @@ const OpinionModalForLeader = forwardRef(({ editData, form, title }, ref) => {
 
   const onCancel = () => {
     form.setFieldsValue({
-      remarkLeader: editData.remarkLeader,
-      opinion: null,
-      docIds: [],
+      whetherLeaderDecisionPass: editData.whetherFollowAuditConclusion,
+      leaderDecisionOpinion: null,
+      leaderDecisionDocIds: [],
     });
-    setNeedOpinion(!editData.remarkLeader);
+    setNeedOpinion(!editData.whetherFollowAuditConclusion);
     setCleanFile(true);
     setVisible(false);
   };
@@ -90,8 +90,8 @@ const OpinionModalForLeader = forwardRef(({ editData, form, title }, ref) => {
     <Row>
       <Col span={24}>
         <FormItem label="是否按审核意见执行" {...formLayout}>
-          {getFieldDecorator('remark', {
-            initialValue:  editData.remark ,
+          {getFieldDecorator('whetherLeaderDecisionPass', {
+            initialValue:  editData.whetherFollowAuditConclusion ,
             rules: [
               {
                 required: true,
@@ -110,7 +110,7 @@ const OpinionModalForLeader = forwardRef(({ editData, form, title }, ref) => {
     <Row>
       <Col span={24}>
         <FormItem label="意见" {...formLayout}>
-          {getFieldDecorator('opinion', {
+          {getFieldDecorator('leaderDecisionOpinion', {
             initialValue: '',
             rules: [
               {
@@ -128,7 +128,7 @@ const OpinionModalForLeader = forwardRef(({ editData, form, title }, ref) => {
       <Col span={24}>
         <FormItem {...formLayout} label={'附件'}>
           {
-            getFieldDecorator('docIds', {
+            getFieldDecorator('leaderDecisionDocIds', {
               initialValue: [],
             })(
               <Upload cleanFile={cleanFile}/>,
