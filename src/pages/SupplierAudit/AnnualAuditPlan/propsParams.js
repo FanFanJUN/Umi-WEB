@@ -1,9 +1,9 @@
 /*
  * @Author: Li Cai
- * @LastEditors: Please set LastEditors
+ * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-27 17:01:47
- * @LastEditTime: 2020-11-26 15:19:47
+ * @LastEditTime: 2020-11-30 17:11:52
  * @Description: 参数props
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/propsParams.js
  */
@@ -61,7 +61,7 @@ export const ApplyOrganizationProps = {
 // 审核类型 reviewType
 export const reviewTypesProps = {
   store: {
-    url: `${baseUrl}/reviewType/findBySearchPage`,
+    url: `${baseUrl}/reviewType/findBySearchPageAndFrozenFalse`,
     type: 'POST'
   },
   remotePaging: true,
@@ -93,7 +93,7 @@ export const reviewReasonsProps = {
   store: {
     type: 'POST',
     autoLoad: false,
-    url: `${baseUrl}/reviewReason/findBySearchPage`,
+    url: `${baseUrl}/reviewReason/findBySearchPageAndFrozenFalse`,
   },
   remotePaging: true,
   columns: [
@@ -122,7 +122,7 @@ export const reviewWaysProps = {
   store: {
     type: 'POST',
     autoLoad: false,
-    url: `${baseUrl}/reviewWay/findBySearchPage`,
+    url: `${baseUrl}/reviewWay/findBySearchPageAndFrozenFalse`,
   },
   remotePaging: true,
   columns: [
