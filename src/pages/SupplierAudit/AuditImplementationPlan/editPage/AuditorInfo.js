@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:44:12
- * @LastEditTime: 2020-11-26 15:10:28
+ * @LastEditTime: 2020-11-27 17:37:54
  * @LastEditors: Please set LastEditors
  * @Description: 审核实施计划-审核人员
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\AuditorInfo.js
@@ -254,7 +254,6 @@ const AuditorInfo = forwardRef((props, ref) => {
       if (selectedRows[0].id) {
         let deleteArr = props.deleteArr.slice();
         deleteArr.push({ id: selectedRows[0].id, type: 'GROUP' });
-        props.setDeleteArr(deleteArr);
       }
       newData.forEach((value, index) => {
         if (value.lineNum === selectedRowKeys[0]) {
@@ -276,7 +275,6 @@ const AuditorInfo = forwardRef((props, ref) => {
       if (contentData.selectedRows[0].id) {
         let deleteArr = props.deleteArr.slice();
         deleteArr.push({ id: contentData.selectedRows[0].id, type: 'MEMBER' });
-        props.setDeleteArr(deleteArr);
       }
       let newDataSource = JSON.parse(JSON.stringify(contentData.dataSource));
       newDataSource.forEach((item, index) => {

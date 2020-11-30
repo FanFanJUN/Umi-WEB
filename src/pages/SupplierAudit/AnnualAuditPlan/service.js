@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-22 10:13:27
- * @LastEditTime: 2020-11-25 17:27:28
+ * @LastEditTime: 2020-11-27 14:28:56
  * @Description: 接口 集
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/service.js
  */
@@ -45,8 +45,8 @@ export async function deleteReviewPlanYear(params) {
     const requestUrl = `${recommendUrl}/api/reviewPlanYearService/deleteReviewPlanYear`;
     return request({
         url: requestUrl,
-        method: 'GET',
-        params,
+        method: 'POST',
+        data: params,
     });
 }
 //提交审核

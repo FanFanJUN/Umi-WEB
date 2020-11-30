@@ -264,7 +264,7 @@ export default function () {
                 disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
-                key='TECHNICAL_DATA_SHARING_ALLOT'
+                key='TECHNICAL_DATA_SHARING_STOP'
             >终止审核</Button>)
         }
         {

@@ -22,6 +22,7 @@ import VerificationResults from './component/VerificationResults';
 import { WithdrawResultsEntryApi } from './commonApi';
 import { openNewTab } from '../../../utils';
 import { getUserId } from '../../../components/utils/CommonUtils';
+import { BASE_URL } from '../../../utils/constants';
 
 const { authAction } = utils;
 const { Search } = Input;
@@ -208,7 +209,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'whetherConfirm', false)
-        || !judge(data.selectedRows, 'leaderId', getUserId())
+          // || !judge(data.selectedRows, 'leaderId', getUserId())
         }
         key='SUPPLIER_AUDIT_DEMAND_CONFIRM'
       >审核结果确认</Button>)
@@ -219,7 +220,8 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={data.selectedRowKeys.length === 0
-        || !judge(data.selectedRows, 'leaderId', getUserId())}
+          // || !judge(data.selectedRows, 'leaderId', getUserId())
+        }
         key='SUPPLIER_AUDIT_DEMAND_VIEW_RESULT'
       >审核结果查看</Button>)
     }
@@ -283,7 +285,7 @@ export default function() {
                 quickSearchValue: data.quickSearchValue,
                 ...data.epTechnicalShareDemandSearchBo,
               },
-              url: `${recommendUrl}/api/reviewImplementManagementService/findByPage`,
+              url: `${window.location.origin}${BASE_URL}/${recommendUrl}/api/reviewImplementManagementService/findByPage`,
               type: 'POST',
             }}
             allowCancelSelect={true}

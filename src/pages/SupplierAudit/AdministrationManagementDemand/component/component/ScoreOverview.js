@@ -11,7 +11,7 @@ import TargetScoringDetailView from './TargetScoringDetailView';
 const ScoreOverview = (props) => {
 
   let minLine = {
-    percentage: 100,
+    percentage: 101,
   };
 
 
@@ -33,7 +33,7 @@ const ScoreOverview = (props) => {
       width: 100,
       render: (v, data) => data.ruleId ? <a onClick={() => targetScoringDetail(data)}>{v}</a> : v,
     },
-    { title: '百分比', dataIndex: 'percentage', width: 100 },
+    { title: '百分比', dataIndex: 'percentage', width: 100, render: v => v ? `${v}%` : '0' },
     { title: '评定等级', dataIndex: 'performanceRating', width: 100 },
     { title: '风险等级', dataIndex: 'riskRating', width: 100 },
   ].map(item => ({ ...item, align: 'center' }));

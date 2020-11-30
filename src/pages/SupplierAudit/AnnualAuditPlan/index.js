@@ -3,11 +3,12 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:00:19
- * @LastEditTime: 2020-11-27 10:02:01
+ * @LastEditTime: 2020-11-27 14:19:24
  * @Description:  年度审核计划管理
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/index.js
  */
 import React, { useState, useRef, useEffect, Fragment } from 'react';
+import moment from "moment";
 import Header from '../../../components/Header';
 import AdvancedForm from '../../../components/AdvancedForm';
 import { Button, Input, message, Modal } from 'antd';
@@ -15,20 +16,15 @@ import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/in
 import { StartFlow } from 'seid';
 import { WorkFlow, ExtTable, utils } from 'suid';
 import {
-    ApplyOrganizationProps,
     CompanyConfig,
-    FindByFiltersConfig,
 } from '../mainData/commomService';
 import {
-    RecallDataSharingList,
-    ShareDistributionProps,
-} from '../../QualitySynergy/commonProps';
+    ApplyOrganizationProps
+} from '../MonthAuditPlan/service';
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
 import { openNewTab } from '../../../utils';
 import { judge } from '../../../utils/utilTool';
-import { materialClassProps } from '../../../utils/commonProps';
-import moment from 'moment';
 import { deleteReviewPlanYear, endFlow, submitReviewPlanYear } from './service';
 import { stateProps, flowProps, reviewTypesProps, reviewReasonsProps } from './propsParams';
 
@@ -157,9 +153,7 @@ export default function () {
             okType: 'danger',
             cancelText: '否',
             onOk: () => {
-                deleteReviewPlanYear({
-                    ids: data.selectedRowKeys.toString(),
-                }).then(res => {
+                deleteReviewPlanYear(data.selectedRowKeys).then(res => {
                     if (res.success) {
                         message.success(res.message);
                         tableRef.current.manualSelectedRows();
@@ -176,18 +170,12 @@ export default function () {
     // 高级查询搜索
     const handleAdvancedSearch = (value) => {
         console.log(value, '高级查询');
-        // value.materialCode = value.materialCode_name;
-        // value.materialGroupCode = value.materialGroupCode_name;
-        // value.strategicPurchaseCode = value.strategicPurchaseCode_name;
-        // value.buCode = value.buCode_name;
-        // value.state = value.state_name;
-        // value.allotSupplierState = value.allotSupplierState_name;
-        // delete value.materialCode_name;
-        // delete value.materialGroupCode_name;
-        // delete value.strategicPurchaseCode_name;
-        // delete value.buCode_name;
-        // delete value.state_name;
-        // delete value.allotSupplierState_name;
+        value.applyDate = value.applyDate ? moment(value.applyDate).format('YYYY-MM-DD ') : ''
+        value.applyDateStart = value.applyDate ? value.applyDate + "00:00:00" : ''
+        value.applyDateEnd = value.applyDate ? value.applyDate + "23:59:59" : ''
+        delete value.applyCorporationCode_name;
+        delete value.applyDepartmentCode_name;
+        delete value.applyDate;
         setData(v => ({ ...v, advanceFormData: value }));
         headerRef.current.hide();
         tableRef.current.manualSelectedRows();
@@ -197,14 +185,9 @@ export default function () {
     // 高级查询配置
     const formItems = [
         { title: '公司', key: 'applyCorporationCode', type: 'list', props: CompanyConfig },
-        { title: '采购组织', key: 'purchaseTeamCode', type: 'list', props: FindByFiltersConfig },
         { title: '申请部门', key: 'applyDepartmentCode', type: 'tree', props: ApplyOrganizationProps },
         { title: '申请人', key: 'applyName', props: { placeholder: '输入申请人' } },
-        { title: '申请日期', key: 'applyDate', type: 'datePicker', props: { placeholder: '输入申请人' } },
-        { title: '供应商', key: 'supplierCode', type: 'list', props: ShareDistributionProps },
-        { title: '物料二次分类', key: 'materialGroupCode', type: 'tree', props: materialClassProps },
-        { title: '审核类型', key: 'reviewTypeCode', type: 'grid', props: reviewTypesProps },
-        { title: '审核原因', key: 'reviewReasonCode', type: 'grid', props: reviewReasonsProps },
+        { title: '申请日期', key: 'applyDate', type: 'datePicker', props: { placeholder: '选择申请日期' } },
         { title: '审批状态', key: 'flowStatus', type: 'list', props: flowProps },
         { title: '状态', key: 'state', type: 'list', props: stateProps },
     ];
@@ -244,21 +227,6 @@ export default function () {
         { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 140 },
         { title: '拟制时间', dataIndex: 'applyDate', ellipsis: true, width: 200 },
     ].map(item => ({ ...item, align: 'center' }));
-
-    const visibleSupplier = () => {
-        console.log('查看供应商');
-    };
-
-    const onChangeCreate = (e) => {
-        setData(v => ({ ...v, checkedCreate: e.target.checked }));
-        tableRef.current.remoteDataRefresh();
-    };
-
-    const onChangeDistribution = (e) => {
-        setData(v => ({ ...v, checkedDistribution: e.target.checked }));
-        tableRef.current.remoteDataRefresh();
-    };
-
 
     const headerLeft = <>
         {

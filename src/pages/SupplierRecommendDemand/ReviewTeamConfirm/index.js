@@ -24,7 +24,7 @@ function renderTabBar(props, DefaultTabBar) {
 function FillInInfomationConfirm() {
   const { query } = useLocation();
   const [isReady, setIsReady] = useState(false);
-  const { id = null } = query;
+  const { id = null, taskId = null, instanceId = null } = query;
   const [status, updateGlobalStatus] = useGlobalStatus(id);
   function handleComplete(info) {
     const { success, message: msg } = info;
@@ -39,7 +39,13 @@ function FillInInfomationConfirm() {
     checkToken(query, setIsReady);
   }, []);
   return isReady ? (
-    <Approve submitComplete={handleComplete} flowMapUrl="flow-web/design/showLook">
+    <Approve
+      submitComplete={handleComplete}
+      flowMapUrl="flow-web/design/showLook"
+      businessId={id}
+      instanceId={instanceId}
+      taskId={taskId}
+    >
       <div>
         <Affix>
           <div className={styles.title}>评审小组确定</div>
@@ -61,8 +67,8 @@ function FillInInfomationConfirm() {
       </div>
     </Approve>
   ) : (
-    <Skeleton loading={!isReady} active></Skeleton>
-  );
+      <Skeleton loading={!isReady} active></Skeleton>
+    );
 }
 
 export default FillInInfomationConfirm;

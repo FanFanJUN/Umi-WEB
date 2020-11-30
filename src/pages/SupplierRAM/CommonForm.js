@@ -1,7 +1,8 @@
 import {
   forwardRef,
   useImperativeHandle,
-  useState
+  useState,
+  useRef
 } from 'react';
 import {
   Form,
@@ -9,12 +10,15 @@ import {
   Col,
   Input,
   Table,
-  DatePicker
+  Button,
+  Modal
 } from 'antd';
 import styles from './index.less';
-import { ComboList } from 'suid';
+import { ComboList, ExtTable } from 'suid';
+import SelectRecommendData from './SelectRecommendData';
 import { commonProps, getUserName } from '../../utils';
 import moment from 'moment';
+import { useTableProps } from '../../utils/hooks';
 const { orgnazationProps, corporationProps } = commonProps;
 
 const { create, Item: FormItem } = Form;
@@ -32,8 +36,19 @@ function CommonForm({
   useImperativeHandle(ref, () => ({
     setFormValue
   }))
-  const [recommendLine, setRecommendLine] = useState([]);
+  const sRef = useRef(null);
   const [demandLine, setDemandLine] = useState([]);
+  const [tableProps, sets] = useTableProps();
+  const {
+    selectedRows,
+    selectedRowKeys,
+    dataSource: recommendLine
+  } = tableProps;
+  const {
+    setDataSource: setRecommendLine,
+    handleSelectedRows
+  } = sets;
+  const empty = selectedRowKeys.length === 0;
   const { getFieldDecorator, setFieldsValue } = form;
   const recommendColumns = [
     {
@@ -42,7 +57,8 @@ function CommonForm({
     },
     {
       title: '公司名称',
-      dataIndex: 'corporationName'
+      dataIndex: 'corporationName',
+      width: 200
     },
     {
       title: '采购组织代码',
@@ -50,30 +66,36 @@ function CommonForm({
     },
     {
       title: '采购组织名称',
-      dataIndex: 'purchaseOrgName'
+      dataIndex: 'purchaseOrgName',
+      width: 200
     },
     {
       title: '认定类型',
-      dataIndex: 'identifyTypeName'
+      dataIndex: 'identifyTypeName',
+      width: 200
     },
     {
       title: '是否实物认定',
       dataIndex: 'objectRecognition',
       render(text) {
-        return !!text ? '是' : '否'
+        const isBoolean = typeof text === 'boolean';
+        if (isBoolean) {
+          return !!text ? '是' : '否'
+        }
+        return '未选择'
       }
     },
     {
-      title: '开始时间',
-      dataIndex: 'startTime',
-      render(text) {
-        return <DatePicker value/>
+      title: '是否信任',
+      dataIndex: 'trust',
+      render(text = null) {
+        const isBoolean = typeof text === 'boolean';
+        if (isBoolean) {
+          return !!text ? '是' : '否'
+        }
+        return '未选择'
       }
-    },
-    {
-      title: '结束时间',
-      dataIndex: 'endTime'
-    },
+    }
   ];
   const demandColumns = [
     {
@@ -106,6 +128,25 @@ function CommonForm({
     }))
     await setRecommendLine(recommendAccessLines);
     await setDemandLine(addLineNumberDemands);
+  }
+  function handleCreateRecommendInfo() {
+    sRef?.current?.show()
+  }
+  function handleSelectRecommendData(items) {
+    setRecommendLine(items)
+  }
+  function handleRemove() {
+    if (selectedRowKeys.length === 0) return
+    Modal.confirm({
+      title: '删除数据',
+      content: '是否删除所选数据',
+      okText: '删除',
+      cancelText: '取消',
+      onOk: () => {
+        const resLine = recommendLine.filter(item => !selectedRowKeys.includes(item.guid))
+        setRecommendLine(resLine)
+      }
+    })
   }
   return (
     <Form {...formLayout}>
@@ -236,11 +277,27 @@ function CommonForm({
         </Col>
       </Row>
       <div className={styles.tableWrapper}>
-        <Table
+        <div className={styles.verticalPadding}>
+          <Button className={styles.btn} onClick={handleCreateRecommendInfo} type='primary'>新增</Button>
+          <Button className={styles.btn} onClick={handleRemove} disabled={empty}>删除</Button>
+        </div>
+        <ExtTable
           bordered
           dataSource={recommendLine}
           columns={recommendColumns}
           size='small'
+          rowKey='guid'
+          allowCancelSelect
+          checkbox={{
+            multiSelect: false
+          }}
+          onSelectRow={handleSelectedRows}
+          selectedRowKeys={selectedRowKeys}
+        />
+        <SelectRecommendData
+          wrappedComponentRef={sRef}
+          initialDataSource={recommendLine}
+          onOk={handleSelectRecommendData}
         />
       </div>
       <div className={styles.commonTitle}>推荐需求单</div>

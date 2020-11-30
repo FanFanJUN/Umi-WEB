@@ -31,6 +31,8 @@ const VerificationResults = (props) => {
     if (data.activeKey === '3' && !isView) {
       let params = await submitDataRef.current.getInfo((err, values) => {
         if (!err) {
+          values.reviewScore = values.reviewScore.replace('%', '');
+          console.log(values);
           return values;
         }
       });
