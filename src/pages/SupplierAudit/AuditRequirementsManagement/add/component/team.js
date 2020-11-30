@@ -76,6 +76,7 @@ const Team = (props) => {
       if (props.type !== 'detail') {
         GetDefaultSystem({
           reviewTypeCode: props.reviewTypeCode,
+          sonList: props.treeData
         }).then(res => {
           if (res.success) {
             setData(v => ({ ...v, defaultSystem: res.data }));

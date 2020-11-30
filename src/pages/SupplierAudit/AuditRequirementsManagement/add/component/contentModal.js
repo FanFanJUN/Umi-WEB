@@ -35,14 +35,14 @@ const ContentModal = (props) => {
     if (getFieldValue('memberType')) {
       setDisabled(getFieldValue('memberType') !== 'INTERNAL_USERS');
     }
-  }, [getFieldValue('memberType')])
+  }, [getFieldValue('memberType')]);
 
   const onOk = () => {
     props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         if (data.lineNum) {
-          values.lineNum = data.lineNum
-          values.memberRuleBoList = data.memberRuleBoList
+          values.lineNum = data.lineNum;
+          values.memberRuleBoList = data.memberRuleBoList;
         }
         props.onOk(values);
       }
@@ -50,22 +50,22 @@ const ContentModal = (props) => {
   };
 
   useEffect(() => {
-    console.log(props.data)
+    console.log(props.data);
     if (type !== 'add') {
       setDisabled(props.data.memberType !== 'INTERNAL_USERS');
     }
-  }, [type])
+  }, [type]);
 
   const departChange = (value) => {
-    console.log(value)
+    console.log(value);
     setFieldsValue({
       namePath: value.namePath,
       codePath: value.codePath,
       memberName: '',
       memberTel: '',
-      employeeNo: ''
+      employeeNo: '',
     });
-  }
+  };
 
   const clearSelected = () => {
     props.form.resetFields();
@@ -77,7 +77,7 @@ const ContentModal = (props) => {
         getFieldDecorator(name, {
           initialValue: initialValue,
         })(
-          <Input type={'hidden'}/>,
+          <Input type={'hidden'} />,
         )
       }
     </FormItem>
@@ -90,14 +90,14 @@ const ContentModal = (props) => {
       employeeNo: getFieldValue('employeeNo') && '',
       departmentCode: getFieldValue('departmentCode') && '',
       departmentId: getFieldValue('departmentId') && '',
-      departmentName: getFieldValue('departmentName') && ''
+      departmentName: getFieldValue('departmentName') && '',
     });
   };
 
   const userSelect = (value) => {
     setFieldsValue({
       memberName: value.userName,
-      employeeNo: value.user.tenantCode
+      employeeNo: value.user.tenantCode,
     });
     GetUserTelByUserId({
       userId: value.user.id,
@@ -221,8 +221,8 @@ const ContentModal = (props) => {
                       }}
                       afterSelect={userSelect}
                       store={{
-                        data: {
-                          includeSubNode: true,
+                        params: {
+                          includeSubNode: false,
                           quickSearchProperties: ['code', 'user.userName'],
                           organizationId: getFieldValue('departmentId'),
                           sortOrders: [{ property: 'code', direction: 'ASC' }],
@@ -249,7 +249,7 @@ const ContentModal = (props) => {
                       message: '姓名不能为空',
                     },
                   ],
-                })(<Input disabled={!disabled} placeholder='请输入姓名'/>)
+                })(<Input disabled={!disabled} placeholder='请输入姓名' />)
               }
             </FormItem>
           </Col>
@@ -264,7 +264,7 @@ const ContentModal = (props) => {
                       message: '联系电话不能为空',
                     },
                   ],
-                })(<Input type={'number'} placeholder='请输入联系电话'/>)
+                })(<Input type={'number'} placeholder='请输入联系电话' />)
               }
             </FormItem>
           </Col>
@@ -274,7 +274,7 @@ const ContentModal = (props) => {
                 {
                   getFieldDecorator('outsideCompany', {
                     initialValue: type === 'add' ? '' : data.outsideCompany,
-                  })(<Input placeholder='请输入外部单位'/>)
+                  })(<Input placeholder='请输入外部单位' />)
                 }
               </FormItem>
             </Col>

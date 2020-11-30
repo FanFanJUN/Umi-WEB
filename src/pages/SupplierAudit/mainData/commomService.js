@@ -596,8 +596,8 @@ export const GetDefaultSystem = async (params = {}) => {
   const url = `${recommendUrl}/api/reviewEvlSystemService/findDefaultEvlSystem`;
   return request({
     url,
-    method: 'GET',
-    params: params,
+    method: 'POST',
+    data: params,
   });
 };
 
