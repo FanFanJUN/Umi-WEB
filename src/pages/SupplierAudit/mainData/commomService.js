@@ -359,11 +359,11 @@ export const provinceConfig = {
 export const DocumentAuditCauseManagementConfig = {
   placeholder: '选择审核原因',
   store: {
-    type: 'POST',
+    type: 'GET',
     autoLoad: false,
-    url: `${baseUrl}/reviewReason/findBySearchPage`,
+    url: `${baseUrl}/api/reviewReasonService/findAllUnfrozen`,
   },
-  remotePaging: true,
+  remotePaging: false,
   rowKey: 'code',
   reader: {
     field: ['code', 'id'],
