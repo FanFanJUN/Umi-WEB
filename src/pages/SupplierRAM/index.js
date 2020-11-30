@@ -13,6 +13,7 @@ import styles from './index.less';
 import { Header, AutoSizeLayout, AdvancedForm } from '../../components'
 import { ExtTable, utils, WorkFlow } from 'suid';
 import { Button, Input, Checkbox, Modal, message } from 'antd';
+import RecommendSelect from './RecommendSelect';
 import { commonProps, commonUrl, openNewTab, getFrameElement } from '../../utils';
 import { removeRecommendAccess, submitToSupplier } from '../../services/recommendAccess';
 import { stopApproveingOrder } from '../../services/supplier';
@@ -31,6 +32,7 @@ const {
 export default () => {
   const headerRef = useRef(null);
   const tableRef = useRef(null);
+  const recommendRef = useRef(null);
   // const [dataSource, setDataSource] = useState([]);
   const [selectedRowKeys, setRowKeys] = useState([]);
   const [selectedRows, setRows] = useState([]);
@@ -248,9 +250,10 @@ export default () => {
   ];
   // 处理新增页签打开
   function handleCreate() {
-    const { id = '' } = FRAMELEEMENT;
-    const { pathname } = window.location;
-    openNewTab(`supplier/recommend/admittance/manage/create?frameElementId=${id}&frameElementSrc=${pathname}`, '新增供应商推荐准入', false)
+    recommendRef?.current?.show()
+    // const { id = '' } = FRAMELEEMENT;
+    // const { pathname } = window.location;
+    // openNewTab(`supplier/recommend/admittance/manage/create?frameElementId=${id}&frameElementSrc=${pathname}`, '新增供应商推荐准入', false)
   }
   // 处理编辑页签打开
   function handleEditor() {
@@ -390,6 +393,7 @@ export default () => {
         }
 
       </AutoSizeLayout>
+      <RecommendSelect wrappedComponentRef={recommendRef}/>
     </div>
   )
 }

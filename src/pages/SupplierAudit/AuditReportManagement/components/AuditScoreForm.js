@@ -9,10 +9,13 @@ import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList
 import { Form } from 'antd';
 import { ExtTable } from 'suid';
 import { getRandom } from '../../../QualitySynergy/commonProps';
+import TargetScoringDetailView from '../../AdministrationManagementDemand/component/component/TargetScoringDetailView';
 
 const AuditScoreForm = React.forwardRef(({ form, isView, editData, type }, ref) => {
   useImperativeHandle(ref, () => ({}));
   const [dataSource, setDataSource] = useState([]);
+  const [params, setParams] = useState({});
+  const [targetScoringDetailVisible, setTargetScoringDetailVisible] = useState(false);
   useEffect(() => {
     transferData();
   }, [editData]);
@@ -37,6 +40,14 @@ const AuditScoreForm = React.forwardRef(({ form, isView, editData, type }, ref) 
     });
     setDataSource(tree);
   };
+  // 查看指标评审得分详情
+  const targetScoringDetail = (data) => {
+    setParams({
+      ruleCode: data.ruleCode,
+      reviewImplementPlanCode: data.reviewImplementPlanCode,
+    });
+    setTargetScoringDetailVisible(true)
+  };
   const columns = [
     {
       title: '', dataIndex: 'id', width: 1, render: v => {
@@ -52,7 +63,7 @@ const AuditScoreForm = React.forwardRef(({ form, isView, editData, type }, ref) 
       title: '审核得分',
       dataIndex: ' reviewScore',
       width: 100,
-      render: (text) => <a onClick={() => console.log('这是超链接')}>{text}</a>,
+      render: (v, data) => data.ruleId ? <a onClick={() => targetScoringDetail(data)}>{v}</a> : v,
     },
     { title: '百分比', dataIndex: 'percentage', width: 100 },
     { title: '评定等级', dataIndex: 'performanceRating', width: 100 },
@@ -72,6 +83,14 @@ const AuditScoreForm = React.forwardRef(({ form, isView, editData, type }, ref) 
             lineNumber={false}
             columns={columns}
             dataSource={dataSource}
+          />
+          <TargetScoringDetailView
+            isView={true}
+            params={params}
+            onCancel={() => {
+              setTargetScoringDetailVisible(false);
+            }}
+            visible={targetScoringDetailVisible}
           />
         </div>
       </div>

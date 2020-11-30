@@ -10,7 +10,7 @@ import { Form, Row, Col } from 'antd';
 
 const TypeChart = React.forwardRef(({ form, isView, editData, type }, ref) => {
   useImperativeHandle(ref, () => ({}));
-
+  const data=[{name:'准入',value:'20'},{name:'追加',value:'20'},{name:'监督',value:'70'}]
   const props = {
     option: {
       title: {
@@ -23,20 +23,7 @@ const TypeChart = React.forwardRef(({ form, isView, editData, type }, ref) => {
       series: [
         {
           type: 'pie',
-          data: [
-            {
-              name: '准入',
-              value: 10,
-            },
-            {
-              name: '追加',
-              value: 20,
-            },
-            {
-              name: '监督',
-              value: 70,
-            },
-          ],
+          data:data ,
         },
       ],
     },
