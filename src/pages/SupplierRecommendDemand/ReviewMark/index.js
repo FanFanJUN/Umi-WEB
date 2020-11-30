@@ -32,7 +32,7 @@ const { Approve } = WorkFlow;
 function ReviewMark() {
   const { query } = useLocation();
   const reviewRef = useRef(null);
-  const { id = null } = query;
+  const { id = null, taskId = null, instanceId = null } = query;
   const [status, updateGlobalStatus] = useGlobalStatus(id);
   const [isReady, setIsReady] = useState(false);
   async function beforeSubmit() {
@@ -68,12 +68,18 @@ function ReviewMark() {
           beforeSubmit={beforeSubmit}
           submitComplete={handleComplete}
           flowMapUrl="flow-web/design/showLook"
+          businessId={id}
+          instanceId={instanceId}
+          taskId={taskId}
         >
           <div>
             <Affix>
               <div className={styles.title}>评审打分</div>
             </Affix>
-            <Tabs renderTabBar={renderTabBar} animated={false}>
+            <Tabs
+              renderTabBar={renderTabBar}
+              animated={false}
+            >
               <TabPane tab="推荐需求单" key="recommend-demand">
                 <DetailRecommendDemand offsetTop={95} />
               </TabPane>
@@ -87,14 +93,14 @@ function ReviewMark() {
                 <SelfAssessment type="detail" />
               </TabPane>
               <TabPane tab="评审" key="mark">
-                <Review wrappedComponentRef={reviewRef} />
+                <Review wrappedComponentRef={reviewRef} forceRender={true} />
               </TabPane>
             </Tabs>
           </div>
         </Approve>
       ) : (
-        <Skeleton loading={!isReady} active></Skeleton>
-      )}
+          <Skeleton loading={!isReady} active></Skeleton>
+        )}
     </>
   );
 }
