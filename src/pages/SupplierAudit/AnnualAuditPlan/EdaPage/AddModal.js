@@ -158,7 +158,7 @@ const AddModal = (props) => {
                                         name='materialCategoryName'
                                         {...materialClassProps}
                                         field={['materielCategoryCode']}
-                                    // afterSelect={selectMaterielCategory}
+
                                     />
                                 )
                             }
@@ -246,7 +246,7 @@ const AddModal = (props) => {
                 allowCancelSelect={true}
                 showSearch={false}
                 remotePaging
-                checkbox={{ multiSelect: false }}
+                checkbox={{ multiSelect: true }}
                 size='small'
                 onSelectRow={handleSelectedRows}
                 selectedRowKeys={selectedRowKeys}
@@ -257,6 +257,7 @@ const AddModal = (props) => {
                     url: `${smBaseUrl}/supplierSupplyList/listPageVo`,
                     type: 'GET',
                 }}
+
                 cascadeParams={
                     {
                         valid: 1,
