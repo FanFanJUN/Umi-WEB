@@ -15,7 +15,9 @@ import AddSupplierInfoModal from './AddSupplierInfoModal';
 let keys = 0;
 
 const AuditTable = React.forwardRef(({ form, isView, editData, type }, ref) => {
-  useImperativeHandle(ref, () => ({}));
+  useImperativeHandle(ref, () => ({
+    getTableData
+  }));
   const getModelRef = useRef(null);
   const tableRef = useRef(null);
   const [tableData, setTableData] = useState([]);
@@ -67,6 +69,9 @@ const AuditTable = React.forwardRef(({ form, isView, editData, type }, ref) => {
   const uploadTable = () => {
     tableRef.current.manualSelectedRows();
     tableRef.current.manualSelectedRows();
+  };
+  const getTableData=()=>{
+    return tableData
   };
   //新增
   const handleAdd = () => {

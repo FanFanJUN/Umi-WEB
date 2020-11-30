@@ -1,7 +1,7 @@
 /*
  * @Author:黄永翠
  * @Date: 2020-11-09 09:38:38
- * @LastEditTime: 2020-11-26 15:13:00
+ * @LastEditTime: 2020-11-30 14:17:57
  * @LastEditors: Please set LastEditors
  * @Description:审核实施计划-明细
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\index.js
@@ -13,9 +13,8 @@ import { router } from 'dva';
 import classnames from 'classnames';
 import moment from 'moment';
 import { pick } from "lodash"
-import { closeCurrent, getMobile, getUserId, getUserName } from '@/utils';
+import { closeCurrent } from '@/utils';
 import styles from '../../../Supplier/Editor/index.less';
-import { getRandom } from '../../../QualitySynergy/commonProps';
 import BaseInfo from "./BaseInfo";
 import AuditInfo from "./AuditInfo";
 import AuditScope from "./AuditScope";
@@ -197,6 +196,7 @@ const Index = (props) => {
             if (handleType === "publish") {
                 return { id: res.data, message: "保存成功" };
             } else {
+                closeCurrent();
                 message.success("保存成功")
             }
         } else {
@@ -234,7 +234,7 @@ const Index = (props) => {
     function handleComplete() {
         setLoading(false);
         setTimeout(() => {
-            // closeCurrent();
+            closeCurrent();
         }, 3000)
     }
 

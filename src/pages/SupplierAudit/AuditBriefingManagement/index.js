@@ -1,20 +1,20 @@
 /**
- * @Description: 审核简报管理
+ * @Description: 审核报告管理
  * @Author: M!keW
- * @Date: 2020-11-23
+ * @Date: 2020-11-16
  */
 import React, { useState, useRef, useEffect, Fragment, forwardRef } from 'react';
 import Header from '../../../components/Header';
 import AdvancedForm from '../../../components/AdvancedForm';
-import { Button, Input, message, Modal } from 'antd';
+import { Button, Checkbox, Input, message, Modal } from 'antd';
 import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
 import { ExtTable, utils, WorkFlow } from 'suid';
 import {
-  CompanyConfig, DeleteAuditRequirementsManagement, EndFlow
+  CompanyConfig, deleteReportById, EndFlow,
+
 } from '../mainData/commomService';
 import {
-  flowProps, judge,
-  stateProps,
+  flowProps, judge, stateProps,
 } from '../../QualitySynergy/commonProps';
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
@@ -27,7 +27,7 @@ const { authAction } = utils;
 const { Search } = Input;
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 
-const AuditBriefingManagement = forwardRef(({}, ref,) => {
+const AuditBriefingManagement = forwardRef(({}, ref) => {
   const tableRef = useRef(null);
   useEffect(() => {
     window.parent.frames.addEventListener('message', listenerParentClose, false);
@@ -37,6 +37,7 @@ const AuditBriefingManagement = forwardRef(({}, ref,) => {
   const listenerParentClose = (event) => {
     const { data = {} } = event;
     if (data.tabAction === 'close') {
+      tableRef.current.manualSelectedRows();
       tableRef.current.remoteDataRefresh();
     }
   };
@@ -44,14 +45,21 @@ const AuditBriefingManagement = forwardRef(({}, ref,) => {
   const [data, setData] = useState({
     spinning: false,
     flowId: '',
+    checkedCreate: true,
     quickSearchValue: '',
     advancedSearchValue: {},
     selectedRowKeys: [],
     selectedRows: [],
-    modalVisible:false
+    modalVisible: false,
   });
 
-  const getModelRef = useRef(null);
+  const getModalRef = useRef(null);
+
+  const onChangeCreate = (e) => {
+    setData(v => ({ ...v, checkedCreate: e.target.checked }));
+    tableRef.current.manualSelectedRows();
+    tableRef.current.remoteDataRefresh();
+  };
 
   const redirectToPage = (type) => {
     switch (type) {
@@ -59,16 +67,10 @@ const AuditBriefingManagement = forwardRef(({}, ref,) => {
         showModal();
         break;
       case 'edit':
-        openNewTab('supplierAudit/AuditBriefingManagementViewEdit?pageState=edit&id='+data.selectedRows[0].id, '审核报告管理-编辑', false);
+        openNewTab('supplierAudit/AuditBriefingManagementViewEdit?pageState=edit&id=' + data.selectedRows[0].id, '审核报告管理-编辑', false);
         break;
       case 'detail':
-        openNewTab('supplierAudit/AuditBriefingManagementViewDetail?pageState=detail&id='+data.selectedRows[0].id, '审核报告管理-明细', false);
-        break;
-      case 'delete':
-        deleteList();
-        break;
-      case 'endFlow':
-        endFlow();
+        openNewTab('supplierAudit/AuditBriefingManagementViewDetail?pageState=detail&id=' + data.selectedRows[0].id, '审核报告管理-明细', false);
         break;
     }
   };
@@ -80,8 +82,8 @@ const AuditBriefingManagement = forwardRef(({}, ref,) => {
   };
 
   // 新增
-  const showModal=()=> {
-    getModelRef.current.handleModalVisible(true);
+  const showModal = () => {
+    getModalRef.current.handleModalVisible(true);
   };
 
   const endFlow = () => {
@@ -117,8 +119,7 @@ const AuditBriefingManagement = forwardRef(({}, ref,) => {
       okType: 'danger',
       cancelText: '否',
       onOk: () => {
-        const codeArr = data.selectedRows.map(item => item.reviewRequirementCode);
-        DeleteAuditRequirementsManagement(codeArr).then(res => {
+        deleteReportById({id:data.selectedRows[0].id}).then(res => {
           if (res.success) {
             message.success(res.message);
             tableRef.current.manualSelectedRows();
@@ -133,24 +134,12 @@ const AuditBriefingManagement = forwardRef(({}, ref,) => {
 
   // 高级查询搜索
   const handleAdvancedSearch = (value) => {
-    // value.materialCode = value.materialCode_name;
-    // value.materialGroupCode = value.materialGroupCode_name;
-    // value.strategicPurchaseCode = value.strategicPurchaseCode_name;
-    // value.buCode = value.buCode_name;
-    // value.state = value.state_name;
-    // value.allotSupplierState = value.allotSupplierState_name;
-    // delete value.materialCode_name;
-    // delete value.materialGroupCode_name;
-    // delete value.strategicPurchaseCode_name;
-    // delete value.buCode_name;
-    // delete value.state_name;
-    // delete value.allotSupplierState_name;
     setData(v => ({ ...v, advancedSearchValue: value }));
     tableRef.current.manualSelectedRows();
     tableRef.current.remoteDataRefresh();
   };
 
-  // 高级查询配置
+// 高级查询配置
   const formItems = [
     {
       title: '拟制公司',
@@ -165,30 +154,8 @@ const AuditBriefingManagement = forwardRef(({}, ref,) => {
   ];
 
   const columns = [
-    {
-      title: '状态', dataIndex: 'state', width: 80, render: v => {
-        switch (v) {
-          case 'DRAFT':
-            return '草稿';
-          case 'EFFECT':
-            return '生效';
-          case 'CHANGING':
-            return '变更中';
-        }
-      },
-    },
-    {
-      title: '审批状态', dataIndex: 'flowStatus', width: 200, render: v => {
-        switch (v) {
-          case 'INIT':
-            return '未进入流程';
-          case 'INPROCESS':
-            return '流程中';
-          case 'COMPLETED':
-            return '流程处理完成';
-        }
-      },
-    },
+    { title: '状态', dataIndex: 'arAuditReportManagStatusRemark', width: 80 },
+    { title: '审批状态', dataIndex: 'flowStatusRemark', width: 200 },
     { title: '审核简报编号', dataIndex: 'reviewRequirementCode', width: 200 },
     { title: '统计期间', dataIndex: 'reviewRequirementCode', width: 200 },
     { title: '拟制公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 200 },
@@ -197,10 +164,6 @@ const AuditBriefingManagement = forwardRef(({}, ref,) => {
     { title: '拟制时间', dataIndex: 'applyDate', ellipsis: true, width: 200 },
   ].map(item => ({ ...item, align: 'center' }));
 
-  // 提交审核验证
-  const handleBeforeStartFlow = async () => {
-
-  };
 
   // 提交审核完成更新列表
   function handleComplete() {
@@ -216,7 +179,7 @@ const AuditBriefingManagement = forwardRef(({}, ref,) => {
         onClick={() => redirectToPage('add')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='TECHNICAL_DATA_SHARING_ADD'
+        key='SRM-SM-AUDITREPORT-ADD'
       >新增</Button>)
     }
     {
@@ -224,17 +187,17 @@ const AuditBriefingManagement = forwardRef(({}, ref,) => {
         onClick={() => redirectToPage('edit')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='TECHNICAL_DATA_SHARING_EDIT'
-        disabled={!judge(data.selectedRows, 'state', 'DRAFT') || data.selectedRowKeys.length !== 1 || !judge(data.selectedRows, 'flowStatus', 'INIT')}
+        key='SRM-SM-AUDITREPORT-EDIT'
+        disabled={!judge(data.selectedRows, 'status', 'Draft') || data.selectedRowKeys.length !== 1 || !judge(data.selectedRows, 'flowStatus', 'INIT')}
       >编辑</Button>)
     }
     {
       authAction(<Button
-        onClick={() => redirectToPage('delete')}
+        onClick={() => deleteList()}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='TECHNICAL_DATA_SHARING_DELETE'
-        disabled={data.selectedRowKeys.length === 0}
+        key='SRM-SM-AUDITREPORT-DELETE'
+        disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length !== 1}
       >删除</Button>)
     }
     {
@@ -242,7 +205,7 @@ const AuditBriefingManagement = forwardRef(({}, ref,) => {
         onClick={() => redirectToPage('detail')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='TECHNICAL_DATA_SHARING_DETAIL'
+        key='SRM-SM-AUDITREPORT-DETAIL'
         disabled={data.selectedRowKeys.length !== 1}
       >明细</Button>)
     }
@@ -250,12 +213,12 @@ const AuditBriefingManagement = forwardRef(({}, ref,) => {
       authAction(<StartFlow
         style={{ marginRight: '5px' }}
         ignore={DEVELOPER_ENV}
-        needConfirm={handleBeforeStartFlow}
+        // needConfirm={handleBeforeStartFlow}
         businessKey={data.flowId}
         callBack={handleComplete}
         disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length === 0}
-        businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewRequirement'
-        key='SRM-SM-SUPPLIERMODEL_EXAMINE'
+        businessModelCode='com.ecmp.srm.sam.entity.ar.ArAuditReportManag'
+        key='SRM-SM-AUDITREPORT-APPROVE'
       >提交审核</StartFlow>)
     }
     {
@@ -264,24 +227,28 @@ const AuditBriefingManagement = forwardRef(({}, ref,) => {
         flowMapUrl='flow-web/design/showLook'
         ignore={DEVELOPER_ENV}
         disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
-        key='SRM-SM-SUPPLIERMODEL_HISTORY'
+        key='SRM-SM-AUDITREPORT-APPROVEHISTORY'
       >
-        <Button className={styles.btn} disabled={data.selectedRowKeys.length !== 1}>审核历史</Button>
+        <Button className={styles.btn}
+                disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length !== 1}>审核历史</Button>
       </FlowHistoryButton>)
     }
     {
       authAction(<Button
-        onClick={() => redirectToPage('endFlow')}
+        onClick={() => endFlow()}
         loading={data.spinning}
         disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='TECHNICAL_DATA_SHARING_ALLOT'
+        key='SRM-SM-AUDITREPORT-ENDAPPROVE'
       >终止审核</Button>)
     }
   </>;
 
   const headerRight = <div style={{ display: 'flex', alignItems: 'center' }}>
+    <div style={{ width: '100px' }}>
+      <Checkbox onChange={onChangeCreate} checked={data.checkedCreate}>仅我创建</Checkbox>
+    </div>
     <Search
       placeholder='请输入审核简报编号查询'
       className={styles.btn}
@@ -314,13 +281,14 @@ const AuditBriefingManagement = forwardRef(({}, ref,) => {
             columns={columns}
             store={{
               params: {
+                ...data.checkedCreate ? { onlyMy: data.checkedCreate } : null,
                 quickSearchValue: data.quickSearchValue,
                 ...data.advancedSearchValue,
               },
-              url: `${recommendUrl}/api/reviewRequirementService/findByPage`,
+              url: `${recommendUrl}/api/arAuditReportManagService/findListByPage`,
               type: 'POST',
             }}
-            checkbox
+            checkbox={{ multiSelect: false }}
             allowCancelSelect={true}
             remotePaging={true}
             ref={tableRef}
@@ -331,7 +299,7 @@ const AuditBriefingManagement = forwardRef(({}, ref,) => {
         }
       </AutoSizeLayout>
       <AddModal
-        wrappedComponentRef={getModelRef}
+        wrappedComponentRef={getModalRef}
       />
     </Fragment>
   );

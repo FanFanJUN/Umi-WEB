@@ -1,7 +1,7 @@
 import { useState, forwardRef, useImperativeHandle } from 'react';
 import styles from './index.less';
 import { ExtModal, ExtTable } from 'suid';
-import { Form } from 'antd';
+import { Form, Input } from 'antd';
 import { Header } from '../../components';
 import { useTableProps } from '../../utils/hooks';
 import { commonUrl } from '../../utils';
@@ -26,7 +26,7 @@ function LayoutComponent({
   } = sets;
   const [visible, toggleVisible] = useState(false);
   const columns = [
-
+    
   ]
   const tableProps = {
     store: {
@@ -37,6 +37,7 @@ function LayoutComponent({
     checkbox: {
       multiSelect: false
     },
+    showSearch: false,
     allowCancelSelect: true,
     bordered: true,
     rowkey: 'id',
@@ -47,13 +48,18 @@ function LayoutComponent({
   const hide = () => toggleVisible(false)
   const left = (
     <>
-
+      Input
     </>
   );
   return (
     <ExtModal
       visible={visible}
       title={title}
+      centered
+      bodyStyle={{
+        height: '60vh'
+      }}
+      width='80vw'
     >
       <Header
         left={left}
