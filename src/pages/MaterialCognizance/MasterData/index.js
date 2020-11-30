@@ -2,14 +2,14 @@
 import React, { Fragment, useRef, useState } from 'react';
 import { Form, Button, message, Modal, Row, Col, Card, Empty } from 'antd';
 //import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
-import { samBaseUrl,recommendUrl} from '../../../utils/commonUrl';
+import { samBaseUrl, recommendUrl } from '../../../utils/commonUrl';
 import { ExtTable, utils } from 'suid';
 import { AutoSizeLayout } from '../../../components';
 import styles from './index.less';
 import ModalFrom from './ModalFrom'
 import RightModalFrom from './RightModalFrom'
-import {deleteBatchByLeftId,deleteRightId} from '../../../services/MaterialService'
-import {isEmpty} from '../../../utils'
+import { deleteBatchByLeftId, deleteRightId } from '../../../services/MaterialService'
+import { isEmpty } from '../../../utils'
 const { authAction } = utils;
 const confirm = Modal.confirm;
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
@@ -18,7 +18,7 @@ const Index = () => {
   const tableLeftRef = useRef(null);
   const tableRightRef = useRef(null);
   const commonFormRef = useRef(null)
-  const commonRightFormRef= useRef(null)
+  const commonRightFormRef = useRef(null)
   const [rightselectRows, setRightSelectRows] = useState([]);
   const [rightselectedRowKeys, setRightSelectedRowKeys] = useState([]);
   const [leftselectRows, setLeftSelectRows] = useState([]);
@@ -33,18 +33,18 @@ const Index = () => {
   const columnsforLeft = [
     { title: '代码', dataIndex: 'stageCode', width: 160 },
     { title: '认定阶段', dataIndex: 'identificationStage', width: 160 },
-    { title: '排序号', dataIndex: 'changeSort',  width: 100  },
+    { title: '排序号', dataIndex: 'changeSort', width: 100 },
   ].map(_ => ({ ..._, align: 'center' }));
 
   // 任务表格
   const columnsforRight = [
     { title: '代码', dataIndex: 'taskCode', width: 120 },
-    { title: '认定任务', dataIndex: 'taskDesc',  width: 200  },
-    { title: '排序号', dataIndex: 'changeSort',  width: 120  },
+    { title: '认定任务', dataIndex: 'taskDesc', width: 200 },
+    { title: '排序号', dataIndex: 'changeSort', width: 120 },
   ].map(_ => ({ ..._, align: 'center' }));
 
   // 阶段新增
-  async function handleLeftAdd () {
+  async function handleLeftAdd() {
     setTabtitle('新增')
     setSelectType(false)
     cleanSelectedRecord()
@@ -57,18 +57,18 @@ const Index = () => {
     commonFormRef.current.handleModalVisible(true)
   }
   // 阶段删除
-  async function handlelLeftDelete () {
+  async function handlelLeftDelete() {
     confirm({
       title: '是否确认删除',
       onOk: async () => {
-          let params = leftselectRows[0].id;
-          const { success, message: msg } = await deleteBatchByLeftId({stageId:params});
-          if (success) {
-              message.success('删除成功！');
-              uploadTable();
-          } else {
-              message.error(msg);
-          }
+        let params = leftselectRows[0].id;
+        const { success, message: msg } = await deleteBatchByLeftId({ stageId: params });
+        if (success) {
+          message.success('删除成功！');
+          uploadTable();
+        } else {
+          message.error(msg);
+        }
       },
       onCancel() {
       },
@@ -92,15 +92,15 @@ const Index = () => {
     confirm({
       title: '是否确认删除',
       onOk: async () => {
-          let params = rightselectRows[0].id;
-          const { success, message: msg } = await deleteRightId({taskId:params});
-          if (success) {
-              message.success('删除成功！');
-              RightCleanSelect();
-              RightCleanSelect()
-          } else {
-              message.error(msg);
-          }
+        let params = rightselectRows[0].id;
+        const { success, message: msg } = await deleteRightId({ taskId: params });
+        if (success) {
+          message.success('删除成功！');
+          RightCleanSelect();
+          RightCleanSelect()
+        } else {
+          message.error(msg);
+        }
       },
       onCancel() {
       },
@@ -113,7 +113,7 @@ const Index = () => {
       tableRightRef.current.remoteDataRefresh()
     }
   }
-  function rightonSelectRow (value, rows) {
+  function rightonSelectRow(value, rows) {
     setRightSelectRows(rows);
     setRightSelectedRowKeys(value);
   }
@@ -149,7 +149,7 @@ const Index = () => {
           onClick={() => handleLeftAdd()}
           className={styles.btn}
           ignore={DEVELOPER_ENV}
-          key='QUALITYSYNERGY_BUCOR_ADD'
+          key='SRM-SM-PLANMASTERDATA-STAGE-ADD'
         >新增</Button>)
       }
       {
@@ -158,7 +158,7 @@ const Index = () => {
           className={styles.btn}
           ignore={DEVELOPER_ENV}
           disabled={leftselectedRowKeys.length === 0 || leftselectedRowKeys.length > 1}
-          key='QUALITYSYNERGY_BUCOR_EDIT'
+          key='SRM-SM-PLANMASTERDATA-STAGE-EDIT'
         >编辑</Button>)
       }
       {
@@ -167,7 +167,7 @@ const Index = () => {
           className={styles.btn}
           ignore={DEVELOPER_ENV}
           disabled={leftselectedRowKeys.length === 0 || leftselectedRowKeys.length > 1}
-          key='QUALITYSYNERGY_BUCOR_EDIT'
+          key='SRM-SM-PLANMASTERDATA-STAGE-DELETE'
         >删除</Button>)
       }
     </div>)
@@ -181,7 +181,7 @@ const Index = () => {
           onClick={() => handleRightAdd()}
           className={styles.btn}
           ignore={DEVELOPER_ENV}
-          key='QUALITYSYNERGY_BUCOR_ADD'
+          key='SRM-SM-PLANMASTERDATA-TASK-ADD'
         >新增</Button>)
       }
       {
@@ -190,7 +190,7 @@ const Index = () => {
           className={styles.btn}
           ignore={DEVELOPER_ENV}
           disabled={rightselectedRowKeys.length === 0 || rightselectedRowKeys.length > 1}
-          key='QUALITYSYNERGY_BUCOR_EDIT'
+          key='SRM-SM-PLANMASTERDATA-TASK-EDIT'
         >编辑</Button>)
       }
       {
@@ -199,7 +199,7 @@ const Index = () => {
           className={styles.btn}
           ignore={DEVELOPER_ENV}
           disabled={rightselectedRowKeys.length === 0 || rightselectedRowKeys.length > 1}
-          key='QUALITYSYNERGY_BUCOR_EDIT'
+          key='SRM-SM-PLANMASTERDATA-TASK-DELETE'
         >删除</Button>)
       }
     </div>)
@@ -245,7 +245,7 @@ const Index = () => {
               title={tabtitle}
               modifydata={leftselectRows[0]}
               type={selectType}
-              onOk={masterSave} 
+              onOk={masterSave}
               wrappedComponentRef={commonFormRef}
             />
           </Card>
@@ -286,7 +286,7 @@ const Index = () => {
                     leftId={leftselectRows[0].id}
                     modifydata={rightselectRows[0]}
                     type={taaskType}
-                    onOk={handleTask} 
+                    onOk={handleTask}
                     wrappedComponentRef={commonRightFormRef}
                   />
                 </div>

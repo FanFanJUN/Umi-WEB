@@ -197,6 +197,7 @@ const ModifyinfoRef = forwardRef(({
         }
       }
       if (!modalType) {
+        console.log(1)
         keys = keys + 1;
         newsdata.push({
           ...val,
@@ -204,10 +205,8 @@ const ModifyinfoRef = forwardRef(({
           executionStatus: 0,
         })
         setDataSource(newsdata);
-        hideModal()
-        uploadTable()
-        return false;
       } else {
+        console.log(2)
         dataSource.map((item, index) => {
           if (item.key === val.key) {
             const copyData = dataSource.slice(0)
@@ -291,7 +290,6 @@ const ModifyinfoRef = forwardRef(({
             allowCancelSelect={true}
             size='small'
             height={height}
-            remotePaging={true}
             ellipsis={false}
             saveData={false}
             onSelectRow={handleSelectedRows}

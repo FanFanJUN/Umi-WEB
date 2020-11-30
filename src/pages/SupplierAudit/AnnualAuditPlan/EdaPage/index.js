@@ -1,9 +1,9 @@
 /*
  * @Author: Li Cai
- * @LastEditors: Please set LastEditors
+ * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:04:51
- * @LastEditTime: 2020-11-24 13:45:22
+ * @LastEditTime: 2020-11-30 15:28:38
  * @Description: 新增  编辑  详情 page
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/index.js
  */
@@ -80,11 +80,15 @@ const Index = (props) => {
     };
 
     const gatAllData = () => {
-        let allData = false;
+        let allData = {bool:true};
         const finnalLineData = !isEmptyArray(lineData) ? lineData : originData.planYearLineVos;
         form.validateFieldsAndScroll((err, values) => {
-            if (err) return;
+            if (err) {
+                allData = {bool:false};
+                return;
+            };
             if (finnalLineData.length === 0) {
+                allData = {bool:false};
                 message.info('请至少添加一条行信息');
                 return;
             }
@@ -95,27 +99,23 @@ const Index = (props) => {
             })
 
             // 校验行数据
-            try {
-                finnalLineData.forEach((item, index) => {
-                    if (!item.reviewTypeCode || !item.reviewReasonCode) {
-                        message.info('行上必填项为空, 请完善');
-                        throw new Error("checkError");
-                    }
-                });
-            } catch (e) {
-                if (e.message !== 'checkError') throw e;
-            };
-
-            if (!err) {
-                allData = { ...originData, ...values, flowStatus: 'INIT', reviewPlanYearLineBos: finnalLineData };
+            for (const item of finnalLineData) {
+                if (!item.reviewTypeCode || !item.reviewReasonCode) {
+                    message.info('行上必填项为空, 请完善');
+                    allData = {bool:false};
+                    break;
+                }
             }
+
+            if(!(allData.bool)) return;
+            allData = { ...originData, ...values, flowStatus: 'INIT', reviewPlanYearLineBos: finnalLineData, bool: true };
         });
         return allData;
     }
 
     async function tohandleSave(buttonType) {
         const allData = gatAllData();
-        if(!allData)return;
+        if(!(allData.bool))return;
         setSpinLoading(true);
         const res = await reviewPlanYearAp({ ...allData, type: data.type });
         if (buttonType === 'submit') {
@@ -127,7 +127,7 @@ const Index = (props) => {
                 message.success("暂存成功");
                 setTimeout(()=>{
                     closeCurrent();
-                }, 3000)
+                }, 1)
             } else {
                 message.error(res.message);
             }
