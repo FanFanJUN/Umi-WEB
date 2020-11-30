@@ -1,9 +1,9 @@
 /*
  * @Author: Li Cai
- * @LastEditors: Please set LastEditors
+ * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime: 2020-11-27 10:03:43
+ * @LastEditTime: 2020-11-30 15:23:41
  * @Description: 行信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
@@ -74,7 +74,7 @@ let LineInfo = (props, ref) => {
     { title: '审核类型', dataIndex: 'reviewTypeName', ellipsis: true, width: 140 },
     { title: '审核原因', dataIndex: 'reviewReasonName', ellipsis: true, width: 140 },
     { title: '审核方式', dataIndex: 'reviewWayName', ellipsis: true, width: 140 },
-    { title: '预计审核月度', dataIndex: 'reviewMonth', ellipsis: true, width: 140, render: text => text + " 月" },
+    { title: '预计审核月度', dataIndex: 'reviewMonth', ellipsis: true, width: 140, render: text =>  text && `${text} 月` },
     { title: '专业组', dataIndex: 'specialtyTeamName', ellipsis: true, width: 140 },
     { title: '备注', dataIndex: 'remark', ellipsis: true, width: 140 },
   ].map(item => ({ ...item, align: 'center' }))
