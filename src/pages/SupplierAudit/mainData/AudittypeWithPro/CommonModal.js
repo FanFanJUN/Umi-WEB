@@ -87,32 +87,32 @@ const CommonModal = (props) => {
                             }
                         </FormItem>
                     </Col>
-                    <Col span={24}>
-                        {HideFormItem('reviewSystemId', data.reviewSystemId)}
-                        {HideFormItem('reviewSystemCode', data.reviewSystemCode)}
-                        {HideFormItem('reviewSystemParentId', data.reviewSystemParentId)}
-                        <FormItem {...formItemLayoutLong} label={'评价体系'}>
-                            {
-                                getFieldDecorator('reviewSystemName', {
-                                    initialValue: type === 'add' ? '' : data.reviewSystemName,
-                                    rules: [
-                                        {
-                                            required: true,
-                                            message: '评价体系不能为空',
-                                        },
-                                    ],
-                                })(
-                                    <ComboTree
-                                        form={form}
-                                        name='reviewSystemName'
-                                        {...supplierEvlSystemTree}
-                                        field={['reviewSystemId', 'reviewSystemCode', 'reviewSystemParentId']}
-                                        afterSelect={selectReviewSystem}
-                                    />
-                                )
-                            }
-                        </FormItem>
-                    </Col>
+                    {/*<Col span={24}>*/}
+                    {/*    {HideFormItem('reviewSystemId', data.reviewSystemId)}*/}
+                    {/*    {HideFormItem('reviewSystemCode', data.reviewSystemCode)}*/}
+                    {/*    {HideFormItem('reviewSystemParentId', data.reviewSystemParentId)}*/}
+                    {/*    <FormItem {...formItemLayoutLong} label={'评价体系'}>*/}
+                    {/*        {*/}
+                    {/*            getFieldDecorator('reviewSystemName', {*/}
+                    {/*                initialValue: type === 'add' ? '' : data.reviewSystemName,*/}
+                    {/*                rules: [*/}
+                    {/*                    {*/}
+                    {/*                        required: true,*/}
+                    {/*                        message: '评价体系不能为空',*/}
+                    {/*                    },*/}
+                    {/*                ],*/}
+                    {/*            })(*/}
+                    {/*                <ComboTree*/}
+                    {/*                    form={form}*/}
+                    {/*                    name='reviewSystemName'*/}
+                    {/*                    {...supplierEvlSystemTree}*/}
+                    {/*                    field={['reviewSystemId', 'reviewSystemCode', 'reviewSystemParentId']}*/}
+                    {/*                    afterSelect={selectReviewSystem}*/}
+                    {/*                />*/}
+                    {/*            )*/}
+                    {/*        }*/}
+                    {/*    </FormItem>*/}
+                    {/*</Col>*/}
                     <Col span={24}>
                         {HideFormItem('reviewIndexCode', data.reviewIndexCode)}
                         {HideFormItem('reviewIndexId', data.reviewIndexId)}

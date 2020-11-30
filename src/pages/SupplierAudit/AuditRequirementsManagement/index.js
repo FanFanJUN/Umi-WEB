@@ -231,7 +231,7 @@ export default function() {
         onClick={() => redirectToPage('add')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='TECHNICAL_DATA_SHARING_ADD'
+        key='SUPPLIER_AUDIT_REQUIREMENT_ADD'
       >新增</Button>)
     }
     {
@@ -239,7 +239,7 @@ export default function() {
         onClick={() => redirectToPage('edit')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='TECHNICAL_DATA_SHARING_EDIT'
+        key='SUPPLIER_AUDIT_REQUIREMENT_EDIT'
         disabled={!judge(data.selectedRows, 'state', 'DRAFT') || data.selectedRowKeys.length !== 1 || !judge(data.selectedRows, 'flowStatus', 'INIT')}
       >编辑</Button>)
     }
@@ -248,7 +248,7 @@ export default function() {
         onClick={() => redirectToPage('delete')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='TECHNICAL_DATA_SHARING_DELETE'
+        key='SUPPLIER_AUDIT_REQUIREMENT_DELETE'
         disabled={data.selectedRowKeys.length === 0}
       >删除</Button>)
     }
@@ -257,7 +257,7 @@ export default function() {
         onClick={() => redirectToPage('detail')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='TECHNICAL_DATA_SHARING_DETAIL'
+        key='SUPPLIER_AUDIT_REQUIREMENT_DETAIL'
         disabled={data.selectedRowKeys.length !== 1}
       >明细</Button>)
     }
@@ -270,7 +270,7 @@ export default function() {
         callBack={handleComplete}
         disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length === 0}
         businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewRequirement'
-        key='SRM-SM-SUPPLIERMODEL_EXAMINE'
+        key='SUPPLIER_AUDIT_REQUIREMENT_EXAMINE'
       >提交审核</StartFlow>)
     }
     {
@@ -279,7 +279,7 @@ export default function() {
         flowMapUrl='flow-web/design/showLook'
         ignore={DEVELOPER_ENV}
         disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
-        key='SRM-SM-SUPPLIERMODEL_HISTORY'
+        key='SUPPLIER_AUDIT_REQUIREMENT_HISTORY'
       >
         <Button className={styles.btn} disabled={data.selectedRowKeys.length !== 1}>审核历史</Button>
       </FlowHistoryButton>)
@@ -291,7 +291,7 @@ export default function() {
         disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='TECHNICAL_DATA_SHARING_ALLOT'
+        key='SUPPLIER_AUDIT_REQUIREMENT_ALLOT'
       >终止审核</Button>)
     }
   </>;
