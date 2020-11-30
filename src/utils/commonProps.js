@@ -657,8 +657,11 @@ export const businessMainProps = {
 // 业务板块主数据
 export const businessUnitMainProps = {
   store: {
-    url: `${baseUrl}/api/businessUnitService/findAll`,
-    type: 'get'
+    url: `${baseUrl}/api/businessUnitService/listByPage`,
+    type: 'post',
+    params: {
+      frozen: false
+    }
   },
   reader: {
     name: 'businessUnit',

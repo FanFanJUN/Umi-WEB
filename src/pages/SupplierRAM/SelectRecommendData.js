@@ -5,9 +5,10 @@ import {
   useRef
 } from 'react';
 import { Button, message, Form, Radio } from 'antd';
-import { ExtTable, ExtModal, ComboList } from 'suid';
+import { ExtTable, ExtModal, ComboList, utils } from 'suid';
 import { commonProps, commonUrl } from '../../utils';
 import styles from './SelectRecommendData.less';
+const { getUUID } = utils;
 const { baseUrl } = commonUrl;
 const {
   corporationProps,
@@ -27,7 +28,6 @@ const columns = [
   }
 ]
 const Ctx = forwardRef(({
-  onContinue = () => null,
   onOk = () => null,
   initialDataSource = [],
   form
@@ -41,8 +41,6 @@ const Ctx = forwardRef(({
   const [selectedRows, setRows] = useState([]);
   const [selectedRowKeys, setKeys] = useState([]);
   const [corporation, setCorporation] = useState({});
-  // const [thatType, setThatType] = useState(null);
-  const [recognition, setRecognition] = useState(undefined);
   const tableRef = useRef(null);
   const tableProps = {
     store: {
@@ -90,6 +88,7 @@ const Ctx = forwardRef(({
         purchaseOrgName: item.name,
         trust,
         objectRecognition,
+        guid: getUUID()
       }))
     return [
       ...filterSelectedRows,
@@ -98,13 +97,11 @@ const Ctx = forwardRef(({
   }
   async function handleOk() {
     const values = await validateFieldsAndScroll()
-    console.log(values)
     const s = formatModalSelectedRows(values);
     onOk(s)
     cancel()
     setKeys([]);
     setRows([]);
-    // setThatType(null)
   }
   return (
     <ExtModal
