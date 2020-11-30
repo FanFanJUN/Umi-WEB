@@ -1,7 +1,7 @@
 import { request } from '@/utils';
-import { smBaseUrl,baseUrl,gatewayUrl} from '@/utils/commonUrl';
-import { BASE_URL,FLOW_HOST,AUTH_SERVER_PATH} from '../utils/constants';
-import {convertDataToFormData} from '../utils'
+import { smBaseUrl, baseUrl, gatewayUrl } from '@/utils/commonUrl';
+import { BASE_URL, FLOW_HOST, AUTH_SERVER_PATH } from '../utils/constants';
+import { convertDataToFormData } from '../utils'
 import httpUtils from '../utils/FeatchUtils'
 function createServiceRequest(option) {
   const {
@@ -54,7 +54,7 @@ export const RecommendationList = params => createServiceRequest({
 // 供应商注册字段配置表删除
 export const DetailSupplierRegister = params =>
   request({
-    headers:{'content-type': 'application/json'},
+    headers: { 'content-type': 'application/json' },
     url: `${smBaseUrl}/api/SmSupplierConfigService/deleteId`,
     data: params,
     method: 'POST',
@@ -74,7 +74,7 @@ export const findSupplierconfigureService = params => createServiceRequest({
 // })
 export const findSupplierconfigureId = params =>
   request({
-    headers:{'content-type': 'application/json'},
+    headers: { 'content-type': 'application/json' },
     url: `${smBaseUrl}/api/SmSupplierRegConfigService/findByRegConfId`,
     data: params,
     method: 'POST',
@@ -101,7 +101,7 @@ export const Configurationfield = params => createServiceRequest({
 // })
 export const SupplierconfigureDetail = params =>
   request({
-    headers:{'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+    headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
     url: `${smBaseUrl}/supplierRecommendRequest/findBySupplierId`,
     params,
     method: 'POST',
@@ -154,7 +154,7 @@ export const getAllCurrencyWithoutAuth = () => {
 // 泛虹公司
 export const getAllCorporation = () => {
   return request({
-    headers:{'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+    headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
     url: `${baseUrl}/basic/listAllCorporation`,
     method: 'POST',
     //params:{'Q_EQ_frozen__bool': '0'}
@@ -173,7 +173,7 @@ export const listAllGeneralTree = (params) => {
 //供應商名称重复检查
 export const checkSupplierName = (params) => {
   return request({
-    headers:{'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+    headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
     url: `${smBaseUrl}/supplierRegister/checkSupplierName`,
     params,
     method: 'POST',
@@ -182,7 +182,7 @@ export const checkSupplierName = (params) => {
 
 export const getBankcodelist = (params) => {
   return request({
-    headers:{'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+    headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
     url: `${baseUrl}/supplierRegister/getDataItemsFromValueCode`,
     params,
     method: 'POST',
@@ -197,7 +197,7 @@ export const getCNCountryIdInfo = params => createServiceRequest({
 // 银行国家
 export const getAccesstocountries = (params) => {
   return request({
-    headers:{'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+    headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
     url: `${baseUrl}/supplierRegister/listAllCountry`,
     params,
     method: 'POST',
@@ -245,7 +245,7 @@ export const saveSupplierRegister = params => createServiceRequest({
   params
 })
 // 终止审批流程
-export const stopApproveingOrder = params =>createServiceRequest({
+export const stopApproveingOrder = params => createServiceRequest({
   path: `${FLOW_HOST}/flowInstance/checkAndEndByBusinessId`,
   params,
   base: gatewayUrl,
@@ -257,24 +257,24 @@ export async function oddgetAllCorporation(params = {}) {
 }
 // 供应商公司查询工厂
 export const getCompanyFactory = (params = {}) => {
-  return httpUtils.post(`/srm-baf-web/factory/findByCorporationCode`,params)
+  return httpUtils.post(`/srm-baf-web/factory/findByCorporationCode`, params)
 }
 //查询供应商
 export const getNormalSuppliers = (params = {}) => {
-  return httpUtils.post(`/srm-baf-web/supplier/findNormalSuppliers`, params,true);
+  return httpUtils.post(`/srm-baf-web/supplier/findNormalSuppliers`, params, true);
 };
 ///审批流程根据id查信息
 export const findApplySupplierInfoVo = params =>
   request({
-    headers:{'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+    headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
     url: `${smBaseUrl}/supplierApply/getApplySupplierInfoVo`,
     params,
     method: 'POST',
     //responseType: 'blob'
   })
- // 审批供应商流程保存
- export const saveLietInFlow = params => {
-   return request({
+// 审批供应商流程保存
+export const saveLietInFlow = params => {
+  return request({
     //headers:{'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
     url: `${smBaseUrl}/supplierAgent/saveAgentInFlow`,
     data: convertDataToFormData(params),
@@ -284,19 +284,19 @@ export const findApplySupplierInfoVo = params =>
 // 供应商修改保存
 export const saveSupplierApply = params => {
   return request({
-   //headers:{'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-   url: `${smBaseUrl}/supplierApply/saveOtherSupplier`,
-   data: convertDataToFormData(params),
-   method: 'POST',
- })
+    //headers:{'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+    url: `${smBaseUrl}/supplierApply/saveOtherSupplier`,
+    data: convertDataToFormData(params),
+    method: 'POST',
+  })
 }
 // 保存自主注册账号信息
 export const saveRegistVo = params => {
   return request({
-   url: `${smBaseUrl}/supplierSelf/saveRegistVo`,
-   data: convertDataToFormData(params),
-   method: 'POST',
- })
+    url: `${smBaseUrl}/supplierSelf/saveRegistVo`,
+    data: convertDataToFormData(params),
+    method: 'POST',
+  })
 }
 // 统一社会信用代码重复检查
 export const checkCreditCode = params => createServiceRequest({
@@ -345,3 +345,10 @@ export const UnifiedcheckCheckEmail = params => createServiceRequest({
 //    method: 'POST',
 //  })
 // }
+
+// 组织绑定邮箱
+
+export const bindingEmail = params => createServiceRequest({
+  path: '/api/supplierSelfService/bindEmail',
+  params,
+})

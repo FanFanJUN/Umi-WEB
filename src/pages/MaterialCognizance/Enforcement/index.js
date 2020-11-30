@@ -287,7 +287,7 @@ function MissionExecution() {
                 authAction(
                     <Button
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNSUPPLIER-ADD'
+                        key='SRM-SM-IMPLEMENT-SUPPLIER-TASK'
                         className={styles.btn}
                         onClick={AddModel}
                         disabled={empty || !underWay}
@@ -299,7 +299,7 @@ function MissionExecution() {
                 authAction(
                     <Button
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNSUPPLIER-DETAIL'
+                        key='SRM-SM-IMPLEMENT-SUPPLIER-DETAIL'
                         className={styles.btn}
                         onClick={handleCheckDetail}
                         disabled={empty}
