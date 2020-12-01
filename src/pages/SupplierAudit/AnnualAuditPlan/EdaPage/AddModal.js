@@ -24,6 +24,7 @@ const AddModal = (props) => {
     const [selectRows, setselectRows] = useState([]);
     const [loading, setLoading] = useState(false);
     const [cascadeParams, setCascadeParams] = useState({});
+    const [page, setPage] = useState({});
 
     const columns = [
         {
@@ -75,9 +76,10 @@ const AddModal = (props) => {
             message.info('至少选择一条行信息');
             return;
         }
-        const tableData = Object.assign({}, selectRows[0]);
-        delete tableData.id;
-        handleOk([tableData]);
+        selectRows.forEach((item)=>{
+            delete item.id;
+        })
+        handleOk(selectRows);
         setselectedRowKeys([]);
         setselectRows([]);
     }
@@ -91,6 +93,13 @@ const AddModal = (props) => {
     function handleSelectedRows(key, rows) {
         setselectedRowKeys(key);
         setselectRows(rows);
+    }
+
+    function handleOnchange(page) {
+        console.log(page);
+        if(page) {
+            setPage(page);
+        }
     }
 
     function handleSearch() {
@@ -158,7 +167,7 @@ const AddModal = (props) => {
                                         name='materialCategoryName'
                                         {...materialClassProps}
                                         field={['materielCategoryCode']}
-                                    // afterSelect={selectMaterielCategory}
+
                                     />
                                 )
                             }
@@ -246,17 +255,21 @@ const AddModal = (props) => {
                 allowCancelSelect={true}
                 showSearch={false}
                 remotePaging
-                checkbox={{ multiSelect: false }}
+                checkbox={true}
                 size='small'
                 onSelectRow={handleSelectedRows}
                 selectedRowKeys={selectedRowKeys}
+                onChange={handleOnchange}
                 store={{
                     params: {
-                        valid: 1
+                        valid: 1,
+                        page: page.current,
+                        rows: page.pageSize,
                     },
                     url: `${smBaseUrl}/supplierSupplyList/listPageVo`,
-                    type: 'GET',
+                    type: 'get',
                 }}
+
                 cascadeParams={
                     {
                         valid: 1,

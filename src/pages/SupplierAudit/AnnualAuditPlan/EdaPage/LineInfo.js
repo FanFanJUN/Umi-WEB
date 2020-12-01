@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime: 2020-11-30 15:23:41
+ * @LastEditTime: 2020-11-30 16:32:10
  * @Description: 行信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
@@ -147,7 +147,8 @@ let LineInfo = (props, ref) => {
       item.specialtyTeamName = item.purchaseProfessionalGroup;
     })
     const newTableList = JSON.parse(JSON.stringify(dataSource));
-    newTableList.push(tableData[0]);
+    // 是否选择有重复数据
+    newTableList.push(...tableData);
     // 行号
     newTableList.forEach((item, index) => {
       item.reviewPlanYearLinenum = ((Array(4).join(0) + (index + 1)).slice(-4) + '0');
