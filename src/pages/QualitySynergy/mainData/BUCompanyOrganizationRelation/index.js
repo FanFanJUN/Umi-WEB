@@ -4,7 +4,10 @@ import styles from '../../TechnicalDataSharing/DataSharingList/index.less';
 import { baseUrl, smBaseUrl } from '../../../../utils/commonUrl';
 import { ExtTable, utils } from 'suid';
 import {
-  AddBUCompanyOrganizationRelation, DeleteBUCompanyOrganizationRelation, FrostBUCompanyOrganizationRelation, judgeButtonDisabled,
+  AddBUCompanyOrganizationRelation,
+  DeleteBUCompanyOrganizationRelation,
+  FrostBUCompanyOrganizationRelation,
+  judgeButtonDisabled,
 } from '../../commonProps';
 import EventModal from './component/EventModal';
 import { AutoSizeLayout } from '../../../../components';
@@ -131,6 +134,7 @@ const Index = () => {
   </div>;
 
   const handleOk = async (value) => {
+    value.supplierEvaluation = value.supplierEvaluation ? 'true' : '';
     if (data.type === 'add') {
       AddBUCompanyOrganizationRelation(value).then(res => {
         if (res.success) {
@@ -162,7 +166,7 @@ const Index = () => {
     <Fragment>
       <AutoSizeLayout>
         {
-          (h) =>  <ExtTable
+          (h) => <ExtTable
             rowKey={(v) => v.id}
             height={h}
             columns={columns}

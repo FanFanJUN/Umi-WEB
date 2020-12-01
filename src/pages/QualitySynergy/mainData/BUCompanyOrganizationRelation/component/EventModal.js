@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ComboList, ExtModal } from 'suid';
 import { Checkbox, Col, Form, Input, Row } from 'antd';
 import {
+  ApplicableStateProps,
   BasicUnitList,
   BUConfig,
   BUConfigNoFrost,
@@ -150,6 +151,15 @@ const EventModal = (props) => {
                   }}
                   {...OrganizationByCompanyCodeConfig}
                 />)
+              }
+            </FormItem>
+          </Col>
+          <Col span={24}>
+            <FormItem {...formItemLayoutLong} label={'供应商评价默认标识'}>
+              {
+                getFieldDecorator('supplierEvaluation', {
+                  initialValue: type === 'add' ? false : !!data.supplierEvaluation,
+                })(<Checkbox />)
               }
             </FormItem>
           </Col>
