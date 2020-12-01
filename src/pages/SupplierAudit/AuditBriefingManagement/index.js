@@ -19,10 +19,9 @@ import {
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
 import { openNewTab } from '../../../utils';
-import { StartFlow } from 'seid';
 import AddModal from './components/AddModal';
 
-const { FlowHistoryButton } = WorkFlow;
+const { FlowHistoryButton, StartFlow } = WorkFlow;
 const { authAction } = utils;
 const { Search } = Input;
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
@@ -213,13 +212,15 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
       authAction(<StartFlow
         style={{ marginRight: '5px' }}
         ignore={DEVELOPER_ENV}
-        // needConfirm={handleBeforeStartFlow}
         businessKey={data.flowId}
-        callBack={handleComplete}
-        disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length === 0}
+        startComplete={handleComplete}
         businessModelCode='com.ecmp.srm.sam.entity.ar.ArAuditReportManag'
         key='SRM-SM-AUDITREPORT-APPROVE'
-      >提交审核</StartFlow>)
+      >{
+        loading => <Button
+          disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length === 0}
+          className={styles.btn} loading={loading}>提交审核</Button>
+      }</StartFlow>)
     }
     {
       authAction(<FlowHistoryButton
