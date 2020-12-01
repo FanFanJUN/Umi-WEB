@@ -34,7 +34,7 @@ const BaseAccountRef = forwardRef(({
   }, [])
   // 表单
   function getAccountinfo() {
-    if (defaultActiveKey[0] === '1' || defaultActiveKey[0] === 1) {
+    if (assignment === 1) {
       const { getOrganizinfo } = OrganRef.current; //组织用户
       let organData = getOrganizinfo()
       if (!organData) {
@@ -43,7 +43,7 @@ const BaseAccountRef = forwardRef(({
       } else {
         return organData
       }
-    } else if (defaultActiveKey[0] === '2') {
+    } else if (assignment === 0) {
       const { getpersoninfo } = PersonRef.current; //个人用户
       let personaData = getpersoninfo()
       if (!personaData) {

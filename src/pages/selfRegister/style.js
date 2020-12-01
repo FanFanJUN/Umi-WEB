@@ -3,13 +3,13 @@
  * @Author: CHEHSHUANG
  * @Date: 2018/12/4
  */
- import styled from "styled-components"
+import styled from "styled-components"
 
- export const Span = styled.span`
+export const Span = styled.span`
      display: inline-block;
      width: 400px;
  `;
- export const Wrapper = styled.div`
+export const Wrapper = styled.div`
      display: flex;
      flex-direction: column;
      overflow: hidden;
@@ -48,7 +48,7 @@
        }
      }
  `;
- export const CardWrapper = styled.div`
+export const CardWrapper = styled.div`
      background-color: rgb(236, 236, 236);
      padding: 15px 15px 0 15px;
      &.last{
@@ -61,14 +61,19 @@
         box-sizing: border-box;
      }
  `;
- export const AddButtonWrapper = styled.div`
+export const AddButtonWrapper = styled.div`
      display: flex;
      justify-content: center;
      margin-top: 10px;
  `;
- export const ModalBox = styled.div`
+export const ModalBox = styled.div`
     .ant-modal-body{
        padding: 2px 15px;
     }
  `;
- 
+
+export const otherStyle = styled.div`
+   .ant-form label {
+      font-size: 30px
+   }
+`;
