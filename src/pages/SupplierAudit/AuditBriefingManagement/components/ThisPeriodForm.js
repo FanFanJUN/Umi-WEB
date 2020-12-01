@@ -4,7 +4,7 @@
  * @Date: 2020-11-27
  */
 
-import React, { useImperativeHandle } from 'react';
+import React, { useImperativeHandle, useRef } from 'react';
 import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/edit/BaseInfo.less';
 import { Form, Input } from 'antd';
 import AuditTable from './AuditTable';
@@ -15,7 +15,10 @@ import SupplierChart from './SupplierChart';
 const FormItem = Form.Item;
 
 const ThisPeriodForm = React.forwardRef(({ form, isView, editData, type }, ref) => {
-  useImperativeHandle(ref, () => ({}));
+  useImperativeHandle(ref, () => ({
+    getFormValue,
+  }));
+  const getTableRef = useRef([]);
   const columns = [
     {
       title: '供应商信息', children: [
@@ -36,10 +39,13 @@ const ThisPeriodForm = React.forwardRef(({ form, isView, editData, type }, ref) 
     { title: '备注', dataIndex: 'remark', width: 140 },
   ].map(item => ({ ...item, align: 'center' }));
 
-  const getFormValue=()=>{
+  const getFormValue = async () => {
+    let transData = {};
+    transData.tableData = await getTableRef.current.getTableData();
     form.validateFieldsAndScroll((err, values) => {
-     console.log(values)
+      transData = { ...transData,...values };
     });
+    return transData
   };
 
   return (
@@ -83,6 +89,7 @@ const ThisPeriodForm = React.forwardRef(({ form, isView, editData, type }, ref) 
             />
           </div>
           <AuditTable
+            wrappedComponentRef={getTableRef}
             editData={[{ departmentName: '11', 'memberName': '11', employeeNo: '11', memberTel: '11', check: '11' }]}/>
           <div style={{ paddingBottom: '10px', fontSize: '14px' }}>
             4、激励建议

@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-12 14:44:24
- * @LastEditTime: 2020-11-19 16:24:27
+ * @LastEditTime: 2020-11-30 11:27:45
  * @Description: 结论及是否通过
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/mainData/ConclusionPassed/index.js
  */
@@ -100,6 +100,8 @@ const Index = () => {
         if (data.success) {
           tableRef.current.manualSelectedRows();
           tableRef.current.remoteDataRefresh();
+        } else {
+          message.error(data.message);
         }
       },
     });
@@ -130,7 +132,7 @@ const Index = () => {
         key='SUPPLIER_AUDIT_CONCLUSION_PASSED_EDIT'
       >编辑</Button>)
     }
-    {
+    {/* {
       authAction(<Button
         onClick={() => buttonClick('delete')}
         className={styles.btn}
@@ -138,7 +140,7 @@ const Index = () => {
         disabled={selectRows.length === 0}
         key='SUPPLIER_AUDIT_CONCLUSION_PASSED_DELETE'
       >删除</Button>)
-    }
+    } */}
     {
       authAction(<Button
         onClick={() => buttonClick('frost')}

@@ -2,13 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Affix, Button, Form, message, Spin, Modal } from 'antd';
 import { WorkFlow } from "suid";
 import classnames from 'classnames';
+import moment from "moment";
 import BaseInfo from "./BaseInfo";
 import styles from '../../../Supplier/Editor/index.less';
 import { router } from 'dva';
 import { closeCurrent, getMobile, getUserId, getUserName } from '@/utils';
 import LineInfo from './LineInfo';
 import ChangeInfo from "../component/ChangeInfo";
-import ChangeLineInfo from "../component/ChangeLineInfo";
 import { insertMonthBo, findOneOverride, upDateMonthBo, insertChangeMonthBo } from "../service";
 const { StartFlow } = WorkFlow;
 
@@ -26,7 +26,6 @@ const Index = (props) => {
     });
     const [editData, setEditData] = useState({});
     const [loading, setLoading] = useState(false);
-
     const { query } = router.useLocation();
     useEffect(() => {
         if (query.pageState !== "add") {
@@ -124,6 +123,8 @@ const Index = (props) => {
                 if (err) {
                     baseInfo = false;
                 } else {
+                    values.applyMonth = moment(values.applyMonth).format('YYYY-MM-DD').slice(0,7) + "-01";
+                    console.log("表单数据", values)
                     baseInfo = { ...values }
                 }
             });
@@ -140,7 +141,7 @@ const Index = (props) => {
     // 新增保存，编辑保存，变更保存
     const handleSave = async (type) => {
         let saveData = await getAllData();
-        console.log("整合的数据", saveData)
+        // console.log("整合的数据", saveData)
         if (!saveData) return false;
         setLoading(true);
         let res = {};
@@ -197,7 +198,7 @@ const Index = (props) => {
         setLoading(false);
         message.success("提交成功");
         setTimeout(() => {
-            // handleBack()
+            handleBack()
         }, 3000)
     }
     return <>

@@ -32,6 +32,7 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
   }));
   const { query } = router.useLocation();
   const getBaseInfoFormRef = useRef(null);
+  const getThisPeriodFormRef = useRef(null);
   const getUser = () => {
     const userId = getUserId();
     const userName = getUserName();
@@ -110,7 +111,9 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
       message.error('请将基本信息填写完全！');
       return false;
     }
+    let thisPeriodInfoVal = await getThisPeriodFormRef.current.getFormValue();
     data.editData.arAuditReportManagBasicVo = baseInfoVal;
+    data.editData.thisPeriodVo = thisPeriodInfoVal;
     return data.editData;
   };
 
@@ -121,7 +124,11 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
       message.error('请将基本信息填写完全！');
       return false;
     }
+    let thisPeriodInfoVal = await getThisPeriodFormRef.current.getFormValue();
     data.editData.arAuditReportManagBasicVo = baseInfoVal;
+    data.editData.thisPeriodVo = thisPeriodInfoVal;
+    console.log(data.editData)
+    return
     saveAuditReport(data.editData).then(res => {
       if (res.success) {
         message.success(res.message);
@@ -140,7 +147,9 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
     if (!baseInfoVal) {
       return false;
     }
+    let thisPeriodInfoVal = await getThisPeriodFormRef.current.getFormValue();
     data.editData.arAuditReportManagBasicVo = baseInfoVal;
+    data.editData.thisPeriodVo = thisPeriodInfoVal;
     return new Promise(function(resolve, reject) {
       saveAuditReport(data.editData).then(res => {
         if (res.success) {
@@ -196,6 +205,8 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
         <TotalInfoForm
           editData={data.editData}/>
         <ThisPeriodForm
+          type={data.type}
+          wrappedComponentRef={getThisPeriodFormRef}
           editData={data.editData}/>
         <NextPeriodForm
           editData={data.editData}/>

@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle, useEffect, useRef,useState } from 'react';
+import React, { forwardRef, useImperativeHandle, useEffect, useRef, useState } from 'react';
 import { Form, Icon, Input, Col, message, Radio, Button } from 'antd';
 import { utils, ExtTable, ComboList } from 'suid';
 import { AddButtonWrapper } from './style'
@@ -16,22 +16,22 @@ let aggregate = [];
 let aggregatename = [];
 const poinsitiondata = [
     {
-      name: '总锦鲤',
-      value: "001",
+        name: '总锦鲤',
+        value: "001",
     },
     {
-      name: '副总经理',
-      value: "002",
+        name: '副总经理',
+        value: "002",
     },
     {
         name: '监理',
         value: "003",
-      },
-      {
+    },
+    {
         name: '财务',
         value: "004"
-      }
-  ];
+    }
+];
 const AuthorizeRef = forwardRef(({
     form,
     initialValue = {},
@@ -60,7 +60,7 @@ const AuthorizeRef = forwardRef(({
             let maxLineNum = getMaxLineNum(editData.contactVos);
             //lineCode = maxLineNum + 1;
             keys = initData.length - 1;
-        }else {
+        } else {
             editData = editData.contactVos
         }
         getBankcodelist(editData)
@@ -86,7 +86,7 @@ const AuthorizeRef = forwardRef(({
                 }
             }
         );
-      }
+    }
     const tableProps = [
         ...columns,
         {
@@ -110,16 +110,16 @@ const AuthorizeRef = forwardRef(({
                             getFieldDecorator(`positionName[${index}]`, {
                                 initialValue: record ? record.positionName : '',
                                 rules: [{ required: true, message: '请选择职位!', whitespace: true }],
-                            })( 
-                                <ComboList 
+                            })(
+                                <ComboList
                                     form={form}
                                     {...listPositionConfig}
                                     showSearch={false}
                                     //afterSelect={afterSelect}
                                     name={`positionName[${index}]`}
                                     field={[`position[${index}]`]}
-                                    afterSelect={(item)=>{
-                                        afterSelect(item,`${index + 1}`)
+                                    afterSelect={(item) => {
+                                        afterSelect(item, `${index + 1}`)
                                     }}
                                 />
                                 // <ComboList 
@@ -129,7 +129,7 @@ const AuthorizeRef = forwardRef(({
                                 //     reader={{
                                 //         name: 'name',
                                 //         field: ['value'],
-                                        
+
                                 //     }}
                                 //     showSearch={false}
                                 //     afterSelect={(item)=>{
@@ -288,11 +288,10 @@ const AuthorizeRef = forwardRef(({
     ].map(item => ({ ...item, align: 'center' }))
 
     // 职务选择
-    function afterSelect(val,key) {
+    function afterSelect(val, key) {
         setEdit(true)
-        dataSource.forEach((item,index) => {
+        dataSource.forEach((item, index) => {
             if (item.key === Number(key)) {
-                console.log(23123)
                 const copyData = dataSource.slice(0)
                 copyData[index].position = val.value;
                 setDataSource(copyData)
@@ -315,14 +314,14 @@ const AuthorizeRef = forwardRef(({
                     let maxLineCode = getMaxLineNum(contactVos);
                     lineCode = maxLineCode++;
                     setDataSource(contactVos)
-                }else {
+                } else {
                     let determine = lineCode
                     lineCode = lineCode + 1
                     const newData = [...dataSource, { key: ++keys, lineCode: getLineCode(determine) }];
                     setDataSource(newData)
                 }
-                
-            }else {
+
+            } else {
                 let determine = lineCode
                 //lineCode = lineCode
                 const newData = [...dataSource, { key: ++keys, lineCode: getLineCode(determine) }];
@@ -366,36 +365,35 @@ const AuthorizeRef = forwardRef(({
     // }
     //联系人验证
     function setName(e) {
-        dataSource.forEach((item,index) => {
+        dataSource.forEach((item, index) => {
             if (index === parseInt(e.target.name)) {
                 item.name = e.target.value
             }
         })
-        console.log(dataSource)
         aggregatename = form.getFieldValue('name');
 
-        let quencyname = counts(aggregatename,e.target.value);
+        let quencyname = counts(aggregatename, e.target.value);
         if (quencyname === 2) {
             message.error('与现有的联系人名称重复，请重新填入！');
             let changeKeyName = `name[${e.target.name}]`;
-            form.setFieldsValue({[changeKeyName]: ''});
+            form.setFieldsValue({ [changeKeyName]: '' });
         }
     }
-    function counts (arr, value) {
+    function counts(arr, value) {
         return arr.reduce((a, v) => v === value ? a + 1 : a + 0, 0)
     }
     // 暂存
     function authorTemporary() {
         let result = {};
         form.validateFieldsAndScroll((err, values) => {
-            values.position.forEach((item,index) => {
+            values.position.forEach((item, index) => {
                 if (item === undefined) {
                     values.position[index] = dataSource[index].position
                 }
             })
             if (values) {
                 result = dataTransfer2(dataSource, values)
-                
+
             }
         })
         return result;
@@ -404,8 +402,7 @@ const AuthorizeRef = forwardRef(({
     function getAuthorfrom() {
         let result = false;
         form.validateFieldsAndScroll((err, values) => {
-            console.log(values)
-            values.position.forEach((item,index) => {
+            values.position.forEach((item, index) => {
                 if (item === undefined) {
                     values.position[index] = dataSource[index].position
                 }

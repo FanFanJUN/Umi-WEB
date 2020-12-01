@@ -182,7 +182,7 @@ export default function () {
             },
         },
         { title: '月度审核计划号', dataIndex: 'reviewPlanMonthCode', width: 180 },
-        { title: '月度', dataIndex: 'applyMonth', ellipsis: true, width: 80, render:(text)=>text ? (text + "月") : ''},
+        { title: '月度', dataIndex: 'applyMonth', ellipsis: true, width: 80, render:(text)=>text ? text.slice(0,7) : ''},
         { title: '拟制说明', dataIndex: 'reviewPlanMonthName', ellipsis: true, width: 200 },
         { title: '拟制公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 200 },
         { title: '拟制部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200 },

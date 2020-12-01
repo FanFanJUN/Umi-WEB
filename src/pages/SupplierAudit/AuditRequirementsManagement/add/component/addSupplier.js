@@ -9,7 +9,7 @@ const FormItem = Form.Item;
 const columns = [
   { title: '物料分类', dataIndex: 'materielCategory', width: 150,render: v => v.name },
   { title: '供应商', dataIndex: 'supplier', width: 400, render: v => v.name},
-  { title: '代理商', dataIndex: 'source', width: 200, },
+  { title: '代理商', dataIndex: 'originSupplierName', width: 200, },
 ].map(item => ({...item, align: 'center'}))
 
 const formItemLayoutLong = {

@@ -20,11 +20,10 @@ import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
 import { openNewTab } from '../../../utils';
 import { materialClassProps } from '../../../utils/commonProps';
-import { StartFlow } from 'seid';
 import AddModal from './components/AddModal';
 import { supplierProps } from '../../../utils/commonProps';
 
-const { FlowHistoryButton } = WorkFlow;
+const { FlowHistoryButton, StartFlow } = WorkFlow;
 const { authAction } = utils;
 const { Search } = Input;
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
@@ -63,7 +62,7 @@ const AuditReportManagement = forwardRef(({}, ref) => {
 
   const [data, setData] = useState({
     spinning: false,
-    flowId: '',
+    flowId: null,
     checkedCreate: true,
     quickSearchValue: '',
     advancedSearchValue: {},
@@ -138,7 +137,7 @@ const AuditReportManagement = forwardRef(({}, ref) => {
       okType: 'danger',
       cancelText: '否',
       onOk: () => {
-        deleteReportById({id:data.selectedRows[0].id}).then(res => {
+        deleteReportById({ id: data.selectedRows[0].id }).then(res => {
           if (res.success) {
             message.success(res.message);
             tableRef.current.manualSelectedRows();
@@ -193,10 +192,6 @@ const AuditReportManagement = forwardRef(({}, ref) => {
     { title: '拟制时间', dataIndex: 'createdDate', ellipsis: true, width: 200 },
   ].map(item => ({ ...item, align: 'center' }));
 
-  // 提交审核验证
-  const handleBeforeStartFlow = async () => {
-
-  };
 
   // 提交审核完成更新列表
   function handleComplete() {
@@ -246,13 +241,15 @@ const AuditReportManagement = forwardRef(({}, ref) => {
       authAction(<StartFlow
         style={{ marginRight: '5px' }}
         ignore={DEVELOPER_ENV}
-        // needConfirm={handleBeforeStartFlow}
         businessKey={data.flowId}
-        callBack={handleComplete}
-        disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length === 0}
+        startComplete={handleComplete}
         businessModelCode='com.ecmp.srm.sam.entity.ar.ArAuditReportManag'
         key='SRM-SM-AUDITREPORT-APPROVE'
-      >提交审核</StartFlow>)
+      >{
+        loading => <Button
+          disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length === 0}
+          className={styles.btn} loading={loading}>提交审核</Button>
+      }</StartFlow>)
     }
     {
       authAction(<FlowHistoryButton

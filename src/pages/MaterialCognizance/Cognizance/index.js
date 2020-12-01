@@ -407,7 +407,7 @@ function SupplierConfigure() {
                 authAction(
                     <Button type='primary'
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNSUPPLIER-ADD'
+                        key='SRM-SM-LDENTPLAN-SUPPLIER-MANADD'
                         className={styles.btn}
                         onClick={ManualEditAddModel}
                     //disabled={empty}
@@ -419,7 +419,7 @@ function SupplierConfigure() {
                 authAction(
                     <Button
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNSUPPLIER-EDIT'
+                        key='SRM-SM-LDENTPLAN-SUPPLIER-EDIT'
                         className={styles.btn}
                         onClick={handleCheckEdit}
                         disabled={empty || !underWay || !isSelf}
@@ -431,7 +431,7 @@ function SupplierConfigure() {
                 authAction(
                     <Button
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNSUPPLIER-DELETE'
+                        key='SRM-SM-LDENTPLAN-SUPPLIER-DELETE'
                         className={styles.btn}
                         onClick={handleDelete}
                         disabled={empty || !iddraft || !isSelf}
@@ -443,7 +443,7 @@ function SupplierConfigure() {
                 authAction(
                     <Button
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNSUPPLIER-DETAIL'
+                        key='SRM-SM-LDENTPLAN-SUPPLIER-DETAIL'
                         className={styles.btn}
                         onClick={handleCheckDetail}
                         disabled={empty}
@@ -455,7 +455,7 @@ function SupplierConfigure() {
                 authAction(
                     <Button
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNSUPPLIER-SUBMIT'
+                        key='SRM-SM-LDENTPLAN-SUPPLIER-RELEASE'
                         className={styles.btn}
                         onClick={handleRelease}
                         disabled={empty || !underWay || !isSelf}
@@ -467,7 +467,7 @@ function SupplierConfigure() {
                 authAction(
                     <Button
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNSUPPLIER-WITHDRAW'
+                        key='SRM-SM-LDENTPLAN-SUPPLIER-CANCEL'
                         className={styles.btn}
                         onClick={handleRelease}
                         disabled={empty || !completed || !isSelf}
@@ -479,7 +479,7 @@ function SupplierConfigure() {
                 authAction(
                     <Button
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNSUPPLIER-WITHDRAW'
+                        key='SRM-SM-LDENTPLAN-SUPPLIER-RESULT'
                         className={styles.btn}
                         onClick={handleConfirm}
                         disabled={empty || !isSelf || !iscogn}

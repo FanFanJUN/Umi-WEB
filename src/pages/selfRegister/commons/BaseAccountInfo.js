@@ -1,5 +1,5 @@
-import React, { forwardRef, useImperativeHandle, useEffect, useState,useRef } from 'react';
-import {Form, Input, message, Row, Tabs} from 'antd';
+import React, { forwardRef, useImperativeHandle, useEffect, useState, useRef } from 'react';
+import { Form, Input, message, Row, Tabs } from 'antd';
 import { onlyNumber, toUpperCase, onMailCheck } from '@/utils/index'
 import OrganizationPage from './OrganizationPage'
 import PersonalPage from './PersonalPage'
@@ -15,9 +15,10 @@ const formLayout = {
   }
 }
 const BaseAccountRef = forwardRef(({
-    hidden,
-    form,
-    accounts = {},
+  hidden,
+  form,
+  accounts = {},
+  assignment
 }, ref) => {
   useImperativeHandle(ref, () => ({
     getAccountinfo,
@@ -33,16 +34,16 @@ const BaseAccountRef = forwardRef(({
   }, [])
   // 表单
   function getAccountinfo() {
-    if (defaultActiveKey[0] === '1' || defaultActiveKey[0] === 1 ) {
-        const { getOrganizinfo } = OrganRef.current; //组织用户
-        let organData = getOrganizinfo()
-        if (!organData) {
-          message.error('请先完成表单填写！');
-          return false;
-        }else {
-          return organData
-        }
-    }else if (defaultActiveKey[0] === '2') {
+    if (assignment === 1) {
+      const { getOrganizinfo } = OrganRef.current; //组织用户
+      let organData = getOrganizinfo()
+      if (!organData) {
+        message.error('请先完成表单填写！');
+        return false;
+      } else {
+        return organData
+      }
+    } else if (assignment === 0) {
       const { getpersoninfo } = PersonRef.current; //个人用户
       let personaData = getpersoninfo()
       if (!personaData) {
@@ -52,27 +53,34 @@ const BaseAccountRef = forwardRef(({
         return personaData
       }
     }
-    
+
   }
   function tabClickHandler(params) {
     setdefaultActiveKey(params)
   }
   return (
-    <div style={{display: hidden ? "none" : "block",textAlign:'center'}}>
-        <Tabs className="tabstext" onTabClick={(params)=>tabClickHandler(params)}>
-            <TabPane forceRender tab="组织成为供应商" key="1">
-              <OrganizationPage
-                accounts={accounts}
-                 wrappedComponentRef={OrganRef}
-              />
-            </TabPane>
-            <TabPane forceRender tab="个人成为供应商" key="2">
-              <PersonalPage 
-                accounts={accounts}
-                 wrappedComponentRef={PersonRef}
-              />
-            </TabPane>
-          </Tabs>
+    <div style={{ display: hidden ? "none" : "block", textAlign: 'center' }}>
+      {
+        assignment === 0 ?
+          <div>
+            <p style={{ paddingTop: '50px', fontSize: '20px' }}>个人成为供应商</p>
+            <PersonalPage
+              accounts={accounts}
+              wrappedComponentRef={PersonRef}
+            />
+          </div> : null
+
+      }
+      {
+        assignment === 1 ?
+          <div>
+            <p style={{ paddingTop: '50px', fontSize: '20px' }}>组织成为供应商</p>
+            <OrganizationPage
+              accounts={accounts}
+              wrappedComponentRef={OrganRef}
+            />
+          </div> : null
+      }
     </div>
   )
 }

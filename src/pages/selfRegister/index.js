@@ -1,28 +1,37 @@
-import { useState, useEffect ,useRef} from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button, message, Steps, Row, Checkbox } from "antd";
 import { router } from 'dva';
 import Cookies from 'js-cookie';
 import RegistrationAgreement from './commons/RegistrationAgreement'
+import SupplierSelectype from './commons/SupplierSelectype'
+import BindingEmail from './commons/BindingEmail'
 import BaseAccountInfo from './commons/BaseAccountInfo'
-import {saveRegistVo} from '../../services/supplierRegister'
+import { saveRegistVo, bindingEmail } from '../../services/supplierRegister'
 import { Wrapper } from './style'
-import {closeCurrent,isEmpty} from '../../utils'
+import { closeCurrent, isEmpty } from '../../utils'
 const srmBaseUrl = "/srm-se-web";
 const Step = Steps.Step;
 export default function () {
     const { query } = router.useLocation();
     const BassAccounRef = useRef(null);
+    const SupplierRef = useRef(null);
+    const BindingRef = useRef(null);
     const [current, setcurrent] = useState(0);
     const [checked, setchecked] = useState(false);
     const [loading, triggerLoading] = useState(false);
     const [accounts, setaccounts] = useState(false);
+    const [assignment, setassignment] = useState('');
+    const [bingemail, setBingemail] = useState(false);
+    const [classtype, setClasstype] = useState(false);
+    const [email, setEmail] = useState('');
     useEffect(() => {
         let organ = {};
         let strcookie = Cookies.get();
         organ.mobile = strcookie._p;
-        if (strcookie._m === 'undefined') {
+        if (strcookie._m === 'undefined' || strcookie._m === undefined) {
             organ.email = '';
-        }else {
+            setBingemail(true)
+        } else {
             organ.email = strcookie._m
         }
         organ.openId = strcookie._o
@@ -32,6 +41,10 @@ export default function () {
     function handlePre() {
         let count = current - 1;
         setcurrent(count)
+        if (bingemail && classtype) {
+            setClasstype(false)
+            setBingemail(false)
+        }
     };
 
     //下一步
@@ -55,7 +68,7 @@ export default function () {
         let resultData = getAccountinfo()
         if (resultData) {
             triggerLoading(true)
-            const { data,success, message: msg } = await saveRegistVo({registrationInformationVo: JSON.stringify(resultData)})
+            const { data, success, message: msg } = await saveRegistVo({ registrationInformationVo: JSON.stringify(resultData) })
             if (success) {
                 Cookies.remove('_o');
                 Cookies.remove('_m');
@@ -68,11 +81,73 @@ export default function () {
             }
         }
     }
+    // 选择供应商注册类型
+    async function handleSupplier() {
+        const { getTypeinfo } = SupplierRef.current;
+        let resultnum = getTypeinfo()
+        if (isEmpty(resultnum.organization) && isEmpty(resultnum.personal)) {
+            message.error('请选择需要注册的供应商类型！');
+        } else {
+            if (!isEmpty(resultnum.organization)) {
+                setassignment(resultnum.organization)
+            }
+            if (!isEmpty(resultnum.personal)) {
+                setassignment(resultnum.personal)
+            }
+
+        }
+        // 个人
+        if (!isEmpty(resultnum.personal) && resultnum.personal === 0) {
+            next()
+        }
+        // 组织
+        if (!isEmpty(resultnum.organization) && resultnum.organization === 1) {
+            if (!isEmpty(accounts.email)) {
+                next()
+            } else {
+                if (email) {
+                    setcurrent(2)
+                    setClasstype(false)
+                } else {
+                    setBingemail(true)
+                    setClasstype(true)
+                    setcurrent(1)
+                }
+
+            }
+        }
+
+    }
+    // 绑定邮箱上一步
+    function handleBack() {
+        setClasstype(false)
+        setBingemail(false)
+    }
+    // 邮箱绑定
+    async function handleEmail() {
+        const { getBinginfo } = BindingRef.current;
+        let resultData = getBinginfo()
+        let strcookie = Cookies.get();
+        if (resultData) {
+            resultData.openId = strcookie._o
+            const { data, success, message: msg } = await bindingEmail(resultData)
+            if (success) {
+                accounts.email = resultData.email
+                setEmail(resultData.email)
+                next()
+            } else {
+                message.error(msg);
+            }
+        } else {
+            message.error('邮箱绑定后才可进行下一步！');
+        }
+    }
     return (
         <Wrapper>
             <header className='header'>
                 <Steps current={current}>
                     <Step title={'入网须知'} />
+                    <Step title={'选择供应商类型'} />
                     <Step title={'注册信息'} />
                 </Steps>
             </header>
@@ -80,31 +155,70 @@ export default function () {
                 <RegistrationAgreement
                     hidden={current !== 0}
                 />
+                {
+                    !classtype ? <SupplierSelectype
+                        hidden={current !== 1}
+                        wrappedComponentRef={SupplierRef}
+                    /> : null
+                }
+
+                {
+                    bingemail && assignment === 1 ? <BindingEmail
+                        hidden={current !== 1}
+                        wrappedComponentRef={BindingRef}
+                    /> : null
+                }
                 <BaseAccountInfo
-                    hidden={current !== 1}
+                    hidden={current !== 2}
                     accounts={accounts}
+                    assignment={assignment}
                     wrappedComponentRef={BassAccounRef}
                 />
             </article>
-            <footer className="footer">
-                <Button hidden={current === 0} onClick={handlePre}>上一步</Button>
-                <Button hidden={current === 0} style={{ marginLeft: 8 }}
+            {/* 第四步 */}
+            <footer className="footer" >
+                <Button onClick={handlePre} hidden={current !== 2}>上一步</Button>
+                <Button style={{ marginLeft: 8 }} hidden={current !== 2}
                     onClick={supplierPayment}
                     type={"primary"}>提交</Button>
 
             </footer>
-            <footer className="regfooter" hidden={current === 1}>
+            {/* 第一步 */}
+            <footer className="regfooter" hidden={current !== 0}>
                 <Checkbox className="checkoutname"
                     checked={checked}
                     onChange={onChange}
                 >
                     我已阅读并同意此协议，并将在注册后上传盖章文件
-          </Checkbox>
-                <Button hidden={current === 1} style={{ marginLeft: 8 }}
+                 </Checkbox>
+                <Button style={{ marginLeft: 8 }}
                     className="buttonname"
                     onClick={handleNext}
                     type={"primary"}>下一步</Button>
             </footer>
-        </Wrapper>
+            {/* 第二步 */}
+            {
+                !classtype ? <footer className="regfooter" hidden={current !== 1}>
+                    <Button onClick={handlePre}>上一步</Button>
+                    <Button style={{ marginLeft: 8 }}
+                        className="buttonname"
+                        onClick={handleSupplier}
+                        type={"primary"}>下一步</Button>
+                </footer> : null
+            }
+
+            {/* 组织第三步 */}
+            {
+                classtype ? <footer className="regfooter" hidden={current !== 1}>
+                    <Button onClick={handleBack}>上一步</Button>
+                    <Button style={{ marginLeft: 8 }}
+                        className="buttonname"
+                        onClick={handleEmail}
+                        type={"primary"}>下一步</Button>
+                </footer> : null
+            }
+
+
+        </Wrapper >
     )
 }

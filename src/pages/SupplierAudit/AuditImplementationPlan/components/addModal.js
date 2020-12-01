@@ -23,11 +23,10 @@ const AddModal = (props) => {
     const [selectedRowKeys, setselectedRowKeys] = useState([]);
     const [cascadeParams, setCascadeParams] = useState({});
     const [applyMonth, setApplayMonth] = useState('');
-    const [loading, setLoading] = useState(false);
 
     const columns = [
         { title: '月度审核计划号和行号', dataIndex: 'reviewPlanMonthCode', width: 180, ellipsis: true },
-        { title: '审核月度', dataIndex: 'applyMonth', width: 140, ellipsis: true, render: () => applyMonth + "月" },
+        { title: '审核月度', dataIndex: 'applyMonth', width: 140, ellipsis: true, render: () => applyMonth ? applyMonth.slice(0, 7) : 0 },
         { title: '需求公司', dataIndex: 'applyCorporationName', width: 140, ellipsis: true },
         { title: '采购组织', dataIndex: 'purchaseTeamName', ellipsis: true, width: 140 },
         { title: '供应商', dataIndex: 'supplierCode', ellipsis: true, width: 140 },
@@ -41,17 +40,17 @@ const AddModal = (props) => {
         if (selectRows.length === 0) {
             message.warning("至少选中一行！");
             return;
-        } else if(selectRows.length > 1) {
+        } else if (selectRows.length > 1) {
             // 多选时满足-选中行的供应商、代理商、审核方式、审核体系、审核小组组长相同
-            const {supplierCode, agentName, reviewWayCode, leaderEmployeeNo, allReviewEvlSystemId} = selectRows[0];
+            const { supplierCode, agentName, reviewWayCode, leaderEmployeeNo, allReviewEvlSystemId } = selectRows[0];
             let tag = selectRows.every(item => {
-                return (item.supplierCode == supplierCode && 
-                    item.agentName == agentName && 
-                    item.reviewWayCode == reviewWayCode && 
+                return (item.supplierCode == supplierCode &&
+                    item.agentName == agentName &&
+                    item.reviewWayCode == reviewWayCode &&
                     item.leaderEmployeeNo == leaderEmployeeNo &&
                     item.allReviewEvlSystemId == allReviewEvlSystemId)
             })
-            if(!tag){
+            if (!tag) {
                 message.error("选中行的供应商、代理商、审核方式、审核体系、审核小组组长不相同!请重新选择");
                 return;
             }
@@ -78,62 +77,60 @@ const AddModal = (props) => {
         onOk={onOk}
         destroyOnClose
     >
-        <Spin spinning={loading}>
-            <div>
-                <Row>
-                    <Col span={10}>
-                        <FormItem {...formItemLayoutLong} label={'月度审核计划'}>
-                            {
-                                getFieldDecorator('reviewPlanMonthCode'),
-                                getFieldDecorator('reviewPlanMonthName', {
-                                    rules: [{ required: true, message: '请选择月度审核计划', },]
-                                })(<ComboList
-                                    allowClear
-                                    style={{ width: '100%' }}
-                                    form={form}
-                                    name={'reviewPlanMonthName'}
-                                    field={['reviewPlanMonthCode']}
-                                    afterSelect={(item) => {
-                                        setCascadeParams({
-                                            reviewPlanMonthCode: item.reviewPlanMonthCode
-                                        })
-                                        setApplayMonth(item.applyMonth)
-                                    }}
-                                    {...reviewPlanMonthConfig}
-                                />)
-                            }
-                        </FormItem>
-                    </Col>
-                    <Col span={10}></Col>
-                    <Col span={4}>
-                        <div style={{ textAlign: 'center' }} onClick={handleSearch}><Button type="primary">查询</Button></div>
-                    </Col>
-                </Row>
-            </div>
-            <ExtTable
-                style={{ marginTop: '10px' }}
-                rowKey='id'
-                allowCancelSelect={true}
-                showSearch={false}
-                remotePaging
-                checkbox={{ multiSelect: true }}
-                size='small'
-                onSelectRow={(key, rows) => {
-                    setselectedRowKeys(key);
-                    setselectRows(rows);
-                }}
-                ref={tableRef}
-                selectedRowKeys={selectedRowKeys}
-                store={{
-                    params: {
-                        ...cascadeParams
-                    },
-                    url: `${recommendUrl}/api/reviewPlanMonthLineService/findMonthLineByLeaderEmployeeNoAndId`,
-                    type: 'POST',
-                }}
-                columns={columns}
-            />
-        </Spin>
+        <div>
+            <Row>
+                <Col span={10}>
+                    <FormItem {...formItemLayoutLong} label={'月度审核计划'}>
+                        {
+                            getFieldDecorator('reviewPlanMonthCode'),
+                            getFieldDecorator('reviewPlanMonthName', {
+                                rules: [{ required: true, message: '请选择月度审核计划', },]
+                            })(<ComboList
+                                allowClear
+                                style={{ width: '100%' }}
+                                form={form}
+                                name={'reviewPlanMonthName'}
+                                field={['reviewPlanMonthCode']}
+                                afterSelect={(item) => {
+                                    setCascadeParams({
+                                        reviewPlanMonthCode: item.reviewPlanMonthCode
+                                    })
+                                    setApplayMonth(item.applyMonth)
+                                }}
+                                {...reviewPlanMonthConfig}
+                            />)
+                        }
+                    </FormItem>
+                </Col>
+                <Col span={10}></Col>
+                <Col span={4}>
+                    <div style={{ textAlign: 'center' }} onClick={handleSearch}><Button type="primary">查询</Button></div>
+                </Col>
+            </Row>
+        </div>
+        <ExtTable
+            style={{ marginTop: '10px' }}
+            rowKey='id'
+            allowCancelSelect={true}
+            showSearch={false}
+            remotePaging
+            checkbox={{ multiSelect: true }}
+            size='small'
+            onSelectRow={(key, rows) => {
+                setselectedRowKeys(key);
+                setselectRows(rows);
+            }}
+            ref={tableRef}
+            selectedRowKeys={selectedRowKeys}
+            store={{
+                params: {
+                    ...cascadeParams
+                },
+                url: `${recommendUrl}/api/reviewPlanMonthLineService/findMonthLineByLeaderEmployeeNoAndId`,
+                type: 'POST',
+            }}
+            columns={columns}
+        />
     </ExtModal>
 
 }

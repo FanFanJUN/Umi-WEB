@@ -30,8 +30,7 @@ export const supplierEvlSystemTree = {
 export const getSupplierEvlSysRule = (param) => {
   return {
     store: {
-      url: `${baseUrl}/supplierEvlRule/supplierEvlRuleListByPage`,
-      param: { 'Q_EQ_frozen__java.lang.Boolean': false },
+      url: `${baseUrl}/supplierEvlRule/findByBusinessUnitId`,
     },
     columns: [
       {
