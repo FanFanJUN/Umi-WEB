@@ -100,7 +100,7 @@ const BaseInfoForm = React.forwardRef(({ form, userInfo, isView, editData,type }
                   rules: [
                     {
                       required: true,
-                      pattern: '^\\d{11}$',
+                      // pattern: '^\\d{11}$',
                       message: '请填写联系方式',
                     },
                   ],
