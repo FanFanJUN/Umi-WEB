@@ -15,10 +15,10 @@ import { ExtTable, utils, WorkFlow } from 'suid';
 import { Button, Input, Checkbox, Modal, message } from 'antd';
 import RecommendSelect from './RecommendSelect';
 import { commonProps, commonUrl, openNewTab, getFrameElement } from '../../utils';
-import { removeRecommendAccess, submitToSupplier } from '../../services/recommendAccess';
+import { removeRecommendAccess } from '../../services/ram';
 import { stopApproveingOrder } from '../../services/supplier';
 const { Search } = Input;
-const { StartFlow } = WorkFlow;
+const { StartFlow, FlowHistoryButton } = WorkFlow;
 const { storage } = utils;
 const { recommendUrl } = commonUrl;
 const {
@@ -28,7 +28,7 @@ const {
   flowStatusProps
 } = commonProps
 
-
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 export default () => {
   const headerRef = useRef(null);
   const tableRef = useRef(null);
@@ -91,11 +91,11 @@ export default () => {
       >编辑</Button>
       <Button
         className={styles.btn}
-        disabled={empty || !fillInit}
+        disabled={empty || underWay}
         onClick={handleRemove}
       >删除</Button>
       <StartFlow
-        businessModelCode='com.ecmp.srm.sam.entity.srd.SupplierRecommendDemand'
+        businessModelCode='com.ecmp.srm.sam.entity.srd.RecommendAccess'
         businessKey={flowId}
         startComplete={uploadTable}
       >
@@ -103,8 +103,15 @@ export default () => {
           loading => <Button className={styles.btn} loading={loading} disabled={empty}>提交审核</Button>
         }
       </StartFlow>
-      <Button className={styles.btn} disabled={empty || !fillComplete}>审核历史</Button>
-      <Button className={styles.btn} disabled={empty} onClick={stopApprove}>审核终止</Button>
+      <FlowHistoryButton
+        businessId={flowId}
+        flowMapUrl='flow-web/design/showLook'
+        ignore={DEVELOPER_ENV}
+        key='SUPPLIER_RAM_APPROVE_HISTORY'
+      >
+        <Button className={styles.btn} disabled={empty || !underWay}>审核历史</Button>
+      </FlowHistoryButton>
+      <Button className={styles.btn} disabled={empty || !underWay} onClick={stopApprove}>审核终止</Button>
       <Checkbox className={styles.btn} onChange={handleOnlyMeChange} checked={onlyMe}>仅我的</Checkbox>
     </>
   )
@@ -118,10 +125,6 @@ export default () => {
     </>
   )
   const columns = [
-    {
-      title: '单据状态',
-      dataIndex: 'supplierRecommendDemandStatusRemark',
-    },
     {
       title: '审批状态',
       dataIndex: 'flowStatus',
@@ -140,7 +143,8 @@ export default () => {
     },
     {
       title: '准入单号',
-      dataIndex: 'docNumber'
+      dataIndex: 'docNumber',
+      width: 150
     },
     {
       title: '供应商代码',
@@ -165,12 +169,12 @@ export default () => {
     {
       title: '申请公司',
       dataIndex: 'corporationName',
-      width: 180
+      width: 250
     },
     {
       title: '创建部门',
       dataIndex: 'orgName',
-      width: 180
+      width: 250
     },
     {
       title: '创建人员',
@@ -178,7 +182,8 @@ export default () => {
     },
     {
       title: '创建时间',
-      dataIndex: 'createdDate'
+      dataIndex: 'createdDate',
+      width: 200
     }
   ].map(item => ({ ...item, align: 'center' }));
   const formItems = [
@@ -248,30 +253,34 @@ export default () => {
       props: flowStatusProps
     },
   ];
-  // 处理新增页签打开
+  // 处理新增时选择推荐需求模态框弹出
   function handleCreate() {
     recommendRef?.current?.show()
-    // const { id = '' } = FRAMELEEMENT;
-    // const { pathname } = window.location;
-    // openNewTab(`supplier/recommend/admittance/manage/create?frameElementId=${id}&frameElementSrc=${pathname}`, '新增供应商推荐准入', false)
+  }
+  // 处理选择推荐需求后跳转对应新增页面
+  function handleRecommendSelected(ids) {
+    const { id = '' } = FRAMELEEMENT;
+    const { pathname } = window.location;
+    openNewTab(`supplier/recommend/admittance/manage/create?frameElementId=${id}&frameElementSrc=${pathname}&recommendDemandIds=${ids}`, '新增供应商推荐准入', false)
   }
   // 处理编辑页签打开
   function handleEditor() {
     const [key] = selectedRowKeys;
     const { id = '' } = FRAMELEEMENT;
     const { pathname } = window.location;
-    openNewTab(`supplier/recommend/admittance/editor?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '编辑供应商推荐准入', false)
+    openNewTab(`supplier/recommend/admittance/manage/editor?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '编辑供应商推荐准入', false)
   }
-
   // 处理删除
   async function handleRemove() {
     const [key] = selectedRowKeys;
     Modal.confirm({
       title: '删除供应商推荐准入',
       content: '删除后无法恢复，确定要删除当前所选数据？',
+      okText: '删除',
+      cancelText: '取消',
       onOk: async () => {
         const { success, message: msg } = await removeRecommendAccess({
-          supplierRecommendDemandId: key
+          recommendAccessId: key
         })
         if (success) {
           message.success(msg)
@@ -393,7 +402,10 @@ export default () => {
         }
 
       </AutoSizeLayout>
-      <RecommendSelect wrappedComponentRef={recommendRef}/>
+      <RecommendSelect
+        wrappedComponentRef={recommendRef}
+        onOk={handleRecommendSelected}
+      />
     </div>
   )
 }

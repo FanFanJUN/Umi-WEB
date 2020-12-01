@@ -8,19 +8,20 @@ import CommonForm from './CommonForm';
 import styles from './index.less';
 import { useLocation } from 'dva/router';
 import {
-  queryRecommendAccessFromRecommendDemand,
+  queryRecommendAccess,
   saveRecommendAccess
 } from '../../services/ram';
 import { closeCurrent } from '../../utils';
-function Create() {
+function Editor() {
   const [loading, toggleLoading] = useState(false);
+  const [id, setId] = useState(null);
   const commonFormRef = useRef(null);
   const { query } = useLocation();
-  const { recommendDemandIds = [] } = query;
+  const { id: recommendAccessId } = query;
   async function handleSave() {
     const value = await commonFormRef.current.getFormValue();
     toggleLoading(true)
-    const { success, message: msg } = await saveRecommendAccess(value);
+    const { success, message: msg } = await saveRecommendAccess({ ...value, id });
     toggleLoading(false)
     if (success) {
       message.success(msg)
@@ -31,9 +32,10 @@ function Create() {
   }
   useEffect(() => {
     async function initialCreateRAMData() {
-      const formatIds = recommendDemandIds.split(',');
-      const { success, data, message: msg } = await queryRecommendAccessFromRecommendDemand(formatIds)
+      const { success, data, message: msg } = await queryRecommendAccess({recommendAccessId})
       if (success) {
+        const { id } = data;
+        setId(id)
         commonFormRef.current.setFormValue(data)
         return
       }
@@ -46,7 +48,7 @@ function Create() {
       <Affix>
         <div className={styles.affixHeader}>
           <div className={styles.fbc}>
-            <span className={styles.title}>新增推荐准入</span>
+            <span className={styles.title}>编辑推荐准入</span>
             <div className={styles.fec}>
               <Button className={styles.btn} onClick={closeCurrent}>返回</Button>
               <Button
@@ -61,10 +63,10 @@ function Create() {
       </Affix>
       <CommonForm
         wrappedComponentRef={commonFormRef}
-        type='create'
+        type='editor'
       />
     </Spin>
   )
 }
 
-export default Create;
+export default Editor;

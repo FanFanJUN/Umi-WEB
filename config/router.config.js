@@ -354,6 +354,16 @@ export default [
         component: './SupplierRAM/Create',
         title: '创建供应商推荐准入'
       },
+      {
+        path: '/supplier/recommend/admittance/manage/editor',
+        component: './SupplierRAM/Editor',
+        title: '编辑供应商推荐准入'
+      },
+      {
+        path: '/supplier/recommend/admittance/manage/approve/whether/check',
+        component: './SupplierRAM/approvePages/WhetherCheck',
+        title: '供应商推荐准入审批-是否需要供应商审核'
+      },
       /**供应商推荐准入 end */
       //  企业社会责任调查表选项主数据
       {

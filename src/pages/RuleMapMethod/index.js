@@ -9,8 +9,7 @@ import { utils, ExtTable } from 'suid';
 import { Button, Input, Spin, message, Modal } from 'antd';
 import { Header, AutoSizeLayout, ModalForm } from '../../components';
 import { useTableProps } from '../../utils/hooks';
-import { commonUrl, commonProps } from '../../utils'
-import moment from 'moment';
+import { commonUrl, commonProps } from '../../utils';
 import {
   ruleMapMethodSaveOne as SAVE_ONE_METHOD,
   ruleMapMethodRemove as REMOVE_METHOD

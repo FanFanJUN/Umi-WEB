@@ -16,7 +16,7 @@ import { commonProps, commonUrl, openNewTab, getFrameElement } from '../../utils
 import { removeSupplierRecommendDemand, submitToSupplier } from '../../services/recommend';
 import { stopApproveingOrder } from '../../services/supplier';
 const { Search } = Input;
-const { StartFlow } = WorkFlow;
+const { StartFlow, FlowHistoryButton } = WorkFlow;
 const { storage } = utils;
 const { recommendUrl } = commonUrl;
 const { corporationProps, materialClassProps, statusProps, flowStatusProps } = commonProps
@@ -87,7 +87,14 @@ export default () => {
           loading => <Button className={styles.btn} loading={loading} disabled={empty}>提交审核</Button>
         }
       </StartFlow>
-      <Button className={styles.btn} disabled={empty || !fillComplete}>审核历史</Button>
+      <FlowHistoryButton
+        businessId={flowId}
+        flowMapUrl='flow-web/design/showLook'
+        ignore={DEVELOPER_ENV}
+        key='SUPPLIER_RECOMMEND_APPROVE_HISTORY'
+      >
+        <Button className={styles.btn} disabled={empty || !fillComplete}>审核历史</Button>
+      </FlowHistoryButton>
       <Button className={styles.btn} disabled={empty} onClick={stopApprove}>审核终止</Button>
       <Checkbox className={styles.btn} onChange={handleOnlyMeChange} checked={onlyMe}>仅我的</Checkbox>
     </>

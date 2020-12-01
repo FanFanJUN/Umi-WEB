@@ -4,7 +4,7 @@
  * @date 2020.4.3
  */
 import React, { useState, forwardRef, useRef, useEffect } from "react";
-import { Col, Row, Tree, Input, Skeleton, Popover, Tag, Checkbox, Table } from "antd";
+import { Col, Row, Tree, Input, Skeleton, Popover, Tag, Checkbox } from "antd";
 import { request } from '@/utils'
 import { baseUrl } from '@/utils/commonUrl'
 import styles from './index.less';
@@ -38,6 +38,7 @@ const UserSelect = forwardRef(({
   wrapperStyle = { width: 800 },
   nodeKey,
   value = [],
+  multiple = true,
   placeholder = '选择人员',
   alias = '',
   ...props
@@ -64,7 +65,7 @@ const UserSelect = forwardRef(({
   const [rdk] = readField;
   const [pageInfo, setPageInfo] = useState({ page: 1, rows: 30 });
   const [total, setTotal] = useState(0);
-  const selectedKeys = value.map(item => item[rdk]);
+  const selectedKeys = Array.isArray(value) && !!value ? value.map(item => item[rdk]) : value[rdk];
   useEffect(() => {
     if (treeSelectedKeys.length === 0) return
     const [id] = treeSelectedKeys;
@@ -181,6 +182,24 @@ const UserSelect = forwardRef(({
     setInclude(e.target.checked)
   }
   function handleSelectedRow(_, rows) {
+    if (!multiple) {
+      const [row] = rows;
+      setFieldsValue({
+        [name]: row[readName]
+      })
+      const fieldValues = readField.map(item => {
+        return row[item]
+      })
+      field.forEach((item, k) => {
+        setFieldsValue({
+          [item]: fieldValues[k]
+        })
+      })
+      onChange(row[readName])
+      onRowsChange(row)
+      triggerVisible(false)
+      return
+    }
     const concatRows = [...new Set([...value, ...rows])]
     if (!!setFieldsValue) {
       setFieldsValue({
@@ -287,6 +306,9 @@ const UserSelect = forwardRef(({
                     setPageInfo({ page: current, rows: pageSize })
                   }}
                   allowCancelSelect={false}
+                  checkbox={{
+                    multiSelect: multiple
+                  }}
                   loading={loading}
                   ref={tableRef}
                   selectedRowKeys={selectedKeys}
@@ -309,9 +331,15 @@ const UserSelect = forwardRef(({
             value.length === 0 ? <div style={{ color: '#ccc', height: 32, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{placeholder}</div> : null
           }
           {
-            value.map((item, index) => <Tag key={`${index}-tab-value`} style={{
-              margin: 5
-            }} closable={!disabled} onClose={() => handleCloseTab(item)} visible={true}>{item[readName]}</Tag>)
+            Array.isArray(value) ? value.map(
+              (item, index) => (
+                <Tag key={`${index}-tab-value`} style={{
+                  margin: 5
+                }} closable={!disabled} onClose={() => handleCloseTab(item)} visible={true}>{item[readName]}</Tag>
+              )
+            ) : (
+                <Tag>{value}</Tag>
+              )
           }
         </div>
       </Popover>
