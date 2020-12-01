@@ -7,7 +7,7 @@ import {
   NormalSupplierConfig,
   SelectionStrategyConfig,
 } from '../../../mainData/commomService';
-import { basicServiceUrl, gatewayUrl, smBaseUrl } from '../../../../../utils/commonUrl';
+import { basicServiceUrl, gatewayUrl, recommendUrl, smBaseUrl } from '../../../../../utils/commonUrl';
 import { documentMaterialClassProps } from '../../../../../utils/commonProps';
 import AddSupplier from './addSupplier';
 
@@ -292,7 +292,7 @@ const AddBeAudited = (props) => {
                       },
                       type: 'POST',
                       autoLoad: false,
-                      url: `${smBaseUrl}/api/supplierService/findNormalSuppliersByInfo `,
+                      url: `${recommendUrl}/common/findNormalSuppliers`,
                     }}
                     {...NormalSupplierConfig}
                   />,
@@ -335,7 +335,7 @@ const AddBeAudited = (props) => {
                       },
                       type: 'POST',
                       autoLoad: false,
-                      url: `${smBaseUrl}/api/supplierService/findNormalSuppliersByInfo `,
+                      url: `${recommendUrl}/common/findNormalSuppliers`,
                     }}
                     {...NormalSupplierConfig}
                   />,
