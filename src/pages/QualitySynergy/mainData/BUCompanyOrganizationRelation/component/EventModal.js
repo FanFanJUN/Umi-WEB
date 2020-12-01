@@ -158,6 +158,7 @@ const EventModal = (props) => {
             <FormItem {...formItemLayoutLong} label={'供应商评价默认标识'}>
               {
                 getFieldDecorator('supplierEvaluation', {
+                  valuePropName: 'checked',
                   initialValue: type === 'add' ? false : !!data.supplierEvaluation,
                 })(<Checkbox />)
               }
