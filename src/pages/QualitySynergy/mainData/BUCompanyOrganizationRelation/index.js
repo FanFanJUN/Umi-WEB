@@ -37,7 +37,7 @@ const Index = () => {
     { title: '公司名称', dataIndex: 'corporationName', ellipsis: true, width: 300 },
     { title: '采购组织代码', dataIndex: 'purchaseOrgCode', ellipsis: true },
     { title: '采购组织名称', dataIndex: 'purchaseOrgName', ellipsis: true, width: 300 },
-    { title: '供应商评价默认标识', dataIndex: 'supplierEvaluation', width: 180 , render: v => v ? '已标记' : '未标记'},
+    { title: '供应商评价默认标识', dataIndex: 'supplierEvaluation', width: 180, render: v => v ? '已标记' : '未标记' },
     { title: '排序号', dataIndex: 'orderNo', ellipsis: true },
     { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (value) => value ? '是' : '否' },
   ].map(item => ({ ...item, align: 'center' }));
@@ -135,7 +135,11 @@ const Index = () => {
   </div>;
 
   const handleOk = async (value) => {
-    value.supplierEvaluation = value.supplierEvaluation ? 'true' : '';
+    if (value.supplierEvaluation) {
+      value.supplierEvaluation = 'true';
+    } else {
+      delete value.supplierEvaluation;
+    }
     if (data.type === 'add') {
       AddBUCompanyOrganizationRelation(value).then(res => {
         if (res.success) {
