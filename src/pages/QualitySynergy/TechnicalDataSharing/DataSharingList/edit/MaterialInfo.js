@@ -159,14 +159,11 @@ const MaterialInfo = React.forwardRef((props, ref) => {
             </Col>
           </Row>
           <Row>
-            <Col span={0}>
-              {hideFormItem('materialSource', type === 'add' ? '' : data.materialSource)}
-            </Col>
             <Col span={12}>
               <FormItem label='物料来源' {...formLayout}>
                 {
-                  isView ? <span>{data.materialSourceName}</span> : getFieldDecorator('materialSourceName', {
-                    initialValue: type === 'add' ? '' : data.materialSourceName,
+                  isView ? <span>{data.materialSource}</span> : getFieldDecorator('materialSource', {
+                    initialValue: type === 'add' ? '' : data.materialSource,
                     rules: [
                       {
                         required: true,
@@ -178,8 +175,7 @@ const MaterialInfo = React.forwardRef((props, ref) => {
                       allowClear={true}
                       style={{ width: '100%' }}
                       form={form}
-                      name={'materialSourceName'}
-                      field={['materialSource']}
+                      name={'materialSource'}
                       {...MaterialSourceConfig}
                     />,
                   )

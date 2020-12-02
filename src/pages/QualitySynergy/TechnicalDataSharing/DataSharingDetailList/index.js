@@ -53,7 +53,7 @@ export default function() {
     { title: '物料描述', dataIndex: 'materialName', ellipsis: true },
     { title: '物料组代码', dataIndex: 'materialGroupCode', ellipsis: true },
     { title: '物料组描述', dataIndex: 'materialGroupName', ellipsis: true },
-    { title: '物料来源', dataIndex: 'materialSource', render: v => v ? MaterialSourceArr[v] : ''},
+    { title: '物料来源', dataIndex: 'materialSource'},
     { title: '初始项目', dataIndex: 'initProject', ellipsis: true },
     { title: '战略采购代码', dataIndex: 'strategicPurchaseCode', ellipsis: true },
     { title: '战略采购名称', dataIndex: 'strategicPurchaseName', ellipsis: true },
@@ -165,6 +165,7 @@ export default function() {
     value.state = value.state_name;
     value.allotSupplierState = value.allotSupplierState_name;
     value.fileCategoryName = value.fileCategoryName_name;
+    value.materialSource = value.materialSource_name;
     delete value.materialCode_name;
     delete value.materialGroupCode_name;
     delete value.strategicPurchaseCode_name;
@@ -172,6 +173,7 @@ export default function() {
     delete value.state_name;
     delete value.allotSupplierState_name;
     delete value.fileCategoryName_name;
+    delete value.materialSource_name;
     setData(v => ({ ...v, epTechnicalShareDemandSearchBo: value }));
     headerRef.current.hide();
     tableRef.current.manualSelectedRows();
