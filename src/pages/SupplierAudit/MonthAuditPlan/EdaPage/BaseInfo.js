@@ -1,11 +1,11 @@
 /*
  * @Author: Li Cai
- * @LastEditors: Please set LastEditors
+ * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:40
- * @LastEditTime: 2020-11-30 15:08:20
+ * @LastEditTime: 2020-12-02 17:08:06
  * @Description:  基本信息
- * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BaseInfo.js
+ * @FilePath: /srm-sm-web/src/pages/SupplierAudit/MonthAuditPlan/EdaPage/BaseInfo.js
  */
 import React, { useEffect, useImperativeHandle } from 'react';
 import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/edit/BaseInfo.less';
@@ -62,7 +62,7 @@ const BaseInfo = (props) => {
                 </FormItem>
               </Col>
             </Row>}
-          <Row>
+           <Row>
             <Col span={12}>
               {HideFormItem('applyCorporationId', data.applyCorporationId)}
               {HideFormItem('applyCorporationCode', data.applyCorporationCode)}
@@ -150,7 +150,7 @@ const BaseInfo = (props) => {
             <Col span={12}>
               <FormItem label="月度" {...formLayout}>
                 {isView ? <span>{data.applyMonth ? data.applyMonth.slice(0,7) : ""}</span> : getFieldDecorator('applyMonth', {
-                  initialValue: type === 'add' ? '' : data.applyMonth,
+                  initialValue: type === 'add' ? '' : data.applyMonth && moment(data.applyMonth),
                   rules: [
                     {
                       required: true,
@@ -159,20 +159,6 @@ const BaseInfo = (props) => {
                   ],
                 })(
                   <MonthPicker placeholder="选择月度" />
-                  // <Select placeholder='选择月' style={{width: '50%'}}>
-                  //     <Select.Option value={1}>1月</Select.Option>
-                  //     <Select.Option value={2}>2月</Select.Option>
-                  //     <Select.Option value={3}>3月</Select.Option>
-                  //     <Select.Option value={4}>4月</Select.Option>
-                  //     <Select.Option value={5}>5月</Select.Option>
-                  //     <Select.Option value={6}>6月</Select.Option>
-                  //     <Select.Option value={7}>7月</Select.Option>
-                  //     <Select.Option value={8}>8月</Select.Option>
-                  //     <Select.Option value={9}>9月</Select.Option>
-                  //     <Select.Option value={10}>10月</Select.Option>
-                  //     <Select.Option value={11}>11月</Select.Option>
-                  //     <Select.Option value={12}>12月</Select.Option>
-                  // </Select>
                 )}
               </FormItem>
             </Col>

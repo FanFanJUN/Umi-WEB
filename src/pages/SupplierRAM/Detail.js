@@ -13,7 +13,6 @@ import {
 import { closeCurrent } from '../../utils';
 function Editor() {
   const [loading, toggleLoading] = useState(false);
-  const [id, setId] = useState(null);
   const commonFormRef = useRef(null);
   const { query } = useLocation();
   const { id: recommendAccessId } = query;
@@ -23,8 +22,6 @@ function Editor() {
       const { success, data, message: msg } = await queryRecommendAccess({recommendAccessId})
       toggleLoading(false)
       if (success) {
-        const { id } = data;
-        setId(id)
         commonFormRef.current.setFormValue(data)
         return
       }

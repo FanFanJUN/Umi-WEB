@@ -1,4 +1,4 @@
-import { useImperativeHandle, forwardRef, useRef, useState } from 'react';
+import { forwardRef, useRef, useState } from 'react';
 import styles from './index.less';
 import { AutoSizeLayout } from '../../../components';
 import { ExtTable, ComboList, ComboTree } from 'suid';
@@ -33,9 +33,6 @@ const CommonTable = forwardRef(({
   columns = [],
   crop = false
 }, ref) => {
-  useImperativeHandle(ref, () => ({
-
-  }))
   const { query } = useLocation();
   const tableRef = useRef(null);
   const { getFieldDecorator, getFieldsValue } = form;

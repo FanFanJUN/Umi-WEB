@@ -377,6 +377,11 @@ export default [
         title: '供应商推荐准入审批-审批明细'
       },
       {
+        path: '/supplier/recommend/admittance/manage/approve/editor',
+        component: './SupplierRAM/approvePages/Editor',
+        title: '供应商推荐准入审批-审批修改'
+      },
+      {
         path: '/supplier/recommend/admittance/manage/approve/result',
         component: './SupplierRAM/approvePages/Result',
         title: '供应商推荐准入审批-推荐准入结果'
@@ -407,6 +412,11 @@ export default [
         path: '/supplier/appraise/project/leader/approve',
         component: './SupplierAppraise/Approve/Leader',
         title: '领导确认'
+      },
+      {
+        path: '/supplier/appraise/project/detail/approve',
+        component: './SupplierAppraise/Approve/Detail',
+        title: '审批流程-查看评价结果'
       },
       {
         path: '/supplier/appraise/project/create',

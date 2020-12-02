@@ -19,7 +19,7 @@ import { removeRecommendAccess } from '../../services/ram';
 import { stopApproveingOrder } from '../../services/supplier';
 const { Search } = Input;
 const { StartFlow, FlowHistoryButton } = WorkFlow;
-const { storage } = utils;
+const { storage, authAction } = utils;
 const { recommendUrl } = commonUrl;
 const {
   corporationProps,
@@ -76,39 +76,87 @@ export default () => {
   }
   const left = (
     <>
-      <Button
-        className={styles.btn}
-        type='primary'
-        onClick={handleCreate}>新增</Button>
-      <Button
-        className={styles.btn}
-        disabled={empty || underWay}
-        onClick={handleEditor}
-      >编辑</Button>
-      <Button
-        className={styles.btn}
-        disabled={empty || underWay}
-        onClick={handleRemove}
-      >删除</Button>
-      <StartFlow
-        businessModelCode='com.ecmp.srm.sam.entity.srd.RecommendAccess'
-        businessKey={flowId}
-        startComplete={uploadTable}
-      >
-        {
-          loading => <Button className={styles.btn} loading={loading} disabled={empty || completed}>提交审核</Button>
-        }
-      </StartFlow>
-      <FlowHistoryButton
-        businessId={flowId}
-        flowMapUrl='flow-web/design/showLook'
-        ignore={DEVELOPER_ENV}
-        key='SUPPLIER_RAM_APPROVE_HISTORY'
-      >
-        <Button className={styles.btn} disabled={empty || !underWay}>审核历史</Button>
-      </FlowHistoryButton>
-      <Button className={styles.btn} disabled={empty || !underWay || completed} onClick={stopApprove}>审核终止</Button>
-      <Checkbox className={styles.btn} onChange={handleOnlyMeChange} checked={onlyMe}>仅我的</Checkbox>
+      {
+        authAction(
+          <Button
+            className={styles.btn}
+            type='primary'
+            onClick={handleCreate}
+            key='SUPPLIER_RAM_CREATE'
+          >新增</Button>
+        )
+      }
+      {
+        authAction(
+          <Button
+            className={styles.btn}
+            disabled={empty || underWay}
+            onClick={handleEditor}
+            key='SUPPLIER_RAM_EDITOR'
+          >编辑</Button>
+
+        )
+      }
+      {
+        authAction(
+          <Button
+            className={styles.btn}
+            disabled={empty || underWay}
+            onClick={handleRemove}
+            key='SUPPLIER_RAM_REMOVE'
+          >删除</Button>
+        )
+      }
+      {
+        authAction(
+          <StartFlow
+            businessModelCode='com.ecmp.srm.sam.entity.srd.RecommendAccess'
+            key='SUPPLIER_RAM_APPROVE'
+            businessKey={flowId}
+            startComplete={uploadTable}
+          >
+            {
+              loading => <Button className={styles.btn} loading={loading} disabled={empty || completed}>提交审核</Button>
+            }
+          </StartFlow>
+        )
+      }
+      {
+        authAction(
+          <FlowHistoryButton
+            businessId={flowId}
+            flowMapUrl='flow-web/design/showLook'
+            ignore={DEVELOPER_ENV}
+            key='SUPPLIER_RAM_APPROVE_HISTORY'
+          >
+            <Button className={styles.btn} disabled={empty || !underWay}>审核历史</Button>
+          </FlowHistoryButton>
+        )
+      }
+      {
+        authAction(
+          <Button
+            className={styles.btn}
+            disabled={
+              empty ||
+              !underWay ||
+              completed
+            }
+            key='SUPPLIER_RAM_APPROVE_STOP'
+            onClick={stopApprove}
+          >审核终止</Button>
+        )
+      }
+      {
+        authAction(
+          <Checkbox
+            className={styles.btn}
+            onChange={handleOnlyMeChange}
+            checked={onlyMe}
+            key='SUPPLIER_RAM_APPROVE_ONLYME'
+          >仅我的</Checkbox>
+        )
+      }
     </>
   )
   const right = (

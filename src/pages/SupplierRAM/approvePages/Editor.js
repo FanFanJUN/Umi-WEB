@@ -3,40 +3,36 @@ import {
   useRef,
   useState
 } from 'react';
-import { message, Form, Radio, Spin } from 'antd';
+import { message, Spin } from 'antd';
 import CommonForm from '../CommonForm';
-import styles from '../index.less';
 import { useLocation } from 'dva/router';
 import {
-  updateNeedExamine,
+  saveRecommendAccess,
   queryRecommendAccess
 } from '../../../services/ram';
 import { WorkFlow } from 'suid';
 import { closeCurrent, checkToken } from '../../../utils';
-const formLayout = {
-  labelCol: {
-    span: 6
-  },
-  wrapperCol: {
-    span: 12
-  }
-};
 const { Approve } = WorkFlow;
-const { Item: FormItem, create } = Form;
-function WhetherCheck({
-  form
-}) {
-  const { getFieldDecorator, validateFieldsAndScroll } = form;
+function Editor() {
   const [loading, toggleLoading] = useState(false);
   const [isReady, setIsReady] = useState(false);
   const commonFormRef = useRef(null);
   const { query } = useLocation();
   const { id = null, taskId = null, instanceId = null } = query;
+  function handleComplete(info) {
+    const { success, message: msg } = info;
+    if (success) {
+      closeCurrent()
+      message.success(msg);
+      return;
+    }
+    message.error(msg);
+  }
   async function beforeSubmit() {
-    const v = await validateFieldsAndScroll()
-    const { success, message: msg } = await updateNeedExamine({
-      ...v,
-      recommendAccessId: id
+    const value = await commonFormRef.current.getFormValue();
+    const { success, message: msg } = await saveRecommendAccess({
+      ...value,
+      id
     });
     return new Promise((resolve) => {
       resolve({
@@ -47,15 +43,6 @@ function WhetherCheck({
         },
       });
     });
-  }
-  function handleComplete(info) {
-    const { success, message: msg } = info;
-    if (success) {
-      closeCurrent()
-      message.success(msg);
-      return;
-    }
-    message.error(msg);
   }
   useEffect(() => {
     checkToken(query, setIsReady)
@@ -87,33 +74,11 @@ function WhetherCheck({
       <Spin spinning={loading}>
         <CommonForm
           wrappedComponentRef={commonFormRef}
-          type='detail'
+          type='editor'
         />
-        <div
-          className={styles.commonTitle}
-        >供应商审核确认</div>
-        <Form>
-          <FormItem label='是否需要供应商审核' {...formLayout}>
-            {
-              getFieldDecorator('needExamine', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请选择是否需要供应商审核'
-                  }
-                ]
-              })(
-                <Radio.Group>
-                  <Radio value={true}>是</Radio>
-                  <Radio value={false}>否</Radio>
-                </Radio.Group>
-              )
-            }
-          </FormItem>
-        </Form>
       </Spin>
     </Approve>
   )
 }
 
-export default create()(WhetherCheck);
+export default Editor;
