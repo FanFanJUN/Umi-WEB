@@ -11,7 +11,7 @@ import {
   AddDataSharingList,
   DataSharingFindOne,
   generateLineNumber,
-  getRandom, SubmitDataSharingList,
+  getRandom, MaterialSourceArr, SubmitDataSharingList,
   UpdateDataSharingList,
 } from '../../../commonProps';
 import SupplierData from './SupplierData';

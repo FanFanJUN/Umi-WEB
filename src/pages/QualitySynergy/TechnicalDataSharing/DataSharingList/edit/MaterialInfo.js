@@ -3,7 +3,13 @@ import styles from './BaseInfo.less';
 import { Col, Form, Modal, Row, Input, message } from 'antd';
 import moment from 'moment/moment';
 import { ComboList, ExtModal } from 'suid';
-import { BUConfig, MaterialConfig, MaterialGroupConfig, FindTacticByBuCodeAndGroupCode } from '../../../commonProps';
+import {
+  BUConfig,
+  MaterialConfig,
+  MaterialGroupConfig,
+  FindTacticByBuCodeAndGroupCode,
+  MaterialSourceConfig,
+} from '../../../commonProps';
 
 const FormItem = Form.Item;
 
@@ -23,30 +29,30 @@ const MaterialInfo = React.forwardRef((props, ref) => {
   const { getFieldDecorator, getFieldValue, setFieldsValue } = props.form;
 
   useImperativeHandle(ref, () => ({
-    getMaterialInfoData: props.form.validateFieldsAndScroll
-  }))
+    getMaterialInfoData: props.form.validateFieldsAndScroll,
+  }));
 
   useEffect(() => {
     // console.log(buCode, 'bucode', getFieldValue('materialGroupCode'), getFieldValue('materialGroupName'))
     if (buCode && getFieldValue('materialGroupCode')) {
       FindTacticByBuCodeAndGroupCode({
         materialGroupCode: getFieldValue('materialGroupCode'),
-        buCode: buCode
+        buCode: buCode,
       }).then(res => {
         if (res.success) {
           if (res.data) {
             setFieldsValue({
               strategicPurchaseId: res.data.id,
               strategicPurchaseName: res.data.name,
-              strategicPurchaseCode: res.data.code
-            })
+              strategicPurchaseCode: res.data.code,
+            });
           }
         } else {
-          message.error(res.message)
+          message.error(res.message);
         }
-      })
+      });
     }
-  }, [getFieldValue('materialGroupCode'), buCode])
+  }, [getFieldValue('materialGroupCode'), buCode]);
 
   const hideFormItem = (name, initialValue) => (
     <FormItem>
@@ -54,7 +60,7 @@ const MaterialInfo = React.forwardRef((props, ref) => {
         getFieldDecorator(name, {
           initialValue: initialValue,
         })(
-          <Input type={'hidden'}/>,
+          <Input type={'hidden'} />,
         )
       }
     </FormItem>
@@ -64,10 +70,10 @@ const MaterialInfo = React.forwardRef((props, ref) => {
     if (!getFieldValue('materialCode')) {
       setFieldsValue({
         strategicPurchaseCode: '',
-        strategicPurchaseName: ''
-      })
+        strategicPurchaseName: '',
+      });
     }
-  }, [getFieldValue('materialCode')])
+  }, [getFieldValue('materialCode')]);
 
   return (
     <div className={styles.wrapper}>
@@ -81,16 +87,16 @@ const MaterialInfo = React.forwardRef((props, ref) => {
             <Col span={12}>
               <FormItem {...formLayout} label={'物料代码'}>
                 {
-                 isView ? <span>{data.materialCode}</span> :  getFieldDecorator('materialCode', {
-                   initialValue: type === 'add' ? '' : data.materialCode,
-                 })(<ComboList
-                   allowClear={true}
-                   style={{ width: '100%' }}
-                   form={form}
-                   name={'materialCode'}
-                   field={['materialId', 'materialName', 'materialGroupCode', 'materialGroupName', 'materialGroupId']}
-                   {...MaterialConfig}
-                 />)
+                  isView ? <span>{data.materialCode}</span> : getFieldDecorator('materialCode', {
+                    initialValue: type === 'add' ? '' : data.materialCode,
+                  })(<ComboList
+                    allowClear={true}
+                    style={{ width: '100%' }}
+                    form={form}
+                    name={'materialCode'}
+                    field={['materialId', 'materialName', 'materialGroupCode', 'materialGroupName', 'materialGroupId']}
+                    {...MaterialConfig}
+                  />)
                 }
               </FormItem>
             </Col>
@@ -106,7 +112,8 @@ const MaterialInfo = React.forwardRef((props, ref) => {
                       },
                     ],
                   })(
-                    <Input disabled={getFieldValue('materialCode') ? true : false} placeholder='请输入物料描述' style={{ width: '100%' }}/>,
+                    <Input disabled={getFieldValue('materialCode') ? true : false} placeholder='请输入物料描述'
+                           style={{ width: '100%' }} />,
                   )
                 }
               </FormItem>
@@ -119,7 +126,7 @@ const MaterialInfo = React.forwardRef((props, ref) => {
             <Col span={12}>
               <FormItem {...formLayout} label={'物料组代码'}>
                 {
-                  isView ? <span>{data.materialGroupCode}</span> :getFieldDecorator('materialGroupCode', {
+                  isView ? <span>{data.materialGroupCode}</span> : getFieldDecorator('materialGroupCode', {
                     initialValue: type === 'add' ? '' : data.materialGroupCode,
                     rules: [
                       {
@@ -129,7 +136,7 @@ const MaterialInfo = React.forwardRef((props, ref) => {
                     ],
                   })(<ComboList
                     allowClear={true}
-                    disabled={getFieldValue('materialCode') ? true : false}
+                    disabled={!!getFieldValue('materialCode')}
                     style={{ width: '100%' }}
                     form={form}
                     name={'materialGroupCode'}
@@ -142,10 +149,52 @@ const MaterialInfo = React.forwardRef((props, ref) => {
             <Col span={12}>
               <FormItem label='物料组描述' {...formLayout}>
                 {
-                  isView ? <span>{data.materialGroupName}</span> :getFieldDecorator('materialGroupName', {
+                  isView ? <span>{data.materialGroupName}</span> : getFieldDecorator('materialGroupName', {
                     initialValue: type === 'add' ? '' : data.materialGroupName,
                   })(
-                    <Input disabled={true} placeholder='请输入物料组描述' style={{ width: '100%' }}/>,
+                    <Input disabled={true} placeholder='请输入物料组描述' style={{ width: '100%' }} />,
+                  )
+                }
+              </FormItem>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={12}>
+              <FormItem label='物料来源' {...formLayout}>
+                {
+                  isView ? <span>{data.materialSource}</span> : getFieldDecorator('materialSource', {
+                    initialValue: type === 'add' ? '' : data.materialSource,
+                    rules: [
+                      {
+                        required: true,
+                        message: '物料来源不能为空',
+                      },
+                    ],
+                  })(
+                    <ComboList
+                      allowClear={true}
+                      style={{ width: '100%' }}
+                      form={form}
+                      name={'materialSource'}
+                      {...MaterialSourceConfig}
+                    />,
+                  )
+                }
+              </FormItem>
+            </Col>
+            <Col span={12}>
+              <FormItem label='初始项目' {...formLayout}>
+                {
+                  isView ? <span>{data.initProject}</span> : getFieldDecorator('initProject', {
+                    initialValue: type === 'add' ? '' : data.initProject,
+                    rules: [
+                      {
+                        required: true,
+                        message: '初始项目不能为空',
+                      },
+                    ],
+                  })(
+                    <Input placeholder='请输入初始项目' style={{ width: '100%' }} />,
                   )
                 }
               </FormItem>
@@ -158,10 +207,10 @@ const MaterialInfo = React.forwardRef((props, ref) => {
             <Col span={12}>
               <FormItem label='战略采购代码' {...formLayout}>
                 {
-                  isView ? <span>{data.strategicPurchaseCode}</span> :getFieldDecorator('strategicPurchaseCode', {
+                  isView ? <span>{data.strategicPurchaseCode}</span> : getFieldDecorator('strategicPurchaseCode', {
                     initialValue: type === 'add' ? '' : data.strategicPurchaseCode,
                   })(
-                    <Input disabled={true} placeholder='请输入战略采购代码' style={{ width: '100%' }}/>,
+                    <Input disabled={true} placeholder='请输入战略采购代码' style={{ width: '100%' }} />,
                   )
                 }
               </FormItem>
@@ -169,10 +218,10 @@ const MaterialInfo = React.forwardRef((props, ref) => {
             <Col span={12}>
               <FormItem label='战略采购名称' {...formLayout}>
                 {
-                  isView ? <span>{data.strategicPurchaseName}</span> :getFieldDecorator('strategicPurchaseName', {
+                  isView ? <span>{data.strategicPurchaseName}</span> : getFieldDecorator('strategicPurchaseName', {
                     initialValue: type === 'add' ? '' : data.strategicPurchaseName,
                   })(
-                    <Input disabled={true} placeholder='请输入战略采购名称' style={{ width: '100%' }}/>,
+                    <Input disabled={true} placeholder='请输入战略采购名称' style={{ width: '100%' }} />,
                   )
                 }
               </FormItem>
@@ -183,6 +232,6 @@ const MaterialInfo = React.forwardRef((props, ref) => {
     </div>
   );
 
-})
+});
 
 export default Form.create()(MaterialInfo);

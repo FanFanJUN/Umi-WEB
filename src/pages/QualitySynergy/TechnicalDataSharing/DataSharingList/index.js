@@ -4,14 +4,14 @@ import AdvancedForm from '../../../../components/AdvancedForm';
 import { Button, Checkbox, Input, message, Modal } from 'antd';
 import styles from './index.less';
 import { DataExport, ExtTable, utils } from 'suid';
-import moment from "moment";
+import moment from 'moment';
 import {
   BUConfigNoFrostHighSearch,
   DeleteDataSharingList,
   judge,
   materialCode,
   MaterialConfig,
-  MaterialGroupConfig, RecallDataSharingList,
+  MaterialGroupConfig, MaterialSourceArr, MaterialSourceConfig, RecallDataSharingList,
   ShareDistributionProps,
   ShareStatusProps,
   StrategicPurchaseConfig,
@@ -28,7 +28,7 @@ const { Search } = Input;
 
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 
-export default function () {
+export default function() {
 
 
   const tableRef = useRef(null);
@@ -179,12 +179,14 @@ export default function () {
     value.buCode = value.buCode_name;
     value.state = value.state_name;
     value.allotSupplierState = value.allotSupplierState_name;
+    value.materialSource = value.materialSource_name;
     delete value.materialCode_name;
     delete value.materialGroupCode_name;
     delete value.strategicPurchaseCode_name;
     delete value.buCode_name;
     delete value.state_name;
     delete value.allotSupplierState_name;
+    delete value.materialSource_name;
     setData(v => ({ ...v, epTechnicalShareDemandSearchBo: value }));
     tableRef.current.manualSelectedRows();
     tableRef.current.remoteDataRefresh();
@@ -194,6 +196,7 @@ export default function () {
   const formItems = [
     { title: '物料代码', key: 'materialCode', type: 'list', props: MaterialConfig },
     { title: '物料组', key: 'materialGroupCode', type: 'list', props: MaterialGroupConfig },
+    { title: '物料来源', key: 'materialSource', type: 'list', props: MaterialSourceConfig },
     { title: '战略采购', key: 'strategicPurchaseCode', type: 'list', props: StrategicPurchaseConfig },
     { title: '业务单元', key: 'buCode', type: 'list', props: BUConfigNoFrostHighSearch },
     { title: '申请人', key: 'applyPeopleName', props: { placeholder: '输入申请人查询' } },
@@ -206,10 +209,12 @@ export default function () {
     { title: '分配供应商状态', dataIndex: 'allotSupplierState', width: 160 },
     { title: '来源', dataIndex: 'source', width: 70 },
     { title: '分享需求号', dataIndex: 'shareDemanNumber', ellipsis: true, width: 180 },
-    { title: '物料代码', dataIndex: 'materialCode', ellipsis: true, width: 160 },
+    { title: '物料代码', dataIndex: 'materialCode', ellipsis: true },
     { title: '物料描述', dataIndex: 'materialName', ellipsis: true },
     { title: '物料组代码', dataIndex: 'materialGroupCode', ellipsis: true },
     { title: '物料组描述', dataIndex: 'materialGroupName', ellipsis: true },
+    { title: '物料来源', dataIndex: 'materialSource' },
+    { title: '初始项目', dataIndex: 'initProject', ellipsis: true },
     { title: '战略采购代码', dataIndex: 'strategicPurchaseCode', ellipsis: true },
     { title: '战略采购名称', dataIndex: 'strategicPurchaseName', ellipsis: true },
     // {
@@ -225,14 +230,14 @@ export default function () {
   ].map(item => ({ ...item, align: 'center' }));
 
   const onChangeCreate = (e) => {
-    setData(v => ({ ...v, checkedCreate: e.target.checked }))
+    setData(v => ({ ...v, checkedCreate: e.target.checked }));
     tableRef.current.remoteDataRefresh();
-  }
+  };
 
   const onChangeDistribution = (e) => {
-    setData(v => ({ ...v, checkedDistribution: e.target.checked }))
+    setData(v => ({ ...v, checkedDistribution: e.target.checked }));
     tableRef.current.remoteDataRefresh();
-  }
+  };
 
   // 导出
   const explainResponse = res => {
@@ -268,7 +273,7 @@ export default function () {
       ...data.checkedDistribution ? { onlyAllocation: data.checkedDistribution } : null,
       quickSearchValue: data.quickSearchValue,
       ...data.epTechnicalShareDemandSearchBo,
-      pageInfo: { page: 1, rows: 100000 }
+      pageInfo: { page: 1, rows: 100000 },
     },
     url: `${recommendUrl}/api/epTechnicalShareDemandService/findByPage`,
     method: 'POST',
@@ -351,8 +356,8 @@ export default function () {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={data.selectedRowKeys.length === 0
-          // || data.selectedRows.every(item => item.strategicPurchaseCode)
-          || !judge(data.selectedRows, 'state', '生效')
+        // || data.selectedRows.every(item => item.strategicPurchaseCode)
+        || !judge(data.selectedRows, 'state', '生效')
         }
         key='TECHNICAL_DATA_SHARING_GOVERN'
       >指派战略采购</Button>)

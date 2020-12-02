@@ -16,7 +16,7 @@ let keys = 0;
 
 const AuditTable = React.forwardRef(({ form, isView, editData, type }, ref) => {
   useImperativeHandle(ref, () => ({
-    getTableData
+    getTableData,
   }));
   const getModelRef = useRef(null);
   const tableRef = useRef(null);
@@ -57,7 +57,7 @@ const AuditTable = React.forwardRef(({ form, isView, editData, type }, ref) => {
     if (editData && editData.length > 0) {
       let newsData = editData.map((item, index) => ({ key: index, ...item }));
       keys = editData.length - 1;
-      setTableData(newsData)
+      setTableData(newsData);
     }
   };
   // 记录列表选中
@@ -70,8 +70,8 @@ const AuditTable = React.forwardRef(({ form, isView, editData, type }, ref) => {
     tableRef.current.manualSelectedRows();
     tableRef.current.manualSelectedRows();
   };
-  const getTableData=()=>{
-    return tableData
+  const getTableData = () => {
+    return tableData;
   };
   //新增
   const handleAdd = () => {
@@ -115,40 +115,40 @@ const AuditTable = React.forwardRef(({ form, isView, editData, type }, ref) => {
   };
   return (
     <div>
-          <span style={{ paddingBottom: '10px', fontSize: '14px' }}>3、供应商审核不足及改善</span>
-          <Header
-            left={headerLeft}
-            advanced={false}
-            extra={false}
-          />
-          <AutoSizeLayout>
-            {(height) => <ExtTable
-              rowKey={(item) => item.key}
-              height={height}
-              checkbox={{
-                multiSelect: false,
-              }}
-              pagination={{
-                hideOnSinglePage: true,
-                disabled: false,
-                pageSize: 100,
-              }}
-              ref={tableRef}
-              allowCancelSelect={true}
-              showSearch={false}
-              size='small'
-              columns={columns}
-              onSelectRow={handleSelectedRows}
-              selectedRowKeys={selectRowKeys}
-              dataSource={tableData}
-            />}
-          </AutoSizeLayout>
-          <AddSupplierInfoModal
-            onOk={handleOk}
-            isView={isTableView}
-            editData={modalType ? selectedRows[0] : {}}
-            wrappedComponentRef={getModelRef}
-          />
+      <span style={{ paddingBottom: '10px', fontSize: '14px' }}>3、供应商审核不足及改善</span>
+      <Header
+        left={isView ? null : headerLeft}
+        advanced={false}
+        extra={false}
+      />
+      <AutoSizeLayout>
+        {(height) => <ExtTable
+          rowKey={(item) => item.key}
+          height={height}
+          checkbox={{
+            multiSelect: false,
+          }}
+          pagination={{
+            hideOnSinglePage: true,
+            disabled: false,
+            pageSize: 100,
+          }}
+          ref={tableRef}
+          allowCancelSelect={true}
+          showSearch={false}
+          size='small'
+          columns={columns}
+          onSelectRow={handleSelectedRows}
+          selectedRowKeys={selectRowKeys}
+          dataSource={tableData}
+        />}
+      </AutoSizeLayout>
+      <AddSupplierInfoModal
+        onOk={handleOk}
+        isView={isTableView}
+        editData={modalType ? selectedRows[0] : {}}
+        wrappedComponentRef={getModelRef}
+      />
     </div>
   );
 });

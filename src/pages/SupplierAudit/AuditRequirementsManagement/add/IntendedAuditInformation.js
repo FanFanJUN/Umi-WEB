@@ -14,6 +14,8 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
 
   const [deleteArr, setDeleteArr] = useState([]);
 
+  const [operation, setOperation] = useState(0);
+
   const [data, setData] = useState({
     reviewTeamGroupBoList: [],
     teamVisible: false,
@@ -73,7 +75,8 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
       case 'edit':
         if (props.companyCode && props.organizationCode) {
           let editData = JSON.parse(JSON.stringify(data.selectRows[0]));
-          editData.supplierStrategyName = supplierStrategyName[editData.supplierStrategyName];
+          console.log(editData, 'editData');
+          editData.supplierStrategyCode = supplierStrategyName[editData.supplierStrategyName];
           setData(v => ({ ...v, title: '编辑拟审核信息', type: 'edit', editData: editData, visible: true }));
         } else {
           message.error('请先选择公司和采购组织!');
@@ -153,10 +156,20 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
     setData(v => ({ ...v, reviewTeamGroupBoList: arr, teamVisible: true, type: handleType }));
   };
 
-  const contentOk = (value) => {
+  const setTreeData = (value, type = undefined) => {
     let newData = JSON.parse(JSON.stringify(data.dataSource));
     newData.map((item, index) => {
       if (item.lineNum === data.selectedRowKeys[0]) {
+        // 如果两次的体系不相同则清空小组中分配的体系
+        if (newData[index].sonList !== value && newData[index].treeData.length !== 0 && type && operation !== 0) {
+          newData[index].reviewTeamGroupBoList.map(v => {
+            if (v.reviewTeamMemberBoList && v.reviewTeamMemberBoList.length !== 0) {
+              v.reviewTeamMemberBoList.map(r => {
+                r.memberRuleBoList = [];
+              });
+            }
+          });
+        }
         newData[index].treeData = value;
         newData[index].sonList = value;
       }
@@ -172,25 +185,38 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
     tableRef.current.remoteDataRefresh();
   };
 
-  // 拆分体系
-  const separationSystem = () => {
+  const contentOk = (value) => {
+    if (data.selectRows[0] && data.selectRows[0].reviewTeamGroupBoList && data.selectRows[0].reviewTeamGroupBoList.length !== 0 && operation !== 0) {
+      Modal.confirm({
+        content: '修改内容将清空组员分配,请确认操作！',
+        okText: '确认',
+        cancelText: '取消',
+        onOk: () => {
+          setTreeData(value, 'clear');
+        },
+      });
+    } else {
+      setTreeData(value);
+    }
   };
 
   const addBeAuditedOK = (value) => {
     if (data.type === 'add') {
       value.reviewRequirementLinenum = ((Array(4).join(0) + (data.dataSource.length + 1)).slice(-4) + '0');
       value.lineNum = getRandom(10);
-      value.supplierStrategyName = value.supplierStrategyCode;
+      // value.supplierStrategyName = value.supplierStrategyCode;
       value.treeData = [];
       value.reviewTeamGroupBoList = [];
       setData(v => ({ ...v, dataSource: [...data.dataSource, ...[value]], visible: false }));
     } else if (data.type === 'edit') {
-      value.reviewRequirementLinenum = data.selectRows[0].reviewRequirementLinenum;
-      value.lineNum = data.selectRows[0].lineNum;
-      value.sonList = data.selectRows[0].sonList;
-      value.supplierStrategyName = value.supplierStrategyCode;
-      value.treeData = data.selectRows[0].treeData;
-      value.reviewTeamGroupBoList = data.selectRows[0].reviewTeamGroupBoList;
+      value = Object.assign(data.selectRows[0], value);
+      // value.id = data.selectRows[0].id;
+      // value.reviewRequirementLinenum = data.selectRows[0].reviewRequirementLinenum;
+      // value.lineNum = data.selectRows[0].lineNum;
+      // value.sonList = data.selectRows[0].sonList;
+      // value.supplierStrategyName = value.supplierStrategyCode;
+      // value.treeData = data.selectRows[0].treeData;
+      // value.reviewTeamGroupBoList = data.selectRows[0].reviewTeamGroupBoList;
       let newData = JSON.parse(JSON.stringify(data.dataSource));
       newData.map((item, index) => {
         if (item.lineNum === data.selectedRowKeys[0]) {
@@ -269,6 +295,7 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
       <Content
         applyCorporationCode={props.applyCorporationCode}
         treeData={data.treeData}
+        setOperation={setOperation}
         onOk={contentOk}
         type={data.type}
         onCancel={() => setData(v => ({ ...v, contentVisible: false }))}

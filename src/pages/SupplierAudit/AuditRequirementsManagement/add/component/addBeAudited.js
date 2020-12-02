@@ -59,7 +59,7 @@ const AddBeAudited = (props) => {
       provinceId: supplierExtend.officeProvinceId,
       provinceName: supplierExtend.officeProvinceName,
       cityId: supplierExtend.officeRegionId,
-      cityName: supplierExtend.officeRegionId,
+      cityName: supplierExtend.officeRegionName,
       countyId: supplierExtend.officeDistrictId,
       countyName: supplierExtend.officeDistrictName,
       address: supplierExtend.officeStreet,
@@ -238,14 +238,14 @@ const AddBeAudited = (props) => {
           </Col>
         </Row>
         <Col span={0}>
-          {hideFormItem('supplierStrategyCode', type === 'add' ? '' : editData.supplierStrategyCode)}
+          {hideFormItem('supplierStrategyName', type === 'add' ? '' : editData.supplierStrategyName)}
         </Col>
         <Row>
           <Col span={12}>
             <FormItem {...formItemLayoutLong} label={'供应商选择方式'}>
               {
-                getFieldDecorator('supplierStrategyName', {
-                  initialValue: editData.supplierStrategyName ? editData.supplierStrategyName : '',
+                getFieldDecorator('supplierStrategyCode', {
+                  initialValue: editData.supplierStrategyCode ? editData.supplierStrategyCode : '',
                   rules: [
                     {
                       required: true,
@@ -258,8 +258,8 @@ const AddBeAudited = (props) => {
                     style={{ width: '100%' }}
                     afterSelect={supplierStrategyChange}
                     form={form}
-                    field={['supplierStrategyCode']}
-                    name={'supplierStrategyName'}
+                    field={['supplierStrategyName']}
+                    name={'supplierStrategyCode'}
                     {...SelectionStrategyConfig}
                   />,
                 )
@@ -285,9 +285,9 @@ const AddBeAudited = (props) => {
                   ],
                 })(
                   <ComboList
-                    disabled={getFieldValue('supplierStrategyName') !== '正常供应商'}
+                    disabled={getFieldValue('supplierStrategyCode') !== '正常供应商'}
                     allowClear={true}
-                    style={getFieldValue('supplierStrategyName') !== '正常供应商' ? { width: '88%' } : { width: '100%' }}
+                    style={getFieldValue('supplierStrategyCode') !== '正常供应商' ? { width: '88%' } : { width: '100%' }}
                     form={form}
                     name={'supplierName'}
                     field={['supplierCode', 'supplierId']}
@@ -308,7 +308,7 @@ const AddBeAudited = (props) => {
                 )
               }
               {
-                getFieldValue('supplierStrategyName') !== '正常供应商' &&
+                getFieldValue('supplierStrategyCode') !== '正常供应商' &&
                 <a style={{ marginLeft: '2%' }} onClick={openSupplierModal}>选择</a>
               }
             </FormItem>
@@ -328,9 +328,9 @@ const AddBeAudited = (props) => {
                   initialValue: editData.agentName ? editData.agentName : '',
                 })(
                   <ComboList
-                    disabled={getFieldValue('supplierStrategyName') !== '正常供应商'}
+                    disabled={getFieldValue('supplierStrategyCode') !== '正常供应商'}
                     allowClear={true}
-                    style={getFieldValue('supplierStrategyName') !== '正常供应商' ? { width: '88%' } : { width: '100%' }}
+                    style={getFieldValue('supplierStrategyCode') !== '正常供应商' ? { width: '88%' } : { width: '100%' }}
                     form={form}
                     name={'agentName'}
                     field={['agentCode', 'agentId']}
@@ -371,7 +371,7 @@ const AddBeAudited = (props) => {
                   ],
                 })(
                   <ComboTree
-                    disabled={getFieldValue('supplierStrategyName') !== '正常供应商'}
+                    disabled={getFieldValue('supplierStrategyCode') !== '正常供应商'}
                     allowClear={true}
                     style={{ width: '100%' }}
                     form={form}
@@ -397,8 +397,8 @@ const AddBeAudited = (props) => {
           <Col span={0}>
             {hideFormItem('countyId', type === 'add' ? '' : editData.countyId)}
           </Col>
-          <Col span={24}>
-            <FormItem {...formItemLayout} label={'生产厂地址'}>
+          <Col span={8}>
+            <FormItem labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label={'生产厂地址'}>
               {
                 getFieldDecorator('countryName', {
                   initialValue: editData.countryName ? editData.countryName : '',
@@ -410,7 +410,7 @@ const AddBeAudited = (props) => {
                   ],
                 })(
                   <ComboList
-                    style={{ width: '15%' }}
+                    style={{ width: '100%' }}
                     form={form}
                     name={'countryName'}
                     field={['countryId']}
@@ -438,6 +438,10 @@ const AddBeAudited = (props) => {
                   />,
                 )
               }
+            </FormItem>
+          </Col>
+          <Col span={4}>
+            <FormItem labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
               {
                 getFieldDecorator('provinceName', {
                   initialValue: editData.provinceName ? editData.provinceName : '',
@@ -449,7 +453,7 @@ const AddBeAudited = (props) => {
                   ],
                 })(
                   <ComboList
-                    style={{ width: '15%' }}
+                    style={{ width: '100%' }}
                     form={form}
                     afterSelect={() => {
                       setFieldsValue({
@@ -478,6 +482,10 @@ const AddBeAudited = (props) => {
                   />,
                 )
               }
+            </FormItem>
+          </Col>
+          <Col span={4}>
+            <FormItem labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
               {
                 getFieldDecorator('cityName', {
                   initialValue: editData.cityName ? editData.cityName : '',
@@ -489,7 +497,7 @@ const AddBeAudited = (props) => {
                   ],
                 })(
                   <ComboList
-                    style={{ width: '15%' }}
+                    style={{ width: '100%' }}
                     form={form}
                     afterSelect={() => {
                       setFieldsValue({
@@ -516,6 +524,10 @@ const AddBeAudited = (props) => {
                   />,
                 )
               }
+            </FormItem>
+          </Col>
+          <Col span={4}>
+            <FormItem labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
               {
                 getFieldDecorator('countyName', {
                   initialValue: editData.countyName ? editData.countyName : '',
@@ -527,7 +539,7 @@ const AddBeAudited = (props) => {
                   ],
                 })(
                   <ComboList
-                    style={{ width: '15%' }}
+                    style={{ width: '100%' }}
                     form={form}
                     afterSelect={() => {
                       setFieldsValue({
@@ -550,6 +562,10 @@ const AddBeAudited = (props) => {
                   />,
                 )
               }
+            </FormItem>
+          </Col>
+          <Col span={4}>
+            <FormItem labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
               {
                 getFieldDecorator('address', {
                   initialValue: editData.address ? editData.address : '',
@@ -560,7 +576,7 @@ const AddBeAudited = (props) => {
                     },
                   ],
                 })(
-                  <Input style={{ width: '40%' }} placeholder={'请输入详细地址'} />,
+                  <Input style={{ width: '100%' }} placeholder={'请输入详细地址'} />,
                 )
               }
             </FormItem>

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ComboList, ComboTree, ExtModal, ExtTable } from 'suid';
 import { Col, Form, Input, Row, message, Tree } from 'antd';
-import { EvaluationSystemConfig } from '../../../mainData/commomService';
+import { EvaluationSystemConfig, GetEvaluationSystem } from '../../../mainData/commomService';
 import ShuttleBox from '../../../common/ShuttleBox';
 import ShuttleBoxNew from '../../../common/ShuttleBoxNew';
 
@@ -29,6 +29,39 @@ const Content = (props) => {
       setData(v => ({ ...v, treeData: props.treeData }));
     }
   }, [props.treeData]);
+
+  useEffect(() => {
+    if (visible) {
+      if (props.treeData && props.treeData.length !== 0) {
+        let treeData = {}
+        props.treeData.map(item => {
+          if (!item.parentId) {
+            treeData = item
+            setFieldsValue({
+              systemId: item.systemId,
+              systemCode: item.systemCode,
+              systemName: item.systemName,
+            });
+          }
+        });
+        GetEvaluationSystem({
+          systemUseType: 'SupplierApprove',
+          corpCode: props.applyCorporationCode,
+        }).then(res => {
+          if (res.success) {
+            if (res.data && res.data.length !== 0) {
+              res.data.map(v => {
+                if (v.id === treeData.systemId) {
+                  setData(a => ({ ...a, leftTreeData: v }));
+                }
+              })
+            }
+            console.log(res.data)
+          }
+        })
+      }
+    }
+  }, [props.visible]);
 
   const onOk = () => {
     props.form.validateFieldsAndScroll((err, values) => {
@@ -66,8 +99,9 @@ const Content = (props) => {
     </FormItem>
   );
 
-  const getTreeData = (value) => {
+  const getTreeData = (value, operation) => {
     setData(v => ({ ...v, treeData: value }));
+    props.setOperation(operation)
   };
 
   return (
