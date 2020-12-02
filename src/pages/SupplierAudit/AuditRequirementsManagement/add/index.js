@@ -52,8 +52,10 @@ const Index = (props) => {
     if (!state) {
       state = 'flowDetail';
     }
-    if (props.isInFlow) {
+    if (props.isInFlow === 1) {
       state = 'detail';
+    } else if (props.isInFlow === 2) {
+      state = 'edit';
     }
     switch (state) {
       case 'add':

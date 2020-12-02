@@ -142,6 +142,8 @@ export default [
       { path: '/supplierAudit/AuditRequirementsManagement', component: './SupplierAudit/AuditRequirementsManagement', title: '审核需求管理' },
 
       { path: '/supplierAudit/AuditRequirementsManagementFlow', component: './SupplierAudit/FlowList', title: '审核需求管理流程中' },
+      { path: '/supplierAudit/AuditRequirementsManagementflowNoAgree', component: './SupplierAudit/FlowList/AuditRequirementsManagementflow', title: '审核需求管理流程中不同意' },
+
       { path: '/supplierAudit/AnnualAuditPlanInflow', component: './SupplierAudit/FlowList/AnnualAuditPlanInflow', title: '年度度审核计划流程中' },
       { path: '/supplierAudit/monthAuditInFlow', component: './SupplierAudit/FlowList/monthAuditInFlow', title: '月度审核计划流程中' },
       { path: '/supplierAudit/monthAuditChangeInFlow', component: './SupplierAudit/FlowList/monthAuditChangeInFlow', title: '月度审核计划变更流程中' },
