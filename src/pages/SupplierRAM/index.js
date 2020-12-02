@@ -41,15 +41,11 @@ export default () => {
   const FRAMELEEMENT = getFrameElement();
   const [signleRow = {}] = selectedRows;
   const { account } = storage.sessionStorage.get("Authorization") || {};
-  const { flowStatus: signleFlowStatus, id: flowId, supplierRecommendDemandStatus } = signleRow;
+  const { flowStatus: signleFlowStatus, id: flowId } = signleRow;
   // 已提交审批状态
   const underWay = signleFlowStatus !== 'INIT';
   // 审核完成状态
   const completed = signleFlowStatus === 'COMPLETED';
-  // 填报完成状态
-  const fillComplete = signleFlowStatus === 'FILLED';
-  // 未提交填报状态
-  const fillInit = supplierRecommendDemandStatus === 'DRAFT'
   // 未选中数据状态
   const empty = selectedRowKeys.length === 0;
   const tableProps = {
@@ -100,7 +96,7 @@ export default () => {
         startComplete={uploadTable}
       >
         {
-          loading => <Button className={styles.btn} loading={loading} disabled={empty}>提交审核</Button>
+          loading => <Button className={styles.btn} loading={loading} disabled={empty || completed}>提交审核</Button>
         }
       </StartFlow>
       <FlowHistoryButton
@@ -111,7 +107,7 @@ export default () => {
       >
         <Button className={styles.btn} disabled={empty || !underWay}>审核历史</Button>
       </FlowHistoryButton>
-      <Button className={styles.btn} disabled={empty || !underWay} onClick={stopApprove}>审核终止</Button>
+      <Button className={styles.btn} disabled={empty || !underWay || completed} onClick={stopApprove}>审核终止</Button>
       <Checkbox className={styles.btn} onChange={handleOnlyMeChange} checked={onlyMe}>仅我的</Checkbox>
     </>
   )

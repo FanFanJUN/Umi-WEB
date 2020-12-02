@@ -317,7 +317,7 @@ export const flowStatusProps = {
       name: '审核中'
     },
     {
-      code: 'COMPLETE',
+      code: 'COMPLETED',
       name: '审核完成'
     },
   ],

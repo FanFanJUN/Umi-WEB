@@ -27,6 +27,65 @@ const { Item: FormItem, create } = Form;
 function WhetherCheck({
   form
 }) {
+  const recommendColumns = [
+    {
+      title: '公司代码',
+      dataIndex: 'corporationCode'
+    },
+    {
+      title: '公司名称',
+      dataIndex: 'corporationName',
+      width: 200
+    },
+    {
+      title: '采购组织代码',
+      dataIndex: 'purchaseOrgCode'
+    },
+    {
+      title: '采购组织名称',
+      dataIndex: 'purchaseOrgName',
+      width: 200
+    },
+    {
+      title: '认定类型',
+      dataIndex: 'identifyTypeName',
+      width: 200
+    },
+    {
+      title: '是否准入',
+      dataIndex: 'access',
+      render(text, record, index) {
+        return getFieldDecorator(`access_${index}`)(
+          <Radio.Group>
+            <Radio value={true}>是</Radio>
+            <Radio value={false}>否</Radio>
+          </Radio.Group>
+        )
+      }
+    },
+    {
+      title: '是否实物认定',
+      dataIndex: 'objectRecognition',
+      render(text) {
+        const isBoolean = typeof text === 'boolean';
+        if (isBoolean) {
+          return !!text ? '是' : '否'
+        }
+        return '未选择'
+      }
+    },
+    {
+      title: '是否信任',
+      dataIndex: 'trust',
+      render(text = null) {
+        const isBoolean = typeof text === 'boolean';
+        if (isBoolean) {
+          return !!text ? '是' : '否'
+        }
+        return '未选择'
+      }
+    }
+  ];
   const { getFieldDecorator, validateFieldsAndScroll } = form;
   const [loading, toggleLoading] = useState(false);
   const commonFormRef = useRef(null);
@@ -83,6 +142,7 @@ function WhetherCheck({
         <CommonForm
           wrappedComponentRef={commonFormRef}
           type='create'
+          columns={recommendColumns}
         />
         <div
           className={styles.commonTitle}

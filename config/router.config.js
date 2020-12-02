@@ -364,6 +364,16 @@ export default [
         component: './SupplierRAM/approvePages/WhetherCheck',
         title: '供应商推荐准入审批-是否需要供应商审核'
       },
+      {
+        path: '/supplier/recommend/admittance/manage/approve/detail',
+        component: './SupplierRAM/approvePages/Detail',
+        title: '供应商推荐准入审批-审批明细'
+      },
+      {
+        path: '/supplier/recommend/admittance/manage/approve/result',
+        component: './SupplierRAM/approvePages/Result',
+        title: '供应商推荐准入审批-推荐准入结果'
+      },
       /**供应商推荐准入 end */
       //  企业社会责任调查表选项主数据
       {
