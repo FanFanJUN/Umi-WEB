@@ -209,13 +209,14 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
       value.reviewTeamGroupBoList = [];
       setData(v => ({ ...v, dataSource: [...data.dataSource, ...[value]], visible: false }));
     } else if (data.type === 'edit') {
-      value.id = data.id;
-      value.reviewRequirementLinenum = data.selectRows[0].reviewRequirementLinenum;
-      value.lineNum = data.selectRows[0].lineNum;
-      value.sonList = data.selectRows[0].sonList;
+      value = Object.assign(data.selectRows[0], value);
+      // value.id = data.selectRows[0].id;
+      // value.reviewRequirementLinenum = data.selectRows[0].reviewRequirementLinenum;
+      // value.lineNum = data.selectRows[0].lineNum;
+      // value.sonList = data.selectRows[0].sonList;
       // value.supplierStrategyName = value.supplierStrategyCode;
-      value.treeData = data.selectRows[0].treeData;
-      value.reviewTeamGroupBoList = data.selectRows[0].reviewTeamGroupBoList;
+      // value.treeData = data.selectRows[0].treeData;
+      // value.reviewTeamGroupBoList = data.selectRows[0].reviewTeamGroupBoList;
       let newData = JSON.parse(JSON.stringify(data.dataSource));
       newData.map((item, index) => {
         if (item.lineNum === data.selectedRowKeys[0]) {
