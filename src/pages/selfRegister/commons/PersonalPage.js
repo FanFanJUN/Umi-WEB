@@ -1,8 +1,8 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useState } from 'react';
 import { Form, Row, Input, Col, message, Radio, Button } from 'antd';
 import SearchTable from '../../supplierRegister/components/SearchTable'
-import { checkCreditCode ,checkAccount} from '../../../services/supplierRegister'
-import {chineseProvinceTableConfig} from '../../../utils/commonProps'
+import { checkCreditCode, checkAccount } from '../../../services/supplierRegister'
+import { chineseProvinceTableConfig } from '../../../utils/commonProps'
 const { create } = Form;
 const FormItem = Form.Item;
 const formItemLayout = {
@@ -16,7 +16,7 @@ const tipsLayout = {
 const OrganizatRef = forwardRef(({
     isView,
     form,
-    accounts=[],
+    accounts = [],
 }, ref) => {
     useImperativeHandle(ref, () => ({
         getpersoninfo,
@@ -44,7 +44,7 @@ const OrganizatRef = forwardRef(({
             if (!err) {
                 values.supplierType = '0';
                 values.openId = accounts.openId;
-                values.name = values.name  + values.mobile
+                values.name = values.name
                 result = values;
             }
         });
@@ -57,10 +57,10 @@ const OrganizatRef = forwardRef(({
             return false;
         }
         if (name) {
-            const {success, message: msg } = await checkAccount({ supplierName: name, supplierId: '' });
-            if (success){
+            const { success, message: msg } = await checkAccount({ supplierName: name, supplierId: '' });
+            if (success) {
                 message.error('供应商名称已存在，请重新输入');
-            }else {
+            } else {
                 message.success('供应商名称可以使用');
             }
         } else {
@@ -76,11 +76,11 @@ const OrganizatRef = forwardRef(({
         }
         let id = '';
         if (creditCode && creditCode.match('^[A-Z0-9]{18}$')) {
-            const {data,success, message: msg } = await checkCreditCode({creditCode,id});
+            const { data, success, message: msg } = await checkCreditCode({ creditCode, id });
             if (success) {
                 if (data) {
                     message.error('社会信用代码已存在，请重新输入');
-                }else {
+                } else {
                     message.success('社会信用代码可以使用');
                 }
             }
@@ -93,11 +93,11 @@ const OrganizatRef = forwardRef(({
         let value = event.target.value;
         event.target.value = value.toUpperCase();
         if (value && value.match('^[A-Z0-9]{18}$')) {
-           
+
         }
     }
     return (
-        <Form style={{paddingTop:'50px'}}>
+        <Form style={{ paddingTop: '50px' }}>
             <Row>
                 <Col span={15}>
                     <FormItem
@@ -108,7 +108,7 @@ const OrganizatRef = forwardRef(({
                             getFieldDecorator('name', {
                                 initialValue: '',
                                 rules: [{ required: true, message: '姓名' },
-                                //{ validator: this.checkName },
+                                    //{ validator: this.checkName },
                                 ],
                             })(
                                 <Input
@@ -181,7 +181,7 @@ const OrganizatRef = forwardRef(({
                                 }],
                             })(
                                 <Input
-                                disabled={true}
+                                    disabled={true}
                                     maxLength={11}
                                     placeholder={'请输入手机号'} />,
                             )

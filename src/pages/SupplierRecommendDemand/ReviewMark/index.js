@@ -92,8 +92,12 @@ function ReviewMark() {
               <TabPane tab="供应商自评表" key="supplier-self-assessment">
                 <SelfAssessment type="detail" />
               </TabPane>
-              <TabPane tab="评审" key="mark">
-                <Review wrappedComponentRef={reviewRef} forceRender={true} />
+              <TabPane
+                tab="评审"
+                key="mark"
+                forceRender={true}
+              >
+                <Review wrappedComponentRef={reviewRef} />
               </TabPane>
             </Tabs>
           </div>

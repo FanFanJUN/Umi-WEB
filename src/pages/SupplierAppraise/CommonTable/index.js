@@ -120,7 +120,7 @@ const CommonTable = forwardRef(({
         const { success, data, message: msg } = await exportMethod({ evaluationProjectId: query?.id });
         if (success) {
           downloadBlobFile(data, fileName)
-          message.success(msg)
+          message.success('导出成功')
           return
         }
         message.error(msg)

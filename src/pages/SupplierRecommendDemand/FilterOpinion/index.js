@@ -22,7 +22,7 @@ const { useLocation } = router;
 const { Approve } = WorkFlow;
 function FillInInfomationConfirm() {
   const { query } = useLocation();
-  const { id = null } = query;
+  const { id = null, taskId = null, instanceId = null } = query;
   const [isReady, setIsReady] = useState(false);
   const [status, updateGlobalStatus] = useGlobalStatus(id);
   const filterRef = useRef(null);
@@ -69,6 +69,9 @@ function FillInInfomationConfirm() {
       beforeSubmit={beforeSubmit}
       submitComplete={handleComplete}
       flowMapUrl="flow-web/design/showLook"
+      businessId={id}
+      instanceId={instanceId}
+      taskId={taskId}
     >
       <div>
         <div className={styles.title}>评审小组筛选意见</div>
@@ -85,15 +88,15 @@ function FillInInfomationConfirm() {
           <TabPane tab="评审打分" key="mark">
             <Review type="detail" />
           </TabPane>
-          <TabPane tab="筛选意见" key="filter">
+          <TabPane tab="筛选意见" key="filter" forceRender={true}>
             <Filter ref={filterRef} />
           </TabPane>
         </Tabs>
       </div>
     </Approve>
   ) : (
-    <Skeleton loading={!isReady} active></Skeleton>
-  );
+      <Skeleton loading={!isReady} active></Skeleton>
+    );
 }
 
 export default FillInInfomationConfirm;

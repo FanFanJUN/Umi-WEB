@@ -85,17 +85,23 @@ export default function () {
     async function handleSupplier() {
         const { getTypeinfo } = SupplierRef.current;
         let resultnum = getTypeinfo()
-        if (isEmpty(resultnum.suppliertype)) {
+        if (isEmpty(resultnum.organization) && isEmpty(resultnum.personal)) {
             message.error('请选择需要注册的供应商类型！');
         } else {
-            setassignment(resultnum.suppliertype)
+            if (!isEmpty(resultnum.organization)) {
+                setassignment(resultnum.organization)
+            }
+            if (!isEmpty(resultnum.personal)) {
+                setassignment(resultnum.personal)
+            }
+
         }
         // 个人
-        if (!isEmpty(resultnum.suppliertype) && resultnum.suppliertype === 0) {
+        if (!isEmpty(resultnum.personal) && resultnum.personal === 0) {
             next()
         }
         // 组织
-        if (!isEmpty(resultnum.suppliertype) && resultnum.suppliertype === 1) {
+        if (!isEmpty(resultnum.organization) && resultnum.organization === 1) {
             if (!isEmpty(accounts.email)) {
                 next()
             } else {

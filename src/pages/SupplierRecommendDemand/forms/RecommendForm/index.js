@@ -1,7 +1,7 @@
 import { forwardRef, useImperativeHandle, useState, createRef } from 'react';
 import { Form, Row, Col, Input, Button, Radio, Checkbox, Tree, Modal } from 'antd';
 import { ComboList, ComboTree, ExtTable } from 'suid';
-import { Header, ComboAttachment } from '../../../../components'
+import { Header, ComboAttachment, UserSelect } from '../../../../components'
 import RecommendCompany from '../RecommendCompany'
 import moment from 'moment';
 import { commonProps, getUserName } from '../../../../utils';
@@ -399,6 +399,7 @@ const FormContext = forwardRef(({
           <Col span={12}>
             <FormItem label='认定物料类别' {...formLayout}>
               {
+                getFieldDecorator('identifyMaterialLevelValue'),
                 getFieldDecorator('identifyMaterialLevelName', {
                   rules: [
                     {
@@ -419,17 +420,31 @@ const FormContext = forwardRef(({
             </FormItem>
           </Col>
           <Col span={12}>
-            <FormItem label='认定物料类别代码' {...formLayout}>
+            <FormItem label='采购小组组长' {...formLayout}>
               {
-                getFieldDecorator('identifyMaterialLevelValue', {
+                getFieldDecorator('purchaseTeamLeaderCode'),
+                getFieldDecorator('purchaseTeamLeaderId'),
+                getFieldDecorator('purchaseTeamLeaderName', {
                   rules: [
                     {
                       required: true,
-                      message: '请选择认定物料类别代码'
+                      message: '请选择采购小组组长'
                     }
                   ]
                 })(
-                  <Input disabled placeholder='选择认定物料类别代码' />
+                  <UserSelect
+                    disabled={type === 'detail'}
+                    placeholder='选择采购小组组长'
+                    form={form}
+                    mode="tags"
+                    name='purchaseTeamLeaderName'
+                    multiple={false}
+                    reader={{
+                      name: 'userName',
+                      field: ['code', 'id']
+                    }}
+                    field={['purchaseTeamLeaderCode', 'purchaseTeamLeaderId']}
+                  />
                 )
               }
             </FormItem>

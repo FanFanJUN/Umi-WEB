@@ -18,6 +18,7 @@ import { ComboList, ExtTable } from 'suid';
 import SelectRecommendData from './SelectRecommendData';
 import { commonProps, getUserName } from '../../utils';
 import moment from 'moment';
+import PropTypes from 'prop-types';
 import { useTableProps } from '../../utils/hooks';
 const { orgnazationProps, corporationProps } = commonProps;
 
@@ -31,26 +32,9 @@ const formLayout = {
   }
 };
 function CommonForm({
-  form
-}, ref) {
-  useImperativeHandle(ref, () => ({
-    setFormValue
-  }))
-  const sRef = useRef(null);
-  const [demandLine, setDemandLine] = useState([]);
-  const [tableProps, sets] = useTableProps();
-  const {
-    selectedRows,
-    selectedRowKeys,
-    dataSource: recommendLine
-  } = tableProps;
-  const {
-    setDataSource: setRecommendLine,
-    handleSelectedRows
-  } = sets;
-  const empty = selectedRowKeys.length === 0;
-  const { getFieldDecorator, setFieldsValue } = form;
-  const recommendColumns = [
+  form,
+  type,
+  columns = [
     {
       title: '公司代码',
       dataIndex: 'corporationCode'
@@ -96,7 +80,33 @@ function CommonForm({
         return '未选择'
       }
     }
-  ];
+  ]
+}, ref) {
+  useImperativeHandle(ref, () => ({
+    setFormValue,
+    getFormValue
+  }))
+  const sRef = useRef(null);
+  const [demandLine, setDemandLine] = useState([]);
+  const [tableProps, sets] = useTableProps();
+  const {
+    selectedRows,
+    selectedRowKeys,
+    dataSource: recommendLine
+  } = tableProps;
+  const {
+    setDataSource: setRecommendLine,
+    handleSelectedRows
+  } = sets;
+  const empty = selectedRowKeys.length === 0;
+  const [singleRow = {}] = selectedRows;
+  const { recommendDemandId } = singleRow;
+  const allowEditor = !!recommendDemandId
+  const {
+    getFieldDecorator,
+    setFieldsValue,
+    validateFieldsAndScroll
+  } = form;
   const demandColumns = [
     {
       title: '序号',
@@ -115,19 +125,49 @@ function CommonForm({
     const {
       orgCode,
       orgName,
+      corporationCode,
+      corporationName,
+      createdDate,
+      supplierCode,
+      supplierName,
+      originName,
+      originCode,
+      materialCategoryName,
+      materialCategoryCode,
+      identifyMaterialLevelValue,
+      identifyMaterialLevelName,
       recommendAccessLines = [],
       accessRelateDemands = []
     } = values;
     await setFieldsValue({
       orgCode,
-      orgName
+      orgName,
+      corporationCode,
+      corporationName,
+      dateTime: type === 'create' ? moment().format('YYYY-MM-DD') : moment(createdDate).format('YYYY-MM-DD'),
+      supplierCode,
+      supplierName,
+      originName,
+      originCode,
+      materialCategoryName,
+      materialCategoryCode,
+      identifyMaterialLevelValue,
+      identifyMaterialLevelName,
     })
     const addLineNumberDemands = accessRelateDemands.map((item, index) => ({
       ...item,
       lineNumber: index + 1
     }))
-    await setRecommendLine(recommendAccessLines);
+    await setRecommendLine(recommendAccessLines.map(item => ({ ...item, guid: item.id })));
     await setDemandLine(addLineNumberDemands);
+  }
+  async function getFormValue() {
+    const v = await validateFieldsAndScroll();
+    return {
+      ...v,
+      accessRelateDemands: demandLine,
+      recommendAccessLines: recommendLine
+    }
   }
   function handleCreateRecommendInfo() {
     sRef?.current?.show()
@@ -169,6 +209,7 @@ function CommonForm({
                   name='orgName'
                   field={['orgCode']}
                   {...orgnazationProps}
+                  disabled={type === 'detail'}
                 />
               )
             }
@@ -202,6 +243,7 @@ function CommonForm({
                   name='corporationName'
                   field={['corporationCode']}
                   {...corporationProps}
+                  disabled={type === 'detail'}
                 />
               )
             }
@@ -260,6 +302,7 @@ function CommonForm({
         <Col span={12}>
           <FormItem label='物料分类'>
             {
+              getFieldDecorator('materialCategoryCode'),
               getFieldDecorator('materialCategoryName')(
                 <Input disabled />
               )
@@ -269,6 +312,7 @@ function CommonForm({
         <Col span={12}>
           <FormItem label='认定物料类别'>
             {
+              getFieldDecorator('identifyMaterialLevelValue'),
               getFieldDecorator('identifyMaterialLevelName')(
                 <Input disabled />
               )
@@ -278,19 +322,35 @@ function CommonForm({
       </Row>
       <div className={styles.tableWrapper}>
         <div className={styles.verticalPadding}>
-          <Button className={styles.btn} onClick={handleCreateRecommendInfo} type='primary'>新增</Button>
-          <Button className={styles.btn} onClick={handleRemove} disabled={empty}>删除</Button>
+          <Button
+            className={styles.btn}
+            onClick={handleCreateRecommendInfo}
+            type='primary'
+            disabled={
+              type === 'detail'
+            }
+          >新增</Button>
+          <Button
+            className={styles.btn}
+            onClick={handleRemove}
+            disabled={
+              empty ||
+              allowEditor ||
+              type === 'detail'
+            }
+          >删除</Button>
         </div>
         <ExtTable
           bordered
           dataSource={recommendLine}
-          columns={recommendColumns}
+          columns={columns}
           size='small'
           rowKey='guid'
           allowCancelSelect
           checkbox={{
             multiSelect: false
           }}
+          showSearch={false}
           onSelectRow={handleSelectedRows}
           selectedRowKeys={selectedRowKeys}
         />
@@ -310,10 +370,15 @@ function CommonForm({
           style={{
             width: 500
           }}
+          rowKey='recommendDemandId'
         />
       </div>
     </Form>
   )
+}
+
+CommonForm.prototype = {
+  type: PropTypes.string
 }
 
 const ForwardRef = forwardRef(CommonForm)

@@ -25,7 +25,7 @@ function ScoreDetails() {
   const { query } = useLocation();
   function checkEvaluateDetail(ruleScoreId, type) {
     const pathname = type === 'system' ? 'supplier/appraise/project/evaluate/result/score/details/system' : 'supplier/appraise/project/evaluate/result/score/details/manual'
-    openNewTab(`${pathname}?ruleScoreId=${ruleScoreId}`,'人工-分值详情', false)
+    openNewTab(`${pathname}?ruleScoreId=${ruleScoreId}`, `${type === 'system' ? '系统' : '人工'}-分值详情`, false)
   }
   const columns = [
     {
@@ -71,7 +71,7 @@ function ScoreDetails() {
         if (text === null) {
           return ''
         }
-        if(!!record?.systemName) {
+        if (!!record?.systemName) {
           return text
         }
         return <Button type='link' onClick={() => checkEvaluateDetail(record?.ruleScoreId, type)}>{text}</Button>
