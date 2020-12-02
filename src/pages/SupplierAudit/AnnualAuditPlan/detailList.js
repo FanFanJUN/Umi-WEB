@@ -1,6 +1,6 @@
 /*
  * @Description:  年度度审核计划明细
- * @FilePath: /srm-sm-web/src/pages/SupplierAudit/MonthAuditPlan/detailList.js
+ * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/detailList.js
  */
 import React, { useState, useRef, useEffect, Fragment } from 'react';
 import Header from '../../../components/Header';
@@ -206,9 +206,9 @@ export default function () {
         }
     </>;
 
-    const headerRight = <div style={{ display: 'flex', alignItems: 'center' }}>
+    const headerRight = <div style={{ display: 'flex', alignItems: 'center', width: '300px' }}>
         <Search
-            placeholder='请输入月度审核计划号或拟制说明查询'
+            placeholder='请输入年度审核计划号或拟制说明查询'
             className={styles.btn}
             onSearch={handleQuickSearch}
             allowClear
