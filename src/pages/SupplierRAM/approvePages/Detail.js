@@ -8,12 +8,10 @@ import CommonForm from '../CommonForm';
 import styles from '../index.less';
 import { useLocation } from 'dva/router';
 import {
-  updateNeedExamine,
-  saveRecommendAccess,
   queryRecommendAccess
 } from '../../../services/ram';
 import { WorkFlow } from 'suid';
-import { closeCurrent } from '../../../utils';
+import { closeCurrent, checkToken } from '../../../utils';
 const formLayout = {
   labelCol: {
     span: 6
@@ -27,8 +25,9 @@ const { Item: FormItem, create } = Form;
 function Detail({
   form
 }) {
-  const { getFieldDecorator, validateFieldsAndScroll, setFieldsValue } = form;
+  const { getFieldDecorator, setFieldsValue } = form;
   const [loading, toggleLoading] = useState(false);
+  const [isReady, setIsReady] = useState(false);
   const commonFormRef = useRef(null);
   const { query } = useLocation();
   const { id = null, taskId = null, instanceId = null } = query;
@@ -41,6 +40,9 @@ function Detail({
     }
     message.error(msg);
   }
+  useEffect(() => {
+    checkToken(query, setIsReady)
+  }, [])
   useEffect(() => {
     async function initialCreateRAMData() {
       toggleLoading(true)
@@ -56,8 +58,10 @@ function Detail({
       }
       message.error(msg)
     }
-    initialCreateRAMData()
-  }, [])
+    if (isReady) {
+      initialCreateRAMData()
+    }
+  }, [isReady])
   return (
     <Approve
       flowMapUrl="flow-web/design/showLook"

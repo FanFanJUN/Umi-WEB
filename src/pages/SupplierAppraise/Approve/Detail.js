@@ -90,7 +90,7 @@ function TeamApprove() {
           <TabPane tab='采购小组确认' key='evaluate-result'>
             {
               isReady ?
-                <CommonTable columns={tableColumns} type='team' /> : <Skeleton loading={true} />
+                <CommonTable columns={tableColumns} /> : <Skeleton loading={true} />
             }
           </TabPane>
         </Tabs>

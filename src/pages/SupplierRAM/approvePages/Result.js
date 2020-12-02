@@ -12,7 +12,7 @@ import {
   updateAccess
 } from '../../../services/ram';
 import { WorkFlow } from 'suid';
-import { closeCurrent } from '../../../utils';
+import { closeCurrent, checkToken } from '../../../utils';
 const formLayout = {
   labelCol: {
     span: 6
@@ -107,6 +107,7 @@ function WhetherCheck({
     setFieldsValue
   } = form;
   const [loading, toggleLoading] = useState(false);
+  const [isReady, setIsReady] = useState(false);
   const [dataSource, setDataSource] = useState([]);
   const commonFormRef = useRef(null);
   const { query } = useLocation();
@@ -143,6 +144,9 @@ function WhetherCheck({
     message.error(msg);
   }
   useEffect(() => {
+    checkToken(query, setIsReady)
+  }, [])
+  useEffect(() => {
     async function initialCreateRAMData() {
       toggleLoading(true)
       const { success, data, message: msg } = await queryRecommendAccess({ recommendAccessId: id })
@@ -158,8 +162,10 @@ function WhetherCheck({
       }
       message.error(msg)
     }
-    initialCreateRAMData()
-  }, [])
+    if (isReady) {
+      initialCreateRAMData()
+    }
+  }, [isReady])
   return (
     <Approve
       flowMapUrl="flow-web/design/showLook"
