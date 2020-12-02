@@ -74,7 +74,6 @@ let BaseInfo = React.forwardRef((props, ref) => {
                   ],
                 })(
                   <ComboList
-                    allowClear={true}
                     style={{ width: '100%' }}
                     afterSelect={v => props.setCompanyCode(v.code)}
                     form={form}
@@ -99,7 +98,6 @@ let BaseInfo = React.forwardRef((props, ref) => {
                   ],
                 })(
                   <ComboTree
-                    allowClear={true}
                     style={{ width: '100%' }}
                     form={form}
                     name={'applyDepartmentName'}
