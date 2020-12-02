@@ -145,14 +145,20 @@ const Index = (props) => {
         if (!saveData) return false;
         setLoading(true);
         let res = {};
-        if (query.pageState === "add") {
-            res = await insertMonthBo(saveData);
-        } else if (query.pageState === "edit") {
-            res = await upDateMonthBo(saveData);
-            res.data = saveData.id;
-        } else {
-            // 变更暂存
-            res = await insertChangeMonthBo(saveData);
+        console.log(query.pageState);
+        const requestPromise = {
+            'add':  insertMonthBo,
+            'edit':  upDateMonthBo,
+            'change':  insertChangeMonthBo,
+        };
+        // 请求错误时 success值同样为 true  catch 重新赋值
+        try {
+             res = await requestPromise[query.pageState](saveData);
+            if(res && res.data && query.pageState === 'edit') {
+                res.data = saveData.id;
+            }
+        } catch (error) {
+            res = error;
         }
         if (res.success) {
             if (type === "save") {
