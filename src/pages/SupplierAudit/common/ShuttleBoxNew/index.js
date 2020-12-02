@@ -4,6 +4,8 @@ import { duplicateRemoval } from '../../mainData/commomService';
 
 const ShuttleBoxNew = (props) => {
 
+  const [operation, setOperation] = useState(0);
+
   const [data, setData] = useState({
     leftCheckedKeys: [],
     leftData: [],
@@ -18,7 +20,7 @@ const ShuttleBoxNew = (props) => {
   useEffect(() => {
     destruction(data.rightTreeData);
     leftData = duplicateRemoval(leftData, 'key');
-    props.onChange(leftData);
+    props.onChange(leftData, operation);
   }, [data.rightTreeData]);
 
   useEffect(() => {
@@ -75,6 +77,7 @@ const ShuttleBoxNew = (props) => {
       rightCheckedKeys: [],
       rightCheck: [],
     }));
+    setOperation(operation + 1);
   };
 
   // 删除方法
@@ -90,6 +93,7 @@ const ShuttleBoxNew = (props) => {
       rightCheckedKeys: [],
       rightCheck: [],
     }));
+    setOperation(operation + 1);
   };
 
   //找到子节点

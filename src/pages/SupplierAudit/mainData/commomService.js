@@ -137,6 +137,16 @@ export const EvaluationSystemConfig = {
   },
 };
 
+// 获取评价体系
+export const GetEvaluationSystem = (params={}) => {
+  const url =`${recommendUrl}/api/reviewEvlSystemService/findEvlSystem`
+  return request({
+    url,
+    method: 'GET',
+    params
+  });
+};
+
 // 区域
 export const AreaConfig = {
   remotePaging: true,

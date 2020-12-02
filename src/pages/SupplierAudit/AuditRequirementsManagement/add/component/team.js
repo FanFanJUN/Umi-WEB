@@ -371,8 +371,6 @@ const Team = (props) => {
       arr = duplicateRemoval(arr, 'systemId');
       arr = recursion(arr);
       setData(v => ({ ...v, leftTreeData: arr }));
-    } else {
-      message.error('请选择一名成员');
     }
   };
 
