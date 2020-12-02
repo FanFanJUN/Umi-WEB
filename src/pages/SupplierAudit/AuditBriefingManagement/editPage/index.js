@@ -205,6 +205,7 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
         <TotalInfoForm
           editData={data.editData}/>
         <ThisPeriodForm
+          isView={data.isView}
           type={data.type}
           wrappedComponentRef={getThisPeriodFormRef}
           editData={data.editData}/>
