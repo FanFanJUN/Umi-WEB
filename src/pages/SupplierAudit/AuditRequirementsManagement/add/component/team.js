@@ -76,7 +76,7 @@ const Team = (props) => {
       if (props.type !== 'detail') {
         GetDefaultSystem({
           reviewTypeCode: props.reviewTypeCode,
-          sonList: props.treeData
+          sonList: props.treeData,
         }).then(res => {
           if (res.success) {
             setData(v => ({ ...v, defaultSystem: res.data }));
@@ -197,6 +197,7 @@ const Team = (props) => {
     }));
     setData(v => ({ ...v, leftTreeData: undefined, treeData: treeData }));
     setContentData(v => ({ ...v, selectedRows: values, selectedRowKeys: keys }));
+    getLeftTreeData(keys);
   };
 
   const buttonClick = (type) => {
@@ -361,8 +362,8 @@ const Team = (props) => {
   };
 
   // 构造左边树
-  const getLeftTreeData = () => {
-    if (contentData.selectedRowKeys && contentData.selectedRowKeys.length !== 0) {
+  const getLeftTreeData = (keys) => {
+    if (keys && keys.length !== 0) {
       if (data.defaultSystem && data.defaultSystem.length !== 0) {
         destructionTree(data.defaultSystem);
       }
@@ -419,7 +420,7 @@ const Team = (props) => {
               <Button type='primary' onClick={() => buttonClick('contentAdd')}>新增</Button>
               <Button style={{ marginLeft: '5px' }} onClick={() => buttonClick('contentEdit')}>编辑</Button>
               <Button style={{ marginLeft: '5px' }} onClick={contentDelete}>删除</Button>
-              <Button style={{ marginLeft: '5px' }} onClick={getLeftTreeData}>审核内容管理</Button>
+              {/*<Button style={{ marginLeft: '5px' }} onClick={getLeftTreeData}>审核内容管理</Button>*/}
             </div>
           }
           <div style={{ marginTop: '10px', height: '270px' }}>
