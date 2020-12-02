@@ -11,7 +11,7 @@ import {
   AddDataSharingList,
   DataSharingFindOne,
   generateLineNumber,
-  getRandom, SubmitDataSharingList,
+  getRandom, MaterialSourceArr, SubmitDataSharingList,
   UpdateDataSharingList,
 } from '../../../commonProps';
 import SupplierData from './SupplierData';
@@ -81,6 +81,7 @@ export default () => {
           lineNumber: getRandom(10).toString(),
         }));
         console.log(res.data);
+        res.data.materialSourceName = res.data.materialSource ? MaterialSourceArr[res.data.materialSource] : ''
         res.data.technicalDataAndSupplierVos = res.data.technicalDataAndSupplierVos.map((item, index) => ({
           ...item,
           technicalLineNumber: generateLineNumber(index + 1),

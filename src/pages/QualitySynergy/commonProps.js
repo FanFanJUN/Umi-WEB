@@ -17,6 +17,32 @@ export const checkDecimal = (c) => {
   return r.test(c);
 }
 
+export const MaterialSourceArr = {
+  'ZZ' : '自制',
+  'WG' : '外购',
+  'WX' : '外协',
+}
+
+export const MaterialSourceConfig = {
+  allowClear: true,
+  dataSource: [
+    {
+      code: 'ZZ',
+      name: '自制',
+    },
+    {
+      code: 'WG',
+      name: '外购',
+    },
+    {
+      code: 'WX',
+      name: '外协',
+    },
+  ],
+  placeholder: '选择技术图纸',
+  ...commonProps,
+}
+
 export const ApplicableStateArr = {
   'true' : '是',
   'false' : '否',
