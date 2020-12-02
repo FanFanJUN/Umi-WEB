@@ -21,7 +21,7 @@ const { storage } = utils;
 const { recommendUrl } = commonUrl;
 const { corporationProps, materialClassProps, statusProps, flowStatusProps } = commonProps
 
-
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 export default () => {
   const headerRef = useRef(null);
   const tableRef = useRef(null);
