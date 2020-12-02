@@ -3,13 +3,13 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime: 2020-11-30 16:32:10
+ * @LastEditTime: 2020-12-02 16:02:21
  * @Description: 行信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
 import React, { useEffect, useRef, useState } from 'react';
 import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/edit/BaseInfo.less';
-import { Form, Button } from 'antd';
+import { Form, Button, message } from 'antd';
 import { ExtTable } from 'suid';
 import AddModal from './AddModal';
 import BatchEditModal from './BatchEditModal';
@@ -74,7 +74,7 @@ let LineInfo = (props, ref) => {
     { title: '审核类型', dataIndex: 'reviewTypeName', ellipsis: true, width: 140 },
     { title: '审核原因', dataIndex: 'reviewReasonName', ellipsis: true, width: 140 },
     { title: '审核方式', dataIndex: 'reviewWayName', ellipsis: true, width: 140 },
-    { title: '预计审核月度', dataIndex: 'reviewMonth', ellipsis: true, width: 140, render: text =>  text && `${text} 月` },
+    { title: '预计审核月度', dataIndex: 'reviewMonth', ellipsis: true, width: 140, render: text => text && `${text} 月` },
     { title: '专业组', dataIndex: 'specialtyTeamName', ellipsis: true, width: 140 },
     { title: '备注', dataIndex: 'remark', ellipsis: true, width: 140 },
   ].map(item => ({ ...item, align: 'center' }))
@@ -147,7 +147,26 @@ let LineInfo = (props, ref) => {
       item.specialtyTeamName = item.purchaseProfessionalGroup;
     })
     const newTableList = JSON.parse(JSON.stringify(dataSource));
-    // 是否选择有重复数据
+    // 是否选择有重复数据 以需求公司、采购组织、供应商、物料分类、物料级别 判断唯一性
+    const chooseDataKeys = tableData.map((item) =>
+      `${item.applyCorporationCode}${item.purchaseTeamCode}${item.materialGroupCode}${item.supplierCode}${item.materialGradeCode}`
+    );
+    let checkFlag = false;
+    if (!isEmptyArray(newTableList)) {
+      const originDataKeys = newTableList.map((item) =>
+        `${item.applyCorporationCode}${item.purchaseTeamCode}${item.materialGroupCode}${item.supplierCode}${item.materialGradeCode}`
+      );
+      for (let item of originDataKeys) {
+        if (chooseDataKeys.includes(item)) {
+          message.error('不能添加重复数据!');
+          checkFlag = true;
+          break;
+        }
+      }
+    }
+    if (checkFlag) {
+      return;
+    }
     newTableList.push(...tableData);
     // 行号
     newTableList.forEach((item, index) => {

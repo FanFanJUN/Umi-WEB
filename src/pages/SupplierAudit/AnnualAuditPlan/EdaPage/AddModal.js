@@ -53,20 +53,6 @@ const AddModal = (props) => {
         { title: '采购金额', dataIndex: 'sampleReceiverName', ellipsis: true, width: 140 },
     ].map(item => ({ ...item, align: 'center' }))
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         setLoading(true);
-    //         const res = await getSupplierSupplyList({ supplierRecommendDemandId: '676800B6-F19D-11EA-9F88-0242C0A8442E' });
-    //         if (res.success) {
-    //             res.data && setdataSource(res.data);
-    //         } else {
-    //             message.error(res.message);
-    //         }
-    //         setLoading(false);
-    //     };
-    //     fetchData();
-    // }, []);
-
     const onCancel = () => {
         handleCancel();
     }
@@ -80,8 +66,6 @@ const AddModal = (props) => {
             delete item.id;
         })
         handleOk(selectRows);
-        setselectedRowKeys([]);
-        setselectRows([]);
     }
 
     const clearSelected = () => {
