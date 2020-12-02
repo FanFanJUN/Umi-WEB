@@ -63,3 +63,10 @@ export const updateNeedExamine = params => createServiceRequest({
   method: 'POST',
   hack: true
 })
+
+// 流程中更新是否准入
+export const updateAccess = params => createServiceRequest({
+  path: '/api/recommendAccessService/updateAccess',
+  params,
+  method: 'POST'
+})

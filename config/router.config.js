@@ -360,6 +360,11 @@ export default [
         title: '编辑供应商推荐准入'
       },
       {
+        path: '/supplier/recommend/admittance/manage/detail',
+        component: './SupplierRAM/Detail',
+        title: '供应商推荐准入明细'
+      },
+      {
         path: '/supplier/recommend/admittance/manage/approve/whether/check',
         component: './SupplierRAM/approvePages/WhetherCheck',
         title: '供应商推荐准入审批-是否需要供应商审核'

@@ -127,6 +127,7 @@ function CommonForm({
       orgName,
       corporationCode,
       corporationName,
+      creatorName,
       createdDate,
       supplierCode,
       supplierName,
@@ -149,6 +150,7 @@ function CommonForm({
       supplierName,
       originName,
       originCode,
+      creatorName,
       materialCategoryName,
       materialCategoryCode,
       identifyMaterialLevelValue,
@@ -321,25 +323,28 @@ function CommonForm({
         </Col>
       </Row>
       <div className={styles.tableWrapper}>
-        <div className={styles.verticalPadding}>
-          <Button
-            className={styles.btn}
-            onClick={handleCreateRecommendInfo}
-            type='primary'
-            disabled={
-              type === 'detail'
-            }
-          >新增</Button>
-          <Button
-            className={styles.btn}
-            onClick={handleRemove}
-            disabled={
-              empty ||
-              allowEditor ||
-              type === 'detail'
-            }
-          >删除</Button>
-        </div>
+        {
+          type === 'detail' ? null :
+            <div className={styles.verticalPadding}>
+              <Button
+                className={styles.btn}
+                onClick={handleCreateRecommendInfo}
+                type='primary'
+                disabled={
+                  type === 'detail'
+                }
+              >新增</Button>
+              <Button
+                className={styles.btn}
+                onClick={handleRemove}
+                disabled={
+                  empty ||
+                  allowEditor ||
+                  type === 'detail'
+                }
+              >删除</Button>
+            </div>
+        }
         <ExtTable
           bordered
           dataSource={recommendLine}

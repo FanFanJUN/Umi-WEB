@@ -8,9 +8,8 @@ import CommonForm from '../CommonForm';
 import styles from '../index.less';
 import { useLocation } from 'dva/router';
 import {
-  updateNeedExamine,
-  saveRecommendAccess,
-  queryRecommendAccess
+  queryRecommendAccess,
+  updateAccess
 } from '../../../services/ram';
 import { WorkFlow } from 'suid';
 import { closeCurrent } from '../../../utils';
@@ -28,6 +27,34 @@ function WhetherCheck({
   form
 }) {
   const recommendColumns = [
+    {
+      title: '是否准入',
+      dataIndex: 'access',
+      render(_, record, index) {
+        return (
+          <FormItem style={{
+            margin: 0,
+            padding: 0
+          }}>
+            {
+              getFieldDecorator(`access_${index}`, {
+                rules: [
+                  {
+                    required: true,
+                    message: '请选择是否准入'
+                  }
+                ]
+              })(
+                <Radio.Group>
+                  <Radio value={true}>是</Radio>
+                  <Radio value={false}>否</Radio>
+                </Radio.Group>
+              )
+            }
+          </FormItem>
+        )
+      }
+    },
     {
       title: '公司代码',
       dataIndex: 'corporationCode'
@@ -52,18 +79,6 @@ function WhetherCheck({
       width: 200
     },
     {
-      title: '是否准入',
-      dataIndex: 'access',
-      render(text, record, index) {
-        return getFieldDecorator(`access_${index}`)(
-          <Radio.Group>
-            <Radio value={true}>是</Radio>
-            <Radio value={false}>否</Radio>
-          </Radio.Group>
-        )
-      }
-    },
-    {
       title: '是否实物认定',
       dataIndex: 'objectRecognition',
       render(text) {
@@ -86,17 +101,28 @@ function WhetherCheck({
       }
     }
   ];
-  const { getFieldDecorator, validateFieldsAndScroll } = form;
+  const {
+    getFieldDecorator,
+    validateFields,
+    setFieldsValue
+  } = form;
   const [loading, toggleLoading] = useState(false);
+  const [dataSource, setDataSource] = useState([]);
   const commonFormRef = useRef(null);
   const { query } = useLocation();
   const { id = null, taskId = null, instanceId = null } = query;
   async function beforeSubmit() {
-    const v = await validateFieldsAndScroll()
-    const { success, message: msg } = await updateNeedExamine({
-      ...v,
-      recommendAccessId: id
-    });
+    const v = await validateFields()
+    const { needExamine, ...vs } = v;
+    const ks = Object.keys(vs);
+    const kvs = ks.map((kv) => {
+      return vs[kv]
+    })
+    const paramsDataSource = dataSource.map((item, index) => ({
+      ...item,
+      access: kvs[index]
+    }))
+    const { success, message: msg } = await updateAccess(paramsDataSource);
     return new Promise((resolve) => {
       resolve({
         success,
@@ -122,7 +148,12 @@ function WhetherCheck({
       const { success, data, message: msg } = await queryRecommendAccess({ recommendAccessId: id })
       toggleLoading(false)
       if (success) {
-        commonFormRef.current.setFormValue(data)
+        const { needExamine, recommendAccessLines } = data;
+        await setDataSource(recommendAccessLines)
+        await setFieldsValue({
+          needExamine
+        })
+        await commonFormRef.current.setFormValue(data)
         return
       }
       message.error(msg)
@@ -141,7 +172,7 @@ function WhetherCheck({
       <Spin spinning={loading}>
         <CommonForm
           wrappedComponentRef={commonFormRef}
-          type='create'
+          type='detail'
           columns={recommendColumns}
         />
         <div
@@ -158,7 +189,7 @@ function WhetherCheck({
                   }
                 ]
               })(
-                <Radio.Group>
+                <Radio.Group disabled>
                   <Radio value={true}>是</Radio>
                   <Radio value={false}>否</Radio>
                 </Radio.Group>
