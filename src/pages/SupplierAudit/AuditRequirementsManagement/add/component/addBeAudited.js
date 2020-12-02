@@ -118,6 +118,15 @@ const AddBeAudited = (props) => {
       supplierName: '',
       supplierCode: '',
       supplierId: '',
+      countryId: '',
+      countryName: '',
+      provinceId: '',
+      provinceName: '',
+      cityId: '',
+      cityName: '',
+      countyId: '',
+      countyName: '',
+      address: '',
     });
   };
 
@@ -401,11 +410,21 @@ const AddBeAudited = (props) => {
                   ],
                 })(
                   <ComboList
-                    allowClear={true}
                     style={{ width: '15%' }}
                     form={form}
                     name={'countryName'}
                     field={['countryId']}
+                    afterSelect={() => {
+                      setFieldsValue({
+                        provinceId: '',
+                        provinceName: '',
+                        cityId: '',
+                        cityName: '',
+                        countyId: '',
+                        countyName: '',
+                        address: '',
+                      });
+                    }}
                     store={{
                       params: {
                         filters: [{ fieldName: 'code', fieldType: 'string', operator: 'EQ', value: 'CN' }],
@@ -430,9 +449,17 @@ const AddBeAudited = (props) => {
                   ],
                 })(
                   <ComboList
-                    allowClear={true}
                     style={{ width: '15%' }}
                     form={form}
+                    afterSelect={() => {
+                      setFieldsValue({
+                        cityId: '',
+                        cityName: '',
+                        countyId: '',
+                        countyName: '',
+                        address: '',
+                      });
+                    }}
                     name={'provinceName'}
                     field={['provinceId']}
                     cascadeParams={{
@@ -462,9 +489,15 @@ const AddBeAudited = (props) => {
                   ],
                 })(
                   <ComboList
-                    allowClear={true}
                     style={{ width: '15%' }}
                     form={form}
+                    afterSelect={() => {
+                      setFieldsValue({
+                        countyId: '',
+                        countyName: '',
+                        address: '',
+                      });
+                    }}
                     name={'cityName'}
                     field={['cityId']}
                     cascadeParams={{
@@ -494,9 +527,13 @@ const AddBeAudited = (props) => {
                   ],
                 })(
                   <ComboList
-                    allowClear={true}
                     style={{ width: '15%' }}
                     form={form}
+                    afterSelect={() => {
+                      setFieldsValue({
+                        address: '',
+                      });
+                    }}
                     name={'countyName'}
                     field={['countyId']}
                     store={{
@@ -581,6 +618,8 @@ const AddBeAudited = (props) => {
         </Row>
       </Form>
       <AddSupplier
+        corporationCode={props.companyCode}
+        purchaseOrgCode={props.organizationCode}
         visible={data.visible}
         onOk={supplierOk}
         onCancel={() => setData(v => ({ ...v, visible: false }))}
