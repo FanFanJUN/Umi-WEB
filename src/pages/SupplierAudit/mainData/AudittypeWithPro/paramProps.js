@@ -30,34 +30,40 @@ export const supplierEvlSystemTree = {
 export const getSupplierEvlSysRule = (param) => {
   return {
     store: {
-      url: `${baseUrl}/supplierEvlRule/findByBusinessUnitId`,
+      url: `${baseUrl}/supplierEvlSysRule/listRulesBySysId`,
     },
     columns: [
       {
         title: '指标代码',
         width: 80,
-        dataIndex: 'code',
+        dataIndex: 'supplierEvlRule',
         key: 'code',
+        render: (text, record) => {
+          return text && text.code;
+        }
       },
       {
         title: '指标名称',
         width: 200,
-        dataIndex: 'name',
+        dataIndex: 'supplierEvlRule',
         key: 'name',
+        render: (text, record) => {
+          return text && text.name;
+        }
       },
     ],
     reader: {
-      name: item => item.name,
-      field: ['id', 'code'],
-      description: 'code',
+      name: item => item.supplierEvlRule.name,
+      field: ['id', 'supplierEvlRule.code'],
+      description: 'code'
     },
     rowKey: 'id',
     placeholder: '请先选择评价体系',
     style: {
-      width: '100%',
+      width: '100%'
     },
-  };
-};
+  }
+}
 // 审核类型 reviewType
 export const reviewTypes = {
   store: {
