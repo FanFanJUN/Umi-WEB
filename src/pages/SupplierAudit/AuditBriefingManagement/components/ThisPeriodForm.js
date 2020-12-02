@@ -43,9 +43,9 @@ const ThisPeriodForm = React.forwardRef(({ form, isView, editData, type }, ref) 
     let transData = {};
     transData.tableData = await getTableRef.current.getTableData();
     form.validateFieldsAndScroll((err, values) => {
-      transData = { ...transData,...values };
+      transData = { ...transData, ...values };
     });
-    return transData
+    return transData;
   };
 
   return (
@@ -89,17 +89,15 @@ const ThisPeriodForm = React.forwardRef(({ form, isView, editData, type }, ref) 
             />
           </div>
           <AuditTable
+            isView={isView}
             wrappedComponentRef={getTableRef}
             editData={[{ departmentName: '11', 'memberName': '11', employeeNo: '11', memberTel: '11', check: '11' }]}/>
           <div style={{ paddingBottom: '10px', fontSize: '14px' }}>
             4、激励建议
             <div style={{ paddingBottom: '10px', fontSize: '14px' }}>
               <FormItem>
-                {isView ? <span
-                  style={{
-                    width: '100%',
-                    border: 'none',
-                  }}>{editData.remark}</span> : form.getFieldDecorator('remark', {
+                {isView ? <span>1）本期供应商审核协同组织并开展实施较好的单位有<span
+                  className={styles.showNumber}>{'供应商'}</span>等，提出表扬。</span> : form.getFieldDecorator('remark', {
                   initialValue: type === 'add' ? '' : editData.remark,
                 })(
                   <span>1）本期供应商审核协同组织并开展实施较好的单位有<span> <Input style={{ width: '400px' }}
@@ -109,11 +107,8 @@ const ThisPeriodForm = React.forwardRef(({ form, isView, editData, type }, ref) 
             </div>
             <div style={{ paddingBottom: '10px', fontSize: '14px' }}>
               <FormItem>
-                {isView ? <span
-                  style={{
-                    width: '100%',
-                    border: 'none',
-                  }}>{editData.remark}</span> : form.getFieldDecorator('remark2', {
+                {isView ? <span>2）对未能按期结案供应商审核报告的<span
+                  className={styles.showNumber}>{'供应商2'}</span>等审核小组，提出通报并要求限期结案，如在下期仍未结案，建议对应单位对其主要责任人实施负激励。</span> : form.getFieldDecorator('remark2', {
                   initialValue: type === 'add' ? '' : editData.remark2,
                 })(
                   <span>2）对未能按期结案供应商审核报告的<span> <Input style={{ width: '400px' }}

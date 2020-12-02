@@ -69,7 +69,7 @@ function Detail({
       <Spin spinning={loading}>
         <CommonForm
           wrappedComponentRef={commonFormRef}
-          type='create'
+          type='detail'
         />
         <div
           className={styles.commonTitle}

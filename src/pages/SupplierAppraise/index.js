@@ -59,7 +59,9 @@ function SupplierRevaluate() {
   const evaluateIng = evaluationProjectStatus === 'UNDER_EVALUATION';
   const complete = evaluationProjectStatus === 'EVALUATION_COMPLETED';
   // 已生成结果
-  const resultGener = evaluationProjectStatus === 'RESULTS_GENERATED'
+  const resultGener = evaluationProjectStatus === 'RESULTS_GENERATED';
+  // 评价中
+  const appraiseIng = evaluationProjectStatus === 'SYSTEM_CALCULATING';
   // 已审批
   const flowComplete = flowStatus === 'COMPLETED';
   // 审批中
@@ -145,6 +147,10 @@ function SupplierRevaluate() {
       render(text) {
         return moment(text).format('YYYY-MM-DD')
       }
+    },
+    {
+      title: '系统计算状态',
+      dataIndex: 'systemCalculateStatus'
     }
   ];
   const formItems = [
@@ -337,7 +343,7 @@ function SupplierRevaluate() {
           <Button
             className={styles.btn}
             onClick={handleAllocation}
-            disabled={empty || !needSelectScorer || complete || resultGener || evaluateIng || !isSelf}
+            disabled={empty || !needSelectScorer || complete || resultGener || evaluateIng || !isSelf || appraiseIng}
             ignore={DEVELOPER_ENV}
             key='SUPPLIER_APPRAISE_ALLOT'
           >分配评审人</Button>
@@ -359,7 +365,7 @@ function SupplierRevaluate() {
           <Button
             className={styles.btn}
             onClick={handleWithdraw}
-            disabled={empty || allowRemove || complete || resultGener || !isSelf}
+            disabled={empty || allowRemove || complete || resultGener || !isSelf || appraiseIng }
             ignore={DEVELOPER_ENV}
             key='SUPPLIER_APPRAISE_WITHDRAW'
           >撤回</Button>

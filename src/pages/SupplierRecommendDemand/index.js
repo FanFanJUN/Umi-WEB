@@ -74,7 +74,7 @@ export default () => {
     <>
       <Button className={styles.btn} type='primary' onClick={handleCreate}>新增</Button>
       <Button className={styles.btn} disabled={empty || underWay} onClick={handleEditor}>编辑</Button>
-      <Button className={styles.btn} disabled={empty || !fillInit} onClick={handleRemove}>删除</Button>
+      <Button className={styles.btn} disabled={empty || !fillInit || underWay} onClick={handleRemove}>删除</Button>
       <Button className={styles.btn} disabled={empty || underWay || !fillInit} onClick={handleSubmitSupplierFillIn}>提交供应商填报</Button>
       <Button className={styles.btn} disabled={empty} onClick={handleOpenInfomationConfirm}>填报信息确认</Button>
       {/* <Button className={styles.btn} disabled={empty || !fillComplete}>提交审核</Button> */}
@@ -84,7 +84,7 @@ export default () => {
         startComplete={uploadTable}
       >
         {
-          loading => <Button className={styles.btn} loading={loading} disabled={empty}>提交审核</Button>
+          loading => <Button className={styles.btn} loading={loading} disabled={empty || underWay || completed}>提交审核</Button>
         }
       </StartFlow>
       <FlowHistoryButton
@@ -95,7 +95,7 @@ export default () => {
       >
         <Button className={styles.btn} disabled={empty || !fillComplete}>审核历史</Button>
       </FlowHistoryButton>
-      <Button className={styles.btn} disabled={empty} onClick={stopApprove}>审核终止</Button>
+      <Button className={styles.btn} disabled={empty || !underWay} onClick={stopApprove}>审核终止</Button>
       <Checkbox className={styles.btn} onChange={handleOnlyMeChange} checked={onlyMe}>仅我的</Checkbox>
     </>
   )
