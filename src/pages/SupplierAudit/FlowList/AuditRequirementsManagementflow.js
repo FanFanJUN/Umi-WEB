@@ -5,6 +5,7 @@ import AuditRequirementsManagementEdit from '../AuditRequirementsManagement/add/
 import { closeCurrent } from '../../../utils';
 
 const Index = () => {
+  let AuditRequirementsManagement = null
 
   const { query } = router.useLocation();
 
@@ -14,15 +15,21 @@ const Index = () => {
     closeCurrent();
   }
 
+  const handleSave = () => {
+    return AuditRequirementsManagement.handleSave()
+  }
+
   return(
     <WorkFlow.Approve
       businessId={query.id}
       taskId={query.taskId}
       instanceId={query.instanceId}
       flowMapUrl="flow-web/design/showLook"
+      beforeSubmit={handleSave}
       submitComplete={handleClose}
     >
       <AuditRequirementsManagementEdit
+        onRef={ref => AuditRequirementsManagement = ref}
         isInFlow={2}
       />
     </WorkFlow.Approve>
