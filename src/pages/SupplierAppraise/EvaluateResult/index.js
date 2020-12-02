@@ -38,8 +38,13 @@ function EvaluateResult() {
       title: '综合得分',
       dataIndex: 'totalScore',
       render(text, record) {
+        if (!!text && text > 0) {
+          return (
+            <Button type='link' onClick={() => handleCheckScoreDetail(record.id)}>{text}</Button>
+          )
+        }
         return (
-          <Button type='link' onClick={() => handleCheckScoreDetail(record.id)}>{text}</Button>
+          <Button type='link' onClick={() => handleCheckScoreDetail(record.id)}>未供货</Button>
         )
       }
     },

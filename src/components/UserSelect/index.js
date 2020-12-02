@@ -65,7 +65,7 @@ const UserSelect = forwardRef(({
   const [rdk] = readField;
   const [pageInfo, setPageInfo] = useState({ page: 1, rows: 30 });
   const [total, setTotal] = useState(0);
-  const selectedKeys = Array.isArray(value) && !!value ? value.map(item => item[rdk]) : value[rdk];
+  const selectedKeys = !!value ? Array.isArray(value) ? value.map(item => item[rdk]) : value[rdk] : [];
   useEffect(() => {
     if (treeSelectedKeys.length === 0) return
     const [id] = treeSelectedKeys;
@@ -328,7 +328,7 @@ const UserSelect = forwardRef(({
           [styles.inputDisabled]: disabled
         })}>
           {
-            value.length === 0 ? <div style={{ color: '#ccc', height: 32, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{placeholder}</div> : null
+            !!value && value.length === 0 ? <div style={{ color: '#ccc', height: 32, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{placeholder}</div> : null
           }
           {
             Array.isArray(value) ? value.map(

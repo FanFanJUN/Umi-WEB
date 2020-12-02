@@ -69,8 +69,10 @@ export default function() {
     { title: '预警', dataIndex: 'warning', width: 80, render: (v) => <div style={{width: '100%', display: 'flex', justifyContent: 'center'}}>
         <div style={{width: '20px', height: '20px', borderRadius: '50%', background: v}} />
       </div>},
-    { title: '资料下载截止日期', dataIndex: 'downloadAbortDate', width: 180 },
+    { title: '资料下载截止日期', dataIndex: 'downloadAbortDate', ellipsis: true, width: 180 },
     { title: '来源', dataIndex: 'source', width: 70 },
+    { title: '分享需求号', dataIndex: 'shareDemanNumber', ellipsis: true,  width: 180 },
+    { title: '分享需求行号', dataIndex: 'technicalLineNumber', ellipsis: true, width: 200 },
     { title: '物料代码', dataIndex: 'materialCode', ellipsis: true},
     { title: '物料描述', dataIndex: 'materialName', ellipsis: true, width: 180},
     { title: '物料组代码', dataIndex: 'materialGroupCode', ellipsis: true, },
@@ -87,10 +89,9 @@ export default function() {
     { title: '业务单元名称', dataIndex: 'buName', ellipsis: true, },
     { title: '申请人', dataIndex: 'applyPeopleName', ellipsis: true, },
     { title: '申请人联系方式', dataIndex: 'applyPeoplePhone', ellipsis: true, },
+    { title: '申请日期', dataIndex: 'applyDate', ellipsis: true, },
     { title: '样品收件人姓名', dataIndex: 'sampleReceiverName', ellipsis: true, },
     { title: '样品收件人联系方式', dataIndex: 'sampleReceiverTel', ellipsis: true, },
-    { title: '分享需求号', dataIndex: 'shareDemanNumber', ellipsis: true,  width: 180 },
-    { title: '分享需求行号', dataIndex: 'technicalLineNumber', ellipsis: true, },
     { title: '备注', dataIndex: 'remark', ellipsis: true, width: 160 },
   ].map(item => ({ ...item, align: 'center' }));
 

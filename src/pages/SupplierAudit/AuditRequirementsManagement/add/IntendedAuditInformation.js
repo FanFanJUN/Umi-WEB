@@ -64,12 +64,20 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
   const handleBtn = (type) => {
     switch (type) {
       case 'add':
-        setData(v => ({ ...v, visible: true, title: '新增拟审核信息', type: 'add', editData: {} }));
+        if (props.companyCode && props.organizationCode) {
+          setData(v => ({ ...v, visible: true, title: '新增拟审核信息', type: 'add', editData: {} }));
+        } else {
+          message.error('请先选择公司和采购组织!');
+        }
         break;
       case 'edit':
-        let editData = JSON.parse(JSON.stringify(data.selectRows[0]));
-        editData.supplierStrategyName = supplierStrategyName[editData.supplierStrategyName];
-        setData(v => ({ ...v, title: '编辑拟审核信息', type: 'edit', editData: editData, visible: true }));
+        if (props.companyCode && props.organizationCode) {
+          let editData = JSON.parse(JSON.stringify(data.selectRows[0]));
+          editData.supplierStrategyName = supplierStrategyName[editData.supplierStrategyName];
+          setData(v => ({ ...v, title: '编辑拟审核信息', type: 'edit', editData: editData, visible: true }));
+        } else {
+          message.error('请先选择公司和采购组织!');
+        }
         break;
       case 'delete':
         let deleteData = JSON.parse(JSON.stringify(data.selectRows[0]));
@@ -179,6 +187,7 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
     } else if (data.type === 'edit') {
       value.reviewRequirementLinenum = data.selectRows[0].reviewRequirementLinenum;
       value.lineNum = data.selectRows[0].lineNum;
+      value.sonList = data.selectRows[0].sonList;
       value.supplierStrategyName = value.supplierStrategyCode;
       value.treeData = data.selectRows[0].treeData;
       value.reviewTeamGroupBoList = data.selectRows[0].reviewTeamGroupBoList;

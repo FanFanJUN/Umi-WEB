@@ -7,10 +7,10 @@ import { recommendUrl, smBaseUrl } from '../../../../../utils/commonUrl';
 const FormItem = Form.Item;
 
 const columns = [
-  { title: '物料分类', dataIndex: 'materielCategory', width: 150,render: v => v.name },
-  { title: '供应商', dataIndex: 'supplier', width: 400, render: v => v.name},
-  { title: '代理商', dataIndex: 'originSupplierName', width: 200, },
-].map(item => ({...item, align: 'center'}))
+  { title: '物料分类', dataIndex: 'materielCategory', width: 150, render: v => v.name },
+  { title: '供应商', dataIndex: 'supplier', width: 400, render: v => v.name },
+  { title: '代理商', dataIndex: 'originSupplierName', width: 200 },
+].map(item => ({ ...item, align: 'center' }));
 
 const formItemLayoutLong = {
   labelCol: { span: 6 },
@@ -31,14 +31,14 @@ const AddSupplier = (props) => {
   const { getFieldDecorator, getFieldValue } = props.form;
 
   const onCancel = () => {
-    props.onCancel()
+    props.onCancel();
   };
 
   const onOk = () => {
-    if(data.selectedValue && data.selectedValue.length !== 0) {
-      props.onOk(data.selectedValue[0])
+    if (data.selectedValue && data.selectedValue.length !== 0) {
+      props.onOk(data.selectedValue[0]);
     } else {
-      message.error('请至少选择一个供应商!')
+      message.error('请至少选择一个供应商!');
     }
   };
 
@@ -52,7 +52,7 @@ const AddSupplier = (props) => {
         getFieldDecorator(name, {
           initialValue: initialValue,
         })(
-          <Input type={'hidden'}/>,
+          <Input type={'hidden'} />,
         )
       }
     </FormItem>
@@ -81,7 +81,7 @@ const AddSupplier = (props) => {
                 getFieldDecorator('originSupplier', {
                   initialValue: '',
                 })(
-                  <Input/>,
+                  <Input />,
                 )
               }
             </FormItem>
@@ -124,7 +124,26 @@ const AddSupplier = (props) => {
           params: {
             quickSearchProperties: ['originSupplierCode', 'originSupplierName'],
             quickSearchValue: getFieldValue('originSupplier'),
-            filters: [{ fieldName: 'materielCategoryCode', fieldType: 'string', operator: 'EQ', value: getFieldValue('materialGroupCode') }],
+            filters: [
+              {
+                fieldName: 'materielCategoryCode',
+                fieldType: 'string',
+                operator: 'EQ',
+                value: getFieldValue('materialGroupCode'),
+              },
+              {
+                fieldName: 'corporationCode',
+                fieldType: 'string',
+                operator: 'EQ',
+                value: props.corporationCode,
+              },
+              {
+                fieldName: 'purchaseOrgCode',
+                fieldType: 'string',
+                operator: 'EQ',
+                value: props.purchaseOrgCode,
+              },
+            ],
           },
           url: `${smBaseUrl}/api/supplierSupplyListTmpService/findByFilters`,
           type: 'POST',

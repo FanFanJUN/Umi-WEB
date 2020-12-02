@@ -40,8 +40,10 @@ const Index = () => {
   const columns = [
     { title: '审核类型代码', dataIndex: 'reviewTypeCode', width: 200 },
     { title: '审核类型名称', dataIndex: 'reviewTypeName', ellipsis: true },
+    { title: '评价体系代码', dataIndex: 'reviewSystemCode', ellipsis: true, width: 200 },
+    { title: '评价体系名称', dataIndex: 'reviewSystemName', ellipsis: true, width: 200 },
     { title: '评价指标代码', dataIndex: 'reviewIndexCode', ellipsis: true },
-    { title: '评价指标名称', dataIndex: 'reviewIndexName', ellipsis: true },
+    { title: '评价指标名称', dataIndex: 'reviewIndexName', ellipsis: true, width: 300 },
     { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (value) => value ? '是' : '否' },
   ].map(item => ({ ...item, align: 'center' }));
 

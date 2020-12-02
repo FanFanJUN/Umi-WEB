@@ -24,30 +24,14 @@ const formLayout = {
 };
 const { Approve } = WorkFlow;
 const { Item: FormItem, create } = Form;
-function WhetherCheck({
+function Detail({
   form
 }) {
-  const { getFieldDecorator, validateFieldsAndScroll } = form;
+  const { getFieldDecorator, validateFieldsAndScroll, setFieldsValue } = form;
   const [loading, toggleLoading] = useState(false);
   const commonFormRef = useRef(null);
   const { query } = useLocation();
   const { id = null, taskId = null, instanceId = null } = query;
-  async function beforeSubmit() {
-    const v = await validateFieldsAndScroll()
-    const { success, message: msg } = await updateNeedExamine({
-      ...v,
-      recommendAccessId: id
-    });
-    return new Promise((resolve) => {
-      resolve({
-        success,
-        message: msg,
-        data: {
-          businessKey: id,
-        },
-      });
-    });
-  }
   function handleComplete(info) {
     const { success, message: msg } = info;
     if (success) {
@@ -63,6 +47,10 @@ function WhetherCheck({
       const { success, data, message: msg } = await queryRecommendAccess({ recommendAccessId: id })
       toggleLoading(false)
       if (success) {
+        const { needExamine } = data;
+        setFieldsValue({
+          needExamine
+        })
         commonFormRef.current.setFormValue(data)
         return
       }
@@ -76,7 +64,6 @@ function WhetherCheck({
       businessId={id}
       instanceId={instanceId}
       taskId={taskId}
-      beforeSubmit={beforeSubmit}
       submitComplete={handleComplete}
     >
       <Spin spinning={loading}>
@@ -98,7 +85,7 @@ function WhetherCheck({
                   }
                 ]
               })(
-                <Radio.Group>
+                <Radio.Group disabled={true}>
                   <Radio value={true}>是</Radio>
                   <Radio value={false}>否</Radio>
                 </Radio.Group>
@@ -111,4 +98,4 @@ function WhetherCheck({
   )
 }
 
-export default create()(WhetherCheck);
+export default create()(Detail);

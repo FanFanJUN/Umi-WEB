@@ -8,8 +8,7 @@ import CommonForm from './CommonForm';
 import styles from './index.less';
 import { useLocation } from 'dva/router';
 import {
-  queryRecommendAccess,
-  saveRecommendAccess
+  queryRecommendAccess
 } from '../../services/ram';
 import { closeCurrent } from '../../utils';
 function Editor() {
@@ -18,18 +17,6 @@ function Editor() {
   const commonFormRef = useRef(null);
   const { query } = useLocation();
   const { id: recommendAccessId } = query;
-  async function handleSave() {
-    const value = await commonFormRef.current.getFormValue();
-    toggleLoading(true)
-    const { success, message: msg } = await saveRecommendAccess({ ...value, id });
-    toggleLoading(false)
-    if (success) {
-      message.success(msg)
-      closeCurrent()
-      return
-    }
-    message.error(msg)
-  }
   useEffect(() => {
     async function initialCreateRAMData() {
       toggleLoading(true)
@@ -50,22 +37,16 @@ function Editor() {
       <Affix>
         <div className={styles.affixHeader}>
           <div className={styles.fbc}>
-            <span className={styles.title}>编辑推荐准入</span>
+            <span className={styles.title}>推荐准入明细</span>
             <div className={styles.fec}>
               <Button className={styles.btn} onClick={closeCurrent}>返回</Button>
-              <Button
-                className={styles.btn}
-                type='primary'
-                onClick={handleSave}
-                disabled={loading}
-              >保存</Button>
             </div>
           </div>
         </div>
       </Affix>
       <CommonForm
         wrappedComponentRef={commonFormRef}
-        type='editor'
+        type='detail'
       />
     </Spin>
   )
