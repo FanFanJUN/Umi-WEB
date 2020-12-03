@@ -6,8 +6,10 @@ import PlanInfo from '../commons/PlanInfo'
 import Distributioninfo from '../commons/Distributioninfo'
 import classnames from 'classnames';
 import styles from '../index.less';
+import { utils } from 'suid';
 import { closeCurrent, isEmpty } from '../../../../utils';
 import { ManualSaveVo } from '../../../../services/MaterialService'
+const { storage } = utils;
 function CreateStrategy() {
   const BaseinfoRef = useRef(null);
   const ModifyinfoRef = useRef(null);
@@ -18,7 +20,7 @@ function CreateStrategy() {
   const [modifytype, setModifytype] = useState('');
   const { query } = router.useLocation();
   const { frameElementId, frameElementSrc = "", Opertype = "" } = query;
-
+  const Manualdata = storage.sessionStorage.get("Manualdata");
   // 获取配置列表项
   useEffect(() => {
 
@@ -26,7 +28,7 @@ function CreateStrategy() {
 
   // 保存
   async function handleSave() {
-    let baseinfo, planinfo, distributioninfo;
+    let baseinfo, planinfo, distributioninfo, admitype;
     const { basefrom } = BaseinfoRef.current;
     const { planfrom } = ModifyinfoRef.current;
     const { displanfrom } = DistributionRef.current;
@@ -51,6 +53,7 @@ function CreateStrategy() {
       detailsVos: distributioninfo,
       documentType: 0
     }
+    console.log(params)
     triggerLoading(true)
     const { success, message: msg } = await ManualSaveVo(params)
     if (success) {
@@ -97,6 +100,8 @@ function CreateStrategy() {
               wrappedComponentRef={ModifyinfoRef}
               modifytype={modifytype}
               manual={true}
+              admitype={query.admitype}
+              editformData={Manualdata}
             />
           </div>
         </div>

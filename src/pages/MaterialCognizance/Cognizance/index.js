@@ -6,7 +6,8 @@ import { StartFlow } from 'seid';
 import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
 import styles from './index.less';
 import { recommendUrl } from '@/utils/commonUrl';
-// import { PCNMasterdatalist} from "../commonProps"
+import RecommendModle from '../Cognizance/commons/recommendModle'
+import InfluenceMaterielModal from '../Cognizance/commons/InfluenceMaterielModal'
 import {
     MaterialObjectDelete,
     MaterialRelease,
@@ -31,6 +32,7 @@ function SupplierConfigure() {
     const getModelRef = useRef(null)
     const tableRef = useRef(null)
     const headerRef = useRef(null)
+    const getecommendRef = useRef(null)
     const authorizations = storage.sessionStorage.get("Authorization");
     const currentUserId = authorizations?.userId;
     const [selectedRowKeys, setRowKeys] = useState([]);
@@ -217,19 +219,37 @@ function SupplierConfigure() {
         tableRef.current.manualSelectedRows([])
         tableRef.current.remoteDataRefresh()
     }
-    // 新增
+    // 准入新增
     function AddModel() {
-        openNewTab(`material/Cognizance/AdmitEdit/index`, '物料认定计划新增', false)
+        getecommendRef.current.handleModalVisible(true);
+    }
+    // 准入选择
+    function selectanalysis(record) {
+        sessionStorage.removeItem('Admitdata');
+        sessionStorage.setItem('Admitdata', JSON.stringify(record));
+        openNewTab(`material/Cognizance/AdmitAdd/index?admitype=1`, '准入单认定计划新增', false)
+    }
+    function selectmanual(record) {
+        sessionStorage.removeItem('Manualdata');
+        sessionStorage.setItem('Manualdata', JSON.stringify(record));
+        openNewTab(`material/Cognizance/ManualAdd/index?admitype=0`, '准入单认定计划新增', false)
     }
     // 手工新增
     function ManualEditAddModel() {
-        openNewTab(`material/Cognizance/ManualAdd/index`, '手工物料认定计划新增', false)
+        getModelRef.current.handleModalVisible(true);
+        //openNewTab(`material/Cognizance/ManualAdd/index?admitype=0`, '手工物料认定计划新增', false)
     }
     // 编辑
     function handleCheckEdit() {
         let id = selectedRows[0].id;
         let cancel = selectedRows[0].planningStatus;
-        openNewTab(`material/Cognizance/ManualEdit/index?id=${id}&cancel=${cancel}`, '实物认定计划变更', false)
+        let admitype = selectedRows[0].documentType
+        if (admitype === 0) {
+            openNewTab(`material/Cognizance/ManualEdit/index?id=${id}&cancel=${cancel}&admitype=${admitype}`, '实物认定计划变更', false)
+        } else {
+            openNewTab(`material/Cognizance/AdmitEdit/index?id=${id}&cancel=${cancel}&admitype=${admitype}`, '实物认定计划变更', false)
+        }
+
     }
     // 删除
     async function handleDelete() {
@@ -252,7 +272,8 @@ function SupplierConfigure() {
     // 明细
     function handleCheckDetail() {
         let id = selectedRows[0].id;
-        openNewTab(`material/Cognizance/ManualDetail/index?id=${id}&alone=true`, '实物认定计划明细', false)
+        let admitype = selectedRows[0].documentType
+        openNewTab(`material/Cognizance/ManualDetail/index?id=${id}&alone=true&admitype=${admitype}`, '实物认定计划明细', false)
     }
     // 发布
     async function handleRelease() {
@@ -391,7 +412,7 @@ function SupplierConfigure() {
     // 左侧
     const HeaderLeftButtons = (
         <div style={{ width: '50%', display: 'flex', height: '100%', alignItems: 'center' }}>
-            {/* {
+            {
                 authAction(
                     <Button type='primary'
                         ignore={DEVELOPER_ENV}
@@ -402,7 +423,7 @@ function SupplierConfigure() {
                     >从准入单创建
                     </Button>
                 )
-            } */}
+            }
             {
                 authAction(
                     <Button type='primary'
@@ -557,6 +578,16 @@ function SupplierConfigure() {
                     <span style={{ color: 'red' }}>{tasktype}</span>{`且不可变更，是否继续？`}
                 </p>
             </Modal>
+            {/** 准入创建单*/}
+            <RecommendModle
+                modifyanalysis={selectanalysis}
+                wrappedComponentRef={getecommendRef}
+            />
+            {/**手工物料 */}
+            <InfluenceMaterielModal
+                modifyanalysis={selectmanual}
+                wrappedComponentRef={getModelRef}
+            />
         </>
     )
 }
