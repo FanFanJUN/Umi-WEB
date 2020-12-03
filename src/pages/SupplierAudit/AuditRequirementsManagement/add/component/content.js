@@ -101,7 +101,7 @@ const Content = (props) => {
 
   const getTreeData = (value, operation) => {
     setData(v => ({ ...v, treeData: value }));
-    props.setOperation(operation)
+    props.setOperation && props.setOperation(operation)
   };
 
   return (
