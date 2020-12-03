@@ -22,7 +22,7 @@ let LineInfo = forwardRef((props, ref) => {
 
   useImperativeHandle(ref, () => ({
     getTableList: () => dataSource.concat(deleteLine),
-    getDeleteArr: () => deleteArr
+    getDeleteArr: () => deleteArr,
   }));
   const tableRef = useRef(null);
   const { originData, isView } = props;
@@ -45,12 +45,15 @@ let LineInfo = forwardRef((props, ref) => {
       let newList = originData.map(item => {
         item.lineNum = getRandom(10);
         item.treeData = buildTreeData(item.sonList);
-        item.reviewTeamGroupBoList = item.reviewTeamGroupBoList ? item.reviewTeamGroupBoList.map(v => ({ ...v, lineNum: getRandom(10) })) : []
+        item.reviewTeamGroupBoList = item.reviewTeamGroupBoList ? item.reviewTeamGroupBoList.map(v => ({
+          ...v,
+          lineNum: getRandom(10),
+        })) : [];
         return item;
-      })
+      });
       setDataSource(newList);
     }
-  }, [originData])
+  }, [originData]);
   const columns = [
     {
       title: '操作', dataIndex: 'operaton', width: 140, ellipsis: true, render: (text, item) => {
@@ -75,7 +78,7 @@ let LineInfo = forwardRef((props, ref) => {
               reviewTeamGroupBoList: item.reviewTeamGroupBoList ? item.reviewTeamGroupBoList : [],
               visible: true,
               type: 'detail',
-              treeData: item.treeData ? item.treeData : []
+              treeData: item.treeData ? item.treeData : [],
             }));
           }} style={{ margin: '0 3px' }} key="group">小组</a>
           <a onClick={(e) => {
@@ -180,7 +183,7 @@ let LineInfo = forwardRef((props, ref) => {
 
   // 编辑和明细时构造treeData
   const buildTreeData = (sonList) => {
-    if(!sonList || sonList.length === 0) return [];
+    if (!sonList || sonList.length === 0) return [];
     let arr = JSON.parse(JSON.stringify(sonList));
     arr.map(item => {
       item.id = item.systemId;
@@ -246,20 +249,20 @@ let LineInfo = forwardRef((props, ref) => {
       content: '是否确认删除选中数据',
       onOk: () => {
         let tag = false;
-        let arr = JSON.parse(JSON.stringify(deleteLine))
+        let arr = JSON.parse(JSON.stringify(deleteLine));
         let newList = dataSource.filter(item => {
           if (item.id && data.selectedRowKeys.includes(item.lineNum)) {
             // 已创建审核实施计划的行不可删除和编辑
-            if (props.type === "change" && item.whetherOccupied) {
+            if (props.type === 'change' && item.whetherOccupied) {
               tag = true;
             }
-            item.whetherDeleted = true
-            arr.push(item)
+            item.whetherDeleted = true;
+            arr.push(item);
           }
           return !data.selectedRowKeys.includes(item.lineNum);
         });
         if (tag) {
-          message.warning("存在已创建审核实施计划的行，不可删除");
+          message.warning('存在已创建审核实施计划的行，不可删除');
           return;
         }
         newList = newList.map((item, index) => {
@@ -267,7 +270,7 @@ let LineInfo = forwardRef((props, ref) => {
           item.reviewPlanMonthLinenum = ((Array(4).join(0) + (index + 1)).slice(-4) + '0');
           return item;
         });
-        setDeleteLine(arr)
+        setDeleteLine(arr);
         setDataSource(newList);
         tableRef.current.manualSelectedRows();
       },
@@ -275,16 +278,32 @@ let LineInfo = forwardRef((props, ref) => {
   };
 
   // 批量编辑弹框-确定
-  const getBatchFormValue = (value) => {
-    let newList = dataSource.map(item => {
-      if (data.selectedRowKeys.includes(item.lineNum)) {
-        return {
-          ...item,
-          ...value,
-        };
+  const getBatchFormValue = (value, isBatch) => {
+    let newList;
+    // 判断是否是批量编辑
+    if (isBatch) {
+      for (let key in value) {
+        if (!value[key]) {
+          delete value[key];
+        }
       }
-      return item;
-    });
+      newList = dataSource.map(item => {
+        if (data.selectedRowKeys.includes(item.lineNum)) {
+          return Object.assign(item, value);
+        }
+        return item;
+      });
+    } else {
+      newList = dataSource.map(item => {
+        if (data.selectedRowKeys.includes(item.lineNum)) {
+          return {
+            ...item,
+            ...value,
+          };
+        }
+        return item;
+      });
+    }
     setDataSource(newList);
     tableRef.current.manualSelectedRows();
   };
@@ -293,7 +312,7 @@ let LineInfo = forwardRef((props, ref) => {
   const contentModalOk = (treeData) => {
     let newList = dataSource.map(item => {
       if (data.selectedRowKeys.includes(item.lineNum)) {
-        item.sonList =treeData;
+        item.sonList = treeData;
         item.treeData = buildTreeData(item.sonList);
       }
       return item;
@@ -323,13 +342,14 @@ let LineInfo = forwardRef((props, ref) => {
   function checkSelect() {
     return data.selectRows.some(item => item.whetherOccupied);
   }
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.bgw}>
         <div className={styles.title}>拟审核信息</div>
         <div className={styles.content}>
           {
-            (!isView || props.type === "change") && <div className={styles.listBtn}>
+            (!isView || props.type === 'change') && <div className={styles.listBtn}>
               <Button onClick={() => handleBtn('annual')} type='primary'>从年度计划新增</Button>
               <Button onClick={() => handleBtn('recommand')} type='primary'>从准入推荐新增</Button>
               <Button onClick={() => handleBtn('demand')} type='primary'>从审核需求新增</Button>
@@ -380,6 +400,8 @@ let LineInfo = forwardRef((props, ref) => {
       />}
       {/* 批量编辑 */}
       {batchEditVisible && <BatchEditModal
+        // 如果是批量编辑则取消必填
+        required={data.selectRows.length < 2}
         visible={batchEditVisible}
         onCancel={() => {
           setBatchEditVisible(false);
