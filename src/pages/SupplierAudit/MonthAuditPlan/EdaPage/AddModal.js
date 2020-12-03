@@ -29,7 +29,7 @@ const AddModal = (props) => {
     const [selectRows, setselectRows] = useState([]);
     const [loading, setLoading] = useState(false);
     const [selectedTear, setSelectedYear] = useState("");
-    
+
     const getColums = () => {
         switch (type) {
             case "annual":
@@ -209,14 +209,14 @@ const AddModal = (props) => {
                                         <Option value="2">2月</Option>
                                         <Option value="3">3月</Option>
                                         <Option value="4">4月</Option>
-                                        <Option value="4">5月</Option>
-                                        <Option value="4">6月</Option>
-                                        <Option value="4">7月</Option>
-                                        <Option value="4">8月</Option>
-                                        <Option value="4">9月</Option>
-                                        <Option value="4">10月</Option>
-                                        <Option value="4">11月</Option>
-                                        <Option value="4">12月</Option>
+                                        <Option value="5">5月</Option>
+                                        <Option value="6">6月</Option>
+                                        <Option value="7">7月</Option>
+                                        <Option value="8">8月</Option>
+                                        <Option value="9">9月</Option>
+                                        <Option value="10">10月</Option>
+                                        <Option value="11">11月</Option>
+                                        <Option value="12">12月</Option>
                                     </Select>
                                 )
                             }
