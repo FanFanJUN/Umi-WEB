@@ -73,6 +73,11 @@ const AddBeAudited = (props) => {
     GetSupplierContact({
       supplierId: id,
     }).then(res => {
+      const value = res.data ? res.data[0] ? res.data[0] : {name: '', telephone: ''} : {name: '', telephone: ''};
+      setFieldsValue({
+        contactUserName: value.name,
+        contactUserTel: value.telephone,
+      });
       console.log(res, '联系人');
     });
   };
@@ -127,6 +132,8 @@ const AddBeAudited = (props) => {
       countyId: '',
       countyName: '',
       address: '',
+      contactUserName: '',
+      contactUserTel: '',
     });
   };
 
