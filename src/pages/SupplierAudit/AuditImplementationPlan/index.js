@@ -69,13 +69,13 @@ export default function () {
                 setAddV(true);
                 break;
             case 'edit':
-                openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=edit&id=${data.selectedRowKeys[0]}`, '月度审核计划管理-编辑', false);
+                openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=edit&id=${data.selectedRowKeys[0]}`, '审核实施计划管理-编辑', false);
                 break;
             case 'detail':
-                openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=detail&id=${data.selectedRowKeys[0]}`, '月度审核计划管理-明细', false);
+                openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=detail&id=${data.selectedRowKeys[0]}`, '审核实施计划管理-明细', false);
                 break;
             case 'change':
-                openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=change&id=${data.selectedRowKeys[0]}`, '月度审核计划管理-变更', false);
+                openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=change&id=${data.selectedRowKeys[0]}`, '审核实施计划管理-变更', false);
                 break;
             case "changehistory":
                 setHistoryV(true);
@@ -392,7 +392,7 @@ export default function () {
                     handleCancel={() => { setAddV(false) }}
                 />
             }
-            { changeVisible && <ChangeLaderModal 
+            { changeVisible && <ChangeLaderModal
                     visible={changeVisible}
                     handleOk={()=>{refresh()}}
                     originData={data.selectedRows[0]}

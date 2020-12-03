@@ -1,6 +1,9 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useState, useRef } from 'react';
 import { Form, Row, Input, Col, DatePicker, Radio, Button } from 'antd';
 import { utils, ComboList, AuthALink } from 'suid';
+import { onlyNumber } from '@/utils'
+import RecommendModle from './recommendModle'
+import InfluenceMaterielModal from '../commons/InfluenceMaterielModal'
 import UploadFile from '../../../../components/Upload/index'
 import { CognizanceTypelist, MaterielCognlist } from '../../commonProps'
 import { openNewTab, isEmpty } from '@/utils';
@@ -32,11 +35,24 @@ const HeadFormRef = forwardRef(({
     const getModelRef = useRef(null)
     const getecommendRef = useRef(null)
     const authorizations = storage.sessionStorage.get("Authorization");
+    const [Othersdata, setOthersdata] = useState({});
     useEffect(() => {
-        if (!isEdit) {
-            selectanalysis(editformData)
+        editAdmitDetail(editformData)
+    }, [editformData])
+
+    function editAdmitDetail(val) {
+        if (isEdit) {
+            if (val) {
+                let params = {
+                    admittanceNo: val.admittanceNo,
+                    admittanceHeadId: val.admittanceHeadId
+                }
+                setOthersdata(params)
+            }
+        } else {
+            selectanalysis(val)
         }
-    }, [])
+    }
     function planfrom() {
         let modifyinfluen = false;
         form.validateFieldsAndScroll(async (err, val) => {
@@ -45,7 +61,12 @@ const HeadFormRef = forwardRef(({
                     val.attachment = []
                 }
                 modifyinfluen = val;
-                modifyinfluen = { ...modifyinfluen }
+                if (!isEdit) {
+                    modifyinfluen.admittanceId = editformData[0].admittanceId
+                    modifyinfluen = { ...modifyinfluen, ...Othersdata }
+                } else {
+                    modifyinfluen = { ...modifyinfluen }
+                }
             }
         })
         return modifyinfluen ? modifyinfluen : false
@@ -54,28 +75,36 @@ const HeadFormRef = forwardRef(({
         //setSetupval(val.value)
         onOk(val.value);
     }
-
-    function handleSingle() {
-        getModelRef.current.handleModalVisible(true);
-
-    }
     function selectanalysis(record) {
+        if (!isEdit) {
+            let params = {
+                admittanceId: record[0].id,
+                admittanceNo: record[0].docNumber,
+                admittanceHeadId: record[0].recommendAccessId
+            }
+            setOthersdata(params)
+        }
         form.setFieldsValue({
-            'companyCode': record[0].corporation.code,
-            'companyName': record[0].corporation.name,
-            'purchaseCode': record[0].purchaseOrg.code,
-            'purchaseName': record[0].purchaseOrg.name,
-            'supplierCode': record[0].supplier.code,
-            'supplierName': record[0].supplier.name,
-            'originalFactoryCode': record[0].originSupplierCode,
-            'originalFactoryName': record[0].originSupplierName,
-            'materielTypeName': record[0].materielCategory.name,
-            'materielTypeCode': record[0].materielCategory.code,
+            'companyCode': record[0].recommendAccess.corporationCode,
+            'companyName': record[0].recommendAccess.corporationName,
+            'purchaseCode': record[0].recommendAccess.orgCode,
+            'purchaseName': record[0].recommendAccess.orgName,
+            'supplierCode': record[0].recommendAccess.supplierCode,
+            'supplierName': record[0].recommendAccess.supplierName,
+            'originalFactoryCode': record[0].recommendAccess.originCode,
+            'originalFactoryName': record[0].recommendAccess.originName,
+            'materielTypeName': record[0].recommendAccess.materialCategoryName,
+            'materielTypeCode': record[0].recommendAccess.materialCategoryCode,
+            'identifiedMaterialCategoryId': record[0].recommendAccess.identifyMaterialLevelValue,
+            'identifiedMaterialCategoryName': record[0].recommendAccess.identifyMaterialLevelName,
+            'identificationTypeId': record[0].identifyTypeCode,
+            'identificationTypeName': record[0].identifyTypeName,
         });
+
     }
-    // 准入明细
+    //准入明细
     function handleAdmit(val) {
-        openNewTab(`supplier/recommend/admittance/manage/detail?id=${val.admittanceHeadId}`, '供应商推荐准入明细', false)
+        openNewTab(`supplier/recommend/admittance/manage/detail?id=${val}`, '供应商推荐准入明细', false)
     }
     return (
         <>
@@ -298,20 +327,27 @@ const HeadFormRef = forwardRef(({
                             }
                         </Item>
                     </Col>
-                    {
-                        isView && admitype === '1' || isView && admitype === 1 ? <Col span={10}>
-                            <Item label='准入单号' {...formLayout}>
-                                {
+                    <Col span={10}>
+                        <Item label='准入单号' {...formLayout}>
+                            {
+                                isView ? <span>{editformData ? editformData.admittanceNo : ''}</span> :
+                                    getFieldDecorator("admittanceNo", {
+                                        initialValue: editformData ? editformData.admittanceNo : '',
+                                    })(
+                                        <AuthALink onClick={() => handleAdmit(Othersdata.admittanceHeadId)}>{Othersdata.admittanceNo}</AuthALink>
+                                    )
+                            }
+                        </Item>
+                    </Col>
 
-                                    <AuthALink onClick={() => handleAdmit(editformData)}>{editformData ? editformData.admittanceNo : ''}</AuthALink>
-
-                                }
-                            </Item>
-                        </Col> : null
-                    }
                 </Row>
 
             </div>
+            {/**手工物料 */}
+            <InfluenceMaterielModal
+                modifyanalysis={selectanalysis}
+                wrappedComponentRef={getModelRef}
+            />
         </>
     )
 }

@@ -159,6 +159,7 @@ const Index = (props) => {
             }
         } catch (error) {
             res = error;
+          setLoading(false);
         }
         if (res.success) {
             if (type === "save") {

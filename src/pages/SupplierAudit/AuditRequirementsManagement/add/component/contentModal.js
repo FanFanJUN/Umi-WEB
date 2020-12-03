@@ -85,6 +85,7 @@ const ContentModal = (props) => {
 
   const personChange = (value) => {
     setFieldsValue({
+      memberId: getFieldValue('memberId') && '',
       memberName: getFieldValue('memberName') && '',
       memberTel: getFieldValue('memberTel') && '',
       employeeNo: getFieldValue('employeeNo') && '',
@@ -96,6 +97,7 @@ const ContentModal = (props) => {
 
   const userSelect = (value) => {
     setFieldsValue({
+      memberId: value.user.id,
       memberName: value.userName,
       employeeNo: value.user.tenantCode,
     });
@@ -206,6 +208,9 @@ const ContentModal = (props) => {
               </FormItem>
             </Col>
           }
+          <Col span={0}>
+            {hideFormItem('memberId', type === 'add' ? '' : data.memberId)}
+          </Col>
           {
             !disabled && <Col span={24}>
               <FormItem {...formItemLayoutLong} label={'员工编号'}>

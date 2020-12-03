@@ -116,6 +116,8 @@ function CreateStrategy() {
               editformData={editData}
               manual={true}
               cancel={query.cancel}
+              admitype={query.admitype}
+              isEdit={true}
             />
           </div>
         </div>

@@ -70,6 +70,8 @@ function CreateStrategy() {
               wrappedComponentRef={ModifyinfoRef}
               modifytype={modifytype}
               isView={true}
+              admitype={query.admitype}
+              isEdit={true}
             />
           </div>
         </div>

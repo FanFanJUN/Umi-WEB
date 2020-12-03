@@ -31,6 +31,7 @@ const fieldsConfig = [
   {
     name: '排序号',
     code: 'rank',
+    type: 'inputNumber'
   },
 ];
 
@@ -111,13 +112,13 @@ const Team = (props) => {
   };
 
   const handleOk = (value) => {
+    console.log(value, '触发')
     if (data.type === 'add') {
       value.lineNum = getRandom(10);
       value.reviewTeamMemberBoList = [];
       setTeamData(v => ({ ...v, dataSource: [...teamData.dataSource, ...[value]] }));
     } else {
       let newData = teamData.dataSource.slice();
-      x;
       teamData.dataSource.forEach((item, index) => {
         if (item.lineNum === data.selectRows[0].lineNum) {
           value.lineNum = item.lineNum;

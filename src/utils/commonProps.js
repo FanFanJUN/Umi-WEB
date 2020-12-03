@@ -414,7 +414,7 @@ export const documentMaterialClassProps = {
     params: { Q_EQ_frozen__Boolean: false }
   },
   reader: {
-    name: 'showName',
+    name: 'name',
     field: ['code', 'id']
   },
   placeholder: '请选择物料分类',

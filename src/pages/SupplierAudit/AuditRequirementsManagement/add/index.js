@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Affix, Button, message, Modal, Spin } from 'antd';
 import classnames from 'classnames';
 import styles from '../../../Supplier/Editor/index.less';
@@ -12,7 +12,6 @@ import {
   GetAllAuditType, UpdateAuditRequirementsManagement,
 } from '../../mainData/commomService';
 import { WorkFlow } from 'suid';
-import { openNewTab } from '../../../../components/utils/CommonUtils';
 
 const { StartFlow } = WorkFlow;
 
@@ -31,7 +30,7 @@ const Index = (props) => {
 
   const [deleteLine, setDeleteLine] = useState([]);
 
-  const [data, setData] = useState({
+  const [allData, setData] = useState({
     reviewRequirementCode: '',
     lineBoList: [],
     editData: {},
@@ -43,6 +42,14 @@ const Index = (props) => {
     title: '',
     userInfo: {},
   });
+
+
+  const { onRef } = props;
+
+
+  useImperativeHandle(onRef, () => ({
+    innerFn: flowSave,
+  }));
 
   useEffect(() => {
     // 获取所有审核类型
@@ -121,6 +128,26 @@ const Index = (props) => {
     closeCurrent();
   };
 
+  const flowSave = async () => {
+    let insertData = await baseInfoRef.current.getBaseInfoData((err, values) => {
+      if (!err) {
+        return values;
+      }
+    });
+    const lineBoList = await intendedAuditInformationRef.current.getDataSource();
+    const deleteArr = await intendedAuditInformationRef.current.getDeleteArr();
+    if (lineBoList && lineBoList.length !== 0) {
+      insertData.lineBoList = [...lineBoList, ...deleteLine];
+      let updateData = Object.assign(allData.editData, insertData);
+      updateData.deleteList = deleteArr;
+      // 是否在流程中编辑标识
+      updateData.inFlow = true
+      return UpdateAuditRequirementsManagement(updateData);
+    } else {
+      message.error('请至少添加一条拟审核信息!');
+    }
+  };
+
   const handleSave = async () => {
     let insertData = await baseInfoRef.current.getBaseInfoData((err, values) => {
       if (!err) {
@@ -134,7 +161,7 @@ const Index = (props) => {
       Modal.confirm({
         title: '是否确认暂存该数据!',
         onOk: () => {
-          if (data.type === 'add') {
+          if (allData.type === 'add') {
             AddAuditRequirementsManagement(insertData).then(res => {
               if (res.success) {
                 message.success(res.message);
@@ -144,8 +171,10 @@ const Index = (props) => {
               }
             }).catch(err => message.error(err.message));
           } else {
-            let updateData = Object.assign(data.editData, insertData);
+            let updateData = Object.assign(allData.editData, insertData);
             updateData.deleteList = deleteArr;
+            // 是否在流程中编辑标识
+            updateData.inFlow = false
             UpdateAuditRequirementsManagement(updateData).then(res => {
               if (res.success) {
                 message.success(res.message);
@@ -175,7 +204,7 @@ const Index = (props) => {
     const lineBoList = await intendedAuditInformationRef.current.getDataSource();
     const deleteArr = await intendedAuditInformationRef.current.getDeleteArr();
     insertData.lineBoList = [...lineBoList, ...deleteLine];
-    if (data.type === 'add') {
+    if (allData.type === 'add') {
       return new Promise(function(resolve, reject) {
         AddAuditRequirementsManagement(insertData).then(res => {
           if (res.success) {
@@ -191,12 +220,11 @@ const Index = (props) => {
         }).catch(err => reject(err));
       });
     } else {
-      let updateData = Object.assign(data.editData, insertData);
+      let updateData = Object.assign(allData.editData, insertData);
       updateData.deleteList = deleteArr;
       return new Promise(function(resolve, reject) {
         UpdateAuditRequirementsManagement(updateData).then(res => {
           if (res.success) {
-            console.log(insertData, 'insertData');
             const data = { businessKey: updateData.id };
             resolve({
               success: true,
@@ -218,12 +246,12 @@ const Index = (props) => {
 
   return (
     <div>
-      <Spin spinning={data.spinLoading}>
+      <Spin spinning={allData.spinLoading}>
         <Affix>
           <div className={classnames(styles.fbc, styles.affixHeader)}>
-            <span>{data.title}</span>
+            <span>{allData.title}</span>
             {
-              (data.type !== 'detail' || props.isInFlow !== 2) &&
+              (allData.type !== 'detail' ? props.isInFlow !== 2 : false) &&
               <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <Button className={styles.btn} onClick={handleBack}>返回</Button>
                 <Button className={styles.btn} onClick={() => handleSave('add')}>暂存</Button>
@@ -231,7 +259,7 @@ const Index = (props) => {
                   className={styles.btn}
                   type='primary'
                   beforeStart={handleBeforeStartFlow}
-                  callBack={handleComplete}
+                  startComplete={handleComplete}
                   disabled={false}
                   businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewRequirement'
                 >
@@ -244,26 +272,26 @@ const Index = (props) => {
           </div>
         </Affix>
         <BaseInfo
-          editData={data.editData}
+          editData={allData.editData}
           setCompanyCode={setCompanyCode}
           setOrganizationCode={setOrganizationCode}
           wrappedComponentRef={baseInfoRef}
-          userInfo={data.userInfo}
-          type={data.type}
+          userInfo={allData.userInfo}
+          type={allData.type}
           setApplyCorporationCode={setApplyCorporationCode}
-          isView={data.isView}
+          isView={allData.isView}
         />
         <IntendedAuditInformation
           setDeleteLine={setDeleteLine}
           deleteLine={deleteLine}
-          editData={data.lineBoList}
+          editData={allData.lineBoList}
           companyCode={companyCode}
           wrappedComponentRef={intendedAuditInformationRef}
           organizationCode={organizationCode}
-          allAuditType={data.allAuditType}
+          allAuditType={allData.allAuditType}
           applyCorporationCode={applyCorporationCode}
-          type={data.type}
-          isView={data.isView}
+          type={allData.type}
+          isView={allData.isView}
         />
       </Spin>
     </div>

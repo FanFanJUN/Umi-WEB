@@ -1,22 +1,21 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { WorkFlow } from 'suid'
 import { router } from 'dva';
 import AuditRequirementsManagementEdit from '../AuditRequirementsManagement/add/index'
 import { closeCurrent } from '../../../utils';
 
 const Index = () => {
-  let AuditRequirementsManagement = null
+  const AuditRequirementsManagement = useRef({});
 
   const { query } = router.useLocation();
 
-  console.log(query, router.useLocation(),  'queery')
-
   const handleClose = () => {
-    closeCurrent();
+    closeCurrent(AuditRequirementsManagement);
   }
 
   const handleSave = () => {
-    return AuditRequirementsManagement.handleSave()
+    return AuditRequirementsManagement.current.innerFn()
+
   }
 
   return(
@@ -29,7 +28,7 @@ const Index = () => {
       submitComplete={handleClose}
     >
       <AuditRequirementsManagementEdit
-        onRef={ref => AuditRequirementsManagement = ref}
+        onRef={AuditRequirementsManagement}
         isInFlow={2}
       />
     </WorkFlow.Approve>
