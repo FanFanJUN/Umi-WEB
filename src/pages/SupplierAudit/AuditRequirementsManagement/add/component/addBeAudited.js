@@ -134,6 +134,9 @@ const AddBeAudited = (props) => {
       address: '',
       contactUserName: '',
       contactUserTel: '',
+      materialGroupName: '',
+      materialGroupCode: '',
+      materialGroupId: ''
     });
   };
 
