@@ -3,11 +3,11 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:04:51
- * @LastEditTime: 2020-12-02 16:28:02
+ * @LastEditTime: 2020-12-03 14:25:01
  * @Description: 新增  编辑  详情 page
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/index.js
  */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Affix, Button, Form, message, Spin } from 'antd';
 import classnames from 'classnames';
 import { WorkFlow } from "suid";
@@ -25,7 +25,7 @@ const userInfo = getUserInfoFromSession();
 
 const Index = (props) => {
 
-    const { form } = props;
+    const { form, onRef } = props;
 
     const { query } = router.useLocation();
 
@@ -41,6 +41,17 @@ const Index = (props) => {
     const [lineData, setlineData] = useState([]);
     const [spinLoading, setSpinLoading] = useState(false);
     const [originData, setOriginData] = useState({});
+
+    useImperativeHandle(onRef, () => ({
+        editDataInflow,
+    }));
+
+    async function editDataInflow() {
+        const allData = gatAllData();
+        if (!(allData.bool)) return false;
+        const res = await reviewPlanYearAp({ ...allData, type: 'edit' });
+        return res;
+    }
 
     useEffect(() => {
         const { id, pageState } = query;
@@ -80,15 +91,15 @@ const Index = (props) => {
     };
 
     const gatAllData = () => {
-        let allData = {bool:true};
+        let allData = { bool: true };
         const finnalLineData = !isEmptyArray(lineData) ? lineData : originData.planYearLineVos;
         form.validateFieldsAndScroll((err, values) => {
             if (err) {
-                allData = {bool:false};
+                allData = { bool: false };
                 return;
             };
             if (finnalLineData.length === 0) {
-                allData = {bool:false};
+                allData = { bool: false };
                 message.info('请至少添加一条行信息');
                 return;
             }
@@ -102,12 +113,12 @@ const Index = (props) => {
             for (const item of finnalLineData) {
                 if (!item.reviewTypeCode || !item.reviewReasonCode) {
                     message.info('行上必填项为空, 请完善');
-                    allData = {bool:false};
+                    allData = { bool: false };
                     break;
                 }
             }
 
-            if(!(allData.bool)) return;
+            if (!(allData.bool)) return;
             allData = { ...originData, ...values, flowStatus: 'INIT', reviewPlanYearLineBos: finnalLineData, bool: true };
         });
         return allData;
@@ -115,12 +126,12 @@ const Index = (props) => {
 
     async function tohandleSave(buttonType) {
         const allData = gatAllData();
-        if(!(allData.bool))return;
+        if (!(allData.bool)) return;
         setSpinLoading(true);
         const res = await reviewPlanYearAp({ ...allData, type: data.type });
         if (buttonType === 'submit') {
             // 编辑页
-            if(data.type === 'edit') {
+            if (data.type === 'edit') {
                 return data.id;
             }
             return res.data;
@@ -129,7 +140,7 @@ const Index = (props) => {
             setSpinLoading(false);
             if (res.success) {
                 message.success("暂存成功");
-                setTimeout(()=>{
+                setTimeout(() => {
                     closeCurrent();
                 }, 1)
             } else {
@@ -179,7 +190,7 @@ const Index = (props) => {
                     <div className={classnames(styles.fbc, styles.affixHeader)}>
                         <span>{data.title}</span>
                         {
-                            data.type !== 'detail' && <div style={{display: "flex", alignItems: "center"}}>
+                            data.type !== 'detail' && <div style={{ display: "flex", alignItems: "center" }}>
                                 <Button className={styles.btn} onClick={handleBack}>返回</Button>
                                 <Button className={styles.btn} onClick={() => tohandleSave('onlySave')}>暂存</Button>
                                 <StartFlow
