@@ -1,9 +1,9 @@
 /*
  * @Author: Li Cai
- * @LastEditors: Please set LastEditors
+ * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:00:19
- * @LastEditTime: 2020-11-27 14:19:24
+ * @LastEditTime: 2020-12-03 09:26:30
  * @Description:  年度审核计划管理
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/index.js
  */
@@ -208,19 +208,19 @@ export default function () {
         {
             title: '审批状态', dataIndex: 'flowStatus', width: 200, render: (text, record) => {
                 switch (text) {
-                    case "INIT":
-                        return "未提交审批";
-                    case "INPROCESS":
-                        return "审批中";
-                    case "COMPLETED":
-                        return "审批完成";
+                    case 'INIT':
+                        return '未进入流程';
+                    case 'INPROCESS':
+                        return '流程中';
+                    case 'COMPLETED':
+                        return '流程处理完成';
                     default:
                         break;
                 }
             },
         },
         { title: '年度审核计划号', dataIndex: 'reviewPlanYearCode', width: 200 },
-        { title: '年度', dataIndex: 'applyYear', ellipsis: true, width: 160, render: text => text + " 年"},
+        { title: '年度', dataIndex: 'applyYear', ellipsis: true, width: 160, render: text => text + " 年" },
         { title: '拟制说明', dataIndex: 'reviewPlanYearName', ellipsis: true, width: 200 },
         { title: '拟制公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 200 },
         { title: '拟制部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200 },

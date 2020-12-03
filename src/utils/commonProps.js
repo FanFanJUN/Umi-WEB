@@ -642,8 +642,11 @@ export const customsEnterpriseAll = {
 // 业务单元主数据
 export const businessMainProps = {
   store: {
-    url: `${baseUrl}/api/buService/findAll`,
-    type: 'get'
+    url: `${baseUrl}/api/buService/findByList`,
+    type: 'post',
+    params: {
+      frozen: false
+    }
   },
   reader: {
     name: 'buName',

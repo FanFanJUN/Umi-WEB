@@ -1,9 +1,9 @@
 /*
  * @Author: Li Cai
- * @LastEditors: Please set LastEditors
+ * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-23 17:00:19
- * @LastEditTime: 2020-11-27 09:38:27
+ * @LastEditTime: 2020-12-03 10:30:14
  * @Description: 批量编辑页面
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BatchEditModal.js
  */
@@ -62,6 +62,33 @@ const BatchEditModal = (props) => {
   }
 
   const HideFormItem = hideFormItem(getFieldDecorator);
+
+  function handleSelectProvice(item, index) {
+    if (item) {
+      setFieldsValue({ cityId: '', cityCode: '', cityName: '', countyId: '', countyCode: '', countyName: '', address: '' });
+    }
+  }
+
+  function handleSelectCity(item, index) {
+    if (item) {
+      setFieldsValue({ countyId: '', countyCode: '', countyName: '', address: '' });
+    }
+  }
+
+  function handleSelectCounty(item, index) {
+    if (item) {
+      setFieldsValue({ address: '' });
+    }
+  }
+
+  function handleClear(type) {
+    const clear = {
+      'city': handleSelectCity,
+      'province': handleSelectProvice,
+      'county': handleSelectCounty,
+    }
+    const b = clear[type]({}); // 创建b 属性 并执行属性事件
+  }
 
   return (
     <ExtModal
@@ -185,7 +212,6 @@ const BatchEditModal = (props) => {
                   ],
                 })(
                   <ComboList
-                    allowClear={true}
                     style={{ width: '15%' }}
                     width={width}
                     form={form}
@@ -235,6 +261,8 @@ const BatchEditModal = (props) => {
                       url: `${gatewayUrl}${basicServiceUrl}/region/getProvinceByCountry`,
                     }}
                     placeholder={'省'}
+                    afterSelect={handleSelectProvice}
+                    afterClear={() => handleClear('province')}
                     {...AreaConfig}
                   />,
                 )
@@ -270,6 +298,8 @@ const BatchEditModal = (props) => {
                       url: `${gatewayUrl}${basicServiceUrl}/region/getCityByProvince`,
                     }}
                     placeholder={'市'}
+                    afterSelect={handleSelectCity}
+                    afterClear={() => handleClear('city')}
                     {...AreaConfig}
                   />,
                 )
@@ -306,6 +336,8 @@ const BatchEditModal = (props) => {
                       url: `${gatewayUrl}${basicServiceUrl}/region/getChildrenNodes`,
                     }}
                     placeholder={'区/县'}
+                    afterSelect={handleSelectCounty}
+                    afterClear={() => handleClear('county')}
                     {...AreaConfig}
                   />,
                 )
