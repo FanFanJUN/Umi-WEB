@@ -6,6 +6,7 @@ import UploadFile from '../../../../components/Upload/index'
 import moment from 'moment';
 import { basicServiceUrl, gatewayUrl } from '../../../../utils/commonUrl';
 import { PersonliableList } from '../../commonProps'
+import styles from '../index.less';
 const { create } = Form;
 const FormItem = Form.Item;
 const { TextArea } = Input;
