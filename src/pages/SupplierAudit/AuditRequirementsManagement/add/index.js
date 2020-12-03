@@ -259,7 +259,7 @@ const Index = (props) => {
                   className={styles.btn}
                   type='primary'
                   beforeStart={handleBeforeStartFlow}
-                  callBack={handleComplete}
+                  startComplete={handleComplete}
                   disabled={false}
                   businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewRequirement'
                 >
