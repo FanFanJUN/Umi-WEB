@@ -31,22 +31,12 @@ function Detail() {
       width: 250
     },
     {
-      title: '公司代码',
-      dataIndex: 'corporationCode'
+      title: '业务单元代码',
+      dataIndex: 'buCode'
     },
     {
-      title: '公司名称',
-      dataIndex: 'corporationName',
-      width: 250
-    },
-    {
-      title: '采购组织代码',
-      dataIndex: 'purchaseOrgCode'
-    },
-    {
-      title: '采购组织名称',
-      dataIndex: 'purchaseOrgName',
-      width: 250
+      title: '业务单元名称',
+      dataIndex: 'buName'
     },
     {
       title: '评审人',

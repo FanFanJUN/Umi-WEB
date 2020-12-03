@@ -194,7 +194,7 @@ function ReviewMain() {
         const { data, success, message: msg } = await exportData(searchValue);
         if (success) {
           downloadBlobFile(data, '评审人配置.xlsx')
-          message.success(msg)
+          message.success('导出成功')
           return
         }
         message.error(msg)

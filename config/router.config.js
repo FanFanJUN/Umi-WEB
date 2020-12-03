@@ -348,6 +348,11 @@ export default [
         component: './SupplierRecommendDemand/FilterOpinion',
         title: '评审小组筛选意见'
       },
+      {
+        path: '/supplier/recommend/team/filter/opinion/approve/detail',
+        component: './SupplierRecommendDemand/FilterOpinionApproveDetail',
+        title: '推荐需求审批-需求单明细'
+      },
       /**供应商推荐准入 begin */
       {
         path: '/supplier/recommend/admittance/manage',

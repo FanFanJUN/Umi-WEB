@@ -20,6 +20,7 @@ import { commonProps, getUserName } from '../../utils';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { useTableProps } from '../../utils/hooks';
+import { openNewTab } from '../../utils';
 const { orgnazationProps, corporationProps } = commonProps;
 
 const { create, Item: FormItem } = Form;
@@ -118,9 +119,19 @@ function CommonForm({
       title: '需求单号',
       dataIndex: 'recommendDemandDocNumber',
       width: 200,
-      align: 'center'
+      align: 'center',
+      render(text, record) {
+        return (
+          <Button type='link' onClick={() => checkDetail(record.recommendDemandId)}>
+            {text}
+          </Button>
+        )
+      }
     }
   ]
+  function checkDetail(id) {
+    openNewTab(`supplier/recommend/demand/detail?id=${id}`, '供应商推荐需求明细')
+  }
   async function setFormValue(values) {
     const {
       orgCode,
