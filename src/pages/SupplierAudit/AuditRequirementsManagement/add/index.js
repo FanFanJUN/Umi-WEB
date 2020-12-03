@@ -140,6 +140,8 @@ const Index = (props) => {
       insertData.lineBoList = [...lineBoList, ...deleteLine];
       let updateData = Object.assign(allData.editData, insertData);
       updateData.deleteList = deleteArr;
+      // 是否在流程中编辑标识
+      updateData.inFlow = true
       return UpdateAuditRequirementsManagement(updateData);
     } else {
       message.error('请至少添加一条拟审核信息!');
@@ -171,6 +173,8 @@ const Index = (props) => {
           } else {
             let updateData = Object.assign(allData.editData, insertData);
             updateData.deleteList = deleteArr;
+            // 是否在流程中编辑标识
+            updateData.inFlow = false
             UpdateAuditRequirementsManagement(updateData).then(res => {
               if (res.success) {
                 message.success(res.message);
@@ -221,7 +225,6 @@ const Index = (props) => {
       return new Promise(function(resolve, reject) {
         UpdateAuditRequirementsManagement(updateData).then(res => {
           if (res.success) {
-            console.log(insertData, 'insertData');
             const data = { businessKey: updateData.id };
             resolve({
               success: true,
