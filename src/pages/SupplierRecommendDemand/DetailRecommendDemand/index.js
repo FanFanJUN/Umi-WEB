@@ -13,7 +13,8 @@ import { saveSupplierRecommendDemand, querySupplierRecommendDemand } from '../..
 import { closeCurrent } from '../../../utils';
 export default ({
   offsetTop = 0,
-  fixed = true
+  fixed = true,
+  systemUseType = 'SupplierRegister'
 }) => {
   const [loading, toggleLoading] = useState(false);
   const formRef = useRef(null);
@@ -75,7 +76,7 @@ export default ({
             </div>
           </div>
       }
-      <RecommendForm wrappedComponentRef={formRef} type='detail' />
+      <RecommendForm wrappedComponentRef={formRef} type='detail' systemUseType={systemUseType} />
     </Spin>
   )
 }

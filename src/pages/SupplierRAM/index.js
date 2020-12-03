@@ -83,6 +83,7 @@ export default () => {
             type='primary'
             onClick={handleCreate}
             key='SUPPLIER_RAM_CREATE'
+            ignore={DEVELOPER_ENV}
           >新增</Button>
         )
       }
@@ -92,6 +93,7 @@ export default () => {
             className={styles.btn}
             disabled={empty || underWay}
             onClick={handleEditor}
+            ignore={DEVELOPER_ENV}
             key='SUPPLIER_RAM_EDITOR'
           >编辑</Button>
 
@@ -103,6 +105,7 @@ export default () => {
             className={styles.btn}
             disabled={empty || underWay}
             onClick={handleRemove}
+            ignore={DEVELOPER_ENV}
             key='SUPPLIER_RAM_REMOVE'
           >删除</Button>
         )
@@ -112,6 +115,7 @@ export default () => {
           <StartFlow
             businessModelCode='com.ecmp.srm.sam.entity.srd.RecommendAccess'
             key='SUPPLIER_RAM_APPROVE'
+            ignore={DEVELOPER_ENV}
             businessKey={flowId}
             startComplete={uploadTable}
           >
@@ -137,11 +141,8 @@ export default () => {
         authAction(
           <Button
             className={styles.btn}
-            disabled={
-              empty ||
-              !underWay ||
-              completed
-            }
+            ignore={DEVELOPER_ENV}
+            disabled={empty || !underWay || completed}
             key='SUPPLIER_RAM_APPROVE_STOP'
             onClick={stopApprove}
           >审核终止</Button>
@@ -153,6 +154,7 @@ export default () => {
             className={styles.btn}
             onChange={handleOnlyMeChange}
             checked={onlyMe}
+            ignore={DEVELOPER_ENV}
             key='SUPPLIER_RAM_APPROVE_ONLYME'
           >仅我的</Checkbox>
         )

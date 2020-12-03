@@ -12,13 +12,13 @@ const {
   supplierProps_no_filter,
   materialClassProps,
   fimlyMaterialClassifyProps,
-  evaluateSystemProps,
-  originFactoryProps
+  // evaluateSystemProps,
+  originFactoryProps,
+  evaluateSystemFormCodeProps
 } = commonProps;
 const { Group: RadioGroup } = Radio;
 const { Group: CheckboxGroup } = Checkbox;
 const { TextArea } = Input;
-
 const recommendCheckbox = [
   {
     label: '质量优势',
@@ -87,7 +87,8 @@ const formLayoutAlone = {
 const { Item: FormItem } = Form;
 const FormContext = forwardRef(({
   form,
-  type = 'add'
+  type = 'add',
+  systemUseType = 'SupplierRegister'
 }, ref) => {
   useImperativeHandle(ref, () => ({
     form,
@@ -103,6 +104,15 @@ const FormContext = forwardRef(({
   const [systemView, setSystemView] = useState(null);
   const [selectedRowKeys, setRowKeys] = useState([]);
   const checkbox = type === 'detail' ? false : { multiSelect: true };
+  const evaluateSystemProps = {
+    ...evaluateSystemFormCodeProps,
+    store: {
+      ...evaluateSystemFormCodeProps.store,
+      params: {
+        systemUseType: systemUseType
+      }
+    }
+  }
   const left = type === 'detail' ? null : (
     <>
       <Button
