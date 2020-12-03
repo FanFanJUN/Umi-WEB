@@ -219,7 +219,7 @@ let LineInfo = forwardRef((props, ref) => {
           if (lineObj.reviewTeamMemberBoList) {
             for (let j = 0; j < lineObj.reviewTeamMemberBoList.length; j++) {
               let obj = lineObj.reviewTeamMemberBoList[j];
-              if (obj.memberRole === 'GROUP_LEADER') {
+              if (obj.memberRole === 'GROUP_LEADER' && !groupObj.leaderName) {
                 // groupObj.leaderId = obj.memberId;
                 // groupObj.leaderName = obj.memberName;
                 // groupObj.leaderTel = obj.memberTel;
