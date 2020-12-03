@@ -31,6 +31,7 @@ const fieldsConfig = [
   {
     name: '排序号',
     code: 'rank',
+    type: 'inputNumber'
   },
 ];
 
