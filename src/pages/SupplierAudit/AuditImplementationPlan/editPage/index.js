@@ -62,7 +62,7 @@ const Index = (props) => {
     }, [])
 
     useEffect(() => {
-        const { id, pageState } = query;
+        let { id, pageState } = query;
         if (!pageState) {
             // 来自工作流
             pageState = props.pageState;
@@ -158,7 +158,7 @@ const Index = (props) => {
                 let lineData = tableRef.current.getTableList();
                 saveData.reviewTeamGroupBoList = lineData;
                 saveData.sonList = saveData.sonList.map(item => {
-                    item.reviewEvlRuleBoList = item.ruleList;
+                    item.reviewEvlRuleBoList = item.ruleList ? item.ruleList : item.reviewEvlRuleBoList;
                     // delete item.ruleList;
                     return item;
                 });
