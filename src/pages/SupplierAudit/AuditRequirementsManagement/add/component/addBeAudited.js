@@ -160,7 +160,7 @@ const AddBeAudited = (props) => {
       provinceId: supplierExtend.officeProvinceId,
       provinceName: supplierExtend.officeProvinceName,
       cityId: supplierExtend.officeRegionId,
-      cityName: supplierExtend.officeRegionId,
+      cityName: supplierExtend.officeRegionName,
       countyId: supplierExtend.officeDistrictId,
       countyName: supplierExtend.officeDistrictName,
       address: supplierExtend.officeStreet,
