@@ -1,7 +1,7 @@
 /*
  * @Author:黄永翠
  * @Date: 2020-11-09 09:38:38
- * @LastEditTime: 2020-12-04 16:05:53
+ * @LastEditTime: 2020-12-04 17:38:25
  * @LastEditors: Please set LastEditors
  * @Description:审核实施计划-明细
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\index.js
@@ -254,7 +254,7 @@ const Index = (props) => {
             <div className={classnames(styles.fbc, styles.affixHeader)}>
                 <span>{data.title}</span>
                 {
-                    (data.type !== 'detail' || data.type === 'change' || data.type === 'edit') && <div style={{ display: "flex", alignItems: 'center' }}>
+                    props.isInFlow!==1 && (data.type !== 'detail' || data.type === 'change' || data.type === 'edit') && <div style={{ display: "flex", alignItems: 'center' }}>
                         <Button className={styles.btn} onClick={() => { closeCurrent() }}>返回</Button>
                         {data.type !== 'change' && <Button className={styles.btn} onClick={() => handleSave('save')}>暂存</Button>}
                         <StartFlow
