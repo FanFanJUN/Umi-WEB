@@ -81,7 +81,6 @@ const ScoreOverview = (props) => {
         item.children = [];
         let reviewRuleList = JSON.parse(JSON.stringify(item.reviewRuleList));
         reviewRuleList = reviewRuleList.map(item => {
-          minLine = item.percentage < minLine.percentage ? item : minLine;
           return ({ ...item, id: getRandom(10) });
         });
         item.children.push(...reviewRuleList);
@@ -99,6 +98,11 @@ const ScoreOverview = (props) => {
     }).then(res => {
       if (res.success) {
         let arr = res.data ? res.data : [];
+        console.log(res.data)
+        arr[0].children = arr[0].children ? arr[0].children : []
+        arr[0].children.map(item => {
+          minLine = item.percentage < minLine.percentage ? item : minLine;
+        })
         arr = buildTree(arr);
         if (minLine.systemId) {
           console.log(minLine, 'minLine')
