@@ -1,12 +1,12 @@
 /*
  * @Author:黄永翠
  * @Date: 2020-11-09 09:38:38
- * @LastEditTime: 2020-11-30 14:17:57
+ * @LastEditTime: 2020-12-04 16:05:53
  * @LastEditors: Please set LastEditors
  * @Description:审核实施计划-明细
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\index.js
  */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useImperativeHandle } from 'react';
 import { Affix, Button, Form, message, Spin, Modal } from 'antd';
 import { WorkFlow } from "suid";
 import { router } from 'dva';
@@ -41,7 +41,7 @@ const pickpropertys = [
     'contactUserName', 'contactUserTel', 'leaderId', 'leaderName', 'leaderEmployeeNo'
 ]
 const Index = (props) => {
-    const { form } = props;
+    const { form, onRef } = props;
     const tableRef = useRef(null);
     const [editData, setEditData] = useState({});
     const [loading, setLoading] = useState(false);
@@ -52,6 +52,17 @@ const Index = (props) => {
     });
 
     const { query } = router.useLocation();
+
+    useImperativeHandle(onRef, () => ({
+        editDataInflow,
+    }));
+
+    async function editDataInflow() {
+        const allData = getAllData();
+        if (!allData) return false;
+        const res = await updateReviewImplementPlan({ ...allData});
+        return res;
+    }
 
     useEffect(() => {
         if (query.pageState !== "add") {

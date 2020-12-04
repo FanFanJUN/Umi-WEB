@@ -183,7 +183,7 @@ export default function () {
 
     const columns = [
         {
-            title: '状态', dataIndex: 'state', width: 120, render: (text) => {
+            title: '状态', dataIndex: 'state', width: 140, render: (text) => {
                 switch (text) {
                     case "DRAFT":
                         return "草稿";
@@ -200,7 +200,7 @@ export default function () {
                 }
             }
         },
-        { title: '作废', dataIndex: 'data1', ellipsis: true, width: 80, render:text=>text?"是":"否" },
+        { title: '作废', dataIndex: 'data1', ellipsis: true, width: 80, render: text => text ? "是" : "否" },
         {
             title: '审批状态', dataIndex: 'flowStatus', width: 180, render: v => {
                 switch (v) {
@@ -216,7 +216,7 @@ export default function () {
         { title: '审核实施计划号', dataIndex: 'reviewImplementPlanCode', width: 180 },
         { title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 250 },
         { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 200 },
-        { title: '审核时间', dataIndex: 'reviewDateStart', ellipsis: true, width: 200, render: (text, item)=>(text.slice(0,10) + '~' + item.reviewDateEnd.slice(0,10)) },
+        { title: '审核时间', dataIndex: 'reviewDateStart', ellipsis: true, width: 200, render: (text, item) => (text.slice(0, 10) + '~' + item.reviewDateEnd.slice(0, 10)) },
         { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 140 },
         { title: '拟制时间', dataIndex: 'applyDate', ellipsis: true, width: 200 },
     ].map(item => ({ ...item, align: 'center' }));
@@ -273,7 +273,10 @@ export default function () {
                 needConfirm={handleBeforeStartFlow}
                 businessKey={data.flowId}
                 callBack={refresh}
-                disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length === 0}
+                disabled={
+                    !judge(data.selectedRows, 'flowStatus', 'INIT')
+                    || data.selectedRowKeys.length === 0
+                    || !judge(data.selectedRows, 'applyAccount', getUserAccount())}
                 businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewImplementPlan'
                 key='SUPPLIER_AUDIT_IMPLEMENT_INFLOW'
             >提交审核</StartFlow>)
@@ -293,7 +296,9 @@ export default function () {
             authAction(<Button
                 onClick={handleStopFlow}
                 loading={data.spinning}
-                disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
+                disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS')
+                    || data.selectedRowKeys.length === 0
+                    || !judge(data.selectedRows, 'applyAccount', getUserAccount())}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 key='SUPPLIER_AUDIT_IMPLEMENT_STOP'
@@ -306,6 +311,7 @@ export default function () {
                 disabled={
                     data.selectedRowKeys.length !== 1
                     || data.selectedRows[0]?.flowStatus !== 'COMPLETED'
+                    || !judge(data.selectedRows, 'applyAccount', getUserAccount())
                 }
                 ignore={DEVELOPER_ENV}
                 key='SUPPLIER_AUDIT_IMPLEMENT_CHANGE'
@@ -324,7 +330,7 @@ export default function () {
             authAction(<Button
                 onClick={() => redirectToPage('changeLeader')}
                 className={styles.btn}
-                disabled={data.selectedRowKeys.length !== 1}
+                disabled={data.selectedRowKeys.length !== 1 || !judge(data.selectedRows, 'applyAccount', getUserAccount())}
                 ignore={DEVELOPER_ENV}
                 key='SUPPLIER_AUDIT_IMPLEMENT_CHANGE_LEADER'
             >变更组长</Button>)
@@ -388,16 +394,16 @@ export default function () {
                 code={data.selectedRows[0]?.reviewImplementPlanCode}
             />}
             { addVisible && <AddNodal
-                    visible={addVisible}
-                    handleCancel={() => { setAddV(false) }}
-                />
+                visible={addVisible}
+                handleCancel={() => { setAddV(false) }}
+            />
             }
             { changeVisible && <ChangeLaderModal
-                    visible={changeVisible}
-                    handleOk={()=>{refresh()}}
-                    originData={data.selectedRows[0]}
-                    handleCancel={() => { setChangeV(false) }}
-                />
+                visible={changeVisible}
+                handleOk={() => { refresh() }}
+                originData={data.selectedRows[0]}
+                handleCancel={() => { setChangeV(false) }}
+            />
             }
         </Fragment>
     );
