@@ -200,7 +200,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='SUPPLIER_AUDIT_DEMAND_VIEW_GROUP'
-        disabled={data.selectedRowKeys.length === 0}
+        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', 'COMPLETED')}
       >查看组长意见</Button>)
     }
     {
@@ -209,7 +209,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'whetherConfirm', false)
-          // || !judge(data.selectedRows, 'leaderId', getUserId())
+        || !judge(data.selectedRows, 'leaderId', getUserId())
         }
         key='SUPPLIER_AUDIT_DEMAND_CONFIRM'
       >审核结果确认</Button>)
@@ -220,7 +220,8 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={data.selectedRowKeys.length === 0
-          // || !judge(data.selectedRows, 'leaderId', getUserId())
+        || !judge(data.selectedRows, 'state', 'COMPLETED')
+        || !judge(data.selectedRows, 'leaderId', getUserId())
         }
         key='SUPPLIER_AUDIT_DEMAND_VIEW_RESULT'
       >审核结果查看</Button>)
@@ -260,7 +261,7 @@ export default function() {
 
   const generationOk = (id) => {
     console.log(id);
-    setData(v => ({ ...v, resultsId: id, resultAddVisible: true }));
+    setData(v => ({ ...v, resultsId: id, generationEntryVisible: false, resultAddVisible: true }));
   };
 
   return (
