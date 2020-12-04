@@ -1,14 +1,15 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useRef, useState } from 'react';
 import { Modal, Form, Button, message, Input, Row, Col, Checkbox } from 'antd';
 import { Fieldclassification, countryListConfig } from '@/utils/commonProps'
-import { ExtTable, ComboList, ComboTree } from 'suid';
+import { ExtTable, ComboList, ComboTree, utils } from 'suid';
 import { openNewTab, getFrameElement } from '@/utils';
 import { recommendUrl, baseUrl } from '@/utils/commonUrl';
 import Header from '@/components/Header';
 import styles from '../index.less';
 import { findCanChooseSupplier } from '@/services/SupplierModifyService'
-import { Materieljurisdiction } from '../../commonProps'
+import { MaterieljurisdictionCode } from '../../commonProps'
 const { Item, create } = Form;
+const { storage } = utils;
 const formLayout = {
     labelCol: {
         span: 8
@@ -27,14 +28,15 @@ const getRecommendRef = forwardRef(({
     }));
     const tableRef = useRef(null)
     const headerRef = useRef(null)
-    const { getFieldDecorator, validateFieldsAndScroll, getFieldValue, setFieldsValue } = form;
-    const [loading, triggerLoading] = useState(false);
+    const { getFieldDecorator, resetFields } = form;
+    const { userId } = storage.sessionStorage.get("Authorization") || {};
     const [searchValue, setSearchValue] = useState('');
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [visible, setvisible] = useState(false);
     const [current, setcurrent] = useState([]);
     const [onlyMe, setOnlyMe] = useState(true);
+    const [seniorSearchvalue, setSeniorsearchvalue] = useState({});
     useEffect(() => {
         //getSupplierlist()
     }, []);
@@ -50,6 +52,15 @@ const getRecommendRef = forwardRef(({
                         direction: 'DESC'
                     }
                 ],
+                filters: seniorSearchvalue.filters ? seniorSearchvalue.filters.concat([{
+                    fieldName: 'creatorId',
+                    operator: 'EQ',
+                    value: onlyMe ? userId : undefined
+                }]) : [{
+                    fieldName: 'creatorId',
+                    operator: 'EQ',
+                    value: onlyMe ? userId : undefined
+                }]
             },
             type: 'POST'
         }
@@ -98,6 +109,39 @@ const getRecommendRef = forwardRef(({
         setOnlyMe(e.target.checked)
         // e.target.checked === true ? setJurisdiction(1) : setJurisdiction(0)
         // uploadTable();
+    }
+    // 查询
+    function handleQuickSerach() {
+        let newsdata = [];
+        form.validateFieldsAndScroll(async (err, val) => {
+            console.log(val)
+            if (!err) {
+                newsdata.push(
+                    {
+                        fieldName: 'docNumber',
+                        value: val.docNumber,
+                        operator: 'LK'
+                    },
+                    {
+                        fieldName: 'supplierName',
+                        value: val.supplierName,
+                        operator: 'LK'
+                    },
+                    {
+                        fieldName: 'materialCategoryCode',
+                        value: val.materialCategoryCode,
+                        operator: 'EQ'
+                    }
+                )
+                setSeniorsearchvalue({
+                    filters: newsdata
+                })
+                tableRef.current.remoteDataRefresh()
+            }
+        })
+    }
+    function handleReset() {
+        resetFields()
     }
     const columns = [
         {
@@ -215,7 +259,7 @@ const getRecommendRef = forwardRef(({
                     <Col span={10}>
                         <Item label='供应商名称' {...formLayout}>
                             {
-                                getFieldDecorator("smSupplierName", {
+                                getFieldDecorator("supplierName", {
                                     initialValue: '',
                                 })(
                                     <Input />
@@ -228,30 +272,33 @@ const getRecommendRef = forwardRef(({
                     <Col span={10}>
                         <Item label='物料分类' {...formLayout}>
                             {
-                                getFieldDecorator("materialCategoryName", {
-                                    initialValue: '',
-                                })(
-                                    <ComboTree
-                                        style={{ width: '100%' }}
-                                        {...Materieljurisdiction}
-                                        name="materialCategoryName"
-                                        field={['materialCategoryCode']}
-                                    />
-                                )
+                                (getFieldDecorator('materialCategoryCode'),
+                                    getFieldDecorator('materialCategoryName', {
+
+                                    })(
+                                        <ComboTree
+                                            style={{ width: '100%' }}
+                                            form={form}
+                                            {...MaterieljurisdictionCode}
+                                            name="materialCategoryName"
+                                            field={['materialCategoryCode']}
+                                        />,
+                                    ))
                             }
                         </Item>
                     </Col>
                     <Col span={10}>
                         <Item label='仅我的' {...formLayout}>
                             {
-                                getFieldDecorator("createdDate", {
+                                getFieldDecorator("creatorId", {
                                     initialValue: '',
                                 })(
                                     <Checkbox className={styles.btn} onChange={handleOnlyMeChange} checked={onlyMe} ></Checkbox>
 
                                 )
                             }
-                            <Button type="primary">查询</Button>
+                            <Button type="primary" onClick={handleQuickSerach} className={styles.btn}>查询</Button>
+                            <Button onClick={handleReset}>重置</Button>
                         </Item>
 
                     </Col>

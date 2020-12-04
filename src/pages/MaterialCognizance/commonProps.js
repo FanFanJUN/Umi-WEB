@@ -286,156 +286,40 @@ export const Earlywarninglist = {
   placeholder: '选择预警状态',
   ...commonProps,
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// 变更信息
-export const ChangecontentList = {
+// 物料
+export const MaterieljurisdictionCode = {
   store: {
-    url: `${smBaseUrl}/api/smPcnChangesService/findByPage`,
-    params: {
-      filters: [{
-        fieldName: 'changeTypeCode',
-        value: '02',
-        operator: 'EQ'
-      }],
-    },
-    type: 'POST'
+    url: `${baseUrl}/SecondaryClassificationMaterialGroup/listAllGeneralTree`,
+    type: 'GET'
   },
-  reader: {
-    name: 'changeContent'
-  },
-  // remotePaging: true,
-  placeholder: '选择变更内容'
-}
-// 是否安规件
-export const Safetyregulationslist = {
-  allowClear: true,
-  dataSource: [
-    {
-      code: '0',
-      name: '否',
-    },
-    {
-      code: '1',
-      name: '是',
-    },
-  ],
-  placeholder: '选择单安规件',
-  ...commonProps,
-}
-// 战略采购
-export const Strategicprocurementlist = {
-  store: {
-    url: `${baseUrl}/api/purchaseGroupService/findByFilters`,
-    type: 'POST'
-  },
-  reader: {
-    name: 'name',
-    field: ['id', 'code'],
-    description: 'code'
-  },
-  // remotePaging: true,
-  placeholder: '选择战略采购'
-}
-
-// 审核状态
-export const ToexamineList = {
-  allowClear: true,
-  dataSource: [
-    {
-      code: 'INIT',
-      name: '未提交审核',
-    },
-    {
-      code: 'INPROCESS',
-      name: '审核中',
-    },
-    {
-      code: 'successColor',
-      name: '已审核',
-    }
-  ],
-  placeholder: '选择审核状态',
-  ...commonProps,
-}
-// 战略采购列表
-// export const StrategicPurchaseConfig = {
-//   allowClear: true,
-//   remotePaging: true,
-//   store: {
-//     type: 'POST',
-//     autoLoad: false,
-//     url: `${baseUrl}/purchaseGroup/findByPagesAll`,
-//   },
-//   rowKey: 'name',
-//   reader: {
-//     name: 'code',
-//     field: ['id', 'name'],
-//     description: 'name',
-//   },
-//   placeholder: '选择战略采购',
-//   style: {
-//     width: '100%',
-//   },
-// };
-// 战略采购列表
-// export const StrategicForName = {
-//   ...StrategicPurchaseConfig,
-//   reader: {
-//     name: 'name',
-//     field: ['id', 'code'],
-//     description: 'code',
-//   },
-// };
-// 流程认定结果 
-export const SupplierResulteList = {
-  allowClear: true,
-  dataSource: [
-    {
-      code: '0',
-      name: '通过',
-    },
-    {
-      code: '1',
-      name: '不通过',
-    },
-  ],
   reader: {
     name: 'name',
     field: ['code'],
   },
-  style: {
-    width: '100%',
+  treeNodeProps: (node) => {
+    if (node.nodeLevel === 0) {
+      return {
+        selectable: false
+      }
+    } else if (node.nodeLevel === 1) {
+      return {
+        selectable: false
+      }
+    }
   },
-  placeholder: '选择结果',
+  // remotePaging: true,
+  placeholder: '请选择物料分类'
 }
-
-// 高级查询战略采购
-export const seniorStrategypurchase = {
+//公司
+export const JurisdictionjurisdictionCode = {
   store: {
-    url: `${baseUrl}/api/purchaseGroupService/findByFilters`,
-    type: 'POST'
+    url: `/api-gateway/basic-service/corporation/findAllAuthEntityData`,
+    type: 'GET'
   },
   reader: {
     name: 'name',
-    field: ['id'],
-    description: 'code'
+    field: ['code'],
   },
   // remotePaging: true,
-  placeholder: '选择战略采购'
+  placeholder: '请选择公司名称'
 }
