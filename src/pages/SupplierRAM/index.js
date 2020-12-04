@@ -103,6 +103,19 @@ export default () => {
         authAction(
           <Button
             className={styles.btn}
+            disabled={empty}
+            onClick={handleDetail}
+            ignore={DEVELOPER_ENV}
+            key='SUPPLIER_RAM_DETAIL'
+          >
+            明细
+          </Button>
+        )
+      }
+      {
+        authAction(
+          <Button
+            className={styles.btn}
             disabled={empty || underWay}
             onClick={handleRemove}
             ignore={DEVELOPER_ENV}
@@ -315,6 +328,13 @@ export default () => {
     const { id = '' } = FRAMELEEMENT;
     const { pathname } = window.location;
     openNewTab(`supplier/recommend/admittance/manage/editor?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '编辑供应商推荐准入', false)
+  }
+  // 处理明细打开
+  function handleDetail() {
+    const [key] = selectedRowKeys;
+    const { id = '' } = FRAMELEEMENT;
+    const { pathname } = window.location;
+    openNewTab(`supplier/recommend/admittance/manage/detail?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '供应商推荐准入明细', false)
   }
   // 处理删除
   async function handleRemove() {
