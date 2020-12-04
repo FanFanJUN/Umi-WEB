@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:44:12
- * @LastEditTime: 2020-12-04 10:30:55
+ * @LastEditTime: 2020-12-04 11:33:48
  * @LastEditors: Please set LastEditors
  * @Description: 审核实施计划-审核人员
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\AuditorInfo.js
@@ -48,6 +48,8 @@ const fieldsConfig = [
   {
     name: '排序号',
     code: 'rank',
+    min: 0,
+    type: "inputNumber"
   },
 ];
 const AuditorInfo = forwardRef((props, ref) => {
