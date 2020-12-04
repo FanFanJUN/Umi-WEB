@@ -124,7 +124,7 @@ const DWC = ({ form, updateGlobalStatus }) => {
                       {getFieldDecorator('signQualityAgreement', {
                         initialValue: type === 'add' ? true : data.signQualityAgreement,
                       })(
-                        <Radio.Group>
+                        <Radio.Group disabled={type==='detail'}>
                           <Radio value={true}>{isAgreeorNot[0]}</Radio>
                           <Radio value={false}>{isAgreeorNot[1]}</Radio>
                         </Radio.Group>)}
@@ -141,7 +141,7 @@ const DWC = ({ form, updateGlobalStatus }) => {
                         //     },
                         // ],
                       })(
-                        <Radio.Group>
+                        <Radio.Group disabled={type==='detail'}>
                           <Radio value={true}>{isAgreeorNot[0]}</Radio>
                           <Radio value={false}>{isAgreeorNot[1]}</Radio>
                         </Radio.Group>
@@ -155,7 +155,7 @@ const DWC = ({ form, updateGlobalStatus }) => {
                       {getFieldDecorator('signSupplyAgreement', {
                         initialValue: type === 'add' ? true : data.signSupplyAgreement,
                       })(
-                        <Radio.Group>
+                        <Radio.Group disabled={type==='detail'}>
                           <Radio value={true}>{isAgreeorNot[0]}</Radio>
                           <Radio value={false}>{isAgreeorNot[1]}</Radio>
                         </Radio.Group>)}
@@ -172,7 +172,7 @@ const DWC = ({ form, updateGlobalStatus }) => {
                         //     },
                         // ],
                       })(
-                        <Radio.Group>
+                        <Radio.Group disabled={type==='detail'}>
                           <Radio value={true}>{isAgreeorNot[0]}</Radio>
                           <Radio value={false}>{isAgreeorNot[1]}</Radio>
                         </Radio.Group>
@@ -186,7 +186,7 @@ const DWC = ({ form, updateGlobalStatus }) => {
                       {getFieldDecorator('signCsrAgreement', {
                         initialValue: type === 'add' ? true : data.signCsrAgreement,
                       })(
-                        <Radio.Group>
+                        <Radio.Group disabled={type==='detail'}>
                           <Radio value={true}>{isAgreeorNot[0]}</Radio>
                           <Radio value={false}>{isAgreeorNot[1]}</Radio>
                         </Radio.Group>)}
@@ -203,7 +203,7 @@ const DWC = ({ form, updateGlobalStatus }) => {
                         //     },
                         // ],
                       })(
-                        <Radio.Group>
+                        <Radio.Group disabled={type==='detail'}>
                           <Radio value={true}>{isAgreeorNot[0]}</Radio>
                           <Radio value={false}>{isAgreeorNot[1]}</Radio>
                         </Radio.Group>
@@ -216,7 +216,7 @@ const DWC = ({ form, updateGlobalStatus }) => {
                   <Col span={24}>
                     <FormItem label="付款条件" {...formLayoutCol}>
                       {getFieldDecorator('payConditionEnum')(
-                        <Radio.Group onChange={handleChange}>
+                        <Radio.Group onChange={handleChange} disabled={type==='detail'}>
                           <Radio value={'RMB'}>月结90天6个月银行承兑(人民币)</Radio>
                           <Radio value={'FOREIGN_CURRENCY'}>月结60天现汇(外币结算)</Radio>
                           <Radio value={'OTHER'}>

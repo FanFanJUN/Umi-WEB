@@ -31,6 +31,11 @@ export default [
     title: '系统打分主数据',
     routes: [
       {
+        path: '/gradeSystem/evaluation/main/quality',
+        component: './SystemEvaluationMainData/Quality',
+        title: '质量主数据'
+      },
+      {
         path: '/gradeSystem/acceptFYP',
         component: './AcceptFYPMain',
         title: '来料验收批次合格率'
@@ -347,6 +352,11 @@ export default [
         path: '/supplier/recommend/team/filter/opinion',
         component: './SupplierRecommendDemand/FilterOpinion',
         title: '评审小组筛选意见'
+      },
+      {
+        path: '/supplier/recommend/team/filter/opinion/detail',
+        component: './SupplierRecommendDemand/FilterOpinion/Detail',
+        title: '评审小组筛选意见-明细'
       },
       {
         path: '/supplier/recommend/team/filter/opinion/approve/detail',

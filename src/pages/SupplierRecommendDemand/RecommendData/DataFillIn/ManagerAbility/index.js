@@ -254,7 +254,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="每年制定查成本降低目标并对执行情况进行评价" {...formLayout}>
                       {getFieldDecorator('reduceCostEvaluation', {
                         initialValue: type === 'add' ? '' : data.reduceCostEvaluation,
-                      })(<Radio.Group>
+                      })(<Radio.Group disabled={type==='detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>)}
@@ -273,6 +273,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                       })(<UploadFile
                         showColor={type !== 'add' ? true : false}
                         type={type !== 'add'}
+                        disabled={type==='detail'}
                         entityId={data.costControlPlanFileId}
                       />)}
                     </FormItem>
@@ -289,7 +290,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Radio.Group>
+                      })(<Radio.Group disabled={type==='detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>)}
@@ -308,6 +309,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                       })(<UploadFile
                         showColor={type !== 'add' ? true : false}
                         type={type !== 'add'}
+                        disabled={type==='detail'}
                         entityId={data.costAccountingListFileId}
                       />)}
                     </FormItem>
@@ -332,7 +334,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Radio.Group>
+                      })(<Radio.Group disabled={type==='detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>)}
@@ -351,7 +353,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Radio.Group>
+                      })(<Radio.Group disabled={type==='detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>)}
@@ -363,14 +365,14 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="库房地点" {...formLayout}>
                       {getFieldDecorator('warehouseLocation', {
                         initialValue: type === 'add' ? '' : data.warehouseLocation,
-                      })(<Input />)}
+                      })(<Input disabled={type==='detail'}/>)}
                     </FormItem>
                   </Col>
                   <Col span={8}>
                     <FormItem label="面积（平方米）" {...formLayout}>
                       {getFieldDecorator('warehouseArea', {
                         initialValue: type === 'add' ? '' : data.warehouseArea,
-                      })(<InputNumber />)}
+                      })(<InputNumber disabled={type==='detail'}/>)}
                     </FormItem>
                   </Col>
                   <Col span={8}>
@@ -383,7 +385,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<InputNumber />)}
+                      })(<InputNumber disabled={type==='detail'}/>)}
                     </FormItem>
                   </Col>
                 </Row>
@@ -399,7 +401,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Radio.Group>
+                      })(<Radio.Group disabled={type==='detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>)}
@@ -417,6 +419,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                         // ],
                       })(<UploadFile
                         showColor={type !== 'add' ? true : false}
+                        disabled={type==='detail'}
                         type={type !== 'add'}
                         entityId={data.stockUpProcessFileId}
                       />)}
@@ -435,7 +438,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Radio.Group>
+                      })(<Radio.Group disabled={type==='detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>)}
@@ -454,6 +457,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                       })(<UploadFile
                         showColor={type !== 'add' ? true : false}
                         type={type !== 'add'}
+                        disabled={type==='detail'}
                         entityId={data.deliveryProcessFileId}
                       />)}
                     </FormItem>
@@ -471,7 +475,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Radio.Group>
+                      })(<Radio.Group disabled={type==='detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>)}
@@ -489,6 +493,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                         // ],
                       })(<UploadFile
                         showColor={type !== 'add' ? true : false}
+                        disabled={type==='detail'}
                         type={type !== 'add'}
                         entityId={data.urgentDeliveryProcessFileId}
                       />)}
@@ -507,7 +512,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Radio.Group>
+                      })(<Radio.Group disabled={type==='detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>)}
@@ -524,6 +529,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                         //     },
                         // ],
                       })(<UploadFile
+                        disabled={type==='detail'}
                         showColor={type !== 'add' ? true : false}
                         type={type !== 'add'}
                         entityId={data.customerProcessFileId}
@@ -543,7 +549,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Radio.Group>
+                      })(<Radio.Group disabled={type==='detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>)}
@@ -561,7 +567,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Radio.Group>
+                      })(<Radio.Group disabled={type==='detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>)}
@@ -580,7 +586,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Radio.Group>
+                      })(<Radio.Group disabled={type==='detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>)}
@@ -598,6 +604,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                         // ],
                       })(<UploadFile
                         showColor={type !== 'add' ? true : false}
+                        disabled={type==='detail'}
                         type={type !== 'add'}
                         entityId={data.delayDeliveryNoticeCustomerFileId}
                       />)}
@@ -633,7 +640,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Radio.Group>
+                      })(<Radio.Group disabled={type==='detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>)}
@@ -651,7 +658,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<InputNumber />)}
+                      })(<InputNumber disabled={type==='detail'}/>)}
                     </FormItem>
                   </Col>
                   <Col span={12}>
@@ -664,7 +671,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<InputNumber />)}
+                      })(<InputNumber disabled={type==='detail'}/>)}
                     </FormItem>
                   </Col>
                 </Row>
@@ -680,7 +687,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Radio.Group>
+                      })(<Radio.Group disabled={type==='detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>)}
@@ -699,7 +706,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Radio.Group>
+                      })(<Radio.Group disabled={type==='detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>)}
@@ -717,6 +724,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                         // ],
                       })(<UploadFile
                         showColor={type !== 'add' ? true : false}
+                        disabled={type==='detail'}
                         type={type !== 'add'}
                         entityId={data.dangerousChemicalShipperFileId}
                       />)}

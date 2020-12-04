@@ -31,7 +31,7 @@ export default () => {
     <Spin spinning={loading}>
       <Affix>
         <div className={classnames(styles.fbc, styles.affixHeader)}>
-          <span>供应商推荐需求</span>
+          <h2>供应商推荐需求</h2>
           <div>
             <Button onClick={back} className={styles.btn}>返回</Button>
             <Button onClick={handleSave} className={styles.btn}>保存</Button>

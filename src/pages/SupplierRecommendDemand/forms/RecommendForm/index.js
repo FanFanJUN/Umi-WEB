@@ -478,6 +478,7 @@ const FormContext = forwardRef(({
             ></ExtTable>
           </Col>
         </Row>
+        <div className={styles.title}>供应商自评</div>
         <Row>
           <Col span={24}>
             <FormItem label='评价体系' {...formLayoutAlone}>
