@@ -146,7 +146,7 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                       {getFieldDecorator('haveenvironmentalTestingEquipments ', {
                         initialValue: type === 'add' ? true : data.haveenvironmentalTestingEquipments,
                       })(
-                        <Radio.Group value={'1'}>
+                        <Radio.Group value={'1'} disabled={type === 'detail'}>
                           <Radio value={true}>有</Radio>
                           <Radio value={false}>无</Radio>
                         </Radio.Group>)}
@@ -169,7 +169,7 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                       {getFieldDecorator('haveRohs', {
                         initialValue: type === 'add' ? true : data.haveRohs,
                       })(
-                        <Radio.Group value={'1'}>
+                        <Radio.Group value={'1'} disabled={type==='detail'}>
                           <Radio value={true}>有</Radio>
                           <Radio value={false}>无</Radio>
                         </Radio.Group>
@@ -183,7 +183,7 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                       {getFieldDecorator('standardTypeEnum', {
                         initialValue: type === 'add' ? 'ROHS_10' : data.standardTypeEnum,
                       })(
-                        <Radio.Group>
+                        <Radio.Group disabled={type==='detail'}>
                           <Radio value={'ROHS_10'}>RoHS1.0</Radio>
                           <Radio value={'ROHS_20'}>RoHS2.0</Radio>
                           <Radio value={'ROHS_10_HALOGEN_FREE'}>RoHS1.0+无卤</Radio>
@@ -201,6 +201,7 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                       })(
                         <UploadFile
                           showColor={type !== 'add' ? true : false}
+                          disabled={type==='detail'}
                           type={type !== 'add'}
                           entityId={data.rohsFileId}
                         />
@@ -215,7 +216,7 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                       {getFieldDecorator('chemicalsControl', {
                         initialValue: type === 'add' ? true : data.chemicalsControl,
                       })(
-                        <Radio.Group>
+                        <Radio.Group disabled={type==='detail'}>
                           <Radio value={true}>有</Radio>
                           <Radio value={false}>无</Radio>
                         </Radio.Group>)}
@@ -227,7 +228,7 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                     <FormItem label="备注" {...formLayout}>
                       {getFieldDecorator('remark', {
                         initialValue: type === 'add' ? '' : data.remark,
-                      })(<Input.TextArea />)}
+                      })(<Input.TextArea disabled={type==='detail'}/>)}
                     </FormItem>
                   </Col>
                 </Row>
@@ -240,6 +241,7 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                         <UploadFile
                           showColor={type !== 'add' ? true : false}
                           type={type === 'add' ? '' : 'show'}
+                          disabled={type==='detail'}
                           entityId={data.attachmentId}
                         />
                       )}

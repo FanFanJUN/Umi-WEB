@@ -408,6 +408,7 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
                         // ],
                       })(<UploadFile showColor={type !== 'add' ? true : false}
                         type={type !== 'add'}
+                        disabled={type==='detail'}
                         entityId={data.keyProductEquipmentFileId} />)}
                     </FormItem>
                   </Col>

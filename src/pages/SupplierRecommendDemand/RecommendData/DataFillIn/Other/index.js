@@ -159,6 +159,7 @@ const Other = ({ form, updateGlobalStatus }) => {
                         <UploadFile
                           showColor={type !== 'add' ? true : false}
                           type={type === 'add' ? '' : 'show'}
+                          disabled={type === 'detail'}
                           entityId={data.corporationGateway} />)}
                     </FormItem>
                   </Col>
@@ -176,6 +177,7 @@ const Other = ({ form, updateGlobalStatus }) => {
                         <UploadFile
                           showColor={type !== 'add' ? true : false}
                           type={type === 'add' ? '' : 'show'}
+                          disabled={type === 'detail'}
                           entityId={data.corporationWorkShop} />)}
                     </FormItem>
                   </Col>
@@ -194,6 +196,7 @@ const Other = ({ form, updateGlobalStatus }) => {
                       })(
                         <UploadFile
                           showColor={type !== 'add' ? true : false}
+                          disabled={type === 'detail'}
                           type={type === 'add' ? '' : 'show'}
                           entityId={data.rawMaterialWarehouse} />)}
                     </FormItem>
@@ -211,6 +214,7 @@ const Other = ({ form, updateGlobalStatus }) => {
                       })(
                         <UploadFile
                           showColor={type !== 'add' ? true : false}
+                          disabled={type === 'detail'}
                           type={type === 'add' ? '' : 'show'}
                           entityId={data.productWarehouse} />)}
                     </FormItem>
@@ -230,6 +234,7 @@ const Other = ({ form, updateGlobalStatus }) => {
                       })(
                         <UploadFile
                           showColor={type !== 'add' ? true : false}
+                          disabled={type === 'detail'}
                           type={type === 'add' ? '' : 'show'}
                           entityId={data.lab} />)}
                     </FormItem>
@@ -248,6 +253,7 @@ const Other = ({ form, updateGlobalStatus }) => {
                       {getFieldDecorator('organizationIds')(
                         <UploadFile
                           showColor={type !== 'add' ? true : false}
+                          disabled={type === 'detail'}
                           type={type === 'add' ? '' : 'show'}
                           entityId={data.organizationId} />)}
                     </FormItem>
@@ -273,6 +279,7 @@ const Other = ({ form, updateGlobalStatus }) => {
                         ],
                       })(
                         <UploadFile
+                          disabled={type === 'detail'}
                           showColor={type !== 'add' ? true : false}
                           type={type === 'add' ? '' : 'show'}
                           entityId={data.capitalVerificationReportFileId} />)}

@@ -65,13 +65,13 @@ export default ({
         fixed ?
           <Affix offsetTop={offsetTop}>
             <div className={classnames(styles.fbc, styles.affixHeader)}>
-              <span>供应商推荐需求</span>
+              <h2>供应商推荐需求</h2>
               <div>
               </div>
             </div>
           </Affix> :
           <div className={classnames(styles.fbc, styles.affixHeader)}>
-            <span>供应商推荐需求</span>
+            <h2>供应商推荐需求</h2>
             <div>
             </div>
           </div>
