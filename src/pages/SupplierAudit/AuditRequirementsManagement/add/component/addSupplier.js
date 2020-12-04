@@ -8,8 +8,18 @@ const FormItem = Form.Item;
 
 const columns = [
   { title: '物料分类', dataIndex: 'materielCategory', width: 150, render: v => v.name },
-  { title: '供应商', dataIndex: 'supplier', width: 400, render: v => v.name },
-  { title: '代理商', dataIndex: 'originSupplierName', width: 200 },
+  {
+    title: '供应商',
+    dataIndex: 'supplier',
+    width: 400,
+    render: (v, record) => record.originSupplierName ? record.originSupplierName : v.name,
+  },
+  {
+    title: '代理商',
+    dataIndex: 'originSupplierName',
+    width: 200,
+    render: (v, record) => record.originSupplierName ? v.name : record.originSupplierName,
+  },
 ].map(item => ({ ...item, align: 'center' }));
 
 const formItemLayoutLong = {
@@ -57,6 +67,8 @@ const AddSupplier = (props) => {
       }
     </FormItem>
   );
+
+  console.log(props, 'props')
 
   const onSelectRow = (keys, values) => {
     setData(v => ({ ...v, selectedKeys: keys, selectedValue: values }));
@@ -142,6 +154,12 @@ const AddSupplier = (props) => {
                 fieldType: 'string',
                 operator: 'EQ',
                 value: props.purchaseOrgCode,
+              },
+              {
+                fieldName: 'frozen',
+                fieldType: 'boolean',
+                operator: 'EQ',
+                value: 0,
               },
             ],
           },
