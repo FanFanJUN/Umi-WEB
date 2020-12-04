@@ -79,6 +79,7 @@ export default () => {
             type='primary'
             key='SUPPLIER_RECOMMEND_DEMAND_CREATE'
             onClick={handleCreate}
+            ignore={DEVELOPER_ENV}
           >新增</Button>
         )
       }
@@ -89,6 +90,7 @@ export default () => {
             disabled={empty || underWay}
             key='SUPPLIER_RECOMMEND_DEMAND_EDITOR'
             onClick={handleEditor}
+            ignore={DEVELOPER_ENV}
           >编辑</Button>
         )
       }
@@ -99,6 +101,7 @@ export default () => {
             disabled={empty || !fillInit || underWay}
             key='SUPPLIER_RECOMMEND_DEMAND_REMOVE'
             onClick={handleRemove}
+            ignore={DEVELOPER_ENV}
           >删除</Button>
         )
       }
@@ -109,6 +112,7 @@ export default () => {
             disabled={empty || underWay || !fillInit}
             key='SUPPLIER_RECOMMEND_DEMAND_SUBMIT'
             onClick={handleSubmitSupplierFillIn}
+            ignore={DEVELOPER_ENV}
           >提交供应商填报</Button>
         )
       }
@@ -119,6 +123,7 @@ export default () => {
             disabled={empty}
             onClick={handleOpenInfomationConfirm}
             key='SUPPLIER_RECOMMEND_DEMAND_CONFIRM'
+            ignore={DEVELOPER_ENV}
           >填报信息确认</Button>
         )
       }
@@ -129,9 +134,10 @@ export default () => {
             businessKey={flowId}
             key='SUPPLIER_RECOMMEND_DEMAND_APPROVE'
             startComplete={uploadTable}
+            ignore={DEVELOPER_ENV}
           >
             {
-              loading => <Button className={styles.btn} loading={loading} disabled={empty || underWay || completed}>提交审核</Button>
+              loading => <Button className={styles.btn} loading={loading} disabled={empty || underWay || completed || !fillComplete}>提交审核</Button>
             }
           </StartFlow>
         )
@@ -153,6 +159,7 @@ export default () => {
           <Button
             className={styles.btn}
             disabled={empty || !underWay}
+            ignore={DEVELOPER_ENV}
             onClick={stopApprove}
             key='SUPPLIER_RECOMMEND_DEMAND_APPROVE_STOP'
           >审核终止</Button>
@@ -162,6 +169,7 @@ export default () => {
         authAction(
           <Checkbox
             className={styles.btn}
+            ignore={DEVELOPER_ENV}
             onChange={handleOnlyMeChange}
             checked={onlyMe}
             key='SUPPLIER_RECOMMEND_DEMAND_ONLYME'
