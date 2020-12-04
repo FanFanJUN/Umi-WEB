@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-12 14:44:24
- * @LastEditTime: 2020-11-19 15:47:35
+ * @LastEditTime: 2020-12-04 11:18:25
  * @Description: 审核类型、是否通过和结论配置
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/mainData/AwcConf/index.js
  */
@@ -76,7 +76,8 @@ const Index = () => {
     {
       name: '排序号',
       code: 'rank',
-      type: 'inputNumber'
+      min: 0,
+      type: "inputNumber"
     }
   ];
 

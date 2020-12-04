@@ -172,7 +172,11 @@ export default function() {
         onClick={() => redirectToPage('resultAdd')} s
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'whetherConfirm', false)}
+        disabled={data.selectedRowKeys.length === 0
+        // 判断结果是否确认
+        || !judge(data.selectedRows, 'whetherConfirm', false)
+        // 已填报不能再次录入
+        || !judge(data.selectedRows, 'state', 'NOT_COMPLETED')}
         key='SUPPLIER_AUDIT_DEMAND_ADD'
       >结果录入</Button>)
     }
@@ -181,7 +185,11 @@ export default function() {
         onClick={() => redirectToPage('generationEntry')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        disabled={data.selectedRowKeys.length === 0}
+        disabled={data.selectedRowKeys.length === 0
+        // 判断结果是否确认
+        || !judge(data.selectedRows, 'whetherConfirm', false)
+        // 已填报不能再次录入
+        || !judge(data.selectedRows, 'state', 'NOT_COMPLETED')}
         key='SUPPLIER_AUDIT_DEMAND_DADD'
       >代录入</Button>)
     }
@@ -190,7 +198,9 @@ export default function() {
         onClick={() => redirectToPage('recall')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', 'COMPLETED')}
+        disabled={data.selectedRowKeys.length === 0
+        || !judge(data.selectedRows, 'state', 'COMPLETED')
+        || !judge(data.selectedRows, 'whetherConfirm', false)}
         key='SUPPLIER_AUDIT_DEMAND_WITHDRAW'
       >撤回</Button>)
     }
