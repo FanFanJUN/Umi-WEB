@@ -1,5 +1,5 @@
 /**
- * @Description: 审核报告管理
+ * @Description: 审核简报管理
  * @Author: M!keW
  * @Date: 2020-11-16
  */
@@ -66,10 +66,10 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
         showModal();
         break;
       case 'edit':
-        openNewTab('supplierAudit/AuditBriefingManagementViewEdit?pageState=edit&id=' + data.selectedRows[0].id, '审核报告管理-编辑', false);
+        openNewTab('supplierAudit/AuditBriefingManagementViewEdit?pageState=edit&id=' + data.selectedRows[0].id, '审核简报管理-编辑', false);
         break;
       case 'detail':
-        openNewTab('supplierAudit/AuditBriefingManagementViewDetail?pageState=detail&id=' + data.selectedRows[0].id, '审核报告管理-明细', false);
+        openNewTab('supplierAudit/AuditBriefingManagementViewDetail?pageState=detail&id=' + data.selectedRows[0].id, '审核简报管理-明细', false);
         break;
     }
   };
