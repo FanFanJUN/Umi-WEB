@@ -18,7 +18,7 @@ import {
 } from '../../QualitySynergy/commonProps';
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
-import { openNewTab } from '../../../utils';
+import { getUserId, openNewTab } from '../../../utils';
 import { materialClassProps } from '../../../utils/commonProps';
 import AddModal from './components/AddModal';
 import { supplierProps } from '../../../utils/commonProps';
@@ -70,6 +70,7 @@ const AuditReportManagement = forwardRef(({}, ref) => {
     selectedRows: [],
     modalVisible: false,
   });
+  const currentUserId = getUserId();
 
   const getModalRef = useRef(null);
 
@@ -216,7 +217,7 @@ const AuditReportManagement = forwardRef(({}, ref) => {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='SRM-SM-AUDITREPORT-EDIT'
-        disabled={!judge(data.selectedRows, 'status', 'Draft') || data.selectedRowKeys.length !== 1 || !judge(data.selectedRows, 'flowStatus', 'INIT')}
+        disabled={(data.selectedRows && data.selectedRows.length > 0 && data.selectedRows[0].creatorId !== currentUserId) || !judge(data.selectedRows, 'status', 'Draft') || data.selectedRowKeys.length !== 1 || !judge(data.selectedRows, 'flowStatus', 'INIT')}
       >编辑</Button>)
     }
     {
@@ -225,7 +226,7 @@ const AuditReportManagement = forwardRef(({}, ref) => {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='SRM-SM-AUDITREPORT-DELETE'
-        disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length !== 1}
+        disabled={(data.selectedRows && data.selectedRows.length > 0 && data.selectedRows[0].creatorId !== currentUserId) || !judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length !== 1}
       >删除</Button>)
     }
     {
@@ -247,7 +248,7 @@ const AuditReportManagement = forwardRef(({}, ref) => {
         key='SRM-SM-AUDITREPORT-APPROVE'
       >{
         loading => <Button
-          disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length === 0}
+          disabled={(data.selectedRows && data.selectedRows.length > 0 && data.selectedRows[0].creatorId !== currentUserId) || !judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length === 0}
           className={styles.btn} loading={loading}>提交审核</Button>
       }</StartFlow>)
     }
@@ -267,7 +268,7 @@ const AuditReportManagement = forwardRef(({}, ref) => {
       authAction(<Button
         onClick={() => endFlow()}
         loading={data.spinning}
-        disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
+        disabled={(data.selectedRows && data.selectedRows.length > 0 && data.selectedRows[0].creatorId !== currentUserId) || !judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='SRM-SM-AUDITREPORT-ENDAPPROVE'
