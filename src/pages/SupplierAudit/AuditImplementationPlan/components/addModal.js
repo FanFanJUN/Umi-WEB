@@ -27,11 +27,26 @@ const AddModal = (props) => {
     const columns = [
         { title: '月度审核计划号和行号', dataIndex: 'reviewPlanMonthCode', width: 180, ellipsis: true },
         { title: '审核月度', dataIndex: 'applyMonth', width: 140, ellipsis: true, render: () => applyMonth ? applyMonth.slice(0, 7) : 0 },
-        { title: '需求公司', dataIndex: 'applyCorporationName', width: 140, ellipsis: true },
-        { title: '采购组织', dataIndex: 'purchaseTeamName', ellipsis: true, width: 140 },
-        { title: '供应商', dataIndex: 'supplierCode', ellipsis: true, width: 140 },
-        { title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 140 },
-        { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 140 },
+        {
+            title: '需求公司', dataIndex: 'applyCorporationName', width: 240, ellipsis: true,
+            render: (v, record) => `${v ? v : ''} ${record.applyCorporationCode ? record.applyCorporationCode : ''}`,
+        },
+        {
+            title: '采购组织', dataIndex: 'purchaseTeamName', ellipsis: true, width: 200,
+            render: (v, record) => `${v ? v : ''} ${record.purchaseTeamCode ? record.purchaseTeamCode : ''}`,
+        },
+        {
+            title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 200,
+            render: (v, record) => `${v ? v : ''} ${record.supplierCode ? record.supplierCode : ''}`,
+        },
+        {
+            title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 140,
+            render: (v, record) => `${v ? v : ''} ${record.agentCode ? record.agentCode : ''}`,
+        },
+        {
+            title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 140,
+            render: (v, record) => `${v ? v : ''} ${record.applyCorporationCode ? record.materialGroupCode : ''}`,
+        },
         { title: '审核类型', dataIndex: 'reviewTypeName', ellipsis: true, width: 140 },
         { title: '审核方式', dataIndex: 'reviewWayName', ellipsis: true, width: 140 },
     ].map(item => ({ ...item, align: 'center' }))
@@ -56,6 +71,7 @@ const AddModal = (props) => {
             }
         }
         sessionStorage.setItem('selectedMonthLIne', JSON.stringify(selectRows));
+        handleCancel();
         openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=add&ids=${selectedRowKeys.join()}`, '审核实施计划-新增', false);
     }
 
