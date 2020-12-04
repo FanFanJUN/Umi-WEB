@@ -163,9 +163,9 @@ const SelfEvaluation = props => {
       if (res.success) {
         props.onCancel();
       } else {
-        message.error(res.messages);
+        message.error(res.message);
       }
-    }).catch(err => message.error(err.messages));
+    }).catch(err => message.error(err.message));
   };
 
   const clearSelected = () => {
