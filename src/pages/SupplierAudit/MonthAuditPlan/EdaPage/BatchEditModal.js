@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-23 17:00:19
- * @LastEditTime: 2020-12-04 10:49:33
+ * @LastEditTime: 2020-12-04 14:59:01
  * @Description: 批量编辑页面
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BatchEditModal.js
  */
@@ -91,7 +91,7 @@ const BatchEditModal = (props) => {
                   name={'reviewReasonName'}
                   field={['reviewReasonId', 'reviewReasonCode']}
                   {...reviewReasonsProps}
-                  disabled={originData.sourceType === "Review_Plan_YEAR_LINE" && originData.reviewTypeName === "追加审核"}
+                  disabled={originData.sourceType !== "ADMISSION_RECOMMENDATION"}
                 />,
                 )
               }

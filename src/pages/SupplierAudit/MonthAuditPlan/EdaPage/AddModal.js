@@ -47,10 +47,12 @@ const AddModal = (props) => {
                 ];
             case "recommand":
                 return [
-                    { title: '准入推荐号', dataIndex: 'data2', ellipsis: true, width: 140 },
-                    { title: '需求公司', dataIndex: 'applyCorporationName', width: 140, ellipsis: true },
+                    { title: '准入推荐号', dataIndex: 'docNumber', ellipsis: true, width: 140 },
+                    { title: '需求公司', dataIndex: 'corporationName', width: 200, ellipsis: true },
                     { title: '采购组织', dataIndex: 'purchaseOrgName', ellipsis: true, width: 140 },
-                    { title: '供应商', dataIndex: 'supplierCode', ellipsis: true, width: 140 },
+                    { title: '供应商', dataIndex: 'supplierCode', ellipsis: true, width: 140, render:(text, item) =>{
+                        return item.recommendAccess?.supplierName;
+                    } },
                     { title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 140 },
                     { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 140 },
                 ];
@@ -102,7 +104,7 @@ const AddModal = (props) => {
                 params: {
                     filters: [{
                         "fieldName": "recommendAccessId",
-                        "value": '',
+                        "value": getFieldValue('recommendAccessId'),
                         "operator": "EQ",
                         "fieldType": "string"
                     }],
@@ -124,6 +126,15 @@ const AddModal = (props) => {
                     ...item,
                     sourceType: "ADMISSION_RECOMMENDATION",
                     sourceLineId: item.id,
+                    applyCorporationName: item.corporationName,
+                    applyCorporationCode: item.corporationCode,
+                    purchaseTeamName: item.purchaseOrgName,
+                    purchaseTeamCode:item.purchaseOrgCode,
+                    purchaseTeamId:item.purchaseOrgId,
+                    sourceCode: item.docNumber,
+                    supplierName: item.recommendAccess?.supplierName,
+                    supplierId: item.recommendAccess?.supplierId,
+                    supplierCode: item.recommendAccess?.supplierCode,
                     id: ''
                 }
             })
@@ -233,13 +244,14 @@ const AddModal = (props) => {
                     <Col span={12}>
                         <FormItem {...formItemLayoutLong} label={'准入推荐号'}>
                             {
-                                getFieldDecorator('fileCategoryName')(
+                                getFieldDecorator('recommendAccessId'),
+                                getFieldDecorator('businessCode')(
                                     <ComboList
                                         allowClear
                                         style={{ width: '100%' }}
                                         form={form}
-                                        name={'name'}
-                                        field={['code', 'id']}
+                                        name={'businessCode'}
+                                        field={['recommendAccessId']}
                                         {...findRecommendAccessByDataAuth}
                                     />,
                                 )

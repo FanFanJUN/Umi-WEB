@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime: 2020-11-27 16:04:41
+ * @LastEditTime: 2020-12-04 15:24:24
  * @Description: 行信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
@@ -125,12 +125,12 @@ let LineInfo = forwardRef((props, ref) => {
       dataIndex: 'materialGroupName',
       ellipsis: true,
       width: 140,
-      render: (v, record) => `${v ? v : ''} ${record.applyCorporationCode ? record.materialGroupCode : ''}`,
+      render: (v, record) => `${v ? v : ''} ${record.materialGroupCode ? record.materialGroupCode : ''}`,
     },
     { title: '物料级别', dataIndex: 'materialGradeName', ellipsis: true, width: 140 },
     {
-      title: '生产厂地址', dataIndex: 'data2', ellipsis: true, width: 180, render: (text, item) => {
-        return item.countryName + item.provinceName + item.cityName + item.countyName + item.address;
+      title: '生产厂地址', dataIndex: 'countryName', ellipsis: true, width: 180, render: (text, item) => {
+        return !text ? "" : item.countryName + item.provinceName + item.cityName + item.countyName + item.address;
       },
     },
     { title: '供应商联系人', dataIndex: 'contactUserName', ellipsis: true, width: 140 },

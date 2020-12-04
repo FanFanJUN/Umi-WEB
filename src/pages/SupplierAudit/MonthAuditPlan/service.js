@@ -189,10 +189,9 @@ export const findRecommendAccessByDataAuth = {
       url: `${recommendUrl}/api/recommendAccessService/findRecommendAccessByDataAuth`,
     },
     remotePaging: true,
-    rowKey: 'code',
+    rowKey: 'businessCode',
     reader: {
-      field: ['code'],
+      field: ['id'],
       name: 'name',
-      description: 'code',
     },
   };
