@@ -163,9 +163,9 @@ const SelfEvaluation = props => {
       if (res.success) {
         props.onCancel();
       } else {
-        message.error(res.messages);
+        message.error(res.message);
       }
-    }).catch(err => message.error(err.messages));
+    }).catch(err => message.error(err.message));
   };
 
   const clearSelected = () => {
@@ -246,7 +246,7 @@ const SelfEvaluation = props => {
       {
         type ?
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            {!isView && <Button onClick={sendBack}>退回</Button>}
+            {!isView && <Button onClick={sendBack} disabled={!data.time}>退回</Button>}
             <span style={{ marginLeft: '50px' }}>自评时间:</span>
             <Input style={{ width: '350px', marginLeft: '5px' }}
                    disabled={true} value={data.time}/>

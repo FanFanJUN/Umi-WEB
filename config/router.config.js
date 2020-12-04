@@ -154,8 +154,11 @@ export default [
       { path: '/supplierAudit/AnnualAuditPlanInflowNotAgree', component: './SupplierAudit/FlowList/AnnualAuditPlanInflowNotAgree', title: '年度度审核计划流程不同意' },
 
       { path: '/supplierAudit/monthAuditInFlow', component: './SupplierAudit/FlowList/monthAuditInFlow', title: '月度审核计划流程中' },
+      { path: '/supplierAudit/monthAuditInFlowNotAgree', component: './SupplierAudit/FlowList/monthAuditInFlowNotAgree', title: '月度审核计划流程中不同意' },
       { path: '/supplierAudit/monthAuditChangeInFlow', component: './SupplierAudit/FlowList/monthAuditChangeInFlow', title: '月度审核计划变更流程中' },
+
       { path: '/supplierAudit/AuditImplementationPlanInflow', component: './SupplierAudit/FlowList/AuditImplementationPlanInflow', title: '审核实施计划流程中' },
+      { path: '/supplierAudit/AuditImplPNotAgreeInflow', component: './SupplierAudit/FlowList/AuditImplPNotAgreeInflow', title: '审核实施计划流程中不同意' },
       { path: '/supplierAudit/AuditIPChangeInflow', component: './SupplierAudit/FlowList/AuditIPChangeInflow', title: '变更审核实施计划流程中' },
 
       { path: '/supplierAudit/AuditRequirementsManagementAdd', component: './SupplierAudit/AuditRequirementsManagement/add', title: '审核需求管理新增' },
@@ -186,6 +189,9 @@ export default [
       { path: '/supplierAudit/AuditBriefingManagementViewAdd', component: './SupplierAudit/AuditBriefingManagement/editPage', title: '审核简报-新增' },
       { path: '/supplierAudit/AuditBriefingManagementViewEdit', component: './SupplierAudit/AuditBriefingManagement/editPage', title: '审核简报-编辑' },
       { path: '/supplierAudit/AuditBriefingManagementViewDetail', component: './SupplierAudit/AuditBriefingManagement/editPage', title: '审核简报-明细' },
+      { path: '/supplierAudit/AuditBriefingManagement/ApprovePage/ApproveDetailPage', component: './SupplierAudit/AuditBriefingManagement/ApprovePage/ApproveDetailPage', title: '审核简报管理' },
+      { path: '/supplierAudit/AuditBriefingManagement/ApprovePage/ApprovePage', component: './SupplierAudit/AuditBriefingManagement/ApprovePage/ApprovePage', title: '审核简报管理流程信息' },
+      { path: '/supplierAudit/AuditBriefingManagement/ApprovePage/ApproveEditPage', component: './SupplierAudit/AuditBriefingManagement/ApprovePage/ApproveEditPage', title: '审核简报管理流程编辑' },
     ]
   },
   {

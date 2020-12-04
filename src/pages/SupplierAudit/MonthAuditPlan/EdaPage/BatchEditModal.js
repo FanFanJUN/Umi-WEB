@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-23 17:00:19
- * @LastEditTime: 2020-11-27 09:23:27
+ * @LastEditTime: 2020-12-04 14:59:01
  * @Description: 批量编辑页面
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BatchEditModal.js
  */
@@ -44,6 +44,7 @@ const BatchEditModal = (props) => {
   const { getFieldDecorator, getFieldValue, setFieldsValue } = props.form;
 
   useEffect(() => {
+    console.log('originData', originData)
     listAllOrgnazationWithDataAuth().then(res => {
       if (res.success) {
         setOrgId(res.data[0] ? res.data[0].id : '');
@@ -84,12 +85,13 @@ const BatchEditModal = (props) => {
                 getFieldDecorator('reviewReasonCode', {initialValue: originData.reviewReasonCode}),
                 getFieldDecorator('reviewReasonName', {initialValue: originData.reviewReasonName})(
                 <ComboGrid
-                allowClear={true}
-                style={{ width: '100%' }}
-                form={form}
-                name={'reviewReasonName'}
-                field={['reviewReasonId', 'reviewReasonCode']}
-                {...reviewReasonsProps}
+                  allowClear={true}
+                  style={{ width: '100%' }}
+                  form={form}
+                  name={'reviewReasonName'}
+                  field={['reviewReasonId', 'reviewReasonCode']}
+                  {...reviewReasonsProps}
+                  disabled={originData.sourceType !== "ADMISSION_RECOMMENDATION"}
                 />,
                 )
               }

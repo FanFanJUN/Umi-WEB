@@ -172,7 +172,11 @@ export default function() {
         onClick={() => redirectToPage('resultAdd')} s
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'whetherConfirm', false)}
+        disabled={data.selectedRowKeys.length === 0
+        // 判断结果是否确认
+        || !judge(data.selectedRows, 'whetherConfirm', false)
+        // 已填报不能再次录入
+        || !judge(data.selectedRows, 'state', 'NOT_COMPLETED')}
         key='SUPPLIER_AUDIT_DEMAND_ADD'
       >结果录入</Button>)
     }
@@ -181,7 +185,11 @@ export default function() {
         onClick={() => redirectToPage('generationEntry')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        disabled={data.selectedRowKeys.length === 0}
+        disabled={data.selectedRowKeys.length === 0
+        // 判断结果是否确认
+        || !judge(data.selectedRows, 'whetherConfirm', false)
+        // 已填报不能再次录入
+        || !judge(data.selectedRows, 'state', 'NOT_COMPLETED')}
         key='SUPPLIER_AUDIT_DEMAND_DADD'
       >代录入</Button>)
     }
@@ -190,7 +198,9 @@ export default function() {
         onClick={() => redirectToPage('recall')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', 'COMPLETED')}
+        disabled={data.selectedRowKeys.length === 0
+        || !judge(data.selectedRows, 'state', 'COMPLETED')
+        || !judge(data.selectedRows, 'whetherConfirm', false)}
         key='SUPPLIER_AUDIT_DEMAND_WITHDRAW'
       >撤回</Button>)
     }
@@ -200,7 +210,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='SUPPLIER_AUDIT_DEMAND_VIEW_GROUP'
-        disabled={data.selectedRowKeys.length === 0}
+        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', 'COMPLETED')}
       >查看组长意见</Button>)
     }
     {
@@ -209,7 +219,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'whetherConfirm', false)
-          // || !judge(data.selectedRows, 'leaderId', getUserId())
+        || !judge(data.selectedRows, 'leaderId', getUserId())
         }
         key='SUPPLIER_AUDIT_DEMAND_CONFIRM'
       >审核结果确认</Button>)
@@ -220,7 +230,8 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={data.selectedRowKeys.length === 0
-          // || !judge(data.selectedRows, 'leaderId', getUserId())
+        || !judge(data.selectedRows, 'state', 'COMPLETED')
+        || !judge(data.selectedRows, 'leaderId', getUserId())
         }
         key='SUPPLIER_AUDIT_DEMAND_VIEW_RESULT'
       >审核结果查看</Button>)
@@ -260,7 +271,7 @@ export default function() {
 
   const generationOk = (id) => {
     console.log(id);
-    setData(v => ({ ...v, resultsId: id, resultAddVisible: true }));
+    setData(v => ({ ...v, resultsId: id, generationEntryVisible: false, resultAddVisible: true }));
   };
 
   return (

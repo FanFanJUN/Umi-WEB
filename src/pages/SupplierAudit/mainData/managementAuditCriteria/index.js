@@ -199,6 +199,8 @@ const Index = () => {
           {
             name: '序列号',
             code: 'rank',
+            min: 0,
+            type: "inputNumber"
           },
         ]}
         propData={{

@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-12 14:44:24
- * @LastEditTime: 2020-11-26 16:02:19
+ * @LastEditTime: 2020-12-04 11:19:36
  * @Description: 审核地区城市配置
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/mainData/ReviewCityConf/index.js
  */
@@ -62,7 +62,8 @@ const Index = () => {
     {
       name: '排序号',
       code: 'rank',
-      type: 'inputNumber'
+      type: 'inputNumber',
+      min: 0
     }
   ];
 

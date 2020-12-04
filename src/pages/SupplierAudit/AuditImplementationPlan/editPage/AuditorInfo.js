@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:44:12
- * @LastEditTime: 2020-11-27 17:37:54
+ * @LastEditTime: 2020-12-04 11:33:48
  * @LastEditors: Please set LastEditors
  * @Description: 审核实施计划-审核人员
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\AuditorInfo.js
@@ -48,6 +48,8 @@ const fieldsConfig = [
   {
     name: '排序号',
     code: 'rank',
+    min: 0,
+    type: "inputNumber"
   },
 ];
 const AuditorInfo = forwardRef((props, ref) => {
@@ -194,6 +196,9 @@ const AuditorInfo = forwardRef((props, ref) => {
     }));
     setData(v => ({ ...v, leftTreeData: undefined, treeData: treeData }));
     setContentData(v => ({ ...v, selectedRows: values, selectedRowKeys: keys }));
+    if(keys && keys.length > 0) {
+      getLeftTreeData(keys);
+    }
   };
 
   const buttonClick = (type) => {
@@ -355,8 +360,8 @@ const AuditorInfo = forwardRef((props, ref) => {
   };
 
   // 构造左边树
-  const getLeftTreeData = () => {
-    if (contentData.selectedRowKeys && contentData.selectedRowKeys.length !== 0) {
+  const getLeftTreeData = (keys) => {
+    if (keys && keys.length !== 0) {
       if (data.defaultSystem && data.defaultSystem.length !== 0) {
         destructionTree(data.defaultSystem);
       }
@@ -364,8 +369,6 @@ const AuditorInfo = forwardRef((props, ref) => {
       arr = duplicateRemoval(arr, 'systemId');
       arr = recursion(arr);
       setData(v => ({ ...v, leftTreeData: arr }));
-    } else {
-      message.error('请选择一名成员');
     }
   };
   return (
@@ -413,7 +416,7 @@ const AuditorInfo = forwardRef((props, ref) => {
                   <Button type='primary' onClick={() => buttonClick('contentAdd')}>新增</Button>
                   <Button style={{ marginLeft: '5px' }} onClick={() => buttonClick('contentEdit')}>编辑</Button>
                   <Button style={{ marginLeft: '5px' }} onClick={contentDelete}>删除</Button>
-                  <Button style={{ marginLeft: '5px' }} onClick={getLeftTreeData}>审核内容管理</Button>
+                  {/* <Button style={{ marginLeft: '5px' }} onClick={getLeftTreeData}>审核内容管理</Button> */}
                 </div>
               }
               <div style={{ marginTop: '10px', height: '270px' }}>

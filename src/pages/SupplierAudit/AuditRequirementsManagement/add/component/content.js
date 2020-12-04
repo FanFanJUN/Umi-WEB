@@ -99,7 +99,7 @@ const Content = (props) => {
     </FormItem>
   );
 
-  const getTreeData = (value, operation) => {
+  const getTreeData = (value, operation=0) => {
     setData(v => ({ ...v, treeData: value }));
     props.setOperation && props.setOperation(operation)
   };

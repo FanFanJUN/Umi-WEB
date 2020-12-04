@@ -10,7 +10,7 @@ import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/in
 import { ExtTable, utils, WorkFlow } from 'suid';
 import { StartFlow } from 'seid';
 import moment from "moment";
-import { CompanyConfig, EndFlow} from '../mainData/commomService';
+import { CompanyConfig, EndFlow } from '../mainData/commomService';
 import { judge } from '../../QualitySynergy/commonProps';
 import { deletePlanMonth, ShareStatusProps, flowProps, ApplyOrganizationProps } from "./service";
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
@@ -182,7 +182,7 @@ export default function () {
             },
         },
         { title: '月度审核计划号', dataIndex: 'reviewPlanMonthCode', width: 180 },
-        { title: '月度', dataIndex: 'applyMonth', ellipsis: true, width: 80, render:(text)=>text ? text.slice(0,7) : ''},
+        { title: '月度', dataIndex: 'applyMonth', ellipsis: true, width: 80, render: (text) => text ? text.slice(0, 7) : '' },
         { title: '拟制说明', dataIndex: 'reviewPlanMonthName', ellipsis: true, width: 200 },
         { title: '拟制公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 200 },
         { title: '拟制部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200 },
@@ -241,7 +241,9 @@ export default function () {
                 ignore={DEVELOPER_ENV}
                 businessKey={data.flowId}
                 callBack={handleComplete}
-                disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length !== 1}
+                disabled={!judge(data.selectedRows, 'flowStatus', 'INIT')
+                    || data.selectedRowKeys.length !== 1
+                    || !judge(data.selectedRows, 'applyAccount', getUserAccount())}
                 businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewPlanMonth'
                 key='SUPPLIER_AUDIT_MONTH_INFLOW'
             >提交审核</StartFlow>)
@@ -261,7 +263,9 @@ export default function () {
             authAction(<Button
                 onClick={handleStopFlow}
                 loading={data.spinning}
-                disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
+                disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS')
+                    || data.selectedRowKeys.length === 0
+                    || !judge(data.selectedRows, 'applyAccount', getUserAccount())}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 key='TECHNICAL_DATA_SHARING_STOP'
@@ -272,9 +276,10 @@ export default function () {
                 onClick={() => redirectToPage('change')}
                 className={styles.btn}
                 disabled={
-                    data.selectedRowKeys.length !== 1 
+                    data.selectedRowKeys.length !== 1
                     || data.selectedRows[0]?.flowStatus !== 'COMPLETED'
                     || data.selectedRows[0]?.state === 'CHANGING'
+                    || !judge(data.selectedRows, 'applyAccount', getUserAccount())
                 }
                 ignore={DEVELOPER_ENV}
                 key='SUPPLIER_AUDIT_MONTH_CHANGE'
@@ -342,7 +347,7 @@ export default function () {
 
             {historyVisible && <ChangeHistory
                 visible={historyVisible}
-                handleCancel={()=>{setHistoryV(false)}}
+                handleCancel={() => { setHistoryV(false) }}
                 id={data.selectedRowKeys[0]}
                 code={data.selectedRows[0]?.reviewPlanMonthCode}
             />}

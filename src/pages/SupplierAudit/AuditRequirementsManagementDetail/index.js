@@ -214,7 +214,7 @@ export default function() {
         type='primary'
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='TECHNICAL_DATA_SHARING_ADD'
+        key='SUPPLIER_AUDIT_REQUIREMENT_DETAIL_EXPORT'
       >导出</DataExport.Button>)
     }
   </>;

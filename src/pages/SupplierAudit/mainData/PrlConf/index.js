@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-12 14:44:24
- * @LastEditTime: 2020-11-26 17:56:46
+ * @LastEditTime: 2020-12-04 11:19:22
  * @Description: 百分比、评定等级、风险等级配置
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/mainData/PrlConf/index.js
  */
@@ -92,7 +92,8 @@ const Index = () => {
   {
     name: '排序号',
     code: 'rank',
-    type: 'inputNumber'
+    type: 'inputNumber',
+    min: 0
   }
   ];
 

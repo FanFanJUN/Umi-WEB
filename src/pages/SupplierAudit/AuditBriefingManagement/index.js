@@ -1,5 +1,5 @@
 /**
- * @Description: 审核报告管理
+ * @Description: 审核简报管理
  * @Author: M!keW
  * @Date: 2020-11-16
  */
@@ -18,7 +18,7 @@ import {
 } from '../../QualitySynergy/commonProps';
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
-import { openNewTab } from '../../../utils';
+import { getUserId, openNewTab } from '../../../utils';
 import AddModal from './components/AddModal';
 
 const { FlowHistoryButton, StartFlow } = WorkFlow;
@@ -51,6 +51,7 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
     selectedRows: [],
     modalVisible: false,
   });
+  const currentUserId = getUserId();
 
   const getModalRef = useRef(null);
 
@@ -66,10 +67,10 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
         showModal();
         break;
       case 'edit':
-        openNewTab('supplierAudit/AuditBriefingManagementViewEdit?pageState=edit&id=' + data.selectedRows[0].id, '审核报告管理-编辑', false);
+        openNewTab('supplierAudit/AuditBriefingManagementViewEdit?pageState=edit&id=' + data.selectedRows[0].id, '审核简报管理-编辑', false);
         break;
       case 'detail':
-        openNewTab('supplierAudit/AuditBriefingManagementViewDetail?pageState=detail&id=' + data.selectedRows[0].id, '审核报告管理-明细', false);
+        openNewTab('supplierAudit/AuditBriefingManagementViewDetail?pageState=detail&id=' + data.selectedRows[0].id, '审核简报管理-明细', false);
         break;
     }
   };
@@ -118,7 +119,7 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
       okType: 'danger',
       cancelText: '否',
       onOk: () => {
-        deleteReportById({id:data.selectedRows[0].id}).then(res => {
+        deleteReportById({ id: data.selectedRows[0].id }).then(res => {
           if (res.success) {
             message.success(res.message);
             tableRef.current.manualSelectedRows();
@@ -129,6 +130,19 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
         }).catch(err => message.error(err.message));
       },
     });
+  };
+
+  //导出
+  const exportItem = () => {
+    deleteReportById({ id: data.selectedRows[0].id }).then(res => {
+      if (res.success) {
+        message.success(res.message);
+        tableRef.current.manualSelectedRows();
+        tableRef.current.remoteDataRefresh();
+      } else {
+        message.error(res.message);
+      }
+    }).catch(err => message.error(err.message));
   };
 
   // 高级查询搜索
@@ -178,7 +192,7 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
         onClick={() => redirectToPage('add')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='SRM-SM-AUDITREPORT-ADD'
+        key='SRM-SM-AUDITBRIEFING-ADD'
       >新增</Button>)
     }
     {
@@ -186,8 +200,8 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
         onClick={() => redirectToPage('edit')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='SRM-SM-AUDITREPORT-EDIT'
-        disabled={!judge(data.selectedRows, 'status', 'Draft') || data.selectedRowKeys.length !== 1 || !judge(data.selectedRows, 'flowStatus', 'INIT')}
+        key='SRM-SM-AUDITBRIEFING-EDIT'
+        disabled={(data.selectedRows && data.selectedRows.length > 0 && data.selectedRows[0].creatorId !== currentUserId) || !judge(data.selectedRows, 'status', 'Draft') || data.selectedRowKeys.length !== 1 || !judge(data.selectedRows, 'flowStatus', 'INIT')}
       >编辑</Button>)
     }
     {
@@ -195,8 +209,8 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
         onClick={() => deleteList()}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='SRM-SM-AUDITREPORT-DELETE'
-        disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length !== 1}
+        key='SRM-SM-AUDITBRIEFING-DELETE'
+        disabled={(data.selectedRows && data.selectedRows.length > 0 && data.selectedRows[0].creatorId !== currentUserId) || !judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length !== 1}
       >删除</Button>)
     }
     {
@@ -204,7 +218,7 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
         onClick={() => redirectToPage('detail')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='SRM-SM-AUDITREPORT-DETAIL'
+        key='SRM-SM-AUDITBRIEFING-DETAIL'
         disabled={data.selectedRowKeys.length !== 1}
       >明细</Button>)
     }
@@ -215,10 +229,10 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
         businessKey={data.flowId}
         startComplete={handleComplete}
         businessModelCode='com.ecmp.srm.sam.entity.ar.ArAuditReportManag'
-        key='SRM-SM-AUDITREPORT-APPROVE'
+        key='SRM-SM-AUDITBRIEFING-APPROVE'
       >{
         loading => <Button
-          disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length === 0}
+          disabled={(data.selectedRows && data.selectedRows.length > 0 && data.selectedRows[0].creatorId !== currentUserId) || !judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length === 0}
           className={styles.btn} loading={loading}>提交审核</Button>
       }</StartFlow>)
     }
@@ -228,7 +242,7 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
         flowMapUrl='flow-web/design/showLook'
         ignore={DEVELOPER_ENV}
         disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
-        key='SRM-SM-AUDITREPORT-APPROVEHISTORY'
+        key='SRM-SM-AUDITBRIEFING-APPROVEHISTORY'
       >
         <Button className={styles.btn}
                 disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length !== 1}>审核历史</Button>
@@ -238,11 +252,21 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
       authAction(<Button
         onClick={() => endFlow()}
         loading={data.spinning}
-        disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
+        disabled={(data.selectedRows && data.selectedRows.length > 0 && data.selectedRows[0].creatorId !== currentUserId) || !judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='SRM-SM-AUDITREPORT-ENDAPPROVE'
+        key='SRM-SM-AUDITBRIEFING-ENDAPPROVE'
       >终止审核</Button>)
+    }
+    {
+      authAction(<Button
+        onClick={() => exportItem()}
+        loading={data.spinning}
+        disabled={data.selectedRowKeys.length === 0}
+        className={styles.btn}
+        ignore={DEVELOPER_ENV}
+        key='SRM-SM-AUDITBRIEFING-EXPORT'
+      >导出PDF</Button>)
     }
   </>;
 
