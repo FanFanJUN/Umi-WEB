@@ -92,11 +92,41 @@ let LineInfo = forwardRef((props, ref) => {
         </div>;
       },
     },
-    { title: '需求公司', dataIndex: 'applyCorporationName', width: 140, ellipsis: true },
-    { title: '采购组织', dataIndex: 'purchaseTeamName', ellipsis: true, width: 140 },
-    { title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 140 },
-    { title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 140 },
-    { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 140 },
+    {
+      title: '需求公司',
+      dataIndex: 'applyCorporationName',
+      width: 250,
+      ellipsis: true,
+      render: (v, record) => `${v ? v : ''} ${record.applyCorporationCode ? record.applyCorporationCode : ''}`,
+    },
+    {
+      title: '采购组织',
+      dataIndex: 'purchaseTeamName',
+      ellipsis: true,
+      width: 250,
+      render: (v, record) => `${v ? v : ''} ${record.purchaseTeamCode ? record.purchaseTeamCode : ''}`,
+    },
+    {
+      title: '供应商',
+      dataIndex: 'supplierName',
+      ellipsis: true,
+      width: 250,
+      render: (v, record) => `${v ? v : ''} ${record.supplierCode ? record.supplierCode : ''}`,
+    },
+    {
+      title: '代理商',
+      dataIndex: 'agentName',
+      ellipsis: true,
+      width: 250,
+      render: (v, record) => `${v ? v : ''} ${record.agentCode ? record.agentCode : ''}`,
+    },
+    {
+      title: '物料分类',
+      dataIndex: 'materialGroupName',
+      ellipsis: true,
+      width: 140,
+      render: (v, record) => `${v ? v : ''} ${record.applyCorporationCode ? record.materialGroupCode : ''}`,
+    },
     { title: '物料级别', dataIndex: 'materialGradeName', ellipsis: true, width: 140 },
     {
       title: '生产厂地址', dataIndex: 'data2', ellipsis: true, width: 180, render: (text, item) => {
