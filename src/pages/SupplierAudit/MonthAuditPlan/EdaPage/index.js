@@ -50,11 +50,11 @@ const Index = (props) => {
         switch (pageState) {
             case 'add':
                 getUser();
-                setData((value) => ({ ...value, type: pageState, isView: false, title: '月度审核计划管理-新增' }));
+                setData((value) => ({ ...value, type: pageState, isView: false, title: '新增月度审核计划' }));
                 break;
             case 'edit':
                 getUser();
-                setData((value) => ({ ...value, type: pageState, id, isView: false, title: '月度审核计划管理-编辑' }));
+                setData((value) => ({ ...value, type: pageState, id, isView: false, title: '编辑月度审核计划' }));
                 break;
             case 'detail':
                 setData((value) => ({ ...value, type: pageState, isView: true, title: `月度审核计划明细: ${editData.reviewPlanMonthCode}` }));

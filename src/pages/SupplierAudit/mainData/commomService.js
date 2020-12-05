@@ -436,6 +436,7 @@ export const reviewPlanMonthConfig = {
 
 // 审核原因
 export const AuditCauseManagementConfig = {
+  allowClear: true,
   placeholder: '选择审核原因',
   store: {
     type: 'POST',
@@ -521,6 +522,7 @@ export const AuditTypeAllConfig = {
 
 // 审核类型
 export const AuditTypeManagementConfig = {
+  allowClear: true,
   placeholder: '选择审核类型',
   store: {
     type: 'POST',

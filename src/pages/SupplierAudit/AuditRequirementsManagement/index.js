@@ -316,6 +316,7 @@ export default function() {
       <Header
         left={headerLeft}
         right={headerRight}
+        hiddenClose
         content={
           <AdvancedForm formItems={formItems} onOk={handleAdvancedSearch}/>
         }

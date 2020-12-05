@@ -51,16 +51,16 @@ export default function () {
     const redirectToPage = (type) => {
         switch (type) {
             case 'add':
-                openNewTab('supplierAudit/MonthAuditPlanEda?pageState=add', '月度审核计划管理-新增', false);
+                openNewTab('supplierAudit/MonthAuditPlanEda?pageState=add', '新增月度审核计划', false);
                 break;
             case 'edit':
-                openNewTab(`supplierAudit/MonthAuditPlanEda?pageState=edit&id=${data.selectedRowKeys[0]}`, '月度审核计划管理-编辑', false);
+                openNewTab(`supplierAudit/MonthAuditPlanEda?pageState=edit&id=${data.selectedRowKeys[0]}`, '编辑月度审核计划', false);
                 break;
             case 'detail':
-                openNewTab(`supplierAudit/MonthAuditPlanEda?pageState=detail&id=${data.selectedRowKeys[0]}`, '月度审核计划管理-明细', false);
+                openNewTab(`supplierAudit/MonthAuditPlanEda?pageState=detail&id=${data.selectedRowKeys[0]}`, '月度审核计划明细', false);
                 break;
             case 'change':
-                openNewTab(`supplierAudit/MonthAuditPlanEda?pageState=change&id=${data.selectedRowKeys[0]}`, '月度审核计划管理-变更', false);
+                openNewTab(`supplierAudit/MonthAuditPlanEda?pageState=change&id=${data.selectedRowKeys[0]}`, '变更月度审核计划', false);
                 break;
             case "changehistory":
                 setHistoryV(true);
@@ -158,7 +158,7 @@ export default function () {
 
     const columns = [
         {
-            title: '状态', dataIndex: 'state', width: 120, render: (text) => {
+            title: '状态', dataIndex: 'state', width: 100, render: (text) => {
                 switch (text) {
                     case "DRAFT":
                         return "草稿";
@@ -181,12 +181,12 @@ export default function () {
                 }
             },
         },
-        { title: '月度审核计划号', dataIndex: 'reviewPlanMonthCode', width: 180 },
+        { title: '月度审核计划号', dataIndex: 'reviewPlanMonthCode', width: 160 },
         { title: '月度', dataIndex: 'applyMonth', ellipsis: true, width: 100, align: 'center', render: (text) => text ? text.slice(0, 7) : '' },
-        { title: '拟制说明', dataIndex: 'reviewPlanMonthName', ellipsis: true, width: 200 },
+        { title: '拟制说明', dataIndex: 'reviewPlanMonthName', ellipsis: true, width: 180 },
         { title: '拟制公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 200 },
         { title: '拟制部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200 },
-        { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 120 },
+        { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 100 },
         { title: '拟制时间', dataIndex: 'applyDate', ellipsis: true, width: 200, align: 'center'},
     ];
 
