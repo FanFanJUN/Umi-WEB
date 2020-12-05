@@ -35,7 +35,7 @@ const Index = (props) => {
     async function editDataInflow() {
         const allData = getAllData();
         if (!allData) return false;
-        const res = await upDateMonthBo({ ...allData});
+        const res = await upDateMonthBo({ ...allData, isInflow: true});
         return res;
     }
 
@@ -225,7 +225,7 @@ const Index = (props) => {
         <Spin spinning={loading}>
             <Affix>
                 <div className={classnames(styles.fbc, styles.affixHeader)}>
-                    <span>{data.title}</span>
+                    <span style={{fontSize: '18px', fontWeight: 'bolder'}}>{data.title}</span>
                     {
                         props.isInFlow!==1 && (data.type === 'add' || data.type === 'change' || data.type === 'edit') && <div style={{ display: "flex", alignItems: 'center' }}>
                             <Button className={styles.btn} onClick={handleBack}>返回</Button>

@@ -3,11 +3,9 @@ import styles from './index.less';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Button, Icon } from 'antd';
-
 const Header = forwardRef(
   (
     {
-      showClose = true,
       left = null,
       right = null,
       extra = '高级查询',
@@ -24,7 +22,7 @@ const Header = forwardRef(
     }));
     return (
       <div style={{
-        position: 'relative',
+        position: "relative"
       }}>
         <div className={classnames([styles.wrapper, styles.flexBetweenStart])}>
           <div className={styles.headerLeftWrapper}>
@@ -50,9 +48,7 @@ const Header = forwardRef(
             [styles.hide]: !visible,
           })}
         >
-          {
-            showClose && <Icon type="close" className={styles.close} onClick={hide} />
-          }
+          <Icon type="close" className={styles.close} onClick={hide} />
           <div className={styles.content}>{content}</div>
         </div>
       </div>

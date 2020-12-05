@@ -159,6 +159,7 @@ export const flowProps = {
 
 // 采购组织数据
 export const ApplyOrganizationProps = {
+    allowClear: true,
     store: {
         url: `${baseUrl}/basic/listAllOrgnazationWithDataAuth`,
     },

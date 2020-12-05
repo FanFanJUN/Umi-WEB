@@ -213,12 +213,12 @@ const getRecommendRef = forwardRef(({
         {
             title: "采购组织代码",
             width: 160,
-            dataIndex: "recommendAccess.orgCode"
+            dataIndex: "purchaseOrgCode"
         },
         {
             title: "采购组织名称",
             width: 160,
-            dataIndex: "recommendAccess.orgName"
+            dataIndex: "purchaseOrgName"
         },
         {
             title: "认定物料类别",
