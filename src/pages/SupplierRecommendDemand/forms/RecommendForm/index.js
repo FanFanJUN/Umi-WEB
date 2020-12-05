@@ -6,6 +6,7 @@ import RecommendCompany from '../RecommendCompany'
 import moment from 'moment';
 import { commonProps, getUserName } from '../../../../utils';
 import styles from './index.less';
+import { standardUnitProps } from '../../../../utils/commonProps';
 const {
   corporationProps,
   orgnazationProps,
@@ -423,6 +424,29 @@ const FormContext = forwardRef(({
                     name='identifyMaterialLevelName'
                     {...fimlyMaterialClassifyProps}
                     field={['identifyMaterialLevelValue']}
+                    disabled={type === 'detail'}
+                  />
+                )
+              }
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem label='基本计量单位' {...formLayout}>
+              {
+                getFieldDecorator('unitCode'),
+                getFieldDecorator('unitName', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '基本计量单位不能为空'
+                    }
+                  ]
+                })(
+                  <ComboList
+                    {...standardUnitProps}
+                    field={['unitCode']}
+                    name='unitName'
+                    form={form}
                     disabled={type === 'detail'}
                   />
                 )

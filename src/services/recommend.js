@@ -56,6 +56,13 @@ export const submitToSupplier = params => createServiceRequest({
   hack: true
 })
 
+// 供应商填报提交
+export const supplierSubmitToSystem = params => createServiceRequest({
+  path: '/api/supplierRecommendDemandService/submitSupplierFilledInfo',
+  params,
+  method: 'POST'
+})
+
 // 企业社会责任及企业生产环境表单主数据
 // 保存
 export const saveCsrConfig = params => createServiceRequest({

@@ -149,7 +149,7 @@ export const GetEvaluationSystem = (params={}) => {
 
 // 区域
 export const AreaConfig = {
-  remotePaging: true,
+  remotePaging: false,
   rowKey: 'code',
   reader: {
     field: ['id'],
@@ -160,7 +160,7 @@ export const AreaConfig = {
 
 // 区域
 export const CountryIdConfig = {
-  remotePaging: true,
+  remotePaging: false,
   rowKey: 'code',
   reader: {
     field: ['countryId'],
@@ -331,6 +331,7 @@ export const FindByFiltersConfig = {
 
 // 供应商
 export const SupplierConfig = {
+  allowClear: true,
   placeholder: '选择供应商',
   store: {
     type: 'POST',
@@ -460,7 +461,7 @@ export const AllCompanyConfig = {
   store: {
     type: 'GET',
     autoLoad: false,
-    url: `${baseUrl}/buCompanyPurchasingOrganization/findCompany`,
+    url: `${baseUrl}/basic/listAllCorporationWithDataAuth`,
   },
   rowKey: 'code',
   reader: {
@@ -478,7 +479,7 @@ export const CompanyConfig = {
   store: {
     type: 'GET',
     autoLoad: false,
-    url: `${baseUrl}/buCompanyPurchasingOrganization/findCompany`,
+    url: `${baseUrl}/basic/listAllCorporationWithDataAuth`,
   },
   rowKey: 'code',
   reader: {

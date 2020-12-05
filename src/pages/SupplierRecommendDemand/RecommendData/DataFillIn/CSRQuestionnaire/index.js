@@ -16,7 +16,9 @@ function CSRQuestionnaire({
 }) {
   const [dataSource, setDataSource] = useState([]);
   const [loading, toggleLoading] = useState(false);
-  const headerExtra = [
+  const { query } = useLocation();
+  const { id = null, type = 'create' } = query;
+  const headerExtra = type === 'detail' ? null : [
     <Button
       className={styles.btn}
       type='primary'
@@ -25,8 +27,6 @@ function CSRQuestionnaire({
       disabled={loading}
     >保存</Button>
   ];
-  const { query } = useLocation();
-  const { id = null, type = 'create' } = query;
   const columns = [
     {
       title: '序号',

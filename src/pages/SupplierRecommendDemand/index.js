@@ -39,7 +39,7 @@ export default () => {
   // 审核完成状态
   const completed = signleFlowStatus === 'COMPLETED';
   // 填报完成状态
-  const fillComplete = signleFlowStatus === 'FILLED';
+  const fillComplete = supplierRecommendDemandStatus === 'FILLED';
   // 未提交填报状态
   const fillInit = supplierRecommendDemandStatus === 'DRAFT'
   // 未选中数据状态
@@ -348,7 +348,7 @@ export default () => {
     const [key] = selectedRowKeys;
     const { id = '' } = FRAMELEEMENT;
     const { pathname } = window.location;
-    openNewTab(`supplier/recommend/team/filter/opinion/detail?type=detail&id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '编辑供应商推荐需求', false)
+    openNewTab(`supplier/recommend/team/filter/opinion/detail?type=detail&id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '供应商推荐需求明细', false)
   }
   // 填报信息确认页签打开
   function handleOpenInfomationConfirm() {

@@ -22,6 +22,11 @@ function Explain() {
       title: '产品名称',
       dataIndex: 'materialCategoryName',
       width: 150
+    },
+    {
+      title: '计量单位',
+      dataIndex: 'unitName',
+      width: 100
     }
   ]
   const tableProps = {
