@@ -53,7 +53,6 @@ function CreateStrategy() {
             detailsVos: distributioninfo,
             documentType: 1
         }
-        console.log(params)
         triggerLoading(true)
         const { success, message: msg } = await ManualSaveVo(params)
         if (success) {
