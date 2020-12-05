@@ -8,7 +8,7 @@
  * @Connect: 1981824361@qq.com
  */
 import styles from './index.less'
-import { Tabs, Button, Affix, Checkbox } from 'antd';
+import { Tabs, Button, Affix, Checkbox, Modal, message } from 'antd';
 import classnames from 'classnames';
 import { useLocation } from 'dva/router';
 import DataFillIn from './DataFillIn';
@@ -16,6 +16,7 @@ import Explain from './Explain';
 import SelfAssessment from './SelfAssessment';
 import { useGlobalStatus } from '../../../utils/hooks';
 import { closeCurrent } from '../../../utils';
+import { supplierSubmitToSystem } from '../../../services/recommend';
 const { TabPane } = Tabs;
 function RecommendData() {
   const { query } = useLocation();
@@ -33,6 +34,25 @@ function RecommendData() {
       <Checkbox checked={status.informationFilling} />
     </div>
   )
+  function handleSubmit() {
+    Modal.confirm({
+      title: '提交填报信息',
+      content: '是否立即提交当前填报的信息',
+      okText: '提交',
+      cancelText: '取消',
+      onOk: async () => {
+        const { success, message: msg } = await supplierSubmitToSystem({
+          supplierRecommendDemandId: id
+        })
+        if(success) {
+          message.success(msg)
+          closeCurrent()
+          return
+        }
+        message.error(msg)
+      }
+    })
+  }
   return (
     <div>
       <Affix>
@@ -40,7 +60,7 @@ function RecommendData() {
           <span>推荐资料填报</span>
           <div>
             <Button className={styles.btn} onClick={closeCurrent}>返回</Button>
-            <Button className={styles.btn}>提交</Button>
+            <Button className={styles.btn} onClick={handleSubmit}>提交</Button>
           </div>
         </div>
       </Affix>

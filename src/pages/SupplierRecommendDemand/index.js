@@ -39,7 +39,7 @@ export default () => {
   // 审核完成状态
   const completed = signleFlowStatus === 'COMPLETED';
   // 填报完成状态
-  const fillComplete = signleFlowStatus === 'FILLED';
+  const fillComplete = supplierRecommendDemandStatus === 'FILLED';
   // 未提交填报状态
   const fillInit = supplierRecommendDemandStatus === 'DRAFT'
   // 未选中数据状态
