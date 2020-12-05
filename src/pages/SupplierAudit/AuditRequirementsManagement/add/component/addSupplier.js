@@ -18,7 +18,7 @@ const columns = [
     title: '代理商',
     dataIndex: 'originSupplierName',
     width: 200,
-    render: (v, record) => record.originSupplierName ? v.name : record.originSupplierName,
+    render: (v, record) => record.originSupplierName ? record.supplier.name : record.originSupplierName,
   },
 ].map(item => ({ ...item, align: 'center' }));
 
@@ -134,7 +134,7 @@ const AddSupplier = (props) => {
         columns={columns}
         store={{
           params: {
-            quickSearchProperties: ['originSupplierCode', 'originSupplierName'],
+            quickSearchProperties: ['supplier.name', 'supplier.code'],
             quickSearchValue: getFieldValue('originSupplier'),
             filters: [
               {
@@ -143,6 +143,12 @@ const AddSupplier = (props) => {
                 operator: 'EQ',
                 value: getFieldValue('materialGroupCode'),
               },
+              // {
+              //   fieldName: 'originSupplierName',
+              //   fieldType: 'string',
+              //   operator: 'EQ',
+              //   value: getFieldValue('originSupplier'),
+              // },
               {
                 fieldName: 'corporationCode',
                 fieldType: 'string',

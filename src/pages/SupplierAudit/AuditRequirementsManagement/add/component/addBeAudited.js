@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { ComboTree, ComboList, ExtModal } from 'suid';
 import { Col, Form, Input, message, Row } from 'antd';
 import {
-  AreaConfig, CountryIdConfig,
+  AreaConfig, CountryIdConfig, DocumentAuditCauseManagementByReviewTypeConfig,
   DocumentAuditCauseManagementConfig, GetSupplierContact, length_200_n,
   NormalSupplierConfig,
   SelectionStrategyConfig,
 } from '../../../mainData/commomService';
-import { basicServiceUrl, gatewayUrl, recommendUrl, smBaseUrl } from '../../../../../utils/commonUrl';
+import { baseUrl, basicServiceUrl, gatewayUrl, recommendUrl, smBaseUrl } from '../../../../../utils/commonUrl';
 import { documentMaterialClassProps } from '../../../../../utils/commonProps';
 import AddSupplier from './addSupplier';
 
@@ -73,7 +73,7 @@ const AddBeAudited = (props) => {
     GetSupplierContact({
       supplierId: id,
     }).then(res => {
-      const value = res.data ? res.data[0] ? res.data[0] : {name: '', telephone: ''} : {name: '', telephone: ''};
+      const value = res.data ? res.data[0] ? res.data[0] : { name: '', telephone: '' } : { name: '', telephone: '' };
       setFieldsValue({
         contactUserName: value.name,
         contactUserTel: value.telephone,
@@ -136,7 +136,7 @@ const AddBeAudited = (props) => {
       contactUserTel: '',
       materialGroupName: '',
       materialGroupCode: '',
-      materialGroupId: ''
+      materialGroupId: '',
     });
   };
 
@@ -179,6 +179,8 @@ const AddBeAudited = (props) => {
     setData(v => ({ ...v, visible: false }));
     console.log(value);
   };
+
+  console.log(getFieldValue('reviewTypeCode'))
 
   return (
     <ExtModal
@@ -240,7 +242,15 @@ const AddBeAudited = (props) => {
                     form={form}
                     name={'reviewReasonName'}
                     field={['reviewReasonCode', 'reviewReasonId']}
-                    {...DocumentAuditCauseManagementConfig}
+                    store={{
+                      params: {
+                        findByReviewTypeCode: getFieldValue('reviewTypeCode'),
+                      },
+                      type: 'GET',
+                      autoLoad: false,
+                      url: `${baseUrl}/api/reviewReasonService/findByReviewTypeCode`,
+                    }}
+                    {...DocumentAuditCauseManagementByReviewTypeConfig}
                   />,
                 )
               }

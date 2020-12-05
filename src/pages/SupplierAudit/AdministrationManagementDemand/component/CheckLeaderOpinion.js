@@ -69,7 +69,7 @@ const CheckLeaderOpinion = (props) => {
 
   const onChange = (e) => {
     setData(v => ({ ...v, checked: e.target.checked }));
-    getTableData();
+    getTableData(props.id);
   };
 
   return (
