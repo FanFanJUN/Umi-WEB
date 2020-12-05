@@ -320,7 +320,7 @@ export default function() {
       <Header
         left={headerLeft}
         right={headerRight}
-        showClose={false}
+        hiddenClose
         content={
           <AdvancedForm formItems={formItems} onOk={handleAdvancedSearch} />
         }
