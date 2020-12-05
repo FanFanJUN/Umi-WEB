@@ -184,7 +184,7 @@ const AddBeAudited = (props) => {
 
   return (
     <ExtModal
-      width={'110vh'}
+      width={'160vh'}
       maskClosable={false}
       visible={visible}
       title={title}
@@ -329,7 +329,7 @@ const AddBeAudited = (props) => {
               }
               {
                 getFieldValue('supplierStrategyCode') !== '正常供应商' &&
-                <a style={{ marginLeft: '2%' }} onClick={openSupplierModal}>选择</a>
+                <a style={{ marginLeft: '3%' }} onClick={openSupplierModal}>选择</a>
               }
             </FormItem>
           </Col>
@@ -425,7 +425,7 @@ const AddBeAudited = (props) => {
                   rules: [
                     {
                       required: true,
-                      message: '国家/省/市/区县/详细地址不能为空',
+                      message: '国家不能为空',
                     },
                   ],
                 })(
@@ -568,6 +568,9 @@ const AddBeAudited = (props) => {
                     }}
                     name={'countyName'}
                     field={['countyId']}
+                    cascadeParams={{
+                      countryId: getFieldValue('cityId'),
+                    }}
                     store={{
                       params: {
                         includeSelf: false,
