@@ -1,7 +1,7 @@
 /*
  * @Author:黄永翠
  * @Date: 2020-11-09 09:38:38
- * @LastEditTime: 2020-12-04 17:38:25
+ * @LastEditTime: 2020-12-05 14:51:39
  * @LastEditors: Please set LastEditors
  * @Description:审核实施计划-明细
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\index.js
@@ -60,7 +60,7 @@ const Index = (props) => {
     async function editDataInflow() {
         const allData = getAllData();
         if (!allData) return false;
-        const res = await updateReviewImplementPlan({ ...allData});
+        const res = await updateReviewImplementPlan({ ...allData, isInflow: true});
         return res;
     }
 
@@ -252,7 +252,7 @@ const Index = (props) => {
     return <Spin spinning={loading}>
         <Affix>
             <div className={classnames(styles.fbc, styles.affixHeader)}>
-                <span>{data.title}</span>
+                <span style={{fontSize: '18px', fontWeight: 'bolder'}}>{data.title}</span>
                 {
                     props.isInFlow!==1 && (data.type !== 'detail' || data.type === 'change' || data.type === 'edit') && <div style={{ display: "flex", alignItems: 'center' }}>
                         <Button className={styles.btn} onClick={() => { closeCurrent() }}>返回</Button>

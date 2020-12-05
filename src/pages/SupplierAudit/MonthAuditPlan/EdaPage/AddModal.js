@@ -124,6 +124,7 @@ const AddModal = (props) => {
         }
         if (type === "recommand") {
             let newList = selectRows.map(item => {
+                delete item.id;
                 return {
                     ...item,
                     sourceType: "ADMISSION_RECOMMENDATION",
@@ -137,7 +138,8 @@ const AddModal = (props) => {
                     supplierName: item.recommendAccess?.supplierName,
                     supplierId: item.recommendAccess?.supplierId,
                     supplierCode: item.recommendAccess?.supplierCode,
-                    id: ''
+                    materialGroupCode: item.recommendAccess?.materialCategoryCode,
+                    materialGroupName: item.recommendAccess?.materialCategoryName,
                 }
             })
             handleOk(newList);

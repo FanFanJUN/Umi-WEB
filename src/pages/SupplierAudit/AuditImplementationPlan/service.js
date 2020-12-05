@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-11-09 09:32:51
- * @LastEditTime: 2020-11-26 17:20:33
+ * @LastEditTime: 2020-12-05 16:10:10
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\service.js
@@ -117,3 +117,41 @@ export async function changeTeamLeader(params) {
         data: params,
     });
 }
+
+export const ShareStatusProps = {
+    allowClear: true,
+    dataSource: [
+        {
+            code: 'DRAFT',
+            name: '草稿',
+        },
+        {
+            code: 'REVIEWING',
+            name: '评审中',
+        },
+        {
+            code: 'END_REVIEWING',
+            name: '评审完成',
+        },
+        {
+            code: 'CHANGING',
+            name: '变更中',
+        },
+        {
+            code: 'CONFIRM',
+            name: '审核结果确认完成',
+        },
+        {
+            code: 'REPORTED',
+            name: '已产生报告',
+        },
+    ],
+    placeholder: '选择状态',
+    reader: {
+        name: 'name',
+        field: ['code'],
+    },
+    style: {
+        width: '100%',
+    },
+};
