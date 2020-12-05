@@ -54,7 +54,9 @@ const AddModal = (props) => {
                         return item.recommendAccess?.supplierName;
                     } },
                     { title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 140 },
-                    { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 140 },
+                    { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 140, render:(text, item) =>{
+                        return item.recommendAccess?.materialCategoryName;
+                    } },
                 ];
             case "demand":
                 return [

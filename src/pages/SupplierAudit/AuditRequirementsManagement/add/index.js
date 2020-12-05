@@ -249,7 +249,7 @@ const Index = (props) => {
       <Spin spinning={allData.spinLoading}>
         <Affix>
           <div className={classnames(styles.fbc, styles.affixHeader)}>
-            <span>{allData.title}</span>
+            <span style={{fontSize: '18px', fontWeight: 'bolder'}}>{allData.title}</span>
             {
               (allData.type !== 'detail' ? props.isInFlow !== 2 : false) &&
               <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

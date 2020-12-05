@@ -105,8 +105,8 @@ const AddPersonModal = (props) => {
                                 }}
                                 afterSelect={userSelect}
                                 store={{
-                                    data: {
-                                        includeSubNode: true,
+                                    params: {
+                                        includeSubNode: false,
                                         quickSearchProperties: ['code', 'user.userName'],
                                         organizationId: getFieldValue('departmentId'),
                                         sortOrders: [{ property: 'code', direction: 'ASC' }],

@@ -365,6 +365,17 @@ export const provinceConfig = {
   },
 };
 
+// 根据审核类型查询审核原因
+export const DocumentAuditCauseManagementByReviewTypeConfig = {
+  placeholder: '选择审核原因',
+  remotePaging: false,
+  rowKey: 'code',
+  reader: {
+    field: ['code', 'id'],
+    name: 'name',
+    description: 'code',
+  },
+};
 // 单据审核原因
 export const DocumentAuditCauseManagementConfig = {
   placeholder: '选择审核原因',
