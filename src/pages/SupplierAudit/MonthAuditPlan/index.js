@@ -170,7 +170,7 @@ export default function () {
             }
         },
         {
-            title: '审批状态', dataIndex: 'flowStatus', width: 180, render: v => {
+            title: '审批状态', dataIndex: 'flowStatus', width: 120, render: v => {
                 switch (v) {
                     case 'INIT':
                         return '未进入流程';
@@ -182,13 +182,13 @@ export default function () {
             },
         },
         { title: '月度审核计划号', dataIndex: 'reviewPlanMonthCode', width: 180 },
-        { title: '月度', dataIndex: 'applyMonth', ellipsis: true, width: 80, render: (text) => text ? text.slice(0, 7) : '' },
+        { title: '月度', dataIndex: 'applyMonth', ellipsis: true, width: 100, align: 'center', render: (text) => text ? text.slice(0, 7) : '' },
         { title: '拟制说明', dataIndex: 'reviewPlanMonthName', ellipsis: true, width: 200 },
         { title: '拟制公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 200 },
         { title: '拟制部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200 },
         { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 120 },
-        { title: '拟制时间', dataIndex: 'applyDate', ellipsis: true, width: 200 },
-    ].map(item => ({ ...item, align: 'center' }));
+        { title: '拟制时间', dataIndex: 'applyDate', ellipsis: true, width: 200, align: 'center'},
+    ];
 
     const headerLeft = <>
         {
@@ -299,6 +299,7 @@ export default function () {
     const headerRight = <div style={{ display: 'flex', alignItems: 'center' }}>
         <Search
             placeholder='请输入月度审核计划号或拟制说明查询'
+            style={{width: "20vw"}}
             className={styles.btn}
             onSearch={handleQuickSearch}
             allowClear
@@ -310,6 +311,7 @@ export default function () {
             <Header
                 left={headerLeft}
                 right={headerRight}
+                hiddenClose
                 ref={headerRef}
                 content={
                     <AdvancedForm formItems={formItems} onOk={handleAdvancedSearch} />
