@@ -1,6 +1,6 @@
 import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
 import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/edit/BaseInfo.less';
-import { Col, Form, Modal, Row, Input, DatePicker, Button, message } from 'antd';
+import { Form, Modal, Button, message } from 'antd';
 import { ExtTable } from 'suid';
 import AddBeAudited from './component/addBeAudited';
 import Content from './component/content';
@@ -36,8 +36,16 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
       title: '操作',
       dataIndex: 'id',
       width: 140,
-      render: (v, value) => <span><a onClick={() => showContent(value.treeData, 'detail')}>内容</a>  <a
-        onClick={() => showTeam(value.reviewTeamGroupBoList, 'detail')}>小组</a></span>,
+      render: (v, value) => <div>
+        {
+          (value.treeData && value.treeData.length !== 0) &&
+          <a onClick={() => showContent(value.treeData, 'detail')}>内容</a>
+        }
+        {
+          (value.reviewTeamGroupBoList && value.reviewTeamGroupBoList.length !== 0) &&
+          <a onClick={() => showTeam(value.reviewTeamGroupBoList, 'detail')}>小组</a>
+        }
+      </div>,
     },
     { title: '审核类型', dataIndex: 'reviewTypeName', width: 140, ellipsis: true },
     { title: '审核原因', dataIndex: 'reviewReasonName', ellipsis: true, width: 140 },

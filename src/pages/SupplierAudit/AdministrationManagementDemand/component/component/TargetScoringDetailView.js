@@ -84,6 +84,7 @@ const TargetScoringDetailView = (props) => {
       if (res.success) {
         if (res.data) {
           setEditData({
+            ruleCode: res.data.ruleCode,
             ruleName: res.data.ruleName,
             definition: res.data.definition,
             highestScore: res.data.highestScore,
@@ -119,6 +120,7 @@ const TargetScoringDetailView = (props) => {
   };
 
   const handleSelectedRows = (keys, rows) => {
+    console.log(rows)
     setData(v => ({ ...v, selectedRowKeys: keys, selectedRowRows: rows }));
   };
 
@@ -249,6 +251,8 @@ const TargetScoringDetailView = (props) => {
         refresTable={handleCancel}
         params={{
           reviewImplementManagementId: data.selectedRowRows[0] ? data.selectedRowRows[0].reviewImplementManagementId : '',
+          ruleName: editData.ruleName,
+          ruleCode: editData.ruleCode
         }}
         onCancel={() => setSendBackVisible(false)}
         visible={sendBackVisible}
