@@ -10,7 +10,7 @@ import { Button, Checkbox, Input, message, Modal } from 'antd';
 import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
 import { ExtTable, utils, WorkFlow } from 'suid';
 import {
-  CompanyConfig, deleteReportById, EndFlow,
+  CompanyConfig, deleteReportById, EndFlow, exportById,
 
 } from '../mainData/commomService';
 import {
@@ -18,7 +18,7 @@ import {
 } from '../../QualitySynergy/commonProps';
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
-import { getUserId, openNewTab } from '../../../utils';
+import {  downloadPDFFile, getUserId, openNewTab } from '../../../utils';
 import AddModal from './components/AddModal';
 
 const { FlowHistoryButton, StartFlow } = WorkFlow;
@@ -134,9 +134,9 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
 
   //导出
   const exportItem = () => {
-    deleteReportById({ id: data.selectedRows[0].id }).then(res => {
+    exportById({ id: data.selectedRows[0].id }).then(res => {
       if (res.success) {
-        message.success(res.message);
+        downloadPDFFile(res.data, '审核简报导出.pdf');
         tableRef.current.manualSelectedRows();
         tableRef.current.remoteDataRefresh();
       } else {
@@ -156,7 +156,7 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
   const formItems = [
     {
       title: '拟制公司',
-      key: 'applyCorporationCode',
+      key: 'statisticCorporationCode',
       type: 'list',
       props: CompanyConfig,
     },
@@ -169,12 +169,17 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
   const columns = [
     { title: '状态', dataIndex: 'arAuditReportManagStatusRemark', width: 80 },
     { title: '审批状态', dataIndex: 'flowStatusRemark', width: 200 },
-    { title: '审核简报编号', dataIndex: 'reviewRequirementCode', width: 200 },
-    { title: '统计期间', dataIndex: 'reviewRequirementCode', width: 200 },
-    { title: '拟制公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 200 },
+    { title: '审核简报编号', dataIndex: 'auditRbriefingManageCode', width: 200 },
+    {
+      title: '统计期间', dataIndex: 'reviewRequirementCode', width: 200,
+      render: (text, record) => {
+        return (record.currentPeriodStart ? record.currentPeriodStart.substring(0, 10) : '') + '到' + (record.currentPeriodEnd ? record.currentPeriodEnd.substring(0, 10) : '');
+      },
+    },
+    { title: '拟制公司', dataIndex: 'statisticCorporationName', ellipsis: true, width: 200 },
     { title: '拟制部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200 },
     { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 200 },
-    { title: '拟制时间', dataIndex: 'applyDate', ellipsis: true, width: 200 },
+    { title: '拟制时间', dataIndex: 'createdDate', ellipsis: true, width: 200 },
   ].map(item => ({ ...item, align: 'center' }));
 
 
@@ -310,7 +315,7 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
                 quickSearchValue: data.quickSearchValue,
                 ...data.advancedSearchValue,
               },
-              url: `${recommendUrl}/api/arAuditReportManagService/findListByPage`,
+              url: `${recommendUrl}/api/abAuditBriefingManageService/findListByPage`,
               type: 'POST',
             }}
             checkbox={{ multiSelect: false }}

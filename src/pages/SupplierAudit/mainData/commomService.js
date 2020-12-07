@@ -1,4 +1,4 @@
-import { baseUrl, basicServiceUrl, gatewayUrl, recommendUrl, smBaseUrl } from '../../../utils/commonUrl';
+import { baseUrl, basicServiceUrl, gatewayUrl, recommendUrl, samBaseUrl, smBaseUrl } from '../../../utils/commonUrl';
 import request from '../../../utils/request';
 import { FLOW_HOST } from '../../../utils/constants';
 import { ComboTree } from 'suid';
@@ -834,3 +834,55 @@ export const saveLeaderDecision = async (params) => {
     data: params,
   });
 };
+
+// 审核简报新增查询
+export const getAuditBriefing = async (params) => {
+  const url = `${recommendUrl}/api/abAuditBriefingManageService/addSelect`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+};
+
+// 审核简报管理新增获取默认值
+export const findForBriefingInsert = async (params = {}) => {
+  const url = `${recommendUrl}/api/abAuditBriefingManageService/findDetailForAdd`;
+  return request({
+    url,
+    method: 'GET',
+    params: params,
+  });
+};
+
+// 审核简报管理保存
+export const saveAuditBriefing = async (params) => {
+  const url = `${recommendUrl}/api/abAuditBriefingManageService/saveVo`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+};
+
+// 审核简报管理findOne
+export const findBriefingVoById = async (params = {}) => {
+  const url = `${recommendUrl}/api/abAuditBriefingManageService/findVoById`;
+  return request({
+    url,
+    method: 'GET',
+    params: params,
+  });
+};
+// 导出审核报告
+export const exportById = async (params = {}) => {
+  const url = `${recommendUrl}/abAuditBriefingManage/exportById`;
+  return request({
+    url,
+    method: 'GET',
+    params: params,
+  });
+};
+
+
+

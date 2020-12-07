@@ -3,11 +3,11 @@
  * @Author: M!keW
  * @Date: 2020-11-23
  */
-import React, { useState, useRef, forwardRef, useImperativeHandle, useEffect } from 'react';
-import { Col, Form, Row, InputNumber, message, DatePicker } from 'antd';
-import { ComboList, ExtModal, YearPicker } from 'suid';
+import React, { useState, useRef, forwardRef, useImperativeHandle } from 'react';
+import { Col, Form, Row, InputNumber, message } from 'antd';
+import { ComboList, ComboTree, ExtModal, YearPicker } from 'suid';
 import { openNewTab } from '@/utils';
-import { AllCompanyConfig } from '../../mainData/commomService';
+import { AllCompanyConfig, ApplyOrganizationProps, getAuditBriefing } from '../../mainData/commomService';
 import MonthPicker from './MonthPicker';
 import moment from 'moment';
 
@@ -45,10 +45,30 @@ const AddModal = forwardRef(({ form }, ref) => {
   };
   const onOk = () => {
     form.validateFieldsAndScroll((err, values) => {
-      console.log(values)
       if (!err) {
-        openNewTab('supplierAudit/AuditBriefingManagementViewAdd?pageState=add&id=' + values, '审核简报-新增', false);
-        setVisible(false);
+        if (values.yearPeriod) {
+          values.yearPeriodStart = values.yearPeriod[0] ? moment(values.yearPeriod[0]).format('YYYY-MM-DD') : null;
+          values.yearPeriodEnd = values.yearPeriod[1] ? moment(values.yearPeriod[1]).format('YYYY-MM-DD') : null;
+          delete values.yearPeriod;
+        }
+        if (values.thisPeriod) {
+          values.currentPeriodStart = values.thisPeriod[0] ? moment(values.thisPeriod[0]).format('YYYY-MM-DD') : null;
+          values.currentPeriodEnd = values.thisPeriod[1] ? moment(values.thisPeriod[1]).format('YYYY-MM-DD') : null;
+          delete values.thisPeriod;
+        }
+        if (values.nextPeriod) {
+          values.nextPeriodStart = values.nextPeriod[0] ? moment(values.nextPeriod[0]).format('YYYY-MM-DD') : null;
+          values.nextPeriodEnd = values.nextPeriod[1] ? moment(values.nextPeriod[1]).format('YYYY-MM-DD') : null;
+          delete values.nextPeriod;
+        }
+        getAuditBriefing(values).then(res => {
+          if (res.success) {
+            openNewTab('supplierAudit/AuditBriefingManagementViewAdd?pageState=add&id=' + res.data, '审核简报-新增', false);
+            setVisible(false);
+          } else {
+            message.error(res.message);
+          }
+        }).catch(err => message.error(err.message));
       } else {
         message.error('请完成表单填写');
       }
@@ -81,6 +101,7 @@ const AddModal = forwardRef(({ form }, ref) => {
     callback();
   };
 
+
   return <ExtModal
     width={600}
     centered
@@ -94,24 +115,28 @@ const AddModal = forwardRef(({ form }, ref) => {
     <Row>
       <Col span={22}>
         <FormItem  {...formLayout} label={'统计公司'}>
-          {getFieldDecorator('applyCorporationName', {
-            rules: [
-              {
-                required: true,
-                message: '请选择统计公司',
-              },
-            ],
-          })(
-            <ComboList
-              allowClear={true}
-              style={{ width: '100%' }}
-              form={form}
-              name={'applyCorporationName'}
-              field={['applyCorporationCode', 'applyCorporationId']}
-              {...AllCompanyConfig}
-            />,
-          )
-          }
+          {
+            (
+              getFieldDecorator('statisticCorporationId', { initialValue: '' }),
+                getFieldDecorator('statisticCorporationName', {
+                  initialValue: '',
+                  rules: [
+                    {
+                      required: true,
+                      message: '请选择统计公司',
+                    },
+                  ],
+                })(
+                  <ComboList
+                    allowClear={true}
+                    style={{ width: '100%' }}
+                    form={form}
+                    name={'statisticCorporationName'}
+                    field={['statisticCorporationCode','statisticCorporationId']}
+                    {...AllCompanyConfig}
+                  />,
+                )
+            )}
         </FormItem>
       </Col>
     </Row>
@@ -169,7 +194,7 @@ const AddModal = forwardRef(({ form }, ref) => {
     <Row>
       <Col span={22}>
         <FormItem {...formLayout} label="期数">
-          {getFieldDecorator('number', {
+          {getFieldDecorator('nper', {
             rules: [{ required: true, message: '期数不能为空!' }],
           })(
             <InputNumber style={{ width: '100%' }} min={0} step={1}/>)}
