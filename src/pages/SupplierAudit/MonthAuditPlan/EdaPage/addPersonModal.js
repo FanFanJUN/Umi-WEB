@@ -137,6 +137,7 @@ const AddPersonModal = (props) => {
                     {
                         getFieldDecorator('memberTel', {
                             initialValue: isEdit ? originData.memberTel : '',
+                            rules: [{ required: true, message: '联系电话不能为空', },],
                         })(<Input placeholder='请输入联系电话' />)
                     }
                 </FormItem>

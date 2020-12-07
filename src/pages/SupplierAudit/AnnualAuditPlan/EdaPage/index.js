@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:04:51
- * @LastEditTime: 2020-12-05 14:52:57
+ * @LastEditTime: 2020-12-07 15:23:31
  * @Description: 新增  编辑  详情 page
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/index.js
  */
@@ -49,7 +49,7 @@ const Index = (props) => {
     async function editDataInflow() {
         const allData = gatAllData();
         if (!(allData.bool)) return false;
-        const res = await reviewPlanYearAp({ ...allData, type: 'edit', isInflow: true});
+        const res = await reviewPlanYearAp({ ...allData, type: 'edit', inFlow: true});
         return res;
     }
 

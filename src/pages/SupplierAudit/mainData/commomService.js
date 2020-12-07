@@ -1,4 +1,4 @@
-import { baseUrl, basicServiceUrl, gatewayUrl, recommendUrl, smBaseUrl } from '../../../utils/commonUrl';
+import { baseUrl, basicServiceUrl, gatewayUrl, recommendUrl, smBaseUrl, purchaseApplyBaseUrl } from '../../../utils/commonUrl';
 import request from '../../../utils/request';
 import { FLOW_HOST } from '../../../utils/constants';
 import { ComboTree } from 'suid';
@@ -468,6 +468,28 @@ export const AuditCauseManagementConfig = {
     type: 'POST',
     autoLoad: false,
     url: `${baseUrl}/reviewReason/findBySearchPage`,
+  },
+  remotePaging: true,
+  rowKey: 'code',
+  reader: {
+    field: ['code'],
+    name: 'name',
+    description: 'code',
+  },
+};
+
+// 专业组
+export const purchaseDepartmentConfigForCode = {
+  allowClear: true,
+  placeholder: '选择专业组',
+  store: {
+    type: 'GET',
+    autoLoad: false,
+    url: `${purchaseApplyBaseUrl}/purchaseDepartment/findByPage`,
+    params: {
+      Q_EQ_frozen__bool: 0,
+      frozen: false
+    }
   },
   remotePaging: true,
   rowKey: 'code',
