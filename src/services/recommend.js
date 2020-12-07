@@ -240,3 +240,11 @@ export const queryRecommendProductList = params => createServiceRequest({
   params,
   method: 'POST'
 })
+
+// 撤回供应商推荐需求
+export const withdrawSupplierFilledInfo = params => createServiceRequest({
+  path: '/api/supplierRecommendDemandService/withdrawSupplierFilledInfo',
+  params,
+  method: 'post',
+  hack: true
+})

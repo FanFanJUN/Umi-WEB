@@ -40,7 +40,7 @@ function SelfAssessment({
     },
     {
       title: '指标定义',
-      dataIndex: ''
+      dataIndex: 'definition'
     },
     {
       title: '评分标准',
@@ -68,7 +68,7 @@ function SelfAssessment({
                   }
                 ],
                 initialValue: record.score,
-              })(<InputNumber max={record.highestScore} />)
+              })(<InputNumber max={record.highestScore} min={0}/>)
             }
           </Item>
         }
