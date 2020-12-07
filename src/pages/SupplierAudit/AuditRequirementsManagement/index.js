@@ -9,7 +9,7 @@ import {
   AuditCauseManagementConfig,
   AuditTypeManagementConfig,
   CompanyConfig, DeleteAuditRequirementsManagement, EndFlow,
-  FindByFiltersConfig, SupplierConfig,
+  FindByFiltersConfig, HeightSearchApplyOrganizationProps, SupplierConfig,
 } from '../mainData/commomService';
 import {
   flowProps, judge, managementStateProps,
@@ -61,13 +61,13 @@ export default function() {
   const redirectToPage = (type) => {
     switch (type) {
       case 'add':
-        openNewTab('supplierAudit/AuditRequirementsManagementAdd?pageState=add', '新增供应商审核需求', false);
+        openNewTab('supplierAudit/AuditRequirementsManagementAdd?pageState=add', '新增审核需求', false);
         break;
       case 'edit':
-        openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=edit&id=${data.selectedRows[0].id}`, '编辑供应商审核需求', false);
+        openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=edit&id=${data.selectedRows[0].id}&reviewRequirementCode=${data.selectedRows[0].reviewRequirementCode}`, '编辑审核需求', false);
         break;
       case 'detail':
-        openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=detail&id=${data.selectedRows[0].id}`, '查看供应商审核需求', false);
+        openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=detail&id=${data.selectedRows[0].id}&reviewRequirementCode=${data.selectedRows[0].reviewRequirementCode}`, '审核需求明细', false);
         break;
       case 'delete':
         deleteList();
@@ -138,7 +138,7 @@ export default function() {
     if (value.applyDate) {
       value.applyDateStart = value.applyDate[0] ? moment(value.applyDate[0]).format('YYYY-MM-DD') : null;
       value.applyDateEnd = value.applyDate[1] ? moment(value.applyDate[1]).format('YYYY-MM-DD') : null;
-      delete value.applyDate
+      delete value.applyDate;
     }
     // value.materialCode = value.materialCode_name;
     // value.materialGroupCode = value.materialGroupCode_name;
@@ -173,7 +173,7 @@ export default function() {
       props: FindByFiltersConfig,
       rules: { rules: [{ required: true, message: '请选择采购组织' }] },
     },
-    { title: '申请部门', key: 'applyDepartmentCode', type: 'tree', props: ApplyOrganizationProps },
+    { title: '申请部门', key: 'applyDepartmentCode', type: 'tree', props: HeightSearchApplyOrganizationProps },
     { title: '申请人', key: 'applyName', props: { placeholder: '输入申请人' } },
     { title: '申请日期', key: 'applyDate', type: 'rangePicker', props: { placeholder: '输入申请日期' } },
     { title: '供应商', key: 'supplierCode', type: 'list', props: SupplierConfig },
@@ -302,6 +302,7 @@ export default function() {
 
   const headerRight = <div style={{ display: 'flex', alignItems: 'center' }}>
     <Search
+      style={{width: '300px'}}
       placeholder='请输入审核需求号或申请说明查询'
       className={styles.btn}
       onSearch={handleQuickSearch}

@@ -279,6 +279,12 @@ const ContentModal = (props) => {
                 {
                   getFieldDecorator('outsideCompany', {
                     initialValue: type === 'add' ? '' : data.outsideCompany,
+                    rules: [
+                      {
+                        required: true,
+                        message: '外部单位不能为空',
+                      },
+                    ],
                   })(<Input placeholder='请输入外部单位' />)
                 }
               </FormItem>

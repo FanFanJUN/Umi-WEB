@@ -378,7 +378,7 @@ const Team = (props) => {
 
   return (
     <ExtModal
-      width={'150vh'}
+      width={'160vh'}
       maskClosable={false}
       visible={visible}
       title={'审核小组管理'}
@@ -389,10 +389,10 @@ const Team = (props) => {
       afterClose={clearSelected}
     >
       <div style={{ width: '100%', height: '100%', display: 'flex' }}>
-        <div style={{ width: '30%' }}>
+        <div style={{ width: '30%', border: '1px solid #e8e8e8', padding: '5px', height: '100%' }}>
           <span style={{ fontSize: '15px', fontWeight: 'bold', marginLeft: '15px' }}>组别</span>
           {
-            props.type !== 'detail' && <div style={{ marginTop: '10px' }}>
+            props.type !== 'detail' && <div style={{ marginTop: '10px', whiteSpace: 'nowrap' }}>
               <Button type='primary' onClick={() => buttonClick('teamAdd')}>新增</Button>
               <Button style={{ marginLeft: '5px' }} onClick={() => buttonClick('teamEdit')}>编辑</Button>
               <Button style={{ marginLeft: '5px' }} onClick={teamDelete}>删除</Button>
@@ -414,8 +414,8 @@ const Team = (props) => {
             />
           </div>
         </div>
-        <div style={{ width: '70%', height: '100%', marginLeft: '10px' }}>
-          <span style={{ fontSize: '15px', fontWeight: 'bold', marginLeft: '15px' }}>成员及审核内容</span>
+        <div style={{ width: '70%', height: '100%', marginLeft: '10px', border: '1px solid #e8e8e8', padding: '5px' }}>
+          <span style={{ fontSize: '15px', fontWeight: 'bold', marginLeft: '15px' }}>成员</span>
           {
             props.type !== 'detail' && <div style={{ marginTop: '10px' }}>
               <Button type='primary' onClick={() => buttonClick('contentAdd')}>新增</Button>
@@ -439,7 +439,7 @@ const Team = (props) => {
               dataSource={contentData.dataSource}
             />
           </div>
-          <div style={{ height: '230px' }}>
+          <div style={{ height: '230px', borderTop: '1px solid #e8e8e8', padding: '5px', margin: '20px' }}>
             <span style={{ fontSize: '15px', fontWeight: 'bold', marginLeft: '15px' }}>成员审核内容管理</span>
             <ShuttleBoxNew
               rightTreeData={data.treeData}

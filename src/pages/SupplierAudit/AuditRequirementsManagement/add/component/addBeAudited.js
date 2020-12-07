@@ -646,7 +646,7 @@ const AddBeAudited = (props) => {
             <FormItem {...formItemLayout} label={'备注'}>
               {
                 getFieldDecorator('remark', {
-                  initialValue: editData.contactUserTel ? editData.contactUserTel : '',
+                  initialValue: editData.remark ? editData.remark : '',
                   rules: [{ validator: length_200_n, message: '请勿超过200个汉字' }],
                 })(
                   <Input.TextArea rows={5} style={{ width: '100%' }} />,

@@ -54,7 +54,7 @@ const Index = (props) => {
   useEffect(() => {
     // 获取所有审核类型
     getAuditType();
-    const { id, pageState } = query;
+    const { id, pageState, reviewRequirementCode=undefined } = query;
     let state = pageState;
     if (!state) {
       state = 'flowDetail';
@@ -67,7 +67,7 @@ const Index = (props) => {
     switch (state) {
       case 'add':
         getUser();
-        setData((value) => ({ ...value, type: state, isView: false, title: '新增供应商审核需求' }));
+        setData((value) => ({ ...value, type: state, isView: false, title: '新增审核需求' }));
         break;
       case 'edit':
         findOne(id);
@@ -75,16 +75,16 @@ const Index = (props) => {
           ...value,
           type: state,
           isView: false,
-          title: `编辑供应商审核需求`,
+          title: `编辑审核需求  ${reviewRequirementCode ? reviewRequirementCode : ''}`,
         }));
         break;
       case 'detail':
         findOne(id);
-        setData((value) => ({ ...value, type: state, isView: true, title: `查看供应商审核需求` }));
+        setData((value) => ({ ...value, type: state, isView: true, title: `审核需求明细  ${reviewRequirementCode ? reviewRequirementCode : ''}` }));
         break;
       case 'flowDetail':
         findOne(id);
-        setData((value) => ({ ...value, type: 'detail', isView: true, title: `供应商审核需求审核` }));
+        setData((value) => ({ ...value, type: 'detail', isView: true, title: `审核需求审核` }));
         break;
     }
   }, []);
