@@ -10,7 +10,7 @@ import { Button, Checkbox, Input, message, Modal } from 'antd';
 import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
 import { ExtTable, utils, WorkFlow } from 'suid';
 import {
-  CompanyConfig, deleteReportById, EndFlow, exportById,
+  CompanyConfig, deleteBriefingById, EndFlow, exportById,
 
 } from '../mainData/commomService';
 import {
@@ -119,7 +119,7 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
       okType: 'danger',
       cancelText: '否',
       onOk: () => {
-        deleteReportById({ id: data.selectedRows[0].id }).then(res => {
+        deleteBriefingById({ id: data.selectedRows[0].id }).then(res => {
           if (res.success) {
             message.success(res.message);
             tableRef.current.manualSelectedRows();
