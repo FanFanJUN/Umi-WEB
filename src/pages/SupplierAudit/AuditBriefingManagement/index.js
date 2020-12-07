@@ -119,8 +119,10 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
       okType: 'danger',
       cancelText: '否',
       onOk: () => {
+        setData(v => ({ ...v, spinning: true }));
         deleteBriefingById({ id: data.selectedRows[0].id }).then(res => {
           if (res.success) {
+            setData(v => ({ ...v, spinning: false }));
             message.success(res.message);
             tableRef.current.manualSelectedRows();
             tableRef.current.remoteDataRefresh();
@@ -134,8 +136,10 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
 
   //导出
   const exportItem = () => {
+    setData(v => ({ ...v, spinning: true }));
     exportById({ id: data.selectedRows[0].id }).then(res => {
       if (res.success) {
+        setData(v => ({ ...v, spinning: false }));
         downloadPDFFile(res.data, '审核简报导出.pdf');
         tableRef.current.manualSelectedRows();
         tableRef.current.remoteDataRefresh();
