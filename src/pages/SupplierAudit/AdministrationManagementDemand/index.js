@@ -131,17 +131,17 @@ export default function() {
   ];
 
   const columns = [
-    { title: '状态', dataIndex: 'state', width: 80, render: v => managementStateConfig[v] },
+    { title: '状态', dataIndex: 'state', width: 70, render: v => managementStateConfig[v] },
     {
       title: '审核需求计划号',
       dataIndex: 'reviewImplementPlanCode',
-      width: 200,
+      width: 140,
       render: (v, data) => <a onClick={() => jumpOtherPage(data.reviewImplementPlanId)}>{v}</a>,
     },
-    { title: '供应商', dataIndex: 'supplierName', width: 300, render: (v, data) => `${v} ${data.supplierCode}` },
-    { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 200 },
-    { title: '审核时间', dataIndex: 'reviewDateStart', width: 400, render: (v, data) => `${v} - ${data.reviewDateEnd}` },
-    { title: '组长', dataIndex: 'leaderName', ellipsis: true, width: 200 },
+    { title: '供应商', dataIndex: 'supplierName', width: 250, render: (v, data) => `${v} ${data.supplierCode}` },
+    { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 250 },
+    { title: '审核时间', dataIndex: 'reviewDateStart', width: 250, render: (v, data) => `${v} - ${data.reviewDateEnd}` },
+    { title: '组长', dataIndex: 'leaderName', ellipsis: true, width: 70 },
   ].map(item => ({ ...item, align: 'center' }));
 
   const jumpOtherPage = (id) => {
@@ -271,6 +271,7 @@ export default function() {
       <Header
         left={headerLeft}
         right={headerRight}
+        hiddenClose
         content={
           <AdvancedForm formItems={formItems} onOk={handleAdvancedSearch} />
         }
@@ -287,6 +288,7 @@ export default function() {
                 managementState: managementState ? 'COMPLETED' : 'NOT_COMPLETED',
                 quickSearchValue: data.quickSearchValue,
                 ...data.epTechnicalShareDemandSearchBo,
+                usedType: '1'
               },
               url: `${window.location.origin}${BASE_URL}/${recommendUrl}/api/reviewImplementManagementService/findByPage`,
               type: 'POST',

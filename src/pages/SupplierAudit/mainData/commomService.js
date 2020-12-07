@@ -1,4 +1,4 @@
-import { baseUrl, basicServiceUrl, gatewayUrl, recommendUrl, smBaseUrl, purchaseApplyBaseUrl } from '../../../utils/commonUrl';
+import { baseUrl, basicServiceUrl, gatewayUrl, recommendUrl, samBaseUrl, smBaseUrl, purchaseApplyBaseUrl } from '../../../utils/commonUrl';
 import request from '../../../utils/request';
 import { FLOW_HOST } from '../../../utils/constants';
 import { ComboTree } from 'suid';
@@ -460,6 +460,24 @@ export const reviewPlanMonthConfig = {
   },
 };
 
+// 根据类型查审核原因
+export const AuditCauseManagementByReviewTypeCodeConfig = {
+  allowClear: true,
+  placeholder: '选择审核原因',
+  store: {
+    type: 'GET',
+    autoLoad: false,
+    url: `${baseUrl}/api/reviewReasonService/findByReviewTypeCode`,
+  },
+  remotePaging: false,
+  rowKey: 'code',
+  reader: {
+    field: ['code'],
+    name: 'name',
+    description: 'code',
+  },
+};
+
 // 审核原因
 export const AuditCauseManagementConfig = {
   allowClear: true,
@@ -568,6 +586,23 @@ export const AuditTypeAllConfig = {
   },
 };
 
+// 审核类型未冻结
+export const AuditTypeManagementUnfrozenConfig = {
+  allowClear: true,
+  placeholder: '选择审核类型',
+  store: {
+    type: 'GET',
+    autoLoad: false,
+    url: `${baseUrl}//api/reviewTypeService/findAllUnfrozen`,
+  },
+  remotePaging: false,
+  rowKey: 'code',
+  reader: {
+    field: ['code'],
+    name: 'name',
+    description: 'code',
+  },
+};
 // 审核类型
 export const AuditTypeManagementConfig = {
   allowClear: true,
@@ -899,3 +934,65 @@ export const saveLeaderDecision = async (params) => {
     data: params,
   });
 };
+
+// 审核简报新增查询
+export const getAuditBriefing = async (params) => {
+  const url = `${recommendUrl}/api/abAuditBriefingManageService/addSelect`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+};
+
+// 审核简报管理新增获取默认值
+export const findForBriefingInsert = async (params = {}) => {
+  const url = `${recommendUrl}/api/abAuditBriefingManageService/findDetailForAdd`;
+  return request({
+    url,
+    method: 'GET',
+    params: params,
+  });
+};
+
+// 审核简报管理保存
+export const saveAuditBriefing = async (params) => {
+  const url = `${recommendUrl}/api/abAuditBriefingManageService/saveVo`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+};
+
+// 审核简报管理findOne
+export const findBriefingVoById = async (params = {}) => {
+  const url = `${recommendUrl}/api/abAuditBriefingManageService/findVoById`;
+  return request({
+    url,
+    method: 'GET',
+    params: params,
+  });
+};
+// 导出审核报告
+export const exportById = async (params = {}) => {
+  const url = `${recommendUrl}/abAuditBriefingManage/exportById`;
+  return request({
+    url,
+    method: 'GET',
+    params: params,
+    responseType: 'blob'
+  });
+};
+
+// 审核简报delete
+export const deleteBriefingById = async (params = {}) => {
+  const url = `${recommendUrl}/api/abAuditBriefingManageService/deleteVoById`;
+  return request({
+    url,
+    method: 'POST',
+    params: params,
+  });
+};
+
+

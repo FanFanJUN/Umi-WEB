@@ -10,7 +10,6 @@ import { Form, Row, Col } from 'antd';
 
 const TypeChart = React.forwardRef(({ form, isView, editData, type }, ref) => {
   useImperativeHandle(ref, () => ({}));
-  const data=[{name:'准入',value:'20'},{name:'追加',value:'20'},{name:'监督',value:'70'}]
   const props = {
     option: {
       title: {
@@ -23,7 +22,7 @@ const TypeChart = React.forwardRef(({ form, isView, editData, type }, ref) => {
       series: [
         {
           type: 'pie',
-          data:data ,
+          data:editData.abAuditTypeVos||[] ,
         },
       ],
     },
@@ -41,24 +40,7 @@ const TypeChart = React.forwardRef(({ form, isView, editData, type }, ref) => {
       series: [
         {
           type: 'pie',
-          data: [
-            {
-              name: '联合',
-              value: 10,
-            },
-            {
-              name: '交叉',
-              value: 20,
-            },
-            {
-              name: '委托第三方',
-              value: 70,
-            },
-            {
-              name: '就近',
-              value: 120,
-            },
-          ],
+          data:editData.abAuditOrgModeVos||[] ,
         },
       ],
     },
@@ -75,24 +57,7 @@ const TypeChart = React.forwardRef(({ form, isView, editData, type }, ref) => {
       series: [
         {
           type: 'pie',
-          data: [
-            {
-              name: 'A级',
-              value: 1,
-            },
-            {
-              name: 'B级',
-              value: 20,
-            },
-            {
-              name: 'C级',
-              value: 70,
-            },
-            {
-              name: 'D级',
-              value: 120,
-            },
-          ],
+          data: editData.abAuditConclusionGradeVos||[]
         },
       ],
     },
@@ -109,24 +74,7 @@ const TypeChart = React.forwardRef(({ form, isView, editData, type }, ref) => {
       series: [
         {
           type: 'pie',
-          data: [
-            {
-              name: 'A级',
-              value: 1,
-            },
-            {
-              name: 'B级',
-              value: 20,
-            },
-            {
-              name: 'C级',
-              value: 70,
-            },
-            {
-              name: 'D级',
-              value: 120,
-            },
-          ],
+          data: editData.abReviewElementVos||[]
         },
       ],
     },

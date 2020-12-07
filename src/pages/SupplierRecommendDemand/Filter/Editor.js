@@ -97,7 +97,12 @@ const Editor = forwardRef(({
     validateFieldsAndScroll,
     getFieldsValue
   } = form;
-  const { recommend, recommendConfirm } = getFieldsValue();
+  const {
+    recommend,
+    recommendConfirm,
+    selectRecommendInfomation,
+    objectRecognition
+  } = getFieldsValue();
   async function show(fields, ts) {
     const { recommendConfirm, ...cacheFieldsValues } = fields;
     toggleVisible(true)
@@ -113,9 +118,6 @@ const Editor = forwardRef(({
     const values = await validateFieldsAndScroll()
     hide()
     setTableDataSource(values)
-  }
-  function handleRecommendConfirmChange() {
-    console.log()
   }
   useEffect(() => {
     setFieldsValue({ ...cacheFields, selectRecommendInfomation: `${cacheFields.corporationCode}-${cacheFields.purchaseOrgCode}` })
@@ -206,22 +208,47 @@ const Editor = forwardRef(({
               <Col span={24}>
                 <Form.Item label='是否准入推荐' {...formLayoutAlone}>
                   {
-                    getFieldDecorator('recommendConfirm')(
-                      <Radio.Group onChange={handleRecommendConfirmChange}>
+                    getFieldDecorator('recommendConfirm', {
+                      rules: [
+                        {
+                          required: true,
+                          message: '请选择是否准入推荐'
+                        }
+                      ]
+                    })(
+                      <Radio.Group>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>
                     )
                   }
                 </Form.Item>
-              </Col> : null
+              </Col> : <Col span={24}>
+                <Form.Item label='是否拟淘汰供应商' {...formLayoutAlone}>
+                  {
+                    getFieldDecorator('weedOut')(
+                      <Radio.Group>
+                        <Radio value={true}>是</Radio>
+                        <Radio value={false}>否</Radio>
+                      </Radio.Group>
+                    )
+                  }
+                </Form.Item>
+              </Col>
           }
           {
             !recommendConfirm && recommendConfirm !== undefined ?
               <Col span={24}>
                 <Form.Item label='不推荐理由' {...formLayoutAlone}>
                   {
-                    getFieldDecorator('noRecommendReason')(
+                    getFieldDecorator('noRecommendReason', {
+                      rules: [
+                        {
+                          required: true,
+                          message: '请简要说明不推荐理由'
+                        }
+                      ]
+                    })(
                       <Input.TextArea rows={6} />
                     )
                   }
@@ -231,35 +258,47 @@ const Editor = forwardRef(({
           {
             recommendConfirm ? <>
               <Col span={12}>
-                <Form.Item label='选择推荐信息' {...formLayout}>
+                <Form.Item label='是否进行实物认定' {...formLayout}>
                   {
-                    getFieldDecorator('selectRecommendInfomation')(
-                      <ComboGrid {...trustInfoProps} />
-                    )
-                  }
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item label='信任公司' {...formLayout}>
-                  {
-                    getFieldDecorator('trustCorporationCode'),
-                    getFieldDecorator('trustCorporationName')(
-                      <ComboGrid disabled {...trustInfoProps} />
-                    )
-                  }
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item label='信任采购组织' {...formLayout}>
-                  {
-                    getFieldDecorator('trustPurchaseOrgCode'),
-                    getFieldDecorator('trustPurchaseOrgName')(
-                      <ComboGrid disabled {...trustInfoProps} />
+                    getFieldDecorator('objectRecognition', {
+                      rules: [
+                        {
+                          required: true,
+                          message: '请选择是否进行实物认定'
+                        }
+                      ]
+                    })(
+                      <Radio.Group>
+                        <Radio value={true}>是</Radio>
+                        <Radio value={false}>否</Radio>
+                      </Radio.Group>
                     )
                   }
                 </Form.Item>
               </Col>
             </> : null
+          }
+          {
+            typeof objectRecognition === 'boolean' && !objectRecognition ?
+              <Col span={24}>
+                <Form.Item label='是否信任其他认定结果' {...formLayoutAlone}>
+                  {
+                    getFieldDecorator('trust', {
+                      rules: [
+                        {
+                          required: true,
+                          message: '请选择是否信任其他认定结果'
+                        }
+                      ]
+                    })(
+                      <Radio.Group>
+                        <Radio value={true}>是</Radio>
+                        <Radio value={false}>否</Radio>
+                      </Radio.Group>
+                    )
+                  }
+                </Form.Item>
+              </Col> : null
           }
         </Row>
       </Form>

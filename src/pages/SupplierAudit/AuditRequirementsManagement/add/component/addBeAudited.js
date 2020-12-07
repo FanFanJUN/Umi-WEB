@@ -180,7 +180,7 @@ const AddBeAudited = (props) => {
     console.log(value);
   };
 
-  console.log(getFieldValue('reviewTypeCode'))
+  console.log(getFieldValue('reviewTypeCode'));
 
   return (
     <ExtModal
@@ -242,6 +242,9 @@ const AddBeAudited = (props) => {
                     form={form}
                     name={'reviewReasonName'}
                     field={['reviewReasonCode', 'reviewReasonId']}
+                    cascadeParams={{
+                      findByReviewTypeCode: getFieldValue('reviewTypeCode'),
+                    }}
                     store={{
                       params: {
                         findByReviewTypeCode: getFieldValue('reviewTypeCode'),

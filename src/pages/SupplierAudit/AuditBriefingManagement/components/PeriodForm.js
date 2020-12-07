@@ -4,7 +4,7 @@
  * @Date: 2020-11-27
  */
 
-import React, {  useImperativeHandle } from 'react';
+import React, { useImperativeHandle } from 'react';
 import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/edit/BaseInfo.less';
 import { Col, Form, Row } from 'antd';
 
@@ -20,10 +20,8 @@ const formLayout = {
 };
 
 
-const PeriodForm = React.forwardRef(({ form, isView, editData,type }, ref) => {
-  useImperativeHandle(ref, () => ({
-
-  }));
+const PeriodForm = React.forwardRef(({ form, isView, editData, type }, ref) => {
+  useImperativeHandle(ref, () => ({}));
 
   return (
     <div className={styles.wrapper}>
@@ -34,14 +32,14 @@ const PeriodForm = React.forwardRef(({ form, isView, editData,type }, ref) => {
             <Col span={12}>
               <FormItem  {...formLayout} label={'年度'}>
                 {
-                  <span>{editData.reviewPlanMonthCode}</span>
+                  <span>{editData.year}</span>
                 }
               </FormItem>
             </Col>
             <Col span={12}>
               <FormItem  {...formLayout} label={'年度期间'}>
                 {
-                  <span>{editData.reviewPlanMonthLinenum}</span>
+                  <span>{editData.yearPeriodStart + '到' + editData.yearPeriodEnd}</span>
                 }
               </FormItem>
             </Col>
@@ -50,15 +48,13 @@ const PeriodForm = React.forwardRef(({ form, isView, editData,type }, ref) => {
             <Col span={12}>
               <FormItem  {...formLayout} label={'本期'}>
                 {
-                  <span>{editData.reviewImplementPlanCode}</span>
-                }
+                  <span>{editData.currentPeriodStart + '到' + editData.currentPeriodEnd}</span>}
               </FormItem>
             </Col>
             <Col span={12}>
               <FormItem  {...formLayout} label={'下期'}>
                 {
-                  <span>{editData.reviewImplementPlanLinenum}</span>
-                }
+                  <span>{editData.nextPeriodStart + '到' + editData.nextPeriodEnd}</span>}
               </FormItem>
             </Col>
           </Row>
@@ -66,7 +62,7 @@ const PeriodForm = React.forwardRef(({ form, isView, editData,type }, ref) => {
             <Col span={12}>
               <FormItem  {...formLayout} label={'期数'}>
                 {
-                  <span>{editData.reviewTypeName}</span>
+                  <span>{editData.nper}</span>
                 }
               </FormItem>
             </Col>

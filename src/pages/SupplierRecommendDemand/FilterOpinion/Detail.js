@@ -10,7 +10,7 @@ import DetailRecommendDemand from '../DetailRecommendDemand';
 import SupplierRecommendFillInData from '../RecommendData/DataFillIn';
 import SelfAssessment from '../RecommendData/SelfAssessment';
 import { Tabs, Skeleton, Affix } from 'antd';
-import Review from '../Review';
+// import Review from '../Review';
 import Filter from '../Filter';
 import { router } from 'dva';
 import { useGlobalStatus } from '../../../utils/hooks';
@@ -44,9 +44,9 @@ function FillInInfomationConfirm() {
         <TabPane tab="供应商自评表" key="supplier-self-assessment">
           <SelfAssessment type="detail" />
         </TabPane>
-        <TabPane tab="评审打分" key="mark">
+        {/* <TabPane tab="评审打分" key="mark">
           <Review type="detail" />
-        </TabPane>
+        </TabPane> */}
         <TabPane tab="筛选意见" key="filter" forceRender={true}>
           <Filter ref={filterRef} type='detail' />
         </TabPane>

@@ -10,13 +10,6 @@ import { Form } from 'antd';
 
 const SupplierChart = React.forwardRef(({ form, isView, editData, type }, ref) => {
   useImperativeHandle(ref, () => ({}));
-  const data=[{name:'川渝地区',value:'222'},{name:'长三角地区',value:'333'},{name:'珠三角地区',value:'444'},{name:'其他地区',value:'20'}]
-  let xData=[];
-  let yData=[];
-  data.forEach(item=>{
-    xData.push(item.name);
-    yData.push(item.value)
-  });
   const props = {
     option: {
       tooltip: {
@@ -31,7 +24,7 @@ const SupplierChart = React.forwardRef(({ form, isView, editData, type }, ref) =
       xAxis: [
         {
           type: 'category',
-          data:xData,
+          data: editData.abAreaNames || [],
           axisPointer: {
             type: 'shadow',
           },
@@ -50,7 +43,7 @@ const SupplierChart = React.forwardRef(({ form, isView, editData, type }, ref) =
         {
           name: '数量',
           type: 'bar',
-          data: yData,
+          data: editData.abAreaValues || [],
           itemStyle: {
             normal: {
               color: function(params) {

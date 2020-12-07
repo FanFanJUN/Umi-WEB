@@ -61,8 +61,8 @@ const AddSupplierInfoModal = forwardRef(({ onOk = () => null, editData, form, is
             style={{
               width: '100%',
               border: 'none',
-            }}>{editData ? editData.departmentName : ''}</span> : getFieldDecorator('departmentName', {
-            initialValue: editData ? editData.departmentName : '',
+            }}>{editData ? editData.improvementDescription : ''}</span> : getFieldDecorator('improvementDescription', {
+            initialValue: editData ? editData.improvementDescription : '',
             rules: [{ required: true, message: '请填写改善事项描述' }],
           })(
             <Input.TextArea autoSize={{ minRows: 2, maxRows: 6 }} style={{ width: '100%' }} maxLength={200}/>,
@@ -77,8 +77,8 @@ const AddSupplierInfoModal = forwardRef(({ onOk = () => null, editData, form, is
             style={{
               width: '100%',
               border: 'none',
-            }}>{editData ? editData.employeeNo : ''}</span> : getFieldDecorator('employeeNo', {
-            initialValue: editData ? editData.employeeNo : '',
+            }}>{editData ? editData.causeAnalysis : ''}</span> : getFieldDecorator('causeAnalysis', {
+            initialValue: editData ? editData.causeAnalysis : '',
             rules: [{ required: true, message: '请填写原因分析' }],
           })(
             <Input.TextArea autoSize={{ minRows: 2, maxRows: 6 }} style={{ width: '100%' }} maxLength={1000}/>,
@@ -93,8 +93,8 @@ const AddSupplierInfoModal = forwardRef(({ onOk = () => null, editData, form, is
             style={{
               width: '100%',
               border: 'none',
-            }}>{editData ? editData.memberName : ''}</span> : getFieldDecorator('memberName', {
-            initialValue: editData ? editData.memberName : '',
+            }}>{editData ? editData.improveMeasureRequire : ''}</span> : getFieldDecorator('improveMeasureRequire', {
+            initialValue: editData ? editData.improveMeasureRequire : '',
             rules: [{ required: true, message: '请填写改进措施及要求' }],
           })(
             <Input.TextArea autoSize={{ minRows: 2, maxRows: 6 }} style={{ width: '100%' }} maxLength={200}/>,
@@ -109,8 +109,8 @@ const AddSupplierInfoModal = forwardRef(({ onOk = () => null, editData, form, is
             style={{
               width: '100%',
               border: 'none',
-            }}>{editData ? editData.memberTel : ''}</span> : getFieldDecorator('memberTel', {
-            initialValue: editData ? editData.memberTel : '',
+            }}>{editData ? editData.thoseResponsible : ''}</span> : getFieldDecorator('thoseResponsible', {
+            initialValue: editData ? editData.thoseResponsible : '',
             rules: [{ required: true, message: '请填写责任人' }],
           })(
             <Input.TextArea autoSize={{ minRows: 2, maxRows: 6 }} style={{ width: '100%' }} maxLength={200}/>,
