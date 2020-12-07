@@ -8,22 +8,25 @@
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/MonthAuditPlan/index.js
  */
 import React, { useState, useRef, useEffect, Fragment } from 'react';
-import { Button, Input, message, Modal } from 'antd';
+import { Button, Input, message, Modal, Checkbox } from 'antd';
 import { ExtTable, utils, WorkFlow } from 'suid';
 import { StartFlow } from 'seid';
 import moment from "moment";
 import Header from '../../../components/Header';
 import AdvancedForm from '../../../components/AdvancedForm';
 import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
-import { ApplyOrganizationProps, CompanyConfig, EndFlow } from '../mainData/commomService';
+import { judge, flowProps } from '../../QualitySynergy/commonProps';
 import {
-    judge,
-    flowProps
-} from '../../QualitySynergy/commonProps';
+    ApplyOrganizationProps,
+    CompanyConfig,
+    FindByFiltersConfig,
+    EndFlow
+} from '../mainData/commomService';
+import { materialClassProps, supplierProps } from '@/utils/commonProps';
 import { deleteReviewImplementPlan, ShareStatusProps } from "./service";
-import AutoSizeLayout from '../../../components/AutoSizeLayout';
-import { recommendUrl } from '../../../utils/commonUrl';
-import { openNewTab, getUserAccount } from '../../../utils';
+import AutoSizeLayout from '@/components/AutoSizeLayout';
+import { recommendUrl } from '@/utils/commonUrl';
+import { openNewTab, getUserAccount } from '@/utils';
 import ChangeHistory from "./components/ChangeHistory";
 import AddNodal from "./components/addModal";
 import ChangeLaderModal from "./components/changeLeader";
@@ -31,6 +34,26 @@ import ChangeLaderModal from "./components/changeLeader";
 const { FlowHistoryButton } = WorkFlow;
 const { authAction } = utils;
 const { Search } = Input;
+const supplierPropsNew = {
+    allowClear: true,
+    ...supplierProps,
+    reader: {
+      name: 'name',
+      field: ['code'],
+      description: 'code'
+    },
+    placeholder: '选择供应商'
+};
+const agentList = {
+    allowClear: true,
+    ...supplierProps,
+    reader: {
+      name: 'name',
+      field: ['code'],
+      description: 'code'
+    },
+    placeholder: '选择代理商'
+};
 
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 
@@ -40,6 +63,7 @@ export default function () {
     const tableRef = useRef(null);
     const [data, setData] = useState({
         quickSearchValue: '',
+        onlyOwn: true,
         epTechnicalShareDemandSearchBo: {},
         selectedRowKeys: [],
         selectedRows: [],
@@ -68,13 +92,13 @@ export default function () {
                 setAddV(true);
                 break;
             case 'edit':
-                openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=edit&id=${data.selectedRowKeys[0]}`, '审核实施计划管理-编辑', false);
+                openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=edit&id=${data.selectedRowKeys[0]}`, '编辑审核实施计划', false);
                 break;
             case 'detail':
-                openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=detail&id=${data.selectedRowKeys[0]}`, '审核实施计划管理-明细', false);
+                openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=detail&id=${data.selectedRowKeys[0]}`, '审核实施计划明细', false);
                 break;
             case 'change':
-                openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=change&id=${data.selectedRowKeys[0]}`, '审核实施计划管理-变更', false);
+                openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=change&id=${data.selectedRowKeys[0]}`, '变更审核实施计划', false);
                 break;
             case "changehistory":
                 setHistoryV(true);
@@ -93,20 +117,25 @@ export default function () {
         tableRef.current.manualSelectedRows();
         tableRef.current.remoteDataRefresh();
     };
+    // 仅我的
+    function handleOnlyMeChange(e) {
+        setData(v => ({ ...v, onlyOwn: e.target.checked }));
+        tableRef.current.manualSelectedRows();
+        tableRef.current.remoteDataRefresh();
+    }
     // 高级查询搜索
     const handleAdvancedSearch = (value) => {
         delete value.state_name;
         delete value.flowStatus_name;
         delete value.purchaseTeamCode_name;
-        // delete value.applyDepartmentCode_name;
         delete value.applyCorporationCode_name;
         delete value.materialSecondClassifyCode_name;
         delete value.allotSupplierState_name;
         delete value.reviewTypeCode_name;
         value.applyDate = value.applyDate ? moment(value.applyDate).format('YYYY-MM-DD ') : '';
         if(value.applyDate) {
-            value.ApplyDateStart = value.applyDate ? value.applyDate + "00:00:00" : ''
-            value.ApplyDateEnd = value.applyDate ? value.applyDate + "23:59:59" : ''
+            value.applyDateStart = value.applyDate ? value.applyDate + "00:00:00" : ''
+            value.applyDateEnd = value.applyDate ? value.applyDate + "23:59:59" : ''
         }
         delete value.applyDate;
         setData(v => ({ ...v, epTechnicalShareDemandSearchBo: { ...value } }));
@@ -174,12 +203,16 @@ export default function () {
 
     // 高级查询配置
     const formItems = [
-        { title: '公司', key: 'applyCorporationCode', type: 'list', props: CompanyConfig },
-        { title: '申请部门', key: 'applyDepartmentCode', type: 'tree', props: ApplyOrganizationProps },
-        { title: '申请人', key: 'applyName', props: { placeholder: '输入申请人' } },
-        { title: '申请日期', key: 'applyDate', type: 'datePicker', props: { placeholder: '选择申请日期' } },
+        { title: '需求公司', key: 'applyCorporationCode', type: 'list', props: CompanyConfig },
+        { title: '采购组织', key: 'purchaseTeamCode', type: 'list', props: FindByFiltersConfig},
+        { title: '拟制人', key: 'applyName', props: { placeholder: '输入申请人' } },
+        { title: '拟制日期', key: 'applyDate', type: 'datePicker', props: { placeholder: '选择申请日期' } },
         { title: '状态', key: 'state', type: 'list', props: ShareStatusProps },
         { title: '审批状态', key: 'flowStatus', type: 'list', props: flowProps },
+        { title: '供应商', key: 'supplierCode', type: 'list', props: supplierPropsNew },
+        { title: '代理商', key: 'agentCode', type: 'list', props: agentList },
+        { title: '物料分类', key: 'materialGroupCode', type: 'tree', props: materialClassProps },
+        { title: '月度审核计划', key: 'applyName', props: { placeholder: '输入月度审核计划' } },
     ];
 
     const columns = [
@@ -201,9 +234,9 @@ export default function () {
                 }
             }
         },
-        { title: '作废', dataIndex: 'whetherDeleted', ellipsis: true, width: 80, render: text => text ? "是" : "否" },
+        { title: '作废', dataIndex: 'whetherDeleted', ellipsis: true, width: 60, render: text => text ? "是" : "否" },
         {
-            title: '审批状态', dataIndex: 'flowStatus', width: 140, render: v => {
+            title: '审批状态', dataIndex: 'flowStatus', width: 100, align: 'center', render: v => {
                 switch (v) {
                     case 'INIT':
                         return '未进入流程';
@@ -215,10 +248,12 @@ export default function () {
             },
         },
         { title: '审核实施计划号', dataIndex: 'reviewImplementPlanCode', width: 180, align: 'center'},
-        { title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 250 },
-        { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 200 },
+        { title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 250, render: (text, item) => {
+            return !text ? "" : item.supplierCode + ' '+ item.supplierName;
+        }},
+        { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 180 },
         { title: '审核时间', dataIndex: 'reviewDateStart', ellipsis: true, width: 200, align: 'center', render: (text, item) => (text.slice(0, 10) + '~' + item.reviewDateEnd.slice(0, 10)) },
-        { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 140 },
+        { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 100, align: 'center'},
         { title: '拟制时间', dataIndex: 'applyDate', ellipsis: true, width: 200, align: 'center' },
     ];
 
@@ -339,6 +374,8 @@ export default function () {
     </>;
 
     const headerRight = <div style={{ display: 'flex', alignItems: 'center' }}>
+        <Checkbox className={styles.btn} onChange={handleOnlyMeChange} checked={data.onlyOwn}
+                style={{ width: '80px' }}>仅我的</Checkbox>
         <Search
             placeholder='请输入审核实施计划号查询'
             className={styles.btn}
@@ -369,6 +406,7 @@ export default function () {
                         store={{
                             params: {
                                 quickSearchValue: data.quickSearchValue,
+                                onlyOwn: data.onlyOwn,
                                 ...data.epTechnicalShareDemandSearchBo,
                             },
                             url: `${recommendUrl}/api/reviewImplementPlanService/findReviewImplementPlanPage`,

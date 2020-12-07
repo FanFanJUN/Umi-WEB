@@ -1,4 +1,4 @@
-import { smBaseUrl, baseUrl, recommendUrl, basicServiceUrl } from '../../utils/commonUrl';
+import { smBaseUrl, baseUrl, recommendUrl } from '../../utils/commonUrl';
 import request from '../../utils/request';
 import React from 'react';
 
@@ -102,6 +102,23 @@ export const flowProps = {
     {
       code: 'COMPLETED',
       name: '流程处理完成',
+    },
+  ],
+  placeholder: '选择状态',
+  ...commonProps,
+};
+
+// 状态
+export const managementStateProps = {
+  allowClear: true,
+  dataSource: [
+    {
+      code: 'DRAFT',
+      name: '草稿',
+    },
+    {
+      code: 'EFFECT',
+      name: '生效',
     },
   ],
   placeholder: '选择状态',

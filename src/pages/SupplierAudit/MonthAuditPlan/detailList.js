@@ -10,12 +10,10 @@ import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/in
 import { DataExport, ExtTable, utils } from 'suid';
 import moment from "moment";
 import {
-    ApplyOrganizationProps,
     AuditCauseManagementConfig,
-    AuditTypeManagementConfig,
+    AuditTypeManagementNoFrozenConfig,
     CompanyConfig,
     FindByFiltersConfig,
-    SupplierConfig,
 } from '../mainData/commomService';
 import { reviewWaysProps, reviewOrganizeProps } from "../AnnualAuditPlan/propsParams"
 import { supplierProps } from '@/utils/commonProps';
@@ -23,6 +21,7 @@ import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
 import { materialClassProps } from '../../../utils/commonProps';
 const supplierPropsNew = {
+    allowClear: true,
     ...supplierProps,
     reader: {
       name: 'name',
@@ -32,6 +31,7 @@ const supplierPropsNew = {
     placeholder: '选择供应商'
 };
 const agentList = {
+    allowClear: true,
     ...supplierProps,
     reader: {
       name: 'name',
@@ -41,6 +41,7 @@ const agentList = {
     placeholder: '选择代理商'
 };
 const reviewWaysPropsNew = {
+    allowClear: true,
     ...reviewWaysProps,
     reader: {
         name: 'name',
@@ -49,6 +50,7 @@ const reviewWaysPropsNew = {
     },
 }
 const reviewOrganizePropsNew = {
+    allowClear: true,
     ...reviewOrganizeProps,
     reader: {
         field: ['code'],
@@ -118,7 +120,7 @@ export default function () {
         { title: '物料分类', key: 'materialGroupCode', type: 'tree', props: materialClassProps },
         { title: '供应商', key: 'supplierCode', type: 'list', props: supplierPropsNew },
         { title: '代理商', key: 'agentCode', type: 'list', props: agentList },
-        { title: '审核类型', key: 'reviewTypeCode', type: 'list', props: AuditTypeManagementConfig },
+        { title: '审核类型', key: 'reviewTypeCode', type: 'list', props: AuditTypeManagementNoFrozenConfig },
         { title: '审核原因', key: 'reviewReasonCode', type: 'list', props: AuditCauseManagementConfig },
         { title: '审核方式', key: 'reviewWayCode', type: 'list', props: reviewWaysPropsNew },
         { title: '审核组织形式', key: 'reviewOrganizedWayCode', type: 'list', props: reviewOrganizePropsNew },
@@ -138,7 +140,7 @@ export default function () {
                     return "变更中";
             }
         } },
-        { title: '审批状态', dataIndex: 'flowStatus', width: 200, render: v => {
+        { title: '审批状态', dataIndex: 'flowStatus', width: 100, render: v => {
             switch (v) {
                 case 'INIT':
                     return '未进入流程';
@@ -148,28 +150,28 @@ export default function () {
                     return '流程处理完成';
             }
         }, },
-        { title: '月度审核计划号', dataIndex: 'reviewPlanMonthCode', width: 200 },
-        { title: '月度', dataIndex: 'applyMonth', ellipsis: true, width: 80, render:(text)=>text ? (text + "月") : '' },
+        { title: '月度审核计划号', dataIndex: 'reviewPlanMonthCode', width: 140, align: 'center' },
+        { title: '月度', dataIndex: 'applyMonth', ellipsis: true, width: 120, align: 'center', render:(text)=>text ? text.slice(0, 7) : '' },
         { title: '拟制说明', dataIndex: 'reviewPlanMonthName', ellipsis: true, width: 200 },
-        { title: '拟制部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200 },
-        { title: '拟制人', dataIndex: 'applyName', ellipsis: true, width: 140 },
-        { title: '拟制日期', dataIndex: 'applyDate', ellipsis: true, width: 200 },
-        { title: '行号', dataIndex: 'reviewPlanMonthLinenum', ellipsis: true, width: 200 },
-        { title: '需求公司代码', dataIndex: 'applyCorporationCode', width: 140, ellipsis: true, },
-        { title: '需求公司名称', dataIndex: 'applyCorporationName', width: 140, ellipsis: true, },
-        { title: '采购组织代码', dataIndex: 'purchaseTeamCode', ellipsis: true, width: 140 },
+        { title: '拟制部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 180 },
+        { title: '拟制人', dataIndex: 'applyName', ellipsis: true, width: 80, align: 'center' },
+        { title: '拟制日期', dataIndex: 'applyDate', ellipsis: true, width: 120, align: 'center', render: text => text.slice(0, 10) },
+        { title: '行号', dataIndex: 'reviewPlanMonthLinenum', ellipsis: true, width: 80, align: 'center'},
+        { title: '需求公司代码', dataIndex: 'applyCorporationCode', width: 100, ellipsis: true, align: 'center'},
+        { title: '需求公司名称', dataIndex: 'applyCorporationName', width: 160, ellipsis: true, },
+        { title: '采购组织代码', dataIndex: 'purchaseTeamCode', ellipsis: true, width: 100, align: 'center' },
         { title: '采购组织名称', dataIndex: 'purchaseTeamName', ellipsis: true, width: 140 },
-        { title: '审核类型', dataIndex: 'reviewTypeName', ellipsis: true, width: 140 },
+        { title: '审核类型', dataIndex: 'reviewTypeName', ellipsis: true, width: 100 },
         { title: '审核原因', dataIndex: 'reviewReasonName', ellipsis: true, width: 140 },
-        { title: '审核组织形式', dataIndex: 'reviewOrganizedWayName', ellipsis: true, width: 140 },
+        { title: '审核组织形式', dataIndex: 'reviewOrganizedWayName', ellipsis: true, width: 100 },
         { title: '审核方式', dataIndex: 'reviewWayName', ellipsis: true, width: 140 },
         { title: '审核内容', dataIndex: 'auditContent', ellipsis: true, width: 140 },
-        { title: '组长', dataIndex: 'leaderName', ellipsis: true, width: 140 },
+        { title: '组长', dataIndex: 'leaderName', ellipsis: true, width: 100 },
         { title: '组员', dataIndex: 'memberName', ellipsis: true, width: 140 },
         { title: '专业组', dataIndex: 'specialtyTeamName', ellipsis: true, width: 140 },
-        { title: '物料分类代码', dataIndex: 'materialGroupCode', ellipsis: true, width: 140 },
+        { title: '物料分类代码', dataIndex: 'materialGroupCode', ellipsis: true, width: 100 },
         { title: '物料分类名称', dataIndex: 'materialGroupName', ellipsis: true, width: 140 },
-        { title: '供应商代码', dataIndex: 'supplierCode', ellipsis: true, width: 140 },
+        { title: '供应商代码', dataIndex: 'supplierCode', ellipsis: true, width: 100 },
         { title: '供应商名称', dataIndex: 'supplierName', ellipsis: true, width: 140 },
         { title: '代理商代码', dataIndex: 'agentCode', ellipsis: true, width: 140 },
         { title: '代理商名称', dataIndex: 'agentName', ellipsis: true, width: 140 },
@@ -177,11 +179,11 @@ export default function () {
             return item.countryName + item.provinceName + item.cityName + item.countyName + item.address;
           },
         },
-        { title: '供应商联系人', dataIndex: 'contactUserName', ellipsis: true, width: 140 },
+        { title: '供应商联系人', dataIndex: 'contactUserName', ellipsis: true, width: 100 },
         { title: '供应商联系方式', dataIndex: 'contactUserTel', ellipsis: true, width: 140 },
         { title: '备注', dataIndex: 'remark', ellipsis: true, width: 140 },
         { title: '已创建审核实施计划', dataIndex: 'whetherOccupied', ellipsis: true, width: 140, render:(text)=>text ? "是" : "否"},
-    ].map(item => ({ ...item, align: 'center' }));
+    ];
 
     // 导出
     const explainResponse = res => {
@@ -189,9 +191,9 @@ export default function () {
         res.data.rows.map(item => {
             arr.push({
                 '状态': item.state === "DRAFT" ? "草稿" : item.state === "EFFECT" ? "生效" : "变更中",
-                '审批状态': item.flowStatus === "DRAFT" ? "草稿" : item.flowStatus === "EFFECT" ? "生效" : "变更中",
+                '审批状态': item.flowStatus === "INIT" ? "未进入流程" : item.flowStatus === "INPROCESS" ? "流程中" : "流程处理完成",
                 '月度审核计划号': item.reviewPlanMonthCode,
-                '月度': item.applyMonth,
+                '月度': item.applyMonth.slice(0, 7),
                 '拟制说明': item.reviewPlanMonthName,
                 '拟制部门': item.applyDepartmentName,
                 '拟制人': item.applyName,
@@ -215,7 +217,7 @@ export default function () {
                 '供应商名称': item.supplierName,
                 '代理商代码': item.agentCode,
                 '代理商名称': item.agentName,
-                '生产厂地址': (item.countryName + item.provinceName + item.cityName + item.countyName + item.address),
+                '生产厂地址': (item.countryName + item.provinceName + item.cityName + item.countyName + item.address).replace(/\s+/g,""),
                 '供应商联系人': item.contactUserName,
                 '供应商联系方式': item.contactUserTel,
                 '备注': item.remark,
@@ -254,6 +256,7 @@ export default function () {
         <Search
             placeholder='请输入月度审核计划号或拟制说明查询'
             className={styles.btn}
+            style={{width: "20vw"}}
             onSearch={handleQuickSearch}
             allowClear
         />
@@ -265,6 +268,7 @@ export default function () {
                 left={headerLeft}
                 right={headerRight}
                 ref={headerRef}
+                hiddenClose
                 content={
                     <AdvancedForm formItems={formItems} onOk={handleAdvancedSearch} />
                 }
@@ -273,7 +277,7 @@ export default function () {
             <AutoSizeLayout>
                 {
                     (h) => <ExtTable
-                        rowKey={(v) =>v.id}
+                        rowKey={(v) =>v.id + v.reviewPlanMonthLinenum}
                         height={h}
                         columns={columns}
                         store={{

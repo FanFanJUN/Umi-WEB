@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime: 2020-12-04 15:24:24
+ * @LastEditTime: 2020-12-07 11:43:41
  * @Description: 行信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
@@ -95,30 +95,30 @@ let LineInfo = forwardRef((props, ref) => {
     {
       title: '需求公司',
       dataIndex: 'applyCorporationName',
-      width: 250,
+      width: 200,
       ellipsis: true,
-      render: (v, record) => `${v ? v : ''} ${record.applyCorporationCode ? record.applyCorporationCode : ''}`,
+      render: (v, record) => `${record.applyCorporationCode ? record.applyCorporationCode : ''} ${v ? v : ''}`,
     },
     {
       title: '采购组织',
       dataIndex: 'purchaseTeamName',
       ellipsis: true,
-      width: 250,
-      render: (v, record) => `${v ? v : ''} ${record.purchaseTeamCode ? record.purchaseTeamCode : ''}`,
+      width: 200,
+      render: (v, record) => `${record.purchaseTeamCode ? record.purchaseTeamCode : ''} ${v ? v : ''}`,
     },
     {
       title: '供应商',
       dataIndex: 'supplierName',
       ellipsis: true,
-      width: 250,
-      render: (v, record) => `${v ? v : ''} ${record.supplierCode ? record.supplierCode : ''}`,
+      width: 200,
+      render: (v, record) => `${record.supplierCode ? record.supplierCode : ''} ${v ? v : ''}`,
     },
     {
       title: '代理商',
       dataIndex: 'agentName',
       ellipsis: true,
-      width: 250,
-      render: (v, record) => `${v ? v : ''} ${record.agentCode ? record.agentCode : ''}`,
+      width: 200,
+      render: (v, record) => `${record.agentCode ? record.agentCode : ''} ${v ? v : ''}`,
     },
     {
       title: '物料分类',
@@ -129,27 +129,28 @@ let LineInfo = forwardRef((props, ref) => {
     },
     { title: '物料级别', dataIndex: 'materialGradeName', ellipsis: true, width: 140 },
     {
-      title: '生产厂地址', dataIndex: 'countryName', ellipsis: true, width: 180, render: (text, item) => {
-        return !text ? "" : item.countryName + item.provinceName + item.cityName + item.countyName + item.address;
+      title: '生产厂地址', dataIndex: 'countryName', ellipsis: true, width: 200, render: (text, item) => {
+        return !text ? "" : (item.countryName + item.provinceName + item.cityName + item.countyName + item.address).replace(/\s+/g,"");
       },
     },
     { title: '供应商联系人', dataIndex: 'contactUserName', ellipsis: true, width: 140 },
-    { title: '供应商联系电话', dataIndex: 'contactUserTel', ellipsis: true, width: 140 },
-    { title: '审核类型', dataIndex: 'reviewTypeName', ellipsis: true, width: 140 },
-    { title: '审核方式', dataIndex: 'reviewWayName', ellipsis: true, width: 140 },
-    { title: '审核组织方式', dataIndex: 'reviewOrganizedWayName', ellipsis: true, width: 140 },
+    { title: '供应商联系电话', dataIndex: 'contactUserTel', ellipsis: true, width: 120 },
+    { title: '审核类型', dataIndex: 'reviewTypeName', ellipsis: true, width: 100 },
+    { title: '审核原因', dataIndex: 'reviewReasonName', ellipsis: true, width: 120 },
+    { title: '审核方式', dataIndex: 'reviewWayName', ellipsis: true, width: 100 },
+    { title: '审核组织方式', dataIndex: 'reviewOrganizedWayName', ellipsis: true, width: 110 },
     { title: '专业组', dataIndex: 'specialtyTeamName', ellipsis: true, width: 140 },
-    { title: '审核小组组长', dataIndex: 'leaderName', ellipsis: true, width: 140 },
+    { title: '审核小组组长', dataIndex: 'leaderName', ellipsis: true, width: 120 },
     { title: '备注', dataIndex: 'remark', ellipsis: true, width: 140 },
     {
       title: '来源类型', dataIndex: 'sourceType', ellipsis: true, width: 140, render: (text) => {
         switch (text) {
           case 'Review_Plan_YEAR_LINE':
-            return '年度计划行';
+            return '年度审核计划';
           case 'ADMISSION_RECOMMENDATION':
             return '准入推荐';
           case 'RECOMMENDATION_REQUIREMENTS':
-            return '推荐需求';
+            return '审核需求';
         }
       },
     },

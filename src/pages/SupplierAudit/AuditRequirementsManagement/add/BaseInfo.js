@@ -1,7 +1,7 @@
 import React, { useEffect, useImperativeHandle } from 'react';
 import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/edit/BaseInfo.less';
-import { ComboList, ComboTree, ExtModal } from 'suid';
-import { Col, Form, Modal, Row, Input, DatePicker } from 'antd';
+import { ComboList, ComboTree } from 'suid';
+import { Col, Form, Row, Input } from 'antd';
 import Upload from '../../../QualitySynergy/compoent/Upload';
 import {
   AllCompanyConfig,
@@ -37,14 +37,14 @@ let BaseInfo = React.forwardRef((props, ref) => {
   const { getFieldDecorator, setFieldsValue, getFieldValue } = props.form;
 
   useImperativeHandle(ref, () => ({
-    getBaseInfoData: props.form.validateFieldsAndScroll
-  }))
+    getBaseInfoData: props.form.validateFieldsAndScroll,
+  }));
 
   useEffect(() => {
     if (getFieldValue('applyCorporationCode')) {
-      props.setApplyCorporationCode(getFieldValue('applyCorporationCode'))
+      props.setApplyCorporationCode(getFieldValue('applyCorporationCode'));
     }
-  }, [getFieldValue('applyCorporationCode')])
+  }, [getFieldValue('applyCorporationCode')]);
 
   const hideFormItem = (name, initialValue) => (
     <FormItem>
@@ -60,7 +60,8 @@ let BaseInfo = React.forwardRef((props, ref) => {
         <div className={styles.title}>基本信息</div>
         <div className={styles.content}>
           <Row>
-            <Col span={0}>{hideFormItem('applyCorporationCode', type === 'add' ? '' : editData.applyCorporationCode)}</Col>
+            <Col
+              span={0}>{hideFormItem('applyCorporationCode', type === 'add' ? '' : editData.applyCorporationCode)}</Col>
             <Col span={0}>{hideFormItem('applyCorporationId', type === 'add' ? '' : editData.applyCorporationId)}</Col>
             <Col span={12}>
               <FormItem label="公司" {...formLayout}>
@@ -84,7 +85,8 @@ let BaseInfo = React.forwardRef((props, ref) => {
                 )}
               </FormItem>
             </Col>
-            <Col span={0}>{hideFormItem('applyDepartmentCode', type === 'add' ? '' : editData.applyDepartmentCode)}</Col>
+            <Col
+              span={0}>{hideFormItem('applyDepartmentCode', type === 'add' ? '' : editData.applyDepartmentCode)}</Col>
             <Col span={0}>{hideFormItem('applyDepartmentId', type === 'add' ? '' : editData.applyDepartmentId)}</Col>
             <Col span={12}>
               <FormItem label="申请部门" {...formLayout}>
@@ -127,7 +129,6 @@ let BaseInfo = React.forwardRef((props, ref) => {
                 })(
                   <Input
                     disabled={type === 'detail'}
-                    type={'number'}
                     placeholder="请输入申请人联系方式"
                     style={{ width: '100%' }}
                   />,
@@ -174,7 +175,7 @@ let BaseInfo = React.forwardRef((props, ref) => {
                     },
                   ],
                 })(
-                  <Input placeholder="请输入申请说明" style={{ width: '100%' }} />
+                  <Input placeholder="请输入申请说明" style={{ width: '100%' }} />,
                 )}
               </FormItem>
             </Col>
@@ -182,23 +183,30 @@ let BaseInfo = React.forwardRef((props, ref) => {
           <Row>
             <Col span={24}>
               <FormItem label="备注" {...formLongLayout}>
-                {isView ?  <span style={{ width: '100%', border: 'none' }}>{editData.remark}</span> : getFieldDecorator('remark', {
+                {isView ? <span style={{
+                  width: '100%',
+                  height: 'auto',
+                  wordWrap: 'break-word',
+                  border: 'none',
+                  whiteSpace: 'normal',
+                }}>{editData.remark}</span> : getFieldDecorator('remark', {
                   initialValue: type === 'add' ? '' : editData.remark,
-                  rules: [{validator: length_200_n, message: '请勿超过200个汉字'},]
+                  rules: [{ validator: length_200_n, message: '请勿超过200个汉字' }],
                 })(
-                  <Input.TextArea rows={6} style={{ width: '100%' }}  />
+                  <Input.TextArea rows={6} style={{ width: '100%' }} />,
                 )}
               </FormItem>
             </Col>
           </Row>
           <Row>
             <Col span={24}>
-              <FormItem {...formLongLayout} label={'技术资料附件'}>
+              <FormItem {...formLongLayout} label={'附件'}>
                 {
                   getFieldDecorator('attachRelatedIds', {
                     initialValue: type === 'add' ? null : editData.fileList,
                   })(
-                    <Upload entityId={type === 'add' ? null : editData.fileList} type={type === 'detail' ? 'show' : ''}/>,
+                    <Upload entityId={type === 'add' ? null : editData.fileList}
+                            type={type === 'detail' ? 'show' : ''} />,
                   )
                 }
               </FormItem>
@@ -208,5 +216,5 @@ let BaseInfo = React.forwardRef((props, ref) => {
       </div>
     </div>
   );
-})
+});
 export default Form.create()(BaseInfo);

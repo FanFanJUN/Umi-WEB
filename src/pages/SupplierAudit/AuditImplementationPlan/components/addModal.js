@@ -25,10 +25,10 @@ const AddModal = (props) => {
     const [applyMonth, setApplayMonth] = useState('');
 
     const columns = [
-        { title: '月度审核计划号和行号', dataIndex: 'reviewPlanMonthCode', width: 180, ellipsis: true },
-        { title: '审核月度', dataIndex: 'applyMonth', width: 140, ellipsis: true, render: () => applyMonth ? applyMonth.slice(0, 7) : 0 },
+        { title: '月度审核计划号和行号', dataIndex: 'reviewPlanMonthCode', width: 200, ellipsis: true, render: (text, item) => text + ' ' + item.reviewPlanMonthLinenum},
+        { title: '审核月度', dataIndex: 'applyMonth', width: 100, ellipsis: true, render: () => applyMonth ? applyMonth.slice(0, 7) : 0 },
         {
-            title: '需求公司', dataIndex: 'applyCorporationName', width: 240, ellipsis: true,
+            title: '需求公司', dataIndex: 'applyCorporationName', width: 220, ellipsis: true,
             render: (v, record) => `${v ? v : ''} ${record.applyCorporationCode ? record.applyCorporationCode : ''}`,
         },
         {
@@ -72,7 +72,7 @@ const AddModal = (props) => {
         }
         sessionStorage.setItem('selectedMonthLIne', JSON.stringify(selectRows));
         handleCancel();
-        openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=add&ids=${selectedRowKeys.join()}`, '审核实施计划-新增', false);
+        openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=add&ids=${selectedRowKeys.join()}`, '新增审核实施计划', false);
     }
 
     function handleSearch() {
@@ -84,8 +84,7 @@ const AddModal = (props) => {
         });
     }
     return <ExtModal
-        width={'80vw'}
-        height={"60%"}
+        width={'90vw'}
         maskClosable={false}
         visible={visible}
         title="从月度计划选择新增"
@@ -131,7 +130,7 @@ const AddModal = (props) => {
             showSearch={false}
             remotePaging
             checkbox={{ multiSelect: true }}
-            size='small'
+            height='50vh'
             onSelectRow={(key, rows) => {
                 setselectedRowKeys(key);
                 setselectRows(rows);

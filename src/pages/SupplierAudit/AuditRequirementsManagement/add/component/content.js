@@ -137,7 +137,7 @@ const Content = (props) => {
                       },
                     ],
                   })(
-                    <ComboTree
+                    <ComboList
                       allowClear={true}
                       style={{ width: '100%' }}
                       form={form}

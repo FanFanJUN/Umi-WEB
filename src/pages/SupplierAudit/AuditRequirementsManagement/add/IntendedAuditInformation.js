@@ -31,7 +31,7 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
   });
 
   const columns = [
-    { title: '行号', dataIndex: 'reviewRequirementLinenum', width: 140, ellipsis: true },
+    { title: '行号', dataIndex: 'reviewRequirementLinenum', width: 100, ellipsis: true },
     {
       title: '操作',
       dataIndex: 'id',
@@ -47,17 +47,17 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
         }
       </div>,
     },
-    { title: '审核类型', dataIndex: 'reviewTypeName', width: 140, ellipsis: true },
-    { title: '审核原因', dataIndex: 'reviewReasonName', ellipsis: true, width: 140 },
-    { title: '物料分类', dataIndex: 'materialGroupName', width: 140, ellipsis: true },
-    { title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 140 },
+    { title: '审核类型', dataIndex: 'reviewTypeName', width: 100, ellipsis: true },
+    { title: '审核原因', dataIndex: 'reviewReasonName', ellipsis: true, width: 150 },
+    { title: '物料分类', dataIndex: 'materialGroupName', width: 100, ellipsis: true },
+    { title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 250 },
     { title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 140 },
     {
       title: '生产厂地址',
       dataIndex: 'countryName',
-      width: 140,
+      width: 250,
       render: (v, data) =>
-        <span>{`${data.countryName + data.provinceName + data.cityName + data.countyName + data.address}`}</span>,
+        <span>{`${data.countryName.trim()+data.provinceName.trim()+data.cityName.trim()+data.countyName.trim()+data.address.trim()}`}</span>,
     },
     { title: '供应商联系人', dataIndex: 'contactUserName', ellipsis: true, width: 140 },
     { title: '供应商联系电话', dataIndex: 'contactUserTel', ellipsis: true, width: 140 },
@@ -274,6 +274,7 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
             </div>
           }
           <ExtTable
+            bordered
             style={{ marginTop: '10px' }}
             rowKey={(v) => v.lineNum}
             allowCancelSelect={true}

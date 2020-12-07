@@ -182,7 +182,7 @@ export default function() {
         '申请说明': reviewRequirementVo.reviewRequirementName,
         '申请公司': reviewRequirementVo.applyCorporationName,
         '申请部门': reviewRequirementVo.applyDepartmentName,
-        '采购组织': reviewRequirementVo.materialGroupCode,
+        '采购组织': reviewRequirementVo.purchaseOrgName,
         '申请人员': reviewRequirementVo.applyName,
         '申请时间': reviewRequirementVo.applyDate,
         '行号': item.reviewRequirementLinenum,
