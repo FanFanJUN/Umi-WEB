@@ -14,12 +14,13 @@ import {
     MakerList,
     Earlywarninglist
 } from '../commonProps'
+import { router } from 'dva';
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { Search } = Input
 const { authAction, storage } = utils;
 const { FlowHistoryButton } = WorkFlow;
 function MissionExecution() {
-    const getModelRef = useRef(null)
+    const { query } = router.useLocation();
     const tableRef = useRef(null)
     const headerRef = useRef(null)
     const authorizations = storage.sessionStorage.get("Authorization");
@@ -40,9 +41,23 @@ function MissionExecution() {
     const empty = selectedRowKeys.length === 0;
 
     useEffect(() => {
+        handleInfo()
         window.parent.frames.addEventListener('message', listenerParentClose, false);
         return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
     }, []);
+
+    function handleInfo() {
+        if (query.InExecution) {
+            let filters = [];
+            filters.push({
+                fieldName: 'taskStatus',
+                value: '0',
+                operator: 'EQ'
+            })
+            setSeniorsearchvalue(filters)
+            uploadTable()
+        }
+    }
     const columns = [
         {
             title: '预警',
@@ -159,19 +174,7 @@ function MissionExecution() {
 
     const dataSource = {
         store: {
-            url: `${recommendUrl}/api/samIdentifyPlanImplementationService/findBySearch?onlyMe=` + jurisdiction + '&early=' + early,
-            params: {
-                ...searchValue,
-                quickSearchProperties: ['identificationPlanNo'],
-                sortOrders: [
-                    {
-                        property: 'createdDate',
-                        direction: 'DESC'
-                    }
-                ],
-                filters: seniorSearchvalue
-            },
-            type: 'POST'
+
         }
     }
 
@@ -317,7 +320,22 @@ function MissionExecution() {
                         onSelectRow={handleSelectedRows}
                         selectedRowKeys={selectedRowKeys}
                         //dataSource={dataSource}
-                        {...dataSource}
+                        //{...dataSource}
+                        store={{
+                            url: `${recommendUrl}/api/samIdentifyPlanImplementationService/findBySearch?onlyMe=` + jurisdiction,
+                            params: {
+                                ...searchValue,
+                                quickSearchProperties: ['identificationPlanNo'],
+                                sortOrders: [
+                                    {
+                                        property: 'createdDate',
+                                        direction: 'DESC'
+                                    }
+                                ],
+                                filters: seniorSearchvalue
+                            },
+                            type: 'POST'
+                        }}
                     />
                 }
             </AutoSizeLayout>

@@ -129,7 +129,7 @@ function SelfAssessment({
         })
         downloadBlobFile(data, '评分导入模板.xls')
         if (success) {
-          message.success(msg)
+          message.success('导出成功')
           return
         }
         message.error(msg)

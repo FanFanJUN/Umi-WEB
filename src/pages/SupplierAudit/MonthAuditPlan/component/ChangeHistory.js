@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-11-04 16:24:34
- * @LastEditTime: 2020-12-04 16:21:46
+ * @LastEditTime: 2020-12-07 12:16:50
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\MonthAuditPlan\component\ChangeHistory.js
@@ -76,6 +76,7 @@ const ChangeHistory = (props) => {
         if (res.success) {
             message.success("删除成功");
             refresh();
+            props.refreshTable();
         } else {
             message.error(res.message);
         }

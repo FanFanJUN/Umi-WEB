@@ -29,23 +29,23 @@ const AddModal = (props) => {
         { title: '审核月度', dataIndex: 'applyMonth', width: 100, ellipsis: true, render: () => applyMonth ? applyMonth.slice(0, 7) : 0 },
         {
             title: '需求公司', dataIndex: 'applyCorporationName', width: 220, ellipsis: true,
-            render: (v, record) => `${v ? v : ''} ${record.applyCorporationCode ? record.applyCorporationCode : ''}`,
+            render: (v, record) => `${record.applyCorporationCode ? record.applyCorporationCode : ''} ${v ? v : ''}`,
         },
         {
             title: '采购组织', dataIndex: 'purchaseTeamName', ellipsis: true, width: 200,
-            render: (v, record) => `${v ? v : ''} ${record.purchaseTeamCode ? record.purchaseTeamCode : ''}`,
+            render: (v, record) => `${record.purchaseTeamCode ? record.purchaseTeamCode : ''} ${v ? v : ''}`,
         },
         {
             title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 200,
-            render: (v, record) => `${v ? v : ''} ${record.supplierCode ? record.supplierCode : ''}`,
+            render: (v, record) => `${record.supplierCode ? record.supplierCode : ''} ${v ? v : ''}`,
         },
         {
             title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 140,
-            render: (v, record) => `${v ? v : ''} ${record.agentCode ? record.agentCode : ''}`,
+            render: (v, record) => `${record.agentCode ? record.agentCode : ''} ${v ? v : ''}`,
         },
         {
             title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 140,
-            render: (v, record) => `${v ? v : ''} ${record.applyCorporationCode ? record.materialGroupCode : ''}`,
+            render: (v, record) => `${record.applyCorporationCode ? record.materialGroupCode : ''} ${v ? v : ''}`,
         },
         { title: '审核类型', dataIndex: 'reviewTypeName', ellipsis: true, width: 140 },
         { title: '审核方式', dataIndex: 'reviewWayName', ellipsis: true, width: 140 },

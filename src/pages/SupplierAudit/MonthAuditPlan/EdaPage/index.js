@@ -35,7 +35,7 @@ const Index = (props) => {
     async function editDataInflow() {
         const allData = getAllData();
         if (!allData) return false;
-        const res = await upDateMonthBo({ ...allData, isInflow: true});
+        const res = await upDateMonthBo({ ...allData, inFlow: true});
         return res;
     }
 
@@ -54,7 +54,7 @@ const Index = (props) => {
                 break;
             case 'edit':
                 getUser();
-                setData((value) => ({ ...value, type: pageState, id, isView: false, title: '编辑月度审核计划' }));
+                setData((value) => ({ ...value, type: pageState, id, isView: false, title: `编辑月度审核计划: ${editData.reviewPlanMonthCode}` }));
                 break;
             case 'detail':
                 setData((value) => ({ ...value, type: pageState, isView: true, title: `月度审核计划明细: ${editData.reviewPlanMonthCode}` }));
@@ -180,7 +180,7 @@ const Index = (props) => {
                 message.success("保存成功");
                 setTimeout(() => {
                     handleBack();
-                }, 3000)
+                }, 1000)
             } else {
                 // 处理提交审核---返回数据id
                 return query.pageState === "change" ? res.message : res.data;
@@ -219,7 +219,7 @@ const Index = (props) => {
         message.success("提交成功");
         setTimeout(() => {
             handleBack()
-        }, 3000)
+        }, 1000)
     }
     return <>
         <Spin spinning={loading}>

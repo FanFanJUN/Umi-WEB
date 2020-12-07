@@ -1,7 +1,7 @@
 /*
  * @Author:黄永翠
  * @Date: 2020-11-09 09:38:38
- * @LastEditTime: 2020-12-05 17:11:04
+ * @LastEditTime: 2020-12-07 15:23:23
  * @LastEditors: Please set LastEditors
  * @Description:审核实施计划-明细
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\index.js
@@ -60,7 +60,7 @@ const Index = (props) => {
     async function editDataInflow() {
         const allData = getAllData();
         if (!allData) return false;
-        const res = await updateReviewImplementPlan({ ...allData, isInflow: true});
+        const res = await updateReviewImplementPlan({ ...allData, inFlow: true});
         return res;
     }
 
@@ -83,7 +83,7 @@ const Index = (props) => {
                 setData({ type: pageState, isView: false, title: '新增审核实施计划' });
                 break;
             case 'edit':
-                setData({ type: pageState, id, isView: false, title: '编辑审核实施计划' });
+                setData({ type: pageState, id, isView: false, title: `编辑审核实施计划: ${editData.reviewImplementPlanCode}` });
                 break;
             case 'detail':
                 setData({ type: pageState, isView: true, title: `审核实施计划明细: ${editData.reviewImplementPlanCode}` });

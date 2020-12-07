@@ -11,6 +11,7 @@ import { DataExport, ExtTable, utils } from 'suid';
 import moment from "moment";
 import {
     AuditCauseManagementConfig,
+    purchaseDepartmentConfigForCode,
     AuditTypeManagementNoFrozenConfig,
     CompanyConfig,
     FindByFiltersConfig,
@@ -124,7 +125,7 @@ export default function () {
         { title: '审核原因', key: 'reviewReasonCode', type: 'list', props: AuditCauseManagementConfig },
         { title: '审核方式', key: 'reviewWayCode', type: 'list', props: reviewWaysPropsNew },
         { title: '审核组织形式', key: 'reviewOrganizedWayCode', type: 'list', props: reviewOrganizePropsNew },
-        { title: '专业组', key: 'specialtyTeamCode', type: 'list', props: AuditCauseManagementConfig },
+        { title: '专业组', key: 'specialtyTeamCode', type: 'list', props: purchaseDepartmentConfigForCode },
         { title: '审核小组组长', key: 'leaderName', props: { placeholder: '输入审核小组组长' } },
         { title: '协同人员', key: 'memberName', props: { placeholder: '输入协同人员' } },
     ];

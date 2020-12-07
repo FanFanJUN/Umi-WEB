@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:40
- * @LastEditTime: 2020-11-23 12:07:49
+ * @LastEditTime: 2020-12-07 15:27:32
  * @Description:  审核实施计划-基本信息
  */
 import React from 'react';
@@ -11,9 +11,10 @@ import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList
 import { ComboList, ComboTree } from 'suid';
 import { Col, Form, Row, Input} from 'antd';
 import Upload from '../../Upload';
-import { AllCompanyConfig, ApplyOrganizationProps } from '../../AnnualAuditPlan/propsParams';
+import { ApplyOrganizationProps } from '../../AnnualAuditPlan/propsParams';
+import { AllCompanyConfig } from "../../mainData/commomService";
 import {  hideFormItem, getDocIdForArray } from '@/utils/utilTool';
-import { closeCurrent, getMobile, getUserAccount, getUserId, getUserName } from '@/utils';
+import { getMobile, getUserAccount, getUserId, getUserName } from '@/utils';
 
 const FormItem = Form.Item;
 

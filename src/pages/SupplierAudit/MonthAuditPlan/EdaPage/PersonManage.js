@@ -92,7 +92,7 @@ const PersonManage = ({ visible, onOk, onCancel, originData, isView, deleteArr, 
                 allowCancelSelect={true}
                 showSearch={false}
                 checkbox={{ multiSelect: true }}
-                size='small'
+                height='50vh'
                 onSelectRow={(keys, rows) => {
                     setSelectedRowKeys(keys);
                     setSelectedRows(rows);

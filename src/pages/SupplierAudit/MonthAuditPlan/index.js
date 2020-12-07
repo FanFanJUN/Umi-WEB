@@ -48,6 +48,11 @@ export default function () {
         }
     };
 
+    const refresh = () => {
+        tableRef.current.manualSelectedRows();
+        tableRef.current.remoteDataRefresh();
+    }
+
     const redirectToPage = (type) => {
         switch (type) {
             case 'add':
@@ -73,9 +78,9 @@ export default function () {
     // 快速查询
     const handleQuickSearch = (value) => {
         setData(v => ({ ...v, quickSearchValue: value }));
-        tableRef.current.manualSelectedRows();
-        tableRef.current.remoteDataRefresh();
+        refresh();
     };
+    
     // 高级查询搜索
     const handleAdvancedSearch = (value) => {
         console.log(value)
@@ -88,8 +93,7 @@ export default function () {
         delete value.state_name
         delete value.applyDate;
         setData(v => ({ ...v, epTechnicalShareDemandSearchBo: { ...value } }));
-        tableRef.current.manualSelectedRows();
-        tableRef.current.remoteDataRefresh();
+        refresh();
         headerRef.current.hide();
     };
 
@@ -106,8 +110,7 @@ export default function () {
                 deletePlanMonth(data.selectedRowKeys).then(res => {
                     if (res.success) {
                         message.success(res.message);
-                        tableRef.current.manualSelectedRows();
-                        tableRef.current.remoteDataRefresh();
+                        refresh();
                     } else {
                         message.error(res.message);
                     }
@@ -115,12 +118,6 @@ export default function () {
             },
         });
     };
-
-    // 提交审核完成更新列表
-    function handleComplete() {
-        tableRef.current.manualSelectedRows();
-        tableRef.current.remoteDataRefresh();
-    }
     // 终止审核
     const handleStopFlow = () => {
         Modal.confirm({
@@ -240,7 +237,7 @@ export default function () {
                 style={{ marginRight: '5px' }}
                 ignore={DEVELOPER_ENV}
                 businessKey={data.flowId}
-                callBack={handleComplete}
+                callBack={refresh}
                 disabled={!judge(data.selectedRows, 'flowStatus', 'INIT')
                     || data.selectedRowKeys.length !== 1
                     || !judge(data.selectedRows, 'applyAccount', getUserAccount())}
@@ -351,6 +348,9 @@ export default function () {
                 visible={historyVisible}
                 handleCancel={() => { setHistoryV(false) }}
                 id={data.selectedRowKeys[0]}
+                refreshTable={()=>{
+                    tableRef.current.remoteDataRefresh();
+                }}
                 code={data.selectedRows[0]?.reviewPlanMonthCode}
             />}
         </Fragment>
