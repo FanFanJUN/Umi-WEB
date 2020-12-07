@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { ComboTree, ComboList, ExtModal } from 'suid';
 import { Col, Form, Input, message, Row } from 'antd';
 import {
-  AreaConfig, CountryIdConfig,
+  AreaConfig, CountryIdConfig, DocumentAuditCauseManagementByReviewTypeConfig,
   DocumentAuditCauseManagementConfig, GetSupplierContact, length_200_n,
   NormalSupplierConfig,
   SelectionStrategyConfig,
 } from '../../../mainData/commomService';
-import { basicServiceUrl, gatewayUrl, recommendUrl, smBaseUrl } from '../../../../../utils/commonUrl';
+import { baseUrl, basicServiceUrl, gatewayUrl, recommendUrl, smBaseUrl } from '../../../../../utils/commonUrl';
 import { documentMaterialClassProps } from '../../../../../utils/commonProps';
 import AddSupplier from './addSupplier';
 
@@ -73,7 +73,7 @@ const AddBeAudited = (props) => {
     GetSupplierContact({
       supplierId: id,
     }).then(res => {
-      const value = res.data ? res.data[0] ? res.data[0] : {name: '', telephone: ''} : {name: '', telephone: ''};
+      const value = res.data ? res.data[0] ? res.data[0] : { name: '', telephone: '' } : { name: '', telephone: '' };
       setFieldsValue({
         contactUserName: value.name,
         contactUserTel: value.telephone,
@@ -136,7 +136,7 @@ const AddBeAudited = (props) => {
       contactUserTel: '',
       materialGroupName: '',
       materialGroupCode: '',
-      materialGroupId: ''
+      materialGroupId: '',
     });
   };
 
@@ -180,9 +180,11 @@ const AddBeAudited = (props) => {
     console.log(value);
   };
 
+  console.log(getFieldValue('reviewTypeCode'))
+
   return (
     <ExtModal
-      width={'110vh'}
+      width={'160vh'}
       maskClosable={false}
       visible={visible}
       title={title}
@@ -240,7 +242,15 @@ const AddBeAudited = (props) => {
                     form={form}
                     name={'reviewReasonName'}
                     field={['reviewReasonCode', 'reviewReasonId']}
-                    {...DocumentAuditCauseManagementConfig}
+                    store={{
+                      params: {
+                        findByReviewTypeCode: getFieldValue('reviewTypeCode'),
+                      },
+                      type: 'GET',
+                      autoLoad: false,
+                      url: `${baseUrl}/api/reviewReasonService/findByReviewTypeCode`,
+                    }}
+                    {...DocumentAuditCauseManagementByReviewTypeConfig}
                   />,
                 )
               }
@@ -319,7 +329,7 @@ const AddBeAudited = (props) => {
               }
               {
                 getFieldValue('supplierStrategyCode') !== '正常供应商' &&
-                <a style={{ marginLeft: '2%' }} onClick={openSupplierModal}>选择</a>
+                <a style={{ marginLeft: '3%' }} onClick={openSupplierModal}>选择</a>
               }
             </FormItem>
           </Col>
@@ -415,7 +425,7 @@ const AddBeAudited = (props) => {
                   rules: [
                     {
                       required: true,
-                      message: '国家/省/市/区县/详细地址不能为空',
+                      message: '国家不能为空',
                     },
                   ],
                 })(
@@ -558,6 +568,9 @@ const AddBeAudited = (props) => {
                     }}
                     name={'countyName'}
                     field={['countyId']}
+                    cascadeParams={{
+                      countryId: getFieldValue('cityId'),
+                    }}
                     store={{
                       params: {
                         includeSelf: false,

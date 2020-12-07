@@ -39,7 +39,7 @@ export default () => {
   // 审核完成状态
   const completed = signleFlowStatus === 'COMPLETED';
   // 填报完成状态
-  const fillComplete = signleFlowStatus === 'FILLED';
+  const fillComplete = supplierRecommendDemandStatus === 'FILLED';
   // 未提交填报状态
   const fillInit = supplierRecommendDemandStatus === 'DRAFT'
   // 未选中数据状态
@@ -98,6 +98,17 @@ export default () => {
         authAction(
           <Button
             className={styles.btn}
+            disabled={empty}
+            key='SUPPLIER_RECOMMEND_DEMAND_DETAIL'
+            ignore={DEVELOPER_ENV}
+            onClick={handleDetail}
+          >明细</Button>
+        )
+      }
+      {
+        authAction(
+          <Button
+            className={styles.btn}
             disabled={empty || !fillInit || underWay}
             key='SUPPLIER_RECOMMEND_DEMAND_REMOVE'
             onClick={handleRemove}
@@ -150,7 +161,7 @@ export default () => {
             ignore={DEVELOPER_ENV}
             key='SUPPLIER_RECOMMEND_DEMAND_APPROVE_HISTORY'
           >
-            <Button className={styles.btn} disabled={empty || !fillComplete}>审核历史</Button>
+            <Button className={styles.btn} disabled={empty || !underWay}>审核历史</Button>
           </FlowHistoryButton>
         )
       }
@@ -332,6 +343,13 @@ export default () => {
     openNewTab(`supplier/recommend/demand/editor?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '编辑供应商推荐需求', false)
   }
 
+  // 处理明细页签打开
+  function handleDetail() {
+    const [key] = selectedRowKeys;
+    const { id = '' } = FRAMELEEMENT;
+    const { pathname } = window.location;
+    openNewTab(`supplier/recommend/team/filter/opinion/detail?type=detail&id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '供应商推荐需求明细', false)
+  }
   // 填报信息确认页签打开
   function handleOpenInfomationConfirm() {
     const [key] = selectedRowKeys;

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useImperativeHandle } from 'react';
 import { Affix, Button, Form, message, Spin, Modal } from 'antd';
 import { WorkFlow } from "suid";
 import classnames from 'classnames';
@@ -13,7 +13,7 @@ import { insertMonthBo, findOneOverride, upDateMonthBo, insertChangeMonthBo } fr
 const { StartFlow } = WorkFlow;
 
 const Index = (props) => {
-    const { form } = props;
+    const { form, onRef } = props;
     const tableRef = useRef(null);
     const changeRef = useRef(null);
     const [data, setData] = useState({
@@ -27,21 +27,34 @@ const Index = (props) => {
     const [editData, setEditData] = useState({});
     const [loading, setLoading] = useState(false);
     const { query } = router.useLocation();
+
+    useImperativeHandle(onRef, () => ({
+        editDataInflow,
+    }));
+
+    async function editDataInflow() {
+        const allData = getAllData();
+        if (!allData) return false;
+        const res = await upDateMonthBo({ ...allData, isInflow: true});
+        return res;
+    }
+
     useEffect(() => {
         if (query.pageState !== "add") {
             getDetail();
         }
     }, [])
+
     useEffect(() => {
         const { id, pageState } = query;
         switch (pageState) {
             case 'add':
                 getUser();
-                setData((value) => ({ ...value, type: pageState, isView: false, title: '月度审核计划管理-新增' }));
+                setData((value) => ({ ...value, type: pageState, isView: false, title: '新增月度审核计划' }));
                 break;
             case 'edit':
                 getUser();
-                setData((value) => ({ ...value, type: pageState, id, isView: false, title: '月度审核计划管理-编辑' }));
+                setData((value) => ({ ...value, type: pageState, id, isView: false, title: '编辑月度审核计划' }));
                 break;
             case 'detail':
                 setData((value) => ({ ...value, type: pageState, isView: true, title: `月度审核计划明细: ${editData.reviewPlanMonthCode}` }));
@@ -212,9 +225,9 @@ const Index = (props) => {
         <Spin spinning={loading}>
             <Affix>
                 <div className={classnames(styles.fbc, styles.affixHeader)}>
-                    <span>{data.title}</span>
+                    <span style={{fontSize: '18px', fontWeight: 'bolder'}}>{data.title}</span>
                     {
-                        (data.type === 'add' || data.type === 'change' || data.type === 'edit') && <div style={{ display: "flex", alignItems: 'center' }}>
+                        props.isInFlow!==1 && (data.type === 'add' || data.type === 'change' || data.type === 'edit') && <div style={{ display: "flex", alignItems: 'center' }}>
                             <Button className={styles.btn} onClick={handleBack}>返回</Button>
                             <Button className={styles.btn} onClick={() => handleSave('save')}>暂存</Button>
                             <StartFlow

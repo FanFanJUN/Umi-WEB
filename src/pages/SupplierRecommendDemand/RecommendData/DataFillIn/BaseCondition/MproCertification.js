@@ -294,21 +294,25 @@ const MproCertification = ({ type, data, setTableData }) => {
         allowCancelSelect
         showSearch={false}
         remotePaging
+        isToolBar={false}
+        allowRemove={false}
+        isEditTable={type==='add'}
+        isToolBar={false}
         rowKey={(item) => item.id}
         size='small'
       />
       <Divider orientation='left'>产品认证</Divider>
       <EditableFormTable
         columns={columnsForPro}
-        copyLine={true}
         bordered
         allowCancelSelect
         showSearch={false}
+        allowRemove={false}
         remotePaging
         rowKey='guid'
         size='small'
-        isEditTable
-        isToolBar={type === 'add'}
+        isEditTable={type==='add'}
+        isToolBar={false}
         setNewData={setProNewData}
         dataSource={proData || []}
       />
@@ -322,7 +326,7 @@ const MproCertification = ({ type, data, setTableData }) => {
         remotePaging
         rowKey='guid'
         size='small'
-        isEditTable
+        isEditTable={type==='add'}
         isToolBar={type === 'add'}
         dataSource={otherData || []}
         setNewData={setOtherNewData}

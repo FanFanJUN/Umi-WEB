@@ -1,9 +1,9 @@
 /*
  * @Author: Li Cai
- * @LastEditors: Li Cai
+ * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:00:19
- * @LastEditTime: 2020-12-03 09:26:30
+ * @LastEditTime: 2020-12-05 17:22:49
  * @Description:  年度审核计划管理
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/index.js
  */
@@ -320,6 +320,7 @@ export default function () {
             <Header
                 left={headerLeft}
                 right={headerRight}
+                hiddenClose
                 content={
                     <AdvancedForm formItems={formItems} onOk={handleAdvancedSearch} />
                 }

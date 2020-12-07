@@ -157,7 +157,7 @@ const QuotationAndGPCA = ({ updateGlobalStatus }) => {
               <div className={styles.content}>
                 <Row style={{ marginBottom: '10px' }}>
                   <span style={{ marginRight: '18px' }}>能够且愿意向长虹提供完整的成本结构:</span>
-                  <Radio.Group onChange={(value) => onChange(value)} value={supplyCostStructure}>
+                  <Radio.Group onChange={(value) => onChange(value)} value={supplyCostStructure} disabled={type === 'detail'}>
                     <Radio value={true}>是</Radio>
                     <Radio value={false}>否</Radio>
                   </Radio.Group>

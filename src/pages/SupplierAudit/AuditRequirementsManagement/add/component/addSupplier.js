@@ -2,25 +2,27 @@ import React, { useRef, useState } from 'react';
 import { ComboTree, ExtModal, ExtTable } from 'suid';
 import { Button, Col, Form, Input, message, Row } from 'antd';
 import { documentMaterialClassProps } from '../../../../../utils/commonProps';
-import { recommendUrl, smBaseUrl } from '../../../../../utils/commonUrl';
+import { smBaseUrl } from '../../../../../utils/commonUrl';
 
 const FormItem = Form.Item;
 
 const columns = [
-  { title: '物料分类', dataIndex: 'materielCategory', width: 150, render: v => v.name },
+  { title: '物料分类', dataIndex: 'materielCategory', width: 150, render: v => v.name, align: 'center' },
   {
     title: '供应商',
     dataIndex: 'supplier',
     width: 400,
+    align: 'left',
     render: (v, record) => record.originSupplierName ? record.originSupplierName : v.name,
   },
   {
     title: '代理商',
     dataIndex: 'originSupplierName',
     width: 200,
-    render: (v, record) => record.originSupplierName ? v.name : record.originSupplierName,
+    align: 'left',
+    render: (v, record) => record.originSupplierName ? record.supplier.name : record.originSupplierName,
   },
-].map(item => ({ ...item, align: 'center' }));
+];
 
 const formItemLayoutLong = {
   labelCol: { span: 6 },
@@ -68,7 +70,7 @@ const AddSupplier = (props) => {
     </FormItem>
   );
 
-  console.log(props, 'props')
+  console.log(props, 'props');
 
   const onSelectRow = (keys, values) => {
     setData(v => ({ ...v, selectedKeys: keys, selectedValue: values }));
@@ -134,7 +136,7 @@ const AddSupplier = (props) => {
         columns={columns}
         store={{
           params: {
-            quickSearchProperties: ['originSupplierCode', 'originSupplierName'],
+            quickSearchProperties: ['supplier.name', 'supplier.code'],
             quickSearchValue: getFieldValue('originSupplier'),
             filters: [
               {
@@ -143,6 +145,12 @@ const AddSupplier = (props) => {
                 operator: 'EQ',
                 value: getFieldValue('materialGroupCode'),
               },
+              // {
+              //   fieldName: 'originSupplierName',
+              //   fieldType: 'string',
+              //   operator: 'EQ',
+              //   value: getFieldValue('originSupplier'),
+              // },
               {
                 fieldName: 'corporationCode',
                 fieldType: 'string',
@@ -166,6 +174,7 @@ const AddSupplier = (props) => {
           url: `${smBaseUrl}/api/supplierSupplyListTmpService/findByFilters`,
           type: 'POST',
         }}
+        height={400}
         allowCancelSelect={true}
         remotePaging={true}
         checkbox={{

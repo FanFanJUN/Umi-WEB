@@ -67,7 +67,7 @@ const Index = (props) => {
     switch (state) {
       case 'add':
         getUser();
-        setData((value) => ({ ...value, type: state, isView: false, title: '审核需求管理-新增' }));
+        setData((value) => ({ ...value, type: state, isView: false, title: '新增供应商审核需求' }));
         break;
       case 'edit':
         findOne(id);
@@ -75,16 +75,16 @@ const Index = (props) => {
           ...value,
           type: state,
           isView: false,
-          title: `审核需求管理-编辑`,
+          title: `编辑供应商审核需求`,
         }));
         break;
       case 'detail':
         findOne(id);
-        setData((value) => ({ ...value, type: state, isView: true, title: `审核需求管理-明细` }));
+        setData((value) => ({ ...value, type: state, isView: true, title: `查看供应商审核需求` }));
         break;
       case 'flowDetail':
         findOne(id);
-        setData((value) => ({ ...value, type: 'detail', isView: true, title: `审核需求管理-明细` }));
+        setData((value) => ({ ...value, type: 'detail', isView: true, title: `供应商审核需求审核` }));
         break;
     }
   }, []);
@@ -249,7 +249,7 @@ const Index = (props) => {
       <Spin spinning={allData.spinLoading}>
         <Affix>
           <div className={classnames(styles.fbc, styles.affixHeader)}>
-            <span>{allData.title}</span>
+            <span style={{fontSize: '18px', fontWeight: 'bolder'}}>{allData.title}</span>
             {
               (allData.type !== 'detail' ? props.isInFlow !== 2 : false) &&
               <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

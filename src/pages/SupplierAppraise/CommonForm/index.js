@@ -31,7 +31,6 @@ import moment from 'moment';
 import { commonProps, getUserAccount, commonUrl } from '../../../utils';
 import { findListById, findByBuCodeOrBgCode, findAppraiseById } from '../../../services/appraise';
 import { useTableProps } from '../../../utils/hooks';
-import ComboModalList from '../../../components/ComboModalList';
 const {
   corporationProps,
   orgnazationProps,

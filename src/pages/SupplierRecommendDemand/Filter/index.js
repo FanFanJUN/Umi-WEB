@@ -16,7 +16,7 @@ import { queryFilterOpinion } from '../../../services/recommend';
 import Editor from './Editor';
 
 const { useLocation } = router;
-const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
+const DEVELOPER_ENV = process.env.NODE_ENV === 'development';
 const SelfAssessment = forwardRef(({
   type = 'create'
 }, ref) => {

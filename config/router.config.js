@@ -31,6 +31,11 @@ export default [
     title: '系统打分主数据',
     routes: [
       {
+        path: '/gradeSystem/evaluation/main/quality',
+        component: './SystemEvaluationMainData/Quality',
+        title: '质量主数据'
+      },
+      {
         path: '/gradeSystem/acceptFYP',
         component: './AcceptFYPMain',
         title: '来料验收批次合格率'
@@ -149,8 +154,11 @@ export default [
       { path: '/supplierAudit/AnnualAuditPlanInflowNotAgree', component: './SupplierAudit/FlowList/AnnualAuditPlanInflowNotAgree', title: '年度度审核计划流程不同意' },
 
       { path: '/supplierAudit/monthAuditInFlow', component: './SupplierAudit/FlowList/monthAuditInFlow', title: '月度审核计划流程中' },
+      { path: '/supplierAudit/monthAuditInFlowNotAgree', component: './SupplierAudit/FlowList/monthAuditInFlowNotAgree', title: '月度审核计划流程中不同意' },
       { path: '/supplierAudit/monthAuditChangeInFlow', component: './SupplierAudit/FlowList/monthAuditChangeInFlow', title: '月度审核计划变更流程中' },
+
       { path: '/supplierAudit/AuditImplementationPlanInflow', component: './SupplierAudit/FlowList/AuditImplementationPlanInflow', title: '审核实施计划流程中' },
+      { path: '/supplierAudit/AuditImplPNotAgreeInflow', component: './SupplierAudit/FlowList/AuditImplPNotAgreeInflow', title: '审核实施计划流程中不同意' },
       { path: '/supplierAudit/AuditIPChangeInflow', component: './SupplierAudit/FlowList/AuditIPChangeInflow', title: '变更审核实施计划流程中' },
 
       { path: '/supplierAudit/AuditRequirementsManagementAdd', component: './SupplierAudit/AuditRequirementsManagement/add', title: '审核需求管理新增' },
@@ -350,6 +358,11 @@ export default [
         path: '/supplier/recommend/team/filter/opinion',
         component: './SupplierRecommendDemand/FilterOpinion',
         title: '评审小组筛选意见'
+      },
+      {
+        path: '/supplier/recommend/team/filter/opinion/detail',
+        component: './SupplierRecommendDemand/FilterOpinion/Detail',
+        title: '评审小组筛选意见-明细'
       },
       {
         path: '/supplier/recommend/team/filter/opinion/approve/detail',

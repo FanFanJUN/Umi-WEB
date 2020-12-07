@@ -263,6 +263,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                 </FormItem>
               </Col>
             </Row>}
+            <div className={styles.title}>人力资源</div>
             <Row>
               <Col span={12}>
                 <FormItem label="公司总人数" {...formLayout}>

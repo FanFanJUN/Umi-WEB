@@ -1,13 +1,13 @@
 /*
  * @Author: Li Cai
- * @LastEditors: Li Cai
+ * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:04:51
- * @LastEditTime: 2020-12-03 14:25:01
+ * @LastEditTime: 2020-12-05 14:52:57
  * @Description: 新增  编辑  详情 page
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/index.js
  */
-import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Affix, Button, Form, message, Spin } from 'antd';
 import classnames from 'classnames';
 import { WorkFlow } from "suid";
@@ -25,7 +25,7 @@ const userInfo = getUserInfoFromSession();
 
 const Index = (props) => {
 
-    const { form, onRef } = props;
+    const { form, onRef, isInFlow, pageState: propsPageState } = props;
 
     const { query } = router.useLocation();
 
@@ -49,12 +49,13 @@ const Index = (props) => {
     async function editDataInflow() {
         const allData = gatAllData();
         if (!(allData.bool)) return false;
-        const res = await reviewPlanYearAp({ ...allData, type: 'edit' });
+        const res = await reviewPlanYearAp({ ...allData, type: 'edit', isInflow: true});
         return res;
     }
 
     useEffect(() => {
-        const { id, pageState } = query;
+        const { id, pageState: queryPageSate } = query;
+        const pageState = queryPageSate || propsPageState; // 流程中pageState 与url pageState
         if (pageState === 'edit' || pageState === 'detail') {
             async function fetchData() {
                 setSpinLoading(true);
@@ -183,32 +184,45 @@ const Index = (props) => {
         }, 3000)
     }
 
+    const showButton = () => {
+        const buttons =
+            (<Fragment>
+                <Button className={styles.btn} onClick={handleBack}>返回</Button>,
+                <Button className={styles.btn} onClick={() => tohandleSave('onlySave')}>暂存</Button>
+                <StartFlow
+                    className={styles.btn}
+                    type='primary'
+                    beforeStart={handleBeforeStartFlow}
+                    startComplete={handleComplete}
+                    onCancel={() => { setSpinLoading(false); }}
+                    businessKey={query?.id}
+                    disabled={spinLoading}
+                    businessModelCode={'com.ecmp.srm.sam.entity.sr.ReviewPlanYear'}
+                >
+                    {
+                        spinLoading => <Button loading={spinLoading} type='primary'>提交</Button>
+                    }
+                </StartFlow>
+            </Fragment>);
+        if (isInFlow) {
+            return null;
+        } else {
+            if (data.type !== 'detail') {
+                return buttons;
+            }
+            return null;
+        }
+    }
+
     return (
         <div>
             <Spin spinning={spinLoading}>
                 <Affix>
                     <div className={classnames(styles.fbc, styles.affixHeader)}>
                         <span>{data.title}</span>
-                        {
-                            data.type !== 'detail' && <div style={{ display: "flex", alignItems: "center" }}>
-                                <Button className={styles.btn} onClick={handleBack}>返回</Button>
-                                <Button className={styles.btn} onClick={() => tohandleSave('onlySave')}>暂存</Button>
-                                <StartFlow
-                                    className={styles.btn}
-                                    type='primary'
-                                    beforeStart={handleBeforeStartFlow}
-                                    startComplete={handleComplete}
-                                    onCancel={() => { setSpinLoading(false); }}
-                                    businessKey={query?.id}
-                                    disabled={spinLoading}
-                                    businessModelCode={'com.ecmp.srm.sam.entity.sr.ReviewPlanYear'}
-                                >
-                                    {
-                                        spinLoading => <Button loading={spinLoading} type='primary'>提交</Button>
-                                    }
-                                </StartFlow>
-                            </div>
-                        }
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                            {showButton()}
+                        </div>
                     </div>
                 </Affix>
                 <BaseInfo

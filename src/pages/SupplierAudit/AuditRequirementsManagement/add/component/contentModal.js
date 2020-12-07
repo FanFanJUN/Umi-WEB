@@ -269,7 +269,7 @@ const ContentModal = (props) => {
                       message: '联系电话不能为空',
                     },
                   ],
-                })(<Input type={'number'} placeholder='请输入联系电话' />)
+                })(<Input placeholder='请输入联系电话' />)
               }
             </FormItem>
           </Col>

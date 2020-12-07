@@ -402,7 +402,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Radio.Group>
+                      })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>有</Radio>
                         <Radio value={false}>无</Radio>
                       </Radio.Group>)}
@@ -418,7 +418,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Radio.Group>
+                      })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>有</Radio>
                         <Radio value={false}>无</Radio>
                       </Radio.Group>)}
@@ -436,7 +436,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Radio.Group>
+                      })(<Radio.Group disabled={type==='detail'}>
                         <Radio value={true}>有</Radio>
                         <Radio value={false}>无</Radio>
                       </Radio.Group>)}
@@ -464,7 +464,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Radio.Group>
+                      })(<Radio.Group disabled={type==='detail'}>
                         <Radio value={true}>有</Radio>
                         <Radio value={false}>无</Radio>
                       </Radio.Group>)}
@@ -482,7 +482,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Radio.Group>
+                      })(<Radio.Group disabled={type==='detail'}>
                         <Radio value={true}>有</Radio>
                         <Radio value={false}>无</Radio>
                       </Radio.Group>)}
@@ -498,7 +498,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Radio.Group>
+                      })(<Radio.Group disabled={type==='detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>)}
@@ -516,7 +516,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Radio.Group>
+                      })(<Radio.Group disabled={type==='detail'}>
                         <Radio value={true}>有</Radio>
                         <Radio value={false}>无</Radio>
                       </Radio.Group>)}
@@ -532,7 +532,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Radio.Group>
+                      })(<Radio.Group disabled={type==='detail'}>
                         <Radio value={true}>有</Radio>
                         <Radio value={false}>无</Radio>
                       </Radio.Group>)}
@@ -550,7 +550,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Radio.Group>
+                      })(<Radio.Group disabled={type==='detail'}>
                         <Radio value={true}>有</Radio>
                         <Radio value={false}>无</Radio>
                       </Radio.Group>)}
@@ -566,7 +566,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Radio.Group>
+                      })(<Radio.Group disabled={type==='detail'}>
                         <Radio value={true}>具备</Radio>
                         <Radio value={false}>不具备</Radio>
                       </Radio.Group>)}
@@ -589,6 +589,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                         <UploadFile
                           showColor={type !== 'add' ? true : false}
                           type={type !== 'add'}
+                          disabled={type==='detail'}
                           entityId={data.equipmentListFileId}
                         />)}
                     </FormItem>
@@ -614,7 +615,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Radio.Group>
+                      })(<Radio.Group disabled={type==='detail'}>
                         <Radio value={true}>有</Radio>
                         <Radio value={false}>无</Radio>
                       </Radio.Group>)}
@@ -642,7 +643,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Input.TextArea />)}
+                      })(<Input.TextArea disabled={type==='detail'}/>)}
                     </FormItem>
                   </Col>
                 </Row>
@@ -658,7 +659,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Input.TextArea />)}
+                      })(<Input.TextArea disabled={type==='detail'}/>)}
                     </FormItem>
                   </Col>
                 </Row>
@@ -673,7 +674,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Input.TextArea />)}
+                      })(<Input.TextArea disabled={type==='detail'}/>)}
                     </FormItem>
                   </Col>
                 </Row>
@@ -689,7 +690,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Input.TextArea />)}
+                      })(<Input.TextArea disabled={type==='detail'}/>)}
                     </FormItem>
                   </Col>
                   <Col span={12}>
@@ -706,6 +707,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                         showColor={type !== 'add' ? true : false}
                         type={type !== 'add'}
                         entityId={data.qualityControlBriefFileId}
+                        disabled={type==='detail'}
                       />)}
                     </FormItem>
                   </Col>
@@ -721,7 +723,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Input.TextArea />)}
+                      })(<Input.TextArea disabled={type==='detail'}/>)}
                     </FormItem>
                   </Col>
                   <Col span={12}>
@@ -737,6 +739,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                       })(<UploadFile
                         showColor={type !== 'add' ? true : false}
                         type={type !== 'add'}
+                        disabled={type==='detail'}
                         entityId={data.finishedProductTestNormFileId}
                       />)}
                     </FormItem>

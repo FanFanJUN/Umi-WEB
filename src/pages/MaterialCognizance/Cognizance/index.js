@@ -16,12 +16,12 @@ import {
 } from '../../../services/MaterialService'
 import {
     OrganizationList,
-    Jurisdictionjurisdiction,
-    Materieljurisdiction,
+    JurisdictionjurisdictionCode,
     PlantypeList,
     Identificationresults,
     BilltypeList,
-    MakerList
+    MakerList,
+    MaterieljurisdictionCode
 } from '../commonProps'
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { Search } = Input
@@ -336,70 +336,17 @@ function SupplierConfigure() {
         uploadTable();
     }
     // 处理高级搜索
-    function handleAdvnacedSearch(value) {
-        value.createDepartmentId = value.createDepartmentId;
-        value.materialName = value.materialName_name;
-        value.supplierName = value.supplierName;
-        value.materielTypeName = value.materielTypeId_name;
-        value.companyName = value.companyName_name;
-        value.documentType = value.documentType;
-        value.planningStatus = value.planningStatus;
-        value.identificationStatus = value.identificationStatus;
-        delete value.createDepartmentId_name;
-        delete value.materialName_name;
-        delete value.companyName_name;
-        delete value.documentType_name;
-        delete value.planningStatus_name;
-        delete value.identificationStatus_name;
-        let searchvalue = [];
-        searchvalue.push(value);
-        let newdata = [];
-        searchvalue.map(item => {
-            newdata.push(
-                {
-                    fieldName: 'createDepartmentId',
-                    value: item.createDepartmentId,
-                    operator: 'EQ'
-                },
-                {
-                    fieldName: 'creatorName',
-                    value: item.materialName,
-                    operator: 'EQ'
-                },
-                {
-                    fieldName: 'supplierName',
-                    value: item.supplierName,
-                    operator: 'LK'
-                },
-                {
-                    fieldName: 'materielTypeName',
-                    value: item.materielTypeName,
-                    operator: 'EQ'
-                },
-                {
-                    fieldName: 'companyName',
-                    value: item.companyName,
-                    operator: 'EQ'
-                },
-                {
-                    fieldName: 'documentType',
-                    value: item.documentType,
-                    operator: 'EQ'
-                },
-                {
-                    fieldName: 'planningStatus',
-                    value: item.planningStatus,
-                    operator: 'EQ'
-                },
-                {
-                    fieldName: 'identificationStatus',
-                    value: item.identificationStatus,
-                    operator: 'EQ'
-                }
-
-            )
-        })
-        setSeniorsearchvalue(newdata)
+    function handleAdvnacedSearch(v) {
+        const keys = Object.keys(v);
+        const filters = keys.map((item) => {
+            const [_, operator, fieldName, isName] = item.split('_');
+            return {
+                fieldName,
+                operator,
+                value: !!isName ? undefined : v[item]
+            }
+        }).filter(item => !!item.value)
+        setSeniorsearchvalue(filters)
         headerRef.current.hide();
         uploadTable();
     }
@@ -416,7 +363,7 @@ function SupplierConfigure() {
                 authAction(
                     <Button type='primary'
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNSUPPLIER-ADD'
+                        key='SRM-SM-LDENTPLAN-SUPPLIER-INTOADD'
                         className={styles.btn}
                         onClick={AddModel}
                     //disabled={empty}
@@ -525,14 +472,14 @@ function SupplierConfigure() {
     )
     // 高级查询配置
     const formItems = [
-        { title: '制定计划部门', key: 'createDepartmentId', type: 'tree', props: OrganizationList },
-        { title: '制定人', key: 'materialName', type: 'list', props: MakerList },
-        { title: '供应商名称', key: 'supplierName', props: { placeholder: '输入供应商名称' } },
-        { title: '物料分类', key: 'materielTypeId', type: 'tree', props: Materieljurisdiction },
-        { title: '公司名称', key: 'companyName', type: 'list', props: Jurisdictionjurisdiction },
-        { title: '单据类型', key: 'documentType', type: 'list', props: BilltypeList },
-        { title: '计划状态', key: 'planningStatus', type: 'list', props: PlantypeList },
-        { title: '认定结果', key: 'identificationStatus', type: 'list', props: Identificationresults }
+        { title: '制定计划部门', key: 'Q_EQ_createDepartmentId', type: 'tree', props: OrganizationList },
+        { title: '制定人', key: 'Q_EQ_creatorId', type: 'list', props: MakerList },
+        { title: '供应商名称', key: 'Q_LK_supplierName', props: { placeholder: '输入供应商名称' } },
+        { title: '物料分类', key: 'Q_EQ_materielTypeCode', type: 'tree', props: MaterieljurisdictionCode },
+        { title: '公司名称', key: 'Q_LK_companyCode', type: 'list', props: JurisdictionjurisdictionCode },
+        { title: '单据类型', key: 'Q_EQ_documentType', type: 'list', props: BilltypeList },
+        { title: '计划状态', key: 'Q_EQ_planningStatus', type: 'list', props: PlantypeList },
+        { title: '认定结果', key: 'Q_EQ_identificationStatus', type: 'list', props: Identificationresults }
     ];
     return (
         <>

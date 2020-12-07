@@ -144,11 +144,6 @@ export default function() {
     { title: '组长', dataIndex: 'leaderName', ellipsis: true, width: 200 },
   ].map(item => ({ ...item, align: 'center' }));
 
-  // 提交审核验证
-  const handleBeforeStartFlow = async () => {
-
-  };
-
   const jumpOtherPage = (id) => {
     openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=detail&id=${id}`, '审核管理实施计划-明细', false);
   };
@@ -158,11 +153,6 @@ export default function() {
     tableRef.current.manualSelectedRows();
     tableRef.current.remoteDataRefresh();
   };
-
-  // 提交审核完成更新列表
-  function handleComplete() {
-
-  }
 
 
   const headerLeft = <>
@@ -210,7 +200,9 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='SUPPLIER_AUDIT_DEMAND_VIEW_GROUP'
-        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', 'COMPLETED')}
+        disabled={data.selectedRowKeys.length === 0
+          // || !judge(data.selectedRows, 'state', 'COMPLETED')
+        }
       >查看组长意见</Button>)
     }
     {
@@ -219,7 +211,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'whetherConfirm', false)
-        || !judge(data.selectedRows, 'leaderId', getUserId())
+          // || !judge(data.selectedRows, 'leaderId', getUserId())
         }
         key='SUPPLIER_AUDIT_DEMAND_CONFIRM'
       >审核结果确认</Button>)

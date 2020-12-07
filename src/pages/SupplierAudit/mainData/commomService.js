@@ -149,7 +149,7 @@ export const GetEvaluationSystem = (params={}) => {
 
 // 区域
 export const AreaConfig = {
-  remotePaging: true,
+  remotePaging: false,
   rowKey: 'code',
   reader: {
     field: ['id'],
@@ -160,7 +160,7 @@ export const AreaConfig = {
 
 // 区域
 export const CountryIdConfig = {
-  remotePaging: true,
+  remotePaging: false,
   rowKey: 'code',
   reader: {
     field: ['countryId'],
@@ -227,6 +227,7 @@ export const UserByDepartmentNameConfig = {
 
 // 采购组织数据
 export const ApplyOrganizationProps = {
+  allowClear: true,
   store: {
     url: `${baseUrl}/basic/listAllOrgnazationWithDataAuth`,
     autoLoad: true,
@@ -330,6 +331,7 @@ export const FindByFiltersConfig = {
 
 // 供应商
 export const SupplierConfig = {
+  allowClear: true,
   placeholder: '选择供应商',
   store: {
     type: 'POST',
@@ -365,6 +367,17 @@ export const provinceConfig = {
   },
 };
 
+// 根据审核类型查询审核原因
+export const DocumentAuditCauseManagementByReviewTypeConfig = {
+  placeholder: '选择审核原因',
+  remotePaging: false,
+  rowKey: 'code',
+  reader: {
+    field: ['code', 'id'],
+    name: 'name',
+    description: 'code',
+  },
+};
 // 单据审核原因
 export const DocumentAuditCauseManagementConfig = {
   placeholder: '选择审核原因',
@@ -424,6 +437,7 @@ export const reviewPlanMonthConfig = {
 
 // 审核原因
 export const AuditCauseManagementConfig = {
+  allowClear: true,
   placeholder: '选择审核原因',
   store: {
     type: 'POST',
@@ -447,7 +461,7 @@ export const AllCompanyConfig = {
   store: {
     type: 'GET',
     autoLoad: false,
-    url: `${baseUrl}/buCompanyPurchasingOrganization/findCompany`,
+    url: `${baseUrl}/basic/listAllCorporationWithDataAuth`,
   },
   rowKey: 'code',
   reader: {
@@ -465,7 +479,7 @@ export const CompanyConfig = {
   store: {
     type: 'GET',
     autoLoad: false,
-    url: `${baseUrl}/buCompanyPurchasingOrganization/findCompany`,
+    url: `${baseUrl}/basic/listAllCorporationWithDataAuth`,
   },
   rowKey: 'code',
   reader: {
@@ -509,6 +523,7 @@ export const AuditTypeAllConfig = {
 
 // 审核类型
 export const AuditTypeManagementConfig = {
+  allowClear: true,
   placeholder: '选择审核类型',
   store: {
     type: 'POST',

@@ -10,7 +10,7 @@ import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/in
 import { ExtTable, utils, WorkFlow } from 'suid';
 import { StartFlow } from 'seid';
 import moment from "moment";
-import { CompanyConfig, EndFlow} from '../mainData/commomService';
+import { CompanyConfig, EndFlow } from '../mainData/commomService';
 import { judge } from '../../QualitySynergy/commonProps';
 import { deletePlanMonth, ShareStatusProps, flowProps, ApplyOrganizationProps } from "./service";
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
@@ -51,16 +51,16 @@ export default function () {
     const redirectToPage = (type) => {
         switch (type) {
             case 'add':
-                openNewTab('supplierAudit/MonthAuditPlanEda?pageState=add', '月度审核计划管理-新增', false);
+                openNewTab('supplierAudit/MonthAuditPlanEda?pageState=add', '新增月度审核计划', false);
                 break;
             case 'edit':
-                openNewTab(`supplierAudit/MonthAuditPlanEda?pageState=edit&id=${data.selectedRowKeys[0]}`, '月度审核计划管理-编辑', false);
+                openNewTab(`supplierAudit/MonthAuditPlanEda?pageState=edit&id=${data.selectedRowKeys[0]}`, '编辑月度审核计划', false);
                 break;
             case 'detail':
-                openNewTab(`supplierAudit/MonthAuditPlanEda?pageState=detail&id=${data.selectedRowKeys[0]}`, '月度审核计划管理-明细', false);
+                openNewTab(`supplierAudit/MonthAuditPlanEda?pageState=detail&id=${data.selectedRowKeys[0]}`, '月度审核计划明细', false);
                 break;
             case 'change':
-                openNewTab(`supplierAudit/MonthAuditPlanEda?pageState=change&id=${data.selectedRowKeys[0]}`, '月度审核计划管理-变更', false);
+                openNewTab(`supplierAudit/MonthAuditPlanEda?pageState=change&id=${data.selectedRowKeys[0]}`, '变更月度审核计划', false);
                 break;
             case "changehistory":
                 setHistoryV(true);
@@ -158,7 +158,7 @@ export default function () {
 
     const columns = [
         {
-            title: '状态', dataIndex: 'state', width: 120, render: (text) => {
+            title: '状态', dataIndex: 'state', width: 100, render: (text) => {
                 switch (text) {
                     case "DRAFT":
                         return "草稿";
@@ -170,7 +170,7 @@ export default function () {
             }
         },
         {
-            title: '审批状态', dataIndex: 'flowStatus', width: 180, render: v => {
+            title: '审批状态', dataIndex: 'flowStatus', width: 120, render: v => {
                 switch (v) {
                     case 'INIT':
                         return '未进入流程';
@@ -181,14 +181,14 @@ export default function () {
                 }
             },
         },
-        { title: '月度审核计划号', dataIndex: 'reviewPlanMonthCode', width: 180 },
-        { title: '月度', dataIndex: 'applyMonth', ellipsis: true, width: 80, render:(text)=>text ? text.slice(0,7) : ''},
-        { title: '拟制说明', dataIndex: 'reviewPlanMonthName', ellipsis: true, width: 200 },
+        { title: '月度审核计划号', dataIndex: 'reviewPlanMonthCode', width: 160 },
+        { title: '月度', dataIndex: 'applyMonth', ellipsis: true, width: 100, align: 'center', render: (text) => text ? text.slice(0, 7) : '' },
+        { title: '拟制说明', dataIndex: 'reviewPlanMonthName', ellipsis: true, width: 180 },
         { title: '拟制公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 200 },
         { title: '拟制部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200 },
-        { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 120 },
-        { title: '拟制时间', dataIndex: 'applyDate', ellipsis: true, width: 200 },
-    ].map(item => ({ ...item, align: 'center' }));
+        { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 100 },
+        { title: '拟制时间', dataIndex: 'applyDate', ellipsis: true, width: 200, align: 'center'},
+    ];
 
     const headerLeft = <>
         {
@@ -241,7 +241,9 @@ export default function () {
                 ignore={DEVELOPER_ENV}
                 businessKey={data.flowId}
                 callBack={handleComplete}
-                disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length !== 1}
+                disabled={!judge(data.selectedRows, 'flowStatus', 'INIT')
+                    || data.selectedRowKeys.length !== 1
+                    || !judge(data.selectedRows, 'applyAccount', getUserAccount())}
                 businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewPlanMonth'
                 key='SUPPLIER_AUDIT_MONTH_INFLOW'
             >提交审核</StartFlow>)
@@ -261,7 +263,9 @@ export default function () {
             authAction(<Button
                 onClick={handleStopFlow}
                 loading={data.spinning}
-                disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
+                disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS')
+                    || data.selectedRowKeys.length === 0
+                    || !judge(data.selectedRows, 'applyAccount', getUserAccount())}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 key='TECHNICAL_DATA_SHARING_STOP'
@@ -272,9 +276,10 @@ export default function () {
                 onClick={() => redirectToPage('change')}
                 className={styles.btn}
                 disabled={
-                    data.selectedRowKeys.length !== 1 
+                    data.selectedRowKeys.length !== 1
                     || data.selectedRows[0]?.flowStatus !== 'COMPLETED'
                     || data.selectedRows[0]?.state === 'CHANGING'
+                    || !judge(data.selectedRows, 'applyAccount', getUserAccount())
                 }
                 ignore={DEVELOPER_ENV}
                 key='SUPPLIER_AUDIT_MONTH_CHANGE'
@@ -294,6 +299,7 @@ export default function () {
     const headerRight = <div style={{ display: 'flex', alignItems: 'center' }}>
         <Search
             placeholder='请输入月度审核计划号或拟制说明查询'
+            style={{width: "20vw"}}
             className={styles.btn}
             onSearch={handleQuickSearch}
             allowClear
@@ -305,6 +311,7 @@ export default function () {
             <Header
                 left={headerLeft}
                 right={headerRight}
+                hiddenClose
                 ref={headerRef}
                 content={
                     <AdvancedForm formItems={formItems} onOk={handleAdvancedSearch} />
@@ -342,7 +349,7 @@ export default function () {
 
             {historyVisible && <ChangeHistory
                 visible={historyVisible}
-                handleCancel={()=>{setHistoryV(false)}}
+                handleCancel={() => { setHistoryV(false) }}
                 id={data.selectedRowKeys[0]}
                 code={data.selectedRows[0]?.reviewPlanMonthCode}
             />}

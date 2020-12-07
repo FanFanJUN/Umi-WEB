@@ -378,7 +378,7 @@ const Team = (props) => {
 
   return (
     <ExtModal
-      width={'120vh'}
+      width={'150vh'}
       maskClosable={false}
       visible={visible}
       title={'审核小组管理'}
@@ -389,7 +389,7 @@ const Team = (props) => {
       afterClose={clearSelected}
     >
       <div style={{ width: '100%', height: '100%', display: 'flex' }}>
-        <div style={{ width: '25%' }}>
+        <div style={{ width: '30%' }}>
           <span style={{ fontSize: '15px', fontWeight: 'bold', marginLeft: '15px' }}>组别</span>
           {
             props.type !== 'detail' && <div style={{ marginTop: '10px' }}>
@@ -414,7 +414,7 @@ const Team = (props) => {
             />
           </div>
         </div>
-        <div style={{ width: '75%', height: '100%', marginLeft: '10px' }}>
+        <div style={{ width: '70%', height: '100%', marginLeft: '10px' }}>
           <span style={{ fontSize: '15px', fontWeight: 'bold', marginLeft: '15px' }}>成员及审核内容</span>
           {
             props.type !== 'detail' && <div style={{ marginTop: '10px' }}>

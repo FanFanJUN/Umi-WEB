@@ -1,12 +1,3 @@
-/*
- * @Author: Li Cai
- * @LastEditors: Please set LastEditors
- * @Connect: 1981824361@qq.com
- * @Date: 2020-10-23 17:00:19
- * @LastEditTime: 2020-12-04 10:49:33
- * @Description: 批量编辑页面
- * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BatchEditModal.js
- */
 import React, { useEffect, useState } from 'react';
 import { ComboList, ExtModal, ComboGrid } from 'suid';
 import { Col, Form, Input, InputNumber, Row } from 'antd';
@@ -44,7 +35,6 @@ const BatchEditModal = (props) => {
   const { getFieldDecorator, getFieldValue, setFieldsValue } = props.form;
 
   useEffect(() => {
-    console.log('originData', originData)
     listAllOrgnazationWithDataAuth().then(res => {
       if (res.success) {
         setOrgId(res.data[0] ? res.data[0].id : '');
@@ -82,17 +72,17 @@ const BatchEditModal = (props) => {
             <FormItem {...formItemLayoutLong} label={'审核原因'}>
               {
                 getFieldDecorator('reviewReasonId', { initialValue: originData.reviewReasonId }),
-                getFieldDecorator('reviewReasonCode', {initialValue: originData.reviewReasonCode}),
-                getFieldDecorator('reviewReasonName', {initialValue: originData.reviewReasonName})(
-                <ComboGrid
-                  allowClear={true}
-                  style={{ width: '100%' }}
-                  form={form}
-                  name={'reviewReasonName'}
-                  field={['reviewReasonId', 'reviewReasonCode']}
-                  {...reviewReasonsProps}
-                  disabled={originData.sourceType === "Review_Plan_YEAR_LINE" && originData.reviewTypeName === "追加审核"}
-                />,
+                getFieldDecorator('reviewReasonCode', { initialValue: originData.reviewReasonCode }),
+                getFieldDecorator('reviewReasonName', { initialValue: originData.reviewReasonName })(
+                  <ComboGrid
+                    allowClear={true}
+                    style={{ width: '100%' }}
+                    form={form}
+                    name={'reviewReasonName'}
+                    field={['reviewReasonId', 'reviewReasonCode']}
+                    {...reviewReasonsProps}
+                    disabled={originData.sourceType !== "ADMISSION_RECOMMENDATION"}
+                  />,
                 )
               }
             </FormItem>
@@ -101,18 +91,18 @@ const BatchEditModal = (props) => {
             <FormItem {...formItemLayoutLong} label={'审核方式'}>
               {
                 getFieldDecorator('reviewWayId', { initialValue: originData.reviewWayId }),
-                getFieldDecorator('reviewWayCode', {initialValue: originData.reviewWayCode}),
+                getFieldDecorator('reviewWayCode', { initialValue: originData.reviewWayCode }),
                 getFieldDecorator('reviewWayName', {
-                initialValue: originData.reviewWayName,
-                rules: [{required, message: '审核方式不能为空',},],
-              })(
-                <ComboGrid
-                style={{ width: '100%' }}
-                form={form}
-                name={'reviewWayName'}
-                field={['reviewWayId', 'reviewWayCode']}
-                {...reviewWaysProps}
-                />,
+                  initialValue: originData.reviewWayName,
+                  rules: [{ required, message: '审核方式不能为空', },],
+                })(
+                  <ComboGrid
+                    style={{ width: '100%' }}
+                    form={form}
+                    name={'reviewWayName'}
+                    field={['reviewWayId', 'reviewWayCode']}
+                    {...reviewWaysProps}
+                  />,
                 )
               }
             </FormItem>
@@ -123,19 +113,19 @@ const BatchEditModal = (props) => {
             <FormItem {...formItemLayoutLong} label={'审核组织形式'}>
               {
                 getFieldDecorator('reviewOrganizedWayId', { initialValue: originData.reviewOrganizedWayId }),
-                getFieldDecorator('reviewOrganizedWayCode', {initialValue: originData.reviewOrganizedWayCode}),
+                getFieldDecorator('reviewOrganizedWayCode', { initialValue: originData.reviewOrganizedWayCode }),
                 getFieldDecorator('reviewOrganizedWayName', {
-                initialValue: originData.reviewOrganizedWayName,
-                rules: [{required, message: '审核组织形式不能为空',},],
-              })(
-                <ComboList
-                allowClear={true}
-                style={{ width: '100%' }}
-                form={form}
-                name={'reviewOrganizedWayName'}
-                field={['reviewOrganizedWayId', 'reviewOrganizedWayCode']}
-                {...reviewOrganizeProps}
-                />,
+                  initialValue: originData.reviewOrganizedWayName,
+                  rules: [{ required, message: '审核组织形式不能为空', },],
+                })(
+                  <ComboList
+                    allowClear={true}
+                    style={{ width: '100%' }}
+                    form={form}
+                    name={'reviewOrganizedWayName'}
+                    field={['reviewOrganizedWayId', 'reviewOrganizedWayCode']}
+                    {...reviewOrganizeProps}
+                  />,
                 )
               }
             </FormItem>
@@ -144,32 +134,28 @@ const BatchEditModal = (props) => {
             <FormItem {...formItemLayoutLong} label={'审核小组组长'}>
               {
                 getFieldDecorator('leaderId', { initialValue: originData.leaderId }),
-                getFieldDecorator('leaderEmployeeNo', {initialValue: originData.leaderEmployeeNo}),
-                getFieldDecorator('leaderTel', {initialValue: originData.leaderTel}),
+                getFieldDecorator('leaderEmployeeNo', { initialValue: originData.leaderEmployeeNo }),
+                getFieldDecorator('leaderTel', { initialValue: originData.leaderTel }),
                 getFieldDecorator('leaderName', {
-                initialValue: originData.leaderName,
-                rules: [{required, message: '审核小组组长不能为空',},],
-              })(
-                <ComboList
-                form={form}
-                name={'leaderName'}
-                field={['leaderEmployeeNo', 'leaderId', 'leaderTel']}
-                cascadeParams={{
-                organizationId: prgId,
-              }}
-                store={{
-                params: {
-                  includeSubNode: false,
-                  quickSearchProperties: ['code', 'user.userName'],
-                  organizationId: prgId,
-                  sortOrders: [{ property: 'code', direction: 'ASC' }],
-                },
-                type: 'POST',
-                autoLoad: false,
-                url: `${gatewayUrl}${basicServiceUrl}/employee/findByUserQueryParam`,
-              }}
-                {...UserByDepartmentNameConfig}
-                />
+                  initialValue: originData.leaderName,
+                  rules: [{ required, message: '审核小组组长不能为空', },],
+                })(
+                  <ComboList
+                    form={form}
+                    name={'leaderName'}
+                    field={['leaderEmployeeNo', 'leaderId', 'leaderTel']}
+                    store={{
+                      params: {
+                        includeSubNode: false,
+                        quickSearchProperties: ['code', 'user.userName'],
+                        sortOrders: [{ property: 'code', direction: 'ASC' }],
+                      },
+                      type: 'POST',
+                      autoLoad: false,
+                      url: `${gatewayUrl}${basicServiceUrl}/employee/findByUserQueryParam`,
+                    }}
+                    {...UserByDepartmentNameConfig}
+                  />
                 )
               }
             </FormItem>
@@ -180,130 +166,130 @@ const BatchEditModal = (props) => {
             <FormItem {...formItemLayout} label={'生产厂地址'}>
               {
                 getFieldDecorator('countryId', { initialValue: originData.countryId }),
-                getFieldDecorator('countryCode', {initialValue: originData.countryCode}),
+                getFieldDecorator('countryCode', { initialValue: originData.countryCode }),
                 getFieldDecorator('countryName', {
-                initialValue: originData.countryName,
-                rules: [
-              {
-                required,
-                message: '国家不能为空',
-              },
-                ],
-              })(
-                <ComboList
-                allowClear={true}
-                style={{ width: '15%' }}
-                width={width}
-                form={form}
-                name={'countryName'}
-                field={['countryId', 'countryCode']}
-                store={{
-                params: {
-                  filters: [{ fieldName: 'code', fieldType: 'string', operator: 'EQ', value: 'CN' }],
-                },
-                type: 'POST',
-                autoLoad: false,
-                url: `${gatewayUrl}${basicServiceUrl}/region/findByPage`,
-              }}
-                placeholder={'国家'}
-                {...CountryIdConfig}
-                />
+                  initialValue: originData.countryName,
+                  rules: [
+                    {
+                      required,
+                      message: '国家不能为空',
+                    },
+                  ],
+                })(
+                  <ComboList
+                    allowClear={true}
+                    style={{ width: '15%' }}
+                    width={width}
+                    form={form}
+                    name={'countryName'}
+                    field={['countryId', 'countryCode']}
+                    store={{
+                      params: {
+                        filters: [{ fieldName: 'code', fieldType: 'string', operator: 'EQ', value: 'CN' }],
+                      },
+                      type: 'POST',
+                      autoLoad: false,
+                      url: `${gatewayUrl}${basicServiceUrl}/region/findByPage`,
+                    }}
+                    placeholder={'国家'}
+                    {...CountryIdConfig}
+                  />
                 )
               }
               {
                 getFieldDecorator('provinceId', { initialValue: originData.provinceId }),
-                getFieldDecorator('provinceCode', {initialValue: originData.provinceCode}),
+                getFieldDecorator('provinceCode', { initialValue: originData.provinceCode }),
                 getFieldDecorator('provinceName', {
-                initialValue: originData.provinceName,
-                rules: [
-              {
-                required,
-                message: '省不能为空',
-              },
-                ],
-              })(
-                <ComboList
-                allowClear={true}
-                style={{ width: '15%' }}
-                width={width}
-                form={form}
-                name={'provinceName'}
-                field={['provinceId', 'provinceCode']}
-                cascadeParams={{
-                countryId: getFieldValue('countryId'),
-              }}
-                store={{
-                params: {
-                  countryId: getFieldValue('countryId'),
-                },
-                type: 'GET',
-                autoLoad: false,
-                url: `${gatewayUrl}${basicServiceUrl}/region/getProvinceByCountry`,
-              }}
-                placeholder={'省'}
-                {...AreaConfig}
-                />
+                  initialValue: originData.provinceName,
+                  rules: [
+                    {
+                      required,
+                      message: '省不能为空',
+                    },
+                  ],
+                })(
+                  <ComboList
+                    allowClear={true}
+                    style={{ width: '15%' }}
+                    width={width}
+                    form={form}
+                    name={'provinceName'}
+                    field={['provinceId', 'provinceCode']}
+                    cascadeParams={{
+                      countryId: getFieldValue('countryId'),
+                    }}
+                    store={{
+                      params: {
+                        countryId: getFieldValue('countryId'),
+                      },
+                      type: 'GET',
+                      autoLoad: false,
+                      url: `${gatewayUrl}${basicServiceUrl}/region/getProvinceByCountry`,
+                    }}
+                    placeholder={'省'}
+                    {...AreaConfig}
+                  />
                 )
               }
               {
                 getFieldDecorator('cityId', { initialValue: originData.cityId }),
-                getFieldDecorator('cityCode', {initialValue: originData.cityCode}),
+                getFieldDecorator('cityCode', { initialValue: originData.cityCode }),
                 getFieldDecorator('cityName', {
-                initialValue: originData.cityName,
-                rules: [{required, message: '市不能为空',},],
-              })(
-                <ComboList
-                allowClear={true}
-                style={{ width: '15%' }}
-                width={width}
-                form={form}
-                name={'cityName'}
-                field={['cityId', 'cityCode']}
-                cascadeParams={{
-                provinceId: getFieldValue('provinceId'),
-              }}
-                store={{
-                params: {
-                  provinceId: getFieldValue('provinceId'),
-                },
-                type: 'GET',
-                autoLoad: false,
-                url: `${gatewayUrl}${basicServiceUrl}/region/getCityByProvince`,
-              }}
-                placeholder={'市'}
-                {...AreaConfig}
-                />,
+                  initialValue: originData.cityName,
+                  rules: [{ required, message: '市不能为空', },],
+                })(
+                  <ComboList
+                    allowClear={true}
+                    style={{ width: '15%' }}
+                    width={width}
+                    form={form}
+                    name={'cityName'}
+                    field={['cityId', 'cityCode']}
+                    cascadeParams={{
+                      provinceId: getFieldValue('provinceId'),
+                    }}
+                    store={{
+                      params: {
+                        provinceId: getFieldValue('provinceId'),
+                      },
+                      type: 'GET',
+                      autoLoad: false,
+                      url: `${gatewayUrl}${basicServiceUrl}/region/getCityByProvince`,
+                    }}
+                    placeholder={'市'}
+                    {...AreaConfig}
+                  />,
                 )
               }
               {
                 getFieldDecorator('countyId', { initialValue: originData.countyId }),
-                getFieldDecorator('countyCode', {initialValue: originData.countyCode}),
+                getFieldDecorator('countyCode', { initialValue: originData.countyCode }),
                 getFieldDecorator('countyName', {
-                initialValue: originData.countyName,
-                rules: [{required, message: '区/县不能为空',},],
-              })(
-                <ComboList
-                allowClear={true}
-                style={{ width: '15%' }}
-                width={width}
-                form={form}
-                name={'countyName'}
-                field={['countyId', 'countyCode']}
-                cascadeParams={{
-                nodeId: getFieldValue('cityId'),
-              }}
-                store={{
-                params: {
-                  includeSelf: false,
-                  nodeId: getFieldValue('cityId'),
-                },
-                type: 'GET',
-                autoLoad: false,
-                url: `${gatewayUrl}${basicServiceUrl}/region/getChildrenNodes`,
-              }}
-                placeholder={'区/县'}
-                {...AreaConfig}
-                />,
+                  initialValue: originData.countyName,
+                  rules: [{ required, message: '区/县不能为空', },],
+                })(
+                  <ComboList
+                    allowClear={true}
+                    style={{ width: '15%' }}
+                    width={width}
+                    form={form}
+                    name={'countyName'}
+                    field={['countyId', 'countyCode']}
+                    cascadeParams={{
+                      nodeId: getFieldValue('cityId'),
+                    }}
+                    store={{
+                      params: {
+                        includeSelf: false,
+                        nodeId: getFieldValue('cityId'),
+                      },
+                      type: 'GET',
+                      autoLoad: false,
+                      url: `${gatewayUrl}${basicServiceUrl}/region/getChildrenNodes`,
+                    }}
+                    placeholder={'区/县'}
+                    {...AreaConfig}
+                  />,
                 )
               }
               {

@@ -6,6 +6,7 @@ import RecommendCompany from '../RecommendCompany'
 import moment from 'moment';
 import { commonProps, getUserName } from '../../../../utils';
 import styles from './index.less';
+import { standardUnitProps } from '../../../../utils/commonProps';
 const {
   corporationProps,
   orgnazationProps,
@@ -430,6 +431,29 @@ const FormContext = forwardRef(({
             </FormItem>
           </Col>
           <Col span={12}>
+            <FormItem label='基本计量单位' {...formLayout}>
+              {
+                getFieldDecorator('unitCode'),
+                getFieldDecorator('unitName', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '基本计量单位不能为空'
+                    }
+                  ]
+                })(
+                  <ComboList
+                    {...standardUnitProps}
+                    field={['unitCode']}
+                    name='unitName'
+                    form={form}
+                    disabled={type === 'detail'}
+                  />
+                )
+              }
+            </FormItem>
+          </Col>
+          <Col span={12}>
             <FormItem label='采购小组组长' {...formLayout}>
               {
                 getFieldDecorator('purchaseTeamLeaderCode'),
@@ -478,6 +502,7 @@ const FormContext = forwardRef(({
             ></ExtTable>
           </Col>
         </Row>
+        <div className={styles.title}>供应商自评</div>
         <Row>
           <Col span={24}>
             <FormItem label='评价体系' {...formLayoutAlone}>

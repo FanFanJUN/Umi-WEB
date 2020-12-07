@@ -72,7 +72,7 @@ const AddModal = (props) => {
         }
         sessionStorage.setItem('selectedMonthLIne', JSON.stringify(selectRows));
         handleCancel();
-        openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=add&ids=${selectedRowKeys.join()}`, '审核实施计划-新增', false);
+        openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=add&ids=${selectedRowKeys.join()}`, '新增审核实施计划', false);
     }
 
     function handleSearch() {

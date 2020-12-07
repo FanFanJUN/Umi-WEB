@@ -18,10 +18,9 @@ import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/in
 import { ApplyOrganizationProps, CompanyConfig, EndFlow } from '../mainData/commomService';
 import {
     judge,
-    ShareStatusProps,
     flowProps
 } from '../../QualitySynergy/commonProps';
-import { deleteReviewImplementPlan } from "./service";
+import { deleteReviewImplementPlan, ShareStatusProps } from "./service";
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
 import { openNewTab, getUserAccount } from '../../../utils';
@@ -69,13 +68,13 @@ export default function () {
                 setAddV(true);
                 break;
             case 'edit':
-                openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=edit&id=${data.selectedRowKeys[0]}`, '审核实施计划管理-编辑', false);
+                openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=edit&id=${data.selectedRowKeys[0]}`, '编辑审核实施计划', false);
                 break;
             case 'detail':
-                openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=detail&id=${data.selectedRowKeys[0]}`, '审核实施计划管理-明细', false);
+                openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=detail&id=${data.selectedRowKeys[0]}`, '审核实施计划明细', false);
                 break;
             case 'change':
-                openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=change&id=${data.selectedRowKeys[0]}`, '审核实施计划管理-变更', false);
+                openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=change&id=${data.selectedRowKeys[0]}`, '变更审核实施计划', false);
                 break;
             case "changehistory":
                 setHistoryV(true);
@@ -96,7 +95,7 @@ export default function () {
     };
     // 高级查询搜索
     const handleAdvancedSearch = (value) => {
-        console.log(value)
+        delete value.state_name;
         delete value.flowStatus_name;
         delete value.purchaseTeamCode_name;
         // delete value.applyDepartmentCode_name;
@@ -104,9 +103,11 @@ export default function () {
         delete value.materialSecondClassifyCode_name;
         delete value.allotSupplierState_name;
         delete value.reviewTypeCode_name;
-        value.applyDate = value.applyDate ? moment(value.applyDate).format('YYYY-MM-DD ') : ''
-        value.ApplyDateStart = value.applyDate ? value.applyDate + "00:00:00" : ''
-        value.ApplyDateEnd = value.applyDate ? value.applyDate + "23:59:59" : ''
+        value.applyDate = value.applyDate ? moment(value.applyDate).format('YYYY-MM-DD ') : '';
+        if(value.applyDate) {
+            value.ApplyDateStart = value.applyDate ? value.applyDate + "00:00:00" : ''
+            value.ApplyDateEnd = value.applyDate ? value.applyDate + "23:59:59" : ''
+        }
         delete value.applyDate;
         setData(v => ({ ...v, epTechnicalShareDemandSearchBo: { ...value } }));
         tableRef.current.manualSelectedRows();
@@ -183,7 +184,7 @@ export default function () {
 
     const columns = [
         {
-            title: '状态', dataIndex: 'state', width: 120, render: (text) => {
+            title: '状态', dataIndex: 'state', width: 160, align: 'center', render: (text) => {
                 switch (text) {
                     case "DRAFT":
                         return "草稿";
@@ -200,9 +201,9 @@ export default function () {
                 }
             }
         },
-        { title: '作废', dataIndex: 'data1', ellipsis: true, width: 80, render:text=>text?"是":"否" },
+        { title: '作废', dataIndex: 'whetherDeleted', ellipsis: true, width: 80, render: text => text ? "是" : "否" },
         {
-            title: '审批状态', dataIndex: 'flowStatus', width: 180, render: v => {
+            title: '审批状态', dataIndex: 'flowStatus', width: 140, render: v => {
                 switch (v) {
                     case 'INIT':
                         return '未进入流程';
@@ -213,13 +214,13 @@ export default function () {
                 }
             },
         },
-        { title: '审核实施计划号', dataIndex: 'reviewImplementPlanCode', width: 180 },
+        { title: '审核实施计划号', dataIndex: 'reviewImplementPlanCode', width: 180, align: 'center'},
         { title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 250 },
         { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 200 },
-        { title: '审核时间', dataIndex: 'reviewDateStart', ellipsis: true, width: 200, render: (text, item)=>(text.slice(0,10) + '~' + item.reviewDateEnd.slice(0,10)) },
+        { title: '审核时间', dataIndex: 'reviewDateStart', ellipsis: true, width: 200, align: 'center', render: (text, item) => (text.slice(0, 10) + '~' + item.reviewDateEnd.slice(0, 10)) },
         { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 140 },
-        { title: '拟制时间', dataIndex: 'applyDate', ellipsis: true, width: 200 },
-    ].map(item => ({ ...item, align: 'center' }));
+        { title: '拟制时间', dataIndex: 'applyDate', ellipsis: true, width: 200, align: 'center' },
+    ];
 
     const headerLeft = <>
         {
@@ -273,7 +274,10 @@ export default function () {
                 needConfirm={handleBeforeStartFlow}
                 businessKey={data.flowId}
                 callBack={refresh}
-                disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length === 0}
+                disabled={
+                    !judge(data.selectedRows, 'flowStatus', 'INIT')
+                    || data.selectedRowKeys.length === 0
+                    || !judge(data.selectedRows, 'applyAccount', getUserAccount())}
                 businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewImplementPlan'
                 key='SUPPLIER_AUDIT_IMPLEMENT_INFLOW'
             >提交审核</StartFlow>)
@@ -293,7 +297,9 @@ export default function () {
             authAction(<Button
                 onClick={handleStopFlow}
                 loading={data.spinning}
-                disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
+                disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS')
+                    || data.selectedRowKeys.length === 0
+                    || !judge(data.selectedRows, 'applyAccount', getUserAccount())}
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 key='SUPPLIER_AUDIT_IMPLEMENT_STOP'
@@ -306,6 +312,7 @@ export default function () {
                 disabled={
                     data.selectedRowKeys.length !== 1
                     || data.selectedRows[0]?.flowStatus !== 'COMPLETED'
+                    || !judge(data.selectedRows, 'applyAccount', getUserAccount())
                 }
                 ignore={DEVELOPER_ENV}
                 key='SUPPLIER_AUDIT_IMPLEMENT_CHANGE'
@@ -324,7 +331,7 @@ export default function () {
             authAction(<Button
                 onClick={() => redirectToPage('changeLeader')}
                 className={styles.btn}
-                disabled={data.selectedRowKeys.length !== 1}
+                disabled={data.selectedRowKeys.length !== 1 || !judge(data.selectedRows, 'applyAccount', getUserAccount())}
                 ignore={DEVELOPER_ENV}
                 key='SUPPLIER_AUDIT_IMPLEMENT_CHANGE_LEADER'
             >变更组长</Button>)
@@ -335,6 +342,7 @@ export default function () {
         <Search
             placeholder='请输入审核实施计划号查询'
             className={styles.btn}
+            style={{width: "16vw"}}
             onSearch={handleQuickSearch}
             allowClear
         />
@@ -346,6 +354,7 @@ export default function () {
                 left={headerLeft}
                 right={headerRight}
                 ref={headerRef}
+                hiddenClose
                 content={
                     <AdvancedForm formItems={formItems} onOk={handleAdvancedSearch} />
                 }
@@ -388,16 +397,16 @@ export default function () {
                 code={data.selectedRows[0]?.reviewImplementPlanCode}
             />}
             { addVisible && <AddNodal
-                    visible={addVisible}
-                    handleCancel={() => { setAddV(false) }}
-                />
+                visible={addVisible}
+                handleCancel={() => { setAddV(false) }}
+            />
             }
             { changeVisible && <ChangeLaderModal
-                    visible={changeVisible}
-                    handleOk={()=>{refresh()}}
-                    originData={data.selectedRows[0]}
-                    handleCancel={() => { setChangeV(false) }}
-                />
+                visible={changeVisible}
+                handleOk={() => { refresh() }}
+                originData={data.selectedRows[0]}
+                handleCancel={() => { setChangeV(false) }}
+            />
             }
         </Fragment>
     );

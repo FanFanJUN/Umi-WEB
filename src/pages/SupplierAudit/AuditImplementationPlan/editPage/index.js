@@ -1,12 +1,12 @@
 /*
  * @Author:黄永翠
  * @Date: 2020-11-09 09:38:38
- * @LastEditTime: 2020-11-30 14:17:57
+ * @LastEditTime: 2020-12-05 17:11:04
  * @LastEditors: Please set LastEditors
  * @Description:审核实施计划-明细
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\index.js
  */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useImperativeHandle } from 'react';
 import { Affix, Button, Form, message, Spin, Modal } from 'antd';
 import { WorkFlow } from "suid";
 import { router } from 'dva';
@@ -41,7 +41,7 @@ const pickpropertys = [
     'contactUserName', 'contactUserTel', 'leaderId', 'leaderName', 'leaderEmployeeNo'
 ]
 const Index = (props) => {
-    const { form } = props;
+    const { form, onRef } = props;
     const tableRef = useRef(null);
     const [editData, setEditData] = useState({});
     const [loading, setLoading] = useState(false);
@@ -52,6 +52,17 @@ const Index = (props) => {
     });
 
     const { query } = router.useLocation();
+
+    useImperativeHandle(onRef, () => ({
+        editDataInflow,
+    }));
+
+    async function editDataInflow() {
+        const allData = getAllData();
+        if (!allData) return false;
+        const res = await updateReviewImplementPlan({ ...allData, isInflow: true});
+        return res;
+    }
 
     useEffect(() => {
         if (query.pageState !== "add") {
@@ -69,10 +80,10 @@ const Index = (props) => {
         }
         switch (pageState) {
             case 'add':
-                setData({ type: pageState, isView: false, title: '审核实施计划管理-新增' });
+                setData({ type: pageState, isView: false, title: '新增审核实施计划' });
                 break;
             case 'edit':
-                setData({ type: pageState, id, isView: false, title: '审核实施计划管理-编辑' });
+                setData({ type: pageState, id, isView: false, title: '编辑审核实施计划' });
                 break;
             case 'detail':
                 setData({ type: pageState, isView: true, title: `审核实施计划明细: ${editData.reviewImplementPlanCode}` });
@@ -241,9 +252,9 @@ const Index = (props) => {
     return <Spin spinning={loading}>
         <Affix>
             <div className={classnames(styles.fbc, styles.affixHeader)}>
-                <span>{data.title}</span>
+                <span style={{fontSize: '18px', fontWeight: 'bolder'}}>{data.title}</span>
                 {
-                    (data.type !== 'detail' || data.type === 'change' || data.type === 'edit') && <div style={{ display: "flex", alignItems: 'center' }}>
+                    props.isInFlow!==1 && (data.type !== 'detail' || data.type === 'change' || data.type === 'edit') && <div style={{ display: "flex", alignItems: 'center' }}>
                         <Button className={styles.btn} onClick={() => { closeCurrent() }}>返回</Button>
                         {data.type !== 'change' && <Button className={styles.btn} onClick={() => handleSave('save')}>暂存</Button>}
                         <StartFlow

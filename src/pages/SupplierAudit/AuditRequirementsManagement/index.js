@@ -12,7 +12,7 @@ import {
   FindByFiltersConfig, SupplierConfig,
 } from '../mainData/commomService';
 import {
-  flowProps, judge,
+  flowProps, judge, managementStateProps,
   stateProps,
 } from '../../QualitySynergy/commonProps';
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
@@ -20,6 +20,7 @@ import { recommendUrl } from '../../../utils/commonUrl';
 import { openNewTab } from '../../../utils';
 import { materialClassProps } from '../../../utils/commonProps';
 import { StartFlow } from 'seid';
+import moment from 'moment/moment';
 
 const { FlowHistoryButton } = WorkFlow;
 
@@ -60,13 +61,13 @@ export default function() {
   const redirectToPage = (type) => {
     switch (type) {
       case 'add':
-        openNewTab('supplierAudit/AuditRequirementsManagementAdd?pageState=add', '审核需求管理-新增', false);
+        openNewTab('supplierAudit/AuditRequirementsManagementAdd?pageState=add', '新增供应商审核需求', false);
         break;
       case 'edit':
-        openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=edit&id=${data.selectedRows[0].id}`, '审核需求管理-编辑', false);
+        openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=edit&id=${data.selectedRows[0].id}`, '编辑供应商审核需求', false);
         break;
       case 'detail':
-        openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=detail&id=${data.selectedRows[0].id}`, '审核需求管理-明细', false);
+        openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=detail&id=${data.selectedRows[0].id}`, '查看供应商审核需求', false);
         break;
       case 'delete':
         deleteList();
@@ -134,6 +135,11 @@ export default function() {
   // 高级查询搜索
   const handleAdvancedSearch = (value) => {
     console.log(value, '高级查询');
+    if (value.applyDate) {
+      value.applyDateStart = value.applyDate[0] ? moment(value.applyDate[0]).format('YYYY-MM-DD') : null;
+      value.applyDateEnd = value.applyDate[1] ? moment(value.applyDate[1]).format('YYYY-MM-DD') : null;
+      delete value.applyDate
+    }
     // value.materialCode = value.materialCode_name;
     // value.materialGroupCode = value.materialGroupCode_name;
     // value.strategicPurchaseCode = value.strategicPurchaseCode_name;
@@ -169,30 +175,28 @@ export default function() {
     },
     { title: '申请部门', key: 'applyDepartmentCode', type: 'tree', props: ApplyOrganizationProps },
     { title: '申请人', key: 'applyName', props: { placeholder: '输入申请人' } },
-    { title: '申请日期', key: 'applyDateStart', type: 'datePicker', props: { placeholder: '输入申请日期' } },
+    { title: '申请日期', key: 'applyDate', type: 'rangePicker', props: { placeholder: '输入申请日期' } },
     { title: '供应商', key: 'supplierCode', type: 'list', props: SupplierConfig },
     { title: '物料分类', key: 'materialSecondClassifyCode', type: 'tree', props: materialClassProps },
     { title: '审核类型', key: 'reviewTypeCode', type: 'list', props: AuditTypeManagementConfig },
     { title: '审核原因', key: 'reviewReasonCode', type: 'list', props: AuditCauseManagementConfig },
-    { title: '状态', key: 'state', type: 'list', props: stateProps },
+    { title: '状态', key: 'state', type: 'list', props: managementStateProps },
     { title: '审批状态', key: 'flowState', type: 'list', props: flowProps },
   ];
 
   const columns = [
     {
-      title: '状态', dataIndex: 'state', width: 80, render: v => {
+      title: '状态', dataIndex: 'state', width: 50, render: v => {
         switch (v) {
           case 'DRAFT':
             return '草稿';
           case 'EFFECT':
             return '生效';
-          case 'CHANGING':
-            return '变更中';
         }
       },
     },
     {
-      title: '审批状态', dataIndex: 'flowStatus', width: 200, render: v => {
+      title: '审批状态', dataIndex: 'flowStatus', width: 100, render: v => {
         switch (v) {
           case 'INIT':
             return '未进入流程';
@@ -203,12 +207,12 @@ export default function() {
         }
       },
     },
-    { title: '审核需求号', dataIndex: 'reviewRequirementCode', width: 200 },
-    { title: '申请说明', dataIndex: 'reviewRequirementName', ellipsis: true, width: 250 },
-    { title: '申请公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 200 },
-    { title: '申请部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200 },
-    { title: '采购组织', dataIndex: 'orgName', ellipsis: true, width: 200 },
-    { title: '申请人员', dataIndex: 'applyName', ellipsis: true, width: 200 },
+    { title: '审核需求号', dataIndex: 'reviewRequirementCode', width: 150 },
+    { title: '申请说明', dataIndex: 'reviewRequirementName', ellipsis: true, width: 200 },
+    { title: '申请公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 230 },
+    { title: '申请部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 230 },
+    { title: '采购组织', dataIndex: 'purchaseOrgName', ellipsis: true, width: 200 },
+    { title: '申请人员', dataIndex: 'applyName', ellipsis: true, width: 100 },
     { title: '申请时间', dataIndex: 'applyDate', ellipsis: true, width: 200 },
   ].map(item => ({ ...item, align: 'center' }));
 
@@ -316,8 +320,9 @@ export default function() {
       <Header
         left={headerLeft}
         right={headerRight}
+        hiddenClose
         content={
-          <AdvancedForm formItems={formItems} onOk={handleAdvancedSearch}/>
+          <AdvancedForm formItems={formItems} onOk={handleAdvancedSearch} />
         }
         advanced
       />

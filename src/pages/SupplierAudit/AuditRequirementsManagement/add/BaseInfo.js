@@ -1,7 +1,7 @@
 import React, { useEffect, useImperativeHandle } from 'react';
 import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/edit/BaseInfo.less';
-import { ComboList, ComboTree, ExtModal } from 'suid';
-import { Col, Form, Modal, Row, Input, DatePicker } from 'antd';
+import { ComboList, ComboTree } from 'suid';
+import { Col, Form, Row, Input } from 'antd';
 import Upload from '../../../QualitySynergy/compoent/Upload';
 import {
   AllCompanyConfig,
@@ -127,7 +127,6 @@ let BaseInfo = React.forwardRef((props, ref) => {
                 })(
                   <Input
                     disabled={type === 'detail'}
-                    type={'number'}
                     placeholder="请输入申请人联系方式"
                     style={{ width: '100%' }}
                   />,
@@ -193,7 +192,7 @@ let BaseInfo = React.forwardRef((props, ref) => {
           </Row>
           <Row>
             <Col span={24}>
-              <FormItem {...formLongLayout} label={'技术资料附件'}>
+              <FormItem {...formLongLayout} label={'附件'}>
                 {
                   getFieldDecorator('attachRelatedIds', {
                     initialValue: type === 'add' ? null : editData.fileList,

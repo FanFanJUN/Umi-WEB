@@ -18,7 +18,7 @@ import {
 } from '../../QualitySynergy/commonProps';
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
-import { openNewTab } from '../../../utils';
+import { getUserId, openNewTab } from '../../../utils';
 import AddModal from './components/AddModal';
 
 const { FlowHistoryButton, StartFlow } = WorkFlow;
@@ -51,6 +51,7 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
     selectedRows: [],
     modalVisible: false,
   });
+  const currentUserId = getUserId();
 
   const getModalRef = useRef(null);
 
@@ -118,7 +119,7 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
       okType: 'danger',
       cancelText: '否',
       onOk: () => {
-        deleteReportById({id:data.selectedRows[0].id}).then(res => {
+        deleteReportById({ id: data.selectedRows[0].id }).then(res => {
           if (res.success) {
             message.success(res.message);
             tableRef.current.manualSelectedRows();
@@ -133,7 +134,7 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
 
   //导出
   const exportItem = () => {
-    deleteReportById({id:data.selectedRows[0].id}).then(res => {
+    deleteReportById({ id: data.selectedRows[0].id }).then(res => {
       if (res.success) {
         message.success(res.message);
         tableRef.current.manualSelectedRows();
@@ -200,7 +201,7 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='SRM-SM-AUDITBRIEFING-EDIT'
-        disabled={!judge(data.selectedRows, 'status', 'Draft') || data.selectedRowKeys.length !== 1 || !judge(data.selectedRows, 'flowStatus', 'INIT')}
+        disabled={(data.selectedRows && data.selectedRows.length > 0 && data.selectedRows[0].creatorId !== currentUserId) || !judge(data.selectedRows, 'status', 'Draft') || data.selectedRowKeys.length !== 1 || !judge(data.selectedRows, 'flowStatus', 'INIT')}
       >编辑</Button>)
     }
     {
@@ -209,7 +210,7 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='SRM-SM-AUDITBRIEFING-DELETE'
-        disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length !== 1}
+        disabled={(data.selectedRows && data.selectedRows.length > 0 && data.selectedRows[0].creatorId !== currentUserId) || !judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length !== 1}
       >删除</Button>)
     }
     {
@@ -231,7 +232,7 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
         key='SRM-SM-AUDITBRIEFING-APPROVE'
       >{
         loading => <Button
-          disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length === 0}
+          disabled={(data.selectedRows && data.selectedRows.length > 0 && data.selectedRows[0].creatorId !== currentUserId) || !judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length === 0}
           className={styles.btn} loading={loading}>提交审核</Button>
       }</StartFlow>)
     }
@@ -251,7 +252,7 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
       authAction(<Button
         onClick={() => endFlow()}
         loading={data.spinning}
-        disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
+        disabled={(data.selectedRows && data.selectedRows.length > 0 && data.selectedRows[0].creatorId !== currentUserId) || !judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='SRM-SM-AUDITBRIEFING-ENDAPPROVE'

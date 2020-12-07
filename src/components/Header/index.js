@@ -11,6 +11,7 @@ const Header = forwardRef(
       extra = '高级查询',
       content = null,
       advanced = false,
+      hiddenClose = false,
       advancedProps = {},
     },
     ref,
@@ -48,7 +49,7 @@ const Header = forwardRef(
             [styles.hide]: !visible,
           })}
         >
-          <Icon type="close" className={styles.close} onClick={hide} />
+          {!hiddenClose && <Icon type="close" className={styles.close} onClick={hide} />}
           <div className={styles.content}>{content}</div>
         </div>
       </div>

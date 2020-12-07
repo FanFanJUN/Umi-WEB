@@ -289,7 +289,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                           },
                         ],
                       })(
-                        <Radio.Group>
+                        <Radio.Group disabled={type==='detail'}>
                           <Radio value={'FULLY'}>完全具备</Radio>
                           <Radio value={'BASIC'}>基本具备</Radio>
                           <Radio value={'NOT'}>不具备</Radio>
@@ -307,7 +307,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                           },
                         ],
                       })(
-                        <Input.TextArea></Input.TextArea>
+                        <Input.TextArea disabled={type==='detail'}></Input.TextArea>
                       )}
                     </FormItem>
                   </Col>
@@ -341,7 +341,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                       {getFieldDecorator('canTechnicalSupport', {
                         initialValue: type === 'add' ? true : data.canTechnicalSupport
                       })(
-                        <Radio.Group>
+                        <Radio.Group disabled={type==='detail'}>
                           <Radio value={true}>是</Radio>
                           <Radio value={false}>否</Radio>
                         </Radio.Group>)}
@@ -357,6 +357,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                         <InputNumber
                           min={0}
                           max={100}
+                          disabled={type==='detail'}
                           formatter={value => `${value}%`}
                           parser={value => value && value.replace('%', '')}
                           style={{ width: '50%' }}
@@ -374,6 +375,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                         <InputNumber
                           min={0}
                           max={100}
+                          disabled={type==='detail'}
                           formatter={value => `${value}%`}
                           parser={value => value && value.replace('%', '')}
                           style={{ width: '50%' }}
@@ -389,7 +391,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                         {getFieldDecorator('devMaxCycle', {
                           initialValue: type === 'add' ? '' : data.devMaxCycle,
                         })(
-                          <InputNumber style={{ width: '20%' }} />
+                          <InputNumber disabled={type==='detail'} style={{ width: '20%' }} />
                         )}
                         <span className={styles.leftMargin}>天</span>
                       </div>
@@ -399,7 +401,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                           getFieldDecorator('devAverageCycle', {
                             initialValue: type === 'add' ? '' : data.devAverageCycle,
                           })(
-                            <InputNumber style={{ width: '20%' }} />
+                            <InputNumber disabled={type==='detail'} style={{ width: '20%' }} />
                           )
                         }
                         <span className={styles.leftMargin}>天</span>
@@ -410,7 +412,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                           getFieldDecorator('devMinCycle', {
                             initialValue: type === 'add' ? '' : data.devMinCycle,
                           })(
-                            <InputNumber style={{ width: '20%' }} />
+                            <InputNumber disabled={type==='detail'} style={{ width: '20%' }} />
                           )
                         }
                         <span className={styles.leftMargin}>天</span>

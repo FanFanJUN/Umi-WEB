@@ -9,8 +9,8 @@ import { recommendUrl } from '@/utils/commonUrl';
 import classnames from 'classnames';
 import {
     OrganizationList,
-    Jurisdictionjurisdiction,
-    Materieljurisdiction,
+    JurisdictionjurisdictionCode,
+    MaterieljurisdictionCode,
     MakerList,
     Earlywarninglist
 } from '../commonProps'
@@ -182,16 +182,6 @@ function MissionExecution() {
             uploadTable()
         }
     }
-    function cooperationChange(val) {
-        let search = []
-        search.push({
-            fieldName: 'smDocunmentStatus',
-            value: val.code,
-            operator: 'EQ'
-        })
-        setSeniorsearchvalue(search)
-        uploadTable();
-    }
     // 记录列表选中
     function handleSelectedRows(rowKeys, rows) {
         setRowKeys(rowKeys);
@@ -218,59 +208,23 @@ function MissionExecution() {
         uploadTable();
     }
     // 处理高级搜索
-    function handleAdvnacedSearch(value) {
-        setEarly(value.earlyWarning)
-        value.departmentName = value.departmentName_name;
-        value.drafterName = value.drafterName_name;
-        value.executorName = value.executorName_name;
-        value.materielTypeId = value.materielTypeId_name;
-        value.companyName = value.companyName_name;
-        value.supplierName = value.supplierName;
-        delete value.earlyWarning_name;
-        delete value.createDepartmentId_name;
-        delete value.drafterName_name;
-        delete value.executorName_name;
-        delete value.materielTypeId_name;
-        delete value.companyName_name;
-        let searchvalue = [];
-        searchvalue.push(value);
-        let newdata = [];
-        searchvalue.map(item => {
-            newdata.push(
-                {
-                    fieldName: 'departmentName',
-                    value: item.departmentName,
-                    operator: 'EQ'
-                },
-                {
-                    fieldName: 'drafterName',
-                    value: item.drafterName,
-                    operator: 'EQ'
-                },
-                {
-                    fieldName: 'executorName',
-                    value: item.executorName,
-                    operator: 'EQ'
-                },
-                {
-                    fieldName: 'materielTypeName',
-                    value: item.materielTypeId,
-                    operator: 'EQ'
-                },
-                {
-                    fieldName: 'companyName',
-                    value: item.companyName,
-                    operator: 'EQ'
-                },
-                {
-                    fieldName: 'supplierName',
-                    value: item.supplierName,
-                    operator: 'LK'
-                }
-
-            )
-        })
-        setSeniorsearchvalue(newdata)
+    function handleAdvnacedSearch(v) {
+        if (!isEmpty(v.Q_EQ_earlyWarning)) {
+            setEarly(v.Q_EQ_earlyWarning)
+        } else {
+            setEarly('')
+        }
+        const keys = Object.keys(v);
+        const filters = keys.map((item) => {
+            const [_, operator, fieldName, isName] = item.split('_');
+            return {
+                fieldName,
+                operator,
+                value: !!isName ? undefined : v[item]
+            }
+        }).filter(item => !!item.value)
+        let others = filters.filter(item => item.fieldName !== 'earlyWarning');
+        setSeniorsearchvalue(others)
         headerRef.current.hide();
         uploadTable();
     }
@@ -326,13 +280,13 @@ function MissionExecution() {
     )
     // 高级查询配置
     const formItems = [
-        { title: '预警', key: 'earlyWarning', type: 'list', props: Earlywarninglist },
-        { title: '制定计划部门', key: 'departmentName', type: 'tree', props: OrganizationList },
-        { title: '制定人', key: 'drafterName', type: 'list', props: MakerList },
-        { title: '执行人', key: 'executorName', type: 'list', props: MakerList },
-        { title: '物料分类', key: 'materielTypeId', type: 'tree', props: Materieljurisdiction },
-        { title: '公司名称', key: 'companyName', type: 'list', props: Jurisdictionjurisdiction },
-        { title: '供应商名称', key: 'supplierName', props: { placeholder: '输入供应商名称' } },
+        { title: '预警', key: 'Q_EQ_earlyWarning', type: 'list', props: Earlywarninglist },
+        { title: '制定计划部门', key: 'Q_EQ_departmentCode', type: 'tree', props: OrganizationList },
+        { title: '制定人', key: 'Q_EQ_drafterId', type: 'list', props: MakerList },
+        { title: '执行人', key: 'Q_EQ_executorId', type: 'list', props: MakerList },
+        { title: '物料分类', key: 'Q_EQ_materielTypeCode', type: 'tree', props: MaterieljurisdictionCode },
+        { title: '公司名称', key: 'Q_EQ_companyCode', type: 'list', props: JurisdictionjurisdictionCode },
+        { title: '供应商名称', key: 'Q_LK_supplierName', props: { placeholder: '输入供应商名称' } },
     ];
     return (
         <>
