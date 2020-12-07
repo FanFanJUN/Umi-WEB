@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:44:12
- * @LastEditTime: 2020-12-04 11:33:48
+ * @LastEditTime: 2020-12-07 16:54:13
  * @LastEditors: Please set LastEditors
  * @Description: 审核实施计划-审核人员
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\AuditorInfo.js
@@ -384,7 +384,7 @@ const AuditorInfo = forwardRef((props, ref) => {
             </Col>
           </Row>
           <div style={{ width: '100%', height: '100%', display: 'flex' }}>
-            <div style={{ width: '25%' }}>
+            <div style={{ width: '30%', border: '1px solid #e8e8e8', padding: '5px' }}>
               <span style={{ fontSize: '15px', fontWeight: 'bold', marginLeft: '15px' }}>组别</span>
               {
                 props.type !== 'detail' && <div style={{ marginTop: '10px' }}>
@@ -409,8 +409,8 @@ const AuditorInfo = forwardRef((props, ref) => {
                 />
               </div>
             </div>
-            <div style={{ width: '75%', height: '100%', marginLeft: '10px' }}>
-              <span style={{ fontSize: '15px', fontWeight: 'bold', marginLeft: '15px' }}>成员及审核内容</span>
+            <div style={{ width: '70%', height: '100%', marginLeft: '10px', border: '1px solid #e8e8e8', padding: '5px'}}>
+              <span style={{ fontSize: '15px', fontWeight: 'bold', marginLeft: '15px' }}>成员</span>
               {
                 props.type !== 'detail' && <div style={{ marginTop: '10px' }}>
                   <Button type='primary' onClick={() => buttonClick('contentAdd')}>新增</Button>
@@ -434,7 +434,7 @@ const AuditorInfo = forwardRef((props, ref) => {
                   dataSource={contentData.dataSource}
                 />
               </div>
-              <div style={{ height: '230px' }}>
+              <div style={{ height: '230px', borderTop: '1px solid #e8e8e8', padding: '5px', margin: '20px'}}>
                 <span style={{ fontSize: '15px', fontWeight: 'bold', marginLeft: '15px' }}>成员审核内容管理</span>
                 <ShuttleBoxNew
                   rightTreeData={data.treeData}
