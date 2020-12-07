@@ -225,6 +225,31 @@ export const UserByDepartmentNameConfig = {
   },
 };
 
+// 高级查询采购组织数据
+export const HeightSearchApplyOrganizationProps = {
+  allowClear: true,
+  store: {
+    url: `${baseUrl}/basic/listAllOrgnazationWithDataAuth`,
+    autoLoad: true,
+  },
+  rowKey: 'code',
+  reader: {
+    name: 'name',
+    field: ['code'],
+  },
+  placeholder: '请选择申请部门',
+  style: {
+    width: '100%',
+  },
+  // treeNodeProps: (node) => {
+  //   if (node.nodeLevel === 0) {
+  //     return {
+  //       selectable: false,
+  //     };
+  //   }
+  // },
+};
+
 // 采购组织数据
 export const ApplyOrganizationProps = {
   allowClear: true,
@@ -435,6 +460,24 @@ export const reviewPlanMonthConfig = {
   },
 };
 
+// 根据类型查审核原因
+export const AuditCauseManagementByReviewTypeCodeConfig = {
+  allowClear: true,
+  placeholder: '选择审核原因',
+  store: {
+    type: 'GET',
+    autoLoad: false,
+    url: `${baseUrl}/api/reviewReasonService/findByReviewTypeCode`,
+  },
+  remotePaging: false,
+  rowKey: 'code',
+  reader: {
+    field: ['code'],
+    name: 'name',
+    description: 'code',
+  },
+};
+
 // 审核原因
 export const AuditCauseManagementConfig = {
   allowClear: true,
@@ -521,6 +564,23 @@ export const AuditTypeAllConfig = {
   },
 };
 
+// 审核类型未冻结
+export const AuditTypeManagementUnfrozenConfig = {
+  allowClear: true,
+  placeholder: '选择审核类型',
+  store: {
+    type: 'GET',
+    autoLoad: false,
+    url: `${baseUrl}//api/reviewTypeService/findAllUnfrozen`,
+  },
+  remotePaging: false,
+  rowKey: 'code',
+  reader: {
+    field: ['code'],
+    name: 'name',
+    description: 'code',
+  },
+};
 // 审核类型
 export const AuditTypeManagementConfig = {
   allowClear: true,
@@ -529,6 +589,24 @@ export const AuditTypeManagementConfig = {
     type: 'POST',
     autoLoad: false,
     url: `${baseUrl}/reviewType/findBySearchPage`,
+  },
+  remotePaging: true,
+  rowKey: 'code',
+  reader: {
+    field: ['code'],
+    name: 'name',
+    description: 'code',
+  },
+};
+
+// 审核类型-未冻结
+export const AuditTypeManagementNoFrozenConfig = {
+  allowClear: true,
+  placeholder: '选择审核类型',
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${baseUrl}/reviewType/findBySearchPageAndFrozenFalse`,
   },
   remotePaging: true,
   rowKey: 'code',

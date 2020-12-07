@@ -50,6 +50,10 @@ const SelfAssessment = forwardRef(({
       render(text) {
         return text.map((item, key) => <div key={`${key}-opinions`}>{item}</div>)
       }
+    },
+    {
+      title: '得分',
+      dataIndex: 'totalScore'
     }
   ]
   const compareColumns = [
@@ -59,7 +63,8 @@ const SelfAssessment = forwardRef(({
       render(_, record) {
         return <Button type='link' onClick={() => handleEditor(record)}>编辑</Button>
       },
-      width: 100
+      width: 100,
+      fixed: 'left'
     },
     {
       title: '供应商',
@@ -85,7 +90,8 @@ const SelfAssessment = forwardRef(({
       title: '拟推荐',
       dataIndex: 'recommend',
       render(text) {
-        return text ? '是' : '否'
+        return typeof text === 'boolean' ?
+          !!text ? '是' : '否' : null
       },
       align: 'center',
       width: 100
@@ -99,7 +105,8 @@ const SelfAssessment = forwardRef(({
       title: '是否准入推荐',
       dataIndex: 'recommendConfirm',
       render(text) {
-        return text ? '是' : '否'
+        return typeof text === 'boolean' ?
+          !!text ? '是' : '否' : null
       },
       align: 'center',
       width: 150
@@ -113,26 +120,28 @@ const SelfAssessment = forwardRef(({
       title: '是否实物认定',
       dataIndex: 'objectRecognition',
       render(text) {
-        return text ? '是' : '否'
+        return typeof text === 'boolean' ?
+          !!text ? '是' : '否' : null
       },
       align: 'center',
       width: 150
     },
     {
-      title: '信任公司',
-      dataIndex: 'trustCorporationName',
+      title: '是否信任',
+      dataIndex: 'trust',
+      render(text) {
+        return typeof text === 'boolean' ?
+          !!text ? '是' : '否' : null
+      },
+      align: 'center',
       width: 100
-    },
-    {
-      title: '信任采购组织',
-      dataIndex: 'trustPurchaseOrgName',
-      width: 150
     },
     {
       title: '是否拟淘汰',
       dataIndex: 'weedOut',
       render(text) {
-        return text ? '是' : '否'
+        return typeof text === 'boolean' ?
+          !!text ? '是' : '否' : null
       },
       align: 'center',
       width: 100
@@ -147,12 +156,24 @@ const SelfAssessment = forwardRef(({
     editorRef.current.show(record, trustInfos)
   }
   function editorConfirm(values) {
-    const { id: lineId } = values;
+    const {
+      id: lineId,
+      recommendConfirm = null,
+      noRecommendReason = null,
+      objectRecognition = null,
+      trust = null,
+      weedOut = null
+    } = values;
     const newCompareDataSource = compareDataSource.map(item => {
       if (item.id === lineId) {
         return {
           ...item,
-          ...values
+          ...values,
+          recommendConfirm,
+          noRecommendReason,
+          objectRecognition,
+          trust,
+          weedOut
         }
       }
       return item
@@ -165,9 +186,9 @@ const SelfAssessment = forwardRef(({
     </>
   ) : null
   function handleSave() {
-    const vaildateState = compareDataSource.every(item => !!item.supplierAnalysis);
+    const vaildateState = compareDataSource.every(item => !!item.supplierAnalysis && typeof item.recommendConfirm === 'boolean' && typeof item.objectRecognition === 'boolean');
     if (!vaildateState) {
-      message.error('请在编辑界面完善供应商分析')
+      message.error('请在编辑界面完善意见信息')
       return false
     }
     return compareDataSource

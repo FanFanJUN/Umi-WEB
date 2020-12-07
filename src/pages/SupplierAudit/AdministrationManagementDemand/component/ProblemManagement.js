@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ComboList, ExtModal, ExtTable } from 'suid';
 import styles from './index.less';
-import { Button, Col, Form, Input, InputNumber, Row } from 'antd';
+import { Button, Col, Form, Input, InputNumber, message, Row, Upload } from 'antd';
 import BU from '../../../QualitySynergy/mainData/BU';
 import ProblemAdd from './ProblemAdd';
 import { getRandom } from '../../../QualitySynergy/commonProps';
 import { OrderSeverityArr } from '../commonApi';
 import { recommendUrl } from '../../../../utils/commonUrl';
+import { BASE_URL } from '../../../../utils/constants';
 
 const FormItem = Form.Item;
 
@@ -38,6 +39,10 @@ const ProblemManagement = (props) => {
   ].map(item => ({ ...item, align: 'center' }));
 
   const tableRef = useRef(null);
+
+  const [fileList, setFileList] = useState([]);
+
+  const [updateLoading, setUpdateLoading] = useState(false);
 
   const { editData } = props;
 
@@ -133,6 +138,48 @@ const ProblemManagement = (props) => {
     setData(v => ({ ...v, dataSource: arr }));
   };
 
+  // 文件上传之前(判断选中文件格式并封装fileList)
+  const beforeUpload = (file) => {
+    let sindex = file.name.lastIndexOf('.');
+    let ext = file.name.substring(sindex + 1, file.name.length);
+    if (sindex < 0) {
+      message.error('请上传excel文件');
+    } else {
+      if (ext !== 'xls' && ext !== 'xlsx') {
+        message.error('请上传excel文件');
+      } else {
+        setFileList([...fileList, file]);
+        console.log('fileList', file);
+      }
+    }
+  };
+
+  // 选择文件上传后返回的状态
+  const handleChange = (res) => {
+    const { status, response } = res.file;
+    if (status === 'uploading') {
+      setUpdateLoading(true);
+    }
+    if (status === 'done') {
+      if (response.status === 'SUCCESS') {
+        let newData = JSON.parse(JSON.stringify(response.data));
+        newData = newData.map(item => ({
+          ...item,
+          severityName: OrderSeverityArr[item.severity],
+          lineNum: getRandom(10),
+        }));
+        setData(v => ({ ...v, dataSource: newData }));
+        setUpdateLoading(false);
+      } else if (response.status === 'FAILURE') {
+        message.error(response.message);
+        setUpdateLoading(false);
+      }
+    } else if (status === 'error') {
+      setUpdateLoading(false);
+      message.error('上传失败');
+    }
+  };
+
   return (
     <ExtModal
       width={'130vh'}
@@ -197,9 +244,21 @@ const ProblemManagement = (props) => {
                         onClick={() => showProblemAdd('edit')}>编辑</Button>
                 <Button style={{ marginRight: '5px' }} disabled={data.selectedRowKeys.length === 0}
                         onClick={() => showProblemAdd('delete')}>删除</Button>
-                <Button style={{ marginRight: '5px' }}>批导入</Button>
+                <Upload
+                  name="file"
+                  beforeUpload={beforeUpload}
+                  showUploadList={false}
+                  fileList={fileList}
+                  action={window.location.origin + BASE_URL + `${recommendUrl}/srController/importProblem `}
+                  onChange={handleChange}
+                >
+                  <Button type='primary' style={{ marginLeft: 5 }} key="chooseFile" loading={updateLoading}>
+                    导入
+                  </Button>
+                </Upload>
                 <Button
-                  onClick={() => window.open(`/service.api/${recommendUrl}/srController/downloadProblemTemplate`)}>批导出</Button>
+                  style={{ marginLeft: '5px' }}
+                  onClick={() => window.open(`${window.location.origin}${BASE_URL}/${recommendUrl}/srController/downloadProblemTemplate`)}>导出</Button>
               </div>
             }
             <ExtTable

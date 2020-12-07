@@ -180,7 +180,7 @@ const AddBeAudited = (props) => {
     console.log(value);
   };
 
-  console.log(getFieldValue('reviewTypeCode'))
+  console.log(getFieldValue('reviewTypeCode'));
 
   return (
     <ExtModal
@@ -242,6 +242,9 @@ const AddBeAudited = (props) => {
                     form={form}
                     name={'reviewReasonName'}
                     field={['reviewReasonCode', 'reviewReasonId']}
+                    cascadeParams={{
+                      findByReviewTypeCode: getFieldValue('reviewTypeCode'),
+                    }}
                     store={{
                       params: {
                         findByReviewTypeCode: getFieldValue('reviewTypeCode'),
@@ -646,7 +649,7 @@ const AddBeAudited = (props) => {
             <FormItem {...formItemLayout} label={'备注'}>
               {
                 getFieldDecorator('remark', {
-                  initialValue: editData.contactUserTel ? editData.contactUserTel : '',
+                  initialValue: editData.remark ? editData.remark : '',
                   rules: [{ validator: length_200_n, message: '请勿超过200个汉字' }],
                 })(
                   <Input.TextArea rows={5} style={{ width: '100%' }} />,

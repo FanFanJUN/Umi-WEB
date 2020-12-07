@@ -158,7 +158,7 @@ export default function () {
 
     const columns = [
         {
-            title: '状态', dataIndex: 'state', width: 100, render: (text) => {
+            title: '状态', dataIndex: 'state', width: 100, align: 'center', render: (text) => {
                 switch (text) {
                     case "DRAFT":
                         return "草稿";
@@ -170,7 +170,7 @@ export default function () {
             }
         },
         {
-            title: '审批状态', dataIndex: 'flowStatus', width: 120, render: v => {
+            title: '审批状态', dataIndex: 'flowStatus', width: 120, align: 'center', render: v => {
                 switch (v) {
                     case 'INIT':
                         return '未进入流程';
@@ -181,10 +181,10 @@ export default function () {
                 }
             },
         },
-        { title: '月度审核计划号', dataIndex: 'reviewPlanMonthCode', width: 160 },
+        { title: '月度审核计划号', dataIndex: 'reviewPlanMonthCode', align: 'center', width: 160 },
         { title: '月度', dataIndex: 'applyMonth', ellipsis: true, width: 100, align: 'center', render: (text) => text ? text.slice(0, 7) : '' },
-        { title: '拟制说明', dataIndex: 'reviewPlanMonthName', ellipsis: true, width: 180 },
-        { title: '拟制公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 200 },
+        { title: '拟制说明', dataIndex: 'reviewPlanMonthName', ellipsis: true, width: 200 },
+        { title: '拟制公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 220 },
         { title: '拟制部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200 },
         { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 100 },
         { title: '拟制时间', dataIndex: 'applyDate', ellipsis: true, width: 200, align: 'center'},

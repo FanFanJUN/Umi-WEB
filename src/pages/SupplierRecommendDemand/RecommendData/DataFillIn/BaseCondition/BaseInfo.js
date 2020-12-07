@@ -253,16 +253,20 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                   })(<InputNumber placeholder='请输入实际产能' style={{ width: '100%' }} disabled={DISABLED} />)}
                 </FormItem>
               </Col>
-            </Row>
-            {type !== 'add' && <Row>
               <Col span={12}>
                 <FormItem label="现有产能利用率" {...formLayout}>
                   {getFieldDecorator('actualCapacityFactor', {
                     initialValue: (data.actualCapacityFactor * 100),
-                  })(<Input style={{ width: '100%' }} addonAfter='%' disabled />)}
+                    rules: [
+                      {
+                        required: true,
+                        message: '现有产能利用率不能为空'
+                      }
+                    ]
+                  })(<Input style={{ width: '100%' }} addonAfter='%' disabled={DISABLED} min={0} max={100}/>)}
                 </FormItem>
               </Col>
-            </Row>}
+            </Row>
             <div className={styles.title}>人力资源</div>
             <Row>
               <Col span={12}>
