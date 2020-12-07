@@ -41,9 +41,7 @@ function RecommendData() {
       okText: '提交',
       cancelText: '取消',
       onOk: async () => {
-        const { success, message: msg } = await supplierSubmitToSystem({
-          supplierRecommendDemandId: id
-        })
+        const { success, message: msg } = await supplierSubmitToSystem(id)
         if(success) {
           message.success(msg)
           closeCurrent()

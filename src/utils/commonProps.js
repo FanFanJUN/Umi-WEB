@@ -152,7 +152,7 @@ export const supplierProps_no_filter = {
 // 组织机构
 export const orgnazationProps = {
   store: {
-    url: `${baseUrl}/basic/listAllOrgnazation`,
+    url: `${baseUrl}/basic/listAllOrgnazationWithDataAuth`,
     type: 'GET'
   },
   style: {
@@ -483,7 +483,7 @@ export const corporationProps = {
     }
   ],
   store: {
-    url: `${baseUrl}/basic/listAllCorporation`,
+    url: `${baseUrl}/basic/listAllCorporationsWithDataAuth`,
     params: { Q_EQ_frozen__Boolean: false }
   },
   reader: {

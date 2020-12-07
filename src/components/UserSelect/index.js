@@ -218,10 +218,22 @@ const UserSelect = forwardRef(({
     onRowsChange(concatRows)
   }
   function handleCloseTab(item) {
-    const ks = value.filter(i => i[rdk] !== item[rdk]).map(item => item[rdk]);
-    const fds = value.filter(i => ks.findIndex(item => item === i[rdk]) !== -1)
-    // setSelectedKeys(ks)
-    onChange(fds)
+    if (multiple) {
+      const ks = value.filter(i => i[rdk] !== item[rdk]).map(item => item[rdk]);
+      const fds = value.filter(i => ks.findIndex(item => item === i[rdk]) !== -1)
+      onChange(fds)
+      return
+    }
+    // setSelectedKeys([])
+    setFieldsValue({
+      [name]: null
+    })
+    onChange(null)
+    field.forEach((item, k) => {
+      setFieldsValue({
+        [item]: null
+      })
+    })
   }
   return (
     <div>
@@ -236,6 +248,7 @@ const UserSelect = forwardRef(({
           if (initState) return
           visi && getTreeData()
         }}
+        destroyTooltipOnHide={!multiple}
         {...props}
         content={
           <div style={wrapperStyle}>
@@ -337,9 +350,9 @@ const UserSelect = forwardRef(({
                   margin: 5
                 }} closable={!disabled} onClose={() => handleCloseTab(item)} visible={true}>{item[readName]}</Tag>
               )
-            ) : (
-                <Tag>{value}</Tag>
-              )
+            ) : !!value ? (
+              <Tag closable={!disabled} onClose={() => handleCloseTab()} visible={true}>{value}</Tag>
+            ) : null
           }
         </div>
       </Popover>

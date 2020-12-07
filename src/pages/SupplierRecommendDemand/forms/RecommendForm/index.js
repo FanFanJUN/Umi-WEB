@@ -89,7 +89,7 @@ const { Item: FormItem } = Form;
 const FormContext = forwardRef(({
   form,
   type = 'add',
-  systemUseType = 'SupplierRegister'
+  systemUseType = 'SupplierApprove'
 }, ref) => {
   useImperativeHandle(ref, () => ({
     form,
@@ -109,9 +109,7 @@ const FormContext = forwardRef(({
     ...evaluateSystemFormCodeProps,
     store: {
       ...evaluateSystemFormCodeProps.store,
-      params: {
-        systemUseType: systemUseType
-      }
+      url: `${evaluateSystemFormCodeProps.store.url}?systemUseType=${systemUseType}`
     }
   }
   const left = type === 'detail' ? null : (

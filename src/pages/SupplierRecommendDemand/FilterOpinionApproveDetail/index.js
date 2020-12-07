@@ -10,11 +10,12 @@ import SupplierRecommendFillInData from '../RecommendData/DataFillIn';
 import SelfAssessment from '../RecommendData/SelfAssessment';
 import { Tabs, Skeleton } from 'antd';
 import { WorkFlow } from 'suid';
-import Review from '../Review';
+// import Review from '../Review';
 import Filter from '../Filter';
 import { router } from 'dva';
 import { useGlobalStatus } from '../../../utils/hooks';
 import { closeCurrent, checkToken } from '../../../utils';
+// import { saveReviewMarkData } from '../../../services/recommend';
 const { TabPane } = Tabs;
 const { useLocation } = router;
 const { Approve } = WorkFlow;
@@ -24,6 +25,7 @@ function FillInInfomationConfirm() {
   const [isReady, setIsReady] = useState(false);
   const [status, updateGlobalStatus] = useGlobalStatus(id);
   const filterRef = useRef(null);
+  const reviewRef = useRef(null)
   function handleComplete(info) {
     const { success, message: msg } = info;
     if (success) {
@@ -33,12 +35,26 @@ function FillInInfomationConfirm() {
     }
     message.error(msg);
   }
+  // async function beforeSubmit() {
+  //   const params = reviewRef.current.getAllParams();
+  //   const { success, message: msg } = await saveReviewMarkData(params);
+  //   return new Promise((resolve) => {
+  //     resolve({
+  //       success,
+  //       message: msg,
+  //       data: {
+  //         businessKey: id
+  //       }
+  //     })
+  //   })
+  // }
   useEffect(() => {
     checkToken(query, setIsReady);
   }, []);
   return isReady ? (
     <Approve
       submitComplete={handleComplete}
+      // beforeSubmit={beforeSubmit}
       flowMapUrl="flow-web/design/showLook"
       businessId={id}
       instanceId={instanceId}
@@ -56,11 +72,8 @@ function FillInInfomationConfirm() {
           <TabPane tab="供应商自评表" key="supplier-self-assessment">
             <SelfAssessment type="detail" />
           </TabPane>
-          <TabPane tab="评审打分" key="mark">
-            <Review type="detail" />
-          </TabPane>
           <TabPane tab="筛选意见" key="filter" forceRender={true}>
-            <Filter ref={filterRef} type="detail"/>
+            <Filter ref={filterRef} type="detail" />
           </TabPane>
         </Tabs>
       </div>

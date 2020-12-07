@@ -55,7 +55,7 @@ function FillInInfomationConfirm() {
             <TeamConfirm />
           </TabPane>
           <TabPane tab="推荐需求单" key="recommend-demand">
-            <DetailRecommendDemand offsetTop={95} systemUseType='SupplierApprove' />
+            <DetailRecommendDemand offsetTop={95} systemUseType='SupplierRegister' />
           </TabPane>
           <TabPane tab="供应商推荐信息" key="supplier-recommend-demand">
             <SupplierRecommendFillInData status={status} updateGlobalStatus={updateGlobalStatus} />
