@@ -959,8 +959,18 @@ export const exportById = async (params = {}) => {
     url,
     method: 'GET',
     params: params,
+    responseType: 'blob'
   });
 };
 
+// 审核简报delete
+export const deleteBriefingById = async (params = {}) => {
+  const url = `${recommendUrl}/api/abAuditBriefingManageService/deleteVoById`;
+  return request({
+    url,
+    method: 'POST',
+    params: params,
+  });
+};
 
 
