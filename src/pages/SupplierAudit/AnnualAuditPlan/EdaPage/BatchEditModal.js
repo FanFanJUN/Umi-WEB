@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-23 17:00:19
- * @LastEditTime: 2020-12-03 10:30:14
+ * @LastEditTime: 2020-12-07 17:41:26
  * @Description: 批量编辑页面
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BatchEditModal.js
  */
@@ -11,7 +11,6 @@ import React, { useEffect } from 'react';
 import { ComboGrid, ComboList, ExtModal } from 'suid';
 import { Col, Form, Input, InputNumber, message, Row } from 'antd';
 import { reviewTypesProps, reviewReasonsProps, reviewWaysProps, AreaConfig, CountryIdConfig } from '../propsParams';
-import { phoneOrTel } from "@/utils";
 import { hideFormItem } from '@/utils/utilTool';
 import { basicServiceUrl, gatewayUrl } from '@/utils/commonUrl';
 import { findReviewTypesByCode } from '../service';
@@ -383,7 +382,6 @@ const BatchEditModal = (props) => {
                   initialValue: originData.contactUserTel,
                   rules: [
                     { required: true, message: '供应商联系方式不能为空', },
-                    { validator: phoneOrTel, message: '请输入手机或者座机号' }
                   ],
                 })(
                   <Input />
