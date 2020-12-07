@@ -123,12 +123,12 @@ export default function() {
   ];
 
   const columns = [
-    { title: '状态', dataIndex: 'state', width: 80, render: v => managementStateConfig[v] },
-    { title: '审核需求计划号', dataIndex: 'reviewImplementPlanCode', width: 200, render: v => <a>{v}</a> },
-    { title: '供应商', dataIndex: 'supplierName', width: 300, render: (v, data) => `${v} ${data.supplierCode}` },
-    { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 200 },
-    { title: '审核时间', dataIndex: 'reviewDateStart', width: 400, render: (v, data) => `${v} - ${data.reviewDateEnd}` },
-    { title: '组长', dataIndex: 'leaderName', ellipsis: true, width: 200 },
+    { title: '状态', dataIndex: 'state', width: 70, render: v => managementStateConfig[v] },
+    { title: '实施审核计划号', dataIndex: 'reviewImplementPlanCode', width: 140, render: v => <a>{v}</a> },
+    // { title: '供应商', dataIndex: 'supplierName', width: 250, render: (v, data) => `${v} ${data.supplierCode}` },
+    { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 170 },
+    { title: '审核时间', dataIndex: 'reviewDateStart', width: 270, render: (v, data) => `${v} - ${data.reviewDateEnd}` },
+    { title: '组长', dataIndex: 'leaderName', ellipsis: true, width: 70 },
   ].map(item => ({ ...item, align: 'center' }));
 
   // 提交审核验证
@@ -239,6 +239,7 @@ export default function() {
                 managementState: managementState ? 'COMPLETED' : 'NOT_COMPLETED',
                 quickSearchValue: data.quickSearchValue,
                 ...data.epTechnicalShareDemandSearchBo,
+                usedType: '2'
               },
               url: `${recommendUrl}/api/reviewImplementManagementService/findByPage`,
               type: 'POST',

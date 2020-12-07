@@ -182,7 +182,7 @@ const ProblemManagement = (props) => {
 
   return (
     <ExtModal
-      width={'130vh'}
+      width={'150vh'}
       maskClosable={false}
       destroyOnClose={true}
       visible={visible}
@@ -252,13 +252,13 @@ const ProblemManagement = (props) => {
                   action={window.location.origin + BASE_URL + `${recommendUrl}/srController/importProblem `}
                   onChange={handleChange}
                 >
-                  <Button type='primary' style={{ marginLeft: 5 }} key="chooseFile" loading={updateLoading}>
-                    导入
+                  <Button style={{ marginLeft: 5 }} key="chooseFile" loading={updateLoading}>
+                    批量导入
                   </Button>
                 </Upload>
                 <Button
                   style={{ marginLeft: '5px' }}
-                  onClick={() => window.open(`${window.location.origin}${BASE_URL}/${recommendUrl}/srController/downloadProblemTemplate`)}>导出</Button>
+                  onClick={() => window.open(`${window.location.origin}${BASE_URL}/${recommendUrl}/srController/downloadProblemTemplate`)}>下载模板</Button>
               </div>
             }
             <ExtTable

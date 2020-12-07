@@ -156,6 +156,7 @@ const ResultsEntry = (props) => {
       </div>}
     >
       <div>
+        <Button style={{ marginRight: '5px' }} key="downLoad" onClick={exportData}>批量导出</Button>
         <Upload
           name="file"
           beforeUpload={beforeUpload}
@@ -168,11 +169,10 @@ const ResultsEntry = (props) => {
           onChange={handleChange}
           style={{ width: '100%' }}
         >
-          <Button type='primary' style={{ marginLeft: 5 }} key="chooseFile" loading={updateLoading}>
+          <Button type='primary' key="chooseFile" loading={updateLoading}>
             批量录入
           </Button>
         </Upload>
-        <Button style={{ marginLeft: '5px' }} key="downLoad" onClick={exportData}>批量导出</Button>
       </div>
       <ProblemTable
         loading={loading}
