@@ -1,9 +1,9 @@
 /*
  * @Author: Li Cai
- * @LastEditors: Li Cai
+ * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:40
- * @LastEditTime: 2020-12-02 17:08:06
+ * @LastEditTime: 2020-12-07 09:15:18
  * @Description:  基本信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/MonthAuditPlan/EdaPage/BaseInfo.js
  */
@@ -185,6 +185,7 @@ const BaseInfo = (props) => {
               <FormItem label="备注" {...formLongLayout}>
                 {isView ? <span>{data.remark}</span> : getFieldDecorator('remark', {
                   initialValue: type === 'add' ? '' : data.remark,
+                  rules: [{ max: 200, message: '输入长度不能超过200' },],
                 })(
                   <Input.TextArea rows={6} style={{ width: '100%' }} />
                 )}
