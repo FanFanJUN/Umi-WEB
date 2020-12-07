@@ -186,7 +186,7 @@ const SelfAssessment = forwardRef(({
     </>
   ) : null
   function handleSave() {
-    const vaildateState = compareDataSource.every(item => !!item.supplierAnalysis && typeof item.recommendConfirm === 'boolean' && typeof item.objectRecognition === 'boolean');
+    const vaildateState = compareDataSource.every(item => typeof item.recommend === 'boolean' ? item.recommend ? typeof item.recommendConfirm === 'boolean' : typeof item.weedOut === 'boolean' : false)
     if (!vaildateState) {
       message.error('请在编辑界面完善意见信息')
       return false

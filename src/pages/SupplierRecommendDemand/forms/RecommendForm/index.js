@@ -1,5 +1,16 @@
-import { forwardRef, useImperativeHandle, useState, createRef } from 'react';
-import { Form, Row, Col, Input, Button, Radio, Checkbox, Tree, Modal } from 'antd';
+import { forwardRef, useImperativeHandle, useState, createRef, useEffect } from 'react';
+import {
+  Form,
+  Row,
+  Col,
+  Input,
+  Button,
+  Radio,
+  Checkbox,
+  Tree,
+  Modal,
+  Table
+} from 'antd';
 import { ComboList, ComboTree, ExtTable } from 'suid';
 import { Header, ComboAttachment, UserSelect } from '../../../../components'
 import RecommendCompany from '../RecommendCompany'
@@ -7,6 +18,7 @@ import moment from 'moment';
 import { commonProps, getUserName } from '../../../../utils';
 import styles from './index.less';
 import { standardUnitProps } from '../../../../utils/commonProps';
+import { findListById } from '../../../../services/appraise';
 const {
   corporationProps,
   orgnazationProps,
@@ -99,11 +111,17 @@ const FormContext = forwardRef(({
     setAllFormatValues,
     getAllFormatValues
   }))
+  const [autoExpandParent, setAutoExpandParent] = useState(true);
+  const [expandedKeys, setExpandedKeys] = useState([]);
+  const [treeSelected, setTreeSelected] = useState([]);
+  const [loading, toggleLoading] = useState(false);
+  const [checkedKeys, setCheckedKeys] = useState([]);
   const [isAgent, changeAgentState] = useState(false);
   const [recommendCompany, setRecommendCompany] = useState([]);
   const [attachment, setAttachment] = useState(null);
   const [systemView, setSystemView] = useState(null);
   const [selectedRowKeys, setRowKeys] = useState([]);
+  const [dataSource, setDataSource] = useState([]);
   const checkbox = type === 'detail' ? false : { multiSelect: true };
   const evaluateSystemProps = {
     ...evaluateSystemFormCodeProps,
@@ -112,6 +130,23 @@ const FormContext = forwardRef(({
       url: `${evaluateSystemFormCodeProps.store.url}?systemUseType=${systemUseType}`
     }
   }
+  const columns = [
+    {
+      title: '指标名称',
+      dataIndex: 'supplierEvlRule.name',
+      width: 200
+    },
+    {
+      title: '指标定义',
+      dataIndex: 'supplierEvlRule.definition',
+      width: 250
+    },
+    {
+      title: '评分标准',
+      dataIndex: 'scoringStandard',
+      width: 250
+    }
+  ];
   const left = type === 'detail' ? null : (
     <>
       <Button
@@ -182,7 +217,23 @@ const FormContext = forwardRef(({
   function getSystemTreeView() {
     if (!!systemView) {
       const treeData = formatViewData(systemView)
-      return (<Tree selectable={false} treeData={[treeData]}></Tree>)
+      return (
+        <Tree
+          selectable={true}
+          treeData={[treeData]}
+          expandedKeys={expandedKeys}
+          autoExpandParent={autoExpandParent}
+          // checkable
+          checkedKeys={checkedKeys}
+          selectedKeys={treeSelected}
+          onExpand={ks => {
+            setAutoExpandParent(false)
+            setExpandedKeys(ks)
+          }}
+          onCheck={ks => setCheckedKeys(ks)}
+          onSelect={ks => setTreeSelected(ks)}
+        ></Tree>
+      )
     }
   }
   function handleSelectedRows(ks) {
@@ -202,6 +253,19 @@ const FormContext = forwardRef(({
       cancelText: '取消'
     })
   }
+  async function getTableData(evlSystemId) {
+    toggleLoading(true)
+    const { data, success } = await findListById({ evlSystemId });
+    toggleLoading(false)
+    if (success) {
+      setDataSource(data)
+    }
+  }
+  useEffect(() => {
+    if (treeSelected.length === 0) return
+    const [id] = treeSelected;
+    getTableData(id)
+  }, [treeSelected])
   return (
     <div className={styles.wrapper}>
       <Form style={{ width: '80vw' }}>
@@ -380,6 +444,13 @@ const FormContext = forwardRef(({
                     form={form}
                     name='materialCategoryName'
                     {...materialClassProps}
+                    treeNodeProps={(node) => {
+                      if (node.nodeLevel !== 2) {
+                        return {
+                          selectable: false
+                        }
+                      }
+                    }}
                     field={['materialCategoryCode']}
                     disabled={type === 'detail'}
                   />
@@ -531,12 +602,19 @@ const FormContext = forwardRef(({
           </Col>
         </Row>
         <Row>
-          <Col span={24}>
+          <Col span={10}>
             <FormItem {...formLayoutAlone} label=' ' colon={false}>
               {
                 getSystemTreeView()
               }
             </FormItem>
+          </Col>
+          <Col span={14}>
+            <Table
+              dataSource={dataSource}
+              columns={columns}
+              loading={loading}
+            />
           </Col>
         </Row>
         <Row>
