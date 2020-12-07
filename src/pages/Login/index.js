@@ -6,7 +6,7 @@ import { connect } from "dva";
 import { formatMessage } from 'umi-plugin-react/locale'
 import { title } from '../../../package.json'
 import styles from "./index.less";
-
+import { utils } from 'suid';
 const { Item } = Form;
 const { Option } = Select;
 
@@ -25,9 +25,10 @@ class LoginForm extends PureComponent {
           type: "global/login",
           payload: {
             ...user,
-            reqId: '151515'
+            reqId: utils.getUUID(),
+            verifyCode: 'WV6B'
           }
-        });
+        });<div className=""></div>
       }
     });
   };

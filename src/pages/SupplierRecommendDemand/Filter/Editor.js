@@ -39,58 +39,6 @@ const Editor = forwardRef(({
     show,
     hide
   }))
-  const trustInfoProps = {
-    dataSource: trustInfos,
-    columns: [
-      {
-        title: '供应商',
-        dataIndex: 'supplierName',
-        width: 120
-      },
-      {
-        title: '原厂',
-        dataIndex: 'originFactoryName',
-        width: 100
-      },
-      {
-        title: '公司',
-        dataIndex: 'corporationCode',
-        width: 80
-      },
-      {
-        title: '采购组织',
-        dataIndex: 'purchaseOrgCode',
-        width: 80
-      },
-      {
-        title: '拟推荐',
-        dataIndex: 'recommend',
-        render(text) {
-          return text ? '是' : '否'
-        },
-        align: 'center',
-        width: 100
-      },
-      {
-        title: '是否实物认定',
-        dataIndex: 'objectRecognition',
-        render(text) {
-          return text ? '是' : '否'
-        },
-        align: 'center',
-        width: 150
-      },
-    ],
-    reader: {
-      name: item => `${item.corporationCode}-${item.purchaseOrgCode}`,
-      field: ['corporationCode', 'corporationName', 'purchaseOrgCode', 'purchaseOrgName']
-    },
-    style: {
-      width: '100%'
-    },
-    form,
-    field: ['trustCorporationCode', 'trustCorporationName', 'trustPurchaseOrgCode', 'trustPurchaseOrgName']
-  }
   const {
     getFieldDecorator,
     setFieldsValue,

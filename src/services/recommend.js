@@ -60,7 +60,8 @@ export const submitToSupplier = params => createServiceRequest({
 export const supplierSubmitToSystem = params => createServiceRequest({
   path: '/api/supplierRecommendDemandService/submitSupplierFilledInfo',
   params,
-  method: 'POST'
+  method: 'POST',
+  hack: true
 })
 
 // 企业社会责任及企业生产环境表单主数据

@@ -162,10 +162,6 @@ const MproCertification = ({ type, data, setTableData }) => {
       title: '计划取得时间',
       dataIndex: 'planObtainTime',
       ellipsis: true,
-      render: (text) => {
-        return text && moment(text).format('YYYY-MM-DD');
-      },
-      inputType: 'DatePicker',
       editable: true
     },
   ].map(item => ({
@@ -226,10 +222,6 @@ const MproCertification = ({ type, data, setTableData }) => {
       title: '首次获证时间',
       dataIndex: 'firstObtainTime',
       ellipsis: true,
-      render: (text) => {
-        return text && moment(text).format('YYYY-MM-DD');
-      },
-      inputType: 'DatePicker',
       editable: true,
       width: 150
     },

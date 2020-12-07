@@ -143,6 +143,9 @@ function CSRQuestionnaire({
         size='small'
         dataSource={dataSource}
         rowKey={(item, index) => `${index}-dataSource-line`}
+        pagination={{
+          pageSize: 10000
+        }}
       ></Table>
     </div>
   )
