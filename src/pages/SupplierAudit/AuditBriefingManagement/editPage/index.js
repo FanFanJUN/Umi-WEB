@@ -9,8 +9,9 @@ import { Form, Spin, message, Affix, Button } from 'antd';
 import * as router from 'react-router-dom';
 import { closeCurrent, getMobile, getUserId, getUserName } from '../../../../utils';
 import {
-  findForReportInsert,
-  findVoById, saveAuditReport,
+  findBriefingVoById,
+  findForBriefingInsert,
+  saveAuditBriefing,
 } from '../../mainData/commomService';
 import classnames from 'classnames';
 import styles from '../../../Supplier/Editor/index.less';
@@ -55,10 +56,10 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
     let state = pageState;
     if (pageState === 'add') {
       getUser();
-      // findInitOne(id);
+      findInitOne(id);
       setData((value) => ({ ...value, type: 'add', isView: false, title: '审核简报-新增' }));
     } else if (pageState === 'edit' || isApproveEdit) {
-      // findOne(id);
+      findOne(id);
       setData((value) => ({
         ...value,
         type: state,
@@ -66,7 +67,7 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
         title: `审核简报-编辑`,
       }));
     } else if (pageState === 'detail' || isApproveDetail) {
-      // findOne(id);
+      findOne(id);
       setData((value) => ({ ...value, type: 'detail', isView: true, title: `审核简报-明细` }));
     }
   }, [query]);
@@ -74,7 +75,7 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
   //新增获取默认值
   const findInitOne = (id) => {
     setData(v => ({ ...v, spinLoading: true }));
-    findForReportInsert({
+    findForBriefingInsert({
       id,
     }).then(res => {
       if (res.success) {
@@ -88,7 +89,7 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
   //获取值
   const findOne = (id) => {
     setData(v => ({ ...v, spinLoading: true }));
-    findVoById({
+    findBriefingVoById({
       id,
     }).then(res => {
       if (res.success) {
@@ -112,8 +113,7 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
       return false;
     }
     let thisPeriodInfoVal = await getThisPeriodFormRef.current.getFormValue();
-    data.editData.arAuditReportManagBasicVo = baseInfoVal;
-    data.editData.thisPeriodVo = thisPeriodInfoVal;
+    data.editData = Object.assign(data.editData, baseInfoVal,thisPeriodInfoVal);
     return data.editData;
   };
 
@@ -125,11 +125,8 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
       return false;
     }
     let thisPeriodInfoVal = await getThisPeriodFormRef.current.getFormValue();
-    data.editData.arAuditReportManagBasicVo = baseInfoVal;
-    data.editData.thisPeriodVo = thisPeriodInfoVal;
-    console.log(data.editData)
-    return
-    saveAuditReport(data.editData).then(res => {
+    data.editData = Object.assign(data.editData, baseInfoVal,thisPeriodInfoVal);
+    saveAuditBriefing(data.editData).then(res => {
       if (res.success) {
         message.success(res.message);
         if (!isApprove) {
@@ -148,10 +145,9 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
       return false;
     }
     let thisPeriodInfoVal = await getThisPeriodFormRef.current.getFormValue();
-    data.editData.arAuditReportManagBasicVo = baseInfoVal;
-    data.editData.thisPeriodVo = thisPeriodInfoVal;
+    data.editData = Object.assign(data.editData, baseInfoVal,thisPeriodInfoVal);
     return new Promise(function(resolve, reject) {
-      saveAuditReport(data.editData).then(res => {
+      saveAuditBriefing(data.editData).then(res => {
         if (res.success) {
           const data = { businessKey: res.data };
           resolve({
@@ -195,7 +191,7 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
           </div>
         </Affix>
         <BaseInfoForm
-          editData={data.editData.arAuditReportManagBasicVo || {}}
+          editData={data.editData || {}}
           userInfo={data.userInfo}
           type={data.type}
           isView={data.isView}

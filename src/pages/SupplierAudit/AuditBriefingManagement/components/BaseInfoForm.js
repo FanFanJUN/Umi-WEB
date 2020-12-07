@@ -55,7 +55,7 @@ const BaseInfoForm = React.forwardRef(({ form, userInfo, isView, editData,type }
           <Row>
             <Col span={12}>
               <FormItem label="拟制公司" {...formLayout}>
-                {<span>{editData.applyCorporationName}</span>}
+                {<span>{editData.statisticCorporationName}</span>}
               </FormItem>
             </Col>
             <Col span={12}>
