@@ -82,18 +82,20 @@ const ShuttleBoxNew = (props) => {
 
   // 删除方法
   const deleteClick = () => {
-    let arr = JSON.parse(JSON.stringify(data.rightCheck));
-    arr = duplicateRemoval(arr, 'systemId');
-    arr = recursion(arr);
-    setData(v => ({
-      ...v,
-      rightTreeData: arr,
-      leftSelectData: [],
-      leftCheckedKeys: [],
-      rightCheckedKeys: [],
-      rightCheck: [],
-    }));
-    setOperation(operation + 1);
+    if (data.rightCheck && data.rightCheck.length !== 0) {
+      let arr = JSON.parse(JSON.stringify(data.rightCheck));
+      arr = duplicateRemoval(arr, 'systemId');
+      arr = recursion(arr);
+      setData(v => ({
+        ...v,
+        rightTreeData: arr,
+        leftSelectData: [],
+        leftCheckedKeys: [],
+        rightCheckedKeys: [],
+        rightCheck: [],
+      }));
+      setOperation(operation + 1);
+    }
   };
 
   //找到子节点
