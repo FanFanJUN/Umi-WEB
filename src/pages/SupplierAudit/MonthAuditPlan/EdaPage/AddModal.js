@@ -39,46 +39,69 @@ const AddModal = (props) => {
                             return text ? (selectedTear + "年" + text + "月") : ""
                         }
                     },
-                    { title: '需求公司', dataIndex: 'applyCorporationName', width: 140, ellipsis: true },
-                    { title: '采购组织', dataIndex: 'purchaseTeamName', ellipsis: true, width: 140 },
-                    { title: '供应商', dataIndex: 'supplierCode', ellipsis: true, width: 140 },
-                    { title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 140 },
-                    { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 140 },
+                    { title: '需求公司', dataIndex: 'applyCorporationName', width: 180, ellipsis: true, render: (text, item) => {
+                        return !text ? '' : item.applyCorporationCode + ' ' + item.applyCorporationName
+                    }},
+                    { title: '采购组织', dataIndex: 'purchaseTeamName', ellipsis: true, width: 180, render: (text, item) => {
+                        return !text ? '' : item.purchaseTeamCode + ' ' + item.purchaseTeamName
+                    }},
+                    { title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 180, render: (text, item) => {
+                        return !text ? '' : item.supplierCode + ' ' + item.supplierName
+                    }},
+                    { title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 160, render: (text, item) => {
+                        return !text ? '' : item.agentCode + ' ' + item.agentName
+                    }},
+                    { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 180, render: (text, item) => {
+                        return !text ? '' : item.materialGroupCode + ' ' + item.materialGroupName
+                    }},
                 ];
             case "recommand":
                 return [
                     { title: '准入推荐号', dataIndex: 'docNumber', ellipsis: true, width: 140 },
-                    { title: '需求公司', dataIndex: 'corporationName', width: 200, ellipsis: true },
-                    { title: '采购组织', dataIndex: 'purchaseOrgName', ellipsis: true, width: 140 },
-                    { title: '供应商', dataIndex: 'supplierCode', ellipsis: true, width: 140, render:(text, item) =>{
-                        return item.recommendAccess?.supplierName;
+                    { title: '需求公司', dataIndex: 'corporationName', width: 200, ellipsis: true, render: (text, item) => {
+                        return !text ? '' : item.corporationCode + ' ' +item.corporationName
                     } },
-                    { title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 140 },
-                    { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 140, render:(text, item) =>{
-                        return item.recommendAccess?.materialCategoryName;
+                    { title: '采购组织', dataIndex: 'purchaseOrgName', ellipsis: true, width: 180, render: (text, item) => {
+                        return !text ? '' :  item.purchaseOrgCode + ' ' +item.purchaseOrgName
+                    }},
+                    { title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 140, render:(text, item) =>{
+                        return item.recommendAccess && item.recommendAccess.supplierName;
+                        // return item.recommendAccess && item.recommendAccess.supplierCode + ' ' + item.recommendAccess.supplierName;
+                    } },
+                    { title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 140, render: (text, item) => {
+                        return !text ? '' : item.agentCode + ' ' +item.agentName
+                    }},
+                    { title: '物料分类', dataIndex: 'materialCategoryName', ellipsis: true, width: 180, render:(text, item) =>{
+                        return item.recommendAccess && item.recommendAccess.materialCategoryCode + ' ' + item.recommendAccess.materialCategoryName;
                     } },
                 ];
             case "demand":
                 return [
                     {
-                        title: '提出日期', dataIndex: 'applyDate', ellipsis: true, width: 140, render: (text, item) => {
-                            return item.reviewRequirementVo && item.reviewRequirementVo.applyDate
+                        title: '提出日期', dataIndex: 'applyDate', ellipsis: true, width: 120, render: (text, item) => {
+                            return item.reviewRequirementVo && item.reviewRequirementVo.applyDate && item.reviewRequirementVo.applyDate.slice(0, 10)
                         }
                     },
                     { title: '审核需求号', dataIndex: 'reviewRequirementCode', ellipsis: true, width: 140 },
                     {
-                        title: '需求公司', dataIndex: 'corporation', width: 140, ellipsis: true, render: (text, item) => {
-                            return item.reviewRequirementVo && item.reviewRequirementVo.applyCorporationName
+                        title: '需求公司', dataIndex: 'corporation', width: 180, ellipsis: true, render: (text, item) => {
+                            return item.reviewRequirementVo && item.reviewRequirementVo.applyCorporationCode + ' ' + item.reviewRequirementVo.applyCorporationName
                         }
                     },
                     {
-                        title: '采购组织', dataIndex: 'purchaseOrgName', ellipsis: true, width: 140, render: (text, item) => {
-                            return item.reviewRequirementVo && item.reviewRequirementVo.purchaseOrgName
+                        title: '采购组织', dataIndex: 'purchaseOrgName', ellipsis: true, width: 180, render: (text, item) => {
+                            return item.reviewRequirementVo && item.reviewRequirementVo.purchaseOrgCode + ' ' +item.reviewRequirementVo.purchaseOrgName
                         }
                     },
-                    { title: '供应商', dataIndex: 'supplierCode', ellipsis: true, width: 140 },
-                    { title: '代理商', dataIndex: 'xagentNamex', ellipsis: true, width: 140 },
-                    { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 140 }
+                    { title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 180, render: (text, item) => {
+                        return !text ? '' : item.supplierCode + ' ' + item.supplierName
+                    } },
+                    { title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 140, render: (text, item) => {
+                        return !text ? '' : item.agentCode + ' ' + item.agentName
+                    }},
+                    { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 140, render: (text, item) => {
+                        return !text ? '' : item.materialGroupCode + ' ' + item.materialGroupName
+                    }}
                 ];
         }
     }
@@ -347,7 +370,7 @@ const AddModal = (props) => {
     }
 
     return <ExtModal
-        width={'60vw'}
+        width={'80vw'}
         maskClosable={false}
         visible={visible}
         title={type === "annual" ? "从年度计划新增" : type === "recommand" ? "从准入推荐新增" : "从审核需求新增"}
@@ -363,8 +386,8 @@ const AddModal = (props) => {
                 allowCancelSelect={true}
                 showSearch={false}
                 remotePaging
+                height={type==="demand" ? "40vh" : "50vh"}
                 checkbox={{ multiSelect: true }}
-                size='small'
                 onSelectRow={(key, rows) => {
                     setselectedRowKeys(key);
                     setselectRows(rows);

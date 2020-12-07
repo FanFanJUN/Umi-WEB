@@ -539,6 +539,24 @@ export const AuditTypeManagementConfig = {
   },
 };
 
+// 审核类型-未冻结
+export const AuditTypeManagementNoFrozenConfig = {
+  allowClear: true,
+  placeholder: '选择审核类型',
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${baseUrl}/reviewType/findBySearchPageAndFrozenFalse`,
+  },
+  remotePaging: true,
+  rowKey: 'code',
+  reader: {
+    field: ['code'],
+    name: 'name',
+    description: 'code',
+  },
+};
+
 // 结论及是否通过
 export const conclusionAndWeatherPassConfig = {
   placeholder: '选择结论及是否通过',
