@@ -7,14 +7,15 @@ import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
 import styles from './index.less';
 import { smBaseUrl } from '@/utils/commonUrl';
 import { stopApproveingOrder } from "../../../services/pcnModifyService"
-import {BilltypeList,ToexamineList,PCNMasterdatalist,seniorStrategypurchase} from '../commonProps'
+import { BilltypeList, ToexamineList, PCNMasterdatalist, seniorStrategypurchase } from '../commonProps'
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
+import { router } from 'dva';
 const { Search } = Input
 const confirm = Modal.confirm;
 const { authAction, storage } = utils;
 const { FlowHistoryButton } = WorkFlow;
+let dataSource
 function SupplierConfigure() {
-    const getModelRef = useRef(null)
     const tableRef = useRef(null)
     const headerRef = useRef(null)
     const authorizations = storage.sessionStorage.get("Authorization");
@@ -24,15 +25,12 @@ function SupplierConfigure() {
     const [selectedRows, setRows] = useState([]);
     const [searchValue, setSearchValue] = useState({});
     const [jurisdiction, setJurisdiction] = useState(1);
-    const [recommen, setrecommen] = useState([]);
-    const [loading, triggerLoading] = useState(false);
-    const [attachId, setAttachId] = useState('');
     const [seniorsearchValue, setSeniorsearchValue] = useState('');
-
+    const { query } = router.useLocation();
     const [singleRow = {}] = selectedRows;
     /** 按钮可用性判断变量集合 BEGIN*/
     const [signleRow = {}] = selectedRows;
-    const { flowStatus: signleFlowStatus, id: flowId, smPcnStrategicCode,smDocunmentStatus: typeStatus } = signleRow;
+    const { flowStatus: signleFlowStatus, id: flowId, smPcnStrategicCode, smDocunmentStatus: typeStatus } = signleRow;
     // 已提交审核状态
     const underWay = signleFlowStatus !== 'INIT';
     // 审核完成状态
@@ -56,13 +54,13 @@ function SupplierConfigure() {
                     return <div>草稿</div>;
                 } else if (text === 0 && record.smDocunmentStatus === 1) {
                     return <div>已保存</div>;
-                }else if (text === 1) {
+                } else if (text === 1) {
                     return <div className="doingColor">验证中</div>;
                 } else if (text === 2) {
                     return <div className="successColor">变更不通过</div>;
-                }else if (text === 3) {
+                } else if (text === 3) {
                     return <div className="successColor">变更通过</div>;
-                }else if (text === 4) {
+                } else if (text === 4) {
                     return <div className="successColor">变更完成</div>;
                 }
             },
@@ -119,28 +117,34 @@ function SupplierConfigure() {
         }
     ].map(_ => ({ ..._, align: 'center' }))
 
-    const dataSource = {
-        store: {
-            url: `${smBaseUrl}/api/smPcnTitleService/findByPurchasePage?onlyMeStatus=` + jurisdiction,
-            //url: `${smBaseUrl}/api/smPcnTitleService/findByPurchasePage`,
-            params: {
-                ...searchValue,
-                quickSearchProperties: ['smPcnCode'],
-                sortOrders: [
-                    {
-                        property: 'createdDate',
-                        direction: 'DESC'
-                    }
-                ],
-                filters:seniorsearchValue
-            },
-            type: 'POST'
+    function handleInfo() {
+        if (query.notBubmit) {
+            let filters = [];
+            filters.push({
+                fieldName: 'flowStatus',
+                value: 'INIT',
+                operator: 'EQ'
+            })
+            setSeniorsearchValue(filters)
+            uploadTable()
+        } else if (query.InProcess) {
+            let filters = [];
+            filters.push({
+                fieldName: 'flowStatus',
+                value: 'INPROCESS',
+                operator: 'EQ'
+            })
+            setSeniorsearchValue(filters)
+            uploadTable()
+        } else {
+            uploadTable()
         }
     }
-    
     useEffect(() => {
+        handleInfo()
         window.parent.frames.addEventListener('message', listenerParentClose, false);
         return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
+
     }, []);
 
     function listenerParentClose(event) {
@@ -167,7 +171,7 @@ function SupplierConfigure() {
     }
     // 编辑
     function handleCheckEdit() {
-       //const [key] = selectedRowKeys;
+        //const [key] = selectedRowKeys;
         let id = selectedRows[0].id;
         openNewTab(`pcnModify/Purchase/Edit/index?id=${id}`, 'PCN变更方案编辑', false)
     }
@@ -216,62 +220,32 @@ function SupplierConfigure() {
         uploadTable();
     }
     // 处理高级搜索
-    function handleAdvnacedSearch(value) {
-        let searchvalue = [];
-        searchvalue.push(value);
-        let newdata = [];
-        searchvalue.map(item => {
-            console.log(item)
-            newdata.push(
-                {
-                    fieldName:'smSupplierCode',
-                    value: item.materialCode,
-                    operator:'EQ'
-                },
-                {
-                    fieldName:'smSupplierName',
-                    value: item.materialName,
-                    operator:'EQ'
-                },
-                {
-                    fieldName:'smSubmitStatus',
-                    value: item.smDocunmentStatus,
-                    operator:'EQ'
-                },
-                {
-                    fieldName:'flowStatus',
-                    value: item.flowStatus,
-                    operator:'EQ'
-                },
-                {
-                    fieldName:'smPcnChangeTypeCode',
-                    value: item.smPcnChangeTypeCode,
-                    operator:'EQ'
-                },
-                {
-                    fieldName:'smPcnStrategicId',
-                    value: item.smSourcing,
-                    operator:'EQ'
-                }
-    
-            )
-        })
-        setSeniorsearchValue(newdata)
+    function handleAdvnacedSearch(v) {
+        const keys = Object.keys(v);
+        const filters = keys.map((item) => {
+            const [_, operator, fieldName, isName] = item.split('_');
+            return {
+                fieldName,
+                operator,
+                value: !!isName ? undefined : v[item]
+            }
+        }).filter(item => !!item.value)
+        setSeniorsearchValue(filters)
         headerRef.current.hide();
         uploadTable();
     }
     function cooperationChange(val) {
         let search = []
         search.push({
-            fieldName:'smSubmitStatus',
+            fieldName: 'smSubmitStatus',
             value: val.code,
-            operator:'EQ'
+            operator: 'EQ'
         })
         setSeniorsearchValue(search)
         uploadTable();
     }
-     // 清空泛虹公司
-     function clearinput() {
+    // 清空泛虹公司
+    function clearinput() {
         setSearchValue('')
         setSeniorsearchValue('')
         uploadTable();
@@ -340,16 +314,16 @@ function SupplierConfigure() {
                 )
             }
         </div>
-    ) 
+    )
     const searchbank = ['name'];
     // 右侧搜索
     const HeaderRightButtons = (
-        <div style={{ display: 'flex'}}>
-            <Checkbox className={styles.btn} onChange={handleOnlyMeChange} checked={onlyMe} 
-            style={{width: '80px'}}>仅我的</Checkbox>
+        <div style={{ display: 'flex' }}>
+            <Checkbox className={styles.btn} onChange={handleOnlyMeChange} checked={onlyMe}
+                style={{ width: '80px' }}>仅我的</Checkbox>
             <ComboList
                 //style={{ width: 340 }}
-                style={{width:'200px' }}
+                style={{ width: '200px' }}
                 searchProperties={searchbank}
                 {...BilltypeList}
                 afterSelect={cooperationChange}
@@ -367,23 +341,23 @@ function SupplierConfigure() {
                 className={styles.btn}
                 onSearch={handleQuickSerach}
                 allowClear
-                style={{ width: '240px'}}
+                style={{ width: '240px' }}
             />
         </div>
     )
     // 高级查询配置
     const formItems = [
-        { title: '供应商代码', key: 'materialCode',  props: { placeholder: '输入供应商代码' } },
-        { title: '供应商名称', key: 'materialName',  props: { placeholder: '输入供应商名称' } },
-        { title: '单据状态', key: 'smDocunmentStatus', type: 'list', props: BilltypeList },
-        { title: '审核状态', key: 'flowStatus', type: 'list', props: ToexamineList },
-        { title: '变更类型', key: 'smPcnChangeTypeCode', type: 'list', props: PCNMasterdatalist },
-        { title: '战略采购', key: 'smSourcing', type: 'list', props: seniorStrategypurchase },
+        { title: '供应商代码', key: 'Q_EQ_smSupplierCode', props: { placeholder: '输入供应商代码' } },
+        { title: '供应商名称', key: 'Q_LK_smSupplierName', props: { placeholder: '输入供应商名称' } },
+        { title: '单据状态', key: 'Q_EQ_smSubmitStatus', type: 'list', props: BilltypeList },
+        { title: '审核状态', key: 'Q_EQ_flowStatus', type: 'list', props: ToexamineList },
+        { title: '变更类型', key: 'Q_EQ_smPcnChangeTypeCode', type: 'list', props: PCNMasterdatalist },
+        { title: '战略采购', key: 'Q_EQ_smPcnStrategicId', type: 'list', props: seniorStrategypurchase },
     ];
     return (
         <>
             <Header
-                left= {HeaderLeftButtons}
+                left={HeaderLeftButtons}
                 right={HeaderRightButtons}
                 advanced
                 ref={headerRef}
@@ -409,7 +383,22 @@ function SupplierConfigure() {
                         onSelectRow={handleSelectedRows}
                         selectedRowKeys={selectedRowKeys}
                         //dataSource={dataSource}
-                        {...dataSource}
+                        //{...dataSource}
+                        store={{
+                            url: `${smBaseUrl}/api/smPcnTitleService/findByPurchasePage?onlyMeStatus=` + jurisdiction,
+                            params: {
+                                ...searchValue,
+                                quickSearchProperties: ['smPcnCode'],
+                                sortOrders: [
+                                    {
+                                        property: 'createdDate',
+                                        direction: 'DESC'
+                                    }
+                                ],
+                                filters: seniorsearchValue
+                            },
+                            type: 'POST'
+                        }}
                     />
                 }
             </AutoSizeLayout>

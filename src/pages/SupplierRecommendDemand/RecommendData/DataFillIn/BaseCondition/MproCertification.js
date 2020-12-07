@@ -13,10 +13,11 @@ import moment from 'moment';
 import EditableFormTable from '../CommonUtil/EditTable';
 
 const MproCertification = ({ type, data, setTableData }) => {
-  const { productCertifications, otherCertifications } = data;
+  const { productCertifications, otherCertifications, managementSystems } = data;
+  console.log(data)
   const [proData, setProData] = useState([]);
   const [otherData, setOtherData] = useState([]);
-
+  const [manageData, setManageData] = useState([]);
   const tableRef = useRef(null);
 
   const columnsForMan = [
@@ -273,7 +274,7 @@ const MproCertification = ({ type, data, setTableData }) => {
   }
 
   useEffect(() => {
-    if (!otherCertifications || !productCertifications) return
+    if (!otherCertifications || !productCertifications || !managementSystems) return
     const o = otherCertifications.map(item => ({
       ...item,
       guid: item?.id
@@ -282,9 +283,14 @@ const MproCertification = ({ type, data, setTableData }) => {
       ...item,
       guid: item?.id
     }))
+    const m = managementSystems.map(item => ({
+      ...item,
+      guid: item?.id
+    }))
+    setManageData(m)
     setOtherData(o)
     setProData(p)
-  }, [productCertifications, otherCertifications])
+  }, [productCertifications, otherCertifications, managementSystems])
   return <Fragment>
     <div>
       <Divider orientation='left'>管理体系</Divider>
@@ -297,9 +303,10 @@ const MproCertification = ({ type, data, setTableData }) => {
         isToolBar={false}
         allowRemove={false}
         isEditTable={type==='add'}
-        isToolBar={false}
-        rowKey={(item) => item.id}
+        // rowKey={(item) => item.id}
+        rowKey='guid'
         size='small'
+        dataSource={manageData}
       />
       <Divider orientation='left'>产品认证</Divider>
       <EditableFormTable
