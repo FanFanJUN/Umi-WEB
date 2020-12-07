@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime: 2020-12-07 11:43:41
+ * @LastEditTime: 2020-12-07 13:39:43
  * @Description: 行信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
@@ -58,37 +58,43 @@ let LineInfo = forwardRef((props, ref) => {
     {
       title: '操作', dataIndex: 'operaton', width: 140, ellipsis: true, render: (text, item) => {
         return <div>
-          <a onClick={(e) => {
-            e.stopPropagation();
-            setTimeout(() => {
-              setData(v => ({ ...v, treeData: item.treeData }));
-            }, 300);
-            setContentData(v => ({
-              ...v,
-              visible: true,
-              type: 'detail',
-              applyCorporationCode: item.applyCorporationCode,
-              treeData: item.treeData ? item.treeData : [],
-            }));
-          }} key="content">内容</a>
-          <a onClick={(e) => {
-            e.stopPropagation();
-            setTeamData(v => ({
-              ...v,
-              reviewTeamGroupBoList: item.reviewTeamGroupBoList ? item.reviewTeamGroupBoList : [],
-              visible: true,
-              type: 'detail',
-              treeData: item.treeData ? item.treeData : [],
-            }));
-          }} style={{ margin: '0 3px' }} key="group">小组</a>
-          <a onClick={(e) => {
-            e.stopPropagation();
-            setPersonData({
-              visible: true,
-              isView: true,
-              originData: item.coordinationMemberBoList ? item.coordinationMemberBoList : [],
-            });
-          }} key="xietong">协同</a>
+          {
+            item.treeData && item.treeData.length > 0 && <a onClick={(e) => {
+              e.stopPropagation();
+              setTimeout(() => {
+                setData(v => ({ ...v, treeData: item.treeData }));
+              }, 300);
+              setContentData(v => ({
+                ...v,
+                visible: true,
+                type: 'detail',
+                applyCorporationCode: item.applyCorporationCode,
+                treeData: item.treeData ? item.treeData : [],
+              }));
+            }} key="content">内容</a>
+          }
+          {
+            item.reviewTeamGroupBoList && <a onClick={(e) => {
+              e.stopPropagation();
+              setTeamData(v => ({
+                ...v,
+                reviewTeamGroupBoList: item.reviewTeamGroupBoList ? item.reviewTeamGroupBoList : [],
+                visible: true,
+                type: 'detail',
+                treeData: item.treeData ? item.treeData : [],
+              }));
+            }} style={{ margin: '0 3px' }} key="group">小组</a>
+          }
+          {
+            item.coordinationMemberBoList && <a onClick={(e) => {
+              e.stopPropagation();
+              setPersonData({
+                visible: true,
+                isView: true,
+                originData: item.coordinationMemberBoList ? item.coordinationMemberBoList : [],
+              });
+            }} key="xietong">协同</a>
+          }
         </div>;
       },
     },
@@ -130,7 +136,7 @@ let LineInfo = forwardRef((props, ref) => {
     { title: '物料级别', dataIndex: 'materialGradeName', ellipsis: true, width: 140 },
     {
       title: '生产厂地址', dataIndex: 'countryName', ellipsis: true, width: 200, render: (text, item) => {
-        return !text ? "" : (item.countryName + item.provinceName + item.cityName + item.countyName + item.address).replace(/\s+/g,"");
+        return !text ? "" : (item.countryName + item.provinceName + item.cityName + item.countyName + item.address).replace(/\s+/g, "");
       },
     },
     { title: '供应商联系人', dataIndex: 'contactUserName', ellipsis: true, width: 140 },

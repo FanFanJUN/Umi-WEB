@@ -212,7 +212,7 @@ export default function () {
         { title: '供应商', key: 'supplierCode', type: 'list', props: supplierPropsNew },
         { title: '代理商', key: 'agentCode', type: 'list', props: agentList },
         { title: '物料分类', key: 'materialGroupCode', type: 'tree', props: materialClassProps },
-        { title: '月度审核计划', key: 'applyName', props: { placeholder: '输入月度审核计划' } },
+        { title: '月度审核计划', key: 'reviewPlanMonthCode', props: { placeholder: '输入月度审核计划' } },
     ];
 
     const columns = [
@@ -253,8 +253,8 @@ export default function () {
         }},
         { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 180 },
         { title: '审核时间', dataIndex: 'reviewDateStart', ellipsis: true, width: 200, align: 'center', render: (text, item) => (text.slice(0, 10) + '~' + item.reviewDateEnd.slice(0, 10)) },
-        { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 100, align: 'center'},
-        { title: '拟制时间', dataIndex: 'applyDate', ellipsis: true, width: 200, align: 'center' },
+        { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 80, align: 'center'},
+        { title: '拟制时间', dataIndex: 'applyDate', ellipsis: true, width: 100, align: 'center', render: text=>text.slice(0, 10) },
     ];
 
     const headerLeft = <>

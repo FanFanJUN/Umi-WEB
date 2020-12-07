@@ -1,9 +1,9 @@
 /*
  * @Author: Li Cai
- * @LastEditors: Li Cai
+ * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-27 17:01:47
- * @LastEditTime: 2020-11-30 17:11:52
+ * @LastEditTime: 2020-12-07 13:43:36
  * @Description: 参数props
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/propsParams.js
  */
@@ -184,7 +184,7 @@ export const reviewOrganizeProps = {
 
 // 区域
 export const AreaConfig = {
-  remotePaging: true,
+  remotePaging: false,
   rowKey: 'code',
   reader: {
     field: ['id', 'code'],
@@ -195,7 +195,7 @@ export const AreaConfig = {
 
 // 区域
 export const CountryIdConfig = {
-  remotePaging: true,
+  remotePaging: false,
   rowKey: 'code',
   reader: {
     field: ['countryId', 'code'],

@@ -8,6 +8,7 @@ import { WorkFlow } from 'suid';
 import { router } from 'dva';
 import { closeCurrent } from '../../../../utils';
 import AuditBriefingManagementView from '../editPage';
+import { saveAuditBriefing } from '../../mainData/commomService';
 
 const ApproveEditPage = () => {
 
@@ -25,21 +26,20 @@ const ApproveEditPage = () => {
     if(!data){
       return false
     }
-    console.log(data)
-    // return new Promise(function(resolve, reject) {
-    //   saveAuditReport(data).then(res => {
-    //     if (res.success) {
-    //       const data = { businessKey: res.data };
-    //       resolve({
-    //         success: true,
-    //         message: res.message,
-    //         data,
-    //       });
-    //     } else {
-    //       message.error(res.message);
-    //     }
-    //   }).catch(err => reject(err));
-    // });
+    return new Promise(function(resolve, reject) {
+      saveAuditBriefing(data).then(res => {
+        if (res.success) {
+          const data = { businessKey: res.data };
+          resolve({
+            success: true,
+            message: res.message,
+            data,
+          });
+        } else {
+          message.error(res.message);
+        }
+      }).catch(err => reject(err));
+    });
   };
 
 

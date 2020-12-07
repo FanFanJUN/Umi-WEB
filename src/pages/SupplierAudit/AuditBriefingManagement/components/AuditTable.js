@@ -30,10 +30,10 @@ const AuditTable = React.forwardRef(({ form, isView, editData, type }, ref) => {
     transferData();
   }, [editData]);
   const columns = [
-    { title: '改善事项描述', dataIndex: 'departmentName', width: 220 },
-    { title: '原因分析', dataIndex: 'employeeNo', width: 100 },
-    { title: '改进措施及要求', dataIndex: 'memberName', width: 120 },
-    { title: '责任人', dataIndex: 'memberTel', width: 100 },
+    { title: '改善事项描述', dataIndex: 'improvementDescription', width: 220 },
+    { title: '原因分析', dataIndex: 'causeAnalysis', width: 100 },
+    { title: '改进措施及要求', dataIndex: 'improveMeasureRequire', width: 120 },
+    { title: '责任人', dataIndex: 'thoseResponsible', width: 100 },
     { title: '检查', dataIndex: 'check', width: 100 },
   ];
   const headerLeft = <>

@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:49:50
- * @LastEditTime: 2020-11-27 10:23:26
+ * @LastEditTime: 2020-12-07 15:03:18
  * @LastEditors: Please set LastEditors
  * @Description: I审核实施计划-审核计划
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\AuditPlan.js
@@ -14,6 +14,7 @@ import Upload from '../../Upload';
 import { getDocIdForArray } from '@/utils/utilTool';
 import { reviewStandard } from "../../mainData/commomService";
 import moment from "moment";
+import { getFileSize } from 'suid/lib/utils';
 
 const FormItem = Form.Item;
 const formLayout = {
@@ -40,7 +41,7 @@ const AuditPlan = (props) => {
     const [checkedList, setCheckedList] = useState([]);// 选中数据code数组
     // 以code为key值存储的审核准则对象
     const [listObj, setListObj] = useState({})
-    const { getFieldDecorator, setFieldsValue } = form;
+    const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
     useEffect(() => {
         if (type !== "detail") {
             reviewStandard().then(res => {
@@ -54,7 +55,7 @@ const AuditPlan = (props) => {
                 setListObj(listObj);
                 setSelecteList(res.data);
                 // 默认全部选中审核准则
-                if(type === "add") {
+                if (type === "add") {
                     setCheckedList(res.data.map(item => item.code));
                 }
                 setFieldsValue({
@@ -66,10 +67,10 @@ const AuditPlan = (props) => {
 
     useEffect(() => {
         if (type !== "add") {
-            if(type === "detail") {
+            if (type === "detail") {
                 setSelecteList(originData.reviewPlanStandardBos ? originData.reviewPlanStandardBos : []);
             }
-            setCheckedList(originData.reviewPlanStandardBos ? originData.reviewPlanStandardBos.map(item=>item.standardCode) : [])
+            setCheckedList(originData.reviewPlanStandardBos ? originData.reviewPlanStandardBos.map(item => item.standardCode) : [])
         }
     }, [originData])
 
@@ -124,7 +125,15 @@ const AuditPlan = (props) => {
                                         rules: [{ required: true, message: '审核时间不能为空', },]
                                     })(
                                         isView ? <span>{originData.reviewDateStart && originData.reviewDateStart.slice(0, 10)}</span> :
-                                            <DatePicker placeholder="请选择" style={{ width: "100%" }} />
+                                            <DatePicker
+                                                placeholder="请选择"
+                                                style={{ width: "100%" }}
+                                                onChange={(v)=>{
+                                                    if(getFieldValue('reviewDateEnd') && v.valueOf()>getFieldValue('reviewDateEnd')) {
+                                                        setFieldsValue({reviewDateEnd: null});
+                                                    }
+                                                }}
+                                            />
                                     )
                                 }
                             </FormItem>
@@ -137,7 +146,13 @@ const AuditPlan = (props) => {
                                         rules: [{ required: true, message: '审核时间不能为空', },]
                                     })(
                                         isView ? <span>{originData.reviewDateEnd && originData.reviewDateEnd.slice(0, 10)}</span> :
-                                            <DatePicker placeholder="请选择" style={{ width: "100%" }} />
+                                            <DatePicker
+                                                placeholder="请选择"
+                                                style={{ width: "100%" }}
+                                                disabledDate={(value) => {
+                                                    return value.valueOf() <= getFieldValue('reviewDateStart')
+                                                }}
+                                            />
                                     )
                                 }
                             </FormItem>

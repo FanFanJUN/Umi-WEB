@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:37:22
- * @LastEditTime: 2020-11-20 14:06:32
+ * @LastEditTime: 2020-12-07 14:43:42
  * @LastEditors: Please set LastEditors
  * @Description: 审核实施计划-拟审核信息
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\AuditInfo.js
@@ -32,7 +32,7 @@ const AuditInfo = (props) => {
     const [tabList, setTableList] = useState([]);
     const [formData, setFormData] = useState({});
     const columns = [
-        { title: '审核实施计划行号', dataIndex: 'reviewImplementPlanLinenum', width: 140, align: "center", render:(text, item)=>text?text:item.reviewPlanMonthLinenum },
+        { title: '月度审核计划行号', dataIndex: 'reviewImplementPlanLinenum', width: 140, align: "center", render:(text, item)=>text?text:item.reviewPlanMonthLinenum },
         { title: '需求公司', dataIndex: 'applyCorporationName', width: 140, align: "center" },
         { title: '采购组织', dataIndex: 'purchaseTeamName', align: "center", width: 140 },
         { title: '物料分类', dataIndex: 'materialGroupName', align: "center", width: 140 },

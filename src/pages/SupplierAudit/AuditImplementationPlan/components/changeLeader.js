@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-11-11 10:31:15
- * @LastEditTime: 2020-11-19 16:04:39
+ * @LastEditTime: 2020-12-07 15:05:03
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\components\changeLeader.js
@@ -67,7 +67,7 @@ const ChangeLeader = (props) => {
     >
         <Spin spinning={loading}>
             <Row>
-                <FormItem {...formItemLayoutLong} label={'月度审核计划'}>
+                <FormItem {...formItemLayoutLong} label={'审核小组组长'}>
                     {
                         getFieldDecorator('memberId', { initialValue: originData.leaderId }),
                         getFieldDecorator('employeeNo', { initialValue: originData.leaderEmployeeNo }),

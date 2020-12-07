@@ -1,4 +1,4 @@
-import { baseUrl, basicServiceUrl, gatewayUrl, recommendUrl, smBaseUrl } from '../../../utils/commonUrl';
+import { baseUrl, basicServiceUrl, gatewayUrl, recommendUrl, samBaseUrl, smBaseUrl, purchaseApplyBaseUrl } from '../../../utils/commonUrl';
 import request from '../../../utils/request';
 import { FLOW_HOST } from '../../../utils/constants';
 import { ComboTree } from 'suid';
@@ -496,6 +496,28 @@ export const AuditCauseManagementConfig = {
   },
 };
 
+// 专业组
+export const purchaseDepartmentConfigForCode = {
+  allowClear: true,
+  placeholder: '选择专业组',
+  store: {
+    type: 'GET',
+    autoLoad: false,
+    url: `${purchaseApplyBaseUrl}/purchaseDepartment/findByPage`,
+    params: {
+      Q_EQ_frozen__bool: 0,
+      frozen: false
+    }
+  },
+  remotePaging: true,
+  rowKey: 'code',
+  reader: {
+    field: ['code'],
+    name: 'name',
+    description: 'code',
+  },
+};
+
 // 有id的公司列表
 export const AllCompanyConfig = {
   allowClear: true,
@@ -912,3 +934,65 @@ export const saveLeaderDecision = async (params) => {
     data: params,
   });
 };
+
+// 审核简报新增查询
+export const getAuditBriefing = async (params) => {
+  const url = `${recommendUrl}/api/abAuditBriefingManageService/addSelect`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+};
+
+// 审核简报管理新增获取默认值
+export const findForBriefingInsert = async (params = {}) => {
+  const url = `${recommendUrl}/api/abAuditBriefingManageService/findDetailForAdd`;
+  return request({
+    url,
+    method: 'GET',
+    params: params,
+  });
+};
+
+// 审核简报管理保存
+export const saveAuditBriefing = async (params) => {
+  const url = `${recommendUrl}/api/abAuditBriefingManageService/saveVo`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+};
+
+// 审核简报管理findOne
+export const findBriefingVoById = async (params = {}) => {
+  const url = `${recommendUrl}/api/abAuditBriefingManageService/findVoById`;
+  return request({
+    url,
+    method: 'GET',
+    params: params,
+  });
+};
+// 导出审核报告
+export const exportById = async (params = {}) => {
+  const url = `${recommendUrl}/abAuditBriefingManage/exportById`;
+  return request({
+    url,
+    method: 'GET',
+    params: params,
+    responseType: 'blob'
+  });
+};
+
+// 审核简报delete
+export const deleteBriefingById = async (params = {}) => {
+  const url = `${recommendUrl}/api/abAuditBriefingManageService/deleteVoById`;
+  return request({
+    url,
+    method: 'POST',
+    params: params,
+  });
+};
+
+
