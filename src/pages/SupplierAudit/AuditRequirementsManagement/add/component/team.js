@@ -36,6 +36,7 @@ const fieldsConfig = [
 ];
 
 const Team = (props) => {
+  let sort = 0
 
   // 解构的tree
   let destructionTreeArr = [];
@@ -343,6 +344,7 @@ const Team = (props) => {
   const recursion = (arr, type = undefined) => {
     let newArr = JSON.parse(JSON.stringify(arr));
     newArr.forEach(item => {
+      item.sort = sort++;
       item.systemId = item.systemId ? item.systemId : item.id;
       item.systemCode = item.systemCode ? item.systemCode : item.code;
       item.systemName = item.systemName ? item.systemName : item.name;
@@ -368,7 +370,6 @@ const Team = (props) => {
       if (data.defaultSystem && data.defaultSystem.length !== 0) {
         destructionTree(data.defaultSystem);
       }
-      console.log(props.treeData, destructionTreeArr, 'arrrrrrrs');
       let arr = [...props.treeData, ...destructionTreeArr];
       arr = duplicateRemoval(arr, 'systemId');
       arr = recursion(arr);

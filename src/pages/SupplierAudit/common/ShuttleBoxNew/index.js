@@ -6,6 +6,8 @@ const ShuttleBoxNew = (props) => {
 
   const [operation, setOperation] = useState(0);
 
+  let sort = 0;
+
   const [data, setData] = useState({
     leftCheckedKeys: [],
     leftData: [],
@@ -48,6 +50,7 @@ const ShuttleBoxNew = (props) => {
 
   const constructArr = (data) => {
     if (data.children.length !== 0) {
+      data.sort = sort++;
       data.systemId = data.systemId ? data.systemId : data.id;
       data.systemCode = data.code ? data.code : data.systemCode;
       data.systemName = data.name ? data.name : data.systemName;
@@ -57,6 +60,7 @@ const ShuttleBoxNew = (props) => {
         constructArr(item);
       });
     } else {
+      data.sort = sort++;
       data.systemId = data.systemId ? data.systemId : data.id;
       data.systemCode = data.code ? data.code : data.systemCode;
       data.systemName = data.name ? data.name : data.systemName;
@@ -68,6 +72,8 @@ const ShuttleBoxNew = (props) => {
   // 添加方法
   const addClick = () => {
     let arr = JSON.parse(JSON.stringify(data.leftSelectData));
+    arr.sort((a, b) => a['sort'] - b['sort']);
+    console.log(arr, 'arrrrr')
     arr = recursion(arr);
     setData(v => ({
       ...v,
