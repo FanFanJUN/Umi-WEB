@@ -186,7 +186,7 @@ export default function() {
 
   const columns = [
     {
-      title: '状态', dataIndex: 'state', width: 50, render: v => {
+      title: '状态', dataIndex: 'state', width: 50, align: 'center', render: v => {
         switch (v) {
           case 'DRAFT':
             return '草稿';
@@ -196,7 +196,7 @@ export default function() {
       },
     },
     {
-      title: '审批状态', dataIndex: 'flowStatus', width: 100, render: v => {
+      title: '审批状态', dataIndex: 'flowStatus', width: 100, align: 'left', render: v => {
         switch (v) {
           case 'INIT':
             return '未进入流程';
@@ -207,14 +207,14 @@ export default function() {
         }
       },
     },
-    { title: '审核需求号', dataIndex: 'reviewRequirementCode', width: 150 },
-    { title: '申请说明', dataIndex: 'reviewRequirementName', ellipsis: true, width: 200 },
-    { title: '申请公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 230 },
-    { title: '申请部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 230 },
-    { title: '采购组织', dataIndex: 'purchaseOrgName', ellipsis: true, width: 200 },
-    { title: '申请人员', dataIndex: 'applyName', ellipsis: true, width: 100 },
-    { title: '申请时间', dataIndex: 'applyDate', ellipsis: true, width: 200 },
-  ].map(item => ({ ...item, align: 'center' }));
+    { title: '审核需求号', dataIndex: 'reviewRequirementCode', align: 'right', width: 150 },
+    { title: '申请说明', dataIndex: 'reviewRequirementName', ellipsis: true, align: 'left', width: 200 },
+    { title: '申请公司', dataIndex: 'applyCorporationName', ellipsis: true, align: 'left', width: 230 },
+    { title: '申请部门', dataIndex: 'applyDepartmentName', align: 'left', ellipsis: true, width: 230 },
+    { title: '采购组织', dataIndex: 'purchaseOrgName', ellipsis: true, align: 'left', width: 200 },
+    { title: '申请人员', dataIndex: 'applyName', ellipsis: true, width: 100, align: 'left' },
+    { title: '申请时间', dataIndex: 'applyDate', ellipsis: true, width: 200, align: 'center'  },
+  ]
 
   // 提交审核验证
   const handleBeforeStartFlow = async () => {
