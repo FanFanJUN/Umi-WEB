@@ -5,9 +5,9 @@ import { Button, Input, message, Modal, Spin } from 'antd';
 import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
 import { ExtTable, utils, WorkFlow } from 'suid';
 import {
-  ApplyOrganizationProps,
+  ApplyOrganizationProps, AuditCauseManagementByReviewTypeCodeConfig,
   AuditCauseManagementConfig,
-  AuditTypeManagementConfig,
+  AuditTypeManagementConfig, AuditTypeManagementUnfrozenConfig,
   CompanyConfig, DeleteAuditRequirementsManagement, EndFlow,
   FindByFiltersConfig, HeightSearchApplyOrganizationProps, SupplierConfig,
 } from '../mainData/commomService';
@@ -178,8 +178,8 @@ export default function() {
     { title: '申请日期', key: 'applyDate', type: 'rangePicker', props: { placeholder: '输入申请日期' } },
     { title: '供应商', key: 'supplierCode', type: 'list', props: SupplierConfig },
     { title: '物料分类', key: 'materialSecondClassifyCode', type: 'tree', props: materialClassProps },
-    { title: '审核类型', key: 'reviewTypeCode', type: 'list', props: AuditTypeManagementConfig },
-    { title: '审核原因', key: 'reviewReasonCode', type: 'list', props: AuditCauseManagementConfig },
+    { title: '审核类型', key: 'reviewTypeCode', type: 'list', props: AuditTypeManagementUnfrozenConfig },
+    { title: '审核原因', key: 'reviewReasonCode', type: 'list', props: AuditCauseManagementByReviewTypeCodeConfig, params: 'reviewTypeCode', paramsKey: 'findByReviewTypeCode' },
     { title: '状态', key: 'state', type: 'list', props: managementStateProps },
     { title: '审批状态', key: 'flowState', type: 'list', props: flowProps },
   ];
