@@ -70,6 +70,7 @@ function CreateStrategy() {
                             modifytype={modifytype}
                             isView={true}
                             admitype={editData.documentType}
+                            isEdit={true}
                         />
                     </div>
                 </div>

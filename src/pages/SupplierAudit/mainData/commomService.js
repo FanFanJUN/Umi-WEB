@@ -225,6 +225,31 @@ export const UserByDepartmentNameConfig = {
   },
 };
 
+// 高级查询采购组织数据
+export const HeightSearchApplyOrganizationProps = {
+  allowClear: true,
+  store: {
+    url: `${baseUrl}/basic/listAllOrgnazationWithDataAuth`,
+    autoLoad: true,
+  },
+  rowKey: 'code',
+  reader: {
+    name: 'name',
+    field: ['code'],
+  },
+  placeholder: '请选择申请部门',
+  style: {
+    width: '100%',
+  },
+  // treeNodeProps: (node) => {
+  //   if (node.nodeLevel === 0) {
+  //     return {
+  //       selectable: false,
+  //     };
+  //   }
+  // },
+};
+
 // 采购组织数据
 export const ApplyOrganizationProps = {
   allowClear: true,

@@ -7,6 +7,7 @@ import ProblemAdd from './ProblemAdd';
 import { getRandom } from '../../../QualitySynergy/commonProps';
 import { OrderSeverityArr } from '../commonApi';
 import { recommendUrl } from '../../../../utils/commonUrl';
+import { BASE_URL } from '../../../../utils/constants';
 
 const FormItem = Form.Item;
 
@@ -197,9 +198,9 @@ const ProblemManagement = (props) => {
                         onClick={() => showProblemAdd('edit')}>编辑</Button>
                 <Button style={{ marginRight: '5px' }} disabled={data.selectedRowKeys.length === 0}
                         onClick={() => showProblemAdd('delete')}>删除</Button>
-                <Button style={{ marginRight: '5px' }}>批导入</Button>
+                <Button style={{ marginRight: '5px' }}>导入</Button>
                 <Button
-                  onClick={() => window.open(`/service.api/${recommendUrl}/srController/downloadProblemTemplate`)}>批导出</Button>
+                  onClick={() => window.open(`${window.location.origin}${BASE_URL}/${recommendUrl}/srController/downloadProblemTemplate`)}>导出</Button>
               </div>
             }
             <ExtTable
