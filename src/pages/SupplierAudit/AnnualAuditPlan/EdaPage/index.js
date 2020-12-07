@@ -1,9 +1,9 @@
 /*
  * @Author: Li Cai
- * @LastEditors: Please set LastEditors
+ * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:04:51
- * @LastEditTime: 2020-12-07 15:23:31
+ * @LastEditTime: 2020-12-07 17:32:38
  * @Description: 新增  编辑  详情 page
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/index.js
  */
@@ -49,7 +49,7 @@ const Index = (props) => {
     async function editDataInflow() {
         const allData = gatAllData();
         if (!(allData.bool)) return false;
-        const res = await reviewPlanYearAp({ ...allData, type: 'edit', inFlow: true});
+        const res = await reviewPlanYearAp({ ...allData, type: 'edit', inFlow: true });
         return res;
     }
 
@@ -71,13 +71,13 @@ const Index = (props) => {
         }
         switch (pageState) {
             case 'add':
-                setData((value) => ({ ...value, type: pageState, isView: false, title: '年度审核计划管理-新增' }));
+                setData((value) => ({ ...value, type: pageState, isView: false, title: '新增年度审核计划' }));
                 break;
             case 'edit':
-                setData((value) => ({ ...value, type: pageState, id, isView: false, title: '年度审核计划管理-编辑' }));
+                setData((value) => ({ ...value, type: pageState, id, isView: false, title: '编辑年度审核计划' }));
                 break;
             case 'detail':
-                setData((value) => ({ ...value, type: pageState, isView: true, title: `年度审核计划管理-明细` }));
+                setData((value) => ({ ...value, type: pageState, isView: true, title: `年度审核计划明细` }));
                 break;
             default:
                 break;
@@ -219,7 +219,7 @@ const Index = (props) => {
             <Spin spinning={spinLoading}>
                 <Affix>
                     <div className={classnames(styles.fbc, styles.affixHeader)}>
-                        <span>{data.title}</span>
+                        <span style={{ fontSize: '18px', fontWeight: 'bolder' }}>{data.title}</span>
                         <div style={{ display: "flex", alignItems: "center" }}>
                             {showButton()}
                         </div>

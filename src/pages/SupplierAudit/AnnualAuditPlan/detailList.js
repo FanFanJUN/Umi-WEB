@@ -111,7 +111,7 @@ export default function () {
             }
         }, },
         { title: '年度审核需求号', dataIndex: 'reviewPlanYearCode', width: 200 },
-        { title: '年度', dataIndex: 'applyYear', ellipsis: true, width: 80, render:(text)=>text ? (text + "月") : '' },
+        { title: '年度', dataIndex: 'applyYear', ellipsis: true, width: 80, render:(text)=>text && `${text}年` },
         { title: '拟制说明', dataIndex: 'reviewPlanYearName', ellipsis: true, width: 200 },
         { title: '拟制部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200 },
         { title: '拟制人', dataIndex: 'applyName', ellipsis: true, width: 140 },

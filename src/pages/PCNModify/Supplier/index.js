@@ -6,9 +6,9 @@ import { StartFlow } from 'seid';
 import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
 import styles from './index.less';
 import { smBaseUrl } from '@/utils/commonUrl';
-import { PCNMasterdatalist} from "../commonProps"
-import { deleteBatchById,PCNSupplierSubmit} from '../../../services/pcnModifyService'
-import {SupplierBilltypeList} from '../commonProps'
+import { PCNMasterdatalist } from "../commonProps"
+import { deleteBatchById, PCNSupplierSubmit } from '../../../services/pcnModifyService'
+import { SupplierBilltypeList } from '../commonProps'
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { Search } = Input
 const confirm = Modal.confirm;
@@ -53,7 +53,7 @@ function SupplierConfigure() {
             render: function (text, record, row) {
                 if (text === 0) {
                     return <div>草稿</div>;
-                } else if (text === 1){
+                } else if (text === 1) {
                     return <div className="successColor">已提交</div>;
                 } else if (text === 2) {
                     return <div className="successColor">已完成</div>;
@@ -109,12 +109,12 @@ function SupplierConfigure() {
                         direction: 'DESC'
                     }
                 ],
-                filters:seniorSearchvalue
+                filters: seniorSearchvalue
             },
             type: 'POST'
         }
     }
-   
+
 
     function listenerParentClose(event) {
         const { data = {} } = event;
@@ -125,9 +125,9 @@ function SupplierConfigure() {
     function cooperationChange(val) {
         let search = []
         search.push({
-            fieldName:'smDocunmentStatus',
+            fieldName: 'smDocunmentStatus',
             value: val.code,
-            operator:'EQ'
+            operator: 'EQ'
         })
         setSeniorsearchvalue(search)
         uploadTable();
@@ -158,7 +158,7 @@ function SupplierConfigure() {
             title: '是否确认删除',
             onOk: async () => {
                 let params = selectedRows[0].id;
-                const { success, message: msg } = await deleteBatchById({pcnTitleId:params});
+                const { success, message: msg } = await deleteBatchById({ pcnTitleId: params });
                 if (success) {
                     message.success('删除成功！');
                     uploadTable();
@@ -183,11 +183,11 @@ function SupplierConfigure() {
         if (status === 0) {
             status = 1
             statustype = true
-        }else {
+        } else {
             status = 0
             statustype = false
         }
-        const { success, message: msg } = await PCNSupplierSubmit({pcnTitleId:id,smDocunmentStatus:status});
+        const { success, message: msg } = await PCNSupplierSubmit({ pcnTitleId: id, smDocunmentStatus: status });
         if (success) {
             message.success(`${statustype ? '提交' : '撤回'}成功！`);
             uploadTable();
@@ -201,50 +201,22 @@ function SupplierConfigure() {
         uploadTable();
     }
     // 处理高级搜索
-    function handleAdvnacedSearch(value) {
-        value.smDocunmentStatus = value.materialGroupCode;
-        value.smPcnChangeTypeCode = value.applyPersonName;
-        value.smSupplierCode = value.materialCode;
-        value.smSupplierName = value.materialName;
-        delete value.applyPersonName;
-        delete value.applyPersonName_name;
-        delete value.materialCode;
-        delete value.materialGroupCode;
-        delete value.materialGroupCode_name;
-        let searchvalue = [];
-        searchvalue.push(value);
-        let newdata = [];
-        searchvalue.map(item => {
-            newdata.push(
-                {
-                    fieldName:'smSupplierCode',
-                    value: item.smSupplierCode,
-                    operator:'EQ'
-                },
-                {
-                    fieldName:'smSupplierName',
-                    value: item.smSupplierName,
-                    operator:'EQ'
-                },
-                {
-                    fieldName:'smDocunmentStatus',
-                    value: item.smDocunmentStatus,
-                    operator:'EQ'
-                },
-                {
-                    fieldName:'smPcnChangeTypeCode',
-                    value: item.smPcnChangeTypeCode,
-                    operator:'EQ'
-                }
-    
-            )
-        })
-        setSeniorsearchvalue(newdata)
+    function handleAdvnacedSearch(v) {
+        const keys = Object.keys(v);
+        const filters = keys.map((item) => {
+            const [_, operator, fieldName, isName] = item.split('_');
+            return {
+                fieldName,
+                operator,
+                value: !!isName ? undefined : v[item]
+            }
+        }).filter(item => !!item.value)
+        setSeniorsearchvalue(filters)
         headerRef.current.hide();
         uploadTable();
     }
-     // 清空泛虹公司
-     function clearinput() {
+    // 清空泛虹公司
+    function clearinput() {
         setSearchValue('')
         setSeniorsearchvalue('')
         uploadTable();
@@ -254,13 +226,13 @@ function SupplierConfigure() {
         <div style={{ width: '50%', display: 'flex', height: '100%', alignItems: 'center' }}>
             {
                 authAction(
-                    <Button type='primary' 
-                        ignore={DEVELOPER_ENV} 
-                        key='SRM-SM-PCNSUPPLIER-ADD' 
-                        className={styles.btn} 
+                    <Button type='primary'
+                        ignore={DEVELOPER_ENV}
+                        key='SRM-SM-PCNSUPPLIER-ADD'
+                        className={styles.btn}
                         onClick={AddModel}
-                        //disabled={empty}
-                        >新增
+                    //disabled={empty}
+                    >新增
                     </Button>
                 )
             }
@@ -278,13 +250,13 @@ function SupplierConfigure() {
             }
             {
                 authAction(
-                    <Button 
-                        ignore={DEVELOPER_ENV} 
-                        key='SRM-SM-PCNSUPPLIER-DELETE' 
-                        className={styles.btn} 
-                        onClick={handleDelete} 
+                    <Button
+                        ignore={DEVELOPER_ENV}
+                        key='SRM-SM-PCNSUPPLIER-DELETE'
+                        className={styles.btn}
+                        onClick={handleDelete}
                         disabled={empty || !underWay || !isSelf}
-                        >删除
+                    >删除
                     </Button>
                 )
             }
@@ -325,13 +297,13 @@ function SupplierConfigure() {
                 )
             }
         </div>
-    ) 
+    )
     const searchbank = ['name'];
     // 右侧搜索
     const HeaderRightButtons = (
-        <div style={{ display: 'flex'}}>
+        <div style={{ display: 'flex' }}>
             <ComboList
-                style={{width:'240px' }}
+                style={{ width: '240px' }}
                 searchProperties={searchbank}
                 {...SupplierBilltypeList}
                 afterSelect={cooperationChange}
@@ -349,7 +321,7 @@ function SupplierConfigure() {
                 className={styles.btn}
                 onSearch={handleQuickSerach}
                 allowClear
-                style={{ width: '240px'}}
+                style={{ width: '240px' }}
             />
         </div>
     )
@@ -357,8 +329,8 @@ function SupplierConfigure() {
     const formItems = [
         // { title: '供应商代码', key: 'materialCode',  props: { placeholder: '输入供应商代码' } },
         // { title: '供应商名称', key: 'materialName',  props: { placeholder: '输入供应商名称' } },
-        { title: '单据状态', key: 'materialGroupCode', type: 'list', props: SupplierBilltypeList },
-        { title: '变更类型', key: 'applyPersonName', type: 'list', props: PCNMasterdatalist },
+        { title: '单据状态', key: 'Q_EQ_smDocunmentStatus', type: 'list', props: SupplierBilltypeList },
+        { title: '变更类型', key: 'Q_EQ_smPcnChangeTypeCode', type: 'list', props: PCNMasterdatalist },
     ];
     return (
         <>
