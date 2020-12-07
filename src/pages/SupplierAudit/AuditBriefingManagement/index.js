@@ -105,6 +105,7 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
           tableRef.current.remoteDataRefresh();
           return;
         }
+        setData(v => ({ ...v, spinning: false }));
         message.error(msg);
       },
     });
@@ -127,6 +128,7 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
             tableRef.current.manualSelectedRows();
             tableRef.current.remoteDataRefresh();
           } else {
+            setData(v => ({ ...v, spinning: false }));
             message.error(res.message);
           }
         }).catch(err => message.error(err.message));
@@ -144,6 +146,7 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
         tableRef.current.manualSelectedRows();
         tableRef.current.remoteDataRefresh();
       } else {
+        setData(v => ({ ...v, spinning: false }));
         message.error(res.message);
       }
     }).catch(err => message.error(err.message));
