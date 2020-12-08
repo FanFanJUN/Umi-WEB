@@ -69,7 +69,7 @@ export default class RangeDatePicker extends Component {
             style={{ width: '100%' }}
             value={startDate}
             defaultValue={defaultStartDate}
-            disabled={this.props.disabled}
+            disabled={this.props.disabled || this.props.startDisabled}
             onChange={this.handleChangeStart}
             format={format}
             disabledDate={this.disabledDateStart}

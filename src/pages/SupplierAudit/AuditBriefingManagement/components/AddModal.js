@@ -165,17 +165,17 @@ const AddModal = forwardRef(({ form }, ref) => {
         </FormItem>
       </Col>
     </Row>
-    {/*<Row>*/}
-      {/*<Col span={22}>*/}
-        {/*<FormItem {...formLayout} label="年度期间">*/}
-          {/*{getFieldDecorator('yearPeriod', {*/}
-            {/*rules: [{ required: true, message: '年度期间不能为空!' }],*/}
-          {/*})(*/}
-            {/*<MonthPicker/>,*/}
-          {/*)}*/}
-        {/*</FormItem>*/}
-      {/*</Col>*/}
-    {/*</Row>*/}
+    <Row>
+      <Col span={22}>
+        <FormItem {...formLayout} label="年度期间">
+          {getFieldDecorator('yearPeriod', {
+            rules: [{ required: true, message: '年度期间不能为空!' }],
+          })(
+            <MonthPicker/>,
+          )}
+        </FormItem>
+      </Col>
+    </Row>
     <Row>
       <Col span={22}>
         <FormItem {...formLayout} label="本期">
@@ -196,6 +196,7 @@ const AddModal = forwardRef(({ form }, ref) => {
             rules: [{ required: true, message: '下期不能为空!' }],
           })(
             <MonthPicker
+              startDisabled
               // disabledDate={disabledDateStart}
               disabled={!form.getFieldValue('thisPeriod')}
             />)}
