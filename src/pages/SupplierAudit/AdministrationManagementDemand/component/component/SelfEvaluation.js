@@ -56,7 +56,10 @@ const SelfEvaluation = props => {
         (!data.children ? <InputNumber
           onBlur={refreshTable}
           value={v} max={data.highestScore}
-          onChange={value => data.reviewScore = value} min={0} /> : data.selfScore),
+          onChange={value => {
+            data.reviewScore = value;
+            changeSelfScore();
+          }} min={0} /> : data.selfScore),
     },
     {
       title: '情况说明', dataIndex: 'remark', width: 200,
@@ -105,6 +108,46 @@ const SelfEvaluation = props => {
       }
       console.log(res, 'ssss');
     });
+  };
+
+  // 体系计算总和
+  const systemCalculate = (arr, value) => {
+    if (value.parentId) {
+      arr.map(item => {
+        if (item.systemId === value.parentId) {
+          let num = 0;
+          item.children.forEach(v => num = num + (v.reviewScore ? v.reviewScore : v.selfScore) || 0);
+          item.selfScore = num;
+        } else {
+          if (item.children && item.children.length !== 0) {
+            systemCalculate(item.children, value);
+          }
+        }
+      });
+    }
+  };
+
+  // 指标计算总和
+  const calculate = (arr) => {
+    if (Array.isArray(arr)) {
+      arr.map(item => {
+        if (item.children && item.children.length !== 0) {
+          if (item.children[0].definition) {
+            let num = 0;
+            item.children.forEach(v => num = num + v.reviewScore);
+            item.selfScore = num;
+            systemCalculate(data.dataSource, item);
+          } else {
+            calculate(item.children);
+          }
+        }
+      });
+    }
+  };
+
+  // 修改指标的得分改变体系计算的总分
+  const changeSelfScore = () => {
+    calculate(data.dataSource);
   };
 
   const buildTree = (arr) => {
@@ -161,7 +204,7 @@ const SelfEvaluation = props => {
     buildParams(arr);
     SubmitResultsEntryApi(apiParams).then(res => {
       if (res.success) {
-        props.onCancel();
+        props.onCancel('ok');
       } else {
         message.error(res.message);
       }
