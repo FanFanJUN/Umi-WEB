@@ -32,17 +32,6 @@ const AddModal = forwardRef(({ form }, ref) => {
     setVisible(!!flag);
   };
 
-  //变化校验
-  const yearChange = () => {
-    setTimeout(() => {
-      form.validateFields(['thisPeriod'], { force: true });
-    }, 100);
-  };
-  const periodChange = () => {
-    setTimeout(() => {
-      form.validateFields(['nextPeriod'], { force: true });
-    }, 100);
-  };
   const onOk = () => {
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
@@ -76,15 +65,37 @@ const AddModal = forwardRef(({ form }, ref) => {
   };
   const { getFieldDecorator } = form;
 
+  //变化校验
+  const yearChange = () => {
+    setTimeout(() => {
+      form.validateFields(['thisPeriod'], { force: true });
+    }, 100);
+  };
+
   //校验是否在年内
   const checkInYear = (rule, value, callback) => {
-    if (value && value.length > 0) {
-      if (value[0].year() !== form.getFieldValue('year') || value[1].year() !== form.getFieldValue('year')) {
+    if (value.startDate && value.endDate) {
+      if (value.startDate.year()  !== form.getFieldValue('year') || value.endDate.year() !== form.getFieldValue('year')) {
         callback('请选择该年度月份');
         return false;
       }
+    }else {
+      callback('请选择');
+      return false;
     }
     callback();
+  };
+
+  const periodChange = (value) => {
+    setTimeout(() => {
+      const dateFormat = 'YYYY-MM-DD';
+      if (value.endDate) {
+        form.setFieldsValue({
+          ['nextPeriod']: {startDate:moment( moment(value.endDate).add(1, 'months'), dateFormat)}
+        });
+      }
+      form.validateFields(['nextPeriod'], { force: true });
+    }, 100);
   };
   //校验月份
   const checkMonth = (rule, value, callback) => {
@@ -154,17 +165,17 @@ const AddModal = forwardRef(({ form }, ref) => {
         </FormItem>
       </Col>
     </Row>
-    <Row>
-      <Col span={22}>
-        <FormItem {...formLayout} label="年度期间">
-          {getFieldDecorator('yearPeriod', {
-            rules: [{ required: true, message: '年度期间不能为空!' }],
-          })(
-            <MonthPicker/>,
-          )}
-        </FormItem>
-      </Col>
-    </Row>
+    {/*<Row>*/}
+      {/*<Col span={22}>*/}
+        {/*<FormItem {...formLayout} label="年度期间">*/}
+          {/*{getFieldDecorator('yearPeriod', {*/}
+            {/*rules: [{ required: true, message: '年度期间不能为空!' }],*/}
+          {/*})(*/}
+            {/*<MonthPicker/>,*/}
+          {/*)}*/}
+        {/*</FormItem>*/}
+      {/*</Col>*/}
+    {/*</Row>*/}
     <Row>
       <Col span={22}>
         <FormItem {...formLayout} label="本期">
@@ -182,7 +193,7 @@ const AddModal = forwardRef(({ form }, ref) => {
       <Col span={22}>
         <FormItem {...formLayout} label="下期">
           {getFieldDecorator('nextPeriod', {
-            rules: [{ required: true, message: '下期不能为空!' }, { validator: checkMonth }],
+            rules: [{ required: true, message: '下期不能为空!' }],
           })(
             <MonthPicker
               // disabledDate={disabledDateStart}
