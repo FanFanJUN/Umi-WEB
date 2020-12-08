@@ -61,7 +61,7 @@ const AuditScoreForm = React.forwardRef(({ form, isView, editData, type }, ref) 
     { title: '不适用', dataIndex: 'notApplyScore', width: 100 },
     {
       title: '审核得分',
-      dataIndex: ' reviewScore',
+      dataIndex: 'reviewScore',
       width: 100,
       render: (v, data) => data.ruleId ? <a onClick={() => targetScoringDetail(data)}>{v}</a> : v,
     },
