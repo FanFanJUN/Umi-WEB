@@ -52,37 +52,37 @@ const OpinionForm = React.forwardRef(({ form, userInfo, leaderApprove, teamData,
               </Col>
             </Row>
           </div>
-          {!leaderApprove && <div className={styles.wrapper}>
-            <div className={styles.bgw}>
-              <div className={styles.title}>领导小组意见</div>
-              <div className={styles.content}>
-                <Row>
-                  <Col span={24}>
-                    <FormItem label="是否按审核意见执行" {...formLayout}>
-                      <span>{teamData.whetherLeaderDecisionPass ? '是' : '否'}</span>
-                    </FormItem>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={24}>
-                    <FormItem label="意见" {...formLayout}>
-                      <span>{teamData.leaderDecisionOpinion}</span>
-                    </FormItem>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={24}>
-                    <FormItem {...formLayout} label={'附件'}>
-                      <Upload entityId={leaderData.leaderDecisionFiles}
-                              type={'show'}/>,
-                    </FormItem>
-                  </Col>
-                </Row>
-              </div>
-            </div>
-          </div>}
         </div>
       </div>
+      {!leaderApprove && <div className={styles.wrapper}>
+        <div className={styles.bgw}>
+          <div className={styles.title}>领导小组意见</div>
+          <div className={styles.content}>
+            <Row>
+              <Col span={24}>
+                <FormItem label="是否按审核意见执行" {...formLayout}>
+                  <span>{teamData.whetherLeaderDecisionPass ? '是' : '否'}</span>
+                </FormItem>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={24}>
+                <FormItem label="意见" {...formLayout}>
+                  <span>{teamData.leaderDecisionOpinion}</span>
+                </FormItem>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={24}>
+                <FormItem {...formLayout} label={'附件'}>
+                  <Upload entityId={leaderData.leaderDecisionFiles}
+                          type={'show'}/>,
+                </FormItem>
+              </Col>
+            </Row>
+          </div>
+        </div>
+      </div>}
     </div>
   );
 });
