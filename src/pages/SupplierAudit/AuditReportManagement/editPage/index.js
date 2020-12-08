@@ -26,6 +26,7 @@ import AuditComments from '../components/AuditComments';
 import { WorkFlow } from 'suid';
 import OpinionModal from '../components/OpinionModal';
 import OpinionModalForLeader from '../components/OpinionModalForLeader';
+import OpinionForm from '../components/OpinionForm';
 
 const { StartFlow } = WorkFlow;
 
@@ -35,7 +36,7 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
     getModalData,
     handleBeforeStartFlow,
     getAllData,
-    getLeaderModalData
+    getLeaderModalData,
   }));
   const { query } = router.useLocation();
   const getBaseInfoFormRef = useRef(null);
@@ -56,6 +57,7 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
     title: '',
     businessKey: null,
     userInfo: {},
+    code: '',
   });
 
   useEffect(() => {
@@ -66,7 +68,7 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
       findInitOne(id);
       setData((value) => ({ ...value, type: 'add', isView: false, title: '审核报告管理-新增' }));
     } else if (pageState === 'edit' || isApproveEdit) {
-      findOne(id);
+      findOne(id, false);
       setData((value) => ({
         ...value,
         type: state,
@@ -74,10 +76,15 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
         title: `审核报告管理-编辑`,
       }));
     } else if (pageState === 'detail' || isApproveDetail) {
-      findOne(id);
-      setData((value) => ({ ...value, type: 'detail', isView: true, title: `审核报告管理-明细` }));
+      findOne(id, true);
+      setData((value) => ({
+        ...value,
+        type: 'detail',
+        isView: true,
+        title: `审核报告管理-明细`,
+      }));
     } else if (purchaseApprove || leaderApprove) {
-      findOne(id);
+      findOne(id, true);
       setData((value) => ({ ...value, type: 'detail', isView: true, title: `审核报告管理-审批` }));
     }
   }, [query]);
@@ -97,13 +104,17 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
   };
 
   //获取值
-  const findOne = (id) => {
+  const findOne = (id, showCode) => {
     setData(v => ({ ...v, spinLoading: true }));
     findVoById({
       id,
     }).then(res => {
       if (res.success) {
-        setData(v => ({ ...v, editData: res.data, spinLoading: false }));
+        if (showCode) {
+          setData(v => ({ ...v, editData: res.data, spinLoading: false, code: res.data.auditReportManagCode }));
+        } else {
+          setData(v => ({ ...v, editData: res.data, spinLoading: false }));
+        }
       } else {
         message.error(res.message);
       }
@@ -201,7 +212,7 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
       <Spin spinning={data.spinLoading}>
         <Affix>
           <div className={classnames(styles.fbc, styles.affixHeader)}>
-            <span className={styles.title}>{data.title}</span>
+            <span className={styles.title}>{data.title + ' ' + data.code}</span>
             {
               isApprove ? null : (data.type !== 'detail') &&
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -263,6 +274,11 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
           editData={data.editData.problemVoList || []}/>
         <AuditComments
           editData={data.editData.reviewSuggestionVo || {}}/>
+        {data.isView && !purchaseApprove &&<OpinionForm
+          leaderApprove={leaderApprove}
+          teamData={data.editData.purchasingTeamOpinionBo || {}}
+          leaderData={data.editData.purchasingTeamOpinionBo || {}}
+        />}
         <OpinionModal
           title={'小组意见'}
           wrappedComponentRef={getModalRef}/>
