@@ -47,7 +47,7 @@ const EditableCell = (config) => {
     const a = record[dataIndex];
     switch (inputType) {
       case 'InputNumber':
-        return <InputNumber disabled={inputDisabled} min={0} {...props} />
+        return <InputNumber disabled={inputDisabled} min={0} />
       case 'DatePicker':
         return <DatePicker {...props} />
       case 'YearPicker':
@@ -305,7 +305,6 @@ const EditableTable = (props) => {
         newData.splice(index, 1, {
           ...item,
           ...row,
-          filled: true
         });
         setEditingKey('');
         setButtonDisabled(false);
@@ -335,7 +334,7 @@ const EditableTable = (props) => {
       }
     }, {}) : {}
     const newData = isEmptyArray(newArray) ?
-      [{ guid: id, filled: false, recommendDemandId, ...copyItems }] : [{ guid: id, filled: false, recommendDemandId, ...copyItems }, ...newArray];
+      [{ guid: id, recommendDemandId, ...copyItems }] : [{ guid: id, recommendDemandId, ...copyItems }, ...newArray];
     setNewData(newData, tableType); // 新增数据 + 所属哪个Table
     setEditingKey(id); // 新增处于编辑行
     setButtonDisabled(true); // 未保存无法操作
