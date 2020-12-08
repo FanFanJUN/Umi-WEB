@@ -42,6 +42,14 @@ function Allocation() {
       dataIndex: 'buName'
     },
     {
+      title: '物料分类',
+      dataIndex: 'materialCategoryName'
+    },
+    {
+      title: '采购专业组',
+      dataIndex: 'purchaseProfessionalGroup'
+    },
+    {
       title: '评审人',
       dataIndex: 'scorerName',
       render(text, record) {

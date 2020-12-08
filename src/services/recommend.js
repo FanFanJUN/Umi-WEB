@@ -132,7 +132,7 @@ export const saveOpinion = params => createServiceRequest({
 
 // 删除意见
 export const removeOpinion = params => createServiceRequest({
-  path: '/api/fillingOpinionService/delete',
+  path: '/api/fillingOpinionService/deleteFillingOpinion',
   params,
   method: 'DELETE',
   hack: true

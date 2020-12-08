@@ -56,8 +56,8 @@ const AuditorInfoFrom = React.forwardRef(({ form, editData,leaderName }, ref) =>
           selectedRowKeys: editData[0].reviewTeamMemberBoList[0].id,
         }));
         if (editData[0].reviewTeamMemberBoList[0].memberRuleBoList && editData[0].reviewTeamMemberBoList[0].memberRuleBoList.length > 0) {
-          setTreeData(editData[0].reviewTeamMemberBoList[0].memberRuleBoList);
           getCheckedKeys(editData[0].reviewTeamMemberBoList[0].memberRuleBoList);
+          setTreeData(editData[0].reviewTeamMemberBoList[0].memberRuleBoList);
         }
       }
     }
@@ -154,6 +154,7 @@ const AuditorInfoFrom = React.forwardRef(({ form, editData,leaderName }, ref) =>
   const handleContentSelectedRows = (keys, values) => {
     setContentData(v => ({ ...v, selectedRows: values, selectedRowKeys: keys }));
     if (values && values.length > 0 && values[0].memberRuleBoList && values[0].memberRuleBoList.length > 0) {
+      getCheckedKeys(values[0].memberRuleBoList);
       setTreeData(values[0].memberRuleBoList);
     } else {
       setTreeData([]);
