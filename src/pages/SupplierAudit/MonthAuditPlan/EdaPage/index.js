@@ -207,7 +207,6 @@ const Index = (props) => {
                 setTimeout(()=>{
                     let closeBtns = document.getElementsByClassName("close-icon");
                     for(let i = 0; i< closeBtns.length; i++) {
-                        console.log(closeBtns[i])
                         closeBtns[i].click();
                     }
                 }, 1000);
