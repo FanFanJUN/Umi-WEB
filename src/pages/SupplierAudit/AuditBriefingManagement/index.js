@@ -174,8 +174,8 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
 
   const columns = [
     { title: '状态', dataIndex: 'arAuditReportManagStatusRemark', width: 80 },
-    { title: '审批状态', dataIndex: 'flowStatusRemark', width: 200 },
-    { title: '审核简报编号', dataIndex: 'auditRbriefingManageCode', width: 200 },
+    { title: '审批状态', dataIndex: 'flowStatusRemark', width: 120 },
+    { title: '审核简报编号', dataIndex: 'auditRbriefingManageCode', width: 140 },
     {
       title: '统计期间', dataIndex: 'reviewRequirementCode', width: 200,
       render: (text, record) => {
@@ -184,8 +184,8 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
     },
     { title: '拟制公司', dataIndex: 'statisticCorporationName', ellipsis: true, width: 200 },
     { title: '拟制部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200 },
-    { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 200 },
-    { title: '拟制时间', dataIndex: 'createdDate', ellipsis: true, width: 200 },
+    { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 120 },
+    { title: '拟制时间', dataIndex: 'createdDate', ellipsis: true, width: 140 },
   ].map(item => ({ ...item, align: 'center' }));
 
 
@@ -302,6 +302,7 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
   return (
     <Fragment>
       <Header
+        hiddenClose
         left={headerLeft}
         right={headerRight}
         ref={headerRef}
