@@ -1,4 +1,5 @@
-import React, { useState, useRef, Fragment } from 'react';
+import React, { useState, useRef, Fragment, useEffect } from 'react';
+import queryString from 'query-string';
 import Header from '../../../components/Header';
 import AdvancedForm from '../../../components/AdvancedForm';
 import { Input, Checkbox, message } from 'antd';
@@ -30,6 +31,12 @@ export default function() {
     selectedRows: [],
     EpTechnicalShareDemandSearchBo: {},
   })
+
+  useEffect(()=>{
+    // 处理工作台过来-url携带参数
+    let afterUrl = queryString.parse(window.location.search);
+    setData(v => ({ ...v, EpTechnicalShareDemandSearchBo: afterUrl }));
+  }, [])
 
   const handleQuickSearch = (value) => {
     setData(v => ({...v, quickSearchValue: value}))
