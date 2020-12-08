@@ -13,7 +13,7 @@ function PutForwardOpinion({
   form
 }) {
   const { query } = useLocation();
-  const tabRef = useRef(null);
+  const tableRef = useRef(null);
   const [confirmLoading, toggleConfirmLoading] = useState(false)
   const [visible, setVisible] = useState(false);
   const [selectedRowKeys, setRowKeys] = useState([]);
@@ -87,7 +87,7 @@ function PutForwardOpinion({
       message.success(msg)
       setVisible(false)
       cleanSelectedRecord()
-      tabRef.current.remoteDataRefresh()
+      tableRef.current.remoteDataRefresh()
       return
     }
     message.error(msg)
@@ -102,7 +102,7 @@ function PutForwardOpinion({
         if (success) {
           message.success(msg);
           cleanSelectedRecord();
-          tabRef.current.remoteDataRefresh();
+          tableRef.current.remoteDataRefresh();
           return
         }
         message.error(msg)
@@ -121,7 +121,7 @@ function PutForwardOpinion({
         if (success) {
           message.success(msg);
           cleanSelectedRecord();
-          tabRef.current.remoteDataRefresh();
+          tableRef.current.remoteDataRefresh();
           return
         }
         message.error(msg)
@@ -154,7 +154,7 @@ function PutForwardOpinion({
               height={h}
               showSearch={false}
               {...tableProps}
-              ref={tabRef}
+              ref={tableRef}
             />
         }
       </AutoSizeLayout>

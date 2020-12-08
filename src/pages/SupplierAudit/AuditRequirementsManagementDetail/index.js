@@ -25,6 +25,7 @@ const { Search } = Input;
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 
 export default function() {
+  const headerRef = useRef(null);
   const tableRef = useRef(null);
 
   const [data, setData] = useState({
@@ -57,6 +58,7 @@ export default function() {
     // delete value.state_name;
     // delete value.allotSupplierState_name;
     setData(v => ({ ...v, epTechnicalShareDemandSearchBo: value }));
+    headerRef.current.hide();
     tableRef.current.manualSelectedRows();
     tableRef.current.remoteDataRefresh();
   };
@@ -238,6 +240,8 @@ export default function() {
       <Header
         left={headerLeft}
         right={headerRight}
+        ref={headerRef}
+        hiddenClose
         content={
           <AdvancedForm formItems={formItems} onOk={handleAdvancedSearch}/>
         }

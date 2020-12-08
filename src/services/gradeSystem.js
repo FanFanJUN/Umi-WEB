@@ -754,3 +754,12 @@ export const vmiSituationRemove = params => createServiceRequest({
 })
 
 /** 是否签订vmi协议主数据 end  */
+
+
+// 批量导出质量主数据
+export const batchExportQualityData = params => createServiceRequest({
+  path: '/bafController/exportBusinessData',
+  params,
+  method: 'POST',
+  responseType: 'blob'
+})

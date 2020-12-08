@@ -13,10 +13,12 @@ import {
   Row,
   Col,
   DatePicker,
-  Select
+  Select,
+  Modal
 } from 'antd';
 import { ComboList } from 'suid';
-import { evlLevelEmu, evaluateSystemFormCodeProps, businessMainProps } from '../../../utils/commonProps';
+import { evlLevelEmu, evaluateSystemFormCodeProps, businessMainProps, businessUnitMainProps } from '../../../utils/commonProps';
+import { batchExportQualityData } from '../../../services/gradeSystem';
 const { create, Item: FormItem } = Form;
 const { Option } = Select;
 const formLayout = {
@@ -31,22 +33,92 @@ function Quality({
   form
 }) {
   const [loading, toggleLoading] = useState(false);
-  const { getFieldDecorator } = form;
+  const { getFieldDecorator, getFieldsValue, validateFields } = form;
+  const { startDate, endDate, evlLevelEnum } = getFieldsValue();
+  const endDisabledDate = (c) => c < startDate;
+  const startDisabledDate = (s) => s > endDate;
+  async function exportData() {
+    const values = await validateFields();
+    Modal.confirm({
+      title: '导出数据',
+      content: '是否导出当前所选条件下的所有数据？',
+      okText: '导出',
+      cancelText: '取消',
+      onOk: async () => {
+        const params = {
+          ...values,
+          startDate: values.startDate.format('YYYY-MM-DD'),
+          endDate: values.endDate.format('YYYY-MM-DD')
+        }
+        toggleLoading(true)
+        const { success, data } = await batchExportQualityData(params)
+        toggleLoading(false)
+      }
+    })
+  }
+  function getEvlLevelCorrelation(v) {
+    if (v === 'CORP_AND_PURCHASE_ORG') {
+      return null
+    }
+    if (v === 'BG') {
+      return (
+        <FormItem key='BG' label='业务板块' {...formLayout}>
+          {
+            getFieldDecorator('bgCode'),
+            getFieldDecorator('businessGroupName')(
+              <ComboList
+                {...businessUnitMainProps}
+                form={form}
+                name='businessGroupName'
+                field={['bgCode']}
+              />
+            )
+          }
+        </FormItem>
+      )
+    }
+    if (v === 'BU') {
+      return (
+        <FormItem key='BU' label='业务单元' {...formLayout}>
+          {
+            getFieldDecorator('buCode'),
+            getFieldDecorator('businessUnitName')(
+              <ComboList
+                {...businessMainProps}
+                form={form}
+                name='businessUnitName'
+                field={['buCode']}
+              />
+            )
+          }
+        </FormItem>
+      )
+    }
+    return null
+  }
   return (
     <Spin spinning={loading}>
       <Affix>
         <div className={styles.verticalPadding}>
-          <Button className={styles.btn} type='primary'>导出待评价数据</Button>
+          <Button className={styles.btn} type='primary' onClick={exportData}>导出待评价数据</Button>
           <Button className={styles.btn}>导入评价数据</Button>
         </div>
       </Affix>
       <Form {...formLayout}>
+        <div className={styles.commonTitle}>数据导出参数选择</div>
         <Row gutter={[12, 0]}>
           <Col span={12}>
             <FormItem label='评价数据开始时间'>
               {
-                getFieldDecorator('startDate')(
-                  <DatePicker className={styles.formItem} />
+                getFieldDecorator('startDate', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '评价数据开始时间不能为空'
+                    }
+                  ]
+                })(
+                  <DatePicker className={styles.formItem} disabledDate={startDisabledDate} />
                 )
               }
             </FormItem>
@@ -54,8 +126,15 @@ function Quality({
           <Col span={12}>
             <FormItem label='评价数据结束时间'>
               {
-                getFieldDecorator('endDate')(
-                  <DatePicker className={styles.formItem} />
+                getFieldDecorator('endDate', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '评价数据结束时间不能为空'
+                    }
+                  ]
+                })(
+                  <DatePicker className={styles.formItem} disabled={!startDate} disabledDate={endDisabledDate} />
                 )
               }
             </FormItem>
@@ -63,8 +142,15 @@ function Quality({
           <Col span={12}>
             <FormItem label='评价数据层次'>
               {
-                getFieldDecorator('evlLevelEnum')(
-                  <Select>
+                getFieldDecorator('evlLevelEnum', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '评价数据层次不能为空'
+                    }
+                  ]
+                })(
+                  <Select placeholder='选择数据层次'>
                     {
                       evlLevelEmu.map(item => (
                         <Option key={item.value}>{item.label}</Option>
@@ -76,29 +162,26 @@ function Quality({
             </FormItem>
           </Col>
           <Col span={12}>
-            <FormItem label='业务单元'>
-              {
-                getFieldDecorator('buCode'),
-                getFieldDecorator('buName')(
-                  <ComboList
-                    {...businessMainProps}
-                    form={form}
-                    name='buName'
-                    field={['buCode']}
-                  />
-                )
-              }
-            </FormItem>
+            {
+              getEvlLevelCorrelation(evlLevelEnum)
+            }
           </Col>
           <Col span={12}>
             <FormItem label='评价体系'>
               {
                 getFieldDecorator('evlSystemId'),
-                getFieldDecorator('buName')(
+                getFieldDecorator('mainDataEvlSystemName', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '评价体系不能为空'
+                    }
+                  ]
+                })(
                   <ComboList
                     form={form}
                     name='mainDataEvlSystemName'
-                    field={['mainDataEvlSystemId']}
+                    field={['evlSystemId']}
                     {...evaluateSystemFormCodeProps}
                     store={{
                       ...evaluateSystemFormCodeProps.store,

@@ -1089,11 +1089,11 @@ export const reportStateProps = {
   allowClear: true,
   dataSource: [
     {
-      code: 'DRAFT',
+      code: 'Draft',
       name: '草稿',
     },
     {
-      code: 'EFFECT',
+      code: 'Take_effect',
       name: '生效',
     },
   ],

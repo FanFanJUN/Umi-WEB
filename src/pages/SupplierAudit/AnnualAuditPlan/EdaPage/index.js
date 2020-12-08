@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:04:51
- * @LastEditTime: 2020-12-07 17:32:38
+ * @LastEditTime: 2020-12-08 11:02:53
  * @Description: 新增  编辑  详情 page
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/index.js
  */
@@ -93,7 +93,7 @@ const Index = (props) => {
 
     const gatAllData = () => {
         let allData = { bool: true };
-        const finnalLineData = !isEmptyArray(lineData) ? lineData : originData.planYearLineVos;
+        const finnalLineData = !isEmptyArray(lineData) ? lineData : (originData.planYearLineVos ? originData.planYearLineVos : []);
         form.validateFieldsAndScroll((err, values) => {
             if (err) {
                 allData = { bool: false };
@@ -138,13 +138,14 @@ const Index = (props) => {
             return res.data;
         } else {
             console.log("res", res)
-            setSpinLoading(false);
             if (res.success) {
                 message.success("暂存成功");
+                setSpinLoading(false);
                 setTimeout(() => {
                     closeCurrent();
                 }, 1)
             } else {
+                setSpinLoading(false);
                 message.error(res.message);
             }
         }
@@ -156,6 +157,7 @@ const Index = (props) => {
     // 提交审核验证
     const handleBeforeStartFlow = async () => {
         const id = await tohandleSave("submit");
+        if(!id) return false;
         return new Promise(function (resolve, reject) {
             if (id) {
                 resolve({

@@ -53,6 +53,18 @@ function ReviewMain() {
       dataIndex: 'buName'
     },
     {
+      title: '物料分类代码',
+      dataIndex: 'materialCategoryCode'
+    },
+    {
+      title: '物料分类名称',
+      dataIndex: 'materialCategoryName'
+    },
+    {
+      title: '采购专业组',
+      dataIndex: 'purchaseProfessionalGroup'
+    },
+    {
       title: '评审人员工编号',
       dataIndex: 'scorerCode'
     },

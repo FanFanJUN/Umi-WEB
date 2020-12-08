@@ -3,18 +3,20 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime: 2020-12-02 16:02:21
+ * @LastEditTime: 2020-12-08 11:29:24
  * @Description: 行信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
 import React, { useEffect, useRef, useState } from 'react';
 import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/edit/BaseInfo.less';
-import { Form, Button, message } from 'antd';
+import { Form, Button, message, Modal } from 'antd';
 import { ExtTable } from 'suid';
 import AddModal from './AddModal';
 import BatchEditModal from './BatchEditModal';
 import { isEmptyArray } from '../../../../utils/utilTool';
+import moment from 'moment';
 
+const { confirm } = Modal;
 let LineInfo = (props, ref) => {
 
   const { setlineData, originData, type, isView } = props;
@@ -63,28 +65,39 @@ let LineInfo = (props, ref) => {
         return `${record.materialGroupCode}_${record.materialGroupName}`;
       }
     },
-    { title: '物料级别', dataIndex: 'materialGradeName', ellipsis: true, width: 140 },
+    { title: '物料级别', dataIndex: 'materialGradeName', ellipsis: true, width: 80, align: 'center' },
     {
       title: '生产厂地址', dataIndex: 'address', ellipsis: true, width: 200, render: (v, data) => {
-        return data.countryName && `${data.countryName + data.provinceName + data.cityName + data.countyName + data.address}`;
+        return data.countryName && `${data.countryName + data.provinceName + data.cityName + data.countyName + data.address}`.replace(/\s+/g, "");
       }
     },
-    { title: '供应商联系人', dataIndex: 'contactUserName', ellipsis: true, width: 140 },
-    { title: '供应商联系电话', dataIndex: 'contactUserTel', ellipsis: true, width: 140 },
-    { title: '审核类型', dataIndex: 'reviewTypeName', ellipsis: true, width: 140 },
+    { title: '供应商联系人', dataIndex: 'contactUserName', ellipsis: true, width: 140, align: 'center' },
+    { title: '供应商联系电话', dataIndex: 'contactUserTel', ellipsis: true, width: 140, align: 'center' },
+    { title: '审核类型', dataIndex: 'reviewTypeName', ellipsis: true, width: 80 },
     { title: '审核原因', dataIndex: 'reviewReasonName', ellipsis: true, width: 140 },
-    { title: '审核方式', dataIndex: 'reviewWayName', ellipsis: true, width: 140 },
-    { title: '预计审核月度', dataIndex: 'reviewMonth', ellipsis: true, width: 140, render: text => text && `${text} 月` },
+    { title: '审核方式', dataIndex: 'reviewWayName', ellipsis: true, width: 80 },
+    { title: '预计审核月度', dataIndex: 'reviewMonth', ellipsis: true, width: 103, render: text => text && moment(text).format('YYYY-MM'), align: 'center' },
     { title: '专业组', dataIndex: 'specialtyTeamName', ellipsis: true, width: 140 },
     { title: '备注', dataIndex: 'remark', ellipsis: true, width: 140 },
-  ].map(item => ({ ...item, align: 'center' }))
+  ];
 
   const handleBtn = (type) => {
     switch (type) {
       case 'add':
         return setData(v => ({ ...v, visible: true, title: '从合格供应商名录新增', type: 'add' }));
       case 'delete':
-        filterSelectRow();
+        confirm({
+          title: '确定删除已选择行数据?',
+          okText: '是',
+          okType: 'danger',
+          cancelText: '否',
+          onOk() {
+            filterSelectRow();
+          },
+          onCancel() {
+            console.log('Cancel');
+          },
+        });
         break;
       case 'edit':
         setBatchEditVisible(true);

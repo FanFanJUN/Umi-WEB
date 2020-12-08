@@ -33,7 +33,7 @@ const EditableCell = (config) => {
       inputDisabled,
       inputDefaultValue,
       selectOptions,
-      props,
+      props = {},
     }
   } = config;
   const { getFieldDecorator } = form;
@@ -96,7 +96,7 @@ const EditableCell = (config) => {
   const getRecordData = () => {
     const a = record[dataIndex];
     if (a !== null && a !== undefined) {
-      if (inputType === 'Select') {
+      if (inputType === 'Select' && props?.mode !== 'multiple') {
         // a有boolean 类型  判断有无值  不用&&符号
         if (!isEmptyArray(selectOptions) && a !== undefined && a !== '' && a !== null) {
           // col 传递参数
@@ -119,6 +119,8 @@ const EditableCell = (config) => {
         const idKey = dataIndex.substr(0, dataIndex.length - 1);
         const entityId = !!a ? a : record[idKey]
         return <UploadFile type='show' entityId={entityId} />
+      } else if (inputType === 'Select' && props?.mode === 'multiple') {
+        return Array.isArray(a) ? a.join(',') : a
       } else {
         return a;
       }
@@ -142,6 +144,8 @@ const EditableCell = (config) => {
       }
       else if (inputType === 'UploadFile') {
         return record?.attachmentId;
+      } else if (inputType === 'Select' && props.mode === 'multiple') {
+        return Array.isArray(a) ? a : []
       }
       return record[dataIndex];
     }

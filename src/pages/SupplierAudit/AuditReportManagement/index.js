@@ -29,6 +29,7 @@ const { Search } = Input;
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const supplierPropsNew = {
   ...supplierProps,
+  allowClear: true,
   reader: {
     name: 'name',
     field: ['code'],
@@ -38,6 +39,7 @@ const supplierPropsNew = {
 };
 const agentList = {
   ...supplierProps,
+  allowClear: true,
   reader: {
     name: 'name',
     field: ['code'],
@@ -71,7 +73,7 @@ const AuditReportManagement = forwardRef(({}, ref) => {
     modalVisible: false,
   });
   const currentUserId = getUserId();
-
+  const headerRef = useRef(null);
   const getModalRef = useRef(null);
 
   const onChangeCreate = (e) => {
@@ -154,6 +156,7 @@ const AuditReportManagement = forwardRef(({}, ref) => {
   // 高级查询搜索
   const handleAdvancedSearch = (value) => {
     setData(v => ({ ...v, advancedSearchValue: value }));
+    headerRef.current.hide();
     tableRef.current.manualSelectedRows();
     tableRef.current.remoteDataRefresh();
   };
@@ -183,14 +186,17 @@ const AuditReportManagement = forwardRef(({}, ref) => {
 
   const columns = [
     { title: '状态', dataIndex: 'arAuditReportManagStatusRemark', width: 80 },
-    { title: '审批状态', dataIndex: 'flowStatusRemark', width: 200 },
-    { title: '审核报告', dataIndex: 'auditReportManagCode', width: 200 },
-    { title: '审核实施计划号', dataIndex: 'reviewImplementPlanCode', width: 200 },
+    { title: '审批状态', dataIndex: 'flowStatusRemark', width: 120 },
+    { title: '审核报告', dataIndex: 'auditReportManagCode', width: 180 },
+    { title: '审核实施计划号', dataIndex: 'reviewImplementPlanCode', width: 140 },
     { title: '需求公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 200 },
     { title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 200 },
-    { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 200 },
-    { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 200 },
-    { title: '拟制时间', dataIndex: 'createdDate', ellipsis: true, width: 200 },
+    {
+      title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 200,
+      render: (text, record) => record.materialGroupCode + ' ' + record.materialGroupName,
+    },
+    { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 120 },
+    { title: '拟制时间', dataIndex: 'createdDate', ellipsis: true, width: 140 },
   ].map(item => ({ ...item, align: 'center' }));
 
 
@@ -293,14 +299,16 @@ const AuditReportManagement = forwardRef(({}, ref) => {
     const [flowData = {}] = rows;
     setData((v) => ({ ...v, selectedRowKeys: value, selectedRows: rows, flowId: flowData.id }));
   };
-
+  console.log(data.advancedSearchValue);
   return (
     <Fragment>
       <Header
         left={headerLeft}
         right={headerRight}
+        ref={headerRef}
+        hiddenClose
         content={
-          <AdvancedForm formItems={formItems} onOk={handleAdvancedSearch}/>
+          <AdvancedForm  formItems={formItems} onOk={handleAdvancedSearch}/>
         }
         advanced
       />
