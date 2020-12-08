@@ -204,6 +204,8 @@ const AddModal = (props) => {
                     if (values.reviewMonth) {
                         values.reviewMonth = Number(values.reviewMonth);
                     }
+                } else {
+                    delete values.businessCode;
                 }
                 setCascadeParams(values);
             }

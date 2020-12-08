@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-12 14:44:24
- * @LastEditTime: 2020-12-04 11:18:25
+ * @LastEditTime: 2020-12-08 16:04:21
  * @Description: 审核类型、是否通过和结论配置
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/mainData/AwcConf/index.js
  */
@@ -41,6 +41,7 @@ const Index = () => {
   const columns = [
     { title: '审核类型代码', dataIndex: 'reviewTypeCode', width: 200 },
     { title: '审核类型名称', dataIndex: 'reviewTypeName', ellipsis: true },
+    { title: '评定等级', dataIndex: 'performanceRating', ellipsis: true },
     { title: '结论代码', dataIndex: 'conclusionCode', ellipsis: true },
     { title: '结论名称', dataIndex: 'conclusionName', ellipsis: true },
     {
@@ -59,6 +60,12 @@ const Index = () => {
       code: 'reviewTypeName',
       config: AuditTypeAllConfig,
       field: ['reviewTypeCode', 'reviewTypeId']
+    },
+    {
+      name: '评定等级',
+      code: 'performanceRating',
+      type: 'selectWithData',
+      data: [{ text: 'A', value: 'A' }, { text: 'B', value: 'B' }, { text: 'C', value: 'C' }, { text: 'D', value: 'D' }]
     },
     {
       name: '结论名称',
