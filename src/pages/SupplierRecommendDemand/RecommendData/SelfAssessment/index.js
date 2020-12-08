@@ -158,7 +158,7 @@ function SelfAssessment({
     toggleLoading(false)
     // const errors = data.filter(item => !!item.msg);
     if (success) {
-      findTreeNodeAndSetValue(data)
+      setDataSource(data)
       message.success('导入成功')
       return false
     }

@@ -43,6 +43,7 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
     const fetchData = async () => {
       setLoading(true);
       const { success, msg, data } = await requestGetApi({ supplierRecommendDemandId: id, tabKey: 'manufactureAbilityTab' });
+      setLoading(false);
       if (success) {
         const {
           productionCapacities = [],
@@ -57,12 +58,12 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
         setproductionCapacities(productionCapacities.map(item => ({ ...item, guid: item.id })));
         setkeyProductEquipments(keyProductEquipments.map(item => ({ ...item, guid: item.id })));
         setkeyTechnologyEquipments(keyTechnologyEquipments.map(item => ({ ...item, guid: item.id })));
-        setcurrentProductionSituations(currentProductionSituations.map(item => ({ ...item, guid: item.id, offSeasonMonth: item.offSeasonMonth.split(',') })));
+        setcurrentProductionSituations(currentProductionSituations.map(item => ({ ...item, guid: item.id, offSeasonMonth: item.offSeasonMonth?.split(',') })));
         setproductManufacturingIntroductions(productManufacturingIntroductions.map(item => ({ ...item, guid: item.id })));
       } else {
         message.error(msg);
       }
-      setLoading(false);
+
     };
     fetchData();
   }, []);
@@ -315,7 +316,7 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
         ...value,
         tabKey: 'manufactureAbilityTab',
         productionCapacities: productionCapacities,
-        currentProductionSituations: currentProductionSituations.map(item=>({
+        currentProductionSituations: currentProductionSituations.map(item => ({
           ...item,
           offSeasonMonth: item.offSeasonMonth.join(',')
         })),
