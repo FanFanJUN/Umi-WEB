@@ -348,7 +348,7 @@ export default () => {
     const [key] = selectedRowKeys;
     const { id = '' } = FRAMELEEMENT;
     const { pathname } = window.location;
-    openNewTab(`supplier/recommend/team/filter/opinion/detail?type=detail&id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '供应商推荐需求明细', false)
+    openNewTab(`supplier/recommend/fillIn/data/detail?type=detail&id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '供应商推荐需求明细', false)
   }
   // 填报信息确认页签打开
   function handleOpenInfomationConfirm() {
