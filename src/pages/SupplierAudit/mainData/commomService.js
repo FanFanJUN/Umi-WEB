@@ -354,6 +354,24 @@ export const FindByFiltersConfig = {
   },
 };
 
+// 所有采购组织
+export const FindAllByFiltersConfig = {
+  allowClear: true,
+  placeholder: '选择采购组织',
+  store: {
+    type: 'GET',
+    autoLoad: false,
+    url: `${baseUrl}/api/purchaseOrgService/findAllUnfrozen`,
+  },
+  remotePaging: false,
+  rowKey: 'code',
+  reader: {
+    field: ['code'],
+    name: 'name',
+    description: 'code',
+  },
+};
+
 // 供应商
 export const SupplierConfig = {
   allowClear: true,
@@ -545,6 +563,24 @@ export const CompanyConfig = {
     type: 'GET',
     autoLoad: false,
     url: `${baseUrl}/basic/listAllCorporationWithDataAuth`,
+  },
+  rowKey: 'code',
+  reader: {
+    field: ['code'],
+    name: 'name',
+    description: 'code',
+  },
+};
+
+// 所有公司列表
+export const SearchAllCompanyConfig = {
+  allowClear: true,
+  placeholder: '选择公司',
+  remotePaging: false,
+  store: {
+    type: 'GET',
+    autoLoad: false,
+    url: `${baseUrl}/basic/listAllCorporationUnFrozen`,
   },
   rowKey: 'code',
   reader: {

@@ -22,16 +22,16 @@ const SelfEvaluation = props => {
   // type为demand时为查看供应商自评、不存在时为自评
   const { type, visible, isView } = props;
 
-  const [fileList, setFileList] = useState([])
+  const [fileList, setFileList] = useState([]);
 
-  const [updateLoading, setUpdateLoading] = useState(false)
+  const [updateLoading, setUpdateLoading] = useState(false);
 
   const columns = [
     {
       title: '', dataIndex: 'id', width: 1, render: v => {
       },
     },
-    { title: '类别', dataIndex: 'systemName', width: 200, required: true },
+    { title: '类别', dataIndex: 'systemName', width: 200, required: true, render: (v, data) => data.children && v },
     { title: '指标名称', dataIndex: 'ruleName', ellipsis: true, width: 100 },
     { title: '指标定义', dataIndex: 'definition', ellipsis: true, width: 250 },
     { title: '评分标准', dataIndex: 'scoringStandard', ellipsis: true, width: 250 },
@@ -80,15 +80,15 @@ const SelfEvaluation = props => {
   const [data, setData] = useState({
     time: '',
     dataSource: [],
-    sendBackVisible: false
+    sendBackVisible: false,
   });
 
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (props.visible) {
-      if(type) {
-        getTime(props.reviewImplementPlanCode)
+      if (type) {
+        getTime(props.reviewImplementPlanCode);
       }
       getTable(props.reviewImplementPlanCode);
     }
@@ -97,15 +97,15 @@ const SelfEvaluation = props => {
   // 获取自评时间
   const getTime = (value) => {
     GetSelfEvaluationTimeApi({
-      reviewImplementPlanCode: value
+      reviewImplementPlanCode: value,
     }).then(res => {
       if (res.success) {
-        const time = res.data ? res.data[0].completedDate : ''
-        setData(v => ({...v, time}))
+        const time = res.data ? res.data[0].completedDate : '';
+        setData(v => ({ ...v, time }));
       }
-      console.log(res, 'ssss')
-    })
-  }
+      console.log(res, 'ssss');
+    });
+  };
 
   const buildTree = (arr) => {
     arr.map(item => {
@@ -184,13 +184,13 @@ const SelfEvaluation = props => {
 
   // 退回
   const sendBack = () => {
-    setData(v => ({...v, sendBackVisible: true}))
-  }
+    setData(v => ({ ...v, sendBackVisible: true }));
+  };
 
   const exportData = () => {
     const url = `${window.location.origin}${BASE_URL}/${recommendUrl}/srController/downloadResultTemplate?reviewImplementManagementId=${props.reviewImplementPlanCode}`;
     window.open(url);
-  }
+  };
 
   // 文件上传之前(判断选中文件格式并封装fileList)
   const beforeUpload = (file) => {
@@ -218,9 +218,9 @@ const SelfEvaluation = props => {
       if (response.status === 'SUCCESS') {
         let newData = JSON.parse(JSON.stringify(response.data));
         newData = buildTree(newData);
-        setData(v => ({...v, dataSource: newData}))
+        setData(v => ({ ...v, dataSource: newData }));
         console.log(newData, '导入的数据');
-        message.success('导入成功')
+        message.success('导入成功');
         setUpdateLoading(false);
       } else if (response.status === 'FAILURE') {
         message.error(response.message);
@@ -249,7 +249,7 @@ const SelfEvaluation = props => {
             {!isView && <Button onClick={sendBack} disabled={!data.time}>退回</Button>}
             <span style={{ marginLeft: '50px' }}>自评时间:</span>
             <Input style={{ width: '350px', marginLeft: '5px' }}
-                   disabled={true} value={data.time}/>
+                   disabled={true} value={data.time} />
           </div>
           : <>
             <Button style={{ marginRight: '5px' }} key="downLoad" onClick={exportData}>批量导出</Button>
@@ -286,9 +286,9 @@ const SelfEvaluation = props => {
       <SendBack
         refresTable={onCancel}
         params={{
-          reviewImplementManagementId: data.dataSource[0] ? data.dataSource[0].reviewImplementManagementId : ''
+          reviewImplementManagementId: data.dataSource[0] ? data.dataSource[0].reviewImplementManagementId : '',
         }}
-        onCancel={() => setData(v => ({...v, sendBackVisible: false}))}
+        onCancel={() => setData(v => ({ ...v, sendBackVisible: false }))}
         visible={data.sendBackVisible}
       />
     </ExtModal>

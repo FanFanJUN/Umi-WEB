@@ -98,16 +98,18 @@ const ScoreOverview = (props) => {
     }).then(res => {
       if (res.success) {
         let arr = res.data ? res.data : [];
-        console.log(res.data)
-        arr[0].children = arr[0].children ? arr[0].children : []
-        arr[0].children.map(item => {
-          minLine = item.percentage < minLine.percentage ? item : minLine;
-        })
-        arr = buildTree(arr);
-        if (minLine.systemId) {
-          console.log(minLine, 'minLine')
-          minLine.reviewScore = arr[0].percentage
-          props.setAuditOpinionData(minLine)
+        if (arr.length > 0) {
+          console.log(res.data)
+          arr[0].children = arr[0].children ? arr[0].children : []
+          arr[0].children.map(item => {
+            minLine = item.percentage < minLine.percentage ? item : minLine;
+          })
+          arr = buildTree(arr);
+          if (minLine.systemId) {
+            console.log(minLine, 'minLine')
+            minLine.reviewScore = arr[0].percentage
+            props.setAuditOpinionData(minLine)
+          }
         }
         setData(v => ({ ...v, dataSource: arr }));
         setLoading(false);

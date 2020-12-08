@@ -1,15 +1,15 @@
 import React, { useState, useRef, useEffect, Fragment } from 'react';
 import Header from '../../../components/Header';
 import AdvancedForm from '../../../components/AdvancedForm';
-import { Button, Checkbox, Input, message } from 'antd';
+import { Button, Checkbox, Input, message, Modal } from 'antd';
 import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
 import { ExtTable, utils, WorkFlow } from 'suid';
 import {
   ApplyOrganizationProps,
   AuditCauseManagementConfig,
   AuditTypeManagementConfig,
-  CompanyConfig, DeleteAuditRequirementsManagement, EndFlow,
-  FindByFiltersConfig, SupplierConfig,
+  CompanyConfig, DeleteAuditRequirementsManagement, EndFlow, FindAllByFiltersConfig,
+  FindByFiltersConfig, SearchAllCompanyConfig, SupplierConfig,
 } from '../mainData/commomService';
 import {
   flowProps, judge,
@@ -66,7 +66,9 @@ export default function() {
     selectedRows: [],
   });
 
-  const [managementState, setManagementState] = useState(false);
+  const [managementState, setManagementState] = useState(true);
+
+  const [unManagementState, setUnManagementState] = useState(true);
 
 
   const redirectToPage = (type) => {
@@ -88,17 +90,25 @@ export default function() {
 
   // 撤回
   const handleRecall = () => {
-    WithdrawResultsEntryApi({
-      id: data.selectedRowKeys[0],
-    }).then(res => {
-      if (res.success) {
-        message.success('撤回成功!');
-        refreshTable()
-      } else {
-        message.error(res.message);
-      }
-    }).catch(err => {
-      message.error(err.message);
+    Modal.confirm({
+      title: '撤回',
+      content: '请确认撤回选中数据!',
+      okText: '确定',
+      cancelText: '取消',
+      onOk: () => {
+        WithdrawResultsEntryApi({
+          id: data.selectedRowKeys[0],
+        }).then(res => {
+          if (res.success) {
+            message.success('撤回成功!');
+            refreshTable();
+          } else {
+            message.error(res.message);
+          }
+        }).catch(err => {
+          message.error(err.message);
+        });
+      },
     });
   };
 
@@ -116,8 +126,8 @@ export default function() {
 
   // 高级查询配置
   const formItems = [
-    { title: '需求公司', key: 'applyCorporationCode', type: 'list', props: CompanyConfig },
-    { title: '采购组织', key: 'purchaseOrgCode', type: 'list', props: FindByFiltersConfig },
+    { title: '需求公司', key: 'applyCorporationCode', type: 'list', props: SearchAllCompanyConfig },
+    { title: '采购组织', key: 'purchaseOrgCode', type: 'list', props: FindAllByFiltersConfig },
     { title: '物料分类', key: 'materialSecondClassifyCode', type: 'tree', props: materialClassProps },
     { title: '审核小组组长', key: 'leaderName' },
   ];
@@ -131,22 +141,11 @@ export default function() {
     { title: '组长', dataIndex: 'leaderName', ellipsis: true, width: 70 },
   ].map(item => ({ ...item, align: 'center' }));
 
-  // 提交审核验证
-  const handleBeforeStartFlow = async () => {
-
-  };
-
   // 刷新table
   const refreshTable = () => {
     tableRef.current.manualSelectedRows();
     tableRef.current.remoteDataRefresh();
   };
-
-  // 提交审核完成更新列表
-  function handleComplete() {
-
-  }
-
 
   const headerLeft = <>
     {
@@ -189,17 +188,18 @@ export default function() {
   </>;
 
   const headerRight = <div style={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-    <div style={{ width: '95%' }}>
+    <div style={{ width: '55%' }}>
       <Checkbox checked={managementState} onClick={e => {
         setManagementState(e.target.checked);
         refreshTable();
       }}>已填报</Checkbox>
-      <Checkbox checked={!managementState} onClick={e => {
-        setManagementState(!e.target.checked);
+      <Checkbox checked={unManagementState} onClick={e => {
+        setUnManagementState(e.target.checked);
         refreshTable();
       }}>未填报</Checkbox>
     </div>
     <Search
+      style={{ width: '350px' }}
       placeholder='请输入审核实施计划号或供应商名称'
       className={styles.btn}
       onSearch={handleQuickSearch}
@@ -223,6 +223,7 @@ export default function() {
       <Header
         left={headerLeft}
         right={headerRight}
+        hiddenClose
         content={
           <AdvancedForm formItems={formItems} onOk={handleAdvancedSearch} />
         }
@@ -236,10 +237,10 @@ export default function() {
             columns={columns}
             store={{
               params: {
-                managementState: managementState ? 'COMPLETED' : 'NOT_COMPLETED',
+                stateList: [managementState ? 'COMPLETED' : '', unManagementState ? 'NOT_COMPLETED' : ''],
                 quickSearchValue: data.quickSearchValue,
                 ...data.epTechnicalShareDemandSearchBo,
-                usedType: '2'
+                usedType: '2',
               },
               url: `${recommendUrl}/api/reviewImplementManagementService/findByPage`,
               type: 'POST',
