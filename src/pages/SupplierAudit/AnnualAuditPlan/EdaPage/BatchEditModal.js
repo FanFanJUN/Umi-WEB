@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-23 17:00:19
- * @LastEditTime: 2020-12-08 10:19:34
+ * @LastEditTime: 2020-12-08 14:20:24
  * @Description: 批量编辑页面
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BatchEditModal.js
  */
@@ -12,7 +12,7 @@ import { ComboGrid, ComboList, ExtModal } from 'suid';
 import { Col, Form, Input, DatePicker, message, Row } from 'antd';
 import { reviewTypesProps, reviewReasonsProps, reviewWaysProps, AreaConfig, CountryIdConfig } from '../propsParams';
 import { hideFormItem } from '@/utils/utilTool';
-import { basicServiceUrl, gatewayUrl } from '@/utils/commonUrl';
+import { basicServiceUrl, gatewayUrl, baseUrl } from '@/utils/commonUrl';
 import { findReviewTypesByCode } from '../service';
 import moment from 'moment';
 
@@ -39,7 +39,7 @@ const BatchEditModal = (props) => {
 
   useEffect(() => {
     async function fetchData() {
-      const res = await findReviewTypesByCode({ quickSearchValue: 'Supervision_review' });
+      const res = await findReviewTypesByCode({ quickSearchValue: '监督审核' });
       if (res.success) {
         const obj = res.data.rows;
         if (obj.length === 0) return;
@@ -146,7 +146,19 @@ const BatchEditModal = (props) => {
                     form={form}
                     name={'reviewReasonName'}
                     field={['reviewReasonId', 'reviewReasonCode']}
+                    cascadeParams={{
+                      findByReviewTypeCode: getFieldValue('reviewTypeCode'),
+                    }}
+                    store={{
+                      params: {
+                        findByReviewTypeCode: getFieldValue('reviewTypeCode'),
+                      },
+                      type: 'GET',
+                      autoLoad: false,
+                      url: `${baseUrl}/api/reviewReasonService/findByReviewTypeCode`,
+                    }}
                     {...reviewReasonsProps}
+                    disabled={getFieldValue('reviewTypeCode') === ''}
                   />,
                 )
               }

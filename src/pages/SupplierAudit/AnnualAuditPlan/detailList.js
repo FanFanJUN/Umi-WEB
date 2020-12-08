@@ -22,6 +22,7 @@ import { materialClassProps } from '../../../utils/commonProps';
 import { ShareStatusProps } from "./service";
 
 const supplierPropsNew = {
+    allowClear: true,
     ...supplierProps,
     reader: {
         name: 'name',
@@ -31,6 +32,7 @@ const supplierPropsNew = {
     placeholder: '选择供应商'
 };
 const reviewWaysPropsNew = {
+    allowClear: true,
     ...reviewWaysProps,
     reader: {
         name: 'name',
@@ -229,6 +231,7 @@ export default function () {
                 content={
                     <AdvancedForm formItems={formItems} onOk={handleAdvancedSearch} />
                 }
+                hiddenClose
                 advanced
             />
             <AutoSizeLayout>

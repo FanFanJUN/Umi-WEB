@@ -17,7 +17,7 @@ import { getUserInfoFromSession } from '@/utils/utilTool';
 import BaseInfo from './BaseInfo';
 import { router } from 'dva';
 import LineInfo from './LineInfo';
-import { findDetailedById, reviewPlanYearAp } from '../service';
+import { findDetailedById, findReviewTypesByCode, reviewPlanYearAp } from '../service';
 import { isEmptyArray } from '../../../../utils/utilTool';
 
 const { StartFlow } = WorkFlow;
@@ -41,6 +41,7 @@ const Index = (props) => {
     const [lineData, setlineData] = useState([]);
     const [spinLoading, setSpinLoading] = useState(false);
     const [originData, setOriginData] = useState({});
+    const [reviewType, setReviewType] = useState({});
 
     useImperativeHandle(onRef, () => ({
         editDataInflow,
@@ -68,6 +69,19 @@ const Index = (props) => {
                 setSpinLoading(false);
             }
             fetchData();
+        }
+        if(pageState ==='edit' || pageState === 'add') {
+            async function fetchData() {
+                const res = await findReviewTypesByCode({ quickSearchValue: '监督审核' });
+                if (res.success) {
+                  const obj = res.data.rows;
+                  if (obj.length === 0) return;
+                  setReviewType(obj[0]);
+                } else {
+                  message.error('获取默认审核类型失败');
+                }
+              }
+              fetchData();
         }
         switch (pageState) {
             case 'add':
@@ -239,6 +253,7 @@ const Index = (props) => {
                     isView={data.isView}
                     setlineData={setTablelineData}
                     originData={originData}
+                    reviewType={reviewType}
                 />
             </Spin>
         </div>

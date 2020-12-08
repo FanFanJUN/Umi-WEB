@@ -147,6 +147,7 @@ const FormContext = forwardRef(({
       width: 250
     }
   ];
+  const empty = selectedRowKeys.length === 0;
   const left = type === 'detail' ? null : (
     <>
       <Button
@@ -171,7 +172,6 @@ const FormContext = forwardRef(({
     getFieldValue,
     validateFieldsAndScroll
   } = form;
-  const empty = selectedRowKeys.length === 0;
   const originSupplierId = getFieldValue('supplierId')
   function handleSelectRecommendCompany(select) {
     setRecommendCompany(select)

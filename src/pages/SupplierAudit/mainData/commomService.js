@@ -304,18 +304,12 @@ export const materialCodeProps = {
     params: { Q_EQ_frozen__Boolean: false },
   },
   reader: {
-    name: 'code',
+    name: 'showName',
+    field: ['code'],
   },
   placeholder: '请选择物料分类',
   style: {
     width: '100%',
-  },
-  treeNodeProps: (node) => {
-    if (node.nodeLevel === 0) {
-      return {
-        selectable: false,
-      };
-    }
   },
 };
 
@@ -592,7 +586,7 @@ export const SearchAllCompanyConfig = {
 // 审核需求号
 export const reviewRequirementConfig = {
   placeholder: '选择审核需求号',
-  remotePaging: false,
+  remotePaging: true,
   store: {
     type: 'POST',
     autoLoad: false,

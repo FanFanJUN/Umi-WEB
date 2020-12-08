@@ -195,6 +195,7 @@ const AddModal = (props) => {
                 if (type === "demand") {
                     delete values.applyCorporationId;
                     delete values.applyCorporationName;
+                    delete values.materialSecondClassifyName;
                     delete values.purchaseOrgId;
                     delete values.purchaseOrgName;
                 } else if (type === "annual") {
@@ -203,6 +204,8 @@ const AddModal = (props) => {
                     if (values.reviewMonth) {
                         values.reviewMonth = Number(values.reviewMonth);
                     }
+                } else {
+                    delete values.businessCode;
                 }
                 setCascadeParams(values);
             }
@@ -330,11 +333,13 @@ const AddModal = (props) => {
                         <Col span={12}>
                             <FormItem {...formItemLayoutLong} label={'物料分类'}>
                                 {
-                                    getFieldDecorator('materialSecondClassifyCode')(
+                                    getFieldDecorator('materialSecondClassifyCode'),
+                                    getFieldDecorator('materialSecondClassifyName')(
                                         <ComboTree
                                             allowClear
                                             form={form}
-                                            name='materialSecondClassifyCode'
+                                            name='materialSecondClassifyName'
+                                            field={['materialSecondClassifyCode']}
                                             {...materialCodeProps}
                                         />,
                                     )

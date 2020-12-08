@@ -53,7 +53,6 @@ const LeaderApprovePage = () => {
       beforeSubmit={beforeSubmit}
     >
       <div>
-        <span onClick={beforeSubmit}>点一下</span>
         <AuditReportManagementView
           isApprove
           leaderApprove

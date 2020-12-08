@@ -64,7 +64,7 @@ const Ctx = forwardRef(({
   }
   // 查重并合并最新选择项
   function formatModalSelectedRows() {
-    const ids = initialDataSource.map(item => `${item.code}-${item.corporationCode}`);
+    const ids = initialDataSource.map(item => `${item.purchaseOrgCode}-${item.corporationCode}`);
     const filterSelectedRows = selectedRows
       .filter(item => !ids.includes(`${item.code}-${item.corporationCode}`))
       .map(item => ({
@@ -75,9 +75,38 @@ const Ctx = forwardRef(({
         purchaseOrgCode: item.code,
         purchaseOrgName: item.name
       }))
+      console.log(ids, selectedRows)
+    console.log(filterSelectedRows, initialDataSource)
     return [...filterSelectedRows, ...initialDataSource]
   }
-
+  /**
+   * 
+   * corporationCode: "A000"
+  corporationName: "广东长虹电子有限公司"
+  display: null
+  id: "7E7254C4-35FA-11EB-8021-0242C0A8441B"
+  identifyTypeCode: "0001"
+  identifyTypeName: "全新供应商"
+  materialCategoryCode: null
+  materialCategoryName: null
+  purchaseOrgCode: "A000"
+  purchaseOrgName: "广东长虹采购组织"
+  recommendDemandId: "7B457E78-35FA-11EB-8021-0242C0A8441B"
+  tenantCode: "10000028"
+  unitCode: null
+  unitName: null
+  
+  
+  code: "A000"
+  corporationCode: "A000"
+  corporationName: "广东长虹电子有限公司"
+  frozen: false
+  id: "48F10491-878B-11EA-9385-0242C0A84405"
+  name: "广东长虹采购组织"
+  rank: 0
+  tenantCode: "10000028"
+  virtual: false
+   */
   function handleContinue() {
     if (!thatType) {
       message.error('请选择认定类型')
