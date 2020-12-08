@@ -240,7 +240,7 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
         ignore={DEVELOPER_ENV}
         businessKey={data.flowId}
         startComplete={handleComplete}
-        businessModelCode='com.ecmp.srm.sam.entity.ar.ArAuditReportManag'
+        businessModelCode='com.ecmp.srm.sam.entity.ab.AbAuditBriefingManage'
         key='SRM-SM-AUDITBRIEFING-APPROVE'
       >{
         loading => <Button

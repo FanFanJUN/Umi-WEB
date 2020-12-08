@@ -26,7 +26,7 @@ const AddModal = forwardRef(({}, ref) => {
     { title: '审核月度', dataIndex: 'applyMonth', width: 140, ellipsis: true, render: text => text ? text + '月' : '' },
     { title: '需求公司', dataIndex: 'applyCorporationName', width: 200, ellipsis: true ,
       render: (text, record) => record.applyCorporationCode + ' ' + record.applyCorporationName},
-    { title: '采购组织', dataIndex: 'purchaseOrgName', ellipsis: true, width: 140 },
+    { title: '采购组织', dataIndex: 'purchaseTeamName', ellipsis: true, width: 140 },
     { title: '供应商', dataIndex: 'supplierCode', ellipsis: true, width: 140,
       render: (text, record) => record.supplierCode + ' ' + record.supplierName},
     { title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 140 },
