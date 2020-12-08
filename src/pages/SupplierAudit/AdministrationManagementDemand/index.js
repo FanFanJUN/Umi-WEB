@@ -35,7 +35,7 @@ const managementStateConfig = {
 };
 
 export default function() {
-
+  const headerRef = useRef(null);
   const tableRef = useRef(null);
 
   useEffect(() => {
@@ -129,6 +129,7 @@ export default function() {
   // 高级查询搜索
   const handleAdvancedSearch = (value) => {
     setData(v => ({ ...v, epTechnicalShareDemandSearchBo: value }));
+    headerRef.current.hide();
     refreshTable();
   };
 
@@ -281,6 +282,7 @@ export default function() {
         left={headerLeft}
         right={headerRight}
         hiddenClose
+        ref={headerRef}
         content={
           <AdvancedForm formItems={formItems} onOk={handleAdvancedSearch} />
         }
