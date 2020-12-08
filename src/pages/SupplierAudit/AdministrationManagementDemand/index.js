@@ -241,7 +241,7 @@ export default function() {
   </>;
 
   const headerRight = <div style={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-    <div style={{ width: '50%' }}>
+    <div style={{ width: '50%', display: 'flex' }}>
       <Checkbox checked={managementState} onClick={e => {
         setManagementState(e.target.checked);
         refreshTable();
@@ -297,8 +297,7 @@ export default function() {
             columns={columns}
             store={{
               params: {
-                managementState:  'COMPLETED',
-                // stateList: [managementState ? 'COMPLETED' : '', unManagementState ? 'NOT_COMPLETED' : ''],
+                stateList: [managementState ? 'COMPLETED' : '', unManagementState ? 'NOT_COMPLETED' : ''],
                 quickSearchValue: data.quickSearchValue,
                 ...data.epTechnicalShareDemandSearchBo,
                 usedType: '1',
