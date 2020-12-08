@@ -3,11 +3,11 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime: 2020-12-08 14:36:24
+ * @LastEditTime: 2020-12-08 17:04:45
  * @Description: 行信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/edit/BaseInfo.less';
 import { Form, Button, message, Modal } from 'antd';
 import { ExtTable } from 'suid';
@@ -20,8 +20,12 @@ import { reviewTypesProps } from '../propsParams';
 const { confirm } = Modal;
 let LineInfo = (props, ref) => {
 
-  const { setlineData, originData, type, isView, reviewType } = props;
+  const { originData, type, isView, reviewType, deleteLine } = props;
   const tableRef = useRef(null);
+
+  useImperativeHandle(ref, () => ({
+    getTableList: () => dataSource,
+  }));
 
   const [data, setData] = useState({
     type: 'add',
@@ -109,11 +113,23 @@ let LineInfo = (props, ref) => {
   }
 
   function filterSelectRow() {
-    const selectData = data.selectedRowKeys;
-    const filterData = dataSource.filter((item) => {
-      return !selectData.includes(item.reviewPlanYearLinenum);
-    });
-    setDataSource(filterData);
+    let deleteData = JSON.parse(JSON.stringify(data.selectRows));
+    let arr = JSON.parse(JSON.stringify(deleteLine));
+    deleteData.forEach(item => {
+      if (item.id) {
+        item.whetherDelete = true;
+        arr.push(item);
+      }
+    })
+
+    let newDataSource = JSON.parse(JSON.stringify(dataSource));
+    for (let index = newDataSource.length - 1; index >= 0; index--) {
+      if ((data.selectedRowKeys).includes(newDataSource[index].reviewPlanYearLinenum)) {
+        newDataSource.splice(index, 1);
+      }
+    }
+    setDataSource(newDataSource);
+    props.callbackSetDeleteLine(arr);
     clearSelect();
   }
 
@@ -191,7 +207,6 @@ let LineInfo = (props, ref) => {
       item.reviewPlanYearLinenum = ((Array(4).join(0) + (index + 1)).slice(-4) + '0');
     })
     setDataSource(newTableList);
-    setlineData(newTableList);
     setData((v) => ({ ...v, visible: false }));
   }
 
@@ -210,7 +225,6 @@ let LineInfo = (props, ref) => {
       return { ...item, ...formValue };
     });
     setDataSource([...newBatchData, ...leftTableData]);;
-    setlineData([...newBatchData, ...leftTableData]);
     setBatchVisible();
     tableRef.current.manualSelectedRows();
   }
@@ -265,4 +279,4 @@ let LineInfo = (props, ref) => {
   );
 }
 
-export default Form.create()(LineInfo);
+export default Form.create()(forwardRef(LineInfo));
