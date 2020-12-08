@@ -149,12 +149,12 @@ const Other = ({ form, updateGlobalStatus }) => {
                     <FormItem label="公司大门" {...formLayout}>
                       {getFieldDecorator('corporationGatewayIds', {
                         initialValue: type === 'add' ? '' : data.corporationGatewayIds,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空',
+                          },
+                        ],
                       })(
                         <UploadFile
                           showColor={type !== 'add' ? true : false}
@@ -167,12 +167,12 @@ const Other = ({ form, updateGlobalStatus }) => {
                     <FormItem label="生产车间全景" {...formLayout}>
                       {getFieldDecorator('corporationWorkShopIds', {
                         initialValue: type === 'add' ? '' : data.corporationWorkShopIds,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空',
+                          },
+                        ],
                       })(
                         <UploadFile
                           showColor={type !== 'add' ? true : false}
@@ -187,12 +187,12 @@ const Other = ({ form, updateGlobalStatus }) => {
                     <FormItem label="原料仓库全景" {...formLayout}>
                       {getFieldDecorator('rawMaterialWarehouseIds', {
                         initialValue: type === 'add' ? '' : data.rawMaterialWarehouseIds,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空',
+                          },
+                        ],
                       })(
                         <UploadFile
                           showColor={type !== 'add' ? true : false}
@@ -205,12 +205,12 @@ const Other = ({ form, updateGlobalStatus }) => {
                     <FormItem label="成品仓库全景" {...formLayout}>
                       {getFieldDecorator('productWarehouseIds', {
                         initialValue: type === 'add' ? '' : data.productWarehouseIds,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空',
+                          },
+                        ],
                       })(
                         <UploadFile
                           showColor={type !== 'add' ? true : false}
@@ -250,7 +250,14 @@ const Other = ({ form, updateGlobalStatus }) => {
                 <Row>
                   <Col span={24}>
                     <FormItem label="组织机构" {...formLayout}>
-                      {getFieldDecorator('organizationIds')(
+                      {getFieldDecorator('organizationIds', {
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空'
+                          }
+                        ]
+                      })(
                         <UploadFile
                           showColor={type !== 'add' ? true : false}
                           disabled={type === 'detail'}
