@@ -39,7 +39,7 @@ const PeriodForm = React.forwardRef(({ form, isView, editData, type }, ref) => {
             <Col span={12}>
               <FormItem  {...formLayout} label={'年度期间'}>
                 {
-                  <span>{editData.yearPeriodStart + '到' + editData.yearPeriodEnd}</span>
+                  <span>{editData.yearPeriodStart.substring(0,10) + '到' + editData.yearPeriodEnd.substring(0,10)}</span>
                 }
               </FormItem>
             </Col>
@@ -48,13 +48,13 @@ const PeriodForm = React.forwardRef(({ form, isView, editData, type }, ref) => {
             <Col span={12}>
               <FormItem  {...formLayout} label={'本期'}>
                 {
-                  <span>{editData.currentPeriodStart + '到' + editData.currentPeriodEnd}</span>}
+                  <span>{editData.currentPeriodStart.substring(0,10) + '到' + editData.currentPeriodEnd.substring(0,10)}</span>}
               </FormItem>
             </Col>
             <Col span={12}>
               <FormItem  {...formLayout} label={'下期'}>
                 {
-                  <span>{editData.nextPeriodStart + '到' + editData.nextPeriodEnd}</span>}
+                  <span>{editData.nextPeriodStart.substring(0,10) + '到' + editData.nextPeriodEnd.substring(0,10)}</span>}
               </FormItem>
             </Col>
           </Row>
