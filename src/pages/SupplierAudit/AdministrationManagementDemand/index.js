@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect, Fragment } from 'react';
 import Header from '../../../components/Header';
 import AdvancedForm from '../../../components/AdvancedForm';
-import { Button, Checkbox, Input, message } from 'antd';
+import { Button, Checkbox, Input, message, Modal } from 'antd';
 import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
 import { ExtTable, utils, WorkFlow } from 'suid';
 import {
-  CompanyConfig, DeleteAuditRequirementsManagement, EndFlow,
-  FindByFiltersConfig, SupplierConfig,
+  CompanyConfig, DeleteAuditRequirementsManagement, EndFlow, FindAllByFiltersConfig,
+  FindByFiltersConfig, SearchAllCompanyConfig, SupplierConfig,
 } from '../mainData/commomService';
 import {
   flowProps, judge,
@@ -35,7 +35,7 @@ const managementStateConfig = {
 };
 
 export default function() {
-
+  const headerRef = useRef(null);
   const tableRef = useRef(null);
 
   useEffect(() => {
@@ -68,7 +68,9 @@ export default function() {
     selectedRows: [],
   });
 
-  const [managementState, setManagementState] = useState(false);
+  const [managementState, setManagementState] = useState(true);
+
+  const [unManagementState, setUnManagementState] = useState(true);
 
 
   const redirectToPage = (type) => {
@@ -96,17 +98,25 @@ export default function() {
 
   // 撤回
   const handleRecall = () => {
-    WithdrawResultsEntryApi({
-      id: data.selectedRowKeys[0],
-    }).then(res => {
-      if (res.success) {
-        message.success('撤回成功!');
-        refreshTable();
-      } else {
-        message.error(res.message);
-      }
-    }).catch(err => {
-      message.error(err.message);
+    Modal.confirm({
+      title: '撤回',
+      content: '请确认撤回选中数据!',
+      okText: '确定',
+      cancelText: '取消',
+      onOk: () => {
+        WithdrawResultsEntryApi({
+          id: data.selectedRowKeys[0],
+        }).then(res => {
+          if (res.success) {
+            message.success('撤回成功!');
+            refreshTable();
+          } else {
+            message.error(res.message);
+          }
+        }).catch(err => {
+          message.error(err.message);
+        });
+      },
     });
   };
 
@@ -119,13 +129,14 @@ export default function() {
   // 高级查询搜索
   const handleAdvancedSearch = (value) => {
     setData(v => ({ ...v, epTechnicalShareDemandSearchBo: value }));
+    headerRef.current.hide();
     refreshTable();
   };
 
   // 高级查询配置
   const formItems = [
-    { title: '需求公司', key: 'applyCorporationCode', type: 'list', props: CompanyConfig },
-    { title: '采购组织', key: 'purchaseOrgCode', type: 'list', props: FindByFiltersConfig },
+    { title: '需求公司', key: 'applyCorporationCode', type: 'list', props: SearchAllCompanyConfig },
+    { title: '采购组织', key: 'purchaseOrgCode', type: 'list', props: FindAllByFiltersConfig },
     { title: '物料分类', key: 'materialSecondClassifyCode', type: 'tree', props: materialClassProps },
     { title: '审核小组组长', key: 'leaderName' },
   ];
@@ -133,14 +144,14 @@ export default function() {
   const columns = [
     { title: '状态', dataIndex: 'state', width: 70, render: v => managementStateConfig[v] },
     {
-      title: '审核需求计划号',
+      title: '实施审核计划号',
       dataIndex: 'reviewImplementPlanCode',
       width: 140,
       render: (v, data) => <a onClick={() => jumpOtherPage(data.reviewImplementPlanId)}>{v}</a>,
     },
     { title: '供应商', dataIndex: 'supplierName', width: 250, render: (v, data) => `${v} ${data.supplierCode}` },
-    { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 250 },
-    { title: '审核时间', dataIndex: 'reviewDateStart', width: 250, render: (v, data) => `${v} - ${data.reviewDateEnd}` },
+    { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 200 },
+    { title: '审核时间', dataIndex: 'reviewDateStart', width: 200, render: (v, data) => `${v} - ${data.reviewDateEnd}` },
     { title: '组长', dataIndex: 'leaderName', ellipsis: true, width: 70 },
   ].map(item => ({ ...item, align: 'center' }));
 
@@ -177,9 +188,7 @@ export default function() {
         ignore={DEVELOPER_ENV}
         disabled={data.selectedRowKeys.length === 0
         // 判断结果是否确认
-        || !judge(data.selectedRows, 'whetherConfirm', false)
-        // 已填报不能再次录入
-        || !judge(data.selectedRows, 'state', 'NOT_COMPLETED')}
+        || !judge(data.selectedRows, 'whetherConfirm', false)}
         key='SUPPLIER_AUDIT_DEMAND_DADD'
       >代录入</Button>)
     }
@@ -211,7 +220,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'whetherConfirm', false)
-          // || !judge(data.selectedRows, 'leaderId', getUserId())
+        || !judge(data.selectedRows, 'leaderId', getUserId())
         }
         key='SUPPLIER_AUDIT_DEMAND_CONFIRM'
       >审核结果确认</Button>)
@@ -231,18 +240,19 @@ export default function() {
   </>;
 
   const headerRight = <div style={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-    <div style={{ width: '95%' }}>
+    <div style={{ width: '50%' }}>
       <Checkbox checked={managementState} onClick={e => {
         setManagementState(e.target.checked);
         refreshTable();
       }}>已填报</Checkbox>
-      <Checkbox checked={!managementState} onClick={e => {
-        setManagementState(!e.target.checked);
+      <Checkbox checked={unManagementState} onClick={e => {
+        setUnManagementState(e.target.checked);
         refreshTable();
       }}>未填报</Checkbox>
     </div>
     <Search
       placeholder='请输入审核实施计划号或供应商名称'
+      style={{ width: '400px' }}
       className={styles.btn}
       onSearch={handleQuickSearch}
       allowClear
@@ -272,6 +282,7 @@ export default function() {
         left={headerLeft}
         right={headerRight}
         hiddenClose
+        ref={headerRef}
         content={
           <AdvancedForm formItems={formItems} onOk={handleAdvancedSearch} />
         }
@@ -285,10 +296,10 @@ export default function() {
             columns={columns}
             store={{
               params: {
-                managementState: managementState ? 'COMPLETED' : 'NOT_COMPLETED',
+                stateList: [managementState ? 'COMPLETED' : '', unManagementState ? 'NOT_COMPLETED' : ''],
                 quickSearchValue: data.quickSearchValue,
                 ...data.epTechnicalShareDemandSearchBo,
-                usedType: '1'
+                usedType: '1',
               },
               url: `${window.location.origin}${BASE_URL}/${recommendUrl}/api/reviewImplementManagementService/findByPage`,
               type: 'POST',

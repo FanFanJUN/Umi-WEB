@@ -11,12 +11,33 @@ const commonProps = {
     width: '100%',
   },
 };
+
+// 验证类型
+export const certifyTypeArr = {
+  'true': '通过',
+  'false': '不通过',
+};
+
+export const CertifyTypeConfig = {
+  allowClear: true,
+  dataSource: [
+    {
+      code: 'true',
+      name: '通过',
+    },
+    {
+      code: 'false',
+      name: '不通过',
+    },
+  ],
+  placeholder: '选择验证结果',
+  ...commonProps,
+};
+
 export const whetherArr = {
   'true': '是',
   'false': '否',
 };
-
-// 验证结果
 export const VerificationResultConfig = {
   allowClear: true,
   dataSource: [

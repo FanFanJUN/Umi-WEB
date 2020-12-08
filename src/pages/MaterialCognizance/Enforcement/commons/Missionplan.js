@@ -60,6 +60,7 @@ const getpcnModifyRef = forwardRef(({
                     wrappedComponentRef={ModifyinfoRef}
                     isView={true}
                     headerInfo={true}
+                    isEdit={true}
                 />
             </DetailCard>
             <DetailCard title="分配计划详情">
