@@ -232,6 +232,7 @@ export default function() {
         ignore={DEVELOPER_ENV}
         disabled={data.selectedRowKeys.length === 0
         || !judge(data.selectedRows, 'state', 'COMPLETED')
+        || !judge(data.selectedRows, 'whetherConfirm', true)
         || !judge(data.selectedRows, 'leaderId', getUserId())
         }
         key='SUPPLIER_AUDIT_DEMAND_VIEW_RESULT'
@@ -296,7 +297,8 @@ export default function() {
             columns={columns}
             store={{
               params: {
-                stateList: [managementState ? 'COMPLETED' : '', unManagementState ? 'NOT_COMPLETED' : ''],
+                managementState:  'COMPLETED',
+                // stateList: [managementState ? 'COMPLETED' : '', unManagementState ? 'NOT_COMPLETED' : ''],
                 quickSearchValue: data.quickSearchValue,
                 ...data.epTechnicalShareDemandSearchBo,
                 usedType: '1',
