@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime: 2020-12-08 11:29:24
+ * @LastEditTime: 2020-12-08 14:36:24
  * @Description: 行信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
@@ -15,11 +15,12 @@ import AddModal from './AddModal';
 import BatchEditModal from './BatchEditModal';
 import { isEmptyArray } from '../../../../utils/utilTool';
 import moment from 'moment';
+import { reviewTypesProps } from '../propsParams';
 
 const { confirm } = Modal;
 let LineInfo = (props, ref) => {
 
-  const { setlineData, originData, type, isView } = props;
+  const { setlineData, originData, type, isView, reviewType } = props;
   const tableRef = useRef(null);
 
   const [data, setData] = useState({
@@ -158,6 +159,10 @@ let LineInfo = (props, ref) => {
       item.materialGradeName = item.materialGrade;
       // 专业组
       item.specialtyTeamName = item.purchaseProfessionalGroup;
+      // 默认审核类型
+      item.reviewTypeName = reviewType.name;
+      item.reviewTypeId = reviewType.id;
+      item.reviewTypeCode = reviewType.code;
     })
     const newTableList = JSON.parse(JSON.stringify(dataSource));
     // 是否选择有重复数据 以需求公司、采购组织、供应商、物料分类、物料级别 判断唯一性
