@@ -57,7 +57,7 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
         setproductionCapacities(productionCapacities.map(item => ({ ...item, guid: item.id })));
         setkeyProductEquipments(keyProductEquipments.map(item => ({ ...item, guid: item.id })));
         setkeyTechnologyEquipments(keyTechnologyEquipments.map(item => ({ ...item, guid: item.id })));
-        setcurrentProductionSituations(currentProductionSituations.map(item => ({ ...item, guid: item.id })));
+        setcurrentProductionSituations(currentProductionSituations.map(item => ({ ...item, guid: item.id, offSeasonMonth: item.offSeasonMonth.split(',') })));
         setproductManufacturingIntroductions(productManufacturingIntroductions.map(item => ({ ...item, guid: item.id })));
       } else {
         message.error(msg);
@@ -315,7 +315,10 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
         ...value,
         tabKey: 'manufactureAbilityTab',
         productionCapacities: productionCapacities,
-        currentProductionSituations: currentProductionSituations,
+        currentProductionSituations: currentProductionSituations.map(item=>({
+          ...item,
+          offSeasonMonth: item.offSeasonMonth.join(',')
+        })),
         productManufacturingIntroductions: productManufacturingIntroductions,
         keyProductEquipments: keyProductEquipments,
         keyTechnologyEquipments: keyTechnologyEquipments,
