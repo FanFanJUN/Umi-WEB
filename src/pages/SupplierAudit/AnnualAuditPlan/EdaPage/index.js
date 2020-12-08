@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:04:51
- * @LastEditTime: 2020-12-08 11:02:53
+ * @LastEditTime: 2020-12-08 17:34:13
  * @Description: 新增  编辑  详情 page
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/index.js
  */
@@ -17,7 +17,7 @@ import { getUserInfoFromSession } from '@/utils/utilTool';
 import BaseInfo from './BaseInfo';
 import { router } from 'dva';
 import LineInfo from './LineInfo';
-import { findDetailedById, reviewPlanYearAp } from '../service';
+import { findDetailedById, findReviewTypesByCode, reviewPlanYearAp } from '../service';
 import { isEmptyArray } from '../../../../utils/utilTool';
 
 const { StartFlow } = WorkFlow;
@@ -28,6 +28,7 @@ const Index = (props) => {
     const { form, onRef, isInFlow, pageState: propsPageState } = props;
 
     const { query } = router.useLocation();
+    const tableRef = useRef(null);
 
     const [data, setData] = useState({
         id: '',
@@ -38,9 +39,10 @@ const Index = (props) => {
         title: '',
     });
 
-    const [lineData, setlineData] = useState([]);
     const [spinLoading, setSpinLoading] = useState(false);
     const [originData, setOriginData] = useState({});
+    const [reviewType, setReviewType] = useState({});
+    const [deleteLine, setDeleteLine] = useState([]);
 
     useImperativeHandle(onRef, () => ({
         editDataInflow,
@@ -69,6 +71,19 @@ const Index = (props) => {
             }
             fetchData();
         }
+        if (pageState === 'edit' || pageState === 'add') {
+            async function fetchData() {
+                const res = await findReviewTypesByCode({ quickSearchValue: '监督审核' });
+                if (res.success) {
+                    const obj = res.data.rows;
+                    if (obj.length === 0) return;
+                    setReviewType(obj[0]);
+                } else {
+                    message.error('获取默认审核类型失败');
+                }
+            }
+            fetchData();
+        }
         switch (pageState) {
             case 'add':
                 setData((value) => ({ ...value, type: pageState, isView: false, title: '新增年度审核计划' }));
@@ -93,7 +108,9 @@ const Index = (props) => {
 
     const gatAllData = () => {
         let allData = { bool: true };
-        const finnalLineData = !isEmptyArray(lineData) ? lineData : (originData.planYearLineVos ? originData.planYearLineVos : []);
+        const lineData = tableRef.current.getTableList();
+        console.log("获取到的表格数据", lineData)
+        const finnalLineData = lineData;
         form.validateFieldsAndScroll((err, values) => {
             if (err) {
                 allData = { bool: false };
@@ -120,7 +137,7 @@ const Index = (props) => {
             }
 
             if (!(allData.bool)) return;
-            allData = { ...originData, ...values, flowStatus: 'INIT', reviewPlanYearLineBos: finnalLineData, bool: true };
+            allData = { ...originData, ...values, flowStatus: 'INIT', reviewPlanYearLineBos: lineData, bool: true };
         });
         return allData;
     }
@@ -129,13 +146,23 @@ const Index = (props) => {
         const allData = gatAllData();
         if (!(allData.bool)) return;
         setSpinLoading(true);
-        const res = await reviewPlanYearAp({ ...allData, type: data.type });
+        let res = {};
+        try {
+            res = await reviewPlanYearAp({ ...allData, type: data.type });
+        } catch (error) {
+            res = error;
+        }
         if (buttonType === 'submit') {
-            // 编辑页
-            if (data.type === 'edit') {
-                return data.id;
+            if (res.success) {
+                // 编辑页
+                if (data.type === 'edit') {
+                    return data.id;
+                }
+                return res.data;
+            } else {
+                message.error(res.message);
             }
-            return res.data;
+            setSpinLoading(false);
         } else {
             console.log("res", res)
             if (res.success) {
@@ -151,13 +178,10 @@ const Index = (props) => {
         }
     }
 
-    function setTablelineData(tableData) {
-        setlineData(tableData);
-    }
     // 提交审核验证
     const handleBeforeStartFlow = async () => {
         const id = await tohandleSave("submit");
-        if(!id) return false;
+        if (!id) return false;
         return new Promise(function (resolve, reject) {
             if (id) {
                 resolve({
@@ -237,8 +261,11 @@ const Index = (props) => {
                 <LineInfo
                     type={data.type}
                     isView={data.isView}
-                    setlineData={setTablelineData}
                     originData={originData}
+                    reviewType={reviewType}
+                    deleteLine={deleteLine}
+                    callbackSetDeleteLine={(data) => { setDeleteLine(data); }}
+                    wrappedComponentRef={tableRef}
                 />
             </Spin>
         </div>

@@ -282,7 +282,7 @@ const IssuesManagement = (props) => {
               validateAll={true}
               importFunc={importFunc}
               validateFunc={validateItem}
-            />,
+            />
           </div>
       }
       <ExtTable

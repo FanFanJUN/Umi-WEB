@@ -1,9 +1,9 @@
 /*
  * @Author: Li Cai
- * @LastEditors: Please set LastEditors
+ * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-27 17:01:47
- * @LastEditTime: 2020-12-07 13:43:36
+ * @LastEditTime: 2020-12-08 14:14:35
  * @Description: 参数props
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/propsParams.js
  */
@@ -27,7 +27,7 @@ export const AllCompanyConfig = {
   store: {
     type: 'GET',
     autoLoad: false,
-    url: `${baseUrl}/buCompanyPurchasingOrganization/findCompany`,
+    url: `${baseUrl}/basic/listAllCorporationWithDataAuth`,
   },
   rowKey: 'code',
   reader: {
@@ -90,11 +90,6 @@ export const reviewTypesProps = {
 // 审核原因
 export const reviewReasonsProps = {
   placeholder: '选择审核原因',
-  store: {
-    type: 'POST',
-    autoLoad: false,
-    url: `${baseUrl}/reviewReason/findBySearchPageAndFrozenFalse`,
-  },
   remotePaging: true,
   columns: [
     {

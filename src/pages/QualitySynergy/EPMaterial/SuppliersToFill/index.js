@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, Fragment } from 'react'
 import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import { Input, Button, message, Modal, Form } from 'antd';
+import queryString from 'query-string';
 import { supplierManagerBaseUrl, recommendUrl } from '@/utils/commonUrl';
 import { openNewTab, getFrameElement, getUserName, getUserId, getUserAccount, closeCurrent } from '@/utils';
 import classnames from 'classnames';
@@ -102,6 +103,11 @@ export default create()(function ({ form }) {
                 }
             }
         })
+
+        // 处理工作台过来-url携带参数
+        let afterUrl = queryString.parse(window.location.search);
+        setSearchValue(v => ({ ...v, ...afterUrl }));
+
         window.parent.frames.addEventListener('message', listenerParentClose, false);
         return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
     }, []);

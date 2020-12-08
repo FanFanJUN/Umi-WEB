@@ -3,11 +3,11 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime: 2020-12-08 11:29:24
+ * @LastEditTime: 2020-12-08 17:04:45
  * @Description: 行信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/edit/BaseInfo.less';
 import { Form, Button, message, Modal } from 'antd';
 import { ExtTable } from 'suid';
@@ -15,12 +15,17 @@ import AddModal from './AddModal';
 import BatchEditModal from './BatchEditModal';
 import { isEmptyArray } from '../../../../utils/utilTool';
 import moment from 'moment';
+import { reviewTypesProps } from '../propsParams';
 
 const { confirm } = Modal;
 let LineInfo = (props, ref) => {
 
-  const { setlineData, originData, type, isView } = props;
+  const { originData, type, isView, reviewType, deleteLine } = props;
   const tableRef = useRef(null);
+
+  useImperativeHandle(ref, () => ({
+    getTableList: () => dataSource,
+  }));
 
   const [data, setData] = useState({
     type: 'add',
@@ -108,11 +113,23 @@ let LineInfo = (props, ref) => {
   }
 
   function filterSelectRow() {
-    const selectData = data.selectedRowKeys;
-    const filterData = dataSource.filter((item) => {
-      return !selectData.includes(item.reviewPlanYearLinenum);
-    });
-    setDataSource(filterData);
+    let deleteData = JSON.parse(JSON.stringify(data.selectRows));
+    let arr = JSON.parse(JSON.stringify(deleteLine));
+    deleteData.forEach(item => {
+      if (item.id) {
+        item.whetherDelete = true;
+        arr.push(item);
+      }
+    })
+
+    let newDataSource = JSON.parse(JSON.stringify(dataSource));
+    for (let index = newDataSource.length - 1; index >= 0; index--) {
+      if ((data.selectedRowKeys).includes(newDataSource[index].reviewPlanYearLinenum)) {
+        newDataSource.splice(index, 1);
+      }
+    }
+    setDataSource(newDataSource);
+    props.callbackSetDeleteLine(arr);
     clearSelect();
   }
 
@@ -158,6 +175,10 @@ let LineInfo = (props, ref) => {
       item.materialGradeName = item.materialGrade;
       // 专业组
       item.specialtyTeamName = item.purchaseProfessionalGroup;
+      // 默认审核类型
+      item.reviewTypeName = reviewType.name;
+      item.reviewTypeId = reviewType.id;
+      item.reviewTypeCode = reviewType.code;
     })
     const newTableList = JSON.parse(JSON.stringify(dataSource));
     // 是否选择有重复数据 以需求公司、采购组织、供应商、物料分类、物料级别 判断唯一性
@@ -186,7 +207,6 @@ let LineInfo = (props, ref) => {
       item.reviewPlanYearLinenum = ((Array(4).join(0) + (index + 1)).slice(-4) + '0');
     })
     setDataSource(newTableList);
-    setlineData(newTableList);
     setData((v) => ({ ...v, visible: false }));
   }
 
@@ -205,7 +225,6 @@ let LineInfo = (props, ref) => {
       return { ...item, ...formValue };
     });
     setDataSource([...newBatchData, ...leftTableData]);;
-    setlineData([...newBatchData, ...leftTableData]);
     setBatchVisible();
     tableRef.current.manualSelectedRows();
   }
@@ -260,4 +279,4 @@ let LineInfo = (props, ref) => {
   );
 }
 
-export default Form.create()(LineInfo);
+export default Form.create()(forwardRef(LineInfo));
