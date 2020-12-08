@@ -84,6 +84,12 @@ const ModifyForm = forwardRef(
                 'executiveDepartmentId': val.organization.id,
             })
         }
+        // 排序号
+        function changeSort(val) {
+            form.setFieldsValue({
+                'sort': val.changeSort,
+            })
+        }
         return (
             <Modal
                 confirmLoading={loading}
@@ -101,6 +107,7 @@ const ModifyForm = forwardRef(
                             {
                                 getFieldDecorator('stageId', { initialValue: dataSource ? dataSource.stageId : '' }),
                                 getFieldDecorator('stageCode', { initialValue: dataSource ? dataSource.stageCode : '' }),
+                                getFieldDecorator('stageSort', { initialValue: dataSource ? dataSource.stageSort : '' }),
                                 getFieldDecorator('stageName', {
                                     initialValue: initialValue ? initialValue.stageName : '',
                                     rules: [{ required: true, message: '请选择认定阶段' }],
@@ -113,7 +120,7 @@ const ModifyForm = forwardRef(
                                             url: `${recommendUrl}/api/samPhysicalIdentificationStageService/findByPage`,
                                             type: 'POST'
                                         }}
-                                        field={['stageId', 'stageCode']}
+                                        field={['stageId', 'stageCode', 'stageSort']}
                                         form={form}
                                         afterSelect={changevalue}
                                         {...Identification}
@@ -148,7 +155,7 @@ const ModifyForm = forwardRef(
                                         }}
                                         field={['taskCode']}
                                         form={form}
-                                        //afterSelect={changevalue}
+                                        afterSelect={changeSort}
                                         disabled={edit || others}
                                     />
                                 )}
@@ -197,7 +204,7 @@ const ModifyForm = forwardRef(
                                     }}
                                     placeholder="请输入排序号"
                                     // onBlur={onlyNumber}
-                                    disabled={edit}
+                                    disabled={true}
                                 />
                             )}
                         </Item>
@@ -265,8 +272,8 @@ const ModifyForm = forwardRef(
                 <Row>
                     <Col span={12}>
                         <Item {...formLayout} label="计划完成天数">
-                            {getFieldDecorator('planDay', {
-                                initialValue: initialValue ? initialValue.planDay : '',
+                            {getFieldDecorator('writeDay', {
+                                initialValue: initialValue ? initialValue.writeDay : '',
                                 rules: [
                                     { required: true, message: '请输入计划完成天数' },
                                     { pattern: RegExp(/^[1-9]\d*$/, "g"), message: '只能是数字' },
