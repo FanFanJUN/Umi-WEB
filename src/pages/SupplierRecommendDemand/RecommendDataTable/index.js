@@ -113,7 +113,18 @@ function RecommendDataTable() {
       params: {
         supplierRecommendDemandId: signleRow?.id
       }
-    }
+    },
+    columns: [
+      {
+        title: '意见',
+        dataIndex: 'opinion'
+      },
+      {
+        title: '提出意见时间',
+        dataIndex: 'submitTime',
+        width: 200
+      }
+    ]
   }
   const footer = (
     <Button onClick={closeCheckOpinion} type='primary'>知道了</Button>
