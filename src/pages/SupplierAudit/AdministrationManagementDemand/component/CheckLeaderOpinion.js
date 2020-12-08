@@ -77,7 +77,7 @@ const CheckLeaderOpinion = (props) => {
       width={'160vh'}
       maskClosable={false}
       visible={visible}
-      title={'查看组长意见'}
+      title={type === 'demand' ? '查看组长意见' : '查看退回信息'}
       onCancel={onCancel}
       footer={<Button type='primary' onClick={onCancel}>关闭</Button>}
       destroyOnClose={true}

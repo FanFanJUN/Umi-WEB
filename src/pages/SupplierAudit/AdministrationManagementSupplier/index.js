@@ -155,7 +155,7 @@ export default function() {
         onClick={() => redirectToPage('selfEvaluation')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        disabled={data.selectedRowKeys.length === 0}
+        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', 'NOT_COMPLETED')}
         key='SUPPLIER_AUDIT_SUPPLIER_SELF_EVALUATION'
       >自评</Button>)
     }
@@ -271,7 +271,12 @@ export default function() {
         visible={data.issuesManagementVisible}
       />
       <SelfEvaluation
-        onCancel={() => setData(v => ({ ...v, selfEvaluationVisible: false }))}
+        onCancel={(value) => {
+          if (value) {
+            refreshTable()
+          }
+          setData(v => ({ ...v, selfEvaluationVisible: false }))
+        }}
         reviewImplementPlanCode={data.resultsId}
         visible={data.selfEvaluationVisible}
       />
