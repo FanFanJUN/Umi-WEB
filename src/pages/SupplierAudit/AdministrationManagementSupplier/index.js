@@ -189,7 +189,7 @@ export default function() {
   </>;
 
   const headerRight = <div style={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-    <div style={{ width: '55%' }}>
+    <div style={{ width: '55%', display: 'flex' }}>
       <Checkbox checked={managementState} onClick={e => {
         setManagementState(e.target.checked);
         refreshTable();
