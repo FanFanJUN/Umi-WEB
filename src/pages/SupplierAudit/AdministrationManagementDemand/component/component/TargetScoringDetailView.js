@@ -38,7 +38,7 @@ const TargetScoringDetailView = (props) => {
       title: '附件',
       dataIndex: 'fileList',
       width: 150,
-      render: v => <Upload entityId={v} type={'show'} />,
+      render: v => <Upload entityId={v} type={'show'}/>,
     },
     {
       title: '问题',
@@ -102,7 +102,9 @@ const TargetScoringDetailView = (props) => {
   };
 
   const handleOk = () => {
-
+    if (isView) {
+      handleCancel();
+    }
   };
 
   const lookProblemManage = (data) => {
@@ -120,7 +122,7 @@ const TargetScoringDetailView = (props) => {
   };
 
   const handleSelectedRows = (keys, rows) => {
-    console.log(rows)
+    console.log(rows);
     setData(v => ({ ...v, selectedRowKeys: keys, selectedRowRows: rows }));
   };
 
@@ -161,7 +163,7 @@ const TargetScoringDetailView = (props) => {
                     getFieldDecorator('ruleName', {
                       initialValue: editData.ruleName,
                     })(
-                      <Input disabled={true} placeholder="请输入指标名称" style={{ width: '100' }} />,
+                      <Input disabled={true} placeholder="请输入指标名称" style={{ width: '100' }}/>,
                     )
                   }
                 </FormItem>
@@ -172,7 +174,7 @@ const TargetScoringDetailView = (props) => {
                     getFieldDecorator('definition', {
                       initialValue: editData.definition,
                     })(
-                      <Input disabled={true} placeholder="请输入指标定义" style={{ width: '100' }} />,
+                      <Input disabled={true} placeholder="请输入指标定义" style={{ width: '100' }}/>,
                     )
                   }
                 </FormItem>
@@ -185,7 +187,7 @@ const TargetScoringDetailView = (props) => {
                     getFieldDecorator('scoringStandard', {
                       initialValue: editData.scoringStandard,
                     })(
-                      <Input.TextArea disabled={true} rows={4} placeholder="请输入评分标准" style={{ width: '100%' }} />,
+                      <Input.TextArea disabled={true} rows={4} placeholder="请输入评分标准" style={{ width: '100%' }}/>,
                     )
                   }
                 </FormItem>
@@ -198,7 +200,7 @@ const TargetScoringDetailView = (props) => {
                     getFieldDecorator('highestScore', {
                       initialValue: editData.highestScore,
                     })(
-                      <Input disabled={true} placeholder="请输入最高得分" style={{ width: '100' }} />,
+                      <Input disabled={true} placeholder="请输入最高得分" style={{ width: '100' }}/>,
                     )
                   }
                 </FormItem>
@@ -209,7 +211,7 @@ const TargetScoringDetailView = (props) => {
                     getFieldDecorator('score', {
                       initialValue: editData.score,
                     })(
-                      <Input disabled={true} placeholder="请输入审核得分" style={{ width: '100' }} />,
+                      <Input disabled={true} placeholder="请输入审核得分" style={{ width: '100' }}/>,
                     )
                   }
                 </FormItem>
@@ -252,7 +254,7 @@ const TargetScoringDetailView = (props) => {
         params={{
           reviewImplementManagementId: data.selectedRowRows[0] ? data.selectedRowRows[0].reviewImplementManagementId : '',
           ruleName: editData.ruleName,
-          ruleCode: editData.ruleCode
+          ruleCode: editData.ruleCode,
         }}
         onCancel={() => setSendBackVisible(false)}
         visible={sendBackVisible}
