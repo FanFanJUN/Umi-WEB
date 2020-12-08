@@ -165,7 +165,16 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
       title: "旺季月份",
       dataIndex: "offSeasonMonth",
       ellipsis: true,
-      inputType: 'Input',
+      inputType: 'Select',
+      selectOptions: Array.from({ length: 12 }).map((_, index) => ({ value: `${index + 1}`, name: `${index + 1}月` })),
+      props: {
+        mode: "multiple",
+        style: {
+          width: 200
+        },
+        defaultValue: [],
+      },
+      width: 220
     },
   ];
 
@@ -408,7 +417,7 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
                         // ],
                       })(<UploadFile showColor={type !== 'add' ? true : false}
                         type={type !== 'add'}
-                        disabled={type==='detail'}
+                        disabled={type === 'detail'}
                         entityId={data.keyProductEquipmentFileId} />)}
                     </FormItem>
                   </Col>
