@@ -36,12 +36,19 @@ const Ctx = forwardRef(({
     cancel,
     show
   }))
-  const { getFieldDecorator, validateFieldsAndScroll } = form;
+  const {
+    getFieldDecorator,
+    validateFieldsAndScroll,
+    getFieldsValue
+  } = form;
   const [visible, setVisible] = useState(false)
   const [selectedRows, setRows] = useState([]);
   const [selectedRowKeys, setKeys] = useState([]);
   const [corporation, setCorporation] = useState({});
   const tableRef = useRef(null);
+  const {
+    objectRecognition
+  } = getFieldsValue();
   const tableProps = {
     store: {
       url: `${baseUrl}/corporationPurchaseOrg/findPurOrgsByCorpCode?corpCode=${corporation?.code}`,
@@ -213,26 +220,29 @@ const Ctx = forwardRef(({
             )
           }
         </FormItem>
-        <FormItem
-          label={<span className={styles.title}>是否信任</span>}
-          colon={false}
-        >
-          {
-            getFieldDecorator('trust', {
-              rules: [
-                {
-                  required: true,
-                  message: '请选择是否信任'
-                }
-              ]
-            })(
-              <RadioGroup>
-                <Radio value={true}>是</Radio>
-                <Radio value={false}>否</Radio>
-              </RadioGroup>
-            )
-          }
-        </FormItem>
+        {
+          typeof objectRecognition === 'boolean' && !objectRecognition ?
+            <FormItem
+              label={<span className={styles.title}>是否信任</span>}
+              colon={false}
+            >
+              {
+                getFieldDecorator('trust', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请选择是否信任'
+                    }
+                  ]
+                })(
+                  <RadioGroup>
+                    <Radio value={true}>是</Radio>
+                    <Radio value={false}>否</Radio>
+                  </RadioGroup>
+                )
+              }
+            </FormItem> : null
+        }
       </Form>
     </ExtModal>
   )

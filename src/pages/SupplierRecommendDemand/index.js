@@ -87,7 +87,7 @@ export default () => {
         authAction(
           <Button
             className={styles.btn}
-            disabled={empty || underWay}
+            disabled={empty || underWay || !fillInit}
             key='SUPPLIER_RECOMMEND_DEMAND_EDITOR'
             onClick={handleEditor}
             ignore={DEVELOPER_ENV}

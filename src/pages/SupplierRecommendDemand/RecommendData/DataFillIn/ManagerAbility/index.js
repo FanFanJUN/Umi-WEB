@@ -254,7 +254,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="每年制定查成本降低目标并对执行情况进行评价" {...formLayout}>
                       {getFieldDecorator('reduceCostEvaluation', {
                         initialValue: type === 'add' ? '' : data.reduceCostEvaluation,
-                      })(<Radio.Group disabled={type==='detail'}>
+                      })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>)}
@@ -273,7 +273,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                       })(<UploadFile
                         showColor={type !== 'add' ? true : false}
                         type={type !== 'add'}
-                        disabled={type==='detail'}
+                        disabled={type === 'detail'}
                         entityId={data.costControlPlanFileId}
                       />)}
                     </FormItem>
@@ -290,7 +290,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Radio.Group disabled={type==='detail'}>
+                      })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>)}
@@ -309,7 +309,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                       })(<UploadFile
                         showColor={type !== 'add' ? true : false}
                         type={type !== 'add'}
-                        disabled={type==='detail'}
+                        disabled={type === 'detail'}
                         entityId={data.costAccountingListFileId}
                       />)}
                     </FormItem>
@@ -328,13 +328,13 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="是否愿意承接紧急订单" {...formLayout}>
                       {getFieldDecorator('rushOrder', {
                         initialValue: type === 'add' ? true : data.rushOrder,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
-                      })(<Radio.Group disabled={type==='detail'}>
+                        rules: [
+                          {
+                            required: true,
+                            message: '请选择是否愿意承接紧急订单',
+                          },
+                        ],
+                      })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>)}
@@ -347,13 +347,13 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="是否根据要求维持一定库存(含质量安全库存)" {...formLayout}>
                       {getFieldDecorator('inventory', {
                         initialValue: type === 'add' ? true : data.inventory,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
-                      })(<Radio.Group disabled={type==='detail'}>
+                        rules: [
+                          {
+                            required: true,
+                            message: '请选择',
+                          },
+                        ],
+                      })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>)}
@@ -365,27 +365,39 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="库房地点" {...formLayout}>
                       {getFieldDecorator('warehouseLocation', {
                         initialValue: type === 'add' ? '' : data.warehouseLocation,
-                      })(<Input disabled={type==='detail'}/>)}
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空'
+                          }
+                        ]
+                      })(<Input disabled={type === 'detail'} />)}
                     </FormItem>
                   </Col>
                   <Col span={8}>
                     <FormItem label="面积（平方米）" {...formLayout}>
                       {getFieldDecorator('warehouseArea', {
                         initialValue: type === 'add' ? '' : data.warehouseArea,
-                      })(<InputNumber disabled={type==='detail'}/>)}
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空'
+                          }
+                        ]
+                      })(<InputNumber min={0} disabled={type === 'detail'} />)}
                     </FormItem>
                   </Col>
                   <Col span={8}>
                     <FormItem label="可存储量（个）" {...formLayout}>
                       {getFieldDecorator('storageNumber', {
                         initialValue: type === 'add' ? '' : data.storageNumber,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
-                      })(<InputNumber disabled={type==='detail'}/>)}
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空'
+                          }
+                        ]
+                      })(<InputNumber min={0} disabled={type === 'detail'} />)}
                     </FormItem>
                   </Col>
                 </Row>
@@ -395,13 +407,13 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="建有备货流程、系统" {...formLayout}>
                       {getFieldDecorator('stockUpProcess', {
                         initialValue: type === 'add' ? true : data.stockUpProcess,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
-                      })(<Radio.Group disabled={type==='detail'}>
+                        rules: [
+                          {
+                            required: true,
+                            message: '请选择'
+                          }
+                        ]
+                      })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>)}
@@ -411,15 +423,15 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="附件资料" {...formLayout}>
                       {getFieldDecorator('stockUpProcessFileIds', {
                         initialValue: type === 'add' ? '' : data.stockUpProcessFileIds,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
+                        rules: [
+                          {
+                            required: !!getFieldValue('stockUpProcess'),
+                            message: '附件资料不能为空',
+                          },
+                        ],
                       })(<UploadFile
                         showColor={type !== 'add' ? true : false}
-                        disabled={type==='detail'}
+                        disabled={type === 'detail'}
                         type={type !== 'add'}
                         entityId={data.stockUpProcessFileId}
                       />)}
@@ -432,13 +444,13 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="建有交货流程、系统" {...formLayout}>
                       {getFieldDecorator('deliveryProcess', {
                         initialValue: type === 'add' ? true : data.deliveryProcess,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
-                      })(<Radio.Group disabled={type==='detail'}>
+                        rules: [
+                          {
+                            required: true,
+                            message: '请选择',
+                          },
+                        ],
+                      })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>)}
@@ -448,16 +460,16 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="证明材料" {...formLayout}>
                       {getFieldDecorator('deliveryProcessFileIds', {
                         initialValue: type === 'add' ? '' : data.deliveryProcessFileIds,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
+                        rules: [
+                          {
+                            required: !!getFieldValue('deliveryProcess'),
+                            message: '证明材料不能为空',
+                          },
+                        ],
                       })(<UploadFile
                         showColor={type !== 'add' ? true : false}
                         type={type !== 'add'}
-                        disabled={type==='detail'}
+                        disabled={type === 'detail'}
                         entityId={data.deliveryProcessFileId}
                       />)}
                     </FormItem>
@@ -469,13 +481,13 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="紧急交货的流程、系统" {...formLayout}>
                       {getFieldDecorator('urgentDeliveryProcess', {
                         initialValue: type === 'add' ? true : data.urgentDeliveryProcess,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
-                      })(<Radio.Group disabled={type==='detail'}>
+                        rules: [
+                          {
+                            required: true,
+                            message: '请选择',
+                          },
+                        ],
+                      })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>)}
@@ -485,15 +497,15 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="证明材料" {...formLayout}>
                       {getFieldDecorator('urgentDeliveryProcessFileIds', {
                         initialValue: type === 'add' ? '' : data.urgentDeliveryProcessFileIds,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
+                        rules: [
+                          {
+                            required: getFieldValue('urgentDeliveryProcess'),
+                            message: '自主技术开发能力不能为空',
+                          },
+                        ],
                       })(<UploadFile
                         showColor={type !== 'add' ? true : false}
-                        disabled={type==='detail'}
+                        disabled={type === 'detail'}
                         type={type !== 'add'}
                         entityId={data.urgentDeliveryProcessFileId}
                       />)}
@@ -506,13 +518,13 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="客户满意度、客户投诉处理流程、系统" {...formLayout}>
                       {getFieldDecorator('customerProcess', {
                         initialValue: type === 'add' ? true : data.customerProcess,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
-                      })(<Radio.Group disabled={type==='detail'}>
+                        rules: [
+                            {
+                                required: true,
+                                message: '请选择',
+                            },
+                        ],
+                      })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>)}
@@ -522,14 +534,14 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="证明材料" {...formLayout}>
                       {getFieldDecorator('customerProcessFileIds', {
                         initialValue: type === 'add' ? '' : data.customerProcessFileIds,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
+                        rules: [
+                            {
+                                required: getFieldValue('customerProcess'),
+                                message: '自主技术开发能力不能为空',
+                            },
+                        ],
                       })(<UploadFile
-                        disabled={type==='detail'}
+                        disabled={type === 'detail'}
                         showColor={type !== 'add' ? true : false}
                         type={type !== 'add'}
                         entityId={data.customerProcessFileId}
@@ -543,13 +555,13 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="生产过程中物料的暂存、仓储中物料、成品的存放区域是否与其供货能力相适应" {...formLayout}>
                       {getFieldDecorator('materialMatchSupplyAbility', {
                         initialValue: type === 'add' ? true : data.materialMatchSupplyAbility,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
-                      })(<Radio.Group disabled={type==='detail'}>
+                        rules: [
+                            {
+                                required: true,
+                                message: '请选择',
+                            },
+                        ],
+                      })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>)}
@@ -561,13 +573,13 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="是否按照先进先出进行管理" {...formLayout}>
                       {getFieldDecorator('fifoManage', {
                         initialValue: type === 'add' ? true : data.fifoManage,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
-                      })(<Radio.Group disabled={type==='detail'}>
+                        rules: [
+                            {
+                                required: true,
+                                message: '请选择',
+                            },
+                        ],
+                      })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>)}
@@ -580,13 +592,13 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="保证在交货延误时能够尽早通知用户的良好预警措施" {...formLayout}>
                       {getFieldDecorator('delayDeliveryNoticeCustomer', {
                         initialValue: type === 'add' ? true : data.delayDeliveryNoticeCustomer,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
-                      })(<Radio.Group disabled={type==='detail'}>
+                        rules: [
+                            {
+                                required: true,
+                                message: '请选择',
+                            },
+                        ],
+                      })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>)}
@@ -596,15 +608,15 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="具体措施说明" {...formLayout}>
                       {getFieldDecorator('delayDeliveryNoticeCustomerFileIds', {
                         initialValue: type === 'add' ? '' : data.delayDeliveryNoticeCustomerFileIds,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
+                        rules: [
+                            {
+                                required: getFieldValue('delayDeliveryNoticeCustomer'),
+                                message: '具体措施说明不能为空',
+                            },
+                        ],
                       })(<UploadFile
                         showColor={type !== 'add' ? true : false}
-                        disabled={type==='detail'}
+                        disabled={type === 'detail'}
                         type={type !== 'add'}
                         entityId={data.delayDeliveryNoticeCustomerFileId}
                       />)}
@@ -640,7 +652,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Radio.Group disabled={type==='detail'}>
+                      })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>)}
@@ -658,7 +670,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<InputNumber disabled={type==='detail'}/>)}
+                      })(<InputNumber min={0} disabled={type === 'detail'} />)}
                     </FormItem>
                   </Col>
                   <Col span={12}>
@@ -671,7 +683,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<InputNumber disabled={type==='detail'}/>)}
+                      })(<InputNumber min={0} disabled={type === 'detail'} />)}
                     </FormItem>
                   </Col>
                 </Row>
@@ -687,7 +699,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Radio.Group disabled={type==='detail'}>
+                      })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>)}
@@ -706,7 +718,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                         //         message: '自主技术开发能力不能为空',
                         //     },
                         // ],
-                      })(<Radio.Group disabled={type==='detail'}>
+                      })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>)}
@@ -724,7 +736,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                         // ],
                       })(<UploadFile
                         showColor={type !== 'add' ? true : false}
-                        disabled={type==='detail'}
+                        disabled={type === 'detail'}
                         type={type !== 'add'}
                         entityId={data.dangerousChemicalShipperFileId}
                       />)}

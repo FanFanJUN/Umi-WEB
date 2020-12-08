@@ -140,6 +140,14 @@ const Customer = React.forwardRef(({
       inputType: 'InputNumber'
     },
     {
+      title: '币种',
+      dataIndex: 'currencyName',
+      ellipsis: true,
+      editable: true,
+      inputType: 'selectwithService',
+      width: 120
+    },
+    {
       title: '年供货量',
       dataIndex: 'annualOutput',
       ellipsis: true,
@@ -193,6 +201,14 @@ const Customer = React.forwardRef(({
       ellipsis: true,
       width: 250,
       inputType: 'InputNumber'
+    },
+    {
+      title: '币种',
+      dataIndex: 'currencyName',
+      ellipsis: true,
+      editable: true,
+      inputType: 'selectwithService',
+      width: 120
     },
     {
       title: '企业占该客户同类物资采购份额',

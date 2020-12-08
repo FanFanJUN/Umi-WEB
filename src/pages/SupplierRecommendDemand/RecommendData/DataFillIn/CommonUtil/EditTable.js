@@ -58,6 +58,7 @@ const EditableCell = (config) => {
             style={{ width: 150 }}
             placeholder="请选择"
             disabled={inputDisabled}
+            {...props}
           >
             {selectOptions.map(item => {
               return <Option value={item.value}>{item.name}</Option>
@@ -205,7 +206,7 @@ const EditableTable = (props) => {
 
   function deleteRow(key, type) {
     const len = dataSource.length;
-    if(copyLine && len === 1) {
+    if (copyLine && len === 1) {
       message.error('当前列表至少需要保留一行数据')
       return
     }
