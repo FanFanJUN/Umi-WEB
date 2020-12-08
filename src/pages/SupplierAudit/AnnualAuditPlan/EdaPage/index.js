@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:04:51
- * @LastEditTime: 2020-12-08 17:11:30
+ * @LastEditTime: 2020-12-08 17:34:13
  * @Description: 新增  编辑  详情 page
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/index.js
  */
@@ -153,11 +153,16 @@ const Index = (props) => {
             res = error;
         }
         if (buttonType === 'submit') {
-            // 编辑页
-            if (data.type === 'edit') {
-                return data.id;
+            if (res.success) {
+                // 编辑页
+                if (data.type === 'edit') {
+                    return data.id;
+                }
+                return res.data;
+            } else {
+                message.error(res.message);
             }
-            return res.data;
+            setSpinLoading(false);
         } else {
             console.log("res", res)
             if (res.success) {
