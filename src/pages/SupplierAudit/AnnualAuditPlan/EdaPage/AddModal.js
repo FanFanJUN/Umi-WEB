@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ComboGrid, ComboList, ComboTree, ExtModal, ExtTable } from 'suid';
-import { Button, Col, Form, Input, message, Row } from 'antd';
+import { Button, Col, Form, Input, message, Row, Spin } from 'antd';
 import { AuditCauseManagementConfig } from '../../mainData/commomService';
 import { isEmptyArray, hideFormItem, filterEmptyFileds } from '@/utils/utilTool';
 // import { getSupplierSupplyList } from '../service';
 import { smBaseUrl } from '@/utils/commonUrl';
 import { purchaseOrgConfig, corporationProps, materialClassProps, getListByTypeId } from '@/utils/commonProps';
+import { findReviewTypesByCode } from '../service';
 
 const FormItem = Form.Item;
 
@@ -48,10 +49,10 @@ const AddModal = (props) => {
                 return text && text.showName;
             }
         },
-        { title: '物料级别', dataIndex: 'materialGrade', ellipsis: true, width: 140 },
+        { title: '物料级别', dataIndex: 'materialGrade', ellipsis: true, width: 80, align: 'center' },
         { title: '绩效等级', dataIndex: 'measureUnit', ellipsis: true, width: 140 },
         { title: '采购金额', dataIndex: 'sampleReceiverName', ellipsis: true, width: 140 },
-    ].map(item => ({ ...item, align: 'center' }))
+    ];
 
     const onCancel = () => {
         handleCancel();
@@ -62,7 +63,7 @@ const AddModal = (props) => {
             message.info('至少选择一条行信息');
             return;
         }
-        selectRows.forEach((item)=>{
+        selectRows.forEach((item) => {
             delete item.id;
         })
         handleOk(selectRows);
@@ -81,7 +82,7 @@ const AddModal = (props) => {
 
     function handleOnchange(page) {
         console.log(page);
-        if(page) {
+        if (page) {
             setPage(page);
         }
     }
