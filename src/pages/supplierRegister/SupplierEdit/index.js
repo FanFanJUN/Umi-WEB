@@ -48,10 +48,10 @@ function CreateStrategy() {
   const { frameElementId, frameElementSrc = "", Opertype = "" } = query;
   let typeId = query.frameElementId;
   let urlParams = queryString.parse(window.location.search);
-    // 获取配置列表项
-    useEffect(() => {
-      initsupplierDetai(); //详情
-    }, []);
+  // 获取配置列表项
+  useEffect(() => {
+    initsupplierDetai(); //详情
+  }, []);
   // 详情
   async function initsupplierDetai() {
     triggerLoading(true);
@@ -62,7 +62,7 @@ function CreateStrategy() {
       setsupplierName(data.supplierInfoVo.supplierVo.name)
       initConfigurationTable(suppliertype)
       setTimeout(() => {
-        
+
         setEditData(data.supplierInfoVo)
         setwholeData(data)
         triggerLoading(false);
@@ -75,7 +75,7 @@ function CreateStrategy() {
   }
   // 配置
   async function initConfigurationTable(typeId) {
-   triggerLoading(true);
+    triggerLoading(true);
     let params = { catgroyid: typeId, property: 1 };
     const { data, success, message: msg } = await SaveSupplierconfigureService(params);
     if (success) {
@@ -159,7 +159,7 @@ function CreateStrategy() {
       }
     }
     let enclosurelist = [], basedata, baseexten, accountData,
-      automaticdata, automaticincome, automThreeYear, rangeValinfo,othersatt=[];
+      automaticdata, automaticincome, automThreeYear, rangeValinfo, othersatt = [];
     if (baseVal && baseVal.supplierVo) {
       baseVal.supplierVo.id = wholeData.supplierInfoVo.supplierVo.id;
       baseVal.extendVo.id = wholeData.supplierInfoVo.extendVo.id;
@@ -177,13 +177,12 @@ function CreateStrategy() {
     }
     if (qualifications) {
       enclosurelist = [...othersatt, ...qualifications.proCertVos];
-    }else {
+    } else {
       enclosurelist = othersatt
     }
     if (businessInfoVal && businessInfoVal.supplierVo) {
       automaticdata = businessInfoVal.supplierVo
     }
-    console.log(businessInfoVal)
     if (businessInfoVal && businessInfoVal.supplierRecentIncomes) {
       automaticincome = businessInfoVal.supplierRecentIncomes
     }
@@ -226,7 +225,7 @@ function CreateStrategy() {
       triggerLoading(false)
       banckjudge()
       return
-    }else {
+    } else {
       message.success(msg);
     }
     triggerLoading(false)
@@ -362,7 +361,7 @@ function CreateStrategy() {
       }
     }
     let enclosurelist = [], basedata, accountData, baseexten, automaticdata, automaticincome,
-      automThreeYear, rangeValinfo,othersatt = [];
+      automThreeYear, rangeValinfo, othersatt = [];
     if (baseVal && baseVal.supplierVo) {
       baseVal.supplierVo.id = wholeData.supplierInfoVo.supplierVo.id;
       baseVal.extendVo.id = wholeData.supplierInfoVo.extendVo.id;
@@ -380,7 +379,7 @@ function CreateStrategy() {
     }
     if (qualifications) {
       enclosurelist = [...othersatt, ...qualifications.proCertVos];
-    }else {
+    } else {
       enclosurelist = othersatt
     }
     if (businessInfoVal && businessInfoVal.supplierVo) {
@@ -448,7 +447,7 @@ function CreateStrategy() {
     let afterUrl = queryString.parse(window.location.search);
     if (query.frameElementId) {
       closeCurrent()
-    }else {
+    } else {
       closeCurrent()
       openNewTab("supplier/selfRegister/OutSideRegisterListView", '我的注册信息', true, afterUrl.frameId);
     }
@@ -547,7 +546,7 @@ function CreateStrategy() {
                         editData={editData}
                         wrappedComponentRef={Bankformef}
                       />
-                  </myContext.Provider>
+                    </myContext.Provider>
                   </div>
                 </div>
               );
