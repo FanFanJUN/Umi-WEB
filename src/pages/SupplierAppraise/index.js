@@ -8,6 +8,7 @@ import styles from './index.less';
 import { useTableProps } from '../../utils/hooks';
 import { ExtTable, utils, WorkFlow } from 'suid';
 import { Button, Input, Modal, message, Checkbox } from 'antd';
+import { useLocation } from 'dva/router'
 import { recommendUrl } from '../../utils/commonUrl';
 import { Header, AutoSizeLayout, AdvancedForm } from '../../components';
 import { evlStatusProps, evaluateSystemProps, orgnazationProps, evlEmu } from '../../utils/commonProps';
@@ -26,7 +27,8 @@ function SupplierRevaluate() {
   const authorizations = storage.sessionStorage.get("Authorization");
   const currentUserId = authorizations?.userId;
   const account = authorizations?.account;
-
+  const { query } = useLocation();
+  const { flowStatus: queryStatus, scored } = query;
   const FRAMELEEMENT = getFrameElement();
   const {
     selectedRowKeys,
@@ -365,7 +367,7 @@ function SupplierRevaluate() {
           <Button
             className={styles.btn}
             onClick={handleWithdraw}
-            disabled={empty || allowRemove || complete || resultGener || !isSelf || appraiseIng }
+            disabled={empty || allowRemove || complete || resultGener || !isSelf || appraiseIng}
             ignore={DEVELOPER_ENV}
             key='SUPPLIER_APPRAISE_WITHDRAW'
           >撤回</Button>
@@ -597,6 +599,24 @@ function SupplierRevaluate() {
     window.parent.frames.addEventListener('message', listenerParentClose, false);
     return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
   }, [])
+  useEffect(() => {
+    if (!!queryStatus || scored) {
+      setSearchValue({
+        filters: [
+          {
+            fieldName: 'flowStatus',
+            value: queryStatus,
+            operator: 'EQ'
+          },
+          {
+            fieldName: 'scored',
+            value: scored,
+            operator: 'EQ'
+          }
+        ]
+      })
+    }
+  }, [queryStatus, scored])
   return (
     <div>
       <Header

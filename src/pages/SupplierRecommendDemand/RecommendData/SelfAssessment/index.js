@@ -68,7 +68,7 @@ function SelfAssessment({
                   }
                 ],
                 initialValue: record.score,
-              })(<InputNumber max={record.highestScore} min={0}/>)
+              })(<InputNumber max={record.highestScore} min={0} />)
             }
           </Item>
         }
@@ -136,18 +136,15 @@ function SelfAssessment({
       }
     })
   }
-  function findTreeNodeAndSetValue(v = [], t = []) {
-    t.forEach(system => {
+  function findTreeNodeAndSetValue(v) {
+    v.forEach(system => {
       if (!!system.ruleId) {
-        const index = v.findIndex(vv => vv.code === system.ruleCode)
-        if (index !== -1) {
-          form.setFieldsValue({
-            [system.ruleId]: v[index].score
-          })
-        }
+        form.setFieldsValue({
+          [system.ruleId]: system.score
+        })
       } else {
         if (!!system.children) {
-          findTreeNodeAndSetValue(v, system.children);
+          findTreeNodeAndSetValue(system.children);
         }
       }
     })
@@ -156,17 +153,19 @@ function SelfAssessment({
     const formData = new FormData();
     formData.append('file', file);
     formData.append('supplierRecommendDemandId', query.id)
-    const { data } = await importProject(formData)
-    const errors = data.filter(item => !!item.msg);
-    if (errors.length !== 0) {
-      Modal.error({
-        title: '导入错误',
-        content: errors.map(item => `${item.name}-${item.msg}`)
-      })
+    toggleLoading(true)
+    const { data, success, message: msg } = await importProject(formData)
+    toggleLoading(false)
+    // const errors = data.filter(item => !!item.msg);
+    if (success) {
+      findTreeNodeAndSetValue(data)
+      message.success('导入成功')
       return false
     }
-    findTreeNodeAndSetValue(data, dataSource)
-    message.success('导入成功')
+    Modal.error({
+      title: '导入错误',
+      content: msg
+    })
     return false
   }
   useEffect(() => {
