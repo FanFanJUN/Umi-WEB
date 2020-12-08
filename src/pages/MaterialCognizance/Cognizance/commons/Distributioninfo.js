@@ -105,7 +105,7 @@ const ModifyinfoRef = forwardRef(({
     {
       title: '计划完成天数',
       align: 'center',
-      dataIndex: 'planDay',
+      dataIndex: 'writeDay',
       width: 120,
     },
     {
@@ -122,6 +122,7 @@ const ModifyinfoRef = forwardRef(({
         key: keys,
         stageName: '认定方案',
         stageCode: '04',
+        stageSort: '1',
         taskName: '制定认定方案',
         taskCode: '00',
         taskTypeName: '判断型任务',
@@ -197,7 +198,6 @@ const ModifyinfoRef = forwardRef(({
         }
       }
       if (!modalType) {
-        console.log(1)
         keys = keys + 1;
         newsdata.push({
           ...val,
@@ -206,7 +206,6 @@ const ModifyinfoRef = forwardRef(({
         })
         setDataSource(newsdata);
       } else {
-        console.log(2)
         dataSource.map((item, index) => {
           if (item.key === val.key) {
             const copyData = dataSource.slice(0)
@@ -237,7 +236,7 @@ const ModifyinfoRef = forwardRef(({
     const changeinfor = tabformRef.current.data;
     if (changeinfor.length > 0) {
       if (changeinfor[0].key === 1 && changeinfor[0].responsiblePartyName === undefined &&
-        changeinfor[0].executiveDepartmentName === undefined && changeinfor[0].planDay === undefined) {
+        changeinfor[0].executiveDepartmentName === undefined && changeinfor[0].writeDay === undefined) {
         return false;
       } else {
         let newdata = [];
