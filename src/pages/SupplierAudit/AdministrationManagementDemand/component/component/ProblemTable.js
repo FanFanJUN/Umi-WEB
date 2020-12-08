@@ -14,11 +14,11 @@ const ProblemTable = (props) => {
     { title: '指标名称', dataIndex: 'ruleName', width: 150 },
     { title: '指标定义', dataIndex: 'definition', ellipsis: true, width: 150 },
     { title: '评分标准', dataIndex: 'scoringStandard', ellipsis: true, width: 180 },
-    { title: '标准分', dataIndex: 'highestScore', ellipsis: true, width: 100 },
+    { title: '标准分', dataIndex: 'highestScore', ellipsis: true, width: 70 },
     {
       title: '不适用',
       dataIndex: 'whetherApply',
-      width: 80,
+      width: type ? 70 : 80,
       render: (v, data) => type ? ApplicableStateArr[v] : <ComboList
         onClick={e => e.stopPropagation()}
         afterSelect={value => {
@@ -49,7 +49,7 @@ const ProblemTable = (props) => {
     {
       title: '附件',
       dataIndex: 'attachRelatedIds',
-      width: 200,
+      width: type ? 50 : 200,
       render: (v, data) => <Upload
         entityId={v} type={props.type}
         onChange={(value) => data.attachRelatedIds = value} />,
@@ -57,7 +57,7 @@ const ProblemTable = (props) => {
     {
       title: '问题',
       dataIndex: 'problemList',
-      width: 200,
+      width: 150,
       render: (v, data) => <div><Button onClick={e => showProblemManagement(e, data)}>问题管理</Button> {v.length}</div>,
     },
   ].map(item => ({ ...item, align: 'center' }));
@@ -130,6 +130,7 @@ const ProblemTable = (props) => {
         style={{ marginTop: '10px' }}
         rowKey={(v) => v.lineNum}
         allowCancelSelect={true}
+        height={400}
         showSearch={false}
         loading={loading}
         remotePaging

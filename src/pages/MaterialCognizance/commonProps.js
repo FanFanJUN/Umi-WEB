@@ -85,7 +85,7 @@ export const Identification = {
   remotePaging: true,
   rowKey: 'code',
   reader: {
-    field: ['id', 'stageCode',],
+    field: ['id', 'stageCode', 'changeSort'],
     name: 'identificationStage',
   },
 };

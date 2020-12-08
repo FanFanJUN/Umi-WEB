@@ -8,7 +8,7 @@ import {
   AuthenticationTypeConfig,
   IssuesManagementApi,
   OrderSeverityArr,
-  SendProblemApi, validationProblemApi, VerificationResultConfig, whetherArr,
+  SendProblemApi, validationProblemApi, VerificationResultConfig, certifyTypeArr, CertifyTypeConfig,
 } from '../../commonApi';
 import { getRandom } from '../../../../QualitySynergy/commonProps';
 import AnswerQuestionModal from '../../../AdministrationManagementSupplier/component/AnswerQuestionModal';
@@ -38,7 +38,7 @@ const IssuesManagement = (props) => {
     },
     { title: '完成时间', dataIndex: 'completionTime', width: 100 },
     { title: '验证类型', dataIndex: 'checkType', width: 100, render: v => AuthenticationTypeArr[v] },
-    { title: '验证结果', dataIndex: 'checkResult', width: 100, render: v => whetherArr[v] },
+    { title: '验证结果', dataIndex: 'checkResult', width: 100, render: v => certifyTypeArr[v] },
   ].map(item => ({ ...item, align: 'center' }));
 
   useEffect(() => {
@@ -95,7 +95,7 @@ const IssuesManagement = (props) => {
       name: '验证结果',
       type: 'comboList',
       code: 'checkResultName',
-      config: VerificationResultConfig,
+      config: CertifyTypeConfig,
       field: ['checkResult'],
     },
   ];
@@ -118,7 +118,7 @@ const IssuesManagement = (props) => {
       newData.checkType = AuthenticationTypeArr[newData.checkType];
     }
     if (newData.checkResult) {
-      newData.checkResult = whetherArr[newData.checkResult];
+      newData.checkResult = certifyTypeArr[newData.checkResult];
     }
     console.log(newData);
     setData(v => ({
@@ -221,7 +221,7 @@ const IssuesManagement = (props) => {
           'preventiveMeasures': item.preventiveMeasures,
           'completionTime': item.completionTime,
           'checkType': AuthenticationTypeArr[item.checkType],
-          'checkResult': whetherArr[item.checkResult],
+          'checkResult': certifyTypeArr[item.checkResult],
         });
       });
       return arr;

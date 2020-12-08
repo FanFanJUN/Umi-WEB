@@ -16,14 +16,14 @@ const AuditQuestions = React.forwardRef(({ form, isView, editData, type }, ref) 
     { title: '指标', dataIndex: 'ruleName', width: 180, required: true },
     { title: '部门/过程', dataIndex: 'department', ellipsis: true, width: 100 },
     { title: '问题描述', dataIndex: 'problemDescribe', ellipsis: true, width: 400 },
-    { title: '严重程度', dataIndex: 'severity', ellipsis: true, width: 120 },
+    { title: '严重程度', dataIndex: 'severityEnumRemark', ellipsis: true, width: 120 },
     { title: '需求整改完成日期', dataIndex: 'demandCompletionTime', width: 140 },
     { title: '提出人', dataIndex: 'proposerName', width: 100 },
     { title: '原因分析', dataIndex: 'reason', width: 140 },
     {
       title: '纠正预防措施及见证附件', dataIndex: 'preventiveMeasures', width: 300, render: (v, data) => <>
         {v} {data.measures}
-        <Upload type='show' entityId={data.attachRelatedIds} />
+        <Upload type='show' entityId={data.fileList} />
       </>,
     },
     { title: '完成时间', dataIndex: 'completionTime', width: 100 },

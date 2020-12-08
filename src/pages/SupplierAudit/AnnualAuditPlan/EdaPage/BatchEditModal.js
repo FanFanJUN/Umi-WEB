@@ -3,19 +3,21 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-23 17:00:19
- * @LastEditTime: 2020-12-07 17:41:26
+ * @LastEditTime: 2020-12-08 10:19:34
  * @Description: 批量编辑页面
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BatchEditModal.js
  */
 import React, { useEffect } from 'react';
 import { ComboGrid, ComboList, ExtModal } from 'suid';
-import { Col, Form, Input, InputNumber, message, Row } from 'antd';
+import { Col, Form, Input, DatePicker, message, Row } from 'antd';
 import { reviewTypesProps, reviewReasonsProps, reviewWaysProps, AreaConfig, CountryIdConfig } from '../propsParams';
 import { hideFormItem } from '@/utils/utilTool';
 import { basicServiceUrl, gatewayUrl } from '@/utils/commonUrl';
 import { findReviewTypesByCode } from '../service';
+import moment from 'moment';
 
 const FormItem = Form.Item;
+const { MonthPicker } = DatePicker;
 
 const formItemLayoutLong = {
   labelCol: { span: 8 },
@@ -108,12 +110,12 @@ const BatchEditModal = (props) => {
                 getFieldDecorator('reviewTypeCode', { initialValue: originData.reviewTypeCode }),
                 getFieldDecorator('reviewTypeName', {
                   initialValue: originData.reviewTypeName,
-                  rules: [
-                    {
-                      required: true,
-                      message: '审核类型不能为空',
-                    },
-                  ],
+                  // rules: [
+                  //   {
+                  //     required: true,
+                  //     message: '审核类型不能为空',
+                  //   },
+                  // ],
                 })(
                   <ComboGrid
                     form={form}
@@ -132,12 +134,12 @@ const BatchEditModal = (props) => {
                 getFieldDecorator('reviewReasonCode', { initialValue: originData.reviewReasonCode }),
                 getFieldDecorator('reviewReasonName', {
                   initialValue: originData.reviewReasonName,
-                  rules: [
-                    {
-                      required: true,
-                      message: '审核原因不能为空',
-                    },
-                  ],
+                  // rules: [
+                  //   {
+                  //     required: true,
+                  //     message: '审核原因不能为空',
+                  //   },
+                  // ],
                 })(
                   <ComboGrid
                     style={{ width: '100%' }}
@@ -159,12 +161,12 @@ const BatchEditModal = (props) => {
                 getFieldDecorator('reviewWayCode', { initialValue: originData.reviewWayCode }),
                 getFieldDecorator('reviewWayName', {
                   initialValue: originData.reviewWayName,
-                  rules: [
-                    {
-                      required: true,
-                      message: '审核方式不能为空',
-                    },
-                  ],
+                  // rules: [
+                  //   {
+                  //     required: true,
+                  //     message: '审核方式不能为空',
+                  //   },
+                  // ],
                 })(
                   <ComboGrid
                     style={{ width: '100%' }}
@@ -181,15 +183,15 @@ const BatchEditModal = (props) => {
             <FormItem {...formItemLayoutLong} label={'预计审核月度'}>
               {
                 getFieldDecorator('reviewMonth', {
-                  initialValue: originData.reviewMonth,
-                  rules: [
-                    {
-                      required: true,
-                      message: '预计审核月度不能为空',
-                    },
-                  ],
+                  initialValue: originData.reviewMonth && moment(originData.reviewMonth),
+                  // rules: [
+                  //   {
+                  //     required: true,
+                  //     message: '预计审核月度不能为空',
+                  //   },
+                  // ],
                 })(
-                  <InputNumber min={1} max={12} style={{ width: '100%' }} />
+                  <MonthPicker style={{ width: '100%' }} />
                 )
               }
             </FormItem>
@@ -203,12 +205,12 @@ const BatchEditModal = (props) => {
                 getFieldDecorator('countryCode', { initialValue: originData.countryCode }),
                 getFieldDecorator('countryName', {
                   initialValue: originData.countryName,
-                  rules: [
-                    {
-                      required: true,
-                      message: '国家/省/市/区县/详细地址不能为空',
-                    },
-                  ],
+                  // rules: [
+                  //   {
+                  //     required: true,
+                  //     message: '国家/省/市/区县/详细地址不能为空',
+                  //   },
+                  // ],
                 })(
                   <ComboList
                     style={{ width: '15%' }}
@@ -234,12 +236,12 @@ const BatchEditModal = (props) => {
                 getFieldDecorator('provinceCode', { initialValue: originData.provinceCode }),
                 getFieldDecorator('provinceName', {
                   initialValue: originData.provinceName,
-                  rules: [
-                    {
-                      required: true,
-                      message: '省不能为空',
-                    },
-                  ],
+                  // rules: [
+                  //   {
+                  //     required: true,
+                  //     message: '省不能为空',
+                  //   },
+                  // ],
                 })(
                   <ComboList
                     allowClear={true}
@@ -271,12 +273,12 @@ const BatchEditModal = (props) => {
                 getFieldDecorator('cityCode', { initialValue: originData.cityCode }),
                 getFieldDecorator('cityName', {
                   initialValue: originData.cityName,
-                  rules: [
-                    {
-                      required: true,
-                      message: '市不能为空',
-                    },
-                  ],
+                  // rules: [
+                  //   {
+                  //     required: true,
+                  //     message: '市不能为空',
+                  //   },
+                  // ],
                 })(
                   <ComboList
                     allowClear={true}
@@ -308,12 +310,12 @@ const BatchEditModal = (props) => {
                 getFieldDecorator('countyCode', { initialValue: originData.countyCode }),
                 getFieldDecorator('countyName', {
                   initialValue: originData.countyName,
-                  rules: [
-                    {
-                      required: true,
-                      message: '区/县不能为空',
-                    },
-                  ],
+                  // rules: [
+                  //   {
+                  //     required: true,
+                  //     message: '区/县不能为空',
+                  //   },
+                  // ],
                 })(
                   <ComboList
                     allowClear={true}
@@ -344,12 +346,12 @@ const BatchEditModal = (props) => {
               {
                 getFieldDecorator('address', {
                   initialValue: originData.address,
-                  rules: [
-                    {
-                      required: true,
-                      message: '详细地址不能为空',
-                    },
-                  ],
+                  // rules: [
+                  //   {
+                  //     required: true,
+                  //     message: '详细地址不能为空',
+                  //   },
+                  // ],
                 })(
                   <Input style={{ width: '40%' }} placeholder={'请输入详细地址'} />,
                 )
@@ -363,12 +365,12 @@ const BatchEditModal = (props) => {
               {
                 getFieldDecorator('contactUserName', {
                   initialValue: originData.contactUserName,
-                  rules: [
-                    {
-                      required: true,
-                      message: '供应商联系人不能为空',
-                    },
-                  ],
+                  // rules: [
+                  //   {
+                  //     required: true,
+                  //     message: '供应商联系人不能为空',
+                  //   },
+                  // ],
                 })(
                   <Input />
                 )
@@ -380,9 +382,9 @@ const BatchEditModal = (props) => {
               {
                 getFieldDecorator('contactUserTel', {
                   initialValue: originData.contactUserTel,
-                  rules: [
-                    { required: true, message: '供应商联系方式不能为空', },
-                  ],
+                  // rules: [
+                  //   { required: true, message: '供应商联系方式不能为空', },
+                  // ],
                 })(
                   <Input />
                 )

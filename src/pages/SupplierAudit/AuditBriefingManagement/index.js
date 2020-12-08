@@ -43,6 +43,7 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
 
   const [data, setData] = useState({
     spinning: false,
+    exportSpinning: false,
     flowId: '',
     checkedCreate: true,
     quickSearchValue: '',
@@ -52,7 +53,7 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
     modalVisible: false,
   });
   const currentUserId = getUserId();
-
+  const headerRef = useRef(null);
   const getModalRef = useRef(null);
 
   const onChangeCreate = (e) => {
@@ -120,15 +121,12 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
       okType: 'danger',
       cancelText: '否',
       onOk: () => {
-        setData(v => ({ ...v, spinning: true }));
         deleteBriefingById({ id: data.selectedRows[0].id }).then(res => {
           if (res.success) {
-            setData(v => ({ ...v, spinning: false }));
             message.success(res.message);
             tableRef.current.manualSelectedRows();
             tableRef.current.remoteDataRefresh();
           } else {
-            setData(v => ({ ...v, spinning: false }));
             message.error(res.message);
           }
         }).catch(err => message.error(err.message));
@@ -138,15 +136,15 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
 
   //导出
   const exportItem = () => {
-    setData(v => ({ ...v, spinning: true }));
+    setData(v => ({ ...v, exportSpinning: true }));
     exportById({ id: data.selectedRows[0].id }).then(res => {
       if (res.success) {
-        setData(v => ({ ...v, spinning: false }));
+        setData(v => ({ ...v, exportSpinning: false }));
         downloadPDFFile(res.data, '审核简报导出.pdf');
         tableRef.current.manualSelectedRows();
         tableRef.current.remoteDataRefresh();
       } else {
-        setData(v => ({ ...v, spinning: false }));
+        setData(v => ({ ...v, exportSpinning: false }));
         message.error(res.message);
       }
     }).catch(err => message.error(err.message));
@@ -155,6 +153,7 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
   // 高级查询搜索
   const handleAdvancedSearch = (value) => {
     setData(v => ({ ...v, advancedSearchValue: value }));
+    headerRef.current.hide();
     tableRef.current.manualSelectedRows();
     tableRef.current.remoteDataRefresh();
   };
@@ -175,8 +174,8 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
 
   const columns = [
     { title: '状态', dataIndex: 'arAuditReportManagStatusRemark', width: 80 },
-    { title: '审批状态', dataIndex: 'flowStatusRemark', width: 200 },
-    { title: '审核简报编号', dataIndex: 'auditRbriefingManageCode', width: 200 },
+    { title: '审批状态', dataIndex: 'flowStatusRemark', width: 120 },
+    { title: '审核简报编号', dataIndex: 'auditRbriefingManageCode', width: 140 },
     {
       title: '统计期间', dataIndex: 'reviewRequirementCode', width: 200,
       render: (text, record) => {
@@ -185,8 +184,8 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
     },
     { title: '拟制公司', dataIndex: 'statisticCorporationName', ellipsis: true, width: 200 },
     { title: '拟制部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200 },
-    { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 200 },
-    { title: '拟制时间', dataIndex: 'createdDate', ellipsis: true, width: 200 },
+    { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 120 },
+    { title: '拟制时间', dataIndex: 'createdDate', ellipsis: true, width: 140 },
   ].map(item => ({ ...item, align: 'center' }));
 
 
@@ -240,7 +239,7 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
         ignore={DEVELOPER_ENV}
         businessKey={data.flowId}
         startComplete={handleComplete}
-        businessModelCode='com.ecmp.srm.sam.entity.ar.ArAuditReportManag'
+        businessModelCode='com.ecmp.srm.sam.entity.ab.AbAuditBriefingManage'
         key='SRM-SM-AUDITBRIEFING-APPROVE'
       >{
         loading => <Button
@@ -273,7 +272,7 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
     {
       authAction(<Button
         onClick={() => exportItem()}
-        loading={data.spinning}
+        loading={data.exportSpinning}
         disabled={data.selectedRowKeys.length === 0}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
@@ -303,8 +302,10 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
   return (
     <Fragment>
       <Header
+        hiddenClose
         left={headerLeft}
         right={headerRight}
+        ref={headerRef}
         content={
           <AdvancedForm formItems={formItems} onOk={handleAdvancedSearch}/>
         }
