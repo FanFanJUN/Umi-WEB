@@ -23,7 +23,7 @@ const AuditQuestions = React.forwardRef(({ form, isView, editData, type }, ref) 
     {
       title: '纠正预防措施及见证附件', dataIndex: 'preventiveMeasures', width: 300, render: (v, data) => <>
         {v} {data.measures}
-        <Upload type='show' entityId={data.attachRelatedIds} />
+        <Upload type='show' entityId={data.fileList} />
       </>,
     },
     { title: '完成时间', dataIndex: 'completionTime', width: 100 },

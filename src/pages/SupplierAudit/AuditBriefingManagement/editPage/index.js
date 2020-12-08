@@ -181,7 +181,7 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
                     startComplete={handleBack}
                     onCancel={handleBack}
                     disabled={false}
-                    businessModelCode='com.ecmp.srm.sam.entity.ar.ArAuditReportManag'
+                    businessModelCode='com.ecmp.srm.sam.entity.ab.AbAuditBriefingManage'
                   >
                     {
                       loading => <Button loading={loading} type='primary'>提交</Button>
