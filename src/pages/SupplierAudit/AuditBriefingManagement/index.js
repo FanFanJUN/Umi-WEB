@@ -52,7 +52,7 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
     modalVisible: false,
   });
   const currentUserId = getUserId();
-
+  const headerRef = useRef(null);
   const getModalRef = useRef(null);
 
   const onChangeCreate = (e) => {
@@ -155,6 +155,7 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
   // 高级查询搜索
   const handleAdvancedSearch = (value) => {
     setData(v => ({ ...v, advancedSearchValue: value }));
+    headerRef.current.hide();
     tableRef.current.manualSelectedRows();
     tableRef.current.remoteDataRefresh();
   };
@@ -305,6 +306,7 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
       <Header
         left={headerLeft}
         right={headerRight}
+        ref={headerRef}
         content={
           <AdvancedForm formItems={formItems} onOk={handleAdvancedSearch}/>
         }
