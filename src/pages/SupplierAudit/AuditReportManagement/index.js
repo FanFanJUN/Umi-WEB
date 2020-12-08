@@ -71,7 +71,7 @@ const AuditReportManagement = forwardRef(({}, ref) => {
     modalVisible: false,
   });
   const currentUserId = getUserId();
-
+  const headerRef = useRef(null);
   const getModalRef = useRef(null);
 
   const onChangeCreate = (e) => {
@@ -154,6 +154,7 @@ const AuditReportManagement = forwardRef(({}, ref) => {
   // 高级查询搜索
   const handleAdvancedSearch = (value) => {
     setData(v => ({ ...v, advancedSearchValue: value }));
+    headerRef.current.hide();
     tableRef.current.manualSelectedRows();
     tableRef.current.remoteDataRefresh();
   };
@@ -293,12 +294,13 @@ const AuditReportManagement = forwardRef(({}, ref) => {
     const [flowData = {}] = rows;
     setData((v) => ({ ...v, selectedRowKeys: value, selectedRows: rows, flowId: flowData.id }));
   };
-
+  console.log(data.advancedSearchValue)
   return (
     <Fragment>
       <Header
         left={headerLeft}
         right={headerRight}
+        ref={headerRef}
         content={
           <AdvancedForm formItems={formItems} onOk={handleAdvancedSearch}/>
         }
