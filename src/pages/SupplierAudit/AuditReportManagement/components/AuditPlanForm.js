@@ -53,14 +53,14 @@ const AuditPlanForm = React.forwardRef(({ form, isView, editData, type,reviewPla
             <Col span={12}>
               <FormItem  {...formLayout} label={'审核时间从'}>
                 {
-                  <span>{editData.reviewDateStart}</span>
+                  <span>{editData.reviewDateStart?editData.reviewDateStart.substring(0,10):''}</span>
                 }
               </FormItem>
             </Col>
             <Col span={12}>
               <FormItem  {...formLayout} label={'审核时间到'}>
                 {
-                  <span>{editData.reviewDateEnd}</span>
+                  <span>{editData.reviewDateEnd?editData.reviewDateEnd.substring(0,10):''}</span>
                 }
               </FormItem>
             </Col>
