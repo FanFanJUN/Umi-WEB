@@ -165,14 +165,13 @@ function WhetherCheck({
       ...item,
       access: kvs[index]
     }))
-    console.log(paramsDataSource)
     if (needExamine) {
       pass = paramsDataSource.every(item => {
         return !!item.examineId
       })
     }
     pass = paramsDataSource.every(item => {
-      return !!item.objectRecognition && !!item.physicalId
+      return !!item.objectRecognition ? !!item.physicalId : true
     })
     console.log(pass)
     if (!pass) {
