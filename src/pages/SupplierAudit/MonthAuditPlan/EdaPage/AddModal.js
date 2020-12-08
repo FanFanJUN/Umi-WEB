@@ -1,9 +1,9 @@
 // 从年度审核新增
 import React, { useState, useRef } from "react";
-import { Form, Row, Col, Button, Select, Spin, message } from "antd";
+import { Form, Row, Col, Button, DatePicker, Spin, message } from "antd";
 import { ExtTable, ExtModal, ComboList, ComboTree, } from 'suid';
+import moment from "moment";
 import {
-    AuditCauseManagementConfig,
     reviewPlanYearConfig,
     AllCompanyConfig,
     AllFindByFiltersConfig,
@@ -14,7 +14,7 @@ import { recommendUrl } from '@/utils/commonUrl';
 import { findRequirementLine, findYearLineLine, findRecommendAccessByDataAuth } from "../service"
 
 const FormItem = Form.Item;
-const { Option } = Select;
+const { MonthPicker } = DatePicker;
 const formItemLayoutLong = {
     labelCol: { span: 8 },
     wrapperCol: { span: 16 },
@@ -36,7 +36,7 @@ const AddModal = (props) => {
                 return [
                     {
                         title: '预计审核月度', dataIndex: 'reviewMonth', ellipsis: true, width: 140, render: (text) => {
-                            return text ? (selectedTear + "年" + text + "月") : ""
+                            return text ? text.slice(0, 7) : ""
                         }
                     },
                     { title: '需求公司', dataIndex: 'applyCorporationName', width: 180, ellipsis: true, render: (text, item) => {
@@ -202,7 +202,9 @@ const AddModal = (props) => {
                     delete values.reviewPlanYearName
                     delete values.reviewPlanYearCode
                     if (values.reviewMonth) {
-                        values.reviewMonth = Number(values.reviewMonth);
+                        values.reviewMonthStart = moment(values.reviewMonth).startOf('month').format('YYYY-MM-DD') + " 00:00:00";
+                        values.reviewMonthEnd = moment(values.reviewMonth).endOf('month').format("YYYY-MM-DD") + " 23:59:59";
+                        delete values.reviewMonth;
                     }
                 } else {
                     delete values.businessCode;
@@ -245,20 +247,7 @@ const AddModal = (props) => {
                         <FormItem {...formItemLayoutLong} label={'预计审核月度'}>
                             {
                                 getFieldDecorator('reviewMonth')(
-                                    <Select>
-                                        <Option value="1">1月</Option>
-                                        <Option value="2">2月</Option>
-                                        <Option value="3">3月</Option>
-                                        <Option value="4">4月</Option>
-                                        <Option value="5">5月</Option>
-                                        <Option value="6">6月</Option>
-                                        <Option value="7">7月</Option>
-                                        <Option value="8">8月</Option>
-                                        <Option value="9">9月</Option>
-                                        <Option value="10">10月</Option>
-                                        <Option value="11">11月</Option>
-                                        <Option value="12">12月</Option>
-                                    </Select>
+                                    <MonthPicker placeholder="选择月度" style={{width: "100%"}}/>
                                 )
                             }
                         </FormItem>

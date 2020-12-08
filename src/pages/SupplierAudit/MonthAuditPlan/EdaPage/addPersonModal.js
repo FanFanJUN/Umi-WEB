@@ -1,9 +1,7 @@
 // 新增协同人员弹框
 import React, { useEffect, useState } from 'react';
-import { ComboList, ComboTree, ExtModal } from 'suid';
-import { Col, Form, Input, Row } from 'antd';
-import { ApplyOrganizationProps, UserByDepartmentConfig, GetUserTelByUserId } from '../../mainData/commomService';
-import { basicServiceUrl, gatewayUrl } from '@/utils/commonUrl';
+import { ExtModal } from 'suid';
+import { Form, Input, Row } from 'antd';
 import { UserSelect } from '@/components';
 
 const FormItem = Form.Item;
@@ -27,36 +25,6 @@ const AddPersonModal = (props) => {
             }
         });
     }
-    // 部门选择更改
-    const departChange = (value) => {
-        console.log('部门选择更改', value)
-        setFieldsValue({
-            namePath: value.namePath,
-            codePath: value.codePath,
-            memberName: '',
-            memberTel: '',
-            employeeNo: ''
-        });
-    }
-    // 员工选择更改
-    const userSelect = (value) => {
-        setFieldsValue({
-            memberName: value.userName,
-            memberId: value.id,
-            employeeNo: value.user.tenantCode
-        });
-        GetUserTelByUserId({
-            userId: value.user.id,
-        }).then(res => {
-            if (res.success) {
-                setFieldsValue({
-                    memberTel: res.data.mobile,
-                });
-            } else {
-                message.error('获取手机号失败');
-            }
-        });
-    };
 
     return <ExtModal
         width={'30vw'}
@@ -115,13 +83,6 @@ const AddPersonModal = (props) => {
                             rules: [{ required: true, message: '部门不能为空', },]
                         })(
                             <Input disabled={true} />
-                            // <ComboTree
-                            //     form={form}
-                            //     name={'departmentName'}
-                            //     field={['departmentCode', 'departmentId']}
-                            //     afterSelect={departChange}
-                            //     {...ApplyOrganizationProps}
-                            // />
                         )
                     }
                 </FormItem>
@@ -134,26 +95,6 @@ const AddPersonModal = (props) => {
                             rules: [{ required: true, message: '员工编号不能为空', },]
                         })(
                             <Input disabled={true} />
-                            // <ComboList
-                            //     form={form}
-                            //     name={'employeeNo'}
-                            //     cascadeParams={{
-                            //         organizationId: getFieldValue('departmentId'),
-                            //     }}
-                            //     afterSelect={userSelect}
-                            //     store={{
-                            //         params: {
-                            //             includeSubNode: false,
-                            //             quickSearchProperties: ['code', 'user.userName'],
-                            //             organizationId: getFieldValue('departmentId'),
-                            //             sortOrders: [{ property: 'code', direction: 'ASC' }],
-                            //         },
-                            //         type: 'POST',
-                            //         autoLoad: false,
-                            //         url: `${gatewayUrl}${basicServiceUrl}/employee/findByUserQueryParam`,
-                            //     }}
-                            //     {...UserByDepartmentConfig}
-                            // />,
                         )
                     }
                 </FormItem>
