@@ -1,7 +1,7 @@
 /*
  * @Author:黄永翠
  * @Date: 2020-11-09 09:38:38
- * @LastEditTime: 2020-12-07 15:23:23
+ * @LastEditTime: 2020-12-08 13:55:42
  * @LastEditors: Please set LastEditors
  * @Description:审核实施计划-明细
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\index.js
@@ -234,6 +234,12 @@ const Index = (props) => {
                 })
                 return
             } else {
+                setTimeout(()=>{
+                    let closeBtns = document.getElementsByClassName("close-icon");
+                    for(let i = 0; i< closeBtns.length; i++) {
+                        closeBtns[i].click();
+                    }
+                }, 1000);
                 reject({
                     success: data,
                     message: res.message

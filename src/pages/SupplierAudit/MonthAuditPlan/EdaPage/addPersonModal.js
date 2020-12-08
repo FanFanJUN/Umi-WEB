@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { ComboList, ComboTree, ExtModal } from 'suid';
 import { Col, Form, Input, Row } from 'antd';
 import { ApplyOrganizationProps, UserByDepartmentConfig, GetUserTelByUserId } from '../../mainData/commomService';
-import { basicServiceUrl, gatewayUrl } from '../../../../utils/commonUrl';
+import { basicServiceUrl, gatewayUrl } from '@/utils/commonUrl';
+import { UserSelect } from '@/components';
 
 const FormItem = Form.Item;
 const formItemLayoutLong = {
@@ -39,7 +40,6 @@ const AddPersonModal = (props) => {
     }
     // 员工选择更改
     const userSelect = (value) => {
-        console.log('员工选择更改', value)
         setFieldsValue({
             memberName: value.userName,
             memberId: value.id,
@@ -69,6 +69,41 @@ const AddPersonModal = (props) => {
     >
         <Form>
             <Row>
+                <FormItem {...formItemLayoutLong} label={'姓名'}>
+                    {
+                        getFieldDecorator('memberId', { initialValue: isEdit ? originData.memberId : '', }),
+                        getFieldDecorator('memberName', {
+                            initialValue: isEdit ? originData.memberName : "",
+                            rules: [{ required: true, message: '姓名不能为空', },],
+                        })(<UserSelect
+                            placeholder='选择成员'
+                            form={form}
+                            mode="tags"
+                            name='purchaseTeamLeaderName'
+                            multiple={false}
+                            reader={{
+                                name: 'userName',
+                                field: ['code', 'id']
+                            }}
+                            onRowsChange={(item) => {
+                                console.log(item)
+                                setFieldsValue({
+                                    memberName: item.userName,
+                                    memberId: item.id,
+                                    employeeNo: item.code,
+                                    namePath: item.organization?.namePath,
+                                    codePath: item.organization?.codePath,
+                                    departmentCode: item.organization?.code,
+                                    departmentId: item.organization?.id,
+                                    departmentName: item.organization?.name,
+                                    memberTel: item.mobile
+                                });
+                            }}
+                        />)
+                    }
+                </FormItem>
+            </Row>
+            <Row>
                 <FormItem {...formItemLayoutLong} label={'部门'}>
                     {
                         getFieldDecorator('namePath', { initialValue: isEdit ? originData.namePath : '', }),
@@ -79,13 +114,14 @@ const AddPersonModal = (props) => {
                             initialValue: isEdit ? originData.departmentName : '',
                             rules: [{ required: true, message: '部门不能为空', },]
                         })(
-                            <ComboTree
-                                form={form}
-                                name={'departmentName'}
-                                field={['departmentCode', 'departmentId']}
-                                afterSelect={departChange}
-                                {...ApplyOrganizationProps}
-                            />,
+                            <Input disabled={true} />
+                            // <ComboTree
+                            //     form={form}
+                            //     name={'departmentName'}
+                            //     field={['departmentCode', 'departmentId']}
+                            //     afterSelect={departChange}
+                            //     {...ApplyOrganizationProps}
+                            // />
                         )
                     }
                 </FormItem>
@@ -97,38 +133,28 @@ const AddPersonModal = (props) => {
                             initialValue: isEdit ? originData.employeeNo : "",
                             rules: [{ required: true, message: '员工编号不能为空', },]
                         })(
-                            <ComboList
-                                form={form}
-                                name={'employeeNo'}
-                                cascadeParams={{
-                                    organizationId: getFieldValue('departmentId'),
-                                }}
-                                afterSelect={userSelect}
-                                store={{
-                                    params: {
-                                        includeSubNode: false,
-                                        quickSearchProperties: ['code', 'user.userName'],
-                                        organizationId: getFieldValue('departmentId'),
-                                        sortOrders: [{ property: 'code', direction: 'ASC' }],
-                                    },
-                                    type: 'POST',
-                                    autoLoad: false,
-                                    url: `${gatewayUrl}${basicServiceUrl}/employee/findByUserQueryParam`,
-                                }}
-                                {...UserByDepartmentConfig}
-                            />,
+                            <Input disabled={true} />
+                            // <ComboList
+                            //     form={form}
+                            //     name={'employeeNo'}
+                            //     cascadeParams={{
+                            //         organizationId: getFieldValue('departmentId'),
+                            //     }}
+                            //     afterSelect={userSelect}
+                            //     store={{
+                            //         params: {
+                            //             includeSubNode: false,
+                            //             quickSearchProperties: ['code', 'user.userName'],
+                            //             organizationId: getFieldValue('departmentId'),
+                            //             sortOrders: [{ property: 'code', direction: 'ASC' }],
+                            //         },
+                            //         type: 'POST',
+                            //         autoLoad: false,
+                            //         url: `${gatewayUrl}${basicServiceUrl}/employee/findByUserQueryParam`,
+                            //     }}
+                            //     {...UserByDepartmentConfig}
+                            // />,
                         )
-                    }
-                </FormItem>
-            </Row>
-            <Row>
-                <FormItem {...formItemLayoutLong} label={'姓名'}>
-                    {
-                        getFieldDecorator('memberId', { initialValue: isEdit ? originData.memberId : '', }),
-                        getFieldDecorator('memberName', {
-                            initialValue: isEdit ? originData.memberName : "",
-                            rules: [{ required: true, message: '姓名不能为空', },],
-                        })(<Input disabled={true} placeholder='请输入姓名' />)
                     }
                 </FormItem>
             </Row>

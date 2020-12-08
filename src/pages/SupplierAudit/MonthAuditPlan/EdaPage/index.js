@@ -158,7 +158,6 @@ const Index = (props) => {
         if (!saveData) return false;
         setLoading(true);
         let res = {};
-        console.log(query.pageState);
         const requestPromise = {
             'add':  insertMonthBo,
             'edit':  upDateMonthBo,
@@ -194,7 +193,6 @@ const Index = (props) => {
     // 提交审核验证
     const handleBeforeStartFlow = async () => {
         const id = await handleSave("publish");
-        console.log("获取到的id是多少", id)
         return new Promise(function (resolve, reject) {
             if (id) {
                 resolve({
@@ -206,6 +204,13 @@ const Index = (props) => {
                 })
                 return
             } else {
+                setTimeout(()=>{
+                    let closeBtns = document.getElementsByClassName("close-icon");
+                    for(let i = 0; i< closeBtns.length; i++) {
+                        console.log(closeBtns[i])
+                        closeBtns[i].click();
+                    }
+                }, 1000);
                 reject({
                     success: data,
                     message: '提交失败'
