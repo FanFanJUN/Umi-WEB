@@ -134,10 +134,10 @@ const ProblemTable = (props) => {
         showSearch={false}
         loading={loading}
         remotePaging
-        checkbox={{ multiSelect: false }}
+        // checkbox={{ multiSelect: false }}
         size='small'
-        onSelectRow={handleSelectedRows}
-        selectedRowKeys={data.selectedRowKeys}
+        // onSelectRow={handleSelectedRows}
+        // selectedRowKeys={data.selectedRowKeys}
         columns={columns}
         ref={tableRef}
         dataSource={data.dataSource}

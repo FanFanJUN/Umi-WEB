@@ -357,7 +357,6 @@ const AddBeAudited = (props) => {
                     form={form}
                     name={'agentName'}
                     field={['agentCode', 'agentId']}
-                    afterSelect={supplierSelect}
                     store={{
                       params: {
                         corpAndPurOrgs: [{

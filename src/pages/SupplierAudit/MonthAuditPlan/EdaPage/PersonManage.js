@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Button, Modal } from "antd";
 import { ExtModal, ExtTable } from "suid";
 import AddPersonModal from "./addPersonModal";
+import { getRandom } from '../../../QualitySynergy/commonProps';
 
 
 const PersonManage = ({ visible, onOk, onCancel, originData, isView, deleteArr, setDeleteArr }) => {
@@ -30,7 +31,7 @@ const PersonManage = ({ visible, onOk, onCancel, originData, isView, deleteArr, 
     }
     useEffect(() => {
         let dataList = originData.map((item, index) => {
-            item.rowKey = index;
+            item.rowKey = getRandom(10);
             return item;
         })
         setDataSource(dataList)
@@ -43,11 +44,29 @@ const PersonManage = ({ visible, onOk, onCancel, originData, isView, deleteArr, 
     ]
     const personHandleOK = (value) => {
         let newList = [].concat(dataSource);
-        newList.push({
-            rowKey: dataSource.length,
-            ...value
-        })
-        setDataSource(newList)
+        if (addModalData.isEdit) {
+            newList = newList.map(item => {
+                if (selectedRowKeys.includes(item.rowKey)) {
+                    return {
+                        ...item,
+                        ...value,
+                    }
+                }
+                return item;
+            })
+            
+            tableRef.current.manualSelectedRows();
+        } else {
+            
+            newList.push({
+                rowKey: getRandom(10),
+                ...value
+            })
+        }
+        setDataSource(newList);
+    }
+    const checkRepeat = (employeeNo) => {
+        return dataSource.some(item => item.employeeNo === employeeNo);
     }
     const handleDelet = () => {
         Modal.confirm({
@@ -61,10 +80,6 @@ const PersonManage = ({ visible, onOk, onCancel, originData, isView, deleteArr, 
                         setDeleteArr(arr);
                     }
                     return !selectedRowKeys.includes(item.rowKey);
-                });
-                newList = newList.map((item, index) => {
-                    item.lineNum = index;
-                    return item;
                 });
                 setDataSource(newList);
                 tableRef.current.manualSelectedRows();
@@ -107,6 +122,7 @@ const PersonManage = ({ visible, onOk, onCancel, originData, isView, deleteArr, 
                 isEdit={addModalData.isEdit}
                 personHandleOK={personHandleOK}
                 onCancel={() => { setAddData({ visible: false }) }}
+                checkRepeat={checkRepeat}
                 originData={addModalData.originData}
             />
             }

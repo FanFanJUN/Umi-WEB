@@ -114,7 +114,7 @@ export const ActualGraderConfig = {
     autoLoad: false,
     url: `${recommendUrl}/api/reviewImplementManagementService/findAgentUser`,
   },
-  remotePaging: true,
+  remotePaging: false,
   rowKey: 'code',
   reader: {
     field: ['id'],

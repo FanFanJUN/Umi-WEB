@@ -21,14 +21,24 @@ const AddModal = forwardRef(({}, ref) => {
   const columns = [
     {
       title: '月度审核计划号和行号', dataIndex: 'reviewPlanMonthCode', width: 200, ellipsis: true,
-      render: (text, record) => text + ' ' + record.reviewPlanMonthLinenum
+      render: (text, record) => text + ' ' + record.reviewPlanMonthLinenum,
     },
-    { title: '审核月度', dataIndex: 'applyMonth', width: 140, ellipsis: true, render: text => text ? text + '月' : '' },
-    { title: '需求公司', dataIndex: 'applyCorporationName', width: 200, ellipsis: true ,
-      render: (text, record) => record.applyCorporationCode + ' ' + record.applyCorporationName},
-    { title: '采购组织', dataIndex: 'purchaseTeamName', ellipsis: true, width: 140 },
-    { title: '供应商', dataIndex: 'supplierCode', ellipsis: true, width: 140,
-      render: (text, record) => record.supplierCode + ' ' + record.supplierName},
+    {
+      title: '审核月度', dataIndex: 'applyMonth', width: 100, ellipsis: true,
+      render: (text) => text ? text.slice(0, 7) : '' ,
+    },
+    {
+      title: '需求公司', dataIndex: 'applyCorporationName', width: 200, ellipsis: true,
+      render: (text, record) => record.applyCorporationCode + ' ' + record.applyCorporationName,
+    },
+    {
+      title: '采购组织', dataIndex: 'purchaseTeamName', ellipsis: true, width: 180,
+      render: (text, record) => record.purchaseTeamCode + ' ' + record.purchaseTeamName,
+    },
+    {
+      title: '供应商', dataIndex: 'supplierCode', ellipsis: true, width: 140,
+      render: (text, record) => record.supplierCode + ' ' + record.supplierName,
+    },
     { title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 140 },
     { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 140 },
     { title: '审核类型', dataIndex: 'reviewTypeName', ellipsis: true, width: 140 },

@@ -318,6 +318,7 @@ const SelfEvaluation = props => {
         rowKey={'id'}
         loading={loading}
         ref={tableRef}
+        pagination={false}
         bordered={true}
         style={{ marginTop: '10px' }}
         showSearch={false}

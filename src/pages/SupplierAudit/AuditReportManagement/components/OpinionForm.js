@@ -60,7 +60,7 @@ const OpinionForm = React.forwardRef(({ form, userInfo, leaderApprove, teamData,
           <div className={styles.content}>
             <Row>
               <Col span={24}>
-                <FormItem label="是否按审核意见执行" {...formLayout}>
+                <FormItem label="是否通过" {...formLayout}>
                   <span>{teamData.whetherLeaderDecisionPass ? '是' : '否'}</span>
                 </FormItem>
               </Col>

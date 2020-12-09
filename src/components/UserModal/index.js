@@ -84,6 +84,7 @@ const UserSelect = forwardRef(({
     }).then(({ data }) => {
       const { rows, records } = data;
       setTotal(records)
+      console.log(rows)
       setUserData(rows)
       // const ks = value.map(item => item[rdk])
       // setSelectedKeys(ks)

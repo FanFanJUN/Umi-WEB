@@ -3,15 +3,16 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime: 2020-12-07 13:39:43
+ * @LastEditTime: 2020-12-09 09:49:32
  * @Description: 行信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
 import React, { useEffect, useRef, useState, useImperativeHandle, forwardRef } from 'react';
-import styles from '../index.less';
 import { Form, Button, Modal, message } from 'antd';
 import { ExtTable } from 'suid';
+import { openNewTab } from '@/utils';
 import AddModal from './AddModal';
+import styles from '../index.less';
 import BatchEditModal from './BatchEditModal';
 import AuditContentModal from '../../AuditRequirementsManagement/add/component/content';
 import PersonManage from './PersonManage';
@@ -160,7 +161,24 @@ let LineInfo = forwardRef((props, ref) => {
         }
       },
     },
-    { title: '来源单号', dataIndex: 'sourceCode', ellipsis: true, width: 140 },
+    {
+      title: '来源单号', dataIndex: 'sourceCode', ellipsis: true, width: 140, render: (text, item) => {
+        return <a onClick={() => {
+          switch (item.sourceType) {
+            case 'Review_Plan_YEAR_LINE':
+              openNewTab(`supplierAudit/AnnualAuditPlanDetail?id=${item.sourceId}&pageState=detail`, '年度审核计划明细', false);
+              break;
+            case 'ADMISSION_RECOMMENDATION':
+              openNewTab(`supplier/recommend/admittance/manage/detail?id=${item.sourceId}`, '供应商推荐准入明细', false);
+              break;
+            case 'RECOMMENDATION_REQUIREMENTS':
+              openNewTab(`supplierAudit/AuditRequirementsManagementAdd?id=${item.sourceId}&pageState=detail`, '审核需求明细', false);
+              break;
+          }
+          
+        }}>{text}</a>
+      }
+    },
     { title: '来源单行号', dataIndex: 'sourceLinenum', ellipsis: true, width: 140 },
   ].map(item => ({ ...item, align: 'center' }));
 

@@ -15,6 +15,9 @@ import AnswerQuestionModal from '../../../AdministrationManagementSupplier/compo
 import Upload from '../../../../QualitySynergy/compoent/Upload';
 import { getDocIdForArray } from '../../../../../utils/utilTool';
 import { recommendUrl } from '../../../../../utils/commonUrl';
+import { BASE_URL } from '../../../../../utils/constants';
+
+const AuthenticationArr = ['DOC_CHECK', 'SCENE_CHECK'];
 
 const IssuesManagement = (props) => {
 
@@ -37,8 +40,18 @@ const IssuesManagement = (props) => {
       </>,
     },
     { title: '完成时间', dataIndex: 'completionTime', width: 100 },
-    { title: '验证类型', dataIndex: 'checkType', width: 100, render: v => AuthenticationTypeArr[v] },
-    { title: '验证结果', dataIndex: 'checkResult', width: 100, render: v => certifyTypeArr[v] },
+    {
+      title: '验证类型',
+      dataIndex: 'checkType',
+      width: 100,
+      render: v => AuthenticationArr.includes(v) ? AuthenticationTypeArr[v] : v,
+    },
+    {
+      title: '验证结果',
+      dataIndex: 'checkResult',
+      width: 100,
+      render: v => ['通过', '不通过'].includes(v) ? v : certifyTypeArr[v],
+    },
   ].map(item => ({ ...item, align: 'center' }));
 
   useEffect(() => {
@@ -114,12 +127,12 @@ const IssuesManagement = (props) => {
 
   const onSelectRow = (keys, rows) => {
     let newData = rows[0] ? rows[0] : {};
-    if (newData.checkType) {
-      newData.checkType = AuthenticationTypeArr[newData.checkType];
-    }
-    if (newData.checkResult) {
-      newData.checkResult = certifyTypeArr[newData.checkResult];
-    }
+    // if (newData.checkType) {
+    //   newData.checkType = AuthenticationTypeArr[newData.checkType];
+    // }
+    // if (newData.checkResult && type !== 'demand') {
+    //   newData.checkResult = certifyTypeArr[newData.checkResult];
+    // }
     console.log(newData);
     setData(v => ({
       ...v,
@@ -137,7 +150,7 @@ const IssuesManagement = (props) => {
     validationProblemApi([newData]).then(res => {
       if (res.success) {
         setData(v => ({ ...v, visible: false }));
-        getTableData();
+        getTableData(props.reviewImplementPlanCode);
         message.success(res.message);
       } else {
         message.error(res.message);
@@ -232,7 +245,6 @@ const IssuesManagement = (props) => {
   const validateItem = (rows) => {
     let newDataSource = JSON.parse(JSON.stringify(data.dataSource));
     rows.map(item => {
-      const id = item['id'] ? item['id'] : '';
       const object = {
         reason: item['reason'] ? item['reason'] : '',
         measures: item['measures'] ? item['measures'] : '',
@@ -245,7 +257,7 @@ const IssuesManagement = (props) => {
         message: '验证通过',
       };
       newDataSource.map((value, index) => {
-        if (value.id === id) {
+        if ((index + 1) === item.lineNum) {
           newDataSource[index] = Object.assign(value, object);
         }
       });
@@ -258,6 +270,11 @@ const IssuesManagement = (props) => {
     refreshTable();
   };
 
+  const exportData = () => {
+    const url = `${window.location.origin}${BASE_URL}/${recommendUrl}//srController/downloadProblemForSupplier?reviewImplementPlanCode=${props.reviewImplementPlanCode}`;
+    window.open(url);
+  };
+
   return (
     <>
       {
@@ -266,14 +283,16 @@ const IssuesManagement = (props) => {
           <Button disabled={data.disabled} style={{ marginLeft: '5px' }} onClick={handleClick}>验证管理</Button>
         </>
           : <div style={{ display: 'flex' }}>
-            <Button onClick={answerQuestion} disabled={data.selectKeys.length === 0}>回答问题</Button>
-            <DataExport.Button
-              style={{ marginLeft: '5px', marginRight: '5px' }} requestParams={requestParams}
-              explainResponse={explainResponse}
-              filenameFormat={'问题清单' + moment().format('YYYYMMDD')}
-            >
-              导出问题
-            </DataExport.Button>
+            <Button style={{ marginRight: '5px' }} onClick={answerQuestion}
+                    disabled={data.selectKeys.length === 0}>回答问题</Button>
+            <Button style={{ marginRight: '5px' }} key="downLoad" onClick={exportData}>导出问题</Button>
+            {/*<DataExport.Button*/}
+            {/*  style={{ marginLeft: '5px', marginRight: '5px' }} requestParams={requestParams}*/}
+            {/*  explainResponse={explainResponse}*/}
+            {/*  filenameFormat={'问题清单' + moment().format('YYYYMMDD')}*/}
+            {/*>*/}
+            {/*  导出问题*/}
+            {/*</DataExport.Button>*/}
             <DataImport
               tableProps={{
                 columns,
