@@ -11,6 +11,7 @@ import {
   RoleConfig, UserByDepartmentConfig,
 } from '../../../mainData/commomService';
 import { baseUrl, basicServiceUrl, gatewayUrl } from '../../../../../utils/commonUrl';
+import UserSelect from '../../../../../components/UserModal';
 
 const FormItem = Form.Item;
 
@@ -188,6 +189,50 @@ const ContentModal = (props) => {
         <Col span={0}>
           {hideFormItem('departmentCode', type === 'add' ? '' : data.departmentCode)}
         </Col>
+       {/* <Row>
+          {
+            !disabled && <FormItem {...formItemLayoutLong} label={'姓名'}>
+              {
+                getFieldDecorator('memberName', {
+                  initialValue: type === 'add' ? '' : data.memberName,
+                  rules: [{ required: true, message: '姓名不能为空' }],
+                })(<UserSelect
+                  placeholder='选择成员'
+                  form={form}
+                  mode="tags"
+                  multiple={false}
+                  reader={{
+                    name: 'userName',
+                    field: ['id'],
+                  }}
+                  onRowsChange={(item) => {
+                    console.log(item);
+                    const data = item ? item[0] : {}
+                    setFieldsValue({
+                      memberId: data.user.id,
+                      memberName: data.user.userName,
+                      employeeNo: data.user.tenantCode,
+                      departmentCode: data.organization.code,
+                      departmentId: data.organization.id,
+                      departmentName: data.organization.name,
+                    });
+                    GetUserTelByUserId({
+                      userId: data.user.id,
+                    }).then(res => {
+                      if (res.success) {
+                        setFieldsValue({
+                          memberTel: res.data.mobile,
+                        });
+                      } else {
+                        message.error('获取手机号失败');
+                      }
+                    });
+                  }}
+                />)
+              }
+            </FormItem>
+          }
+        </Row>*/}
         <Row>
           {
             !disabled && <Col span={24}>
