@@ -48,7 +48,6 @@ const AuditOpinion = React.forwardRef((props, ref) => {
   useEffect(() => {
     if (isView) {
       ShowVerificationAuditOpinionDataApi({
-        performanceRating: editData.performanceRating,
         id,
       }).then(res => {
         if (res.success) {
@@ -60,6 +59,7 @@ const AuditOpinion = React.forwardRef((props, ref) => {
       }).catch(err => message.error(err.message));
     } else {
       GetVerificationAuditOpinionDataApi({
+        performanceRating: editData.performanceRating,
         reviewImplementPlanCode,
       }).then(res => {
         if (res.success) {
