@@ -262,7 +262,7 @@ export const ApplyOrganizationProps = {
     name: 'name',
     field: ['code', 'id'],
   },
-  placeholder: '请选择申请部门',
+  placeholder: '请选择部门',
   style: {
     width: '100%',
   },
