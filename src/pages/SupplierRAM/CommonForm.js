@@ -142,6 +142,7 @@ function CommonForm({
       createdDate,
       supplierCode,
       supplierName,
+      supplierId,
       originName,
       originCode,
       materialCategoryName,
@@ -159,6 +160,7 @@ function CommonForm({
       dateTime: type === 'create' ? moment().format('YYYY-MM-DD') : moment(createdDate).format('YYYY-MM-DD'),
       supplierCode,
       supplierName,
+      supplierId,
       originName,
       originCode,
       creatorName,
@@ -288,6 +290,7 @@ function CommonForm({
         <Col span={12}>
           <FormItem label='供应商代码'>
             {
+              getFieldDecorator('supplierId'),
               getFieldDecorator('supplierCode')(
                 <Input disabled />
               )

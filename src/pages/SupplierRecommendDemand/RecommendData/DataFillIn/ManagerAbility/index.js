@@ -254,6 +254,12 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="每年制定查成本降低目标并对执行情况进行评价" {...formLayout}>
                       {getFieldDecorator('reduceCostEvaluation', {
                         initialValue: type === 'add' ? '' : data.reduceCostEvaluation,
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空'
+                          }
+                        ]
                       })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
@@ -284,12 +290,12 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="具有专门的成本核算流程，核算表格" {...formLayout}>
                       {getFieldDecorator('costAccountingOrganization', {
                         initialValue: type === 'add' ? '' : data.costAccountingOrganization,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空'
+                          }
+                        ]
                       })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
@@ -519,10 +525,10 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                       {getFieldDecorator('customerProcess', {
                         initialValue: type === 'add' ? true : data.customerProcess,
                         rules: [
-                            {
-                                required: true,
-                                message: '请选择',
-                            },
+                          {
+                            required: true,
+                            message: '请选择',
+                          },
                         ],
                       })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>是</Radio>
@@ -535,10 +541,10 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                       {getFieldDecorator('customerProcessFileIds', {
                         initialValue: type === 'add' ? '' : data.customerProcessFileIds,
                         rules: [
-                            {
-                                required: getFieldValue('customerProcess'),
-                                message: '自主技术开发能力不能为空',
-                            },
+                          {
+                            required: getFieldValue('customerProcess'),
+                            message: '自主技术开发能力不能为空',
+                          },
                         ],
                       })(<UploadFile
                         disabled={type === 'detail'}
@@ -556,10 +562,10 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                       {getFieldDecorator('materialMatchSupplyAbility', {
                         initialValue: type === 'add' ? true : data.materialMatchSupplyAbility,
                         rules: [
-                            {
-                                required: true,
-                                message: '请选择',
-                            },
+                          {
+                            required: true,
+                            message: '请选择',
+                          },
                         ],
                       })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>是</Radio>
@@ -574,10 +580,10 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                       {getFieldDecorator('fifoManage', {
                         initialValue: type === 'add' ? true : data.fifoManage,
                         rules: [
-                            {
-                                required: true,
-                                message: '请选择',
-                            },
+                          {
+                            required: true,
+                            message: '请选择',
+                          },
                         ],
                       })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>是</Radio>
@@ -593,10 +599,10 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                       {getFieldDecorator('delayDeliveryNoticeCustomer', {
                         initialValue: type === 'add' ? true : data.delayDeliveryNoticeCustomer,
                         rules: [
-                            {
-                                required: true,
-                                message: '请选择',
-                            },
+                          {
+                            required: true,
+                            message: '请选择',
+                          },
                         ],
                       })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>是</Radio>
@@ -609,10 +615,10 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                       {getFieldDecorator('delayDeliveryNoticeCustomerFileIds', {
                         initialValue: type === 'add' ? '' : data.delayDeliveryNoticeCustomerFileIds,
                         rules: [
-                            {
-                                required: getFieldValue('delayDeliveryNoticeCustomer'),
-                                message: '具体措施说明不能为空',
-                            },
+                          {
+                            required: getFieldValue('delayDeliveryNoticeCustomer'),
+                            message: '具体措施说明不能为空',
+                          },
                         ],
                       })(<UploadFile
                         showColor={type !== 'add' ? true : false}
@@ -646,12 +652,12 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="是否存在空运" {...formLayout}>
                       {getFieldDecorator('haveAirLiftDelivery', {
                         initialValue: type === 'add' ? '' : data.haveAirLiftDelivery,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空'
+                          }
+                        ]
                       })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
@@ -693,12 +699,12 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="在发运数量上是否能够灵活处理" {...formLayout}>
                       {getFieldDecorator('flexibleShipmentQuantity', {
                         initialValue: type === 'add' ? true : data.flexibleShipmentQuantity,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空'
+                          }
+                        ]
                       })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
@@ -712,12 +718,12 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="是否选择具有危险化学品合法运输资质的承运方" {...formLayout}>
                       {getFieldDecorator('dangerousChemicalShipper', {
                         initialValue: type === 'add' ? true : data.dangerousChemicalShipper,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空'
+                          }
+                        ]
                       })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>

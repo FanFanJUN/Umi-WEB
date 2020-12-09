@@ -396,12 +396,12 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="材料入厂检验" {...formLayout}>
                       {getFieldDecorator('materialIncomeInspection', {
                         initialValue: type === 'add' ? '' : data.materialIncomeInspection,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空',
+                          },
+                        ],
                       })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>有</Radio>
                         <Radio value={false}>无</Radio>
@@ -412,12 +412,12 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="生产过程检验" {...formLayout}>
                       {getFieldDecorator('productionProcessInspection', {
                         initialValue: type === 'add' ? '' : data.productionProcessInspection,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空',
+                          },
+                        ],
                       })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>有</Radio>
                         <Radio value={false}>无</Radio>
@@ -430,12 +430,12 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="出厂检验" {...formLayout}>
                       {getFieldDecorator('routineTest', {
                         initialValue: type === 'add' ? '' : data.routineTest,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空',
+                          },
+                        ],
                       })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>有</Radio>
                         <Radio value={false}>无</Radio>
@@ -458,12 +458,12 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="关键工序是否实行了SPC控制" {...formLayout}>
                       {getFieldDecorator('spcControl', {
                         initialValue: type === 'add' ? '' : data.spcControl,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空',
+                          },
+                        ],
                       })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>有</Radio>
                         <Radio value={false}>无</Radio>
@@ -476,12 +476,12 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="是否有可靠性实验室" {...formLayout}>
                       {getFieldDecorator('accessibilityLab', {
                         initialValue: type === 'add' ? '' : data.accessibilityLab,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空',
+                          },
+                        ],
                       })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>有</Radio>
                         <Radio value={false}>无</Radio>
@@ -492,12 +492,12 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="是否制定试验计划并实施" {...formLayout}>
                       {getFieldDecorator('testPlan', {
                         initialValue: type === 'add' ? '' : data.testPlan,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空',
+                          },
+                        ],
                       })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
@@ -510,12 +510,12 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="是否培训" {...formLayout}>
                       {getFieldDecorator('inspectorTrain', {
                         initialValue: type === 'add' ? '' : data.inspectorTrain,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空',
+                          },
+                        ],
                       })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>有</Radio>
                         <Radio value={false}>无</Radio>
@@ -526,12 +526,12 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="资质认定" {...formLayout}>
                       {getFieldDecorator('inspectorCertification', {
                         initialValue: type === 'add' ? '' : data.inspectorCertification,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空',
+                          },
+                        ],
                       })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>有</Radio>
                         <Radio value={false}>无</Radio>
@@ -544,12 +544,12 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="产品追溯" {...formLayout}>
                       {getFieldDecorator('productTracking', {
                         initialValue: type === 'add' ? '' : data.productTracking,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空',
+                          },
+                        ],
                       })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>有</Radio>
                         <Radio value={false}>无</Radio>
@@ -560,12 +560,12 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="FMEA管理（过程）" {...formLayout}>
                       {getFieldDecorator('productCertification', {
                         initialValue: type === 'add' ? '' : data.productCertification,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空',
+                          },
+                        ],
                       })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>具备</Radio>
                         <Radio value={false}>不具备</Radio>
@@ -609,12 +609,12 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="企业有无目前无法检测的检测项目" {...formLayout}>
                       {getFieldDecorator('haveCannotTestItem', {
                         initialValue: type === 'add' ? '' : data.haveCannotTestItem,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空',
+                          },
+                        ],
                       })(<Radio.Group disabled={type === 'detail'}>
                         <Radio value={true}>有</Radio>
                         <Radio value={false}>无</Radio>
