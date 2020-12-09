@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime: 2020-12-08 17:04:45
+ * @LastEditTime: 2020-12-09 16:05:29
  * @Description: 行信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
@@ -134,11 +134,11 @@ let LineInfo = (props, ref) => {
   }
 
   function clearSelect() {
-    setData(v => ({ v, selectedRowKeys: [], selectRows: [] }));
+    setData(v => ({ selectedRowKeys: [], selectRows: [] }));
   }
 
   const handleSelectedRows = (value, rows) => {
-    setData((v) => ({ ...v, selectedRowKeys: value, selectRows: rows, type: 'add' }))
+    setData((v) => ({ selectedRowKeys: value, selectRows: rows, type: 'add' }))
   }
 
   function setVisible() {
@@ -201,6 +201,9 @@ let LineInfo = (props, ref) => {
     if (checkFlag) {
       return;
     }
+    tableData.forEach((item) => {
+      delete item.id;
+    })
     newTableList.push(...tableData);
     // 行号
     newTableList.forEach((item, index) => {
@@ -212,6 +215,7 @@ let LineInfo = (props, ref) => {
 
   function setBatchVisible() {
     setBatchEditVisible(false);
+    clearSelect();
   }
 
   function getBatchFormValue(formValue) {
@@ -228,6 +232,7 @@ let LineInfo = (props, ref) => {
     setBatchVisible();
     tableRef.current.manualSelectedRows();
   }
+  console.log(data, dataSource);
 
   return (
     <div className={styles.wrapper}>
