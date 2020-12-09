@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime: 2020-12-09 09:49:32
+ * @LastEditTime: 2020-12-09 14:58:51
  * @Description: 行信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
@@ -31,7 +31,7 @@ let LineInfo = forwardRef((props, ref) => {
     selectRows: [],
     selectedRowKeys: [],
   });
-
+  const [operation, setOperation] = useState(0);//
   const [dataSource, setDataSource] = useState([]);
   const [deleteLine, setDeleteLine] = useState([]);//删除的行数据
   const [deleteArr, setDeleteArr] = useState([]);//组合头上数据deleteArr，标记小组成员，协同人员的删除
@@ -175,7 +175,7 @@ let LineInfo = forwardRef((props, ref) => {
               openNewTab(`supplierAudit/AuditRequirementsManagementAdd?id=${item.sourceId}&pageState=detail`, '审核需求明细', false);
               break;
           }
-          
+
         }}>{text}</a>
       }
     },
@@ -365,17 +365,45 @@ let LineInfo = forwardRef((props, ref) => {
 
   // 审核内容管理弹框-确定
   const contentModalOk = (treeData) => {
-    let newList = dataSource.map(item => {
-      if (data.selectedRowKeys.includes(item.lineNum)) {
-        item.sonList = treeData;
-        item.treeData = buildTreeData(item.sonList);
-      }
-      return item;
-    });
-    // console.log('整合的数据', newList);
-    setDataSource(newList);
-    setContentData({ visible: false });
-    tableRef.current.manualSelectedRows();
+    let newList = dataSource;
+    if (data.selectRows.some(item => (item.reviewTeamGroupBoList && item.reviewTeamGroupBoList.length > 0)) && operation !== 0) {
+      Modal.confirm({
+        content: '修改内容将清空组员分配,请确认操作！',
+        okText: '确认',
+        cancelText: '取消',
+        onOk: () => {
+          newList = dataSource.map(item => {
+            if (data.selectedRowKeys.includes(item.lineNum)) {
+              item.sonList = treeData;
+              item.treeData = buildTreeData(item.sonList);
+              item.reviewTeamGroupBoList && item.reviewTeamGroupBoList.map(v => {
+                if (v.reviewTeamMemberBoList && v.reviewTeamMemberBoList.length !== 0) {
+                  v.reviewTeamMemberBoList.map(r => {
+                    r.memberRuleBoList = [];
+                  });
+                }
+              });
+            }
+            return item;
+          });
+          setDataSource(newList);
+          setContentData({ visible: false });
+          tableRef.current.manualSelectedRows();
+        },
+      });
+    } else {
+      newList = dataSource.map(item => {
+        if (data.selectedRowKeys.includes(item.lineNum)) {
+          item.sonList = treeData;
+          item.treeData = buildTreeData(item.sonList);
+        }
+        return item;
+      });
+      setDataSource(newList);
+      setContentData({ visible: false });
+      tableRef.current.manualSelectedRows();
+    }
+
   };
 
   // 协同人员管理弹框-确定
@@ -471,6 +499,7 @@ let LineInfo = forwardRef((props, ref) => {
         type={contentModalData.type}
         visible={contentModalData.visible}
         treeData={contentModalData.treeData}
+        setOperation={setOperation}
         onOk={contentModalOk}
         onCancel={() => setContentData({ visible: false })}
       />
