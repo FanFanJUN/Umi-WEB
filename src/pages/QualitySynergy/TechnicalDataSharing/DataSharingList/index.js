@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, Fragment } from 'react';
 import Header from '../../../../components/Header';
 import AdvancedForm from '../../../../components/AdvancedForm';
 import { Button, Checkbox, Input, message, Modal } from 'antd';
-import queryString from 'query-string';
+import { router } from 'dva';
 import styles from './index.less';
 import { DataExport, ExtTable, utils } from 'suid';
 import moment from 'moment';
@@ -44,11 +44,10 @@ export default function() {
   const [assignData, setAssignData] = useState({
     visible: false,
   });
-
+  const { query } = router.useLocation();
   useEffect(() => {
     // 处理工作台过来-url携带参数
-    let afterUrl = queryString.parse(window.location.search);
-    setData(v => ({ ...v, epTechnicalShareDemandSearchBo: afterUrl }));
+    setData(v => ({ ...v, epTechnicalShareDemandSearchBo: query }));
 
     window.parent.frames.addEventListener('message', listenerParentClose, false);
     return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);

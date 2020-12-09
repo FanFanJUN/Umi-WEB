@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, Fragment } from 'react';
 import { Input, Button, message, Modal, Form, Checkbox } from 'antd';
 import moment from 'moment';
-import queryString from 'query-string';
+import { router } from 'dva';
 import styles from './index.less';
 import { openNewTab, getFrameElement, getUserAccount } from '@/utils';
 import { ExtTable, ComboList, ExtModal, utils, DataExport } from 'suid';
@@ -74,6 +74,7 @@ export default create()(function ({ form }) {
     const [viewDemandNum, setViewDemandNum] = useState('')
     const FRAMELEEMENT = getFrameElement();
     const { getFieldDecorator, setFieldsValue, validateFields } = form;
+    const { query } = router.useLocation();
     useEffect(() => {
         if (!maintainModal) return;
         findOrgTreeWithoutFrozen().then(res => {
@@ -84,8 +85,7 @@ export default create()(function ({ form }) {
     }, [maintainModal]);
     useEffect(() => {
         // 处理工作台过来-url携带参数
-        let afterUrl = queryString.parse(window.location.search);
-        setSearchValue(v => ({ ...v, ...afterUrl }));
+        setSearchValue(v => ({ ...v, ...query}));
 
         window.parent.frames.addEventListener('message', listenerParentClose, false);
         return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
