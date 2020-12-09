@@ -36,18 +36,18 @@ const AddModal = forwardRef(({ form }, ref) => {
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         if (values.yearPeriod) {
-          values.yearPeriodStart = values.yearPeriod[0] ? moment(values.yearPeriod[0]).format('YYYY-MM-DD') : null;
-          values.yearPeriodEnd = values.yearPeriod[1] ? moment(values.yearPeriod[1]).format('YYYY-MM-DD') : null;
+          values.yearPeriodStart = values.yearPeriod.startDate ? moment(values.yearPeriod.startDate).format('YYYY-MM-DD') : null;
+          values.yearPeriodEnd = values.yearPeriod.endDate? moment(values.yearPeriod.endDate).format('YYYY-MM-DD') : null;
           delete values.yearPeriod;
         }
         if (values.thisPeriod) {
-          values.currentPeriodStart = values.thisPeriod[0] ? moment(values.thisPeriod[0]).format('YYYY-MM-DD') : null;
-          values.currentPeriodEnd = values.thisPeriod[1] ? moment(values.thisPeriod[1]).format('YYYY-MM-DD') : null;
+          values.currentPeriodStart = values.thisPeriod.startDate ? moment(values.thisPeriod.startDate).format('YYYY-MM-DD') : null;
+          values.currentPeriodEnd = values.thisPeriod.endDate ? moment(values.thisPeriod.endDate).format('YYYY-MM-DD') : null;
           delete values.thisPeriod;
         }
         if (values.nextPeriod) {
-          values.nextPeriodStart = values.nextPeriod[0] ? moment(values.nextPeriod[0]).format('YYYY-MM-DD') : null;
-          values.nextPeriodEnd = values.nextPeriod[1] ? moment(values.nextPeriod[1]).format('YYYY-MM-DD') : null;
+          values.nextPeriodStart = values.nextPeriod.startDate ? moment(values.nextPeriod.startDate).format('YYYY-MM-DD') : null;
+          values.nextPeriodEnd = values.nextPeriod.endDate ? moment(values.nextPeriod.endDate).format('YYYY-MM-DD') : null;
           delete values.nextPeriod;
         }
         getAuditBriefing(values).then(res => {
@@ -94,7 +94,7 @@ const AddModal = forwardRef(({ form }, ref) => {
           ['nextPeriod']: {startDate:moment( moment(value.endDate).add(1, 'months'), dateFormat)}
         });
       }
-      form.validateFields(['nextPeriod'], { force: true });
+      // form.validateFields(['nextPeriod'], { force: true });
     }, 100);
   };
   //校验月份
