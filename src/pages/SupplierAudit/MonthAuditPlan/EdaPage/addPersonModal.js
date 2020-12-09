@@ -1,8 +1,9 @@
 // 新增协同人员弹框
 import React, { useEffect, useState } from 'react';
-import { ExtModal } from 'suid';
+import { ExtModal, message } from 'suid';
 import { Form, Input, Row } from 'antd';
 import { UserSelect } from '@/components';
+import { GetUserTelByUserId } from "../../mainData/commomService";
 
 const FormItem = Form.Item;
 const formItemLayoutLong = {
@@ -11,7 +12,7 @@ const formItemLayoutLong = {
 };
 
 const AddPersonModal = (props) => {
-    const { visible, onCancel, isEdit, personHandleOK, form, originData } = props;
+    const { visible, onCancel, isEdit, personHandleOK, form, originData = {}, checkRepeat } = props;
     const { getFieldDecorator, setFieldsValue, getFieldValue } = props.form;
 
     const clearSelected = () => {
@@ -25,7 +26,19 @@ const AddPersonModal = (props) => {
             }
         });
     }
-
+    const getMemberTel = (id) => {
+        GetUserTelByUserId({
+            userId: id,
+        }).then(res => {
+            if (res.success) {
+                setFieldsValue({
+                    memberTel: res.data.mobile,
+                });
+            } else {
+                message.warning('获取手机号失败');
+            }
+        });
+    }
     return <ExtModal
         width={'30vw'}
         visible={visible}
@@ -47,25 +60,29 @@ const AddPersonModal = (props) => {
                             placeholder='选择成员'
                             form={form}
                             mode="tags"
-                            name='purchaseTeamLeaderName'
+                            name='name'
                             multiple={false}
                             reader={{
                                 name: 'userName',
                                 field: ['code', 'id']
                             }}
                             onRowsChange={(item) => {
-                                console.log(item)
-                                setFieldsValue({
-                                    memberName: item.userName,
-                                    memberId: item.id,
-                                    employeeNo: item.code,
-                                    namePath: item.organization?.namePath,
-                                    codePath: item.organization?.codePath,
-                                    departmentCode: item.organization?.code,
-                                    departmentId: item.organization?.id,
-                                    departmentName: item.organization?.name,
-                                    memberTel: item.mobile
-                                });
+                                if (checkRepeat(item.code)) {
+                                    message.warning("选中人员已存在！");
+                                    setFieldsValue({ memberName: isEdit ? originData.memberName : "" })
+                                } else {
+                                    getMemberTel(item.id);
+                                    setFieldsValue({
+                                        memberName: item.userName,
+                                        memberId: item.id,
+                                        employeeNo: item.code,
+                                        namePath: item.organization?.namePath,
+                                        codePath: item.organization?.codePath,
+                                        departmentCode: item.organization?.code,
+                                        departmentId: item.organization?.id,
+                                        departmentName: item.organization?.name,
+                                    });
+                                }
                             }}
                         />)
                     }
