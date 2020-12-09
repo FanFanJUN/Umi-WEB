@@ -10,6 +10,8 @@ import { utils } from 'suid';
 const { Item } = Form;
 const { Option } = Select;
 
+
+
 @withRouter
 @connect(({ global, loading }) => ({ global, loading }))
 @Form.create()
@@ -25,10 +27,10 @@ class LoginForm extends PureComponent {
           type: "global/login",
           payload: {
             ...user,
-            reqId: utils.getUUID(),
-            verifyCode: 'WV6B'
+            reqId: '161de21c-1b3a-46a4-b6e8-3c7605164f8e',
+            appId: '1234'
           }
-        });<div className=""></div>
+        }); <div className=""></div>
       }
     });
   };
@@ -100,6 +102,17 @@ class LoginForm extends PureComponent {
                     size="large"
                     type="password"
                     placeholder="密码"
+                  />
+                )
+              }
+            </Item>
+            <Item>
+              {
+                getFieldDecorator("verifyCode")(
+                  <Input
+                    prefix={<Icon type='bug' style={{ color: 'ragba(0,0,0,.25)' }} />}
+                    size="large"
+                    placeholder="验证码"
                   />
                 )
               }
