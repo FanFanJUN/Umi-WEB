@@ -11,7 +11,7 @@ import {
   RoleConfig, UserByDepartmentConfig,
 } from '../../../mainData/commomService';
 import { baseUrl, basicServiceUrl, gatewayUrl } from '../../../../../utils/commonUrl';
-import UserSelect from '../../../../../components/UserModal';
+import UserSelect from '../../../../../components/UserSelect';
 
 const FormItem = Form.Item;
 
@@ -31,6 +31,20 @@ const ContentModal = (props) => {
   const onCancel = () => {
     props.onCancel();
   };
+
+  // useEffect(() => {
+  //   if (!getFieldValue('memberName')) {
+  //     setFieldsValue({
+  //       namePath: '',
+  //       codePath: '',
+  //       departmentId: '',
+  //       departmentName: '',
+  //       memberName: '',
+  //       memberTel: '',
+  //       employeeNo: '',
+  //     });
+  //   }
+  // }, [getFieldValue('memberName')]);
 
   useEffect(() => {
     if (getFieldValue('memberType')) {
@@ -93,6 +107,7 @@ const ContentModal = (props) => {
       departmentCode: getFieldValue('departmentCode') && '',
       departmentId: getFieldValue('departmentId') && '',
       departmentName: getFieldValue('departmentName') && '',
+      outsideCompany: getFieldValue('outsideCompany') && '',
     });
   };
 
@@ -189,7 +204,7 @@ const ContentModal = (props) => {
         <Col span={0}>
           {hideFormItem('departmentCode', type === 'add' ? '' : data.departmentCode)}
         </Col>
-       {/* <Row>
+        {<Row>
           {
             !disabled && <FormItem {...formItemLayoutLong} label={'姓名'}>
               {
@@ -206,18 +221,19 @@ const ContentModal = (props) => {
                     field: ['id'],
                   }}
                   onRowsChange={(item) => {
-                    console.log(item);
-                    const data = item ? item[0] : {}
+                    console.log(item, 'item');
                     setFieldsValue({
-                      memberId: data.user.id,
-                      memberName: data.user.userName,
-                      employeeNo: data.user.tenantCode,
-                      departmentCode: data.organization.code,
-                      departmentId: data.organization.id,
-                      departmentName: data.organization.name,
+                      codePath: item.organization.codePath,
+                      namePath: item.organization.namePath,
+                      memberId: item.user.id,
+                      memberName: item.user.userName,
+                      employeeNo: item.user.tenantCode,
+                      departmentCode: item.organization.code,
+                      departmentId: item.organization.id,
+                      departmentName: item.organization.name,
                     });
                     GetUserTelByUserId({
-                      userId: data.user.id,
+                      userId: item.user.id,
                     }).then(res => {
                       if (res.success) {
                         setFieldsValue({
@@ -232,30 +248,8 @@ const ContentModal = (props) => {
               }
             </FormItem>
           }
-        </Row>*/}
+        </Row>}
         <Row>
-          {
-            !disabled && <Col span={24}>
-              <FormItem {...formItemLayoutLong} label={'部门'}>
-                {
-                  getFieldDecorator('departmentName', {
-                    initialValue: type === 'add' ? '' : data.departmentName,
-                  })(
-                    <ComboTree
-                      form={form}
-                      name={'departmentName'}
-                      field={['departmentCode', 'departmentId']}
-                      afterSelect={departChange}
-                      {...ApplyOrganizationProps}
-                    />,
-                  )
-                }
-              </FormItem>
-            </Col>
-          }
-          <Col span={0}>
-            {hideFormItem('memberId', type === 'add' ? '' : data.memberId)}
-          </Col>
           {
             !disabled && <Col span={24}>
               <FormItem {...formItemLayoutLong} label={'员工编号'}>
@@ -266,6 +260,7 @@ const ContentModal = (props) => {
                     <ComboList
                       form={form}
                       name={'employeeNo'}
+                      disabled={!disabled}
                       cascadeParams={{
                         organizationId: getFieldValue('departmentId'),
                       }}
@@ -288,21 +283,48 @@ const ContentModal = (props) => {
               </FormItem>
             </Col>
           }
-          <Col span={24}>
-            <FormItem {...formItemLayoutLong} label={'姓名'}>
-              {
-                getFieldDecorator('memberName', {
-                  initialValue: type === 'add' ? '' : data.memberName,
-                  rules: [
-                    {
-                      required: true,
-                      message: '姓名不能为空',
-                    },
-                  ],
-                })(<Input disabled={!disabled} placeholder='请输入姓名' />)
-              }
-            </FormItem>
+        </Row>
+        <Row>
+          {
+            !disabled && <Col span={24}>
+              <FormItem {...formItemLayoutLong} label={'部门'}>
+                {
+                  getFieldDecorator('departmentName', {
+                    initialValue: type === 'add' ? '' : data.departmentName,
+                  })(
+                    <ComboTree
+                      form={form}
+                      disabled={!disabled}
+                      name={'departmentName'}
+                      field={['departmentCode', 'departmentId']}
+                      afterSelect={departChange}
+                      {...ApplyOrganizationProps}
+                    />,
+                  )
+                }
+              </FormItem>
+            </Col>
+          }
+          <Col span={0}>
+            {hideFormItem('memberId', type === 'add' ? '' : data.memberId)}
           </Col>
+          {
+            disabled && <Col span={24}>
+              <FormItem {...formItemLayoutLong} label={'姓名'}>
+                {
+                  getFieldDecorator('memberName', {
+                    initialValue: type === 'add' ? '' : data.memberName,
+                    rules: [
+                      {
+                        required: true,
+                        message: '姓名不能为空',
+                      },
+                    ],
+                  })(<Input disabled={!disabled} placeholder='请输入姓名' />)
+                }
+              </FormItem>
+            </Col>
+          }
           <Col span={24}>
             <FormItem {...formItemLayoutLong} label={'联系电话'}>
               {
