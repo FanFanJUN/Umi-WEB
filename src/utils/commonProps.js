@@ -407,6 +407,46 @@ export const statusProps = {
   }
 }
 
+export const supplierRecommendDemandStatusProps = {
+  dataSource: [
+    {
+      code: 'DRAFT',
+      name: '草稿'
+    },
+    {
+      code: 'FILLING',
+      name: '填报中'
+    },
+    {
+      code: 'FILLED',
+      name: '已填报'
+    },
+    {
+      code: 'SUBMIT_APPROVE',
+      name: '已提交评审'
+    },
+    {
+      code: 'CONFIRM_JUROR',
+      name: '已确定评审人'
+    },
+    {
+      code: 'SCORE_COMPLETE',
+      name: '已评审'
+    },
+    {
+      code: 'SCREEN_COMPLETE',
+      name: '筛选已完成'
+    },
+  ],
+  reader: {
+    name: 'name',
+    field: ['code']
+  },
+  style: {
+    width: '100%'
+  }
+}
+
 // 二次分类物料组数据
 export const documentMaterialClassProps = {
   store: {

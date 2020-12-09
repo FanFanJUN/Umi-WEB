@@ -156,6 +156,7 @@ class UploadFile extends React.Component {
 
   //删除文件
   handleRemove = file => {
+    console.log(file)
     const { fileList, completeUploadFile } = this.state;
     let index = -1;
     const list = fileList.filter(item => file.uid !== item.uid);
@@ -217,13 +218,13 @@ class UploadFile extends React.Component {
       && (item.name.toLocaleLowerCase().includes('doc') || item.name.toLocaleLowerCase().includes('pdf')
         || item.name.toLocaleLowerCase().includes('docx') || item.name.toLocaleLowerCase().includes('jpg')
         || item.name.toLocaleLowerCase().includes('png'))) {
-      actions.push(<a target="_blank" href={item.thumbUrl}>预览</a>);
+      actions.push(<a key={'look'} target="_blank" href={item.thumbUrl}>预览</a>);
     }
     if (this.props.download !== false) {
-      actions.push(<a target="_blank" href={item.url} onClick={this.props.downloadClick}>下载</a>);
+      actions.push(<a key='down' target="_blank" href={item.url} onClick={this.props.downloadClick}>下载</a>);
     }
     if (this.props.type !== 'show' && !this.props.disabled) {
-      actions.push(<a target="_blank" onClick={() => this.handleRemove(item)}>删除</a>);
+      actions.push(<a key={'delete'} target="_blank" onClick={() => this.handleRemove(item)}>删除</a>);
     }
     ;
     return actions;

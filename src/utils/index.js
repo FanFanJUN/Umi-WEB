@@ -458,6 +458,8 @@ export const formatTemplateBooleanParma = (item, paramKey) => {
   }
 }
 
+export const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
+
 export const downloadPDFFile = (data, name) => {
   const blob = new Blob([data], { type: 'application/pdf' });
   const fileName = name;

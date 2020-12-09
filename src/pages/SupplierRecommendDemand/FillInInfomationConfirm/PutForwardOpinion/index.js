@@ -13,6 +13,7 @@ function PutForwardOpinion({
   form
 }) {
   const { query } = useLocation();
+  const { flowStatus } = query;
   const tableRef = useRef(null);
   const [confirmLoading, toggleConfirmLoading] = useState(false)
   const [visible, setVisible] = useState(false);
@@ -67,13 +68,13 @@ function PutForwardOpinion({
     onSelectRow: handleSelectedRows,
     rowKey: (item) => item.id
   }
-  const left = (
+  const left = flowStatus === 'INIT' ? (
     <>
       <Button className={styles.btn} type='primary' onClick={() => setVisible(true)}>新增</Button>
       <Button className={styles.btn} disabled={empty || isSubmit} onClick={handleReomve}>删除</Button>
       <Button className={styles.btn} disabled={empty || isSubmit} onClick={handleSubmit}>提交</Button>
     </>
-  )
+  ) : null
 
   async function handleCreate() {
     const values = await form.validateFieldsAndScroll()

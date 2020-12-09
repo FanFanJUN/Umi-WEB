@@ -49,6 +49,7 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
     title: '',
     businessKey: null,
     userInfo: {},
+    code: '',
   });
 
   useEffect(() => {
@@ -59,7 +60,7 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
       findInitOne(id);
       setData((value) => ({ ...value, type: 'add', isView: false, title: '审核简报-新增' }));
     } else if (pageState === 'edit' || isApproveEdit) {
-      findOne(id);
+      findOne(id, false);
       setData((value) => ({
         ...value,
         type: state,
@@ -67,7 +68,7 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
         title: `审核简报-编辑`,
       }));
     } else if (pageState === 'detail' || isApproveDetail) {
-      findOne(id);
+      findOne(id, true);
       setData((value) => ({ ...value, type: 'detail', isView: true, title: `审核简报-明细` }));
     }
   }, [query]);
@@ -87,13 +88,17 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
   };
 
   //获取值
-  const findOne = (id) => {
+  const findOne = (id, showCode) => {
     setData(v => ({ ...v, spinLoading: true }));
     findBriefingVoById({
       id,
     }).then(res => {
       if (res.success) {
-        setData(v => ({ ...v, editData: res.data, spinLoading: false }));
+        if (showCode) {
+          setData(v => ({ ...v, editData: res.data, spinLoading: false, code: ':' + res.data.auditRbriefingManageCode }));
+        } else {
+          setData(v => ({ ...v, editData: res.data, spinLoading: false }));
+        }
       } else {
         message.error(res.message);
       }
@@ -113,7 +118,7 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
       return false;
     }
     let thisPeriodInfoVal = await getThisPeriodFormRef.current.getFormValue();
-    data.editData = Object.assign(data.editData, baseInfoVal,thisPeriodInfoVal);
+    data.editData = Object.assign(data.editData, baseInfoVal, thisPeriodInfoVal);
     return data.editData;
   };
 
@@ -125,7 +130,7 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
       return false;
     }
     let thisPeriodInfoVal = await getThisPeriodFormRef.current.getFormValue();
-    data.editData = Object.assign(data.editData, baseInfoVal,thisPeriodInfoVal);
+    data.editData = Object.assign(data.editData, baseInfoVal, thisPeriodInfoVal);
     saveAuditBriefing(data.editData).then(res => {
       if (res.success) {
         message.success(res.message);
@@ -145,7 +150,7 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
       return false;
     }
     let thisPeriodInfoVal = await getThisPeriodFormRef.current.getFormValue();
-    data.editData = Object.assign(data.editData, baseInfoVal,thisPeriodInfoVal);
+    data.editData = Object.assign(data.editData, baseInfoVal, thisPeriodInfoVal);
     return new Promise(function(resolve, reject) {
       saveAuditBriefing(data.editData).then(res => {
         if (res.success) {
@@ -168,7 +173,7 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
       <Spin spinning={data.spinLoading}>
         <Affix>
           <div className={classnames(styles.fbc, styles.affixHeader)}>
-            <span className={styles.title}>{data.title}</span>
+            <span className={styles.title}>{data.title + '' + data.code}</span>
             {
               isApprove ? null : (data.type !== 'detail') &&
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

@@ -25,6 +25,7 @@ const BaseCondition = ({ form, updateGlobalStatus }) => {
   const [loading, setLoading] = useState(false);
   const [proData, setProData] = useState([]);
   const [otherData, setOtherData] = useState([]);
+  const [manageData, setManageData] = useState([]);
   const { query: { id, type = 'add' } } = router.useLocation();
   (proData, otherData)
   useEffect(() => {
@@ -40,6 +41,7 @@ const BaseCondition = ({ form, updateGlobalStatus }) => {
         })
         await setProData(data.productCertifications)
         await setOtherData(data.otherCertifications)
+        await setManageData(data.managementSystems)
       } else {
         message.error(msg);
       }
@@ -54,7 +56,7 @@ const BaseCondition = ({ form, updateGlobalStatus }) => {
       ...value,
       supplierCertificates: data.supplierCertificates,
       supplierContacts: data.supplierContacts,
-      managementSystems: data.managementSystems,
+      managementSystems: manageData,
       recommendDemandId: id,
       id: data.id,
       actualCapacityFactor: (value.designCapability / value.actualCapacity).toFixed(2), // 现有产能利用率 设计产能/实际产能
@@ -74,10 +76,16 @@ const BaseCondition = ({ form, updateGlobalStatus }) => {
   }
 
   function setTableData(newData, type) {
-    if (type === 'pro') {
-      setProData(newData);
-    } else {
-      setOtherData(newData);
+    switch (type) {
+      case 'pro':
+        setProData(newData)
+        break;
+      case 'other':
+        setOtherData(newData)
+        break;
+      case 'manage':
+        setManageData(newData)
+        break;
     }
   }
 

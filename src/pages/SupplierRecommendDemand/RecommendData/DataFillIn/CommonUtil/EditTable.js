@@ -14,7 +14,7 @@ import PropTypes from 'prop-types';
 import AutoSizeLayout from '../../../../supplierRegister/SupplierAutoLayout';
 import { guid, isEmptyArray, hideFormItem } from './utils';
 import UploadFile from '../../../../../components/Upload';
-import { currencyTableProps } from '../../../../../utils/commonProps';
+import { currencyProps } from '../../../../../utils/commonProps';
 import moment from 'moment';
 
 const EditableContext = React.createContext();
@@ -47,7 +47,7 @@ const EditableCell = (config) => {
     const a = record[dataIndex];
     switch (inputType) {
       case 'InputNumber':
-        return <InputNumber disabled={inputDisabled} min={0} />
+        return <InputNumber disabled={inputDisabled} min={0} {...props} />
       case 'DatePicker':
         return <DatePicker {...props} />
       case 'YearPicker':
@@ -79,7 +79,7 @@ const EditableCell = (config) => {
       case 'hideForm':
         return <Input type={"hidden"} />
       case 'selectwithService':
-        return <ComboGrid {...currencyTableProps} form={form} afterSelect={afterSelect} />
+        return <ComboGrid {...currencyProps} form={form} afterSelect={afterSelect} />
       case 'percentInput':
         return <InputNumber min={0}
           max={100}
@@ -305,6 +305,7 @@ const EditableTable = (props) => {
         newData.splice(index, 1, {
           ...item,
           ...row,
+          filled: true
         });
         setEditingKey('');
         setButtonDisabled(false);
@@ -334,7 +335,7 @@ const EditableTable = (props) => {
       }
     }, {}) : {}
     const newData = isEmptyArray(newArray) ?
-      [{ guid: id, recommendDemandId, ...copyItems }] : [{ guid: id, recommendDemandId, ...copyItems }, ...newArray];
+      [{ guid: id, filled: false, recommendDemandId, ...copyItems }] : [{ guid: id, filled: false, recommendDemandId, ...copyItems }, ...newArray];
     setNewData(newData, tableType); // 新增数据 + 所属哪个Table
     setEditingKey(id); // 新增处于编辑行
     setButtonDisabled(true); // 未保存无法操作

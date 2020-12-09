@@ -147,7 +147,10 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
       title: "占总产量％",
       dataIndex: "rateWithTotal",
       ellipsis: true,
-      inputType: 'Input',
+      inputType: 'InputNumber',
+      props: {
+        max: 100
+      }
     },
     {
       title: "产品交付周期(天）",
@@ -310,7 +313,6 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
       // }
     }
     form.validateFieldsAndScroll((error, value) => {
-      (value);
       if (error) return;
       const saveParams = {
         ...value,
@@ -318,7 +320,7 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
         productionCapacities: productionCapacities,
         currentProductionSituations: currentProductionSituations.map(item => ({
           ...item,
-          offSeasonMonth: item.offSeasonMonth.join(',')
+          offSeasonMonth: item.offSeasonMonth?.join(',')
         })),
         productManufacturingIntroductions: productManufacturingIntroductions,
         keyProductEquipments: keyProductEquipments,

@@ -89,7 +89,7 @@ const OpinionModalForLeader = forwardRef(({ editData, form, title }, ref) => {
   >
     <Row>
       <Col span={24}>
-        <FormItem label="是否按审核意见执行" {...formLayout}>
+        <FormItem label="是否通过" {...formLayout}>
           {getFieldDecorator('whetherLeaderDecisionPass', {
             initialValue:  editData.whetherFollowAuditConclusion ,
             rules: [

@@ -19,7 +19,7 @@ const { Search } = Input;
 const { StartFlow, FlowHistoryButton } = WorkFlow;
 const { storage, authAction } = utils;
 const { recommendUrl } = commonUrl;
-const { corporationProps, materialClassProps, statusProps, flowStatusProps } = commonProps
+const { corporationProps, materialClassProps, statusProps, flowStatusProps, supplierRecommendDemandStatusProps } = commonProps
 
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 export default () => {
@@ -315,10 +315,10 @@ export default () => {
     },
     {
       title: '单据状态',
-      key: 'Q_EQ_status',
+      key: 'Q_EQ_supplierRecommendDemandStatus',
       type: 'list',
       props: {
-        ...statusProps,
+        ...supplierRecommendDemandStatusProps,
         placeholder: '选择单据状态'
       }
     },
@@ -348,14 +348,14 @@ export default () => {
     const [key] = selectedRowKeys;
     const { id = '' } = FRAMELEEMENT;
     const { pathname } = window.location;
-    openNewTab(`supplier/recommend/team/filter/opinion/detail?type=detail&id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '供应商推荐需求明细', false)
+    openNewTab(`supplier/recommend/fillIn/data/detail?type=detail&id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '供应商推荐需求明细', false)
   }
   // 填报信息确认页签打开
   function handleOpenInfomationConfirm() {
     const [key] = selectedRowKeys;
     const { id = '' } = FRAMELEEMENT;
     const { pathname } = window.location;
-    openNewTab(`supplier/recommend/fillIn/infomation/confirm?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}&type=detail`, '填报信息确认', false)
+    openNewTab(`supplier/recommend/fillIn/infomation/confirm?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}&type=detail&flowStatus=${signleFlowStatus}`, '填报信息确认', false)
   }
 
   // 处理删除

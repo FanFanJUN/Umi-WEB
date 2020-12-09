@@ -6,14 +6,19 @@ import {
   Form,
   Modal
 } from 'antd';
-import { Header, UserSelect, UserModal } from '../../../components';
+import { Header, UserModal } from '../../../components';
 import { router } from 'dva';
-import { ComboTree, ExtTable } from 'suid';
+import { ComboTree } from 'suid';
 import { queryTeamConfirm, saveTeamConfrim, queryTeamConfirmHistoryList } from '../../../services/recommend';
-import styles from './index.less';
 import { commonProps } from '../../../utils'
-const { evaluateSystemProps } = commonProps;
-
+const { evaluateSystemFormCodeProps } = commonProps;
+const evaluateSystemProps = {
+  ...evaluateSystemFormCodeProps,
+  store: {
+    ...evaluateSystemFormCodeProps.store,
+    url: `${evaluateSystemFormCodeProps.store.url}?systemUseType=SupplierRegister`
+  }
+}
 const { useLocation } = router;
 const { Item } = Form
 const formLayout = {
@@ -27,8 +32,6 @@ const formLayout = {
 
 function TeamConfirm({
   form,
-  updateGlobalStatus = () => null,
-  type = 'create'
 }) {
   const [dataSource, setDataSource] = useState([]);
   const [loading, toggleLoading] = useState(false);
@@ -37,7 +40,6 @@ function TeamConfirm({
   const [selectedRowKeys, setRowKeys] = useState([]);
   const [selectedRows, setRows] = useState([]);
   // 选中的评审人
-  const [selectedReviewRows, setReviewRows] = useState([]);
   const [systemOp, setSystemOp] = useState({});
   const { query } = useLocation();
   const empty = selectedRowKeys.length === 0;
@@ -146,9 +148,6 @@ function TeamConfirm({
   function cleanSelectedKeys() {
     setRowKeys([])
     setRows([])
-  }
-  function cleanReviewSelectedKeys() {
-    setReviewRows([])
   }
   function getDataSourceKeys(d, ks = []) {
     const isValid = Array.isArray(d)

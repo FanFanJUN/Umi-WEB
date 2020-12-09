@@ -1,4 +1,4 @@
-import react, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import styles from './index.less';
 import { Header, AutoSizeLayout } from '../../../components';
 import { ExtTable } from 'suid';
@@ -106,6 +106,26 @@ function RecommendDataTable() {
       <Search onSearch={handleSearch} placeholder='请输入需求单号' />
     </>
   )
+  const opinionTableProps = {
+    store: {
+      url: `${recommendUrl}/api/fillingOpinionService/findOpinionBySupplierRecommendDemandId`,
+      type: 'get',
+      params: {
+        supplierRecommendDemandId: signleRow?.id
+      }
+    },
+    columns: [
+      {
+        title: '意见',
+        dataIndex: 'opinion'
+      },
+      {
+        title: '提出意见时间',
+        dataIndex: 'submitTime',
+        width: 200
+      }
+    ]
+  }
   const footer = (
     <Button onClick={closeCheckOpinion} type='primary'>知道了</Button>
   )
@@ -145,7 +165,7 @@ function RecommendDataTable() {
     const { id = '' } = FRAMELEEMENT;
     const [key] = selectedRowKeys;
     const { pathname } = window.location;
-    openNewTab(`supplier/recommend/demand/detail?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '供应商推荐需求明细', false)
+    openNewTab(`supplier/recommend/fillIn/data/detail?type=detail&id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '推荐资料填报明细', false)
   }
 
   // 撤回
@@ -196,6 +216,7 @@ function RecommendDataTable() {
       >
         <ExtTable
           showSearch={false}
+          {...opinionTableProps}
         />
       </Modal>
     </div>

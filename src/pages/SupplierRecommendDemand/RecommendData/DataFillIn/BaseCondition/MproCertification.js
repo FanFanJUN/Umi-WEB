@@ -14,7 +14,6 @@ import EditableFormTable from '../CommonUtil/EditTable';
 
 const MproCertification = ({ type, data, setTableData }) => {
   const { productCertifications, otherCertifications, managementSystems } = data;
-  console.log(data)
   const [proData, setProData] = useState([]);
   const [otherData, setOtherData] = useState([]);
   const [manageData, setManageData] = useState([]);
@@ -64,8 +63,10 @@ const MproCertification = ({ type, data, setTableData }) => {
     },
     {
       title: '附件',
-      dataIndex: 'attachmentId',
+      dataIndex: 'attachmentIds',
       ellipsis: true,
+      editable: true,
+      inputType: 'UploadFile'
     },
     {
 
@@ -265,6 +266,11 @@ const MproCertification = ({ type, data, setTableData }) => {
     setTableData(newData, 'other');
   }
 
+  function setManageNewData(newData) {
+    setManageData(newData)
+    setTableData(newData, 'manage')
+  }
+
   useEffect(() => {
     if (!otherCertifications || !productCertifications || !managementSystems) return
     const o = otherCertifications.map(item => ({
@@ -294,10 +300,11 @@ const MproCertification = ({ type, data, setTableData }) => {
         remotePaging
         isToolBar={false}
         allowRemove={false}
-        isEditTable={type==='add'}
+        isEditTable={type === 'add'}
         // rowKey={(item) => item.id}
         rowKey='guid'
         size='small'
+        setNewData={setManageNewData}
         dataSource={manageData}
       />
       <Divider orientation='left'>产品认证</Divider>
@@ -310,7 +317,7 @@ const MproCertification = ({ type, data, setTableData }) => {
         remotePaging
         rowKey='guid'
         size='small'
-        isEditTable={type==='add'}
+        isEditTable={type === 'add'}
         isToolBar={false}
         setNewData={setProNewData}
         dataSource={proData || []}
@@ -325,7 +332,7 @@ const MproCertification = ({ type, data, setTableData }) => {
         remotePaging
         rowKey='guid'
         size='small'
-        isEditTable={type==='add'}
+        isEditTable={type === 'add'}
         isToolBar={type === 'add'}
         dataSource={otherData || []}
         setNewData={setOtherNewData}

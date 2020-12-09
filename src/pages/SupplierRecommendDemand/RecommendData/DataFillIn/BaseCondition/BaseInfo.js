@@ -285,7 +285,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                         message: '现有产能利用率不能为空'
                       }
                     ]
-                  })(<Input style={{ width: '100%' }} addonAfter='%' disabled={DISABLED} min={0} max={100} />)}
+                  })(<Input type='number' style={{ width: '100%' }} addonAfter='%' disabled={DISABLED} min={0} max={100} />)}
                 </FormItem>
               </Col>
             </Row>

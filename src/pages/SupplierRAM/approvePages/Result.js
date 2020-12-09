@@ -3,7 +3,7 @@ import {
   useRef,
   useState
 } from 'react';
-import { message, Form, Radio, Spin } from 'antd';
+import { message, Form, Radio, Spin, Button } from 'antd';
 import CommonForm from '../CommonForm';
 import styles from '../index.less';
 import { useLocation } from 'dva/router';
@@ -12,7 +12,7 @@ import {
   updateAccess
 } from '../../../services/ram';
 import { WorkFlow } from 'suid';
-import { closeCurrent, checkToken } from '../../../utils';
+import { closeCurrent, checkToken, openNewTab } from '../../../utils';
 const formLayout = {
   labelCol: {
     span: 6
@@ -99,7 +99,48 @@ function WhetherCheck({
         }
         return '未选择'
       }
-    }
+    },
+    {
+      title: '实物认定结果',
+      dataIndex: 'physicalPass',
+      render(text) {
+        const isBoolean = typeof text === 'boolean';
+        if (isBoolean) {
+          return !!text ? '通过' : '未通过'
+        }
+        return ''
+      }
+    },
+    {
+      title: '实物认定报告',
+      dataIndex: 'physicalId',
+      render(text, { physicalDocNumber = '' }) {
+        if (!!text) {
+          return (
+            <Button type='link' onClick={() => openNewTab(`material/Cognizance/ManualDetail/index?id=${text}`)}>{physicalDocNumber}</Button>
+          )
+        }
+        return ''
+      },
+      width: 200
+    },
+    {
+      title: '供应商审核结果',
+      dataIndex: 'examineResult'
+    },
+    {
+      title: '供应商审核报告',
+      dataIndex: 'examineId',
+      render(text, { examineDocNumber = '' }) {
+        if (!!text) {
+          return (
+            <Button type='link' onClick={() => openNewTab(`material/Cognizance/ManualDetail/index?id=${text}`)}>{examineDocNumber}</Button>
+          )
+        }
+        return ''
+      },
+      width: 200
+    },
   ];
   const {
     getFieldDecorator,
@@ -113,9 +154,10 @@ function WhetherCheck({
   const { query } = useLocation();
   const { id = null, taskId = null, instanceId = null } = query;
   async function beforeSubmit() {
-    const v = await validateFields()
+    const v = await validateFields();
     const { needExamine, ...vs } = v;
     const ks = Object.keys(vs);
+    let pass = true;
     const kvs = ks.map((kv) => {
       return vs[kv]
     })
@@ -123,6 +165,27 @@ function WhetherCheck({
       ...item,
       access: kvs[index]
     }))
+    if (needExamine) {
+      pass = paramsDataSource.every(item => {
+        return !!item.examineId
+      })
+    }
+    pass = paramsDataSource.every(item => {
+      return !!item.objectRecognition ? !!item.physicalId : true
+    })
+    console.log(pass)
+    if (!pass) {
+      message.error('实物认定或供应商审核未完成，请等待')
+      return new Promise((resolve, rj) => {
+        resolve({
+          success: pass,
+          message: '实物认定或供应商审核未完成，请等待',
+          data: {
+            businessKey: id,
+          },
+        });
+      });
+    }
     const { success, message: msg } = await updateAccess(paramsDataSource);
     return new Promise((resolve) => {
       resolve({

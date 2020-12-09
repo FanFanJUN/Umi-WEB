@@ -8,8 +8,8 @@ import {
   ApplyOrganizationProps,
   AuditCauseManagementConfig,
   AuditTypeManagementConfig,
-  CompanyConfig,
-  FindByFiltersConfig, flowStatusConfig, stateConfig, SupplierConfig,
+  CompanyConfig, DetailSupplierConfig,
+  FindByFiltersConfig, flowStatusConfig, HeightSearchApplyOrganizationProps, stateConfig, SupplierConfig,
 } from '../mainData/commomService';
 import {
   flowProps, stateProps,
@@ -79,10 +79,10 @@ export default function() {
       props: FindByFiltersConfig,
       rules: { rules: [{ required: true, message: '请选择采购组织' }] },
     },
-    { title: '申请部门', key: 'applyDepartmentCode', type: 'tree', props: ApplyOrganizationProps },
+    { title: '申请部门', key: 'applyDepartmentCode', type: 'tree', props: HeightSearchApplyOrganizationProps },
     { title: '申请人', key: 'applyName', props: { placeholder: '输入申请人' } },
     { title: '申请日期', key: 'applyDateStart', type: 'datePicker', props: { placeholder: '输入申请日期' } },
-    { title: '供应商', key: 'supplierCode', type: 'list', props: SupplierConfig },
+    { title: '供应商', key: 'supplierId', type: 'list', props: DetailSupplierConfig },
     { title: '物料分类', key: 'materialSecondClassifyCode', type: 'tree', props: materialClassProps },
     { title: '审核类型', key: 'reviewTypeCode', type: 'list', props: AuditTypeManagementConfig },
     { title: '审核原因', key: 'reviewReasonCode', type: 'list', props: AuditCauseManagementConfig },
