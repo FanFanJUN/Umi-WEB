@@ -220,7 +220,7 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'whetherConfirm', false)
-        // || !judge(data.selectedRows, 'leaderId', getUserId())
+        || !judge(data.selectedRows, 'leaderId', getUserId())
         }
         key='SUPPLIER_AUDIT_DEMAND_CONFIRM'
       >审核结果确认</Button>)

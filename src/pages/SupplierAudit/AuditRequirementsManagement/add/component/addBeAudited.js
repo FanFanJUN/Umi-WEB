@@ -180,8 +180,6 @@ const AddBeAudited = (props) => {
     console.log(value);
   };
 
-  console.log(getFieldValue('reviewTypeCode'));
-
   return (
     <ExtModal
       width={'160vh'}
