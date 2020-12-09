@@ -145,6 +145,12 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                     <FormItem label="有无自有环保检测设备" {...formLayout}>
                       {getFieldDecorator('haveenvironmentalTestingEquipments ', {
                         initialValue: type === 'add' ? true : data.haveenvironmentalTestingEquipments,
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空'
+                          }
+                        ]
                       })(
                         <Radio.Group value={'1'} disabled={type === 'detail'}>
                           <Radio value={true}>有</Radio>
@@ -168,8 +174,14 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                     <FormItem label="RoHS管控标准" {...formLayout}>
                       {getFieldDecorator('haveRohs', {
                         initialValue: type === 'add' ? true : data.haveRohs,
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空'
+                          }
+                        ]
                       })(
-                        <Radio.Group value={'1'} disabled={type==='detail'}>
+                        <Radio.Group value={'1'} disabled={type === 'detail'}>
                           <Radio value={true}>有</Radio>
                           <Radio value={false}>无</Radio>
                         </Radio.Group>
@@ -183,7 +195,7 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                       {getFieldDecorator('standardTypeEnum', {
                         initialValue: type === 'add' ? 'ROHS_10' : data.standardTypeEnum,
                       })(
-                        <Radio.Group disabled={type==='detail'}>
+                        <Radio.Group disabled={type === 'detail'}>
                           <Radio value={'ROHS_10'}>RoHS1.0</Radio>
                           <Radio value={'ROHS_20'}>RoHS2.0</Radio>
                           <Radio value={'ROHS_10_HALOGEN_FREE'}>RoHS1.0+无卤</Radio>
@@ -201,7 +213,7 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                       })(
                         <UploadFile
                           showColor={type !== 'add' ? true : false}
-                          disabled={type==='detail'}
+                          disabled={type === 'detail'}
                           type={type !== 'add'}
                           entityId={data.rohsFileId}
                         />
@@ -215,8 +227,14 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                     <FormItem label="化学品注册、评估、许可和限制" {...formLayout}>
                       {getFieldDecorator('chemicalsControl', {
                         initialValue: type === 'add' ? true : data.chemicalsControl,
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空'
+                          }
+                        ]
                       })(
-                        <Radio.Group disabled={type==='detail'}>
+                        <Radio.Group disabled={type === 'detail'}>
                           <Radio value={true}>有</Radio>
                           <Radio value={false}>无</Radio>
                         </Radio.Group>)}
@@ -228,7 +246,7 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                     <FormItem label="备注" {...formLayout}>
                       {getFieldDecorator('remark', {
                         initialValue: type === 'add' ? '' : data.remark,
-                      })(<Input.TextArea disabled={type==='detail'}/>)}
+                      })(<Input.TextArea disabled={type === 'detail'} />)}
                     </FormItem>
                   </Col>
                 </Row>
@@ -241,7 +259,7 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                         <UploadFile
                           showColor={type !== 'add' ? true : false}
                           type={type === 'add' ? '' : 'show'}
-                          disabled={type==='detail'}
+                          disabled={type === 'detail'}
                           entityId={data.attachmentId}
                         />
                       )}

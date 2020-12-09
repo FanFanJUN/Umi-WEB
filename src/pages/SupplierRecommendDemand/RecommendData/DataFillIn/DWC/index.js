@@ -123,8 +123,14 @@ const DWC = ({ form, updateGlobalStatus }) => {
                     <FormItem label="签订质量协议" {...formLayout}>
                       {getFieldDecorator('signQualityAgreement', {
                         initialValue: type === 'add' ? true : data.signQualityAgreement,
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空'
+                          }
+                        ]
                       })(
-                        <Radio.Group disabled={type==='detail'}>
+                        <Radio.Group disabled={type === 'detail'}>
                           <Radio value={true}>{isAgreeorNot[0]}</Radio>
                           <Radio value={false}>{isAgreeorNot[1]}</Radio>
                         </Radio.Group>)}
@@ -134,14 +140,14 @@ const DWC = ({ form, updateGlobalStatus }) => {
                     <FormItem label="签订技术协议" {...formLayout}>
                       {getFieldDecorator('signTechnologyAgreement', {
                         initialValue: type === 'add' ? true : data.signTechnologyAgreement,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '成立时间不能为空',
-                        //     },
-                        // ],
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空',
+                          },
+                        ],
                       })(
-                        <Radio.Group disabled={type==='detail'}>
+                        <Radio.Group disabled={type === 'detail'}>
                           <Radio value={true}>{isAgreeorNot[0]}</Radio>
                           <Radio value={false}>{isAgreeorNot[1]}</Radio>
                         </Radio.Group>
@@ -154,8 +160,14 @@ const DWC = ({ form, updateGlobalStatus }) => {
                     <FormItem label="签订供货协议" {...formLayout}>
                       {getFieldDecorator('signSupplyAgreement', {
                         initialValue: type === 'add' ? true : data.signSupplyAgreement,
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空'
+                          }
+                        ]
                       })(
-                        <Radio.Group disabled={type==='detail'}>
+                        <Radio.Group disabled={type === 'detail'}>
                           <Radio value={true}>{isAgreeorNot[0]}</Radio>
                           <Radio value={false}>{isAgreeorNot[1]}</Radio>
                         </Radio.Group>)}
@@ -165,14 +177,14 @@ const DWC = ({ form, updateGlobalStatus }) => {
                     <FormItem label="签订VMI协议" {...formLayout}>
                       {getFieldDecorator('signVmiAgreement', {
                         initialValue: type === 'add' ? true : data.signVmiAgreement,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '成立时间不能为空',
-                        //     },
-                        // ],
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空',
+                          },
+                        ],
                       })(
-                        <Radio.Group disabled={type==='detail'}>
+                        <Radio.Group disabled={type === 'detail'}>
                           <Radio value={true}>{isAgreeorNot[0]}</Radio>
                           <Radio value={false}>{isAgreeorNot[1]}</Radio>
                         </Radio.Group>
@@ -185,8 +197,14 @@ const DWC = ({ form, updateGlobalStatus }) => {
                     <FormItem label="签订CSR协议" {...formLayout}>
                       {getFieldDecorator('signCsrAgreement', {
                         initialValue: type === 'add' ? true : data.signCsrAgreement,
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空'
+                          }
+                        ]
                       })(
-                        <Radio.Group disabled={type==='detail'}>
+                        <Radio.Group disabled={type === 'detail'}>
                           <Radio value={true}>{isAgreeorNot[0]}</Radio>
                           <Radio value={false}>{isAgreeorNot[1]}</Radio>
                         </Radio.Group>)}
@@ -196,14 +214,14 @@ const DWC = ({ form, updateGlobalStatus }) => {
                     <FormItem label="反商业贿赂协议" {...formLayout}>
                       {getFieldDecorator('antiCommercialBribery', {
                         initialValue: type === 'add' ? true : data.antiCommercialBribery,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '成立时间不能为空',
-                        //     },
-                        // ],
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空',
+                          },
+                        ],
                       })(
-                        <Radio.Group disabled={type==='detail'}>
+                        <Radio.Group disabled={type === 'detail'}>
                           <Radio value={true}>{isAgreeorNot[0]}</Radio>
                           <Radio value={false}>{isAgreeorNot[1]}</Radio>
                         </Radio.Group>
@@ -216,7 +234,7 @@ const DWC = ({ form, updateGlobalStatus }) => {
                   <Col span={24}>
                     <FormItem label="付款条件" {...formLayoutCol}>
                       {getFieldDecorator('payConditionEnum')(
-                        <Radio.Group onChange={handleChange} disabled={type==='detail'}>
+                        <Radio.Group onChange={handleChange} disabled={type === 'detail'}>
                           <Radio value={'RMB'}>月结90天6个月银行承兑(人民币)</Radio>
                           <Radio value={'FOREIGN_CURRENCY'}>月结60天现汇(外币结算)</Radio>
                           <Radio value={'OTHER'}>
