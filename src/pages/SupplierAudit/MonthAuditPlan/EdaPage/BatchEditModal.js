@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { ComboList, ExtModal, ComboGrid } from 'suid';
 import { Col, Form, Input, InputNumber, Row } from 'antd';
-import { listAllOrgnazationWithDataAuth } from '../service';
+import { listAllOrgnazationWithDataAuth, AuditCauseManagementConfig } from '../service';
 import { UserByDepartmentNameConfig } from '../../mainData/commomService';
 import {
-  reviewReasonsProps,
   reviewOrganizeProps,
   reviewWaysProps,
   CountryIdConfig,
@@ -73,14 +72,17 @@ const BatchEditModal = (props) => {
               {
                 getFieldDecorator('reviewReasonId', { initialValue: originData.reviewReasonId }),
                 getFieldDecorator('reviewReasonCode', { initialValue: originData.reviewReasonCode }),
-                getFieldDecorator('reviewReasonName', { initialValue: originData.reviewReasonName })(
+                getFieldDecorator('reviewReasonName', { 
+                  initialValue: originData.reviewReasonName,
+                  rules: [{ required, message: '审核方式不能为空', },],
+                })(
                   <ComboGrid
                     allowClear={true}
                     style={{ width: '100%' }}
                     form={form}
                     name={'reviewReasonName'}
                     field={['reviewReasonId', 'reviewReasonCode']}
-                    {...reviewReasonsProps}
+                    {...AuditCauseManagementConfig}
                     disabled={originData.sourceType !== "ADMISSION_RECOMMENDATION"}
                   />,
                 )

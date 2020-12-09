@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:37:22
- * @LastEditTime: 2020-12-07 14:43:42
+ * @LastEditTime: 2020-12-09 14:17:19
  * @LastEditors: Please set LastEditors
  * @Description: 审核实施计划-拟审核信息
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\AuditInfo.js
@@ -33,9 +33,15 @@ const AuditInfo = (props) => {
     const [formData, setFormData] = useState({});
     const columns = [
         { title: '月度审核计划行号', dataIndex: 'reviewImplementPlanLinenum', width: 140, align: "center", render:(text, item)=>text?text:item.reviewPlanMonthLinenum },
-        { title: '需求公司', dataIndex: 'applyCorporationName', width: 140, align: "center" },
-        { title: '采购组织', dataIndex: 'purchaseTeamName', align: "center", width: 140 },
-        { title: '物料分类', dataIndex: 'materialGroupName', align: "center", width: 140 },
+        { title: '需求公司', dataIndex: 'applyCorporationName', width: 200, align: "center", render: (text, item) => {
+            return item.applyCorporationCode + ' ' + text;
+        }},
+        { title: '采购组织', dataIndex: 'purchaseTeamName', align: "center", width: 200, render: (text, item) => {
+            return item.purchaseTeamCode + ' ' + text;
+        }},
+        { title: '物料分类', dataIndex: 'materialGroupName', align: "center", width: 140, render: (text, item) => {
+            return item.materialGroupCode + ' ' + text;
+        }},
         { title: '物料级别', dataIndex: 'materialGradeName', align: "center", width: 140 },
         { title: '审核类型', dataIndex: 'reviewTypeName', align: "center", width: 140 },
         { title: '审核原因', dataIndex: 'reviewReasonName', align: "center", width: 140 },

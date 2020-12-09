@@ -11,7 +11,7 @@ import {
     reviewRequirementConfig
 } from '../../mainData/commomService';
 import { recommendUrl } from '@/utils/commonUrl';
-import { findRequirementLine, findYearLineLine, findRecommendAccessByDataAuth } from "../service"
+import { findRequirementLine, findYearLineLine, findAccessLineLine, findRecommendAccessByDataAuth } from "../service"
 
 const FormItem = Form.Item;
 const { MonthPicker } = DatePicker;
@@ -39,41 +39,61 @@ const AddModal = (props) => {
                             return text ? text.slice(0, 7) : ""
                         }
                     },
-                    { title: '需求公司', dataIndex: 'applyCorporationName', width: 180, ellipsis: true, render: (text, item) => {
-                        return !text ? '' : item.applyCorporationCode + ' ' + item.applyCorporationName
-                    }},
-                    { title: '采购组织', dataIndex: 'purchaseTeamName', ellipsis: true, width: 180, render: (text, item) => {
-                        return !text ? '' : item.purchaseTeamCode + ' ' + item.purchaseTeamName
-                    }},
-                    { title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 180, render: (text, item) => {
-                        return !text ? '' : item.supplierCode + ' ' + item.supplierName
-                    }},
-                    { title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 160, render: (text, item) => {
-                        return !text ? '' : item.agentCode + ' ' + item.agentName
-                    }},
-                    { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 180, render: (text, item) => {
-                        return !text ? '' : item.materialGroupCode + ' ' + item.materialGroupName
-                    }},
+                    {
+                        title: '需求公司', dataIndex: 'applyCorporationName', width: 180, ellipsis: true, render: (text, item) => {
+                            return !text ? '' : item.applyCorporationCode + ' ' + item.applyCorporationName
+                        }
+                    },
+                    {
+                        title: '采购组织', dataIndex: 'purchaseTeamName', ellipsis: true, width: 180, render: (text, item) => {
+                            return !text ? '' : item.purchaseTeamCode + ' ' + item.purchaseTeamName
+                        }
+                    },
+                    {
+                        title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 180, render: (text, item) => {
+                            return !text ? '' : item.supplierCode + ' ' + item.supplierName
+                        }
+                    },
+                    {
+                        title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 160, render: (text, item) => {
+                            return !text ? '' : item.agentCode + ' ' + item.agentName
+                        }
+                    },
+                    {
+                        title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 180, render: (text, item) => {
+                            return !text ? '' : item.materialGroupCode + ' ' + item.materialGroupName
+                        }
+                    },
                 ];
             case "recommand":
                 return [
                     { title: '准入推荐号', dataIndex: 'docNumber', ellipsis: true, width: 140 },
-                    { title: '需求公司', dataIndex: 'corporationName', width: 200, ellipsis: true, render: (text, item) => {
-                        return !text ? '' : item.corporationCode + ' ' +item.corporationName
-                    } },
-                    { title: '采购组织', dataIndex: 'purchaseOrgName', ellipsis: true, width: 180, render: (text, item) => {
-                        return !text ? '' :  item.purchaseOrgCode + ' ' +item.purchaseOrgName
-                    }},
-                    { title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 140, render:(text, item) =>{
-                        return item.recommendAccess && item.recommendAccess.supplierName;
-                        // return item.recommendAccess && item.recommendAccess.supplierCode + ' ' + item.recommendAccess.supplierName;
-                    } },
-                    { title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 140, render: (text, item) => {
-                        return !text ? '' : item.agentCode + ' ' +item.agentName
-                    }},
-                    { title: '物料分类', dataIndex: 'materialCategoryName', ellipsis: true, width: 180, render:(text, item) =>{
-                        return item.recommendAccess && item.recommendAccess.materialCategoryCode + ' ' + item.recommendAccess.materialCategoryName;
-                    } },
+                    {
+                        title: '需求公司', dataIndex: 'corporationName', width: 200, ellipsis: true, render: (text, item) => {
+                            return !text ? '' : item.corporationCode + ' ' + item.corporationName
+                        }
+                    },
+                    {
+                        title: '采购组织', dataIndex: 'purchaseOrgName', ellipsis: true, width: 180, render: (text, item) => {
+                            return !text ? '' : item.purchaseOrgCode + ' ' + item.purchaseOrgName
+                        }
+                    },
+                    {
+                        title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 140, render: (text, item) => {
+                            return item.recommendAccess && item.recommendAccess.supplierName;
+                            // return item.recommendAccess && item.recommendAccess.supplierCode + ' ' + item.recommendAccess.supplierName;
+                        }
+                    },
+                    {
+                        title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 140, render: (text, item) => {
+                            return !text ? '' : item.agentCode + ' ' + item.agentName
+                        }
+                    },
+                    {
+                        title: '物料分类', dataIndex: 'materialCategoryName', ellipsis: true, width: 180, render: (text, item) => {
+                            return item.recommendAccess && item.recommendAccess.materialCategoryCode + ' ' + item.recommendAccess.materialCategoryName;
+                        }
+                    },
                 ];
             case "demand":
                 return [
@@ -90,18 +110,24 @@ const AddModal = (props) => {
                     },
                     {
                         title: '采购组织', dataIndex: 'purchaseOrgName', ellipsis: true, width: 180, render: (text, item) => {
-                            return item.reviewRequirementVo && item.reviewRequirementVo.purchaseOrgCode + ' ' +item.reviewRequirementVo.purchaseOrgName
+                            return item.reviewRequirementVo && item.reviewRequirementVo.purchaseOrgCode + ' ' + item.reviewRequirementVo.purchaseOrgName
                         }
                     },
-                    { title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 180, render: (text, item) => {
-                        return !text ? '' : item.supplierCode + ' ' + item.supplierName
-                    } },
-                    { title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 140, render: (text, item) => {
-                        return !text ? '' : item.agentCode + ' ' + item.agentName
-                    }},
-                    { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 140, render: (text, item) => {
-                        return !text ? '' : item.materialGroupCode + ' ' + item.materialGroupName
-                    }}
+                    {
+                        title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 180, render: (text, item) => {
+                            return !text ? '' : item.supplierCode + ' ' + item.supplierName
+                        }
+                    },
+                    {
+                        title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 140, render: (text, item) => {
+                            return !text ? '' : item.agentCode + ' ' + item.agentName
+                        }
+                    },
+                    {
+                        title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 140, render: (text, item) => {
+                            return !text ? '' : item.materialGroupCode + ' ' + item.materialGroupName
+                        }
+                    }
                 ];
         }
     }
@@ -145,45 +171,48 @@ const AddModal = (props) => {
             message.warning("至少选中一行！");
             return;
         }
-        if (type === "recommand") {
-            let newList = selectRows.map(item => {
-                delete item.id;
-                return {
-                    ...item,
-                    sourceType: "ADMISSION_RECOMMENDATION",
-                    sourceLineId: item.id,
-                    applyCorporationName: item.corporationName,
-                    applyCorporationCode: item.corporationCode,
-                    purchaseTeamName: item.purchaseOrgName,
-                    purchaseTeamCode:item.purchaseOrgCode,
-                    purchaseTeamId:item.purchaseOrgId,
-                    sourceCode: item.docNumber,
-                    supplierName: item.recommendAccess?.supplierName,
-                    supplierId: item.recommendAccess?.supplierId,
-                    supplierCode: item.recommendAccess?.supplierCode,
-                    materialGroupCode: item.recommendAccess?.materialCategoryCode,
-                    materialGroupName: item.recommendAccess?.materialCategoryName,
-                }
+        // if (type === "recommand") {
+        //     let newList = selectRows.map(item => {
+        //         delete item.id;
+        //         return {
+        //             ...item,
+        //             sourceType: "ADMISSION_RECOMMENDATION",
+        //             sourceLineId: item.id,
+        //             applyCorporationName: item.corporationName,
+        //             applyCorporationCode: item.corporationCode,
+        //             purchaseTeamName: item.purchaseOrgName,
+        //             purchaseTeamCode:item.purchaseOrgCode,
+        //             purchaseTeamId:item.purchaseOrgId,
+        //             sourceCode: item.docNumber,
+        //             supplierName: item.recommendAccess?.supplierName,
+        //             supplierId: item.recommendAccess?.supplierId,
+        //             supplierCode: item.recommendAccess?.supplierCode,
+        //             materialGroupCode: item.recommendAccess?.materialCategoryCode,
+        //             materialGroupName: item.recommendAccess?.materialCategoryName,
+        //         }
+        //     })
+        //     handleOk(newList);
+        // } else {}
+        let res = {};
+        setLoading(true);
+        if (type === "demand") {
+            res = await findRequirementLine({
+                ids: selectedRowKeys.join()
             })
-            handleOk(newList);
+        } else if (type === "annual") {
+            res = await findYearLineLine({
+                ids: selectedRowKeys.join()
+            })
         } else {
-            let res = {};
-            setLoading(true);
-            if (type === "demand") {
-                res = await findRequirementLine({
-                    ids: selectedRowKeys.join()
-                })
-            } else if (type === "annual") {
-                res = await findYearLineLine({
-                    ids: selectedRowKeys.join()
-                })
-            }
-            setLoading(false);
-            if (res.success) {
-                handleOk(res.data);
-            } else {
-                message.error(res.message);
-            }
+            res = await findAccessLineLine({
+                ids: selectedRowKeys.join()
+            })
+        }
+        setLoading(false);
+        if (res.success) {
+            handleOk(res.data);
+        } else {
+            message.error(res.message);
         }
 
     }
@@ -247,7 +276,7 @@ const AddModal = (props) => {
                         <FormItem {...formItemLayoutLong} label={'预计审核月度'}>
                             {
                                 getFieldDecorator('reviewMonth')(
-                                    <MonthPicker placeholder="选择月度" style={{width: "100%"}}/>
+                                    <MonthPicker placeholder="选择月度" style={{ width: "100%" }} />
                                 )
                             }
                         </FormItem>
@@ -380,7 +409,7 @@ const AddModal = (props) => {
                 allowCancelSelect={true}
                 showSearch={false}
                 remotePaging
-                height={type==="demand" ? "40vh" : "50vh"}
+                height={type === "demand" ? "40vh" : "50vh"}
                 checkbox={{ multiSelect: true }}
                 onSelectRow={(key, rows) => {
                     setselectedRowKeys(key);

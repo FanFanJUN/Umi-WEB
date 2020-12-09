@@ -19,11 +19,6 @@ function Allocation() {
   const [loading, toggleLoading] = useState(false);
   const columns = [
     {
-      title: '类别',
-      dataIndex: 'systemName',
-      width: 200
-    },
-    {
       title: '指标名称',
       dataIndex: 'ruleName',
       width: 250
@@ -162,10 +157,8 @@ function Allocation() {
               key={tableKey}
               showSearch={false}
               rowKey={(item) => item?.key}
-              defaultExpandAllRows={true}
               dataSource={dataSource}
               height={h}
-              pagination={false}
               columns={columns}
             />
         }
