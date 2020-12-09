@@ -1,5 +1,5 @@
 import React, { useState, useRef, Fragment, useEffect } from 'react';
-import queryString from 'query-string';
+import { router } from 'dva';
 import Header from '../../../components/Header';
 import AdvancedForm from '../../../components/AdvancedForm';
 import { Input, Checkbox, message } from 'antd';
@@ -31,11 +31,10 @@ export default function() {
     selectedRows: [],
     EpTechnicalShareDemandSearchBo: {},
   })
-
+  const { query } = router.useLocation();
   useEffect(()=>{
     // 处理工作台过来-url携带参数
-    let afterUrl = queryString.parse(window.location.search);
-    setData(v => ({ ...v, EpTechnicalShareDemandSearchBo: afterUrl }));
+    setData(v => ({ ...v, EpTechnicalShareDemandSearchBo: query }));
   }, [])
 
   const handleQuickSearch = (value) => {
