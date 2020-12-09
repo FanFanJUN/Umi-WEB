@@ -95,7 +95,7 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
     }).then(res => {
       if (res.success) {
         if (showCode) {
-          setData(v => ({ ...v, editData: res.data, spinLoading: false, code: ':' + res.data.auditReportManagCode }));
+          setData(v => ({ ...v, editData: res.data, spinLoading: false, code: ':' + res.data.auditRbriefingManageCode }));
         } else {
           setData(v => ({ ...v, editData: res.data, spinLoading: false }));
         }
