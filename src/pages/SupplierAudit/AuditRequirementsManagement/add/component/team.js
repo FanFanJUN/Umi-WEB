@@ -131,12 +131,11 @@ const Team = (props) => {
         }
       });
       newData = newData.sort((a, b) => a.rank - b.rank);
-      console.log(newData, 'newData');
       setTeamData(v => ({ ...v, dataSource: newData, selectedRows: [], selectedRowKeys: [] }));
     }
+    setData(v => ({ ...v, visible: false }));
     teamTableRef.current.manualSelectedRows();
     teamTableRef.current.remoteDataRefresh();
-    setData(v => ({ ...v, visible: false }));
   };
 
   const contentAdd = (value) => {

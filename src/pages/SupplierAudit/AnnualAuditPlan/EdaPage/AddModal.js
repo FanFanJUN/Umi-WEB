@@ -63,9 +63,6 @@ const AddModal = (props) => {
             message.info('至少选择一条行信息');
             return;
         }
-        selectRows.forEach((item) => {
-            delete item.id;
-        })
         handleOk(selectRows);
     }
 
