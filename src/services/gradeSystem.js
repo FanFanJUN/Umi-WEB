@@ -764,4 +764,15 @@ export const batchExportQualityData = params => createServiceRequest({
   responseType: 'blob'
 })
 
+export const batchCheckQualityData = params => createServiceRequest({
+  path: '/api/bafEvlDataService/checkQualityDataImport',
+  params,
+  method: 'POST'
+})
+
+export const batchSaveQualityData = params => createServiceRequest({
+  path: '/api/bafEvlDataService/saveQualityDataImport',
+  params,
+  method: 'POST'
+})
 // 批量导入质量主数据

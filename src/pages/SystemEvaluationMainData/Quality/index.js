@@ -21,7 +21,12 @@ import { ComboList, DataImport } from 'suid';
 import classnames from 'classnames'
 import { evlLevelEmu, evaluateSystemFormCodeProps, businessMainProps, businessUnitMainProps } from '../../../utils/commonProps';
 import { downloadBlobFile, DEVELOPER_ENV } from '../../../utils';
-import { batchExportQualityData } from '../../../services/gradeSystem';
+import {
+  batchExportQualityData as EXPORT_SERVICE,
+  batchCheckQualityData as CHECK_SERVICE,
+  batchSaveQualityData as SAVE_SERVICE
+} from '../../../services/gradeSystem';
+const MOUDLE_NAME = '质量';
 const { create, Item: FormItem } = Form;
 const { Option } = Select;
 const { MonthPicker } = DatePicker;
@@ -71,30 +76,59 @@ const COLUMNS = [
     dataIndex: 'month'
   },
   {
-    title: '商务问题次数',
-    dataIndex: 'questionTime'
+    title: '一般质量问题次数',
+    dataIndex: 'generalQualityProblem'
   },
   {
-    title: '商务问题不及时次数',
-    dataIndex: 'timesOfDelay'
+    title: '重大质量问题次数',
+    dataIndex: 'majorQualityProblem'
   },
   {
-    title: '商务问题未解决次数',
-    dataIndex: 'unsolvedBusinessProblems'
+    title: '市场质量问题次数',
+    dataIndex: 'marketQualityProblem'
   },
   {
-    title: '损失50万元以上次数',
-    dataIndex: 'above'
+    title: '协作次数',
+    dataIndex: 'cooperationTime'
   },
   {
-    title: '损失50万元以下次数',
-    dataIndex: 'below'
-  }
+    title: '入厂不合格批次',
+    dataIndex: 'unqualified'
+  },
+  {
+    title: '免检监督检验不合格批次',
+    dataIndex: 'inspectionFreeUnqualified'
+  },
+  {
+    title: '检验总批次',
+    dataIndex: 'total'
+  },
+  {
+    title: '环境问题次数',
+    dataIndex: 'environmentalProblem'
+  },
+  {
+    title: '不良总数',
+    dataIndex: 'totalDefect'
+  },
+  {
+    title: '使用总数',
+    dataIndex: 'useTotal'
+  },
+  {
+    title: 'PCN变更未通知次数',
+    dataIndex: 'pcnChangesNotInformed'
+  },
+  {
+    title: '质量问题处理不及时或无效次数',
+    dataIndex: 'qualityProblemDealInvalid'
+  },
 ]
 function Quality({
   form
 }) {
   const [loading, toggleLoading] = useState(false);
+  const [spinning, toggleSpinning] = useState(false);
   const { getFieldDecorator, getFieldsValue, validateFields } = form;
   const { startDate, endDate, evlLevelEnum } = getFieldsValue();
   const endDisabledDate = (c) => c < startDate;
@@ -113,11 +147,11 @@ function Quality({
           endDate: values.endDate.format('YYYY-MM')
         }
         toggleLoading(true)
-        const { success, data } = await batchExportQualityData(params)
+        const { success, data } = await EXPORT_SERVICE(params)
         toggleLoading(false)
         if (success) {
           message.success("导出成功")
-          downloadBlobFile(data, '待评价数据.xlsx')
+          downloadBlobFile(data, `待评价数据-${MOUDLE_NAME}.xlsx`)
           return
         }
         message.error(msg)
@@ -133,7 +167,14 @@ function Quality({
         <FormItem key='BG' label='业务板块' {...formLayout}>
           {
             getFieldDecorator('bgCode'),
-            getFieldDecorator('businessGroupName')(
+            getFieldDecorator('businessGroupName',{
+              rules: [
+                {
+                  required: true,
+                  message: '请选择业务板块'
+                }
+              ]
+            })(
               <ComboList
                 {...businessUnitMainProps}
                 form={form}
@@ -150,7 +191,14 @@ function Quality({
         <FormItem key='BU' label='业务单元' {...formLayout}>
           {
             getFieldDecorator('buCode'),
-            getFieldDecorator('businessUnitName')(
+            getFieldDecorator('businessUnitName',{
+              rules: [
+                {
+                  required: true,
+                  message: '请选择业务单元'
+                }
+              ]
+            })(
               <ComboList
                 {...businessMainProps}
                 form={form}
@@ -164,8 +212,31 @@ function Quality({
     }
     return null
   }
+  async function validateFunc(params) {
+    toggleLoading(true)
+    const { success, data, message: msg } = await CHECK_SERVICE(params);
+    toggleLoading(false)
+    if (success) {
+      const formatData = data.map((item, index) => ({
+        ...item,
+        key: `${index}-validate`
+      }))
+      return new Promise(resolve => resolve(formatData))
+    }
+    message.error(msg)
+  }
+  async function importFunc(params) {
+    toggleSpinning(true)
+    const { success, message: msg } = await SAVE_SERVICE(params);
+    toggleSpinning(false)
+    if (success) {
+      message.success('批量导入成功')
+      return
+    }
+    message.error(msg)
+  }
   return (
-    <Spin spinning={loading}>
+    <Spin spinning={spinning}>
       <Affix>
         <div className={classnames(styles.verticalPadding, styles.fsc)}>
           <Button className={styles.btn} type='primary' onClick={exportData}>导出待评价数据</Button>
@@ -175,6 +246,11 @@ function Quality({
             uploadBtnText='导入评价数据'
             validateAll={false}
             tableProps={{ columns: COLUMNS }}
+            validateFunc={validateFunc}
+            importFunc={importFunc}
+            okButtonProps={{
+              loading: loading
+            }}
           />
           {/* <Button className={styles.btn}>导入评价数据</Button> */}
         </div>

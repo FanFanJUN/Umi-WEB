@@ -168,7 +168,22 @@ const Team = (props) => {
   };
 
   const onOk = () => {
-    props.onOk(teamData.dataSource);
+    const arr = JSON.parse(JSON.stringify(teamData.dataSource));
+    if (arr && arr.length !== 0) {
+      let error = [];
+      arr.map(item => {
+        if (!item.reviewTeamMemberBoList || item.reviewTeamMemberBoList.length === 0) {
+          error.push(item.reviewGroup);
+        }
+      });
+      if (error.length !== 0) {
+        message.error(error.toString() + ' 没有添加成员!');
+      } else {
+        props.onOk(teamData.dataSource);
+      }
+    } else {
+      message.error('请添加至少一个组别!');
+    }
   };
 
   const handleTeamSelectedRows = (keys, values) => {
@@ -295,8 +310,15 @@ const Team = (props) => {
           newDataSource.splice(index, 1);
         }
       });
+      let newTeamDataSource = JSON.parse(JSON.stringify(teamData.dataSource));
+      newTeamDataSource.map((item, index) => {
+        if (item.lineNum === teamData.selectedRowKeys[0]) {
+          newTeamDataSource[index].reviewTeamMemberBoList = newDataSource;
+        }
+      });
       setData(v => ({ ...v, treeData: [], leftTreeData: [] }));
       setContentData(v => ({ ...v, dataSource: newDataSource }));
+      setTeamData(v => ({ ...v, dataSource: newTeamDataSource }));
     } else {
       message.error('请选择一条数据');
     }

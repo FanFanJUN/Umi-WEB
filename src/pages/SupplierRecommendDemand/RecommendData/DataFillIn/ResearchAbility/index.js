@@ -339,7 +339,13 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                   <Col span={24}>
                     <FormItem label="是否愿意为客户的技术开发提供技术支持" {...formLayout}>
                       {getFieldDecorator('canTechnicalSupport', {
-                        initialValue: type === 'add' ? true : data.canTechnicalSupport
+                        initialValue: type === 'add' ? true : data.canTechnicalSupport,
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空'
+                          }
+                        ]
                       })(
                         <Radio.Group disabled={type==='detail'}>
                           <Radio value={true}>是</Radio>

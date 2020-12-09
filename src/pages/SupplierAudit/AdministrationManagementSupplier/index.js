@@ -22,6 +22,7 @@ import { WithdrawResultsEntryApi } from '../AdministrationManagementDemand/commo
 import CheckLeaderOpinion from '../AdministrationManagementDemand/component/CheckLeaderOpinion';
 import IssuesManagementModal from './component/IssuesManagementModal';
 import SelfEvaluation from '../AdministrationManagementDemand/component/component/SelfEvaluation';
+import { openNewTab } from '../../../utils';
 
 const { authAction } = utils;
 const { Search } = Input;
@@ -135,7 +136,7 @@ export default function() {
 
   const columns = [
     { title: '状态', dataIndex: 'state', width: 70, render: v => managementStateConfig[v] },
-    { title: '实施审核计划号', dataIndex: 'reviewImplementPlanCode', width: 140, render: v => <a>{v}</a> },
+    { title: '实施审核计划号', dataIndex: 'reviewImplementPlanCode', width: 140, render: (v, record) => <a onClick={() => jumpOtherPage(record.reviewImplementPlanId)}>{v}</a> },
     // { title: '供应商', dataIndex: 'supplierName', width: 250, render: (v, data) => `${v} ${data.supplierCode}` },
     { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 170 },
     { title: '审核时间', dataIndex: 'reviewDateStart', width: 270, render: (v, data) => `${v} - ${data.reviewDateEnd}` },
@@ -146,6 +147,10 @@ export default function() {
   const refreshTable = () => {
     tableRef.current.manualSelectedRows();
     tableRef.current.remoteDataRefresh();
+  };
+
+  const jumpOtherPage = (id) => {
+    openNewTab(`supplierAudit/AuditImplementationPlan/editPage?pageState=detail&id=${id}`, '审核管理实施计划-明细', false);
   };
 
   const headerLeft = <>
