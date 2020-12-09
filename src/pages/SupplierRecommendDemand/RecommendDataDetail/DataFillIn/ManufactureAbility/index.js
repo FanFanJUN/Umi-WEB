@@ -147,10 +147,7 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
       title: "占总产量％",
       dataIndex: "rateWithTotal",
       ellipsis: true,
-      inputType: 'InputNumber',
-      props: {
-        max: 100
-      }
+      inputType: 'Input',
     },
     {
       title: "产品交付周期(天）",

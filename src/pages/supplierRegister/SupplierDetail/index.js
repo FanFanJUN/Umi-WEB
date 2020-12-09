@@ -42,42 +42,46 @@ function CreateStrategy() {
   const { frameElementId, frameElementSrc = "", Opertype = "" } = query;
   let typeId = query.frameElementId;
   let showtype = query.type;
-  async function initConfigurationTable() {
+
+  // 获取配置列表项
+  useEffect(() => {
+    initsupplierDetai()
+  }, []);
+  // 明细
+  async function initsupplierDetai() {
     triggerLoading(true);
-    let params = {catgroyid:typeId,property:3}
-    const { data, success, message: msg } = await SaveSupplierconfigureService(params);
-      if (success) {
-        let datalist  = data.configBodyVos;
-        setConfigure(datalist)
-        triggerLoading(false);
-        configurelist(datalist)
-      }else {
-        triggerLoading(false);
-        message.error(msg)
-      }
-      initsupplierDetai(); // 供应商详情
-      // 详情
-      async function initsupplierDetai() {
-        triggerLoading(true);
-        let id = query.id;
-        const { data, success, message: msg } = await SupplierconfigureDetail({ supplierId: id });
-        if (success) {
-          setInitialValue(data.supplierInfoVo)
-          setEditData(data.supplierInfoVo)
-          setwholeData(data)
-          triggerLoading(false);
-        }else {
-          triggerLoading(false);
-          message.error(msg)
-        }
-      }
-    // setbaseinfo(handlebase)
-    // setaccountinfo(handleaccount)
-    // setEditData(detail.supplierInfoVo)
-    // setInitialValue(detail.supplierInfoVo)
+    let id = query.id;
+    const { data, success, message: msg } = await SupplierconfigureDetail({ supplierId: id });
+    if (success) {
+      let suppliertype = data.supplierInfoVo.supplierVo.supplierCategory.id
+      initConfigurationTable(suppliertype)
+      setInitialValue(data.supplierInfoVo)
+      setEditData(data.supplierInfoVo)
+      setwholeData(data)
+      triggerLoading(false);
+    } else {
+      triggerLoading(false);
+      message.error(msg)
+    }
   }
+  async function initConfigurationTable(typeId) {
+    triggerLoading(true);
+    let params = { catgroyid: typeId, property: 3 }
+    const { data, success, message: msg } = await SaveSupplierconfigureService(params);
+    if (success) {
+      let datalist = data.configBodyVos;
+      setConfigure(datalist)
+      triggerLoading(false);
+      configurelist(datalist)
+    } else {
+      triggerLoading(false);
+      message.error(msg)
+    }
+
+  }
+
   function configurelist(configure) {
-    let handlebase = [],handleaccount = [],handbusiness = [];
+    let handlebase = [], handleaccount = [], handbusiness = [];
     configure.map(item => {
       if (item.smMsgTypeCode === '1') {
         handlebase.push({
@@ -105,11 +109,6 @@ function CreateStrategy() {
     setaccountinfo(handleaccount)
     setbusinesshide(handbusiness)
   }
-
-  // 获取配置列表项
-  useEffect(() => {
-    initConfigurationTable()
-  }, []);
   // 返回
   function handleBack() {
     closeCurrent()
@@ -128,14 +127,14 @@ function CreateStrategy() {
 
       </Affix>
       <div className={styles.wrapper}>
-          {
+        {
           configure.map((item, index) => {
             if (item.smMsgTypeCode !== '3' && item.fieldCode === 'name') {
               return (
                 <div className={styles.bgw}>
                   <div className={styles.title}>基本信息</div>
                   <div >
-                  <BaseinfiDetail
+                    <BaseinfiDetail
                       isView={true}
                       editformData={editData}
                       baseinfo={baseinfo}
@@ -145,7 +144,7 @@ function CreateStrategy() {
                   </div>
                 </div>
               )
-            } 
+            }
             if (item.operationCode !== '3' && item.fieldCode === 'mobile') {
               return (
                 <div className={styles.bgw}>
@@ -274,37 +273,37 @@ function CreateStrategy() {
               );
             }
           })
-          
-          }
-      
+
+        }
+
       </div>
       {
         showtype === 'false' ? <div className={styles.wrapper}>
-        <div className={styles.bgw}>
-          <div className={styles.title}>集团状态信息</div>
-          <div>
-            <StatusInfor
+          <div className={styles.bgw}>
+            <div className={styles.title}>集团状态信息</div>
+            <div>
+              <StatusInfor
                 editData={editData}
                 wrappedComponentRef={QualispecialRef}
                 isView={true}
-            />
+              />
+            </div>
           </div>
-        </div>
-      </div> : null
+        </div> : null
       }
       {
         showtype === 'false' ? <div className={styles.wrapper}>
-        <div className={styles.bgw}>
-        <div className={styles.title}>公司采购组织信息</div>
-        <div>
-            <PurchaseInfor
+          <div className={styles.bgw}>
+            <div className={styles.title}>公司采购组织信息</div>
+            <div>
+              <PurchaseInfor
                 editData={editData}
                 wrappedComponentRef={QualispecialRef}
                 isView={true}
-            />
-        </div>
-        </div>
-      </div> : null
+              />
+            </div>
+          </div>
+        </div> : null
       }
     </Spin>
   )

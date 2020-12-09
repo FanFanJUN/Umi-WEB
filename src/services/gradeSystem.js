@@ -758,8 +758,10 @@ export const vmiSituationRemove = params => createServiceRequest({
 
 // 批量导出质量主数据
 export const batchExportQualityData = params => createServiceRequest({
-  path: '/bafController/exportBusinessData',
+  path: '/bafController/exportQualityData',
   params,
   method: 'POST',
   responseType: 'blob'
 })
+
+// 批量导入质量主数据

@@ -14,13 +14,16 @@ import {
   Col,
   DatePicker,
   Select,
-  Modal
+  Modal,
+  message
 } from 'antd';
-import { ComboList } from 'suid';
+import { ComboList, DataImport } from 'suid';
 import { evlLevelEmu, evaluateSystemFormCodeProps, businessMainProps, businessUnitMainProps } from '../../../utils/commonProps';
+import { downloadBlobFile } from '../../../utils';
 import { batchExportQualityData } from '../../../services/gradeSystem';
 const { create, Item: FormItem } = Form;
 const { Option } = Select;
+const { MonthPicker } = DatePicker;
 const formLayout = {
   labelCol: {
     span: 10,
@@ -47,12 +50,18 @@ function Quality({
       onOk: async () => {
         const params = {
           ...values,
-          startDate: values.startDate.format('YYYY-MM-DD'),
-          endDate: values.endDate.format('YYYY-MM-DD')
+          startDate: values.startDate.format('YYYY-MM'),
+          endDate: values.endDate.format('YYYY-MM')
         }
         toggleLoading(true)
         const { success, data } = await batchExportQualityData(params)
         toggleLoading(false)
+        if (success) {
+          message.success("导出成功")
+          downloadBlobFile(data, '待评价数据.xlsx')
+          return
+        }
+        message.error(msg)
       }
     })
   }
@@ -118,7 +127,7 @@ function Quality({
                     }
                   ]
                 })(
-                  <DatePicker className={styles.formItem} disabledDate={startDisabledDate} />
+                  <MonthPicker className={styles.formItem} disabledDate={startDisabledDate} />
                 )
               }
             </FormItem>
@@ -134,7 +143,7 @@ function Quality({
                     }
                   ]
                 })(
-                  <DatePicker className={styles.formItem} disabled={!startDate} disabledDate={endDisabledDate} />
+                  <MonthPicker className={styles.formItem} disabled={!startDate} disabledDate={endDisabledDate} />
                 )
               }
             </FormItem>
