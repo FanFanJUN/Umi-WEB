@@ -18,8 +18,9 @@ import {
   message
 } from 'antd';
 import { ComboList, DataImport } from 'suid';
+import classnames from 'classnames'
 import { evlLevelEmu, evaluateSystemFormCodeProps, businessMainProps, businessUnitMainProps } from '../../../utils/commonProps';
-import { downloadBlobFile } from '../../../utils';
+import { downloadBlobFile, DEVELOPER_ENV } from '../../../utils';
 import { batchExportQualityData } from '../../../services/gradeSystem';
 const { create, Item: FormItem } = Form;
 const { Option } = Select;
@@ -32,6 +33,64 @@ const formLayout = {
     span: 10,
   }
 };
+const COLUMNS = [
+  {
+    title: '供应商代码',
+    dataIndex: 'supplierCode'
+  },
+  {
+    title: '供应商名称',
+    dataIndex: 'supplierName'
+  },
+  {
+    title: '原厂代码',
+    dataIndex: 'originCode'
+  },
+  {
+    title: '原厂名称',
+    dataIndex: 'originName'
+  },
+  {
+    title: '物料分类代码',
+    dataIndex: 'materialCategoryCode'
+  },
+  {
+    title: '物料分类名称',
+    dataIndex: 'materialCategoryName'
+  },
+  {
+    title: '业务单元代码',
+    dataIndex: 'buCode'
+  },
+  {
+    title: '业务单元名称',
+    dataIndex: 'buName'
+  },
+  {
+    title: '月度',
+    dataIndex: 'month'
+  },
+  {
+    title: '商务问题次数',
+    dataIndex: 'questionTime'
+  },
+  {
+    title: '商务问题不及时次数',
+    dataIndex: 'timesOfDelay'
+  },
+  {
+    title: '商务问题未解决次数',
+    dataIndex: 'unsolvedBusinessProblems'
+  },
+  {
+    title: '损失50万元以上次数',
+    dataIndex: 'above'
+  },
+  {
+    title: '损失50万元以下次数',
+    dataIndex: 'below'
+  }
+]
 function Quality({
   form
 }) {
@@ -108,9 +167,16 @@ function Quality({
   return (
     <Spin spinning={loading}>
       <Affix>
-        <div className={styles.verticalPadding}>
+        <div className={classnames(styles.verticalPadding, styles.fsc)}>
           <Button className={styles.btn} type='primary' onClick={exportData}>导出待评价数据</Button>
-          <Button className={styles.btn}>导入评价数据</Button>
+          <DataImport
+            ignore={DEVELOPER_ENV}
+            className={styles.btn}
+            uploadBtnText='导入评价数据'
+            validateAll={false}
+            tableProps={{ columns: COLUMNS }}
+          />
+          {/* <Button className={styles.btn}>导入评价数据</Button> */}
         </div>
       </Affix>
       <Form {...formLayout}>
