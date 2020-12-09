@@ -14,7 +14,7 @@ import {
 
 } from '../mainData/commomService';
 import {
-  flowProps, judge, stateProps,
+  flowProps, judge, reportStateProps,
 } from '../../QualitySynergy/commonProps';
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
@@ -168,7 +168,7 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
     },
     { title: '拟制人', key: 'applyName', props: { placeholder: '输入拟制人' } },
     { title: '拟制日期', key: 'applyDateStart', type: 'datePicker', props: { placeholder: '选择拟制日期' } },
-    { title: '状态', key: 'state', type: 'list', props: stateProps },
+    { title: '状态', key: 'state', type: 'list', props: reportStateProps },
     { title: '审批状态', key: 'flowState', type: 'list', props: flowProps },
   ];
 
