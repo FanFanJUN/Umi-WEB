@@ -366,6 +366,24 @@ export const FindAllByFiltersConfig = {
   },
 };
 
+// 明细供应商
+export const DetailSupplierConfig = {
+  allowClear: true,
+  placeholder: '选择供应商',
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${recommendUrl}/common/pageSupplier`,
+  },
+  remotePaging: true,
+  rowKey: 'code',
+  reader: {
+    field: ['code'],
+    name: 'name',
+    description: 'code',
+  },
+};
+
 // 供应商
 export const SupplierConfig = {
   allowClear: true,

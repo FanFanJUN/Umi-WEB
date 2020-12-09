@@ -31,12 +31,14 @@ const fieldsConfig = [
   {
     name: '排序号',
     code: 'rank',
-    type: 'inputNumber'
+    type: 'inputNumber',
+    max: '100',
+    min: '0',
   },
 ];
 
 const Team = (props) => {
-  let sort = 0
+  let sort = 0;
 
   // 解构的tree
   let destructionTreeArr = [];
@@ -113,11 +115,12 @@ const Team = (props) => {
   };
 
   const handleOk = (value) => {
-    console.log(value, '触发')
     if (data.type === 'add') {
       value.lineNum = getRandom(10);
       value.reviewTeamMemberBoList = [];
-      setTeamData(v => ({ ...v, dataSource: [...teamData.dataSource, ...[value]] }));
+      let newArr = [...teamData.dataSource, ...[value]];
+      newArr = newArr.sort((a, b) => a.rank - b.rank);
+      setTeamData(v => ({ ...v, dataSource: newArr }));
     } else {
       let newData = teamData.dataSource.slice();
       teamData.dataSource.forEach((item, index) => {
@@ -127,6 +130,8 @@ const Team = (props) => {
           newData.splice(index, 1, value);
         }
       });
+      newData = newData.sort((a, b) => a.rank - b.rank);
+      console.log(newData, 'newData');
       setTeamData(v => ({ ...v, dataSource: newData, selectedRows: [], selectedRowKeys: [] }));
     }
     teamTableRef.current.manualSelectedRows();

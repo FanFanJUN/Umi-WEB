@@ -31,14 +31,14 @@ const CheckLeaderOpinion = (props) => {
 
   useEffect(() => {
     if (props.visible) {
-      getTableData(props.id);
+      getTableData(props.id, data.checked);
     }
   }, [props.visible]);
 
-  const getTableData = (reviewImplementManagementId) => {
+  const getTableData = (reviewImplementManagementId, checked) => {
     setData(v => ({ ...v, loading: true }));
     CheckGroupLeadersOpinion({
-      ownMe: data.checked,
+      ownMe: checked,
       reviewImplementManagementId,
       reviewImplementPlanCode,
     }).then(res => {
@@ -60,16 +60,16 @@ const CheckLeaderOpinion = (props) => {
   };
 
   const clearSelected = () => {
-    setData(v => ({ ...v, dataSource: [] }));
+    setData(v => ({ ...v, dataSource: [], checked: true }));
   };
 
   const handleSelectedRows = (keys, rows) => {
     setData(v => ({ ...v, selectedRowKeys: keys, selectedRowRows: rows }));
   };
 
-  const onChange = (e) => {
-    setData(v => ({ ...v, checked: e.target.checked }));
-    getTableData(props.id);
+  const onChange = async (e) => {
+    await setData(v => ({ ...v, checked: e.target.checked }));
+    getTableData(props.id, e.target.checked);
   };
 
   return (

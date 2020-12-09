@@ -130,6 +130,7 @@ const ScoreOverview = (props) => {
         style={{ marginTop: '5px' }}
         showSearch={false}
         columns={columns}
+        pagination={false}
         dataSource={data.dataSource}
         defaultExpandAllRows={true}
         lineNumber={false}
