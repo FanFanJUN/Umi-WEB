@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 import { recommendUrl, baseUrl } from '@/utils/commonUrl';
 
-// 审核需求新增-确定
+// 从审核需求新增-确定
 export async function findRequirementLine(params) {
     const requestUrl = `${recommendUrl}/api/reviewPlanMonthLineService/findRequirementLine`;
     return request({
@@ -10,9 +10,19 @@ export async function findRequirementLine(params) {
         params,
     });
 }
-// 年度计划新增-确定
+// 从年度计划新增-确定
 export async function findYearLineLine(params) {
     const requestUrl = `${recommendUrl}/api/reviewPlanMonthLineService/findYearLine`;
+    return request({
+        url: requestUrl,
+        method: 'GET',
+        params,
+    });
+}
+
+// 从准入推荐新增-确定
+export async function findAccessLineLine(params) {
+    const requestUrl = `${recommendUrl}/api/reviewPlanMonthLineService/findAccessLine`;
     return request({
         url: requestUrl,
         method: 'GET',
@@ -185,14 +195,44 @@ export const ApplyOrganizationProps = {
 export const findRecommendAccessByDataAuth = {
     placeholder: '选择准入推荐号',
     store: {
-      type: 'POST',
-      autoLoad: false,
-      url: `${recommendUrl}/api/recommendAccessService/findRecommendAccessByDataAuth`,
+        type: 'POST',
+        autoLoad: false,
+        url: `${recommendUrl}/api/recommendAccessService/findRecommendAccessByDataAuth`,
     },
     remotePaging: true,
     rowKey: 'businessCode',
     reader: {
-      field: ['id'],
-      name: 'name',
+        field: ['id'],
+        name: 'name',
     },
-  };
+};
+
+// 审核原因
+export const AuditCauseManagementConfig = {
+    allowClear: true,
+    placeholder: '选择审核原因',
+    store: {
+        type: 'POST',
+        autoLoad: false,
+        url: `${baseUrl}/reviewReason/findBySearchPage`,
+    },
+    remotePaging: true,
+    rowKey: 'code',
+    reader: {
+        field: ['id', 'code'],
+        name: 'name',
+        description: 'code',
+    },
+    columns: [
+        {
+            title: '代码',
+            width: 80,
+            dataIndex: 'code',
+        },
+        {
+            title: '名称',
+            width: 200,
+            dataIndex: 'name',
+        },
+    ],
+};
