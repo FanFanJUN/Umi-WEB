@@ -111,7 +111,7 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
     }).then(res => {
       if (res.success) {
         if (showCode) {
-          setData(v => ({ ...v, editData: res.data, spinLoading: false, code: res.data.auditReportManagCode }));
+          setData(v => ({ ...v, editData: res.data, spinLoading: false, code: ':' + res.data.auditReportManagCode }));
         } else {
           setData(v => ({ ...v, editData: res.data, spinLoading: false }));
         }
@@ -274,7 +274,7 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
           editData={data.editData.problemVoList || []}/>
         <AuditComments
           editData={data.editData.reviewSuggestionVo || {}}/>
-        {data.isView && !purchaseApprove &&<OpinionForm
+        {data.isView && !purchaseApprove && <OpinionForm
           leaderApprove={leaderApprove}
           teamData={data.editData.purchasingTeamOpinionBo || {}}
           leaderData={data.editData.purchasingTeamOpinionBo || {}}
