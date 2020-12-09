@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:04:51
- * @LastEditTime: 2020-12-08 17:34:13
+ * @LastEditTime: 2020-12-09 16:35:20
  * @Description: 新增  编辑  详情 page
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/index.js
  */
@@ -49,9 +49,9 @@ const Index = (props) => {
     }));
 
     async function editDataInflow() {
-        const allData = gatAllData();
+        const allData = gatAllData('onlySave');
         if (!(allData.bool)) return false;
-        const res = await reviewPlanYearAp({ ...allData, type: 'edit', inFlow: true });
+        const res = await reviewPlanYearAp({ ...allData, type: 'edit', inFlow: true, flowStatus: 'INPROCESS' });
         return res;
     }
 
@@ -106,19 +106,25 @@ const Index = (props) => {
         closeCurrent();
     };
 
-    const gatAllData = () => {
+    // 校验头行 数据  暂存  与提交 时校验 
+    const gatAllData = (buttonType) => {
         let allData = { bool: true };
         const lineData = tableRef.current.getTableList();
         console.log("获取到的表格数据", lineData)
         const finnalLineData = lineData;
         form.validateFieldsAndScroll((err, values) => {
             if (err) {
-                allData = { bool: false };
+                allData = { bool: false, message: '请完善信息' };
+                if (buttonType === 'onlySave') {
+                    message.error('请完善信息');
+                }
                 return;
             };
             if (finnalLineData.length === 0) {
-                allData = { bool: false };
-                message.info('请至少添加一条行信息');
+                allData = { bool: false, message: '请至少添加一条行信息' };
+                if (buttonType === 'onlySave') {
+                    message.error('请至少添加一条行信息');
+                }
                 return;
             }
             finnalLineData.forEach((item) => {
@@ -130,21 +136,23 @@ const Index = (props) => {
             // 校验行数据
             for (const item of finnalLineData) {
                 if (!item.reviewTypeCode || !item.reviewReasonCode) {
-                    message.info('行上必填项为空, 请完善');
-                    allData = { bool: false };
+                    if (buttonType === 'onlySave') {
+                        message.error('行上必填项为空, 请完善');
+                    }
+                    allData = { bool: false, message: '行上必填项为空, 请完善' };
                     break;
                 }
             }
 
-            if (!(allData.bool)) return;
+            if (!(allData.bool)) return allData;
             allData = { ...originData, ...values, flowStatus: 'INIT', reviewPlanYearLineBos: lineData, bool: true };
         });
         return allData;
     }
 
     async function tohandleSave(buttonType) {
-        const allData = gatAllData();
-        if (!(allData.bool)) return;
+        const allData = gatAllData(buttonType);
+        if (!(allData.bool)) return allData;
         setSpinLoading(true);
         let res = {};
         try {
@@ -158,11 +166,12 @@ const Index = (props) => {
                 if (data.type === 'edit') {
                     return data.id;
                 }
+                setSpinLoading(false);
                 return res.data;
             } else {
-                message.error(res.message);
+                setSpinLoading(false);
+                return { message: res.message };
             }
-            setSpinLoading(false);
         } else {
             console.log("res", res)
             if (res.success) {
@@ -178,25 +187,43 @@ const Index = (props) => {
         }
     }
 
-    // 提交审核验证
+    // 提交审核验证 把校验信息放入 promise
     const handleBeforeStartFlow = async () => {
-        const id = await tohandleSave("submit");
-        if (!id) return false;
+        const res = await tohandleSave("submit");
         return new Promise(function (resolve, reject) {
-            if (id) {
-                resolve({
-                    success: data,
-                    message: '提交成功',
-                    data: {
-                        businessKey: id
+            if (Object.prototype.toString.call(res) === '[object Object]') {
+                setTimeout(() => {
+                    const closeBtns = document.getElementsByClassName("close-icon");
+                    for (let i = 0; i < closeBtns.length; i++) {
+                        closeBtns[i].click();
                     }
-                })
-                return
-            } else {
+                }, 1000);
                 reject({
                     success: data,
-                    message: '提交失败'
+                    message: res.message
                 })
+            } else {
+                if (res) {
+                    resolve({
+                        success: data,
+                        message: '提交成功',
+                        data: {
+                            businessKey: res
+                        }
+                    })
+                    return
+                } else {
+                    setTimeout(() => {
+                        const closeBtns = document.getElementsByClassName("close-icon");
+                        for (let i = 0; i < closeBtns.length; i++) {
+                            closeBtns[i].click();
+                        }
+                    }, 1000);
+                    reject({
+                        success: data,
+                        message: '提交失败'
+                    })
+                }
             }
         })
     }
@@ -220,7 +247,12 @@ const Index = (props) => {
                     type='primary'
                     beforeStart={handleBeforeStartFlow}
                     startComplete={handleComplete}
-                    onCancel={() => { setSpinLoading(false); }}
+                    onCancel={() => {
+                        setSpinLoading(false);
+                        setTimeout(() => {
+                            closeCurrent();
+                        }, 1)
+                    }}
                     businessKey={query?.id}
                     disabled={spinLoading}
                     businessModelCode={'com.ecmp.srm.sam.entity.sr.ReviewPlanYear'}

@@ -16,11 +16,6 @@ function Detail() {
   const formRef = useRef(null);
   const columns = [
     {
-      title: '类别',
-      dataIndex: 'systemName',
-      width: 200
-    },
-    {
       title: '指标名称',
       dataIndex: 'ruleName',
       width: 250
@@ -98,10 +93,8 @@ function Detail() {
                   key={tableKey}
                   showSearch={false}
                   rowKey={(item) => item?.key}
-                  defaultExpandAllRows={true}
                   dataSource={dataSource}
                   height={h}
-                  pagination={false}
                   columns={columns}
                   loading={loading}
                 />

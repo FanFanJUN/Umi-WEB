@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:00:19
- * @LastEditTime: 2020-12-08 13:52:52
+ * @LastEditTime: 2020-12-09 16:48:31
  * @Description:  年度审核计划管理
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/index.js
  */
@@ -27,6 +27,7 @@ import { openNewTab } from '../../../utils';
 import { judge } from '../../../utils/utilTool';
 import { deleteReviewPlanYear, endFlow, submitReviewPlanYear } from './service';
 import { stateProps, flowProps, reviewTypesProps, reviewReasonsProps } from './propsParams';
+import { getUserAccount } from '../../../components/utils/CommonUtils';
 
 const { authAction } = utils;
 const { Search } = Input;
@@ -220,7 +221,7 @@ export default function () {
             },
         },
         { title: '年度审核计划号', dataIndex: 'reviewPlanYearCode', align: 'center', width: 160 },
-        { title: '年度', dataIndex: 'applyYear', ellipsis: true, width: 93, render: text => text &&  `${text} 年`, align: 'right' },
+        { title: '年度', dataIndex: 'applyYear', ellipsis: true, width: 93, render: text => text && `${text} 年`, align: 'right' },
         { title: '拟制说明', dataIndex: 'reviewPlanYearName', ellipsis: true, width: 200, align: 'left' },
         { title: '拟制公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 200, align: 'left' },
         { title: '拟制部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200, align: 'left' },
@@ -245,6 +246,7 @@ export default function () {
                 ignore={DEVELOPER_ENV}
                 key='SUPPLIER_AUDIT_YEAR_EDIT'
                 disabled={
+                    !judge(data.selectedRows, 'applyAccount', getUserAccount()) ||
                     !checkOnlyOneSelect ||
                     data.selectedRows[0]?.state !== 'DRAFT' || data.selectedRows[0]?.flowStatus !== 'INIT'}
             >编辑</Button>)
@@ -255,7 +257,11 @@ export default function () {
                 className={styles.btn}
                 ignore={DEVELOPER_ENV}
                 key='SUPPLIER_AUDIT_YEAR_DELETE'
-                disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', 'DRAFT') || !judge(data.selectedRows, 'flowStatus', 'INIT')}
+                disabled={data.selectedRowKeys.length === 0
+                    || !judge(data.selectedRows, 'state', 'DRAFT')
+                    || !judge(data.selectedRows, 'flowStatus', 'INIT')
+                    || !judge(data.selectedRows, 'applyAccount', getUserAccount())
+                }
             >删除</Button>)
         }
         {
@@ -274,7 +280,7 @@ export default function () {
                 ignore={DEVELOPER_ENV}
                 businessKey={data.selectedRowKeys[0]}
                 callBack={handleComplete}
-                disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || !checkOnlyOneSelect}
+                disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || !checkOnlyOneSelect || !judge(data.selectedRows, 'applyAccount', getUserAccount())}
                 businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewPlanYear'
                 key='SUPPLIER_AUDIT_YEAR_PUBLISH'
             >提交审核</StartFlow>)
@@ -294,7 +300,7 @@ export default function () {
             authAction(<Button
                 onClick={() => redirectToPage('endFlow')}
                 className={styles.btn}
-                disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || !checkOnlyOneSelect}
+                disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || !checkOnlyOneSelect || !judge(data.selectedRows, 'applyAccount', getUserAccount())}
                 ignore={DEVELOPER_ENV}
                 key='SUPPLIER_AUDIT_YEAR_ALLOT'
             >终止审核</Button>)
