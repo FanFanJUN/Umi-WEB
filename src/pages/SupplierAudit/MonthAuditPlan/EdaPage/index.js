@@ -106,8 +106,11 @@ const Index = (props) => {
         } else {
             let reviewPlanMonthLinenum = "";
             let tag = lineData.some(item => {
-                if(!item.reviewWayId || !item.reviewOrganizedWayId)reviewPlanMonthLinenum = item.reviewPlanMonthLinenum
-                return (!item.reviewWayId || !item.reviewOrganizedWayId)
+                // 记录行号
+                if((!item.reviewWayId || !item.reviewOrganizedWayId)  && !item.whetherDeleted){
+                    reviewPlanMonthLinenum = item.reviewPlanMonthLinenum
+                }
+                return (!item.reviewWayId || !item.reviewOrganizedWayId) && !item.whetherDeleted
             })
             if(tag) {
                 message.error("行" + reviewPlanMonthLinenum + "：审核方式或审核组织形式不能为空，请进行编辑完善");
@@ -171,7 +174,7 @@ const Index = (props) => {
             }
         } catch (error) {
             res = error;
-          setLoading(false);
+            setLoading(false);
         }
         if (res.success) {
             if (type === "save") {
@@ -186,8 +189,11 @@ const Index = (props) => {
             }
         } else {
             setLoading(false);
-            message.error(res.message);
-            return false;
+            if (type === "save") {
+                message.error(res.message);
+            } else {
+                return false;
+            }
         }
     }
     // 提交审核验证
