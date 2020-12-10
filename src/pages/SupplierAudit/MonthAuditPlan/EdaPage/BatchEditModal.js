@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { ComboList, ExtModal, ComboGrid } from 'suid';
-import { Col, Form, Input, InputNumber, Row } from 'antd';
-import { listAllOrgnazationWithDataAuth, AuditCauseManagementConfig } from '../service';
-import { UserByDepartmentNameConfig, DocumentAuditCauseManagementByReviewTypeConfig } from '../../mainData/commomService';
+import { Col, Form, Input, Row } from 'antd';
+import { UserSelect } from '@/components';
+import { GetUserTelByUserId, DocumentAuditCauseManagementByReviewTypeConfig } from '../../mainData/commomService';
 import {
   reviewOrganizeProps,
   reviewWaysProps,
@@ -28,18 +28,18 @@ const formItemLayout = {
 
 const BatchEditModal = (props) => {
 
-  const { visible, form, originData = {}, required } = props;
-  const [prgId, setOrgId] = useState('');
+  const { visible, form, selectedRows } = props;
+  const [required, setRequired] = useState('');
+  const [originData, setOriginData] = useState({});
 
   const { getFieldDecorator, getFieldValue, setFieldsValue } = props.form;
 
   useEffect(() => {
-    listAllOrgnazationWithDataAuth().then(res => {
-      if (res.success) {
-        setOrgId(res.data[0] ? res.data[0].id : '');
-      }
-    });
-  }, []);
+    if (selectedRows && selectedRows.length > 0) {
+      setOriginData(selectedRows.length === 1 ? selectedRows[0] : {});
+      setRequired(selectedRows.length < 2);
+    }
+  }, [selectedRows])
 
   const onCancel = () => {
     props.onCancel();
@@ -54,6 +54,17 @@ const BatchEditModal = (props) => {
     });
   };
 
+  const getMemberTel = (id) => {
+    GetUserTelByUserId({
+      userId: id,
+    }).then(res => {
+      if (res.success) {
+        setFieldsValue({
+          leaderTel: res.data.mobile,
+        });
+      }
+    });
+  }
 
   return (
     <ExtModal
@@ -72,7 +83,7 @@ const BatchEditModal = (props) => {
               {
                 getFieldDecorator('reviewReasonId', { initialValue: originData.reviewReasonId }),
                 getFieldDecorator('reviewReasonCode', { initialValue: originData.reviewReasonCode }),
-                getFieldDecorator('reviewReasonName', { 
+                getFieldDecorator('reviewReasonName', {
                   initialValue: originData.reviewReasonName,
                   rules: [{ required, message: '审核方式不能为空', },],
                 })(
@@ -82,9 +93,11 @@ const BatchEditModal = (props) => {
                     form={form}
                     name={'reviewReasonName'}
                     field={['reviewReasonCode', 'reviewReasonId']}
+                    disabled={originData.sourceType !== "ADMISSION_RECOMMENDATION"}
+                    disabled={selectedRows.some(item => item.sourceType !== "ADMISSION_RECOMMENDATION")}
                     store={{
                       params: {
-                        findByReviewTypeCode: originData.reviewTypeCode
+                        findByReviewTypeCode: selectedRows[0].reviewTypeCode
                       },
                       type: 'GET',
                       autoLoad: false,
@@ -149,21 +162,24 @@ const BatchEditModal = (props) => {
                   initialValue: originData.leaderName,
                   rules: [{ required, message: '审核小组组长不能为空', },],
                 })(
-                  <ComboList
+                  <UserSelect
+                    placeholder='选择成员'
                     form={form}
-                    name={'leaderName'}
-                    field={['leaderEmployeeNo', 'leaderId', 'leaderTel']}
-                    store={{
-                      params: {
-                        includeSubNode: false,
-                        quickSearchProperties: ['code', 'user.userName'],
-                        sortOrders: [{ property: 'code', direction: 'ASC' }],
-                      },
-                      type: 'POST',
-                      autoLoad: false,
-                      url: `${gatewayUrl}${basicServiceUrl}/employee/findByUserQueryParam`,
+                    mode="tags"
+                    name='name'
+                    multiple={false}
+                    reader={{
+                      name: 'userName',
+                      field: ['code', 'id']
                     }}
-                    {...UserByDepartmentNameConfig}
+                    onRowsChange={(item) => {
+                      getMemberTel(item.id);
+                      setFieldsValue({
+                        leaderName: item.userName,
+                        leaderId: item.id,
+                        leaderEmployeeNo: item.code,
+                      });
+                    }}
                   />
                 )
               }
