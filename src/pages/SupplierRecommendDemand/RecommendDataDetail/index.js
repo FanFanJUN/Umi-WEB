@@ -1,85 +1,57 @@
-/*
- * @Author: Li Cai
- * @LastEditors: Li Cai
- * @Date: 2020-09-08 14:29:17
- * @LastEditTime: 2020-09-11 15:22:44
- * @FilePath: /srm-sm-web/src/pages/SupplierRecommendDemand/RecommendData/index.js
- * @Description: 
- * @Connect: 1981824361@qq.com
+/**
+ * 实现功能：供应商推荐需求-评审打分明细
+ * @author hezhi
+ * @date 2020-09-23
  */
-import styles from './index.less'
-import { Tabs, Button, Affix, Checkbox, Modal, message } from 'antd';
-import classnames from 'classnames';
-import { useLocation } from 'dva/router';
-import DataFillIn from './DataFillIn';
-import Explain from './Explain';
-import SelfAssessment from './SelfAssessment';
+import { useRef, useState, useEffect } from 'react';
+
+import styles from './index.less';
+import DetailRecommendDemand from '../DetailRecommendDemand';
+import SupplierRecommendFillInData from '../RecommendData/DataFillIn';
+import SelfAssessment from '../RecommendData/SelfAssessment';
+import { Tabs, Skeleton, Affix, Button } from 'antd';
+// import Review from '../Review';
+import Filter from '../Filter';
+import { router } from 'dva';
 import { useGlobalStatus } from '../../../utils/hooks';
 import { closeCurrent } from '../../../utils';
-import { supplierSubmitToSystem } from '../../../services/recommend';
 const { TabPane } = Tabs;
-function RecommendData() {
+const { useLocation } = router;
+function FillInInfomationConfirm() {
   const { query } = useLocation();
-  const { id } = query;
+  const { id = null } = query;
   const [status, updateGlobalStatus] = useGlobalStatus(id);
-  const selfTab = (
-    <div className={styles.fec}>
-      <div className={styles.tabText}>供应商自评</div>
-      <Checkbox checked={status.selfEvaluation} />
-    </div>
-  );
-  const dataFillTab = (
-    <div className={styles.fec}>
-      <div className={styles.tabText}>资料填报</div>
-      <Checkbox checked={status.informationFilling} />
-    </div>
-  )
-  function handleSubmit() {
-    Modal.confirm({
-      title: '提交填报信息',
-      content: '是否立即提交当前填报的信息',
-      okText: '提交',
-      cancelText: '取消',
-      onOk: async () => {
-        const { success, message: msg } = await supplierSubmitToSystem({ supplierRecommendDemandId: id })
-        if (success) {
-          message.success(msg)
-          closeCurrent()
-          return
-        }
-        message.error(msg)
-      }
-    })
+  const filterRef = useRef(null);
+  function renderTabBar(props, DefaultTabBar) {
+    return <Affix offsetTop={51}><DefaultTabBar {...props} style={{ background: '#fff', padding: '0 24px' }} /></Affix>
   }
   return (
     <div>
       <Affix>
-        <div className={classnames(styles.fbc, styles.affixHeader)}>
-          <span>推荐资料填报明细</span>
-          <div>
-            <Button className={styles.btn} onClick={closeCurrent}>返回</Button>
-          </div>
+        <div className={styles.fbc} style={{ padding: '0 12px', background: '#fff' }}>
+          <div className={styles.title}>推荐需求明细</div>
+          <Button onClick={closeCurrent}>返回</Button>
         </div>
       </Affix>
-      <Tabs
-        renderTabBar={(props, DefaultTabBar) => {
-          return <Affix offsetTop={56}><DefaultTabBar {...props} style={{ background: '#fff', padding: '0 24px' }} /></Affix>
-        }}
-        defaultActiveKey='explain'
-        animated={false}
-      >
-        <TabPane key='explain' tab='填表说明'>
-          <Explain />
+      <Tabs animated={false} renderTabBar={renderTabBar}>
+        <TabPane tab="推荐需求单" key="recommend-demand">
+          <DetailRecommendDemand fixed={false} />
         </TabPane>
-        <TabPane key='selfAssessment' tab={selfTab}>
-          <SelfAssessment updateGlobalStatus={updateGlobalStatus} type='detail' />
+        <TabPane tab="供应商推荐信息" key="supplier-recommend-demand">
+          <SupplierRecommendFillInData status={status} updateGlobalStatus={updateGlobalStatus} />
         </TabPane>
-        <TabPane key='dataFillIn' tab={dataFillTab}>
-          <DataFillIn updateGlobalStatus={updateGlobalStatus} status={status} />
+        <TabPane tab="供应商自评表" key="supplier-self-assessment">
+          <SelfAssessment type="detail" />
+        </TabPane>
+        {/* <TabPane tab="评审打分" key="mark">
+          <Review type="detail" />
+        </TabPane> */}
+        <TabPane tab="筛选意见" key="filter" forceRender={true}>
+          <Filter ref={filterRef} type='detail' />
         </TabPane>
       </Tabs>
     </div>
   )
 }
 
-export default RecommendData;
+export default FillInInfomationConfirm;

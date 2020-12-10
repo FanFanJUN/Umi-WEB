@@ -1,5 +1,5 @@
 import { request } from '../utils';
-import { recommendUrl, baseUrl } from '../utils/commonUrl';
+import { recommendUrl } from '../utils/commonUrl';
 function createServiceRequest(option) {
   const {
     path: url,
@@ -776,3 +776,45 @@ export const batchSaveQualityData = params => createServiceRequest({
   method: 'POST'
 })
 // 批量导入质量主数据
+
+// 批量导出技术主数据
+export const batchExportTechnologyData = params => createServiceRequest({
+  path: '/bafController/exportTechnologyData',
+  params,
+  method: 'POST',
+  responseType: 'blob'
+})
+
+export const batchCheckTechnologyData = params => createServiceRequest({
+  path: '/api/bafEvlDataService/checkTechnologyDataImport',
+  params,
+  method: 'POST'
+})
+
+export const batchSaveTechnologyData = params => createServiceRequest({
+  path: '/api/bafEvlDataService/saveTechnologyDataImport',
+  params,
+  method: 'POST'
+})
+// 批量导入技术主数据
+
+// 批量导出技术主数据
+export const batchExportBusinessData = params => createServiceRequest({
+  path: '/bafController/exportBusinessData',
+  params,
+  method: 'POST',
+  responseType: 'blob'
+})
+
+export const batchCheckBusinessData = params => createServiceRequest({
+  path: '/api/bafEvlDataService/checkBusinessDataImport',
+  params,
+  method: 'POST'
+})
+
+export const batchSaveBusinessData = params => createServiceRequest({
+  path: '/api/bafEvlDataService/saveBusinessDataImport',
+  params,
+  method: 'POST'
+})
+// 批量导入技术主数据

@@ -22,11 +22,11 @@ import classnames from 'classnames'
 import { evlLevelEmu, evaluateSystemFormCodeProps, businessMainProps, businessUnitMainProps } from '../../../utils/commonProps';
 import { downloadBlobFile, DEVELOPER_ENV } from '../../../utils';
 import {
-  batchExportQualityData as EXPORT_SERVICE,
-  batchCheckQualityData as CHECK_SERVICE,
-  batchSaveQualityData as SAVE_SERVICE
+  batchExportTechnologyData as EXPORT_SERVICE,
+  batchCheckTechnologyData as CHECK_SERVICE,
+  batchSaveTechnologyData as SAVE_SERVICE
 } from '../../../services/gradeSystem';
-const MOUDLE_NAME = '质量';
+const MOUDLE_NAME = '技术';
 const { create, Item: FormItem } = Form;
 const { Option } = Select;
 const { MonthPicker } = DatePicker;
@@ -76,25 +76,17 @@ const COLUMNS = [
     dataIndex: 'month'
   },
   {
-    title: '商务问题次数',
-    dataIndex: 'questionTime'
+    title: '送样次数',
+    dataIndex: 'deliveryNumber'
   },
   {
-    title: '商务问题不及时次数',
-    dataIndex: 'timesOfDelay'
+    title: '送样不及时次数',
+    dataIndex: 'deliveryDelay'
   },
   {
-    title: '商务问题未解决次数',
-    dataIndex: 'unsolvedBusinessProblems'
+    title: '样品问题次数',
+    dataIndex: 'sampleProblem'
   },
-  {
-    title: '损失50万元以上次数',
-    dataIndex: 'above'
-  },
-  {
-    title: '损失50万元以下次数',
-    dataIndex: 'below'
-  }
 ]
 function Quality({
   form
@@ -223,13 +215,14 @@ function Quality({
             okButtonProps={{
               loading: loading
             }}
+            key
           />
           {/* <Button className={styles.btn}>导入评价数据</Button> */}
         </div>
       </Affix>
       <Form {...formLayout}>
         <div className={styles.commonTitle}>数据导出参数选择</div>
-        <Row gutter={[12, 0]}>
+        <Row>
           <Col span={12}>
             <FormItem label='评价数据开始时间'>
               {
