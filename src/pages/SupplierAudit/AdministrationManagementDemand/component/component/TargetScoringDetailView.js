@@ -109,12 +109,14 @@ const TargetScoringDetailView = (props) => {
 
   const lookProblemManage = (data) => {
     setProblemVisible(true);
-    setProblemData({
-      problemList: data,
-      ruleName: data[0].ruleName,
-      definition: data[0].ruleName,
-      scoringStandard: data[0].scoringStandard,
-    });
+    if (data && data.length > 0) {
+      setProblemData({
+        problemList: data,
+        ruleName: data[0].ruleName,
+        definition: data[0].ruleName,
+        scoringStandard: data[0].scoringStandard,
+      });
+    }
   };
 
   const handleCancel = () => {
