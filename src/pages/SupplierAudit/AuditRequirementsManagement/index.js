@@ -21,6 +21,7 @@ import { openNewTab } from '../../../utils';
 import { materialClassProps } from '../../../utils/commonProps';
 import { StartFlow } from 'seid';
 import moment from 'moment/moment';
+import { getUserId } from '../../../components/utils/CommonUtils';
 
 const { FlowHistoryButton } = WorkFlow;
 
@@ -180,7 +181,14 @@ export default function() {
     { title: '供应商', key: 'supplierCode', type: 'list', props: SupplierConfig },
     { title: '物料分类', key: 'materialSecondClassifyCode', type: 'tree', props: materialClassProps },
     { title: '审核类型', key: 'reviewTypeCode', type: 'list', props: AuditTypeManagementUnfrozenConfig },
-    { title: '审核原因', key: 'reviewReasonCode', type: 'list', props: AuditCauseManagementByReviewTypeCodeConfig, params: 'reviewTypeCode', paramsKey: 'findByReviewTypeCode' },
+    {
+      title: '审核原因',
+      key: 'reviewReasonCode',
+      type: 'list',
+      props: AuditCauseManagementByReviewTypeCodeConfig,
+      params: 'reviewTypeCode',
+      paramsKey: 'findByReviewTypeCode',
+    },
     { title: '状态', key: 'state', type: 'list', props: managementStateProps },
     { title: '审批状态', key: 'flowState', type: 'list', props: flowProps },
   ];
@@ -214,8 +222,8 @@ export default function() {
     { title: '申请部门', dataIndex: 'applyDepartmentName', align: 'left', ellipsis: true, width: 230 },
     { title: '采购组织', dataIndex: 'purchaseOrgName', ellipsis: true, align: 'left', width: 200 },
     { title: '申请人员', dataIndex: 'applyName', ellipsis: true, width: 100, align: 'left' },
-    { title: '申请时间', dataIndex: 'applyDate', ellipsis: true, width: 200, align: 'center'  },
-  ]
+    { title: '申请时间', dataIndex: 'applyDate', ellipsis: true, width: 200, align: 'center' },
+  ];
 
   // 提交审核验证
   const handleBeforeStartFlow = async () => {
@@ -245,7 +253,10 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='SUPPLIER_AUDIT_REQUIREMENT_EDIT'
-        disabled={!judge(data.selectedRows, 'state', 'DRAFT') || data.selectedRowKeys.length !== 1 || !judge(data.selectedRows, 'flowStatus', 'INIT')}
+        disabled={!judge(data.selectedRows, 'state', 'DRAFT')
+        || data.selectedRowKeys.length !== 1
+        || !judge(data.selectedRows, 'flowStatus', 'INIT')
+        || !judge(data.selectedRows, 'applyId', getUserId())}
       >编辑</Button>)
     }
     {
@@ -254,7 +265,8 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='SUPPLIER_AUDIT_REQUIREMENT_DELETE'
-        disabled={data.selectedRowKeys.length === 0}
+        disabled={data.selectedRowKeys.length === 0
+        || !judge(data.selectedRows, 'applyId', getUserId())}
       >删除</Button>)
     }
     {
@@ -273,7 +285,7 @@ export default function() {
         needConfirm={handleBeforeStartFlow}
         businessKey={data.flowId}
         callBack={handleComplete}
-        disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length === 0}
+        disabled={!judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length !== 1}
         businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewRequirement'
         key='SUPPLIER_AUDIT_REQUIREMENT_EXAMINE'
       >提交审核</StartFlow>)
@@ -283,7 +295,7 @@ export default function() {
         businessId={data.flowId}
         flowMapUrl='flow-web/design/showLook'
         ignore={DEVELOPER_ENV}
-        disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
+        disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length !== 1}
         key='SUPPLIER_AUDIT_REQUIREMENT_HISTORY'
       >
         <Button className={styles.btn} disabled={data.selectedRowKeys.length !== 1}>审核历史</Button>
@@ -293,7 +305,7 @@ export default function() {
       authAction(<Button
         onClick={() => redirectToPage('endFlow')}
         loading={data.spinning}
-        disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
+        disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length !== 1}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         key='SUPPLIER_AUDIT_REQUIREMENT_ALLOT'
@@ -303,7 +315,7 @@ export default function() {
 
   const headerRight = <div style={{ display: 'flex', alignItems: 'center' }}>
     <Search
-      style={{width: '300px'}}
+      style={{ width: '300px' }}
       placeholder='请输入审核需求号或申请说明查询'
       className={styles.btn}
       onSearch={handleQuickSearch}

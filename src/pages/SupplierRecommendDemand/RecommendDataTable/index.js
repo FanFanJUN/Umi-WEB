@@ -21,7 +21,11 @@ function RecommendDataTable() {
   const { supplierRecommendDemandStatus = '' } = signleRow;
   // 未选中数据状态
   const empty = selectedRowKeys.length === 0;
-  const complete = supplierRecommendDemandStatus === 'COMPLETE';
+  const complete = supplierRecommendDemandStatus === 'FILLED';
+  const underWay = (
+    supplierRecommendDemandStatus === 'DRAFT' ||
+    supplierRecommendDemandStatus === 'FILLING'
+  );
   const tableProps = {
     store: {
       url: `${recommendUrl}/api/supplierRecommendDemandService/findSupplierListByPage`,
@@ -42,10 +46,7 @@ function RecommendDataTable() {
     columns: [
       {
         title: '状态',
-        dataIndex: 'supplierRecommendDemandStatus',
-        render(text) {
-          return text === 'FILLING' ? '填报中' : '填报完成'
-        }
+        dataIndex: 'supplierRecommendDemandStatusRemark'
       },
       {
         title: '需求单号',
@@ -86,7 +87,7 @@ function RecommendDataTable() {
   }
   const left = (
     <>
-      <Button className={styles.btn} onClick={handleFillIn} disabled={empty}>填报</Button>
+      <Button className={styles.btn} onClick={handleFillIn} disabled={empty || !underWay}>填报</Button>
       <Button className={styles.btn} disabled={empty} onClick={checkDetail}>明细</Button>
       <Button className={styles.btn} disabled={empty || !complete} onClick={handleWithdraw}>撤回</Button>
       <Button className={styles.btn} disabled={empty} onClick={checkOpinion}>查看意见</Button>
@@ -101,7 +102,7 @@ function RecommendDataTable() {
         placeholder='填报状态'
       >
         <Option key='FILLING' value='FILLING'>填报中</Option>
-        <Option kye='COMPLETE' value='COMPLETE'>填报完成</Option>
+        <Option kye='FILLED' value='FILLED'>填报完成</Option>
       </Select>
       <Search onSearch={handleSearch} placeholder='请输入需求单号' />
     </>

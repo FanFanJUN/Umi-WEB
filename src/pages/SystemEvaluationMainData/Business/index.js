@@ -19,14 +19,14 @@ import {
 } from 'antd';
 import { ComboList, DataImport } from 'suid';
 import classnames from 'classnames'
-import { evlLevelEmu, evaluateSystemFormCodeProps, businessMainProps, businessUnitMainProps } from '../../../utils/commonProps';
+import { evlLevelEmu, evaluateSystemFormCodeProps, businessMainProps, businessUnitMainProps, specialtyGroupProps } from '../../../utils/commonProps';
 import { downloadBlobFile, DEVELOPER_ENV } from '../../../utils';
 import {
-  batchExportQualityData as EXPORT_SERVICE,
-  batchCheckQualityData as CHECK_SERVICE,
-  batchSaveQualityData as SAVE_SERVICE
+  batchExportBusinessData as EXPORT_SERVICE,
+  batchCheckBusinessData as CHECK_SERVICE,
+  batchSaveBusinessData as SAVE_SERVICE
 } from '../../../services/gradeSystem';
-const MOUDLE_NAME = '质量';
+const MOUDLE_NAME = '商务';
 const { create, Item: FormItem } = Form;
 const { Option } = Select;
 const { MonthPicker } = DatePicker;
@@ -313,6 +313,28 @@ function Quality({
                         systemUseType: "SupplierEvaluation"
                       }
                     }}
+                  />
+                )
+              }
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem label='采购专业组'>
+              {
+                getFieldDecorator('purchaseProfessionalGroup'),
+                getFieldDecorator('purchaseProfessionalGroupName', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '采购专业组不能为空'
+                    }
+                  ]
+                })(
+                  <ComboList
+                    form={form}
+                    name='purchaseProfessionalGroupName'
+                    field={['purchaseProfessionalGroup']}
+                    {...specialtyGroupProps}
                   />
                 )
               }
