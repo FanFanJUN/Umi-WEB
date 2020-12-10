@@ -61,14 +61,14 @@ const OpinionForm = React.forwardRef(({ form, userInfo, leaderApprove, teamData,
             <Row>
               <Col span={24}>
                 <FormItem label="是否通过" {...formLayout}>
-                  <span>{teamData.whetherLeaderDecisionPass ? '是' : '否'}</span>
+                  <span>{leaderData.whetherLeaderDecisionPass ? '是' : '否'}</span>
                 </FormItem>
               </Col>
             </Row>
             <Row>
               <Col span={24}>
                 <FormItem label="意见" {...formLayout}>
-                  <span>{teamData.leaderDecisionOpinion}</span>
+                  <span>{leaderData.leaderDecisionOpinion}</span>
                 </FormItem>
               </Col>
             </Row>

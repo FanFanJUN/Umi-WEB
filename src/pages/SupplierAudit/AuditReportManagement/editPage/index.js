@@ -277,7 +277,7 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
         {data.isView && !purchaseApprove && <OpinionForm
           leaderApprove={leaderApprove}
           teamData={data.editData.purchasingTeamOpinionBo || {}}
-          leaderData={data.editData.purchasingTeamOpinionBo || {}}
+          leaderData={data.editData.leaderDecisionBo || {}}
         />}
         <OpinionModal
           title={'小组意见'}
