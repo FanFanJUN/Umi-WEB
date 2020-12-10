@@ -321,8 +321,8 @@ function Quality({
           <Col span={12}>
             <FormItem label='采购专业组'>
               {
-                getFieldDecorator('purchaseProfessionalGroup'),
-                getFieldDecorator('purchaseProfessionalGroupName', {
+                getFieldDecorator('purchaseProfessionalGroupCode'),
+                getFieldDecorator('purchaseProfessionalGroup', {
                   rules: [
                     {
                       required: true,
@@ -332,8 +332,8 @@ function Quality({
                 })(
                   <ComboList
                     form={form}
-                    name='purchaseProfessionalGroupName'
-                    field={['purchaseProfessionalGroup']}
+                    name='purchaseProfessionalGroup'
+                    field={['purchaseProfessionalGroupCode']}
                     {...specialtyGroupProps}
                   />
                 )
