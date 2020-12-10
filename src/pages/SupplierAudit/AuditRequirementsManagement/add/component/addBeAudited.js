@@ -183,7 +183,7 @@ const AddBeAudited = (props) => {
 
   return (
     <ExtModal
-      width={'100vh'}
+      width={'130vh'}
       maskClosable={false}
       visible={visible}
       title={title}
@@ -309,7 +309,7 @@ const AddBeAudited = (props) => {
                   <ComboList
                     disabled={getFieldValue('supplierStrategyCode') !== '正常供应商'}
                     allowClear={true}
-                    style={getFieldValue('supplierStrategyCode') !== '正常供应商' ? { width: '85%' } : { width: '100%' }}
+                    style={getFieldValue('supplierStrategyCode') !== '正常供应商' ? { width: '80%' } : { width: '100%' }}
                     form={form}
                     name={'supplierName'}
                     field={['supplierCode', 'supplierId']}
