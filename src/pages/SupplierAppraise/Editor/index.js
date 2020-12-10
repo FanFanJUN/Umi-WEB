@@ -4,7 +4,7 @@ import CommonForm from '../CommonForm';
 import { Button, Affix, Modal, message } from 'antd';
 import { useLocation } from 'dva/router';
 import { saveAppraiseProject } from '../../../services/appraise';
-import { closeCurrent } from '../../../components/utils/CommonUtils';
+import { closeCurrent } from '../../../utils';
 function Editor() {
   const formRef = useRef(null);
   const { query } = useLocation();

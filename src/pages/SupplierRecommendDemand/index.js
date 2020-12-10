@@ -51,7 +51,6 @@ export default () => {
 "已评审" SCORE_COMPLETE,
 "筛选已完成" SCREEN_COMPLETE;
    */
-
   // 未选中数据状态
   const empty = selectedRowKeys.length === 0;
   const tableProps = {

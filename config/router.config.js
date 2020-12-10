@@ -36,6 +36,16 @@ export default [
         title: '质量主数据'
       },
       {
+        path: '/gradeSystem/evaluation/main/technology',
+        component: './SystemEvaluationMainData/Technology',
+        title: '技术主数据'
+      },
+      {
+        path: '/gradeSystem/evaluation/main/business',
+        component: './SystemEvaluationMainData/Business',
+        title: '商务主数据'
+      },
+      {
         path: '/gradeSystem/acceptFYP',
         component: './AcceptFYPMain',
         title: '来料验收批次合格率'

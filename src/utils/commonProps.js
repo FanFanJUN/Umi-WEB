@@ -681,6 +681,26 @@ export const formulaModeProps = {
   placeholder: '选择计算方式'
 }
 
+// 采购专业组数据字典
+// 计算方式数据字典
+export const specialtyGroupProps = {
+  store: {
+    url: `${baseUrl}/dataDictionaryItem/getDictByTypeCode`,
+    params: {
+      dictTypeCode: 'purchasing_professional_group'
+    },
+    type: 'get'
+  },
+  style: { width: '100%' },
+  reader: {
+    name: 'name',
+    field: ['value'],
+    description: 'value'
+  },
+  // remotePaging: true,
+  placeholder: '选择专业组'
+}
+
 // 通过公司代码查询评价体系主数据
 export const evaluateSystemFormCodeProps = {
   store: {

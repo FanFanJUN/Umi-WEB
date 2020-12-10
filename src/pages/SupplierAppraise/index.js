@@ -218,7 +218,7 @@ function SupplierRevaluate() {
   function handleRemove() {
     const [key] = selectedRowKeys;
     Modal.confirm({
-      title: '删除评 价项目',
+      title: '删除评价项目',
       content: '是否删除当前所选评价项目？',
       onOk: async () => {
         const { success, message: msg } = await removeAppraiseProject({

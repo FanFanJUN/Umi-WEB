@@ -814,9 +814,6 @@ const CommonForm = forwardRef(({
               onSelectRow={tableCommonSets.handleSelectedRows}
               columns={businessColumns}
               ellipsis={false}
-              checkbox={{
-                multiSelect: true
-              }}
               ref={tableRef}
             />
           </Col>
