@@ -22,7 +22,7 @@ export default () => {
     const { success, message: msg } = await saveSupplierRecommendDemand({ ...vs, id });
     toggleLoading(false)
     if (success) {
-      // closeCurrent()
+      closeCurrent()
       return
     }
     message.error(msg)
@@ -41,7 +41,6 @@ export default () => {
         const {
           selfEvlSystem,
           supplierRecommendDemandLines,
-          supplierRecommendDemandStatus,
           supplierRecommendDemandStatusRemark,
           createdDate,
           docNumber,

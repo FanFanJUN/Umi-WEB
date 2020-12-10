@@ -74,13 +74,13 @@ const AddModal = forwardRef(({}, ref) => {
         allowCancelSelect={true}
         showSearch={false}
         remotePaging
-        checkbox
         size='small'
         onSelectRow={(key, rows) => {
           setSelectedRowKeys(key);
           setSelectRows(rows);
         }}
         ref={tableRef}
+        checkbox={{ multiSelect: false }}
         selectedRowKeys={selectedRowKeys}
         store={{
           url: `${recommendUrl}/api/reviewPlanMonthLineService/findForReport`,

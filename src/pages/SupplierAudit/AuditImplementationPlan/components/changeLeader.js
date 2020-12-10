@@ -1,19 +1,10 @@
-/*
- * @Author: your name
- * @Date: 2020-11-11 10:31:15
- * @LastEditTime: 2020-12-07 15:05:03
- * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\components\changeLeader.js
- */
-// 从年度审核新增
+// 变更组长
 import React, { useState, useEffect } from "react";
 import { Form, Row, Spin, message } from "antd";
-import { ExtModal, ComboList, ComboTree, } from 'suid';
-import { listAllOrgnazationWithDataAuth } from '../../MonthAuditPlan/service';
-import { UserByDepartmentNameConfig } from "../../mainData/commomService";
-import { basicServiceUrl, gatewayUrl } from '@/utils/commonUrl';
+import { ExtModal } from 'suid';
+import { GetUserTelByUserId } from "../../mainData/commomService";
 import { changeTeamLeader } from "../service";
+import { UserSelect } from '@/components';
 
 const FormItem = Form.Item;
 const formItemLayoutLong = {
@@ -23,28 +14,22 @@ const formItemLayoutLong = {
 
 const ChangeLeader = (props) => {
     const { visible, handleCancel, form, originData = {}, handleOk } = props
-    const { getFieldDecorator, validateFieldsAndScroll } = form;
+    const { getFieldDecorator, validateFieldsAndScroll, setFieldsValue } = form;
     const [loading, setLoading] = useState(false);
-    const [prgId, setOrgId] = useState('');
-    const [selectObj, setSelectObj] = useState({})
-
-    useEffect(() => {
-        listAllOrgnazationWithDataAuth().then(res => {
-            if (res.success) {
-                setOrgId(res.data[0] ? res.data[0].id : '');
-            }
-        })
-    }, [])
 
     const onOk = async () => {
         validateFieldsAndScroll((err, values) => {
             if (err) return;
+            if(values.employeeNo === props.originData.leaderEmployeeNo) {
+                handleCancel();
+                return;
+            }
+            setLoading(true);
             changeTeamLeader({
                 relatedId: props.originData && props.originData.id,
                 ...values,
-                ...selectObj,
             }).then(res => {
-                console.log("变更组长", res)
+                setLoading(false);
                 if (res.success) {
                     message.success("操作成功");
                     handleOk()
@@ -52,7 +37,21 @@ const ChangeLeader = (props) => {
                 } else {
                     message.error(res.message);
                 }
+            }).catch(()=>{
+                setLoading(false);
             })
+        });
+    }
+
+    const getMemberTel = (id) => {
+        GetUserTelByUserId({
+            userId: id,
+        }).then(res => {
+            if (res.success) {
+                setFieldsValue({
+                    memberTel: res.data.mobile,
+                });
+            }
         });
     }
 
@@ -69,6 +68,11 @@ const ChangeLeader = (props) => {
             <Row>
                 <FormItem {...formItemLayoutLong} label={'审核小组组长'}>
                     {
+                        getFieldDecorator('departmentId'),
+                        getFieldDecorator('departmentCode'),
+                        getFieldDecorator('departmentName'),
+                        getFieldDecorator('codePath'),
+                        getFieldDecorator('namePath'),
                         getFieldDecorator('memberId', { initialValue: originData.leaderId }),
                         getFieldDecorator('employeeNo', { initialValue: originData.leaderEmployeeNo }),
                         getFieldDecorator('memberTel', { initialValue: originData.leaderTel }),
@@ -76,34 +80,29 @@ const ChangeLeader = (props) => {
                             initialValue: originData.leaderName,
                             rules: [{ required: true, message: '审核小组组长不能为空', },],
                         })(
-                            <ComboList
+                            <UserSelect
+                                placeholder='选择成员'
                                 form={form}
-                                style={{ width: "100%" }}
-                                name={'memberName'}
-                                field={['employeeNo', 'memberId', 'memberTel']}
-                                store={{
-                                    data: {
-                                        includeSubNode: true,
-                                        quickSearchProperties: ['code', 'user.userName'],
-                                        organizationId: prgId,
-                                        sortOrders: [{ property: 'code', direction: 'ASC' }],
-                                    },
-                                    type: 'POST',
-                                    autoLoad: false,
-                                    url: `${gatewayUrl}${basicServiceUrl}/employee/findByUserQueryParam`,
+                                mode="tags"
+                                name='name'
+                                multiple={false}
+                                reader={{
+                                    name: 'userName',
+                                    field: ['code', 'id']
                                 }}
-                                afterSelect={(item) => {
-                                    console.log("选中数据", item);
-                                    let selectObj = {
+                                onRowsChange={(item) => {
+                                    getMemberTel(item.id);
+                                    setFieldsValue({
                                         departmentId: item.organization.id,
                                         departmentCode: item.organization.code,
                                         departmentName: item.organization.name,
                                         codePath: item.organization.codePath,
-                                        namePath: item.organization.namePath
-                                    }
-                                    setSelectObj(selectObj);
+                                        namePath: item.organization.namePath,
+                                        memberId: item.id,
+                                        memberName: item.userName,
+                                        employeeNo: item.code
+                                      });
                                 }}
-                                {...UserByDepartmentNameConfig}
                             />
                         )
                     }

@@ -42,6 +42,16 @@ export default () => {
   const fillComplete = supplierRecommendDemandStatus === 'FILLED';
   // 未提交填报状态
   const fillInit = supplierRecommendDemandStatus === 'DRAFT'
+  /**
+"草稿" DRAFT,
+"填报中" FILLING,
+"已填报" FILLED  流程中更新状态
+"已提交评审" SUBMIT_APPROVE,
+"已确定评审人" CONFIRM_JUROR,
+"已评审" SCORE_COMPLETE,
+"筛选已完成" SCREEN_COMPLETE;
+   */
+
   // 未选中数据状态
   const empty = selectedRowKeys.length === 0;
   const tableProps = {
@@ -87,7 +97,7 @@ export default () => {
         authAction(
           <Button
             className={styles.btn}
-            disabled={empty || underWay || !fillInit}
+            disabled={empty || underWay}
             key='SUPPLIER_RECOMMEND_DEMAND_EDITOR'
             onClick={handleEditor}
             ignore={DEVELOPER_ENV}
@@ -131,7 +141,7 @@ export default () => {
         authAction(
           <Button
             className={styles.btn}
-            disabled={empty}
+            disabled={empty || underWay || !fillComplete}
             onClick={handleOpenInfomationConfirm}
             key='SUPPLIER_RECOMMEND_DEMAND_CONFIRM'
             ignore={DEVELOPER_ENV}
@@ -169,7 +179,7 @@ export default () => {
         authAction(
           <Button
             className={styles.btn}
-            disabled={empty || !underWay}
+            disabled={empty || !underWay || completed}
             ignore={DEVELOPER_ENV}
             onClick={stopApprove}
             key='SUPPLIER_RECOMMEND_DEMAND_APPROVE_STOP'
