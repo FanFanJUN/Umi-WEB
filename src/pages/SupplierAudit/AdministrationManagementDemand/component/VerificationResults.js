@@ -32,7 +32,6 @@ const VerificationResults = (props) => {
       let params = await submitDataRef.current.getInfo((err, values) => {
         if (!err) {
           values.reviewScore = values.reviewScore.replace('%', '');
-          values.conclusion = values.conclusionName;
           console.log(values);
           return values;
         }

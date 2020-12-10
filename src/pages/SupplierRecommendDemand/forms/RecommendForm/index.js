@@ -118,6 +118,8 @@ const FormContext = forwardRef(({
   const [checkedKeys, setCheckedKeys] = useState([]);
   const [isAgent, changeAgentState] = useState(false);
   const [recommendCompany, setRecommendCompany] = useState([]);
+  // 是否填报中
+  const [filling, setFilling] = useState(false);
   const [attachment, setAttachment] = useState(null);
   const [systemView, setSystemView] = useState(null);
   const [selectedRowKeys, setRowKeys] = useState([]);
@@ -148,7 +150,7 @@ const FormContext = forwardRef(({
     }
   ];
   const empty = selectedRowKeys.length === 0;
-  const left = type === 'detail' ? null : (
+  const left = (type === 'detail' || filling) ? null : (
     <>
       <Button
         style={{ margin: '0 6px' }}
@@ -190,14 +192,16 @@ const FormContext = forwardRef(({
     treeData = {}
   }) {
 
-    const { attachmentId, supplierCategory, ...other } = fields;
+    const { attachmentId, supplierCategory, supplierRecommendDemandStatus, ...other } = fields;
     const name = supplierCategory?.name;
     const reg = /代理商/g;
     const result = reg.test(name);
+    console.log(supplierRecommendDemandStatus)
     changeAgentState(result)
     setFieldsValue(other)
     setSystemView(treeData)
     setAttachment(attachmentId)
+    setFilling(supplierRecommendDemandStatus !== 'DRAFT')
   }
   function formatViewData(iview) {
     if (iview.children) {
@@ -369,7 +373,7 @@ const FormContext = forwardRef(({
                       changeAgentState(result)
                       // if(reg)
                     }}
-                    disabled={type === 'detail'}
+                    disabled={type === 'detail' || filling}
                   />
                 )
               }
@@ -386,48 +390,45 @@ const FormContext = forwardRef(({
           </Col>
         </Row>
         {/* 仅代理商显示原厂选项 */}
-        {
-          isAgent ?
-            <Row>
-              <Col span={12}>
-                <FormItem label='原厂名称' {...formLayout}>
-                  {
-                    getFieldDecorator('originFactoryName', {
-                      rules: [
-                        {
-                          required: true,
-                          message: '请选择原厂'
-                        }
-                      ]
-                    })(
-                      <ComboList
-                        form={form}
-                        name='originFactoryName'
-                        {...originFactoryProps}
-                        store={{
-                          ...originFactoryProps.store,
-                          params: {
-                            supplierId: originSupplierId
-                          }
-                        }}
-                        field={['originFactoryCode']}
-                        disabled={type === 'detail'}
-                      />
-                    )
-                  }
-                </FormItem>
-              </Col>
-              <Col span={12}>
-                <FormItem label='原厂代码' {...formLayout}>
-                  {
-                    getFieldDecorator('originFactoryCode')(
-                      <Input disabled placeholder='选择原厂' />
-                    )
-                  }
-                </FormItem>
-              </Col>
-            </Row> : null
-        }
+        <Row>
+          <Col span={12}>
+            <FormItem label='原厂名称' {...formLayout}>
+              {
+                getFieldDecorator('originName', {
+                  rules: [
+                    {
+                      required: isAgent,
+                      message: '请选择原厂'
+                    }
+                  ]
+                })(
+                  <ComboList
+                    form={form}
+                    name='originName'
+                    {...originFactoryProps}
+                    store={{
+                      ...originFactoryProps.store,
+                      params: {
+                        supplierId: originSupplierId
+                      }
+                    }}
+                    field={['originCode']}
+                    disabled={type === 'detail' || filling}
+                  />
+                )
+              }
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem label='原厂代码' {...formLayout}>
+              {
+                getFieldDecorator('originCode')(
+                  <Input disabled placeholder='选择原厂' />
+                )
+              }
+            </FormItem>
+          </Col>
+        </Row>
         <Row>
           <Col span={12}>
             <FormItem label='物料分类' {...formLayout}>
@@ -452,7 +453,7 @@ const FormContext = forwardRef(({
                       }
                     }}
                     field={['materialCategoryCode']}
-                    disabled={type === 'detail'}
+                    disabled={type === 'detail' || filling}
                   />
                 )
               }
@@ -516,7 +517,7 @@ const FormContext = forwardRef(({
                     field={['unitCode']}
                     name='unitName'
                     form={form}
-                    disabled={type === 'detail'}
+                    disabled={type === 'detail' || filling}
                   />
                 )
               }
@@ -594,7 +595,7 @@ const FormContext = forwardRef(({
                     afterSelect={item => {
                       setSystemView(item)
                     }}
-                    disabled={type === 'detail'}
+                    disabled={type === 'detail' || filling}
                   />
                 )
               }

@@ -276,7 +276,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                 </FormItem>
               </Col>
               <Col span={12}>
-                <FormItem label="现有产能利用率" {...formLayout}>
+                <FormItem label="现有产能利用率(%)" {...formLayout}>
                   {getFieldDecorator('actualCapacityFactor', {
                     initialValue: (data.actualCapacityFactor * 100),
                     rules: [
@@ -285,7 +285,15 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                         message: '现有产能利用率不能为空'
                       }
                     ]
-                  })(<Input type='number' style={{ width: '100%' }} addonAfter='%' disabled={DISABLED} min={0} max={100} />)}
+                  })(
+                    <InputNumber
+                      type='number'
+                      style={{ width: '100%' }}
+                      disabled={DISABLED}
+                      min={0}
+                      max={100}
+                    />
+                  )}
                 </FormItem>
               </Col>
             </Row>

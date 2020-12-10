@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime: 2020-12-09 16:24:06
+ * @LastEditTime: 2020-12-10 15:11:49
  * @Description: 行信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
@@ -474,13 +474,11 @@ let LineInfo = forwardRef((props, ref) => {
       />}
       {/* 批量编辑 */}
       {batchEditVisible && <BatchEditModal
-        // 如果是批量编辑则取消必填
-        required={data.selectRows.length < 2}
         visible={batchEditVisible}
         onCancel={() => {
           setBatchEditVisible(false);
         }}
-        originData={data.selectRows.length === 1 ? data.selectRows[0] : {}}
+        selectedRows={data.selectRows}
         onOk={getBatchFormValue}
       />
       }
