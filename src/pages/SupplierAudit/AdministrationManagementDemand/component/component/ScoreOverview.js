@@ -14,7 +14,6 @@ const ScoreOverview = (props) => {
     percentage: 101,
   };
 
-
   const columns = [
     {
       title: '', dataIndex: 'id', width: 1, render: v => {
@@ -99,10 +98,10 @@ const ScoreOverview = (props) => {
       if (res.success) {
         let arr = res.data ? res.data : [];
         if (arr.length > 0) {
-          console.log(res.data)
+          console.log(res.data, 'xxx')
           arr[0].children = arr[0].children ? arr[0].children : []
           arr[0].children.map(item => {
-            minLine = item.percentage < minLine.percentage ? item : minLine;
+            minLine = item.percentage < minLine.percentage ? JSON.parse(JSON.stringify(item)) : minLine;
           })
           arr = buildTree(arr);
           if (minLine.systemId) {
@@ -122,12 +121,11 @@ const ScoreOverview = (props) => {
   return (
     <div>
       <Button onClick={viewScoreByReviewer}>按评审人查看评分</Button>
-      <Button onClick={viewVendorSelfRating} style={{ marginLeft: '5px' }}>查看供应商自评</Button>
+      <Button onClick={viewVendorSelfRating} style={{ marginLeft: '5px', marginBottom: '5px' }}>查看供应商自评</Button>
       <ExtTable
         rowKey={'id'}
         loading={loading}
         bordered={true}
-        style={{ marginTop: '5px' }}
         showSearch={false}
         columns={columns}
         pagination={false}

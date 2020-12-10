@@ -133,7 +133,7 @@ export default () => {
             startComplete={uploadTable}
           >
             {
-              loading => <Button className={styles.btn} loading={loading} disabled={empty || completed}>提交审核</Button>
+              loading => <Button className={styles.btn} loading={loading} disabled={empty || underWay}>提交审核</Button>
             }
           </StartFlow>
         )

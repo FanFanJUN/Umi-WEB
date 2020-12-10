@@ -8,7 +8,7 @@
  * @Connect: 1981824361@qq.com
  */
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Spin, PageHeader, Radio, Row, Col, Input, InputNumber, Divider, message } from 'antd';
+import { Form, Button, Spin, PageHeader, Row, Col, Input, message } from 'antd';
 import styles from '../../DataFillIn/index.less';
 import EditableFormTable from '../CommonUtil/EditTable';
 import UploadFile from '../../../../../components/Upload';
@@ -160,7 +160,7 @@ const Other = ({ form, updateGlobalStatus }) => {
                           showColor={type !== 'add' ? true : false}
                           type={type === 'add' ? '' : 'show'}
                           disabled={type === 'detail'}
-                          entityId={data.corporationGateway} />)}
+                          entityId={data.corporationGatewayId} />)}
                     </FormItem>
                   </Col>
                   <Col span={12}>
@@ -178,7 +178,7 @@ const Other = ({ form, updateGlobalStatus }) => {
                           showColor={type !== 'add' ? true : false}
                           type={type === 'add' ? '' : 'show'}
                           disabled={type === 'detail'}
-                          entityId={data.corporationWorkShop} />)}
+                          entityId={data.corporationWorkShopId} />)}
                     </FormItem>
                   </Col>
                 </Row>
@@ -198,7 +198,7 @@ const Other = ({ form, updateGlobalStatus }) => {
                           showColor={type !== 'add' ? true : false}
                           disabled={type === 'detail'}
                           type={type === 'add' ? '' : 'show'}
-                          entityId={data.rawMaterialWarehouse} />)}
+                          entityId={data.rawMaterialWarehouseId} />)}
                     </FormItem>
                   </Col>
                   <Col span={12}>
@@ -216,7 +216,7 @@ const Other = ({ form, updateGlobalStatus }) => {
                           showColor={type !== 'add' ? true : false}
                           disabled={type === 'detail'}
                           type={type === 'add' ? '' : 'show'}
-                          entityId={data.productWarehouse} />)}
+                          entityId={data.productWarehouseId} />)}
                     </FormItem>
                   </Col>
                 </Row>
@@ -236,7 +236,7 @@ const Other = ({ form, updateGlobalStatus }) => {
                           showColor={type !== 'add' ? true : false}
                           disabled={type === 'detail'}
                           type={type === 'add' ? '' : 'show'}
-                          entityId={data.lab} />)}
+                          entityId={data.labId} />)}
                     </FormItem>
                   </Col>
                 </Row>
