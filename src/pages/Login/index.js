@@ -30,7 +30,7 @@ class LoginForm extends PureComponent {
             reqId: '161de21c-1b3a-46a4-b6e8-3c7605164f8e',
             appId: '1234'
           }
-        }); <div className=""></div>
+        });
       }
     });
   };

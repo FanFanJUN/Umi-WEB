@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { queryDataFillStatus } from '../services/recommend'
-
+// 供应商填报资料填报状态
 export function useGlobalStatus(supplierRecommendDemandId) {
   const [status, changeStatus] = useState({
     // 自评
@@ -50,7 +50,7 @@ export function useGlobalStatus(supplierRecommendDemandId) {
   }, [])
   return [status, updateGlobalStatus]
 }
-
+// 公共列表数据处理hook
 export function useTableProps() {
   const [selectedRowKeys, setRowKeys] = useState([]);
   const [selectedRows, setRows] = useState([]);

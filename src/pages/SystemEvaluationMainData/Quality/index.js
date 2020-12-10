@@ -251,13 +251,14 @@ function Quality({
             okButtonProps={{
               loading: loading
             }}
+            key
           />
           {/* <Button className={styles.btn}>导入评价数据</Button> */}
         </div>
       </Affix>
       <Form {...formLayout}>
         <div className={styles.commonTitle}>数据导出参数选择</div>
-        <Row gutter={[12, 0]}>
+        <Row>
           <Col span={12}>
             <FormItem label='评价数据开始时间'>
               {

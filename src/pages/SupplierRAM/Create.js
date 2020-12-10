@@ -16,7 +16,7 @@ function Create() {
   const [loading, toggleLoading] = useState(false);
   const commonFormRef = useRef(null);
   const { query } = useLocation();
-  const { recommendDemandIds = [] } = query;
+  const { recommendDemandIds = '' } = query;
   async function handleSave() {
     const value = await commonFormRef.current.getFormValue();
     toggleLoading(true)
@@ -31,6 +31,7 @@ function Create() {
   }
   useEffect(() => {
     async function initialCreateRAMData() {
+      console.log(recommendDemandIds)
       const formatIds = recommendDemandIds.split(',');
       const { success, data, message: msg } = await queryRecommendAccessFromRecommendDemand(formatIds)
       if (success) {

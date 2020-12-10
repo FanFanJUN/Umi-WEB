@@ -75,8 +75,8 @@ const Ctx = forwardRef(({
         purchaseOrgCode: item.code,
         purchaseOrgName: item.name
       }))
-      console.log(ids, selectedRows)
-    console.log(filterSelectedRows, initialDataSource)
+    //   console.log(ids, selectedRows)
+    // console.log(filterSelectedRows, initialDataSource)
     return [...filterSelectedRows, ...initialDataSource]
   }
   /**

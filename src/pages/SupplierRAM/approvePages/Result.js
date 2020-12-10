@@ -117,7 +117,7 @@ function WhetherCheck({
       render(text, { physicalDocNumber = '' }) {
         if (!!text) {
           return (
-            <Button type='link' onClick={() => openNewTab(`material/Cognizance/ManualDetail/index?id=${text}`)}>{physicalDocNumber}</Button>
+            <Button type='link' onClick={() => openNewTab(`material/Cognizance/ManualDetail/index?id=${text}`, '实物认定报告', false)}>{physicalDocNumber}</Button>
           )
         }
         return ''
@@ -134,7 +134,7 @@ function WhetherCheck({
       render(text, { examineDocNumber = '' }) {
         if (!!text) {
           return (
-            <Button type='link' onClick={() => openNewTab(`material/Cognizance/ManualDetail/index?id=${text}`)}>{examineDocNumber}</Button>
+            <Button type='link' onClick={() => openNewTab(`material/Cognizance/ManualDetail/index?id=${text}`, '供应商审核报告', false)}>{examineDocNumber}</Button>
           )
         }
         return ''
@@ -169,13 +169,12 @@ function WhetherCheck({
       pass = paramsDataSource.every(item => {
         return !!item.examineId
       })
+    } else {
+      pass = paramsDataSource.every(item => {
+        return !!item.objectRecognition ? !!item.physicalId : true
+      })
     }
-    pass = paramsDataSource.every(item => {
-      return !!item.objectRecognition ? !!item.physicalId : true
-    })
-    console.log(pass)
     if (!pass) {
-      message.error('实物认定或供应商审核未完成，请等待')
       return new Promise((resolve, rj) => {
         resolve({
           success: pass,

@@ -14,7 +14,7 @@ import {
   Modal
 } from 'antd';
 import styles from './index.less';
-import { ComboList, ExtTable } from 'suid';
+import { ComboList, ExtTable, ComboTree } from 'suid';
 import SelectRecommendData from './SelectRecommendData';
 import { commonProps, getUserName } from '../../utils';
 import moment from 'moment';
@@ -130,7 +130,7 @@ function CommonForm({
     }
   ]
   function checkDetail(id) {
-    openNewTab(`supplier/recommend/demand/detail?id=${id}`, '供应商推荐需求明细')
+    openNewTab(`supplier/recommend/demand/detail?id=${id}`, '供应商推荐需求明细', false)
   }
   async function setFormValue(values) {
     const {
@@ -219,7 +219,7 @@ function CommonForm({
                   }
                 ]
               })(
-                <ComboList
+                <ComboTree
                   form={form}
                   name='orgName'
                   field={['orgCode']}
