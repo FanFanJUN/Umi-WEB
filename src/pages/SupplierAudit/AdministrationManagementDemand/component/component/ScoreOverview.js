@@ -10,6 +10,10 @@ import TargetScoringDetailView from './TargetScoringDetailView';
 
 const ScoreOverview = (props) => {
 
+  let minLine = {
+    percentage: 101,
+  };
+
   const columns = [
     {
       title: '', dataIndex: 'id', width: 1, render: v => {
@@ -92,9 +96,6 @@ const ScoreOverview = (props) => {
       reviewImplementPlanCode,
     }).then(res => {
       if (res.success) {
-        let minLine = {
-          percentage: 101,
-        };
         let arr = res.data ? res.data : [];
         if (arr.length > 0) {
           console.log(res.data, 'xxx')
