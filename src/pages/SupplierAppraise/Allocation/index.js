@@ -67,7 +67,7 @@ function Allocation() {
   function handleExportData() {
     Modal.confirm({
       title: '导出分配评审人',
-      content: '是否导出当前评价项目陪审人配置表',
+      content: '是否导出当前评价项目评审人配置表',
       okText: '导出',
       cancelText: '取消',
       onOk: async () => {
