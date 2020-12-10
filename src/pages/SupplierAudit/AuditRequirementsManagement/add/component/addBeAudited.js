@@ -10,6 +10,7 @@ import {
 import { baseUrl, basicServiceUrl, gatewayUrl, recommendUrl, smBaseUrl } from '../../../../../utils/commonUrl';
 import { documentMaterialClassProps } from '../../../../../utils/commonProps';
 import AddSupplier from './addSupplier';
+import './index.less';
 
 const FormItem = Form.Item;
 
@@ -180,11 +181,9 @@ const AddBeAudited = (props) => {
     console.log(value);
   };
 
-  console.log(getFieldValue('reviewTypeCode'));
-
   return (
     <ExtModal
-      width={'160vh'}
+      width={'130vh'}
       maskClosable={false}
       visible={visible}
       title={title}
@@ -296,7 +295,7 @@ const AddBeAudited = (props) => {
             {hideFormItem('supplierCode', type === 'add' ? '' : editData.supplierCode)}
           </Col>
           <Col span={12}>
-            <FormItem {...formItemLayoutLong} label={'供应商'}>
+            <FormItem {...formItemLayoutLong} style={{ display: 'flex' }} label={'供应商'}>
               {
                 getFieldDecorator('supplierName', {
                   initialValue: editData.supplierName ? editData.supplierName : '',
@@ -310,7 +309,7 @@ const AddBeAudited = (props) => {
                   <ComboList
                     disabled={getFieldValue('supplierStrategyCode') !== '正常供应商'}
                     allowClear={true}
-                    style={getFieldValue('supplierStrategyCode') !== '正常供应商' ? { width: '88%' } : { width: '100%' }}
+                    style={getFieldValue('supplierStrategyCode') !== '正常供应商' ? { width: '80%' } : { width: '100%' }}
                     form={form}
                     name={'supplierName'}
                     field={['supplierCode', 'supplierId']}
@@ -332,7 +331,7 @@ const AddBeAudited = (props) => {
               }
               {
                 getFieldValue('supplierStrategyCode') !== '正常供应商' &&
-                <a style={{ marginLeft: '3%' }} onClick={openSupplierModal}>选择</a>
+                <a style={{ width: '5%', marginLeft: '2%' }} onClick={openSupplierModal}>选择</a>
               }
             </FormItem>
           </Col>

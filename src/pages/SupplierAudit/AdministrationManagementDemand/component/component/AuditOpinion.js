@@ -48,7 +48,6 @@ const AuditOpinion = React.forwardRef((props, ref) => {
   useEffect(() => {
     if (isView) {
       ShowVerificationAuditOpinionDataApi({
-        performanceRating: editData.performanceRating,
         id,
       }).then(res => {
         if (res.success) {
@@ -60,6 +59,7 @@ const AuditOpinion = React.forwardRef((props, ref) => {
       }).catch(err => message.error(err.message));
     } else {
       GetVerificationAuditOpinionDataApi({
+        performanceRating: editData.performanceRating,
         reviewImplementPlanCode,
       }).then(res => {
         if (res.success) {
@@ -139,8 +139,8 @@ const AuditOpinion = React.forwardRef((props, ref) => {
         <Col span={12}>
           <FormItem label="结论" {...formLayout}>
             {
-              getFieldDecorator('conclusionName', {
-                initialValue: data.conclusionName,
+              getFieldDecorator('conclusion', {
+                initialValue: data.conclusionName ? data.conclusionName : data.conclusion,
               })(
                 <Input disabled={true} />,
               )
@@ -174,7 +174,7 @@ const AuditOpinion = React.forwardRef((props, ref) => {
                   },
                 ],
               })(
-                <Upload entityId={editData.fileList ? getDocIdForArray(data.fileList) : null}
+                <Upload entityId={editData.fileList ? null : data.fileList}
                         type={isView ? 'show' : ''} />,
               )
             }

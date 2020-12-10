@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { ComboList, ExtModal, ComboGrid } from 'suid';
 import { Col, Form, Input, InputNumber, Row } from 'antd';
 import { listAllOrgnazationWithDataAuth, AuditCauseManagementConfig } from '../service';
-import { UserByDepartmentNameConfig } from '../../mainData/commomService';
+import { UserByDepartmentNameConfig, DocumentAuditCauseManagementByReviewTypeConfig } from '../../mainData/commomService';
 import {
   reviewOrganizeProps,
   reviewWaysProps,
   CountryIdConfig,
   AreaConfig,
 } from '../../AnnualAuditPlan/propsParams';
-import { basicServiceUrl, gatewayUrl } from '@/utils/commonUrl';
+import { basicServiceUrl, gatewayUrl, baseUrl } from '@/utils/commonUrl';
 
 
 const FormItem = Form.Item;
@@ -76,15 +76,22 @@ const BatchEditModal = (props) => {
                   initialValue: originData.reviewReasonName,
                   rules: [{ required, message: '审核方式不能为空', },],
                 })(
-                  <ComboGrid
+                  <ComboList
                     allowClear={true}
                     style={{ width: '100%' }}
                     form={form}
                     name={'reviewReasonName'}
-                    field={['reviewReasonId', 'reviewReasonCode']}
-                    {...AuditCauseManagementConfig}
-                    disabled={originData.sourceType !== "ADMISSION_RECOMMENDATION"}
-                  />,
+                    field={['reviewReasonCode', 'reviewReasonId']}
+                    store={{
+                      params: {
+                        findByReviewTypeCode: originData.reviewTypeCode
+                      },
+                      type: 'GET',
+                      autoLoad: false,
+                      url: `${baseUrl}/api/reviewReasonService/findByReviewTypeCode`,
+                    }}
+                    {...DocumentAuditCauseManagementByReviewTypeConfig}
+                  />
                 )
               }
             </FormItem>

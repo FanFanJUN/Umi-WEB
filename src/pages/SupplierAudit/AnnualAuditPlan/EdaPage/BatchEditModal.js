@@ -3,7 +3,7 @@
  * @LastEditors: Li Cai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-23 17:00:19
- * @LastEditTime: 2020-12-08 14:20:24
+ * @LastEditTime: 2020-12-09 16:38:04
  * @Description: 批量编辑页面
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BatchEditModal.js
  */
@@ -34,6 +34,7 @@ const width = 160;
 const BatchEditModal = (props) => {
 
   const { visible, title, form, type, originData = {} } = props;
+  console.log(originData);
 
   const { getFieldDecorator, getFieldValue, setFieldsValue } = props.form;
 
@@ -58,6 +59,9 @@ const BatchEditModal = (props) => {
   const onOk = () => {
     form.validateFieldsAndScroll((err, values) => {
       if (err) return;
+      if (values.reviewMonth) {
+        values.reviewMonth = moment(values.reviewMonth).format('YYYY-MM-DD').toString();
+      }
       props.onOk(values);
     });
   }

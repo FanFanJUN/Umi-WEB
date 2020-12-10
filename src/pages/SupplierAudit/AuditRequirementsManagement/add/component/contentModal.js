@@ -227,7 +227,7 @@ const ContentModal = (props) => {
                       namePath: item.organization.namePath,
                       memberId: item.user.id,
                       memberName: item.user.userName,
-                      employeeNo: item.user.tenantCode,
+                      employeeNo: item.code,
                       departmentCode: item.organization.code,
                       departmentId: item.organization.id,
                       departmentName: item.organization.name,

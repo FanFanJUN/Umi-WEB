@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime: 2020-12-09 14:58:51
+ * @LastEditTime: 2020-12-09 16:24:06
  * @Description: 行信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
@@ -260,25 +260,16 @@ let LineInfo = forwardRef((props, ref) => {
       let groupObj = {};
       item.treeData = buildTreeData(item.sonList);
       item.lineNum = getRandom(10);
+      item.whetherDeleted = false;
       item.reviewPlanMonthLinenum = ((Array(4).join(0) + (index + 1 + dataSource.length)).slice(-4) + '0');
-      // // 采购组织暂时写死
-      // item.purchaseTeamCode = '2520';
-      // item.purchaseTeamId = 'B2A7879B-9358-11EA-B42A-0242C0A84414';
-      // item.purchaseTeamName = '电视公司零采采购组织';
-
       if (item.reviewTeamGroupBoList) {
         for (var i = 0; i < item.reviewTeamGroupBoList.length; i++) {
-          // console.log(item.reviewTeamGroupBoList[i])
           let lineObj = item.reviewTeamGroupBoList[i];
           lineObj.lineNum = getRandom(10);
           if (lineObj.reviewTeamMemberBoList) {
             for (let j = 0; j < lineObj.reviewTeamMemberBoList.length; j++) {
               let obj = lineObj.reviewTeamMemberBoList[j];
               if (obj.memberRole === 'GROUP_LEADER' && !groupObj.leaderName) {
-                // groupObj.leaderId = obj.memberId;
-                // groupObj.leaderName = obj.memberName;
-                // groupObj.leaderTel = obj.memberTel;
-                // groupObj.leaderEmployeeNo = obj.employeeNo;
                 groupObj.leaderDepartmentId = obj.departmentId;
                 groupObj.leaderDepartmentCode = obj.departmentCode;
                 groupObj.leaderDepartmentName = obj.departmentName;
