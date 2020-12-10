@@ -252,11 +252,11 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
         businessId={data.flowId}
         flowMapUrl='flow-web/design/showLook'
         ignore={DEVELOPER_ENV}
-        disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length === 0}
+        disabled={!judge(data.selectedRows, 'flowStatus', 'COMPLETED') || data.selectedRowKeys.length === 0}
         key='SRM-SM-AUDITBRIEFING-APPROVEHISTORY'
       >
         <Button className={styles.btn}
-                disabled={!judge(data.selectedRows, 'flowStatus', 'INPROCESS') || data.selectedRowKeys.length !== 1}>审核历史</Button>
+                disabled={!judge(data.selectedRows, 'flowStatus', 'COMPLETED') || data.selectedRowKeys.length !== 1}>审核历史</Button>
       </FlowHistoryButton>)
     }
     {
