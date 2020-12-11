@@ -178,7 +178,7 @@ const AuditReportManagement = forwardRef(({}, ref) => {
     { title: '拟制人', key: 'applyName', props: { placeholder: '输入拟制人' } },
     { title: '拟制日期', key: 'applyDateStart', type: 'datePicker', props: { placeholder: '选择拟制日期' } },
     { title: '状态', key: 'status', type: 'list', props: reportStateProps },
-    { title: '审批状态', key: 'flowState', type: 'list', props: flowProps },
+    { title: '审批状态', key: 'flowStatus', type: 'list', props: flowProps },
     { title: '供应商', key: 'supplierCode', type: 'list', props: supplierPropsNew },
     { title: '代理商', key: 'agentCode', type: 'list', props: agentList },
     { title: '物料分类', key: 'materialGroupCode', type: 'tree', props: materialClassProps },
