@@ -203,12 +203,12 @@ const getRecommendRef = forwardRef(({
         {
             title: "公司代码",
             width: 150,
-            dataIndex: "recommendAccess.corporationCode"
+            dataIndex: "corporationCode"
         },
         {
             title: "公司名称",
             width: 160,
-            dataIndex: "recommendAccess.corporationName"
+            dataIndex: "corporationName"
         },
         {
             title: "采购组织代码",
