@@ -474,7 +474,7 @@ export default () => {
   function listenerParentClose(event) {
     const { data = {} } = event;
     if (data.tabAction === 'close') {
-      tableRef.current.remoteDataRefresh()
+      uploadTable()
     }
   }
   useEffect(() => {
