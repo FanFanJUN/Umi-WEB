@@ -49,6 +49,7 @@ const HeadFormRef = forwardRef(({
     }));
     const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
     const [data, setData] = useState([]);
+    const [rectif, setRectif] = useState(false);
     useEffect(() => {
         handledata()
     }, [])
@@ -70,6 +71,13 @@ const HeadFormRef = forwardRef(({
     function disabledDate(current) {
         return current && current < moment().startOf('day');
     }
+    function handleadopt(e) {
+        if (e.target.value === 0) {
+            setRectif(true)
+        } else {
+            setRectif(false)
+        }
+    }
     return (
         <div >
             <Row>
@@ -88,33 +96,37 @@ const HeadFormRef = forwardRef(({
                                 })(
                                     <Group
                                         disabled={isView === true}
-                                        options={confirmRadioOptions} />
+                                        options={confirmRadioOptions}
+                                        onChange={(value) => handleadopt(value)}
+                                    />
                                 )
                         }
                     </FormItem>
                 </Col>
             </Row>
-            <Row>
-                <Col span={15}>
-                    <FormItem label='是否整改' {...formLayout}>
-                        {
-                            getFieldDecorator('rectificationStatus', {
-                                initialValue: editformData ? editformData.rectificationStatus : '',
-                                rules: [
-                                    {
-                                        required: true,
-                                        message: '请选择是否整改',
-                                    },
-                                ],
-                            })(
-                                <Group
-                                    disabled={isView === true}
-                                    options={RectificationRadio} />
-                            )
-                        }
-                    </FormItem>
-                </Col>
-            </Row>
+            {
+                rectif ? <Row>
+                    <Col span={15}>
+                        <FormItem label='是否整改' {...formLayout}>
+                            {
+                                getFieldDecorator('rectificationStatus', {
+                                    initialValue: editformData ? editformData.rectificationStatus : '',
+                                    rules: [
+                                        {
+                                            required: true,
+                                            message: '请选择是否整改',
+                                        },
+                                    ],
+                                })(
+                                    <Group
+                                        disabled={isView === true}
+                                        options={RectificationRadio} />
+                                )
+                            }
+                        </FormItem>
+                    </Col>
+                </Row> : null
+            }
             <Row>
                 <Col span={15}>
                     <FormItem label='本次任务完成日期' {...formLayout}>
