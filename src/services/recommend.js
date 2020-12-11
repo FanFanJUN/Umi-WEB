@@ -162,6 +162,14 @@ export const saveTeamConfrim = params => createServiceRequest({
   method: 'POST'
 })
 
+// 删除分配评审人
+export const deleteTeamConfrim = params => createServiceRequest({
+  path: '/api/samSupplierEvlSystemService/deleteRuleJurors',
+  params,
+  method: 'DELETE',
+  hack: true
+})
+
 // 查询已分配评审人的评价体系
 export const queryTeamConfirmHistoryList = params => createServiceRequest({
   path: '/api/samSupplierEvlSystemService/findReviewEvlRuleVoByRecommendDemandId',

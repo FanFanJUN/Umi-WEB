@@ -16,11 +16,10 @@ import {
 import styles from './index.less';
 import { ComboList, ExtTable, ComboTree } from 'suid';
 import SelectRecommendData from './SelectRecommendData';
-import { commonProps, getUserName } from '../../utils';
+import { commonProps, getUserName, openNewTab } from '../../utils';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { useTableProps } from '../../utils/hooks';
-import { openNewTab } from '../../utils';
 const { orgnazationProps, corporationProps } = commonProps;
 
 const { create, Item: FormItem } = Form;
@@ -36,6 +35,17 @@ function CommonForm({
   form,
   type,
   columns = [
+    {
+      title: '是否准入',
+      dataIndex: 'access',
+      render(text) {
+        const isBoolean = typeof text === 'boolean';
+        if (isBoolean) {
+          return !!text ? '是' : '否'
+        }
+        return ''
+      }
+    },
     {
       title: '公司代码',
       dataIndex: 'corporationCode'
@@ -80,7 +90,48 @@ function CommonForm({
         }
         return '未选择'
       }
-    }
+    },
+    {
+      title: '实物认定结果',
+      dataIndex: 'physicalPass',
+      render(text = null) {
+        const isBoolean = typeof text === 'boolean';
+        if (isBoolean) {
+          return !!text ? '通过' : '未通过'
+        }
+        return ''
+      }
+    },
+    {
+      title: '实物认定报告',
+      dataIndex: 'physicalId',
+      render(text, { physicalDocNumber = '' }) {
+        if (!!text) {
+          return (
+            <Button type='link' onClick={() => openNewTab(`material/Cognizance/ManualDetail/index?id=${text}`, '实物认定报告', false)}>{physicalDocNumber}</Button>
+          )
+        }
+        return ''
+      },
+      width: 200
+    },
+    {
+      title: '供应商审核结果',
+      dataIndex: 'examineResult'
+    },
+    {
+      title: '供应商审核报告',
+      dataIndex: 'examineId',
+      render(text, { examineDocNumber = '' }) {
+        if (!!text) {
+          return (
+            <Button type='link' onClick={() => openNewTab(`material/Cognizance/ManualDetail/index?id=${text}`, '供应商审核报告', false)}>{examineDocNumber}</Button>
+          )
+        }
+        return ''
+      },
+      width: 200
+    },
   ]
 }, ref) {
   useImperativeHandle(ref, () => ({

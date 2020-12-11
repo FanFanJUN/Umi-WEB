@@ -27,7 +27,7 @@ const MproCertification = ({ type, data, setTableData }) => {
     },
     {
       title: '认证类型',
-      dataIndex: 'certificateInfoType',
+      dataIndex: 'productName',
       ellipsis: true,
       editable: true
     },

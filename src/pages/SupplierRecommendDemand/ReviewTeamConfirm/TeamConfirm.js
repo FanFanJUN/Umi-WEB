@@ -1,16 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useImperativeHandle, forwardRef } from 'react';
 import {
-  Button,
   Table,
   message,
   Form,
-  Modal
+  Tag
 } from 'antd';
 import { Header, UserModal } from '../../../components';
 import { router } from 'dva';
 import { ComboTree } from 'suid';
-import { queryTeamConfirm, saveTeamConfrim, queryTeamConfirmHistoryList } from '../../../services/recommend';
+import {
+  queryTeamConfirm,
+  saveTeamConfrim,
+  deleteTeamConfrim,
+  queryTeamConfirmHistoryList
+} from '../../../services/recommend';
 import { commonProps } from '../../../utils'
+import Modal from 'antd/es/modal';
 const { evaluateSystemFormCodeProps } = commonProps;
 const evaluateSystemProps = {
   ...evaluateSystemFormCodeProps,
@@ -32,7 +37,10 @@ const formLayout = {
 
 function TeamConfirm({
   form,
-}) {
+}, ref) {
+  useImperativeHandle(ref, () => ({
+    checkSystemOp
+  }))
   const [dataSource, setDataSource] = useState([]);
   const [loading, toggleLoading] = useState(false);
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
@@ -43,6 +51,10 @@ function TeamConfirm({
   const [systemOp, setSystemOp] = useState({});
   const { query } = useLocation();
   const empty = selectedRowKeys.length === 0;
+  function checkSystemOp() {
+    const rls = getRuleData(dataSource);
+    return rls.every(item => item.jurorScores.length > 0)
+  }
   const tableProps = {
     columns: [
       {
@@ -66,10 +78,16 @@ function TeamConfirm({
         dataIndex: 'jurorScores',
         render(text) {
           if (Array.isArray(text)) {
-            return text.map(item => item.scorerName).join('，')
+            return text.map(item => (
+              <Tag
+                closable
+                onClose={(event) => handleDeleteJurorScores(event, item)}
+              >{item.scorerName}</Tag>
+            ))
           }
           return ''
-        }
+        },
+        width: 240
       }
     ],
     loading: loading,
@@ -129,6 +147,26 @@ function TeamConfirm({
     }
     message.error(msg)
   }
+  function handleDeleteJurorScores(event, item) {
+    event.preventDefault()
+    Modal.confirm({
+      title: '删除评审人',
+      content: '是否确认删除该评选人？',
+      okText: '删除',
+      cancelText: '取消',
+      onOk: async () => {
+        const { success, message: msg } = await deleteTeamConfrim({
+          ruleJurorId: item?.id
+        })
+        if (success) {
+          message.success(msg)
+          uploadTableDataSource()
+          return
+        }
+        message.error(msg)
+      }
+    })
+  }
   async function uploadTableDataSource() {
     toggleLoading(true)
     const { success, message: msg, data } = await queryTeamConfirmHistoryList({
@@ -136,7 +174,6 @@ function TeamConfirm({
     })
     toggleLoading(false)
     if (success) {
-      console.log(data)
       const { evlSystemRules, supplierEvlSystem } = data
       const ks = getDataSourceKeys(evlSystemRules)
       form.setFieldsValue({ systemName: supplierEvlSystem?.name })
@@ -151,7 +188,7 @@ function TeamConfirm({
   }
   function getDataSourceKeys(d, ks = []) {
     const isValid = Array.isArray(d)
-    if(!isValid){
+    if (!isValid) {
       return []
     }
     let kes = ks;
@@ -162,6 +199,22 @@ function TeamConfirm({
       }
     })
     return kes
+  }
+  function getRuleData(d, rules = []) {
+    const isValid = Array.isArray(d)
+    if (!isValid) {
+      return []
+    }
+    let rs = rules;
+    d.forEach(item => {
+      if (!!item?.ruleName) {
+        rules.push(item)
+      }
+      if (!!item.children) {
+        return getRuleData(item.children, rs)
+      }
+    })
+    return rs
   }
   async function handleReviewPersonConfirm(items = []) {
     if (items.length === 0) {
@@ -197,4 +250,7 @@ function TeamConfirm({
     </div>
   )
 }
-export default Form.create()(TeamConfirm);
+
+const ForwardRef = forwardRef(TeamConfirm)
+
+export default Form.create()(ForwardRef);
