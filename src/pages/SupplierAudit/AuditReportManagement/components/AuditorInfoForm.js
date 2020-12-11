@@ -208,7 +208,7 @@ const AuditorInfoFrom = React.forwardRef(({ form, editData,leaderName }, ref) =>
                   dataSource={contentData.dataSource}
                 />
               </div>
-              <div style={{ height: '230px' }}>
+              <div style={{ height: '230px' , overflow: 'auto'}}>
                 <span style={{ fontSize: '15px', fontWeight: 'bold', marginLeft: '15px' }}>成员审核内容管理</span>
                 {treeData && treeData.length > 0 && < DirectoryTree
                   defaultExpandAll
