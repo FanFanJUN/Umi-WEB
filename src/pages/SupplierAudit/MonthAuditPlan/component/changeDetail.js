@@ -1,13 +1,13 @@
 /*
  * @Author: your name
  * @Date: 2020-11-05 16:27:34
- * @LastEditTime: 2020-11-10 14:01:00
+ * @LastEditTime: 2020-12-11 18:08:47
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\MonthAuditPlan\component\changeDetail.js
  */
 import React, { useState, useEffect } from "react";
-import { Spin, Tabs, Form } from "antd";
+import { Spin, Tabs, Form, message } from "antd";
 import { router } from 'dva';
 import ChangeInfo from "./ChangeInfo";
 import ChangeLineInfo from "./ChangeLineInfo";

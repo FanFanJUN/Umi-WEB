@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime: 2020-12-11 17:43:46
+ * @LastEditTime: 2020-12-11 18:04:02
  * @Description: 行信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
@@ -256,32 +256,35 @@ let LineInfo = forwardRef((props, ref) => {
   // 新增弹框-确定
   const handleAddOk = (value) => {
     // console.log('行数据', value)
-    let newList = value.map((item, index) => {
-      let groupObj = {};
-      item.treeData = buildTreeData(item.sonList);
-      item.lineNum = getRandom(10);
-      item.whetherDeleted = false;
-      item.reviewPlanMonthLinenum = ((Array(4).join(0) + (index + 1 + dataSource.length)).slice(-4) + '0');
-      if (item.reviewTeamGroupBoList) {
-        for (var i = 0; i < item.reviewTeamGroupBoList.length; i++) {
-          let lineObj = item.reviewTeamGroupBoList[i];
-          lineObj.lineNum = getRandom(10);
-          if (lineObj.reviewTeamMemberBoList) {
-            for (let j = 0; j < lineObj.reviewTeamMemberBoList.length; j++) {
-              let obj = lineObj.reviewTeamMemberBoList[j];
-              if (obj.memberRole === 'GROUP_LEADER' && !groupObj.leaderName) {
-                groupObj.leaderDepartmentId = obj.departmentId;
-                groupObj.leaderDepartmentCode = obj.departmentCode;
-                groupObj.leaderDepartmentName = obj.departmentName;
-                groupObj.codePath = obj.codePath;
-                groupObj.namePath = obj.namePath;
+    let newList = [];
+    value.forEach((item, index) => {
+      if (!dataSource.some(v => v.sourceId === item.sourceId)) {
+        let groupObj = {};
+        item.treeData = buildTreeData(item.sonList);
+        item.lineNum = getRandom(10);
+        item.whetherDeleted = false;
+        item.reviewPlanMonthLinenum = ((Array(4).join(0) + (index + 1 + dataSource.length)).slice(-4) + '0');
+        if (item.reviewTeamGroupBoList) {
+          for (var i = 0; i < item.reviewTeamGroupBoList.length; i++) {
+            let lineObj = item.reviewTeamGroupBoList[i];
+            lineObj.lineNum = getRandom(10);
+            if (lineObj.reviewTeamMemberBoList) {
+              for (let j = 0; j < lineObj.reviewTeamMemberBoList.length; j++) {
+                let obj = lineObj.reviewTeamMemberBoList[j];
+                if (obj.memberRole === 'GROUP_LEADER' && !groupObj.leaderName) {
+                  groupObj.leaderDepartmentId = obj.departmentId;
+                  groupObj.leaderDepartmentCode = obj.departmentCode;
+                  groupObj.leaderDepartmentName = obj.departmentName;
+                  groupObj.codePath = obj.codePath;
+                  groupObj.namePath = obj.namePath;
+                }
               }
             }
           }
         }
+        let newItem = Object.assign(item, groupObj);
+        newList.push(newItem);
       }
-      let newItem = Object.assign(item, groupObj);
-      return newItem;
     });
     newList = dataSource.concat(newList);
     setDataSource(newList);
