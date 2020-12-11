@@ -14,6 +14,12 @@ const NextPeriodForm = React.forwardRef(({ form, isView, editData, type }, ref) 
 
   const columns = [
     {
+      title: '序号', dataIndex: 'lineNumber', ellipsis: true, width: 90,
+      render(text, record, index) {
+        return index + 1;
+      },
+    },
+    {
       title: '供应商信息', children: [
         { title: '名称', dataIndex: 'supplierName', width: 200 },
         { title: '物资分类', dataIndex: 'materialGroupName', ellipsis: true, width: 200 },
