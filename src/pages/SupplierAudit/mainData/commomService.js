@@ -478,8 +478,10 @@ export const reviewPlanMonthConfig = {
     params: {
       state: 'EFFECT',
       flowStatus: 'COMPLETED',
+      whetherDeleted: false,
+      whetherOccupied: false
     },
-    url: `${recommendUrl}/api//reviewPlanMonthService/findByPage`,
+    url: `${recommendUrl}/api/reviewPlanMonthService/findByPage`,
   },
   remotePaging: true,
   rowKey: 'reviewPlanMonthCode',

@@ -98,22 +98,23 @@ const Index = (props) => {
     const getAllData = () => {
         let saveData = { ...editData };
         let lineData = tableRef.current.getTableList();
-        console.log("获取到的表格数据", lineData)
+        // console.log("获取到的表格数据", lineData);
         let deleteArr = tableRef.current.getDeleteArr();
         if (lineData.length === 0) {
             message.info('请至少添加一条行信息');
             return false;
         } else {
+            // 校验审核原因，审核方式，审核组织形式不能为空
             let reviewPlanMonthLinenum = "";
             let tag = lineData.some(item => {
                 // 记录行号
-                if((!item.reviewWayId || !item.reviewOrganizedWayId)  && !item.whetherDeleted){
+                if((!item.reviewWayId || !item.reviewOrganizedWayId || !item.reviewReasonId)  && !item.whetherDeleted){
                     reviewPlanMonthLinenum = item.reviewPlanMonthLinenum
                 }
-                return (!item.reviewWayId || !item.reviewOrganizedWayId) && !item.whetherDeleted
+                return (!item.reviewWayId || !item.reviewOrganizedWayId || !item.reviewReasonId) && !item.whetherDeleted;
             })
             if(tag) {
-                message.error("行" + reviewPlanMonthLinenum + "：审核方式或审核组织形式不能为空，请进行编辑完善");
+                message.error("行" + reviewPlanMonthLinenum + "：审核原因，审核方式，审核组织形式不能为空，请进行编辑完善");
                 return false;
             }
         }
@@ -140,7 +141,7 @@ const Index = (props) => {
                     baseInfo = false;
                 } else {
                     values.applyMonth = moment(values.applyMonth).format('YYYY-MM-DD').slice(0,7) + "-01";
-                    console.log("表单数据", values)
+                    // console.log("表单数据", values)
                     baseInfo = { ...values }
                 }
             });
@@ -169,9 +170,6 @@ const Index = (props) => {
         // 请求错误时 success值同样为 true  catch 重新赋值
         try {
              res = await requestPromise[query.pageState](saveData);
-            if(res && res.data && query.pageState === 'edit') {
-                res.data = saveData.id;
-            }
         } catch (error) {
             res = error;
             setLoading(false);
@@ -185,7 +183,7 @@ const Index = (props) => {
                 }, 1000)
             } else {
                 // 处理提交审核---返回数据id
-                return query.pageState === "change" ? res.message : res.data;
+                return res.data;
             }
         } else {
             setLoading(false);
