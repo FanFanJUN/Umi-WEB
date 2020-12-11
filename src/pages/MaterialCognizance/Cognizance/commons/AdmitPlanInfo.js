@@ -85,8 +85,8 @@ const HeadFormRef = forwardRef(({
             setOthersdata(params)
         }
         form.setFieldsValue({
-            'companyCode': record[0].recommendAccess.corporationCode,
-            'companyName': record[0].recommendAccess.corporationName,
+            'companyCode': record[0].corporationCode,
+            'companyName': record[0].corporationName,
             'purchaseCode': record[0].purchaseOrgCode,
             'purchaseName': record[0].purchaseOrgName,
             'supplierCode': record[0].recommendAccess.supplierCode,
