@@ -53,7 +53,7 @@ function LayoutComponent({
     handleSelectedRows,
     setSearchValue
   } = sets;
-  const { account } = storage.sessionStorage.get("Authorization") || {};
+  const { userId } = storage.sessionStorage.get("Authorization") || {};
   const tableRef = useRef(null);
   const [onlyMe, setOnlyMe] = useState(false);
   const [visible, toggleVisible] = useState(false);
@@ -129,13 +129,13 @@ function LayoutComponent({
         ...searchValue,
         filters: searchValue.filters ?
           searchValue.filters.concat([{
-            fieldName: 'creatorAccount',
+            fieldName: 'purchaseTeamLeaderId',
             operator: 'EQ',
-            value: onlyMe ? account : undefined
+            value: onlyMe ? userId : undefined
           }]) : [{
-            fieldName: 'creatorAccount',
+            fieldName: 'purchaseTeamLeaderId',
             operator: 'EQ',
-            value: onlyMe ? account : undefined
+            value: onlyMe ? userId : undefined
           }],
         quickSearchProperties: ['supplierName', 'docNumber'],
         sortOrders: [
