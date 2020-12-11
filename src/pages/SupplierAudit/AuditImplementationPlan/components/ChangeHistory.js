@@ -37,7 +37,7 @@ const ChangeHistory = (props) => {
         //     return text;
         // } },
         { title: '变更人', dataIndex: 'applyName', ellipsis: true, width: 140 },
-        { title: '变更时间', dataIndex: 'applyDate', ellipsis: true, width: 140 },
+        { title: '变更时间', dataIndex: 'changeDate', ellipsis: true, width: 140 },
         {
             title: '链接', dataIndex: 'id', ellipsis: true, width: 140, render: (text) => <a onClick={(e) => {
                 e.stopPropagation();
