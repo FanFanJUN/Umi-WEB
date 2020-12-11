@@ -131,7 +131,7 @@ function Quality({
         <FormItem key='BG' label='业务板块' {...formLayout}>
           {
             getFieldDecorator('bgCode'),
-            getFieldDecorator('businessGroupName',{
+            getFieldDecorator('businessGroupName', {
               rules: [
                 {
                   required: true,
@@ -155,7 +155,7 @@ function Quality({
         <FormItem key='BU' label='业务单元' {...formLayout}>
           {
             getFieldDecorator('buCode'),
-            getFieldDecorator('businessUnitName',{
+            getFieldDecorator('businessUnitName', {
               rules: [
                 {
                   required: true,
@@ -209,7 +209,11 @@ function Quality({
             className={styles.btn}
             uploadBtnText='导入评价数据'
             validateAll={false}
-            tableProps={{ columns: COLUMNS }}
+            tableProps={{
+              columns: COLUMNS,
+              searchProperties: ['supplierCode', 'supplierName'],
+              searchPlaceHolder: '请输入供应商代码或名称查询'
+            }}
             validateFunc={validateFunc}
             importFunc={importFunc}
             okButtonProps={{

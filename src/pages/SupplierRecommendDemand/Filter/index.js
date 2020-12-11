@@ -48,7 +48,7 @@ const SelfAssessment = forwardRef(({
       title: '意见描述',
       dataIndex: 'compareSupplierOpinions',
       render(text) {
-        return text.map((item, key) => <div key={`${key}-opinions`}>{item}</div>)
+        return text.map((item, key) => <div key={`${key}-opinions`}>{`${item.scorerName}:${item.opinion ? item.opinion : ''}\n`}</div>)
       }
     },
     {
