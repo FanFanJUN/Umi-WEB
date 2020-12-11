@@ -5,10 +5,19 @@ import { AuditCauseManagementConfig } from '../../mainData/commomService';
 import { isEmptyArray, hideFormItem, filterEmptyFileds } from '@/utils/utilTool';
 // import { getSupplierSupplyList } from '../service';
 import { smBaseUrl } from '@/utils/commonUrl';
-import { purchaseOrgConfig, corporationProps, materialClassProps, getListByTypeId } from '@/utils/commonProps';
+import { purchaseOrgConfig, corporationProps, materialClassProps, getListByTypeId, supplierProps } from '@/utils/commonProps';
 import { findReviewTypesByCode } from '../service';
 
 const FormItem = Form.Item;
+const minxinSupplierProps = {
+    ...supplierProps,
+    reader: {
+        name: 'name',
+        field: ['code'],
+        description: 'code'
+    },
+    placeholder: '选择供应商'
+};
 
 const formItemLayoutLong = {
     labelCol: { span: 8 },
@@ -50,7 +59,7 @@ const AddModal = (props) => {
             }
         },
         { title: '物料级别', dataIndex: 'materialGrade', ellipsis: true, width: 80, align: 'center' },
-        { title: '绩效等级', dataIndex: 'measureUnit', ellipsis: true, width: 140 },
+        { title: '绩效等级', dataIndex: 'grade', ellipsis: true, width: 140 },
         { title: '采购金额', dataIndex: 'sampleReceiverName', ellipsis: true, width: 140 },
     ];
 
@@ -88,9 +97,11 @@ const AddModal = (props) => {
         form.validateFieldsAndScroll((err, values) => {
             if (err) return;
             if (!err) {
+                values.Q_EQ_materialGrade = values.materialGrade;
                 delete values.Q_EQ_purchaseOrgName;
                 delete values.materialGradeAndName;
                 delete values.Q_EQ_corporationName;
+                delete values.materialGrade;
                 setCascadeParams(values);
             }
         });
@@ -142,7 +153,7 @@ const AddModal = (props) => {
                     <Col span={8}>
                         <FormItem {...formItemLayoutLong} label={'物料分类'}>
                             {
-                                getFieldDecorator('materielCategory')(
+                                getFieldDecorator('materialCategoryName')(
                                     <ComboTree
                                         allowClear
                                         form={form}
@@ -157,11 +168,19 @@ const AddModal = (props) => {
                     </Col>
                 </Row>
                 <Row>
+                    {HideFormItem('Q_EQ_supplierCode')}
                     <Col span={8}>
                         <FormItem {...formItemLayoutLong} label={'原厂'}>
                             {
-                                getFieldDecorator('originSupplierCode')(
-                                    <Input />
+                                getFieldDecorator('supplierCodeName')(
+                                    <ComboList
+                                        allowClear
+                                        style={{ width: '100%' }}
+                                        form={form}
+                                        name='supplierCodeName'
+                                        field={['Q_EQ_supplierCode']}
+                                        {...minxinSupplierProps}
+                                    />
                                 )
                             }
                         </FormItem>
@@ -188,15 +207,8 @@ const AddModal = (props) => {
                     <Col span={8}>
                         <FormItem {...formItemLayoutLong} label={'绩效等级'}>
                             {
-                                getFieldDecorator('fileCategoryName')(
-                                    <ComboList
-                                        allowClear
-                                        style={{ width: '100%' }}
-                                        form={form}
-                                        name={'name'}
-                                        field={['code', 'id']}
-                                        {...AuditCauseManagementConfig}
-                                    />,
+                                getFieldDecorator('Q_EQ_grade')(
+                                    <Input />,
                                 )
                             }
                         </FormItem>
@@ -247,6 +259,8 @@ const AddModal = (props) => {
                         valid: 1,
                         page: page.current,
                         rows: page.pageSize,
+                        Q_EQ_frozen__Boolean: 0,
+                        ...filterEmptyFileds(cascadeParams),
                     },
                     url: `${smBaseUrl}/supplierSupplyList/listPageVo`,
                     type: 'get',
@@ -255,6 +269,7 @@ const AddModal = (props) => {
                 cascadeParams={
                     {
                         valid: 1,
+                        Q_EQ_frozen__Boolean: 0,
                         ...filterEmptyFileds(cascadeParams),
                     }
                 }
