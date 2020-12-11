@@ -21,6 +21,12 @@ const ThisPeriodForm = React.forwardRef(({ form, isView, editData, type }, ref) 
   const getTableRef = useRef([]);
   const columns = [
     {
+      title: '序号', dataIndex: 'lineNumber', ellipsis: true, width: 90,
+      render(text, record, index) {
+        return index + 1;
+      },
+    },
+    {
       title: '供应商信息', children: [
         { title: '名称', dataIndex: 'supplierName', width: 200 },
         { title: '物资分类', dataIndex: 'materialGroupName', ellipsis: true, width: 200 },
@@ -30,6 +36,15 @@ const ThisPeriodForm = React.forwardRef(({ form, isView, editData, type }, ref) 
     { title: '审核类型', dataIndex: 'reviewTypeName', ellipsis: true, width: 120 },
     { title: '审核组织方式', dataIndex: 'reviewOrganizedWayName', width: 140 },
     { title: '参考审核内容', dataIndex: 'systemNames', width: 200 },
+    { title: '审核报告编号', dataIndex: 'auditReportManagCode', width: 140 },
+    {
+      title: '审核执行', children: [
+        { title: '综合得分', dataIndex: 'reviewScore', width: 120 },
+        { title: '审核评级', dataIndex: 'performanceRating', width: 120 },
+        { title: '报告结案', dataIndex: 'theCaseReport', width: 120 },
+        { title: '应用建议', dataIndex: 'conclusion', width: 120 },
+      ],
+    },
     {
       title: '审核组成员', children: [
         { title: '组长', dataIndex: 'leaderName', width: 140 },
@@ -60,9 +75,9 @@ const ThisPeriodForm = React.forwardRef(({ form, isView, editData, type }, ref) 
             className={styles.showNumber}>{editData.supplierOrgAuditNum}</span>家，延期执行<span
             className={styles.showNumber}>{editData.supplierOrgAuditPostponeNum}</span>家，执行<span
             className={styles.showNumber}>{editData.supplierOrgAuditExecutNum}</span> 家，执行审核执行率<span
-            className={styles.showNumber}>{editData.supplierOrgAuditImplementRate}</span>；审核报告结案<span
+            className={styles.showNumber}>{editData.supplierOrgAuditImplementRate + '%'}</span>；审核报告结案<span
             className={styles.showNumber}>{editData.supplierOrgAuditCloseNum}</span>家，报告结案率<span
-            className={styles.showNumber}>{editData.supplierOrgAuditReportCloseRate}</span> 。
+            className={styles.showNumber}>{editData.supplierOrgAuditReportCloseRate + '%'}</span> 。
           </div>
           <div>
             <div style={{ paddingBottom: '10px', fontSize: '14px' }}>
