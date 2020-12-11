@@ -52,7 +52,7 @@ const CommonTable = forwardRef(({
     remotePaging: true,
     columns,
     ref: tableRef,
-    checkbox: {
+    checkbox: type === 'detail' ? false : {
       rowCheck: false
     }
   }
