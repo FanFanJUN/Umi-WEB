@@ -27,7 +27,7 @@ const MproCertification = ({ type, data, setTableData }) => {
     },
     {
       title: '认证类型',
-      dataIndex: 'certificateInfoType',
+      dataIndex: 'productName',
       ellipsis: true,
       editable: true
     },
@@ -77,7 +77,6 @@ const MproCertification = ({ type, data, setTableData }) => {
       render: (text) => {
         return text && moment(text).format('YYYY-MM-DD');
       },
-      inputType: 'DatePicker',
       width: 150
     },
   ].map(item => ({

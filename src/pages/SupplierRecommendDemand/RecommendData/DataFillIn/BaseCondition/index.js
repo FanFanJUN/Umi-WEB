@@ -97,7 +97,7 @@ const BaseCondition = ({ form, updateGlobalStatus }) => {
           style={{
             padding: '0px'
           }}
-          title="基本概况"
+          title="基本情况"
           extra={type === 'add' ? [
             <Button
               key="save"

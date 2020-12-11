@@ -35,7 +35,7 @@ const SelfAssessment = forwardRef(({
     },
     {
       title: '原厂',
-      dataIndex: 'originFactoryName'
+      dataIndex: 'originName'
     },
     {
       title: '拟推荐',
@@ -73,7 +73,7 @@ const SelfAssessment = forwardRef(({
     },
     {
       title: '原厂',
-      dataIndex: 'originFactoryName',
+      dataIndex: 'originName',
       width: 100
     },
     {

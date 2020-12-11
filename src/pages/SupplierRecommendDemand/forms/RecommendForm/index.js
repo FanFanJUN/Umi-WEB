@@ -196,7 +196,6 @@ const FormContext = forwardRef(({
     const name = supplierCategory?.name;
     const reg = /代理商/g;
     const result = reg.test(name);
-    console.log(supplierRecommendDemandStatus)
     changeAgentState(result)
     setFieldsValue(other)
     setSystemView(treeData)
@@ -208,14 +207,14 @@ const FormContext = forwardRef(({
       return {
         ...iview,
         title: iview.name,
-        key: iview.id,
+        key: iview?.mainDataRelateId ? iview.mainDataRelateId : iview.id,
         children: iview.children.map(item => formatViewData(item))
       }
     }
     return {
       ...iview,
       title: iview.name,
-      key: iview.id
+      key: iview?.mainDataRelateId ? iview.mainDataRelateId : iview.id
     }
   }
   function getSystemTreeView() {

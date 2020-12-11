@@ -242,11 +242,11 @@ export default () => {
     },
     {
       title: '原厂代码',
-      dataIndex: 'originFactoryName'
+      dataIndex: 'originName'
     },
     {
       title: '原厂名称',
-      dataIndex: 'originFactoryCode'
+      dataIndex: 'originCode'
     },
     {
       title: '物料分类',

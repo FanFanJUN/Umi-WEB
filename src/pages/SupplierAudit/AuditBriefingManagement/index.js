@@ -169,7 +169,7 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
     { title: '拟制人', key: 'applyName', props: { placeholder: '输入拟制人' } },
     { title: '拟制日期', key: 'applyDateStart', type: 'datePicker', props: { placeholder: '选择拟制日期' } },
     { title: '状态', key: 'state', type: 'list', props: reportStateProps },
-    { title: '审批状态', key: 'flowState', type: 'list', props: flowProps },
+    { title: '审批状态', key: 'flowStatus', type: 'list', props: flowProps },
   ];
 
   const columns = [

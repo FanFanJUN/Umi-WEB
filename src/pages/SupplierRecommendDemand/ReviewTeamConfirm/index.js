@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import styles from './index.less';
 import DetailRecommendDemand from '../DetailRecommendDemand';
 import SupplierRecommendFillInData from '../RecommendData/DataFillIn';
@@ -23,6 +23,7 @@ function renderTabBar(props, DefaultTabBar) {
 
 function FillInInfomationConfirm() {
   const { query } = useLocation();
+  const teamConfrimRef = useRef(null);
   const [isReady, setIsReady] = useState(false);
   const { id = null, taskId = null, instanceId = null } = query;
   const [status, updateGlobalStatus] = useGlobalStatus(id);
@@ -35,12 +36,32 @@ function FillInInfomationConfirm() {
     }
     message.error(msg);
   }
+  async function beforeSubmit() {
+    const isReturn = teamConfrimRef.current.checkSystemOp()
+    if (isReturn) {
+      return new Promise((resolve) => {
+        resolve({
+          success: true,
+          data: {
+            businessKey: id
+          }
+        })
+      })
+    }
+    return new Promise((resolve)=> {
+      resolve({
+        success: false,
+        message: '存在未分配评审人的指标项，请检查'
+      })
+    })
+  }
   useEffect(() => {
     checkToken(query, setIsReady);
   }, []);
   return isReady ? (
     <Approve
       submitComplete={handleComplete}
+      beforeSubmit={beforeSubmit}
       flowMapUrl="flow-web/design/showLook"
       businessId={id}
       instanceId={instanceId}
@@ -52,7 +73,7 @@ function FillInInfomationConfirm() {
         </Affix>
         <Tabs renderTabBar={renderTabBar} animated={false}>
           <TabPane tab="评审小组确定" key="team-confirm">
-            <TeamConfirm />
+            <TeamConfirm wrappedComponentRef={teamConfrimRef} />
           </TabPane>
           <TabPane tab="推荐需求单" key="recommend-demand">
             <DetailRecommendDemand offsetTop={95} systemUseType='SupplierRegister' />
