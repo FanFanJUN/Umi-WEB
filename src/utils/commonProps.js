@@ -2,7 +2,8 @@ import {
   smBaseUrl,
   baseUrl,
   supplierManagerBaseUrl,
-  commonsUrl
+  commonsUrl,
+  gatewayUrl
 } from './commonUrl';
 import {
   listChineseProvinces,
@@ -1253,4 +1254,16 @@ export const getListByTypeId = (id) => {
       field: ['value'],
     },
   };
+}
+
+// 国家主数据
+export const stateInfoPorps = {
+  store: {
+    url: `${gatewayUrl}/basic-service/country/findAll`,
+    type: 'GET',
+  },
+  reader: {
+    name: 'name',
+    field: ['id']
+  }
 }

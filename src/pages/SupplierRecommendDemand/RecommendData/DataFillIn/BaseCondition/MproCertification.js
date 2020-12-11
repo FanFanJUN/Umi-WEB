@@ -77,7 +77,6 @@ const MproCertification = ({ type, data, setTableData }) => {
       render: (text) => {
         return text && moment(text).format('YYYY-MM-DD');
       },
-      inputType: 'DatePicker',
       width: 150
     },
   ].map(item => ({

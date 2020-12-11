@@ -12,6 +12,7 @@ import { Divider, Form, InputNumber, Row, Col, Input } from 'antd';
 import moment from 'moment';
 import EditableFormTable from '../CommonUtil/EditTable';
 import UploadFile from '../../../../../components/Upload';
+import { stateInfoPorps } from '../../../../../utils/commonProps';
 
 const FormItem = Form.Item;
 const formLayout = {
@@ -64,7 +65,7 @@ const OverallSit = ({
               }
             ]
           })(
-            <InputNumber style={{ width: '100%' }} disabled={DISABLED} min={0} max={100}/>,
+            <InputNumber style={{ width: '100%' }} disabled={DISABLED} min={0} max={100} />,
           )}
         </FormItem>
       </Col>
@@ -236,6 +237,16 @@ const Customer = React.forwardRef(({
       title: '出口国家',
       dataIndex: 'exportCountryName',
       ellipsis: true,
+      inputType: 'comboList',
+      props: {
+        ...stateInfoPorps,
+        name: 'exportCountryName',
+        field: ['exportCountryId'],
+        style: {
+          width: 200
+        }
+      },
+      width: 240
     },
     {
       title: '金额',
@@ -333,6 +344,7 @@ const Customer = React.forwardRef(({
     setsupplierOrderInfos(supplierOrderInfos.map(item => ({ ...item, guid: item.id })))
     setthreeYearPlans(threeYearPlans.map(item => ({ ...item, guid: item.id })))
   }, [data])
+  console.log(threeYearPlans)
   return (
     <div>
       <Divider orientation='left'>总体情况</Divider>

@@ -34,10 +34,7 @@ const formLayoutCol = {
 
 
 const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
-  const DISABLED = type === 'detail'
-  const [designCapability, setdesignCapability] = useState('');
-  const [actualCapacity, setactualCapacity] = useState('');
-
+  const DISABLED = type === 'detail';
   const { getFieldDecorator, setFieldsValue, getFieldsValue, resetFields } = form;
   const HideFormItem = hideFormItem(getFieldDecorator);
   const {
@@ -49,7 +46,9 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
     qualityControl = 0,
     technicist = 0,
     supportStaff = 0,
-    otherStaff = 0
+    otherStaff = 0,
+    designCapability = 0,
+    actualCapacity = 0
   } = getFieldsValue()
   useEffect(() => {
     const total = bachelorDegree + juniorCollege + technicalSecondary + manager + salesman + qualityControl + technicist + supportStaff + otherStaff;
@@ -67,6 +66,12 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
     supportStaff,
     otherStaff
   ])
+  useEffect(() => {
+    const n = (parseFloat(actualCapacity / designCapability) * 100).toFixed(2);
+    setFieldsValue({
+      actualCapacityFactor: n
+    })
+  }, [actualCapacity, designCapability])
   return (
     <div className={styles.wrapper}>
       <div className={styles.bgw}>
@@ -103,13 +108,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
               <Col span={12}>
                 <FormItem {...formLayout} label={'企业性质'}>
                   {getFieldDecorator('enterpriceProperty', {
-                    initialValue: data.enterpriceProperty,
-                    rules: [
-                      {
-                        required: true,
-                        message: '企业性质不能为空',
-                      },
-                    ],
+                    initialValue: data.enterpriceProperty
                   })(
                     <Input disabled />,
                   )}
@@ -118,13 +117,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
               <Col span={12}>
                 <FormItem label="注册资金" {...formLayout}>
                   {getFieldDecorator('registeredFund', {
-                    initialValue: data.registeredFund,
-                    rules: [
-                      {
-                        required: true,
-                        message: '注册资金不能为空',
-                      },
-                    ],
+                    initialValue: data.registeredFund
                   })(<Input disabled style={{ width: '100%' }} addonAfter="万 RMB" />)}
                 </FormItem>
               </Col>
@@ -134,12 +127,6 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                 <FormItem label="供应商注册地址" {...formLayoutCol}>
                   {getFieldDecorator('countryName', {
                     initialValue: data.countryName,
-                    rules: [
-                      {
-                        required: true,
-                        message: '供应商注册地址不能为空',
-                      },
-                    ],
                   })(
                     <Input style={{ width: '10%' }} disabled />
                   )}
@@ -278,18 +265,12 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
               <Col span={12}>
                 <FormItem label="现有产能利用率(%)" {...formLayout}>
                   {getFieldDecorator('actualCapacityFactor', {
-                    initialValue: (data.actualCapacityFactor * 100),
-                    rules: [
-                      {
-                        required: true,
-                        message: '现有产能利用率不能为空'
-                      }
-                    ]
+                    initialValue: data.actualCapacityFactor,
                   })(
                     <InputNumber
                       type='number'
                       style={{ width: '100%' }}
-                      disabled={DISABLED}
+                      disabled
                       min={0}
                       max={100}
                     />
