@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-11-04 16:24:34
- * @LastEditTime: 2020-12-07 12:16:50
+ * @LastEditTime: 2020-12-11 16:08:14
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\MonthAuditPlan\component\ChangeHistory.js
@@ -46,7 +46,7 @@ const ChangeHistory = (props) => {
         //     return text;
         // } },
         { title: '变更人', dataIndex: 'applyName', ellipsis: true, width: 140 },
-        { title: '变更时间', dataIndex: 'applyDate', ellipsis: true, width: 140 },
+        { title: '变更时间', dataIndex: 'changeDate', ellipsis: true, width: 140 },
         {
             title: '链接', dataIndex: 'id', ellipsis: true, width: 140, render: (text) => <a onClick={(e) => {
                 e.stopPropagation();
