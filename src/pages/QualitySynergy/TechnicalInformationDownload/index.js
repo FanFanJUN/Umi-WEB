@@ -32,10 +32,6 @@ export default function() {
     EpTechnicalShareDemandSearchBo: {},
   })
   const { query } = router.useLocation();
-  useEffect(()=>{
-    // 处理工作台过来-url携带参数
-    setData(v => ({ ...v, EpTechnicalShareDemandSearchBo: query }));
-  }, [])
 
   const handleQuickSearch = (value) => {
     setData(v => ({...v, quickSearchValue: value}))

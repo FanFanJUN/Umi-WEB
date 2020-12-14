@@ -85,7 +85,7 @@ export default create()(function ({ form }) {
     }, [maintainModal]);
     useEffect(() => {
         // 处理工作台过来-url携带参数
-        setSearchValue(v => ({ ...v, ...query}));
+        setSearchValue(v => ({ ...v, ...query, allotOnlyOwn: query.allotOnlyOwn == "true"}));
 
         window.parent.frames.addEventListener('message', listenerParentClose, false);
         return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
