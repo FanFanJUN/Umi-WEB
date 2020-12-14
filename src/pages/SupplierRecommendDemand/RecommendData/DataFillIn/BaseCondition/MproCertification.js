@@ -27,7 +27,7 @@ const MproCertification = ({ type, data, setTableData }) => {
     },
     {
       title: '认证类型',
-      dataIndex: 'productName',
+      dataIndex: 'certificateType',
       ellipsis: true,
       editable: true
     },
@@ -93,26 +93,9 @@ const MproCertification = ({ type, data, setTableData }) => {
     },
     {
       title: '认证类型',
-      dataIndex: 'certificateInfoType',
+      dataIndex: 'certificateType',
       ellipsis: true,
-      editable: true,
-      inputDisabled: true,
-      inputDefaultValue: 'PRODUCT_CERTIFICATION',
-      inputType: 'Select',
-      selectOptions: [
-        {
-          name: '管理体系',
-          value: 'MANAGEMENT_SYSTEM'
-        },
-        {
-          name: '产品认证',
-          value: 'PRODUCT_CERTIFICATION'
-        },
-        {
-          name: '其他认证',
-          value: 'OTHER_CERTIFICATION'
-        },
-      ]
+      editable: true
     },
     {
       title: '执行标准',
@@ -180,26 +163,9 @@ const MproCertification = ({ type, data, setTableData }) => {
     },
     {
       title: '认证类型',
-      dataIndex: 'certificateInfoType',
+      dataIndex: 'certificateType',
       ellipsis: true,
       editable: true,
-      inputDisabled: true,
-      inputDefaultValue: 'OTHER_CERTIFICATION',
-      inputType: 'Select',
-      selectOptions: [
-        {
-          name: '管理体系',
-          value: 'MANAGEMENT_SYSTEM'
-        },
-        {
-          name: '产品认证',
-          value: 'PRODUCT_CERTIFICATION'
-        },
-        {
-          name: '其他认证',
-          value: 'OTHER_CERTIFICATION'
-        },
-      ]
     },
     {
       title: '执行标准',
