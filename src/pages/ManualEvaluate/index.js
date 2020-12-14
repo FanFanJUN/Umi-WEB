@@ -11,15 +11,36 @@ import { Button, Input, Modal, message, Checkbox } from 'antd';
 import { Header, AutoSizeLayout, AdvancedForm } from '../../components';
 import { useTableProps } from '../../utils/hooks';
 import { recommendUrl } from '../../utils/commonUrl';
-import { evlStatusProps, evaluateSystemProps, orgnazationProps, evlEmu } from '../../utils/commonProps';
+import {
+  evlStatusProps,
+  evaluateSystemProps,
+  orgnazationProps,
+  evlEmu,
+  flowStatusProps
+} from '../../utils/commonProps';
 import { formatYMDHmsToYMD, getFrameElement, openNewTab } from '../../utils';
-import { checkEvaluateData }  from '../../services/evaluate';
+import { checkEvaluateData } from '../../services/evaluate';
 import { stopApprove } from '../../services/api';
 const { Search } = Input;
 const { StartFlow, FlowHistoryButton } = WorkFlow;
 
 const { authAction, storage } = utils;
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
+
+const minxiEvlStatusProps = {
+  ...evlStatusProps,
+  dataSource: [
+    {
+      code: 'NOT_EVALUATE',
+      name: '未评价'
+    },
+    {
+      code: 'EVALUATED',
+      name: '已评价'
+    }
+  ],
+  placeholder: '请选择评价状态'
+}
 
 function ManualEvaluate() {
   const tableRef = useRef(null)
@@ -55,18 +76,30 @@ function ManualEvaluate() {
   const FRAMELEEMENT = getFrameElement();
   const formItems = [
     {
-      title: '状态',
-      key: 'Q_EQ_evaluationProjectStatus',
+      title: '评价状态',
+      key: 'Q_EQ_evaluationStatus',
       type: 'list',
-      props: evlStatusProps
+      props: minxiEvlStatusProps
+    },
+    {
+      title: '审核状态',
+      key: 'Q_EQ_flowStatus',
+      type: 'list',
+      props: flowStatusProps
     },
     {
       title: '评价项目号',
-      key: 'Q_LK_docNumber'
+      key: 'Q_LK_docNumber',
+      props: {
+        placeholder: '输入评价项目号'
+      }
     },
     {
       title: '评价项目名称',
-      key: 'Q_LK_projectName'
+      key: 'Q_LK_projectName',
+      props: {
+        placeholder: '输入评价项目名称'
+      }
     },
     {
       title: '评价体系',
@@ -88,7 +121,10 @@ function ManualEvaluate() {
     },
     {
       title: '创建人',
-      key: 'Q_LK_creatorName'
+      key: 'Q_LK_creatorName',
+      props: {
+        placeholder: '输入创建人姓名'
+      }
     },
     {
       title: '创建日期',
@@ -139,11 +175,11 @@ function ManualEvaluate() {
         render(text) {
           switch (text) {
             case 'INIT':
-              return '未提交审批'
+              return '未提交审核'
             case 'INPROCESS':
-              return '审批中'
+              return '审核中'
             case 'COMPLETED':
-              return '审批完成'
+              return '审核完成'
             default:
               return ''
           }
@@ -279,7 +315,7 @@ function ManualEvaluate() {
   // 提交审核前检查
   async function handleBeforeSubmit() {
     toggleApproveLoading(true)
-    const {success, message: msg, data} = await checkEvaluateData({ subEvaluationProjectId: flowId })
+    const { success, message: msg, data } = await checkEvaluateData({ subEvaluationProjectId: flowId })
     toggleApproveLoading(false)
     return new Promise((resolve) => {
       if (data) {
@@ -357,7 +393,10 @@ function ManualEvaluate() {
     setSearchValue({
       filters: formatFields.map(item => ({
         ...item,
-        fieldName: `seEvaluationProject.${item.fieldName}`
+        fieldName: (
+          item.fieldName === 'evaluationStatus' ||
+          item.fieldName === 'flowStatus'
+        ) ? item.fieldName : `seEvaluationProject.${item.fieldName}`
       }))
     })
     uploadTable()
