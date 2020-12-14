@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-11-04 16:24:34
- * @LastEditTime: 2020-12-11 16:08:14
+ * @LastEditTime: 2020-12-11 18:11:27
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\MonthAuditPlan\component\ChangeHistory.js
@@ -68,6 +68,7 @@ const ChangeHistory = (props) => {
         }
     }
     const refresh = () => {
+        props.refreshTable();
         tableRef.current.manualSelectedRows();
         tableRef.current.remoteDataRefresh();
     }

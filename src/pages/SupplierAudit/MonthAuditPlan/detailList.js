@@ -116,8 +116,8 @@ export default function () {
 
     // 高级查询配置
     const formItems = [
-        { title: '需求公司', key: 'applyCorporationCode', type: 'list', props: CompanyConfig },
-        { title: '采购组织', key: 'purchaseTeamCode', type: 'list', props: FindByFiltersConfig},
+        { title: '需求公司', key: 'applyCorporationCode', type: 'list', props: CompanyConfig,  rules: { rules: [{ required: true, message: '请选择公司' }] },},
+        { title: '采购组织', key: 'purchaseTeamCode', type: 'list', props: FindByFiltersConfig,  rules: { rules: [{ required: true, message: '请选择采购组织' }] },},
         { title: '物料分类', key: 'materialGroupCode', type: 'tree', props: materialClassProps },
         { title: '供应商', key: 'supplierCode', type: 'list', props: supplierPropsNew },
         { title: '代理商', key: 'agentCode', type: 'list', props: agentList },
