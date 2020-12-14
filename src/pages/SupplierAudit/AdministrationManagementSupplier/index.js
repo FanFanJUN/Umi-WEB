@@ -4,6 +4,7 @@ import AdvancedForm from '../../../components/AdvancedForm';
 import { Button, Checkbox, Input, message, Modal } from 'antd';
 import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
 import { ExtTable, utils, WorkFlow } from 'suid';
+import { router } from 'dva';
 import {
   ApplyOrganizationProps,
   AuditCauseManagementConfig,
@@ -37,8 +38,15 @@ const managementStateConfig = {
 export default function() {
   const headerRef = useRef(null);
   const tableRef = useRef(null);
-
+  const { query } = router.useLocation();
   useEffect(() => {
+    // 工作台
+    if(query.state == 'NOT_COMPLETED') {
+      setManagementState(false);
+      setUnManagementState(true);
+    }
+    setData(v => ({ ...v, epTechnicalShareDemandSearchBo: {...query} }));
+
     window.parent.frames.addEventListener('message', listenerParentClose, false);
     return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
   }, []);

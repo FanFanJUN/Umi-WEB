@@ -8,6 +8,7 @@ import AdvancedForm from '../../../components/AdvancedForm';
 import { Input } from 'antd';
 import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
 import { DataExport, ExtTable, utils } from 'suid';
+import { router } from 'dva';
 import moment from "moment";
 import {
     AuditCauseManagementConfig,
@@ -68,8 +69,11 @@ export default function () {
 
     const headerRef = useRef(null);
     const tableRef = useRef(null);
-
+    const { query } = router.useLocation();
     useEffect(() => {
+        // 处理工作台过来-url携带参数
+        setData(v => ({ ...v, epTechnicalShareDemandSearchBo: { ...query } }));
+
         window.parent.frames.addEventListener('message', listenerParentClose, false);
         return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
     }, []);
