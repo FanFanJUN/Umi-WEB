@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Button, message } from 'antd';
+import { Button, message, Tooltip } from 'antd';
 import { ExtTable, DataExport, DataImport } from 'suid';
 import moment from 'moment/moment';
 import EventModal from '../../../common/EventModal';
@@ -18,6 +18,7 @@ import { recommendUrl } from '../../../../../utils/commonUrl';
 import { BASE_URL } from '../../../../../utils/constants';
 
 const AuthenticationArr = ['DOC_CHECK', 'SCENE_CHECK'];
+const buttonWidth = 70;
 
 const IssuesManagement = (props) => {
 
@@ -34,10 +35,12 @@ const IssuesManagement = (props) => {
     { title: '提出人', dataIndex: 'proposerName', width: 100 },
     { title: '问题分析', dataIndex: 'reason', width: 100 },
     {
-      title: '纠正预防措施及见证附件', dataIndex: 'preventiveMeasures', width: 300, render: (v, data) => <>
-        {v} {data.measures}
+      title: '纠正预防措施及见证附件', dataIndex: 'preventiveMeasures', width: 300, render: (v, data) => <div style={{ marginLeft: buttonWidth, whiteSpace: 'nowrap' }}>
+        <Tooltip title={`${v} ${data.measures}`}>
+          <span>{v} {data.measures}</span>
+        </Tooltip>,
         <Upload type='show' entityId={data.attachRelatedIds} />
-      </>,
+      </div>,
     },
     { title: '完成时间', dataIndex: 'completionTime', width: 100 },
     {

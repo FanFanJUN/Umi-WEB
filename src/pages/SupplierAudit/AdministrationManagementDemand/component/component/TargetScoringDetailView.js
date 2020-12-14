@@ -224,10 +224,9 @@ const TargetScoringDetailView = (props) => {
         <div className={styles.bgw}>
           <div className={styles.title}>评分详情</div>
           <div className={styles.content}>
-            {!isView && <Button onClick={handleSendBack} disabled={data.selectedRowKeys.length === 0}>退回</Button>}
+            {!isView && <Button style={{ marginBottom: '10px' }} onClick={handleSendBack} disabled={data.selectedRowKeys.length === 0}>退回</Button>}
             <ExtTable
-              style={{ marginTop: '10px' }}
-              height={'25vh'}
+              height={'30vh'}
               rowKey={'reviewImplementManagementId'}
               loading={loading}
               checkbox={{ multiSelect: false }}

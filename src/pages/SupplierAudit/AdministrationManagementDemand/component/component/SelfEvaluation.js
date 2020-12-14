@@ -55,6 +55,7 @@ const SelfEvaluation = props => {
       render: (v, data) => type ? data.selfScore ? data.selfScore : v :
         (!data.children ? <InputNumber
           onBlur={refreshTable}
+          precision={1}
           value={v} max={data.highestScore}
           onChange={value => {
             data.reviewScore = value;
