@@ -369,6 +369,10 @@ const FormContext = forwardRef(({
                       const name = item?.supplierCategory?.name;
                       const reg = /代理商/g;
                       const result = reg.test(name);
+                      setFieldsValue({
+                        originName: null,
+                        originCode: null
+                      })
                       changeAgentState(result)
                       // if(reg)
                     }}
@@ -404,6 +408,7 @@ const FormContext = forwardRef(({
                   <ComboList
                     form={form}
                     name='originName'
+                    key={`${originSupplierId}-origin-select`}
                     {...originFactoryProps}
                     store={{
                       ...originFactoryProps.store,
