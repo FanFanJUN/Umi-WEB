@@ -231,7 +231,6 @@ export default function() {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={data.selectedRowKeys.length === 0
-        // || !judge(data.selectedRows, 'state', 'COMPLETED')
         || !judge(data.selectedRows, 'whetherConfirm', true)
         || !judge(data.selectedRows, 'leaderId', getUserId())
         }
