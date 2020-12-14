@@ -47,7 +47,7 @@ export default function() {
   const { query } = router.useLocation();
   useEffect(() => {
     // 处理工作台过来-url携带参数
-    setData(v => ({ ...v, epTechnicalShareDemandSearchBo: query }));
+    setData(v => ({ ...v, epTechnicalShareDemandSearchBo: query, checkedDistribution: query.onlyAllocation == "true" }));
 
     window.parent.frames.addEventListener('message', listenerParentClose, false);
     return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
