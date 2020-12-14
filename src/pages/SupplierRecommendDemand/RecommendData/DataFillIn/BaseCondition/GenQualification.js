@@ -7,10 +7,8 @@
  * @Description: 通用资质 Table
  * @Connect: 1981824361@qq.com
  */
-import { useEffect, useState, useRef, Fragment } from 'react'
-import { ExtTable, ComboList, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
-import { Button } from 'antd';
-import EditableFormTable from '../CommonUtil/EditTable';
+import { useRef, Fragment } from 'react'
+import { ExtTable } from 'suid';
 import moment from 'moment';
 import UploadFile from '../../../../../components/Upload';
 
