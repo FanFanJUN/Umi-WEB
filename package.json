@@ -33,7 +33,7 @@
     "react-dom": "^16.8.6",
     "react-fast-compare": "^2.0.4",
     "sei-utils": "^1.0.91",
-    "seid": "^1.2.27",
+    "seid": "^1.2.41",
     "suid": "^1.3.74"
   },
   "devDependencies": {

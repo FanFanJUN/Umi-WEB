@@ -27,8 +27,13 @@ class UploadFile extends React.Component {
     this.updateFile()
   }
   componentWillReceiveProps(nextProps) {
-    if ((nextProps.entityId && nextProps.entityId !== this.props.entityId)
-      || nextProps.refresh) {
+    /**
+     * 请求的entityId未找到文件数组，没有更新completeFileList，每次都会触发update
+     */
+    if (
+      (nextProps.entityId && typeof nextProps.entityId === 'string' && nextProps.entityId !== this.props.entityId)
+      || nextProps.refresh
+    ) {
       this.entityId = nextProps.entityId
       this.updateFile()
     } else {

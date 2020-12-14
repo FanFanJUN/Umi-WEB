@@ -294,6 +294,12 @@ const EditableTable = (props) => {
   });
 
   function save(form, key) {
+    const hasUploadFile = columns.findIndex(item => item?.inputType === 'UploadFile') !== -1;
+    const uploadfileKey = columns.map(item => ({
+      type: item.inputType,
+      dataIndex: item.dataIndex
+    })).filter(item => item.type === 'UploadFile');
+    const [uk] = uploadfileKey;
     form.validateFields((error, row) => {
       if (error) {
         return;
@@ -302,14 +308,23 @@ const EditableTable = (props) => {
       const index = newData.findIndex(item => key === item[rowKey]);
       if (index > -1) {
         const item = newData[index];
-        newData.splice(index, 1, {
-          ...item,
-          ...row,
-          filled: true
-        });
+        if (hasUploadFile) {
+          newData.splice(index, 1, {
+            ...item,
+            ...row,
+            [uk]: Array.isArray(row[uk]) ? row[uk] : null,
+            filled: true
+          })
+        } else {
+          newData.splice(index, 1, {
+            ...item,
+            ...row,
+            filled: true
+          });
+        }
         setEditingKey('');
         setButtonDisabled(false);
-        props.setNewData(newData, tableType);
+        props.setNewData(hasnewData, tableType);
       } else {
         newData.push(row);
         setEditingKey('');
