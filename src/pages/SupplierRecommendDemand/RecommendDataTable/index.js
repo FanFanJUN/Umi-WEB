@@ -38,7 +38,13 @@ function RecommendDataTable() {
             operator: 'EQ'
           }
         ] : [],
-        ...searchValue
+        ...searchValue,
+        sortOrders: [
+          {
+            property: 'createdDate',
+            direction: 'DESC'
+          }
+        ]
       },
       type: 'POST'
     },
@@ -139,7 +145,13 @@ function RecommendDataTable() {
     })
     uploadTable()
   }
+  // 清除选中项
+  function cleanSelectedRecord() {
+    tableRef.current.manualSelectedRows([])
+    setRowKeys([])
+  }
   function uploadTable() {
+    cleanSelectedRecord()
     tableRef.current.remoteDataRefresh()
   }
   function handleFillIn() {
@@ -183,7 +195,7 @@ function RecommendDataTable() {
         })
         if (success) {
           message.success(msg)
-          tableRef.current.remoteDataRefresh()
+          uploadTable()
           return
         }
         message.error(msg)

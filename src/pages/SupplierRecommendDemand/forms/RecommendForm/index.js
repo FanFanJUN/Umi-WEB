@@ -685,7 +685,7 @@ const FormContext = forwardRef(({
           </Col>
         </Row>
         <Row>
-          <Col span={12}>
+          <Col span={16}>
             <FormItem label='附件资料' {...formLayoutAlone}>
               {
                 getFieldDecorator('files')(
