@@ -4,7 +4,7 @@
  * @date 2020.4.3
  */
 import React, { useState, useEffect } from 'react';
-import { Table, PageHeader, Button, Input, Radio, message } from 'antd';
+import { Table, PageHeader, Button, Input, Radio, message, Form } from 'antd';
 import styles from '../index.less';
 import { queryCSRorEPEData, saveCSRorEPEData } from '../../../../../services/recommend';
 import { Upload } from '../../../../../components';
@@ -13,12 +13,16 @@ import { router } from 'dva';
 const { useLocation } = router;
 const { Group: RadioGroup } = Radio;
 
+const { create } = Form;
+
 function CSRQuestionnaire({
-  updateGlobalStatus = () => null
+  updateGlobalStatus = () => null,
+  form
 }) {
   const [dataSource, setDataSource] = useState([]);
   const [loading, toggleLoading] = useState(false);
   const [confirmLoading, toggleConfirmLoading] = useState(false);
+  const { getFieldDecorator, validateFieldsAndScroll } = form;
   const { query } = useLocation();
   const { id = null, type = 'create' } = query;
   const headerExtra = type === 'detail' ? null : [
@@ -46,16 +50,29 @@ function CSRQuestionnaire({
       render(text, record, index) {
         const { selectConfigList } = record;
         return (
-          <RadioGroup
-            disabled={type === 'detail'}
-            value={text}
-            onChange={(e) =>
-              handleLineChange(e, index, 'selectValue')}
-          >
+          <Form.Item style={{ margin: 0, padding: 0 }}>
             {
-              selectConfigList.map((item, k) => <Radio value={k} key={`${k}-value-key`}>{item}</Radio>)
+              getFieldDecorator(`${index}-selectValue`, {
+                rules: [
+                  {
+                    required: true,
+                    message: '请按实际情况选择'
+                  }
+                ],
+                initialValue: text
+              })(
+                <RadioGroup
+                  disabled={type === 'detail'}
+                  onChange={(e) =>
+                    handleLineChange(e, index, 'selectValue')}
+                >
+                  {
+                    selectConfigList.map((item, k) => <Radio value={k} key={`${k}-value-key`}>{item}</Radio>)
+                  }
+                </RadioGroup>
+              )
             }
-          </RadioGroup>
+          </Form.Item>
         )
       }
     },
@@ -111,6 +128,8 @@ function CSRQuestionnaire({
     setDataSource(newDataSource)
   }
   async function handleSave() {
+    const v = await validateFieldsAndScroll();
+    console.log(v)
     toggleConfirmLoading(true)
     const { success, message: msg } = await saveCSRorEPEData(dataSource);
     toggleConfirmLoading(false)
@@ -137,18 +156,20 @@ function CSRQuestionnaire({
     <div>
       <PageHeader title='企业生产环境' extra={headerExtra} />
       <div className={styles.divider}></div>
-      <Table
-        columns={columns}
-        bordered
-        size='small'
-        dataSource={dataSource}
-        rowKey={(item, index) => `${index}-dataSource-line`}
-        pagination={{
-          pageSize: 10000
-        }}
-      ></Table>
+      <Form>
+        <Table
+          columns={columns}
+          bordered
+          size='small'
+          dataSource={dataSource}
+          rowKey={(item, index) => `${index}-dataSource-line`}
+          pagination={{
+            pageSize: 10000
+          }}
+        ></Table>
+      </Form>
     </div>
   )
 }
 
-export default CSRQuestionnaire;
+export default create()(CSRQuestionnaire);

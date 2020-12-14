@@ -23,7 +23,7 @@ const ProblemTable = (props) => {
         onClick={e => e.stopPropagation()}
         afterSelect={value => {
           data.whetherApply = value.code;
-          // refreshTable();
+          refreshTable();
         }}
         value={ApplicableStateArr[v]} {...ApplicableStateProps} />,
     },
@@ -32,7 +32,7 @@ const ProblemTable = (props) => {
       dataIndex: 'reviewScore',
       width: 100,
       render: (v, data) => type ? v : <InputNumber
-        // onBlur={refreshTable}
+        onBlur={refreshTable}
         value={v} max={data.highestScore}
         precision={1}
         onChange={value => data.reviewScore = value}

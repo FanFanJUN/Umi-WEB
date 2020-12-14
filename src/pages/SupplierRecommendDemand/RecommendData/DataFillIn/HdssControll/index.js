@@ -84,7 +84,7 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
   ];
 
   async function handleSave() {
-    if (getFieldValue('haveenvironmentalTestingEquipments ')) {
+    if (getFieldValue('haveEnvironmentalTestingEquipment ')) {
       if (isEmptyArray(tableData)) {
         message.error('列表至少填写一条设备信息！');
         return;
@@ -143,8 +143,8 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                 <Row>
                   <Col span={24}>
                     <FormItem label="有无自有环保检测设备" {...formLayout}>
-                      {getFieldDecorator('haveenvironmentalTestingEquipments ', {
-                        initialValue: type === 'add' ? true : data.haveenvironmentalTestingEquipments,
+                      {getFieldDecorator('haveEnvironmentalTestingEquipment', {
+                        initialValue: data.haveEnvironmentalTestingEquipment,
                         rules: [
                           {
                             required: true,
