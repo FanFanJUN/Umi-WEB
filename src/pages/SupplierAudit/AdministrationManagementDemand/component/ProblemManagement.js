@@ -165,6 +165,8 @@ const ProblemManagement = (props) => {
         let newData = JSON.parse(JSON.stringify(response.data));
         newData = newData.map(item => ({
           ...item,
+          ruleCode: editData.ruleCode,
+          ruleName: editData.ruleName,
           severityName: OrderSeverityArr[item.severity],
           lineNum: getRandom(10),
         }));

@@ -18,12 +18,12 @@ const ProblemTable = (props) => {
     {
       title: '不适用',
       dataIndex: 'whetherApply',
-      width: type ? 70 : 80,
+      width: type ? 70 : 120,
       render: (v, data) => type ? ApplicableStateArr[v] : <ComboList
         onClick={e => e.stopPropagation()}
         afterSelect={value => {
           data.whetherApply = value.code;
-          // refreshTable();
+          refreshTable();
         }}
         value={ApplicableStateArr[v]} {...ApplicableStateProps} />,
     },
@@ -32,8 +32,9 @@ const ProblemTable = (props) => {
       dataIndex: 'reviewScore',
       width: 100,
       render: (v, data) => type ? v : <InputNumber
-        // onBlur={refreshTable}
+        onBlur={refreshTable}
         value={v} max={data.highestScore}
+        precision={1}
         onChange={value => data.reviewScore = value}
         min={0} />,
     },
@@ -51,7 +52,7 @@ const ProblemTable = (props) => {
       dataIndex: 'attachRelatedIds',
       width: type ? 50 : 200,
       render: (v, data) => <Upload
-        entityId={v} type={props.type}
+        entityId={type ? data.fileList : v} type={props.type}
         onChange={(value) => data.attachRelatedIds = value} />,
     },
     {
