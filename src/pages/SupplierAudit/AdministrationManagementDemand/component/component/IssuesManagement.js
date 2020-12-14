@@ -35,7 +35,10 @@ const IssuesManagement = (props) => {
     { title: '提出人', dataIndex: 'proposerName', width: 100 },
     { title: '问题分析', dataIndex: 'reason', width: 100 },
     {
-      title: '纠正预防措施及见证附件', dataIndex: 'preventiveMeasures', width: 300, render: (v, data) => <div style={{ marginLeft: buttonWidth, whiteSpace: 'nowrap' }}>
+      title: '纠正预防措施及见证附件',
+      dataIndex: 'preventiveMeasures',
+      width: 300,
+      render: (v, data) => <div style={{ marginLeft: buttonWidth, whiteSpace: 'nowrap' }}>
         <Tooltip title={`${v} ${data.measures}`}>
           <span>{v} {data.measures}</span>
         </Tooltip>,
@@ -247,28 +250,32 @@ const IssuesManagement = (props) => {
 
   const validateItem = (rows) => {
     let newDataSource = JSON.parse(JSON.stringify(data.dataSource));
-    rows.map(item => {
-      const object = {
-        reason: item['reason'] ? item['reason'] : '',
-        measures: item['measures'] ? item['measures'] : '',
-        preventiveMeasures: item['preventiveMeasures'] ? item['preventiveMeasures'] : '',
-        completionTime: item['completionTime'] ? item['completionTime'] : '',
-        key: item['key'],
-        validate: true,
-        status: '验证通过',
-        statusCode: 'success',
-        message: '验证通过',
-      };
-      newDataSource.map((value, index) => {
+    rows = rows.map(item => ({
+      ...item,
+      lineNum: item['lineNum'],
+      reason: item['reason'] ? item['reason'] : '',
+      measures: item['measures'] ? item['measures'] : '',
+      preventiveMeasures: item['preventiveMeasures'] ? item['preventiveMeasures'] : '',
+      completionTime: item['completionTime'] ? item['completionTime'] : '',
+      validate: true,
+      status: '验证通过',
+      statusCode: 'success',
+      message: '验证通过',
+    }));
+    newDataSource.map((value, index) => {
+      rows.map(item => {
         if ((index + 1) === item.lineNum) {
-          newDataSource[index] = Object.assign(value, object);
+          newDataSource[index] = Object.assign(value, item);
+          newDataSource[index].lineNum = value.lineNum
         }
       });
     });
+    console.log(rows);
     return newDataSource;
   };
 
   const importFunc = (value) => {
+    console.log(value, 'valie')
     setData(v => ({ ...v, dataSource: value }));
     refreshTable();
   };
@@ -299,6 +306,7 @@ const IssuesManagement = (props) => {
             <DataImport
               tableProps={{
                 columns,
+                rowKey: 'lineNum',
                 showSearch: false,
               }}
               validateAll={true}
