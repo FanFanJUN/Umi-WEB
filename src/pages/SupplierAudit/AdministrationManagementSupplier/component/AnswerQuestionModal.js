@@ -46,6 +46,8 @@ const AnswerQuestionModal = (props) => {
     });
   };
 
+  console.log(editData.attachRelatedIds, 'editData')
+
   return (
     <ExtModal
       width={'100vh'}
@@ -139,7 +141,7 @@ const AnswerQuestionModal = (props) => {
                   },
                 ],
               })(
-                <Upload entityId={editData.attachRelatedIds ? null : editData.attachRelatedIds} />,
+                <Upload entityId={!editData.attachRelatedIds ? null : editData.attachRelatedIds} />,
               )
             }
           </FormItem>
