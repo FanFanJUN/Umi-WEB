@@ -38,7 +38,13 @@ function RecommendDataTable() {
             operator: 'EQ'
           }
         ] : [],
-        ...searchValue
+        ...searchValue,
+        sortOrders: [
+          {
+            property: 'createdDate',
+            direction: 'DESC'
+          }
+        ]
       },
       type: 'POST'
     },
