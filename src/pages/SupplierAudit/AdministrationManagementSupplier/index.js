@@ -46,6 +46,7 @@ export default function() {
       setUnManagementState(true);
     }
     setData(v => ({ ...v, epTechnicalShareDemandSearchBo: {...query} }));
+    tableRef.current.remoteDataRefresh();
 
     window.parent.frames.addEventListener('message', listenerParentClose, false);
     return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
