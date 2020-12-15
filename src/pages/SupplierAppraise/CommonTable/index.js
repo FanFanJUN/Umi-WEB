@@ -164,10 +164,10 @@ const CommonTable = forwardRef(({
         {
           type === 'detail' ? null : (
             <div>
+              <Button className={styles.btn} onClick={handleExport}>导出</Button>
               <Upload beforeUpload={handleImport} showUploadList={false}>
                 <Button className={styles.btn}>导入</Button>
               </Upload>
-              <Button className={styles.btn} onClick={handleExport}>导出</Button>
             </div>
           )
         }
