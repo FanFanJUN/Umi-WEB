@@ -597,12 +597,12 @@ const Bankformef = forwardRef(({
   }
   // 导入数据效验
   const validateItem = (data) => {
-    let importdata = data, response,validitydata = [];
+    let importdata = data, response, validitydata = [];
     return new Promise((resolve, reject) => {
       Importvalidity(data).then(res => {
         importdata.forEach((item, indexs) => {
-          if (res.data.errStatus === '1') {
-            res.data.msgs.map((items, index) => {
+          if (res.data.errStatus === 1) {
+            res.data.infos.map((items, index) => {
               if (indexs === index) {
                 let obj = {
                   ...item,
@@ -610,14 +610,14 @@ const Bankformef = forwardRef(({
                   validate: false,
                   status: '失败',
                   statusCode: 'error',
-                  message: items
+                  message: res.data.msgs[0]
                 }
                 validitydata.push(obj)
                 response = validitydata
               }
             })
-          }else {
-            res.data.infos.map((items,index) => {
+          } else {
+            res.data.infos.map((items, index) => {
               if (indexs === index) {
                 let obj = {
                   ...item,
@@ -631,7 +631,7 @@ const Bankformef = forwardRef(({
                 response = validitydata
               }
             })
-            res.data.infos.map((items,index) => {
+            res.data.infos.map((items, index) => {
               if (items.error === '') {
                 const supplierInfo = res.data.supplierInfoVos.map((info, index) => ({
                   ...info,
@@ -650,7 +650,6 @@ const Bankformef = forwardRef(({
   };
   // 导入
   const importFunc = (value) => {
-    console.log(value)
     if (isEdit) {
       setDataSource(savedata)
     } else {
