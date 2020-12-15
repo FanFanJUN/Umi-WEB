@@ -36,7 +36,7 @@ const VerificationResults = (props) => {
           return values;
         }
       });
-      params.whetherPass = params.whetherPass === '是';
+      params.whetherPass = params.whetherPass ? params.whetherPass === '是' : '';
       params = Object.assign(params, { reviewImplementManagementId: props.id });
       SubmitVerificationAuditOpinionDataApi(params).then(res => {
         if (res.success) {

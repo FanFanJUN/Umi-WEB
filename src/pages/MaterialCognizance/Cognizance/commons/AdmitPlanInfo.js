@@ -158,7 +158,7 @@ const HeadFormRef = forwardRef(({
                                 isView ? <span>{editformData ? editformData.supplierName : ''}</span> :
                                     (
                                         getFieldDecorator('supplierCode', {
-                                            initialValue: editformData ? editformData.purchaseCode : ''
+                                            initialValue: editformData ? editformData.supplierCode : ''
                                         }),
                                         getFieldDecorator("supplierName", {
                                             initialValue: editformData ? editformData.supplierName : '',
