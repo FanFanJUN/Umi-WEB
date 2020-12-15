@@ -199,7 +199,7 @@ export const findRecommendAccessByDataAuth = {
         autoLoad: false,
         url: `${recommendUrl}/api/recommendAccessService/findRecommendAccessByDataAuth`,
     },
-    remotePaging: true,
+    remotePaging: false,
     rowKey: 'businessCode',
     reader: {
         field: ['id'],
