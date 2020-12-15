@@ -167,7 +167,7 @@ function WhetherCheck({
     }))
     if (needExamine) {
       pass = paramsDataSource.every(item => {
-        return !!item.examineId
+        return !!item.examineId && (!!item.objectRecognition ? !!item.physicalId : true)
       })
     } else {
       pass = paramsDataSource.every(item => {
@@ -175,6 +175,7 @@ function WhetherCheck({
       })
     }
     if (!pass) {
+      message.error('实物认定或供应商审核未完成，请等待')
       return new Promise((resolve, rj) => {
         resolve({
           success: pass,

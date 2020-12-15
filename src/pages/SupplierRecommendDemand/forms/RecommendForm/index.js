@@ -1,4 +1,11 @@
-import { forwardRef, useImperativeHandle, useState, createRef, useEffect } from 'react';
+import {
+  forwardRef,
+  useImperativeHandle,
+  useState,
+  createRef,
+  useEffect,
+  useRef
+} from 'react';
 import {
   Form,
   Row,
@@ -25,7 +32,6 @@ const {
   supplierProps_no_filter,
   materialClassProps,
   fimlyMaterialClassifyProps,
-  // evaluateSystemProps,
   originFactoryProps,
   evaluateSystemFormCodeProps
 } = commonProps;
@@ -112,6 +118,7 @@ const FormContext = forwardRef(({
     getAllFormatValues
   }))
   const [autoExpandParent, setAutoExpandParent] = useState(true);
+  const recommendTableRef = useRef(null)
   const [expandedKeys, setExpandedKeys] = useState([]);
   const [treeSelected, setTreeSelected] = useState([]);
   const [loading, toggleLoading] = useState(false);
@@ -242,6 +249,11 @@ const FormContext = forwardRef(({
   function handleSelectedRows(ks) {
     setRowKeys(ks)
   }
+  // 清除选中项
+  function cleanSelectedRecord() {
+    recommendTableRef.current.manualSelectedRows([])
+    setRowKeys([])
+  }
   function handleRemoveSelectedRows() {
     Modal.confirm({
       title: '删除拟推荐公司',
@@ -252,6 +264,7 @@ const FormContext = forwardRef(({
           return !selectedRowKeys.includes(`${item.identifyTypeCode}-${item.purchaseOrgCode}`)
         })
         setRecommendCompany(newData)
+        cleanSelectedRecord()
       },
       cancelText: '取消'
     })
@@ -573,6 +586,7 @@ const FormContext = forwardRef(({
               checkbox={checkbox}
               selectedRowKeys={selectedRowKeys}
               onSelectRow={handleSelectedRows}
+              ref={recommendTableRef}
             ></ExtTable>
           </Col>
         </Row>

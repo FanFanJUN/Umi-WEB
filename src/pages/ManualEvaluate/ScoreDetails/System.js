@@ -87,7 +87,7 @@ function SystemDetail() {
       <Affix>
         <div className={classnames(styles.fbc, styles.affixHeader)}>
           <span className={styles.title}>
-            综合得分详情
+            指标得分详细
           </span>
           <Button onClick={closeCurrent}>返回</Button>
         </div>

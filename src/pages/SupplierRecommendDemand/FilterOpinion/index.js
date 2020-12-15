@@ -27,28 +27,30 @@ function FillInInfomationConfirm() {
   const [status, updateGlobalStatus] = useGlobalStatus(id);
   const filterRef = useRef(null);
   async function beforeSubmit() {
-    const params = filterRef.current.getAllParams();
-    const { success, message: msg } = await saveFilterOpinion(params);
-    return new Promise((resolve, reject) => {
-      if (!params) {
-        resolve({
-          success: false,
-          message: '请在编辑页面完善供应商分析',
-        });
-      }
-      if (success) {
+    const { success: sucs, params, message: pmsg } = filterRef.current.getAllParams();
+    if (sucs) {
+      const { success, message: msg } = await saveFilterOpinion(params);
+      return new Promise(resolve => {
+        if (success) {
+          resolve({
+            success,
+            message: msg,
+            data: {
+              businessKey: id,
+            },
+          });
+          return;
+        }
         resolve({
           success,
-          message: msg,
-          data: {
-            businessKey: id,
-          },
+          message: msg
         });
-        return;
-      }
+      })
+    }
+    return new Promise((resolve, reject) => {
       resolve({
-        success,
-        message: msg,
+        success: false,
+        message: pmsg,
       });
     });
   }
