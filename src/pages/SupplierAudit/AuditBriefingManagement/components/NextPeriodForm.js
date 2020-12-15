@@ -14,7 +14,7 @@ const NextPeriodForm = React.forwardRef(({ form, isView, editData, type }, ref) 
 
   const columns = [
     {
-      title: '序号', dataIndex: 'lineNumber', ellipsis: true, width: 90,
+      title: '序号', dataIndex: 'lineNumber', ellipsis: true, width: 80,
       render(text, record, index) {
         return index + 1;
       },
