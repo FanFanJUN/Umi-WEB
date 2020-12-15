@@ -9,6 +9,7 @@ const { TabPane } = Tabs;
 function EvaluateResult() {
   const formRef = useRef(null);
   const { query } = useLocation();
+  const { flowStatus = 'COMPELETED' } = query;
   const tableColumns = [
     {
       title: '供应商代码',
@@ -70,9 +71,9 @@ function EvaluateResult() {
     },
     {
       title: '领导决定',
-      dataIndex: 'leaderAdviceName'
-    },
-  ]
+      dataIndex: flowStatus === 'INIT' ? null : 'leaderAdviceName'
+    }
+  ].filter(item => !!item.dataIndex)
   function handleCheckScoreDetail(evaluationResultId) {
     openNewTab(`supplier/appraise/project/evaluate/result/score/details?evaluationProjectId=${query?.id}&evaluationResultId=${evaluationResultId}`, '综合得分', false)
   }

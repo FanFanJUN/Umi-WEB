@@ -240,7 +240,7 @@ function SupplierRevaluate() {
     const [key] = selectedRowKeys;
     const { id = '' } = FRAMELEEMENT;
     const { pathname } = window.location;
-    openNewTab(`supplier/appraise/project/evaluate/result?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '评价结果', false)
+    openNewTab(`supplier/appraise/project/evaluate/result?flowStatus=${flowStatus}&id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '评价结果', false)
   }
   // 分配评审人
   function handleAllocation() {

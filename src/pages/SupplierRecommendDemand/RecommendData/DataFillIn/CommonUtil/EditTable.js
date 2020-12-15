@@ -73,7 +73,9 @@ const EditableCell = (config) => {
           <Option value={false}>否</Option>
         </Select>
       case 'UploadFile':
-        return <UploadFile entityId={record[a]} />
+        const idKey = dataIndex.substr(0, dataIndex.length - 1);
+        const entityId = !!a ? a : record[idKey]
+        return <UploadFile entityId={entityId} />
       case 'TextArea':
         return <Input.TextArea disabled={inputDisabled} />
       case 'hideForm':
@@ -294,6 +296,11 @@ const EditableTable = (props) => {
   });
 
   function save(form, key) {
+    const hasUploadFile = columns.findIndex(item => item?.inputType === 'UploadFile') !== -1;
+    const uploadfileKey = columns.map(item => ({
+      type: item.inputType,
+      dataIndex: item.dataIndex
+    })).filter(item => item.type === 'UploadFile').map(item => item.dataIndex);
     form.validateFields((error, row) => {
       if (error) {
         return;
@@ -302,11 +309,27 @@ const EditableTable = (props) => {
       const index = newData.findIndex(item => key === item[rowKey]);
       if (index > -1) {
         const item = newData[index];
-        newData.splice(index, 1, {
-          ...item,
-          ...row,
-          filled: true
-        });
+        if (hasUploadFile) {
+          const ukItems = uploadfileKey.reduce((prev, cur) => {
+            return {
+              ...prev,
+              [cur]: Array.isArray(row[cur]) ? row[cur] : null
+            }
+          }, {})
+          console.log(item, row, ukItems)
+          newData.splice(index, 1, {
+            ...item,
+            ...row,
+            ...ukItems,
+            filled: true
+          })
+        } else {
+          newData.splice(index, 1, {
+            ...item,
+            ...row,
+            filled: true
+          });
+        }
         setEditingKey('');
         setButtonDisabled(false);
         props.setNewData(newData, tableType);

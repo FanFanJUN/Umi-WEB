@@ -125,7 +125,7 @@ function CommonForm({
       render(text, { examineDocNumber = '' }) {
         if (!!text) {
           return (
-            <Button type='link' onClick={() => openNewTab(`material/Cognizance/ManualDetail/index?id=${text}`, '供应商审核报告', false)}>{examineDocNumber}</Button>
+            <Button type='link' onClick={() => openNewTab(`supplierAudit/AuditReportManagementDetail?pageState=detail&id=${text}`, '供应商审核报告', false)}>{examineDocNumber}</Button>
           )
         }
         return ''

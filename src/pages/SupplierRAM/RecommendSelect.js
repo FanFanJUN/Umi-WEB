@@ -91,11 +91,11 @@ function LayoutComponent({
       dataIndex: 'supplierName'
     },
     {
-      title: '原厂代码',
+      title: '原厂名称',
       dataIndex: 'originName'
     },
     {
-      title: '原厂名称',
+      title: '原厂代码',
       dataIndex: 'originCode'
     },
     {

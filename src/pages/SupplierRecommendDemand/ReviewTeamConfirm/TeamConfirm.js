@@ -7,7 +7,7 @@ import {
 } from 'antd';
 import { Header, UserModal } from '../../../components';
 import { router } from 'dva';
-import { ComboTree } from 'suid';
+import { ComboTree, ComboList } from 'suid';
 import {
   queryTeamConfirm,
   saveTeamConfrim,
@@ -115,7 +115,7 @@ function TeamConfirm({
       <Item label='评价体系' {...formLayout} required>
         {
           form.getFieldDecorator('systemName')(
-            <ComboTree
+            <ComboList
               {...evaluateSystemProps}
               style={{
                 width: 300

@@ -40,13 +40,14 @@ const SelfEvaluation = props => {
       title: '不适用',
       dataIndex: 'whetherApply',
       width: 100,
-      render: (v, data) => type ? ApplicableStateArr[v] : !data.children && <ComboList
-        onClick={e => e.stopPropagation()}
-        afterSelect={value => {
-          data.whetherApply = value.code;
-          refreshTable();
-        }}
-        value={ApplicableStateArr[v]} {...ApplicableStateProps} />,
+      render: (v, data) => type ? data.notApplyScore ? data.notApplyScore : ApplicableStateArr[v] : !data.children ?
+        <ComboList
+          onClick={e => e.stopPropagation()}
+          afterSelect={value => {
+            data.whetherApply = value.code;
+            refreshTable();
+          }}
+          value={ApplicableStateArr[v]} {...ApplicableStateProps} /> : data.notApplyScore,
     },
     {
       title: '自评得分',
