@@ -71,7 +71,7 @@ export default () => {
         quickSearchProperties: ['supplierName', 'docNumber'],
         sortOrders: [
           {
-            property: 'docNumber',
+            property: 'createdDate',
             direction: 'DESC'
           }
         ]
