@@ -47,13 +47,13 @@ const AuditorInfoFrom = React.forwardRef(({ form, editData,leaderName }, ref) =>
   const getInitData = () => {
     if (editData && editData.length > 0) {
       // setGroupLeader(editData[0].groupLeader);
-      setTeamData(v => ({ ...v, dataSource: editData, selectedRows: editData[0], selectedRowKeys: editData[0].id }));
+      setTeamData(v => ({ ...v, dataSource: editData, selectedRows: editData[0], selectedRowKeys: [editData[0].id]}));
       if (editData[0].reviewTeamMemberBoList && editData[0].reviewTeamMemberBoList.length > 0) {
         setContentData(v => ({
           ...v,
           dataSource: editData[0].reviewTeamMemberBoList,
           selectedRows: editData[0].reviewTeamMemberBoList[0],
-          selectedRowKeys: editData[0].reviewTeamMemberBoList[0].id,
+          selectedRowKeys: [editData[0].reviewTeamMemberBoList[0].id],
         }));
         if (editData[0].reviewTeamMemberBoList[0].memberRuleBoList && editData[0].reviewTeamMemberBoList[0].memberRuleBoList.length > 0) {
           getCheckedKeys(editData[0].reviewTeamMemberBoList[0].memberRuleBoList);
