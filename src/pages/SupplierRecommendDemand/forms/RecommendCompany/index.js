@@ -73,10 +73,13 @@ const Ctx = forwardRef(({
         identifyTypeCode: thatType.value,
         identifyTypeName: thatType.name,
         purchaseOrgCode: item.code,
-        purchaseOrgName: item.name
+        purchaseOrgName: item.name,
+        corporationCode: corporation.code,
+        corporationName: corporation.name
       }))
     //   console.log(ids, selectedRows)
     // console.log(filterSelectedRows, initialDataSource)
+    console.log(filterSelectedRows)
     return [...filterSelectedRows, ...initialDataSource]
   }
   /**

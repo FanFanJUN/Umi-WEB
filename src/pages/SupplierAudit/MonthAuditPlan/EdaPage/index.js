@@ -183,27 +183,27 @@ const Index = (props) => {
                 }, 1000)
             } else {
                 // 处理提交审核---返回数据id
-                return res.data;
+                return { id: res.data, message: "保存成功" };
             }
         } else {
             setLoading(false);
             if (type === "save") {
                 message.error(res.message);
             } else {
-                return false;
+                return { id: false, message: res.message };
             }
         }
     }
     // 提交审核验证
     const handleBeforeStartFlow = async () => {
-        const id = await handleSave("publish");
+        const res = await handleSave("publish");
         return new Promise(function (resolve, reject) {
-            if (id) {
+            if (res.id) {
                 resolve({
                     success: data,
                     message: '保存成功',
                     data: {
-                        businessKey: id
+                        businessKey: res.id
                     }
                 })
                 return
@@ -216,7 +216,7 @@ const Index = (props) => {
                 }, 1000);
                 reject({
                     success: data,
-                    message: '提交失败'
+                    message: res.message
                 })
             }
         })

@@ -186,12 +186,25 @@ const SelfAssessment = forwardRef(({
     </>
   ) : null
   function handleSave() {
-    const vaildateState = compareDataSource.every(item => typeof item.recommend === 'boolean' ? item.recommend ? typeof item.recommendConfirm === 'boolean' : typeof item.weedOut === 'boolean' : false)
+    const vaildateState = compareDataSource.every(item => typeof item.recommend === 'boolean' ? item.recommend ? typeof item.recommendConfirm === 'boolean' : typeof item.weedOut === 'boolean' : false);
+    if (compareDataSource.length === 0) {
+      message.error('打分暂未完成，请等待打分完成')
+      return {
+        success: false,
+        message: '打分暂未完成，请等待打分完成'
+      };
+    }
     if (!vaildateState) {
       message.error('请在编辑界面完善意见信息')
-      return false
+      return {
+        success: false,
+        message: '请在编辑界面完善意见信息'
+      }
     }
-    return compareDataSource
+    return {
+      success: true,
+      params: compareDataSource
+    }
   }
   useEffect(() => {
     async function initialDataSource() {
@@ -201,11 +214,15 @@ const SelfAssessment = forwardRef(({
       })
       toggleLoading(false)
       if (success) {
-        const { compareSuppliers, compareResults } = data;
+        const {
+          compareSuppliers,
+          compareResults
+        } = data;
         setDataSource(compareSuppliers)
         setCompareDataSource(compareResults)
         return
       }
+      message.error(msg)
     }
     initialDataSource()
   }, [])

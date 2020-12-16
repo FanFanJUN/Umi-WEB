@@ -11,7 +11,7 @@ import { Button, Input, Modal, message, Checkbox } from 'antd';
 import { useLocation } from 'dva/router'
 import { recommendUrl } from '../../utils/commonUrl';
 import { Header, AutoSizeLayout, AdvancedForm } from '../../components';
-import { evlStatusProps, evaluateSystemProps, orgnazationProps, evlEmu } from '../../utils/commonProps';
+import { evlStatusProps, evaluateSystemProps, orgnazationProps, evlEmu, flowStatusProps } from '../../utils/commonProps';
 import { getFrameElement, openNewTab } from '../../utils';
 import moment from 'moment';
 import { removeAppraiseProject, sponsorAppraise, withdrawAppraise, generateResult } from '../../services/appraise';
@@ -64,11 +64,11 @@ function SupplierRevaluate() {
   const resultGener = evaluationProjectStatus === 'RESULTS_GENERATED';
   // 评价中
   const appraiseIng = evaluationProjectStatus === 'SYSTEM_CALCULATING';
-  // 已审批
+  // 已审核
   const flowComplete = flowStatus === 'COMPLETED';
-  // 审批中
+  // 审核中
   const flowing = flowStatus === 'INPROCESS';
-  // 未审批
+  // 未审核
   const flowInit = flowStatus === 'INIT';
   const columns = [
     {
@@ -77,16 +77,16 @@ function SupplierRevaluate() {
       width: 120
     },
     {
-      title: '审批状态',
+      title: '审核状态',
       dataIndex: 'flowStatus',
       render(text) {
         switch (text) {
           case 'INIT':
-            return '未提交审批'
+            return '未提交审核'
           case 'INPROCESS':
-            return '审批中'
+            return '审核中'
           case 'COMPLETED':
-            return '审批完成'
+            return '审核完成'
           default:
             return ''
         }
@@ -161,6 +161,12 @@ function SupplierRevaluate() {
       key: 'Q_EQ_evaluationProjectStatus',
       type: 'list',
       props: evlStatusProps
+    },
+    {
+      title: '审核状态',
+      key: 'Q_EQ_flowStatus',
+      type: 'list',
+      props: flowStatusProps
     },
     {
       title: '评价项目号',
@@ -240,7 +246,7 @@ function SupplierRevaluate() {
     const [key] = selectedRowKeys;
     const { id = '' } = FRAMELEEMENT;
     const { pathname } = window.location;
-    openNewTab(`supplier/appraise/project/evaluate/result?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '评价结果', false)
+    openNewTab(`supplier/appraise/project/evaluate/result?flowStatus=${flowStatus}&id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '评价结果', false)
   }
   // 分配评审人
   function handleAllocation() {
@@ -570,7 +576,7 @@ function SupplierRevaluate() {
       }
     })
   }
-  // 终止审批流
+  // 终止审核流
   function handleStopApprove() {
     Modal.confirm({
       title: '终止审核',

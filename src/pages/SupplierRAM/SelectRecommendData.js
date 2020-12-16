@@ -83,7 +83,6 @@ const Ctx = forwardRef(({
       trust,
       objectRecognition,
     } = values;
-    console.log(selectedRows, initialDataSource)
     const ids = initialDataSource.map(item => `${item.purchaseOrgCode}-${item.corporationCode}`);
     const filterSelectedRows = selectedRows
       .filter(item => !ids.includes(`${item.code}-${item.corporationCode}`))
