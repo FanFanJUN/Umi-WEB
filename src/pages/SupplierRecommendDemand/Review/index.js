@@ -72,7 +72,7 @@ const SelfAssessment = forwardRef(({
                 }
               ],
               initialValue: text,
-            })(<InputNumber max={record.samSupplierEvlSysRule.highestScore} min={0}/>)
+            })(<InputNumber max={record.samSupplierEvlSysRule?.highestScore} min={0}/>)
           }
         </Item>
       }

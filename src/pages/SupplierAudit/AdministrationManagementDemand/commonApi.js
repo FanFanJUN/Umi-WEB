@@ -78,6 +78,12 @@ export const AuthenticationTypeConfig = {
   ...commonProps,
 };
 
+export const StringOrderSeverityArr = {
+  '严重不符合': 'SERIOUS_NOT_FIT',
+  '一般不符合': 'GENERALLY_NOT_FIT',
+  '轻微不符合': 'MINOR_NOT_FIT',
+};
+
 export const OrderSeverityArr = {
   'SERIOUS_NOT_FIT': '严重不符合',
   'GENERALLY_NOT_FIT': '一般不符合',

@@ -326,14 +326,7 @@ function Quality({
             <FormItem label='采购专业组'>
               {
                 getFieldDecorator('purchaseProfessionalGroupCode'),
-                getFieldDecorator('purchaseProfessionalGroup', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '采购专业组不能为空'
-                    }
-                  ]
-                })(
+                getFieldDecorator('purchaseProfessionalGroup')(
                   <ComboList
                     form={form}
                     name='purchaseProfessionalGroup'

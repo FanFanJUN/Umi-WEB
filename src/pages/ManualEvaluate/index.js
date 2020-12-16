@@ -18,6 +18,7 @@ import {
   evlEmu,
   flowStatusProps
 } from '../../utils/commonProps';
+import { useLocation } from 'dva/router';
 import { formatYMDHmsToYMD, getFrameElement, openNewTab } from '../../utils';
 import { checkEvaluateData } from '../../services/evaluate';
 import { stopApprove } from '../../services/api';
@@ -43,8 +44,8 @@ const minxiEvlStatusProps = {
 }
 
 function ManualEvaluate() {
-  const tableRef = useRef(null)
-  const headerRef = useRef(null)
+  const tableRef = useRef(null);
+  const headerRef = useRef(null);
   const [tableState, sets] = useTableProps();
   const {
     selectedRowKeys,
@@ -58,6 +59,7 @@ function ManualEvaluate() {
     setSearchValue,
     setOnlyMe
   } = sets;
+  const { query } = useLocation();
   const [approveLoading, toggleApproveLoading] = useState(false)
   const [singleRow = {}] = selectedRows;
   const authorizations = storage.sessionStorage.get("Authorization");
@@ -65,11 +67,13 @@ function ManualEvaluate() {
   const {
     seEvaluationProject = {},
     flowStatus, // 审核状态
-    id: flowId
+    id: flowId,
+    scorerCode
   } = singleRow;
   // const { evaluationProjectStatus } = seEvaluationProject;
   // 未提交审核状态
   const noSubmit = flowStatus === 'INIT';
+  const isSelf = scorerCode === account;
   const completed = flowStatus === 'COMPLETED'
   // 未选中数据的状态
   const empty = selectedRowKeys.length === 0;
@@ -242,7 +246,7 @@ function ManualEvaluate() {
         authAction(
           <Button
             className={styles.btn}
-            disabled={!noSubmit || empty}
+            disabled={!noSubmit || empty || !isSelf}
             onClick={handleEvaluate}
             ignore={DEVELOPER_ENV}
             key='MANUAL_EVALUATE'
@@ -273,7 +277,7 @@ function ManualEvaluate() {
             businessModelCode='com.ecmp.srm.sam.entity.se.SeSubEvaluationProject'
           >
             {
-              loading => <Button loading={loading} className={styles.btn} disabled={empty || !noSubmit}>提交审核</Button>
+              loading => <Button loading={loading} className={styles.btn} disabled={empty || !noSubmit || !isSelf}>提交审核</Button>
             }
           </StartFlow>
         )
@@ -282,7 +286,7 @@ function ManualEvaluate() {
         authAction(
           <Button
             className={styles.btn}
-            disabled={empty || noSubmit || completed}
+            disabled={empty || noSubmit || completed || !isSelf}
             onClick={handleStopApprove}
             ignore={DEVELOPER_ENV}
             key='MANUAL_EVALUATE_APPROVE_STOP'
@@ -446,7 +450,25 @@ function ManualEvaluate() {
       tableRef.current.remoteDataRefresh()
     }
   }
+  function analysisParams(params) {
+    const [scored = null, flowStatus = null] = params;
+    const filters = [
+      {
+        fieldName: 'scored',
+        operator: 'EQ',
+        value: scored
+      },
+      {
+        filedName: 'flowStatus',
+        operator: 'EQ',
+        value: flowStatus
+      }
+    ].filter(item => !Object.is(null, item.value));
+    return filters
+  }
   useEffect(() => {
+    const filters = analysisParams(query);
+    setSearchValue({ filters })
     window.parent.frames.addEventListener('message', listenerParentClose, false);
     return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
   }, [])
