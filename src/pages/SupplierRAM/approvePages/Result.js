@@ -167,11 +167,11 @@ function WhetherCheck({
     }))
     if (needExamine) {
       pass = paramsDataSource.every(item => {
-        return !!item.examineResult && (!!item.objectRecognition ? !!item.physicalPass : true)
+        return !!item.examineResult && (!!item.objectRecognition ? typeof item.physicalPass === 'boolean' : true)
       })
     } else {
       pass = paramsDataSource.every(item => {
-        return !!item.objectRecognition ? !!item.physicalPass : true
+        return !!item.objectRecognition ? typeof item.physicalPass === 'boolean' : true
       })
     }
     if (!pass) {
