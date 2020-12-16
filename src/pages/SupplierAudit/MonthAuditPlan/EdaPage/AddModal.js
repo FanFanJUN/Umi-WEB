@@ -79,14 +79,13 @@ const AddModal = (props) => {
                         }
                     },
                     {
-                        title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 140, render: (text, item) => {
-                            return item.recommendAccess && item.recommendAccess.supplierName;
-                            // return item.recommendAccess && item.recommendAccess.supplierCode + ' ' + item.recommendAccess.supplierName;
+                        title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 180, render: (text, item) => {
+                            return item.recommendAccess && (item.recommendAccess.supplierCode ? (item.recommendAccess.supplierCode + ' ' + item.recommendAccess.supplierName) : item.recommendAccess.supplierName);
                         }
                     },
                     {
-                        title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 140, render: (text, item) => {
-                            return !text ? '' : item.agentCode + ' ' + item.agentName
+                        title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 180, render: (text, item) => {
+                            return item.recommendAccess && item.recommendAccess.originName && (item.recommendAccess.originCode + ' ' + item.recommendAccess.originName);
                         }
                     },
                     {

@@ -8,7 +8,12 @@ import {
   AuthenticationTypeConfig,
   IssuesManagementApi,
   OrderSeverityArr,
-  SendProblemApi, validationProblemApi, VerificationResultConfig, certifyTypeArr, CertifyTypeConfig,
+  SendProblemApi,
+  validationProblemApi,
+  VerificationResultConfig,
+  certifyTypeArr,
+  CertifyTypeConfig,
+  StringOrderSeverityArr,
 } from '../../commonApi';
 import { getRandom } from '../../../../QualitySynergy/commonProps';
 import AnswerQuestionModal from '../../../AdministrationManagementSupplier/component/AnswerQuestionModal';
@@ -250,33 +255,52 @@ const IssuesManagement = (props) => {
 
   const validateItem = (rows) => {
     let newDataSource = JSON.parse(JSON.stringify(data.dataSource));
-    rows = rows.map(item => ({
-      ...item,
-      lineNum: item['lineNum'],
-      reason: item['reason'] ? item['reason'] : '',
-      measures: item['measures'] ? item['measures'] : '',
-      preventiveMeasures: item['preventiveMeasures'] ? item['preventiveMeasures'] : '',
-      completionTime: item['completionTime'] ? item['completionTime'] : '',
-      validate: true,
-      status: '验证通过',
-      statusCode: 'success',
-      message: '验证通过',
-    }));
+    rows = rows.map(item => {
+      if (item['completionTime'].match(/^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})$/)) {
+        return ({
+          ...item,
+          lineNum: item['lineNum'],
+          reason: item['reason'] ? item['reason'] : '',
+          measures: item['measures'] ? item['measures'] : '',
+          preventiveMeasures: item['preventiveMeasures'] ? item['preventiveMeasures'] : '',
+          completionTime: item['completionTime'] ? item['completionTime'] : '',
+          validate: true,
+          status: '验证通过',
+          statusCode: 'success',
+          message: '验证通过',
+        });
+      } else {
+        return ({
+          ...item,
+          lineNum: item['lineNum'],
+          reason: item['reason'] ? item['reason'] : '',
+          measures: item['measures'] ? item['measures'] : '',
+          preventiveMeasures: item['preventiveMeasures'] ? item['preventiveMeasures'] : '',
+          completionTime: item['completionTime'] ? item['completionTime'] : '',
+          validate: false,
+          status: '验证不通过',
+          statusCode: 'error',
+          message: '时间格式错误',
+        });
+      }
+    });
     newDataSource.map((value, index) => {
       rows.map(item => {
         if ((index + 1) === item.lineNum) {
           newDataSource[index] = Object.assign(value, item);
-          newDataSource[index].lineNum = value.lineNum
+          newDataSource[index].lineNum = value.lineNum;
         }
       });
     });
-    console.log(rows);
     return newDataSource;
   };
 
   const importFunc = (value) => {
-    console.log(value, 'valie')
-    setData(v => ({ ...v, dataSource: value }));
+    let newDataSource = JSON.parse(JSON.stringify(value));
+    if (newDataSource && newDataSource.length !== 0) {
+      newDataSource = newDataSource.map(item => ({ ...item, severity: StringOrderSeverityArr[item.severity] }));
+    }
+    setData(v => ({ ...v, dataSource: newDataSource }));
     refreshTable();
   };
 
@@ -306,7 +330,7 @@ const IssuesManagement = (props) => {
             <DataImport
               tableProps={{
                 columns,
-                rowKey: 'lineNum',
+                rowKey: (item) => item.lineNum,
                 showSearch: false,
               }}
               validateAll={true}
