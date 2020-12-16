@@ -65,11 +65,13 @@ function ManualEvaluate() {
   const {
     seEvaluationProject = {},
     flowStatus, // 审核状态
-    id: flowId
+    id: flowId,
+    scorerCode
   } = singleRow;
   // const { evaluationProjectStatus } = seEvaluationProject;
   // 未提交审核状态
   const noSubmit = flowStatus === 'INIT';
+  const isSelf = scorerCode === account;
   const completed = flowStatus === 'COMPLETED'
   // 未选中数据的状态
   const empty = selectedRowKeys.length === 0;
@@ -242,7 +244,7 @@ function ManualEvaluate() {
         authAction(
           <Button
             className={styles.btn}
-            disabled={!noSubmit || empty}
+            disabled={!noSubmit || empty || !isSelf}
             onClick={handleEvaluate}
             ignore={DEVELOPER_ENV}
             key='MANUAL_EVALUATE'
@@ -273,7 +275,7 @@ function ManualEvaluate() {
             businessModelCode='com.ecmp.srm.sam.entity.se.SeSubEvaluationProject'
           >
             {
-              loading => <Button loading={loading} className={styles.btn} disabled={empty || !noSubmit}>提交审核</Button>
+              loading => <Button loading={loading} className={styles.btn} disabled={empty || !noSubmit || !isSelf}>提交审核</Button>
             }
           </StartFlow>
         )
@@ -282,7 +284,7 @@ function ManualEvaluate() {
         authAction(
           <Button
             className={styles.btn}
-            disabled={empty || noSubmit || completed}
+            disabled={empty || noSubmit || completed || !isSelf}
             onClick={handleStopApprove}
             ignore={DEVELOPER_ENV}
             key='MANUAL_EVALUATE_APPROVE_STOP'
