@@ -18,6 +18,7 @@ import {
   evlEmu,
   flowStatusProps
 } from '../../utils/commonProps';
+import { useLocation } from 'dva/router';
 import { formatYMDHmsToYMD, getFrameElement, openNewTab } from '../../utils';
 import { checkEvaluateData } from '../../services/evaluate';
 import { stopApprove } from '../../services/api';
@@ -43,8 +44,8 @@ const minxiEvlStatusProps = {
 }
 
 function ManualEvaluate() {
-  const tableRef = useRef(null)
-  const headerRef = useRef(null)
+  const tableRef = useRef(null);
+  const headerRef = useRef(null);
   const [tableState, sets] = useTableProps();
   const {
     selectedRowKeys,
@@ -58,6 +59,7 @@ function ManualEvaluate() {
     setSearchValue,
     setOnlyMe
   } = sets;
+  const { query } = useLocation();
   const [approveLoading, toggleApproveLoading] = useState(false)
   const [singleRow = {}] = selectedRows;
   const authorizations = storage.sessionStorage.get("Authorization");
@@ -448,7 +450,25 @@ function ManualEvaluate() {
       tableRef.current.remoteDataRefresh()
     }
   }
+  function analysisParams(params) {
+    const [scored = null, flowStatus = null] = params;
+    const filters = [
+      {
+        fieldName: 'scored',
+        operator: 'EQ',
+        value: scored
+      },
+      {
+        filedName: 'flowStatus',
+        operator: 'EQ',
+        value: flowStatus
+      }
+    ].filter(item => !Object.is(null, item.value));
+    return filters
+  }
   useEffect(() => {
+    const filters = analysisParams(query);
+    setSearchValue({ filters })
     window.parent.frames.addEventListener('message', listenerParentClose, false);
     return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
   }, [])
