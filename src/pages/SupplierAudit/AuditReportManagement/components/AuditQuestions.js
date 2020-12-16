@@ -8,7 +8,7 @@ import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList
 import { Form } from 'antd';
 import { ExtTable } from 'suid';
 import Upload from '../../../../components/Upload';
-import { AuthenticationTypeArr, whetherArr } from '../../AdministrationManagementDemand/commonApi';
+import { AuthenticationTypeArr, certifyTypeArr, whetherArr } from '../../AdministrationManagementDemand/commonApi';
 
 const AuditQuestions = React.forwardRef(({ form, isView, editData, type }, ref) => {
   useImperativeHandle(ref, () => ({}));
@@ -28,7 +28,7 @@ const AuditQuestions = React.forwardRef(({ form, isView, editData, type }, ref) 
     },
     { title: '完成时间', dataIndex: 'completionTime', width: 100 },
     { title: '验证类型', dataIndex: 'checkType', width: 100, render: v => AuthenticationTypeArr[v] },
-    { title: '验证结果', dataIndex: 'checkResult', width: 100, render: v => whetherArr[v] },
+    { title: '验证结果', dataIndex: 'checkResult', width: 100, render: v => certifyTypeArr[v] },
   ].map(item => ({ ...item, align: 'center' }));
   return (
     <div className={styles.wrapper}>

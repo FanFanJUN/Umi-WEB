@@ -63,7 +63,7 @@ const AuditComments = React.forwardRef(({ form, isView, editData, type }, ref) =
             <Col span={12}>
               <FormItem  {...formLayout} label={'是否通过'}>
                 {
-                  <span>{editData.whetherPass ? '是' : '否'}</span>
+                  <span>{editData.whetherPass === null ? '' : (editData.whetherPass ? '是' : '否')}</span>
                 }
               </FormItem>
             </Col>

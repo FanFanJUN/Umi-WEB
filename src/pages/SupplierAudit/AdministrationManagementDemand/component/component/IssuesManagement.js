@@ -270,12 +270,10 @@ const IssuesManagement = (props) => {
         }
       });
     });
-    console.log(rows);
     return newDataSource;
   };
 
   const importFunc = (value) => {
-    console.log(value, 'valie')
     setData(v => ({ ...v, dataSource: value }));
     refreshTable();
   };

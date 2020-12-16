@@ -121,7 +121,7 @@ const Editor = forwardRef(({
           <Col span={12}>
             <Form.Item label='原厂' {...formLayout}>
               {
-                getFieldDecorator('orginFactoryName')(<Box />)
+                getFieldDecorator('originName')(<Box />)
               }
             </Form.Item>
           </Col>
