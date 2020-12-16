@@ -211,7 +211,8 @@ export default () => {
     },
     {
       title: '供应商名称',
-      dataIndex: 'supplierName'
+      dataIndex: 'supplierName',
+      width: 200
     },
     {
       title: '原厂代码',
@@ -219,11 +220,13 @@ export default () => {
     },
     {
       title: '原厂名称',
-      dataIndex: 'originCode'
+      dataIndex: 'originCode',
+      width: 200
     },
     {
       title: '物料分类',
-      dataIndex: 'materialCategoryName'
+      dataIndex: 'materialCategoryName',
+      width: 200
     },
     {
       title: '申请公司',

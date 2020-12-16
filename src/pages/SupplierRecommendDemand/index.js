@@ -230,7 +230,8 @@ export default () => {
     },
     {
       title: '需求单号',
-      dataIndex: 'docNumber'
+      dataIndex: 'docNumber',
+      width: 200
     },
     {
       title: '供应商代码',
@@ -238,15 +239,17 @@ export default () => {
     },
     {
       title: '供应商名称',
-      dataIndex: 'supplierName'
+      dataIndex: 'supplierName',
+      width: 200
     },
     {
       title: '原厂代码',
-      dataIndex: 'originName'
+      dataIndex: 'originCode'
     },
     {
       title: '原厂名称',
-      dataIndex: 'originCode'
+      dataIndex: 'originName',
+      width: 200
     },
     {
       title: '物料分类',
@@ -268,7 +271,8 @@ export default () => {
     },
     {
       title: '创建时间',
-      dataIndex: 'createdDate'
+      dataIndex: 'createdDate',
+      width: 220
     }
   ].map(item => ({ ...item, align: 'center' }));
   const formItems = [
