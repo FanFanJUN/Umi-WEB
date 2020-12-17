@@ -450,8 +450,8 @@ function ManualEvaluate() {
       tableRef.current.remoteDataRefresh()
     }
   }
-  function analysisParams(params) {
-    const [scored = null, flowStatus = null] = params;
+  function analysisParams(params = {}) {
+    const { scored = null, flowStatus = null } = params;
     const filters = [
       {
         fieldName: 'scored',
@@ -459,7 +459,7 @@ function ManualEvaluate() {
         value: scored
       },
       {
-        filedName: 'flowStatus',
+        fieldName: 'flowStatus',
         operator: 'EQ',
         value: flowStatus
       }

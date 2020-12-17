@@ -52,12 +52,34 @@ const Editor = forwardRef(({
     objectRecognition
   } = getFieldsValue();
   async function show(fields, ts) {
-    const { recommendConfirm, ...cacheFieldsValues } = fields;
-    toggleVisible(true)
+    const {
+      recommendConfirm,
+      objectRecognition = null,
+      trust = null,
+      ...cacheFieldsValues
+    } = fields;
+    const cfv = {
+      ...cacheFieldsValues,
+      trust,
+      objectRecognition
+    }
+    await toggleVisible(true)
     await DELAY(200)
-    setTrustInfos(ts)
-    setFieldsValue(fields)
-    setCacheFields(cacheFieldsValues)
+    await setTrustInfos(ts)
+    await setFieldsValue({
+      recommendConfirm
+    })
+    await setFieldsValue({
+      objectRecognition
+    })
+    await setFieldsValue({
+      trust
+    })
+    await setFieldsValue(fields)
+    await setFieldsValue({
+      trust
+    })
+    setCacheFields(cfv)
   }
   function hide() {
     toggleVisible(false)
