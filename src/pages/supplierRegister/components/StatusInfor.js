@@ -13,27 +13,27 @@ const { create } = Form;
 const FormItem = Form.Item;
 
 const formItemLayout = {
-  labelCol: {
-    span: 8
-  },
-  wrapperCol: {
-    span: 16
-  }
+    labelCol: {
+        span: 8
+    },
+    wrapperCol: {
+        span: 16
+    }
 }
 const StatusInfor = forwardRef(({
-  form,
-  editData = [],
+    form,
+    editData = [],
 }, ref) => {
-  useImperativeHandle(ref, () => ({
-    form
-  }));
+    useImperativeHandle(ref, () => ({
+        form
+    }));
 
-  useEffect(() => {
+    useEffect(() => {
 
-  }, [editData])
+    }, [editData])
 
-  return (
-    <Form>
+    return (
+        <Form>
             <Row>
                 <Col span={12}>
                     <FormItem
@@ -50,7 +50,7 @@ const StatusInfor = forwardRef(({
                         {...formItemLayout}
                         label={'方案冻结状态'}
                     >
-                        <span>{editData && editData.supplierVo && editData.supplierVo.planFrozen === false ? '否' : '是'}</span>
+                        <span>{editData && editData.supplierVo && editData.supplierVo.planFrozen ? '是' : '否'}</span>
                     </FormItem>
                 </Col>
                 <Col span={12}>
@@ -58,7 +58,7 @@ const StatusInfor = forwardRef(({
                         {...formItemLayout}
                         label={'报价冻结状态'}
                     >
-                        <span>{editData && editData.extendVo && editData.supplierVo.offerFrozen === false ? '否' : '是'}</span>
+                        <span>{editData && editData.extendVo && editData.supplierVo.offerFrozen === false ? '是' : '否'}</span>
                     </FormItem>
                 </Col>
             </Row>
@@ -68,7 +68,7 @@ const StatusInfor = forwardRef(({
                         {...formItemLayout}
                         label={'下单冻结状态'}
                     >
-                        <span>{editData && editData.supplierVo && editData.supplierVo.orderFrozen === false ? '否' : '是'}</span>
+                        <span>{editData && editData.supplierVo && editData.supplierVo.orderFrozen === false ? '是' : '否'}</span>
                     </FormItem>
                 </Col>
                 <Col span={12}>
@@ -76,13 +76,13 @@ const StatusInfor = forwardRef(({
                         {...formItemLayout}
                         label={'付款冻结状态'}
                     >
-                        <span>{editData && editData.supplierVo && editData.supplierVo.payFrozen === false ? '否' : '是'}</span>
+                        <span>{editData && editData.supplierVo && editData.supplierVo.payFrozen === false ? '是' : '否'}</span>
                     </FormItem>
                 </Col>
 
             </Row>
         </Form>
-  )
+    )
 })
 
 const CommonForm = create()(StatusInfor)

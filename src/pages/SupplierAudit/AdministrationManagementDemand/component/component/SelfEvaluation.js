@@ -45,6 +45,7 @@ const SelfEvaluation = props => {
           onClick={e => e.stopPropagation()}
           afterSelect={value => {
             data.whetherApply = value.code;
+            changeSelfScore();
             refreshTable();
           }}
           value={ApplicableStateArr[v]} {...ApplicableStateProps} /> : data.notApplyScore,
@@ -118,8 +119,11 @@ const SelfEvaluation = props => {
       arr.map(item => {
         if (item.systemId === value.parentId) {
           let num = 0;
+          let notApplyScoreNum = 0;
           item.children.forEach(v => num = num + (v.reviewScore ? v.reviewScore : v.selfScore) || 0);
+          item.children.forEach(v => notApplyScoreNum = notApplyScoreNum + (v.notApplyScore ? v.notApplyScore : 0));
           item.selfScore = num;
+          item.notApplyScore = notApplyScoreNum;
         } else {
           if (item.children && item.children.length !== 0) {
             systemCalculate(item.children, value);
@@ -136,8 +140,11 @@ const SelfEvaluation = props => {
         if (item.children && item.children.length !== 0) {
           if (item.children[0].definition) {
             let num = 0;
+            let notApplyScoreNum = 0;
+            item.children.forEach(v => notApplyScoreNum = notApplyScoreNum + (v.whetherApply ? (v.highestScore ? v.highestScore : 0) : 0));
             item.children.forEach(v => num = num + v.reviewScore);
             item.selfScore = num;
+            item.notApplyScore = notApplyScoreNum;
             systemCalculate(data.dataSource, item);
           } else {
             calculate(item.children);
@@ -150,6 +157,7 @@ const SelfEvaluation = props => {
   // 修改指标的得分改变体系计算的总分
   const changeSelfScore = () => {
     calculate(data.dataSource);
+    console.log(data.dataSource);
   };
 
   const buildTree = (arr) => {

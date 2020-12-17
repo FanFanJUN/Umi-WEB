@@ -53,7 +53,6 @@ function CreateStrategy() {
       detailsVos: distributioninfo,
       documentType: 0
     }
-    console.log(params)
     triggerLoading(true)
     const { success, message: msg } = await ManualSaveVo(params)
     if (success) {
@@ -110,7 +109,7 @@ function CreateStrategy() {
           <div >
             <Distributioninfo
               wrappedComponentRef={DistributionRef}
-              isEdit={true}
+              isAdd={true}
               isView={false}
             />
           </div>

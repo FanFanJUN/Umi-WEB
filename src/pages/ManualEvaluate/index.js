@@ -231,13 +231,6 @@ function ManualEvaluate() {
         title: '评价人',
         dataIndex: 'scorerName'
       },
-      {
-        title: '评价日期',
-        dataIndex: 'seEvaluationProject.createdDate',
-        render(text) {
-          return formatYMDHmsToYMD(text)
-        }
-      }
     ]
   }
   const left = (
@@ -450,8 +443,8 @@ function ManualEvaluate() {
       tableRef.current.remoteDataRefresh()
     }
   }
-  function analysisParams(params) {
-    const [scored = null, flowStatus = null] = params;
+  function analysisParams(params = {}) {
+    const { scored = null, flowStatus = null } = params;
     const filters = [
       {
         fieldName: 'scored',
@@ -459,7 +452,7 @@ function ManualEvaluate() {
         value: scored
       },
       {
-        filedName: 'flowStatus',
+        fieldName: 'flowStatus',
         operator: 'EQ',
         value: flowStatus
       }

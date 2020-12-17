@@ -3,7 +3,7 @@
  * @author hezhi
  * @date 2020-09-23
  */
-import { useRef, useState, useEffect } from 'react';
+import { useRef } from 'react';
 
 import styles from './index.less';
 import DetailRecommendDemand from '../DetailRecommendDemand';

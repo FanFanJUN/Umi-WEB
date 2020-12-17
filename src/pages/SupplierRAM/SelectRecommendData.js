@@ -82,6 +82,8 @@ const Ctx = forwardRef(({
       identifyTypeName,
       trust,
       objectRecognition,
+      corporationCode,
+      corporationName
     } = values;
     const ids = initialDataSource.map(item => `${item.purchaseOrgCode}-${item.corporationCode}`);
     const filterSelectedRows = selectedRows
@@ -91,6 +93,8 @@ const Ctx = forwardRef(({
         id: null,
         identifyTypeCode,
         identifyTypeName,
+        corporationCode,
+        corporationName,
         purchaseOrgCode: item.code,
         purchaseOrgName: item.name,
         trust,

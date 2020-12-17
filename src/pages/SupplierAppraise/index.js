@@ -185,8 +185,11 @@ function SupplierRevaluate() {
     {
       title: '组织部门',
       key: 'Q_EQ_orgCode',
-      props: { ...orgnazationProps, placeholder: '请选择组织部门' },
-      type: 'list'
+      props: {
+        ...orgnazationProps,
+        placeholder: '请选择组织部门'
+      },
+      type: 'tree'
     },
     {
       title: '评价期间类型',

@@ -215,7 +215,8 @@ export const consignmentOrdersSaveList = params => createServiceRequest({
 export const consignmentOrdersCheck = params => createServiceRequest({
   path: '/api/bafConsignmentOrderRateService/checkImportData',
   params,
-  method: 'POST'
+  method: 'POST',
+  timeout: 0
 })
 
 // 保存一条数据

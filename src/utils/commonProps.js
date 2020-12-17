@@ -459,19 +459,11 @@ export const supplierRecommendDemandStatusProps = {
     },
     {
       code: 'SUBMIT_APPROVE',
-      name: '已提交评审'
-    },
-    {
-      code: 'CONFIRM_JUROR',
-      name: '已确定评审人'
-    },
-    {
-      code: 'SCORE_COMPLETE',
-      name: '已评审'
+      name: '评审中'
     },
     {
       code: 'SCREEN_COMPLETE',
-      name: '筛选已完成'
+      name: '评审已完成'
     },
   ],
   reader: {
