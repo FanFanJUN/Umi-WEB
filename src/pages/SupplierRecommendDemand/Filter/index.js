@@ -153,7 +153,7 @@ const SelfAssessment = forwardRef(({
       .filter(item => item.id !== record.id)
       .filter(item => !item.objectRecognition)
       .filter(item => !item.trustCorporationName && !item.trustPurchaseOrgName);
-      console.log(record)
+    console.log(record)
     editorRef.current.show(record, trustInfos)
   }
   function editorConfirm(values) {

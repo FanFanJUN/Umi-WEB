@@ -41,10 +41,10 @@ const formLayout = {
 };
 
 function AdvancedForm({
-                        formItems = [],
-                        onOk = () => null,
-                        form = {},
-                      }) {
+  formItems = [],
+  onOk = () => null,
+  form = {},
+}) {
   const {
     getFieldValue,
     getFieldDecorator,
@@ -93,15 +93,15 @@ function AdvancedForm({
                     {
                       getFieldDecorator(`${item.key}`),
                       getFieldDecorator(`${item.key}_name`, item?.rules)(
-                      <Item
-                      style={{
-                      width: '100%',
-                    }}
-                      form={form}
-                      {...item.props}
-                      name={`${item.key}_name`}
-                      field={[item.key]}
-                      />
+                        <Item
+                          style={{
+                            width: '100%',
+                          }}
+                          form={form}
+                          {...item.props}
+                          name={`${item.key}_name`}
+                          field={[item.key]}
+                        />
                       )
                     }
                   </FormItem>
