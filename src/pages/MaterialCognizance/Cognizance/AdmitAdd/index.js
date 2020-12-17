@@ -109,7 +109,7 @@ function CreateStrategy() {
                     <div >
                         <Distributioninfo
                             wrappedComponentRef={DistributionRef}
-                            isEdit={true}
+                            isAdd={true}
                             isView={false}
                         />
                     </div>
