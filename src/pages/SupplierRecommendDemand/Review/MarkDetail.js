@@ -49,11 +49,21 @@ const SelfAssessment = forwardRef(({
     },
     {
       title: '最高分',
-      dataIndex: 'highestScore'
+      dataIndex: 'highestScore',
+      width: 150
     },
     {
       title: '得分',
-      dataIndex: 'score'
+      dataIndex: 'score',
+      width: 150
+    },
+    {
+      title: '详情评分',
+      dataIndex: 'jurorScores',
+      render(text) {
+        return Array.isArray(text) ? text.map(item => `${item.scorerName}：${item.score}`) : ''
+      },
+      width: 150
     }
   ]
   useEffect(() => {
