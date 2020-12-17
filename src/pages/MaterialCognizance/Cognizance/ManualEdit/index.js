@@ -65,7 +65,6 @@ function CreateStrategy() {
       detailsVos: distributioninfo,
     }
     let editparams = { ...editData, ...params }
-    console.log(editparams)
     triggerLoading(true)
     const { success, message: msg } = await ManualSaveVo(editparams)
     if (success) {
