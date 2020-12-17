@@ -14,7 +14,7 @@ import {
   Form,
 } from 'antd';
 import { router } from 'dva';
-import { queryReviewMarkData } from '../../../services/recommend';
+import { queryReviewMarkData, queryTeamConfirmHistoryList } from '../../../services/recommend';
 
 const { useLocation } = router;
 const SelfAssessment = forwardRef(({
@@ -32,20 +32,24 @@ const SelfAssessment = forwardRef(({
   const { query } = useLocation();
   const columns = [
     {
+      title: '类别',
+      dataIndex: 'systemName'
+    },
+    {
       title: '指标名称',
-      dataIndex: 'samSupplierEvlSysRule.ruleName'
+      dataIndex: 'ruleName'
     },
     {
       title: '指标定义',
-      dataIndex: 'samSupplierEvlSysRule.definition'
+      dataIndex: 'definition'
     },
     {
       title: '评分标准',
-      dataIndex: 'samSupplierEvlSysRule.scoringStandard'
+      dataIndex: 'scoringStandard'
     },
     {
       title: '最高分',
-      dataIndex: 'samSupplierEvlSysRule.highestScore'
+      dataIndex: 'highestScore'
     },
     {
       title: '得分',
@@ -55,13 +59,13 @@ const SelfAssessment = forwardRef(({
   useEffect(() => {
     async function initialDataSource() {
       toggleLoading(true)
-      const { data, success, message: msg } = await queryReviewMarkData({
+      const { data, success, message: msg } = await queryTeamConfirmHistoryList({
         supplierRecommendDemandId: query.id
       })
       toggleLoading(false)
       if (success) {
-        const { jurorScores } = data;
-        setDataSource(jurorScores)
+        const { evlSystemRules } = data;
+        setDataSource(evlSystemRules)
         return
       }
     }

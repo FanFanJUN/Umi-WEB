@@ -231,13 +231,6 @@ function ManualEvaluate() {
         title: '评价人',
         dataIndex: 'scorerName'
       },
-      {
-        title: '评价日期',
-        dataIndex: 'seEvaluationProject.createdDate',
-        render(text) {
-          return formatYMDHmsToYMD(text)
-        }
-      }
     ]
   }
   const left = (
