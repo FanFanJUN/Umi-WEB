@@ -1,5 +1,5 @@
 import React, { createRef, useState, useRef, useEffect } from 'react';
-import { Button, Modal, message, Spin, Affix,Tabs } from 'antd';
+import { Button, Modal, message, Spin, Affix, Tabs } from 'antd';
 import { router } from 'dva';
 import classnames from 'classnames';
 import {
@@ -38,32 +38,32 @@ function CreateStrategy() {
     triggerLoading(true);
     const { data, success, message: msg } = await findByRequestIdForModify({ id: query.id });
     if (success) {
-        let suppliertype = data.supplierApplyVo.supplierInfoVo.supplierVo.supplierCategory.id
-        setInitialValue(data.supplierApplyVo.supplierInfoVo)
-        setEditData(data.supplierApplyVo.supplierInfoVo)
-        //setReasonchange(data.supplierApplyVo)
-        setwholeData(data.supplierApplyVo)
+      let suppliertype = data.supplierApplyVo.supplierInfoVo.supplierVo.supplierCategory.id
+      setInitialValue(data.supplierApplyVo.supplierInfoVo)
+      setEditData(data.supplierApplyVo.supplierInfoVo)
+      //setReasonchange(data.supplierApplyVo)
+      setwholeData(data.supplierApplyVo)
       triggerLoading(false);
       initConfigurationTable(suppliertype)
-    }else {
+    } else {
       triggerLoading(false);
       message.error(msg)
     }
-    
+
   }
   // 类型配置表
   async function initConfigurationTable(typeId) {
     triggerLoading(true);
-    let params = {catgroyid:typeId,property:3};
+    let params = { catgroyid: typeId, property: 3 };
     const { data, success, message: msg } = await SaveSupplierconfigureService(params);
-      if (success) {
-        let datalist  = data.configBodyVos;
-        triggerLoading(false);
-        setconfigurelist(datalist)
-      }else {
-        triggerLoading(false);
-        message.error(msg)
-      }
+    if (success) {
+      let datalist = data.configBodyVos;
+      triggerLoading(false);
+      setconfigurelist(datalist)
+    } else {
+      triggerLoading(false);
+      message.error(msg)
+    }
   }
   // 获取配置列表项
   useEffect(() => {
@@ -89,19 +89,19 @@ function CreateStrategy() {
 
       <div className={styles.wrapper}>
         <Tabs className={styles.tabcolor}>
-            <TabPane forceRender tab="变更列表" key="1">
-              <ModifyHistoryDetail
-                editData={wholeData}
-                lineDataSource={lineDataSource}
-                />
-            </TabPane>
-            <TabPane forceRender tab="基本信息" key="2">
-                <ModifInfo 
-                  wholeData={wholeData}
-                  configuredata={configuredata}
-                />
-            </TabPane>
-          </Tabs>
+          <TabPane forceRender tab="变更列表" key="1">
+            <ModifyHistoryDetail
+              editData={wholeData}
+              lineDataSource={lineDataSource}
+            />
+          </TabPane>
+          <TabPane forceRender tab="基本信息" key="2">
+            <ModifInfo
+              wholeData={wholeData}
+              configuredata={configuredata}
+            />
+          </TabPane>
+        </Tabs>
       </div>
     </Spin>
   )

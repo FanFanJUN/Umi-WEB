@@ -7,7 +7,7 @@ import ModifyForm from './ModifyForm';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
 import styles from '../index.less';
 import { map } from 'lodash';
-
+import { QueryMasterdata, TaskqueryMasterdata } from '../../../../services/MaterialService'
 
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { create } = Form;
@@ -19,7 +19,7 @@ const ModifyinfoRef = forwardRef(({
   headerInfo,
   modifytype,
   isEdit,
-  isView
+  isAdd
 }, ref) => {
   useImperativeHandle(ref, () => ({
     displanfrom,
@@ -117,14 +117,30 @@ const ModifyinfoRef = forwardRef(({
   ].map(_ => ({ ..._, align: 'center' }))
 
   async function hanldcreate() {
-    if (isEdit) {
+    if (isAdd) {
+      let params = {}
+      const { data, success, message: msg } = await QueryMasterdata(params);
+      if (success) {
+        data.rows.map(item => {
+          if (item.identificationStage === "认定方案") {
+            handleTask(item)
+          }
+        })
+        return
+      }
+    }
+
+  }
+  async function handleTask(val) {
+    const { data, success, message: msg } = await TaskqueryMasterdata({ stageId: val.id });
+    if (success) {
       let defaulted = [{
         key: keys,
-        stageName: '认定方案',
-        stageCode: '04',
-        stageSort: '1',
-        taskName: '制定认定方案',
-        taskCode: '00',
+        stageName: val.identificationStage,
+        stageCode: val.stageCode,
+        stageSort: val.changeSort,
+        taskName: data[0].taskDesc,
+        taskCode: data[0].taskCode,
         taskTypeName: '判断型任务',
         taskTypeCode: '01',
         sort: 1,
@@ -201,7 +217,7 @@ const ModifyinfoRef = forwardRef(({
         keys = keys + 1;
         newsdata.push({
           ...val,
-          key: keys + 1,
+          key: keys,
           executionStatus: 0,
         })
         setDataSource(newsdata);

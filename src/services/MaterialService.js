@@ -166,3 +166,23 @@ export const ConfirmBilltype = (params) => {
     hack: true
   })
 };
+
+// 实物认定主数据阶段查询
+export const QueryMasterdata = params => {
+  return request({
+    url: `${recommendUrl}/api/samPhysicalIdentificationStageService/findByPage`,
+    data: params,
+    method: 'POST',
+  })
+}
+
+// 实物认定主数据任务查询
+export const TaskqueryMasterdata = params => {
+  return request({
+    headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+    url: `${recommendUrl}/api/samPhysicalIdentificationTaskService/findByStageId`,
+    params,
+    method: 'POST',
+    hack: true
+  })
+}
