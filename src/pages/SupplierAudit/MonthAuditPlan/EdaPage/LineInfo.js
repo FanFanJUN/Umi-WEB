@@ -3,7 +3,7 @@
  * @LastEditors: Please set LastEditors
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime: 2020-12-11 18:04:02
+ * @LastEditTime: 2020-12-17 17:06:19
  * @Description: 行信息
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
@@ -98,6 +98,19 @@ let LineInfo = forwardRef((props, ref) => {
           }
         </div>;
       },
+    },
+    {
+      title: '行号',
+      dataIndex: 'reviewPlanMonthLinenum',
+      width: 80,
+      ellipsis: true,
+    },
+    {
+      title: '是否作废',
+      dataIndex: 'whetherDeleted',
+      width: 80,
+      ellipsis: true,
+      render: text=>text?"是":"否",
     },
     {
       title: '需求公司',

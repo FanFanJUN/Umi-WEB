@@ -1,7 +1,7 @@
 /*
  * @Author:黄永翠
  * @Date: 2020-11-09 09:38:38
- * @LastEditTime: 2020-12-08 13:55:42
+ * @LastEditTime: 2020-12-17 17:18:59
  * @LastEditors: Please set LastEditors
  * @Description:审核实施计划-明细
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\index.js
@@ -198,9 +198,9 @@ const Index = (props) => {
             res = await addReviewImplementPlan(saveData);
         } else if (query.pageState === "edit") {
             res = await updateReviewImplementPlan(saveData);
-        } else {
+        } else if(query.pageState === "change" || handleType === 'delete') {
             // 变更添加
-            res = await changeReviewImplementPlanInsert(saveData);
+            res = await changeReviewImplementPlanInsert({...saveData, whetherDeleted: handleType === 'delete'});
         }
         setLoading(false);
         if (res.success) {
@@ -208,7 +208,7 @@ const Index = (props) => {
                 return { id: res.data, message: "保存成功" };
             } else {
                 closeCurrent();
-                message.success("保存成功")
+                message.success("操作成功")
             }
         } else {
             if (handleType === "publish") {
@@ -263,6 +263,7 @@ const Index = (props) => {
                     props.isInFlow!==1 && (data.type !== 'detail' || data.type === 'change' || data.type === 'edit') && <div style={{ display: "flex", alignItems: 'center' }}>
                         <Button className={styles.btn} onClick={() => { closeCurrent() }}>返回</Button>
                         {data.type !== 'change' && <Button className={styles.btn} onClick={() => handleSave('save')}>暂存</Button>}
+                        {data.type === 'change' && <Button className={styles.btn} onClick={() => handleSave('delete')}>作废</Button>}
                         <StartFlow
                             className={styles.btn}
                             type='primary'

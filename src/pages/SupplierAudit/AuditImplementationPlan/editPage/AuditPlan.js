@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:49:50
- * @LastEditTime: 2020-12-07 15:03:18
+ * @LastEditTime: 2020-12-16 17:28:46
  * @LastEditors: Please set LastEditors
  * @Description: I审核实施计划-审核计划
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\AuditPlan.js
@@ -14,7 +14,6 @@ import Upload from '../../Upload';
 import { getDocIdForArray } from '@/utils/utilTool';
 import { reviewStandard } from "../../mainData/commomService";
 import moment from "moment";
-import { getFileSize } from 'suid/lib/utils';
 
 const FormItem = Form.Item;
 const formLayout = {

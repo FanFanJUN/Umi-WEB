@@ -347,6 +347,7 @@ export default function () {
                 disabled={
                     data.selectedRowKeys.length !== 1
                     || data.selectedRows[0]?.flowStatus !== 'COMPLETED'
+                    || data.selectedRows[0]?.state === 'CHANGING'
                     || !judge(data.selectedRows, 'applyAccount', getUserAccount())
                 }
                 ignore={DEVELOPER_ENV}

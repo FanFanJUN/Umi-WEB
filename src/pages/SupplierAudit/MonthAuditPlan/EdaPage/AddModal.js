@@ -170,28 +170,6 @@ const AddModal = (props) => {
             message.warning("至少选中一行！");
             return;
         }
-        // if (type === "recommand") {
-        //     let newList = selectRows.map(item => {
-        //         delete item.id;
-        //         return {
-        //             ...item,
-        //             sourceType: "ADMISSION_RECOMMENDATION",
-        //             sourceLineId: item.id,
-        //             applyCorporationName: item.corporationName,
-        //             applyCorporationCode: item.corporationCode,
-        //             purchaseTeamName: item.purchaseOrgName,
-        //             purchaseTeamCode:item.purchaseOrgCode,
-        //             purchaseTeamId:item.purchaseOrgId,
-        //             sourceCode: item.docNumber,
-        //             supplierName: item.recommendAccess?.supplierName,
-        //             supplierId: item.recommendAccess?.supplierId,
-        //             supplierCode: item.recommendAccess?.supplierCode,
-        //             materialGroupCode: item.recommendAccess?.materialCategoryCode,
-        //             materialGroupName: item.recommendAccess?.materialCategoryName,
-        //         }
-        //     })
-        //     handleOk(newList);
-        // } else {}
         let res = {};
         setLoading(true);
         if (type === "demand") {
