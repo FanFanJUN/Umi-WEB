@@ -256,7 +256,7 @@ const IssuesManagement = (props) => {
   const validateItem = (rows) => {
     let newDataSource = JSON.parse(JSON.stringify(data.dataSource));
     rows = rows.map(item => {
-      if (item['completionTime'].match(/^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})$/)) {
+      if (typeof item['completionTime'] === 'string' && item['completionTime'].match(/^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})$/) || !item['completionTime']) {
         return ({
           ...item,
           lineNum: item['lineNum'],
@@ -276,7 +276,7 @@ const IssuesManagement = (props) => {
           reason: item['reason'] ? item['reason'] : '',
           measures: item['measures'] ? item['measures'] : '',
           preventiveMeasures: item['preventiveMeasures'] ? item['preventiveMeasures'] : '',
-          completionTime: item['completionTime'] ? item['completionTime'] : '',
+          completionTime: item['completionTime'] ? item['completionTime'].toString() : '',
           validate: false,
           status: '验证不通过',
           statusCode: 'error',
