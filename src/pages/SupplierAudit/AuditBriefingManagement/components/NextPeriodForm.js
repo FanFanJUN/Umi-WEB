@@ -49,7 +49,7 @@ const NextPeriodForm = React.forwardRef(({ form, isView, editData, type }, ref) 
           </div>
           <ExtTable
             bordered={true}
-            rowKey={(v) => v.applyCorporationId}
+            rowKey={(v) => v.supplierId}
             showSearch={false}
             height={'500px'}
             lineNumber={false}

@@ -97,7 +97,7 @@ const ThisPeriodForm = React.forwardRef(({ form, isView, editData, type }, ref) 
             <div style={{ paddingBottom: '10px', fontSize: '12px', fontWeight: 'bold' }}>2-3本期供应商审核执行明细统计汇总表</div>
             <ExtTable
               bordered={true}
-              rowKey={(v) => v.applyCorporationId}
+              rowKey={(v) => v.supplierId}
               showSearch={false}
               height={'300px'}
               lineNumber={false}
