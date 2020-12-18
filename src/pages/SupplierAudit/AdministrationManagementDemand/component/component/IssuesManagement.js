@@ -73,6 +73,7 @@ const IssuesManagement = (props) => {
     setData(v => ({ ...v, loading: true }));
     IssuesManagementApi({
       reviewImplementPlanCode,
+      whetherSupplier: !props.type
     }).then(res => {
       if (res.success) {
         let arr = res.data.slice();
