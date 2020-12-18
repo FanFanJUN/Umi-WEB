@@ -457,6 +457,7 @@ export const reviewPlanYearConfig = {
     autoLoad: false,
     params: {
       state: 'EFFECT',
+      whetherOccupied: false
     },
     url: `${recommendUrl}/api/reviewPlanYearService/findByPage`,
   },
