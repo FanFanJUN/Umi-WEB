@@ -21,14 +21,13 @@ import {
   Radio,
   Tree,
   Select,
-  Button,
   Modal,
   message,
   Spin
 } from 'antd';
 import { useLocation } from 'dva/router';
 import moment from 'moment';
-import { commonProps, getUserAccount, commonUrl } from '../../../utils';
+import { commonProps, getUserAccount } from '../../../utils';
 import { findListById, findByBuCodeOrBgCode, findAppraiseById } from '../../../services/appraise';
 import { useTableProps } from '../../../utils/hooks';
 const {
@@ -40,7 +39,6 @@ const {
   businessMainProps,
   businessUnitMainProps
 } = commonProps;
-const { baseUrl } = commonUrl;
 const { Group: RadioGroup } = Radio;
 const { create, Item: FormItem } = Form;
 const { Option } = Select;
@@ -440,7 +438,7 @@ const CommonForm = forwardRef(({
         <div className={styles.commonTitle}>
           基本信息
         </div>
-        <Row gutter={[12, 0]}>
+        <Row>
           <Col span={12}>
             <FormItem label='评价项目名称' {...formLayout}>
               {
@@ -507,7 +505,7 @@ const CommonForm = forwardRef(({
             <FormItem label='评价期间' style={{
               marginBottom: 0
             }} required {...formLayout}>
-              <Row gutter={[12, 0]}>
+              <Row>
                 <Col span={12}>
                   <FormItem>
                     {
@@ -573,7 +571,7 @@ const CommonForm = forwardRef(({
             <FormItem label='应用期间' style={{
               marginBottom: 0
             }} {...formLayout} required>
-              <Row gutter={[12, 0]}>
+              <Row>
                 <Col span={12}>
                   <FormItem>
                     {
@@ -628,8 +626,7 @@ const CommonForm = forwardRef(({
                       required: true,
                       message: '请选择是否影响合格供应商名录',
                       type: 'boolean'
-                    },
-
+                    }
                   ]
                 })(
                   <RadioGroup disabled={type === 'detail'}>
@@ -754,7 +751,7 @@ const CommonForm = forwardRef(({
           </Col>
         </Row>
         <div className={styles.commonTitle}>评价范围</div>
-        <Row gutter={[12, 0]}>
+        <Row>
           <Col span={12}>
             <FormItem label='评价层级' {...formLayout}>
               {
@@ -783,41 +780,16 @@ const CommonForm = forwardRef(({
             }
           </Col>
         </Row>
-        <Row>
-          <Col span={24}>
-            {/* <div style={{ padding: 12 }}>
-              {
-                evlValue === 'CORP_AND_PURCHASE_ORG' ? (
-                  <>
-                    <ComboModalList
-                      className={styles.btn} type='primary'
-                      title='新增'
-                      disabled={type === 'detail'}
-                      columns={businessColumns}
-                      store={{
-                        url: `${baseUrl}/api/corporationPurchaseOrgService/findByPageWithDataAuth`,
-                        type: 'POST',
-                        params: {
-                          quickSearchProperties: businessColumns.map(item => item.dataIndex)
-                        }
-                      }}
-                      onOk={handleCreateOnOk}
-                    >新增</ComboModalList>
-                    <Button disabled={type === 'detail' || tableCommonProps.selectedRowKeys.length === 0} className={styles.btn} onClick={handleRemove}>删除</Button>
-                  </>
-                ) : null
-              }
-            </div> */}
-            <ExtTable
-              {...tableCommonProps}
-              showSearch={false}
-              onSelectRow={tableCommonSets.handleSelectedRows}
-              columns={businessColumns}
-              ellipsis={false}
-              ref={tableRef}
-            />
-          </Col>
-        </Row>
+        <div>
+          <ExtTable
+            {...tableCommonProps}
+            showSearch={false}
+            onSelectRow={tableCommonSets.handleSelectedRows}
+            columns={businessColumns}
+            ellipsis={false}
+            ref={tableRef}
+          />
+        </div>
       </Form>
     </Spin>
   )

@@ -12,7 +12,13 @@ import { downloadBlobFile, sendResize, closeCurrent } from '../../../utils';
 import { ExtTable, WorkFlow } from 'suid';
 import CommonForm from '../../SupplierAppraise/CommonForm';
 import { useTableProps } from '../../../utils/hooks';
-import { exportEvaluateData, queryEvaluateData, importEvaluateData, checkEvaluateData, queryEvaluateApproveBaseDate } from '../../../services/evaluate';
+import {
+  exportEvaluateData,
+  queryEvaluateData,
+  importEvaluateData,
+  checkEvaluateData,
+  queryEvaluateApproveBaseDate
+} from '../../../services/evaluate';
 const { TabPane } = Tabs;
 const { StartFlow } = WorkFlow;
 function Evaluate() {

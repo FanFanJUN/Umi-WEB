@@ -4,7 +4,7 @@ import { AutoSizeLayout } from '../../../components';
 import { ExtTable, ComboList, ComboTree } from 'suid';
 import { useLocation } from 'dva/router';
 import { Button, Upload, Form, Input, Select, Spin, Modal, message } from 'antd';
-import { commonUrl, commonProps, downloadBlobFile, sendResize } from '../../../utils';
+import { commonUrl, commonProps, downloadBlobFile } from '../../../utils';
 import {
   evaluateResultLeaderExport, // 领导审核导出
   evaluateResultLeaderImport, // 领导审核导入

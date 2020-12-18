@@ -19,7 +19,12 @@ import {
 } from 'antd';
 import { ComboList, DataImport } from 'suid';
 import classnames from 'classnames'
-import { evlLevelEmu, evaluateSystemFormCodeProps, businessMainProps, businessUnitMainProps } from '../../../utils/commonProps';
+import {
+  evlLevelEmu,
+  evaluateSystemFormCodeProps,
+  businessMainProps,
+  businessUnitMainProps
+} from '../../../utils/commonProps';
 import { downloadBlobFile, DEVELOPER_ENV } from '../../../utils';
 import {
   batchExportTechnologyData as EXPORT_SERVICE,

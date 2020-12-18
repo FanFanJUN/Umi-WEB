@@ -5,7 +5,13 @@ import { commonProps, getUserName } from '../../../utils';
 import { Header, ComboAttachment } from '../../../components';
 import styles from './index.less';
 import moment from 'moment';
-const { supplierProps, orgnazationProps, currencyProps, paymentProps, dictProps } = commonProps;
+const {
+  supplierProps,
+  orgnazationProps,
+  currencyProps,
+  paymentProps,
+  dictProps
+} = commonProps;
 const { create, Item: FormItem } = Form;
 const { TextArea } = Input;
 const formLayout = {
