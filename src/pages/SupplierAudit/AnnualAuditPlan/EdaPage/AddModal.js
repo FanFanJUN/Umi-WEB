@@ -255,7 +255,7 @@ const AddModal = (props) => {
         afterClose={clearSelected}
         footer={[
           <Button key="back" onClick={onCancel}>
-            取消
+            返回
           </Button>,
           <Button key="submit" type="primary" onClick={onOk}>
             确定

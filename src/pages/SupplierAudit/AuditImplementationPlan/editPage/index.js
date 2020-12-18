@@ -1,7 +1,7 @@
 /*
  * @Author:黄永翠
  * @Date: 2020-11-09 09:38:38
- * @LastEditTime: 2020-12-17 17:18:59
+ * @LastEditTime: 2020-12-18 11:26:57
  * @LastEditors: Please set LastEditors
  * @Description:审核实施计划-明细
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\index.js
@@ -269,7 +269,7 @@ const Index = (props) => {
                             type='primary'
                             beforeStart={handleBeforeStartFlow}
                             startComplete={handleComplete}
-                            onCancel={() => { setLoading(false); }}
+                            onCancel={() => { setLoading(false); closeCurrent();}}
                             businessKey={query?.id}
                             disabled={loading}
                             businessModelCode={data.type === 'change' ? 'com.ecmp.srm.sam.entity.sr.ReviewImplementPlanChange' : 'com.ecmp.srm.sam.entity.sr.ReviewImplementPlan'}
