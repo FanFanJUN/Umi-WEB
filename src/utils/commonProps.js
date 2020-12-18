@@ -47,7 +47,6 @@ export const fimlyMaterialClassifyProps = {
     field: ['value'],
     description: 'value'
   },
-  remotePaging: true,
   placeholder: '选择认定物料类别'
 }
 // 认定类型数据字典

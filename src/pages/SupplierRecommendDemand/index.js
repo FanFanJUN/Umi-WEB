@@ -19,7 +19,13 @@ const { Search } = Input;
 const { StartFlow, FlowHistoryButton } = WorkFlow;
 const { storage, authAction } = utils;
 const { recommendUrl } = commonUrl;
-const { corporationProps, materialClassProps, statusProps, flowStatusProps, supplierRecommendDemandStatusProps } = commonProps
+const {
+  corporationProps,
+  materialClassProps,
+  flowStatusProps,
+  supplierRecommendDemandStatusProps,
+  fimlyMaterialClassifyProps
+} = commonProps
 
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 export default () => {
@@ -256,9 +262,14 @@ export default () => {
       dataIndex: 'materialCategoryName'
     },
     {
+      title: '认定物料类别',
+      dataIndex: 'identifyMaterialLevelName',
+      width: 200
+    },
+    {
       title: '申请公司',
       dataIndex: 'corporationName',
-      width: 180
+      width: 250
     },
     {
       title: '创建部门',
@@ -313,10 +324,12 @@ export default () => {
       props: materialClassProps
     },
     {
-      title: '物料认定类别',
-      key: 'Q_EQ_materialConfirmCode',
+      title: '认定物料类别',
+      key: 'Q_EQ_identifyMaterialLevelValue',
+      type: 'list',
       props: {
-        placeholder: '选择物料认定类别'
+        ...fimlyMaterialClassifyProps,
+        placeholder: '选择认定物料类别'
       }
     },
     {
