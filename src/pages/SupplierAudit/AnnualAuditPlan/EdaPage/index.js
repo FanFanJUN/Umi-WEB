@@ -1,11 +1,11 @@
 /*
  * @Author: Li Cai
- * @LastEditors: Li Cai
+ * @LastEditors  : LiCai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:04:51
- * @LastEditTime: 2020-12-09 16:35:20
+ * @LastEditTime : 2020-12-18 10:29:57
  * @Description: 新增  编辑  详情 page
- * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/index.js
+ * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/index.js
  */
 import React, { Fragment, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Affix, Button, Form, message, Spin } from 'antd';
@@ -135,11 +135,12 @@ const Index = (props) => {
 
             // 校验行数据
             for (const item of finnalLineData) {
-                if (!item.reviewTypeCode || !item.reviewReasonCode) {
+                if (!item.reviewTypeCode || !item.reviewReasonCode 
+                    || !item.reviewWayCode || !item.reviewMonth || !item.contactUserName || !item.contactUserTel || !item.countryCode) {
                     if (buttonType === 'onlySave') {
-                        message.error('行上必填项为空, 请完善');
+                        message.error(`${item.reviewPlanYearLinenum}行上必填项为空, 请完善`);
                     }
-                    allData = { bool: false, message: '行上必填项为空, 请完善' };
+                    allData = { bool: false, message: `${item.reviewPlanYearLinenum}行上必填项为空, 请完善` };
                     break;
                 }
             }
