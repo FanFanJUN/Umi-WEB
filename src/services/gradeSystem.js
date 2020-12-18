@@ -173,7 +173,8 @@ export const orderConfirmationSaveList = params => createServiceRequest({
 export const orderConfirmationCheck = params => createServiceRequest({
   path: '/api/bafTimelyOrderConfirmationRateService/checkImportData',
   params,
-  method: 'POST'
+  method: 'POST',
+  timeout: 0
 })
 
 // 保存一条数据
@@ -258,7 +259,8 @@ export const timelyDeliveryRateSaveList = params => createServiceRequest({
 export const timelyDeliveryRateCheck = params => createServiceRequest({
   path: '/api/bafOnTimeDeliveryRateService/checkImportData',
   params,
-  method: 'POST'
+  method: 'POST',
+  timeout: 0
 })
 
 // 保存一条数据
