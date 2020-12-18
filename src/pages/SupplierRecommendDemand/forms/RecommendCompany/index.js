@@ -18,7 +18,8 @@ const columns = [
   },
   {
     title: '采购组织名称',
-    dataIndex: 'name'
+    dataIndex: 'name',
+    width: 250
   }
 ]
 const Ctx = forwardRef(({
@@ -151,7 +152,7 @@ const Ctx = forwardRef(({
       footer={
         <>
           <Button onClick={handleContinue}>确定并继续</Button>
-          <Button onClick={handleOk}>确定</Button>
+          <Button onClick={handleOk} type='primary'>确定</Button>
           <Button onClick={cancel}>取消</Button>
         </>
       }
