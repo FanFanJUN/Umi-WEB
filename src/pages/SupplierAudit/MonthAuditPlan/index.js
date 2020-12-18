@@ -166,7 +166,7 @@ export default function () {
                 }
             }
         },
-        { title: '是否作废', dataIndex: 'whetherDeleted', ellipsis: true, width: 80, render: text=>text?"是":"否" },
+        { title: '作废', dataIndex: 'whetherDeleted', ellipsis: true, width: 60, render: text=>text?"是":"否" },
         {
             title: '审批状态', dataIndex: 'flowStatus', width: 120, align: 'center', render: v => {
                 switch (v) {
@@ -277,6 +277,7 @@ export default function () {
                     data.selectedRowKeys.length !== 1
                     || data.selectedRows[0]?.flowStatus !== 'COMPLETED'
                     || data.selectedRows[0]?.state === 'CHANGING'
+                    || data.selectedRows[0]?.whetherDeleted
                     || !judge(data.selectedRows, 'applyAccount', getUserAccount())
                 }
                 ignore={DEVELOPER_ENV}
