@@ -28,7 +28,7 @@ const ThisPeriodForm = React.forwardRef(({ form, isView, editData, type }, ref) 
     },
     {
       title: '供应商信息', children: [
-        { title: '名称', dataIndex: 'supplierName', width: 200 },
+        { title: '名称', dataIndex: 'supplierName', width: 200, ellipsis: true },
         { title: '物资分类', dataIndex: 'materialGroupName', ellipsis: true, width: 200 },
       ],
     },
