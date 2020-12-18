@@ -258,7 +258,7 @@ export default () => {
     },
     {
       title: '申请公司',
-      key: 'Q_EQ_purchaseCompanyCode',
+      key: 'Q_EQ_corporationCode',
       type: 'list',
       props: {
         ...corporationProps,
