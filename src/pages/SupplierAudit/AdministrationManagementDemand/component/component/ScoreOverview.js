@@ -134,6 +134,7 @@ const ScoreOverview = (props) => {
         lineNumber={false}
       />
       <ViewScoreByReviewerView
+        isView={props.isView}
         onCancel={() => setData(v => ({ ...v, viewScoreByReviewerVisible: false }))}
         reviewImplementPlanCode={props.reviewImplementPlanCode}
         visible={data.viewScoreByReviewerVisible}
