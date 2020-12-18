@@ -449,7 +449,7 @@ function ManualEvaluate() {
       {
         fieldName: 'scored',
         operator: 'EQ',
-        value: scored
+        value: JSON.parse(scored)
       },
       {
         fieldName: 'flowStatus',
