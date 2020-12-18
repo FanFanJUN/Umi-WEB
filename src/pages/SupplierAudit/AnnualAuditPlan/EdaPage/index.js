@@ -3,7 +3,7 @@
  * @LastEditors  : LiCai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:04:51
- * @LastEditTime : 2020-12-18 17:10:37
+ * @LastEditTime : 2020-12-18 17:47:53
  * @Description: 新增  编辑  详情 page
  * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/index.js
  */
@@ -56,7 +56,7 @@ const Index = (props) => {
     }
 
     useEffect(() => {
-        const { id, pageState: queryPageSate } = query;
+        const { id, pageState: queryPageSate, reviewPlanYearCode } = query;
         const pageState = queryPageSate || propsPageState; // 流程中pageState 与url pageState
         if (pageState === 'edit' || pageState === 'detail') {
             async function fetchData() {
@@ -89,10 +89,10 @@ const Index = (props) => {
                 setData((value) => ({ ...value, type: pageState, isView: false, title: '新增年度审核计划' }));
                 break;
             case 'edit':
-                setData((value) => ({ ...value, type: pageState, id, isView: false, title: '编辑年度审核计划' }));
+                setData((value) => ({ ...value, type: pageState, id, isView: false, title: `编辑年度审核计划:${reviewPlanYearCode}` }));
                 break;
             case 'detail':
-                setData((value) => ({ ...value, type: pageState, isView: true, title: `年度审核计划明细` }));
+                setData((value) => ({ ...value, type: pageState, isView: true, title: `年度审核计划明细:${reviewPlanYearCode}` }));
                 break;
             default:
                 break;
