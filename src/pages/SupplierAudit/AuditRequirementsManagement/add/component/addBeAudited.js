@@ -74,10 +74,10 @@ const AddBeAudited = (props) => {
     GetSupplierContact({
       supplierId: id,
     }).then(res => {
-      const value = res.data ? res.data[0] ? res.data[0] : { name: '', telephone: '' } : { name: '', telephone: '' };
+      const value = res.data ? res.data[0] ? res.data[0] : { name: '', mobile: '' } : { name: '', mobile: '' };
       setFieldsValue({
         contactUserName: value.name,
-        contactUserTel: value.telephone,
+        contactUserTel: value.mobile,
       });
       console.log(res, '联系人');
     });

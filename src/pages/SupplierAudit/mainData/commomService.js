@@ -612,6 +612,10 @@ export const reviewRequirementConfig = {
     type: 'POST',
     autoLoad: false,
     url: `${recommendUrl}/api/reviewRequirementService/findByPage`,
+    params: {
+      state: 'EFFECT',
+      whetherOccupied: false
+    }
   },
   rowKey: 'reviewRequirementCode',
   reader: {
