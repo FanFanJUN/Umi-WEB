@@ -457,6 +457,7 @@ export const reviewPlanYearConfig = {
     autoLoad: false,
     params: {
       state: 'EFFECT',
+      whetherOccupied: false
     },
     url: `${recommendUrl}/api/reviewPlanYearService/findByPage`,
   },
@@ -611,6 +612,10 @@ export const reviewRequirementConfig = {
     type: 'POST',
     autoLoad: false,
     url: `${recommendUrl}/api/reviewRequirementService/findByPage`,
+    params: {
+      state: 'EFFECT',
+      whetherOccupied: false
+    }
   },
   rowKey: 'reviewRequirementCode',
   reader: {
