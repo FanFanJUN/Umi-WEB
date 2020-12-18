@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import styles from './index.less';
 import { Button, Affix, Tabs } from 'antd';
 import { ExtTable, utils } from 'suid';
-import { closeCurrent, sendResize } from '../../../utils';
+import { closeCurrent, sendResize, DELAY } from '../../../utils';
 import { useLocation } from 'dva/router';
 import CommonForm from '../CommonForm';
 import { AutoSizeLayout } from '../../../components'
@@ -68,7 +68,8 @@ function Detail() {
       await setDataSource(data);
       const uuid = utils.getUUID();
       await setTableKey(uuid)
-      sendResize()
+      await DELAY(1000)
+      await sendResize()
       return
     }
   }
