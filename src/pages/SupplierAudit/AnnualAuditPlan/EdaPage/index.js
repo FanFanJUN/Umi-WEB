@@ -3,7 +3,7 @@
  * @LastEditors  : LiCai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:04:51
- * @LastEditTime : 2020-12-18 10:29:57
+ * @LastEditTime : 2020-12-18 16:49:46
  * @Description: 新增  编辑  详情 page
  * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/index.js
  */
@@ -130,6 +130,9 @@ const Index = (props) => {
             finnalLineData.forEach((item) => {
                 if (!item.whetherDelete) {
                     item.whetherDelete = false;
+                }
+                if (item.rowId && item.id) {
+                  delete item.id;
                 }
             })
 
