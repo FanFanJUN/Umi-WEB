@@ -281,7 +281,7 @@ export default () => {
     },
     {
       title: '物料分类',
-      key: 'Q_EQ_materialClassificationCode',
+      key: 'Q_EQ_materialCategoryCode',
       type: 'tree',
       props: materialClassProps
     },
