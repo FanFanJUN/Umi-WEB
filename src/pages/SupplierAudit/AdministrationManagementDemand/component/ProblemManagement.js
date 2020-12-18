@@ -172,13 +172,14 @@ const ProblemManagement = (props) => {
         }));
         setData(v => ({ ...v, dataSource: newData }));
         setUpdateLoading(false);
+        refreshTable()
       } else if (response.status === 'FAILURE') {
         message.error(response.message);
         setUpdateLoading(false);
       }
     } else if (status === 'error') {
       setUpdateLoading(false);
-      message.error('上传失败');
+      message.error('上传失败!');
     }
   };
 

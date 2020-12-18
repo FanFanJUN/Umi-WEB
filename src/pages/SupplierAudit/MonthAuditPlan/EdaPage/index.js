@@ -243,7 +243,7 @@ const Index = (props) => {
                                 type='primary'
                                 beforeStart={handleBeforeStartFlow}
                                 startComplete={handleComplete}
-                                onCancel={() => { setLoading(false); }}
+                                onCancel={() => { setLoading(false); handleBack();}}
                                 businessKey={query?.id}
                                 disabled={loading}
                                 businessModelCode={data.type === 'change' ? 'com.ecmp.srm.sam.entity.sr.ReviewPlanMonthChange' : 'com.ecmp.srm.sam.entity.sr.ReviewPlanMonth'}

@@ -141,18 +141,6 @@ export default function() {
       value.applyDateEnd = value.applyDate[1] ? moment(value.applyDate[1]).format('YYYY-MM-DD') : null;
       delete value.applyDate;
     }
-    // value.materialCode = value.materialCode_name;
-    // value.materialGroupCode = value.materialGroupCode_name;
-    // value.strategicPurchaseCode = value.strategicPurchaseCode_name;
-    // value.buCode = value.buCode_name;
-    // value.state = value.state_name;
-    // value.allotSupplierState = value.allotSupplierState_name;
-    // delete value.materialCode_name;
-    // delete value.materialGroupCode_name;
-    // delete value.strategicPurchaseCode_name;
-    // delete value.buCode_name;
-    // delete value.state_name;
-    // delete value.allotSupplierState_name;
     setData(v => ({ ...v, epTechnicalShareDemandSearchBo: value }));
     headerRef.current.hide();
     tableRef.current.manualSelectedRows();
@@ -225,17 +213,16 @@ export default function() {
     { title: '申请时间', dataIndex: 'applyDate', ellipsis: true, width: 200, align: 'center' },
   ];
 
-  // 提交审核验证
-  const handleBeforeStartFlow = async () => {
-
-  };
-
   // 提交审核完成更新列表
   function handleComplete() {
     tableRef.current.manualSelectedRows();
     tableRef.current.remoteDataRefresh();
   }
 
+  // 提交审核验证
+  const handleBeforeStartFlow = async () => {
+
+  };
 
   const headerLeft = <>
     {
