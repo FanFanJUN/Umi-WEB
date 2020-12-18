@@ -1,5 +1,5 @@
 /**
- * 实现功能： 供应商评价项目-人工评价
+ * 实现功能： 供应商评审项目-人工评审
  * @author hezhi
  * @date 2020-10-15
  */
@@ -97,7 +97,7 @@ function Evaluate() {
       width: 250
     },
     {
-      title: '评价标准',
+      title: '评审标准',
       dataIndex: 'samSupplierEvlSysRule.scoringStandard',
       width: 250
     },
@@ -127,18 +127,18 @@ function Evaluate() {
   )
   function handleExportData() {
     Modal.confirm({
-      title: '导出评价指标模板',
-      content: '是否导出当前评价指标模板',
+      title: '导出评审指标模板',
+      content: '是否导出当前评审指标模板',
       okText: '导出',
       cancelText: '取消',
       onOk: async () => {
         const { success, data, message: msg } = await exportEvaluateData({ subEvaluationProjectId: query?.id });
         if (success) {
-          downloadBlobFile(data, '评价指标模板.xlsx')
-          message.success('导出评价指标模板成功')
+          downloadBlobFile(data, '评审指标模板.xlsx')
+          message.success('导出评审指标模板成功')
           return
         }
-        message.error('导出评价指标模板失败')
+        message.error('导出评审指标模板失败')
       }
     })
   }
@@ -200,7 +200,7 @@ function Evaluate() {
       }
       resolve({
         success: data,
-        message: '数据校验不通过，请检查评价指标是否填写完整'
+        message: '数据校验不通过，请检查评审指标是否填写完整'
       })
     })
   }
@@ -212,7 +212,7 @@ function Evaluate() {
       <Affix>
         <div className={styles.affixHeader}>
           <div className={styles.fbc}>
-            <span className={styles.title}>人工评价</span>
+            <span className={styles.title}>人工评审</span>
             <div className={styles.fec}>
               <Button className={styles.btn} onClick={closeCurrent}>返回</Button>
               <StartFlow
@@ -243,9 +243,9 @@ function Evaluate() {
             <CommonForm wrappedComponentRef={formRef} type='detail' initialize={false}/>
           </Spin>
         </TabPane>
-        <TabPane tab='评价指标' key='target' forceRender={true}>
+        <TabPane tab='评审指标' key='target' forceRender={true}>
           <Spin spinning={loading}>
-            <div className={styles.commonTitle}>评价指标</div>
+            <div className={styles.commonTitle}>评审指标</div>
             <Header left={left} />
             <AutoSizeLayout>
               {

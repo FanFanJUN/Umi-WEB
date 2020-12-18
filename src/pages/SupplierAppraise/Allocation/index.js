@@ -50,7 +50,8 @@ function Allocation() {
       render(text, record) {
         if (!text) return ''
         return `${record.scorerCode}   ${text}`
-      }
+      },
+      width: 200
     }
   ]
   const left = (

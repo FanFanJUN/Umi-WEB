@@ -1,5 +1,5 @@
 /**
- * 实现功能： 供应商评价项目-人工评价
+ * 实现功能： 供应商评审项目-人工评审
  * @author hezhi
  * @date 2020-10-15
  */
@@ -83,7 +83,7 @@ function Evaluate() {
       width: 250
     },
     {
-      title: '评价标准',
+      title: '评审标准',
       dataIndex: 'samSupplierEvlSysRule.scoringStandard',
       width: 250
     },
@@ -146,9 +146,9 @@ function Evaluate() {
             <CommonForm wrappedComponentRef={formRef} type='detail' initialize={false}/>
           </Spin>
         </TabPane>
-        <TabPane tab='评价指标' key='target' forceRender={true}>
+        <TabPane tab='评审指标' key='target' forceRender={true}>
           <Spin spinning={loading}>
-            <div className={styles.commonTitle}>评价指标</div>
+            <div className={styles.commonTitle}>评审指标</div>
             <AutoSizeLayout>
               {
                 h => (
