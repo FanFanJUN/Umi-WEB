@@ -41,11 +41,11 @@ export default function() {
   const { query } = router.useLocation();
   useEffect(() => {
     // 工作台
-    if(query.state == 'NOT_COMPLETED') {
+    if (query.state == 'NOT_COMPLETED') {
       setManagementState(false);
       setUnManagementState(true);
     }
-    setData(v => ({ ...v, epTechnicalShareDemandSearchBo: {...query} }));
+    setData(v => ({ ...v, epTechnicalShareDemandSearchBo: { ...query } }));
     tableRef.current.remoteDataRefresh();
 
     window.parent.frames.addEventListener('message', listenerParentClose, false);
@@ -145,7 +145,12 @@ export default function() {
 
   const columns = [
     { title: '状态', dataIndex: 'state', width: 70, render: v => managementStateConfig[v] },
-    { title: '实施审核计划号', dataIndex: 'reviewImplementPlanCode', width: 140, render: (v, record) => <a onClick={() => jumpOtherPage(record.reviewImplementPlanId)}>{v}</a> },
+    {
+      title: '实施审核计划号',
+      dataIndex: 'reviewImplementPlanCode',
+      width: 140,
+      render: (v, record) => <a onClick={() => jumpOtherPage(record.reviewImplementPlanId)}>{v}</a>,
+    },
     // { title: '供应商', dataIndex: 'supplierName', width: 250, render: (v, data) => `${v} ${data.supplierCode}` },
     { title: '物料分类', dataIndex: 'materialGroupName', ellipsis: true, width: 170 },
     { title: '审核时间', dataIndex: 'reviewDateStart', width: 270, render: (v, data) => `${v} - ${data.reviewDateEnd}` },
@@ -178,7 +183,9 @@ export default function() {
         onClick={() => redirectToPage('recall')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        disabled={data.selectedRowKeys.length === 0 || !judge(data.selectedRows, 'state', 'COMPLETED')}
+        disabled={data.selectedRowKeys.length === 0
+        || !judge(data.selectedRows, 'state', 'COMPLETED')
+        || !judge(data.selectedRows, 'whetherConfirm', false)}
         key='SUPPLIER_AUDIT_SUPPLIER_WITHRAW'
       >撤回</Button>)
     }
@@ -287,9 +294,9 @@ export default function() {
       <SelfEvaluation
         onCancel={(value) => {
           if (value) {
-            refreshTable()
+            refreshTable();
           }
-          setData(v => ({ ...v, selfEvaluationVisible: false }))
+          setData(v => ({ ...v, selfEvaluationVisible: false }));
         }}
         reviewImplementPlanCode={data.resultsId}
         visible={data.selfEvaluationVisible}
