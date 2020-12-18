@@ -37,46 +37,74 @@ const AddModal = (props) => {
     const [page, setPage] = useState({});
 
     const columns = [
-        {
-            title: '需求公司', dataIndex: 'corporation', width: 140, ellipsis: true, render: (text, context) => {
-                return text && `${text.code}_${text.name}`;
-            }
+      {
+        title: '需求公司',
+        dataIndex: 'corporation',
+        width: 140,
+        ellipsis: true,
+        render: (text, context) => {
+          return text && `${text.code}_${text.name}`;
         },
-        {
-            title: '采购组织', dataIndex: 'purchaseOrg', ellipsis: true, width: 140, render: (text, context) => {
-                return text && `${text.code}_${text.name}`;
-            }
+      },
+      {
+        title: '采购组织',
+        dataIndex: 'purchaseOrg',
+        ellipsis: true,
+        width: 140,
+        render: (text, context) => {
+          return text && `${text.code}_${text.name}`;
         },
-        {
-            title: '供应商', dataIndex: 'supplier', ellipsis: true, width: 140, render: function (text, context) {
-                return text && `${text.code}_${text.name}`;
-            }
+      },
+      {
+        title: '供应商',
+        dataIndex: 'supplier',
+        ellipsis: true,
+        width: 140,
+        render: (text, context) => {
+          return text && `${text.code}_${text.name}`;
         },
-        { title: '代理商', dataIndex: 'originSupplierName', ellipsis: true, width: 140 },
-        {
-            title: '物料分类', dataIndex: 'materielCategory', ellipsis: true, width: 140, render: (text, context) => {
-                return text && text.showName;
-            }
+      },
+      { title: '代理商', dataIndex: 'originSupplierName', ellipsis: true, width: 140 },
+      {
+        title: '物料分类',
+        dataIndex: 'materielCategory',
+        ellipsis: true,
+        width: 140,
+        render: (text, context) => {
+          return text && text.showName;
         },
-        { title: '物料级别', dataIndex: 'materialGrade', ellipsis: true, width: 80, align: 'center' },
-        { title: '绩效等级', dataIndex: 'grade', ellipsis: true, width: 140 },
-        { title: '采购金额', dataIndex: 'sampleReceiverName', ellipsis: true, width: 140 },
+      },
+      { title: '物料级别', dataIndex: 'materialGrade', ellipsis: true, width: 80, align: 'center' },
+      { title: '绩效等级', dataIndex: 'grade', ellipsis: true, width: 140 },
+      { title: '采购金额', dataIndex: 'sampleReceiverName', ellipsis: true, width: 140 },
     ];
 
     const onCancel = () => {
         handleCancel();
     }
 
+    const checkOne = () => {
+      if (isEmptyArray(selectRows)) {
+        message.info('至少选择一条行信息');
+        return false;
+      }
+      return true;
+    };
+
     const onOk = () => {
-        if (isEmptyArray(selectRows)) {
-            message.info('至少选择一条行信息');
-            return;
-        }
-        handleOk(selectRows);
-    }
+      if (!checkOne()) return;
+      handleOk(selectRows, 'ok');
+    };
+
+    const onOkAndContinue = () => {
+      if (!checkOne()) return;
+      handleOk(selectRows, 'continue');
+      clearSelected();
+    };
 
     const clearSelected = () => {
-
+        setselectedRowKeys([]);
+        setselectRows([]);
     }
 
     const HideFormItem = hideFormItem(getFieldDecorator);
@@ -97,11 +125,9 @@ const AddModal = (props) => {
         form.validateFieldsAndScroll((err, values) => {
             if (err) return;
             if (!err) {
-                values.Q_EQ_materialGrade = values.materialGrade;
                 delete values.Q_EQ_purchaseOrgName;
                 delete values.materialGradeAndName;
                 delete values.Q_EQ_corporationName;
-                delete values.materialGrade;
                 setCascadeParams(values);
             }
         });
@@ -198,7 +224,6 @@ const AddModal = (props) => {
                                         name='materialGradeAndName'
                                         field={['materialGrade']}
                                         {...getListByTypeId('F4D69B2D-7949-11EA-920B-0242C0A84416')}
-                                    // afterSelect={setMaterialGrade}
                                     />,
                                 )
                             }
@@ -219,65 +244,66 @@ const AddModal = (props) => {
     }
 
     return (
-        <ExtModal
-            width={'80%'}
-            maskClosable={false}
-            visible={visible}
-            title={title}
-            onCancel={onCancel}
-            onOk={onOk}
-            destroyOnClose={true}
-            afterClose={clearSelected}
-            footer={[
-                <Button key="back" onClick={onCancel}>
-                    取消
-                </Button>,
-                <Button key="submit" type="primary" onClick={onOk}>
-                    确定
-                </Button>,
-            ]}
-
-        >
-            <div>{renderForm()}</div>
-            <div style={{ textAlign: 'center' }}>
-                <Button type="primary" onClick={handleSearch} style={{ marginRight: '10px' }}>查询</Button>
-                <Button onClick={resetForm}>重置</Button>
-            </div>
-            <ExtTable
-                style={{ marginTop: '10px' }}
-                rowKey='id'
-                allowCancelSelect={true}
-                showSearch={false}
-                remotePaging
-                checkbox={true}
-                size='small'
-                onSelectRow={handleSelectedRows}
-                selectedRowKeys={selectedRowKeys}
-                onChange={handleOnchange}
-                store={{
-                    params: {
-                        valid: 1,
-                        page: page.current,
-                        rows: page.pageSize,
-                        Q_EQ_frozen__Boolean: 0,
-                        ...filterEmptyFileds(cascadeParams),
-                    },
-                    url: `${smBaseUrl}/supplierSupplyList/listPageVo`,
-                    type: 'get',
-                }}
-
-                cascadeParams={
-                    {
-                        valid: 1,
-                        Q_EQ_frozen__Boolean: 0,
-                        ...filterEmptyFileds(cascadeParams),
-                    }
-                }
-                columns={columns}
-                loading={loading}
-            />
-        </ExtModal>
-    )
+      <ExtModal
+        width={'80%'}
+        maskClosable={false}
+        visible={visible}
+        title={title}
+        onCancel={onCancel}
+        onOk={onOk}
+        destroyOnClose={true}
+        afterClose={clearSelected}
+        footer={[
+          <Button key="back" onClick={onCancel}>
+            取消
+          </Button>,
+          <Button key="submit" type="primary" onClick={onOk}>
+            确定
+          </Button>,
+          <Button key="continue" type="primary" onClick={onOkAndContinue}>
+            确定并继续
+          </Button>,
+        ]}
+      >
+        <div>{renderForm()}</div>
+        <div style={{ textAlign: 'center' }}>
+          <Button type="primary" onClick={handleSearch} style={{ marginRight: '10px' }}>
+            查询
+          </Button>
+          <Button onClick={resetForm}>重置</Button>
+        </div>
+        <ExtTable
+          style={{ marginTop: '10px' }}
+          rowKey="id"
+          allowCancelSelect={true}
+          showSearch={false}
+          remotePaging
+          checkbox={true}
+          size="small"
+          onSelectRow={handleSelectedRows}
+          selectedRowKeys={selectedRowKeys}
+          onChange={handleOnchange}
+          store={{
+            params: {
+              valid: 1,
+              page: page.current,
+              rows: page.pageSize,
+              Q_EQ_frozen__Boolean: 0,
+              ...filterEmptyFileds(cascadeParams),
+            },
+            url: `${smBaseUrl}/supplierSupplyList/listPageVo`,
+            type: 'get',
+          }}
+          cascadeParams={{
+            valid: 1,
+            Q_EQ_frozen__Boolean: 0,
+            ...filterEmptyFileds(cascadeParams),
+          }}
+          columns={columns}
+          loading={loading}
+        />
+      </ExtModal>
+    );
 
 }
 
