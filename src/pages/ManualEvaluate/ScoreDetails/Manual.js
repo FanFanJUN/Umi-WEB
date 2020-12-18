@@ -41,7 +41,7 @@ function ManualDetail() {
       dataIndex: 'purchaseOrgCode',
     },
     {
-      title: '评价人',
+      title: '评审人',
       dataIndex: 'scorerName'
     },
     {

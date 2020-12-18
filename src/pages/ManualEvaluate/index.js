@@ -1,5 +1,5 @@
 /**
- * 实现功能： 人工评价
+ * 实现功能： 人工评审
  * @author hezhi
  * @date 2020-09-23
  */
@@ -33,14 +33,14 @@ const minxiEvlStatusProps = {
   dataSource: [
     {
       code: 'NOT_EVALUATE',
-      name: '未评价'
+      name: '未评审'
     },
     {
       code: 'EVALUATED',
-      name: '已评价'
+      name: '已评审'
     }
   ],
-  placeholder: '请选择评价状态'
+  placeholder: '请选择评审状态'
 }
 
 function ManualEvaluate() {
@@ -80,7 +80,7 @@ function ManualEvaluate() {
   const FRAMELEEMENT = getFrameElement();
   const formItems = [
     {
-      title: '评价状态',
+      title: '评审状态',
       key: 'Q_EQ_evaluationStatus',
       type: 'list',
       props: minxiEvlStatusProps
@@ -92,21 +92,21 @@ function ManualEvaluate() {
       props: flowStatusProps
     },
     {
-      title: '评价项目号',
+      title: '评审项目号',
       key: 'Q_LK_docNumber',
       props: {
-        placeholder: '输入评价项目号'
+        placeholder: '输入评审项目号'
       }
     },
     {
-      title: '评价项目名称',
+      title: '评审项目名称',
       key: 'Q_LK_projectName',
       props: {
-        placeholder: '输入评价项目名称'
+        placeholder: '输入评审项目名称'
       }
     },
     {
-      title: '评价体系',
+      title: '评审体系',
       key: 'Q_EQ_mainDataEvlSystemId',
       type: 'list',
       props: evaluateSystemProps
@@ -118,7 +118,7 @@ function ManualEvaluate() {
       type: 'list'
     },
     {
-      title: '评价期间类型',
+      title: '评审期间类型',
       key: 'Q_EQ_evlPeriodType',
       props: evlEmu,
       type: 'list'
@@ -170,7 +170,7 @@ function ManualEvaluate() {
     rowKey: (item) => item.id,
     columns: [
       {
-        title: '评价状态',
+        title: '评审状态',
         dataIndex: 'evaluationStatusRemark'
       },
       {
@@ -190,16 +190,16 @@ function ManualEvaluate() {
         },
       },
       {
-        title: '评价单号',
+        title: '评审单号',
         dataIndex: 'docNumber',
         width: 200
       },
       {
-        title: '评价项目名称',
+        title: '评审项目名称',
         dataIndex: 'seEvaluationProject.projectName'
       },
       {
-        title: '评价体系',
+        title: '评审体系',
         dataIndex: 'seEvaluationProject.mainDataEvlSystemName'
       },
       {
@@ -214,11 +214,11 @@ function ManualEvaluate() {
         dataIndex: 'seEvaluationProject.orgName'
       },
       {
-        title: '评价期间类型',
+        title: '评审期间类型',
         dataIndex: 'seEvaluationProject.evlPeriodTypeEnumRemark'
       },
       {
-        title: '评价期间',
+        title: '评审期间',
         dataIndex: 'rangeTime',
         render(text, record) {
           const st = formatYMDHmsToYMD(record.seEvaluationProject.evlPeriodStartTime);
@@ -228,7 +228,7 @@ function ManualEvaluate() {
         width: 200
       },
       {
-        title: '评价人',
+        title: '评审人',
         dataIndex: 'scorerName'
       },
     ]
@@ -243,7 +243,7 @@ function ManualEvaluate() {
             onClick={handleEvaluate}
             ignore={DEVELOPER_ENV}
             key='MANUAL_EVALUATE'
-          >评价</Button>
+          >评审</Button>
         )
       }
       {
@@ -305,7 +305,7 @@ function ManualEvaluate() {
     <Search
       className={styles.btn}
       onSearch={handleQuickSearch}
-      placeholder="请输入评价项目号或名称查询"
+      placeholder="请输入评审项目号或名称查询"
       allowClear
     />
   )
@@ -404,19 +404,19 @@ function ManualEvaluate() {
     cleanSelectedRecord()
     tableRef.current.remoteDataRefresh()
   }
-  // 评价
+  // 评审
   function handleEvaluate() {
     const [key] = selectedRowKeys;
     const { id = '' } = FRAMELEEMENT;
     const { pathname } = window.location;
-    openNewTab(`supplier/appraise/project/manual/evaluate?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}&flowId=${flowId}`, '评价', false)
+    openNewTab(`supplier/appraise/project/manual/evaluate?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}&flowId=${flowId}`, '评审', false)
   }
   // 查看明细页面
   function handleCheckDetail() {
     const [key] = selectedRowKeys;
     const { id = '' } = FRAMELEEMENT;
     const { pathname } = window.location;
-    openNewTab(`supplier/appraise/project/manual/evaluate/detail?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}&flowId=${flowId}`, '评价明细', false)
+    openNewTab(`supplier/appraise/project/manual/evaluate/detail?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}&flowId=${flowId}`, '评审明细', false)
   }
   // 终止审批流
   function handleStopApprove() {
