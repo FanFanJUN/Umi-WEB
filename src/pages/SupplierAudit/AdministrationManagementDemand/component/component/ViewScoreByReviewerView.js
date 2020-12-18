@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { ExtModal } from 'suid';
-import { message, Spin, Tabs } from 'antd';
+import { Button, message, Spin, Tabs } from 'antd';
 import { ViewScoreByReviewerApi } from '../../commonApi';
 import ProblemTable from './ProblemTable';
 import { getRandom } from '../../../../QualitySynergy/commonProps';
@@ -77,6 +77,7 @@ const ViewScoreByReviewerView = (props) => {
       onCancel={onCancel}
       onOk={onOk}
       destroyOnClose={true}
+      footer={<Button type='primary' onClick={onCancel}>返回</Button>}
       afterClose={clearSelected}
     >
       <Spin spinning={loading}>
@@ -99,7 +100,7 @@ const ViewScoreByReviewerView = (props) => {
                           reviewImplementManagementId: item.lineList[0] ? item.lineList[0].reviewImplementManagementId : '',
                         }}
                         onChange={onChange}
-                        type={'show'}
+                        type={!props.isView ? 'show' : ''}
                         dataSource={item.lineList}
                       />
                     </TabPane>;
