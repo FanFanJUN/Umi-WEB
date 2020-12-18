@@ -219,6 +219,11 @@ export default function() {
     tableRef.current.remoteDataRefresh();
   }
 
+  // 提交审核验证
+  const handleBeforeStartFlow = async () => {
+
+  };
+
   const headerLeft = <>
     {
       authAction(<Button
