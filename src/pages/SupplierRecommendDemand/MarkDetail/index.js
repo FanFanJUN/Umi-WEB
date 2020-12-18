@@ -14,7 +14,7 @@ import {
   Form,
 } from 'antd';
 import { router } from 'dva';
-import { queryTeamConfirmHistoryList } from '../../../services/recommend';
+import { queryTeamConfirmHistoryList } from '../../services/recommend';
 
 const { useLocation } = router;
 const SelfAssessment = forwardRef(({

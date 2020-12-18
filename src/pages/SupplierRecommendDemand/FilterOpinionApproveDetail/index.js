@@ -10,7 +10,7 @@ import SupplierRecommendFillInData from '../RecommendData/DataFillIn';
 import SelfAssessment from '../RecommendData/SelfAssessment';
 import { Tabs, Skeleton } from 'antd';
 import { WorkFlow } from 'suid';
-// import Review from '../Review';
+import MarkDetail from '../Review/MarkDetail';
 import Filter from '../Filter';
 import { router } from 'dva';
 import { useGlobalStatus } from '../../../utils/hooks';
@@ -71,6 +71,9 @@ function FillInInfomationConfirm() {
           </TabPane>
           <TabPane tab="供应商自评表" key="supplier-self-assessment">
             <SelfAssessment type="detail" />
+          </TabPane>
+          <TabPane tab="评审打分" key="mark">
+            <MarkDetail type="detail" />
           </TabPane>
           <TabPane tab="筛选意见" key="filter" forceRender={true}>
             <Filter ref={filterRef} type="detail" />
