@@ -1,5 +1,5 @@
 import { request } from '../utils';
-import { recommendUrl, baseUrl } from '../utils/commonUrl';
+import { recommendUrl } from '../utils/commonUrl';
 function createServiceRequest(option) {
   const {
     path: url,

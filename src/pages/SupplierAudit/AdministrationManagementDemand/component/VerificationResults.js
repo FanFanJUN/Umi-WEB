@@ -82,11 +82,13 @@ const VerificationResults = (props) => {
       width={'180vh'}
       maskClosable={false}
       visible={visible}
-      title={'审核结果确认'}
+      title={!isView ? '审核结果确认' : '审核结果查看'}
       onCancel={onCancel}
-      onOk={onOk}
       destroyOnClose={true}
       afterClose={clearSelected}
+      footer={!isView ?
+        <div><Button onClick={onCancel}>取消</Button><Button type='primary' onClick={onOk}>确定</Button></div> :
+        <Button type='primary' onClick={onCancel}>关闭</Button>}
     >
       <Tabs defaultActiveKey={'1'} activeKey={data.activeKey} onTabClick={onTabClick}>
         <TabPane tab="评分概览" key="1">

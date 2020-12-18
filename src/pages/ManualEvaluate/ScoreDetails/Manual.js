@@ -25,6 +25,14 @@ function ManualDetail() {
   const { query } = useLocation();
   const columns = [
     {
+      title: '业务单元名称',
+      dataIndex: 'buName',
+    },
+    {
+      title: '业务单元代码',
+      dataIndex: 'buCode',
+    },
+    {
       title: '公司名称',
       dataIndex: 'corporationName'
     },

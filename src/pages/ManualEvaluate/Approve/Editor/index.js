@@ -5,14 +5,19 @@
  */
 import { useRef, useState, useEffect } from 'react';
 import styles from './index.less';
-import { Affix, Button, Tabs, Spin, Upload, Modal, message } from 'antd';
+import { Button, Tabs, Spin, Upload, Modal, message } from 'antd';
 import { useLocation } from 'dva/router';
 import { Header, AutoSizeLayout } from '../../../../components';
 import { downloadBlobFile, sendResize, checkToken, closeCurrent } from '../../../../utils';
 import { ExtTable, WorkFlow } from 'suid';
 import CommonForm from '../../../SupplierAppraise/CommonForm';
 import { useTableProps } from '../../../../utils/hooks';
-import { exportEvaluateData, queryEvaluateData, importEvaluateData, queryEvaluateApproveBaseDate } from '../../../../services/evaluate';
+import {
+  exportEvaluateData,
+  queryEvaluateData,
+  importEvaluateData,
+  queryEvaluateApproveBaseDate
+} from '../../../../services/evaluate';
 const { TabPane } = Tabs;
 const { Approve } = WorkFlow;
 function Evaluate() {
@@ -187,7 +192,6 @@ function Evaluate() {
         animated={false}
         onChange={sendResize}
       >
-
         <TabPane tab='基本信息' key='base'>
           <Spin spinning={loading}>
             <CommonForm wrappedComponentRef={formRef} type='detail' initialize={false} />

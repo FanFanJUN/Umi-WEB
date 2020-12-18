@@ -730,7 +730,7 @@ export const customsEnterpriseAll = {
 // 业务单元主数据
 export const businessMainProps = {
   store: {
-    url: `${baseUrl}/api/buService/findByList`,
+    url: `${baseUrl}/api/buService/findByListWithDataAuth`,
     type: 'post',
     params: {
       frozen: false

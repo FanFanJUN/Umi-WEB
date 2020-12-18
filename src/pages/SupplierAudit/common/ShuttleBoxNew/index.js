@@ -20,10 +20,29 @@ const ShuttleBoxNew = (props) => {
   const { type, rightTreeData, leftTreeData } = props;
 
   useEffect(() => {
-    destruction(data.rightTreeData);
-    leftData = duplicateRemoval(leftData, 'key');
-    props.onChange(leftData, operation);
+    // destruction(data.rightTreeData);
+    tiledTree.getChildren(data.rightTreeData);
+    // leftData = duplicateRemoval(leftData, 'key');
+    props.onChange(tiledTree.treeData, operation);
   }, [data.rightTreeData]);
+
+  // 平铺多维数组
+  const tiledTree = (() => {
+    let treeData = [];
+    return {
+      getChildren: (arr) => {
+        arr.map(item => {
+          if (item.children && item.children.length !== 0) {
+            treeData.push(item);
+            tiledTree.getChildren(item.children);
+          } else {
+            treeData.push(item);
+          }
+        });
+      },
+      treeData,
+    };
+  })();
 
   useEffect(() => {
     leftData = [];
@@ -73,7 +92,7 @@ const ShuttleBoxNew = (props) => {
   const addClick = () => {
     let arr = JSON.parse(JSON.stringify(data.leftSelectData));
     arr.sort((a, b) => a['sort'] - b['sort']);
-    console.log(arr, 'arrrrr')
+    console.log(arr, 'arrrrr');
     arr = recursion(arr);
     setData(v => ({
       ...v,
