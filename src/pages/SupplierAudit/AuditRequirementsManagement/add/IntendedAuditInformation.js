@@ -30,6 +30,12 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
     title: '新增拟审核信息',
   });
 
+  const detailColumns = [
+    { title: '是否被引用', dataIndex: 'whetherOccupied', ellipsis: true, width: 140, render: v => v ? '是' : '否' },
+    { title: '月度计划号', dataIndex: 'reviewPlanMonthCode', ellipsis: true, width: 150 },
+    { title: '月度计划行号', dataIndex: 'reviewPlanMonthCode', ellipsis: true, width: 150 },
+  ].map(item => ({ ...item, align: 'center' }));
+
   const columns = [
     { title: '行号', dataIndex: 'reviewRequirementLinenum', width: 100, ellipsis: true },
     {
@@ -57,7 +63,7 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
       dataIndex: 'countryName',
       width: 250,
       render: (v, data) =>
-        <span>{`${data.countryName.trim()+data.provinceName.trim()+data.cityName.trim()+data.countyName.trim()+data.address.trim()}`}</span>,
+        <span>{`${data.countryName.trim() + data.provinceName.trim() + data.cityName.trim() + data.countyName.trim() + data.address.trim()}`}</span>,
     },
     { title: '供应商联系人', dataIndex: 'contactUserName', ellipsis: true, width: 140 },
     { title: '供应商联系电话', dataIndex: 'contactUserTel', ellipsis: true, width: 140 },
@@ -284,7 +290,7 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
             size='small'
             onSelectRow={handleSelectedRows}
             selectedRowKeys={data.selectedRowKeys}
-            columns={columns}
+            columns={isView ? [...columns, ...detailColumns] : columns}
             ref={tableRef}
             dataSource={data.dataSource}
           />
