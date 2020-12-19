@@ -11,9 +11,9 @@ const ProblemTable = (props) => {
   const { type, loading } = props;
 
   const columns = [
-    { title: '指标名称', dataIndex: 'ruleName', width: 150 },
-    { title: '指标定义', dataIndex: 'definition', ellipsis: true, width: 150 },
-    { title: '评分标准', dataIndex: 'scoringStandard', ellipsis: true, width: 180 },
+    { title: '指标名称', dataIndex: 'ruleName', width: 120 },
+    { title: '指标定义', dataIndex: 'definition', ellipsis: true, width: 140 },
+    { title: '评分标准', dataIndex: 'scoringStandard', ellipsis: true, width: 150 },
     { title: '标准分', dataIndex: 'highestScore', ellipsis: true, width: 70 },
     {
       title: '不适用',
@@ -41,7 +41,7 @@ const ProblemTable = (props) => {
     {
       title: '情况记录',
       dataIndex: 'remark',
-      width: 200,
+      width: 150,
       render: (v, data) => type ? v : <Input value={v} onChange={e => {
         data.remark = e.target.value;
         refreshTable();
@@ -50,7 +50,7 @@ const ProblemTable = (props) => {
     {
       title: '附件',
       dataIndex: 'attachRelatedIds',
-      width: type ? 50 : 200,
+      width: type ? 50 : 160,
       render: (v, data) => <Upload
         entityId={type ? data.fileList : v} type={props.type}
         onChange={(value) => data.attachRelatedIds = value} />,
@@ -58,7 +58,7 @@ const ProblemTable = (props) => {
     {
       title: '问题',
       dataIndex: 'problemList',
-      width: 150,
+      width: 130,
       render: (v, data) => <div><Button onClick={e => showProblemManagement(e, data)}>问题管理</Button> {v.length}</div>,
     },
   ].map(item => ({ ...item, align: 'center' }));

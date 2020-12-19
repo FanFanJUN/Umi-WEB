@@ -70,7 +70,7 @@ const ViewScoreByReviewerView = (props) => {
 
   return (
     <ExtModal
-      width={'160vh'}
+      width={'145vh'}
       maskClosable={false}
       visible={visible}
       title={'按评审人查看评分'}

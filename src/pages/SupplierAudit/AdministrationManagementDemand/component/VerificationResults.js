@@ -79,7 +79,7 @@ const VerificationResults = (props) => {
 
   return (
     <ExtModal
-      width={'180vh'}
+      width={'150vh'}
       maskClosable={false}
       visible={visible}
       title={!isView ? '审核结果确认' : '审核结果查看'}

@@ -142,7 +142,7 @@ const ResultsEntry = (props) => {
 
   return (
     <ExtModal
-      width={'180vh'}
+      width={'150vh'}
       maskClosable={false}
       visible={visible}
       title={'结果录入'}

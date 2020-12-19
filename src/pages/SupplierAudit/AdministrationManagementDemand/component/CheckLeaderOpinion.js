@@ -12,7 +12,7 @@ const CheckLeaderOpinion = (props) => {
   ].map(item => ({ ...item, align: 'center' }));
 
   const columns = [
-    { title: '意见', dataIndex: 'suggestion', ellipsis: true, width: 400 },
+    { title: '意见', dataIndex: 'suggestion', ellipsis: true, width: 300 },
     { title: '提出人', dataIndex: 'leaderName', ellipsis: true, width: 150 },
     { title: '提出时间', dataIndex: 'proposeTime', width: 200 },
   ].map(item => ({ ...item, align: 'center' }));
@@ -74,7 +74,7 @@ const CheckLeaderOpinion = (props) => {
 
   return (
     <ExtModal
-      width={'160vh'}
+      width={'150vh'}
       maskClosable={false}
       visible={visible}
       title={type === 'demand' ? '查看组长意见' : '查看退回信息'}
