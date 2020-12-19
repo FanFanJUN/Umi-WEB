@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ComboGrid, ComboList, ComboTree, ExtModal, ExtTable } from 'suid';
-import { Button, Col, Form, Input, message, Row, Spin } from 'antd';
-import { AuditCauseManagementConfig } from '../../mainData/commomService';
+import { Button, Col, Form, Input, message, Row } from 'antd';
 import { isEmptyArray, hideFormItem, filterEmptyFileds } from '@/utils/utilTool';
 // import { getSupplierSupplyList } from '../service';
 import { smBaseUrl } from '@/utils/commonUrl';
 import { purchaseOrgConfig, corporationProps, materialClassProps, getListByTypeId, supplierProps } from '@/utils/commonProps';
-import { findReviewTypesByCode } from '../service';
+import { FormItemStye } from '../styleParam';
 
 const FormItem = Form.Item;
 const minxinSupplierProps = {
@@ -32,7 +31,7 @@ const AddModal = (props) => {
 
     const [selectedRowKeys, setselectedRowKeys] = useState([]);
     const [selectRows, setselectRows] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading] = useState(false);
     const [cascadeParams, setCascadeParams] = useState({});
     const [page, setPage] = useState({});
 
@@ -42,7 +41,7 @@ const AddModal = (props) => {
         dataIndex: 'corporation',
         width: 140,
         ellipsis: true,
-        render: (text, context) => {
+        render: (text) => {
           return text && `${text.code}_${text.name}`;
         },
       },
@@ -51,7 +50,7 @@ const AddModal = (props) => {
         dataIndex: 'purchaseOrg',
         ellipsis: true,
         width: 140,
-        render: (text, context) => {
+        render: (text) => {
           return text && `${text.code}_${text.name}`;
         },
       },
@@ -60,17 +59,17 @@ const AddModal = (props) => {
         dataIndex: 'supplier',
         ellipsis: true,
         width: 140,
-        render: (text, context) => {
+        render: (text) => {
           return text && `${text.code}_${text.name}`;
         },
       },
-      { title: '代理商', dataIndex: 'originSupplierName', ellipsis: true, width: 140 },
+      { title: '代理商', dataIndex: 'originSupplierName', ellipsis: true, width: 80 },
       {
         title: '物料分类',
         dataIndex: 'materielCategory',
         ellipsis: true,
         width: 140,
-        render: (text, context) => {
+        render: (text) => {
           return text && text.showName;
         },
       },
@@ -139,113 +138,121 @@ const AddModal = (props) => {
 
     function renderForm() {
         return (
-            <Form>
-                <Row>
-                    <Col span={8}>
-                        <FormItem {...formItemLayoutLong} label={'需求公司'}>
-                            {
-                                getFieldDecorator('Q_EQ_corporationName')(
-                                    <ComboGrid
-                                        allowClear
-                                        style={{ width: '100%' }}
-                                        form={form}
-                                        name='Q_EQ_corporationName'
-                                        field={['Q_EQ_corporationCode']}
-                                        {...corporationProps}
-                                    />
-                                )
-                            }
-                        </FormItem>
-                    </Col>
-                    {HideFormItem('Q_EQ_corporationCode')}
-                    {HideFormItem('Q_EQ_purchaseOrgCode')}
-                    <Col span={8}>
-                        <FormItem {...formItemLayoutLong} label={'采购组织'}>
-                            {
-                                getFieldDecorator('Q_EQ_purchaseOrgName')(
-                                    <ComboGrid
-                                        form={form}
-                                        field={['Q_EQ_purchaseOrgCode']}
-                                        name={'Q_EQ_purchaseOrgName'}
-                                        {...purchaseOrgConfig}
-                                        allowClear
-                                    // afterSelect={selectpurchaseOrg}
-                                    />
-                                )
-                            }
-                        </FormItem>
-                    </Col>
-                    {HideFormItem('materielCategoryCode')}
-                    <Col span={8}>
-                        <FormItem {...formItemLayoutLong} label={'物料分类'}>
-                            {
-                                getFieldDecorator('materialCategoryName')(
-                                    <ComboTree
-                                        allowClear
-                                        form={form}
-                                        name='materialCategoryName'
-                                        {...materialClassProps}
-                                        field={['materielCategoryCode']}
-
-                                    />
-                                )
-                            }
-                        </FormItem>
-                    </Col>
-                </Row>
-                <Row>
-                    {HideFormItem('Q_EQ_supplierCode')}
-                    <Col span={8}>
-                        <FormItem {...formItemLayoutLong} label={'原厂'}>
-                            {
-                                getFieldDecorator('supplierCodeName')(
-                                    <ComboList
-                                        allowClear
-                                        style={{ width: '100%' }}
-                                        form={form}
-                                        name='supplierCodeName'
-                                        field={['Q_EQ_supplierCode']}
-                                        {...minxinSupplierProps}
-                                    />
-                                )
-                            }
-                        </FormItem>
-                    </Col>
-                    <Col span={8}>
-                        <FormItem {...formItemLayoutLong} label={'物料级别'}>
-                            {
-                                getFieldDecorator('materialGrade'),
-                                getFieldDecorator('materialGradeAndName')(
-                                    <ComboList
-                                        allowClear
-                                        style={{ width: '100%' }}
-                                        form={form}
-                                        pagination={false}
-                                        name='materialGradeAndName'
-                                        field={['materialGrade']}
-                                        {...getListByTypeId('F4D69B2D-7949-11EA-920B-0242C0A84416')}
-                                    />,
-                                )
-                            }
-                        </FormItem>
-                    </Col>
-                    <Col span={8}>
-                        <FormItem {...formItemLayoutLong} label={'绩效等级'}>
-                            {
-                                getFieldDecorator('Q_EQ_grade')(
-                                    <Input />,
-                                )
-                            }
-                        </FormItem>
-                    </Col>
-                </Row>
-            </Form>
+          <Form>
+            <Row>
+              <Col span={8}>
+                <FormItem
+                  {...formItemLayoutLong}
+                  label={'需求公司'}
+                  style={FormItemStye}
+                >
+                  {getFieldDecorator('Q_EQ_corporationName')(
+                    <ComboGrid
+                      allowClear
+                      style={{ width: '100%' }}
+                      form={form}
+                      name="Q_EQ_corporationName"
+                      field={['Q_EQ_corporationCode']}
+                      {...corporationProps}
+                    />,
+                  )}
+                </FormItem>
+              </Col>
+              {HideFormItem('Q_EQ_corporationCode')}
+              {HideFormItem('Q_EQ_purchaseOrgCode')}
+              <Col span={8}>
+                <FormItem
+                  {...formItemLayoutLong}
+                  label={'采购组织'}
+                  style={FormItemStye}
+                >
+                  {getFieldDecorator('Q_EQ_purchaseOrgName')(
+                    <ComboGrid
+                      form={form}
+                      field={['Q_EQ_purchaseOrgCode']}
+                      name={'Q_EQ_purchaseOrgName'}
+                      {...purchaseOrgConfig}
+                      allowClear
+                      // afterSelect={selectpurchaseOrg}
+                    />,
+                  )}
+                </FormItem>
+              </Col>
+              {HideFormItem('materielCategoryCode')}
+              <Col span={8}>
+                <FormItem
+                  {...formItemLayoutLong}
+                  label={'物料分类'}
+                  style={FormItemStye}
+                >
+                  {getFieldDecorator('materialCategoryName')(
+                    <ComboTree
+                      allowClear
+                      form={form}
+                      name="materialCategoryName"
+                      {...materialClassProps}
+                      field={['materielCategoryCode']}
+                    />,
+                  )}
+                </FormItem>
+              </Col>
+            </Row>
+            <Row>
+              {HideFormItem('Q_EQ_supplierCode')}
+              <Col span={8}>
+                <FormItem {...formItemLayoutLong} label={'原厂'} style={{ marginBottom: '10px' }}>
+                  {getFieldDecorator('supplierCodeName')(
+                    <ComboList
+                      allowClear
+                      style={{ width: '100%' }}
+                      form={form}
+                      name="supplierCodeName"
+                      field={['Q_EQ_supplierCode']}
+                      {...minxinSupplierProps}
+                    />,
+                  )}
+                </FormItem>
+              </Col>
+              <Col span={8}>
+                <FormItem
+                  {...formItemLayoutLong}
+                  label={'物料级别'}
+                  style={{ marginBottom: '10px' }}
+                >
+                  {
+                    (getFieldDecorator('materialGrade'),
+                    getFieldDecorator('materialGradeAndName')(
+                      <ComboList
+                        allowClear
+                        style={{ width: '100%' }}
+                        form={form}
+                        pagination={false}
+                        name="materialGradeAndName"
+                        field={['materialGrade']}
+                        {...getListByTypeId('F4D69B2D-7949-11EA-920B-0242C0A84416')}
+                      />,
+                    ))
+                  }
+                </FormItem>
+              </Col>
+              <Col span={8}>
+                <FormItem
+                  {...formItemLayoutLong}
+                  label={'绩效等级'}
+                  style={{ marginBottom: '10px' }}
+                >
+                  {getFieldDecorator('Q_EQ_grade')(<Input />)}
+                </FormItem>
+              </Col>
+            </Row>
+          </Form>
         );
     }
 
     return (
       <ExtModal
         width={'80%'}
+        centered
         maskClosable={false}
         visible={visible}
         title={title}
@@ -273,7 +280,7 @@ const AddModal = (props) => {
           <Button onClick={resetForm}>重置</Button>
         </div>
         <ExtTable
-          style={{ marginTop: '10px' }}
+          height={300}
           rowKey="id"
           allowCancelSelect={true}
           showSearch={false}
