@@ -50,7 +50,7 @@ const AddPersonModal = (props) => {
     >
         <Form>
             <Row>
-                <FormItem {...formItemLayoutLong} label={'姓名'}>
+                <FormItem {...formItemLayoutLong} label={'姓名'} style={{marginBottom: '0px'}}>
                     {
                         getFieldDecorator('memberId', { initialValue: isEdit ? originData.memberId : '', }),
                         getFieldDecorator('memberName', {
@@ -89,7 +89,7 @@ const AddPersonModal = (props) => {
                 </FormItem>
             </Row>
             <Row>
-                <FormItem {...formItemLayoutLong} label={'部门'}>
+                <FormItem {...formItemLayoutLong} label={'部门'} style={{marginBottom: '0px'}}>
                     {
                         getFieldDecorator('namePath', { initialValue: isEdit ? originData.namePath : '', }),
                         getFieldDecorator('codePath', { initialValue: isEdit ? originData.codePath : '', }),
@@ -105,7 +105,7 @@ const AddPersonModal = (props) => {
                 </FormItem>
             </Row>
             <Row>
-                <FormItem {...formItemLayoutLong} label={'员工编号'}>
+                <FormItem {...formItemLayoutLong} label={'员工编号'} style={{marginBottom: '0px'}}>
                     {
                         getFieldDecorator('employeeNo', {
                             initialValue: isEdit ? originData.employeeNo : "",
@@ -117,7 +117,7 @@ const AddPersonModal = (props) => {
                 </FormItem>
             </Row>
             <Row>
-                <FormItem {...formItemLayoutLong} label={'联系电话'}>
+                <FormItem {...formItemLayoutLong} label={'联系电话'} style={{marginBottom: '0px'}}>
                     {
                         getFieldDecorator('memberTel', {
                             initialValue: isEdit ? originData.memberTel : '',

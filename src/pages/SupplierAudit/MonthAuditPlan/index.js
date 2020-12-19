@@ -179,7 +179,7 @@ export default function () {
                 }
             },
         },
-        { title: '月度审核计划号', dataIndex: 'reviewPlanMonthCode', align: 'center', width: 140 },
+        { title: '月度审核计划号', dataIndex: 'reviewPlanMonthCode', align: 'center', width: 156 },
         { title: '月度', dataIndex: 'applyMonth', ellipsis: true, width: 90, align: 'center', render: (text) => text ? text.slice(0, 7) : '' },
         { title: '拟制说明', dataIndex: 'reviewPlanMonthName', ellipsis: true, width: 130 },
         { title: '拟制公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 150 },

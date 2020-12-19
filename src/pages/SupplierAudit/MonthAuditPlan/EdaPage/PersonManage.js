@@ -89,6 +89,7 @@ const PersonManage = ({ visible, onOk, onCancel, originData, isView, deleteArr, 
     return <>
         <ExtModal
             width={'50vw'}
+            centered
             maskClosable={false}
             visible={visible}
             title={'协同人员管理'}
