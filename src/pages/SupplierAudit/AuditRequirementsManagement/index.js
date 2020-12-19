@@ -253,6 +253,7 @@ export default function() {
         ignore={DEVELOPER_ENV}
         key='SUPPLIER_AUDIT_REQUIREMENT_DELETE'
         disabled={data.selectedRowKeys.length === 0
+        || !judge(data.selectedRows, 'state', 'DRAFT')
         || !judge(data.selectedRows, 'applyId', getUserId())}
       >删除</Button>)
     }
