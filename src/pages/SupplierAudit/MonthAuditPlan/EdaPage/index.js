@@ -176,7 +176,6 @@ const Index = (props) => {
         }
         if (res.success) {
             if (type === "save") {
-                setLoading(false);
                 message.success("保存成功");
                 setTimeout(() => {
                     handleBack();
