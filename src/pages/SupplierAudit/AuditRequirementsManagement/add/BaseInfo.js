@@ -64,7 +64,7 @@ let BaseInfo = React.forwardRef((props, ref) => {
               span={0}>{hideFormItem('applyCorporationCode', type === 'add' ? '' : editData.applyCorporationCode)}</Col>
             <Col span={0}>{hideFormItem('applyCorporationId', type === 'add' ? '' : editData.applyCorporationId)}</Col>
             <Col span={12}>
-              <FormItem label="公司" {...formLayout}>
+              <FormItem label="公司" {...formLayout} style={{marginBottom: '0px'}}>
                 {isView ? <span>{editData.applyCorporationName}</span> : getFieldDecorator('applyCorporationName', {
                   initialValue: type === 'add' ? '' : editData.applyCorporationName,
                   rules: [
@@ -89,7 +89,7 @@ let BaseInfo = React.forwardRef((props, ref) => {
               span={0}>{hideFormItem('applyDepartmentCode', type === 'add' ? '' : editData.applyDepartmentCode)}</Col>
             <Col span={0}>{hideFormItem('applyDepartmentId', type === 'add' ? '' : editData.applyDepartmentId)}</Col>
             <Col span={12}>
-              <FormItem label="申请部门" {...formLayout}>
+              <FormItem label="申请部门" {...formLayout} style={{marginBottom: '0px'}}>
                 {isView ? <span>{editData.applyDepartmentName}</span> : getFieldDecorator('applyDepartmentName', {
                   initialValue: type === 'add' ? '' : editData.applyDepartmentName,
                   rules: [
@@ -110,14 +110,14 @@ let BaseInfo = React.forwardRef((props, ref) => {
               </FormItem>
             </Col>
             <Col span={12}>
-              <FormItem label="申请人" {...formLayout}>
+              <FormItem label="申请人" {...formLayout} style={{marginBottom: '0px'}}>
                 {isView ? <span>{editData.applyName}</span> : getFieldDecorator('applyName', {
                   initialValue: type === 'add' ? userInfo.userName : editData.applyName,
                 })(<Input disabled={true} placeholder="请输入申请人" style={{ width: '100' }} />)}
               </FormItem>
             </Col>
             <Col span={12}>
-              <FormItem label="联系方式" {...formLayout}>
+              <FormItem label="联系方式" {...formLayout} style={{marginBottom: '0px'}}>
                 {isView ? <span>{editData.applyTel}</span> : getFieldDecorator('applyTel', {
                   initialValue: type === 'add' ? userInfo.userMobile : editData.applyTel,
                   rules: [
@@ -140,7 +140,7 @@ let BaseInfo = React.forwardRef((props, ref) => {
             <Col span={0}>{hideFormItem('purchaseOrgCode', type === 'add' ? '' : editData.purchaseOrgCode)}</Col>
             <Col span={0}>{hideFormItem('purchaseOrgId', type === 'add' ? '' : editData.purchaseOrgId)}</Col>
             <Col span={12}>
-              <FormItem label="采购组织" {...formLayout}>
+              <FormItem label="采购组织" {...formLayout} style={{marginBottom: '0px'}}>
                 {isView ? <span>{editData.purchaseOrgName}</span> : getFieldDecorator('purchaseOrgName', {
                   initialValue: type === 'add' ? '' : editData.purchaseOrgName,
                   rules: [
@@ -165,7 +165,7 @@ let BaseInfo = React.forwardRef((props, ref) => {
           </Row>
           <Row>
             <Col span={24}>
-              <FormItem label="申请说明" {...formLongLayout}>
+              <FormItem label="申请说明" {...formLongLayout} style={{marginBottom: '0px'}}>
                 {isView ? <span>{editData.reviewRequirementName}</span> : getFieldDecorator('reviewRequirementName', {
                   initialValue: type === 'add' ? '' : editData.reviewRequirementName,
                   rules: [
@@ -182,7 +182,7 @@ let BaseInfo = React.forwardRef((props, ref) => {
           </Row>
           <Row>
             <Col span={24}>
-              <FormItem label="备注" {...formLongLayout}>
+              <FormItem label="备注" {...formLongLayout} style={{marginBottom: '0px'}}>
                 {isView ? <span style={{
                   width: '100%',
                   height: 'auto',
@@ -200,7 +200,7 @@ let BaseInfo = React.forwardRef((props, ref) => {
           </Row>
           <Row>
             <Col span={24}>
-              <FormItem {...formLongLayout} label={'附件'}>
+              <FormItem {...formLongLayout} label={'附件'} style={{marginBottom: '0px'}}>
                 {
                   getFieldDecorator('attachRelatedIds', {
                     initialValue: type === 'add' ? null : editData.fileList,

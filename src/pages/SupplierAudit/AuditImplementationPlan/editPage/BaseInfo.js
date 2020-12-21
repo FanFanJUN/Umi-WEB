@@ -1,9 +1,9 @@
 /*
  * @Author: 黄永翠
- * @LastEditors: Please set LastEditors
+ * @LastEditors  : LiCai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:40
- * @LastEditTime: 2020-12-07 15:27:32
+ * @LastEditTime : 2020-12-21 14:03:55
  * @Description:  审核实施计划-基本信息
  */
 import React from 'react';
@@ -53,7 +53,7 @@ const BaseInfo = (props) => {
             <Col span={12}>
               {HideFormItem('applyCorporationId', data.applyCorporationId)}
               {HideFormItem('applyCorporationCode', data.applyCorporationCode)}
-              <FormItem label="拟制公司" {...formLayout}>
+              <FormItem label="拟制公司" {...formLayout} style={{marginBottom: '0px'}}>
                 {isView ? <span>{data.applyCorporationName}</span> : getFieldDecorator('applyCorporationName', {
                   initialValue: type === 'add' ? '' : data.applyCorporationName,
                   rules: [
@@ -77,7 +77,7 @@ const BaseInfo = (props) => {
             <Col span={12}>
               {HideFormItem('applyDepartmentId', data.applyDepartmentId)}
               {HideFormItem('applyDepartmentCode', data.applyDepartmentCode)}
-              <FormItem label="拟制部门" {...formLayout}>
+              <FormItem label="拟制部门" {...formLayout} style={{marginBottom: '0px'}}>
                 {isView ? <span>{data.applyDepartmentName}</span> : getFieldDecorator('applyDepartmentName', {
                   initialValue: type === 'add' ? '' : data.applyDepartmentName,
                   rules: [
@@ -101,7 +101,7 @@ const BaseInfo = (props) => {
             <Col span={12}>
               {HideFormItem('applyId', type === 'add' ? getUserId() : data.applyId)}
               {HideFormItem('applyAccount', type === 'add' ? getUserAccount() : data.applyAccount)}
-              <FormItem label="拟制人" {...formLayout}>
+              <FormItem label="拟制人" {...formLayout} style={{marginBottom: '0px'}}>
                 {isView ? <span>{data.applyName}</span> : getFieldDecorator('applyName', {
                   initialValue: type === 'add' ? getUserName() : data.applyName,
                   rules: [
@@ -114,7 +114,7 @@ const BaseInfo = (props) => {
               </FormItem>
             </Col>
             <Col span={12}>
-              <FormItem label="联系方式" {...formLayout}>
+              <FormItem label="联系方式" {...formLayout} style={{marginBottom: '0px'}}>
                 {isView ? <span>{data.applyTel}</span> : getFieldDecorator('applyTel', {
                   initialValue: type === 'add' ? getMobile() : data.applyTel,
                   rules: [
@@ -135,7 +135,7 @@ const BaseInfo = (props) => {
           </Row>
           <Row>
             <Col span={24}>
-              <FormItem label="备注" {...formLongLayout}>
+              <FormItem label="备注" {...formLongLayout} style={{marginBottom: '0px'}}>
                 {isView ? <span>{data.remark}</span> : getFieldDecorator('remark', {
                   initialValue: type === 'add' ? '' : data.remark,
                 })(
@@ -146,7 +146,7 @@ const BaseInfo = (props) => {
           </Row>
           <Row>
             <Col span={24}>
-              <FormItem {...formLongLayout} label={'附件'}>
+              <FormItem {...formLongLayout} label={'附件'} style={{marginBottom: '0px'}}>
                 {
                   getFieldDecorator('attachRelatedId', {
                     initialValue: type === 'add' ? [] : getDocIdForArray(data.attachRelateds),

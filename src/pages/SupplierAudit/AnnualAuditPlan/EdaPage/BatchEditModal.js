@@ -3,7 +3,7 @@
  * @LastEditors  : LiCai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-23 17:00:19
- * @LastEditTime : 2020-12-19 14:32:54
+ * @LastEditTime : 2020-12-21 14:24:59
  * @Description: 批量编辑页面
  * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BatchEditModal.js
  */
@@ -15,7 +15,7 @@ import { hideFormItem } from '@/utils/utilTool';
 import { basicServiceUrl, gatewayUrl, baseUrl } from '@/utils/commonUrl';
 import { findReviewTypesByCode } from '../service';
 import moment from 'moment';
-import { isEmptyObject } from '../../../../utils/utilTool';
+import { filterEmptyFileds, isEmptyObject } from '../../../../utils/utilTool';
 import { FormItemStye } from '../styleParam';
 
 const FormItem = Form.Item;
@@ -65,7 +65,7 @@ const BatchEditModal = (props) => {
       if (values.reviewMonth) {
         values.reviewMonth = moment(values.reviewMonth).format('YYYY-MM-DD').toString();
       }
-      props.onOk(values);
+      props.onOk(filterEmptyFileds(values));
     });
   }
 

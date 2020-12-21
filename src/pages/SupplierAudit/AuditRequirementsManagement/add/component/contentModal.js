@@ -146,7 +146,7 @@ const ContentModal = (props) => {
             {hideFormItem('memberRole', type === 'add' ? '' : data.memberRole)}
           </Col>
           <Col span={24}>
-            <FormItem {...formItemLayoutLong} label={'角色'}>
+            <FormItem {...formItemLayoutLong} label={'角色'} style={{marginBottom: '0px'}}>
               {
                 getFieldDecorator('memberRoleName', {
                   initialValue: type === 'add' ? '' : data.memberRoleName,
@@ -171,7 +171,7 @@ const ContentModal = (props) => {
             {hideFormItem('memberType', type === 'add' ? '' : data.memberType)}
           </Col>
           <Col span={24}>
-            <FormItem {...formItemLayoutLong} label={'人员类型'}>
+            <FormItem {...formItemLayoutLong} label={'人员类型'} style={{marginBottom: '0px'}}>
               {
                 getFieldDecorator('memberTypeName', {
                   initialValue: type === 'add' ? '' : data.memberTypeName,
@@ -206,7 +206,7 @@ const ContentModal = (props) => {
         </Col>
         {<Row>
           {
-            !disabled && <FormItem {...formItemLayoutLong} label={'姓名'}>
+            !disabled && <FormItem {...formItemLayoutLong} label={'姓名'} style={{marginBottom: '0px'}}>
               {
                 getFieldDecorator('memberName', {
                   initialValue: type === 'add' ? '' : data.memberName,
@@ -252,7 +252,7 @@ const ContentModal = (props) => {
         <Row>
           {
             !disabled && <Col span={24}>
-              <FormItem {...formItemLayoutLong} label={'员工编号'}>
+              <FormItem {...formItemLayoutLong} label={'员工编号'} style={{marginBottom: '0px'}}>
                 {
                   getFieldDecorator('employeeNo', {
                     initialValue: type === 'add' ? '' : data.employeeNo,
@@ -287,7 +287,7 @@ const ContentModal = (props) => {
         <Row>
           {
             !disabled && <Col span={24}>
-              <FormItem {...formItemLayoutLong} label={'部门'}>
+              <FormItem {...formItemLayoutLong} label={'部门'} style={{marginBottom: '0px'}}>
                 {
                   getFieldDecorator('departmentName', {
                     initialValue: type === 'add' ? '' : data.departmentName,
@@ -310,7 +310,7 @@ const ContentModal = (props) => {
           </Col>
           {
             disabled && <Col span={24}>
-              <FormItem {...formItemLayoutLong} label={'姓名'}>
+              <FormItem {...formItemLayoutLong} label={'姓名'} style={{marginBottom: '0px'}}>
                 {
                   getFieldDecorator('memberName', {
                     initialValue: type === 'add' ? '' : data.memberName,
@@ -326,7 +326,7 @@ const ContentModal = (props) => {
             </Col>
           }
           <Col span={24}>
-            <FormItem {...formItemLayoutLong} label={'联系电话'}>
+            <FormItem {...formItemLayoutLong} label={'联系电话'} style={{marginBottom: '0px'}}>
               {
                 getFieldDecorator('memberTel', {
                   initialValue: type === 'add' ? '' : data.memberTel,
@@ -342,7 +342,7 @@ const ContentModal = (props) => {
           </Col>
           {
             disabled && <Col span={24}>
-              <FormItem {...formItemLayoutLong} label={'外部单位'}>
+              <FormItem {...formItemLayoutLong} label={'外部单位'} style={{marginBottom: '0px'}}>
                 {
                   getFieldDecorator('outsideCompany', {
                     initialValue: type === 'add' ? '' : data.outsideCompany,

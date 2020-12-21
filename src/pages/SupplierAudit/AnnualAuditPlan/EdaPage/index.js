@@ -3,7 +3,7 @@
  * @LastEditors  : LiCai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:04:51
- * @LastEditTime : 2020-12-21 10:39:58
+ * @LastEditTime : 2020-12-21 14:17:06
  * @Description: 新增  编辑  详情 page
  * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/index.js
  */
@@ -245,7 +245,7 @@ const Index = (props) => {
         const buttons =
             (<Fragment>
                 <Button className={styles.btn} onClick={handleBack}>返回</Button>
-                <Button className={styles.btn} onClick={() => tohandleSave('onlySave')}>暂存</Button>
+                <Button className={styles.btn} onClick={() => tohandleSave('onlySave')} loading={spinLoading}>暂存</Button>
                 <StartFlow
                     className={styles.btn}
                     type='primary'
