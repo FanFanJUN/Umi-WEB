@@ -75,9 +75,10 @@ const Team = (props) => {
   });
 
   useEffect(() => {
+    console.log(visible);
     if (visible) {
       setTeamData(v => ({ ...v, dataSource: props.reviewTeamGroupBoList }));
-      if (props.type !== 'detail') {
+      if (props.reviewTypeCode) {
         GetDefaultSystem({
           reviewTypeCode: props.reviewTypeCode,
           sonList: props.treeData,
