@@ -187,7 +187,7 @@ const AuditReportManagement = forwardRef(({}, ref) => {
   const columns = [
     { title: '状态', dataIndex: 'arAuditReportManagStatusRemark', width: 80 },
     {
-      title: '审批状态', dataIndex: 'flowStatusRemark', width: 120,
+      title: '审批状态', dataIndex: 'flowStatus', width: 120,
       render: v => {
         switch (v) {
           case 'INIT':
