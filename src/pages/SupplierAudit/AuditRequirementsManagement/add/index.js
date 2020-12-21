@@ -161,15 +161,21 @@ const Index = (props) => {
       Modal.confirm({
         title: '是否确认暂存该数据!',
         onOk: () => {
+          setData(v => ({...v, spinLoading: true}))
           if (allData.type === 'add') {
             AddAuditRequirementsManagement(insertData).then(res => {
               if (res.success) {
                 message.success(res.message);
+                setData(v => ({...v, spinLoading: false}))
                 handleBack();
               } else {
+                setData(v => ({...v, spinLoading: false}))
                 message.error(res.message);
               }
-            }).catch(err => message.error(err.message));
+            }).catch(err => {
+              setData(v => ({...v, spinLoading: false}))
+              message.error(err.message)
+            });
           } else {
             let updateData = Object.assign(allData.editData, insertData);
             updateData.deleteList = deleteArr;
@@ -178,11 +184,16 @@ const Index = (props) => {
             UpdateAuditRequirementsManagement(updateData).then(res => {
               if (res.success) {
                 message.success(res.message);
+                setData(v => ({...v, spinLoading: false}))
                 handleBack();
               } else {
                 message.error(res.message);
+                setData(v => ({...v, spinLoading: false}))
               }
-            }).catch(err => message.error(err.message));
+            }).catch(err => {
+              setData(v => ({...v, spinLoading: false}))
+              message.error(err.message)
+            });
           }
         },
         okText: '确定',
