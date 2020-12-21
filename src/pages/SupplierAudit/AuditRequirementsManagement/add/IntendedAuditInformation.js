@@ -37,7 +37,7 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
   ].map(item => ({ ...item, align: 'center' }));
 
   const columns = [
-    { title: '行号', dataIndex: 'reviewRequirementLinenum', width: 100, ellipsis: true },
+    { title: '行号', dataIndex: 'reviewRequirementLinenum', width: 80, ellipsis: true },
     {
       title: '操作',
       dataIndex: 'id',
@@ -49,19 +49,19 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
         }
         {
           (value.reviewTeamGroupBoList && value.reviewTeamGroupBoList.length !== 0) &&
-          <a onClick={() => showTeam(value.reviewTeamGroupBoList, 'detail')}>小组</a>
+          <a onClick={() => showTeam(value.reviewTeamGroupBoList, 'detail')}> 小组</a>
         }
       </div>,
     },
-    { title: '审核类型', dataIndex: 'reviewTypeName', width: 100, ellipsis: true },
-    { title: '审核原因', dataIndex: 'reviewReasonName', ellipsis: true, width: 150 },
+    { title: '审核类型', dataIndex: 'reviewTypeName', width: 90, ellipsis: true },
+    { title: '审核原因', dataIndex: 'reviewReasonName', ellipsis: true, width: 130 },
     { title: '物料分类', dataIndex: 'materialGroupName', width: 100, ellipsis: true },
-    { title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 250 },
+    { title: '供应商', dataIndex: 'supplierName', ellipsis: true, width: 150 },
     { title: '代理商', dataIndex: 'agentName', ellipsis: true, width: 140 },
     {
       title: '生产厂地址',
       dataIndex: 'countryName',
-      width: 250,
+      width: 200,
       render: (v, data) =>
         <span>{`${data.countryName.trim() + data.provinceName.trim() + data.cityName.trim() + data.countyName.trim() + data.address.trim()}`}</span>,
     },

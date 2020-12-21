@@ -1,10 +1,10 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:44:12
- * @LastEditTime: 2020-12-07 16:54:13
- * @LastEditors: Please set LastEditors
+ * @LastEditTime : 2020-12-21 14:09:10
+ * @LastEditors  : LiCai
  * @Description: 审核实施计划-审核人员
- * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\AuditorInfo.js
+ * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AuditImplementationPlan/editPage/AuditorInfo.js
  */
 
 import React, { useState, useRef, useEffect, useImperativeHandle, forwardRef } from 'react';
@@ -20,7 +20,7 @@ import { duplicateRemoval, PersonnelTypeArr, RoleArr } from '../../mainData/comm
 const FormItem = Form.Item;
 const formLayout = {
   labelCol: {
-    span: 6,
+    span: 8,
   },
   wrapperCol: {
     span: 14,

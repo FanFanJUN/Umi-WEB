@@ -3,7 +3,7 @@
  * @LastEditors  : LiCai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-23 17:00:19
- * @LastEditTime : 2020-12-18 10:02:55
+ * @LastEditTime : 2020-12-21 14:24:59
  * @Description: 批量编辑页面
  * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BatchEditModal.js
  */
@@ -15,7 +15,8 @@ import { hideFormItem } from '@/utils/utilTool';
 import { basicServiceUrl, gatewayUrl, baseUrl } from '@/utils/commonUrl';
 import { findReviewTypesByCode } from '../service';
 import moment from 'moment';
-import { isEmptyObject } from '../../../../utils/utilTool';
+import { filterEmptyFileds, isEmptyObject } from '../../../../utils/utilTool';
+import { FormItemStye } from '../styleParam';
 
 const FormItem = Form.Item;
 const { MonthPicker } = DatePicker;
@@ -64,7 +65,7 @@ const BatchEditModal = (props) => {
       if (values.reviewMonth) {
         values.reviewMonth = moment(values.reviewMonth).format('YYYY-MM-DD').toString();
       }
-      props.onOk(values);
+      props.onOk(filterEmptyFileds(values));
     });
   }
 
@@ -99,7 +100,7 @@ const BatchEditModal = (props) => {
 
   return (
     <ExtModal
-      width={'100vh'}
+      width={'120vh'}
       maskClosable={false}
       visible={visible}
       title="批量编辑"
@@ -110,7 +111,7 @@ const BatchEditModal = (props) => {
       <Form>
         <Row>
           <Col span={12}>
-            <FormItem {...formItemLayoutLong} label={'审核类型'}>
+            <FormItem {...formItemLayoutLong} label={'审核类型'} style={FormItemStye}>
               {
                 (getFieldDecorator('reviewTypeId', { initialValue: originData.reviewTypeId }),
                 getFieldDecorator('reviewTypeCode', { initialValue: originData.reviewTypeCode }),
@@ -135,7 +136,7 @@ const BatchEditModal = (props) => {
             </FormItem>
           </Col>
           <Col span={12}>
-            <FormItem {...formItemLayoutLong} label={'审核原因'}>
+            <FormItem {...formItemLayoutLong} label={'审核原因'} style={FormItemStye}>
               {
                 (getFieldDecorator('reviewReasonId', { initialValue: originData.reviewReasonId }),
                 getFieldDecorator('reviewReasonCode', {
@@ -176,7 +177,7 @@ const BatchEditModal = (props) => {
         </Row>
         <Row>
           <Col span={12}>
-            <FormItem {...formItemLayoutLong} label={'审核方式'}>
+            <FormItem {...formItemLayoutLong} label={'审核方式'} style={FormItemStye}>
               {
                 (getFieldDecorator('reviewWayId', { initialValue: originData.reviewWayId }),
                 getFieldDecorator('reviewWayCode', { initialValue: originData.reviewWayCode }),
@@ -201,7 +202,7 @@ const BatchEditModal = (props) => {
             </FormItem>
           </Col>
           <Col span={12}>
-            <FormItem {...formItemLayoutLong} label={'预计审核月度'}>
+            <FormItem {...formItemLayoutLong} label={'预计审核月度'} style={FormItemStye}>
               {getFieldDecorator('reviewMonth', {
                 initialValue: originData.reviewMonth && moment(originData.reviewMonth),
                 rules: [
@@ -216,7 +217,12 @@ const BatchEditModal = (props) => {
         </Row>
         <Row>
           <Col span={8}>
-            <FormItem labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label={'生产厂地址'}>
+            <FormItem
+              labelCol={{ span: 12 }}
+              wrapperCol={{ span: 12 }}
+              label={'生产厂地址'}
+              style={FormItemStye}
+            >
               {
                 (getFieldDecorator('countryId', { initialValue: originData.countryId }),
                 getFieldDecorator('countryCode', { initialValue: originData.countryCode }),
@@ -252,7 +258,7 @@ const BatchEditModal = (props) => {
             </FormItem>
           </Col>
           <Col span={4}>
-            <FormItem>
+            <FormItem style={FormItemStye}>
               {
                 (getFieldDecorator('provinceId', { initialValue: originData.provinceId }),
                 getFieldDecorator('provinceCode', { initialValue: originData.provinceCode }),
@@ -292,7 +298,7 @@ const BatchEditModal = (props) => {
             </FormItem>
           </Col>
           <Col span={4}>
-            <FormItem>
+            <FormItem style={FormItemStye}>
               {
                 (getFieldDecorator('cityId', { initialValue: originData.cityId }),
                 getFieldDecorator('cityCode', { initialValue: originData.cityCode }),
@@ -332,7 +338,7 @@ const BatchEditModal = (props) => {
             </FormItem>
           </Col>
           <Col span={4}>
-            <FormItem>
+            <FormItem style={FormItemStye}>
               {
                 (getFieldDecorator('countyId', { initialValue: originData.countyId }),
                 getFieldDecorator('countyCode', { initialValue: originData.countyCode }),
@@ -373,7 +379,7 @@ const BatchEditModal = (props) => {
             </FormItem>
           </Col>
           <Col span={4}>
-            <FormItem>
+            <FormItem style={FormItemStye}>
               {getFieldDecorator('address', {
                 initialValue: originData.address,
                 rules: [
@@ -388,7 +394,7 @@ const BatchEditModal = (props) => {
         </Row>
         <Row>
           <Col span={12}>
-            <FormItem {...formItemLayoutLong} label={'供应商联系人'}>
+            <FormItem {...formItemLayoutLong} label={'供应商联系人'} style={FormItemStye}>
               {getFieldDecorator('contactUserName', {
                 initialValue: originData.contactUserName,
                 rules: [
@@ -401,7 +407,7 @@ const BatchEditModal = (props) => {
             </FormItem>
           </Col>
           <Col span={12}>
-            <FormItem {...formItemLayoutLong} label={'供应商联系方式'}>
+            <FormItem {...formItemLayoutLong} label={'供应商联系方式'} style={FormItemStye}>
               {getFieldDecorator('contactUserTel', {
                 initialValue: originData.contactUserTel,
                 rules: [{ required, message: '供应商联系方式不能为空' }],
@@ -411,7 +417,7 @@ const BatchEditModal = (props) => {
         </Row>
         <Row>
           <Col span={24}>
-            <FormItem {...formItemLayout} label={'备注'}>
+            <FormItem {...formItemLayout} label={'备注'} style={FormItemStye}>
               {getFieldDecorator('remark', {
                 initialValue: originData.remark,
                 rules: [{ max: 200, message: '输入长度不能超过200' }],

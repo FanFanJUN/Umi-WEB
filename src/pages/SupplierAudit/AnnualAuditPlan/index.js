@@ -1,11 +1,11 @@
 /*
  * @Author: Li Cai
- * @LastEditors: Li Cai
+ * @LastEditors  : LiCai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:00:19
- * @LastEditTime: 2020-12-09 16:48:31
+ * @LastEditTime : 2020-12-19 14:20:25
  * @Description:  年度审核计划管理
- * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/index.js
+ * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/index.js
  */
 import React, { useState, useRef, useEffect, Fragment } from 'react';
 import moment from "moment";
@@ -65,15 +65,26 @@ export default function () {
 
 
     const redirectToPage = (type) => {
+        const { selectedRowKeys, selectedRows } = data;
         switch (type) {
             case 'add':
-                openNewTab('supplierAudit/AnnualAuditPlanEda?pageState=add', '年度审核计划管理-新增', false);
+                openNewTab('supplierAudit/AnnualAuditPlanEda?pageState=add', '新增年度审核计划', false);
                 break;
             case 'edit':
-                openNewTab(`supplierAudit/AnnualAuditPlanEda?pageState=edit&id=${data.selectedRowKeys[0]}`, '年度审核计划管理-编辑', false);
+                openNewTab(
+                  `supplierAudit/AnnualAuditPlanEda?pageState=edit&id=${selectedRowKeys[0]}
+                &reviewPlanYearCode=${selectedRows[0].reviewPlanYearCode}`,
+                  '编辑年度审核计划',
+                  false,
+                );
                 break;
             case 'detail':
-                openNewTab(`supplierAudit/AnnualAuditPlanDetail?pageState=detail&id=${data.selectedRowKeys[0]}`, '年度审核计划管理-明细', false);
+                openNewTab(
+                  `supplierAudit/AnnualAuditPlanDetail?pageState=detail&id=${selectedRowKeys[0]}
+                &reviewPlanYearCode=${selectedRows[0].reviewPlanYearCode}`,
+                  '年度审核计划明细',
+                  false,
+                );
                 break;
             case 'delete':
                 deleteList();
@@ -222,9 +233,9 @@ export default function () {
         },
         { title: '年度审核计划号', dataIndex: 'reviewPlanYearCode', align: 'center', width: 160 },
         { title: '年度', dataIndex: 'applyYear', ellipsis: true, width: 93, render: text => text && `${text} 年`, align: 'right' },
-        { title: '拟制说明', dataIndex: 'reviewPlanYearName', ellipsis: true, width: 200, align: 'left' },
+        { title: '拟制说明', dataIndex: 'reviewPlanYearName', ellipsis: true, width: 129, align: 'left' },
         { title: '拟制公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 200, align: 'left' },
-        { title: '拟制部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200, align: 'left' },
+        { title: '拟制部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 147, align: 'left' },
         { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 140 },
         { title: '拟制时间', dataIndex: 'applyDate', ellipsis: true, width: 200, align: 'center' },
     ];

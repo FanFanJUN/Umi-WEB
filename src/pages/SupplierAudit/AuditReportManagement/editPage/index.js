@@ -144,6 +144,7 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
       message.error('请将基本信息填写完全！');
       return false;
     }
+    setData(v => ({...v, spinLoading: true}));
     data.editData.arAuditReportManagBasicVo = baseInfoVal;
     saveAuditReport(data.editData).then(res => {
       if (res.success) {
@@ -155,6 +156,7 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
         message.error(res.message);
       }
     }).catch(err => message.error(err.message));
+    setData(v => ({...v, spinLoading: false}));
   };
 
   //提交
@@ -164,6 +166,7 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
       return false;
     }
     data.editData.arAuditReportManagBasicVo = baseInfoVal;
+    setData(v => ({...v, spinLoading: false}));
     return new Promise(function(resolve, reject) {
       saveAuditReport(data.editData).then(res => {
         if (res.success) {
@@ -177,6 +180,7 @@ const AuditReportManagementView = forwardRef(({ isApprove, isApproveDetail, isAp
           message.error(res.message);
         }
       }).catch(err => reject(err));
+      setData(v => ({...v, spinLoading: false}));
     });
   };
 

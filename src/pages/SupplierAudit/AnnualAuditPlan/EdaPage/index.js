@@ -3,7 +3,7 @@
  * @LastEditors  : LiCai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:04:51
- * @LastEditTime : 2020-12-18 17:10:37
+ * @LastEditTime : 2020-12-21 14:17:06
  * @Description: 新增  编辑  详情 page
  * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/index.js
  */
@@ -18,7 +18,6 @@ import BaseInfo from './BaseInfo';
 import { router } from 'dva';
 import LineInfo from './LineInfo';
 import { findDetailedById, findReviewTypesByCode, reviewPlanYearAp } from '../service';
-import { isEmptyArray } from '../../../../utils/utilTool';
 
 const { StartFlow } = WorkFlow;
 const userInfo = getUserInfoFromSession();
@@ -59,17 +58,17 @@ const Index = (props) => {
         const { id, pageState: queryPageSate } = query;
         const pageState = queryPageSate || propsPageState; // 流程中pageState 与url pageState
         if (pageState === 'edit' || pageState === 'detail') {
-            async function fetchData() {
-                setSpinLoading(true);
-                const res = await findDetailedById({ id: query.id });
-                if (res.success) {
-                    res.data && setOriginData(res.data);
-                } else {
-                    message.error(res.message);
-                }
-                setSpinLoading(false);
+          async function fetchData() {
+            setSpinLoading(true);
+            const res = await findDetailedById({ id: query.id });
+            if (res.success) {
+              res.data && setOriginData(res.data);
+            } else {
+              message.error(res.message);
             }
-            fetchData();
+            setSpinLoading(false);
+          }
+          fetchData();
         }
         if (pageState === 'edit' || pageState === 'add') {
             async function fetchData() {
@@ -85,17 +84,18 @@ const Index = (props) => {
             fetchData();
         }
         switch (pageState) {
-            case 'add':
-                setData((value) => ({ ...value, type: pageState, isView: false, title: '新增年度审核计划' }));
-                break;
-            case 'edit':
-                setData((value) => ({ ...value, type: pageState, id, isView: false, title: '编辑年度审核计划' }));
-                break;
-            case 'detail':
-                setData((value) => ({ ...value, type: pageState, isView: true, title: `年度审核计划明细` }));
-                break;
-            default:
-                break;
+          case 'add':
+            setData(value => ({ ...value, type: pageState, isView: false }));
+            break;
+          case 'edit':
+            console.log(originData);
+            setData(value => ({ ...value, type: pageState, id, isView: false }));
+            break;
+          case 'detail':
+            setData(value => ({ ...value, type: pageState, isView: true }));
+            break;
+          default:
+            break;
         }
         console.log(pageState, 'pageState');
     }, []);
@@ -245,7 +245,7 @@ const Index = (props) => {
         const buttons =
             (<Fragment>
                 <Button className={styles.btn} onClick={handleBack}>返回</Button>
-                <Button className={styles.btn} onClick={() => tohandleSave('onlySave')}>暂存</Button>
+                <Button className={styles.btn} onClick={() => tohandleSave('onlySave')} loading={spinLoading}>暂存</Button>
                 <StartFlow
                     className={styles.btn}
                     type='primary'
@@ -276,12 +276,27 @@ const Index = (props) => {
         }
     }
 
+    const title = () => {
+      const { pageState: queryPageSate } = query;
+      const pageState = queryPageSate || propsPageState; // 流程中pageState 与url pageState
+      const headerTitle = {
+        add: '新增年度审核计划',
+        edit:
+          (originData.reviewPlanYearCode && `编辑年度审核计划:${originData.reviewPlanYearCode}`) ||
+          '编辑年度审核计划',
+        detail:
+          (originData.reviewPlanYearCode && `年度审核计划明细:${originData.reviewPlanYearCode}`) ||
+          '年度审核计划明细',
+      };
+      return headerTitle[pageState];
+    };
+
     return (
         <div>
             <Spin spinning={spinLoading}>
                 <Affix>
                     <div className={classnames(styles.fbc, styles.affixHeader)}>
-                        <span style={{ fontSize: '18px', fontWeight: 'bolder' }}>{data.title}</span>
+                        <span style={{ fontSize: '18px', fontWeight: 'bolder' }}>{title()}</span>
                         <div style={{ display: "flex", alignItems: "center" }}>
                             {showButton()}
                         </div>

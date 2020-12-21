@@ -19,22 +19,22 @@ const ScoreOverview = (props) => {
       title: '', dataIndex: 'id', width: 1, render: v => {
       },
     },
-    { title: '类别', dataIndex: 'systemName', width: 200, required: true },
+    { title: '类别', dataIndex: 'systemName', width: 150, required: true },
     { title: '指标名称', dataIndex: 'ruleName', ellipsis: true, width: 100 },
-    { title: '指标定义', dataIndex: 'definition', ellipsis: true, width: 300 },
-    { title: '评分标准', dataIndex: 'scoringStandard', ellipsis: true, width: 300 },
-    { title: '标准分', dataIndex: 'highestScore', width: 100, render: (v, data) => data.score ? data.score : v },
-    { title: '自评得分', dataIndex: 'selfScore', width: 100 },
-    { title: '不适用', dataIndex: 'notApplyScore', width: 100 },
+    { title: '指标定义', dataIndex: 'definition', ellipsis: true, width: 150 },
+    { title: '评分标准', dataIndex: 'scoringStandard', ellipsis: true, width: 150 },
+    { title: '标准分', dataIndex: 'highestScore', width: 80, render: (v, data) => data.score ? data.score : v },
+    { title: '自评得分', dataIndex: 'selfScore', width: 80 },
+    { title: '不适用', dataIndex: 'notApplyScore', width: 80 },
     {
       title: '审核得分',
       dataIndex: 'reviewScore',
-      width: 100,
+      width: 80,
       render: (v, data) => data.ruleId ? <a onClick={() => targetScoringDetail(data)}>{v}</a> : v,
     },
-    { title: '百分比', dataIndex: 'percentage', width: 100, render: v => v ? `${v}%` : '0' },
-    { title: '评定等级', dataIndex: 'performanceRating', width: 100 },
-    { title: '风险等级', dataIndex: 'riskRating', width: 100 },
+    { title: '百分比', dataIndex: 'percentage', width: 80, render: v => v ? `${v}%` : '0' },
+    { title: '评定等级', dataIndex: 'performanceRating', width: 80 },
+    { title: '风险等级', dataIndex: 'riskRating', width: 80 },
   ].map(item => ({ ...item, align: 'center' }));
 
   const [data, setData] = useState({
@@ -125,6 +125,7 @@ const ScoreOverview = (props) => {
       <ExtTable
         rowKey={'id'}
         loading={loading}
+        height={'50vh'}
         bordered={true}
         showSearch={false}
         columns={columns}

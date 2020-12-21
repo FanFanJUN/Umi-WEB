@@ -268,10 +268,11 @@ let LineInfo = forwardRef((props, ref) => {
 
   // 新增弹框-确定
   const handleAddOk = (value) => {
-    // console.log('行数据', value)
+    console.log('行数据', value)
+    let errorArr = []
     let newList = [];
     value.forEach((item, index) => {
-      if (!dataSource.some(v => v.sourceId === item.sourceId)) {
+      if (!dataSource.some(v => v.sourceLineId === item.sourceLineId)) {
         let groupObj = {};
         item.treeData = buildTreeData(item.sonList);
         item.lineNum = getRandom(10);
@@ -297,8 +298,13 @@ let LineInfo = forwardRef((props, ref) => {
         }
         let newItem = Object.assign(item, groupObj);
         newList.push(newItem);
+      } else {
+        errorArr = [...errorArr, (index + 1)]
       }
     });
+    if (errorArr.length !== 0) {
+      message.error('选中的第' + errorArr.toString() + '行重复,已自动过滤!')
+    }
     newList = dataSource.concat(newList);
     setDataSource(newList);
     setModalData({ visible: false });

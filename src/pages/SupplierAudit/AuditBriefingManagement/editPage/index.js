@@ -131,6 +131,7 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
     }
     let thisPeriodInfoVal = await getThisPeriodFormRef.current.getFormValue();
     data.editData = Object.assign(data.editData, baseInfoVal, thisPeriodInfoVal);
+    setData(v => ({...v, spinLoading: true}));
     saveAuditBriefing(data.editData).then(res => {
       if (res.success) {
         message.success(res.message);
@@ -141,6 +142,7 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
         message.error(res.message);
       }
     }).catch(err => message.error(err.message));
+    setData(v => ({...v, spinLoading: false}));
   };
 
   //提交
@@ -151,6 +153,7 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
     }
     let thisPeriodInfoVal = await getThisPeriodFormRef.current.getFormValue();
     data.editData = Object.assign(data.editData, baseInfoVal, thisPeriodInfoVal);
+    setData(v => ({...v, spinLoading: true}));
     return new Promise(function(resolve, reject) {
       saveAuditBriefing(data.editData).then(res => {
         if (res.success) {
@@ -164,6 +167,7 @@ const AuditBriefingManagementView = forwardRef(({ isApprove, isApproveDetail, is
           message.error(res.message);
         }
       }).catch(err => reject(err));
+      setData(v => ({...v, spinLoading: false}));
     });
   };
 

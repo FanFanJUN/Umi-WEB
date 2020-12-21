@@ -1,10 +1,10 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:37:22
- * @LastEditTime: 2020-12-10 16:37:03
- * @LastEditors: Please set LastEditors
+ * @LastEditTime : 2020-12-21 14:05:55
+ * @LastEditors  : LiCai
  * @Description: 审核实施计划-拟审核信息
- * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\AuditInfo.js
+ * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AuditImplementationPlan/editPage/AuditInfo.js
  */
 import React, { useState, useEffect } from 'react';
 import { Col, Form, Row, Input, Pagination  } from 'antd';
@@ -71,7 +71,7 @@ const AuditInfo = (props) => {
                 <div className={styles.content}>
                     <Row>
                         <Col span={12}>
-                            <FormItem  {...formLayout} label={'月度审核计划号'}>
+                            <FormItem  {...formLayout} label={'月度审核计划号'} style={{marginBottom: '0px'}}>
                                 {
                                     isView ? <span>{formData.reviewPlanMonthCode}</span> : <Input disabled={true} value={formData.reviewPlanMonthCode} />
                                 }
@@ -87,14 +87,14 @@ const AuditInfo = (props) => {
                     </Row>
                     <Row>
                         <Col span={12}>
-                            <FormItem  {...formLayout} label={'供应商'}>
+                            <FormItem  {...formLayout} label={'供应商'} style={{marginBottom: '0px'}}>
                                 {
                                     isView ? <span>{formData.supplierName}</span> : <Input disabled={true} value={formData.supplierName} />
                                 }
                             </FormItem>
                         </Col>
                         <Col span={12}>
-                            <FormItem  {...formLayout} label={'代理商'}>
+                            <FormItem  {...formLayout} label={'代理商'} style={{marginBottom: '0px'}}>
                                 {
                                     isView ? <span>{formData.agentName}</span> : <Input disabled={true} value={formData.agentName} />
                                 }
@@ -103,7 +103,7 @@ const AuditInfo = (props) => {
                     </Row>
                     <Row>
                         <Col span={24}>
-                            <FormItem  {...formItemLayoutLong} label={'生产厂地址'}>
+                            <FormItem  {...formItemLayoutLong} label={'生产厂地址'} style={{marginBottom: '0px'}}>
                                 {
                                     isView ? <span>{formData.countryName + formData.provinceName + formData.cityName + formData.countyName + formData.address}</span> : <div>
                                         <Input disabled={true} value={formData.countryName} style={{ width: "10%" }} />
@@ -118,7 +118,7 @@ const AuditInfo = (props) => {
                     </Row>
                     <Row>
                         <Col span={12}>
-                            <FormItem  {...formLayout} label={'供应商联系人'}>
+                            <FormItem  {...formLayout} label={'供应商联系人'} style={{marginBottom: '0px'}}>
                                 {
                                     isView ? <span>{formData.contactUserName}</span> : <Input disabled={true} value={formData.contactUserName} />
                                 }

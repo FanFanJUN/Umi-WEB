@@ -32,23 +32,23 @@ const IssuesManagement = (props) => {
   const { type, id, isView } = props;
 
   const columns = [
-    { title: '指标', dataIndex: 'ruleName', width: 200, required: true },
+    { title: '指标', dataIndex: 'ruleName', width: 100, required: true },
     { title: '部门/过程', dataIndex: 'department', ellipsis: true, width: 100 },
-    { title: '问题描述', dataIndex: 'problemDescribe', ellipsis: true, width: 200 },
-    { title: '严重程度', dataIndex: 'severity', width: 180, render: v => OrderSeverityArr[v] },
-    { title: '要求整改完成日期', dataIndex: 'demandCompletionTime', width: 200 },
+    { title: '问题描述', dataIndex: 'problemDescribe', ellipsis: true, width: 80 },
+    { title: '严重程度', dataIndex: 'severity', width: 100, render: v => OrderSeverityArr[v] },
+    { title: '要求整改完成日期', dataIndex: 'demandCompletionTime', width: 150 },
     { title: '提出人', dataIndex: 'proposerName', width: 100 },
     { title: '问题分析', dataIndex: 'reason', width: 100 },
     {
       title: '纠正预防措施及见证附件',
       dataIndex: 'preventiveMeasures',
-      width: 300,
-      render: (v, data) => <div style={{ marginLeft: buttonWidth, whiteSpace: 'nowrap' }}>
+      width: 220,
+      render: (v, data) => <>
         <Tooltip title={`${v} ${data.measures}`}>
           <span>{v} {data.measures}</span>
-        </Tooltip>,
+        </Tooltip>
         <Upload type='show' entityId={data.attachRelatedIds} />
-      </div>,
+      </>,
     },
     { title: '完成时间', dataIndex: 'completionTime', width: 100 },
     {
@@ -73,7 +73,7 @@ const IssuesManagement = (props) => {
     setData(v => ({ ...v, loading: true }));
     IssuesManagementApi({
       reviewImplementPlanCode,
-      whetherSupplier: !props.type
+      whetherSupplier: !props.type,
     }).then(res => {
       if (res.success) {
         let arr = res.data.slice();
@@ -345,6 +345,7 @@ const IssuesManagement = (props) => {
         rowKey={(v) => v.lineNum}
         loading={data.loading}
         allowCancelSelect={true}
+        height={'50vh'}
         showSearch={false}
         remotePaging
         checkbox={{ multiSelect: false }}

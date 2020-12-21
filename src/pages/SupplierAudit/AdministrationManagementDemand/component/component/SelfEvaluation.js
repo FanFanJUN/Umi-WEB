@@ -31,10 +31,10 @@ const SelfEvaluation = props => {
       title: '', dataIndex: 'id', width: 1, render: v => {
       },
     },
-    { title: '类别', dataIndex: 'systemName', width: 200, required: true, render: (v, data) => data.children && v },
+    { title: '类别', dataIndex: 'systemName', width: 100, required: true, render: (v, data) => data.children && v },
     { title: '指标名称', dataIndex: 'ruleName', ellipsis: true, width: 100 },
-    { title: '指标定义', dataIndex: 'definition', ellipsis: true, width: 250 },
-    { title: '评分标准', dataIndex: 'scoringStandard', ellipsis: true, width: 250 },
+    { title: '指标定义', dataIndex: 'definition', ellipsis: true, width: 120 },
+    { title: '评分标准', dataIndex: 'scoringStandard', ellipsis: true, width: 120 },
     { title: '标准分', dataIndex: 'highestScore', width: 100, render: (v, data) => data.score ? data.score : v },
     {
       title: '不适用',
@@ -65,7 +65,7 @@ const SelfEvaluation = props => {
           }} min={0} /> : data.selfScore),
     },
     {
-      title: '情况说明', dataIndex: 'remark', width: 200,
+      title: '情况说明', dataIndex: 'remark', width: 150,
       render: (v, data) => type ? v : !data.children &&
         <Input value={v} onChange={e => {
           data.remark = e.target.value;
@@ -287,7 +287,7 @@ const SelfEvaluation = props => {
 
   return (
     <ExtModal
-      width={'170vh'}
+      width={'145vh'}
       maskClosable={false}
       visible={visible}
       title={type ? '查看供应商自评' : '自评'}
@@ -298,14 +298,14 @@ const SelfEvaluation = props => {
     >
       {
         type ?
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
             {!isView && <Button onClick={sendBack} disabled={!data.time}>退回</Button>}
             <span style={{ marginLeft: '50px' }}>自评时间:</span>
             <Input style={{ width: '350px', marginLeft: '5px' }}
                    disabled={true} value={data.time} />
           </div>
           : <>
-            <Button style={{ marginRight: '5px' }} key="downLoad" onClick={exportData}>批量导出</Button>
+            <Button style={{ marginRight: '5px', marginBottom: '10px' }} key="downLoad" onClick={exportData}>批量导出</Button>
             <ImportUpload
               name="file"
               beforeUpload={beforeUpload}
@@ -330,7 +330,6 @@ const SelfEvaluation = props => {
         ref={tableRef}
         pagination={false}
         bordered={true}
-        style={{ marginTop: '10px' }}
         showSearch={false}
         columns={columns}
         dataSource={data.dataSource}

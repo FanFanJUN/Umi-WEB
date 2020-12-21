@@ -59,13 +59,13 @@ const AnswerQuestionModal = (props) => {
       destroyOnClose={true}
     >
       <Row>
-        <Col span={12}>
-          <FormItem {...formLongLayout} label={'问题描述'}>
+        <Col span={24}>
+          <FormItem {...formLayout} label={'问题描述'}>
             {
               getFieldDecorator('problemDescribe', {
                 initialValue: !editData.problemDescribe ? '' : editData.problemDescribe,
               })(
-                <Input disabled={true} style={{ width: '100' }} />,
+                <Input.TextArea rows={4} disabled={true} style={{ width: '100%' }} />,
               )
             }
           </FormItem>

@@ -1,10 +1,10 @@
 /*
  * @Author:黄永翠
  * @Date: 2020-11-09 09:38:38
- * @LastEditTime: 2020-12-18 11:26:57
- * @LastEditors: Please set LastEditors
+ * @LastEditTime : 2020-12-21 14:19:51
+ * @LastEditors  : LiCai
  * @Description:审核实施计划-明细
- * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\index.js
+ * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AuditImplementationPlan/editPage/index.js
  */
 import React, { useEffect, useRef, useState, useImperativeHandle } from 'react';
 import { Affix, Button, Form, message, Spin, Modal } from 'antd';
@@ -262,8 +262,8 @@ const Index = (props) => {
                 {
                     props.isInFlow!==1 && (data.type !== 'detail' || data.type === 'change' || data.type === 'edit') && <div style={{ display: "flex", alignItems: 'center' }}>
                         <Button className={styles.btn} onClick={() => { closeCurrent() }}>返回</Button>
-                        {data.type !== 'change' && <Button className={styles.btn} onClick={() => handleSave('save')}>暂存</Button>}
-                        {data.type === 'change' && <Button className={styles.btn} onClick={() => handleSave('delete')}>作废</Button>}
+                        {data.type !== 'change' && <Button className={styles.btn} onClick={() => handleSave('save')} loading={loading}>暂存</Button>}
+                        {data.type === 'change' && <Button className={styles.btn} onClick={() => handleSave('delete')} loading={loading}>作废</Button>}
                         <StartFlow
                             className={styles.btn}
                             type='primary'

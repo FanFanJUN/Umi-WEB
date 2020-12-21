@@ -204,13 +204,13 @@ export default function() {
         }
       },
     },
-    { title: '审核需求号', dataIndex: 'reviewRequirementCode', align: 'right', width: 150 },
-    { title: '申请说明', dataIndex: 'reviewRequirementName', ellipsis: true, align: 'left', width: 200 },
-    { title: '申请公司', dataIndex: 'applyCorporationName', ellipsis: true, align: 'left', width: 230 },
-    { title: '申请部门', dataIndex: 'applyDepartmentName', align: 'left', ellipsis: true, width: 230 },
-    { title: '采购组织', dataIndex: 'purchaseOrgName', ellipsis: true, align: 'left', width: 200 },
-    { title: '申请人员', dataIndex: 'applyName', ellipsis: true, width: 100, align: 'left' },
-    { title: '申请时间', dataIndex: 'applyDate', ellipsis: true, width: 200, align: 'center' },
+    { title: '审核需求号', dataIndex: 'reviewRequirementCode', align: 'right', width: 140 },
+    { title: '申请说明', dataIndex: 'reviewRequirementName', ellipsis: true, align: 'left', width: 150 },
+    { title: '申请公司', dataIndex: 'applyCorporationName', ellipsis: true, align: 'left', width: 150 },
+    { title: '申请部门', dataIndex: 'applyDepartmentName', align: 'left', ellipsis: true, width: 150 },
+    { title: '采购组织', dataIndex: 'purchaseOrgName', ellipsis: true, align: 'left', width: 150 },
+    { title: '申请人员', dataIndex: 'applyName', ellipsis: true, width: 80, align: 'left' },
+    { title: '申请时间', dataIndex: 'applyDate', ellipsis: true, width: 180, align: 'center' },
   ];
 
   // 提交审核完成更新列表
@@ -253,6 +253,7 @@ export default function() {
         ignore={DEVELOPER_ENV}
         key='SUPPLIER_AUDIT_REQUIREMENT_DELETE'
         disabled={data.selectedRowKeys.length === 0
+        || !judge(data.selectedRows, 'state', 'DRAFT')
         || !judge(data.selectedRows, 'applyId', getUserId())}
       >删除</Button>)
     }

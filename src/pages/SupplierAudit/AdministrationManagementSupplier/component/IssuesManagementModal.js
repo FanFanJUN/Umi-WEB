@@ -57,7 +57,7 @@ const IssuesManagementModal = (props) => {
 
   return (
     <ExtModal
-      width={'180vh'}
+      width={'150vh'}
       maskClosable={false}
       visible={visible}
       title={'问题管理'}

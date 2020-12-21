@@ -405,7 +405,8 @@ const Team = (props) => {
 
   return (
     <ExtModal
-      width={'160vh'}
+      width={'145vh'}
+      centered
       maskClosable={false}
       visible={visible}
       title={'审核小组管理'}
@@ -425,7 +426,7 @@ const Team = (props) => {
               <Button style={{ marginLeft: '5px' }} onClick={teamDelete}>删除</Button>
             </div>
           }
-          <div style={{ marginTop: '10px', height: '480px' }}>
+          <div style={{ marginTop: '10px', height: '460px' }}>
             <ExtTable
               rowKey={(v) => v.lineNum}
               allowCancelSelect={true}
@@ -451,11 +452,12 @@ const Team = (props) => {
               {/*<Button style={{ marginLeft: '5px' }} onClick={getLeftTreeData}>审核内容管理</Button>*/}
             </div>
           }
-          <div style={{ marginTop: '10px', height: '270px' }}>
+          <div style={{ marginTop: '10px', height: '190px' }}>
             <ExtTable
               rowKey={(v) => v.lineNum}
               allowCancelSelect={true}
               showSearch={false}
+              height={'40vh'}
               remotePaging
               checkbox={{ multiSelect: false }}
               size='small'

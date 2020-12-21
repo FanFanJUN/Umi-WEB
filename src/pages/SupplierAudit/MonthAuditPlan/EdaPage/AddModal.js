@@ -222,52 +222,62 @@ const AddModal = (props) => {
 
     function renderForm() {
         if (type === "annual") {
-            return <Form>
+            return (
+              <Form>
                 <Row>
-                    <Col span={10}>
-                        <FormItem {...formItemLayoutLong} label={'年度审核计划'}>
-                            {
-                                getFieldDecorator('id'),
-                                getFieldDecorator('reviewPlanYearCode'),
-                                getFieldDecorator('reviewPlanYearName', {
-                                    rules: [{ required: true, message: '请选择', },]
-                                })(
-                                    <ComboList
-                                        allowClear
-                                        style={{ width: '100%' }}
-                                        form={form}
-                                        name={'reviewPlanYearName'}
-                                        field={['reviewPlanYearCode', 'id']}
-                                        {...reviewPlanYearConfig}
-                                        afterSelect={(item) => {
-                                            if (item.applyYear) {
-                                                setSelectedYear(item.applyYear)
-                                            }
-                                        }}
-                                    />,
-                                )
-                            }
-                        </FormItem>
-                    </Col>
-                    <Col span={10}>
-                        <FormItem {...formItemLayoutLong} label={'预计审核月度'}>
-                            {
-                                getFieldDecorator('reviewMonth')(
-                                    <MonthPicker placeholder="选择月度" style={{ width: "100%" }} />
-                                )
-                            }
-                        </FormItem>
-                    </Col>
-                    <Col span={4}>
-                        <div style={{ textAlign: 'center' }} onClick={handleSearch}><Button type="primary">查询</Button></div>
-                    </Col>
+                  <Col span={10}>
+                    <FormItem
+                      {...formItemLayoutLong}
+                      label={'年度审核计划'}
+                      style={{ marginBottom: '0px' }}
+                    >
+                      {
+                        (getFieldDecorator('id'),
+                        getFieldDecorator('reviewPlanYearCode'),
+                        getFieldDecorator('reviewPlanYearName', {
+                          rules: [{ required: true, message: '请选择' }],
+                        })(
+                          <ComboList
+                            allowClear
+                            style={{ width: '100%' }}
+                            form={form}
+                            name={'reviewPlanYearName'}
+                            field={['reviewPlanYearCode', 'id']}
+                            {...reviewPlanYearConfig}
+                            afterSelect={item => {
+                              if (item.applyYear) {
+                                setSelectedYear(item.applyYear);
+                              }
+                            }}
+                          />,
+                        ))
+                      }
+                    </FormItem>
+                  </Col>
+                  <Col span={10}>
+                    <FormItem
+                      {...formItemLayoutLong}
+                      label={'预计审核月度'}
+                      style={{ marginBottom: '0px' }}
+                    >
+                      {getFieldDecorator('reviewMonth')(
+                        <MonthPicker placeholder="选择月度" style={{ width: '100%' }} />,
+                      )}
+                    </FormItem>
+                  </Col>
+                  <Col span={4}>
+                    <div style={{ textAlign: 'center', marginTop: '3px' }} onClick={handleSearch}>
+                      <Button type="primary">查询</Button>
+                    </div>
+                  </Col>
                 </Row>
-            </Form>
+              </Form>
+            );
         } else if (type === "recommand") {
             return <Form>
                 <Row>
                     <Col span={12}>
-                        <FormItem {...formItemLayoutLong} label={'准入推荐号'}>
+                        <FormItem {...formItemLayoutLong} label={'准入推荐号'} style={{marginBottom: '0px'}}>
                             {
                                 getFieldDecorator('recommendAccessId'),
                                 getFieldDecorator('businessCode')(
@@ -283,85 +293,101 @@ const AddModal = (props) => {
                             }
                         </FormItem>
                     </Col>
-                    <Col span={12} style={{ textAlign: 'center' }} onClick={handleSearch}><Button type="primary">查询</Button></Col>
+                    <Col span={2} style={{ textAlign: 'center', marginTop: '3px' }} onClick={handleSearch}><Button type="primary">查询</Button></Col>
                 </Row>
             </Form>
         } else if (type === "demand") {
             return (
-                <Form>
-                    <Row>
-                        <Col span={12}>
-                            <FormItem {...formItemLayoutLong} label={'审核需求号'}>
-                                {
-                                    getFieldDecorator('reviewRequirementCode')(
-                                        <ComboList
-                                            allowClear
-                                            style={{ width: '100%' }}
-                                            form={form}
-                                            name='reviewRequirementCode'
-                                            {...reviewRequirementConfig}
-                                        />
-                                    )
-                                }
-                            </FormItem>
-                        </Col>
-                        <Col span={12}>
-                            <FormItem {...formItemLayoutLong} label={'需求公司'}>
-                                {
-                                    getFieldDecorator('applyCorporationId'),
-                                    getFieldDecorator('applyCorporationCode'),
-                                    getFieldDecorator('applyCorporationName')(
-                                        <ComboList
-                                            allowClear={true}
-                                            style={{ width: '100%' }}
-                                            form={form}
-                                            name={'applyCorporationName'}
-                                            field={['applyCorporationCode', 'applyCorporationId']}
-                                            {...AllCompanyConfig}
-                                        />
-                                    )
-                                }
-                            </FormItem>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span={12}>
-                            <FormItem {...formItemLayoutLong} label={'物料分类'}>
-                                {
-                                    getFieldDecorator('materialSecondClassifyCode'),
-                                    getFieldDecorator('materialSecondClassifyName')(
-                                        <ComboTree
-                                            allowClear
-                                            form={form}
-                                            name='materialSecondClassifyName'
-                                            field={['materialSecondClassifyCode']}
-                                            {...materialCodeProps}
-                                        />,
-                                    )
-                                }
-                            </FormItem>
-                        </Col>
-                        <Col span={12}>
-                            <FormItem {...formItemLayoutLong} label={'采购组织'}>
-                                {
-                                    getFieldDecorator('purchaseOrgCode'),
-                                    getFieldDecorator('purchaseOrgId'),
-                                    getFieldDecorator('purchaseOrgName')(
-                                        <ComboList
-                                            allowClear={true}
-                                            style={{ width: '100%' }}
-                                            form={form}
-                                            name={'purchaseOrgName'}
-                                            field={['purchaseOrgCode', 'purchaseOrgId']}
-                                            {...AllFindByFiltersConfig}
-                                        />
-                                    )
-                                }
-                            </FormItem>
-                        </Col>
-                    </Row>
-                    <div style={{ textAlign: 'center' }} onClick={handleSearch}><Button type="primary">查询</Button></div>
-                </Form>
+              <Form>
+                <Row>
+                  <Col span={12}>
+                    <FormItem
+                      {...formItemLayoutLong}
+                      label={'审核需求号'}
+                      style={{ marginBottom: '0px' }}
+                    >
+                      {getFieldDecorator('reviewRequirementCode')(
+                        <ComboList
+                          allowClear
+                          style={{ width: '100%' }}
+                          form={form}
+                          name="reviewRequirementCode"
+                          {...reviewRequirementConfig}
+                        />,
+                      )}
+                    </FormItem>
+                  </Col>
+                  <Col span={12}>
+                    <FormItem
+                      {...formItemLayoutLong}
+                      label={'需求公司'}
+                      style={{ marginBottom: '0px' }}
+                    >
+                      {
+                        (getFieldDecorator('applyCorporationId'),
+                        getFieldDecorator('applyCorporationCode'),
+                        getFieldDecorator('applyCorporationName')(
+                          <ComboList
+                            allowClear={true}
+                            style={{ width: '100%' }}
+                            form={form}
+                            name={'applyCorporationName'}
+                            field={['applyCorporationCode', 'applyCorporationId']}
+                            {...AllCompanyConfig}
+                          />,
+                        ))
+                      }
+                    </FormItem>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={12}>
+                    <FormItem
+                      {...formItemLayoutLong}
+                      label={'物料分类'}
+                      style={{ marginBottom: '0px' }}
+                    >
+                      {
+                        (getFieldDecorator('materialSecondClassifyCode'),
+                        getFieldDecorator('materialSecondClassifyName')(
+                          <ComboTree
+                            allowClear
+                            form={form}
+                            name="materialSecondClassifyName"
+                            field={['materialSecondClassifyCode']}
+                            {...materialCodeProps}
+                          />,
+                        ))
+                      }
+                    </FormItem>
+                  </Col>
+                  <Col span={12}>
+                    <FormItem
+                      {...formItemLayoutLong}
+                      label={'采购组织'}
+                      style={{ marginBottom: '0px' }}
+                    >
+                      {
+                        (getFieldDecorator('purchaseOrgCode'),
+                        getFieldDecorator('purchaseOrgId'),
+                        getFieldDecorator('purchaseOrgName')(
+                          <ComboList
+                            allowClear={true}
+                            style={{ width: '100%' }}
+                            form={form}
+                            name={'purchaseOrgName'}
+                            field={['purchaseOrgCode', 'purchaseOrgId']}
+                            {...AllFindByFiltersConfig}
+                          />,
+                        ))
+                      }
+                    </FormItem>
+                  </Col>
+                </Row>
+                <div style={{ textAlign: 'center', marginTop: '3px' }} onClick={handleSearch}>
+                  <Button type="primary">查询</Button>
+                </div>
+              </Form>
             );
         } else {
             return ""
@@ -371,6 +397,7 @@ const AddModal = (props) => {
 
     return <ExtModal
         width={'80vw'}
+        centered
         maskClosable={false}
         visible={visible}
         title={type === "annual" ? "从年度计划新增" : type === "recommand" ? "从准入推荐新增" : "从审核需求新增"}

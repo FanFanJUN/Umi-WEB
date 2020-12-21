@@ -80,7 +80,7 @@ export default function () {
         setData(v => ({ ...v, quickSearchValue: value }));
         refresh();
     };
-    
+
     // 高级查询搜索
     const handleAdvancedSearch = (value) => {
         console.log(value)
@@ -155,7 +155,7 @@ export default function () {
 
     const columns = [
         {
-            title: '状态', dataIndex: 'state', width: 100, align: 'center', render: (text) => {
+            title: '状态', dataIndex: 'state', width: 60, align: 'center', render: (text) => {
                 switch (text) {
                     case "DRAFT":
                         return "草稿";
@@ -166,9 +166,9 @@ export default function () {
                 }
             }
         },
-        { title: '作废', dataIndex: 'whetherDeleted', ellipsis: true, width: 60, render: text=>text?"是":"否" },
+        { title: '作废', dataIndex: 'whetherDeleted', ellipsis: true, width: 50, render: text=>text?"是":"否" },
         {
-            title: '审批状态', dataIndex: 'flowStatus', width: 120, align: 'center', render: v => {
+            title: '审批状态', dataIndex: 'flowStatus', width: 100, align: 'center', render: v => {
                 switch (v) {
                     case 'INIT':
                         return '未进入流程';
@@ -179,12 +179,12 @@ export default function () {
                 }
             },
         },
-        { title: '月度审核计划号', dataIndex: 'reviewPlanMonthCode', align: 'center', width: 160 },
-        { title: '月度', dataIndex: 'applyMonth', ellipsis: true, width: 100, align: 'center', render: (text) => text ? text.slice(0, 7) : '' },
-        { title: '拟制说明', dataIndex: 'reviewPlanMonthName', ellipsis: true, width: 200 },
-        { title: '拟制公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 220 },
-        { title: '拟制部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 200 },
-        { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 100 },
+        { title: '月度审核计划号', dataIndex: 'reviewPlanMonthCode', align: 'center', width: 156 },
+        { title: '月度', dataIndex: 'applyMonth', ellipsis: true, width: 90, align: 'center', render: (text) => text ? text.slice(0, 7) : '' },
+        { title: '拟制说明', dataIndex: 'reviewPlanMonthName', ellipsis: true, width: 130 },
+        { title: '拟制公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 150 },
+        { title: '拟制部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 150 },
+        { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 80 },
         { title: '拟制时间', dataIndex: 'applyDate', ellipsis: true, width: 200, align: 'center'},
     ];
 

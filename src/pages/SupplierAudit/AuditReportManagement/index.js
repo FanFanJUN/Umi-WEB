@@ -14,7 +14,7 @@ import {
   FindByFiltersConfig,
 } from '../mainData/commomService';
 import {
-  flowProps, judge, reportStateProps,
+  flowStatus, judge, reportStateProps,
 } from '../../QualitySynergy/commonProps';
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
@@ -178,7 +178,7 @@ const AuditReportManagement = forwardRef(({}, ref) => {
     { title: '拟制人', key: 'applyName', props: { placeholder: '输入拟制人' } },
     { title: '拟制日期', key: 'applyDateStart', type: 'datePicker', props: { placeholder: '选择拟制日期' } },
     { title: '状态', key: 'status', type: 'list', props: reportStateProps },
-    { title: '审批状态', key: 'flowStatus', type: 'list', props: flowProps },
+    { title: '审批状态', key: 'flowStatus', type: 'list', props: flowStatus },
     { title: '供应商', key: 'supplierCode', type: 'list', props: supplierPropsNew },
     { title: '代理商', key: 'agentCode', type: 'list', props: agentList },
     { title: '物料分类', key: 'materialGroupCode', type: 'tree', props: materialClassProps },
@@ -186,7 +186,19 @@ const AuditReportManagement = forwardRef(({}, ref) => {
 
   const columns = [
     { title: '状态', dataIndex: 'arAuditReportManagStatusRemark', width: 80 },
-    { title: '审批状态', dataIndex: 'flowStatusRemark', width: 120 },
+    {
+      title: '审批状态', dataIndex: 'flowStatus', width: 120,
+      render: v => {
+        switch (v) {
+          case 'INIT':
+            return '未进入流程';
+          case 'INPROCESS':
+            return '审批中';
+          case 'COMPLETED':
+            return '流程处理完成';
+        }
+      },
+    },
     { title: '审核报告', dataIndex: 'auditReportManagCode', width: 180 },
     { title: '审核实施计划号', dataIndex: 'reviewImplementPlanCode', width: 140 },
     { title: '需求公司', dataIndex: 'applyCorporationName', ellipsis: true, width: 200 },
@@ -263,11 +275,11 @@ const AuditReportManagement = forwardRef(({}, ref) => {
         businessId={data.flowId}
         flowMapUrl='flow-web/design/showLook'
         ignore={DEVELOPER_ENV}
-        disabled={!judge(data.selectedRows, 'flowStatus', 'COMPLETED') || data.selectedRowKeys.length === 0}
+        disabled={judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length !== 1}
         key='SRM-SM-AUDITREPORT-APPROVEHISTORY'
       >
         <Button className={styles.btn}
-                disabled={!judge(data.selectedRows, 'flowStatus', 'COMPLETED') || data.selectedRowKeys.length !== 1}>审核历史</Button>
+                disabled={judge(data.selectedRows, 'flowStatus', 'INIT') || data.selectedRowKeys.length !== 1}>审核历史</Button>
       </FlowHistoryButton>)
     }
     {
@@ -308,7 +320,7 @@ const AuditReportManagement = forwardRef(({}, ref) => {
         ref={headerRef}
         hiddenClose
         content={
-          <AdvancedForm  formItems={formItems} onOk={handleAdvancedSearch}/>
+          <AdvancedForm formItems={formItems} onOk={handleAdvancedSearch}/>
         }
         advanced
       />
