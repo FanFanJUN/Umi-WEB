@@ -1,13 +1,14 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import styles from './index.less';
 import { Header, AutoSizeLayout } from '../../../components';
 import { ExtTable } from 'suid';
 import { Input, Select, Button, Modal, message } from 'antd';
-import { openNewTab, getFrameElement, commonUrl } from '../../../utils';
+import { openNewTab, getFrameElement, commonUrl, commonProps } from '../../../utils';
 import { withdrawSupplierFilledInfo } from '../../../services/recommend';
 const { recommendUrl } = commonUrl;
 const { Search } = Input
 const { Option } = Select;
+const { supplierRecommendDemandStatusProps } = commonProps;
 
 function RecommendDataTable() {
   const tableRef = useRef(null);
@@ -104,13 +105,18 @@ function RecommendDataTable() {
       <Select
         style={{ width: 300 }}
         value={status}
-        onSelect={handleStateSelect}
+        // onSelect={handleStateSelect}
         placeholder='填报状态'
+        allowClear
+        onChange={handleStateSelect}
       >
-        <Option key='FILLING' value='FILLING'>填报中</Option>
-        <Option kye='FILLED' value='FILLED'>填报完成</Option>
+        {
+          supplierRecommendDemandStatusProps.dataSource.map(item => (
+            <Option key={item.code} value={item.code}>{item.name}</Option>
+          ))
+        }
       </Select>
-      <Search onSearch={handleSearch} placeholder='请输入需求单号' />
+      <Search allowClear onSearch={handleSearch} placeholder='请输入需求单号' />
     </>
   )
   const opinionTableProps = {
@@ -202,6 +208,17 @@ function RecommendDataTable() {
       }
     })
   }
+  // 监听二级路由关闭更新列表
+  function listenerParentClose(event) {
+    const { data = {} } = event;
+    if (data.tabAction === 'close') {
+      uploadTable()
+    }
+  }
+  useEffect(() => {
+    window.parent.frames.addEventListener('message', listenerParentClose, false);
+    return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
+  }, [])
   return (
     <div>
       <Header left={left} right={right} />

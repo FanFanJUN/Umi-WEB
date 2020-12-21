@@ -431,6 +431,7 @@ const FormContext = forwardRef(({
                     }}
                     field={['originCode']}
                     disabled={type === 'detail' || filling}
+                    placeholder=''
                   />
                 )
               }
@@ -440,7 +441,7 @@ const FormContext = forwardRef(({
             <FormItem label='原厂代码' {...formLayout}>
               {
                 getFieldDecorator('originCode')(
-                  <Input disabled placeholder='选择原厂' />
+                  <Input disabled />
                 )
               }
             </FormItem>

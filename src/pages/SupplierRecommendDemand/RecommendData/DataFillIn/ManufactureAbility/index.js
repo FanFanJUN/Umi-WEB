@@ -458,7 +458,10 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
           </div>
           <div className={styles.wrapper}>
             <div className={styles.bgw}>
-              <div className={styles.title}>关键工艺及关键工艺设备情况</div>
+              <div className={styles.title}>
+                关键工艺及关键工艺设备情况
+                <span className={styles.hint}>（至少填写3行）</span>
+                </div>
               <div className={styles.content}>
                 <EditableFormTable
                   dataSource={keyTechnologyEquipments}

@@ -12,7 +12,7 @@ import { Divider, Form, InputNumber, Row, Col, Input } from 'antd';
 import moment from 'moment';
 import EditableFormTable from '../CommonUtil/EditTable';
 import UploadFile from '../../../../../components/Upload';
-import { stateInfoPorps } from '../../../../../utils/commonProps';
+import { stateInfoPorps, businessMainProps } from '../../../../../utils/commonProps';
 
 const FormItem = Form.Item;
 const formLayout = {
@@ -128,6 +128,12 @@ const Customer = React.forwardRef(({
       title: '供货BU名称',
       dataIndex: 'buName',
       ellipsis: true,
+      inputType: 'comboList',
+      props: {
+        ...businessMainProps,
+        name: 'buName',
+        field: ['buCode']
+      }
     },
     {
       title: '配件名称',
@@ -135,7 +141,7 @@ const Customer = React.forwardRef(({
       ellipsis: true,
     },
     {
-      title: '单价',
+      title: '单价（无税）',
       dataIndex: 'unitPrice',
       ellipsis: true,
       inputType: 'InputNumber'
@@ -175,7 +181,7 @@ const Customer = React.forwardRef(({
       ellipsis: true,
     },
     {
-      title: '客户在行业所占百分比占比(%)',
+      title: '客户所在行业占比',
       dataIndex: 'industryCustomerRate',
       ellipsis: true,
       width: 250,

@@ -52,6 +52,20 @@ const BaseCondition = ({ form, updateGlobalStatus }) => {
 
   async function handleSave() {
     const value = await form.validateFieldsAndScroll();
+    const {
+      manager = 0, // 管理人员
+      salesman = 0, // 销售人员
+      qualityControl = 0, // 质量控制
+      technicist = 0, // 技术人员
+      supportStaff = 0, // 客服人员
+      otherStaff = 0, // 其他人员
+      headCount = 0, // 总人数
+    } = value;
+    const count = manager + salesman + qualityControl + technicist + supportStaff + otherStaff;
+    if (count > headCount) {
+      message.error(`各部门人数总和超过公司总人数${headCount}人，请检查。`)
+      return
+    }
     const saveParams = {
       ...value,
       supplierCertificates: data.supplierCertificates,

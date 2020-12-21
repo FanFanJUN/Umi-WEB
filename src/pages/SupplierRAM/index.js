@@ -158,7 +158,7 @@ export default () => {
             disabled={empty || !underWay || completed}
             key='SUPPLIER_RAM_APPROVE_STOP'
             onClick={stopApprove}
-          >审核终止</Button>
+          >终止审核</Button>
         )
       }
       {
@@ -414,7 +414,7 @@ export default () => {
       cancelText: '取消'
     })
   }
-  // 审核终止
+  // 终止审核
   async function handleStopApproveRecord() {
     const { success, message: msg } = await stopApproveingOrder({
       businessId: flowId

@@ -251,7 +251,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
               <div className={styles.content}>
                 <Row>
                   <Col span={12}>
-                    <FormItem label="每年制定查成本降低目标并对执行情况进行评价" {...formLayout}>
+                    <FormItem label="每年制定成本降低目标并对执行情况进行评价" {...formLayout}>
                       {getFieldDecorator('reduceCostEvaluation', {
                         initialValue: type === 'add' ? '' : data.reduceCostEvaluation,
                         rules: [
@@ -557,7 +557,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                 </Row>
                 <Divider orientation='left'>物料存储</Divider>
                 <Row>
-                  <Col span={12}>
+                  <Col span={24}>
                     <FormItem label="生产过程中物料的暂存、仓储中物料、成品的存放区域是否与其供货能力相适应" {...formLayout}>
                       {getFieldDecorator('materialMatchSupplyAbility', {
                         initialValue: type === 'add' ? true : data.materialMatchSupplyAbility,

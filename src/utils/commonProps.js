@@ -747,8 +747,7 @@ export const businessMainProps = {
 // 业务板块主数据
 export const businessUnitMainProps = {
   store: {
-    url: `${baseUrl}/api/businessUnitService/listByPage`,
-    type: 'post',
+    url: `${baseUrl}/api/businessUnitService/getUserAuthorizedEntities`,
     params: {
       frozen: false
     }

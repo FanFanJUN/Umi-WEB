@@ -30,14 +30,14 @@ const SalesProfit = ({ data=[], type, setTableData }) => {
       //  required: false
     },
     {
-      title: "销售金额",
+      title: "含税销售金额（万元）",
       dataIndex: "salesAmount",
       ellipsis: true,
       editable: true,
       inputType: 'InputNumber',
     },
     {
-      title: "利润",
+      title: "利润（万元）",
       dataIndex: "profit",
       ellipsis: true,
       editable: true,

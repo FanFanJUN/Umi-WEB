@@ -43,12 +43,12 @@ function FillInInfomationConfirm() {
         <TabPane tab="供应商自评表" key="supplier-self-assessment">
           <SelfAssessment type="detail" />
         </TabPane>
-        <TabPane tab="评审打分" key="mark">
+        {/* <TabPane tab="评审打分" key="mark">
           <MarkDetail type="detail" />
         </TabPane>
         <TabPane tab="筛选意见" key="filter" forceRender={true}>
           <Filter ref={filterRef} type='detail' />
-        </TabPane>
+        </TabPane> */}
       </Tabs>
     </div>
   )

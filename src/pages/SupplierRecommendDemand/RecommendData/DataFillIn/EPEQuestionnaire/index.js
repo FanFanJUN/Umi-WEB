@@ -82,7 +82,22 @@ function CSRQuestionnaire({
       render(text, record, index) {
         const { attachmentConfig } = record;
         if (attachmentConfig) {
-          return <Upload fileOnChange={(ids) => handleUploadFile(ids, index)} entityId={text} type={type === 'detail' ? 'show' : ''} />
+          return (
+            <Form.Item>
+              {
+                getFieldDecorator(`${index}-attachmentId`, {
+                  rules: [
+                    {
+                      required: true,
+                      message: '附件不能为空'
+                    }
+                  ]
+                })(
+                  <Upload fileOnChange={(ids) => handleUploadFile(ids, index)} entityId={text} type={type === 'detail' ? 'show' : ''} />
+                )
+              }
+            </Form.Item>
+          )
         }
       }
     },
@@ -129,7 +144,6 @@ function CSRQuestionnaire({
   }
   async function handleSave() {
     const v = await validateFieldsAndScroll();
-    console.log(v)
     toggleConfirmLoading(true)
     const { success, message: msg } = await saveCSRorEPEData(dataSource);
     toggleConfirmLoading(false)

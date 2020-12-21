@@ -58,7 +58,7 @@ function RecommendData() {
           <span>推荐资料填报</span>
           <div>
             <Button className={styles.btn} onClick={closeCurrent}>返回</Button>
-            <Button className={styles.btn} onClick={handleSubmit}>提交</Button>
+            <Button className={styles.btn} onClick={handleSubmit} type='primary'>提交</Button>
           </div>
         </div>
       </Affix>

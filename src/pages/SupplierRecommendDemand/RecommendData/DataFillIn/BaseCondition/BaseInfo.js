@@ -41,30 +41,39 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
     bachelorDegree = 0,
     juniorCollege = 0,
     technicalSecondary = 0,
-    manager = 0,
-    salesman = 0,
-    qualityControl = 0,
-    technicist = 0,
-    supportStaff = 0,
-    otherStaff = 0,
     designCapability = 0,
-    actualCapacity = 0
+    actualCapacity = 0,
+    manager = 0, // 管理人员
+    salesman = 0, // 销售人员
+    qualityControl = 0, // 质量控制
+    technicist = 0, // 技术人员
+    supportStaff = 0, // 客服人员
+    // otherStaff = 0, // 其他人员
+    headCount = 0, // 总人数
   } = getFieldsValue()
   useEffect(() => {
-    const total = bachelorDegree + juniorCollege + technicalSecondary + manager + salesman + qualityControl + technicist + supportStaff + otherStaff;
+    const total = bachelorDegree + juniorCollege + technicalSecondary;
     setFieldsValue({
       headCount: total
     })
   }, [
     bachelorDegree,
     juniorCollege,
-    technicalSecondary,
+    technicalSecondary
+  ])
+  useEffect(() => {
+    const os = headCount - (manager + salesman + qualityControl + technicist + supportStaff);
+    setFieldsValue({
+      otherStaff: os
+    })
+  }, [
     manager,
     salesman,
     qualityControl,
     technicist,
     supportStaff,
-    otherStaff
+    // otherStaff,
+    headCount,
   ])
   useEffect(() => {
     const n = (parseFloat(actualCapacity / designCapability) * 100).toFixed(2);
@@ -411,7 +420,14 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                 <FormItem label="其他" {...formLayout}>
                   {getFieldDecorator('otherStaff', {
                     initialValue: type === 'add' ? '' : data.otherStaff,
-                  })(<InputNumber style={{ width: '100%' }} disabled={DISABLED} min={0} />)}
+                    rules: [
+                      {
+                        min: 0,
+                        type: 'number',
+                        message: '各部门人数总和超过公司总人数'
+                      }
+                    ]
+                  })(<InputNumber style={{ width: '100%' }} disabled />)}
                 </FormItem>
               </Col>
             </Row>
