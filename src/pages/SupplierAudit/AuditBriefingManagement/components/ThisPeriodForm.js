@@ -41,7 +41,7 @@ const ThisPeriodForm = React.forwardRef(({ form, isView, editData, type }, ref) 
       title: '审核执行', children: [
         { title: '综合得分', dataIndex: 'reviewScore', width: 120 },
         { title: '审核评级', dataIndex: 'performanceRating', width: 120 },
-        { title: '报告结案', dataIndex: 'theCaseReport', width: 120 },
+        { title: '报告结案', dataIndex: 'theCaseReportEnumRemark', width: 120 },
         { title: '应用建议', dataIndex: 'conclusion', width: 120 },
       ],
     },
