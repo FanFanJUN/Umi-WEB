@@ -53,7 +53,7 @@ function TeamConfirm({
   const empty = selectedRowKeys.length === 0;
   function checkSystemOp() {
     const rls = getRuleData(dataSource);
-    return rls.every(item => item.jurorScores.length > 0)
+    return rls.every(item => item.jurorScores?.length > 0)
   }
   const tableProps = {
     columns: [
