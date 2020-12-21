@@ -108,6 +108,27 @@ export const flowProps = {
   ...commonProps,
 };
 
+// 审批流程
+export const flowStatus = {
+  allowClear: true,
+  dataSource: [
+    {
+      code: 'INIT',
+      name: '未进入流程',
+    },
+    {
+      code: 'INPROCESS',
+      name: '审批中',
+    },
+    {
+      code: 'COMPLETED',
+      name: '流程处理完成',
+    },
+  ],
+  placeholder: '选择状态',
+  ...commonProps,
+};
+
 // 状态
 export const managementStateProps = {
   allowClear: true,

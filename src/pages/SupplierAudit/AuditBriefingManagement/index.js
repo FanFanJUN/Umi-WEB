@@ -14,11 +14,11 @@ import {
 
 } from '../mainData/commomService';
 import {
-  flowProps, judge, reportStateProps,
+ flowStatus, judge, reportStateProps,
 } from '../../QualitySynergy/commonProps';
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
-import {  downloadPDFFile, getUserId, openNewTab } from '../../../utils';
+import { downloadPDFFile, getUserId, openNewTab } from '../../../utils';
 import AddModal from './components/AddModal';
 
 const { FlowHistoryButton, StartFlow } = WorkFlow;
@@ -169,12 +169,23 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
     { title: '拟制人', key: 'applyName', props: { placeholder: '输入拟制人' } },
     { title: '拟制日期', key: 'applyDateStart', type: 'datePicker', props: { placeholder: '选择拟制日期' } },
     { title: '状态', key: 'state', type: 'list', props: reportStateProps },
-    { title: '审批状态', key: 'flowStatus', type: 'list', props: flowProps },
+    { title: '审批状态', key: 'flowStatus', type: 'list', props: flowStatus },
   ];
 
   const columns = [
     { title: '状态', dataIndex: 'arAuditReportManagStatusRemark', width: 80 },
-    { title: '审批状态', dataIndex: 'flowStatusRemark', width: 120 },
+    {
+      title: '审批状态', dataIndex: 'flowStatusRemark', width: 120, render: v => {
+        switch (v) {
+          case 'INIT':
+            return '未进入流程';
+          case 'INPROCESS':
+            return '审批中';
+          case 'COMPLETED':
+            return '流程处理完成';
+        }
+      },
+    },
     { title: '审核简报编号', dataIndex: 'auditRbriefingManageCode', width: 140 },
     {
       title: '统计期间', dataIndex: 'reviewRequirementCode', width: 200,
