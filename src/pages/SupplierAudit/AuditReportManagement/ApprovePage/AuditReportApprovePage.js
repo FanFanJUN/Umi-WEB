@@ -13,8 +13,11 @@ const AuditReportApprovePage = () => {
 
   const { query } = router.useLocation();
 
-  const handleClose = () => {
-    closeCurrent();
+  const handleClose = (res) => {
+    const { success } = res;
+    if (success) {
+      closeCurrent();
+    }
   };
 
   return(
