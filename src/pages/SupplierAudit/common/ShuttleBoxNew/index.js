@@ -210,7 +210,7 @@ const ShuttleBoxNew = (props) => {
     <div style={{ height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       <div style={{ width: '40%', height: '95%', border: '1px solid #f2f2f2', padding: '10px', overflow: 'auto' }}>
         <span style={{ fontSize: '15px', fontWeight: 'bold', marginLeft: '15px' }}>待选择</span>
-        <Tree
+        {data.leftData.length !== 0 && <Tree
           style={{ zIndex: '10' }}
           defaultExpandAll={true}
           defaultExpandParent={true}
@@ -218,7 +218,7 @@ const ShuttleBoxNew = (props) => {
           checkedKeys={data.leftCheckedKeys}
           onCheck={leftCheck}
           treeData={data.leftData}
-        />
+        />}
       </div>
       <div style={{
         width: '10%',
@@ -238,14 +238,14 @@ const ShuttleBoxNew = (props) => {
       </div>
       <div style={{ width: '40%', height: '95%', border: '1px solid #f2f2f2', padding: '10px', overflow: 'auto' }}>
         <span style={{ fontSize: '15px', fontWeight: 'bold', marginLeft: '15px' }}>已选择</span>
-        <Tree
+        {data.rightTreeData.length !== 0 && <Tree
           defaultExpandAll={true}
           defaultExpandParent={true}
           checkable
           checkedKeys={data.rightCheckedKeys}
           onCheck={rightCheck}
           treeData={data.rightTreeData}
-        />
+        />}
       </div>
     </div>
   );

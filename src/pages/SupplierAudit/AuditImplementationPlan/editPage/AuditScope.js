@@ -1,10 +1,10 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:43:10
- * @LastEditTime: 2020-11-25 16:53:52
- * @LastEditors: Please set LastEditors
+ * @LastEditTime : 2020-12-22 11:25:11
+ * @LastEditors  : LiCai
  * @Description: 审核实施计划-审核范围
- * @FilePath: \srm-sm-web\src\pages\SupplierAudit\AuditImplementationPlan\editPage\AuditScope.js
+ * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AuditImplementationPlan/editPage/AuditScope.js
  */
 
 import React, { useEffect, useState } from 'react';
@@ -63,23 +63,25 @@ const AuditScope = (props) => {
     }, [treeData])
 
     return (
-        <div className={styles.wrapper}>
-            <div className={styles.bgw}>
-                <div className={styles.title}>审核范围</div>
-                <div className={styles.content}>
-                    <div style={{ margin: "0 0 3vw 10vw" }}>
-                        <Tree
-                            defaultExpandAll={true}
-                            checkable
-                            disabled
-                            checkedKeys={rightCheckedKeys}
-                            treeData={newTree}
-                        />
-                    </div>
-                </div>
+      <div className={styles.wrapper}>
+        <div className={styles.bgw}>
+          <div className={styles.title}>审核范围</div>
+          <div className={styles.content}>
+            <div style={{ margin: '0 0 3vw 10vw' }}>
+              {newTree.length > 0 && (
+                <Tree
+                  defaultExpandAll={true}
+                  checkable
+                  disabled
+                  checkedKeys={rightCheckedKeys}
+                  treeData={newTree}
+                />
+              )}
             </div>
+          </div>
         </div>
-    )
+      </div>
+    );
 }
 
 export default AuditScope;

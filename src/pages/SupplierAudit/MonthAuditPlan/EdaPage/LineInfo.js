@@ -52,6 +52,7 @@ let LineInfo = forwardRef((props, ref) => {
         })) : [];
         return item;
       });
+      newList = newList.sort((a, b) => a.reviewPlanMonthLinenum - b.reviewPlanMonthLinenum)
       setDataSource(newList);
     }
   }, [originData]);
@@ -335,7 +336,9 @@ let LineInfo = forwardRef((props, ref) => {
         }
         newList = newList.map((item, index) => {
           item.lineNum = getRandom(10);
-          item.reviewPlanMonthLinenum = ((Array(4).join(0) + (index + 1)).slice(-4) + '0');
+          if (props.pageState !== 'change') {
+            item.reviewPlanMonthLinenum = ((Array(4).join(0) + (index + 1)).slice(-4) + '0');
+          }
           return item;
         });
         setDeleteLine(arr);

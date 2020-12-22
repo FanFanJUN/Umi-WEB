@@ -39,9 +39,9 @@ const Index = (props) => {
         return res;
     }
 
-    useEffect(() => {
+    useEffect(async () => {
         if (query.pageState !== "add") {
-            getDetail();
+            await getDetail();
         }
     }, [])
 
@@ -271,6 +271,7 @@ const Index = (props) => {
             />
             <LineInfo
                 type={data.type}
+                pageState={query.pageState}
                 isView={data.isView}
                 wrappedComponentRef={tableRef}
                 originData={editData.lineBoList}

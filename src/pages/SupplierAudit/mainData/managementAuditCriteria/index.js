@@ -21,7 +21,7 @@ const Index = () => {
 
   const [data, setData] = useState({
     visible: false,
-    title: '限用物质清单新增',
+    title: '审核准则管理新增',
     type: 'add',
   });
 

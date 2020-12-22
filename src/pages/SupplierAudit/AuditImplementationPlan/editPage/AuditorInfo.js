@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:44:12
- * @LastEditTime : 2020-12-22 09:51:52
+ * @LastEditTime : 2020-12-22 11:44:04
  * @LastEditors  : LiCai
  * @Description: 审核实施计划-审核人员
  * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AuditImplementationPlan/editPage/AuditorInfo.js
@@ -159,13 +159,14 @@ const AuditorInfo = forwardRef((props, ref) => {
   };
 
   const contentAdd = (value) => {
-    if (contentData.type === 'add') {
-      if (value.memberRole === 'GROUP_LEADER') {
-        if (contentData.dataSource.some(item => item.memberRole === 'GROUP_LEADER')) {
-          message.error('每个组只能有一个组长!');
-          return;
-        }
+    // 新增&& 编辑时均校验只能有一个组长
+    if (value.memberRole === 'GROUP_LEADER') {
+      if (contentData.dataSource.some(item => item.memberRole === 'GROUP_LEADER')) {
+        message.error('每个组只能有一个组长!');
+        return;
       }
+    }
+    if (contentData.type === 'add') {
       value.lineNum = getRandom(10);
       value.memberRuleBoList = [];
       setContentData(v => ({ ...v, dataSource: [...contentData.dataSource, ...[value]], visible: false }));

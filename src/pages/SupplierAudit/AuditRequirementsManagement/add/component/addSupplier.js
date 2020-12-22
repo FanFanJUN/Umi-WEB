@@ -79,6 +79,7 @@ const AddSupplier = (props) => {
   return (
     <ExtModal
       width={'100vh'}
+      centered
       maskClosable={false}
       visible={visible}
       title={'从合格供应商名录选择'}

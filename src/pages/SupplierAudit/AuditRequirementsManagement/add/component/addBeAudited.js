@@ -13,6 +13,7 @@ import AddSupplier from './addSupplier';
 import './index.less';
 
 const FormItem = Form.Item;
+const width = 160;
 
 const formItemLayoutLong = {
   labelCol: { span: 8 },
@@ -432,6 +433,7 @@ const AddBeAudited = (props) => {
                 })(
                   <ComboList
                     style={{ width: '100%' }}
+                    width={width}
                     form={form}
                     name={'countryName'}
                     field={['countryId']}
@@ -475,6 +477,7 @@ const AddBeAudited = (props) => {
                 })(
                   <ComboList
                     style={{ width: '100%' }}
+                    width={width}
                     form={form}
                     afterSelect={() => {
                       setFieldsValue({
@@ -519,6 +522,7 @@ const AddBeAudited = (props) => {
                 })(
                   <ComboList
                     style={{ width: '100%' }}
+                    width={width}
                     form={form}
                     afterSelect={() => {
                       setFieldsValue({
@@ -561,6 +565,7 @@ const AddBeAudited = (props) => {
                 })(
                   <ComboList
                     style={{ width: '100%' }}
+                    width={width}
                     form={form}
                     afterSelect={() => {
                       setFieldsValue({
