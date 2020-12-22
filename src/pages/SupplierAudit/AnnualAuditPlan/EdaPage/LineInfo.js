@@ -3,7 +3,7 @@
  * @LastEditors  : LiCai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime : 2020-12-18 10:46:32
+ * @LastEditTime : 2020-12-22 09:25:02
  * @Description: 行信息
  * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
@@ -234,10 +234,10 @@ let LineInfo = (props, ref) => {
         // 供应商
         item.supplierCode = item.originSupplierCode;
         item.supplierName = item.originSupplierName;
-        // item.supplierId = item.supplier.id;
         //代理商
         item.agentCode = item.supplier.code;
         item.agentName = item.supplier.name;
+        item.agentId = item.supplier.id;
       } else {
         // 供应商
         item.supplierCode = item.supplier.code;

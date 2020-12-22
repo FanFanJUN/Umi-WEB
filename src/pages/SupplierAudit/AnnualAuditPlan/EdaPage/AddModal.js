@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { ComboGrid, ComboList, ComboTree, ExtModal, ExtTable } from 'suid';
 import { Button, Col, Form, Input, message, Row } from 'antd';
 import { isEmptyArray, hideFormItem, filterEmptyFileds } from '@/utils/utilTool';
@@ -25,7 +25,8 @@ const formItemLayoutLong = {
 
 const AddModal = (props) => {
 
-    const { visible, title, form, handleCancel, handleOk } = props
+    const { visible, title, form, handleCancel, handleOk } = props;
+    const tableRef = useRef(null);
 
     const { getFieldDecorator } = form;
 
@@ -128,6 +129,8 @@ const AddModal = (props) => {
                 delete values.materialGradeAndName;
                 delete values.Q_EQ_corporationName;
                 setCascadeParams(values);
+                tableRef.current.manualSelectedRows();
+                tableRef.current.remoteDataRefresh();
             }
         });
     }
@@ -287,6 +290,7 @@ const AddModal = (props) => {
           remotePaging
           checkbox={true}
           size="small"
+          ref={tableRef}
           onSelectRow={handleSelectedRows}
           selectedRowKeys={selectedRowKeys}
           onChange={handleOnchange}
