@@ -15,6 +15,7 @@ export default [
     routes: [
       { path: '/supplierPLM/MasterData/index', component: './SupplierPLM/MasterData', title: '供应商主数据同步PLM系统主数据' },
       { path: '/supplierPLM/Systemdetails/index', component: './SupplierPLM/Systemdetails', title: '供应商同步PLM系统明细表' },
+      { path: '/supplierPLM/InterfaceJournal/index', component: './SupplierPLM/InterfaceJournal', title: '供应商同步PLM系统接口日志' },
     ]
   },
   {
