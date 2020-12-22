@@ -3,12 +3,12 @@
  * @LastEditors  : LiCai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:40
- * @LastEditTime : 2020-12-19 14:28:52
+ * @LastEditTime : 2020-12-22 14:38:33
  * @Description:  基本信息
  * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BaseInfo.js
  */
-import React, { useEffect, useImperativeHandle } from 'react';
-import { ComboList, ComboTree } from 'suid';
+import React from 'react';
+import { ComboList, ComboTree, YearPicker } from 'suid';
 import { Col, Form, Row, Input, InputNumber } from 'antd';
 import Upload from '../../Upload';
 import { phoneOrTel } from "@/utils";
@@ -41,7 +41,7 @@ const BaseInfo = (props) => {
 
   const { type, form, originData: data, userInfo = {}, isView } = props;
 
-  const { getFieldDecorator, setFieldsValue } = form;
+  const { getFieldDecorator } = form;
 
   const HideFormItem = hideFormItem(getFieldDecorator);
 
@@ -177,7 +177,7 @@ const BaseInfo = (props) => {
                         message: '年度不能为空',
                       },
                     ],
-                  })(<InputNumber style={{ width: '100%' }} min={0} />)
+                  })(<YearPicker style={{ width: '100%' }} format="YYYY年" />)
                 )}
               </FormItem>
             </Col>

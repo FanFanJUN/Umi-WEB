@@ -186,7 +186,7 @@ function RecommendDataTable() {
     const { id = '' } = FRAMELEEMENT;
     const [key] = selectedRowKeys;
     const { pathname } = window.location;
-    openNewTab(`supplier/recommend/fillIn/data/detail?type=detail&id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '推荐资料填报明细', false)
+    openNewTab(`supplier/recommend/fillIn/data/supplier/detail?type=detail&id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '推荐资料填报明细', false)
   }
 
   // 撤回

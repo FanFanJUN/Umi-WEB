@@ -359,6 +359,11 @@ export default [
         title: '推荐资料填报明细'
       },
       {
+        path: '/supplier/recommend/fillIn/data/supplier/detail',
+        component: './SupplierRecommendDemand/RecommendDataDetail/SupplierDetail',
+        title: '推荐资料填报明细-供应商'
+      },
+      {
         path: '/supplier/suvery/information',
         component: './SupplierRecommendDemand/RecommendDataTable',
         title: '供应商调查信息'
