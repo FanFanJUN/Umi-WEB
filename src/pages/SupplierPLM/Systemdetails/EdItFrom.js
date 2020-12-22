@@ -28,14 +28,22 @@ const commonFormRef = forwardRef(({
     const getTrustinfor = useRef(null)
     const { getFieldDecorator, validateFieldsAndScroll, getFieldValue, setFieldsValue } = form;
     const [visible, setvisible] = useState(false);
-    const [business, setbusiness] = useState('');
+    const [supplier, setsupplier] = useState('');
     useEffect(() => {
-        compareData()
-        console.log(modifydata.status)
-    }, [modifydata]);
+        handleFrozen(modifydata)
+    }, [type, modifydata]);
     function handleModalVisible(flag) {
         setvisible(!!flag)
     };
+    function handleFrozen(val) {
+        if (type) {
+            if (val.status === 0) {
+                modifydata.status = '有效'
+            } else if (val.status === 1) {
+                modifydata.status = '冻结'
+            }
+        }
+    }
     function handlBusiness(val) {
         form.setFieldsValue({
             'unitName': val.buName,
@@ -48,9 +56,10 @@ const commonFormRef = forwardRef(({
         })
     }
     function handleSubmit() {
-        validateFieldsAndScroll((err, val) => {
-            let params;
+        validateFieldsAndScroll(async (err, val) => {
+            let params, business = [];
             if (!err) {
+                business = await compareData()
                 val.status === '有效' ? val.status = 0 : val.status = 1
                 if (business.includes(val.unitCode)) {
                     if (type) {
@@ -83,7 +92,8 @@ const commonFormRef = forwardRef(({
             data.rows.map(item => {
                 newsdata.push(item.unitCode)
             })
-            setbusiness(newsdata)
+            return newsdata;
+            //setbusiness(newsdata)
         }
     }
     return (
@@ -112,7 +122,7 @@ const commonFormRef = forwardRef(({
                                     ],
                                 })(
                                     <ComboList
-                                        showSearch={false}
+                                        showSearch={true}
                                         style={{ width: '100%' }}
                                         {...buList}
                                         name='unitCode'
@@ -202,7 +212,7 @@ const commonFormRef = forwardRef(({
                     <Col span={12}>
                         <Item {...formLayout} label="状态">
                             {getFieldDecorator('status', {
-                                initialValue: modifydata && !isEmpty(modifydata.status) ? modifydata.status === 0 ? modifydata.status = '有效' : modifydata.status = '冻结' : '',
+                                initialValue: modifydata && modifydata.status,
                                 rules: [
                                     {
                                         required: true,

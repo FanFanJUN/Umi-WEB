@@ -65,9 +65,12 @@ export const PLMType = {
 export const qualifiedList = {
   remotePaging: true,
   store: {
-    type: 'POST',
+    params: {
+      valid: 1,
+    },
+    type: 'GET',
     autoLoad: false,
-    url: `${smBaseUrl}/supplierSupplyList/listPageVo?valid=1`,
+    url: `${smBaseUrl}/supplierSupplyList/listPageVo`,
   },
   rowKey: 'supplier.code',
   reader: {
@@ -125,3 +128,41 @@ export const qualifiedListName = {
   },
   placeholder: '选择供应商',
 };
+// 重发状态
+export const Retransmission = {
+  showSearch: false,
+  allowClear: true,
+  dataSource: [
+    {
+      code: '0',
+      name: '未重发',
+    },
+    {
+      code: '1',
+      name: '已重发',
+    }
+  ],
+  reader: {
+    name: 'name',
+  },
+  placeholder: '请选择状态',
+}
+// 请求状态
+export const requestStart = {
+  showSearch: false,
+  allowClear: true,
+  dataSource: [
+    {
+      code: '0',
+      name: '成功',
+    },
+    {
+      code: '1',
+      name: '失败',
+    }
+  ],
+  reader: {
+    name: 'name',
+  },
+  placeholder: '请选择状态',
+}
