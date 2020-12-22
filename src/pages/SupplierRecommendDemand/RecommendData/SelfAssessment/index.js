@@ -11,12 +11,14 @@ import {
   Modal
 } from 'antd';
 import { router } from 'dva';
+import { utils } from 'suid';
 import styles from './index.less';
 import { querySelfAssessment, saveSelfAssessment, exportProject, importProject } from '../../../../services/recommend';
 import { downloadBlobFile } from '../../../../utils';
 
 const { useLocation } = router;
 const { Item } = Form
+const { getUUID } = utils;
 
 function SelfAssessment({
   form,
@@ -24,6 +26,7 @@ function SelfAssessment({
   type = 'create'
 }) {
   const [dataSource, setDataSource] = useState([]);
+  const [tableUUID, setTableUUID] = useState('initial-uuid-table')
   const [loading, toggleLoading] = useState(false);
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -158,6 +161,8 @@ function SelfAssessment({
     toggleLoading(false)
     // const errors = data.filter(item => !!item.msg);
     if (success) {
+      const uuid = getUUID();
+      setTableUUID(uuid)
       setDataSource(data)
       message.success('导入成功')
       return false
@@ -202,6 +207,7 @@ function SelfAssessment({
         dataSource={dataSource}
         pagination={false}
         columns={columns}
+        key={tableUUID}
         bordered
         expandedRowKeys={expandedRowKeys}
         rowKey={item => item.key}
