@@ -128,7 +128,7 @@ const Ctx = forwardRef(({
       centered
       footer={
         <>
-          <Button onClick={handleOk}>确定</Button>
+          <Button onClick={handleOk} type='primary'>确定</Button>
           <Button onClick={cancel}>取消</Button>
         </>
       }

@@ -59,26 +59,6 @@ function LayoutComponent({
   const [visible, toggleVisible] = useState(false);
   const columns = [
     {
-      title: '单据状态',
-      dataIndex: 'supplierRecommendDemandStatusRemark',
-    },
-    {
-      title: '审批状态',
-      dataIndex: 'flowStatus',
-      render(text) {
-        switch (text) {
-          case 'INIT':
-            return '未提交审批'
-          case 'INPROCESS':
-            return '审批中'
-          case 'COMPLETED':
-            return '审批完成'
-          default:
-            return ''
-        }
-      }
-    },
-    {
       title: '需求单号',
       dataIndex: 'docNumber'
     },
@@ -160,7 +140,7 @@ function LayoutComponent({
   const show = () => toggleVisible(true)
   const hide = () => toggleVisible(false)
   const left = (
-    <Form {...formLayout} style={{ width: '90vw' }}>
+    <Form {...formLayout} style={{ width: '90vw', fontWeight: 'normal' }}>
       <Row>
         <Col span={4}>
           <FormItem

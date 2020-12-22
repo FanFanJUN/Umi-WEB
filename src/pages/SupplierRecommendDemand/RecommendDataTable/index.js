@@ -3,6 +3,7 @@ import styles from './index.less';
 import { Header, AutoSizeLayout } from '../../../components';
 import { ExtTable } from 'suid';
 import { Input, Select, Button, Modal, message } from 'antd';
+import { useLocation } from 'dva/router'
 import { openNewTab, getFrameElement, commonUrl, commonProps } from '../../../utils';
 import { withdrawSupplierFilledInfo } from '../../../services/recommend';
 const { recommendUrl } = commonUrl;
@@ -15,6 +16,7 @@ function RecommendDataTable() {
   const [selectedRowKeys, setRowKeys] = useState([]);
   const [selectedRows, setRows] = useState([]);
   const [detailModal, toggleDetailModal] = useState(false);
+  const { query } = useLocation();
   const [status, setStatus] = useState('');
   const [searchValue, setSearchValue] = useState({});
   const FRAMELEEMENT = getFrameElement();
@@ -216,8 +218,28 @@ function RecommendDataTable() {
     }
   }
   useEffect(() => {
-    window.parent.frames.addEventListener('message', listenerParentClose, false);
-    return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
+    const { supplierRecommendDemandStatus = null } = query;
+    if (!!supplierRecommendDemandStatus) {
+      setSearchValue({
+        filters: [
+          {
+            fieldName: 'supplierRecommendDemandStatus',
+            value: supplierRecommendDemandStatus,
+            operator: 'EQ'
+          }
+        ]
+      })
+      uploadTable()
+    }
+    window
+      .parent
+      .frames
+      .addEventListener('message', listenerParentClose, false);
+    return () =>
+      window
+        .parent
+        .frames
+        .removeEventListener('message', listenerParentClose, false)
   }, [])
   return (
     <div>
