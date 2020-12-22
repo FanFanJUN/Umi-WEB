@@ -186,3 +186,13 @@ export const TaskqueryMasterdata = params => {
     hack: true
   })
 }
+// 执行撤回
+export const WithdrawImplementVo = (params) => {
+  return request({
+    headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+    url: `${recommendUrl}/api/samIdentifyPlanImplementationService/recallImplemention`,
+    params,
+    method: 'POST',
+    hack: true
+  })
+};
