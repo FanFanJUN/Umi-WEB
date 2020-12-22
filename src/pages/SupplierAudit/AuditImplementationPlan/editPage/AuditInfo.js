@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:37:22
- * @LastEditTime : 2020-12-21 14:05:55
+ * @LastEditTime : 2020-12-21 16:31:35
  * @LastEditors  : LiCai
  * @Description: 审核实施计划-拟审核信息
  * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AuditImplementationPlan/editPage/AuditInfo.js
@@ -78,7 +78,7 @@ const AuditInfo = (props) => {
                             </FormItem>
                         </Col>
                         <Col span={12}>
-                            <FormItem  {...formLayout} label={'审核方式'}>
+                            <FormItem  {...formLayout} label={'审核方式'} style={{marginBottom: '0px'}}>
                                 {
                                     isView ? <span>{formData.reviewWayName}</span> : <Input disabled={true} value={formData.reviewWayName} />
                                 }

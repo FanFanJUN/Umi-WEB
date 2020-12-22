@@ -17,8 +17,11 @@ const AuditReportApproveEditPage = () => {
 
   const getRef = useRef(null);
 
-  const handleClose = () => {
-    closeCurrent();
+  const handleClose = (res) => {
+    const { success } = res;
+    if (success) {
+      closeCurrent();
+    }
   };
 
   // 新增

@@ -7,7 +7,6 @@ import {
 } from '../../mainData/commomService';
 import { recommendUrl } from '@/utils/commonUrl';
 import { openNewTab, getUserAccount } from '@/utils';
-import { findRequirementLine, findYearLineLine } from "../service"
 
 const FormItem = Form.Item;
 const formItemLayoutLong = {
@@ -85,6 +84,7 @@ const AddModal = (props) => {
     }
     return <ExtModal
         width={'90vw'}
+        centered
         maskClosable={false}
         visible={visible}
         title="从月度计划选择新增"
@@ -117,9 +117,8 @@ const AddModal = (props) => {
                         }
                     </FormItem>
                 </Col>
-                <Col span={10}></Col>
                 <Col span={4}>
-                    <div style={{ textAlign: 'center' }} onClick={handleSearch}><Button type="primary">查询</Button></div>
+                    <div style={{ textAlign: 'center', marginTop: '3px' }} onClick={handleSearch}><Button type="primary">查询</Button></div>
                 </Col>
             </Row>
         </div>

@@ -76,7 +76,7 @@ function CreateStrategy() {
           <span className={styles.title}>实物认定任务执行</span>
           <div className={styles.flexCenter}>
             <Button className={styles.btn} onClick={handleBack}>返回</Button>
-            <Button className={styles.btn} onClick={handleSave}>保存</Button>
+            <Button type='primary' className={styles.btn} onClick={handleSave}>保存</Button>
           </div>
         </div>
 

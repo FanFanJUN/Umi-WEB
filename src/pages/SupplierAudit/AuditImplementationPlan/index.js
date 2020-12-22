@@ -381,7 +381,7 @@ export default function () {
         <Search
             placeholder='请输入审核实施计划号查询'
             className={styles.btn}
-            style={{width: "16vw"}}
+            style={{width: "18vw"}}
             onSearch={handleQuickSearch}
             allowClear
         />

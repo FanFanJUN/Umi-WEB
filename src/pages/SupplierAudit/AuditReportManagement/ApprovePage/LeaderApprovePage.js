@@ -16,8 +16,11 @@ const LeaderApprovePage = () => {
 
   const { query } = router.useLocation();
   const getRef = useRef(null);
-  const handleClose = () => {
-    closeCurrent();
+  const handleClose = (res) => {
+    const { success } = res;
+    if (success) {
+      closeCurrent();
+    }
   };
 
   // 保存领导意见

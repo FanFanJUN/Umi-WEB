@@ -68,9 +68,9 @@ const HeadFormRef = forwardRef(({
         })
         return modifyinfluen ? modifyinfluen : false
     }
-    function disabledDate(current) {
-        return current && current < moment().startOf('day');
-    }
+    // function disabledDate(current) {
+    //     return current && current < moment().startOf('day');
+    // }
     function handleadopt(e) {
         if (e.target.value === 0) {
             setRectif(true)
@@ -142,7 +142,7 @@ const HeadFormRef = forwardRef(({
                             })(
                                 <DatePicker
                                     format="YYYY-MM-DD"
-                                    disabledDate={disabledDate}
+                                    //disabledDate={disabledDate}
                                     disabled={isView}
                                     style={{ width: '100%' }}
                                 />
