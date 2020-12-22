@@ -30,7 +30,7 @@ function WhetherCheck({
     {
       title: '是否准入',
       dataIndex: 'access',
-      render(_, record, index) {
+      render(text, record, index) {
         return (
           <FormItem style={{
             margin: 0,
@@ -43,7 +43,8 @@ function WhetherCheck({
                     required: true,
                     message: '请选择是否准入'
                   }
-                ]
+                ],
+                initialValue: text
               })(
                 <Radio.Group>
                   <Radio value={true}>是</Radio>
