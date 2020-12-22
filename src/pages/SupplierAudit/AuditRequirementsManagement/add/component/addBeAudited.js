@@ -201,7 +201,7 @@ const AddBeAudited = (props) => {
             {hideFormItem('reviewTypeCode', type === 'add' ? '' : editData.reviewTypeCode)}
           </Col>
           <Col span={12}>
-            <FormItem {...formItemLayoutLong} label={'审核类型'}>
+            <FormItem {...formItemLayoutLong} label={'审核类型'} style={{marginBottom: '0px'}}>
               {
                 getFieldDecorator('reviewTypeName', {
                   initialValue: editData.reviewTypeName ? editData.reviewTypeName : '追加审核',
@@ -224,7 +224,7 @@ const AddBeAudited = (props) => {
             {hideFormItem('reviewReasonCode', type === 'add' ? '' : editData.reviewReasonCode)}
           </Col>
           <Col span={12}>
-            <FormItem {...formItemLayoutLong} label={'审核原因'}>
+            <FormItem {...formItemLayoutLong} label={'审核原因'} style={{marginBottom: '0px'}}>
               {
                 getFieldDecorator('reviewReasonName', {
                   initialValue: editData.reviewReasonName ? editData.reviewReasonName : '',
@@ -264,7 +264,7 @@ const AddBeAudited = (props) => {
         </Col>
         <Row>
           <Col span={12}>
-            <FormItem {...formItemLayoutLong} label={'供应商选择方式'}>
+            <FormItem {...formItemLayoutLong} label={'供应商选择方式'} style={{marginBottom: '0px'}}>
               {
                 getFieldDecorator('supplierStrategyCode', {
                   initialValue: editData.supplierStrategyCode ? editData.supplierStrategyCode : '',
@@ -295,7 +295,7 @@ const AddBeAudited = (props) => {
             {hideFormItem('supplierCode', type === 'add' ? '' : editData.supplierCode)}
           </Col>
           <Col span={12}>
-            <FormItem {...formItemLayoutLong} style={{ display: 'flex' }} label={'供应商'}>
+            <FormItem {...formItemLayoutLong} style={{ display: 'flex', marginBottom: '0px' }} label={'供应商'}>
               {
                 getFieldDecorator('supplierName', {
                   initialValue: editData.supplierName ? editData.supplierName : '',
@@ -344,7 +344,7 @@ const AddBeAudited = (props) => {
             {hideFormItem('agentCode', type === 'add' ? '' : editData.agentCode)}
           </Col>
           <Col span={12}>
-            <FormItem {...formItemLayoutLong} label={'代理商'}>
+            <FormItem {...formItemLayoutLong} label={'代理商'} style={{marginBottom: '0px'}}>
               {
                 getFieldDecorator('agentName', {
                   initialValue: editData.agentName ? editData.agentName : '',
@@ -380,7 +380,7 @@ const AddBeAudited = (props) => {
             {hideFormItem('materialGroupCode', type === 'add' ? '' : editData.materialGroupCode)}
           </Col>
           <Col span={12}>
-            <FormItem {...formItemLayoutLong} label={'物料分类'}>
+            <FormItem {...formItemLayoutLong} label={'物料分类'} style={{marginBottom: '0px'}}>
               {
                 getFieldDecorator('materialGroupName', {
                   initialValue: editData.materialGroupName ? editData.materialGroupName : '',
@@ -419,7 +419,7 @@ const AddBeAudited = (props) => {
             {hideFormItem('countyId', type === 'add' ? '' : editData.countyId)}
           </Col>
           <Col span={8}>
-            <FormItem labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label={'生产厂地址'}>
+            <FormItem labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label={'生产厂地址'} style={{marginBottom: '0px'}}>
               {
                 getFieldDecorator('countryName', {
                   initialValue: editData.countryName ? editData.countryName : '',
@@ -462,7 +462,7 @@ const AddBeAudited = (props) => {
             </FormItem>
           </Col>
           <Col span={4}>
-            <FormItem labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
+            <FormItem labelCol={{ span: 0 }} wrapperCol={{ span: 24 }} style={{marginBottom: '0px'}}>
               {
                 getFieldDecorator('provinceName', {
                   initialValue: editData.provinceName ? editData.provinceName : '',
@@ -506,7 +506,7 @@ const AddBeAudited = (props) => {
             </FormItem>
           </Col>
           <Col span={4}>
-            <FormItem labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
+            <FormItem labelCol={{ span: 0 }} wrapperCol={{ span: 24 }} style={{marginBottom: '0px'}}>
               {
                 getFieldDecorator('cityName', {
                   initialValue: editData.cityName ? editData.cityName : '',
@@ -548,7 +548,7 @@ const AddBeAudited = (props) => {
             </FormItem>
           </Col>
           <Col span={4}>
-            <FormItem labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
+            <FormItem labelCol={{ span: 0 }} wrapperCol={{ span: 24 }} style={{marginBottom: '0px'}}>
               {
                 getFieldDecorator('countyName', {
                   initialValue: editData.countyName ? editData.countyName : '',
@@ -589,7 +589,7 @@ const AddBeAudited = (props) => {
             </FormItem>
           </Col>
           <Col span={4}>
-            <FormItem labelCol={{ span: 0 }} wrapperCol={{ span: 24 }}>
+            <FormItem labelCol={{ span: 0 }} wrapperCol={{ span: 24 }} style={{marginBottom: '0px'}}>
               {
                 getFieldDecorator('address', {
                   initialValue: editData.address ? editData.address : '',
@@ -608,7 +608,7 @@ const AddBeAudited = (props) => {
         </Row>
         <Row>
           <Col span={12}>
-            <FormItem {...formItemLayoutLong} label={'供应商联系人'}>
+            <FormItem {...formItemLayoutLong} label={'供应商联系人'} style={{marginBottom: '0px'}}>
               {
                 getFieldDecorator('contactUserName', {
                   initialValue: editData.contactUserName ? editData.contactUserName : '',
@@ -625,7 +625,7 @@ const AddBeAudited = (props) => {
             </FormItem>
           </Col>
           <Col span={12}>
-            <FormItem {...formItemLayoutLong} label={'供应商联系方式'}>
+            <FormItem {...formItemLayoutLong} label={'供应商联系方式'} style={{marginBottom: '0px'}}>
               {
                 getFieldDecorator('contactUserTel', {
                   initialValue: editData.contactUserTel ? editData.contactUserTel : '',
@@ -644,7 +644,7 @@ const AddBeAudited = (props) => {
         </Row>
         <Row>
           <Col span={24}>
-            <FormItem {...formItemLayout} label={'备注'}>
+            <FormItem {...formItemLayout} label={'备注'} style={{marginBottom: '0px'}}>
               {
                 getFieldDecorator('remark', {
                   initialValue: editData.remark ? editData.remark : '',

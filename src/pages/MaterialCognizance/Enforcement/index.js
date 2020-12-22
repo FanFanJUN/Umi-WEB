@@ -12,11 +12,16 @@ import {
     JurisdictionjurisdictionCode,
     MaterieljurisdictionCode,
     MakerList,
-    Earlywarninglist
+    Earlywarninglist,
+    ExecutorList
 } from '../commonProps'
+import {
+    WithdrawImplementVo
+} from '../../../services/MaterialService'
 import { router } from 'dva';
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { Search } = Input
+const confirm = Modal.confirm;
 const { authAction, storage } = utils;
 const { FlowHistoryButton } = WorkFlow;
 function MissionExecution() {
@@ -34,11 +39,13 @@ function MissionExecution() {
     const [seniorSearchvalue, setSeniorsearchvalue] = useState('');
     /** 按钮可用性判断变量集合 BEGIN*/
     const [signleRow = {}] = selectedRows;
-    const { taskStatus: signleFlowStatus, id: flowId, creatorId } = signleRow;
+    const { taskStatus: signleFlowStatus, taskStatus: implementStatus } = signleRow;
     // 执行中
     const underWay = signleFlowStatus === 0;
     // 未选中数据的状态
     const empty = selectedRowKeys.length === 0;
+    // 已执行
+    const implement = implementStatus === 1
 
     useEffect(() => {
         handleInfo()
@@ -195,10 +202,20 @@ function MissionExecution() {
         tableRef.current.manualSelectedRows([])
         tableRef.current.remoteDataRefresh()
     }
-    // 新增
-    function AddModel() {
-        let id = selectedRows[0].id;
-        openNewTab(`material/Enforcement/Edit/index?id=${id}`, '实物认定任务执行', false)
+    // 执行任务
+    function carryTask() {
+        if (selectedRows.length > 0) {
+            if (selectedRows[0].taskStatus === 0) {
+                let id = selectedRows[0].id;
+                openNewTab(`material/Enforcement/Edit/index?id=${id}`, '实物认定任务执行', false)
+            } else {
+                message.error('只能执行任务状态为执行中的数据！');
+            }
+
+        } else {
+            message.error('请选择一条数据！');
+        }
+
     }
     // 明细
     function handleCheckDetail() {
@@ -237,18 +254,49 @@ function MissionExecution() {
         e.target.checked === true ? setJurisdiction(1) : setJurisdiction(0)
         uploadTable();
     }
+    // 撤回
+    async function handlewithdraw() {
+        confirm({
+            title: '是否撤回',
+            onOk: async () => {
+                let id = selectedRows[0].id;
+                const { success, message: msg } = await WithdrawImplementVo({ implementationId: id });
+                if (success) {
+                    message.success('撤回成功！');
+                    uploadTable();
+                } else {
+                    message.error(msg);
+                }
+            },
+            onCancel() {
+            },
+        });
+    }
     // 左侧
     const HeaderLeftButtons = (
         <div style={{ width: '50%', display: 'flex', height: '100%', alignItems: 'center' }}>
             {
                 authAction(
                     <Button
+                        type='primary'
                         ignore={DEVELOPER_ENV}
                         key='SRM-SM-IMPLEMENT-SUPPLIER-TASK'
                         className={styles.btn}
-                        onClick={AddModel}
-                        disabled={empty || !underWay}
+                        onClick={carryTask}
+                    //disabled={!underWay}
                     >执行任务
+                    </Button>
+                )
+            }
+            {
+                authAction(
+                    <Button
+                        ignore={DEVELOPER_ENV}
+                        key='SRM-SM-IMPLEMENT-SUPPLIER-WITHDRAW'
+                        className={styles.btn}
+                        onClick={handlewithdraw}
+                        disabled={empty || !implement}
+                    >撤回
                     </Button>
                 )
             }
@@ -286,7 +334,7 @@ function MissionExecution() {
         { title: '预警', key: 'Q_EQ_earlyWarning', type: 'list', props: Earlywarninglist },
         { title: '制定计划部门', key: 'Q_EQ_departmentCode', type: 'tree', props: OrganizationList },
         { title: '制定人', key: 'Q_EQ_drafterId', type: 'list', props: MakerList },
-        { title: '执行人', key: 'Q_EQ_executorId', type: 'list', props: MakerList },
+        { title: '执行人', key: 'Q_EQ_executorId', type: 'list', props: ExecutorList },
         { title: '物料分类', key: 'Q_EQ_materielTypeCode', type: 'tree', props: MaterieljurisdictionCode },
         { title: '公司名称', key: 'Q_EQ_companyCode', type: 'list', props: JurisdictionjurisdictionCode },
         { title: '供应商名称', key: 'Q_LK_supplierName', props: { placeholder: '输入供应商名称' } },
@@ -322,7 +370,7 @@ function MissionExecution() {
                         //dataSource={dataSource}
                         //{...dataSource}
                         store={{
-                            url: `${recommendUrl}/api/samIdentifyPlanImplementationService/findBySearch?onlyMe=` + jurisdiction,
+                            url: `${recommendUrl}/api/samIdentifyPlanImplementationService/findBySearch?onlyMe=` + jurisdiction + '&early=' + early,
                             params: {
                                 ...searchValue,
                                 quickSearchProperties: ['identificationPlanNo'],

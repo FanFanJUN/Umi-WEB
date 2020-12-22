@@ -25,8 +25,8 @@ const columns = [
 ];
 
 const formItemLayoutLong = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 18 },
+  labelCol: { span: 8 },
+  wrapperCol: { span: 16 },
 };
 
 const AddSupplier = (props) => {
@@ -174,7 +174,7 @@ const AddSupplier = (props) => {
           url: `${smBaseUrl}/api/supplierSupplyListTmpService/findByFilters`,
           type: 'POST',
         }}
-        height={400}
+        height={300}
         allowCancelSelect={true}
         remotePaging={true}
         checkbox={{

@@ -323,3 +323,26 @@ export const JurisdictionjurisdictionCode = {
   // remotePaging: true,
   placeholder: '请选择公司名称'
 }
+// 执行人
+export const ExecutorList = {
+  remotePaging: true,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `/api-gateway/basic-service/employee/findByUserQueryParam`,
+    params: {
+      includeFrozen: false,
+      includeSubNode: false,
+      quickSearchProperties: ['code', 'user.userName'],
+      organizationId: '',
+      sortOrders: [{ property: 'code', direction: 'ASC' }],
+    }
+  },
+  rowKey: 'userName',
+  reader: {
+    name: 'userName',
+    field: ['id'],
+    description: 'code',
+  },
+  placeholder: '请选择执行人'
+}

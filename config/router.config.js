@@ -9,6 +9,15 @@ export default [
     ],
   },
   {
+    path: '/supplierPLM',
+    component: '../layouts/LoginLayout',
+    title: '供应商主数据同步PLM',
+    routes: [
+      { path: '/supplierPLM/MasterData/index', component: './SupplierPLM/MasterData', title: '供应商主数据同步PLM系统主数据' },
+      { path: '/supplierPLM/Systemdetails/index', component: './SupplierPLM/Systemdetails', title: '供应商同步PLM系统明细表' },
+    ]
+  },
+  {
     path: '/material',
     component: '../layouts/LoginLayout',
     title: '实物认定',

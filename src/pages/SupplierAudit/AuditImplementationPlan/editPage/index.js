@@ -1,7 +1,7 @@
 /*
  * @Author:黄永翠
  * @Date: 2020-11-09 09:38:38
- * @LastEditTime : 2020-12-21 14:19:51
+ * @LastEditTime : 2020-12-21 18:04:45
  * @LastEditors  : LiCai
  * @Description:审核实施计划-明细
  * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AuditImplementationPlan/editPage/index.js
@@ -311,6 +311,7 @@ const Index = (props) => {
             reviewTeamGroupBoList={editData.reviewTeamGroupBoList ? editData.reviewTeamGroupBoList : []}
             orgLeaderName={editData.leaderName}
             deleteArr={[]}
+            originData={data.editData}
         />
         {/* 协同人员 */}
         <PersonTable originData={editData.coordinationMemberBoList} />
