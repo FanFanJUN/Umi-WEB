@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:44:12
- * @LastEditTime : 2020-12-21 18:24:11
+ * @LastEditTime : 2020-12-22 09:51:52
  * @LastEditors  : LiCai
  * @Description: 审核实施计划-审核人员
  * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AuditImplementationPlan/editPage/AuditorInfo.js
@@ -93,10 +93,13 @@ const AuditorInfo = forwardRef((props, ref) => {
   });
 
   useEffect(() => {
-    const selectedLine = JSON.parse(sessionStorage.getItem('selectedMonthLIne'));
-    const reviewImplementPlanLineBos = props.originData?.reviewImplementPlanLineBos;
-    const reviewTypeCode =
-      selectedLine[0].reviewTypeCode || reviewImplementPlanLineBos[0].reviewTypeCode;
+    let lineList = [];
+    if(type === 'add') {
+      lineList = JSON.parse(sessionStorage.getItem('selectedMonthLIne'));
+    } else {
+      lineList = props.originData?.reviewImplementPlanLineBos || [];
+    }
+    const reviewTypeCode = lineList.length !== 0 && lineList[0].reviewTypeCode;
     props.treeData &&
       GetDefaultSystem({
         reviewTypeCode,
