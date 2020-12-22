@@ -107,7 +107,11 @@ function TeamConfirm({
     },
     rowSelection: {
       type: 'checkbox',
-      selectedRowKeys
+      selectedRowKeys,
+      onSelect: (record) => {
+        setRows([record])
+        setRowKeys([record.key])
+      }
     },
   }
   const left = (
