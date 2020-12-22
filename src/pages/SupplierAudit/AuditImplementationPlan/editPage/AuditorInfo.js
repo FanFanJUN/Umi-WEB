@@ -1,7 +1,7 @@
 /*
  * @Author: 黄永翠
  * @Date: 2020-11-09 10:44:12
- * @LastEditTime : 2020-12-21 14:09:10
+ * @LastEditTime : 2020-12-21 18:24:11
  * @LastEditors  : LiCai
  * @Description: 审核实施计划-审核人员
  * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AuditImplementationPlan/editPage/AuditorInfo.js
@@ -15,7 +15,7 @@ import ShuttleBoxNew from "../../common/ShuttleBoxNew";
 import EventModal from '../../common/EventModal';
 import { getRandom } from '../../../QualitySynergy/commonProps';
 import ContentModal from '../../AuditRequirementsManagement/add/component/contentModal';
-import { duplicateRemoval, PersonnelTypeArr, RoleArr } from '../../mainData/commomService';
+import { duplicateRemoval, GetDefaultSystem, PersonnelTypeArr, RoleArr } from '../../mainData/commomService';
 
 const FormItem = Form.Item;
 const formLayout = {
@@ -93,10 +93,26 @@ const AuditorInfo = forwardRef((props, ref) => {
   });
 
   useEffect(() => {
-      setTeamData(v => ({ 
-        ...v, 
-        dataSource: reviewTeamGroupBoList.map(item=>({...item, lineNum: getRandom(10)}))
-      }));
+    const selectedLine = JSON.parse(sessionStorage.getItem('selectedMonthLIne'));
+    const reviewImplementPlanLineBos = props.originData?.reviewImplementPlanLineBos;
+    const reviewTypeCode =
+      selectedLine[0].reviewTypeCode || reviewImplementPlanLineBos[0].reviewTypeCode;
+    props.treeData &&
+      GetDefaultSystem({
+        reviewTypeCode,
+        sonList: props.treeData,
+      })
+        .then(res => {
+          console.log(res);
+          if (res.success) {
+            setData(v => ({ ...v, defaultSystem: res.data }));
+          }
+        })
+        .catch(err => message.error(err.message));
+    setTeamData(v => ({
+      ...v,
+      dataSource: reviewTeamGroupBoList.map(item => ({ ...item, lineNum: getRandom(10) })),
+    }));
   }, [reviewTeamGroupBoList]);
 
   useEffect(() => {
