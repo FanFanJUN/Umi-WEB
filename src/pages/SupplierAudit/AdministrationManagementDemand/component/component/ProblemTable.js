@@ -123,7 +123,7 @@ const ProblemTable = (props) => {
   };
 
   return (
-    <>
+    <div>
       {
         props.type === 'show' && <Button onClick={handleBack}>退回</Button>
       }
@@ -156,7 +156,7 @@ const ProblemTable = (props) => {
         onCancel={() => setData(v => ({ ...v, visible: false }))}
         visible={data.visible}
       />
-    </>
+    </div>
   );
 };
 
