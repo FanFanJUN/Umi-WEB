@@ -302,7 +302,7 @@ const AddModal = (props) => {
               Q_EQ_frozen__Boolean: 0,
               ...filterEmptyFileds(cascadeParams),
             },
-            url: `${smBaseUrl}/supplierSupplyList/listPageVo`,
+            url: `${smBaseUrl}/supplierSupplyList/listPageVoWithDataAuth`,
             type: 'get',
           }}
           cascadeParams={{

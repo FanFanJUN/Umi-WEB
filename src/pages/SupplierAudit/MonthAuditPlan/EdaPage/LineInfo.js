@@ -52,7 +52,7 @@ let LineInfo = forwardRef((props, ref) => {
         })) : [];
         return item;
       });
-      newList = newList.sort((a, b) => a.reviewPlanMonthLinenum - b.reviewPlanMonthLinenum)
+      newList = newList.sort((a, b) => a.reviewPlanMonthLinenum - b.reviewPlanMonthLinenum);
       setDataSource(newList);
     }
   }, [originData]);
@@ -111,7 +111,7 @@ let LineInfo = forwardRef((props, ref) => {
       dataIndex: 'whetherDeleted',
       width: 80,
       ellipsis: true,
-      render: text=>text?"是":"否",
+      render: text => text ? '是' : '否',
     },
     {
       title: '需求公司',
@@ -151,7 +151,7 @@ let LineInfo = forwardRef((props, ref) => {
     { title: '物料级别', dataIndex: 'materialGradeName', ellipsis: true, width: 140 },
     {
       title: '生产厂地址', dataIndex: 'countryName', ellipsis: true, width: 200, render: (text, item) => {
-        return !text ? "" : (item.countryName + item.provinceName + item.cityName + item.countyName + item.address).replace(/(\s+)|(null)+/g, "");
+        return !text ? '' : (item.countryName + item.provinceName + item.cityName + item.countyName + item.address).replace(/(\s+)|(null)+/g, '');
       },
     },
     { title: '供应商联系人', dataIndex: 'contactUserName', ellipsis: true, width: 140 },
@@ -190,8 +190,8 @@ let LineInfo = forwardRef((props, ref) => {
               break;
           }
 
-        }}>{text}</a>
-      }
+        }}>{text}</a>;
+      },
     },
     { title: '来源单行号', dataIndex: 'sourceLinenum', ellipsis: true, width: 140 },
   ].map(item => ({ ...item, align: 'center' }));
@@ -269,8 +269,8 @@ let LineInfo = forwardRef((props, ref) => {
 
   // 新增弹框-确定
   const handleAddOk = (value) => {
-    console.log('行数据', value)
-    let errorArr = []
+    console.log('行数据', value);
+    let errorArr = [];
     let newList = [];
     value.forEach((item, index) => {
       if (!dataSource.some(v => v.sourceLineId === item.sourceLineId)) {
@@ -278,7 +278,6 @@ let LineInfo = forwardRef((props, ref) => {
         item.treeData = buildTreeData(item.sonList);
         item.lineNum = getRandom(10);
         item.whetherDeleted = false;
-        item.reviewPlanMonthLinenum = ((Array(4).join(0) + (index + 1 + dataSource.length)).slice(-4) + '0');
         if (item.reviewTeamGroupBoList) {
           for (var i = 0; i < item.reviewTeamGroupBoList.length; i++) {
             let lineObj = item.reviewTeamGroupBoList[i];
@@ -300,11 +299,15 @@ let LineInfo = forwardRef((props, ref) => {
         let newItem = Object.assign(item, groupObj);
         newList.push(newItem);
       } else {
-        errorArr = [...errorArr, (index + 1)]
+        errorArr = [...errorArr, (index + 1)];
       }
     });
+    newList = newList.map((item, index) => ({
+      ...item,
+      reviewPlanMonthLinenum: ((Array(4).join(0) + (index + 1 + dataSource.length)).slice(-4) + '0'),
+    }))
     if (errorArr.length !== 0) {
-      message.error('选中的第' + errorArr.toString() + '行重复,已自动过滤!')
+      message.error('选中的第' + errorArr.toString() + '行重复,已自动过滤!');
     }
     newList = dataSource.concat(newList);
     setDataSource(newList);

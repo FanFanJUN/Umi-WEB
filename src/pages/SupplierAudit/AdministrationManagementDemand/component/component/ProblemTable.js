@@ -32,6 +32,7 @@ const ProblemTable = (props) => {
       dataIndex: 'reviewScore',
       width: 100,
       render: (v, data) => type ? v : <InputNumber
+        disabled={data.whetherApply}
         onBlur={refreshTable}
         value={v} max={data.highestScore}
         precision={1}
@@ -123,7 +124,7 @@ const ProblemTable = (props) => {
   };
 
   return (
-    <>
+    <div>
       {
         props.type === 'show' && <Button onClick={handleBack}>退回</Button>
       }
@@ -156,7 +157,7 @@ const ProblemTable = (props) => {
         onCancel={() => setData(v => ({ ...v, visible: false }))}
         visible={data.visible}
       />
-    </>
+    </div>
   );
 };
 
