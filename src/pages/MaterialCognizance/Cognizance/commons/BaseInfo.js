@@ -63,7 +63,7 @@ const HeadFormRef = forwardRef(({
                                             })(
                                                 <ComboTree disabled={isView === true || cancel === '2'}
                                                     {...OrganizationList}
-                                                    showSearch={false}
+                                                    showSearch={true}
                                                     style={{ width: '100%' }}
                                                     name='createDepartmentName'
                                                     field={['createDepartmentId']}
