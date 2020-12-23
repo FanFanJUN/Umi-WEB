@@ -12,7 +12,7 @@ import { Divider, Form, InputNumber, Row, Col, Input } from 'antd';
 import moment from 'moment';
 import EditableFormTable from '../CommonUtil/EditTable';
 import UploadFile from '../../../../../components/Upload';
-import { stateInfoPorps, businessMainProps } from '../../../../../utils/commonProps';
+import { stateInfoPorps, businessMainPropsNoAuth } from '../../../../../utils/commonProps';
 
 const FormItem = Form.Item;
 const formLayout = {
@@ -130,10 +130,11 @@ const Customer = React.forwardRef(({
       ellipsis: true,
       inputType: 'comboList',
       props: {
-        ...businessMainProps,
+        ...businessMainPropsNoAuth,
         name: 'buName',
         field: ['buCode']
-      }
+      },
+      width: 250
     },
     {
       title: '配件名称',

@@ -35,8 +35,12 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
 
   const { query: { id, type = 'add' } } = router.useLocation();
 
-  const { getFieldDecorator, getFieldValue, setFieldsValue } = form;
-
+  const { getFieldDecorator, getFieldValue, setFieldsValue, getFieldsValue } = form;
+  const {
+    haveEnvironmentalTestingEquipment,
+    haveRohs,
+    chemicalsControl
+  } = getFieldsValue()
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -84,9 +88,14 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
   ];
 
   async function handleSave() {
-    if (getFieldValue('haveEnvironmentalTestingEquipment ')) {
-      if (isEmptyArray(tableData)) {
+    if (haveEnvironmentalTestingEquipment) {
+      if (tableData.length === 0) {
         message.error('列表至少填写一条设备信息！');
+        return
+      }
+      const vl = tableData.every(item => !Object.is(null, item));
+      if (!vl) {
+        message.error('设备信息未填写完整！');
         return;
       }
     }
@@ -194,6 +203,12 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                     <FormItem label="标准类型" {...formLayout}>
                       {getFieldDecorator('standardTypeEnum', {
                         initialValue: type === 'add' ? 'ROHS_10' : data.standardTypeEnum,
+                        rules: [
+                          {
+                            required: haveRohs,
+                            message: '标准类型不能为空'
+                          }
+                        ]
                       })(
                         <Radio.Group disabled={type === 'detail'}>
                           <Radio value={'ROHS_10'}>RoHS1.0</Radio>
@@ -210,6 +225,12 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                     <FormItem label="RoHS检测报告" {...formLayout}>
                       {getFieldDecorator('rohsFileIds', {
                         initialValue: type === 'add' ? '' : data.rohsFileId,
+                        rules: [
+                          {
+                            required: haveRohs,
+                            message: 'RoHS检测报告不能为空'
+                          }
+                        ]
                       })(
                         <UploadFile
                           showColor={type !== 'add' ? true : false}
@@ -246,6 +267,12 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                     <FormItem label="备注" {...formLayout}>
                       {getFieldDecorator('remark', {
                         initialValue: type === 'add' ? '' : data.remark,
+                        rules: [
+                          {
+                            required: chemicalsControl,
+                            message: '备注不能为空'
+                          }
+                        ]
                       })(<Input.TextArea disabled={type === 'detail'} />)}
                     </FormItem>
                   </Col>
@@ -255,6 +282,12 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                     <FormItem label="附件材料" {...formLayout}>
                       {getFieldDecorator('attachmentIds', {
                         initialValue: type === 'add' ? '' : data.attachmentIds,
+                        rules: [
+                          {
+                            required: chemicalsControl,
+                            message: '请上传附件资料'
+                          }
+                        ]
                       })(
                         <UploadFile
                           showColor={type !== 'add' ? true : false}

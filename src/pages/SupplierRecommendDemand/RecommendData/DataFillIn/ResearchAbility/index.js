@@ -44,9 +44,15 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
   const [loading, setLoading] = useState(false);
 
   const { query: { id, type = 'add' } } = router.useLocation();
-
-  const { getFieldDecorator, setFieldsValue } = form;
-
+  const {
+    getFieldDecorator,
+    setFieldsValue,
+    getFieldsValue
+  } = form;
+  const {
+    devMaxCycle = 0,
+    devMinCycle = 0
+  } = getFieldsValue()
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -289,7 +295,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                           },
                         ],
                       })(
-                        <Radio.Group disabled={type==='detail'}>
+                        <Radio.Group disabled={type === 'detail'}>
                           <Radio value={'FULLY'}>完全具备</Radio>
                           <Radio value={'BASIC'}>基本具备</Radio>
                           <Radio value={'NOT'}>不具备</Radio>
@@ -307,7 +313,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                           },
                         ],
                       })(
-                        <Input.TextArea disabled={type==='detail'}></Input.TextArea>
+                        <Input.TextArea disabled={type === 'detail'}></Input.TextArea>
                       )}
                     </FormItem>
                   </Col>
@@ -347,7 +353,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                           }
                         ]
                       })(
-                        <Radio.Group disabled={type==='detail'}>
+                        <Radio.Group disabled={type === 'detail'}>
                           <Radio value={true}>是</Radio>
                           <Radio value={false}>否</Radio>
                         </Radio.Group>)}
@@ -363,7 +369,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                         <InputNumber
                           min={0}
                           max={100}
-                          disabled={type==='detail'}
+                          disabled={type === 'detail'}
                           formatter={value => `${value}%`}
                           parser={value => value && value.replace('%', '')}
                           style={{ width: '50%' }}
@@ -381,7 +387,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                         <InputNumber
                           min={0}
                           max={100}
-                          disabled={type==='detail'}
+                          disabled={type === 'detail'}
                           formatter={value => `${value}%`}
                           parser={value => value && value.replace('%', '')}
                           style={{ width: '50%' }}
@@ -390,39 +396,72 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                   </Col>
                 </Row>
                 <Row>
-                  <Col span={24}>
-                    <FormItem label="样品开发周期" {...formLayout}>
-                      <div>
-                        <span className={styles.rightMargin}>最长</span>
-                        {getFieldDecorator('devMaxCycle', {
-                          initialValue: type === 'add' ? '' : data.devMaxCycle,
+                  <Col span={4}>
+                    <div style={{
+                      textAlign: 'right'
+                    }}>样品开发周期</div>
+                  </Col>
+                  <Col span={16}>
+                    <FormItem label="最长" {...formLayout} labelCol={{
+                      span: 4
+                    }} wrapperCol={{ span: 20 }}>
+                      {getFieldDecorator('devMaxCycle', {
+                        initialValue: type === 'add' ? '' : data.devMaxCycle,
+                        rules: [
+                          {
+                            validator: (_, value, cb) => {
+                              if (value < devMinCycle) {
+                                cb('最长天数应大于等于最短天数')
+                              }
+                              cb()
+                            }
+                          }
+                        ]
+                      })(
+                        <InputNumber disabled={type === 'detail'} style={{ width: '20%' }} />
+                      )}
+                    </FormItem>
+                    <FormItem label='最短' {...formLayout} labelCol={{
+                      span: 4
+                    }} wrapperCol={{ span: 20 }}>
+                      {
+                        getFieldDecorator('devMinCycle', {
+                          initialValue: type === 'add' ? '' : data.devMinCycle,
+                          rules: [
+                            {
+                              validator: (_, value, cb) => {
+                                if (value > devMaxCycle) {
+                                  cb('最短天数应小于等于最长天数')
+                                }
+                                cb()
+                              }
+                            }
+                          ]
                         })(
-                          <InputNumber disabled={type==='detail'} style={{ width: '20%' }} />
-                        )}
-                        <span className={styles.leftMargin}>天</span>
-                      </div>
-                      <div>
-                        <span className={styles.rightMargin}>最短</span>
-                        {
-                          getFieldDecorator('devAverageCycle', {
-                            initialValue: type === 'add' ? '' : data.devAverageCycle,
-                          })(
-                            <InputNumber disabled={type==='detail'} style={{ width: '20%' }} />
-                          )
-                        }
-                        <span className={styles.leftMargin}>天</span>
-                      </div>
-                      <div>
-                        <span className={styles.rightMargin}>平均</span>
-                        {
-                          getFieldDecorator('devMinCycle', {
-                            initialValue: type === 'add' ? '' : data.devMinCycle,
-                          })(
-                            <InputNumber disabled={type==='detail'} style={{ width: '20%' }} />
-                          )
-                        }
-                        <span className={styles.leftMargin}>天</span>
-                      </div>
+                          <InputNumber disabled={type === 'detail'} style={{ width: '20%' }} />
+                        )
+                      }
+                    </FormItem>
+                    <FormItem label='平均' {...formLayout} labelCol={{
+                      span: 4
+                    }} wrapperCol={{ span: 20 }}>
+                      {
+                        getFieldDecorator('devAverageCycle', {
+                          initialValue: type === 'add' ? '' : data.devAverageCycle,
+                          rules: [
+                            {
+                              validator: (_, value, cb) => {
+                                if (value < devMinCycle || value > devMaxCycle) {
+                                  cb('平均天数应大于等于最短天数、小于等于最长天数')
+                                }
+                                cb()
+                              }
+                            }
+                          ]
+                        })(
+                          <InputNumber disabled={type === 'detail'} style={{ width: '20%' }} />
+                        )
+                      }
                     </FormItem>
                   </Col>
                 </Row>
@@ -465,7 +504,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
             </div>
           </div>
         </PageHeader>
-      </Spin>
+      </Spin >
     </div >
   )
 };

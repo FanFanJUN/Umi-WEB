@@ -743,6 +743,23 @@ export const businessMainProps = {
     width: '100%'
   }
 }
+export const businessMainPropsNoAuth = {
+  store: {
+    url: `${baseUrl}/api/buService/findByList`,
+    type: 'post',
+    params: {
+      frozen: false
+    }
+  },
+  reader: {
+    name: 'buName',
+    field: ['buCode']
+  },
+  style: {
+    width: '100%'
+  }
+
+}
 
 // 业务板块主数据
 export const businessUnitMainProps = {

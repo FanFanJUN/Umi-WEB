@@ -96,10 +96,27 @@ function RecommendDataTable() {
   }
   const left = (
     <>
-      <Button className={styles.btn} onClick={handleFillIn} disabled={empty || !underWay}>填报</Button>
-      <Button className={styles.btn} disabled={empty} onClick={checkDetail}>明细</Button>
-      <Button className={styles.btn} disabled={empty || !complete} onClick={handleWithdraw}>撤回</Button>
-      <Button className={styles.btn} disabled={empty} onClick={checkOpinion}>查看意见</Button>
+      <Button
+        className={styles.btn}
+        onClick={handleFillIn}
+        disabled={empty || !underWay}
+        type='primary'
+      >填报</Button>
+      <Button
+        className={styles.btn}
+        disabled={empty}
+        onClick={checkDetail}
+      >明细</Button>
+      <Button
+        className={styles.btn}
+        disabled={empty || !complete}
+        onClick={handleWithdraw}
+      >撤回</Button>
+      <Button
+        className={styles.btn}
+        disabled={empty}
+        onClick={checkOpinion}
+      >查看意见</Button>
     </>
   )
   const right = (

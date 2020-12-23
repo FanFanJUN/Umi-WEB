@@ -27,7 +27,7 @@ class LoginForm extends PureComponent {
           type: "global/login",
           payload: {
             ...user,
-            reqId: '161de21c-1b3a-46a4-b6e8-3c7605164f8e',
+            reqId: 'd4e0665f-551f-4af1-9cad-c2015aad7eba',
             appId: '1234'
           }
         });
