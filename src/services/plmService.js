@@ -99,6 +99,16 @@ export const SynchronizationList = params => {
         hack: true
     })
 }
+// PLM系统明细表-导出
+export const SynchronizationExportt = params => {
+    return request({
+        url: `${smBaseUrl}/bafsupplierplm/exportSupplierPlm`,
+        params,
+        method: 'POST',
+        hack: true,
+        responseType: 'blob'
+    })
+}
 
 
 

@@ -211,23 +211,25 @@ const commonFormRef = forwardRef(({
                     </Col>
                     <Col span={12}>
                         <Item {...formLayout} label="状态">
-                            {getFieldDecorator('status', {
-                                initialValue: modifydata && modifydata.status,
-                                rules: [
-                                    {
-                                        required: true,
-                                        message: '请选择状态',
-                                    },
-                                ],
-                            })(
-                                <ComboList
-                                    showSearch={false}
-                                    style={{ width: '100%' }}
-                                    {...PLMType}
-                                    name='status'
-                                    form={form}
-                                />
-                            )}
+                            {
+                                getFieldDecorator('status', {
+                                    initialValue: modifydata && modifydata.status,
+                                    rules: [
+                                        {
+                                            required: true,
+                                            message: '请选择状态',
+                                        },
+                                    ],
+                                })(
+                                    <ComboList
+                                        showSearch={false}
+                                        style={{ width: '100%' }}
+                                        {...PLMType}
+                                        name='status'
+                                        form={form}
+                                    />
+                                )
+                            }
                         </Item>
                     </Col>
                 </Row>

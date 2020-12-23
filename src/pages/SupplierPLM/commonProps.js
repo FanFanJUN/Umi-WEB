@@ -166,3 +166,23 @@ export const requestStart = {
   },
   placeholder: '请选择状态',
 }
+// 高级查询同步PLM状态
+export const seniorplmType = {
+  showSearch: false,
+  allowClear: true,
+  dataSource: [
+    {
+      code: '0',
+      name: '有效',
+    },
+    {
+      code: '1',
+      name: '冻结',
+    }
+  ],
+  reader: {
+    name: 'name',
+    field: ['code'],
+  },
+  placeholder: '请选择状态',
+}

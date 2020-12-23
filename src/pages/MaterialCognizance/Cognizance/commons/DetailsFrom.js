@@ -120,6 +120,12 @@ const ModifyinfoRef = forwardRef(({
             dataIndex: 'planTime',
             width: 140,
         },
+        {
+            title: '计划完成天数',
+            align: 'center',
+            dataIndex: 'planDay',
+            width: 140,
+        },
         ...overurging,
         {
             title: '备注',
