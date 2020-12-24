@@ -38,7 +38,6 @@ export const PLMSynchronList = {
   ],
   reader: {
     name: 'name',
-    field: ['code'],
   },
   placeholder: '请选择同步PLM状态',
 }
@@ -56,8 +55,10 @@ export const PLMType = {
       name: '冻结',
     }
   ],
+  rowKey: 'code',
   reader: {
     name: 'name',
+    field: ['code'],
   },
   placeholder: '请选择状态',
 }

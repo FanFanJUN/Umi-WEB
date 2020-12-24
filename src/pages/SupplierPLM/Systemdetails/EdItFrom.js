@@ -30,20 +30,10 @@ const commonFormRef = forwardRef(({
     const [visible, setvisible] = useState(false);
     const [supplier, setsupplier] = useState('');
     useEffect(() => {
-        handleFrozen(modifydata)
-    }, [type, modifydata]);
+    }, []);
     function handleModalVisible(flag) {
         setvisible(!!flag)
     };
-    function handleFrozen(val) {
-        if (type) {
-            if (val.status === 0) {
-                modifydata.status = '有效'
-            } else if (val.status === 1) {
-                modifydata.status = '冻结'
-            }
-        }
-    }
     function handlBusiness(val) {
         form.setFieldsValue({
             'unitName': val.buName,
@@ -212,6 +202,7 @@ const commonFormRef = forwardRef(({
                     <Col span={12}>
                         <Item {...formLayout} label="状态">
                             {
+                                getFieldDecorator('statusCode', { initialValue: modifydata && modifydata.statusCode }),
                                 getFieldDecorator('status', {
                                     initialValue: modifydata && modifydata.status,
                                     rules: [
@@ -226,6 +217,7 @@ const commonFormRef = forwardRef(({
                                         style={{ width: '100%' }}
                                         {...PLMType}
                                         name='status'
+                                        field={['statusCode']}
                                         form={form}
                                     />
                                 )
