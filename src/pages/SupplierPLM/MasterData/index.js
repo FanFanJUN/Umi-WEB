@@ -181,7 +181,7 @@ function SupplierConfigure() {
                 authAction(
                     <Button type='primary'
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNMASTERDATA-ADD'
+                        key='SRM-SM-PLM-MASTERDATA-ADD'
                         className={styles.btn}
                         onClick={AddModel}
                     //disabled={empty}
@@ -193,7 +193,7 @@ function SupplierConfigure() {
                 authAction(
                     <Button
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNMASTERDATA-EDIT'
+                        key='SRM-SM-PLM-MASTERDATA-EDIT'
                         className={styles.btn}
                         onClick={handleCheckEdit}
                         disabled={empty}
@@ -205,7 +205,7 @@ function SupplierConfigure() {
                 authAction(
                     <Button
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNMASTERDATA-EDIT'
+                        key='SRM-SM-PLM-MASTERDATA-DELETE'
                         className={styles.btn}
                         onClick={handleDelete}
                         disabled={empty}
@@ -217,7 +217,7 @@ function SupplierConfigure() {
                 authAction(
                     <Button
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNMASTERDATA-FROZEN'
+                        key='SRM-SM-PLM-MASTERDATA-FROZEN'
                         className={styles.btn}
                         onClick={() => handleFrozen('freeze')}
                         disabled={empty || frozenStatus}
@@ -229,7 +229,7 @@ function SupplierConfigure() {
                 authAction(
                     <Button
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNMASTERDATA-THAW'
+                        key='SRM-SM-PLM-MASTERDATA-THAW'
                         className={styles.btn}
                         onClick={() => handleFrozen('thaw')}
                         disabled={empty || frozenthaw}

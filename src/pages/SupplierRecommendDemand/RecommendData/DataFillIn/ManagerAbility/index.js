@@ -62,8 +62,17 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
 
   const { query: { id, type = 'add' } } = router.useLocation();
 
-  const { getFieldDecorator, getFieldValue, setFieldsValue } = form;
+  const {
+    getFieldDecorator,
+    getFieldValue,
+    getFieldsValue,
+    setFieldsValue
+  } = form;
 
+  const {
+    haveAirLiftDelivery,
+    dangerousChemicalShipper
+  } = getFieldsValue();
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -670,12 +679,12 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="正常情况交货期(小时)" {...formLayout}>
                       {getFieldDecorator('airLiftDeliveryDate', {
                         initialValue: type === 'add' ? '' : data.airLiftDeliveryDate,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
+                        rules: [
+                          {
+                            required: haveAirLiftDelivery,
+                            message: '正常情况交货期不能为空',
+                          },
+                        ],
                       })(<InputNumber min={0} disabled={type === 'detail'} />)}
                     </FormItem>
                   </Col>
@@ -683,12 +692,12 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="紧急情况交货期(小时)" {...formLayout}>
                       {getFieldDecorator('airLiftUrgentDeliveryDate', {
                         initialValue: type === 'add' ? '' : data.airLiftUrgentDeliveryDate,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
+                        rules: [
+                          {
+                            required: haveAirLiftDelivery,
+                            message: '紧急情况交货期不能为空',
+                          },
+                        ],
                       })(<InputNumber min={0} disabled={type === 'detail'} />)}
                     </FormItem>
                   </Col>
@@ -734,12 +743,12 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="证明材料" {...formLayout}>
                       {getFieldDecorator('dangerousChemicalShipperFileIds', {
                         initialValue: type === 'add' ? '' : data.dangerousChemicalShipperFileIds,
-                        // rules: [
-                        //     {
-                        //         required: true,
-                        //         message: '自主技术开发能力不能为空',
-                        //     },
-                        // ],
+                        rules: [
+                          {
+                            required: dangerousChemicalShipper,
+                            message: '请上传证明材料',
+                          },
+                        ],
                       })(<UploadFile
                         showColor={type !== 'add' ? true : false}
                         disabled={type === 'detail'}

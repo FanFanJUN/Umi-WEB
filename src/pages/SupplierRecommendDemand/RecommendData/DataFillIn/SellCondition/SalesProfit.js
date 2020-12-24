@@ -35,6 +35,7 @@ const SalesProfit = ({ data=[], type, setTableData }) => {
       ellipsis: true,
       editable: true,
       inputType: 'InputNumber',
+      width: 220
     },
     {
       title: "利润（万元）",
