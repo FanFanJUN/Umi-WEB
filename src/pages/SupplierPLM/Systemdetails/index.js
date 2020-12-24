@@ -140,6 +140,10 @@ function SupplierConfigure() {
     }
     // 记录列表选中
     function handleSelectedRows(rowKeys, rows) {
+        if (rows[0]) {
+            rows[0].status === 0 ? rows[0].status = '有效' : rows[0].status = '冻结'
+        }
+
         setRowKeys(rowKeys);
         setRows(rows);
     }
@@ -257,7 +261,7 @@ function SupplierConfigure() {
                 authAction(
                     <Button type='primary'
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNMASTERDATA-ADD'
+                        key='SRM-SM-PLM-DETAILS-ADD'
                         className={styles.btn}
                         onClick={AddModel}
                     //disabled={empty}
@@ -269,7 +273,7 @@ function SupplierConfigure() {
                 authAction(
                     <Button
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNMASTERDATA-EDIT'
+                        key='SRM-SM-PLM-DETAILS-EDIT'
                         className={styles.btn}
                         onClick={handleCheckEdit}
                         disabled={empty || synStatus}
@@ -281,7 +285,7 @@ function SupplierConfigure() {
                 authAction(
                     <Button
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNMASTERDATA-EDIT'
+                        key='SRM-SM-PLM-DETAILS-DELETE'
                         className={styles.btn}
                         onClick={handleDelete}
                         disabled={empty || synStatus}
@@ -293,7 +297,7 @@ function SupplierConfigure() {
                 authAction(
                     <Button
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNMASTERDATA-THAW'
+                        key='SRM-SM-PLM-DETAILS-SYNCH'
                         className={styles.btn}
                         onClick={handleSynchron}
                         disabled={empty || !failStatus}
@@ -305,7 +309,7 @@ function SupplierConfigure() {
                 authAction(
                     <Button
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNMASTERDATA-FROZEN'
+                        key='SRM-SM-PLM-DETAILS-EXPORT'
                         className={styles.btn}
                         onClick={handleExport}
                     >导出
