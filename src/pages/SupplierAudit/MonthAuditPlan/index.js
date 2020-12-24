@@ -186,6 +186,7 @@ export default function () {
         { title: '拟制部门', dataIndex: 'applyDepartmentName', ellipsis: true, width: 150 },
         { title: '拟制人员', dataIndex: 'applyName', ellipsis: true, width: 80 },
         { title: '拟制时间', dataIndex: 'applyDate', ellipsis: true, width: 200, align: 'center'},
+      { title: '审批通过时间', dataIndex: 'flowCompletedDate', ellipsis: true, width: 200, align: 'center'}
     ];
 
     const headerLeft = <>

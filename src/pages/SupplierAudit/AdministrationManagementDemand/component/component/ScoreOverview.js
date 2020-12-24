@@ -23,18 +23,49 @@ const ScoreOverview = (props) => {
     { title: '指标名称', dataIndex: 'ruleName', ellipsis: true, width: 100 },
     { title: '指标定义', dataIndex: 'definition', ellipsis: true, width: 150 },
     { title: '评分标准', dataIndex: 'scoringStandard', ellipsis: true, width: 150 },
-    { title: '标准分', dataIndex: 'highestScore', width: 80, render: (v, data) => data.score ? data.score : v },
-    { title: '自评得分', dataIndex: 'selfScore', width: 80 },
-    { title: '不适用', dataIndex: 'notApplyScore', width: 80 },
+    {
+      title: '标准分',
+      dataIndex: 'highestScore',
+      width: 80,
+      render: (v, data) => (data.parentId || data.reviewImplementPlanId) && (data.score ? data.score : v),
+    },
+    {
+      title: '自评得分',
+      dataIndex: 'selfScore',
+      width: 80,
+      render: (v, data) => (data.parentId || data.reviewImplementPlanId) && v,
+    },
+    {
+      title: '不适用',
+      dataIndex: 'notApplyScore',
+      width: 80,
+      render: (v, data) => (data.parentId || data.reviewImplementPlanId) && v,
+    },
     {
       title: '审核得分',
       dataIndex: 'reviewScore',
       width: 80,
-      render: (v, data) => data.ruleId ? <a onClick={() => targetScoringDetail(data)}>{v}</a> : v,
+      render: (v, data) => (data.parentId || data.reviewImplementPlanId) && (data.ruleId ?
+        <a onClick={() => targetScoringDetail(data)}>{v}</a> : v),
     },
-    { title: '百分比', dataIndex: 'percentage', width: 80, render: v => v ? `${v}%` : '0' },
-    { title: '评定等级', dataIndex: 'performanceRating', width: 80 },
-    { title: '风险等级', dataIndex: 'riskRating', width: 80 },
+    {
+      title: '百分比',
+      dataIndex: 'percentage',
+      width: 80,
+      render: (v, data) => (data.parentId || data.reviewImplementPlanId) && (v ? `${v}%` : '0'),
+    },
+    {
+      title: '评定等级',
+      dataIndex: 'performanceRating',
+      width: 80,
+      render: (v, data) => (data.parentId || data.reviewImplementPlanId) && v,
+    },
+    {
+      title: '风险等级',
+      dataIndex: 'riskRating',
+      width: 80,
+      render: (v, data) => (data.parentId || data.reviewImplementPlanId) && v,
+    },
   ].map(item => ({ ...item, align: 'center' }));
 
   const [data, setData] = useState({
@@ -98,16 +129,16 @@ const ScoreOverview = (props) => {
       if (res.success) {
         let arr = res.data ? res.data : [];
         if (arr.length > 0) {
-          console.log(res.data, 'xxx')
-          arr[0].children = arr[0].children ? arr[0].children : []
+          console.log(res.data, 'xxx');
+          arr[0].children = arr[0].children ? arr[0].children : [];
           arr[0].children.map(item => {
             minLine = item.percentage < minLine.percentage ? JSON.parse(JSON.stringify(item)) : minLine;
-          })
+          });
           arr = buildTree(arr);
           if (minLine.systemId) {
-            console.log(minLine, 'minLine')
-            minLine.reviewScore = arr[0].percentage
-            props.setAuditOpinionData(minLine)
+            console.log(minLine, 'minLine');
+            minLine.reviewScore = arr[0].percentage;
+            props.setAuditOpinionData(minLine);
           }
         }
         setData(v => ({ ...v, dataSource: arr }));

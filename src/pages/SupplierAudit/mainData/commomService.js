@@ -731,6 +731,16 @@ export const DeleteAuditRequirementsManagement = async (params = {}) => {
   });
 };
 
+//根据供应商code查地址
+export const GetSupplierAreaByCode = async (params = {}) => {
+  const url = `${smBaseUrl}/api/supplierService/findByCode`;
+  return request({
+    url,
+    method: 'GET',
+    params: params,
+  });
+};
+
 // 获取供应商联系人 /supplierContactService/findBySupplierId
 export const GetSupplierContact = async (params = {}) => {
   const url = `${smBaseUrl}/api/supplierContactService/findBySupplierId`;
