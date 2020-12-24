@@ -31,7 +31,7 @@ function SelfAssessment({
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const { query } = useLocation();
-  const { validateFieldsAndScroll, getFieldDecorator } = form;
+  const { validateFieldsAndScroll, getFieldDecorator, resetFields } = form;
   const columns = [
     {
       title: '类别',
@@ -139,20 +139,30 @@ function SelfAssessment({
       }
     })
   }
-  // function findTreeNodeAndSetValue(v) {
-  //   v.forEach(system => {
-  //     if (!!system.ruleId) {
-  //       form.setFieldsValue({
-  //         [system.ruleId]: system.score
-  //       })
-  //     } else {
-  //       if (!!system.children) {
-  //         findTreeNodeAndSetValue(system.children);
-  //       }
-  //     }
-  //   })
-  // }
+  function findNode(value, tree) {
+    if (!value) return
+    return tree.map(treeNode => {
+      //如果有子节点
+      if (treeNode.children.length > 0) {
+        //如果标题匹配
+        if (treeNode.name.indexOf(value) > -1 || treeNode.code.indexOf(value) > -1) {
+          return treeNode
+        } else {//如果标题不匹配，则查看子节点是否有匹配标题
+          treeNode.children = findNode(value, treeNode.children);
+          if (treeNode.children.length > 0) {
+            return treeNode
+          }
+        }
+      } else {//没子节点
+        if (treeNode.name.indexOf(value) > -1 || treeNode.code.indexOf(value) > -1) {
+          return treeNode
+        }
+      }
+      return null;
+    }).filter((treeNode) => treeNode)
+  }
   async function handleImport(file) {
+    await resetFields()
     const formData = new FormData();
     formData.append('file', file);
     formData.append('supplierRecommendDemandId', query.id)
@@ -162,8 +172,8 @@ function SelfAssessment({
     // const errors = data.filter(item => !!item.msg);
     if (success) {
       const uuid = getUUID();
-      setTableUUID(uuid)
-      setDataSource(data)
+      await setTableUUID(uuid)
+      await setDataSource(data)
       message.success('导入成功')
       return false
     }
@@ -191,7 +201,7 @@ function SelfAssessment({
     initialDataSource()
   }, [])
   return (
-    <div>
+    <div key={tableUUID}>
       <PageHeader
         ghost={false}
         title='自我评价'
@@ -207,7 +217,6 @@ function SelfAssessment({
         dataSource={dataSource}
         pagination={false}
         columns={columns}
-        key={tableUUID}
         bordered
         expandedRowKeys={expandedRowKeys}
         rowKey={item => item.key}

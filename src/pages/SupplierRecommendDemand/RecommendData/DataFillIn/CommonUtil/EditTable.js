@@ -14,7 +14,7 @@ import PropTypes from 'prop-types';
 import AutoSizeLayout from '../../../../supplierRegister/SupplierAutoLayout';
 import { guid, isEmptyArray, hideFormItem } from './utils';
 import UploadFile from '../../../../../components/Upload';
-import { currencyNoFrozenProps } from '../../../../../utils/commonProps';
+import { currencyTableProps } from '../../../../../utils/commonProps';
 import moment from 'moment';
 
 const EditableContext = React.createContext();
@@ -81,7 +81,7 @@ const EditableCell = (config) => {
       case 'hideForm':
         return <Input type={"hidden"} />
       case 'selectwithService':
-        return <ComboGrid {...currencyNoFrozenProps} form={form} afterSelect={afterSelect} />
+        return <ComboGrid {...currencyTableProps} form={form} afterSelect={afterSelect} />
       case 'percentInput':
         return <InputNumber min={0}
           max={100}

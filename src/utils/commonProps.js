@@ -206,7 +206,8 @@ export const currencyNoFrozenProps = {
     url: `${baseUrl}/currency/listByPage`,
     params: {
       Q_EQ_frozen__bool: 0
-    }
+    },
+    type: 'post'
   },
   remotePaging: true,
   searchProperties: ['code', 'name'],
@@ -241,7 +242,13 @@ export const currencyTableProps = {
     url: `${baseUrl}/api/currencyService/findByPage`,
     autoLoad: false,
     params: {
-      Q_EQ_frozen__bool: 0
+      filters: [
+        {
+          fieldName: 'frozen',
+          operator: 'EQ',
+          value: false
+        }
+      ]
     },
     type: 'POST'
   },
