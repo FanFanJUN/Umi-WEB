@@ -26,6 +26,7 @@ const AuditorInfoFrom = React.forwardRef(({ form, editData,leaderName }, ref) =>
 
   useImperativeHandle(ref, () => ({}));
   const [checkedKeys, setCheckedKeys] = useState([]);
+  const [expandedKeys, setExpandedKeys] = useState([]);
   const teamTableRef = useRef(null);
   const contentTableRef = useRef(null);
   // const [groupLeader, setGroupLeader] = useState(null);
@@ -72,6 +73,7 @@ const AuditorInfoFrom = React.forwardRef(({ form, editData,leaderName }, ref) =>
     });
     keys = Array.from(new Set(keys));
     setCheckedKeys(keys);
+    setExpandedKeys(keys);
   };
   const renderTreeNodes = (data) => {
     if (data.length > 0) {
@@ -163,6 +165,10 @@ const AuditorInfoFrom = React.forwardRef(({ form, editData,leaderName }, ref) =>
       setTreeData([]);
     }
   };
+
+  const onExpand = (expandedKeys) => {
+   setExpandedKeys(expandedKeys)
+  };
   return (
     <div className={styles.wrapper}>
       <div className={styles.bgw}>
@@ -216,6 +222,8 @@ const AuditorInfoFrom = React.forwardRef(({ form, editData,leaderName }, ref) =>
                 {treeData && treeData.length > 0 && < DirectoryTree
                   defaultExpandAll
                   checkedKeys={checkedKeys}
+                  expandedKeys={expandedKeys}
+                  onExpand={onExpand}
                   checkable
                 >
                   {renderTreeNodes(treeData)}
