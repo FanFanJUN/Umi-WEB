@@ -46,14 +46,14 @@ const AuditScoreForm = React.forwardRef(({ form, isView, editData, type }, ref) 
       ruleCode: data.ruleCode,
       reviewImplementPlanCode: data.reviewImplementPlanCode,
     });
-    setTargetScoringDetailVisible(true)
+    setTargetScoringDetailVisible(true);
   };
   const columns = [
     {
       title: '', dataIndex: 'id', width: 1, render: v => {
       },
     },
-    { title: '类别', dataIndex: 'systemName', width: 200},
+    { title: '类别', dataIndex: 'systemName', width: 200 },
     { title: '指标名称', dataIndex: 'ruleName', ellipsis: true, width: 100 },
     { title: '指标定义', dataIndex: 'definition', ellipsis: true, width: 120 },
     { title: '评分标准', dataIndex: 'scoringStandard', ellipsis: true, width: 160 },
@@ -74,7 +74,7 @@ const AuditScoreForm = React.forwardRef(({ form, isView, editData, type }, ref) 
       <div className={styles.bgw}>
         <div className={styles.title}>评审得分</div>
         <div className={styles.content}>
-          <ExtTable
+          {dataSource && dataSource.length > 0 && <ExtTable
             bordered={true}
             rowKey={(v) => v.id}
             showSearch={false}
@@ -83,7 +83,7 @@ const AuditScoreForm = React.forwardRef(({ form, isView, editData, type }, ref) 
             lineNumber={false}
             columns={columns}
             dataSource={dataSource}
-          />
+          />}
           <TargetScoringDetailView
             isView={true}
             params={params}

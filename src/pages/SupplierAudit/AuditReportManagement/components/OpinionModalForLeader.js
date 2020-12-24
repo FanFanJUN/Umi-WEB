@@ -28,7 +28,7 @@ const OpinionModalForLeader = forwardRef(({ editData, form, title }, ref) => {
   const [cleanFile, setCleanFile] = useState(false);
   const [needOpinion, setNeedOpinion] = useState(false);
   useEffect(() => {
-    setNeedOpinion(!editData.whetherFollowAuditConclusion);
+    setNeedOpinion(!editData.whetherPass);
   }, [editData]);
   useEffect(() => {
     setRequired();
@@ -60,11 +60,11 @@ const OpinionModalForLeader = forwardRef(({ editData, form, title }, ref) => {
 
   const onCancel = () => {
     form.setFieldsValue({
-      whetherLeaderDecisionPass: editData.whetherFollowAuditConclusion,
+      whetherLeaderDecisionPass: editData.whetherPass,
       leaderDecisionOpinion: null,
       leaderDecisionDocIds: [],
     });
-    setNeedOpinion(!editData.whetherFollowAuditConclusion);
+    setNeedOpinion(!editData.whetherPass);
     setCleanFile(true);
     setVisible(false);
   };
@@ -91,7 +91,7 @@ const OpinionModalForLeader = forwardRef(({ editData, form, title }, ref) => {
       <Col span={24}>
         <FormItem label="是否通过" {...formLayout}>
           {getFieldDecorator('whetherLeaderDecisionPass', {
-            initialValue:  editData.whetherFollowAuditConclusion ,
+            initialValue:  editData.whetherPass ,
             rules: [
               {
                 required: true,

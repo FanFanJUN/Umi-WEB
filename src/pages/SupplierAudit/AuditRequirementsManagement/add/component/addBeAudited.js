@@ -3,7 +3,7 @@ import { ComboTree, ComboList, ExtModal } from 'suid';
 import { Col, Form, Input, message, Row } from 'antd';
 import {
   AreaConfig, CountryIdConfig, DocumentAuditCauseManagementByReviewTypeConfig,
-  DocumentAuditCauseManagementConfig, GetSupplierContact, length_200_n,
+  DocumentAuditCauseManagementConfig, GetSupplierAreaByCode, GetSupplierContact, length_200_n,
   NormalSupplierConfig,
   SelectionStrategyConfig,
 } from '../../../mainData/commomService';
@@ -153,6 +153,25 @@ const AddBeAudited = (props) => {
         agentCode: supplier.code,
         agentId: supplier.id,
       });
+      GetSupplierAreaByCode({
+        code: value.originSupplierCode
+      }).then(res => {
+        if (res.success) {
+          const originSupplierData = res.data
+          console.log(originSupplierData, 'originSupplierData')
+          setFieldsValue({
+            countryId: originSupplierData.supplierExtend.countryId,
+            countryName: originSupplierData.supplierExtend.countryName,
+            provinceId: originSupplierData.supplierExtend.officeProvinceId,
+            provinceName: originSupplierData.supplierExtend.officeProvinceName,
+            cityId: originSupplierData.supplierExtend.officeRegionId,
+            cityName: originSupplierData.supplierExtend.officeRegionName,
+            countyId: originSupplierData.supplierExtend.officeDistrictId,
+            countyName: originSupplierData.supplierExtend.officeDistrictName,
+            address: originSupplierData.supplierExtend.officeStreet,
+          })
+        }
+      })
     } else {
       setFieldsValue({
         agentName: value.originSupplierName,
@@ -161,21 +180,21 @@ const AddBeAudited = (props) => {
         supplierName: supplier.name,
         supplierCode: supplier.code,
         supplierId: supplier.id,
+        countryId: supplierExtend.countryId,
+        countryName: supplierExtend.countryName,
+        provinceId: supplierExtend.officeProvinceId,
+        provinceName: supplierExtend.officeProvinceName,
+        cityId: supplierExtend.officeRegionId,
+        cityName: supplierExtend.officeRegionName,
+        countyId: supplierExtend.officeDistrictId,
+        countyName: supplierExtend.officeDistrictName,
+        address: supplierExtend.officeStreet,
       });
     }
     setFieldsValue({
       materialGroupName: materielCategory.name,
       materialGroupCode: materielCategory.code,
       materialGroupId: materielCategory.id,
-      countryId: supplierExtend.countryId,
-      countryName: supplierExtend.countryName,
-      provinceId: supplierExtend.officeProvinceId,
-      provinceName: supplierExtend.officeProvinceName,
-      cityId: supplierExtend.officeRegionId,
-      cityName: supplierExtend.officeRegionName,
-      countyId: supplierExtend.officeDistrictId,
-      countyName: supplierExtend.officeDistrictName,
-      address: supplierExtend.officeStreet,
     });
     getSupplierContact(value.supplierId);
     setData(v => ({ ...v, visible: false }));

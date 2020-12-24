@@ -5,14 +5,15 @@ import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
 import styles from './index.less';
 import { smBaseUrl } from '@/utils/commonUrl';
 import EditFrom from './EdItFrom'
-import { SystemDelete, SynchronizationList } from '../../../services/plmService'
+import { downloadBlobFile } from '../../../utils';
+import { SystemDelete, SynchronizationList, SynchronizationExportt } from '../../../services/plmService'
 import { onLineTarget } from '../../../../config/proxy.config';
 import {
     buListCode,
     buListName,
     qualifiedListName,
     PLMSynchronList,
-    PLMType
+    seniorplmType
 } from '../commonProps'
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const host = process.env.NODE_ENV === 'production' ? '' : onLineTarget;
@@ -37,10 +38,11 @@ function SupplierConfigure() {
     const { plmStatus: synchron } = signleRow;
     // 未选中数据的状态
     const empty = selectedRowKeys.length === 0;
-    // 同步
-    const synStatus = synchron === '0' || synchron === '2';
-    // 编辑
-    const EditStatus = synchron === '0';
+    // 未同步
+    const synStatus = synchron !== 0;
+    // 同步失败
+    const failStatus = synchron === 2 || synchron === 0;
+    const DOWNLOADNAME = '供应商发送PLM主数据.xls'
     const columns = [
         {
             title: '业务单元代码',
@@ -75,7 +77,7 @@ function SupplierConfigure() {
                 if (text === 0) {
                     return <div>未同步</div>;
                 } else if (text === 1) {
-                    return <div>已同步</div>;
+                    return <div>同步成功</div>;
                 } else if (text === 2) {
                     return <div>同步失败</div>;
                 } else {
@@ -102,7 +104,7 @@ function SupplierConfigure() {
         },
         {
             title: '同步时间',
-            width: 100,
+            width: 160,
             dataIndex: 'synTime',
         },
     ].map(_ => ({ ..._, align: 'center' }))
@@ -138,6 +140,10 @@ function SupplierConfigure() {
     }
     // 记录列表选中
     function handleSelectedRows(rowKeys, rows) {
+        if (rows[0]) {
+            rows[0].status === 0 ? rows[0].status = '有效' : rows[0].status = '冻结'
+        }
+
         setRowKeys(rowKeys);
         setRows(rows);
     }
@@ -201,20 +207,26 @@ function SupplierConfigure() {
             },
         });
     }
-    // 导入数据效验
-    const validateItem = (data) => {
-        return new Promise((resolve, reject) => {
-            Importvalidity(data).then(res => {
-                let response = res.data.map((item, index) => ({
-                    ...item,
-                    key: index,
-                    validate: item.importStatus,
-                    status: item.importStatus ? '数据完整' : '失败',
-                    statusCode: item.importStatus ? 'success' : 'error',
-                    message: item.importStatus ? '成功' : item.errMsg,
-                }));
-                resolve(response);
-            })
+    // 导出
+    async function handleExport() {
+        Modal.confirm({
+            title: '导出数据',
+            content: '是否导出数据？',
+            okText: '导出',
+            cancelText: '取消',
+            onOk: async () => {
+                // const search = {
+                //     ...searchValue,
+                //     quickSearchProperties
+                // }
+                const { success, message: msg, data } = await SynchronizationExportt()
+                if (success) {
+                    downloadBlobFile(data, DOWNLOADNAME);
+                    message.success('导出成功')
+                    return
+                }
+                message.error(msg)
+            }
         })
     }
     // 快速查询
@@ -249,47 +261,11 @@ function SupplierConfigure() {
                 authAction(
                     <Button type='primary'
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNMASTERDATA-ADD'
+                        key='SRM-SM-PLM-DETAILS-ADD'
                         className={styles.btn}
                         onClick={AddModel}
                     //disabled={empty}
                     >新增
-                                </Button>
-                )
-            }
-            {
-                authAction(
-                    <Button
-                        ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNMASTERDATA-EDIT'
-                        className={styles.btn}
-                        onClick={handleCheckEdit}
-                        disabled={empty || EditStatus}
-                    >编辑
-                                </Button>
-                )
-            }
-            {
-                authAction(
-                    <Button
-                        ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNMASTERDATA-EDIT'
-                        className={styles.btn}
-                        onClick={handleDelete}
-                        disabled={empty || EditStatus}
-                    >删除
-                                </Button>
-                )
-            }
-            {
-                authAction(
-                    <Button
-                        ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNMASTERDATA-FROZEN'
-                        className={styles.btn}
-                        onClick={() => handleFrozen('freeze')}
-                        disabled={empty}
-                    >导出
                     </Button>
                 )
             }
@@ -297,12 +273,47 @@ function SupplierConfigure() {
                 authAction(
                     <Button
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-PCNMASTERDATA-THAW'
+                        key='SRM-SM-PLM-DETAILS-EDIT'
+                        className={styles.btn}
+                        onClick={handleCheckEdit}
+                        disabled={empty || synStatus}
+                    >编辑
+                    </Button>
+                )
+            }
+            {
+                authAction(
+                    <Button
+                        ignore={DEVELOPER_ENV}
+                        key='SRM-SM-PLM-DETAILS-DELETE'
+                        className={styles.btn}
+                        onClick={handleDelete}
+                        disabled={empty || synStatus}
+                    >删除
+                    </Button>
+                )
+            }
+            {
+                authAction(
+                    <Button
+                        ignore={DEVELOPER_ENV}
+                        key='SRM-SM-PLM-DETAILS-SYNCH'
                         className={styles.btn}
                         onClick={handleSynchron}
-                        disabled={empty || synStatus}
+                        disabled={empty || !failStatus}
                     >同步
-                                </Button>
+                    </Button>
+                )
+            }
+            {
+                authAction(
+                    <Button
+                        ignore={DEVELOPER_ENV}
+                        key='SRM-SM-PLM-DETAILS-EXPORT'
+                        className={styles.btn}
+                        onClick={handleExport}
+                    >导出
+                    </Button>
                 )
             }
         </div>
@@ -333,7 +344,7 @@ function SupplierConfigure() {
         { title: '业务单元名称', key: 'Q_EQ_unitName', type: 'list', props: buListName },
         { title: '供应商代码', key: 'Q_EQ_supplierCode', type: 'list', props: qualifiedListName },
         { title: '同步PLM状态', key: 'Q_EQ_plmStatus', type: 'list', props: PLMSynchronList },
-        { title: '状态', key: 'Q_EQ_status', type: 'list', props: PLMType }
+        { title: '状态', key: 'Q_EQ_status', type: 'list', props: seniorplmType }
     ];
     return (
         <>
