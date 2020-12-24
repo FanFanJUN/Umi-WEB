@@ -20,29 +20,26 @@ const ShuttleBoxNew = (props) => {
   const { type, rightTreeData, leftTreeData } = props;
 
   useEffect(() => {
-    // destruction(data.rightTreeData);
-    tiledTree.getChildren(data.rightTreeData);
-    // leftData = duplicateRemoval(leftData, 'key');
-    props.onChange(tiledTree.treeData, operation);
+    const treeData = tiledTree(data.rightTreeData)
+    props.onChange(treeData, operation);
   }, [data.rightTreeData]);
 
   // 平铺多维数组
-  const tiledTree = (() => {
+  const tiledTree = (list) => {
     let treeData = [];
-    return {
-      getChildren: (arr) => {
-        arr.map(item => {
+    const tiled = (arr) => {
+      arr.map(item => {
           if (item.children && item.children.length !== 0) {
             treeData.push(item);
-            tiledTree.getChildren(item.children);
+            tiled(item.children);
           } else {
             treeData.push(item);
           }
         });
-      },
-      treeData,
-    };
-  })();
+      }
+    tiled(list)
+    return treeData
+  }
 
   useEffect(() => {
     leftData = [];
