@@ -65,7 +65,7 @@ const AuditorInfoFrom = React.forwardRef(({ form, editData,leaderName }, ref) =>
 
   const getCheckedKeys = (tree) => {
     tree.forEach(item => {
-      keys.push(item.id);
+      keys.push(item.systemId);
       if (item.children && item.children.length > 0) {
         getCheckedKeys(item.children);
       }
@@ -80,7 +80,9 @@ const AuditorInfoFrom = React.forwardRef(({ form, editData,leaderName }, ref) =>
           return (
             <TreeNode
               disableCheckbox={true}
-              title={item.systemName} key={item.id}>
+              title={item.systemName}
+              key={item.systemId}
+              >
               {renderTreeNodes(item.children)}
             </TreeNode>
           );
@@ -88,7 +90,8 @@ const AuditorInfoFrom = React.forwardRef(({ form, editData,leaderName }, ref) =>
         return <TreeNode
           disableCheckbox={true}
           title={item.systemName}
-          key={item.id} isLeaf/>;
+          key={item.systemId}
+          isLeaf/>;
       });
     } else {
       return;
