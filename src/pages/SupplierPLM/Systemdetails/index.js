@@ -43,6 +43,7 @@ function SupplierConfigure() {
     // 同步失败
     const failStatus = synchron === 2 || synchron === 0;
     const DOWNLOADNAME = '供应商发送PLM主数据.xls'
+    const quickSearchProperties = ['unitName', 'supplierCode', 'supplierName'];
     const columns = [
         {
             title: '业务单元代码',
@@ -121,7 +122,7 @@ function SupplierConfigure() {
                         direction: 'ASC'
                     }
                 ],
-                filters: seniorSearchvalue
+                ...seniorSearchvalue
             },
             type: 'POST'
         }
@@ -215,11 +216,12 @@ function SupplierConfigure() {
             okText: '导出',
             cancelText: '取消',
             onOk: async () => {
-                // const search = {
-                //     ...searchValue,
-                //     quickSearchProperties
-                // }
-                const { success, message: msg, data } = await SynchronizationExportt()
+                const params = {
+                    ...searchValue,
+                    quickSearchProperties,
+                    ...seniorSearchvalue
+                }
+                const { success, message: msg, data } = await SynchronizationExportt(params)
                 if (success) {
                     downloadBlobFile(data, DOWNLOADNAME);
                     message.success('导出成功')
@@ -250,7 +252,7 @@ function SupplierConfigure() {
                 value: !!isName ? undefined : v[item]
             }
         }).filter(item => !!item.value)
-        setSeniorsearchvalue(filters)
+        setSeniorsearchvalue(v => ({ ...v, filters: filters }));
         headerRef.current.hide();
         uploadTable();
     }

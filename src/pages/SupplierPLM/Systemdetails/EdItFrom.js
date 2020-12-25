@@ -155,11 +155,12 @@ const commonFormRef = forwardRef(({
                                 })(
                                     //<Input placeholder="请选择业务单元名称" disabled />
                                     <ComboList
-                                        showSearch={false}
+                                        showSearch={true}
                                         style={{ width: '100%' }}
                                         {...qualifiedList}
                                         name='supplierCode'
                                         field={['supplierId']}
+                                        searchProperties={['supplier.code', 'supplier.name']}
                                         form={form}
                                         afterSelect={hanleSupplier}
                                     />

@@ -69,9 +69,9 @@ export const qualifiedList = {
     params: {
       valid: 1,
     },
-    type: 'GET',
+    type: 'POST',
     autoLoad: false,
-    url: `${smBaseUrl}/supplierSupplyList/listPageVo`,
+    url: `${smBaseUrl}/api/supplierSupplyListExtService/findBySearch`,
   },
   rowKey: 'supplier.code',
   reader: {
@@ -119,7 +119,7 @@ export const qualifiedListName = {
   store: {
     type: 'POST',
     autoLoad: false,
-    url: `${smBaseUrl}/supplierSupplyList/listPageVo?valid=1`,
+    url: `${smBaseUrl}/api/supplierSupplyListExtService/findBySearch`,
   },
   rowKey: 'supplier.code',
   reader: {
@@ -128,6 +128,7 @@ export const qualifiedListName = {
     description: 'supplier.name',
   },
   placeholder: '选择供应商',
+  searchProperties: ['supplier.code', 'supplier.name']
 };
 // 重发状态
 export const Retransmission = {
