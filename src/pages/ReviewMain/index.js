@@ -144,6 +144,9 @@ function ReviewMain() {
             }}
             validateFunc={validateFunc}
             importFunc={importFunc}
+            okButtonProps={{
+              loading: spinning
+            }}
           />
         )
       }
