@@ -209,7 +209,6 @@ const SupplierEditRef = forwardRef(({
         {
           configure.map((item, index) => {
             if (item.smMsgTypeCode !== '3' && item.fieldCode === 'name') {
-              console.log(editData)
               return (
                 <div className={styles.bgw}>
                   <div className={styles.title}>基本信息</div>
