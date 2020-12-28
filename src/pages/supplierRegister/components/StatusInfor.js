@@ -8,7 +8,7 @@
 
 import React, { forwardRef, useImperativeHandle, useEffect, useState } from 'react';
 import { Button, Row, Col, Form, Input, DatePicker, message } from 'antd';
-
+import { isEmpty } from '@/utils';
 const { create } = Form;
 const FormItem = Form.Item;
 
@@ -30,7 +30,7 @@ const StatusInfor = forwardRef(({
 
     useEffect(() => {
 
-    }, [editData])
+    }, [])
 
     return (
         <Form>
@@ -50,7 +50,7 @@ const StatusInfor = forwardRef(({
                         {...formItemLayout}
                         label={'方案冻结状态'}
                     >
-                        <span>{editData && editData.supplierVo && editData.supplierVo.planFrozen ? '是' : '否'}</span>
+                        <span>{editData && editData.supplierVo && (!isEmpty(editData.supplierVo.planFrozen)) ? editData.supplierVo.planFrozen === false ? '否' : '是' : '否'}</span>
                     </FormItem>
                 </Col>
                 <Col span={12}>
@@ -58,7 +58,7 @@ const StatusInfor = forwardRef(({
                         {...formItemLayout}
                         label={'报价冻结状态'}
                     >
-                        <span>{editData && editData.extendVo && editData.supplierVo.offerFrozen === false ? '是' : '否'}</span>
+                        <span>{editData && editData.extendVo && (!isEmpty(editData.supplierVo.offerFrozen)) ? editData.supplierVo.offerFrozen === false ? '否' : '是' : '否'}</span>
                     </FormItem>
                 </Col>
             </Row>
@@ -68,7 +68,7 @@ const StatusInfor = forwardRef(({
                         {...formItemLayout}
                         label={'下单冻结状态'}
                     >
-                        <span>{editData && editData.supplierVo && editData.supplierVo.orderFrozen === false ? '是' : '否'}</span>
+                        <span>{editData && editData.supplierVo && (!isEmpty(editData.supplierVo.orderFrozen)) ? editData.supplierVo.orderFrozen === false ? '否' : '是' : '否'}</span>
                     </FormItem>
                 </Col>
                 <Col span={12}>
@@ -76,7 +76,7 @@ const StatusInfor = forwardRef(({
                         {...formItemLayout}
                         label={'付款冻结状态'}
                     >
-                        <span>{editData && editData.supplierVo && editData.supplierVo.payFrozen === false ? '是' : '否'}</span>
+                        <span>{editData && editData.supplierVo && (!isEmpty(editData.supplierVo.payFrozen)) ? editData.supplierVo.payFrozen === false ? '否' : '是' : '否'}</span>
                     </FormItem>
                 </Col>
 

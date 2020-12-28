@@ -33,6 +33,11 @@ function SupplierConfigure() {
             }
         },
         {
+            title: '发送时间',
+            width: 200,
+            dataIndex: 'createdDate',
+        },
+        {
             title: '返回报文',
             width: 220,
             dataIndex: 'retData',
@@ -42,7 +47,7 @@ function SupplierConfigure() {
         },
         {
             title: '供应商代码',
-            width: 100,
+            width: 120,
             dataIndex: 'supplierCode',
         },
         {

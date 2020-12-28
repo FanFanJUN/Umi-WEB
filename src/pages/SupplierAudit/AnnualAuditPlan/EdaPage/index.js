@@ -3,7 +3,7 @@
  * @LastEditors  : LiCai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:04:51
- * @LastEditTime : 2020-12-21 14:17:06
+ * @LastEditTime : 2020-12-24 16:47:59
  * @Description: 新增  编辑  详情 page
  * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/index.js
  */
@@ -138,13 +138,26 @@ const Index = (props) => {
 
             // 校验行数据
             for (const item of finnalLineData) {
-                if (!item.reviewTypeCode || !item.reviewReasonCode 
-                    || !item.reviewWayCode || !item.reviewMonth || !item.contactUserName || !item.contactUserTel || !item.countryCode) {
-                    if (buttonType === 'onlySave') {
-                        message.error(`${item.reviewPlanYearLinenum}行上必填项为空, 请完善`);
-                    }
-                    allData = { bool: false, message: `${item.reviewPlanYearLinenum}行上必填项为空, 请完善` };
-                    break;
+                if (
+                  !item.reviewTypeCode ||
+                  !item.reviewReasonCode ||
+                  !item.reviewWayCode ||
+                  !item.reviewMonth ||
+                  !item.contactUserName ||
+                  !item.contactUserTel ||
+                  !item.countryName ||
+                  !item.provinceName ||
+                  !item.cityName ||
+                  !item.countyName
+                ) {
+                  if (buttonType === 'onlySave') {
+                    message.error(`${item.reviewPlanYearLinenum}行上必填项为空, 请完善`);
+                  }
+                  allData = {
+                    bool: false,
+                    message: `${item.reviewPlanYearLinenum}行上必填项为空, 请完善`,
+                  };
+                  break;
                 }
             }
 

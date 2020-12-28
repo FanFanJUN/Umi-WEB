@@ -3,7 +3,7 @@
  * @LastEditors  : LiCai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime : 2020-12-22 09:25:02
+ * @LastEditTime : 2020-12-25 11:12:11
  * @Description: 行信息
  * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
@@ -13,9 +13,10 @@ import { Form, Button, message, Modal } from 'antd';
 import { ExtTable } from 'suid';
 import AddModal from './AddModal';
 import BatchEditModal from './BatchEditModal';
-import { isEmptyArray } from '../../../../utils/utilTool';
+import { isEmptyArray, isEmptyObject } from '../../../../utils/utilTool';
 import moment from 'moment';
 import { reviewTypesProps } from '../propsParams';
+import { GetSupplierAreaByCode, GetSupplierContact } from '../../mainData/commomService';
 
 const { confirm } = Modal;
 let LineInfo = (props, ref) => {
@@ -218,9 +219,47 @@ let LineInfo = (props, ref) => {
     setData(() => ({ visible: false, selectRows: [], selectedRowKeys: [] }));
   }
 
-  function handleOk(tableData, buttonFlag) {
+  // 获取供应商联系人
+  function getSupplierContact(id){
+     let res = {};
+     GetSupplierContact({
+       supplierId: id,
+     }).then(res => {
+       res = (res.data && res.data[0]) || {};
+     });
+     return res;
+  };
+
+  async function handleOk(tableData, buttonFlag) {
     console.log(tableData);
+    // 获取供应商 生产厂地址
+    let originSupplierCodeList = [];
+
     tableData.forEach(item => {
+      if (item.supplier && item.originSupplierCode) {
+        originSupplierCodeList.push(item.originSupplierCode);
+      }
+    });
+    // 去重
+    const finnalCode = [...new Set(originSupplierCodeList)];
+    let resoriginSupplierList = [];
+    if(!isEmptyArray(finnalCode)) {
+      const requestPromise = finnalCode.map(item => {
+        return GetSupplierAreaByCode({ code: item });
+      });
+      try {
+        const res = await Promise.all(requestPromise);
+        if (!isEmptyArray(res)) {
+          resoriginSupplierList = res.map(item => ({
+            code: item.data.code,
+            supplierExtend: item.data.supplierExtend,
+          }));
+        }
+      } catch (error) {
+      }
+    }
+    
+    tableData.forEach( (item) => {
       // 需求公司
       item.applyCorporationCode = item.corporation.code;
       item.applyCorporationId = item.corporation.id;
@@ -238,6 +277,24 @@ let LineInfo = (props, ref) => {
         item.agentCode = item.supplier.code;
         item.agentName = item.supplier.name;
         item.agentId = item.supplier.id;
+        // 地址
+        if(!isEmptyArray(resoriginSupplierList)) {
+          const supplierExtendList = resoriginSupplierList.map(originItem => {
+            if (item.originSupplierCode === originItem.code) {
+              return originItem.supplierExtend;
+            }
+          });
+          const supplierExtend = supplierExtendList[0] || {};
+          item.countryId = supplierExtend.countryId || '';
+          item.countryName = supplierExtend.countryName || '';
+          item.provinceId = supplierExtend.officeProvinceId || '';
+          item.provinceName = supplierExtend.officeProvinceName || '';
+          item.cityId = supplierExtend.officeRegionId || '';
+          item.cityName = supplierExtend.officeRegionName || '';
+          item.countyId = supplierExtend.officeDistrictId || '';
+          item.countyName = supplierExtend.officeDistrictName || '';
+          item.address = supplierExtend.officeStreet || '';
+        }
       } else {
         // 供应商
         item.supplierCode = item.supplier.code;
@@ -247,6 +304,17 @@ let LineInfo = (props, ref) => {
         //代理商
         item.agentCode = item.originSupplierCode;
         item.agentName = item.originSupplierName;
+        //地址
+        const  supplierExtend  = item?.supplier?.supplierExtend;
+        item.countryId = supplierExtend?.countryId || '';
+        item.countryName = supplierExtend?.countryName || '';
+        item.provinceId = supplierExtend?.officeProvinceId || '';
+        item.provinceName = supplierExtend?.officeProvinceName || '';
+        item.cityId = supplierExtend?.officeRegionId || '';
+        item.cityName = supplierExtend?.officeRegionName || '';
+        item.countyId = supplierExtend?.officeDistrictId || '';
+        item.countyName = supplierExtend?.officeDistrictName || '';
+        item.address = supplierExtend?.officeStreet || '';
       }
       // 物料分类
       item.materialGroupCode = item.materielCategory.code;
@@ -265,15 +333,29 @@ let LineInfo = (props, ref) => {
       // 选择数据ID
       item.rowId = item.id;
     })
-    const newTableList = JSON.parse(JSON.stringify(dataSource));
+    // 联系方式
+    for ( let i=0; i<tableData.length; i++ ) {
+      　//await的必须是个Promise
+        await GetSupplierContact({
+          supplierId: tableData[i].supplier.id,
+        }).then((res)=>{
+          console.log(res);
+          const contractObj = res.data && !isEmptyArray(res.data) && res.data[0];
+          tableData[i].contactUserName = contractObj.name;
+          tableData[i].contactUserTel = contractObj.mobile;
+        });
+      }
+    let newTableList = JSON.parse(JSON.stringify(dataSource));
     // 是否选择有重复数据 以需求公司、采购组织、供应商、物料分类、物料级别 判断唯一性
-    const chooseDataKeys = tableData.map((item) =>
-      `${item.applyCorporationCode}${item.purchaseTeamCode}${item.materialGroupCode}${item.supplierCode}${item.materialGradeCode}${item.agentCode}`
+    const chooseDataKeys = tableData.map(
+      item =>
+        `${item.applyCorporationCode}${item.purchaseTeamCode}${item.materialGroupCode}${item.supplierCode}${item.materialGradeCode}${item.agentCode}`,
     );
     let checkFlag = false;
     if (!isEmptyArray(newTableList)) {
-      const originDataKeys = newTableList.map((item) =>
-        `${item.applyCorporationCode}${item.purchaseTeamCode}${item.materialGroupCode}${item.supplierCode}${item.materialGradeCode}${item.agentCode}`
+      const originDataKeys = newTableList.map(
+        item =>
+          `${item.applyCorporationCode}${item.purchaseTeamCode}${item.materialGroupCode}${item.supplierCode}${item.materialGradeCode}${item.agentCode}`,
       );
       for (let item of originDataKeys) {
         if (chooseDataKeys.includes(item)) {
