@@ -69,6 +69,7 @@ const AddModal = (props) => {
         ];
       case 'recommand':
         return [
+          { title: '提出日期', dataIndex: 'recommendAccess', ellipsis: true, width: 150, render: (v, record) => record.recommendAccess.createdDate },
           { title: '准入推荐号', dataIndex: 'docNumber', ellipsis: true, width: 140, render: (v, record) => <a onClick={(e) => jumpToRecommand(e, record)}>{v}</a> },
           {
             title: '需求公司', dataIndex: 'corporationName', width: 200, ellipsis: true, render: (text, item) => {
