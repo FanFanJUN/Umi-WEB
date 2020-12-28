@@ -47,7 +47,8 @@ function PutForwardOpinion({
       },
       {
         title: '意见',
-        dataIndex: 'opinion'
+        dataIndex: 'opinion',
+        width: 250
       },
       {
         title: '提交时间',

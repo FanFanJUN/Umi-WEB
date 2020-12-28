@@ -149,7 +149,8 @@ function RecommendDataTable() {
     columns: [
       {
         title: '意见',
-        dataIndex: 'opinion'
+        dataIndex: 'opinion',
+        width: 250
       },
       {
         title: '提出意见时间',

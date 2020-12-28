@@ -10,6 +10,7 @@
 import { useState, useEffect } from 'react';
 import { Form } from 'antd';
 import EditTable from '../CommonUtil/EditTable';
+import moment from 'moment';
 
 const SalesProfit = ({ data=[], type, setTableData }) => {
   useEffect(() => {
@@ -24,10 +25,9 @@ const SalesProfit = ({ data=[], type, setTableData }) => {
       editable: true,
       inputType: 'YearPicker',
       props: {
+        disabledDate: (current) => current && current > moment()
         // mode: 'year'
       }
-      // inputType: 'in',
-      //  required: false
     },
     {
       title: "含税销售金额（万元）",

@@ -101,6 +101,7 @@ const SelfAssessment = forwardRef(({
     {
       title: '意见描述',
       dataIndex: 'opinion',
+      width: 250,
       render(text, record) {
         if (type === 'detail') {
           return text

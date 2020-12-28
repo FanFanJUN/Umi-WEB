@@ -345,6 +345,11 @@ export default [
         title: '编辑供应商推荐需求'
       },
       {
+        path: '/supplier/recommend/demand/approve/editor',
+        component: './SupplierRecommendDemand/ApproveEditorRecommendDemand',
+        title: '审核中编辑-供应商推荐需求'
+      },
+      {
         path: '/supplier/recommend/demand/detail',
         component: './SupplierRecommendDemand/DetailRecommendDemand',
         title: '供应商推荐需求明细'

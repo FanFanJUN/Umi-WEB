@@ -53,6 +53,14 @@ const SelfAssessment = forwardRef(({
       width: 150
     },
     {
+      title: '不适用',
+      dataIndex: 'notApplicable',
+      render(text, record) {
+        return Array.isArray(record?.jurorScores) ? record?.jurorScores.map(item => <div>{`${item.scorerName}：${item.notApplicable ? '是' : '否'}`}</div>) : ''
+      },
+      width: 150
+    },
+    {
       title: '得分',
       dataIndex: 'score',
       width: 150
@@ -63,6 +71,11 @@ const SelfAssessment = forwardRef(({
       render(text) {
         return Array.isArray(text) ? text.map(item => <div>{`${item.scorerName}：${item.score}`}</div>) : ''
       },
+      width: 150
+    },
+    {
+      title: '百分比',
+      dataIndex: 'percent',
       width: 150
     }
   ]

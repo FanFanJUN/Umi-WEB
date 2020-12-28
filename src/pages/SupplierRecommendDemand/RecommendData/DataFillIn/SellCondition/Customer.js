@@ -195,7 +195,10 @@ const Customer = React.forwardRef(({
       render: (text) => {
         return text && moment(text).format('YYYY-MM-DD');
       },
-      inputType: 'DatePicker'
+      inputType: 'DatePicker',
+      props: {
+        disabledDate: (current) => current && current > moment()
+      }
     },
     {
       title: '供货数量',
@@ -351,7 +354,6 @@ const Customer = React.forwardRef(({
     setsupplierOrderInfos(supplierOrderInfos.map(item => ({ ...item, guid: item.id })))
     setthreeYearPlans(threeYearPlans.map(item => ({ ...item, guid: item.id })))
   }, [data])
-  console.log(threeYearPlans)
   return (
     <div>
       <Divider orientation='left'>总体情况</Divider>

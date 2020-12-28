@@ -8,6 +8,7 @@ import {
   InputNumber,
   Form,
   Upload,
+  Select,
   Modal
 } from 'antd';
 import { router } from 'dva';
@@ -18,6 +19,7 @@ import { downloadBlobFile } from '../../../../utils';
 
 const { useLocation } = router;
 const { Item } = Form
+const { Option } = Select;
 const { getUUID } = utils;
 
 function SelfAssessment({
@@ -31,7 +33,12 @@ function SelfAssessment({
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const { query } = useLocation();
-  const { validateFieldsAndScroll, getFieldDecorator, resetFields } = form;
+  const {
+    validateFieldsAndScroll,
+    getFieldDecorator,
+    resetFields,
+    getFieldValue
+  } = form;
   const columns = [
     {
       title: '类别',
@@ -51,7 +58,38 @@ function SelfAssessment({
     },
     {
       title: '最高分',
-      dataIndex: 'highestScore'
+      dataIndex: 'highestScore',
+      width: 120
+    },
+    {
+      title: '不适用',
+      dataIndex: 'notApplicable',
+      width: 120,
+      render(text, record) {
+        if (type === 'detail') {
+          return Object.is(null, text) ? '' : !!text ? '是' : '否'
+        }
+        if (!!record.ruleId) {
+          return <Item style={{ marginBottom: 0 }}>
+            {
+              getFieldDecorator(`notApplicable_${record.ruleId}`, {
+                rules: [
+                  {
+                    required: true,
+                    message: '请选择是否适用'
+                  }
+                ],
+                initialValue: text,
+              })(
+                <Select style={{ width: 80 }}>
+                  <Option value={true} label='是'>是</Option>
+                  <Option value={false} label='否'>否</Option>
+                </Select>
+              )
+            }
+          </Item>
+        }
+      }
     },
     {
       title: '得分',
@@ -61,22 +99,33 @@ function SelfAssessment({
           return text
         }
         if (!!record.ruleId) {
+          const nab = getFieldValue(`notApplicable_${record.ruleId}`)
           return <Item style={{ marginBottom: 0 }}>
             {
               getFieldDecorator(`${record.ruleId}`, {
                 rules: [
                   {
-                    required: true,
+                    required: !nab,
                     message: '请打分'
                   }
                 ],
                 initialValue: record.score,
-              })(<InputNumber max={record.highestScore} min={0} />)
+              })(
+                <InputNumber
+                  max={record.highestScore}
+                  min={0}
+                  disabled={nab}
+                />
+              )
             }
           </Item>
         }
         return text
       }
+    },
+    {
+      title: '百分比',
+      dataIndex: 'percent'
     }
   ]
   const left = (
@@ -92,10 +141,15 @@ function SelfAssessment({
   );
   async function handleSave() {
     const values = await validateFieldsAndScroll();
+    const ntReg = /^notApplicable_/;
     const ids = Object.keys(values);
-    const scores = ids.map(item => ({
+    const sKeys = ids.filter(item => ntReg.test(item));
+    const sV = sKeys.map(item=> values[item]);
+    const scoresKeys = ids.filter(item => !ntReg.test(item));
+    const scores = scoresKeys.map((item, index) => ({
       ruleId: item,
-      score: values[item]
+      score: values[item],
+      notApplicable: sV[index]
     }))
     setConfirmLoading(true)
     const { success, message: msg } = await saveSelfAssessment(scores);

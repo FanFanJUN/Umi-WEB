@@ -260,7 +260,6 @@ function Quality({
             okButtonProps={{
               loading: loading
             }}
-            key
           />
           {/* <Button className={styles.btn}>导入评价数据</Button> */}
         </div>
