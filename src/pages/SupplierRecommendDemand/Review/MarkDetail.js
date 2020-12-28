@@ -102,7 +102,7 @@ const SelfAssessment = forwardRef(({
         pagination={false}
         columns={columns}
         bordered
-        rowKey={item => item.id}
+        rowKey={item => item.key}
       />
     </div>
   )
