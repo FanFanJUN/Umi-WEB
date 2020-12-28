@@ -8,6 +8,7 @@ import EditFrom from './EdItFrom'
 import { downloadBlobFile } from '../../../utils';
 import { SystemDelete, SynchronizationList, SynchronizationExportt } from '../../../services/plmService'
 import { onLineTarget } from '../../../../config/proxy.config';
+
 import {
     buListCode,
     buListName,
@@ -22,7 +23,6 @@ const confirm = Modal.confirm;
 const { authAction, storage } = utils;
 const { FlowHistoryButton } = WorkFlow;
 function SupplierConfigure() {
-    const getModelRef = useRef(null)
     const tableRef = useRef(null)
     const headerRef = useRef(null)
     const commonFormRef = useRef(null)
@@ -256,6 +256,7 @@ function SupplierConfigure() {
         headerRef.current.hide();
         uploadTable();
     }
+
     // 左侧
     const HeaderLeftButtons = (
         <div style={{ width: '50%', display: 'flex', height: '100%', alignItems: 'center' }}>
@@ -381,6 +382,7 @@ function SupplierConfigure() {
                     />
                 }
             </AutoSizeLayout>
+
             <EditFrom
                 title={tabtitle}
                 modifydata={selectedRows[0]}
