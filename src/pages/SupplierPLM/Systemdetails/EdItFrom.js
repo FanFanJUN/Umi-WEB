@@ -1,10 +1,13 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useRef, useState } from 'react';
-import { Modal, Form, Row, Col, Input, message } from 'antd';
+import { Modal, Form, Row, Col, Input, message, Button } from 'antd';
 import { buList } from '../commonProps'
-import { ComboList } from 'suid';
+import { ComboList, utils, AuthButton } from 'suid';
 import { SystemdataSave, MasterdataList } from '../../../services/plmService'
 import { PLMType, qualifiedList } from '../commonProps'
 import { isEmpty } from '../../../utils/index'
+import QualifiedModle from './qualifiedModle'
+const { storage } = utils;
+
 const { create, Item } = Form;
 const { TextArea } = Input;
 const formLayout = {
@@ -25,26 +28,31 @@ const commonFormRef = forwardRef(({
     useImperativeHandle(ref, () => ({
         handleModalVisible,
     }));
-    const getTrustinfor = useRef(null)
+    const getecommendRef = useRef(null)
     const { getFieldDecorator, validateFieldsAndScroll, getFieldValue, setFieldsValue } = form;
     const [visible, setvisible] = useState(false);
     const [supplier, setsupplier] = useState('');
     useEffect(() => {
     }, []);
+
+    function handleSupplier() {
+        getecommendRef.current.handleModalqualified(true)
+    }
+    // 合格供应商
+    function selectanalysis(record) {
+        console.log(record)
+        form.setFieldsValue({
+            'supplierId': record[0].supplier.id,
+            'supplierCode': record[0].supplier.code,
+            'supplierName': record[0].supplier.name,
+            'supplierAbbreviation': record[0].supplier.abbreviation,
+            'unitCode': record[0].buCode,
+            'unitName': record[0].buName
+        })
+    }
     function handleModalVisible(flag) {
         setvisible(!!flag)
     };
-    function handlBusiness(val) {
-        form.setFieldsValue({
-            'unitName': val.buName,
-        })
-    }
-    function hanleSupplier(val) {
-        form.setFieldsValue({
-            'supplierName': val.supplier.name,
-            'supplierAbbreviation': val.supplier.abbreviation
-        })
-    }
     function handleSubmit() {
         validateFieldsAndScroll(async (err, val) => {
             let params, business = [];
@@ -97,11 +105,70 @@ const commonFormRef = forwardRef(({
                 maskClosable={false}
                 onOk={handleSubmit}
             >
+
+                <Row>
+                    <Col span={12}>
+                        <Item {...formLayout} label="供应商代码">
+                            {
+                                //getFieldDecorator('supplierId', { initialValue: modifydata ? modifydata && modifydata.supplierId : '' }),
+                                getFieldDecorator('supplierCode', {
+                                    initialValue: modifydata && modifydata.supplierCode,
+                                    rules: [
+                                        {
+                                            required: true,
+                                            message: '请选择供应商',
+                                        },
+                                    ],
+                                })(
+
+                                    <Input
+                                        style={{
+                                            width: '69%',
+                                            marginRight: '1%',
+                                        }}
+                                        placeholder="请选择供应商" disabled />
+
+
+                                    // <ComboList
+                                    //     showSearch={true}
+                                    //     style={{ width: '100%' }}
+                                    //     {...qualifiedList}
+                                    //     name='supplierCode'
+                                    //     field={['supplierId']}
+                                    //     searchProperties={['supplier.code', 'supplier.name']}
+                                    //     form={form}
+                                    //     afterSelect={hanleSupplier}
+                                    // />
+                                )
+                            }
+                            {!type || type ?
+                                <Button
+                                    style={{ width: '29%' }}
+                                    onClick={() => handleSupplier()}
+                                >选择</Button> : ''}
+                        </Item>
+                    </Col>
+                    <Col span={12}>
+                        <Item {...formLayout} label="供应商全称">
+                            {getFieldDecorator('supplierName', {
+                                initialValue: modifydata && modifydata.supplierName,
+                                rules: [
+                                    {
+                                        required: true,
+                                        message: '请选择供应商名称',
+                                    },
+                                ],
+                            })(
+                                <Input placeholder="请选择供应商名称" disabled />
+                            )}
+                        </Item>
+                    </Col>
+                </Row>
                 <Row>
                     <Col span={12}>
                         <Item {...formLayout} label="业务单元代码">
                             {
-                                getFieldDecorator('unitId', { initialValue: modifydata ? modifydata && modifydata.unitId : '' }),
+                                //getFieldDecorator('unitId', { initialValue: modifydata ? modifydata && modifydata.unitId : '' }),
                                 getFieldDecorator('unitCode', {
                                     initialValue: modifydata && modifydata.unitCode,
                                     rules: [
@@ -111,15 +178,16 @@ const commonFormRef = forwardRef(({
                                         },
                                     ],
                                 })(
-                                    <ComboList
-                                        showSearch={true}
-                                        style={{ width: '100%' }}
-                                        {...buList}
-                                        name='unitCode'
-                                        field={['unitId']}
-                                        form={form}
-                                        afterSelect={handlBusiness}
-                                    />
+                                    // <ComboList
+                                    //     showSearch={true}
+                                    //     style={{ width: '100%' }}
+                                    //     {...buList}
+                                    //     name='unitCode'
+                                    //     field={['unitId']}
+                                    //     form={form}
+                                    //     afterSelect={handlBusiness}
+                                    // />
+                                    <Input placeholder="请选择业务单元名称" disabled />
                                 )}
                         </Item>
                     </Col>
@@ -135,51 +203,6 @@ const commonFormRef = forwardRef(({
                                 ],
                             })(
                                 <Input placeholder="请选择业务单元名称" disabled />
-                            )}
-                        </Item>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={12}>
-                        <Item {...formLayout} label="供应商代码">
-                            {
-                                getFieldDecorator('supplierId', { initialValue: modifydata ? modifydata && modifydata.supplierId : '' }),
-                                getFieldDecorator('supplierCode', {
-                                    initialValue: modifydata && modifydata.supplierCode,
-                                    rules: [
-                                        {
-                                            required: true,
-                                            message: '请选择供应商',
-                                        },
-                                    ],
-                                })(
-                                    //<Input placeholder="请选择业务单元名称" disabled />
-                                    <ComboList
-                                        showSearch={true}
-                                        style={{ width: '100%' }}
-                                        {...qualifiedList}
-                                        name='supplierCode'
-                                        field={['supplierId']}
-                                        searchProperties={['supplier.code', 'supplier.name']}
-                                        form={form}
-                                        afterSelect={hanleSupplier}
-                                    />
-                                )
-                            }
-                        </Item>
-                    </Col>
-                    <Col span={12}>
-                        <Item {...formLayout} label="供应商全称">
-                            {getFieldDecorator('supplierName', {
-                                initialValue: modifydata && modifydata.supplierName,
-                                rules: [
-                                    {
-                                        required: true,
-                                        message: '请选择供应商名称',
-                                    },
-                                ],
-                            })(
-                                <Input placeholder="请选择供应商名称" disabled />
                             )}
                         </Item>
                     </Col>
@@ -227,6 +250,11 @@ const commonFormRef = forwardRef(({
                     </Col>
                 </Row>
             </Modal>
+            {/*** 合格通知单*/}
+            <QualifiedModle
+                modifyanalysis={selectanalysis}
+                wrappedComponentRef={getecommendRef}
+            />
         </>
     );
 },
