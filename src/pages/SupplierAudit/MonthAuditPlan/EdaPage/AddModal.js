@@ -12,6 +12,7 @@ import {
 } from '../../mainData/commomService';
 import { recommendUrl } from '@/utils/commonUrl';
 import { findRequirementLine, findYearLineLine, findAccessLineLine, findRecommendAccessByDataAuth } from '../service';
+import { openNewTab } from '../../../../utils';
 
 const FormItem = Form.Item;
 const { MonthPicker } = DatePicker;
@@ -101,7 +102,7 @@ const AddModal = (props) => {
               return item.reviewRequirementVo && item.reviewRequirementVo.applyDate && item.reviewRequirementVo.applyDate.slice(0, 10);
             },
           },
-          { title: '审核需求号', dataIndex: 'reviewRequirementCode', ellipsis: true, width: 140 },
+          { title: '审核需求号', dataIndex: 'reviewRequirementCode', ellipsis: true, width: 140, render: (v, record) => <a onClick={(e) => jumpToDemand(e, record)}>{v}</a> },
           {
             title: '需求公司', dataIndex: 'corporation', width: 180, ellipsis: true, render: (text, item) => {
               return item.reviewRequirementVo && item.reviewRequirementVo.applyCorporationCode + ' ' + item.reviewRequirementVo.applyCorporationName;
@@ -130,6 +131,12 @@ const AddModal = (props) => {
         ];
     }
   };
+
+  // 跳转到审核需求界面
+  const jumpToDemand = (e, record) => {
+    e.stopPropagation()
+    openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=detail&id=${record.reviewRequirementId}&reviewRequirementCode=${record.reviewRequirementCode}`, '审核需求明细', false);
+  }
 
   const getStore = () => {
     if (type === 'annual') {
@@ -417,6 +424,7 @@ const AddModal = (props) => {
         height={type === 'demand' ? '40vh' : '50vh'}
         checkbox={{ multiSelect: true }}
         onSelectRow={(key, rows) => {
+          console.log(rows)
           setselectedRowKeys(key);
           setselectRows(rows);
         }}
