@@ -222,6 +222,9 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
       ellipsis: true,
       editable: true,
       inputType: 'DatePicker',
+      props: {
+        disabledDate: (current) => current && current > moment()
+      }
     },
     {
       title: "数量",

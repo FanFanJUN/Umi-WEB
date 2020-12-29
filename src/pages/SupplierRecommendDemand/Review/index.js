@@ -30,7 +30,7 @@ const SelfAssessment = forwardRef(({
   updateGlobalStatus = () => null,
   type = 'create'
 }, ref) => {
-  const { validateFieldsAndScroll, getFieldDecorator, setFieldsValue } = form;
+  const { validateFieldsAndScroll, getFieldDecorator, setFieldsValue, getFieldValue } = form;
   useImperativeHandle(ref, () => ({
     validateFieldsAndScroll,
     getAllParams: handleSave
@@ -54,7 +54,8 @@ const SelfAssessment = forwardRef(({
     },
     {
       title: '最高分',
-      dataIndex: 'samSupplierEvlSysRule.highestScore'
+      dataIndex: 'samSupplierEvlSysRule.highestScore',
+      width: 150
     },
     {
       title: '不适用',

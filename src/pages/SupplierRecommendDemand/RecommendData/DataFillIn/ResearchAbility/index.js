@@ -94,6 +94,9 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
       ellipsis: true,
       editable: true,
       inputType: 'DatePicker',
+      props: {
+        disabledDate: (current) => current && current > moment()
+      },
       width: 160,
     },
     {
