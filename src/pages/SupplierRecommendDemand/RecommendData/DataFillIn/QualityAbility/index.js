@@ -129,6 +129,9 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
       ellipsis: true,
       editable: true,
       inputType: 'DatePicker',
+      props: {
+        disabledDate: (current) => current && current > moment()
+      }
     },
     {
       title: "数量",
@@ -149,7 +152,6 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
       dataIndex: "accuracy",
       ellipsis: true,
       editable: true,
-      inputType: 'InputNumber',
     },
     {
       title: "备注",
