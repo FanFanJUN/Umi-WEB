@@ -8,14 +8,16 @@
  */
 // 从年度审核新增
 import React, { useState, useRef } from "react";
-import { Button } from "antd";
+import { Button, Modal } from 'antd';
 import { ExtTable, ExtModal, WorkFlow, message } from 'suid';
 import { StartFlow } from 'seid';
 import { recommendUrl } from '@/utils/commonUrl';
 import { openNewTab, getUserAccount } from '../../../../utils';
-import Upload from "../../Upload";
 import { deleteChangeById } from "../service";
 import ChangeLineModal from "./ChangeLineModal";
+import { judge } from '../../../QualitySynergy/commonProps';
+import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
+import { EndFlow } from '../../mainData/commomService';
 
 const { FlowHistoryButton } = WorkFlow;
 
@@ -25,6 +27,9 @@ const ChangeHistory = (props) => {
     const [selectedRowKeys, setselectedRowKeys] = useState([]);
     const [selectRows, setselectRows] = useState([]);
     const [detailData, setDetailData] = useState({});
+    const [data, setData] = useState({
+      spinning: false
+    })
 
     const columns = [
         { title: '变更单号', dataIndex: 'changeCode', width: 200, ellipsis: true },
@@ -82,6 +87,31 @@ const ChangeHistory = (props) => {
             message.error(res.message);
         }
     }
+
+  // 终止审核
+  const handleStopFlow = () => {
+    Modal.confirm({
+      title: '终止审核',
+      content: '是否终止审核？',
+      okText: '确定',
+      cancelText: '取消',
+      onOk: async () => {
+        setData(v => ({ ...v, spinning: true }));
+        const { success, message: msg } = await EndFlow({
+          businessId: selectRows[0] ? selectRows[0].id : '',
+        });
+        if (success) {
+          message.success(msg);
+          setData(v => ({ ...v, spinning: false }));
+          tableRef.current.manualSelectedRows();
+          tableRef.current.remoteDataRefresh();
+          props.refreshTable();
+          return;
+        }
+        message.error(msg);
+      },
+    });
+  };
     return <ExtModal
         width={'60vw'}
         maskClosable={false}
@@ -114,6 +144,13 @@ const ChangeHistory = (props) => {
             >
                 <Button disabled={selectedRowKeys.length !== 1 || selectRows[0].flowState == "INIT"} style={{ margin: '0 6px' }}>审核历史</Button>
             </FlowHistoryButton>
+          <Button
+            onClick={handleStopFlow}
+            loading={data.spinning}
+            disabled={!judge(selectRows, 'flowStatus', 'INPROCESS')
+            || selectedRowKeys.length === 0}
+            className={styles.btn}
+          >终止审核</Button>
         </div>
         <ExtTable
             style={{ marginTop: '10px' }}
