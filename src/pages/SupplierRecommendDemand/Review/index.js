@@ -30,7 +30,13 @@ const SelfAssessment = forwardRef(({
   updateGlobalStatus = () => null,
   type = 'create'
 }, ref) => {
-  const { validateFieldsAndScroll, getFieldDecorator, setFieldsValue, getFieldValue } = form;
+  const {
+    validateFieldsAndScroll,
+    getFieldDecorator,
+    setFieldsValue,
+    getFieldValue,
+    resetFields
+  } = form;
   useImperativeHandle(ref, () => ({
     validateFieldsAndScroll,
     getAllParams: handleSave
@@ -77,7 +83,16 @@ const SelfAssessment = forwardRef(({
                 ],
                 initialValue: text,
               })(
-                <Select style={{ width: 80 }}>
+                <Select
+                  style={{ width: 80 }}
+                  onSelect={(v) => {
+                    if(v) {
+                      setFieldsValue({
+                        [`score_${record.id}`] : null
+                      })
+                    }
+                  }}
+                >
                   <Option value={true} label='是'>是</Option>
                   <Option value={false} label='否'>否</Option>
                 </Select>
@@ -229,6 +244,7 @@ const SelfAssessment = forwardRef(({
     setFieldsValue(fields)
   }
   async function handleImport(file) {
+    await resetFields()
     const formData = new FormData();
     formData.append('file', file);
     formData.append('supplierRecommendDemandId', query.id)
