@@ -152,8 +152,7 @@ function SelfAssessment({
     const scores = scoresKeys.map((item, index) => ({
       ruleId: item,
       score: values[item],
-      notApplicable: sV[index],
-      editStatus: true
+      notApplicable: sV[index]
     }))
     setConfirmLoading(true)
     const { success, message: msg } = await saveSelfAssessment(scores);
@@ -245,7 +244,8 @@ function SelfAssessment({
     async function initialDataSource() {
       toggleLoading(true)
       const { data, success, message: msg } = await querySelfAssessment({
-        supplierRecommendDemandId: query.id
+        supplierRecommendDemandId: query.id,
+        editStatus: type === 'detail' ? null : true
       })
       toggleLoading(false)
       if (success) {

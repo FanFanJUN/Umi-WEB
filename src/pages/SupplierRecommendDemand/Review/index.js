@@ -179,8 +179,7 @@ const SelfAssessment = forwardRef(({
       return ({
         id,
         score: values[item],
-        notApplicable: nabs[index],
-        editStatus: true
+        notApplicable: nabs[index]
       })
     })
     const opinions = ids.filter(item => /^opinion/.test(item)).map(item => {
@@ -249,7 +248,8 @@ const SelfAssessment = forwardRef(({
     async function initialDataSource() {
       toggleLoading(true)
       const { data, success, message: msg } = await queryReviewMarkData({
-        supplierRecommendDemandId: query.id
+        supplierRecommendDemandId: query.id,
+        editStatus: type === 'detail' ? null : true
       })
       toggleLoading(false)
       if (success) {
