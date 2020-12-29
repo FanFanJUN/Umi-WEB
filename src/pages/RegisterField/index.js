@@ -8,7 +8,7 @@ import AutoSizeLayout from '@/components/AutoSizeLayout';
 import styles from './index.less';
 import CommonForm from './CommonForm'
 import { smBaseUrl } from '@/utils/commonUrl';
-import { infoSuppliermaster,SaveSupplierRegister, DetailSupplierRegister } from "@/services/supplierConfig"
+import { infoSuppliermaster, SaveSupplierRegister, DetailSupplierRegister } from "@/services/supplierConfig"
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { Search } = Input
 const FormItem = Form.Item;
@@ -33,13 +33,8 @@ const tabformRef = forwardRef(({
   const [selectRowKeys, setRowKeys] = useState([]);
   const [selectedRows, setRows] = useState([]);
   const [searchValue, setSearchValue] = useState({});
-  const [initialValue, setInitialValue] = useState({});
-  const [modalType, setModalType] = useState('add');
-  const [showAttach, triggerShowAttach] = useState(false);
-  const [visible, setVisible] = useState(false);
-  const [loading, triggerLoading] = useState(false);
-  const [attachId, setAttachId] = useState('')
-  const [sortdata, setSortdata] =  useState([])
+  const [tabtitle, setTabtitle] = useState(false);
+  const [selectType, setSelectType] = useState(false);
   const { account } = storage.sessionStorage.get("Authorization");
   //const { attachment = null } = initialValue;
   /* 按钮禁用状态控制 */
@@ -50,7 +45,7 @@ const tabformRef = forwardRef(({
       url: `${smBaseUrl}/api/SmSupplierConfigService/findByPage`,
       params: {
         ...searchValue,
-        pageInfo:{page:1,rows:100},
+        pageInfo: { page: 1, rows: 100 },
         quickSearchProperties: ['smFieldCode', 'smFieldName']
       },
       type: 'POST'
@@ -77,13 +72,20 @@ const tabformRef = forwardRef(({
   // 右侧搜索
   const searchBtnCfg = (
     <>
-      <Input
+      {/* <Input
         placeholder='请输入字段代码或名称查询'
         className={styles.btn}
         onChange={SerachValue}
         allowClear
       />
-      <Button type='primary' onClick={handleQuickSerach}>查询</Button>
+      <Button type='primary' onClick={handleQuickSerach}>查询</Button> */}
+      <Search
+        placeholder='请输入字段代码或名称查询'
+        className={styles.btn}
+        onSearch={handleQuickSerach}
+        allowClear
+        style={{ width: '240px' }}
+      />
     </>
   )
   const tableProps = {
@@ -128,25 +130,14 @@ const tabformRef = forwardRef(({
     ],
     sort: {
       multiple: false,
-      field: {standby1 : 'asc' },
+      field: { standby1: 'asc' },
     },
-  }
-  function handleCheck() {
-    console.log(tableRef.current.data)
   }
   useEffect(() => {
     window.parent.frames.addEventListener('message', listenerParentClose, false);
     return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
   }, []);
-  // 列表
-  // async function inifmasterdata() {
-  //   triggerLoading(true)
-  //   const { data,success, message: msg } = await infoSuppliermaster();
-  //   if (success) {
-  //     setdataSource(data)
-  //     triggerLoading(false)
-  //   }
-  // }
+
   // 数据刷新
   function listenerParentClose(event) {
     const { data = {} } = event;
@@ -157,38 +148,29 @@ const tabformRef = forwardRef(({
 
   // 记录列表选中
   function handleSelectedRows(rowKeys, rows) {
-    setRowKeys([]);
-    setRows([]);
     setRowKeys(rowKeys);
     setRows(rows);
-    console.log(selectRowKeys)
   }
   // 清除选中项
   function cleanSelectedRecord() {
     setRowKeys([]);
     setRows([]);
+    tableRef.current.manualSelectedRows([])
   }
 
   // 新增或编辑
-  function showModal(t = 'add') {
-    if (t === 'editor') {
-      let RegFild;
-      if (selectedRows.length > 1) {
-        RegFild = selectedRows.splice(1);
-      }else {
-        RegFild = selectedRows
-      }
-      // const [v] = selectRowKeys;
-      // const [row] = selectedRows;
-      const [row] = RegFild;
-      setInitialValue({ ...row })
-    }
-    setVisible(true)
-    setModalType(t)
-    console.log(selectedRows);
-    console.log(selectRowKeys)
+  function showModal() {
+    setTabtitle('新增字段')
+    setSelectType(false)
+    cleanSelectedRecord()
+    commonFormRef.current.handleModalVisible(true)
   }
-
+  // 编辑
+  function handleCheckEdit() {
+    setTabtitle('编辑字段')
+    setSelectType(true)
+    commonFormRef.current.handleModalVisible(true)
+  }
   // 获取查询输入框值
   function SerachValue(v) {
     setSearchValue({
@@ -196,7 +178,8 @@ const tabformRef = forwardRef(({
     })
   }
   // 快速查询
-  function handleQuickSerach() {
+  function handleQuickSerach(value) {
+    setSearchValue(v => ({ ...v, quickSearchValue: value }));
     uploadTable();
   }
   // 清空列选择并刷新
@@ -204,35 +187,10 @@ const tabformRef = forwardRef(({
     cleanSelectedRecord()
     tableRef.current.remoteDataRefresh()
   }
-  // 取消编辑或新增
-  function handleCancel() {
-    const { resetFields } = commonFormRef.current.form;
-    resetFields()
-    hideModal()
-  }
-  // 新增或编辑保存
-  async function handleSubmit(val, keys, hide) {
-    triggerLoading(true)
-    const { success, message: msg } = await SaveSupplierRegister(val);
-    if (success) {
-      triggerLoading(false)
-      uploadTable()
-      message.success(msg)
-      hideModal();
-      return
-    }
-    triggerLoading(false)
-    message.error(msg)
-    uploadTable()
-  }
-  // 关闭弹窗
-  function hideModal() {
-    setVisible(false)
-    setInitialValue({})
-  }
-  function hideAttach() {
-    setAttachId('')
-    triggerShowAttach(false)
+  // 保存
+  async function masterSave() {
+    commonFormRef.current.handleModalVisible(false)
+    uploadTable();
   }
   // 删除
   async function handleRemove() {
@@ -265,7 +223,7 @@ const tabformRef = forwardRef(({
             }
             {
               authAction(
-                <Button ignore={DEVELOPER_ENV} key='SUPPLIER_REGISTER_CONFIGURE_TABLE_EDIT' className={styles.btn} onClick={() => showModal('editor')} disabled={empty}>编辑</Button>
+                <Button ignore={DEVELOPER_ENV} key='SUPPLIER_REGISTER_CONFIGURE_TABLE_EDIT' className={styles.btn} onClick={handleCheckEdit} disabled={empty}>编辑</Button>
               )
             }
             {
@@ -302,28 +260,13 @@ const tabformRef = forwardRef(({
           />
         }
       </AutoSizeLayout>
-      <div>
-        <CommonForm
-          visible={visible}
-          onCancel={handleCancel}
-          onOk={handleSubmit}
-          type={modalType}
-          mode={type}
-          initialValues={initialValue}
-          wrappedComponentRef={commonFormRef}
-          loading={loading}
-          destroyOnClose
-        />
-        <Modal
-          visible={showAttach}
-          onCancel={hideAttach}
-          footer={
-            <Button type='ghost' onClick={hideAttach}>关闭</Button>
-          }
-        ></Modal>
-      </div>
-
-
+      <CommonForm
+        title={tabtitle}
+        modifydata={selectedRows[0]}
+        onOk={masterSave}
+        type={selectType}
+        wrappedComponentRef={commonFormRef}
+      />
     </>
   )
 }

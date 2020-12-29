@@ -52,7 +52,7 @@ function SupplierConfigure() {
         },
         {
             title: '供应商名称',
-            width: 240,
+            width: 320,
             dataIndex: 'supplierName',
         }
     ].map(_ => ({ ..._, align: 'center' }))
@@ -65,8 +65,8 @@ function SupplierConfigure() {
                 quickSearchProperties: ['supplierCode', 'supplierName'],
                 sortOrders: [
                     {
-                        property: 'supplierCode',
-                        direction: 'ASC'
+                        property: 'createdDate',
+                        direction: 'DESC'
                     }
                 ],
             },

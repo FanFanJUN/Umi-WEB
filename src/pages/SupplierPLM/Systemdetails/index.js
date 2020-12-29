@@ -89,11 +89,11 @@ function SupplierConfigure() {
         {
             title: '状态',
             width: 120,
-            dataIndex: 'status',
+            dataIndex: 'frozen',
             render: function (text, record, row) {
-                if (text === 0 || text === '有效') {
+                if (text === '0' || text === '有效') {
                     return <div>有效</div>;
-                } else {
+                } else if (text === '1') {
                     return <div>冻结</div>;
                 }
             },
@@ -119,7 +119,7 @@ function SupplierConfigure() {
                 sortOrders: [
                     {
                         property: 'synTime',
-                        direction: 'ASC'
+                        direction: 'DESC'
                     }
                 ],
                 ...seniorSearchvalue
