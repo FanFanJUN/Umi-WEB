@@ -69,8 +69,20 @@ const AddModal = (props) => {
         ];
       case 'recommand':
         return [
-          { title: '提出日期', dataIndex: 'recommendAccess', ellipsis: true, width: 150, render: (v, record) => record.recommendAccess.createdDate },
-          { title: '准入推荐号', dataIndex: 'docNumber', ellipsis: true, width: 140, render: (v, record) => <a onClick={(e) => jumpToRecommand(e, record)}>{v}</a> },
+          {
+            title: '提出日期',
+            dataIndex: 'recommendAccess',
+            ellipsis: true,
+            width: 150,
+            render: (v, record) => record.recommendAccess.createdDate,
+          },
+          {
+            title: '准入推荐号',
+            dataIndex: 'docNumber',
+            ellipsis: true,
+            width: 140,
+            render: (v, record) => <a onClick={(e) => jumpToRecommand(e, record)}>{v}</a>,
+          },
           {
             title: '需求公司', dataIndex: 'corporationName', width: 200, ellipsis: true, render: (text, item) => {
               return !text ? '' : item.corporationCode + ' ' + item.corporationName;
@@ -104,7 +116,13 @@ const AddModal = (props) => {
               return item.reviewRequirementVo && item.reviewRequirementVo.applyDate && item.reviewRequirementVo.applyDate.slice(0, 10);
             },
           },
-          { title: '审核需求号', dataIndex: 'reviewRequirementCode', ellipsis: true, width: 140, render: (v, record) => <a onClick={(e) => jumpToDemand(e, record)}>{v}</a> },
+          {
+            title: '审核需求号',
+            dataIndex: 'reviewRequirementCode',
+            ellipsis: true,
+            width: 140,
+            render: (v, record) => <a onClick={(e) => jumpToDemand(e, record)}>{v}</a>,
+          },
           {
             title: '需求公司', dataIndex: 'corporation', width: 180, ellipsis: true, render: (text, item) => {
               return item.reviewRequirementVo && item.reviewRequirementVo.applyCorporationCode + ' ' + item.reviewRequirementVo.applyCorporationName;
@@ -136,16 +154,16 @@ const AddModal = (props) => {
 
   // 跳转到审核需求界面
   const jumpToDemand = (e, record) => {
-    e.stopPropagation()
+    e.stopPropagation();
     openNewTab(`supplierAudit/AuditRequirementsManagementAdd?pageState=detail&id=${record.reviewRequirementId}&reviewRequirementCode=${record.reviewRequirementCode}`, '审核需求明细', false);
-  }
+  };
 
   const jumpToRecommand = (e, record) => {
-    e.stopPropagation()
+    e.stopPropagation();
     const { id = '' } = FRAMELEEMENT;
     const { pathname } = window.location;
-    openNewTab(`supplier/recommend/admittance/manage/detail?id=${record.recommendAccessId}&frameElementId=${id}&frameElementSrc=${pathname}`, '供应商推荐准入明细', false)
-  }
+    openNewTab(`supplier/recommend/admittance/manage/detail?id=${record.recommendAccessId}&frameElementId=${id}&frameElementSrc=${pathname}`, '供应商推荐准入明细', false);
+  };
 
   const getStore = () => {
     if (type === 'annual') {
@@ -168,6 +186,7 @@ const AddModal = (props) => {
     } else {
       return {
         params: {
+          sortOrders: [{ property: 'docNumber' }, { property: 'corporationCode' }, { property: 'purchaseOrgCode' }],
           filters: [{
             'fieldName': 'recommendAccessId',
             'value': getFieldValue('recommendAccessId'),
@@ -433,7 +452,7 @@ const AddModal = (props) => {
         height={type === 'demand' ? '40vh' : '50vh'}
         checkbox={{ multiSelect: true }}
         onSelectRow={(key, rows) => {
-          console.log(rows)
+          console.log(rows);
           setselectedRowKeys(key);
           setselectRows(rows);
         }}
