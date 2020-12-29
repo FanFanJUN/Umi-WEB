@@ -86,13 +86,13 @@ const SelfAssessment = forwardRef(({
               })(
                 <Select
                   style={{ width: 80 }}
-                  // onSelect={(v) => {
-                  //   if (v) {
-                  //     setFieldsValue({
-                  //       [`score_${record.id}`]: null
-                  //     })
-                  //   }
-                  // }}
+                  onSelect={(v) => {
+                    if (v) {
+                      setFieldsValue({
+                        [`score_${record.id}`]: null
+                      })
+                    }
+                  }}
                 >
                   <Option value={true} label='是'>是</Option>
                   <Option value={false} label='否'>否</Option>
