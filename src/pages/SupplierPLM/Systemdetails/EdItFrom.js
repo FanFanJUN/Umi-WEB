@@ -223,31 +223,6 @@ const commonFormRef = forwardRef(({
                             )}
                         </Item>
                     </Col>
-                    <Col span={12}>
-                        <Item {...formLayout} label="状态">
-                            {
-                                getFieldDecorator('statusCode', { initialValue: modifydata && modifydata.statusCode }),
-                                getFieldDecorator('status', {
-                                    initialValue: modifydata && modifydata.status,
-                                    rules: [
-                                        {
-                                            required: true,
-                                            message: '请选择状态',
-                                        },
-                                    ],
-                                })(
-                                    <ComboList
-                                        showSearch={false}
-                                        style={{ width: '100%' }}
-                                        {...PLMType}
-                                        name='status'
-                                        field={['statusCode']}
-                                        form={form}
-                                    />
-                                )
-                            }
-                        </Item>
-                    </Col>
                 </Row>
             </Modal>
             {/*** 合格通知单*/}

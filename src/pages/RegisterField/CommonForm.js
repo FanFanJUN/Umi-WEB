@@ -1,79 +1,86 @@
-import React, { forwardRef, useImperativeHandle, useEffect,useRef } from 'react';
-import { Modal, Form, Row, Col, Input, } from 'antd';
-import { Fieldclassification} from '@/utils/commonProps'
+import React, { forwardRef, useImperativeHandle, useEffect, useRef, useState } from 'react';
+import { Modal, Form, Row, Col, Input, message, Button } from 'antd';
+import { Fieldclassification } from '@/utils/commonProps'
 import { ComboTree, ComboGrid, ComboList } from 'suid';
-// import { baseUrl } from '../../../utils/commonUrl';
+import { SaveSupplierRegister } from "../../services/supplierConfig"
 const { create, Item } = Form;
+const { TextArea } = Input;
 const formLayout = {
     labelCol: {
         span: 8,
     },
     wrapperCol: {
-        span: 16,
+        span: 16
     },
 };
 const data = [
     {
-      name: '单值',
-      code: '0',
+        name: '单值',
+        code: '0',
     },
     {
-      name: '多值',
-      code: '1',
+        name: '多值',
+        code: '1',
     }
-  ];
-const CommonForm = forwardRef(
-    (
-        {
-            visible,
-            form,
-            onCancel = () => null,
-            onOk = () => null,
-            initialValues = {},
-            type = 'add',
-            loading,
-        },
-        ref,
-    ) => {
-        useImperativeHandle(ref, () => ({ form }));
-        const { getFieldDecorator, validateFieldsAndScroll, getFieldValue, setFieldsValue } = form;
-        useEffect(() => {
-            if (type === 'editor' && visible) {
-                const {
-                    id,
-                    createdDate,
-                    creatorName,
-                    ...other
-                } = initialValues;
-                const fields = {
-                    ...other
+];
+const commonFormRef = forwardRef(({
+    form,
+    title,
+    onOk = () => null,
+    modifydata = {},
+    type
+}, ref,) => {
+    useImperativeHandle(ref, () => ({
+        handleModalVisible,
+    }));
+    const getecommendRef = useRef(null)
+    const { getFieldDecorator, validateFieldsAndScroll, getFieldValue, setFieldsValue } = form;
+    const [visible, setvisible] = useState(false);
+    useEffect(() => {
+    }, []);
+    function handleModalVisible(flag) {
+        setvisible(!!flag)
+    };
+    // 字段保存
+    function handleSubmit() {
+        validateFieldsAndScroll(async (err, val) => {
+            let params;
+            if (!err) {
+                if (type) {
+                    params = { ...modifydata, ...val }
+                } else {
+                    params = val
                 }
-                setFieldsValue(fields);
+                masterSave(params)
             }
-        }, [visible]);
-        const title = `新增字段`;
-        function handleSubmit() {
-            validateFieldsAndScroll((err, val) => {
-                if (!err) {
-                    onOk({...initialValues, ...val});
-                }
-            });
+        });
+    }
+    async function masterSave(params) {
+        const { success, message: msg } = await SaveSupplierRegister(params);
+        if (success) {
+            message.success('保存成功');
+            onOk();
+        } else {
+            message.error(msg);
         }
-        return (
+    }
+    return (
+        <>
             <Modal
-                confirmLoading={loading}
                 visible={visible}
                 title={title}
-                onCancel={onCancel}
+                onCancel={() => handleModalVisible(false)}
                 destroyOnClose={true}
                 width="60vw"
                 maskClosable={false}
                 onOk={handleSubmit}
             >
+
                 <Row>
                     <Col span={12}>
                         <Item {...formLayout} label="字段代码">
                             {getFieldDecorator('smFieldCode', {
+                                initialValue: modifydata && modifydata.smFieldCode,
                                 rules: [
                                     {
                                         required: true,
@@ -93,6 +100,7 @@ const CommonForm = forwardRef(
                     <Col span={12}>
                         <Item {...formLayout} label="字段名称">
                             {getFieldDecorator('smFieldName', {
+                                initialValue: modifydata && modifydata.smFieldName,
                                 rules: [
                                     {
                                         required: true,
@@ -115,27 +123,29 @@ const CommonForm = forwardRef(
                     <Col span={12}>
                         <Item label="信息分类" {...formLayout}>
                             {
-                                getFieldDecorator('smMsgTypeCode'),
-                                getFieldDecorator('rank'),
+                                getFieldDecorator('smMsgTypeCode', { initialValue: modifydata && modifydata.smMsgTypeCode }),
+                                getFieldDecorator('rank', { initialValue: modifydata && modifydata.rank }),
                                 getFieldDecorator('smMsgTypeName', {
-                                  rules: [
-                                    {
-                                      required: true,
-                                      message: '请选择信息分类'
-                                    }
-                                  ]
+                                    initialValue: modifydata && modifydata.smMsgTypeName,
+                                    rules: [
+                                        {
+                                            required: true,
+                                            message: '请选择信息分类'
+                                        }
+                                    ]
                                 })(
-                                <ComboList remotePaging showSearch={false} 
-                                    {...Fieldclassification} 
-                                    name='smMsgTypeName' 
-                                    field={['smMsgTypeCode','rank']} form={form} 
-                                />)
+                                    <ComboList remotePaging showSearch={false}
+                                        {...Fieldclassification}
+                                        name='smMsgTypeName'
+                                        field={['smMsgTypeCode', 'rank']} form={form}
+                                    />)
                             }
                         </Item>
                     </Col>
                     <Col span={12}>
                         <Item {...formLayout} label="表名称">
                             {getFieldDecorator('smTableName', {
+                                initialValue: modifydata && modifydata.smTableName,
                                 rules: [
                                     {
                                         required: true,
@@ -157,35 +167,37 @@ const CommonForm = forwardRef(
                     <Col span={12}>
                         <Item {...formLayout} label="字段类型">
                             {
-                            getFieldDecorator('smFieldTypeCode'),
-                            getFieldDecorator('smFieldTypeName', {
-                                rules: [
-                                    {
-                                        required: true,
-                                        message: '请选择字段类型',
-                                    },
-                                ],
-                            })(
-                                <ComboList
-                                    showSearch={false}
-                                    style={{ width:'100%' }}
-                                    dataSource={data}
-                                    reader={{
-                                        name: 'name',
-                                        field: ['code'],
-                                        description: 'code',
-                                        
-                                    }}
-                                    name='smFieldTypeName' 
-                                    field={['smFieldTypeCode']}
-                                    form={form}
-                                />
-                            )}
+                                getFieldDecorator('smFieldTypeCode', { initialValue: modifydata && modifydata.smFieldTypeCode }),
+                                getFieldDecorator('smFieldTypeName', {
+                                    initialValue: modifydata && modifydata.smFieldTypeName,
+                                    rules: [
+                                        {
+                                            required: true,
+                                            message: '请选择字段类型',
+                                        },
+                                    ],
+                                })(
+                                    <ComboList
+                                        showSearch={false}
+                                        style={{ width: '100%' }}
+                                        dataSource={data}
+                                        reader={{
+                                            name: 'name',
+                                            field: ['code'],
+                                            description: 'code',
+
+                                        }}
+                                        name='smFieldTypeName'
+                                        field={['smFieldTypeCode']}
+                                        form={form}
+                                    />
+                                )}
                         </Item>
                     </Col>
                     <Col span={12}>
                         <Item {...formLayout} label="排序码">
                             {getFieldDecorator('sort', {
+                                initialValue: modifydata && modifydata.sort,
                                 rules: [
                                     {
                                         required: true,
@@ -204,9 +216,10 @@ const CommonForm = forwardRef(
                     </Col>
                 </Row>
                 <Row>
-                <Col span={12}>
+                    <Col span={12}>
                         <Item {...formLayout} label="备注">
                             {getFieldDecorator('smExplain', {
+                                initialValue: modifydata && modifydata.smExplain,
                                 // rules: [
                                 //     {
                                 //         required: true,
@@ -225,8 +238,9 @@ const CommonForm = forwardRef(
                     </Col>
                 </Row>
             </Modal>
-        );
-    },
+        </>
+    );
+},
 );
 
-export default create()(CommonForm);
+export default create()(commonFormRef);
