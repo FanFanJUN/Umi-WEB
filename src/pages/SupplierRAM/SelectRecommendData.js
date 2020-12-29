@@ -46,6 +46,7 @@ const Ctx = forwardRef(({
   const [selectedRowKeys, setKeys] = useState([]);
   const [corporation, setCorporation] = useState({});
   const tableRef = useRef(null);
+  const allowTrust = initialDataSource.some(item=> item.objectRecognition);
   const {
     objectRecognition
   } = getFieldsValue();
@@ -239,7 +240,7 @@ const Ctx = forwardRef(({
                     }
                   ]
                 })(
-                  <RadioGroup>
+                  <RadioGroup disabled={!allowTrust}>
                     <Radio value={true}>是</Radio>
                     <Radio value={false}>否</Radio>
                   </RadioGroup>

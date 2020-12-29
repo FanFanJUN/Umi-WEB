@@ -31,7 +31,7 @@ class UploadFile extends React.Component {
      * 请求的entityId未找到文件数组，没有更新completeFileList，每次都会触发update
      */
     if (
-      (nextProps.entityId && typeof nextProps.entityId === 'string' && nextProps.entityId !== this.props.entityId)
+      (nextProps.entityId && (typeof nextProps.entityId === 'string' || Array.isArray(nextProps.entityId)) && nextProps.entityId !== this.props.entityId)
       || nextProps.refresh
     ) {
       this.entityId = nextProps.entityId
@@ -76,6 +76,7 @@ class UploadFile extends React.Component {
       const flsRequestes = this.entityId.map(item => {
         return request.get(`${baseUrl}/getDocumentByRefIdOrDocId?paramId=${item}`)
       })
+      console.log(`uploadfile: ${this.entityId}`)
       const values = await Promise.all(flsRequestes);
       const fls = values.map(({ data }) => {
         const [f] = data;

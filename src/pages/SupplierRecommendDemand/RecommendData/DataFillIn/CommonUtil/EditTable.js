@@ -120,6 +120,7 @@ const EditableCell = (config) => {
       } else if (inputType === 'UploadFile') {
         const idKey = dataIndex.substr(0, dataIndex.length - 1);
         const entityId = !!a ? a : record[idKey]
+        console.log(entityId)
         return <UploadFile type='show' entityId={entityId} />
       } else if (inputType === 'Select' && props?.mode === 'multiple') {
         return Array.isArray(a) ? a.join(',') : a
