@@ -100,7 +100,7 @@ const SelfAssessment = forwardRef(({
             getFieldDecorator(`score_${record.id}`, {
               rules: [
                 {
-                  required: true,
+                  required: !nab,
                   message: '请打分'
                 }
               ],
