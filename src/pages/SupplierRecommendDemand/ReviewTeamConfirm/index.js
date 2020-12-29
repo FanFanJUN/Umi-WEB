@@ -36,9 +36,9 @@ function FillInInfomationConfirm() {
     }
     message.error(msg);
   }
-  async function beforeSubmit() {
+  async function beforeSubmit({ approved }) {
     const isReturn = teamConfrimRef.current.checkSystemOp()
-    if (isReturn) {
+    if (isReturn || !approved) {
       return new Promise((resolve) => {
         resolve({
           success: true,
@@ -48,7 +48,7 @@ function FillInInfomationConfirm() {
         })
       })
     }
-    return new Promise((resolve)=> {
+    return new Promise((resolve) => {
       resolve({
         success: false,
         message: '存在未分配评审人的指标项，请检查'
