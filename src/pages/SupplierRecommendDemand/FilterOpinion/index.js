@@ -26,7 +26,17 @@ function FillInInfomationConfirm() {
   const [isReady, setIsReady] = useState(false);
   const [status, updateGlobalStatus] = useGlobalStatus(id);
   const filterRef = useRef(null);
-  async function beforeSubmit() {
+  async function beforeSubmit({ approved }) {
+    // if(!approved) {
+    //   return new Promise(resolve=>{
+    //     resolve({
+    //       success: true,
+    //       data: {
+    //         businessKey: id
+    //       }
+    //     })
+    //   })
+    // }
     const { success: sucs, params, message: pmsg } = filterRef.current.getAllParams();
     if (sucs) {
       const { success, message: msg } = await saveFilterOpinion(params);
