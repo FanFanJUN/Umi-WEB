@@ -35,6 +35,7 @@ const SelfAssessment = forwardRef(({
     getFieldDecorator,
     setFieldsValue,
     getFieldValue,
+    getFieldsValue,
     resetFields
   } = form;
   useImperativeHandle(ref, () => ({
@@ -85,13 +86,13 @@ const SelfAssessment = forwardRef(({
               })(
                 <Select
                   style={{ width: 80 }}
-                  onSelect={(v) => {
-                    if(v) {
-                      setFieldsValue({
-                        [`score_${record.id}`] : null
-                      })
-                    }
-                  }}
+                  // onSelect={(v) => {
+                  //   if (v) {
+                  //     setFieldsValue({
+                  //       [`score_${record.id}`]: null
+                  //     })
+                  //   }
+                  // }}
                 >
                   <Option value={true} label='是'>是</Option>
                   <Option value={false} label='否'>否</Option>
@@ -232,13 +233,15 @@ const SelfAssessment = forwardRef(({
     })
   }
   function importBeforeSetFormValue(values = []) {
+    console.log(values)
     if (!Array.isArray(values)) {
       return
     }
     const fields = values.reduce((prev, cur) => {
       return {
         ...prev,
-        [`score_${cur.id}`]: cur.score
+        [`score_${cur.id}`]: cur.score,
+        [`notApplicable_${cur.id}`]: cur.notApplicable
       }
     }, {})
     setFieldsValue(fields)
