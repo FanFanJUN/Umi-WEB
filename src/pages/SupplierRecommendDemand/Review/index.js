@@ -8,21 +8,22 @@ import { Header } from '../../../components';
 import {
   Button,
   Table,
-  PageHeader,
   message,
   InputNumber,
   Form,
   Upload,
   Modal,
-  Input
+  Input,
+  Select
 } from 'antd';
 import { router } from 'dva';
 import styles from './index.less';
-import { importRevieMarkData, queryReviewMarkData, saveReviewMarkData, exportRevieMarkData } from '../../../services/recommend';
+import { importRevieMarkData, queryReviewMarkData, exportRevieMarkData } from '../../../services/recommend';
 import { downloadBlobFile } from '../../../utils';
 
 const { useLocation } = router;
 const { Item } = Form
+const { Option } = Select;
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development')
 const SelfAssessment = forwardRef(({
   form,
@@ -56,12 +57,43 @@ const SelfAssessment = forwardRef(({
       dataIndex: 'samSupplierEvlSysRule.highestScore'
     },
     {
+      title: '不适用',
+      dataIndex: 'notApplicable',
+      width: 120,
+      render(text, record) {
+        if (type === 'detail') {
+          return Object.is(null, text) ? '' : !!text ? '是' : '否'
+        }
+        if (!!record.id) {
+          return <Item style={{ marginBottom: 0 }}>
+            {
+              getFieldDecorator(`notApplicable_${record.id}`, {
+                rules: [
+                  {
+                    required: true,
+                    message: '请选择是否适用'
+                  }
+                ],
+                initialValue: text,
+              })(
+                <Select style={{ width: 80 }}>
+                  <Option value={true} label='是'>是</Option>
+                  <Option value={false} label='否'>否</Option>
+                </Select>
+              )
+            }
+          </Item>
+        }
+      }
+    },
+    {
       title: '得分',
       dataIndex: 'score',
       render(text, record) {
         if (type === 'detail') {
           return text
         }
+        const nab = getFieldValue(`notApplicable_${record.id}`)
         return <Item style={{ marginBottom: 0 }}>
           {
             getFieldDecorator(`score_${record.id}`, {
@@ -72,7 +104,13 @@ const SelfAssessment = forwardRef(({
                 }
               ],
               initialValue: text,
-            })(<InputNumber max={record.samSupplierEvlSysRule?.highestScore} min={0}/>)
+            })(
+              <InputNumber
+                max={record.samSupplierEvlSysRule?.highestScore}
+                min={0}
+                disabled={nab}
+              />
+            )
           }
         </Item>
       }
@@ -135,11 +173,14 @@ const SelfAssessment = forwardRef(({
   async function handleSave() {
     const values = await validateFieldsAndScroll();
     const ids = Object.keys(values);
-    const scores = ids.filter(item => /^score/.test(item)).map(item => {
+    const nabs = ids.filter(item => /^notApplicable_/.test(item)).map(item => values[item]);
+    const scores = ids.filter(item => /^score/.test(item)).map((item, index) => {
       const [_, id] = item.split('_')
       return ({
         id,
-        score: values[item]
+        score: values[item],
+        notApplicable: nabs[index],
+        editStatus: true
       })
     })
     const opinions = ids.filter(item => /^opinion/.test(item)).map(item => {

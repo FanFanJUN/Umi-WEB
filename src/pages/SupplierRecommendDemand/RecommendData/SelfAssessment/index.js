@@ -125,9 +125,12 @@ function SelfAssessment({
     },
     {
       title: '百分比',
-      dataIndex: 'percent'
+      dataIndex: 'percent',
+      show: type === 'detail',
+      width: 150,
     }
-  ]
+  ].map(item => ({ show: true, ...item }))
+    .filter(item => item?.show)
   const left = (
     <>
       <Button onClick={handleExport} className={styles.btn}>导出打分项</Button>
@@ -144,12 +147,13 @@ function SelfAssessment({
     const ntReg = /^notApplicable_/;
     const ids = Object.keys(values);
     const sKeys = ids.filter(item => ntReg.test(item));
-    const sV = sKeys.map(item=> values[item]);
+    const sV = sKeys.map(item => values[item]);
     const scoresKeys = ids.filter(item => !ntReg.test(item));
     const scores = scoresKeys.map((item, index) => ({
       ruleId: item,
       score: values[item],
-      notApplicable: sV[index]
+      notApplicable: sV[index],
+      editStatus: true
     }))
     setConfirmLoading(true)
     const { success, message: msg } = await saveSelfAssessment(scores);
