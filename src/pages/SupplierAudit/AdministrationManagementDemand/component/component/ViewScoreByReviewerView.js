@@ -67,7 +67,6 @@ const ViewScoreByReviewerView = (props) => {
     console.log(value);
   };
 
-
   return (
     <ExtModal
       width={'145vh'}
@@ -100,7 +99,7 @@ const ViewScoreByReviewerView = (props) => {
                           reviewImplementManagementId: item.lineList[0] ? item.lineList[0].reviewImplementManagementId : '',
                         }}
                         onChange={onChange}
-                        type={!props.isView ? 'show' : ''}
+                        type={'show'}
                         dataSource={item.lineList}
                       />
                     </TabPane>;
