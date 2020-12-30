@@ -24,25 +24,12 @@ const AccountRef = forwardRef(({
     form
   }));
   const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
-  const [configAcc, setConfigAcc] = useState([]);
-  const [configure, setConfigure] = useState([]);
-  //const { attachment = null } = initialValues;
+
   useEffect(() => {
-    // let fieldsListed = []
-    // accountinfo.map(item => {
-    //   fieldsListed.push({
-    //     title: item.title,
-    //     key: item.key,
-    //     verifi: item.verifi,
-    //     type: 'input',
-    //   })
-    // })
-    setFieldsValue(initialValue)
-  }, [initialValue])
+
+  }, [])
   // 表单
   function getAccountinfo() {
-    // const valus = form.validateFieldsAndScroll();
-    // return valus;
     let result = false;
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
