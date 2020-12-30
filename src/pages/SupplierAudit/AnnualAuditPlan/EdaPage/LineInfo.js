@@ -3,7 +3,7 @@
  * @LastEditors  : LiCai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime : 2020-12-25 11:12:11
+ * @LastEditTime : 2020-12-28 13:51:06
  * @Description: 行信息
  * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
@@ -17,6 +17,8 @@ import { isEmptyArray, isEmptyObject } from '../../../../utils/utilTool';
 import moment from 'moment';
 import { reviewTypesProps } from '../propsParams';
 import { GetSupplierAreaByCode, GetSupplierContact } from '../../mainData/commomService';
+import BatchImport from '../BatchImport';
+import { smBaseUrl, recommendUrl } from '@/utils/commonUrl';
 
 const { confirm } = Modal;
 let LineInfo = (props, ref) => {
@@ -399,26 +401,59 @@ let LineInfo = (props, ref) => {
     tableRef.current.manualSelectedRows();
   }
 
+  function importCallBack(data) {
+    
+  }
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.bgw}>
         <div className={styles.title}>拟审核信息</div>
         <div className={styles.content}>
-          {
-            !isView && <div>
-              <Button onClick={() => handleBtn('add')} type='primary'>从合格供应商名录新增</Button>
-              <Button disabled={data.selectRows.length === 0} onClick={() => { handleBtn('edit') }} style={{ marginLeft: '5px' }}>批量编辑</Button>
-              <Button disabled={data.selectedRowKeys.length === 0} onClick={() => { handleBtn('delete') }} style={{ marginLeft: '5px' }}>删除</Button>
+          {!isView && (
+            <div>
+              <Button onClick={() => handleBtn('add')} type="primary">
+                从合格供应商名录新增
+              </Button>
+              <Button
+                disabled={data.selectRows.length === 0}
+                onClick={() => {
+                  handleBtn('edit');
+                }}
+                style={{ marginLeft: '5px' }}
+              >
+                批量编辑
+              </Button>
+              <Button
+                disabled={data.selectedRowKeys.length === 0}
+                onClick={() => {
+                  handleBtn('delete');
+                }}
+                style={{ marginLeft: '5px' }}
+              >
+                删除
+              </Button>
+              <BatchImport
+                disabled={dataSource.length === 0}
+                name={'file'}
+                params={dataSource}
+                action={`${smBaseUrl}/api/srController/importYearExcel`}
+                downParams={[]}
+                columns={columns}
+                downLoadUrl={`${recommendUrl}/srController/downloadYearExcel`}
+                downMethod="post"
+                callback={importCallBack}
+              />
             </div>
-          }
+          )}
           <ExtTable
             style={{ marginTop: '10px' }}
-            rowKey='reviewPlanYearLinenum'
+            rowKey="reviewPlanYearLinenum"
             allowCancelSelect={true}
             showSearch={false}
             remotePaging
             checkbox={isView ? null : { multiSelect: true }}
-            size='small'
+            size="small"
             onSelectRow={handleSelectedRows}
             selectedRowKeys={data.selectedRowKeys}
             columns={columns}
@@ -427,7 +462,7 @@ let LineInfo = (props, ref) => {
           />
         </div>
       </div>
-      {data.visible &&
+      {data.visible && (
         <AddModal
           visible={data.visible}
           title={data.title}
@@ -435,16 +470,16 @@ let LineInfo = (props, ref) => {
           handleCancel={setVisible}
           handleOk={handleOk}
           lineData={dataSource}
-        />}
-      {
-        batchEditVisible &&
+        />
+      )}
+      {batchEditVisible && (
         <BatchEditModal
           visible={batchEditVisible}
           onCancel={setBatchVisible}
           onOk={getBatchFormValue}
           originData={selectData}
         />
-      }
+      )}
     </div>
   );
 }

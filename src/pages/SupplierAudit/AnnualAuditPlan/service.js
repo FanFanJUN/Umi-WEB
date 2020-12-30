@@ -1,11 +1,11 @@
 /*
  * @Author: Li Cai
- * @LastEditors: Please set LastEditors
+ * @LastEditors  : LiCai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-22 10:13:27
- * @LastEditTime: 2020-11-27 14:28:56
+ * @LastEditTime : 2020-12-28 14:07:16
  * @Description: 接口 集
- * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/service.js
+ * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/service.js
  */
 import request from '@/utils/request';
 import { baseUrl, gatewayUrl, recommendUrl, smBaseUrl } from '../../../utils/commonUrl';
@@ -97,3 +97,13 @@ export const ShareStatusProps = {
         width: '100%',
     },
 };
+
+// 下载模板带数据
+export async function downLoadTemp(params) {
+    const requestUrl = params && params.api;
+    return request({
+        url: requestUrl,
+        method: 'POST',
+        data: params.params,
+    });
+}
