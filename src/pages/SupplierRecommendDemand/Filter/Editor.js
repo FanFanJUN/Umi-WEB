@@ -32,22 +32,22 @@ const Editor = forwardRef(({
   form,
   setTableDataSource = () => null
 }, ref) => {
-  const [visible, toggleVisible] = useState(false);
-  const [cacheFields, setCacheFields] = useState({})
-  const [trustInfos, setTrustInfos] = useState([]);
-  // const [compareDataSource, setCompareDataSource] = useState([]);
-  const allowTrust = trustInfos.some(item=> item.objectRecognition);
-
-  useImperativeHandle(ref, () => ({
-    show,
-    hide
-  }))
   const {
     getFieldDecorator,
     setFieldsValue,
     validateFieldsAndScroll,
     getFieldsValue
   } = form;
+  const [visible, toggleVisible] = useState(false);
+  const [cacheFields, setCacheFields] = useState({})
+  const [trustInfos, setTrustInfos] = useState([]);
+  // const [compareDataSource, setCompareDataSource] = useState([]);
+  const { id: orderId } = getFieldsValue();
+  const allowTrust = trustInfos.filter(item => item.id !== orderId).some(item => item.objectRecognition);
+  useImperativeHandle(ref, () => ({
+    show,
+    hide
+  }))
   const {
     recommend,
     recommendConfirm,
