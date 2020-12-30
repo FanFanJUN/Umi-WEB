@@ -37,7 +37,8 @@ function SelfAssessment({
     validateFieldsAndScroll,
     getFieldDecorator,
     resetFields,
-    getFieldValue
+    getFieldValue,
+    setFieldsValue
   } = form;
   const columns = [
     {
@@ -81,7 +82,16 @@ function SelfAssessment({
                 ],
                 initialValue: text,
               })(
-                <Select style={{ width: 80 }}>
+                <Select
+                  style={{ width: 80 }}
+                  onSelect={(v) => {
+                    if (v) {
+                      setFieldsValue({
+                        [record.ruleId]: null
+                      })
+                    }
+                  }}
+                >
                   <Option value={true} label='是'>是</Option>
                   <Option value={false} label='否'>否</Option>
                 </Select>
