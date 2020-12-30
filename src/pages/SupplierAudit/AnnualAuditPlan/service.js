@@ -3,7 +3,7 @@
  * @LastEditors  : LiCai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-22 10:13:27
- * @LastEditTime : 2020-12-28 14:07:16
+ * @LastEditTime : 2020-12-30 11:23:26
  * @Description: 接口 集
  * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/service.js
  */
@@ -105,5 +105,6 @@ export async function downLoadTemp(params) {
         url: requestUrl,
         method: 'POST',
         data: params.params,
+        responseType: 'blob'
     });
 }
