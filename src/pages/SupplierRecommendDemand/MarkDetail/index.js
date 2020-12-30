@@ -61,7 +61,9 @@ const SelfAssessment = forwardRef(({
       title: '详情评分',
       dataIndex: 'jurorScores',
       render(text) {
-        return Array.isArray(text) ? text.map(item => <div>{`${item.scorerName}：${item.score}`}</div>) : ''
+        return (
+          Array.isArray(text) ? text.map(item => Object.is(null, item.score) ? null : <div>{`${item.scorerName}：${item.score}`}</div>) : ''
+        )
       },
       width: 150
     }

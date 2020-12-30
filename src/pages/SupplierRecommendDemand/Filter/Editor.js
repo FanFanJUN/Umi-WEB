@@ -35,6 +35,9 @@ const Editor = forwardRef(({
   const [visible, toggleVisible] = useState(false);
   const [cacheFields, setCacheFields] = useState({})
   const [trustInfos, setTrustInfos] = useState([]);
+  // const [compareDataSource, setCompareDataSource] = useState([]);
+  const allowTrust = trustInfos.some(item=> item.objectRecognition);
+
   useImperativeHandle(ref, () => ({
     show,
     hide
@@ -48,7 +51,6 @@ const Editor = forwardRef(({
   const {
     recommend,
     recommendConfirm,
-    selectRecommendInfomation,
     objectRecognition
   } = getFieldsValue();
   async function show(fields, ts) {
@@ -90,7 +92,10 @@ const Editor = forwardRef(({
     setTableDataSource(values)
   }
   useEffect(() => {
-    setFieldsValue({ ...cacheFields, selectRecommendInfomation: `${cacheFields.corporationCode}-${cacheFields.purchaseOrgCode}` })
+    setFieldsValue({
+      ...cacheFields,
+      selectRecommendInfomation: `${cacheFields.corporationCode}-${cacheFields.purchaseOrgCode}`
+    })
   }, [cacheFields])
   return (
     <Modal
@@ -256,12 +261,12 @@ const Editor = forwardRef(({
                     getFieldDecorator('trust', {
                       rules: [
                         {
-                          required: true,
+                          required: allowTrust,
                           message: '请选择是否信任其他认定结果'
                         }
                       ]
                     })(
-                      <Radio.Group>
+                      <Radio.Group disabled={!allowTrust}>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
                       </Radio.Group>

@@ -149,12 +149,11 @@ const SelfAssessment = forwardRef(({
   ]
   const [_, ...detailColumns] = compareColumns
   function handleEditor(record) {
-    const trustInfos = compareDataSource
-      .filter(item => item.id !== record.id)
-      .filter(item => !item.objectRecognition)
-      .filter(item => !item.trustCorporationName && !item.trustPurchaseOrgName);
-    console.log(record)
-    editorRef.current.show(record, trustInfos)
+    // const trustInfos = compareDataSource
+    //   .filter(item => item.id !== record.id)
+    //   .filter(item => !item.objectRecognition)
+    //   .filter(item => !item.trustCorporationName && !item.trustPurchaseOrgName);
+    editorRef.current.show(record,  compareDataSource)
   }
   function editorConfirm(values) {
     const {

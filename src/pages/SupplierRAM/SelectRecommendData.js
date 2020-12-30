@@ -235,7 +235,7 @@ const Ctx = forwardRef(({
                 getFieldDecorator('trust', {
                   rules: [
                     {
-                      required: true,
+                      required: allowTrust,
                       message: '请选择是否信任'
                     }
                   ]
