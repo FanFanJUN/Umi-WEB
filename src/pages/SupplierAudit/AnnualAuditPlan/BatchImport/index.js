@@ -3,7 +3,7 @@
  * @connect      : 1981824361@qq.com
  * @Date         : 2020-12-28 10:14:41
  * @LastEditors  : LiCai
- * @LastEditTime : 2020-12-30 15:33:41
+ * @LastEditTime : 2020-12-30 17:50:05
  * @Description  : 批量导入
  * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/BatchImport/index.js
  */
@@ -59,7 +59,6 @@ import moment from 'moment';
       width: 140,
       align: 'center',
     },
-    { title: '审核类型', dataIndex: 'reviewTypeName', ellipsis: true, width: 80 },
     { title: '审核原因', dataIndex: 'reviewReasonName', ellipsis: true, width: 140 },
     { title: '审核方式', dataIndex: 'reviewWayName', ellipsis: true, width: 80 },
     {
@@ -95,6 +94,10 @@ import moment from 'moment';
    }
 
    function handleOk() {
+     if(dataSource.length === 0) {
+       message.error('无数据可操作!');
+       return;
+     }
      const num = dataSource.filter((item) => {
        return item.importStatus === false
      }).length;
