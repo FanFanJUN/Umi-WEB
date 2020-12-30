@@ -55,8 +55,8 @@ const BaseinfoRef = forwardRef(({
 		// 	...other
 		// } = initialValues;
 		const { setHeaderFields } = CommonconfigRef.current;
-		setHeaderFields(initialVal);
-	}, [initialValues]);
+		//setHeaderFields(initialVal);
+	}, []);
 	// 暂存表单
 	function getTemporaryBaseInfo() {
 		let extendVo = {};

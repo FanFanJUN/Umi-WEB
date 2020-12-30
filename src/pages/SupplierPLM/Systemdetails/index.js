@@ -104,6 +104,11 @@ function SupplierConfigure() {
             dataIndex: 'plmMsg',
         },
         {
+            title: '创建时间',
+            width: 180,
+            dataIndex: 'createdDate',
+        },
+        {
             title: '同步时间',
             width: 160,
             dataIndex: 'synTime',
@@ -118,7 +123,7 @@ function SupplierConfigure() {
                 quickSearchProperties: ['unitName', 'supplierCode', 'supplierName'],
                 sortOrders: [
                     {
-                        property: 'synTime',
+                        property: 'createdDate',
                         direction: 'DESC'
                     }
                 ],

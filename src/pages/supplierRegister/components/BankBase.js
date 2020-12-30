@@ -1,9 +1,9 @@
-import React, { forwardRef, useImperativeHandle, useEffect, useRef, useState,useContext} from 'react';
-import { baseUrl} from '../../../utils/commonUrl';
+import React, { forwardRef, useImperativeHandle, useEffect, useRef, useState, useContext } from 'react';
+import { baseUrl } from '../../../utils/commonUrl';
 import { Modal, Form, Row, Col, Input, } from 'antd';
 import { Fieldclassification } from '@/utils/commonProps'
 import { ComboTree, ComboGrid, ComboList } from 'suid';
-import { onlyNumber,isEmpty } from '@/utils/index';
+import { onlyNumber, isEmpty } from '@/utils/index';
 import { ComboAttachment } from '@/components';
 import UploadFile from '../../../components/Upload/index'
 import myContext from './ContextName'
@@ -34,16 +34,16 @@ const BankbaseRef = forwardRef(({
     onCancel = () => null,
     onOk = () => null,
     initialValues = {},
-    type = 'add',
     CNCountryId,
-    loading }, ref,) => {
+    editData = {}
+}, ref,) => {
 
     useImperativeHandle(ref, () => ({
         handleModalVisible,
         getFormValue,
         form
     }));
-    const count = useContext(myContext); 
+    const count = useContext(myContext);
     const { getFieldDecorator, validateFieldsAndScroll, getFieldValue, setFieldsValue } = form;
     const [bankcodeTab, setBankcode] = useState([]);
     const [initData, setInitData] = useState([]);
@@ -61,7 +61,7 @@ const BankbaseRef = forwardRef(({
         if (fields && isEmpty(fields.bankOwner)) {
             fields.bankOwner = count
         }
-        
+
         let initData = [], editData = [];
         editData.push(fields);
         if (editData && editData.length > 0) {
@@ -76,7 +76,7 @@ const BankbaseRef = forwardRef(({
                         key: item.provinceId || item.province && item.province.key || ""
                         , label: item.provinceName || item.province && item.province.label || ""
                     };
-                }else {
+                } else {
                     item.province = {
                         key: "", label: ""
                     };
@@ -86,7 +86,7 @@ const BankbaseRef = forwardRef(({
                         key: item.paymentCode || item.payment && item.payment.key || ""
                         , label: item.paymentName || item.payment && item.payment.label || ""
                     };
-                }else {
+                } else {
                     item.payment = {
                         key: "", label: ""
                     };
@@ -96,9 +96,9 @@ const BankbaseRef = forwardRef(({
                         key: item.regionId || item.region && item.region.key || "",
                         label: item.regionName || item.region && item.region.label || ""
                     };
-                }else {
+                } else {
                     item.region = {
-                        key: "",label: ""
+                        key: "", label: ""
                     };
                 }
                 // this.bankCodeName = item.bankCodeName;
@@ -119,9 +119,9 @@ const BankbaseRef = forwardRef(({
         initData = initData.length > 0 ? initData[0] : null;
         setInitData(initData);
         setFieldsValue(initData);
-        
+
     }, []);
-    
+
     // async function BankcodeConfigTable() {
     //     let params = {code:'BANK_CODE','Q_EQ_frozen__bool':'0'}
     //     const { data, success, message: msg } = await getBankcodelist(params);
@@ -132,7 +132,7 @@ const BankbaseRef = forwardRef(({
     // }
     function handleModalVisible(flag) {
         setvisible(!!flag)
-      }
+    }
     function handleSubmit() {
         let addbanklist = form.validateFieldsAndScroll;
         return addbanklist;
@@ -149,26 +149,26 @@ const BankbaseRef = forwardRef(({
             if (!err) {
                 let obj = {};
                 Object.keys(values).forEach((key) => {
-                if (key === "country") {
-                    obj[key + "Name"] = values[key].label;
-                    obj[key + "Id"] = values[key].key  || countryId;
-                } else if (key === "province" && values.province) {
-                    obj[key + "Name"] = values[key].label;
-                    obj[key + "Id"] = values[key].key;
-                } else if (key === "region" && values.region) {
-                    obj[key + "Name"] = values[key].label;
-                    obj[key + "Id"] = values[key].key;
-                } else if (key === "payment") {
-                    obj[key + "Name"] = values[key].label;
-                    obj[key + "Code"] = values[key].key;
-                } else if (key === "bankCode") {
-                    obj.bankCodeName = this.bankCodeName;
-                    obj.bankCode = this.bankCode;
-                } else {
+                    if (key === "country") {
+                        obj[key + "Name"] = values[key].label;
+                        obj[key + "Id"] = values[key].key || countryId;
+                    } else if (key === "province" && values.province) {
+                        obj[key + "Name"] = values[key].label;
+                        obj[key + "Id"] = values[key].key;
+                    } else if (key === "region" && values.region) {
+                        obj[key + "Name"] = values[key].label;
+                        obj[key + "Id"] = values[key].key;
+                    } else if (key === "payment") {
+                        obj[key + "Name"] = values[key].label;
+                        obj[key + "Code"] = values[key].key;
+                    } else if (key === "bankCode") {
+                        obj.bankCodeName = this.bankCodeName;
+                        obj.bankCode = this.bankCode;
+                    } else {
+                        obj[key] = values[key] || null;
+                    }
                     obj[key] = values[key] || null;
-                }
-                obj[key] = values[key] || null;
-                obj.country = countryId;
+                    obj.country = countryId;
                 });
                 result = obj;
             }
@@ -176,7 +176,7 @@ const BankbaseRef = forwardRef(({
         return result;
     }
     const searchbank = ['value', 'name'];
-    const unionPaynumber = ['code','name'];
+    const unionPaynumber = ['code', 'name'];
     return (
         <Form >
             <Row className="formstyl">
@@ -259,9 +259,9 @@ const BankbaseRef = forwardRef(({
                     >
                         {
                             isView ? <span></span> :
-                            getFieldDecorator("bankCode"),
+                                getFieldDecorator("bankCode", { initialValue: editData && editData.bankInfoVos ? editData.bankInfoVos.bankCode : '' }),
                             getFieldDecorator("bankCodeName", {
-                                initialValue: "",
+                                initialValue: editData && editData.bankInfoVos ? editData.bankInfoVos.bankCodeName : '',
                                 //rules: [{ required: !isView, message: '请选择银行编码!', }]
                             })(
                                 <ComboGrid
@@ -399,40 +399,22 @@ const BankbaseRef = forwardRef(({
                         label={"银行控制代码"}
                         {...formItemLayout}
                     >
-                        {/* {
+                        {
                             isView ? <span></span> :
-                                    getFieldDecorator("paymentName",
-                                    getFieldDecorator('paymentCode'), {
-                                    initialValue: "",
-                                    //rules: [{ required: !isView, message: '请选择银行控制代码!' }]
-                                    rules: [{
-                                        required: true,
-                                        message: '请选择银行控制代码!'
-                                    }]
-                                })(
-                                    <ComboList
-                                        showSearch={false}
-                                        {...paymentTypeConfig}
-                                        name='paymentName'
-                                        field={['paymentCode']}
-                                        form={form}
-                                    />
-                                )} */}
-                                {
-                            isView ? <span></span> :
-                                getFieldDecorator("paymentCode"),
-                                getFieldDecorator('paymentName', {
-                                    initialValue: "",
-                                    rules: [{ required: !isView, message: '请选择银行控制代码!', }]
-                                })(
-                                    <ComboList
-                                        showSearch={false}
-                                        {...paymentTypeConfig}
-                                        name='paymentName'
-                                        field={['paymentCode']}
-                                        form={form}
-                                    />
-                                )}
+                                getFieldDecorator("paymentCode", { initialValue: editData && editData.bankInfoVos ? editData.bankInfoVos.paymentCode : '' }),
+                            getFieldDecorator('paymentName', {
+                                initialValue: editData && editData.bankInfoVos ? editData.bankInfoVos.paymentName : '',
+                                rules: [{ required: !isView, message: '请选择银行控制代码!', }]
+                            })(
+                                <ComboList
+                                    showSearch={false}
+                                    {...paymentTypeConfig}
+                                    name='paymentName'
+                                    field={['paymentCode']}
+                                    form={form}
+                                />
+                            )
+                        }
                     </FormItem>
                 </Col>
                 <Col span={8}>

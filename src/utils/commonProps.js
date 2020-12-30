@@ -942,9 +942,6 @@ export const companyOrgConfigByCode = {
     url: `${baseUrl}/factory/findByCorporationCode?Q_EQ_frozen__bool=0`,
     type: 'post'
   },
-  // cascadeParams:{
-  //   corporationCode: 'A000'
-  // },
   columns: [
     {
       title: '工厂代码',
@@ -1013,6 +1010,7 @@ export const countryListConfig = {
   reader: {
     name: 'name',
     field: ['id'],
+    description: 'code'
   },
   style: {
     width: '100%'
@@ -1281,3 +1279,34 @@ export const stateInfoPorps = {
     field: ['id']
   }
 }
+
+
+export const Identification = {
+  remotePaging: true,
+  rowKey: 'code',
+  reader: {
+    name: 'name',
+    field: ['code'],
+    description: 'code'
+  },
+};
+
+export const Identificationtask = {
+  remotePaging: true,
+  rowKey: 'code',
+  reader: {
+    name: 'name',
+    field: ['code'],
+    description: 'code'
+  },
+};
+
+export const AreaConfig = {
+  remotePaging: false,
+  rowKey: 'code',
+  reader: {
+    field: ['id'],
+    name: 'name',
+    description: 'code',
+  },
+};

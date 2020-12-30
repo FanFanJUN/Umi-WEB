@@ -65,6 +65,7 @@ const AuthorizeRef = forwardRef(({
         }
         getBankcodelist(editData)
     }, [editformData])
+
     let columns = [];
     if (!isView) {
         columns.push(
@@ -106,7 +107,7 @@ const AuthorizeRef = forwardRef(({
                 return <span>
                     <FormItem style={{ marginBottom: 0 }}>
                         {
-                            getFieldDecorator(`position[${index}]`),
+                            getFieldDecorator(`position[${index}]`, { initialValue: record ? record.position : '', }),
                             getFieldDecorator(`positionName[${index}]`, {
                                 initialValue: record ? record.positionName : '',
                                 rules: [{ required: true, message: '请选择职位!', whitespace: true }],
@@ -122,22 +123,6 @@ const AuthorizeRef = forwardRef(({
                                         afterSelect(item, `${index + 1}`)
                                     }}
                                 />
-                                // <ComboList 
-                                //     form={form}
-                                //     style={{ width:'100%' }}
-                                //     dataSource={poinsitiondata}
-                                //     reader={{
-                                //         name: 'name',
-                                //         field: ['value'],
-
-                                //     }}
-                                //     showSearch={false}
-                                //     afterSelect={(item)=>{
-                                //         afterSelect(item,`${index}` + 1 )
-                                //     }}
-                                //     name={`positionName[${index}]`}
-                                //     field={[`position[${index}]`]}
-                                // />
                             )
                         }
                     </FormItem>

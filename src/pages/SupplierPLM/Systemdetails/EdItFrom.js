@@ -40,7 +40,6 @@ const commonFormRef = forwardRef(({
     }
     // 合格供应商
     function selectanalysis(record) {
-        console.log(record)
         form.setFieldsValue({
             'supplierId': record[0].supplier.id,
             'supplierCode': record[0].supplier.code,
@@ -110,7 +109,7 @@ const commonFormRef = forwardRef(({
                     <Col span={12}>
                         <Item {...formLayout} label="供应商代码">
                             {
-                                //getFieldDecorator('supplierId', { initialValue: modifydata ? modifydata && modifydata.supplierId : '' }),
+                                getFieldDecorator('supplierId', { initialValue: modifydata ? modifydata && modifydata.supplierId : '' }),
                                 getFieldDecorator('supplierCode', {
                                     initialValue: modifydata && modifydata.supplierCode,
                                     rules: [

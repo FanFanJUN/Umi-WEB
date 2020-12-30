@@ -24,7 +24,7 @@ import {
   ValiditySupplierRegister
 } from '@/services/SupplierModifyService'
 import styles from '../../supplierRegister/components/index.less';
-import { closeCurrent ,isEmpty} from '../../../utils';
+import { closeCurrent, isEmpty } from '../../../utils';
 
 function CreateStrategy() {
   const BaseinfoRef = useRef(null);
@@ -73,7 +73,7 @@ function CreateStrategy() {
           if (data.supplierInfoVo.supplierVo.accountVo === undefined) {
             setvisible(true)
           }
-        }else {
+        } else {
           if (data.supplierInfoVo.supplierVo.accountVo) {
             let mobile = data.supplierInfoVo.supplierVo.accountVo.mobile;
             let email = data.supplierInfoVo.supplierVo.accountVo.email;
@@ -178,7 +178,7 @@ function CreateStrategy() {
       }
     }
     let enclosurelist = [], basedata, baseexten, accountData,
-      automaticdata, automaticincome, automThreeYear, rangeValinfo,othersatt = [];
+      automaticdata, automaticincome, automThreeYear, rangeValinfo, othersatt = [];
     if (baseVal && baseVal.supplierVo) {
       basedata = baseVal.supplierVo
     }
@@ -194,7 +194,7 @@ function CreateStrategy() {
     }
     if (qualifications) {
       enclosurelist = [...othersatt, ...qualifications.proCertVos];
-    }else {
+    } else {
       enclosurelist = othersatt
     }
     if (businessInfoVal && businessInfoVal.supplierVo) {
@@ -248,7 +248,7 @@ function CreateStrategy() {
       triggerLoading(false)
       closeCurrent()
       return
-    }else {
+    } else {
       message.error(msg);
     }
     triggerLoading(false)
@@ -376,7 +376,7 @@ function CreateStrategy() {
     }
 
     let enclosurelist = [], basedata, accountData, baseexten, automaticdata, automaticincome,
-      automThreeYear, rangeValinfo,othersatt=[];
+      automThreeYear, rangeValinfo, othersatt = [];
     if (baseVal && baseVal.supplierVo) {
       basedata = baseVal.supplierVo
     }
@@ -392,7 +392,7 @@ function CreateStrategy() {
     }
     if (qualifications) {
       enclosurelist = [...othersatt, ...qualifications.proCertVos];
-    }else {
+    } else {
       enclosurelist = othersatt
     }
     if (businessInfoVal && businessInfoVal.supplierVo) {
@@ -437,29 +437,29 @@ function CreateStrategy() {
     againdata.supplierInfoVo.supplierVo.id = editData.supplierVo.id
     //let saveData = {...againdata};
     setAgaindata(againdata)
-     // 变更保存效验
-     const { success, message: msg } = await ValiditySupplierRegister(againdata);
-     if (success) {
+    // 变更保存效验
+    const { success, message: msg } = await ValiditySupplierRegister(againdata);
+    if (success) {
       getModelRef.current.handleModalVisible(true);
-     }else {
+    } else {
       message.error(msg);
-     }
-     
-    
+    }
+
+
   }
   async function createSave(val) {
     triggerLoading(true)
     let params = { ...againdata, ...val };
     const { success, message: msg } = await TemporarySupplierRegister(params);
-      if (success) {
-        message.success(msg);
-        triggerLoading(false)
-        closeCurrent()
-        return
-      } else {
-        message.error(msg);
-      }
+    if (success) {
+      message.success(msg);
       triggerLoading(false)
+      closeCurrent()
+      return
+    } else {
+      message.error(msg);
+    }
+    triggerLoading(false)
   }
   function setSuppliername(name) {
     setsupplierName(name)
@@ -649,12 +649,12 @@ function CreateStrategy() {
           wrappedComponentRef={getModelRef}
         />
         <Modal
-            title="提示"
-            visible={visible}
-            onOk={handleOk}
-            onCancel={handleCancel}
-            >
-            <p>请先到供应商账号的个人设置中绑定手机和邮箱，再变更其他信息，否则无法保存变更信息</p>
+          title="提示"
+          visible={visible}
+          onOk={handleOk}
+          onCancel={handleCancel}
+        >
+          <p>请先到供应商账号的个人设置中绑定手机和邮箱，再变更其他信息，否则无法保存变更信息</p>
         </Modal>
       </div>
     </Spin>
