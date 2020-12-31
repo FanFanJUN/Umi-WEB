@@ -1,12 +1,14 @@
 
 import React, { useState, useRef } from "react";
-import { Button, message } from "antd";
+import { Button, message, Modal } from "antd";
 import { ExtTable, ExtModal, WorkFlow } from 'suid';
 import { StartFlow } from 'seid';
 import { recommendUrl } from '@/utils/commonUrl';
 import { openNewTab, getUserAccount } from '@/utils';
 import { deleteChangeById } from "../service";
 import ChangeLineModal from "./ChangeLineModal";
+import { judge } from "../../../QualitySynergy/commonProps";
+import { EndFlow } from "../../mainData/commomService";
 
 const { FlowHistoryButton } = WorkFlow;
 
@@ -16,6 +18,7 @@ const ChangeHistory = (props) => {
     const [selectedRowKeys, setselectedRowKeys] = useState([]);
     const [selectRows, setselectRows] = useState([]);
     const [detailData, setDetailData] = useState({});
+    const [loading, setloading] = useState(false);
 
     const columns = [
         { title: '变更单号', dataIndex: 'changeCode', width: 200, ellipsis: true },
@@ -71,7 +74,35 @@ const ChangeHistory = (props) => {
             message.error(res.message);
         }
     }
-    return <ExtModal
+
+    const handleStopFlow = () => {
+        Modal.confirm({
+          title: '终止审核',
+          content: '是否终止审核？',
+          okText: '确定',
+          cancelText: '取消',
+          onOk: () => {
+            setloading(true);
+             EndFlow({
+              businessId: selectRows[0] ? selectRows[0].id : '',
+            }).then((res) => {
+                const { success, message: msg } = res;
+                if (success) {
+                    message.success(msg);
+                    setloading(false);
+                    tableRef.current.manualSelectedRows();
+                    tableRef.current.remoteDataRefresh();
+                    props.refreshTable();
+                    return;
+                  }
+                  message.error(msg);
+            })
+          },
+        });
+      };
+    
+    return (
+      <ExtModal
         width={'60vw'}
         maskClosable={false}
         visible={visible}
@@ -79,56 +110,91 @@ const ChangeHistory = (props) => {
         onCancel={handleCancel}
         footer={null}
         destroyOnClose
-    >
+      >
         <div>
-            <Button onClick={() => { handleBtn("view") }} key="view" disabled={selectRows.length !== 1}>查看</Button>
-            <Button onClick={handleDelete} style={{ margin: "0 6px" }} key="delete"
-                disabled={selectRows.length === 0
-                    || !selectRows.every(item => item.flowStatus == "INIT")
-                    || !selectRows.every(item => item.applyAccount == getUserAccount())
-                }>删除</Button>
-            <StartFlow
-                businessKey={selectedRowKeys[0] ? selectedRowKeys[0] : ''}
-                callBack={refresh}
-                disabled={selectedRowKeys.length !== 1 || selectRows[0].flowStatus != "INIT" || selectRows[0].applyAccount != getUserAccount()}
-                businessModelCode='com.ecmp.srm.sam.entity.sr.ReviewImplementPlanChange'
-            >提交审核</StartFlow>
-            <FlowHistoryButton
-                businessId={selectedRowKeys[0]}
-                flowMapUrl='flow-web/design/showLook'
+          <Button
+            onClick={() => {
+              handleBtn('view');
+            }}
+            key="view"
+            disabled={selectRows.length !== 1}
+          >
+            查看
+          </Button>
+          <Button
+            onClick={handleDelete}
+            style={{ margin: '0 6px' }}
+            key="delete"
+            disabled={
+              selectRows.length === 0 ||
+              !selectRows.every(item => item.flowStatus == 'INIT') ||
+              !selectRows.every(item => item.applyAccount == getUserAccount())
+            }
+          >
+            删除
+          </Button>
+          <StartFlow
+            businessKey={selectedRowKeys[0] ? selectedRowKeys[0] : ''}
+            callBack={refresh}
+            disabled={
+              selectedRowKeys.length !== 1 ||
+              selectRows[0].flowStatus != 'INIT' ||
+              selectRows[0].applyAccount != getUserAccount()
+            }
+            businessModelCode="com.ecmp.srm.sam.entity.sr.ReviewImplementPlanChange"
+          >
+            提交审核
+          </StartFlow>
+          <FlowHistoryButton businessId={selectedRowKeys[0]} flowMapUrl="flow-web/design/showLook">
+            <Button
+              disabled={selectedRowKeys.length !== 1 || selectRows[0].flowStatus == 'INIT'}
+              style={{ margin: '0 6px' }}
             >
-                <Button disabled={selectedRowKeys.length !== 1 || selectRows[0].flowStatus == "INIT"} style={{ margin: '0 6px' }}>审核历史</Button>
-            </FlowHistoryButton>
+              审核历史
+            </Button>
+          </FlowHistoryButton>
+          <Button
+            onClick={handleStopFlow}
+            loading={loading}
+            disabled={!judge(selectRows, 'flowStatus', 'INPROCESS') || selectedRowKeys.length === 0}
+          >
+            终止审核
+          </Button>
         </div>
         <ExtTable
-            style={{ marginTop: '10px' }}
-            rowKey='id'
-            allowCancelSelect={true}
-            showSearch={false}
-            remotePaging
-            checkbox={{ multiSelect: false }}
-            size='small'
-            onSelectRow={(key, rows) => {
-                setselectedRowKeys(key);
-                setselectRows(rows);
-            }}
-            ref={tableRef}
-            selectedRowKeys={selectedRowKeys}
-            store={{
-                url: `${recommendUrl}/api/reviewImplementPlanChangeService/findPageByCode`,
-                type: 'POST',
-                params: {
-                    reviewImplementPlanCode: props.code
-                }
-            }}
-            columns={columns}
+          style={{ marginTop: '10px' }}
+          rowKey="id"
+          allowCancelSelect={true}
+          showSearch={false}
+          remotePaging
+          checkbox={{ multiSelect: false }}
+          size="small"
+          onSelectRow={(key, rows) => {
+            setselectedRowKeys(key);
+            setselectRows(rows);
+          }}
+          ref={tableRef}
+          selectedRowKeys={selectedRowKeys}
+          store={{
+            url: `${recommendUrl}/api/reviewImplementPlanChangeService/findPageByCode`,
+            type: 'POST',
+            params: {
+              reviewImplementPlanCode: props.code,
+            },
+          }}
+          columns={columns}
         />
-        {detailData.visible && <ChangeLineModal
+        {detailData.visible && (
+          <ChangeLineModal
             visible={detailData.visible}
             id={detailData.id}
-            handleCancel={() => { setDetailData({ visible: false }) }}
-        />}
-    </ExtModal>
+            handleCancel={() => {
+              setDetailData({ visible: false });
+            }}
+          />
+        )}
+      </ExtModal>
+    );
 
 }
 

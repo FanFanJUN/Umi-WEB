@@ -34,7 +34,7 @@ const AddModal = (props) => {
     const [selectRows, setselectRows] = useState([]);
     const [loading] = useState(false);
     const [cascadeParams, setCascadeParams] = useState({});
-    const [page, setPage] = useState({});
+    const [page, setPage] = useState({current: 1, pageSize: 30});
 
     const columns = [
       {

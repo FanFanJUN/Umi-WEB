@@ -435,6 +435,9 @@ export default function () {
                 handleCancel={() => { setHistoryV(false) }}
                 id={data.selectedRowKeys[0]}
                 code={data.selectedRows[0]?.reviewImplementPlanCode}
+                refreshTable={() => {
+                    tableRef.current.remoteDataRefresh();
+                  }}
             />}
             { addVisible && <AddNodal
                 visible={addVisible}

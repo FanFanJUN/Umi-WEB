@@ -3,7 +3,7 @@
  * @LastEditors  : LiCai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime : 2020-12-28 13:51:06
+ * @LastEditTime : 2020-12-30 15:35:06
  * @Description: 行信息
  * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
@@ -19,6 +19,8 @@ import { reviewTypesProps } from '../propsParams';
 import { GetSupplierAreaByCode, GetSupplierContact } from '../../mainData/commomService';
 import BatchImport from '../BatchImport';
 import { smBaseUrl, recommendUrl } from '@/utils/commonUrl';
+import _ from 'lodash';
+import { BASE_URL } from '@/utils/constants';
 
 const { confirm } = Modal;
 let LineInfo = (props, ref) => {
@@ -62,7 +64,7 @@ let LineInfo = (props, ref) => {
       width: 140,
       ellipsis: true,
       render: (text, record) => {
-        return `${record.applyCorporationCode}_${record.applyCorporationName}`;
+        return record.applyCorporationCode && `${record.applyCorporationCode}_${record.applyCorporationName}`;
       },
     },
     {
@@ -71,7 +73,7 @@ let LineInfo = (props, ref) => {
       ellipsis: true,
       width: 140,
       render: (text, record) => {
-        return `${record.purchaseTeamCode}_${record.purchaseTeamName}`;
+        return record.purchaseTeamCode && `${record.purchaseTeamCode}_${record.purchaseTeamName}`;
       },
     },
     {
@@ -80,7 +82,10 @@ let LineInfo = (props, ref) => {
       ellipsis: true,
       width: 140,
       render: (text, record) => {
-        return `${record.supplierCode}_${record.supplierName}`;
+        if(record.agentCode && record.supplierCode) {
+          return record.agentCode && `${record.agentCode}_${record.agentName}`
+        }
+        return record.supplierCode && `${record.supplierCode}_${record.supplierName}`;
       },
     },
     {
@@ -89,6 +94,9 @@ let LineInfo = (props, ref) => {
       ellipsis: true,
       width: 140,
       render: (text, record) => {
+        if(record.agentCode && record.supplierCode) {
+          return `${record.supplierCode}_${record.supplierName}`
+        }
         return record.agentCode && `${record.agentCode}_${record.agentName}`;
       },
     },
@@ -98,7 +106,7 @@ let LineInfo = (props, ref) => {
       ellipsis: true,
       width: 140,
       render: (text, record) => {
-        return `${record.materialGroupCode}_${record.materialGroupName}`;
+        return record.materialGroupCode && `${record.materialGroupCode}_${record.materialGroupName}`;
       },
     },
     {
@@ -115,7 +123,6 @@ let LineInfo = (props, ref) => {
       width: 200,
       render: (v, data) => {
         return (
-          data.countryName &&
           `${data.countryName +
             data.provinceName +
             data.cityName +
@@ -401,8 +408,50 @@ let LineInfo = (props, ref) => {
     tableRef.current.manualSelectedRows();
   }
 
+  function dealDataSource() {
+    let copyDataSource = _.cloneDeep(dataSource);
+    copyDataSource.forEach((item)=> {
+      item.purchaseTeamName = `${item.purchaseTeamCode}_${item.purchaseTeamName}`;
+      item.supplierName = `${item.supplierCode}_${item.supplierName}`;
+      item.agentName = item.agentCode && `${item.agentCode}_${item.agentName}`;
+      item.materialGroupName = `${item.materialGroupCode}_${item.materialGroupName}`;
+    })
+    return copyDataSource;
+  }
+
   function importCallBack(data) {
-    
+    if (!isEmptyArray(data)) {
+      let copyDataSource = _.cloneDeep(dataSource);
+      copyDataSource.forEach(item => {
+        data.forEach(record => {
+          if(item.reviewPlanYearLinenum === record.reviewPlanYearLinenum) {
+            item.countryId = record?.countryId || '';
+            item.countryName = record?.countryName || '';
+            item.countryCode = record?.countryCode || ''
+            item.provinceId = record?.provinceId || '';
+            item.provinceName = record?.provinceName || '';
+            item.provinceCode = record?.provinceCode || ''
+            item.cityId = record?.cityId || '';
+            item.cityName = record?.cityName || '';
+            item.cityCode = record?.cityCode || ''
+            item.countyId = record?.countyId || '';
+            item.countyName = record?.countyName || '';
+            item.address = record?.address || '';
+            item.contactUserName = record.contactUserName;
+            item.contactUserTel = record.contactUserTel;
+            item.reviewReasonCode = record.reviewReasonCode;
+            item.reviewReasonId = record.reviewReasonId;
+            item.reviewReasonName = record.reviewReasonName;
+            item.reviewWayCode = record.reviewWayCode;
+            item.reviewWayId = record.reviewWayId;
+            item.reviewWayName = record.reviewWayName
+            item.remark = record.remark;
+            item.reviewMonth = record.reviewMonth;
+          }
+        })
+      });
+      setDataSource(copyDataSource);
+    }
   }
 
   return (
@@ -436,8 +485,9 @@ let LineInfo = (props, ref) => {
               <BatchImport
                 disabled={dataSource.length === 0}
                 name={'file'}
-                params={dataSource}
-                action={`${smBaseUrl}/api/srController/importYearExcel`}
+                params={dealDataSource()}
+                action={`${window.location.origin + BASE_URL}/srm-sam-service/srController/importYearExcel`}
+                // action={`${recommendUrl}/srController/importYearExcel`}
                 downParams={[]}
                 columns={columns}
                 downLoadUrl={`${recommendUrl}/srController/downloadYearExcel`}
