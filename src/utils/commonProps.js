@@ -21,7 +21,16 @@ import { searchListByKey } from '../components/utils/CommonUtils';
 export const standardUnitProps = {
   store: {
     url: `${commonsUrl}/unit/findByPage`,
-    type: 'post'
+    type: 'post',
+    params: {
+      filters: [
+        {
+          fieldName: 'frozen',
+          operator: 'EQ',
+          value: false
+        }
+      ]
+    }
   },
   style: { width: '100%' },
   reader: {
