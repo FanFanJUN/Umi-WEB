@@ -3,7 +3,7 @@
  * @LastEditors  : LiCai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime : 2020-12-30 15:35:06
+ * @LastEditTime : 2020-12-31 11:13:03
  * @Description: 行信息
  * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
@@ -43,6 +43,7 @@ let LineInfo = (props, ref) => {
   const [dataSource, setDataSource] = useState([]);
   const [batchEditVisible, setBatchEditVisible] = useState(false);
   const [selectData, setSelectData] = useState({});
+  const [buttonLoading, setButtonLoading] = useState(false);
 
   useEffect(() => {
     if (originData && !isEmptyArray(originData.planYearLineVos)) {
@@ -82,9 +83,6 @@ let LineInfo = (props, ref) => {
       ellipsis: true,
       width: 140,
       render: (text, record) => {
-        if(record.agentCode && record.supplierCode) {
-          return record.agentCode && `${record.agentCode}_${record.agentName}`
-        }
         return record.supplierCode && `${record.supplierCode}_${record.supplierName}`;
       },
     },
@@ -94,9 +92,6 @@ let LineInfo = (props, ref) => {
       ellipsis: true,
       width: 140,
       render: (text, record) => {
-        if(record.agentCode && record.supplierCode) {
-          return `${record.supplierCode}_${record.supplierName}`
-        }
         return record.agentCode && `${record.agentCode}_${record.agentName}`;
       },
     },
@@ -240,6 +235,7 @@ let LineInfo = (props, ref) => {
   };
 
   async function handleOk(tableData, buttonFlag) {
+    setButtonLoading(true);
     console.log(tableData);
     // 获取供应商 生产厂地址
     let originSupplierCodeList = [];
@@ -265,6 +261,7 @@ let LineInfo = (props, ref) => {
           }));
         }
       } catch (error) {
+        setButtonLoading(false);
       }
     }
     
@@ -375,6 +372,7 @@ let LineInfo = (props, ref) => {
       }
     }
     if (checkFlag) {
+      setButtonLoading(false);
       return;
     }
     newTableList.push(...tableData);
@@ -388,6 +386,7 @@ let LineInfo = (props, ref) => {
       return;
     }
     setData((v) => ({ ...v, visible: false }));
+    setButtonLoading(false);
   }
 
   function setBatchVisible() {
@@ -520,6 +519,7 @@ let LineInfo = (props, ref) => {
           handleCancel={setVisible}
           handleOk={handleOk}
           lineData={dataSource}
+          buttonLoading={buttonLoading}
         />
       )}
       {batchEditVisible && (
