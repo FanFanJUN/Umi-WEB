@@ -1310,3 +1310,13 @@ export const AreaConfig = {
     description: 'code',
   },
 };
+// 区域
+export const CountryIdConfig = {
+  remotePaging: false,
+  rowKey: 'code',
+  reader: {
+    field: ['countryId'],
+    name: 'name',
+    description: 'code',
+  },
+};

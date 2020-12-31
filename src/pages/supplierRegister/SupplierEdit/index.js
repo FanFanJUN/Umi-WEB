@@ -37,7 +37,6 @@ function CreateStrategy() {
   const [baseinfo, setbaseinfo] = useState([]);
   const [accountinfo, setaccountinfo] = useState([]);
   const [businesshide, setbusinesshide] = useState([]);
-  const [initialValue, setInitialValue] = useState({});
   const [wholeData, setwholeData] = useState([]);
   const [editData, setEditData] = useState([]);
   const [loading, triggerLoading] = useState(false);
@@ -61,13 +60,9 @@ function CreateStrategy() {
       let suppliertype = data.supplierInfoVo.supplierVo.supplierCategory.id
       setsupplierName(data.supplierInfoVo.supplierVo.name)
       initConfigurationTable(suppliertype)
-      setTimeout(() => {
-
-        setEditData(data.supplierInfoVo)
-        setwholeData(data)
-        triggerLoading(false);
-      }, 100);
-      setInitialValue(data.supplierInfoVo)
+      setEditData(data.supplierInfoVo)
+      setwholeData(data)
+      triggerLoading(false);
     } else {
       triggerLoading(false);
       message.error(msg)
@@ -202,17 +197,6 @@ function CreateStrategy() {
       supplierRecentIncomes: automaticincome,
       supplierAgents: agentVal,
       proCertVos: proCertVos ? proCertVos.proCertVos : ''
-    }
-    if (baseVal) {
-      if (baseVal.supplierVo.companyCode) {
-        wholeData.companyCode = baseVal.supplierVo.companyCode
-        if (baseVal.supplierVo.companyName === baseVal.supplierVo.companyCode) {
-          wholeData.companyName = wholeData.companyName
-        } else {
-          wholeData.companyName = baseVal.supplierVo.companyName
-        }
-
-      }
     }
     if (wholeData) {
       wholeData.supplierInfoVo = supplierInfoVo;
@@ -404,18 +388,6 @@ function CreateStrategy() {
       supplierAgents: agentVal,
       proCertVos: proCertVos ? proCertVos.proCertVos : ''
     }
-    if (baseVal) {
-      if (baseVal.supplierVo.companyCode) {
-        wholeData.companyCode = baseVal.supplierVo.companyCode
-        if (baseVal.supplierVo.companyName === baseVal.supplierVo.companyCode) {
-          wholeData.companyName = wholeData.companyName
-        } else {
-          wholeData.companyName = baseVal.supplierVo.companyName
-        }
-
-      }
-    }
-
     if (wholeData) {
       wholeData.supplierInfoVo = supplierInfoVo;
     }
@@ -479,7 +451,6 @@ function CreateStrategy() {
                     <BaseInfo
                       Dyformname={setSuppliername}
                       baseinfo={baseinfo}
-                      initialValues={editData}
                       editformData={editData}
                       wholeData={wholeData}
                       wrappedComponentRef={BaseinfoRef}
@@ -497,7 +468,6 @@ function CreateStrategy() {
                   <div>
                     <Account
                       accountinfo={accountinfo}
-                      initialValue={initialValue}
                       editData={editData}
                       wrappedComponentRef={AccountRef}
                     />
@@ -512,7 +482,6 @@ function CreateStrategy() {
                   <div className={styles.title}>授权委托人</div>
                   <div>
                     <Authorizedclient
-                      initialValue={initialValue}
                       editformData={editData}
                       wrappedComponentRef={AuthorizeRef}
                     />

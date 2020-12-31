@@ -59,33 +59,31 @@ function CreateStrategy() {
       let suppliertype = data.supplierInfoVo.supplierVo.supplierCategory.id
       setsupplierName(data.supplierInfoVo.supplierVo.name)
       initConfigurationTable(suppliertype)
-      setTimeout(() => {
-        setInitialValue(data.supplierInfoVo)
-        setEditData(data.supplierInfoVo)
-        setwholeData(data)
-        setAgaindata(againdata)
-        triggerLoading(false);
-        if (data.supplierInfoVo.supplierVo.supplierCategoryName === '个人供应商') {
+      setInitialValue(data.supplierInfoVo)
+      setEditData(data.supplierInfoVo)
+      setwholeData(data)
+      setAgaindata(againdata)
+      triggerLoading(false);
+      if (data.supplierInfoVo.supplierVo.supplierCategoryName === '个人供应商') {
+        let mobile = data.supplierInfoVo.supplierVo.accountVo.mobile;
+        if (isEmpty(mobile)) {
+          setvisible(true)
+        }
+        if (data.supplierInfoVo.supplierVo.accountVo === undefined) {
+          setvisible(true)
+        }
+      } else {
+        if (data.supplierInfoVo.supplierVo.accountVo) {
           let mobile = data.supplierInfoVo.supplierVo.accountVo.mobile;
-          if (isEmpty(mobile)) {
-            setvisible(true)
-          }
-          if (data.supplierInfoVo.supplierVo.accountVo === undefined) {
-            setvisible(true)
-          }
-        } else {
-          if (data.supplierInfoVo.supplierVo.accountVo) {
-            let mobile = data.supplierInfoVo.supplierVo.accountVo.mobile;
-            let email = data.supplierInfoVo.supplierVo.accountVo.email;
-            if (isEmpty(mobile) || isEmpty(email)) {
-              setvisible(true)
-            }
-          }
-          if (data.supplierInfoVo.supplierVo.accountVo === undefined) {
+          let email = data.supplierInfoVo.supplierVo.accountVo.email;
+          if (isEmpty(mobile) || isEmpty(email)) {
             setvisible(true)
           }
         }
-      }, 100);
+        if (data.supplierInfoVo.supplierVo.accountVo === undefined) {
+          setvisible(true)
+        }
+      }
     } else {
       triggerLoading(false);
       message.error(msg)
@@ -220,17 +218,6 @@ function CreateStrategy() {
       supplierAgents: agentVal,
       proCertVos: proCertVos ? proCertVos.proCertVos : ''
     }
-    if (baseVal) {
-      if (baseVal.supplierVo.companyCode) {
-        againdata.companyCode = baseVal.supplierVo.companyCode
-        if (baseVal.supplierVo.companyName === baseVal.supplierVo.companyCode) {
-          againdata.companyName = wholeData.companyName
-        } else {
-          againdata.companyName = baseVal.supplierVo.companyName
-        }
-
-      }
-    }
     if (againdata) {
       againdata.supplierInfoVo = supplierInfoVo;
     }
@@ -238,9 +225,9 @@ function CreateStrategy() {
     //如果为新增  拼加一个供应商ID在头上
     againdata.supplierId = againdata.supplierId || query.id;
     againdata.supplierInfoVo.supplierVo.id = editData.supplierVo.id
-    //againdata.againdata = '0';
     againdata.saveStatus = '0';
     let saveData = { ...againdata };
+    console.log(saveData)
     triggerLoading(true)
     const { success, message: msg } = await TemporarySupplierRegister(saveData);
     if (success) {
@@ -417,17 +404,6 @@ function CreateStrategy() {
       supplierAgents: agentVal,
       proCertVos: proCertVos ? proCertVos.proCertVos : ''
     }
-    if (baseVal) {
-      if (baseVal.supplierVo.companyCode) {
-        againdata.companyCode = baseVal.supplierVo.companyCode
-        if (baseVal.supplierVo.companyName === baseVal.supplierVo.companyCode) {
-          againdata.companyName = wholeData.companyName
-        } else {
-          againdata.companyName = baseVal.supplierVo.companyName
-        }
-
-      }
-    }
     if (againdata) {
       againdata.supplierInfoVo = supplierInfoVo;
     }
@@ -510,7 +486,6 @@ function CreateStrategy() {
                     <BaseInfo
                       Dyformname={setSuppliername}
                       baseinfo={baseinfo}
-                      initialValues={editData}
                       editformData={editData}
                       wholeData={wholeData}
                       wrappedComponentRef={BaseinfoRef}
@@ -529,7 +504,6 @@ function CreateStrategy() {
                   <div>
                     <Account
                       accountinfo={accountinfo}
-                      initialValue={initialValue}
                       editData={editData}
                       wrappedComponentRef={AccountRef}
                     />
@@ -544,7 +518,6 @@ function CreateStrategy() {
                   <div className={styles.title}>授权委托人</div>
                   <div>
                     <Authorizedclient
-                      initialValue={initialValue}
                       editformData={editData}
                       wrappedComponentRef={AuthorizeRef}
                     />

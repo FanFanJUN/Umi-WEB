@@ -12,29 +12,9 @@ const { create } = Form;
 const FormItem = Form.Item;
 let keys = 0;
 let lineCode = 1;
-let aggregate = [];
 let aggregatename = [];
-const poinsitiondata = [
-    {
-        name: '总锦鲤',
-        value: "001",
-    },
-    {
-        name: '副总经理',
-        value: "002",
-    },
-    {
-        name: '监理',
-        value: "003",
-    },
-    {
-        name: '财务',
-        value: "004"
-    }
-];
 const AuthorizeRef = forwardRef(({
     form,
-    initialValue = {},
     editformData = {},
     isView,
     isOverseas = null
@@ -42,14 +22,11 @@ const AuthorizeRef = forwardRef(({
     useImperativeHandle(ref, () => ({
         getAuthorfrom,
         authorTemporary,
-        setHeaderFields,
         form
     }));
     const tabformRef = useRef(null)
     const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
-    const [configure, setConfigure] = useState([]);
     const [dataSource, setDataSource] = useState([]);
-    const [authoriz, setauthoriz] = useState([]);
     const [edit, setEdit] = useState(false);
 
     useEffect(() => {
@@ -58,7 +35,6 @@ const AuthorizeRef = forwardRef(({
         if (editData && editData.contactVos && editData.contactVos.length > 0) {
             initData = editData.contactVos.map((item, index) => ({ key: index, ...item }));
             let maxLineNum = getMaxLineNum(editData.contactVos);
-            //lineCode = maxLineNum + 1;
             keys = initData.length - 1;
         } else {
             editData = editData.contactVos
@@ -116,12 +92,11 @@ const AuthorizeRef = forwardRef(({
                                     form={form}
                                     {...listPositionConfig}
                                     showSearch={false}
-                                    //afterSelect={afterSelect}
                                     name={`positionName[${index}]`}
                                     field={[`position[${index}]`]}
-                                    afterSelect={(item) => {
-                                        afterSelect(item, `${index + 1}`)
-                                    }}
+                                // afterSelect={(item) => {
+                                //     afterSelect(item, `${index + 1}`)
+                                // }}
                                 />
                             )
                         }
@@ -272,17 +247,6 @@ const AuthorizeRef = forwardRef(({
         },
     ].map(item => ({ ...item, align: 'center' }))
 
-    // 职务选择
-    function afterSelect(val, key) {
-        setEdit(true)
-        dataSource.forEach((item, index) => {
-            if (item.key === Number(key)) {
-                const copyData = dataSource.slice(0)
-                copyData[index].position = val.value;
-                setDataSource(copyData)
-            }
-        })
-    }
     function getBankcodelist(val) {
         let contactVos;
         if (val) {
@@ -308,7 +272,6 @@ const AuthorizeRef = forwardRef(({
 
             } else {
                 let determine = lineCode
-                //lineCode = lineCode
                 const newData = [...dataSource, { key: ++keys, lineCode: getLineCode(determine) }];
                 setDataSource(newData)
             }
@@ -324,12 +287,6 @@ const AuthorizeRef = forwardRef(({
             lineCode = lineCode + 1
         }
         const newData = [...dataSource, { key: ++keys, lineCode: getLineCode(determine) }];
-        //setauthoriz([{ keyId: ++keys, lineCode: getLineCode(determine) }])
-        //lineCode++;
-        // let setlecode = [];
-        // setlecode.push({ keyId: ++keys, lineCode: getLineCode(determine) })
-        // console.log(setlecode)
-        // setauthoriz(setlecode)
         setDataSource(newData)
 
     };
@@ -343,11 +300,6 @@ const AuthorizeRef = forwardRef(({
         }
         setDataSource(newData)
     };
-    // function deleteNmae(e) {
-    //     console.log(e.target)
-    //     let changeKeyName = `name[${e.target.name}]`;
-    //     form.setFieldsValue({[changeKeyName]: ''});
-    // }
     //联系人验证
     function setName(e) {
         dataSource.forEach((item, index) => {
@@ -378,7 +330,6 @@ const AuthorizeRef = forwardRef(({
             })
             if (values) {
                 result = dataTransfer2(dataSource, values)
-
             }
         })
         return result;
@@ -397,12 +348,6 @@ const AuthorizeRef = forwardRef(({
             }
         })
         return result;
-    }
-    // 设置所有表格参数
-    const setHeaderFields = (fields) => {
-        //const { attachmentId = null, ...fs } = fields;
-        // setAttachment(attachmentId)
-        // setFieldsValue(fs)
     }
     return (
         <>
