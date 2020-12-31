@@ -54,9 +54,12 @@ function CreateStrategy() {
     if (success) {
       let suppliertype = data.supplierInfoVo.supplierVo.supplierCategory.id
       initConfigurationTable(suppliertype)
-      setEditData(data.supplierInfoVo)
-      setwholeData(data)
-      triggerLoading(false);
+      setTimeout(() => {
+
+        setEditData(data.supplierInfoVo)
+        setwholeData(data)
+        triggerLoading(false);
+      }, 100);
     } else {
       triggerLoading(false);
       message.error(msg)

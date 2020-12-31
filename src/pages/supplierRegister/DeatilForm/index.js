@@ -9,28 +9,12 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useState } from 'react';
 import { Button, Row, Col, Form, Input, DatePicker, message } from 'antd';
 import UploadFile from '../../../components/Upload/index'
-import {getEntityId} from "../CommonUtils";
+import { getEntityId } from "../CommonUtils";
 import styles from './index.less';
 import { conformsTo, values } from 'lodash';
-
 const { create } = Form;
 const { RangePicker } = DatePicker
 const FormItem = Form.Item;
-// const Combos = {
-//   grid: ComboGrid,
-//   list: ComboList,
-//   tree: ComboTree,
-//   searchTable: ComboGrid,
-//   multiple: ComboMultiple,
-//   select: MixinSelect,
-//   selectTree: ComboTree,
-//   rangePicker: RangePicker,
-//   upload: ComboAttachment,
-//   address: CascadeAddressSelect,
-//   regFund: MoneyInput,
-//   offaddress: CascadeAddressSelect
-// }
-
 const formItemLayout = {
   labelCol: {
     span: 8
@@ -52,31 +36,15 @@ const CommonconfigRef = forwardRef(({
   change
 }, ref) => {
   useImperativeHandle(ref, () => ({
-    setHeaderFields,
     form
-  }));
-  const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
-  const [companycode, setcompanycode] = useState([ ]);
-  
-  //console.log(initialValues)
-  useEffect(() => {
-    // const {
-    //     id,
-    //     ...other
-    // } = initialValues;
-    // const fields = {
-    //     ...other
-    // }
-    // console.log(fields)
-    // setFieldsValue(fields);
+  }))
 
-  }, [])
-  // 设置表单参数
-  function setHeaderFields(fields) {
-    // const { attachmentId = null, ...fs } = fields;
-    // setFieldsValue(fs)
-  }
-  let entityIdObj = getEntityId(editData);
+  const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
+  const [companycode, setcompanycode] = useState([]);
+  useEffect(() => {
+
+  }, []);
+  let entityIdObj = getEntityId(editData)
   return (
     <Row type="flex">
       {
@@ -86,7 +54,7 @@ const CommonconfigRef = forwardRef(({
             if (item.key !== 'registerProvinceCode' || item.key !== 'registerProvinceId') {
               return (
                 <>
-                {/* <Col span={8}> */}
+                  {/* <Col span={8}> */}
 
                   {item.key === 'supplierCategoryName' ?
                     <Col
@@ -189,7 +157,7 @@ const CommonconfigRef = forwardRef(({
                   }
                   {
                     item.key === 'regFund' ? <Col
-                    span={8}
+                      span={8}
                     >
                       <FormItem style={{ width: '100%', marginBottom: 10 }}
                         label={'注册资金'} {...formItemLayout} >
@@ -296,17 +264,17 @@ const CommonconfigRef = forwardRef(({
                     </Col> : null
                   }
                   {
-                     item.key === 'bukrName' ? <Col span={8}
-                     style={{
-                       display:'none'
-                     }}>
-                     <FormItem
-                       {...formItemLayout}
-                       label={'泛虹公司'}
-                     >
-                       <span>{editData && editData.supplierVo && editData.supplierVo.supplierCategory ? editData.supplierVo.supplierCategory.companyCoded : ''}</span>
-                     </FormItem>
-                   </Col> : null
+                    item.key === 'bukrName' ? <Col span={8}
+                      style={{
+                        display: 'none'
+                      }}>
+                      <FormItem
+                        {...formItemLayout}
+                        label={'泛虹公司'}
+                      >
+                        <span>{editData && editData.supplierVo && editData.supplierVo.supplierCategory ? editData.supplierVo.supplierCategory.companyCoded : ''}</span>
+                      </FormItem>
+                    </Col> : null
                   }
                   {
                     item.key === 'workName' ? <Col span={8}>
@@ -441,27 +409,27 @@ const CommonconfigRef = forwardRef(({
                     </Col> : null
                   }
                   {
-                  item.key === 'registerProvinceCode' ? <Col span={8}>
-                    <FormItem
-                      labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}
-                      label={'注册地址'}
-                    >
-                      <span>{editData && editData.extendVo && editData.extendVo.registerRegionName ? editData.extendVo.registerProvinceName + editData.extendVo.registerRegionName + editData.extendVo.registerDistrictName + editData.extendVo.registerStreet : ''}</span>
-                    </FormItem>
-                  </Col> : null
+                    item.key === 'registerProvinceCode' ? <Col span={8}>
+                      <FormItem
+                        labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}
+                        label={'注册地址'}
+                      >
+                        <span>{editData && editData.extendVo && editData.extendVo.registerRegionName ? editData.extendVo.registerProvinceName + editData.extendVo.registerRegionName + editData.extendVo.registerDistrictName + editData.extendVo.registerStreet : ''}</span>
+                      </FormItem>
+                    </Col> : null
                   }
                   {
-                  item.key === 'registerProvinceId' ? <Col span={8}>
-                    <FormItem
-                      labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}
-                      label={'办公地址'}
-                    >
-                      <span>{editData && editData.extendVo && editData.extendVo.officeProvinceName ? editData.extendVo.officeProvinceName + editData.extendVo.officeRegionName + editData.extendVo.officeDistrictName + editData.extendVo.officeStreet : ''}</span>
-                    </FormItem>
-                  </Col> : null
-                }
-                {/* </Col> */}
-                
+                    item.key === 'registerProvinceId' ? <Col span={8}>
+                      <FormItem
+                        labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}
+                        label={'办公地址'}
+                      >
+                        <span>{editData && editData.extendVo && editData.extendVo.officeProvinceName ? editData.extendVo.officeProvinceName + editData.extendVo.officeRegionName + editData.extendVo.officeDistrictName + editData.extendVo.officeStreet : ''}</span>
+                      </FormItem>
+                    </Col> : null
+                  }
+                  {/* </Col> */}
+
                 </>
               )
             }

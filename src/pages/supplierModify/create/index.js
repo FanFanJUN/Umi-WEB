@@ -40,7 +40,6 @@ function CreateStrategy() {
   const [baseinfo, setbaseinfo] = useState([]);
   const [accountinfo, setaccountinfo] = useState([]);
   const [businesshide, setbusinesshide] = useState([]);
-  const [initialValue, setInitialValue] = useState({});
   const [wholeData, setwholeData] = useState([]);
   const [editData, setEditData] = useState([]);
   const [againdata, setAgaindata] = useState({});
@@ -59,7 +58,6 @@ function CreateStrategy() {
       let suppliertype = data.supplierInfoVo.supplierVo.supplierCategory.id
       setsupplierName(data.supplierInfoVo.supplierVo.name)
       initConfigurationTable(suppliertype)
-      setInitialValue(data.supplierInfoVo)
       setEditData(data.supplierInfoVo)
       setwholeData(data)
       setAgaindata(againdata)
@@ -227,7 +225,6 @@ function CreateStrategy() {
     againdata.supplierInfoVo.supplierVo.id = editData.supplierVo.id
     againdata.saveStatus = '0';
     let saveData = { ...againdata };
-    console.log(saveData)
     triggerLoading(true)
     const { success, message: msg } = await TemporarySupplierRegister(saveData);
     if (success) {

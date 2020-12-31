@@ -21,14 +21,14 @@ export const dataTransfer = (dataSource, values, initIndex) => {
   const data = dataSource.map((item, index) => {
     let obj = {};
     //赋予行号
-    obj.lineCode= item.lineCode;
+    obj.lineCode = item.lineCode;
     Object.keys(values).forEach((key) => {
       const newKey = key.split('_')[0];
       if (isCommon) {
         if (index < initIndex) { //通用资质已有数据
           obj['qualificationType'] = item.qualificationType;
-            obj['id'] = item.id;
-            obj['refId'] = item.refId;
+          obj['id'] = item.id;
+          obj['refId'] = item.refId;
         }
       }
       if (newKey === 'date') {
@@ -51,7 +51,7 @@ export const dataTransfer2 = (dataSource, values, isChange) => {
   return dataSource.map((item, index) => {
     let obj = {};
     //赋予行号
-    obj.lineCode= item.lineCode;
+    obj.lineCode = item.lineCode;
     Object.keys(values).forEach((key) => {
       // values[key] = values[key].filter(item => !!item);
       if (key === 'date') {
@@ -71,7 +71,7 @@ export const dataTransfer2 = (dataSource, values, isChange) => {
       }
       else if (key === 'electronicSignature') {
         obj[key] = values[key][index] || false;
-      }else if (key === 'operatingVolume') {
+      } else if (key === 'operatingVolume') {
         obj[key] = values[key][index] || 0;
       }
       else {
@@ -151,7 +151,7 @@ export const checkDateWithHalfYear = (rule, value, callback) => {
 export const checkDateWithYearAdd3 = (rule, value, callback) => {
   if (value) {
     if (!value.startDate) {
-      
+
     } else if (value.startDate && !value.endDate) {
       let _startDate = new Date(value.startDate);
       let now = new Date();
