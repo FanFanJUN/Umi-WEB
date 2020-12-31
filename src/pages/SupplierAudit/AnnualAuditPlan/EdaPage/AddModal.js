@@ -25,7 +25,7 @@ const formItemLayoutLong = {
 
 const AddModal = (props) => {
 
-    const { visible, title, form, handleCancel, handleOk } = props;
+    const { visible, title, form, handleCancel, handleOk, buttonLoading } = props;
     const tableRef = useRef(null);
 
     const { getFieldDecorator } = form;
@@ -60,11 +60,19 @@ const AddModal = (props) => {
         dataIndex: 'supplier',
         ellipsis: true,
         width: 140,
-        render: (text) => {
+        render: (text, record) => {
+          if(record.originSupplierCode && text) {
+            return record.originSupplierCode && `${record.originSupplierCode}_${record.originSupplierName}`;
+          }
           return text && `${text.code}_${text.name}`;
         },
       },
-      { title: '代理商', dataIndex: 'originSupplierName', ellipsis: true, width: 80 },
+      { title: '代理商', dataIndex: 'originSupplierName', ellipsis: true, width: 80, render: (text, record)=> {
+        if(record.originSupplierCode && record.supplier) {
+          return record?.supplier && `${record?.supplier?.code}_${record?.supplier?.name}`;
+        }
+        return record.originSupplierCode && `${record.originSupplierCode}_${text}`;
+      } },
       {
         title: '物料分类',
         dataIndex: 'materielCategory',
@@ -267,10 +275,10 @@ const AddModal = (props) => {
           <Button key="back" onClick={onCancel}>
             返回
           </Button>,
-          <Button key="submit" type="primary" onClick={onOk}>
+          <Button key="submit" type="primary" onClick={onOk} loading={buttonLoading}>
             确定
           </Button>,
-          <Button key="continue" type="primary" onClick={onOkAndContinue}>
+          <Button key="continue" type="primary" onClick={onOkAndContinue} loading={buttonLoading}>
             确定并继续
           </Button>,
         ]}

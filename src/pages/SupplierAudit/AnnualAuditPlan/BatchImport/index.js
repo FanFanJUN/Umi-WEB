@@ -3,7 +3,7 @@
  * @connect      : 1981824361@qq.com
  * @Date         : 2020-12-28 10:14:41
  * @LastEditors  : LiCai
- * @LastEditTime : 2020-12-30 17:50:05
+ * @LastEditTime : 2020-12-31 10:30:25
  * @Description  : 批量导入
  * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/BatchImport/index.js
  */
@@ -205,7 +205,7 @@ const getHeaders = () => {
          <div>
            <Row style={{ padding: 5 }}>{title()}</Row>
            <ExtTable
-             style={{ marginTop: '10px' }}
+             height={400}
              rowKey="reviewPlanYearLinenum"
              allowCancelSelect={true}
              showSearch={false}
