@@ -41,21 +41,8 @@ const BaseinfoRef = forwardRef(({
 	})
 	const fieldsList = fieldsListed;
 	const editData = editformData;
-	const initialVal = initialValues
 	useEffect(() => {
-		// const { userName, userId, mobile } = storage.sessionStorage.get("Authorization");
-		// setFieldsValue({
-		//   phone: mobile
-		// })
-		// setCreateName(userName)
-		// const {
-		// 	id,
-		// 	createdDate,
-		// 	creatorName,
-		// 	...other
-		// } = initialValues;
 		const { setHeaderFields } = CommonconfigRef.current;
-		//setHeaderFields(initialVal);
 	}, []);
 	// 暂存表单
 	function getTemporaryBaseInfo() {

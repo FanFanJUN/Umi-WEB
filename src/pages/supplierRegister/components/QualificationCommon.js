@@ -3,9 +3,11 @@ import { Form, Icon, Input, Col, message, Radio, Button } from 'antd';
 import moment from 'moment';
 import { utils, ExtTable, ComboList } from 'suid';
 import { AddButtonWrapper } from './style'
-import { compareData, getLineCode ,checkDateWithHalfYear,
-    checkDateWithYearAdd3,checkDateWithYearAdd,getMaxLineNum} from '@/utils/index'
-import {dataTransfer} from '../CommonUtils'
+import {
+    compareData, getLineCode, checkDateWithHalfYear,
+    checkDateWithYearAdd3, checkDateWithYearAdd, getMaxLineNum
+} from '@/utils/index'
+import { dataTransfer } from '../CommonUtils'
 import RangeDatePicker from './RangeDatePicker'
 // import {ComboAttachment } from '@/components';
 import UploadFile from '../../../components/Upload/index'
@@ -35,7 +37,7 @@ const QualificationRef = forwardRef(({
     //const [lineCode, setLineCode] = useState(0);
     //const [initIndex, setInitIndex] = useState();
     const { attachment = null } = initialValue;
-    
+
     useEffect(() => {
         getqualifications(editData);
     }, [editData])
@@ -44,10 +46,11 @@ const QualificationRef = forwardRef(({
         lineCode = 1;
         let editData = val;
         let initData = [
-            {   key: 0, 
-                lineCode:getLineCode(lineCode++), 
+            {
+                key: 0,
+                lineCode: getLineCode(lineCode++),
                 'qualificationType': '营业执照',
-                'qualificationName': '营业执照' 
+                'qualificationName': '营业执照'
             },
             {
                 key: 1,
@@ -61,10 +64,11 @@ const QualificationRef = forwardRef(({
                 'qualificationType': '法定代表人授权委托书',
                 'qualificationName': '法定代表人授权委托书',
             },
-            {   key: 3, 
-                lineCode: getLineCode(lineCode++), 
-                'qualificationType': '公司印鉴信息', 
-                'qualificationName': '公司印鉴信息' 
+            {
+                key: 3,
+                lineCode: getLineCode(lineCode++),
+                'qualificationType': '公司印鉴信息',
+                'qualificationName': '公司印鉴信息'
             },
             {
                 key: 4,
@@ -78,20 +82,20 @@ const QualificationRef = forwardRef(({
         setDataSource(initData)
         keys = initData.length - 1;
         initIndex = initData.length;
-        let itemArr = [],modifydata= [];
+        let itemArr = [], modifydata = [];
         if (editData && editData.genCertVos && editData.genCertVos.length > 0) {
-            editData.genCertVos.map((item,index) => {
+            editData.genCertVos.map((item, index) => {
                 if (index === 0 && item.qualificationType === '入网须知') {
                     modifydata = editData.genCertVos.concat(editData.genCertVos.shift())
-                }else {
+                } else {
                     modifydata = editData.genCertVos
                 }
-                
+
             });
             modifydata = modifydata.filter(item => item.qualificationType !== '入网须知');
             modifydata.sort(compare("key"));
             if (modifydata.length > 0) {
-                modifydata.map((item,index) => {
+                modifydata.map((item, index) => {
                     itemArr.push({
                         key: index,
                         id: item.id,
@@ -99,10 +103,10 @@ const QualificationRef = forwardRef(({
                         qualificationType: item.qualificationType,
                         refId: item.refId,
                         startDate: item.startDate,
-                        endDate:item.endDate,
+                        endDate: item.endDate,
                         certificateNo: item.certificateNo,
                         institution: item.institution,
-                        attachments:item.attachments
+                        attachments: item.attachments
                     });
                 })
                 initData = itemArr;
@@ -111,15 +115,15 @@ const QualificationRef = forwardRef(({
                 lineCode = maxLineNum + 1;
                 keys = initData.length - 1;
                 setDataSource(initData)
-            }else {
+            } else {
                 setDataSource(initData)
             }
-            
+
         }
-        
+
     }
-    function compare (prop) {
-        return function(a,b) {
+    function compare(prop) {
+        return function (a, b) {
             var value1 = a[prop];
             var value2 = b[prop];
             return value1 - value2;
@@ -132,7 +136,7 @@ const QualificationRef = forwardRef(({
                 title: '操作',
                 width: 50,
                 align: 'center',
-                dataIndex:'operation',
+                dataIndex: 'operation',
                 render: (text, record, index) => {
                     return <div>
                         {
@@ -174,24 +178,24 @@ const QualificationRef = forwardRef(({
                         })(
                             record.key > initIndex - 1 ?
                                 (isView ? (!compareData(record.endDate) ?
-                                    <span style={{ color: 'red' }}>{text}</span>
+                                    <span>{text}</span>
                                     : <span>{text}</span>) :
-                                    <Input name={record.key} placeholder={'请输入资质文件类型'}/>) :
+                                    <Input name={record.key} placeholder={'请输入资质文件类型'} />) :
                                 (
                                     !compareData(record.endDate) ?
-                                    <span style={{ color: 'red' }}>{text}
-                                        <Input style={{ display: 'none' }}/></span> :
-                                        (record.key === 0 ? 
-                                            
+                                        <span>{text}
+                                            <Input style={{ display: 'none' }} /></span> :
+                                        (record.key === 0 ?
+
                                             <span>
                                                 <label class="ant-form-item-required" title=""></label>
-                                                {text}<Input style={{ display: 'none' }}/>
-                                            </span> : 
+                                                {text}<Input style={{ display: 'none' }} />
+                                            </span> :
                                             <span>
-                                                {text}<Input style={{ display: 'none' }}/>
+                                                {text}<Input style={{ display: 'none' }} />
                                             </span>
                                         )
-                                    
+
                                 ),
                         )
                     }
@@ -217,7 +221,7 @@ const QualificationRef = forwardRef(({
                                 message: '请输入证书编号!',
                             }],
                         })(
-                            <Input placeholder={'若没有，则填写无'}/>,
+                            <Input placeholder={'若没有，则填写无'} />,
                         )}
                 </FormItem>;
             },
@@ -239,7 +243,7 @@ const QualificationRef = forwardRef(({
                                 message: '请输入认证机构!',
                             }],
                         })(
-                            <Input placeholder={'若没有，则填写无'}/>,
+                            <Input placeholder={'若没有，则填写无'} />,
                         )}
                 </FormItem>;
             },
@@ -259,15 +263,15 @@ const QualificationRef = forwardRef(({
                 return <FormItem style={{ marginBottom: 0 }}>
                     {
                         getFieldDecorator(`date[${record.key}]`, {
-                            initialValue:  record.startDate ? {
-                                    startDate: moment(record.startDate),
-                                    endDate: moment(record.endDate),
-                                } : '',
+                            initialValue: record.startDate ? {
+                                startDate: moment(record.startDate),
+                                endDate: moment(record.endDate),
+                            } : '',
                             rules: [{
                                 required: record.key === 0,
                                 message: '请设置有效期',
                             },
-                                { validator: record.key === 4 ? checkDateWithHalfYear : record.key === 1 ? checkDateWithYearAdd3 : checkDateWithYearAdd }],
+                            { validator: record.key === 4 ? checkDateWithHalfYear : record.key === 1 ? checkDateWithYearAdd3 : checkDateWithYearAdd }],
                         })(
                             <RangeDatePicker type={record.key === 4 ? 'endTime' : 'currentTime'}
                             />,
@@ -300,11 +304,11 @@ const QualificationRef = forwardRef(({
                             />,
                         )}
                     {!isView && record.qualificationType === '法人身份证明书' &&
-                    <a href='/srm-se-web/供应商法定代表人身份证明书.docx'>模板下载</a>}
+                        <a href='/srm-se-web/供应商法定代表人身份证明书.docx'>模板下载</a>}
                     {!isView && record.qualificationType === '法定代表人授权委托书' &&
-                    <a href='/srm-se-web/供应商法定代表人授权委托书.docx'>模板下载</a>}
+                        <a href='/srm-se-web/供应商法定代表人授权委托书.docx'>模板下载</a>}
                     {!isView && record.qualificationType === '公司印鉴信息' &&
-                    <a href='/srm-se-web/供应商预留印鉴模板.docx'>模板下载</a>}
+                        <a href='/srm-se-web/供应商预留印鉴模板.docx'>模板下载</a>}
                 </FormItem>;
 
             },
@@ -316,7 +320,7 @@ const QualificationRef = forwardRef(({
         const newData = [...dataSource, { key: keys + 1, lineCode: getLineCode(lineCode) }];
         //setLineCode(lineCode + 1)
         lineCode++;
-        keys ++ ;
+        keys++;
         //console.log(newData)
         setDataSource(newData)
     };
@@ -345,7 +349,7 @@ const QualificationRef = forwardRef(({
     // 获取表单值
     function getqualificationsInfo() {
         let result = false;
-		form.validateFieldsAndScroll((err, values) => {
+        form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 result = dataTransfer(dataSource, values);
             }
@@ -353,11 +357,11 @@ const QualificationRef = forwardRef(({
         return result;
     }
     // 设置所有表格参数
-	const setHeaderFields = (fields) => {
-		//const { attachmentId = null, ...fs } = fields;
-		// setAttachment(attachmentId)
-		// setFieldsValue(fs)
-	  }
+    const setHeaderFields = (fields) => {
+        //const { attachmentId = null, ...fs } = fields;
+        // setAttachment(attachmentId)
+        // setFieldsValue(fs)
+    }
     return (
         <div>
             <div>
@@ -376,7 +380,7 @@ const QualificationRef = forwardRef(({
                         rowKey={(item) => `row-${item.key}`}
                     />
                     <AddButtonWrapper>
-                        <Button hidden={isView} icon={'plus'} type="dashed" style={{ width: '50%',marginBottom:'10px' }}
+                        <Button hidden={isView} icon={'plus'} type="dashed" style={{ width: '50%', marginBottom: '10px' }}
                             onClick={handleAdd}>新增</Button>
                     </AddButtonWrapper>
                 </div>

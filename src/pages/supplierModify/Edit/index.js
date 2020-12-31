@@ -49,6 +49,11 @@ function CreateStrategy() {
   const [configure, setConfigure] = useState([]);
   const [supplierName, setsupplierName] = useState();
   const { query } = router.useLocation();
+  // 获取配置列表项
+  useEffect(() => {
+    initsupplierDetai(); // 获取详情
+
+  }, []);
   // 变更详情
   async function initsupplierDetai() {
     triggerLoading(true);
@@ -58,35 +63,33 @@ function CreateStrategy() {
       let suppliertype = data.supplierApplyVo.supplierInfoVo.supplierVo.supplierCategory.id
       setsupplierName(data.supplierApplyVo.supplierInfoVo.supplierVo.name)
       initConfigurationTable(suppliertype)
-      setTimeout(() => {
-        setInitialValue(data.supplierApplyVo.supplierInfoVo)
-        setEditData(data.supplierApplyVo.supplierInfoVo)
-        setReasonchange(data.supplierApplyVo)
-        setwholeData(data.supplierApplyVo)
-        triggerLoading(false);
-        if (data.supplierApplyVo.supplierInfoVo.supplierVo.supplierCategoryName === '个人供应商') {
-          if (data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo) {
-            let mobile = data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo.mobile;
-            if (isEmpty(mobile)) {
-              setvisible(true)
-            }
-          }
-          if (data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo === undefined) {
-            setvisible(true)
-          }
-        } else {
-          if (data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo) {
-            let mobile = data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo.mobile;
-            let email = data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo.email;
-            if (isEmpty(mobile) || isEmpty(email)) {
-              setvisible(true)
-            }
-          }
-          if (data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo === undefined) {
+      setInitialValue(data.supplierApplyVo.supplierInfoVo)
+      setEditData(data.supplierApplyVo.supplierInfoVo)
+      setReasonchange(data.supplierApplyVo)
+      setwholeData(data.supplierApplyVo)
+      triggerLoading(false);
+      if (data.supplierApplyVo.supplierInfoVo.supplierVo.supplierCategoryName === '个人供应商') {
+        if (data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo) {
+          let mobile = data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo.mobile;
+          if (isEmpty(mobile)) {
             setvisible(true)
           }
         }
-      }, 200);
+        if (data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo === undefined) {
+          setvisible(true)
+        }
+      } else {
+        if (data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo) {
+          let mobile = data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo.mobile;
+          let email = data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo.email;
+          if (isEmpty(mobile) || isEmpty(email)) {
+            setvisible(true)
+          }
+        }
+        if (data.supplierApplyVo.supplierInfoVo.supplierVo.accountVo === undefined) {
+          setvisible(true)
+        }
+      }
     } else {
       triggerLoading(false);
       message.error(msg)
@@ -222,17 +225,6 @@ function CreateStrategy() {
       supplierAgents: agentVal,
       proCertVos: proCertVos ? proCertVos.proCertVos : ''
     }
-    if (baseVal) {
-      if (baseVal.supplierVo.companyCode) {
-        wholeData.companyCode = baseVal.supplierVo.companyCode
-        if (baseVal.supplierVo.companyName === baseVal.supplierVo.companyCode) {
-          wholeData.companyName = wholeData.companyName
-        } else {
-          wholeData.companyName = baseVal.supplierVo.companyName
-        }
-
-      }
-    }
     if (wholeData) {
       wholeData.supplierInfoVo = supplierInfoVo;
     }
@@ -249,16 +241,6 @@ function CreateStrategy() {
       message.error(msg);
     }
     triggerLoading(false)
-  }
-  // 帐号暂存
-  function ObtainAccount() {
-    const { getAccountinfo } = AccountRef.current; //帐号
-    const accountVal = getAccountinfo();
-    if (!accountVal) {
-      message.error('请将供应商账号信息填写完全！');
-      return false;
-    }
-    return accountVal;
   }
   //  // 授权委托人
   function ObtainAuthor() {
@@ -418,18 +400,6 @@ function CreateStrategy() {
       supplierAgents: agentVal,
       proCertVos: proCertVos ? proCertVos.proCertVos : ''
     }
-    if (baseVal) {
-      if (baseVal.supplierVo.companyCode) {
-        wholeData.companyCode = baseVal.supplierVo.companyCode
-        if (baseVal.supplierVo.companyName === baseVal.supplierVo.companyCode) {
-          wholeData.companyName = wholeData.companyName
-        } else {
-          wholeData.companyName = baseVal.supplierVo.companyName
-        }
-
-      }
-    }
-
     if (wholeData) {
       wholeData.supplierInfoVo = supplierInfoVo;
     }
@@ -460,11 +430,7 @@ function CreateStrategy() {
   function setSuppliername(name) {
     setsupplierName(name)
   }
-  // 获取配置列表项
-  useEffect(() => {
-    initsupplierDetai(); // 获取详情
 
-  }, []);
   // 返回
   function handleBack() {
     closeCurrent()

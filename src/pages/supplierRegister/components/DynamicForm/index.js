@@ -70,7 +70,6 @@ const CommonconfigRef = forwardRef(({
   change
 }, ref) => {
   useImperativeHandle(ref, () => ({
-    //setHeaderFields,
     form
   }));
   const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
@@ -88,15 +87,6 @@ const CommonconfigRef = forwardRef(({
       setCompanyid(val.supplierVo.bukrCode)
     }
 
-  }
-  // 设置表单参数
-  function setHeaderFields(fields) {
-    const { attachmentId = null, ...fs } = fields;
-    // setTimeout(() => {
-    //   setsupplierName(fields.supplierVo.name)
-    // }, 100);
-    //setsupplierName(fs.supplierVo.name)
-    setFieldsValue(fs)
   }
   //注册地址同步办公地址
   function registerChange(value) {
@@ -131,9 +121,7 @@ const CommonconfigRef = forwardRef(({
     let value = event.target.value;
     event.target.value = value.toUpperCase();
     if (value && value.match("^[A-Z0-9]{18}$")) {
-      // if (this.state.checks && !this.state.checks.checkCreditCodeResult) {
-      //   setChecks('checkCreditCodeResult', true);
-      // }
+
     }
   }
   //校验资金数量
@@ -196,6 +184,9 @@ const CommonconfigRef = forwardRef(({
   function changevalue(val) {
     setsupplierName(val.name)
     setCompanyid(val.code)
+    form.setFieldsValue({
+      'supplierVo.name': val.name,
+    });
   }
   // 泛虹工厂
   function FactoryChange(value) {

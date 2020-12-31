@@ -15,7 +15,6 @@ const AccountRef = forwardRef(({
   isView,
   form,
   editData = [],
-  initialValue = {},
   accountinfo = [],
   approve
 }, ref) => {

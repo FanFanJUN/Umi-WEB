@@ -41,6 +41,7 @@ const Bankformef = forwardRef(({
   const [visible, setVisible] = useState(false);
   const [loading, triggerLoading] = useState(false);
   const [attachId, setAttachId] = useState('')
+  const [selectType, setSelectType] = useState(false);
 
   let Modeltitle = '新增';
   useEffect(() => {
@@ -164,38 +165,27 @@ const Bankformef = forwardRef(({
   function cleanSelectedRecord() {
     setRowKeys([]);
     setRows([]);
+    tabformRef.current.manualSelectedRows([])
   }
   // 新增
   function showModal() {
-    let rowselect = [];
-    setRows(rowselect);
-    setInitialValue(rowselect)
-    setEdit(false)
+    setSelectType(false)
+    cleanSelectedRecord()
     BankInfoRef.current.handleModalVisible(true)
   }
   // 编辑
   function handleEdit() {
-    let newsbank;
-    if (selectedRows.length > 1) {
-      newsbank = selectedRows.splice(1);
-    } else {
-      newsbank = selectedRows
-    }
-    //setDataSource(newsbank) 
-    setEdit(true)
-    const [row] = newsbank;
-    setInitialValue({ ...row })
+    setSelectType(true)
+    setInitialValue(selectedRows[0])
     BankInfoRef.current.handleModalVisible(true);
   }
   // 清空列选择并刷新
   function uploadTable() {
     cleanSelectedRecord()
-    //tableRef.current.remoteDataRefresh()
+    tabformRef.current.remoteDataRefresh()
   }
   // 取消编辑或新增
   function handleCancel() {
-    //const { resetFields } = commonFormRef.current.form;
-    //resetFields()
     setVisible(false)
     uploadTable()
   }
@@ -349,13 +339,14 @@ const Bankformef = forwardRef(({
           onOk={handleSubmit}
           type={modalType}
           initialValues={initialValue}
-          CNCountryId={CNCountryId}
+          countryId={CNCountryId}
           wrappedComponentRef={BankInfoRef}
           isView={isView}
           edit={edit}
           saveData={false}
           mergeData={mergeData}
           loading={loading}
+          type={selectType}
           destroyOnClose
         />
         {/* <Modal

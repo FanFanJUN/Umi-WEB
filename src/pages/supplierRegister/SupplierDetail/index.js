@@ -34,7 +34,6 @@ function CreateStrategy() {
   const [accountinfo, setaccountinfo] = useState([]);
   const [businesshide, setbusinesshide] = useState([]);
   const [editData, setEditData] = useState([]);
-  const [initialValue, setInitialValue] = useState({});
   const [configure, setConfigure] = useState([]);
   const [loading, triggerLoading] = useState(false);
   const [wholeData, setwholeData] = useState([]);
@@ -55,7 +54,6 @@ function CreateStrategy() {
     if (success) {
       let suppliertype = data.supplierInfoVo.supplierVo.supplierCategory.id
       initConfigurationTable(suppliertype)
-      setInitialValue(data.supplierInfoVo)
       setEditData(data.supplierInfoVo)
       setwholeData(data)
       triggerLoading(false);
@@ -153,7 +151,6 @@ function CreateStrategy() {
                   <div>
                     <Account
                       accountinfo={accountinfo}
-                      initialValue={initialValue}
                       editData={editData}
                       isView={true}
                       wrappedComponentRef={AccountRef}
@@ -169,7 +166,6 @@ function CreateStrategy() {
                   <div className={styles.title}>授权委托人</div>
                   <div>
                     <Authorizedclient
-                      initialValue={initialValue}
                       editformData={editData}
                       wrappedComponentRef={AuthorizeRef}
                       isView={true}

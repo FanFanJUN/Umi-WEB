@@ -17,23 +17,17 @@ const SupplyRangeRef = forwardRef(({
   useImperativeHandle(ref, () => ({
     getSupplierRange,
     SupplierTemporary,
-    setHeaderFields,
     form
   }));
   const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
   const [materialId, setMaterialId] = useState([]);
   useEffect(() => {
-    //getSupplyRange(editData);
     let materialIded = [];
     let materialName = [];
     if (editData && editData.extendVo && editData.extendVo.materielCategories) {
       materialIded = editData.extendVo.materielCategories.map(item => item ? item.id : '');
       materialName = editData.extendVo.materielCategories.map(item => item ? item.name : '').join('、');
-     // materialId = materialIded;
       setMaterialId(materialIded)
-      // setFieldsValue({
-      //   ['extendVo.matCatIds'] : materialIded
-      // })
     }
   }, [editData])
 
@@ -41,10 +35,6 @@ const SupplyRangeRef = forwardRef(({
     labelCol: { span: 4 },
     wrapperCol: { span: 20 },
   };
-  // function getSupplyRange(val) {
-  //   let editData = val;
-   
-  // }
   // 暂存
   function SupplierTemporary() {
     let result = {};
@@ -61,13 +51,7 @@ const SupplyRangeRef = forwardRef(({
     });
     return result;
   }
-  // 设置所有表格参数
-  const setHeaderFields = (fields) => {
-    //const { attachmentId = null, ...fs } = fields;
-    // setAttachment(attachmentId)
-    // setFieldsValue(fs)
-  }
-  
+
   return (
     <div>
       <Form>
@@ -83,7 +67,7 @@ const SupplyRangeRef = forwardRef(({
                   getFieldDecorator('extendVo.supplyScopeRemark', {
                     initialValue: editData && editData.extendVo ? editData.extendVo.supplyScopeRemark : '',
                   })(
-                    <Input placeholder={'请输入供应范围描述'} maxLength={1024}/>,
+                    <Input placeholder={'请输入供应范围描述'} maxLength={1024} />,
                   )
               }
             </FormItem>
@@ -102,7 +86,7 @@ const SupplyRangeRef = forwardRef(({
                   //   message: '请选择物料分类',
                   // }],
                 })(
-                  
+
                   <MatCatTree
                     service={listAllGeneralTree}
                     isView={isView}

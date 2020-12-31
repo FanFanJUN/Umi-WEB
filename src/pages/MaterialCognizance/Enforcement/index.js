@@ -39,14 +39,15 @@ function MissionExecution() {
     const [seniorSearchvalue, setSeniorsearchvalue] = useState('');
     /** 按钮可用性判断变量集合 BEGIN*/
     const [signleRow = {}] = selectedRows;
-    const { taskStatus: signleFlowStatus, taskStatus: implementStatus } = signleRow;
+    const { taskStatus: signleFlowStatus, taskStatus: implementStatus, creatorId } = signleRow;
     // 执行中
     const underWay = signleFlowStatus === 0;
     // 未选中数据的状态
     const empty = selectedRowKeys.length === 0;
     // 已执行
     const implement = implementStatus === 1
-
+    // 是不是自己的单据
+    const isSelf = currentUserId === creatorId;
     useEffect(() => {
         handleInfo()
         window.parent.frames.addEventListener('message', listenerParentClose, false);
@@ -283,7 +284,7 @@ function MissionExecution() {
                         key='SRM-SM-IMPLEMENT-SUPPLIER-TASK'
                         className={styles.btn}
                         onClick={carryTask}
-                    //disabled={!underWay}
+                        disabled={!isSelf}
                     >执行任务
                     </Button>
                 )
@@ -295,7 +296,7 @@ function MissionExecution() {
                         key='SRM-SM-IMPLEMENT-SUPPLIER-WITHDRAW'
                         className={styles.btn}
                         onClick={handlewithdraw}
-                        disabled={empty || !implement}
+                        disabled={empty || !implement || !isSelf}
                     >撤回
                     </Button>
                 )

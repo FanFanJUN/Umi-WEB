@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ExtTable, WorkFlow, ExtModal, utils, ToolBar,ScrollBar } from 'suid';
+import { ExtTable, WorkFlow, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import { Input, Button, message, Modal } from 'antd';
-import { openNewTab, getFrameElement ,isEmpty} from '@/utils';
+import { openNewTab, getFrameElement, isEmpty } from '@/utils';
 import { StartFlow } from 'seid';
 import UploadFile from '../../components/Upload/index'
 import Header from '@/components/Header';
@@ -9,8 +9,8 @@ import ChooseSupplierModal from './commons/ChooseSupplierModal';
 import AutoSizeLayout from '@/components/AutoSizeLayout';
 import styles from './index.less';
 import { smBaseUrl } from '@/utils/commonUrl';
-import { RecommendationList ,stopApproveingOrder} from "@/services/supplierRegister"
-import {deleteSupplierModify,checkExistUnfinishedValidity,findCanModifySupplierList} from '@/services/SupplierModifyService'
+import { RecommendationList, stopApproveingOrder } from "@/services/supplierRegister"
+import { deleteSupplierModify, checkExistUnfinishedValidity, findCanModifySupplierList } from '@/services/SupplierModifyService'
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { Search } = Input
 const confirm = Modal.confirm;
@@ -31,11 +31,11 @@ function SupplierConfigure() {
     const [loading, triggerLoading] = useState(false);
     const [attachId, setAttachId] = useState('');
     const [fixedHeader, setfixedHeader] = useState('');
-    
+
     const [singleRow = {}] = selectedRows;
     /** 按钮可用性判断变量集合 BEGIN*/
     const [signleRow = {}] = selectedRows;
-    const { flowStatus: signleFlowStatus, id: flowId, creatorId ,saveStatus: typeStatus} = signleRow;
+    const { flowStatus: signleFlowStatus, id: flowId, creatorId, saveStatus: typeStatus } = signleRow;
     // 已提交审核状态
     const underWay = signleFlowStatus !== 'INIT';
     // 审核完成状态
@@ -61,7 +61,7 @@ function SupplierConfigure() {
             dataIndex: 'flowStatus',
             key: 'flowStatus',
             width: 100,
-            render: function(text, record, row) {
+            render: function (text, record, row) {
                 if (text === 'INIT' && record.saveStatus === 0) {
                     return <div>草稿</div>;
                 } else if (text === 'INIT' && record.saveStatus === 1) {
@@ -88,7 +88,7 @@ function SupplierConfigure() {
             width: 220,
             dataIndex: 'supplierName',
         },
-    
+
         {
             title: '变更人',
             width: 120,
@@ -101,7 +101,7 @@ function SupplierConfigure() {
             title: '附件',
             width: 80,
             dataIndex: 'id',
-            render: (value) => <UploadFile type="show" entityId={value}/>,
+            render: (value) => <UploadFile type="show" entityId={value} />,
         },
         {
             title: '变更日期',
@@ -124,7 +124,7 @@ function SupplierConfigure() {
             dataIndex: 'flowStatus',
             key: 'flowStatus',
             width: 100,
-            render: function(text, record, row) {
+            render: function (text, record, row) {
                 if (text === 'INIT' && record.saveStatus === 0) {
                     return <div>草稿</div>;
                 } else if (text === 'INIT' && record.saveStatus === 1) {
@@ -141,7 +141,7 @@ function SupplierConfigure() {
             width: 200,
             dataIndex: 'code',
         },
-    
+
         {
             title: '变更原因',
             width: 280,
@@ -151,7 +151,7 @@ function SupplierConfigure() {
             title: '附件',
             width: 100,
             dataIndex: 'id',
-            render: (value) => <UploadFile type="show" entityId={value}/>,
+            render: (value) => <UploadFile type="show" entityId={value} />,
         },
         {
             title: '创建人员',
@@ -202,7 +202,7 @@ function SupplierConfigure() {
         window.parent.frames.addEventListener('message', listenerParentClose, false);
         return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
     }, []);
-    
+
     function listenerParentClose(event) {
         const { data = {} } = event;
         if (data.tabAction === 'close') {
@@ -215,12 +215,12 @@ function SupplierConfigure() {
         if (authorizations.userType !== 'Supplier') {
             getModelRef.current.handleModalVisible(true);
             return;
-        }else {
-            const {data,success, message: msg } = await findCanModifySupplierList();
+        } else {
+            const { data, success, message: msg } = await findCanModifySupplierList();
             if (success) {
                 let id = data.rows[0].supplierId;
                 openNewTab(`supplier/supplierModify/create/index?id=${id}`, '供应商变更新建变更单', false)
-            }else {
+            } else {
                 message.error(msg)
             }
         }
@@ -292,39 +292,39 @@ function SupplierConfigure() {
     }
     // 提交审核验证
     async function handleBeforeStartFlow() {
-        const {success, message: msg } = await checkExistUnfinishedValidity({ requestId: selectedRows[0].id });
+        const { success, message: msg } = await checkExistUnfinishedValidity({ requestId: selectedRows[0].id });
         if (success) {
             message.success(msg)
             return true;
-        }else {
+        } else {
             message.error(msg)
             return false;
         }
-        
+
     }
     // 终止审核
-  function stopApprove() {
-    Modal.confirm({
-      title: '终止审批流程',
-      content: '流程终止后无法恢复，是否继续？',
-      onOk: handleStopApproveRecord,
-      okText: '确定',
-      cancelText: '取消'
-    })
-  }
-  async function handleStopApproveRecord() {
-    const [row] = selectedRows
-    const { id: flowId } = row
-    const { success, message: msg } = await stopApproveingOrder({
-      businessId: flowId
-    })
-    if (success) {
-      message.success(msg)
-      uploadTable()
-      return
+    function stopApprove() {
+        Modal.confirm({
+            title: '终止审批流程',
+            content: '流程终止后无法恢复，是否继续？',
+            onOk: handleStopApproveRecord,
+            okText: '确定',
+            cancelText: '取消'
+        })
     }
-    message.error(msg)
-  }
+    async function handleStopApproveRecord() {
+        const [row] = selectedRows
+        const { id: flowId } = row
+        const { success, message: msg } = await stopApproveingOrder({
+            businessId: flowId
+        })
+        if (success) {
+            message.success(msg)
+            uploadTable()
+            return
+        }
+        message.error(msg)
+    }
     return (
         <>
             <Header
@@ -332,37 +332,37 @@ function SupplierConfigure() {
                     <>
                         {
                             authAction(
-                                <Button type='primary' 
-                                    ignore={DEVELOPER_ENV} 
-                                    key='SRM-SM-SUPPLIERMODEL_ADD' 
-                                    className={styles.btn} 
+                                <Button type='primary'
+                                    ignore={DEVELOPER_ENV}
+                                    key='SRM-SM-SUPPLIERMODEL_ADD'
+                                    className={styles.btn}
                                     onClick={AddModel}
-                                    //disabled={empty}
-                                    >新增
+                                //disabled={empty}
+                                >新增
                                 </Button>
                             )
                         }
                         {
                             authAction(
-                                <Button 
-                                    ignore={DEVELOPER_ENV} 
-                                    key='SRM-SM-SUPPLIERMODEL_EDIT' 
-                                    className={styles.btn} 
-                                    onClick={handleCheckEdit} 
+                                <Button
+                                    ignore={DEVELOPER_ENV}
+                                    key='SRM-SM-SUPPLIERMODEL_EDIT'
+                                    className={styles.btn}
+                                    onClick={handleCheckEdit}
                                     disabled={empty || underWay || !isSelf}
-                                    >编辑
+                                >编辑
                                 </Button>
                             )
                         }
                         {
                             authAction(
-                                <Button 
-                                    ignore={DEVELOPER_ENV} 
-                                    key='SRM-SM-SUPPLIERMODEL_DELETE' 
-                                    className={styles.btn} 
-                                    onClick={handleDelete} 
+                                <Button
+                                    ignore={DEVELOPER_ENV}
+                                    key='SRM-SM-SUPPLIERMODEL_DELETE'
+                                    className={styles.btn}
+                                    onClick={handleDelete}
                                     disabled={empty || underWay || !isSelf}
-                                    >删除
+                                >删除
                                 </Button>
                             )
                         }
@@ -405,13 +405,13 @@ function SupplierConfigure() {
                         }
                         {
                             authAction(
-                                <Button 
-                                    ignore={DEVELOPER_ENV} 
-                                    key='SRM-SM-SUPPLIERMODEL_DETAILED' 
-                                    className={styles.btn} 
-                                    onClick={handleCheckDetail} 
+                                <Button
+                                    ignore={DEVELOPER_ENV}
+                                    key='SRM-SM-SUPPLIERMODEL_DETAILED'
+                                    className={styles.btn}
+                                    onClick={handleCheckDetail}
                                     disabled={empty}
-                                    >变更明细
+                                >变更明细
                                 </Button>
                             )
                         }
@@ -445,7 +445,7 @@ function SupplierConfigure() {
                     />
                 }
             </AutoSizeLayout>
-            <ChooseSupplierModal 
+            <ChooseSupplierModal
                 wrappedComponentRef={getModelRef}
             >
             </ChooseSupplierModal>

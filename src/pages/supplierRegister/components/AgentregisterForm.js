@@ -1,11 +1,11 @@
-import React, { forwardRef, useImperativeHandle, useEffect, useRef ,useState} from 'react';
+import React, { forwardRef, useImperativeHandle, useEffect, useRef, useState } from 'react';
 import { Modal, Form, Row, Col, Input, } from 'antd';
-import { Fieldclassification ,countryListConfig} from '@/utils/commonProps'
+import { Fieldclassification, countryListConfig } from '@/utils/commonProps'
 import { ComboTree, ComboGrid, ComboList } from 'suid';
 import { onlyNumber } from '@/utils/index';
 import { ComboAttachment } from '@/components';
 import UploadFile from '../../../components/Upload/index'
-import {findCodeByName} from '../../../services/supplierRegister'
+import { findCodeByName } from '../../../services/supplierRegister'
 import '../index.less'
 const { create } = Form;
 const FormItem = Form.Item;
@@ -22,47 +22,16 @@ const getAgentregRef = forwardRef(({
     editData
 }, ref,) => {
     useImperativeHandle(ref, () => ({
-        getFormValue, 
-        form 
+        getFormValue,
+        form
     }));
     const { getFieldDecorator, validateFieldsAndScroll, getFieldValue, setFieldsValue } = form;
     const [loading, triggerLoading] = useState(false);
-    const [initData,setInitData] = useState(false);
+    const [initData, setInitData] = useState(false);
     const [originalCode, setoriginalCode] = useState([]);
     useEffect(() => {
-        const {
-            id,
-            ...other
-        } = initialValues;
-        const fields = {
-            ...other
-        }
-        
-        let initData = [], editData = [];
-        editData.push(fields);
-        if (editData && editData.length > 0) {
-            initData = editData.map((item, index) => {
-              item.country = {
-                key: item.countryId || item.country && item.country.key || "",
-                label: item.countryName || item.country && item.country.label || ""
-              };
-              //delete item.countryId;
-              //delete item.countryName;
-              return item;
-            });
-          }
-          initData =  initData.length > 0 ? initData[0] : null;
-          console.log(initData)
-          let originalCode =  editData.length > 0 && editData[0].originalCode ? editData[0].originalCode :''
-          setInitData(initData)
-          setoriginalCode(originalCode)
-          console.log(editData)
-          setFieldsValue(initData);
-        //setupAgent();
+
     }, []);
-    // function setupAgent() {
-        
-    // }
     // 获取表单值
     function getFormValue() {
         let result = false;
@@ -71,14 +40,13 @@ const getAgentregRef = forwardRef(({
                 result = values
             }
         })
-        console.log(result)
-        return result; 
+        return result;
     }
     //查代码
     async function nameChange() {
         const originalCompanyName = form.getFieldValue('originalCompanyName');
         triggerLoading(true)
-        const { data,success, message: msg } = await findCodeByName({name:originalCompanyName});
+        const { data, success, message: msg } = await findCodeByName({ name: originalCompanyName });
         if (success) {
             //setoriginalCode(data)
             form.setFieldsValue({
@@ -99,7 +67,7 @@ const getAgentregRef = forwardRef(({
                         {
                             isView ? <span></span> :
                                 getFieldDecorator("originalCompanyName", {
-                                    initialValue: "",
+                                    initialValue: initialValues && initialValues.originalCompanyName,
                                     rules: [{ required: !isView, message: '请输入完整公司名称!', }]
                                 })(
                                     <Input
@@ -117,7 +85,7 @@ const getAgentregRef = forwardRef(({
                         {
                             //<span>{originalCode}</span>
                             getFieldDecorator("originalCode", {
-                                initialValue: "",
+                                initialValue: initialValues && initialValues.originalCode,
                                 rules: [{
                                     required: !isView,
                                     message: '请输入已有供应商代码的原厂名称带出原厂代码!'
@@ -140,7 +108,7 @@ const getAgentregRef = forwardRef(({
                         {
                             isView ? <span></span> :
                                 getFieldDecorator("agentBrand", {
-                                    initialValue: "",
+                                    initialValue: initialValues && initialValues.agentBrand,
                                     rules: [{
                                         required: !isView,
                                         message: '请输入代理品牌!'
@@ -159,21 +127,21 @@ const getAgentregRef = forwardRef(({
                     >
                         {
                             isView ? <span></span> :
-                                getFieldDecorator("countryId"),
-                                getFieldDecorator("countryName", {
-                                    initialValue:"",
-                                    rules: [{
-                                        required: !isView,
-                                        message: '请选择代理国别!',
-                                    }]
-                                })(
-                                    <ComboList 
-                                        {...countryListConfig}
-                                        form={form}
-                                        name="countryName"
-                                        field={["countryId"]}
-                                    />
-                                )}
+                                getFieldDecorator("countryId", { initialValue: initialValues && initialValues.countryId, }),
+                            getFieldDecorator("countryName", {
+                                initialValue: initialValues && initialValues.countryName,
+                                rules: [{
+                                    required: !isView,
+                                    message: '请选择代理国别!',
+                                }]
+                            })(
+                                <ComboList
+                                    {...countryListConfig}
+                                    form={form}
+                                    name="countryName"
+                                    field={["countryId"]}
+                                />
+                            )}
                     </FormItem>
                 </Col>
             </Row>
@@ -186,7 +154,7 @@ const getAgentregRef = forwardRef(({
                         {
                             isView ? <span></span> :
                                 getFieldDecorator("originalAddress", {
-                                    initialValue: "",
+                                    initialValue: initialValues && initialValues.originalAddress,
                                     rules: [{
                                         required: !isView,
                                         message: '请输入原厂地址!'
@@ -205,7 +173,7 @@ const getAgentregRef = forwardRef(({
                     >
                         {
                             getFieldDecorator("businessLicenseDocIds", {
-                                initialValue: [],
+                                initialValue: initialValues && initialValues.businessLicenseDocIds,
                                 rules: [{ required: !isView, message: "请上传营业执照" }]
                             })(
                                 <UploadFile
@@ -226,14 +194,14 @@ const getAgentregRef = forwardRef(({
                     >
                         {
                             getFieldDecorator("powerAttorneyDocIds", {
-                                initialValue: [],
+                                initialValue: initialValues && initialValues.powerAttorneyDocIds,
                                 rules: [{ required: !isView, message: "请上传代理证" }]
                             })(
                                 <UploadFile
                                     title={"附件上传"}
                                     accessType={['pdf', 'jpg', 'png']}
                                     warning={'仅支持pdf,jpg,png格式，文件大小不超过10M'}
-                                    entityId={initData ? initData.powerAttorneyDocId : null}
+                                    entityId={initialValues ? initialValues.powerAttorneyDocId : null}
                                     type={isView ? "show" : ""}
                                 />
                             )
