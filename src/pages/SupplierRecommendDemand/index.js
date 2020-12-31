@@ -38,8 +38,8 @@ export default () => {
   const [onlyMe, setOnlyMe] = useState(true);
   const FRAMELEEMENT = getFrameElement();
   const [signleRow = {}] = selectedRows;
-  const { account } = storage.sessionStorage.get("Authorization") || {};
-  const { flowStatus: signleFlowStatus, id: flowId, supplierRecommendDemandStatus } = signleRow;
+  const { account, userId } = storage.sessionStorage.get("Authorization") || {};
+  const { flowStatus: signleFlowStatus, id: flowId, supplierRecommendDemandStatus, creatorId } = signleRow;
   // 已提交审批状态
   const underWay = signleFlowStatus !== 'INIT';
   // 审核完成状态
@@ -48,6 +48,8 @@ export default () => {
   const fillComplete = supplierRecommendDemandStatus === 'FILLED';
   // 未提交填报状态
   const fillInit = supplierRecommendDemandStatus === 'DRAFT'
+  // 是不是自己的单据
+  const isSelf = userId === creatorId;
   /**
 "草稿" DRAFT,
 "填报中" FILLING,
@@ -102,7 +104,7 @@ export default () => {
         authAction(
           <Button
             className={styles.btn}
-            disabled={empty || underWay}
+            disabled={empty || underWay || !isSelf}
             key='SUPPLIER_RECOMMEND_DEMAND_EDITOR'
             onClick={handleEditor}
             ignore={DEVELOPER_ENV}
@@ -124,7 +126,7 @@ export default () => {
         authAction(
           <Button
             className={styles.btn}
-            disabled={empty || !fillInit || underWay}
+            disabled={empty || !fillInit || underWay || !isSelf}
             key='SUPPLIER_RECOMMEND_DEMAND_REMOVE'
             onClick={handleRemove}
             ignore={DEVELOPER_ENV}
@@ -135,7 +137,7 @@ export default () => {
         authAction(
           <Button
             className={styles.btn}
-            disabled={empty || underWay || !fillInit}
+            disabled={empty || underWay || !fillInit || !isSelf}
             key='SUPPLIER_RECOMMEND_DEMAND_SUBMIT'
             onClick={handleSubmitSupplierFillIn}
             ignore={DEVELOPER_ENV}
@@ -146,7 +148,7 @@ export default () => {
         authAction(
           <Button
             className={styles.btn}
-            disabled={empty || underWay || !fillComplete}
+            disabled={empty || underWay || !fillComplete || !isSelf}
             onClick={handleOpenInfomationConfirm}
             key='SUPPLIER_RECOMMEND_DEMAND_CONFIRM'
             ignore={DEVELOPER_ENV}
@@ -163,7 +165,19 @@ export default () => {
             ignore={DEVELOPER_ENV}
           >
             {
-              loading => <Button className={styles.btn} loading={loading} disabled={empty || underWay || completed || !fillComplete}>提交审核</Button>
+              loading => (
+                <Button
+                  className={styles.btn}
+                  loading={loading}
+                  disabled={
+                    empty ||
+                    underWay ||
+                    completed ||
+                    !fillComplete ||
+                    !isSelf
+                  }
+                >提交审核</Button>
+              )
             }
           </StartFlow>
         )
@@ -184,7 +198,7 @@ export default () => {
         authAction(
           <Button
             className={styles.btn}
-            disabled={empty || !underWay || completed}
+            disabled={empty || !underWay || completed || !isSelf}
             ignore={DEVELOPER_ENV}
             onClick={stopApprove}
             key='SUPPLIER_RECOMMEND_DEMAND_APPROVE_STOP'

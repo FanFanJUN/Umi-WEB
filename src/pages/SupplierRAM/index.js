@@ -40,14 +40,15 @@ export default () => {
   const [onlyMe, setOnlyMe] = useState(true);
   const FRAMELEEMENT = getFrameElement();
   const [signleRow = {}] = selectedRows;
-  const { account } = storage.sessionStorage.get("Authorization") || {};
-  const { flowStatus: signleFlowStatus, id: flowId } = signleRow;
+  const { account, userId } = storage.sessionStorage.get("Authorization") || {};
+  const { flowStatus: signleFlowStatus, id: flowId, creatorId } = signleRow;
   // 已提交审批状态
   const underWay = signleFlowStatus !== 'INIT';
   // 审核完成状态
   const completed = signleFlowStatus === 'COMPLETED';
   // 未选中数据状态
   const empty = selectedRowKeys.length === 0;
+  const isSelf = userId === creatorId;
   const tableProps = {
     store: {
       url: `${recommendUrl}/api/recommendAccessService/findByPage`,
@@ -91,7 +92,7 @@ export default () => {
         authAction(
           <Button
             className={styles.btn}
-            disabled={empty || underWay}
+            disabled={empty || underWay || !isSelf}
             onClick={handleEditor}
             ignore={DEVELOPER_ENV}
             key='SUPPLIER_RAM_EDITOR'
@@ -116,7 +117,7 @@ export default () => {
         authAction(
           <Button
             className={styles.btn}
-            disabled={empty || underWay}
+            disabled={empty || underWay || !isSelf}
             onClick={handleRemove}
             ignore={DEVELOPER_ENV}
             key='SUPPLIER_RAM_REMOVE'
@@ -133,7 +134,7 @@ export default () => {
             startComplete={uploadTable}
           >
             {
-              loading => <Button className={styles.btn} loading={loading} disabled={empty || underWay}>提交审核</Button>
+              loading => <Button className={styles.btn} loading={loading} disabled={empty || underWay || !isSelf}>提交审核</Button>
             }
           </StartFlow>
         )
@@ -155,7 +156,7 @@ export default () => {
           <Button
             className={styles.btn}
             ignore={DEVELOPER_ENV}
-            disabled={empty || !underWay || completed}
+            disabled={empty || !underWay || completed || !isSelf}
             key='SUPPLIER_RAM_APPROVE_STOP'
             onClick={stopApprove}
           >终止审核</Button>
