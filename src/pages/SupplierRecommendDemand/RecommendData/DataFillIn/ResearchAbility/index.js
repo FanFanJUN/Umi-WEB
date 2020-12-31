@@ -25,14 +25,6 @@ const formLayout = {
     span: 16,
   },
 };
-const formLayoutCol = {
-  labelCol: {
-    span: 4,
-  },
-  wrapperCol: {
-    span: 20,
-  },
-};
 
 const ResearchAbility = ({ form, updateGlobalStatus }) => {
 
