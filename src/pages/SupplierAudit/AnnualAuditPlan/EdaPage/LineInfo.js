@@ -3,7 +3,7 @@
  * @LastEditors  : LiCai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime : 2020-12-31 11:13:03
+ * @LastEditTime : 2020-12-31 11:25:00
  * @Description: 行信息
  * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
@@ -382,6 +382,7 @@ let LineInfo = (props, ref) => {
     })
     setDataSource(newTableList);
     if (buttonFlag === 'continue') {
+      setButtonLoading(false);
       message.info('数据添加成功！请继续')
       return;
     }
