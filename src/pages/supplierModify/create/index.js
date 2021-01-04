@@ -50,6 +50,11 @@ function CreateStrategy() {
   const { query } = router.useLocation();
   const { frameElementId, frameElementSrc = "", Opertype = "" } = query;
   let typeId = query.frameElementId;
+  // 获取配置列表项
+  useEffect(() => {
+    initsupplierDetai(); // 详情
+
+  }, []);
   async function initsupplierDetai() {
     triggerLoading(true);
     let id = query.id;
@@ -223,6 +228,8 @@ function CreateStrategy() {
     //如果为新增  拼加一个供应商ID在头上
     againdata.supplierId = againdata.supplierId || query.id;
     againdata.supplierInfoVo.supplierVo.id = editData.supplierVo.id
+    againdata.companyCode = supplierInfoVo.supplierVo.companyCode;
+    againdata.companyName = supplierInfoVo.supplierVo.companyName;
     againdata.saveStatus = '0';
     let saveData = { ...againdata };
     triggerLoading(true)
@@ -407,6 +414,8 @@ function CreateStrategy() {
     //如果为新增  拼加一个供应商ID在头上
     againdata.supplierId = againdata.supplierId || query.id;
     againdata.saveStatus = '1';
+    againdata.companyCode = supplierInfoVo.supplierVo.companyCode;
+    againdata.companyName = supplierInfoVo.supplierVo.companyName;
     againdata.supplierInfoVo.supplierVo.id = editData.supplierVo.id
     //let saveData = {...againdata};
     setAgaindata(againdata)
@@ -437,11 +446,6 @@ function CreateStrategy() {
   function setSuppliername(name) {
     setsupplierName(name)
   }
-  // 获取配置列表项
-  useEffect(() => {
-    initsupplierDetai(); // 详情
-
-  }, []);
   // 返回
   function handleBack() {
     closeCurrent()

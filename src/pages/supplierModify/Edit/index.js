@@ -227,6 +227,8 @@ function CreateStrategy() {
       wholeData.supplierInfoVo = supplierInfoVo;
     }
     wholeData.saveStatus = '0';
+    wholeData.companyCode = supplierInfoVo.supplierVo.companyCode;
+    wholeData.companyName = supplierInfoVo.supplierVo.companyName;
     let saveData = wholeData;
     triggerLoading(true)
     const { success, message: msg } = await TemporarySupplierRegister(saveData);
@@ -404,6 +406,8 @@ function CreateStrategy() {
     setwholeData(wholeData)
     // 变更保存效验
     wholeData.saveStatus = '1';
+    againdata.companyCode = supplierInfoVo.supplierVo.companyCode;
+    againdata.companyName = supplierInfoVo.supplierVo.companyName;
     const { success, message: msg } = await ValiditySupplierRegister(wholeData);
     if (success) {
       getModelRef.current.handleModalVisible(true);
