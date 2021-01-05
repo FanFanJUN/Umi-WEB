@@ -14,7 +14,7 @@ import {
 
 } from '../mainData/commomService';
 import {
- flowStatus, judge, reportStateProps,
+  flowStatus, judge, reportStateProps,
 } from '../../QualitySynergy/commonProps';
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
@@ -77,6 +77,9 @@ const AuditBriefingManagement = forwardRef(({}, ref) => {
   };
 
   const handleQuickSearch = (value) => {
+    if (value) {
+      value = value.trim();
+    }
     setData(v => ({ ...v, quickSearchValue: value }));
     tableRef.current.manualSelectedRows();
     tableRef.current.remoteDataRefresh();
