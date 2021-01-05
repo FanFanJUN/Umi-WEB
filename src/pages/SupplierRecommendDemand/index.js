@@ -447,7 +447,7 @@ export default () => {
   // 快速搜索
   function handleQuickSerach(v) {
     setSearchValue({
-      quickSearchValue: v
+      quickSearchValue: v.trim()
     })
     uploadTable()
   }

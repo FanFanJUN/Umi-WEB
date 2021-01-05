@@ -245,7 +245,7 @@ function AcceptFYPMain() {
   // 处理快速查询
   function handleQuickSearch(v) {
     setSearchValue({
-      quickSearchValue: v
+      quickSearchValue: v.trim()
     })
     uploadTable()
   }

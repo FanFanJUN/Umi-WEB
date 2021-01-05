@@ -167,7 +167,7 @@ function RecommendDataTable() {
   }
   function handleSearch(v) {
     setSearchValue({
-      quickSearchValue: v
+      quickSearchValue: v.trim()
     })
     uploadTable()
   }
