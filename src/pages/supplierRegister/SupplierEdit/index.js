@@ -201,6 +201,8 @@ function CreateStrategy() {
     if (wholeData) {
       wholeData.supplierInfoVo = supplierInfoVo;
     }
+    wholeData.companyCode = supplierInfoVo.supplierVo.companyCode;
+    wholeData.companyName = supplierInfoVo.supplierVo.companyName;
     let saveData = wholeData;
     triggerLoading(true)
     const { success, message: msg } = await TemporarySupplierRegister(saveData);
@@ -391,6 +393,8 @@ function CreateStrategy() {
     if (wholeData) {
       wholeData.supplierInfoVo = supplierInfoVo;
     }
+    wholeData.companyCode = supplierInfoVo.supplierVo.companyCode;
+    wholeData.companyName = supplierInfoVo.supplierVo.companyName;
     let saveData = wholeData;
     triggerLoading(true)
     const { success, message: msg } = await saveSupplierRegister(saveData);

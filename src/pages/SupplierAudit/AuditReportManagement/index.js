@@ -97,6 +97,9 @@ const AuditReportManagement = forwardRef(({}, ref) => {
   };
 
   const handleQuickSearch = (value) => {
+    if (value) {
+      value = value.trim();
+    }
     setData(v => ({ ...v, quickSearchValue: value }));
     tableRef.current.manualSelectedRows();
     tableRef.current.remoteDataRefresh();

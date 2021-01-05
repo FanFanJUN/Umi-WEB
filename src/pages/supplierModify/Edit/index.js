@@ -40,7 +40,6 @@ function CreateStrategy() {
   const [baseinfo, setbaseinfo] = useState([]);
   const [accountinfo, setaccountinfo] = useState([]);
   const [businesshide, setbusinesshide] = useState([]);
-  const [initialValue, setInitialValue] = useState({});
   const [wholeData, setwholeData] = useState([]);
   const [editData, setEditData] = useState([]);
   const [Reasonchange, setReasonchange] = useState(false);
@@ -63,7 +62,6 @@ function CreateStrategy() {
       let suppliertype = data.supplierApplyVo.supplierInfoVo.supplierVo.supplierCategory.id
       setsupplierName(data.supplierApplyVo.supplierInfoVo.supplierVo.name)
       initConfigurationTable(suppliertype)
-      setInitialValue(data.supplierApplyVo.supplierInfoVo)
       setEditData(data.supplierApplyVo.supplierInfoVo)
       setReasonchange(data.supplierApplyVo)
       setwholeData(data.supplierApplyVo)
@@ -229,6 +227,8 @@ function CreateStrategy() {
       wholeData.supplierInfoVo = supplierInfoVo;
     }
     wholeData.saveStatus = '0';
+    wholeData.companyCode = supplierInfoVo.supplierVo.companyCode;
+    wholeData.companyName = supplierInfoVo.supplierVo.companyName;
     let saveData = wholeData;
     triggerLoading(true)
     const { success, message: msg } = await TemporarySupplierRegister(saveData);
@@ -406,6 +406,8 @@ function CreateStrategy() {
     setwholeData(wholeData)
     // 变更保存效验
     wholeData.saveStatus = '1';
+    againdata.companyCode = supplierInfoVo.supplierVo.companyCode;
+    againdata.companyName = supplierInfoVo.supplierVo.companyName;
     const { success, message: msg } = await ValiditySupplierRegister(wholeData);
     if (success) {
       getModelRef.current.handleModalVisible(true);
@@ -478,7 +480,6 @@ function CreateStrategy() {
                     <BaseInfo
                       Dyformname={setSuppliername}
                       baseinfo={baseinfo}
-                      initialValues={editData}
                       editformData={editData}
                       wholeData={wholeData}
                       wrappedComponentRef={BaseinfoRef}
@@ -496,7 +497,6 @@ function CreateStrategy() {
                   <div>
                     <Account
                       accountinfo={accountinfo}
-                      initialValue={initialValue}
                       editData={editData}
                       wrappedComponentRef={AccountRef}
                     />
@@ -511,7 +511,6 @@ function CreateStrategy() {
                   <div className={styles.title}>授权委托人</div>
                   <div>
                     <Authorizedclient
-                      initialValue={initialValue}
                       editformData={editData}
                       wrappedComponentRef={AuthorizeRef}
                     />

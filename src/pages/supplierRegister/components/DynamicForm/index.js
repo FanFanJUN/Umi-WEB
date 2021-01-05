@@ -45,7 +45,7 @@ import { baseUrl } from '../../../../utils/commonUrl';
 import SearchTable from '../SearchTable'
 import styles from './index.less';
 import { conformsTo, values } from 'lodash';
-
+let entityIdObj;
 const { create } = Form;
 const { RangePicker } = DatePicker
 const FormItem = Form.Item;
@@ -79,6 +79,7 @@ const CommonconfigRef = forwardRef(({
 
   useEffect(() => {
     setother(editData)
+    entityIdObj = getEntityId(editData);
   }, [editData])
 
   function setother(val) {
@@ -160,7 +161,7 @@ const CommonconfigRef = forwardRef(({
     let value = event.target.value;
     event.target.value = value.replace(/[^\d]/g, '');
   }
-  let entityIdObj = getEntityId(editData);
+
   // 供应商分类切换
   function handletypeSelect(item) {
     selectfication(item.id)
