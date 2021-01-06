@@ -332,7 +332,7 @@ function SupplierConfigure() {
     }
     // 快速查询
     function handleQuickSerach(value) {
-        ssetSearchValue(v => ({ ...v, quickSearchValue: value.trim() }));
+        setSearchValue(v => ({ ...v, quickSearchValue: value.trim() }));
         uploadTable();
     }
     // 处理高级搜索

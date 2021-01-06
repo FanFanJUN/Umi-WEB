@@ -213,7 +213,7 @@ function SupplierConfigure() {
     function handleQuickSerach() {
         let search = "";
         setSearchValue(search);
-        setSearchValue(searchValue)
+        setSearchValue(searchValue.trim())
         uploadTable();
     }
     // 提交审核完成更新列表
@@ -336,14 +336,14 @@ function SupplierConfigure() {
     const HeaderRightButtons = (
         <div style={{ display: 'flex' }}>
             <Input
-                style={{ width: '280px' }}
+                style={{ width: '160px' }}
                 placeholder='请输入说明'
                 className={styles.btn}
                 onChange={SerachValue}
                 allowClear
             />
             <ComboList
-                style={{ width: '380px' }}
+                style={{ width: '260px' }}
                 searchProperties={searchbank}
                 {...corporationSupplierConfig}
                 afterSelect={cooperationChange}

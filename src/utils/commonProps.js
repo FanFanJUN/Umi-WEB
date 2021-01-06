@@ -939,10 +939,7 @@ export const corporationSupplierConfig = {
     field: ['code'],
     description: 'code'
   },
-  style: {
-    width: '100%'
-  },
-  placeholder: '请选择泛虹公司'
+  placeholder: '请选择公司'
 };
 // 泛虹工厂
 export const companyOrgConfigByCode = {

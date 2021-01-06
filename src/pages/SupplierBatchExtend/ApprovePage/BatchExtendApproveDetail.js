@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ExtTable, WorkFlow, ExtModal, utils, ToolBar,ScrollBar } from 'suid';
+import { ExtTable, WorkFlow, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import { router } from 'dva';
-import { message,Tabs,Spin,Affix} from 'antd';
+import { message, Tabs, Spin, Affix } from 'antd';
 import ImportBaseInfo from '../commons/ImportBaseInfo'
 import ImportData from '../commons/ImportData'
-import { closeCurrent,checkToken} from '../../../utils/index';
-import {RecommendationList} from '../../../services/ImportSupplier'
+import { closeCurrent, checkToken } from '../../../utils/index';
+import { RecommendationList } from '../../../services/SupplierBatchExtend'
 import styles from '../index.less';
 function SupplierApproveInfo() {
     const BaseinfoRef = useRef(null);
@@ -14,20 +14,20 @@ function SupplierApproveInfo() {
     const { id, taskId, instanceId } = query;
     const [loading, triggerLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
-    useEffect(() => { 
-      initsupplierDetai(); 
+    useEffect(() => {
+        initsupplierDetai();
     }, []);
     // 无账号详情
     async function initsupplierDetai() {
-      triggerLoading(true)
-      const { data,success, message: msg } = await RecommendationList({id:query.id})
-      if (success) {
-        triggerLoading(false)
-        setDataSource(data)
-      } else {
-        message.error(msg);
-        triggerLoading(false)
-      }
+        triggerLoading(true)
+        const { data, success, message: msg } = await RecommendationList({ id: query.id })
+        if (success) {
+            triggerLoading(false)
+            setDataSource(data)
+        } else {
+            message.error(msg);
+            triggerLoading(false)
+        }
     }
 
     return (
@@ -47,7 +47,7 @@ function SupplierApproveInfo() {
                     <div className={styles.title}>新增供应商</div>
                     <div >
                         <ImportData
-                            editData={dataSource.supplierInfoVos}
+                            editData={dataSource.supplierFinanceViews}
                             wrappedComponentRef={DatainfoRef}
                             isEdit={true}
                             headerInfo={true}

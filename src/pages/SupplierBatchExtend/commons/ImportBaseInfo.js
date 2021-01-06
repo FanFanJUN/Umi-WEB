@@ -51,23 +51,28 @@ const HeadFormRef = forwardRef(({
                     <Row>
                         <Col span={10}>
                             <Item label='申请公司' {...formItemLayout}>
-                                {isView ? dataSource ? dataSource.corporation ? dataSource.corporation.name : '' : "" :
-                                    getFieldDecorator('corporationId', {
-                                        initialValue: dataSource ? dataSource.corporationId : "",
-                                    }),
-                                    getFieldDecorator("corporation", {
-                                        initialValue: dataSource ? dataSource.corporation : "",
-                                        rules: [{ required: true, message: "请选择申请公司", }]
-                                    })(
-                                        <ComboList
-                                            style={{ width: '100%' }}
-                                            {...establishSupplierConfig}
-                                            showSearch={true}
-                                            form={form}
-                                            name='corporation'
-                                            field={['corporationId']}
-                                        />
-                                    )
+                                {
+                                    isView ?
+                                        <span>{dataSource && dataSource.corporation ? dataSource.corporation.name : ''}</span> :
+                                        (
+                                            getFieldDecorator('corporationId', {
+                                                initialValue: dataSource ? dataSource.corporationId : "",
+                                            }),
+                                            getFieldDecorator("corporation.name", {
+                                                initialValue: dataSource && dataSource.corporation ? dataSource.corporation.name : "",
+                                                rules: [{ required: true, message: "请选择申请公司", }]
+                                            })(
+                                                <ComboList
+                                                    style={{ width: '100%' }}
+                                                    {...establishSupplierConfig}
+                                                    showSearch={true}
+                                                    form={form}
+                                                    name='corporation.name'
+                                                    field={['corporationId']}
+                                                />
+                                            )
+                                        )
+
                                 }
                             </Item>
                         </Col>

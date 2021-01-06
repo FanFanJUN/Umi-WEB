@@ -14,7 +14,6 @@ const Importformef = forwardRef(({
   form,
   editData = {},
   headerInfo,
-  isEdit,
   isView
 }, ref) => {
   useImperativeHandle(ref, () => ({
@@ -91,260 +90,6 @@ const Importformef = forwardRef(({
     // }
   ].map(_ => ({ ..._, align: 'center' }))
   // 编辑导入表单
-  const columnsedit = [
-    {
-      title: '手机',
-      dataIndex: 'supplierVo.accountVo.mobile',
-      ellipsis: true,
-      width: 180,
-
-    },
-    {
-      title: '邮箱',
-      dataIndex: 'supplierVo.accountVo.email',
-      ellipsis: true,
-      width: 80,
-
-    },
-    {
-      title: '供应商分类',
-      dataIndex: 'supplierVo.supplierCategoryName',
-      ellipsis: true,
-      width: 120,
-
-    },
-    {
-      title: '供应商名称',
-      dataIndex: 'supplierVo.name',
-      ellipsis: true,
-      width: 120
-    },
-    {
-      title: '统一社会信用代码',
-      dataIndex: 'supplierVo.creditCode',
-      ellipsis: true,
-      width: 160,
-
-    },
-    {
-      title: '邓白氏码',
-      dataIndex: 'supplierVo.dbCode',
-      ellipsis: true,
-      width: 180,
-
-    },
-    {
-      title: '简称',
-      dataIndex: 'supplierVo.abbreviation',
-      ellipsis: true,
-      width: 120,
-    },
-
-    {
-      title: '企业性质',
-      dataIndex: 'supplierVo.enterprisePropertyName',
-      ellipsis: true,
-      width: 100,
-
-    },
-    {
-      title: '邮编',
-      dataIndex: 'supplierVo.postcode',
-      ellipsis: true,
-      width: 120,
-
-    },
-    {
-      title: '注册国家代码',
-      dataIndex: 'supplierVo.countryCode',
-      ellipsis: true,
-      width: 100,
-    }, {
-      title: '注册国家名称',
-      dataIndex: 'supplierVo.countryName',
-      ellipsis: true,
-      width: 100,
-    }, {
-      title: '注册省代码',
-      dataIndex: 'supplierVo.registerProvinceCode',
-      ellipsis: true,
-      width: 80,
-    }, {
-      title: '注册省名称',
-      dataIndex: 'supplierVo.registerProvinceName',
-      ellipsis: true,
-      width: 100,
-    }, {
-      title: '注册市代码',
-      dataIndex: 'supplierVo.registerRegionCode',
-      ellipsis: true,
-      width: 160,
-    }, {
-      title: '注册市名称',
-      dataIndex: 'supplierVo.registerRegionName',
-      ellipsis: true,
-      width: 160,
-    }, {
-      title: '注册区县代码',
-      dataIndex: 'supplierVo.registerDistrictCode',
-      ellipsis: true,
-      width: 160,
-    }, {
-      title: '注册区县名称',
-      dataIndex: 'supplierVo.registerDistrictName',
-      ellipsis: true,
-      width: 160,
-    }, {
-      title: '注册详细地址',
-      dataIndex: 'supplierVo.registerStreet',
-      ellipsis: true,
-      width: 100,
-
-    }, {
-      title: '传真',
-      dataIndex: 'supplierVo.fax',
-      ellipsis: true,
-      width: 120,
-
-    },
-    {
-      title: '银行所在国家',
-      dataIndex: 'countryName',
-      ellipsis: true,
-      width: 100,
-      render: (value, item, index) => {
-        if (item.bankInfoVos && item.bankInfoVos.length > 0) {
-          return item.bankInfoVos[0].countryName
-        }
-      }
-    },
-    {
-      title: '银行编码',
-      dataIndex: 'bankCode',
-      ellipsis: true,
-      width: 100,
-      render: (value, item, index) => {
-        if (item.bankInfoVos && item.bankInfoVos.length > 0) {
-          return item.bankInfoVos[0].bankCode
-        }
-      }
-    },
-    {
-      title: '银行账户',
-      dataIndex: 'bankAccount',
-      ellipsis: true,
-      width: 100,
-      render: (value, item, index) => {
-        if (item.bankInfoVos && item.bankInfoVos.length > 0) {
-          return item.bankInfoVos[0].bankAccount
-        }
-      }
-    },
-    {
-      title: '银行名称',
-      dataIndex: 'bankName',
-      ellipsis: true,
-      width: 100,
-      render: (value, item, index) => {
-        if (item.bankInfoVos && item.bankInfoVos.length > 0) {
-          return item.bankInfoVos[0].bankName
-        }
-      }
-    },
-    {
-      title: '银行户主',
-      dataIndex: 'bankOwner',
-      ellipsis: true,
-      width: 120,
-      render: (value, item, index) => {
-        if (item.bankInfoVos && item.bankInfoVos.length > 0) {
-          return item.bankInfoVos[0].bankOwner
-        }
-      }
-    },
-    {
-      title: 'SWIFT码',
-      dataIndex: 'swift',
-      ellipsis: true,
-      width: 80,
-      render: (value, item, index) => {
-        if (item.bankInfoVos && item.bankInfoVos.length > 0) {
-          return item.bankInfoVos[0].swift
-        }
-      }
-    },
-    {
-      title: '银联行号',
-      dataIndex: 'unionpayCode',
-      ellipsis: true,
-      width: 100,
-      render: (value, item, index) => {
-        if (item.bankInfoVos && item.bankInfoVos.length > 0) {
-          return item.bankInfoVos[0].unionpayCode
-        }
-      }
-    },
-    {
-      title: '银行地区',
-      dataIndex: 'provinceName',
-      ellipsis: true,
-      width: 100,
-      render: (value, item, index) => {
-        if (item.bankInfoVos && item.bankInfoVos.length > 0) {
-          return item.bankInfoVos[0].provinceName
-        }
-      }
-    }, {
-      title: '银行城市',
-      dataIndex: 'regionName',
-      ellipsis: true,
-      width: 100,
-      render: (value, item, index) => {
-        if (item.bankInfoVos && item.bankInfoVos.length > 0) {
-          return item.bankInfoVos[0].regionName
-        }
-      }
-    }, {
-      title: '银行控制代码',
-      dataIndex: 'paymentCode',
-      ellipsis: true,
-      width: 120,
-      render: (value, item, index) => {
-        if (item.bankInfoVos && item.bankInfoVos.length > 0) {
-          return item.bankInfoVos[0].paymentCode
-        }
-      }
-    },
-    {
-      title: '扩展公司代码',
-      dataIndex: 'supplierFinanceView.corporationCode',
-      ellipsis: true,
-      width: 120,
-    },
-    {
-      title: '扩展采购组织代码',
-      dataIndex: 'supplierFinanceView.purchaseOrgCode',
-      ellipsis: true,
-      width: 160,
-    },
-    {
-      title: '付款条件',
-      dataIndex: 'supplierFinanceView.payCodition',
-      ellipsis: true,
-      width: 80,
-    }, {
-      title: '方案组',
-      dataIndex: 'supplierFinanceView.schemeGroupCode',
-      ellipsis: true,
-      width: 80,
-    },
-    {
-      title: '币种',
-      dataIndex: 'supplierFinanceView.currencyCode',
-      ellipsis: true,
-      width: 80,
-    }
-  ].map(_ => ({ ..._, align: 'center' }))
   const empty = selectRowKeys.length === 0;
 
   function handleData(val) {
@@ -355,10 +100,10 @@ const Importformef = forwardRef(({
   }
   // 表单
   function getImportDate() {
-    if (savedata.length === 0) {
+    if (dataSource.length === 0) {
       return false;
     }
-    return { supplierFinanceViews: savedata };
+    return { supplierFinanceViews: dataSource };
   }
   // 记录列表选中
   function handleSelectedRows(rowKeys, rows) {
@@ -392,21 +137,18 @@ const Importformef = forwardRef(({
     return new Promise((resolve, reject) => {
       Importvalidity(data).then(res => {
         importdata.forEach((item, indexs) => {
+          console.log(res.data.errStatus === 1)
           if (res.data.errStatus === 1) {
-            res.data.infos.map((items, index) => {
-              if (indexs === index) {
-                let obj = {
-                  ...item,
-                  key: index,
-                  validate: false,
-                  status: '失败',
-                  statusCode: 'error',
-                  message: res.data.msgs[0]
-                }
-                validitydata.push(obj)
-                response = validitydata
-              }
-            })
+            let obj = {
+              ...item,
+              key: indexs,
+              validate: false,
+              status: '失败',
+              statusCode: 'error',
+              message: res.data.msgs[0]
+            }
+            validitydata.push(obj)
+            response = validitydata
           } else {
             res.data.infos.map((items, index) => {
               if (indexs === index) {
@@ -441,11 +183,7 @@ const Importformef = forwardRef(({
   };
   // 导入
   const importFunc = (value) => {
-    if (isEdit) {
-      setDataSource(savedata)
-    } else {
-      setDataSource(value)
-    }
+    setDataSource(value)
 
   };
   const headerleft = (
@@ -501,7 +239,7 @@ const Importformef = forwardRef(({
         dataSource={dataSource}
       //{...dataSource}
       /> : <ExtTable
-          columns={isEdit ? columnsedit : columns}
+          columns={columns}
           showSearch={false}
           ref={tabformRef}
           rowKey={(item) => item.key}

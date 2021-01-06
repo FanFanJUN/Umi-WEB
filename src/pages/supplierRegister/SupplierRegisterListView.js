@@ -200,14 +200,7 @@ function SupplierConfigure() {
     }
     // 泛虹公司
     function cooperationChange(record) {
-        // console.log(record)
-        // setSearchValue({
-        //     quickSearchValue: record.name
-        // })
-        // uploadTable();
-        //let search = "";
-        setSearchValue(record.name);
-        //setSearchValue(searchValue)
+        setSearchValue(v => ({ ...v, quickSearchValue: record.name.trim() }));
         uploadTable();
     }
     // 清空泛虹公司
@@ -269,9 +262,6 @@ function SupplierConfigure() {
     }
     // 编辑
     function handleEditor() {
-        // const [key] = selectedRowKeys;
-        // const { id = '' } = FRAMEELEMENT;
-        // const { pathname } = window.location
         let categoryid = selectedRows[0].supplier.supplierCategoryId;
         let id = selectedRows[0].supplierId;
         openNewTab(`supplier/supplierRegister/SupplierEdit/index?id=${id}&frameElementId=${categoryid}`, '编辑供应商注册信息', false)
@@ -283,18 +273,6 @@ function SupplierConfigure() {
         let categoryid = selectedRows[0].supplier.supplierCategoryId;
         let id = selectedRows[0].supplierId;
         openNewTab(`supplier/supplierRegister/SupplierDetail/index?id=${id}&frameElementId=${categoryid}`, '供应商注册信息明细', false)
-    }
-    // 冻结
-    function handleChange() {
-
-    }
-    // 输入框值
-    function SerachValue(v) {
-        setSearchValue(v.target.value)
-        if (v.target.value === '') {
-            setSearchValue('')
-            uploadTable();
-        }
     }
     // 查询
     function handleQuickSerach(value) {
@@ -372,6 +350,7 @@ function SupplierConfigure() {
                 left={HeaderLeftButtons}
                 right={HeaderRightButtons}
                 ref={headerRef}
+                content
             />
             <AutoSizeLayout>
                 {

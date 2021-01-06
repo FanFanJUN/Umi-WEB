@@ -44,21 +44,7 @@ export const Importvalidity = params => createServiceRequest({
     path: '/api/supplierFinanceViewProcessService/checksupplierimport',
     params,
 })
-// export const Importvalidity = params => {
-//     return request({
-//         url: `${smBaseUrl}/api/supplierFinanceViewProcessService/checksupplierimport`,
-//         data: convertDataToFormData(params),
-//         method: 'POST',
-//     })
-// }
 // 保存
-// export const saveBatchVo = params => {
-//     return request({
-//         url: `${smBaseUrl}/api/supplierFinanceViewProcessService/saveVo`,
-//         data: convertDataToFormData(params),
-//         method: 'POST',
-//     })
-// }
 export const saveBatchVo = params => createServiceRequest({
     path: '/api/supplierFinanceViewProcessService/saveVo',
     params,

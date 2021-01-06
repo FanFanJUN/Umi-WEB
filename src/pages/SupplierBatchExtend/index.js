@@ -96,7 +96,7 @@ function SupplierConfigure() {
 
     const dataSource = {
         store: {
-            url: `${smBaseUrl}/supplierFinanceViewProcess/findBatchByPage`,
+            url: `${smBaseUrl}/api/supplierFinanceViewProcessService/findBatchByPage`,
             params: {
                 quickSearchValue: searchValue,
 
@@ -207,7 +207,7 @@ function SupplierConfigure() {
     function handleQuickSerach() {
         let search = "";
         setSearchValue(search);
-        setSearchValue(searchValue)
+        setSearchValue(searchValue.trim())
         uploadTable();
     }
     // 提交审核完成更新列表
@@ -337,7 +337,7 @@ function SupplierConfigure() {
                 allowClear
             />
             <ComboList
-                style={{ width: '240px' }}
+                style={{ width: '260px' }}
                 searchProperties={searchbank}
                 {...corporationSupplierConfig}
                 afterSelect={cooperationChange}

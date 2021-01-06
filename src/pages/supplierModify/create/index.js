@@ -363,10 +363,6 @@ function CreateStrategy() {
       if (item.operationCode !== '3' && item.fieldCode === 'proCertVos') {
         const { getspecialpurpose } = QualispecialRef.current; // 专用资质
         proCertVos = getspecialpurpose() || [];
-        if (!proCertVos) {
-          message.error('请将专用资质信息填写完全！');
-          return false;
-        }
       }
     }
 
