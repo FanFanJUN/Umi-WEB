@@ -216,7 +216,7 @@ function SupplierConfigure() {
     }
     // 查询
     function handleQuickSerach(value) {
-        setSearchValue(v => ({ ...v, quickSearchValue: value }));
+        setSearchValue(v => ({ ...v, quickSearchValue: value.trim() }));
         uploadTable();
     }
     // 处理高级搜索

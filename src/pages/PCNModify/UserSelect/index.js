@@ -276,7 +276,7 @@ const UserSelect = forwardRef(({
                     },
                     right: <Search onSearch={v => {
                       setTableSearchValue({
-                        quickSearchValue: v.trim()
+                        quickSearchValue: v
                       })
                       setPageInfo({
                         page: 1,

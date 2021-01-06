@@ -6,7 +6,7 @@ import ImportBaseInfo from '../commons/ImportBaseInfo'
 import ImportData from '../commons/ImportData'
 import styles from '../../supplierRegister/components/index.less';
 import { closeCurrent, isEmpty } from '../../../utils';
-import { RecommendationList, saveBatchVo } from '../../../services/ImportSupplier'
+import {RecommendationList,saveBatchVo} from '../../../services/ImportSupplier'
 function CreateStrategy() {
     const BaseinfoRef = useRef(null);
     const DatainfoRef = useRef(null);
@@ -21,7 +21,7 @@ function CreateStrategy() {
     // 详情
     async function Importdetails() {
         triggerLoading(true)
-        const { data, success, message: msg } = await RecommendationList({ id: query.id })
+        const { data,success, message: msg } = await RecommendationList({id:query.id})
         if (success) {
             triggerLoading(false)
             setDataSource(data)
@@ -33,15 +33,16 @@ function CreateStrategy() {
     // 保存
     async function handleSave() {
         const { getImportBaseInfo } = BaseinfoRef.current; // 基本信息
-        const { getImportDate } = DatainfoRef.current; // 供应商
+        const {getImportDate} = DatainfoRef.current; // 供应商
         let ImportBaseInfo = getImportBaseInfo();
         let ImportDate = getImportDate();
         if (!ImportBaseInfo) {
-            message.error('请将基本信息填写完全！');
-            return false;
+          message.error('请将基本信息填写完全！');
+          return false;
         }
-        let params = { ...dataSource, ...ImportBaseInfo, ...ImportDate }
-        const { success, message: msg } = await saveBatchVo({ supplierBatchCreationVo: JSON.stringify(params) })
+        let params = {...dataSource,...ImportBaseInfo,...ImportDate}
+        console.log(JSON.stringify(params))
+        const {success, message: msg } = await saveBatchVo({supplierBatchCreationVo: JSON.stringify(params)})
         if (success) {
             triggerLoading(false)
             closeCurrent()

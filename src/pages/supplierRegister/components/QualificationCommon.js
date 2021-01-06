@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useState } from 'react';
-import { Form, Icon, Input, Col, message, Radio, Button } from 'antd';
+import { Form, Icon, Input, Col, message, Radio, Button, DatePicker } from 'antd';
 import moment from 'moment';
 import { utils, ExtTable, ComboList } from 'suid';
 import { AddButtonWrapper } from './style'
@@ -27,15 +27,11 @@ const QualificationRef = forwardRef(({
     useImperativeHandle(ref, () => ({
         getqualificationsInfo,
         qualicaTemporary,
-        setHeaderFields,
         form
     }));
     const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
     const [configure, setConfigure] = useState([]);
     const [dataSource, setDataSource] = useState([]);
-    //const [keys, setKey] = useState();
-    //const [lineCode, setLineCode] = useState(0);
-    //const [initIndex, setInitIndex] = useState();
     const { attachment = null } = initialValue;
 
     useEffect(() => {
@@ -77,8 +73,6 @@ const QualificationRef = forwardRef(({
                 'qualificationName': '审计报告',
             },
         ];
-        // console.log(lineCode)
-        // console.log(initData)
         setDataSource(initData)
         keys = initData.length - 1;
         initIndex = initData.length;
@@ -103,8 +97,9 @@ const QualificationRef = forwardRef(({
                         qualificationType: item.qualificationType,
                         refId: item.refId,
                         startDate: item.startDate,
-                        endDate: item.endDate,
+                        //endDate: item.endDate,
                         certificateNo: item.certificateNo,
+                        vaildYear: item.vaildYear,
                         institution: item.institution,
                         attachments: item.attachments
                     });
@@ -249,32 +244,52 @@ const QualificationRef = forwardRef(({
             },
         },
         {
-            title: '有效期',
-            dataIndex: 'date',
-            width: 300,
+            title: '有效开始时间',
+            dataIndex: 'startDate',
+            width: 180,
             align: 'center',
             render: (text, record, index) => {
                 if (isView) {
-                    return <span>{record.startDate ? record.startDate + '~' + record.endDate : ''}</span>;
+                    return <span>{record.startDate ? record.startDate : ''}</span>;
                 }
-                let date = new Date();
-                let startDate = moment(date.toString().substring(11, 15) + '-01-01');
-                let endDate = moment((parseInt(date.toString().substring(11, 15)) + 1) + '-06-01');
                 return <FormItem style={{ marginBottom: 0 }}>
                     {
-                        getFieldDecorator(`date[${record.key}]`, {
-                            initialValue: record.startDate ? {
-                                startDate: moment(record.startDate),
-                                endDate: moment(record.endDate),
-                            } : '',
+                        getFieldDecorator(`startDate[${record.key}]`, {
+                            initialValue: record.startDate ? moment(record.startDate) : '',
                             rules: [{
                                 required: record.key === 0,
                                 message: '请设置有效期',
-                            },
-                            { validator: record.key === 4 ? checkDateWithHalfYear : record.key === 1 ? checkDateWithYearAdd3 : checkDateWithYearAdd }],
+                            }],
                         })(
-                            <RangeDatePicker type={record.key === 4 ? 'endTime' : 'currentTime'}
-                            />,
+                            //<RangeDatePicker type={record.key === 4 ? 'endTime' : 'currentTime'} />,
+                            <DatePicker
+                                format="YYYY-MM-DD"
+                                disabledDate={disabledDate}
+                                disabled={isView}
+                                style={{ width: '100%' }}
+                            />
+                        )}
+                </FormItem>;
+            },
+        },
+        {
+            title: '有效期年限',
+            dataIndex: 'vaildYear',
+            width: 180,
+            render: (text, record, index) => {
+                if (isView) {
+                    return text;
+                }
+                return <FormItem style={{ marginBottom: 0 }}>
+                    {
+                        getFieldDecorator(`vaildYear[${record.key}]`, {
+                            initialValue: record.vaildYear,
+                            rules: [{
+                                required: record.key === 0,
+                                message: '请输入有效期年限',
+                            }],
+                        })(
+                            <Input placeholder={'请输入有效期年限'} />,
                         )}
                 </FormItem>;
             },
@@ -316,26 +331,24 @@ const QualificationRef = forwardRef(({
     ].map(item => ({ ...item, align: 'center' }))
     // 新增
     function handleAdd() {
-        //console.log(keys)
         const newData = [...dataSource, { key: keys + 1, lineCode: getLineCode(lineCode) }];
-        //setLineCode(lineCode + 1)
         lineCode++;
         keys++;
-        //console.log(newData)
         setDataSource(newData)
     };
     //删除
     function handleDelete(key) {
-        //console.log(key)
-        //const { dataSource } = this.state;
         const newData = dataSource.filter((item) => item.key !== key);
-        //setLineCode(lineCode - 1);
         lineCode--;
         for (let i = 0; i < newData.length; i++) {
             newData[i].lineCode = getLineCode(i + 1);
         }
         setDataSource(newData)
     };
+    // 有效期时间
+    function disabledDate(current) {
+        return current && current > moment().endOf('day');
+    }
     // 暂存
     function qualicaTemporary() {
         let result = {};
@@ -355,12 +368,6 @@ const QualificationRef = forwardRef(({
             }
         });
         return result;
-    }
-    // 设置所有表格参数
-    const setHeaderFields = (fields) => {
-        //const { attachmentId = null, ...fs } = fields;
-        // setAttachment(attachmentId)
-        // setFieldsValue(fs)
     }
     return (
         <div>

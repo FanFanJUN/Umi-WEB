@@ -1120,7 +1120,8 @@ export const paymentTypeConfig = {
     type: 'post'
   },
   reader: {
-    name: 'name',
+    name: 'code',
+    description: 'name',
     field: ['code'],
   },
   style: {
@@ -1328,4 +1329,30 @@ export const CountryIdConfig = {
     name: 'name',
     description: 'code',
   },
+};
+// 批创建
+export const establishSupplierConfig = {
+  store: {
+    autoLoad: true,
+    url: `${baseUrl}/basic/listAllCorporation?Q_EQ_frozen__bool=0`,
+    type: 'post'
+  },
+  columns: [
+    {
+      title: '公司代码',
+      width: 80,
+      dataIndex: 'code',
+    },
+    {
+      title: '公司名称',
+      width: 200,
+      dataIndex: 'name',
+    },
+  ],
+  reader: {
+    name: 'name',
+    field: ['id'],
+    description: 'code'
+  },
+  placeholder: '请选择申请公司'
 };

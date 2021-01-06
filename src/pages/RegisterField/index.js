@@ -69,25 +69,7 @@ const tabformRef = forwardRef(({
       sorttabledata
     }
   }
-  // 右侧搜索
-  const searchBtnCfg = (
-    <>
-      {/* <Input
-        placeholder='请输入字段代码或名称查询'
-        className={styles.btn}
-        onChange={SerachValue}
-        allowClear
-      />
-      <Button type='primary' onClick={handleQuickSerach}>查询</Button> */}
-      <Search
-        placeholder='请输入字段代码或名称查询'
-        className={styles.btn}
-        onSearch={handleQuickSerach}
-        allowClear
-        style={{ width: '240px' }}
-      />
-    </>
-  )
+
   const tableProps = {
     columns: [
       {
@@ -179,7 +161,7 @@ const tabformRef = forwardRef(({
   }
   // 快速查询
   function handleQuickSerach(value) {
-    setSearchValue(v => ({ ...v, quickSearchValue: value }));
+    setSearchValue(v => ({ ...v, quickSearchValue: value.trim() }));
     uploadTable();
   }
   // 清空列选择并刷新
@@ -211,6 +193,18 @@ const tabformRef = forwardRef(({
       }
     })
   }
+  // 右侧搜索
+  const searchBtnCfg = (
+    <>
+      <Search
+        placeholder='请输入字段代码或名称查询'
+        className={styles.btn}
+        onSearch={handleQuickSerach}
+        allowClear
+        style={{ width: '240px' }}
+      />
+    </>
+  )
   return (
     <>
       <Header

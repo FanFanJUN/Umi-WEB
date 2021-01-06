@@ -565,6 +565,11 @@ export default [
         component: './SupplierRAM/Create',
         title: '创建供应商准入管理'
       },
+      /***供应商批量扩展 */
+      { path: '/supplier/SupplierBatchExtend/index', component: './SupplierBatchExtend/index', title: '供应商批量扩展' },
+      { path: '/supplier/SupplierBatchExtend/create/index', component: './SupplierBatchExtend/create/index', title: '新增供应商批量扩展' },
+      { path: '/supplier/SupplierBatchExtend/Edit/index', component: './SupplierBatchExtend/Edit/index', title: '编辑供应商批量扩展' },
+      { path: '/supplier/SupplierBatchExtend/Detail/index', component: './SupplierBatchExtend/Detail/index', title: '供应商批量扩展明细' },
     ],
   }
 ];

@@ -119,12 +119,12 @@ const getRecommendRef = forwardRef(({
                 newsdata.push(
                     {
                         fieldName: 'docNumber',
-                        value: val.docNumber,
+                        value: (val.docNumber).trim(),
                         operator: 'LK'
                     },
                     {
                         fieldName: 'supplierName',
-                        value: val.supplierName,
+                        value: (val.supplierName).trim(),
                         operator: 'LK'
                     },
                     {

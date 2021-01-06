@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ExtTable, WorkFlow, ExtModal, utils,ToolBar  } from 'suid';
+import { ExtTable, WorkFlow, ExtModal, utils, ToolBar } from 'suid';
 import { Input, Button, message, Checkbox } from 'antd';
 import { openNewTab, getFrameElement } from '@/utils';
 import Header from '@/components/Header';
 //import AdvancedForm from '@/components/AdvancedForm';
 import AutoSizeLayout from '@/components/AutoSizeLayout';
 import styles from './index.less';
-import { smBaseUrl} from '@/utils/commonUrl';
-import {queryStrategyTableList} from "@/services/supplierConfig"
+import { smBaseUrl } from '@/utils/commonUrl';
+import { queryStrategyTableList } from "@/services/supplierConfig"
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { Search } = Input
 const { authAction, storage } = utils;
@@ -17,7 +17,7 @@ function SupplierConfigure() {
   const [selectedRowKeys, setRowKeys] = useState([]);
   const [onlyMe, setOnlyMe] = useState(true);
   const [selectedRows, setRows] = useState([]);
-  const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = useState({});
   const [visible, triggerVisible] = useState(false);
   const [attachId, setAttachId] = useState('');
   const [showAttach, triggerShowAttach] = useState(false);
@@ -36,33 +36,33 @@ function SupplierConfigure() {
     {
       title: '配置代码',
       dataIndex: 'configCode',
-      width:180
+      width: 180
     },
     {
       title: '供应商分类代码',
       dataIndex: 'supplierCategoryCode',
-      width:180
+      width: 180
     },
     {
       title: '供应商分类名称',
       dataIndex: 'supplierCategoryName',
-      width:220
+      width: 220
     },
     {
       title: '新增',
       dataIndex: 'configCreate',
       render(text, record, index) {
-        return  <div>
+        return <div>
           {
             record.configCreate === '1' ? <Checkbox
               key={index}
               checked={true}
             /> : <Checkbox
-            defaultChecked={false}
-            defaultValue={false}
-            checked={false}
-          />
-            
+                defaultChecked={false}
+                defaultValue={false}
+                checked={false}
+              />
+
           }
         </div>
       },
@@ -72,46 +72,46 @@ function SupplierConfigure() {
       title: '变更',
       dataIndex: 'configChange',
       render(text, record, index) {
-        return  <div>
+        return <div>
           {
             record.configChange === '1' ? <Checkbox
-            key={index}
+              key={index}
               checked={true}
             /> : <Checkbox
-            key={index}
-            defaultChecked={false}
-            defaultValue={false}
-            checked={false}
-          />
-            
+                key={index}
+                defaultChecked={false}
+                defaultValue={false}
+                checked={false}
+              />
+
           }
         </div>
       },
       width: 80,
     },
-    { 
-      title: '明细', 
+    {
+      title: '明细',
       dataIndex: 'configDetail',
       render(text, record, index) {
-        return  <div>
+        return <div>
           {
             record.configDetail === '1' ? <Checkbox
-            key={index}
+              key={index}
               checked={true}
             /> : <Checkbox
-            key={index}
-            defaultChecked={false}
-            defaultValue={false}
-            checked={false}
-          />
-            
+                key={index}
+                defaultChecked={false}
+                defaultValue={false}
+                checked={false}
+              />
+
           }
         </div>
       },
-      width: 80 
+      width: 80
     },
     { title: '处理人', dataIndex: 'creatorName' },
-    { title: '处理时间', dataIndex: 'createdDate',width: 180 },
+    { title: '处理时间', dataIndex: 'createdDate', width: 180 },
   ].map(_ => ({ ..._, align: 'center' }))
   /* 按钮禁用状态控制 */
   const FRAMEELEMENT = getFrameElement();
@@ -120,8 +120,8 @@ function SupplierConfigure() {
     store: {
       url: `${smBaseUrl}/api/SmSupplierRegConfigService/findByProperty`,
       params: {
-        quickSearchValue: searchValue,
-        quickSearchProperties:['configCode'],
+        ...searchValue,
+        quickSearchProperties: ['configCode'],
         sortOrders: [
           {
             property: 'configCode',
@@ -133,15 +133,15 @@ function SupplierConfigure() {
     }
   }
   // 右侧搜索
-  const searchBtnCfg =(
+  const searchBtnCfg = (
     <>
-      <Input
+      <Search
         placeholder='请输入配置代码查询'
         className={styles.btn}
-        onChange={SerachValue}
+        onSearch={handleQuickSerach}
         allowClear
+        style={{ width: '240px' }}
       />
-      <Button type='primary' onClick={handleQuickSerach}>查询</Button>
     </>
   )
 
@@ -149,7 +149,7 @@ function SupplierConfigure() {
     window.parent.frames.addEventListener('message', listenerParentClose, false);
     return () => window.parent.frames.removeEventListener('message', listenerParentClose, false)
   }, []);
-  
+
   function listenerParentClose(event) {
     const { data = {} } = event;
     if (data.tabAction === 'close') {
@@ -166,7 +166,7 @@ function SupplierConfigure() {
   function cleanSelectedRecord() {
     setRowKeys([])
   }
-  
+
   function uploadTable() {
     cleanSelectedRecord()
     tableRef.current.remoteDataRefresh()
@@ -199,10 +199,8 @@ function SupplierConfigure() {
     setSearchValue(v.target.value)
   }
   // 查询
-  function handleQuickSerach() {
-    let search = "";
-    setSearchValue(search);
-    setSearchValue(searchValue)
+  function handleQuickSerach(value) {
+    setSearchValue(v => ({ ...v, quickSearchValue: value.trim() }));
     uploadTable();
   }
 
@@ -212,7 +210,7 @@ function SupplierConfigure() {
   }
   return (
     <>
-    <Header
+      <Header
         left={
           <>
             {
@@ -236,7 +234,7 @@ function SupplierConfigure() {
                   ignore={DEVELOPER_ENV} className={styles.btn} onClick={handleChange} disabled={empty}>冻结</Button>
               )
             } */}
-            
+
           </>
         }
         right={searchBtnCfg}

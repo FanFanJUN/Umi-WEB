@@ -6,7 +6,7 @@ import ImportBaseInfo from '../commons/ImportBaseInfo'
 import ImportData from '../commons/ImportData'
 import styles from '../../supplierRegister/components/index.less';
 import { closeCurrent, isEmpty } from '../../../utils';
-import { RecommendationList, saveBatchVo } from '../../../services/ImportSupplier'
+import {RecommendationList,saveBatchVo} from '../../../services/ImportSupplier'
 function CreateStrategy() {
     const BaseinfoRef = useRef(null);
     const DatainfoRef = useRef(null);
@@ -21,33 +21,13 @@ function CreateStrategy() {
     // 详情
     async function Importdetails() {
         triggerLoading(true)
-        const { data, success, message: msg } = await RecommendationList({ id: query.id })
+        const { data,success, message: msg } = await RecommendationList({id:query.id})
         if (success) {
             triggerLoading(false)
             setDataSource(data)
         } else {
             message.error(msg);
             triggerLoading(false)
-        }
-    }
-    // 保存
-    async function handleSave() {
-        const { getImportBaseInfo } = BaseinfoRef.current; // 基本信息
-        const { getImportDate } = DatainfoRef.current; // 供应商
-        let ImportBaseInfo = getImportBaseInfo();
-        let ImportDate = getImportDate();
-        if (!ImportBaseInfo) {
-            message.error('请将基本信息填写完全！');
-            return false;
-        }
-        let params = { ...dataSource, ...ImportBaseInfo, ...ImportDate }
-        const { success, message: msg } = await saveBatchVo({ supplierBatchCreationVo: JSON.stringify(params) })
-        if (success) {
-            triggerLoading(false)
-            closeCurrent()
-        } else {
-            triggerLoading(false)
-            message.error(msg);
         }
     }
 
@@ -65,11 +45,10 @@ function CreateStrategy() {
             <Affix offsetTop={0}>
                 <div className={classnames([styles.header, styles.flexBetweenStart])}>
                     <span className={styles.title}>
-                        编辑
+                        明细
             </span>
                     <div className={styles.flexCenter}>
                         <Button className={styles.btn} onClick={handleBack}>返回</Button>
-                        <Button className={styles.btn} onClick={handleSave}>保存</Button>
                     </div>
                 </div>
 
@@ -82,6 +61,7 @@ function CreateStrategy() {
                         <ImportBaseInfo
                             dataSource={dataSource}
                             wrappedComponentRef={BaseinfoRef}
+                            isView={true}
                         />
                     </div>
                 </div>
@@ -92,6 +72,8 @@ function CreateStrategy() {
                             editData={dataSource.supplierInfoVos}
                             wrappedComponentRef={DatainfoRef}
                             isEdit={query.isEdit}
+                            headerInfo={query.headerInfo}
+                            isView={true}
                         />
                     </div>
                 </div>

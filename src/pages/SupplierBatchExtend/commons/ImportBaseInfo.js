@@ -1,8 +1,6 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useState } from 'react';
 import { Form, Row, Input, Col, DatePicker, Radio, Button } from 'antd';
-import { utils, ComboList, ComboTree } from 'suid';
-// import { corporationConfigShowName } from '@/utils/commonProps'
-// import SearchTable from '../../supplierRegister/components/SearchTable'
+import { utils, ComboList } from 'suid';
 import { establishSupplierConfig } from '../../../utils/commonProps'
 import UploadFile from '../../../components/Upload/index'
 const { Item, create } = Form;
@@ -53,28 +51,23 @@ const HeadFormRef = forwardRef(({
                     <Row>
                         <Col span={10}>
                             <Item label='申请公司' {...formItemLayout}>
-                                {
-                                    isView ?
-                                        <span>{dataSource && dataSource.corporation ? dataSource.corporation.name : ''}</span> :
-                                        (
-                                            getFieldDecorator('corporationId', {
-                                                initialValue: dataSource ? dataSource.corporationId : "",
-                                            }),
-                                            getFieldDecorator("corporation.name", {
-                                                initialValue: dataSource && dataSource.corporation ? dataSource.corporation.name : "",
-                                                rules: [{ required: true, message: "请选择申请公司", }]
-                                            })(
-                                                <ComboList
-                                                    style={{ width: '100%' }}
-                                                    {...establishSupplierConfig}
-                                                    showSearch={true}
-                                                    form={form}
-                                                    name='corporation.name'
-                                                    field={['corporationId']}
-                                                />
-                                            )
-                                        )
-
+                                {isView ? dataSource ? dataSource.corporation ? dataSource.corporation.name : '' : "" :
+                                    getFieldDecorator('corporationId', {
+                                        initialValue: dataSource ? dataSource.corporationId : "",
+                                    }),
+                                    getFieldDecorator("corporation", {
+                                        initialValue: dataSource ? dataSource.corporation : "",
+                                        rules: [{ required: true, message: "请选择申请公司", }]
+                                    })(
+                                        <ComboList
+                                            style={{ width: '100%' }}
+                                            {...establishSupplierConfig}
+                                            showSearch={true}
+                                            form={form}
+                                            name='corporation'
+                                            field={['corporationId']}
+                                        />
+                                    )
                                 }
                             </Item>
                         </Col>

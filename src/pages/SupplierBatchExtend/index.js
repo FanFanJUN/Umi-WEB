@@ -96,7 +96,7 @@ function SupplierConfigure() {
 
     const dataSource = {
         store: {
-            url: `${smBaseUrl}/api/supplierBatchCreationService/findBatchByPage`,
+            url: `${smBaseUrl}/supplierFinanceViewProcess/findBatchByPage`,
             params: {
                 quickSearchValue: searchValue,
 
@@ -118,6 +118,16 @@ function SupplierConfigure() {
             type: 'POST'
         }
     }
+    useEffect(() => {
+        window.parent.frames.addEventListener('message', listenerParentClose, false);
+        return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
+    }, []);
+    function listenerParentClose(event) {
+        const { data = {} } = event;
+        if (data.tabAction === 'close') {
+            tableRef.current.remoteDataRefresh()
+        }
+    }
     // 申请公司
     function cooperationChange(record) {
         setSearchValue(record.name);
@@ -132,23 +142,7 @@ function SupplierConfigure() {
         uploadTable();
     }
     const searchbank = ['name'];
-    const formItemLayout = {
-        labelCol: { span: 14 },
-        wrapperCol: { span: 10 },
-    };
 
-
-    useEffect(() => {
-        window.parent.frames.addEventListener('message', listenerParentClose, false);
-        return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
-    }, []);
-
-    function listenerParentClose(event) {
-        const { data = {} } = event;
-        if (data.tabAction === 'close') {
-            tableRef.current.remoteDataRefresh()
-        }
-    }
     // 记录列表选中
     function handleSelectedRows(rowKeys, rows) {
         setRowKeys(rowKeys);
@@ -165,14 +159,14 @@ function SupplierConfigure() {
         cleanSelectedRecord()
         tableRef.current.remoteDataRefresh()
     }
-    // 新增无帐号供应商
+    // 新增供应商批量扩展
     async function AddModel() {
-        openNewTab(`supplier/ImportSupplier/create/index`, '新增', false)
+        openNewTab(`supplier/SupplierBatchExtend/create/index`, '新增', false)
     }
     // 编辑
     function handleCheckEdit() {
         let id = selectedRows[0].id;
-        openNewTab(`supplier/ImportSupplier/Edit/index?id=` + id + '&isEdit=true', '编辑', false)
+        openNewTab(`supplier/SupplierBatchExtend/Edit/index?id=` + id + '&isEdit=true', '编辑', false)
     }
     // 删除
     async function handleDelete() {
@@ -199,7 +193,7 @@ function SupplierConfigure() {
     // 明细
     function handleCheckDetail() {
         let id = selectedRows[0].id;
-        openNewTab(`supplier/ImportSupplier/Detail/index?id=` + id + '&headerInfo=true&isEdit=true', '明细', false)
+        openNewTab(`supplier/SupplierBatchExtend/Detail/index?id=` + id + '&headerInfo=true&isEdit=true', '明细', false)
     }
     // 输入框值
     function SerachValue(v) {
@@ -336,14 +330,14 @@ function SupplierConfigure() {
     const HeaderRightButtons = (
         <div style={{ display: 'flex' }}>
             <Input
-                style={{ width: '280px' }}
+                style={{ width: '160px' }}
                 placeholder='请输入说明'
                 className={styles.btn}
                 onChange={SerachValue}
                 allowClear
             />
             <ComboList
-                style={{ width: '380px' }}
+                style={{ width: '240px' }}
                 searchProperties={searchbank}
                 {...corporationSupplierConfig}
                 afterSelect={cooperationChange}
