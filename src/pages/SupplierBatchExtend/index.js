@@ -296,7 +296,7 @@ function SupplierConfigure() {
                         businessKey={flowId}
                         callBack={handleComplete}
                         disabled={empty || underWay || !isSelf}
-                        businessModelCode='com.ecmp.srm.sm.entity.SupplierBatchCreation'
+                        businessModelCode='com.ecmp.srm.sm.entity.SupplierFinanceViewProcess'
                         key='SRM-SM-ACCOUNTSUPPLIER-EXAMINE'
                     >提交审核</StartFlow>
                 )

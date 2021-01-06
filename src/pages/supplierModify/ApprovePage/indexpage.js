@@ -1,21 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ExtTable, WorkFlow, ExtModal, utils, ToolBar,ScrollBar } from 'suid';
+import { ExtTable, WorkFlow, ExtModal, utils, ToolBar, ScrollBar } from 'suid';
 import { router } from 'dva';
-import { message,Tabs} from 'antd';
+import { message, Tabs } from 'antd';
 import ModifyHistoryDetail from '../commons/ModifyHistoryDetail'
 import ModifyInfo from '../details/ModifyInfo'
 import {
     findByRequestIdForModify,
     findSupplierModifyHistroyList,
     TemporarySupplierRegister
-  } from '@/services/SupplierModifyService'
-  import {
+} from '@/services/SupplierModifyService'
+import {
     SaveSupplierconfigureService
-  } from '@/services/supplierRegister';
-  import { closeCurrent,checkToken} from '../../../utils/index';
-  import styles from '../index.less';
-  const TabPane = Tabs.TabPane;
-  let senddata;
+} from '@/services/supplierRegister';
+import { closeCurrent, checkToken } from '../../../utils/index';
+import styles from '../index.less';
+const TabPane = Tabs.TabPane;
+let senddata;
 function SupplierApproveInfo() {
     const saveformRef = useRef(null)
     const { query } = router.useLocation();
@@ -30,7 +30,7 @@ function SupplierApproveInfo() {
     useEffect(() => {
         async function init() {
             await checkToken(query, setIsReady);
-            initsupplierDetai(); 
+            initsupplierDetai();
         }
         init();
     }, []);
@@ -47,7 +47,6 @@ function SupplierApproveInfo() {
             setSaveData(data)
             triggerLoading(false);
             senddata = JSON.stringify(data.supplierApplyVo)
-            console.log(senddata)
         } else {
             triggerLoading(false);
             message.error(msg)
@@ -70,12 +69,11 @@ function SupplierApproveInfo() {
     const handleSave = async (approved) => {
         triggerLoading(true)
         let params = JSON.parse(senddata)
-        console.log(params)
         const { success, message: msg } = await TemporarySupplierRegister(params)
         triggerLoading(false)
         return new Promise((resolve, reject) => {
             if (success) {
-                resolve({success, message: msg})
+                resolve({ success, message: msg })
                 message.success(msg)
                 return;
             }
@@ -86,9 +84,9 @@ function SupplierApproveInfo() {
     function handleSubmitComplete(res) {
         const { success } = res;
         if (success) {
-          closeCurrent();
+            closeCurrent();
         }
-      }
+    }
     return (
         <>
             {isReady ? (
@@ -98,18 +96,18 @@ function SupplierApproveInfo() {
                     instanceId={instanceId}
                     flowMapUrl="flow-web/design/showLook"
                     submitComplete={handleSubmitComplete}
-                    //beforeSubmit={handleSave}
-                    >
+                //beforeSubmit={handleSave}
+                >
                     <div className={styles.wrapper}>
                         <Tabs className={styles.tabcolor}>
                             <TabPane forceRender tab="变更列表" key="1">
-                            <ModifyHistoryDetail
-                                editData={wholeData}
+                                <ModifyHistoryDetail
+                                    editData={wholeData}
                                 //lineDataSource={lineDataSource}
                                 />
                             </TabPane>
                             <TabPane forceRender tab="基本信息" key="2">
-                                <ModifyInfo  
+                                <ModifyInfo
                                     wholeData={wholeData}
                                     configuredata={configuredata}
                                     wrappedComponentRef={saveformRef}
@@ -118,7 +116,7 @@ function SupplierApproveInfo() {
                         </Tabs>
                     </div>
                 </WorkFlow.Approve>
-            ): null}
+            ) : null}
         </>
     )
 }

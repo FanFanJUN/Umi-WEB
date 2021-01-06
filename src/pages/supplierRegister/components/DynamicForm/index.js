@@ -35,7 +35,8 @@ import {
   oddcompanyOrgConfigByCode,
   Identification,
   Identificationtask,
-  corporationProps
+  corporationProps,
+  corporationPropsModify
 } from '../../../../utils/commonProps'
 import { checkSupplierName } from '../../../../services/supplierRegister'
 import UploadFile from '../../../../components/Upload/index'
@@ -691,7 +692,7 @@ const CommonconfigRef = forwardRef(({
                           })(
                             <ComboList
                               disabled={item.verifi === '2'}
-                              {...corporationProps}
+                              {...corporationPropsModify}
                               form={form}
                               name="supplierVo.bukrName"
                               field={["supplierVo.bukrCode"]}
@@ -925,7 +926,7 @@ const CommonconfigRef = forwardRef(({
                           })(
                             <ComboList
                               disabled={item.verifi === '2'}
-                              {...corporationProps}
+                              {...corporationPropsModify}
                               form={form}
                               name="supplierVo.companyName"
                               field={["supplierVo.companyCode"]}

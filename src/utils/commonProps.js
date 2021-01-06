@@ -1353,3 +1353,29 @@ export const establishSupplierConfig = {
   },
   placeholder: '请选择申请公司'
 };
+// 注册变更公司
+export const corporationPropsModify = {
+  columns: [
+    {
+      title: '公司名称',
+      dataIndex: 'name'
+    }, {
+      title: '公司代码',
+      dataIndex: 'code'
+    }
+  ],
+  store: {
+    url: `${baseUrl}/basic/listAllCorporationUnFrozen`,
+    params: { Q_EQ_frozen__Boolean: false }
+  },
+  reader: {
+    name: 'name',
+    field: ['code'],
+    description: 'code'
+    // value: 'code'
+  },
+  style: {
+    width: '100%'
+  },
+  placeholder: '选择公司'
+}
