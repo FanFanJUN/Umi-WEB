@@ -64,7 +64,7 @@ function SupplierApproveInfo() {
               </div>
             </div>
             <div className={styles.bgw}>
-              <div className={styles.title}>新增供应商</div>
+              <div className={styles.title}>扩展采购会计视图</div>
               <div >
                 <ImportData
                   editData={dataSource.supplierFinanceViews}

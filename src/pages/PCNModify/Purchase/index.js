@@ -150,7 +150,8 @@ function SupplierConfigure() {
     function listenerParentClose(event) {
         const { data = {} } = event;
         if (data.tabAction === 'close') {
-            tableRef.current.remoteDataRefresh()
+            //tableRef.current.remoteDataRefresh()
+            uploadTable()
         }
     }
     // 记录列表选中

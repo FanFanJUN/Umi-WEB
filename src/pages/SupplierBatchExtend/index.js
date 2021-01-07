@@ -6,7 +6,7 @@ import { StartFlow } from 'seid';
 import { AutoSizeLayout, Header } from '@/components';
 import styles from './index.less';
 import { smBaseUrl } from '@/utils/commonUrl';
-import { deleteBatchById, stopApproveingOrder } from '../../services/ImportSupplier'
+import { deleteBatchById, stopApproveingOrder } from '../../services/SupplierBatchExtend'
 import { corporationSupplierConfig } from '../../utils/commonProps'
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const FormItem = Form.Item;
@@ -125,7 +125,7 @@ function SupplierConfigure() {
     function listenerParentClose(event) {
         const { data = {} } = event;
         if (data.tabAction === 'close') {
-            tableRef.current.remoteDataRefresh()
+            uploadTable()
         }
     }
     // 申请公司
@@ -244,7 +244,7 @@ function SupplierConfigure() {
                 authAction(
                     <Button type='primary'
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-ACCOUNTSUPPLIER-ADD'
+                        key='SRM-SM-BATCHEXPANSION-ADD'
                         className={styles.btn}
                         onClick={AddModel}
                     //disabled={empty}
@@ -256,7 +256,7 @@ function SupplierConfigure() {
                 authAction(
                     <Button
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-ACCOUNTSUPPLIER-EDIT'
+                        key='SRM-SM-BATCHEXPANSION-EDIT'
                         className={styles.btn}
                         onClick={handleCheckEdit}
                         disabled={empty || underWay || !isSelf}
@@ -268,7 +268,7 @@ function SupplierConfigure() {
                 authAction(
                     <Button
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-ACCOUNTSUPPLIER-DELETE'
+                        key='SRM-SM-BATCHEXPANSION-DELETE'
                         className={styles.btn}
                         onClick={handleDelete}
                         disabled={empty || underWay || !isSelf}
@@ -280,7 +280,7 @@ function SupplierConfigure() {
                 authAction(
                     <Button
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-ACCOUNTSUPPLIER-DETAIL'
+                        key='SRM-SM-BATCHEXPANSION-DETAIL'
                         className={styles.btn}
                         onClick={handleCheckDetail}
                         disabled={empty}
@@ -297,7 +297,7 @@ function SupplierConfigure() {
                         callBack={handleComplete}
                         disabled={empty || underWay || !isSelf}
                         businessModelCode='com.ecmp.srm.sm.entity.SupplierFinanceViewProcess'
-                        key='SRM-SM-ACCOUNTSUPPLIER-EXAMINE'
+                        key='SRM-SM-BATCHEXPANSION-EXAMINE'
                     >提交审核</StartFlow>
                 )
             }
@@ -308,7 +308,7 @@ function SupplierConfigure() {
                         disabled={empty || !underWay || !isSelf || completed}
                         onClick={stopApprove}
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-ACCOUNTSUPPLIER-STOP-APPROVAL'
+                        key='SRM-SM-BATCHEXPANSION-STOP-APPROVAL'
                     >终止审核</Button>
                 )
             }
@@ -318,7 +318,7 @@ function SupplierConfigure() {
                         businessId={flowId}
                         flowMapUrl='flow-web/design/showLook'
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-ACCOUNTSUPPLIER-HISTORY'
+                        key='SRM-SM-BATCHEXPANSION-HISTORY'
                     >
                         <Button className={styles.btn} disabled={empty || !underWay}>审核历史</Button>
                     </FlowHistoryButton>
