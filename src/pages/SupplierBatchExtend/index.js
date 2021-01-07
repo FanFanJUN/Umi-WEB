@@ -1,20 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ExtTable, WorkFlow, ComboList, utils, ToolBar, ScrollBar } from 'suid';
+import { ExtTable, ComboList, utils, WorkFlow } from 'suid';
 import { Input, Button, message, Modal, Form, Row, Col } from 'antd';
 import { openNewTab, getFrameElement, isEmpty } from '@/utils';
-import { StartFlow } from 'seid';
 import { AutoSizeLayout, Header } from '@/components';
 import styles from './index.less';
+// import { StartFlow } from 'seid';
 import { smBaseUrl } from '@/utils/commonUrl';
 import { deleteBatchById, stopApproveingOrder } from '../../services/SupplierBatchExtend'
 import { corporationSupplierConfig } from '../../utils/commonProps'
-const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
-const FormItem = Form.Item;
+const { StartFlow, FlowHistoryButton } = WorkFlow;
 const confirm = Modal.confirm;
 const { authAction, storage } = utils;
-const { FlowHistoryButton } = WorkFlow;
-const { getFieldDecorator, setFieldsValue, getFieldValue } = Form;
-function SupplierConfigure() {
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
+export default () => {
     const tableRef = useRef(null)
     const headerRef = useRef(null)
     const authorizations = storage.sessionStorage.get("Authorization");
@@ -239,7 +237,7 @@ function SupplierConfigure() {
     }
     // 左侧
     const HeaderLeftButtons = (
-        <div style={{ width: '50%', display: 'flex', height: '100%', alignItems: 'center' }}>
+        <div style={{ width: '80%', display: 'flex', height: '100%' }}>
             {
                 authAction(
                     <Button type='primary'
@@ -291,16 +289,37 @@ function SupplierConfigure() {
             {
                 authAction(
                     <StartFlow
+                        businessModelCode='com.ecmp.srm.sm.entity.SupplierFinanceViewProcess'
+                        businessKey={flowId}
+                        key='SRM-SM-BATCHEXPANSION-EXAMINE'
+                        startComplete={handleComplete}
+                        ignore={DEVELOPER_ENV}
+                    >
+                        {
+                            loading => (
+                                <Button
+                                    className={styles.btn}
+                                    loading={loading}
+                                    disabled={empty || underWay || !isSelf}
+                                >提交审核</Button>
+                            )
+                        }
+                    </StartFlow>
+                )
+            }
+            {/* {
+                authAction(
+                    <StartFlow
                         className={styles.btn}
                         ignore={DEVELOPER_ENV}
                         businessKey={flowId}
-                        callBack={handleComplete}
+                        startComplete={handleComplete}
                         disabled={empty || underWay || !isSelf}
                         businessModelCode='com.ecmp.srm.sm.entity.SupplierFinanceViewProcess'
                         key='SRM-SM-BATCHEXPANSION-EXAMINE'
                     >提交审核</StartFlow>
                 )
-            }
+            } */}
             {
                 authAction(
                     <Button
@@ -388,4 +407,4 @@ function SupplierConfigure() {
     )
 }
 
-export default SupplierConfigure
+//export default SupplierConfigure
