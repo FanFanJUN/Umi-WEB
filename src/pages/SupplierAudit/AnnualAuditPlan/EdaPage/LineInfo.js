@@ -3,7 +3,7 @@
  * @LastEditors  : LiCai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime : 2020-12-31 11:25:00
+ * @LastEditTime : 2021-01-08 09:53:21
  * @Description: 行信息
  * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
@@ -436,6 +436,7 @@ let LineInfo = (props, ref) => {
             item.cityCode = record?.cityCode || ''
             item.countyId = record?.countyId || '';
             item.countyName = record?.countyName || '';
+            item.countyCode = record?.countyCode || '';
             item.address = record?.address || '';
             item.contactUserName = record.contactUserName;
             item.contactUserTel = record.contactUserTel;
