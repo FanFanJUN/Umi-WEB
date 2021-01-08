@@ -136,22 +136,10 @@ const Importformef = forwardRef(({
     let importdata = data, response, validitydata = [];
     return new Promise((resolve, reject) => {
       Importvalidity(data).then(res => {
-        importdata.forEach((item, indexs) => {
-          console.log(res.data.errStatus === 1)
-          if (res.data.errStatus === 1) {
-            let obj = {
-              ...item,
-              key: indexs,
-              validate: false,
-              status: '失败',
-              statusCode: 'error',
-              message: res.data.msgs[0]
-            }
-            validitydata.push(obj)
-            response = validitydata
-          } else {
-            res.data.infos.map((items, index) => {
-              if (indexs === index) {
+        if (res.data.errStatus === 0) {
+          res.data.supplierInfoVos.forEach((item, index) => {
+            res.data.infos.map((items, indexs) => {
+              if (index === indexs) {
                 let obj = {
                   ...item,
                   key: index,
@@ -164,18 +152,31 @@ const Importformef = forwardRef(({
                 response = validitydata
               }
             })
-            res.data.infos.map((items, index) => {
-              if (items.error === '') {
-                const supplierInfo = res.data.supplierInfoVos.map((info, index) => ({
-                  ...info,
-                  key: index,
-                }))
-                setsavedata(supplierInfo)
-              }
-            })
-          }
-          resolve(response)
-        })
+          })
+          res.data.infos.map((items, index) => {
+            if (items.error === '') {
+              const supplierInfo = res.data.supplierInfoVos.map((info, index) => ({
+                ...info,
+                key: index,
+              }))
+              setsavedata(supplierInfo)
+            }
+          })
+        } else {
+          importdata.forEach((item, indexs) => {
+            let obj = {
+              ...item,
+              key: indexs,
+              validate: false,
+              status: '失败',
+              statusCode: 'error',
+              message: res.data.msgs[0]
+            }
+            validitydata.push(obj)
+            response = validitydata
+          })
+        }
+        resolve(response)
       }).catch(err => {
         //reject(err)
       })

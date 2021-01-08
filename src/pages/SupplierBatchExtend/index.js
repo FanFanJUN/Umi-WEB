@@ -307,19 +307,6 @@ export default () => {
                     </StartFlow>
                 )
             }
-            {/* {
-                authAction(
-                    <StartFlow
-                        className={styles.btn}
-                        ignore={DEVELOPER_ENV}
-                        businessKey={flowId}
-                        startComplete={handleComplete}
-                        disabled={empty || underWay || !isSelf}
-                        businessModelCode='com.ecmp.srm.sm.entity.SupplierFinanceViewProcess'
-                        key='SRM-SM-BATCHEXPANSION-EXAMINE'
-                    >提交审核</StartFlow>
-                )
-            } */}
             {
                 authAction(
                     <Button
