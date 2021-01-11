@@ -31,12 +31,13 @@ export const dataTransfer = (dataSource, values, initIndex) => {
           obj['refId'] = item.refId;
         }
       }
-      if (newKey === 'date') {
-        obj['startDate'] = values[key][item.key] && values[key][item.key].startDate;
-        obj['endDate'] = values[key][item.key] && values[key][item.key].endDate;
-      } else {
-        obj[newKey] = values[key][item.key] || null;
-      }
+      // if (newKey === 'date') {
+      //   obj['startDate'] = values[key][item.key] && values[key][item.key].startDate;
+      //   obj['endDate'] = values[key][item.key] && values[key][item.key].endDate;
+      // } else {
+      //   obj[newKey] = values[key][item.key] || null;
+      // }
+      obj[newKey] = values[key][item.key] || null;
     });
     return obj;
   });

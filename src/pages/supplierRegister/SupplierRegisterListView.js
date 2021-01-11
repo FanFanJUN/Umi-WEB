@@ -2,12 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ExtTable, WorkFlow, ExtModal, utils, ComboList, ScrollBar } from 'suid';
 import { Input, Button, message, Modal, Form } from 'antd';
 import { openNewTab, getFrameElement } from '@/utils';
-import SearchTable from './components/SearchTable'
-import { StartFlow } from 'seid';
-
-import Header from '@/components/Header';
-//import AdvancedForm from '@/components/AdvancedForm';
-import AutoSizeLayout from '@/components/AutoSizeLayout';
+import { AutoSizeLayout, Header } from '@/components';
 import styles from './index.less';
 import { smBaseUrl } from '@/utils/commonUrl';
 import { RecommendationList, stopApproveingOrder } from "@/services/supplierRegister"
@@ -24,7 +19,7 @@ function SupplierConfigure() {
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [onlyMe, setOnlyMe] = useState(true);
     const [selectedRows, setRows] = useState([]);
-    const [searchValue, setSearchValue] = useState('');
+    const [searchValue, setSearchValue] = useState({});
     const [visible, setVisible] = useState(false);
     const [recommen, setrecommen] = useState([]);
     const [loading, triggerLoading] = useState(false);
@@ -191,7 +186,7 @@ function SupplierConfigure() {
         store: {
             url: `${smBaseUrl}/api/supplierSelfService/findVoListByPage`,
             params: {
-                quickSearchValue: searchValue,
+                ...searchValue,
                 quickSearchProperties: ['companyName', 'supplierName'],
                 sortOrders: [
                     {
@@ -205,14 +200,7 @@ function SupplierConfigure() {
     }
     // 泛虹公司
     function cooperationChange(record) {
-        // console.log(record)
-        // setSearchValue({
-        //     quickSearchValue: record.name
-        // })
-        // uploadTable();
-        //let search = "";
-        setSearchValue(record.name);
-        //setSearchValue(searchValue)
+        setSearchValue(v => ({ ...v, quickSearchValue: record.name.trim() }));
         uploadTable();
     }
     // 清空泛虹公司
@@ -220,33 +208,6 @@ function SupplierConfigure() {
         setSearchValue('')
         uploadTable();
     }
-    const searchbank = ['name'];
-    // 右侧搜索
-    const searchBtnCfg = (
-        <>
-            <ComboList
-                style={{ width: 340 }}
-                searchProperties={searchbank}
-                {...corporationSupplierConfig}
-                afterSelect={cooperationChange}
-                rowKey="code"
-                //showSearch={false}
-                allowClear={true}
-                afterClear={clearinput}
-                reader={{
-                    name: 'name',
-                }}
-            />
-            <Input
-                style={{ width: 280 }}
-                placeholder='请输入供应商名称查询'
-                className={styles.btn}
-                onChange={SerachValue}
-                allowClear
-            />
-            <Button type='primary' onClick={handleQuickSerach}>查询</Button>
-        </>
-    )
 
     useEffect(() => {
         window.parent.frames.addEventListener('message', listenerParentClose, false);
@@ -301,9 +262,6 @@ function SupplierConfigure() {
     }
     // 编辑
     function handleEditor() {
-        // const [key] = selectedRowKeys;
-        // const { id = '' } = FRAMEELEMENT;
-        // const { pathname } = window.location
         let categoryid = selectedRows[0].supplier.supplierCategoryId;
         let id = selectedRows[0].supplierId;
         openNewTab(`supplier/supplierRegister/SupplierEdit/index?id=${id}&frameElementId=${categoryid}`, '编辑供应商注册信息', false)
@@ -316,23 +274,9 @@ function SupplierConfigure() {
         let id = selectedRows[0].supplierId;
         openNewTab(`supplier/supplierRegister/SupplierDetail/index?id=${id}&frameElementId=${categoryid}`, '供应商注册信息明细', false)
     }
-    // 冻结
-    function handleChange() {
-
-    }
-    // 输入框值
-    function SerachValue(v) {
-        setSearchValue(v.target.value)
-        if (v.target.value === '') {
-            setSearchValue('')
-            uploadTable();
-        }
-    }
     // 查询
-    function handleQuickSerach() {
-        let search = "";
-        setSearchValue(search);
-        setSearchValue(searchValue)
+    function handleQuickSerach(value) {
+        setSearchValue(v => ({ ...v, quickSearchValue: value.trim() }));
         uploadTable();
     }
 
@@ -344,103 +288,69 @@ function SupplierConfigure() {
     function handleComplete() {
         uploadTable()
     }
-    // 终止审核
-    function stopApprove() {
-        Modal.confirm({
-            title: '终止审批流程',
-            content: '流程终止后无法恢复，是否继续？',
-            onOk: handleStopApproveRecord,
-            okText: '确定',
-            cancelText: '取消'
-        })
-    }
-    async function handleStopApproveRecord() {
-        const [row] = selectedRows
-        const { id: flowId } = row
-        const { success, message: msg } = await stopApproveingOrder({
-            businessId: flowId
-        })
-        if (success) {
-            message.success(msg)
-            uploadTable()
-            return
-        }
-        message.error(msg)
-    }
+    // 左侧
+    const HeaderLeftButtons = (
+        <div style={{ width: '50%', display: 'flex', height: '100%', alignItems: 'center' }}>
+            {
+                authAction(
+                    <Button
+                        ignore={DEVELOPER_ENV}
+                        key='SRM-SM-SUPPLIER-REGISTER-DETAIL'
+                        className={styles.btn}
+                        onClick={handleCheckDetail}
+                        disabled={empty}
+                    >明细
+                                </Button>
+                )
+            }
+            {
+                authAction(
+                    <FlowHistoryButton
+                        businessId={flowId}
+                        flowMapUrl='flow-web/design/showLook'
+                        ignore={DEVELOPER_ENV}
+                        key='SRM-SM-SUPPLIER-REGISTER-HISTORY'
+                    >
+                        <Button className={styles.btn} disabled={empty || !underWay}>审核历史</Button>
+                    </FlowHistoryButton>
+                )
+            }
+        </div>
+    )
+    const searchbank = ['name'];
+    // 右侧搜索
+    const HeaderRightButtons = (
+        <div style={{ display: 'flex' }}>
+            <ComboList
+                style={{ width: '260px' }}
+                searchProperties={searchbank}
+                {...corporationSupplierConfig}
+                afterSelect={cooperationChange}
+                rowKey="code"
+                //showSearch={false}
+                allowClear={true}
+                afterClear={clearinput}
+                reader={{
+                    name: 'name',
+                }}
+                className={styles.btn}
+            />
+            <Search
+                placeholder='请输入供应商名称查询'
+                className={styles.btn}
+                onSearch={handleQuickSerach}
+                allowClear
+                style={{ width: '240px' }}
+            />
+        </div>
+    )
     return (
         <>
             <Header
-                left={
-                    <>
-                        {/* {
-                            authAction(
-                                <Button type='primary' 
-                                    ignore={DEVELOPER_ENV} 
-                                    key='' 
-                                    className={styles.btn} 
-                                    onClick={handleEditor}
-                                    disabled={empty || underWay || !isSelf}
-                                    >编辑
-                                </Button>
-                            )
-                        } */}
-                        {
-                            authAction(
-                                <Button
-                                    ignore={DEVELOPER_ENV}
-                                    key='SRM-SM-SUPPLIER-REGISTER-DETAIL'
-                                    className={styles.btn}
-                                    onClick={handleCheckDetail}
-                                    disabled={empty}
-                                >明细
-                                </Button>
-                            )
-                        }
-                        {/* {
-                            authAction(
-                                <StartFlow
-                                    className={styles.btn}
-                                    ignore={DEVELOPER_ENV}
-                                    // preStart={handleBeforeStartFlow}
-                                    businessKey={flowId}
-                                    callBack={handleComplete}
-                                    disabled={empty || underWay || !isSelf || !Toexamine}
-                                    businessModelCode='com.ecmp.srm.sm.entity.SupplierApply'
-                                    ignore={DEVELOPER_ENV}
-                                    key='PURCHASE_VIEW_CHANGE_APPROVE'
-                                ></StartFlow>
-                            )
-                        } */}
-                        {/* {
-                            authAction(
-                                <Button
-                                    className={styles.btn}
-                                    disabled={empty || !underWay || !isSelf}
-                                    onClick={stopApprove}
-                                    ignore={DEVELOPER_ENV}
-                                    key='PURCHASE_VIEW_CHANGE_STOP_APPROVE'
-                                >终止审核</Button>
-                            )
-                        } */}
-                        {
-                            authAction(
-                                <FlowHistoryButton
-                                    businessId={flowId}
-                                    flowMapUrl='flow-web/design/showLook'
-                                    ignore={DEVELOPER_ENV}
-                                    key='SRM-SM-SUPPLIER-REGISTER-HISTORY'
-                                >
-                                    <Button className={styles.btn} disabled={empty || !underWay}>审核历史</Button>
-                                </FlowHistoryButton>
-                            )
-                        }
-
-                    </>
-                }
-                right={searchBtnCfg}
-                advanced={false}
-                extra={false}
+                left={HeaderLeftButtons}
+                right={HeaderRightButtons}
                 ref={headerRef}
+                content
             />
             <AutoSizeLayout>
                 {

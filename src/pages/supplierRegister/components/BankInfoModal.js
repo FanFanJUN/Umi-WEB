@@ -64,7 +64,6 @@ const BankInfoRef = forwardRef(({
     // 保存银行
     async function handleSave() {
         validateFieldsAndScroll(async (err, val) => {
-            console.log(val)
             let params;
             if (!err) {
                 if (val.openingPermit && val.openingPermit.length > 0 && !val.openingPermitId) {
@@ -97,6 +96,11 @@ const BankInfoRef = forwardRef(({
     }
     function handleModalVisible(flag) {
         setvisible(!!flag)
+    }
+    function changevalue(val) {
+        form.setFieldsValue({
+            'paymentName': val.name,
+        });
     }
     return (
         <Modal
@@ -273,7 +277,7 @@ const BankInfoRef = forwardRef(({
                     >
                         {
                             isView ? <span></span> :
-                                getFieldDecorator("bankCode", { initialValue: editData && initialValues.bankCode }),
+                                getFieldDecorator("bankCode", { initialValue: initialValues && initialValues.bankCode }),
                             getFieldDecorator("bankCodeName", {
                                 initialValue: initialValues && initialValues.bankCodeName,
                                 //rules: [{ required: !isView, message: '请选择银行编码!', }]
@@ -397,19 +401,46 @@ const BankInfoRef = forwardRef(({
                     >
                         {
                             isView ? <span></span> :
-                                getFieldDecorator("paymentCode", { initialValue: editData && editData.paymentCode }),
-                            getFieldDecorator('paymentName', {
-                                initialValue: initialValues && initialValues.paymentName,
-                                rules: [{ required: !isView, message: '请选择银行控制代码!', }]
-                            })(
-                                <ComboList
-                                    showSearch={false}
-                                    {...paymentTypeConfig}
-                                    name='paymentName'
-                                    field={['paymentCode']}
-                                    form={form}
-                                />
-                            )
+                                //getFieldDecorator("paymentCode", { initialValue: initialValues && initialValues.paymentCode }),
+                                getFieldDecorator('paymentCode', {
+                                    initialValue: initialValues && initialValues.paymentCode,
+                                    rules: [{ required: !isView, message: '请选择银行控制代码!', }]
+                                })(
+                                    <ComboList
+                                        showSearch={false}
+                                        {...paymentTypeConfig}
+                                        name='paymentCode'
+                                        field={['paymentCode']}
+                                        afterSelect={changevalue}
+                                        form={form}
+                                    />
+                                )
+                        }
+                    </FormItem>
+                </Col>
+                <Col span={8}>
+                    <FormItem
+                        label={"银行控制名称"}
+                        {...formItemLayout}
+                    >
+                        {
+                            isView ? <span></span> :
+                                getFieldDecorator('paymentName', {
+                                    initialValue: initialValues && initialValues.paymentName,
+                                    rules: [{ required: !isView, message: '请选择银行控制名称!', }]
+                                })(
+                                    // <ComboList
+                                    //     showSearch={false}
+                                    //     {...paymentTypeConfig}
+                                    //     name='paymentName'
+                                    //     field={['paymentCode']}
+                                    //     form={form}
+                                    // />
+                                    <Input
+                                        disabled={true}
+                                        placeholder={"请选择银行控制名称"}
+                                    />
+                                )
                         }
                     </FormItem>
                 </Col>
@@ -431,6 +462,8 @@ const BankInfoRef = forwardRef(({
                                 )}
                     </FormItem>
                 </Col>
+            </Row>
+            <Row>
                 <Col span={8}>
                     <FormItem
                         {...formItemLayout}

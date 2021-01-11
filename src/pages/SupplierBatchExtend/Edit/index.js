@@ -6,7 +6,7 @@ import ImportBaseInfo from '../commons/ImportBaseInfo'
 import ImportData from '../commons/ImportData'
 import styles from '../../supplierRegister/components/index.less';
 import { closeCurrent, isEmpty } from '../../../utils';
-import { RecommendationList, saveBatchVo } from '../../../services/ImportSupplier'
+import { RecommendationList, saveBatchVo } from '../../../services/SupplierBatchExtend'
 function CreateStrategy() {
     const BaseinfoRef = useRef(null);
     const DatainfoRef = useRef(null);
@@ -41,7 +41,7 @@ function CreateStrategy() {
             return false;
         }
         let params = { ...dataSource, ...ImportBaseInfo, ...ImportDate }
-        const { success, message: msg } = await saveBatchVo({ supplierBatchCreationVo: JSON.stringify(params) })
+        const { success, message: msg } = await saveBatchVo(params)
         if (success) {
             triggerLoading(false)
             closeCurrent()
@@ -86,10 +86,10 @@ function CreateStrategy() {
                     </div>
                 </div>
                 <div className={styles.bgw}>
-                    <div className={styles.title}>新增供应商</div>
+                    <div className={styles.title}>扩展采购会计视图</div>
                     <div >
                         <ImportData
-                            editData={dataSource.supplierInfoVos}
+                            editData={dataSource.supplierFinanceViews}
                             wrappedComponentRef={DatainfoRef}
                             isEdit={query.isEdit}
                         />

@@ -1,20 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ExtTable, WorkFlow, ComboList, utils, ToolBar, ScrollBar } from 'suid';
+import { ExtTable, ComboList, utils, WorkFlow } from 'suid';
 import { Input, Button, message, Modal, Form, Row, Col } from 'antd';
 import { openNewTab, getFrameElement, isEmpty } from '@/utils';
-import { StartFlow } from 'seid';
 import { AutoSizeLayout, Header } from '@/components';
 import styles from './index.less';
+// import { StartFlow } from 'seid';
 import { smBaseUrl } from '@/utils/commonUrl';
-import { deleteBatchById, stopApproveingOrder } from '../../services/ImportSupplier'
+import { deleteBatchById, stopApproveingOrder } from '../../services/SupplierBatchExtend'
 import { corporationSupplierConfig } from '../../utils/commonProps'
-const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
-const FormItem = Form.Item;
+const { StartFlow, FlowHistoryButton } = WorkFlow;
 const confirm = Modal.confirm;
 const { authAction, storage } = utils;
-const { FlowHistoryButton } = WorkFlow;
-const { getFieldDecorator, setFieldsValue, getFieldValue } = Form;
-function SupplierConfigure() {
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
+export default () => {
     const tableRef = useRef(null)
     const headerRef = useRef(null)
     const authorizations = storage.sessionStorage.get("Authorization");
@@ -96,7 +94,7 @@ function SupplierConfigure() {
 
     const dataSource = {
         store: {
-            url: `${smBaseUrl}/api/supplierBatchCreationService/findBatchByPage`,
+            url: `${smBaseUrl}/api/supplierFinanceViewProcessService/findBatchByPage`,
             params: {
                 quickSearchValue: searchValue,
 
@@ -118,6 +116,16 @@ function SupplierConfigure() {
             type: 'POST'
         }
     }
+    useEffect(() => {
+        window.parent.frames.addEventListener('message', listenerParentClose, false);
+        return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
+    }, []);
+    function listenerParentClose(event) {
+        const { data = {} } = event;
+        if (data.tabAction === 'close') {
+            uploadTable()
+        }
+    }
     // 申请公司
     function cooperationChange(record) {
         setSearchValue(record.name);
@@ -132,23 +140,7 @@ function SupplierConfigure() {
         uploadTable();
     }
     const searchbank = ['name'];
-    const formItemLayout = {
-        labelCol: { span: 14 },
-        wrapperCol: { span: 10 },
-    };
 
-
-    useEffect(() => {
-        window.parent.frames.addEventListener('message', listenerParentClose, false);
-        return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
-    }, []);
-
-    function listenerParentClose(event) {
-        const { data = {} } = event;
-        if (data.tabAction === 'close') {
-            tableRef.current.remoteDataRefresh()
-        }
-    }
     // 记录列表选中
     function handleSelectedRows(rowKeys, rows) {
         setRowKeys(rowKeys);
@@ -165,14 +157,14 @@ function SupplierConfigure() {
         cleanSelectedRecord()
         tableRef.current.remoteDataRefresh()
     }
-    // 新增无帐号供应商
+    // 新增供应商批量扩展
     async function AddModel() {
-        openNewTab(`supplier/ImportSupplier/create/index`, '新增', false)
+        openNewTab(`supplier/SupplierBatchExtend/create/index`, '新增', false)
     }
     // 编辑
     function handleCheckEdit() {
         let id = selectedRows[0].id;
-        openNewTab(`supplier/ImportSupplier/Edit/index?id=` + id + '&isEdit=true', '编辑', false)
+        openNewTab(`supplier/SupplierBatchExtend/Edit/index?id=` + id + '&isEdit=true', '编辑', false)
     }
     // 删除
     async function handleDelete() {
@@ -199,7 +191,7 @@ function SupplierConfigure() {
     // 明细
     function handleCheckDetail() {
         let id = selectedRows[0].id;
-        openNewTab(`supplier/ImportSupplier/Detail/index?id=` + id + '&headerInfo=true&isEdit=true', '明细', false)
+        openNewTab(`supplier/SupplierBatchExtend/Detail/index?id=` + id + '&headerInfo=true&isEdit=true', '明细', false)
     }
     // 输入框值
     function SerachValue(v) {
@@ -245,12 +237,12 @@ function SupplierConfigure() {
     }
     // 左侧
     const HeaderLeftButtons = (
-        <div style={{ width: '50%', display: 'flex', height: '100%', alignItems: 'center' }}>
+        <div style={{ width: '80%', display: 'flex', height: '100%' }}>
             {
                 authAction(
                     <Button type='primary'
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-ACCOUNTSUPPLIER-ADD'
+                        key='SRM-SM-BATCHEXPANSION-ADD'
                         className={styles.btn}
                         onClick={AddModel}
                     //disabled={empty}
@@ -262,7 +254,7 @@ function SupplierConfigure() {
                 authAction(
                     <Button
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-ACCOUNTSUPPLIER-EDIT'
+                        key='SRM-SM-BATCHEXPANSION-EDIT'
                         className={styles.btn}
                         onClick={handleCheckEdit}
                         disabled={empty || underWay || !isSelf}
@@ -274,7 +266,7 @@ function SupplierConfigure() {
                 authAction(
                     <Button
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-ACCOUNTSUPPLIER-DELETE'
+                        key='SRM-SM-BATCHEXPANSION-DELETE'
                         className={styles.btn}
                         onClick={handleDelete}
                         disabled={empty || underWay || !isSelf}
@@ -286,7 +278,7 @@ function SupplierConfigure() {
                 authAction(
                     <Button
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-ACCOUNTSUPPLIER-DETAIL'
+                        key='SRM-SM-BATCHEXPANSION-DETAIL'
                         className={styles.btn}
                         onClick={handleCheckDetail}
                         disabled={empty}
@@ -297,14 +289,22 @@ function SupplierConfigure() {
             {
                 authAction(
                     <StartFlow
-                        className={styles.btn}
-                        ignore={DEVELOPER_ENV}
+                        businessModelCode='com.ecmp.srm.sm.entity.SupplierFinanceViewProcess'
                         businessKey={flowId}
-                        callBack={handleComplete}
-                        disabled={empty || underWay || !isSelf}
-                        businessModelCode='com.ecmp.srm.sm.entity.SupplierBatchCreation'
-                        key='SRM-SM-ACCOUNTSUPPLIER-EXAMINE'
-                    >提交审核</StartFlow>
+                        key='SRM-SM-BATCHEXPANSION-EXAMINE'
+                        startComplete={handleComplete}
+                        ignore={DEVELOPER_ENV}
+                    >
+                        {
+                            loading => (
+                                <Button
+                                    className={styles.btn}
+                                    loading={loading}
+                                    disabled={empty || underWay || !isSelf}
+                                >提交审核</Button>
+                            )
+                        }
+                    </StartFlow>
                 )
             }
             {
@@ -314,7 +314,7 @@ function SupplierConfigure() {
                         disabled={empty || !underWay || !isSelf || completed}
                         onClick={stopApprove}
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-ACCOUNTSUPPLIER-STOP-APPROVAL'
+                        key='SRM-SM-BATCHEXPANSION-STOP-APPROVAL'
                     >终止审核</Button>
                 )
             }
@@ -324,7 +324,7 @@ function SupplierConfigure() {
                         businessId={flowId}
                         flowMapUrl='flow-web/design/showLook'
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-ACCOUNTSUPPLIER-HISTORY'
+                        key='SRM-SM-BATCHEXPANSION-HISTORY'
                     >
                         <Button className={styles.btn} disabled={empty || !underWay}>审核历史</Button>
                     </FlowHistoryButton>
@@ -394,4 +394,4 @@ function SupplierConfigure() {
     )
 }
 
-export default SupplierConfigure
+//export default SupplierConfigure

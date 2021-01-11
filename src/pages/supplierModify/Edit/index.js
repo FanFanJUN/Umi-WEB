@@ -406,8 +406,8 @@ function CreateStrategy() {
     setwholeData(wholeData)
     // 变更保存效验
     wholeData.saveStatus = '1';
-    againdata.companyCode = supplierInfoVo.supplierVo.companyCode;
-    againdata.companyName = supplierInfoVo.supplierVo.companyName;
+    wholeData.companyCode = supplierInfoVo.supplierVo.companyCode;
+    wholeData.companyName = supplierInfoVo.supplierVo.companyName;
     const { success, message: msg } = await ValiditySupplierRegister(wholeData);
     if (success) {
       getModelRef.current.handleModalVisible(true);
@@ -463,7 +463,6 @@ function CreateStrategy() {
             <Button className={styles.btn} onClick={handleSave}>保存</Button>
           </div>
         </div>
-
       </Affix>
 
       <div className={styles.wrapper}>

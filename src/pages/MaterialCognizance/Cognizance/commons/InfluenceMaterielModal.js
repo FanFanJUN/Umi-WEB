@@ -75,7 +75,7 @@ const getAgentregRef = forwardRef(({
         if (isEmpty(v.target.value)) {
             setSearchValue('')
         } else {
-            setSearchValue(v.target.value)
+            setSearchValue((v.target.value).trim())
         }
 
     }

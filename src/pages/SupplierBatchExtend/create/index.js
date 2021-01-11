@@ -6,30 +6,16 @@ import ImportBaseInfo from '../commons/ImportBaseInfo'
 import ImportData from '../commons/ImportData'
 import styles from '../../supplierRegister/components/index.less';
 import { closeCurrent, isEmpty } from '../../../utils';
-import { RecommendationList, saveBatchVo } from '../../../services/ImportSupplier'
+import { RecommendationList, saveBatchVo } from '../../../services/SupplierBatchExtend'
+import { utils } from 'suid';
 function CreateStrategy() {
     const BaseinfoRef = useRef(null);
     const DatainfoRef = useRef(null);
-
     const [dataSource, setDataSource] = useState([]);
-
     const [loading, triggerLoading] = useState(false);
-    const [visible, setvisible] = useState(false);
-    const [configure, setConfigure] = useState([]);
+    const { storage } = utils;
     const { query } = router.useLocation();
-
-    // 详情
-    async function Importdetails() {
-        triggerLoading(true)
-        const { data, success, message: msg } = await RecommendationList({ id: query.id })
-        if (success) {
-            triggerLoading(false)
-            setDataSource(data)
-        } else {
-            message.error(msg);
-            triggerLoading(false)
-        }
-    }
+    const authorizations = storage.sessionStorage.get("Authorization");
     // 保存
     async function handleSave() {
         const { getImportBaseInfo } = BaseinfoRef.current; // 基本信息
@@ -40,8 +26,10 @@ function CreateStrategy() {
             message.error('请将基本信息填写完全！');
             return false;
         }
-        let params = { ...dataSource, ...ImportBaseInfo, ...ImportDate }
-        const { success, message: msg } = await saveBatchVo({ supplierBatchCreationVo: JSON.stringify(params) })
+        ImportBaseInfo.applyName = authorizations.userName
+        let params = { ...ImportBaseInfo, ...ImportDate }
+        triggerLoading(true)
+        const { success, message: msg } = await saveBatchVo(params)
         if (success) {
             triggerLoading(false)
             closeCurrent()
@@ -53,7 +41,7 @@ function CreateStrategy() {
 
     // 获取配置列表项
     useEffect(() => {
-        Importdetails()
+
     }, []);
     // 返回
     function handleBack() {
@@ -65,8 +53,8 @@ function CreateStrategy() {
             <Affix offsetTop={0}>
                 <div className={classnames([styles.header, styles.flexBetweenStart])}>
                     <span className={styles.title}>
-                        编辑
-            </span>
+                        新增
+                    </span>
                     <div className={styles.flexCenter}>
                         <Button className={styles.btn} onClick={handleBack}>返回</Button>
                         <Button className={styles.btn} onClick={handleSave}>保存</Button>
@@ -80,18 +68,15 @@ function CreateStrategy() {
                     <div className={styles.title}>基本信息</div>
                     <div >
                         <ImportBaseInfo
-                            dataSource={dataSource}
                             wrappedComponentRef={BaseinfoRef}
                         />
                     </div>
                 </div>
                 <div className={styles.bgw}>
-                    <div className={styles.title}>新增供应商</div>
+                    <div className={styles.title}>扩展采购会计视图</div>
                     <div >
                         <ImportData
-                            editData={dataSource.supplierInfoVos}
                             wrappedComponentRef={DatainfoRef}
-                            isEdit={query.isEdit}
                         />
                     </div>
                 </div>

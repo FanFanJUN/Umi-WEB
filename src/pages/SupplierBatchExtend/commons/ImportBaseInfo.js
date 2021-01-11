@@ -1,8 +1,6 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useState } from 'react';
 import { Form, Row, Input, Col, DatePicker, Radio, Button } from 'antd';
-import { utils, ComboList, ComboTree } from 'suid';
-// import { corporationConfigShowName } from '@/utils/commonProps'
-// import SearchTable from '../../supplierRegister/components/SearchTable'
+import { utils, ComboList } from 'suid';
 import { establishSupplierConfig } from '../../../utils/commonProps'
 import UploadFile from '../../../components/Upload/index'
 const { Item, create } = Form;

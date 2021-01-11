@@ -25,7 +25,7 @@ function SupplierConfigure() {
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [onlyMe, setOnlyMe] = useState(true);
     const [selectedRows, setRows] = useState([]);
-    const [searchValue, setSearchValue] = useState('');
+    const [searchValue, setSearchValue] = useState({});
     const [visible, setVisible] = useState(false);
     const [recommen, setrecommen] = useState([]);
     const [loading, triggerLoading] = useState(false);
@@ -173,7 +173,7 @@ function SupplierConfigure() {
         store: {
             url: `${smBaseUrl}/api/supplierModifyService/findRequestByPage`,
             params: {
-                quickSearchValue: searchValue,
+                ...searchValue,
                 quickSearchProperties: ['supplierName'],
                 sortOrders: [
                     {
@@ -185,18 +185,6 @@ function SupplierConfigure() {
             type: 'POST'
         }
     }
-    // 右侧搜索
-    const searchBtnCfg = (
-        <>
-            <Input
-                placeholder='请输入供应商名称查询'
-                className={styles.btn}
-                onChange={SerachValue}
-                allowClear
-            />
-            <Button type='primary' onClick={handleQuickSerach}>查询</Button>
-        </>
-    )
 
     useEffect(() => {
         window.parent.frames.addEventListener('message', listenerParentClose, false);
@@ -280,10 +268,8 @@ function SupplierConfigure() {
         setSearchValue(v.target.value)
     }
     // 查询
-    function handleQuickSerach() {
-        let search = "";
-        setSearchValue(search);
-        setSearchValue(searchValue)
+    function handleQuickSerach(value) {
+        setSearchValue(v => ({ ...v, quickSearchValue: value.trim() }));
         uploadTable();
     }
     // 提交审核完成更新列表
@@ -325,6 +311,18 @@ function SupplierConfigure() {
         }
         message.error(msg)
     }
+    // 右侧搜索
+    const searchBtnCfg = (
+        <>
+            <Search
+                placeholder='请输入字段代名称查询'
+                className={styles.btn}
+                onSearch={handleQuickSerach}
+                allowClear
+                style={{ width: '240px' }}
+            />
+        </>
+    )
     return (
         <>
             <Header

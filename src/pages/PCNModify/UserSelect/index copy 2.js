@@ -106,7 +106,7 @@ const UserSelect = forwardRef(({
       method: 'post',
       data: {
         organizationId: id,
-        quickSearchValue: v.trim(),
+        quickSearchValue: v,
         pageInfo: {
           page: 1,
           rows: 100000

@@ -939,10 +939,7 @@ export const corporationSupplierConfig = {
     field: ['code'],
     description: 'code'
   },
-  style: {
-    width: '100%'
-  },
-  placeholder: '请选择泛虹公司'
+  placeholder: '请选择公司'
 };
 // 泛虹工厂
 export const companyOrgConfigByCode = {
@@ -1120,7 +1117,8 @@ export const paymentTypeConfig = {
     type: 'post'
   },
   reader: {
-    name: 'name',
+    name: 'code',
+    description: 'name',
     field: ['code'],
   },
   style: {
@@ -1329,3 +1327,55 @@ export const CountryIdConfig = {
     description: 'code',
   },
 };
+// 批创建
+export const establishSupplierConfig = {
+  store: {
+    autoLoad: true,
+    url: `${baseUrl}/basic/listAllCorporation?Q_EQ_frozen__bool=0`,
+    type: 'post'
+  },
+  columns: [
+    {
+      title: '公司代码',
+      width: 80,
+      dataIndex: 'code',
+    },
+    {
+      title: '公司名称',
+      width: 200,
+      dataIndex: 'name',
+    },
+  ],
+  reader: {
+    name: 'name',
+    field: ['id'],
+    description: 'code'
+  },
+  placeholder: '请选择申请公司'
+};
+// 注册变更公司
+export const corporationPropsModify = {
+  columns: [
+    {
+      title: '公司名称',
+      dataIndex: 'name'
+    }, {
+      title: '公司代码',
+      dataIndex: 'code'
+    }
+  ],
+  store: {
+    url: `${baseUrl}/basic/listAllCorporationUnFrozen`,
+    params: { Q_EQ_frozen__Boolean: false }
+  },
+  reader: {
+    name: 'name',
+    field: ['code'],
+    description: 'code'
+    // value: 'code'
+  },
+  style: {
+    width: '100%'
+  },
+  placeholder: '选择公司'
+}
