@@ -65,16 +65,17 @@ const Index = (props) => {
     return res;
   }
 
+
   useEffect(async () => {
     await checkToken(query);
     if (query.pageState !== 'add') {
-      getDetail();
+      await getDetail();
     } else {
-      getOriginData();
+      await getOriginData();
     }
   }, []);
 
-  useEffect(async () => {
+  const getData = async (resData) => {
     let { id, pageState } = query;
     if (!pageState) {
       // 来自工作流
@@ -85,22 +86,23 @@ const Index = (props) => {
         setData({ type: pageState, isView: false, title: '新增审核实施计划' });
         break;
       case 'edit':
-        setData({ type: pageState, id, isView: false, title: `编辑审核实施计划: ${editData.reviewImplementPlanCode}` });
+        setData({ type: pageState, id, isView: false, title: `编辑审核实施计划: ${resData && resData.reviewImplementPlanCode}` });
         break;
       case 'detail':
-        setData({ type: pageState, isView: true, title: `审核实施计划明细: ${editData.reviewImplementPlanCode}` });
+        setData({ type: pageState, isView: true, title: `审核实施计划明细: ${resData && resData.reviewImplementPlanCode}` });
         break;
       case 'change':
-        setData({ type: pageState, isView: false, title: `变更审核实施计划: ${editData.reviewImplementPlanCode}` });
+        setData({ type: pageState, isView: false, title: `变更审核实施计划: ${resData && resData.reviewImplementPlanCode}` });
         break;
       case 'isInflow':
-        setData({ type: pageState, isView: true, title: `审核实施计划明细: ${editData.reviewImplementPlanCode}` });
+        setData({ type: pageState, isView: true, title: `审核实施计划明细: ${resData && resData.reviewImplementPlanCode}` });
         break;
       default:
         setData({ type: pageState, isView: false, title: '审核实施计划管理-新增' });
         break;
     }
-  }, [editData]);
+  }
+
   // 编辑和明细时构造treeData
   const buildTreeData = (sonList) => {
     if (!sonList || sonList.length === 0) return [];
@@ -130,9 +132,12 @@ const Index = (props) => {
         resData.reviewTeamGroupBoList = Object.values(resData.reviewTeamGroupBoMap);
         console.log('整合的数据', resData);
         setEditData(resData);
+        await getData(resData)
       } else {
         message.error(res.message);
       }
+    } else {
+      await getData()
     }
   }
 
@@ -145,6 +150,7 @@ const Index = (props) => {
       resData.treeData = buildTreeData(resData.sonList);
       console.log('获取到的数据res', resData);
       setEditData(resData);
+      await getData(resData)
     } else {
       message.error(res.message);
     }

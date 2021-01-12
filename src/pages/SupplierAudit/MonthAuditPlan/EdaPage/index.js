@@ -45,10 +45,12 @@ const Index = (props) => {
     await checkToken(query);
     if (query.pageState !== 'add') {
       await getDetail();
+    } else {
+      await getData()
     }
   }, []);
 
-  useEffect(async () => {
+  const getData = async(resData) => {
     const { id, pageState } = query;
     switch (pageState) {
       case 'add':
@@ -62,7 +64,7 @@ const Index = (props) => {
           type: pageState,
           id,
           isView: false,
-          title: `编辑月度审核计划: ${editData.reviewPlanMonthCode}`,
+          title: `编辑月度审核计划: ${resData && resData.reviewPlanMonthCode}`,
         }));
         break;
       case 'detail':
@@ -70,7 +72,7 @@ const Index = (props) => {
           ...value,
           type: pageState,
           isView: true,
-          title: `月度审核计划明细: ${editData.reviewPlanMonthCode}`,
+          title: `月度审核计划明细: ${resData && resData.reviewPlanMonthCode}`,
         }));
         break;
       case 'change':
@@ -78,7 +80,7 @@ const Index = (props) => {
           ...value,
           type: pageState,
           isView: true,
-          title: `变更月度审核计划: ${editData.reviewPlanMonthCode}`,
+          title: `变更月度审核计划: ${resData && resData.reviewPlanMonthCode}`,
         }));
         break;
       case 'isInflow':
@@ -86,14 +88,14 @@ const Index = (props) => {
           ...value,
           type: pageState,
           isView: true,
-          title: `月度审核计划明细: ${editData.reviewPlanMonthCode}`,
+          title: `月度审核计划明细: ${resData && resData.reviewPlanMonthCode}`,
         }));
         break;
       default:
         setData((value) => ({ ...value, type: pageState, isView: false, title: '月度审核计划管理-新增' }));
         break;
     }
-  }, [editData]);
+  }
 
   const getDetail = async () => {
     setLoading(true);
@@ -103,6 +105,7 @@ const Index = (props) => {
     setLoading(false);
     if (res) {
       setEditData(res.data);
+      await getData(res.data)
     } else {
       message.error(res.message);
     }
