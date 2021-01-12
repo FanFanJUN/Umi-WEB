@@ -1,27 +1,20 @@
 /*
  * @Author: hyc
  * @Date: 2020-11-17 20:35:59
- * @LastEditTime : 2021-01-12 14:40:32
- * @LastEditors  : LiCai
+ * @LastEditTime: 2020-11-24 15:20:37
+ * @LastEditors: Please set LastEditors
  * @Description: 年度审核实施计划-流程中
- * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/FlowList/AnnualAuditPlanInflow.js
+ * @FilePath: \srm-sm-web\src\pages\SupplierAudit\FlowList\AuditImplementationPlanInflow.js
  */
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { WorkFlow } from 'suid'
 import { router } from 'dva';
 import AnnualAuditPlan from '../AnnualAuditPlan/EdaPage'
-import { checkToken, closeCurrent } from '../../../utils';
+import { closeCurrent } from '../../../utils';
 
 const Index = () => {
 
   const { query } = router.useLocation();
-
-  const [isReady, setIsReady] = useState(false);
-
-  useEffect(() => {
-    checkToken(query, setIsReady);
-  }, [])
-
   const handleClose = () => {
     closeCurrent();
   }
