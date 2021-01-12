@@ -3,7 +3,7 @@
  * @LastEditors  : LiCai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:04:51
- * @LastEditTime : 2021-01-12 15:18:19
+ * @LastEditTime : 2021-01-12 15:49:58
  * @Description: 新增  编辑  详情 page
  * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/index.js
  */
@@ -56,13 +56,10 @@ const Index = (props) => {
     }
 
     useEffect(() => {
-      async function init() {
-        await checkToken(query);
-      }
-      init();
-    }, []);
-
-    useEffect(() => {
+        async function init() {
+          await checkToken(query);
+        }
+        init();
         const { id, pageState: queryPageSate } = query;
         const pageState = queryPageSate || propsPageState; // 流程中pageState 与url pageState
         if (pageState === 'edit' || pageState === 'detail') {
