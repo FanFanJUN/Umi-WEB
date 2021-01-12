@@ -3,15 +3,31 @@
  * @Author: M!keW
  * @Date: 2020-11-18
  */
-import React, { useEffect, useImperativeHandle } from 'react';
+import React, { useEffect, useImperativeHandle, useState } from 'react';
 import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/edit/BaseInfo.less';
 import { Form } from 'antd';
 import { ExtTable } from 'suid';
 import Upload from '../../../../components/Upload';
 import { AuthenticationTypeArr, certifyTypeArr, whetherArr } from '../../AdministrationManagementDemand/commonApi';
+import { getRandom } from '../../../QualitySynergy/commonProps';
+import { getDocIdForArray } from '../../../../utils/utilTool';
 
 const AuditQuestions = React.forwardRef(({ form, isView, editData, type }, ref) => {
   useImperativeHandle(ref, () => ({}));
+  const [tableData, setTableData] = useState([]);
+  useEffect(() => {
+    transferData();
+  }, [editData]);
+  //初始化获取的数据
+  const transferData = () => {
+    if (editData && editData.length > 0) {
+      editData = editData.map(item => ({
+        ...item,
+        attachRelatedIds: getDocIdForArray(item.fileList),
+      }));
+      setTableData(editData);
+    }
+  };
   const columns = [
     { title: '指标', dataIndex: 'ruleName', width: 180, required: true },
     { title: '部门/过程', dataIndex: 'department', ellipsis: true, width: 100 },
@@ -23,7 +39,7 @@ const AuditQuestions = React.forwardRef(({ form, isView, editData, type }, ref) 
     {
       title: '纠正预防措施及见证附件', dataIndex: 'preventiveMeasures', width: 300, render: (v, data) => <>
         {v} {data.measures}
-        <Upload type='show' entityId={data.fileList} />
+        <Upload type='show' entityId={data.attachRelatedIds}/>
       </>,
     },
     { title: '完成时间', dataIndex: 'completionTime', width: 100 },
@@ -41,7 +57,7 @@ const AuditQuestions = React.forwardRef(({ form, isView, editData, type }, ref) 
             showSearch={false}
             height={'500px'}
             columns={columns}
-            dataSource={editData}
+            dataSource={tableData}
           />
         </div>
       </div>
