@@ -1,21 +1,26 @@
 /*
  * @Author: hyc
  * @Date: 2020-12-04 15:37:56
- * @LastEditTime: 2020-12-04 15:55:53
- * @LastEditors: Please set LastEditors
+ * @LastEditTime : 2021-01-12 14:39:04
+ * @LastEditors  : LiCai
  * @Description: 审核实施计划-流程中-不同意编辑
- * @FilePath: \srm-sm-web\src\pages\SupplierAudit\FlowList\monthAuditInFlowNotAgree.js
+ * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/FlowList/AuditImplPNotAgreeInflow.js
  */
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { WorkFlow } from 'suid'
 import { router } from 'dva';
 import AuditImplementationPlanDetail from '../AuditImplementationPlan/editPage'
-import { closeCurrent } from '../../../utils';
+import { checkToken, closeCurrent } from '../../../utils';
 
 const AnnualAuditPlanInflowNotAgree = () => {
 
   const elementRef = useRef({});
   const { query } = router.useLocation();
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    checkToken(query, setIsReady)
+  }, [])
 
   const handleClose = () => {
     closeCurrent(elementRef);
