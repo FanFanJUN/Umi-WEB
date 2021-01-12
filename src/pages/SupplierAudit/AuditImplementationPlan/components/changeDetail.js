@@ -31,7 +31,6 @@ export default Form.create()((props) => {
 
     useEffect( async() => {
         await checkToken(query);
-        init();
         getChangeInfo();
     }, []);
 
