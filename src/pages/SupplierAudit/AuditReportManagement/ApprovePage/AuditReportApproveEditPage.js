@@ -3,10 +3,10 @@
  * @Author: M!keW
  * @Date: 2020-11-25
  */
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { WorkFlow } from 'suid';
 import { router } from 'dva';
-import { closeCurrent } from '../../../../utils';
+import { checkToken, closeCurrent } from '../../../../utils';
 import AuditReportManagementView from '../editPage';
 import { saveAuditReport } from '../../mainData/commomService';
 import { message } from 'antd';
@@ -14,7 +14,15 @@ import { message } from 'antd';
 const AuditReportApproveEditPage = () => {
 
   const { query } = router.useLocation();
+  const [isReady, setIsReady] = useState(false);
+  // 获取配置列表项
+  useEffect(() => {
+    async function init() {
+      await checkToken(query, setIsReady);
+    }
 
+    init();
+  }, []);
   const getRef = useRef(null);
 
   const handleClose = (res) => {
@@ -27,8 +35,8 @@ const AuditReportApproveEditPage = () => {
   // 新增
   const beforeSubmit = async () => {
     let data = await getRef.current.getAllData();
-    if(!data){
-      return false
+    if (!data) {
+      return false;
     }
     return new Promise(function(resolve, reject) {
       saveAuditReport(data).then(res => {
@@ -48,7 +56,7 @@ const AuditReportApproveEditPage = () => {
 
 
   return (
-    <WorkFlow.Approve
+    <>{isReady ? <WorkFlow.Approve
       businessId={query.id}
       taskId={query.taskId}
       instanceId={query.instanceId}
@@ -62,7 +70,7 @@ const AuditReportApproveEditPage = () => {
         wrappedComponentRef={getRef}
       />
 
-    </WorkFlow.Approve>
+    </WorkFlow.Approve> : null}</>
   );
 
 };
