@@ -327,6 +327,7 @@ export default create()(function({ form }) {
     const res = await withdrawalFile()
     console.log(res)
     if (res.success) {
+      message.success('撤回成功！')
       judgeFiles()
     } else {
       message.error(res.message)
