@@ -2,7 +2,7 @@ import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Affix, Button, message, Modal, Spin } from 'antd';
 import classnames from 'classnames';
 import styles from '../../../Supplier/Editor/index.less';
-import { closeCurrent, getMobile, getUserId, getUserName } from '../../../../utils';
+import { checkToken, closeCurrent, getMobile, getUserId, getUserName } from '../../../../utils';
 import BaseInfo from './BaseInfo';
 import { router } from 'dva';
 import IntendedAuditInformation from './IntendedAuditInformation';
@@ -51,11 +51,12 @@ const Index = (props) => {
     innerFn: flowSave,
   }));
 
-  useEffect(() => {
+  useEffect(async () => {
     // 获取所有审核类型
     getAuditType();
-    const { id, pageState, reviewRequirementCode=undefined } = query;
+    const { id, pageState, reviewRequirementCode = undefined, _s } = query;
     let state = pageState;
+    await checkToken(query);
     if (!state) {
       state = 'flowDetail';
     }
@@ -80,7 +81,12 @@ const Index = (props) => {
         break;
       case 'detail':
         findOne(id);
-        setData((value) => ({ ...value, type: state, isView: true, title: `审核需求明细  ${reviewRequirementCode ? reviewRequirementCode : ''}` }));
+        setData((value) => ({
+          ...value,
+          type: state,
+          isView: true,
+          title: `审核需求明细  ${reviewRequirementCode ? reviewRequirementCode : ''}`,
+        }));
         break;
       case 'flowDetail':
         findOne(id);
@@ -141,7 +147,7 @@ const Index = (props) => {
       let updateData = Object.assign(allData.editData, insertData);
       updateData.deleteList = deleteArr;
       // 是否在流程中编辑标识
-      updateData.inFlow = true
+      updateData.inFlow = true;
       return UpdateAuditRequirementsManagement(updateData);
     } else {
       message.error('请至少添加一条拟审核信息!');
@@ -161,38 +167,38 @@ const Index = (props) => {
       Modal.confirm({
         title: '是否确认暂存该数据!',
         onOk: () => {
-          setData(v => ({...v, spinLoading: true}))
+          setData(v => ({ ...v, spinLoading: true }));
           if (allData.type === 'add') {
             AddAuditRequirementsManagement(insertData).then(res => {
               if (res.success) {
                 message.success(res.message);
-                setData(v => ({...v, spinLoading: false}))
+                setData(v => ({ ...v, spinLoading: false }));
                 handleBack();
               } else {
-                setData(v => ({...v, spinLoading: false}))
+                setData(v => ({ ...v, spinLoading: false }));
                 message.error(res.message);
               }
             }).catch(err => {
-              setData(v => ({...v, spinLoading: false}))
-              message.error(err.message)
+              setData(v => ({ ...v, spinLoading: false }));
+              message.error(err.message);
             });
           } else {
             let updateData = Object.assign(allData.editData, insertData);
             updateData.deleteList = deleteArr;
             // 是否在流程中编辑标识
-            updateData.inFlow = false
+            updateData.inFlow = false;
             UpdateAuditRequirementsManagement(updateData).then(res => {
               if (res.success) {
                 message.success(res.message);
-                setData(v => ({...v, spinLoading: false}))
+                setData(v => ({ ...v, spinLoading: false }));
                 handleBack();
               } else {
                 message.error(res.message);
-                setData(v => ({...v, spinLoading: false}))
+                setData(v => ({ ...v, spinLoading: false }));
               }
             }).catch(err => {
-              setData(v => ({...v, spinLoading: false}))
-              message.error(err.message)
+              setData(v => ({ ...v, spinLoading: false }));
+              message.error(err.message);
             });
           }
         },
@@ -260,7 +266,7 @@ const Index = (props) => {
       <Spin spinning={allData.spinLoading}>
         <Affix>
           <div className={classnames(styles.fbc, styles.affixHeader)}>
-            <span style={{fontSize: '18px', fontWeight: 'bolder'}}>{allData.title}</span>
+            <span style={{ fontSize: '18px', fontWeight: 'bolder' }}>{allData.title}</span>
             {
               (allData.type !== 'detail' ? props.isInFlow !== 2 : false) &&
               <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
