@@ -65,7 +65,8 @@ const Index = (props) => {
     return res;
   }
 
-  useEffect(() => {
+  useEffect(async () => {
+    await checkToken(query);
     if (query.pageState !== 'add') {
       getDetail();
     } else {
@@ -75,7 +76,6 @@ const Index = (props) => {
 
   useEffect(async () => {
     let { id, pageState } = query;
-    await checkToken(query);
     if (!pageState) {
       // 来自工作流
       pageState = props.pageState;

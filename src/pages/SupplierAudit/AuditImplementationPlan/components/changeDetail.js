@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-11-05 16:27:34
- * @LastEditTime : 2021-01-12 15:19:53
+ * @LastEditTime : 2021-01-12 15:51:10
  * @LastEditors  : LiCai
  * @Description: In User Settings Edit
  * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AuditImplementationPlan/components/changeDetail.js
@@ -37,6 +37,10 @@ export default Form.create()((props) => {
       }, []);
 
     useEffect(() => {
+        async function init() {
+          await checkToken(query);
+        }
+        init();
         getChangeInfo();
     }, []);
 

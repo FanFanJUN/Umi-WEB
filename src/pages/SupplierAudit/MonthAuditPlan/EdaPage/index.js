@@ -42,6 +42,7 @@ const Index = (props) => {
   }
 
   useEffect(async () => {
+    await checkToken(query);
     if (query.pageState !== 'add') {
       await getDetail();
     }
@@ -49,7 +50,6 @@ const Index = (props) => {
 
   useEffect(async () => {
     const { id, pageState } = query;
-    await checkToken(query);
     switch (pageState) {
       case 'add':
         getUser();
