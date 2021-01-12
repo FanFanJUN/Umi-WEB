@@ -181,7 +181,7 @@ function CommonForm({
     }
   ]
   function checkDetail(id) {
-    openNewTab(`supplier/recommend/demand/detail?id=${id}`, '供应商推荐需求明细', false)
+    openNewTab(`supplier/recommend/fillIn/data/detail?type=detail&id=${id}`, '供应商推荐需求明细', false)
   }
   async function setFormValue(values) {
     const {

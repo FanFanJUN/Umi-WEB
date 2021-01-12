@@ -60,7 +60,7 @@ const getAgentregRef = forwardRef(({
             <Row>
                 <Col span={16}>
                     <FormItem
-                        label={"原公司名称"}
+                        label={"原厂公司名称"}
                         labelCol={{ span: 4 }}
                         wrapperCol={{ span: 20 }}
                     >
@@ -68,11 +68,11 @@ const getAgentregRef = forwardRef(({
                             isView ? <span></span> :
                                 getFieldDecorator("originalCompanyName", {
                                     initialValue: initialValues && initialValues.originalCompanyName,
-                                    rules: [{ required: !isView, message: '请输入完整公司名称!', }]
+                                    rules: [{ required: !isView, message: '请输入完整原厂公司名称!', }]
                                 })(
                                     <Input
                                         onBlur={nameChange}
-                                        placeholder={"请输入完整公司名称"}
+                                        placeholder={"请输入完整原厂公司名称"}
                                     />
                                 )}
                     </FormItem>

@@ -465,6 +465,15 @@ export async function epDemandCopyAllList(params) {
         params: params,
     });
 }
+// 供应商-填报环保资料-撤销资质文件
+export async function withdrawalFile(params) {
+  const url = `${recommendUrl}/api/epSupplierAptitudeService/withdraw`;
+  return request({
+    url,
+    method: 'GET',
+    params
+  });
+}
 // 供应商-填报环保资料-上传资质文件
 export async function uploadFile(params) {
     const url = `${recommendUrl}/api/epSupplierAptitudeService/insert`;

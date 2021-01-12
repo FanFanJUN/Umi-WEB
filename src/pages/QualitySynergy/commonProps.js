@@ -196,6 +196,10 @@ export const ShareDownloadStatus = {
       code: '未下载',
       name: '未下载',
     },
+    {
+      code: '全部',
+      name: '全部',
+    },
   ],
   placeholder: '选择下载状态',
   ...commonProps,

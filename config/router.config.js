@@ -334,6 +334,12 @@ export default [
         component: './SupplierRecommendDemand',
         title: '供应商推荐需求管理'
       },
+      // 测试页面
+      {
+        path: '/supplier/recommend/test/page',
+        component: './SupplierRecommendDemand/RecommendData/DataFillIn/Test',
+        title: '测试'
+      },
       {
         path: '/supplier/recommend/demand/create',
         component: './SupplierRecommendDemand/CreateRecommendDemand',
