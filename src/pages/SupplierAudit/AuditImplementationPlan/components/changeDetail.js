@@ -31,7 +31,8 @@ export default Form.create()((props) => {
 
     useEffect( async() => {
         await checkToken(query);
-        await getChangeInfo();
+        init();
+        getChangeInfo();
     }, []);
 
     async function getChangeInfo() {
