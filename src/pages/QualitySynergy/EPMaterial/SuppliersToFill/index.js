@@ -100,6 +100,10 @@ export default create()(function({ form }) {
     findMyselfData().then(res => {
       if (res.success && res.statusCode === 200) {
         if (res.data.length === 0) {
+          // 撤回资质文件清空上传的缓存
+          if(ownerFiles.length){
+            setOwnerFiles([])
+          }
           confirm({
             title: '提示',
             content: '您还未上传资质文件，请先上传文件！',
@@ -481,7 +485,8 @@ export default create()(function({ form }) {
       onOk={() => {
         handleUploadOk();
       }}
-      cancelText={ownerFiles.length === 0 ? '退出' : '取消'}
+      // cancelText={ownerFiles.length === 0 ? '退出' : '取消'}
+      cancelText={'取消'}
       visible={uploadVisible}
       title="上传资质文件"
     >
