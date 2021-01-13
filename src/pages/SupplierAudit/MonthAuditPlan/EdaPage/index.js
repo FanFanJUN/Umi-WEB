@@ -44,7 +44,7 @@ const Index = (props) => {
   useEffect(async () => {
     if (query.pageState !== 'add') {
       await getDetail();
-    } else {s
+    } else {
       await getData()
     }
   }, []);
