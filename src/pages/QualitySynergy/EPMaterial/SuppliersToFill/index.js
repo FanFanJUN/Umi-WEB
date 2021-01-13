@@ -104,7 +104,7 @@ export default create()(function({ form }) {
             title: '提示',
             content: '您还未上传资质文件，请先上传文件！',
             okText: '立即上传',
-            cancelText: '退出',
+            cancelText: '取消',
             onOk: () => {
               setUploadVisible(true);
             },

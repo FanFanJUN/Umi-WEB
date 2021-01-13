@@ -1125,3 +1125,20 @@ export const reportStateProps = {
   placeholder: '选择状态',
   ...commonProps,
 };
+
+// 环保资料物料-列表-来源
+export const sourcelist = {
+  allowClear: true,
+  dataSource: [
+    {
+      code: 'SRM',
+      name: 'SRM',
+    },
+    {
+      code: 'PLM',
+      name: 'PLM',
+    },
+  ],
+  placeholder: '选择来源',
+  ...commonProps,
+};
