@@ -11,23 +11,26 @@ import { ExtTable } from 'suid';
 import styles from '../index.less';
 import { findHistoryPageByChangId } from "../service";
 import { message } from 'antd';
+import { checkToken } from '../../../../utils';
 
 const Index = (props) => {
     const [dataSource, setDataSource] = useState([]);
-    useEffect(()=>{
-        (async function(){
-            const res = await findHistoryPageByChangId({id: props.id});
-            if(res.success) {
-                const dataList = res.data.map((item, index)=> {
-                    item.id = index + 1;
-                    return item;
-                })
-                setDataSource(dataList)
-            } else {
-                message.error(res.message)
-            }
-        })()
+    useEffect(async ()=>{
+      await getHistory()
     }, [])
+
+  const getHistory = async () => {
+    const res = await findHistoryPageByChangId({id: props.id});
+    if(res.success) {
+      const dataList = res.data.map((item, index)=> {
+        item.id = index + 1;
+        return item;
+      })
+      setDataSource(dataList)
+    } else {
+      message.error(res.message)
+    }
+  }
 
     const columns = [
         { title: '操作内容', dataIndex: 'operationType', render:text=>{

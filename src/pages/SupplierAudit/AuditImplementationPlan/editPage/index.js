@@ -67,7 +67,6 @@ const Index = (props) => {
 
 
   useEffect(async () => {
-    await checkToken(query);
     if (query.pageState !== 'add') {
       await getDetail();
     } else {

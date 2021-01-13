@@ -30,7 +30,6 @@ export default Form.create()((props) => {
     const { query } = router.useLocation();
 
     useEffect( async() => {
-        await checkToken(query);
         await getChangeInfo();
     }, []);
 
