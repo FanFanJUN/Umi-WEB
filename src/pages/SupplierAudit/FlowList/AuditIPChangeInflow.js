@@ -6,23 +6,37 @@
  * @Description: 审核实施计划-流程中
  * @FilePath: \srm-sm-web\src\pages\SupplierAudit\FlowList\AuditImplementationPlanInflow.js
  */
-import React from 'react';
-import { WorkFlow } from 'suid'
+import React, { useEffect, useState } from 'react';
+import { WorkFlow } from 'suid';
 import { router } from 'dva';
-import ChangeDetail from '../AuditImplementationPlan/components/changeDetail'
-import { closeCurrent } from '../../../utils';
+import ChangeDetail from '../AuditImplementationPlan/components/changeDetail';
+import { checkToken, closeCurrent } from '../../../utils';
+import { Spin } from 'antd';
+import MonthAuditChangeDetail from '../MonthAuditPlan/component/changeDetail';
 
 const Index = () => {
 
   const { query } = router.useLocation();
 
-  console.log(query, router.useLocation(),  'queery')
+  const [show, setShow] = useState(false);
+
+  console.log(query, router.useLocation(), 'queery');
 
   const handleClose = () => {
     closeCurrent();
-  }
+  };
 
-  return(
+  useEffect(async () => {
+    if (query._s) {
+      await checkToken(query, (data) => {
+        setShow(data);
+      });
+    } else {
+      setShow(true);
+    }
+  }, []);
+
+  return (
     <WorkFlow.Approve
       businessId={query.id}
       taskId={query.taskId}
@@ -30,13 +44,19 @@ const Index = () => {
       flowMapUrl="flow-web/design/showLook"
       submitComplete={handleClose}
     >
-      <ChangeDetail
-        isInFlow={1}
-        pageState="detail"
-      />
+      <div style={!show ? { height: '100vh' } : { height: 'auto' }}>
+        <Spin spinning={!show} style={{ width: '100%', height: '100vh' }}>
+          {
+            show && <ChangeDetail
+              isInFlow={1}
+              pageState="detail"
+            />
+          }
+        </Spin>
+      </div>
     </WorkFlow.Approve>
-  )
+  );
 
-}
+};
 
-export default Index
+export default Index;

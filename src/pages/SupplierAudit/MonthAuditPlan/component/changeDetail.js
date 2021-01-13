@@ -20,13 +20,12 @@ import { checkToken } from '../../../../utils';
 const { TabPane } = Tabs;
 
 export default Form.create()((props) => {
-  const { form } = props;
+  const { form, pageState } = props;
   const [loading, setLoading] = useState(false);
   const [editData, setEditData] = useState({});
   const [changeInfo, setChangeInfo] = useState({});
   const { query } = router.useLocation();
   useEffect(async () => {
-    await checkToken(query);
     await getOrderDetail();
   }, []);
 
@@ -65,7 +64,7 @@ export default Form.create()((props) => {
           originData={changeInfo}
           isView={true}
         />
-        <ChangeLineInfo id={query.id} />
+        <ChangeLineInfo id={query.id}/>
       </TabPane>
       <TabPane tab="单据" key="2">
         <BaseInfo

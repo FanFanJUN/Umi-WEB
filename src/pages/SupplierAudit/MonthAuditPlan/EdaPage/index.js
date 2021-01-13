@@ -42,10 +42,9 @@ const Index = (props) => {
   }
 
   useEffect(async () => {
-    await checkToken(query);
     if (query.pageState !== 'add') {
       await getDetail();
-    } else {
+    } else {s
       await getData()
     }
   }, []);
@@ -79,7 +78,7 @@ const Index = (props) => {
         setData((value) => ({
           ...value,
           type: pageState,
-          isView: true,
+          isView: false,
           title: `变更月度审核计划: ${resData && resData.reviewPlanMonthCode}`,
         }));
         break;
