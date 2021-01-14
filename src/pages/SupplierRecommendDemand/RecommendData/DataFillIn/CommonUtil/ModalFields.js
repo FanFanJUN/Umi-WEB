@@ -2,11 +2,13 @@ import { useImperativeHandle, forwardRef } from 'react';
 import { Form, Col, Row, Input, DatePicker } from 'antd';
 import moment from 'moment';
 import { ExtModal, ComboList, ComboGrid } from 'suid';
+import UploadFile from './UploadFile'
 const fieldTypes = {
   'input': Input,
   'comboList': ComboList,
   'comboGrid': ComboGrid,
-  'datePicker': DatePicker
+  'datePicker': DatePicker,
+  'uploadFile': UploadFile
 }
 
 const { create, Item } = Form;
@@ -27,11 +29,17 @@ function ModalFields({
   const {
     getFieldDecorator,
     getFieldsValue,
-    setFieldsValue
+    setFieldsValue,
+    validateFieldsAndScroll
   } = form;
   useImperativeHandle(ref, () => ({
-    setFieldsValue
+    setValue,
+    validateFieldsAndScroll
   }))
+  function setValue(v) {
+    const { guid, ...otherValue } = v
+    setFieldsValue(otherValue)
+  }
   function getFieldComponent(field) {
     const {
       name = '',

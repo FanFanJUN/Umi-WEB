@@ -14,77 +14,44 @@ function EditorTable({
   allowCreate = true,
   allowEditor = true,
   allowRemove = true,
+  allowOperation = true,
+  copyLine = false,
+  copyFields = ['productCode', 'productName'],
   setDataSource = () => null,
-  fields = [
-    {
-      name: 'name',
-      label: '姓名',
-      option: {
-        rules: [
-          {
-            required: true,
-            message: '姓名不能为空'
-          }
-        ]
-      },
-      props: {
-        disabled: true
-      }
-    },
-    {
-      name: 'year',
-      label: '年月日',
-      fieldType: 'datePicker',
-      option: {
-        rules: [
-          {
-            required: true,
-            message: '选择日期'
-          }
-        ]
-      },
-      disabledDate: (ct, mt, tv) => {
-        return ct && ct > tv
-      },
-      disabledTarget: 'month'
-    },
-    {
-      name: 'month',
-      label: '年月日',
-      fieldType: 'datePicker',
-      option: {
-        rules: [
-          {
-            required: true,
-            message: '选择日期'
-          }
-        ]
-      },
-      disabledDate: (ct, mt, tv) => {
-        return ct && ct < tv
-      },
-      disabledTarget: 'year'
-    }
-  ]
+  fields = []
 }) {
   const formRef = useRef(null);
   const [tps, sets] = useTableProps();
   const [visible, setVisible] = useState(false);
   const [type, setType] = useState('create');
   const { handleSelectedRows } = sets;
-  const { selectedRowKeys } = tps;
+  const { selectedRowKeys, selectedRows } = tps;
   const empty = selectedRowKeys.length === 0;
   const d = dataSource.map(item => ({
     ...item,
-    guid: !!item.guid ? item?.guild : !!item?.id ? item?.id : getUUID()
+    guid: !!item.guid ? item?.guid : !!item?.id ? item?.id : getUUID()
   }))
-  function handleCreate() {
-    setVisible(true)
-    setType('create')
+  async function handleCreate() {
+    await setVisible(true)
+    await setType('create')
+    if (copyLine) {
+      const [line] = dataSource;
+      const cfs = copyFields.reduce((prev, current) => {
+        return {
+          ...prev,
+          [current]: line[current]
+        }
+      }, {})
+      await formRef.current.setValue(cfs)
+    }
   }
-  function handleEditor() {
-    setVisible(true)
-    setType('editor')
+  async function handleEditor() {
+    const [row] = selectedRows;
+    await setVisible(true)
+    await setType('editor')
+    await formRef.current.setValue({
+      ...row
+    })
   }
   function handleRemove() {
     Modal.confirm({
@@ -97,8 +64,24 @@ function EditorTable({
       }
     })
   }
-  function handleConfirm() {
-    console.log(formRef)
+  async function handleConfirm() {
+    const val = await formRef.current.validateFieldsAndScroll();
+    await setVisible(false)
+    if (type === 'create') {
+      const gid = getUUID();
+      await setDataSource([...d, { ...val, guid: gid }])
+      return
+    }
+    const [sk] = selectedRowKeys;
+    const nd = d.map(item => {
+      if (item.guid === sk) {
+        return {
+          ...val
+        }
+      }
+      return item
+    })
+    await setDataSource(nd)
   }
   const left = (
     <>
@@ -138,6 +121,14 @@ function EditorTable({
         showSearch={false}
         onSelectRow={handleSelectedRows}
         selectedRowKeys={selectedRowKeys}
+        rowKey={item => item.guid}
+        bordered
+        size='small'
+        checkbox={
+          allowOperation ?
+            { multiSelect: false } : false
+        }
+        allowCancelSelect
       />
       <ModalFields
         visible={visible}
