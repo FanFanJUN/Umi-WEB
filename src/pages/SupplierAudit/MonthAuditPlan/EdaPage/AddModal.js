@@ -13,6 +13,7 @@ import {
 import { recommendUrl } from '@/utils/commonUrl';
 import { findRequirementLine, findYearLineLine, findAccessLineLine, findRecommendAccessByDataAuth } from '../service';
 import { getFrameElement, openNewTab } from '../../../../utils';
+import { smBaseUrl } from '../../../../utils/commonUrl';
 
 const FormItem = Form.Item;
 const { MonthPicker } = DatePicker;
@@ -21,6 +22,13 @@ const formItemLayoutLong = {
   wrapperCol: { span: 16 },
 };
 const FRAMELEEMENT = getFrameElement();
+
+const title = {
+  'annual': '从年度计划新增',
+  'recommand': '从准入推荐新增',
+  'demand': '从审核需求新增',
+  'pcnBills': '从PCN单据新增',
+};
 
 const AddModal = (props) => {
   const { visible, type, handleCancel, handleOk, form } = props;
@@ -181,6 +189,11 @@ const AddModal = (props) => {
           ...cascadeParams,
         },
         url: `${recommendUrl}/api/reviewRequirementLineService/findForList`,
+        type: 'POST',
+      };
+    } else if (type === 'pcnBills') {
+      return {
+        url: `${smBaseUrl}/api/smPcnTitleService/phyIdentQueryMonthlyPlan`,
         type: 'POST',
       };
     } else {
@@ -436,7 +449,7 @@ const AddModal = (props) => {
     centered
     maskClosable={false}
     visible={visible}
-    title={type === 'annual' ? '从年度计划新增' : type === 'recommand' ? '从准入推荐新增' : '从审核需求新增'}
+    title={title[type]}
     onCancel={handleCancel}
     onOk={onOk}
     destroyOnClose
