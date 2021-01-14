@@ -100,10 +100,6 @@ export default create()(function({ form }) {
     findMyselfData().then(res => {
       if (res.success && res.statusCode === 200) {
         if (res.data.length === 0) {
-          // 撤回资质文件清空上传的缓存
-          if(ownerFiles.length){
-            setOwnerFiles([])
-          }
           confirm({
             title: '提示',
             content: '您还未上传资质文件，请先上传文件！',
@@ -332,6 +328,10 @@ export default create()(function({ form }) {
     console.log(res)
     if (res.success) {
       message.success('撤回成功！')
+      // 撤回资质文件清空上传的缓存
+      if(ownerFiles.length){
+        setOwnerFiles([])
+      }
       judgeFiles()
     } else {
       message.error(res.message)
