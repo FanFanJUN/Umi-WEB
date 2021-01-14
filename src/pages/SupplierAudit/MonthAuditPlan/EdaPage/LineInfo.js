@@ -201,6 +201,7 @@ let LineInfo = forwardRef((props, ref) => {
       case 'annual':
       case 'recommand':
       case 'demand':
+      case 'pcnBills':
         setModalData({
           visible: true,
           type,
@@ -305,7 +306,7 @@ let LineInfo = forwardRef((props, ref) => {
     newList = newList.map((item, index) => ({
       ...item,
       reviewPlanMonthLinenum: ((Array(4).join(0) + (index + 1 + dataSource.length)).slice(-4) + '0'),
-    }))
+    }));
     if (errorArr.length !== 0) {
       message.error('选中的第' + errorArr.toString() + '行重复,已自动过滤!');
     }
@@ -455,6 +456,7 @@ let LineInfo = forwardRef((props, ref) => {
               <Button onClick={() => handleBtn('annual')} type='primary'>从年度计划新增</Button>
               <Button onClick={() => handleBtn('recommand')} type='primary'>从准入推荐新增</Button>
               <Button onClick={() => handleBtn('demand')} type='primary'>从审核需求新增</Button>
+              {/*<Button onClick={() => handleBtn('pcnBills')} type='primary'>从PCN单据新增</Button>*/}
               <Button onClick={() => {
                 handleBtn('edit');
               }} disabled={data.selectRows.length === 0 || checkSelect()}>批量编辑</Button>

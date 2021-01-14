@@ -3,7 +3,7 @@
  * @LastEditors  : LiCai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:04:51
- * @LastEditTime : 2020-12-24 16:47:59
+ * @LastEditTime : 2021-01-13 11:22:20
  * @Description: 新增  编辑  详情 page
  * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/index.js
  */
@@ -18,6 +18,7 @@ import BaseInfo from './BaseInfo';
 import { router } from 'dva';
 import LineInfo from './LineInfo';
 import { findDetailedById, findReviewTypesByCode, reviewPlanYearAp } from '../service';
+import { checkToken } from '../../../../utils';
 
 const { StartFlow } = WorkFlow;
 const userInfo = getUserInfoFromSession();
@@ -55,6 +56,7 @@ const Index = (props) => {
     }
 
     useEffect(() => {
+        // await checkToken(query);
         const { id, pageState: queryPageSate } = query;
         const pageState = queryPageSate || propsPageState; // 流程中pageState 与url pageState
         if (pageState === 'edit' || pageState === 'detail') {

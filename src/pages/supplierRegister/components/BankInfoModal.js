@@ -174,10 +174,6 @@ const BankInfoRef = forwardRef(({
                                 }),
                             getFieldDecorator("provinceName", {
                                 initialValue: initialValues && initialValues.provinceName,
-                                rules: [{
-                                    required: true,
-                                    message: '省不能为空',
-                                }]
                             })(
                                 // <SelectWithService
                                 //     labelInValue={true}
@@ -228,10 +224,6 @@ const BankInfoRef = forwardRef(({
                                 }),
                             getFieldDecorator("regionName", {
                                 initialValue: initialValues && initialValues.regionName,
-                                rules: [{
-                                    required: true,
-                                    message: '市不能为空',
-                                }]
                             })(
                                 // <SelectWithService
                                 //     labelInValue={true}

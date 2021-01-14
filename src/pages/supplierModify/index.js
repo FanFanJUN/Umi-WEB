@@ -382,7 +382,7 @@ function SupplierConfigure() {
                             authAction(
                                 <Button
                                     className={styles.btn}
-                                    disabled={empty || !underWay || !isSelf || completed}
+                                    disabled={empty || !underWay || completed}
                                     onClick={stopApprove}
                                     ignore={DEVELOPER_ENV}
                                     key='SRM-SM-SUPPLIERMODEL_STOP_APPROVAL'

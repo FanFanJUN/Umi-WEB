@@ -3,16 +3,23 @@
  * @Author: M!keW
  * @Date: 2020-12-04
  */
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { WorkFlow } from 'suid'
 import { router } from 'dva';
-import { closeCurrent } from '../../../../utils';
+import { checkToken, closeCurrent } from '../../../../utils';
 import AuditBriefingManagementView from '../editPage';
 
 const ApprovePage = () => {
 
   const { query } = router.useLocation();
-
+  const [isReady, setIsReady] = useState(false);
+  // 获取配置列表项
+  useEffect(() => {
+    async function init() {
+      await checkToken(query, setIsReady);
+    }
+    init();
+  }, []);
   const handleClose = (res) => {
     const { success } = res;
     if (success) {
@@ -21,7 +28,7 @@ const ApprovePage = () => {
   };
 
   return(
-    <WorkFlow.Approve
+    <>{isReady ?<WorkFlow.Approve
       businessId={query.id}
       taskId={query.taskId}
       instanceId={query.instanceId}
@@ -33,7 +40,7 @@ const ApprovePage = () => {
         isApproveDetail
       />
 
-    </WorkFlow.Approve>
+    </WorkFlow.Approve>: null}</>
   )
 
 };

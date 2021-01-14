@@ -1,10 +1,10 @@
 /*
  * @Author: your name
  * @Date: 2020-11-05 16:27:34
- * @LastEditTime: 2020-11-26 17:38:02
- * @LastEditors: Please set LastEditors
+ * @LastEditTime : 2021-01-12 16:36:53
+ * @LastEditors  : LiCai
  * @Description: In User Settings Edit
- * @FilePath: \srm-sm-web\src\pages\SupplierAudit\MonthAuditPlan\component\changeDetail.js
+ * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AuditImplementationPlan/components/changeDetail.js
  */
 import React, { useState, useEffect } from "react";
 import { Spin, Tabs, Form, message } from "antd";
@@ -19,6 +19,7 @@ import PersonTable from "../editPage/PersonTable";
 import AuditPlan from "../editPage/AuditPlan";
 import { findReasonByChangId, findDetailsByReviewImplementPlanId } from "../service";
 import styles from "../../MonthAuditPlan/index.less";
+import { checkToken } from "../../../../utils";
 const { TabPane } = Tabs;
 
 export default Form.create()((props) => {
@@ -27,8 +28,9 @@ export default Form.create()((props) => {
     const [editData, setEditData] = useState({});
     const [changeInfo, setChangeInfo] = useState({});
     const { query } = router.useLocation();
-    useEffect(() => {
-        getChangeInfo();
+
+    useEffect( async() => {
+        await getChangeInfo();
     }, []);
 
     async function getChangeInfo() {

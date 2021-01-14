@@ -39,7 +39,7 @@ function MissionExecution() {
     const [seniorSearchvalue, setSeniorsearchvalue] = useState('');
     /** 按钮可用性判断变量集合 BEGIN*/
     const [signleRow = {}] = selectedRows;
-    const { taskStatus: signleFlowStatus, taskStatus: implementStatus, creatorId } = signleRow;
+    const { taskStatus: signleFlowStatus, taskStatus: implementStatus, executorId } = signleRow;
     // 执行中
     const underWay = signleFlowStatus === 0;
     // 未选中数据的状态
@@ -47,7 +47,7 @@ function MissionExecution() {
     // 已执行
     const implement = implementStatus === 1
     // 是不是自己的单据
-    const isSelf = currentUserId === creatorId;
+    const isSelf = currentUserId === executorId;
     useEffect(() => {
         handleInfo()
         window.parent.frames.addEventListener('message', listenerParentClose, false);

@@ -9,7 +9,7 @@ import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
 import { recommendUrl } from '@/utils/commonUrl';
 import {
     MaterialConfig, MaterialGroupConfig, StrategicPurchaseConfig, StrategicForName,
-    statusProps, distributionProps, materialStatus, PDMStatus, allPersonList,
+    statusProps, distributionProps, materialStatus, PDMStatus, allPersonList, sourcelist
 } from '../../commonProps';
 import CheckQualificationModal from '../components/checkQualificationModal';
 import DistributeSupplierModal from '../components/distributeSupplierModal';
@@ -272,6 +272,7 @@ export default create()(function ({ form }) {
         delete value.syncStatus_name;
         delete value.assignSupplierStatus_name;
         delete value.allotSupplierState_name;
+        delete value.sourceType_name;
         setSearchValue(v => ({ ...v, ...value }));
         headerRef.current.hide();
         refresh();
@@ -443,6 +444,7 @@ export default create()(function ({ form }) {
         { title: '分配供应商状态', key: 'allotSupplierState', type: 'list', props: distributionProps },
         { title: '物料标记状态', key: 'assignSupplierStatus', type: 'list', props: materialStatus },
         { title: '同步PDM状态', key: 'syncStatus', type: 'list', props: PDMStatus },
+        { title: '来源', key: 'sourceType', type: 'list', props: sourcelist },
     ];
     const columns = [
         {

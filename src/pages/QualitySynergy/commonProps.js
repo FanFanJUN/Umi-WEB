@@ -196,6 +196,10 @@ export const ShareDownloadStatus = {
       code: '未下载',
       name: '未下载',
     },
+    {
+      code: '全部',
+      name: '全部',
+    },
   ],
   placeholder: '选择下载状态',
   ...commonProps,
@@ -1119,5 +1123,22 @@ export const reportStateProps = {
     },
   ],
   placeholder: '选择状态',
+  ...commonProps,
+};
+
+// 环保资料物料-列表-来源
+export const sourcelist = {
+  allowClear: true,
+  dataSource: [
+    {
+      code: 'SRM',
+      name: 'SRM',
+    },
+    {
+      code: 'PLM',
+      name: 'PLM',
+    },
+  ],
+  placeholder: '选择来源',
   ...commonProps,
 };
