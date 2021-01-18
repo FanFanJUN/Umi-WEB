@@ -26,13 +26,15 @@ export default [
       { path: '/material/MasterData/index', component: './MaterialCognizance/MasterData', title: '实物认定主数据' },
       { path: '/material/Cognizance/index', component: './MaterialCognizance/Cognizance', title: '实物认定计划' },
       { path: '/material/Cognizance/AdmitEdit/index', component: './MaterialCognizance/Cognizance/AdmitEdit/index', title: '准入单创建编辑' },
-      { path: '/material/Cognizance/ManualAdd/index', component: './MaterialCognizance/Cognizance/ManualAdd/index', title: '手工单创建' },
+      { path: '/material/Cognizance/ManualAdd/index', component: './MaterialCognizance/Cognizance/ManualAdd/index', title: '合格供应商名录创建' },
       { path: '/material/Cognizance/ManualEdit/index', component: './MaterialCognizance/Cognizance/ManualEdit/index', title: '实物认定计划编辑' },
       { path: '/material/Cognizance/ManualDetail/index', component: './MaterialCognizance/Cognizance/ManualDetail/index', title: '实物认定计划明细' },
       { path: '/material/Enforcement/index', component: './MaterialCognizance/Enforcement', title: '实物认定执行' },
       { path: '/material/Enforcement/Edit/index', component: './MaterialCognizance/Enforcement/Edit/index', title: '实物认定执行任务' },
       { path: '/material/Enforcement/Details/index', component: './MaterialCognizance/Enforcement/Details/index', title: '实物认定执行明细' },
       { path: '/material/Cognizance/AdmitAdd/index', component: './MaterialCognizance/Cognizance/AdmitAdd/index', title: '准入单创建' },
+      { path: '/material/Cognizance/PCNModifyAdd/index', component: './MaterialCognizance/Cognizance/PCNModifyAdd/index', title: 'PCN变更创建' },
+      { path: '/material/Cognizance/PCNModifyEdit/index', component: './MaterialCognizance/Cognizance/PCNModifyEdit/index', title: 'PCN变更创建编辑' },
     ]
   },
   {

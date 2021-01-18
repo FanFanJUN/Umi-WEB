@@ -1,25 +1,26 @@
-import React, { forwardRef, useImperativeHandle, useEffect, useRef ,useState} from 'react';
+import React, { forwardRef, useImperativeHandle, useEffect, useRef, useState } from 'react';
 import { Modal, Form, Button, message, Input, } from 'antd';
-import { Fieldclassification ,countryListConfig} from '@/utils/commonProps'
+import { Fieldclassification, countryListConfig } from '@/utils/commonProps'
 import { ExtTable } from 'suid';
 import { openNewTab, getFrameElement } from '@/utils';
 import { smBaseUrl } from '@/utils/commonUrl';
 import Header from '@/components/Header';
 import styles from '../index.less';
-import {findCanChooseSupplier} from '@/services/SupplierModifyService'
+import { findCanChooseSupplier } from '@/services/SupplierModifyService'
 const { create } = Form;
+const { Search } = Input
 const getAgentregRef = forwardRef(({
     form,
 }, ref,) => {
-    useImperativeHandle(ref, () => ({ 
+    useImperativeHandle(ref, () => ({
         handleModalVisible,
-        form 
+        form
     }));
     const tableRef = useRef(null)
     const headerRef = useRef(null)
     const { getFieldDecorator, validateFieldsAndScroll, getFieldValue, setFieldsValue } = form;
     const [loading, triggerLoading] = useState(false);
-    const [searchValue, setSearchValue] = useState('');
+    const [searchValue, setSearchValue] = useState({});
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [visible, setvisible] = useState(false);
@@ -32,7 +33,7 @@ const getAgentregRef = forwardRef(({
         store: {
             url: `${smBaseUrl}/api/supplierModifyService/findCanChooseSupplier`,
             params: {
-                quickSearchValue: searchValue,
+                ...searchValue,
                 quickSearchProperties: ['name'],
                 sortOrders: [
                     {
@@ -44,21 +45,7 @@ const getAgentregRef = forwardRef(({
             type: 'POST'
         }
     }
-    // 供应商
-    // async function getSupplierlist() {
-    //     let params = {page:1,rows:30,'S_createdDate':'desc'};
-    //     triggerLoading(true)
-    //     const { data,success, message: msg } = await findCanChooseSupplier(params);
-    //     if (success) {
-    //         setData(data)
-    //         triggerLoading(false)
-    //         return
-    //     }else {
-    //         message.error(msg);
-    //     }
-    //     triggerLoading(false)
-    // }
-    function handleModalVisible (flag) {
+    function handleModalVisible(flag) {
         setvisible(!!flag)
     };
     function handleSelectedRows(rowKeys, rows) {
@@ -90,10 +77,8 @@ const getAgentregRef = forwardRef(({
         setSearchValue(v.target.value)
     }
     // 查询
-    function handleQuickSerach() {
-        let search = "";
-        setSearchValue(search);
-        setSearchValue(searchValue)
+    function handleQuickSerach(value) {
+        setSearchValue(v => ({ ...v, quickSearchValue: value.trim() }));
         uploadTable();
     }
     function uploadTable() {
@@ -112,34 +97,41 @@ const getAgentregRef = forwardRef(({
             title: "供应商代码",
             width: 120,
             dataIndex: "supplierCode"
-          },
-          {
+        },
+        {
             title: "供应商名称",
             width: 260,
             dataIndex: "supplierName"
-          },
-          {
+        },
+        {
             title: "合作关系",
             width: 150,
             dataIndex: "cooperationLevelName"
-          },
-          {
+        },
+        {
             title: "管理级别",
             width: 150,
             dataIndex: "managementLevellName"
-          }
+        }
     ].map(_ => ({ ..._, align: 'center' }));
     // 右侧搜索
     const searchBtnCfg = (
         <>
-            <Input
+            {/* <Input
                 style={{width:260}}
                 placeholder='请输入供应商代码或名称查询'
                 className={styles.btn}
                 onChange={SerachValue}
                 allowClear
             />
-            <Button type='primary' onClick={handleQuickSerach}>查询</Button>
+            <Button type='primary' onClick={handleQuickSerach}>查询</Button> */}
+            <Search
+                placeholder='请输入供应商代码或名称查询'
+                className={styles.btn}
+                onSearch={handleQuickSerach}
+                allowClear
+                style={{ width: '240px' }}
+            />
         </>
     )
     return (
@@ -180,7 +172,7 @@ const getAgentregRef = forwardRef(({
                 //dataSource={dataSource}
                 {...dataSource}
             />
-      </Modal>
+        </Modal>
     );
 },
 );

@@ -1,6 +1,6 @@
 import React, { forwardRef, useState, useRef, useEffect, useImperativeHandle } from 'react';
 import { ExtTable, utils, ComboList, AuthButton } from 'suid';
-import { Form, Button, message, Radio, Modal ,Input} from 'antd';
+import { Form, Button, message, Radio, Modal, Input } from 'antd';
 import { openNewTab, getFrameElement, isEmpty } from '@/utils';
 import Header from '@/components/Header';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
@@ -8,13 +8,13 @@ import styles from '../index.less';
 import InfluenceMaterielModal from './InfluenceMaterielModal'
 import MaterielModal from './MaterielModal'
 import SeeMaterielModal from './SeeMaterielModal'
-import {Safetyregulationslist,Strategicprocurementlist} from '../../commonProps'
+import { Safetyregulationslist, Strategicprocurementlist } from '../../commonProps'
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { create } = Form;
 const FormItem = Form.Item;
 const { authAction, storage } = utils;
-let keys = 0,matkey = 0;
-let handlematers = [],strategy = [];
+let keys = 0, matkey = 0;
+let handlematers = [], strategy = [];
 const ModifyinfluenceRef = forwardRef(({
     form,
     isView,
@@ -55,9 +55,9 @@ const ModifyinfluenceRef = forwardRef(({
                 render: function (text, record, row) {
                     if (text === 0) {
                         return <div>同意</div>;
-                    } else if (text === 1){
+                    } else if (text === 1) {
                         return <div className="successColor">不同意</div>;
-                    }else {
+                    } else {
                         return <div></div>;
                     }
                 },
@@ -79,7 +79,7 @@ const ModifyinfluenceRef = forwardRef(({
         },
         {
             title: '物料分类',
-            dataIndex: 'materielCategoryId',
+            dataIndex: 'materielCategoryName',
             align: 'center',
             width: 160,
         },
@@ -119,12 +119,12 @@ const ModifyinfluenceRef = forwardRef(({
                 return <span>
                     <FormItem style={{ marginBottom: 0 }}>
                         {
-                            getFieldDecorator(`smPcnPart[${index}]`,{initialValue: record ? record.smPcnPart : ''}),
+                            getFieldDecorator(`smPcnPart[${index}]`, { initialValue: record ? record.smPcnPart : '' }),
                             getFieldDecorator(`smPcnPartName[${index}]`, {
                                 initialValue: record ? record.smPcnPartName : '',
                                 rules: [{ required: true, message: '请选择安规件!', whitespace: true }],
-                            })( 
-                                <ComboList 
+                            })(
+                                <ComboList
                                     form={form}
                                     {...Safetyregulationslist}
                                     showSearch={false}
@@ -150,20 +150,20 @@ const ModifyinfluenceRef = forwardRef(({
                 return <span>
                     <FormItem style={{ marginBottom: 0 }}>
                         {
-                            getFieldDecorator(`smPcnStrategicId[${index}]`,{initialValue: record ? record.smPcnStrategicId : ''}),
-                            getFieldDecorator(`smPcnStrategicCode[${index}]`,{initialValue: record ? record.smPcnStrategicCode : ''}),
+                            getFieldDecorator(`smPcnStrategicId[${index}]`, { initialValue: record ? record.smPcnStrategicId : '' }),
+                            getFieldDecorator(`smPcnStrategicCode[${index}]`, { initialValue: record ? record.smPcnStrategicCode : '' }),
                             getFieldDecorator(`smPcnStrategicName[${index}]`, {
                                 initialValue: record ? record.smPcnStrategicName : '',
-                                rules: [{ required: true, message: '请选择战略采购!'}],
-                            })( 
-                                <ComboList 
+                                rules: [{ required: true, message: '请选择战略采购!' }],
+                            })(
+                                <ComboList
                                     form={form}
                                     {...Strategicprocurementlist}
                                     showSearch={true}
                                     style={{ width: '100%' }}
                                     //afterSelect={afterSelect}
                                     name={`smPcnStrategicName[${index}]`}
-                                    field={[`smPcnStrategicId[${index}]`,`smPcnStrategicCode[${index}]`]}
+                                    field={[`smPcnStrategicId[${index}]`, `smPcnStrategicCode[${index}]`]}
                                 />
                             )
                         }
@@ -177,12 +177,12 @@ const ModifyinfluenceRef = forwardRef(({
     // 编辑处理数据
     function hanldModify(val) {
         if (isEdit) {
-            let newsdata = [],MaterielVoList = [];
+            let newsdata = [], MaterielVoList = [];
             val.map((item, index) => {
-                let Name;keys ++ ;
+                let Name; keys++;
                 if (item.smPcnPart === 0) {
                     Name = '是'
-                }else {
+                } else {
                     Name = '否'
                 }
                 newsdata.push({
@@ -210,45 +210,46 @@ const ModifyinfluenceRef = forwardRef(({
         [...newsdata] = dataSource;
         if (newsdata.length > 0) {
             let result = false
-            newsdata.map(item =>{
-                val.map((items,index) => {
-                    if (item.materielCategoryCode === items.materielCategoryCode && 
-                        item.companyCode === items.corporation.code && 
-                        item.purchaseOrgCode === items.purchaseOrgCode){
-                        val.splice(index,1)
+            newsdata.map(item => {
+                val.map((items, index) => {
+                    if (item.materielCategoryCode === items.materielCategoryCode &&
+                        item.companyCode === items.corporation.code &&
+                        item.purchaseOrgCode === items.purchaseOrgCode) {
+                        val.splice(index, 1)
                         result = true
-                    }    
+                    }
                 })
-               
+
             })
             if (result) {
                 message.error('当前数据已存在，请重新选择！')
                 addTodata(val)
-            }else {
+            } else {
                 addTodata(val)
             }
-        }else {
+        } else {
             addTodata(val)
         }
-        
+
     }
     // 新增添加数据
     function addTodata(val) {
         let newsdata = [];
         [...newsdata] = dataSource;
         val.map(ins => {
-            keys ++ ;
+            keys++;
             newsdata.push({
                 key: keys,
-                smOriginalFactoryCode:ins.originSupplierCode,
-                smOriginalFactoryName:ins.originSupplierName,
-                materielCategoryId: ins.materielCategory && ins.materielCategory.name,
+                smOriginalFactoryCode: ins.originSupplierCode,
+                smOriginalFactoryName: ins.originSupplierName,
+                materielCategoryId: ins.materielCategory && ins.materielCategory.id,
+                materielCategoryName: ins.materielCategory && ins.materielCategory.name,
                 companyCode: ins.corporation.code,
                 companyName: ins.corporation.name,
                 purchaseOrgCode: ins.purchaseOrgCode,
                 purchaseOrgName: ins.purchaseOrg.name,
                 materielCategoryCode: ins.materielCategoryCode,
-                smPcnAnalysisMaterielVoList:[]
+                smPcnAnalysisMaterielVoList: []
             })
         })
         setDataSource(newsdata);
@@ -261,7 +262,7 @@ const ModifyinfluenceRef = forwardRef(({
             item.smPcnAnalysisMaterielVoList.map((items) => {
                 newsdata.push({
                     key: matkey++,
-                    id:items.id,
+                    id: items.id,
                     materielTypeCode: items.codePath || items.materielTypeCode,
                     materielName: items.namePath || items.materielName,
                     materielCode: items.materialCode || items.materielCode,
@@ -276,16 +277,15 @@ const ModifyinfluenceRef = forwardRef(({
     }
     // 删除物料操作
     function determine(val) {
-        console.log(val)
-        handlematers.forEach((item,index) => {
+        handlematers.forEach((item, index) => {
             item.forEach((items) => {
                 val.forEach((vals) => {
                     if (items.key === vals.key) {
                         handlematers[index] = val
-                    }   
-                }) 
+                    }
+                })
             })
-            
+
         })
         uploadTable()
     }
@@ -316,11 +316,11 @@ const ModifyinfluenceRef = forwardRef(({
     // 表单删除
     async function handleRemove() {
         const filterData = dataSource.filter(item => item.key !== selectedRows[0].key);
-        handlematers.map((item,index) => {
+        handlematers.map((item, index) => {
             item.map((items) => {
                 if (items.key === selectedRows[0].key) {
                     handlematers[index] = [];
-                } 
+                }
             })
         })
         setDataSource(filterData)
@@ -333,34 +333,21 @@ const ModifyinfluenceRef = forwardRef(({
         const analysis = tabformRef.current.data;
         if (!analysis || analysis.length === 0) {
             return false;
-        }else {
+        } else {
             form.validateFieldsAndScroll((err, values) => {
-                console.log(values)
-                values.smPcnPart.forEach((item,index) => {
+                values.smPcnPart.forEach((item, index) => {
                     analysis[index].smPcnPart = values.smPcnPart[index]
                 })
-                
-                values.smPcnStrategicId.forEach((item,index) => {
+
+                values.smPcnStrategicId.forEach((item, index) => {
                     analysis[index].smPcnStrategicId = values.smPcnStrategicId[index]
                     analysis[index].smPcnStrategicCode = values.smPcnStrategicCode[index]
                     analysis[index].smPcnStrategicName = values.smPcnStrategicName[index]
                 })
                 if (!err) {
-                    console.log(analysis)
-                    //result = analysis
-                    // analysis.forEach((analy,index) => {
-                    //     handlematers.forEach((item,index) => {
-                    //         item.forEach((items) => {
-                    //             if (analy.key === items.key) {
-                    //                 analysis[index].smPcnAnalysisMaterielVoList = item
-                    //             }
-                    //         })
-                            
-                    //     })
-                    // })
                     result = analysis
                 }
-                
+
             })
         }
         return result;
@@ -444,18 +431,18 @@ const ModifyinfluenceRef = forwardRef(({
                         materselect={materselect}
                         materielCategoryCode={materielid}
                         companyCode={companyCode}
-                        iseditMater={selectedRows} 
+                        iseditMater={selectedRows}
                         isEdit={isEdit}
-                        wrappedComponentRef={getMatermodRef} 
+                        wrappedComponentRef={getMatermodRef}
                     />
                     {/***** 查看物料 */}
                     <SeeMaterielModal
                         determine={determine}
                         materiel={seemateriel}
-                        isView={isView} 
-                        wrappedComponentRef={getSeeMaterRef} 
+                        isView={isView}
+                        wrappedComponentRef={getSeeMaterRef}
                     />
-                    
+
                 </div>
             </div>
         </>

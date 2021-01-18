@@ -1379,3 +1379,16 @@ export const corporationPropsModify = {
   },
   placeholder: '选择公司'
 }
+// 币种
+export const CurrencyAllList = {
+  store: {
+    url: `${baseUrl}/supplierRegister/getAllCurrency`,
+    type: 'POST'
+  },
+  reader: {
+    name: 'name',
+    field: ['code'],
+    description: 'code'
+  },
+  placeholder: '选择币种'
+}

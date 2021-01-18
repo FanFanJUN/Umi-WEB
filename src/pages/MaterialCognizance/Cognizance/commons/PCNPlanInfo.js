@@ -30,13 +30,25 @@ const HeadFormRef = forwardRef(({
     }));
     const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
     const getModelRef = useRef(null)
-    const getecommendRef = useRef(null)
-    const authorizations = storage.sessionStorage.get("Authorization");
+    const [Othersdata, setOthersdata] = useState({});
     useEffect(() => {
-        if (!isEdit) {
-            selectanalysis(editformData)
+        PCNeditDetail(editformData)
+    }, [editformData])
+
+    function PCNeditDetail(val) {
+        if (isEdit) {
+            if (val) {
+                let params = {
+                    pcnCode: val.pcnCode,
+                    pcnTitleId: val.pcnTitleId
+                }
+                setOthersdata(params)
+            }
+
+        } else {
+            selectanalysis(val)
         }
-    }, [])
+    }
     function planfrom() {
         let modifyinfluen = false;
         form.validateFieldsAndScroll(async (err, val) => {
@@ -45,40 +57,43 @@ const HeadFormRef = forwardRef(({
                     val.attachment = []
                 }
                 modifyinfluen = val;
-                modifyinfluen = { ...modifyinfluen }
+                if (!isEdit) {
+                    modifyinfluen.admittanceId = editformData[0].admittanceId
+                    modifyinfluen = { ...modifyinfluen, ...Othersdata }
+                } else {
+                    modifyinfluen = { ...modifyinfluen }
+                }
             }
         })
         return modifyinfluen ? modifyinfluen : false
     }
     function afterSelect(val) {
-        //setSetupval(val.value)
         onOk(val.value);
     }
-
-    function handleSingle() {
-        getModelRef.current.handleModalVisible(true);
-
-    }
     function selectanalysis(record) {
+        if (!isEdit) {
+            let params = {
+                pcnTitleDetailId: record[0].id,
+                pcnCode: record[0].smPcnCode,
+                pcnTitleId: record[0].smPcnTitleId
+            }
+            setOthersdata(params)
+        }
         form.setFieldsValue({
-            'companyCode': record[0].corporation.code,
-            'companyName': record[0].corporation.name,
-            'purchaseCode': record[0].purchaseOrg.code,
-            'purchaseName': record[0].purchaseOrg.name,
-            'supplierCode': record[0].supplier.code,
-            'supplierName': record[0].supplier.name,
-            'originalFactoryCode': record[0].originSupplierCode,
-            'originalFactoryName': record[0].originSupplierName,
-            'materielTypeName': record[0].materielCategory.name,
-            'materielTypeCode': record[0].materielCategory.code,
+            'companyCode': record[0].companyCode,
+            'companyName': record[0].companyName,
+            'purchaseCode': record[0].purchaseOrgCode,
+            'purchaseName': record[0].purchaseOrgName,
+            'supplierCode': record[0].smSupplierCode,
+            'supplierName': record[0].smSupplierName,
+            'originalFactoryCode': record[0].smOriginalFactoryCode,
+            'originalFactoryName': record[0].smOriginalFactoryName,
+            'materielTypeName': record[0].materielCategoryName,
+            'materielTypeCode': record[0].materielCategoryCode,
         });
     }
-    // 准入明细
-    function handleAdmit(val) {
-        openNewTab(`supplier/recommend/admittance/manage/detail?id=${val.admittanceHeadId}`, '供应商推荐准入明细', false)
-    }
     // PCN明细
-    function handlePCN(val) {
+    function handlePCNmit(val) {
         openNewTab(`pcnModify/ApprovePage/PCNSeewholeDetail?id=${val.pcnTitleId}`, 'PCN变更方案明细', false)
     }
     return (
@@ -302,28 +317,18 @@ const HeadFormRef = forwardRef(({
                             }
                         </Item>
                     </Col>
-                    {
-                        isView && admitype === '1' || isView && admitype === 1 ? <Col span={10}>
-                            <Item label='准入单号' {...formLayout}>
-                                {
-
-                                    <AuthALink onClick={() => handleAdmit(editformData)}>{editformData ? editformData.admittanceNo : ''}</AuthALink>
-
-                                }
-                            </Item>
-                        </Col> : null
-                    }
-                    {
-                        isView && admitype === '2' || isView && admitype === 2 ? <Col span={10}>
-                            <Item label='PCN变更单号' {...formLayout}>
-                                {
-
-                                    <AuthALink onClick={() => handlePCN(editformData)}>{editformData ? editformData.pcnCode : ''}</AuthALink>
-
-                                }
-                            </Item>
-                        </Col> : null
-                    }
+                    <Col span={10}>
+                        <Item label='PCN变更单号' {...formLayout}>
+                            {
+                                isView ? <span>{editformData ? editformData.pcnCode : ''}</span> :
+                                    getFieldDecorator("pcnCode", {
+                                        initialValue: editformData ? editformData.pcnCode : '',
+                                    })(
+                                        <AuthALink onClick={() => handlePCNmit(Othersdata)}>{Othersdata.pcnCode}</AuthALink>
+                                    )
+                            }
+                        </Item>
+                    </Col>
                 </Row>
 
             </div>

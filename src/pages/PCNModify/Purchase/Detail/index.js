@@ -8,7 +8,7 @@ import CustomerOpinionDetail from '../commons/CustomerOpinionDetail'
 import ToexamineDetail from '../commons/ToexamineDetail'
 import Executioninfor from '../commons/Executioninfor'
 import classnames from 'classnames';
-import {findPCNSupplierId} from '../../../../services/pcnModifyService'
+import { findPCNSupplierId } from '../../../../services/pcnModifyService'
 import styles from '../index.less';
 import { closeCurrent, isEmpty } from '../../../../utils';
 const TabPane = Tabs.TabPane;
@@ -33,7 +33,7 @@ function CreateStrategy() {
     async function initsupplierDetai() {
         triggerLoading(true);
         let id = query.id;
-        const { data, success, message: msg } = await findPCNSupplierId({pcnTitleId:id});
+        const { data, success, message: msg } = await findPCNSupplierId({ pcnTitleId: id });
         if (success) {
             setEditData(data)
             triggerLoading(false);
@@ -63,7 +63,7 @@ function CreateStrategy() {
 
             </Affix>
             <div className={styles.wrapper}>
-                <Tabs className="tabstext" onTabClick={(params)=>tabClickHandler(params)} style={{ background: '#fff' }}>
+                <Tabs className="tabstext" onTabClick={(params) => tabClickHandler(params)} style={{ background: '#fff' }}>
                     <TabPane forceRender tab="PCN变更单" key="1">
                         <PCNModifyDetail
                             editData={editData}
@@ -80,7 +80,7 @@ function CreateStrategy() {
                             headerInfo={true}
                         />
                     </TabPane>
-                    <TabPane forceRender tab="验证结果" key="3">
+                    <TabPane forceRender tab="实物认定结果" key="3">
                         <ResultsIdenDetail
                             editData={editData}
                             wrappedComponentRef={getResultsIden}

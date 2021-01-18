@@ -116,7 +116,7 @@ function CreateStrategy() {
                                     headerInfo={true}
                                 />
                             </TabPane>
-                            <TabPane forceRender tab="验证结果" key="3">
+                            <TabPane forceRender tab="实物认定结果" key="3">
                                 <ResultsIdenDetail
                                     editData={editData}
                                     isView={true}

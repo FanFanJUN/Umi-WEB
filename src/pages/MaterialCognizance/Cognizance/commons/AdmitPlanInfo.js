@@ -33,8 +33,6 @@ const HeadFormRef = forwardRef(({
     }));
     const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
     const getModelRef = useRef(null)
-    const getecommendRef = useRef(null)
-    const authorizations = storage.sessionStorage.get("Authorization");
     const [Othersdata, setOthersdata] = useState({});
     useEffect(() => {
         editAdmitDetail(editformData)
