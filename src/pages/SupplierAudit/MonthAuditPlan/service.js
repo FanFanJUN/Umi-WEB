@@ -30,6 +30,16 @@ export async function findAccessLineLine(params) {
     });
 }
 
+// 从PCN单据新增新增-确定
+export async function findPCNBillsLine(params) {
+  const requestUrl = `${recommendUrl}/api/reviewPlanMonthLineService/findPcnLine`;
+  return request({
+    url: requestUrl,
+    method: 'POST',
+    data: params,
+  });
+}
+
 // 新增月度计划-保存
 export async function insertMonthBo(params) {
     const requestUrl = `${recommendUrl}/api/reviewPlanMonthService/insert`;
