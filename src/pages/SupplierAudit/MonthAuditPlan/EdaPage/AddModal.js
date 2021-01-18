@@ -1,6 +1,6 @@
 // 从年度审核新增
 import React, { useState, useRef } from 'react';
-import { Form, Row, Col, Button, DatePicker, Spin, message } from 'antd';
+import { Form, Row, Col, Button, DatePicker, Spin, message, Input } from 'antd';
 import { ExtTable, ExtModal, ComboList, ComboTree } from 'suid';
 import moment from 'moment';
 import {
@@ -11,7 +11,13 @@ import {
   reviewRequirementConfig,
 } from '../../mainData/commomService';
 import { recommendUrl } from '@/utils/commonUrl';
-import { findRequirementLine, findYearLineLine, findAccessLineLine, findRecommendAccessByDataAuth } from '../service';
+import {
+  findRequirementLine,
+  findYearLineLine,
+  findAccessLineLine,
+  findRecommendAccessByDataAuth,
+  findPCNBillsLine,
+} from '../service';
 import { getFrameElement, openNewTab } from '../../../../utils';
 import { smBaseUrl } from '../../../../utils/commonUrl';
 
@@ -27,7 +33,7 @@ const title = {
   'annual': '从年度计划新增',
   'recommand': '从准入推荐新增',
   'demand': '从审核需求新增',
-  'pcnBills': '从PCN单据新增',
+  'pcnBills': '从PCN变更新增',
 };
 
 const AddModal = (props) => {
@@ -157,6 +163,41 @@ const AddModal = (props) => {
             },
           },
         ];
+      case 'pcnBills':
+        return [
+          {
+            title: '提出日期', dataIndex: 'createdDate', ellipsis: true, width: 120,
+          },
+          {
+            title: 'PCN变更号',
+            dataIndex: 'smPcnCode',
+            ellipsis: true,
+            width: 140,
+          },
+          {
+            title: '需求公司', dataIndex: 'companyName', width: 180, ellipsis: true,
+          },
+          {
+            title: '采购组织', dataIndex: 'purchaseOrgName', ellipsis: true, width: 180, render: (text, item) => {
+              return item.purchaseOrgName && item.purchaseOrgCode + ' ' + item.purchaseOrgName;
+            },
+          },
+          {
+            title: '供应商', dataIndex: 'smSupplierName', ellipsis: true, width: 180, render: (text, item) => {
+              return item.smSupplierName && item.smSupplierCode + ' ' + item.smSupplierName;
+            },
+          },
+          {
+            title: '物料分类', dataIndex: 'materielCategoryName', ellipsis: true, width: 140, render: (text, item) => {
+              return item.materielCategoryName && item.materielCategoryCode + ' ' + item.materielCategoryName;
+            },
+          },
+          {
+            title: '代理商', dataIndex: 'smOriginalFactoryName', ellipsis: true, width: 140, render: (text, item) => {
+              return item.smOriginalFactoryName && item.smOriginalFactoryCode + ' ' + item.smOriginalFactoryName;
+            },
+          },
+        ];
     }
   };
 
@@ -193,6 +234,34 @@ const AddModal = (props) => {
       };
     } else if (type === 'pcnBills') {
       return {
+        params: {
+          filters: [
+            {
+              'fieldName': 'smPcnCode',
+              'value': cascadeParams.smPcnCode ? cascadeParams.smPcnCode : '',
+              'operator': 'EQ',
+              'fieldType': 'string',
+            },
+            {
+              'fieldName': 'companyCode',
+              'value': cascadeParams.companyCode ? cascadeParams.companyCode : '',
+              'operator': 'EQ',
+              'fieldType': 'string',
+            },
+            {
+              'fieldName': 'materielCategoryCode',
+              'value': cascadeParams.materielCategoryCode ? cascadeParams.materielCategoryCode : '',
+              'operator': 'EQ',
+              'fieldType': 'string',
+            },
+            {
+              'fieldName': 'purchaseOrgCode',
+              'value': cascadeParams.purchaseOrgCode ? cascadeParams.purchaseOrgCode : '',
+              'operator': 'EQ',
+              'fieldType': 'string',
+            },
+          ],
+        },
         url: `${smBaseUrl}/api/smPcnTitleService/phyIdentQueryMonthlyPlan`,
         type: 'POST',
       };
@@ -228,6 +297,8 @@ const AddModal = (props) => {
       res = await findYearLineLine({
         ids: selectedRowKeys.join(),
       });
+    } else if (type === 'pcnBills') {
+      res = await findPCNBillsLine(selectRows);
     } else {
       res = await findAccessLineLine({
         ids: selectedRowKeys.join(),
@@ -260,6 +331,8 @@ const AddModal = (props) => {
             values.reviewMonthEnd = moment(values.reviewMonth).endOf('month').format('YYYY-MM-DD') + ' 23:59:59';
             delete values.reviewMonth;
           }
+        } else if (type === 'pcnBills') {
+
         } else {
           delete values.businessCode;
         }
@@ -404,6 +477,93 @@ const AddModal = (props) => {
                         form={form}
                         name="materialSecondClassifyName"
                         field={['materialSecondClassifyCode']}
+                        {...materialCodeProps}
+                      />,
+                    ))
+                }
+              </FormItem>
+            </Col>
+            <Col span={12}>
+              <FormItem
+                {...formItemLayoutLong}
+                label={'采购组织'}
+                style={{ marginBottom: '0px' }}
+              >
+                {
+                  (getFieldDecorator('purchaseOrgCode'),
+                    getFieldDecorator('purchaseOrgId'),
+                    getFieldDecorator('purchaseOrgName')(
+                      <ComboList
+                        allowClear={true}
+                        style={{ width: '100%' }}
+                        form={form}
+                        name={'purchaseOrgName'}
+                        field={['purchaseOrgCode', 'purchaseOrgId']}
+                        {...AllFindByFiltersConfig}
+                      />,
+                    ))
+                }
+              </FormItem>
+            </Col>
+          </Row>
+          <div style={{ textAlign: 'center', marginTop: '3px' }} onClick={handleSearch}>
+            <Button type="primary">查询</Button>
+          </div>
+        </Form>
+      );
+    } else if (type === 'pcnBills') {
+      return (
+        <Form>
+          <Row>
+            <Col span={12}>
+              <FormItem
+                {...formItemLayoutLong}
+                label={'PCN变更号'}
+                style={{ marginBottom: '0px' }}
+              >
+                {getFieldDecorator('smPcnCode')(
+                  <Input placeholder='请输入PCN变更号' />,
+                )}
+              </FormItem>
+            </Col>
+            <Col span={12}>
+              <FormItem
+                {...formItemLayoutLong}
+                label={'需求公司'}
+                style={{ marginBottom: '0px' }}
+              >
+                {
+                  (getFieldDecorator('applyCorporationId'),
+                    getFieldDecorator('applyCorporationCode'),
+                    getFieldDecorator('applyCorporationName')(
+                      <ComboList
+                        allowClear={true}
+                        style={{ width: '100%' }}
+                        form={form}
+                        name={'applyCorporationName'}
+                        field={['applyCorporationCode', 'applyCorporationId']}
+                        {...AllCompanyConfig}
+                      />,
+                    ))
+                }
+              </FormItem>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={12}>
+              <FormItem
+                {...formItemLayoutLong}
+                label={'物料分类'}
+                style={{ marginBottom: '0px' }}
+              >
+                {
+                  (getFieldDecorator('materielCategoryCode'),
+                    getFieldDecorator('materielCategoryName')(
+                      <ComboTree
+                        allowClear
+                        form={form}
+                        name="materielCategoryName"
+                        field={['materielCategoryCode']}
                         {...materialCodeProps}
                       />,
                     ))
