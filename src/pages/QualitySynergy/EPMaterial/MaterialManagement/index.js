@@ -493,6 +493,7 @@ export default create()(function ({ form }) {
                 }
             },
         },
+        { title: '复核状态', dataIndex: 'check', width: 100, render: (text) => text ? '已复核' : '未复核' },
         { title: '冻结', dataIndex: 'frozen', width: 70, render: (text) => text ? '是' : '否' },
         { title: '物料代码', dataIndex: 'materialCode', ellipsis: true },
         { title: '物料描述', dataIndex: 'materialName', ellipsis: true },
