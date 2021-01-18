@@ -43,7 +43,7 @@ const checkModal = forwardRef(({ form, selectedRow = {}, checkModalType }, ref) 
             }
         },
         {
-            title: '复核状态', dataIndex: 'check', width: 100, align: 'center', render: (text) => text ? '已复核' : '未复核'
+            title: '复核状态', dataIndex: 'checkReview', width: 100, align: 'center', render: (text) => text ? '已复核' : '未复核'
         },
         {
             title: '复核结果', dataIndex: 'reviewResults', ellipsis: true, align: 'center', render: (text) => {
