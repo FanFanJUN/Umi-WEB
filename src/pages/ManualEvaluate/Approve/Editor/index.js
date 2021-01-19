@@ -43,6 +43,47 @@ function Evaluate() {
       width: 200
     },
     {
+      title: '原厂代码',
+      dataIndex: 'originCode'
+    },
+    {
+      title: '原厂名称',
+      dataIndex: 'originName'
+    },
+    {
+      title: '物料分类代码',
+      dataIndex: 'materialCategoryCode'
+    },
+    {
+      title: '物料分类名称',
+      dataIndex: 'materialCategoryName',
+      width: 250
+    },
+    {
+      title: '标准分',
+      dataIndex: 'samSupplierEvlSysRule.highestScore'
+    },
+    {
+      title: '评分人',
+      dataIndex: 'scorerName'
+    },
+    {
+      title: '分值',
+      dataIndex: 'score'
+    },
+    {
+      title: '百分比',
+      dataIndex: 'percent'
+    },
+    {
+      title: '业务单元代码',
+      dataIndex: 'buCode'
+    },
+    {
+      title: '业务单元名称',
+      dataIndex: 'buName'
+    },
+    {
       title: '公司代码',
       dataIndex: 'corporationCode'
     },
@@ -60,23 +101,7 @@ function Evaluate() {
       dataIndex: 'purchaseOrgName',
       width: 200
     },
-    {
-      title: '物料分类代码',
-      dataIndex: 'materialCategoryCode'
-    },
-    {
-      title: '物料分类名称',
-      dataIndex: 'materialCategoryName',
-      width: 250
-    },
-    {
-      title: '原厂代码',
-      dataIndex: 'originCode'
-    },
-    {
-      title: '原厂名称',
-      dataIndex: 'originName'
-    },
+    
     {
       title: '指标名称',
       dataIndex: 'samSupplierEvlSysRule.ruleName',
@@ -91,18 +116,6 @@ function Evaluate() {
       title: '评审标准',
       dataIndex: 'samSupplierEvlSysRule.scoringStandard',
       width: 250
-    },
-    {
-      title: '标准分',
-      dataIndex: 'samSupplierEvlSysRule.highestScore'
-    },
-    {
-      title: '评分人',
-      dataIndex: 'scorerName'
-    },
-    {
-      title: '分值',
-      dataIndex: 'score'
     }
   ];
   const left = (
