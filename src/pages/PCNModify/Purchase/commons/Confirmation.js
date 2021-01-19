@@ -1,7 +1,7 @@
 
 import React, { forwardRef, useImperativeHandle, useEffect, useRef, useState } from 'react';
-import { Form, Row, Input, Col, Button, Radio,Modal,message } from 'antd';
-import { utils, ExtTable, AuthButton,DetailCard } from 'suid';
+import { Form, Row, Input, Col, Button, Radio, Modal, message } from 'antd';
+import { utils, ExtTable, AuthButton, DetailCard } from 'suid';
 import classnames from 'classnames';
 import styles from '../index.less';
 import Header from '@/components/Header';
@@ -11,227 +11,250 @@ import StaffModal from './StaffModal'
 import InformationModal from './informationModal'
 import CustomerinforModal from './CustomerinforModal'
 import AuditinforModal from './AuditinforModal'
-import {isEmpty } from '../../../../utils';
+import { isEmpty } from '../../../../utils';
 const { create } = Form;
 const FormItem = Form.Item;
 let keys = 0;
 const formLayout = {
-    labelCol: {
-        span: 3,
-    },
-    wrapperCol: {
-        span: 21
-    },
+  labelCol: {
+    span: 3,
+  },
+  wrapperCol: {
+    span: 21
+  },
 };
 const { storage } = utils
 let typeid = []
 const getconfirmFromRef = forwardRef(({
-	form,
+  form,
   isView,
   editData,
-	onClickfication = () => null,
-	Dyformname = () => null,
-	headerInfo,
-	change
+  onClickfication = () => null,
+  Dyformname = () => null,
+  headerInfo,
+  change
 }, ref) => {
-	useImperativeHandle(ref, () => ({
-		getBaseInfo,
-		form
-	}));
-	const { getFieldDecorator, setFieldsValue, getFieldValue, validateFieldsAndScroll } = form;
-    const CommonconfigRef = useRef(null);
-    const tabformRef = useRef(null);
-    const verifformRef = useRef(null);
-    const StaffFormRef = useRef(null);
-    const getInformation = useRef(null);
-    const getcustomerinfor = useRef(null);
-    const getauditinfor = useRef(null)
+  useImperativeHandle(ref, () => ({
+    getBaseInfo,
+    form
+  }));
+  const { getFieldDecorator, setFieldsValue, getFieldValue, validateFieldsAndScroll } = form;
+  const CommonconfigRef = useRef(null);
+  const tabformRef = useRef(null);
+  const verifformRef = useRef(null);
+  const StaffFormRef = useRef(null);
+  const getInformation = useRef(null);
+  const getcustomerinfor = useRef(null);
+  const getauditinfor = useRef(null)
 
-    const [selectRowKeys, setRowKeys] = useState([]);
-    const [selectedRows, setRows] = useState([]);
-    const [staffData,setStaffData] = useState([]);
-    const [selectedStaffKeys, setStaffKeys] = useState([]);
-    const [selectedStaffRows, setStaffRows] = useState([]);
-    const [stafvisible, setStafvisible] = useState(false);
-    const [opinion, setOpinion] = useState({});
-    const [dataSource, setDataSource] = useState([]);
-    const [purchase, setPurchase] = useState([]);
-    const [informationvisib, setInformationvisib] = useState(false);
-    const [showAttach, triggerShowAttach] = useState(false);
-    const emptyStaff = selectedStaffRows.length === 0; // 员工
-    const empty = selectRowKeys.length === 0;
-	  useEffect(() => {
-      editToexamine(editData)
-    }, [editData]);
-    // 验证方案
-    async function editToexamine(val) {
-      if (val) {
-        let materieldata = editData.smPcnAnalysisVos;
-        setDataSource(materieldata)
-        setPurchase(editData.smPcnConfirmPlanVo)
-      }
-      if (!isEmpty(val)) {
-        if (!isEmpty(val.smPcnConfirmPlanVo)) {
-          let opentype = val.smPcnConfirmPlanVo.ideaStatus
-          let editstaff = val.smPcnConfirmPlanVo.smPcnConfirmPlanTeamVos
-          let newdata = [];
-          if (editstaff.length > 0) {
-            editstaff.map((item,index)=> {
-              newdata.push({
-                key:index,
-                ...item
-              })
-            })
-          }
-          setOpinion(opentype)
-          setStaffData(newdata)
-        }
-        
-      }
+  const [selectRowKeys, setRowKeys] = useState([]);
+  const [selectedRows, setRows] = useState([]);
+  const [staffData, setStaffData] = useState([]);
+  const [selectedStaffKeys, setStaffKeys] = useState([]);
+  const [selectedStaffRows, setStaffRows] = useState([]);
+  const [stafvisible, setStafvisible] = useState(false);
+  const [opinion, setOpinion] = useState({});
+  const [dataSource, setDataSource] = useState([]);
+  const [purchase, setPurchase] = useState([]);
+  const [informationvisib, setInformationvisib] = useState(false);
+  //const [trust, setTrust] = useState(false);
+  const [verificationData, setVerificationData] = useState([]);
+
+  const [showAttach, triggerShowAttach] = useState(false);
+  const emptyStaff = selectedStaffRows.length === 0; // 员工
+  const empty = selectRowKeys.length === 0;
+  const differ = selectRowKeys.length > 1;
+  useEffect(() => {
+    editToexamine(editData)
+  }, [editData]);
+  // 验证方案
+  async function editToexamine(val) {
+    if (val) {
+      let materieldata = editData.smPcnAnalysisVos;
+      setDataSource(materieldata)
+      setPurchase(editData.smPcnConfirmPlanVo)
     }
-    // 采购小组表单
-    const columns = [
-      {
-        title: '员工姓名',
-        dataIndex: 'emloyeeName',
-        align: 'center',
-        width: 180,
-      },
-      {
-        title: '员工编号',
-        dataIndex: 'emloyeeNumber',
-        align: 'center',
-        width: 160
+    if (!isEmpty(val)) {
+      if (!isEmpty(val.smPcnConfirmPlanVo)) {
+        let opentype = val.smPcnConfirmPlanVo.ideaStatus
+        let editstaff = val.smPcnConfirmPlanVo.smPcnConfirmPlanTeamVos
+        let newdata = [];
+        if (editstaff.length > 0) {
+          editstaff.map((item, index) => {
+            newdata.push({
+              key: index,
+              ...item
+            })
+          })
+        }
+        setOpinion(opentype)
+        setStaffData(newdata)
       }
-    ]
-    // 验证方案表单
-    const verifColumns = [
-        {
-            title: '物料分类',
-            dataIndex: 'materielCategoryId',
-            align: 'center',
-            width: 160
-          },
-          {
-            title: '公司代码',
-            dataIndex: 'companyCode',
-            align: 'center',
-            width: 180,
-          },
-          {
-            title: '公司名称',
-            dataIndex: 'companyName',
-            align: 'center',
-            width: 220
-          },
-          {
-            title: '采购组织代码',
-            dataIndex: 'purchaseOrgCode',
-            align: 'center',
-            width: 180,
-          },
-          {
-            title: '采购组织名称',
-            dataIndex: 'purchaseOrgName',
-            align: 'center',
-            width: 160
-          },
-          {
-            title: '是否安规件',
-            dataIndex: 'smPcnPart',
-            align: 'center',
-            width: 180,
-            render: function (text, record, row) {
-              if (text === 0) {
-                  return <div>否</div>;
-              } else if (text === 1) {
-                  return <div className="doingColor">是</div>;
-              } 
-            },
-          },
-          {
-            title: '是否实物认定',
-            dataIndex: 'smInKindStatus',
-            align: 'center',
-            width: 160,
-            render: function (text, record, row) {
-              if (text === 0) {
-                  return <div>否</div>;
-              } else if (text === 1) {
-                  return <div className="doingColor">是</div>;
-              } 
-            },
-          },
-          // {
-          //   title: '信任公司',
-          //   dataIndex: 'smTrustCompanyCode',
-          //   align: 'center',
-          //   width: 180,
-          // },
-          // {
-          //   title: '信任采购组织',
-          //   dataIndex: 'smTrustPurchasCode',
-          //   align: 'center',
-          //   width: 160
-          // },
-          {
-            title: '实物认定确认人',
-            dataIndex: 'smInKindManName',
-            align: 'center',
-            width: 180,
-          },
-          {
-            title: '是否客户确认',
-            dataIndex: 'smCustomerConfirm',
-            align: 'center',
-            width: 160,
-            render: function (text, record, row) {
-              if (text === 0) {
-                  return <div>否</div>;
-              } else if (text === 1) {
-                  return <div className="doingColor">是</div>;
-              } 
-            },
-          },
-          {
-            title: '客户意见确认人',
-            dataIndex: 'smCustomerConfirmsName',
-            align: 'center',
-            width: 180,
-          },
-          {
-            title: '是否供应商审核',
-            dataIndex: 'smSupplierAuditStatus',
-            align: 'center',
-            width: 160,
-            render: function (text, record, row) {
-              if (text === 0) {
-                return <div>否</div>;
-              } else if (text === 1) {
-                return <div className="doingColor">是</div>;
-              } 
-            },
-          },
-          {
-            title: '供应商审核确认人',
-            dataIndex: 'smSupplierAuditConfirmerName',
-            align: 'center',
-            width: 180,
-          },
-    ]
-	// 获取表单参数
-	function getBaseInfo() {
-    let result = false,resultype,alltype = [],everytype;
+
+    }
+  }
+  // 采购小组表单
+  const columns = [
+    {
+      title: '员工姓名',
+      dataIndex: 'emloyeeName',
+      align: 'center',
+      width: 180,
+    },
+    {
+      title: '员工编号',
+      dataIndex: 'emloyeeNumber',
+      align: 'center',
+      width: 160
+    }
+  ]
+  // 验证方案表单
+  const verifColumns = [
+    {
+      title: '原厂名称',
+      dataIndex: 'smOriginalFactoryName',
+      align: 'center',
+      width: 160
+    },
+    {
+      title: '原厂代码',
+      dataIndex: 'smOriginalFactoryCode',
+      align: 'center',
+      width: 160
+    },
+    {
+      title: '物料分类',
+      dataIndex: 'materielCategoryName',
+      align: 'center',
+      width: 160
+    },
+    {
+      title: '公司代码',
+      dataIndex: 'companyCode',
+      align: 'center',
+      width: 180,
+    },
+    {
+      title: '公司名称',
+      dataIndex: 'companyName',
+      align: 'center',
+      width: 220
+    },
+    {
+      title: '采购组织代码',
+      dataIndex: 'purchaseOrgCode',
+      align: 'center',
+      width: 180,
+    },
+    {
+      title: '采购组织名称',
+      dataIndex: 'purchaseOrgName',
+      align: 'center',
+      width: 160
+    },
+    {
+      title: '是否安规件',
+      dataIndex: 'smPcnPart',
+      align: 'center',
+      width: 180,
+      render: function (text, record, row) {
+        if (text === 0) {
+          return <div>否</div>;
+        } else if (text === 1) {
+          return <div className="doingColor">是</div>;
+        }
+      },
+    },
+    {
+      title: '是否实物认定',
+      dataIndex: 'smInKindStatus',
+      align: 'center',
+      width: 160,
+      render: function (text, record, row) {
+        if (text === 0) {
+          return <div>否</div>;
+        } else if (text === 1) {
+          return <div className="doingColor">是</div>;
+        }
+      },
+    },
+    {
+      title: '是否信任',
+      dataIndex: 'trustOrNot',
+      align: 'center',
+      width: 140,
+      render: function (text, record, row) {
+        if (text === '0' || text === 0) {
+          return <div>否</div>;
+        } else if (text === '1' || text === 1) {
+          return <div className="doingColor">是</div>;
+        }
+      },
+    },
+    // {
+    //   title: '信任采购组织',
+    //   dataIndex: 'smTrustPurchasCode',
+    //   align: 'center',
+    //   width: 160
+    // },
+    {
+      title: '实物认定确认人',
+      dataIndex: 'smInKindManName',
+      align: 'center',
+      width: 180,
+    },
+    {
+      title: '是否客户确认',
+      dataIndex: 'smCustomerConfirm',
+      align: 'center',
+      width: 160,
+      render: function (text, record, row) {
+        if (text === 0) {
+          return <div>否</div>;
+        } else if (text === 1) {
+          return <div className="doingColor">是</div>;
+        }
+      },
+    },
+    {
+      title: '客户意见确认人',
+      dataIndex: 'smCustomerConfirmsName',
+      align: 'center',
+      width: 180,
+    },
+    {
+      title: '是否供应商审核',
+      dataIndex: 'smSupplierAuditStatus',
+      align: 'center',
+      width: 160,
+      render: function (text, record, row) {
+        if (text === 0) {
+          return <div>否</div>;
+        } else if (text === 1) {
+          return <div className="doingColor">是</div>;
+        }
+      },
+    },
+    // {
+    //   title: '供应商审核确认人',
+    //   dataIndex: 'smSupplierAuditConfirmerName',
+    //   align: 'center',
+    //   width: 180,
+    // },
+  ]
+  // 获取表单参数
+  function getBaseInfo() {
+    let result = false, resultype, alltype = [], everytype;
     let purchasetab = tabformRef.current.data;
-    if (purchasetab.length > 0 ) {
+    if (purchasetab.length > 0) {
       form.validateFieldsAndScroll((err, val) => {
         if (!err) {
           let purchase = {
-            smPcnConfirmPlanTeamVos:purchasetab,
+            smPcnConfirmPlanTeamVos: purchasetab,
             ideaStatus: val.ideaStatus,
             attachment: val.attachment
           }
-          editData.smPcnConfirmPlanVo = {...editData.smPcnConfirmPlanVo,...purchase}
+          editData.smPcnConfirmPlanVo = { ...editData.smPcnConfirmPlanVo, ...purchase }
           result = editData
           let verificatab = verifformRef.current.data;
           if (opinion === 2 && verificatab.length > 0) {
@@ -241,36 +264,10 @@ const getconfirmFromRef = forwardRef(({
                 result = false
                 return false
               } else {
-                // if (verificatab.length === 1) {
-                //   let global;
-                //   for (let item of verificatab) {
-                //     if (item.smInKindStatus === 0 && item.smCustomerConfirm === 0 && item.smSupplierAuditStatus === 0){
-                //       alltype.push(true)                     
-                //     } else {
-                //       alltype.push(false)
-                //     }
-                //   }
-                //   global = isAllEqual(alltype)
-                //   everytype = alltype.every(verifid)
-                //   resultype = global
-                 
-                // }else {
-                //   let global;
-                //   for (let item of verificatab) {
-                //     if (item.smInKindStatus === 0 && item.smCustomerConfirm === 0 && item.smSupplierAuditStatus === 0){
-                //       alltype.push(true)                     
-                //     } else {
-                //       alltype.push(false)
-                //     }
-                //   }
-                //   global = isAllEqual(alltype)
-                //   everytype = alltype.every(verifid)
-                //   resultype = global
-                // }
                 let global;
                 for (let item of verificatab) {
-                  if (item.smInKindStatus === 0 && item.smCustomerConfirm === 0 && item.smSupplierAuditStatus === 0){
-                    alltype.push(true)                     
+                  if (item.smInKindStatus === 0 && item.smCustomerConfirm === 0 && item.smSupplierAuditStatus === 0) {
+                    alltype.push(true)
                   } else {
                     alltype.push(false)
                   }
@@ -282,12 +279,12 @@ const getconfirmFromRef = forwardRef(({
                   message.error('当验证方案不能全部为否！')
                   result = false
                   return false
-                }else {
+                } else {
                   let newverifica = verifformRef.current.data
-                  editData.smPcnAnalysisVos.map((orig,indexs) => {
-                    newverifica.map((items,index) => {
+                  editData.smPcnAnalysisVos.map((orig, indexs) => {
+                    newverifica.map((items, index) => {
                       if (orig.id === items.id) {
-                        editData.smPcnAnalysisVos.splice(indexs,1,items)
+                        editData.smPcnAnalysisVos.splice(indexs, 1, items)
                       }
                     })
                   })
@@ -296,11 +293,11 @@ const getconfirmFromRef = forwardRef(({
               }
             }
           }
-          
+
         }
       })
       return result;
-    }else {
+    } else {
       message.error('采购小组成员最少有一行数据！')
       return false;
     }
@@ -314,11 +311,11 @@ const getconfirmFromRef = forwardRef(({
       return true;
     }
   }
-  function verifid (value, index, ar) {
+  function verifid(value, index, ar) {
     if (value === true) {
-        return true;
-    }else {
-        return false;
+      return true;
+    } else {
+      return false;
     }
   }
   // 采购小组新增
@@ -327,6 +324,8 @@ const getconfirmFromRef = forwardRef(({
   }
 
   function showinformation() {
+    const newdata = [...dataSource]
+    setVerificationData(newdata)
     getInformation.current.handleModalVisible(true)
   }
   function showCustomer() {
@@ -344,40 +343,38 @@ const getconfirmFromRef = forwardRef(({
   function handleStaff(val) {
     let newsdata = [];
     [...newsdata] = staffData;
-      if (newsdata.length > 0) {
-        let result = false
-        newsdata.map(item =>{
-          val.map((items,index) => {
-            if (item.emloyeeName === items.emloyeeName && 
-              item.emloyeeNumber === items.emloyeeNumber){
-              val.splice(index,1)
-              result = true
-            }    
-          })
-          
+    if (newsdata.length > 0) {
+      let result = false
+      newsdata.map(item => {
+        val.map((items, index) => {
+          if (item.emloyeeName === items.emloyeeName &&
+            item.emloyeeNumber === items.emloyeeNumber) {
+            val.splice(index, 1)
+            result = true
+          }
         })
-        if (result) {
-          message.error('当前数据已存在，请重新选择！')
-          addTodata(val)
-        }else {
-          addTodata(val)
-        }
-    }else {
+
+      })
+      if (result) {
+        message.error('当前数据已存在，请重新选择！')
+        addTodata(val)
+      } else {
+        addTodata(val)
+      }
+    } else {
       addTodata(val)
     }
-    // setStaffData(val)
-    // setStafvisible(false)
   }
-   // 新增添加数据
+  // 新增添加数据
   function addTodata(val) {
     let newsdata = [];
     [...newsdata] = staffData;
     val.map(ins => {
-      keys ++ ;
+      keys++;
       newsdata.push({
         key: keys,
-        emloyeeName:ins.emloyeeName,
-        emloyeeNumber:ins.emloyeeNumber,
+        emloyeeName: ins.emloyeeName,
+        emloyeeNumber: ins.emloyeeNumber,
       })
     })
     setStaffData(newsdata);
@@ -390,7 +387,7 @@ const getconfirmFromRef = forwardRef(({
     setStaffData(filterData)
   }
   // 采购小组表单选择
-  function PurSelectedRows(rowKeys,rows) {
+  function PurSelectedRows(rowKeys, rows) {
     setStaffKeys(rowKeys)
     setStaffRows(rows)
   }
@@ -409,15 +406,15 @@ const getconfirmFromRef = forwardRef(({
     setRows(rows);
   }
   // 编辑认定信息
-  async function handleinfor (val) {
+  async function handleinfor(val) {
     const newdata = [...dataSource]
     newdata.map((item, index) => {
-      val.map((items,indexs) => {
+      val.map((items, indexs) => {
         if (item.id === items.id) {
-          newdata.splice(index,1,items)
+          newdata.splice(index, 1, items)
         }
       })
-      
+
     })
     setDataSource(newdata)
     getInformation.current.handleModalVisible(false)
@@ -426,14 +423,13 @@ const getconfirmFromRef = forwardRef(({
   // 编辑客户信息
   function handlecustomer(val) {
     const newdata = [...dataSource]
-    console.log(newdata)
     newdata.map((item, index) => {
-      val.map((items,indexs) => {
+      val.map((items, indexs) => {
         if (item.id === items.id) {
-          newdata.splice(index,1,items)
+          newdata.splice(index, 1, items)
         }
       })
-      
+
     })
     setDataSource(newdata)
     getcustomerinfor.current.handleModalVisible(false)
@@ -443,17 +439,17 @@ const getconfirmFromRef = forwardRef(({
   function handletoexamine(val) {
     const newdata = [...dataSource]
     newdata.map((item, index) => {
-      val.map((items,indexs) => {
+      val.map((items, indexs) => {
         if (item.id === items.id) {
-          newdata.splice(index,1,items)
+          newdata.splice(index, 1, items)
         }
       })
-      
+
     })
     setDataSource(newdata)
     getauditinfor.current.handleModalVisible(false)
     uploadTable()
-  } 
+  }
   function uploadTable() {
     tabformRef.current.remoteDataRefresh()
     tabformRef.current.manualSelectedRows([])
@@ -475,7 +471,7 @@ const getconfirmFromRef = forwardRef(({
   const verifheaderleft = (
     <>
       {
-        <AuthButton className={styles.btn} onClick={() => showinformation()} disabled={empty}>编辑认定信息</AuthButton>
+        <AuthButton className={styles.btn} onClick={() => showinformation()} disabled={empty || differ}>编辑认定信息</AuthButton>
       }
       {
         <AuthButton className={styles.btn} onClick={() => showCustomer()} disabled={empty}>编辑客户信息</AuthButton>
@@ -485,161 +481,162 @@ const getconfirmFromRef = forwardRef(({
       }
     </>
   );
-	return (
-		<div>
-			{/* <div className={classnames([styles.header, styles.flexBetweenStart])}>
+  return (
+    <div>
+      {/* <div className={classnames([styles.header, styles.flexBetweenStart])}>
                 <span className={styles.title}>确认方案</span>
             </div> */}
-            <div >
-                <DetailCard title="采购小组成员">
-                    <Header  style={{ display: headerInfo === true ? 'none' : 'block',color: 'red' }}
-                        left={ headerInfo ? '' : headerleft}
-                        advanced={false}
-                        extra={false}
-                    />
-                    <AutoSizeLayout>
-                        {
-                        (height) => <ExtTable
-                            columns={columns}
-                            showSearch={false}
-                            ref={tabformRef}
-                            rowKey={(item) => item.key}
-                            checkbox={{
-                              multiSelect: false
-                            }}
-                            pagination={{
-                              hideOnSinglePage: true,
-                              disabled: false,
-                              pageSize: 100,
-                            }}
-                            allowCancelSelect={true}
-                            size='small'
-                            height={height}
-                            remotePaging={true}
-                            ellipsis={false}
-                            saveData={false}
-                            onSelectRow={PurSelectedRows}
-                            selectedRowKeys={selectedStaffKeys}
-                            dataSource={staffData}
-                        />
-                        }
-                    </AutoSizeLayout>
-                    <Row>
-                        <Col span={20}>
-                            <FormItem {...formLayout} label="评审资料">
-                                {getFieldDecorator('attachment', {
-                                    rules: [
-                                        {
-                                            required: !isView,
-                                            message: '请上传评审资料',
-                                        },
-                                    ],
-                                })(
-                                    <UploadFile
-                                        title={"附件上传"}
-                                        entityId={purchase ? purchase.reviewDataId : null}
-                                        type={isView ? "show" : ""}
-                                    />
-                                )}
-                            </FormItem>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span={20}>
-                            <FormItem {...formLayout} label="初评意见">
-                                {getFieldDecorator('ideaStatus', {
-                                    initialValue: purchase && purchase.ideaStatus,
-                                    rules: [
-                                        {
-                                            required: !isView,
-                                            message: '请选择初评意见',
-                                        },
-                                    ],
-                                })(
-                                    <Radio.Group disabled={isView === true} onChange={(e) => opinionChange(e)}>
-                                        <Radio value={0}>不需要验证</Radio>
-                                        {/* <Radio value={1}>立即执行变更</Radio> */}
-                                        <Radio value={2}>需要验证</Radio>
-                                    </Radio.Group>
-                                )}
-                            </FormItem>
-                        </Col>
-                    </Row>
-                </DetailCard>
-                { 
-                  opinion === 2 ? <DetailCard title="验证方案">
-                      <Header  style={{ display: headerInfo === true ? 'none' : 'block',color: 'red' }}
-                          left={ headerInfo ? '' : verifheaderleft}
-                          advanced={false}
-                          extra={false}
-                      />
-                      <AutoSizeLayout>
-                          {
-                          (height) => <ExtTable
-                              columns={verifColumns}
-                              showSearch={false}
-                              ref={verifformRef}
-                              rowKey={(item) => item.id}
-                              checkbox={{
-                                multiSelect: true
-                              }}
-                              pagination={{
-                                hideOnSinglePage: true,
-                                disabled: false,
-                                pageSize: 100,
-                              }}
-                              allowCancelSelect={true}
-                              size='small'
-                              height={height}
-                              remotePaging={true}
-                              ellipsis={false}
-                              saveData={false}
-                              onSelectRow={handleSelectedRows}
-                              selectedRowKeys={selectRowKeys}
-                              dataSource={dataSource}
-                          />
-                          }
-                      </AutoSizeLayout>    
-                  </DetailCard> : null
-                }
-                
-                {/**员工 */}
-                <StaffModal
-                    visible={stafvisible}
-                    onCancel={handleCancel}
-                    onOk={handleStaff}
-                    wrappedComponentRef={StaffFormRef}
-                    destroyOnClose
+      <div >
+        <DetailCard title="采购小组成员">
+          <Header style={{ display: headerInfo === true ? 'none' : 'block', color: 'red' }}
+            left={headerInfo ? '' : headerleft}
+            advanced={false}
+            extra={false}
+          />
+          <AutoSizeLayout>
+            {
+              (height) => <ExtTable
+                columns={columns}
+                showSearch={false}
+                ref={tabformRef}
+                rowKey={(item) => item.key}
+                checkbox={{
+                  multiSelect: false
+                }}
+                pagination={{
+                  hideOnSinglePage: true,
+                  disabled: false,
+                  pageSize: 100,
+                }}
+                allowCancelSelect={true}
+                size='small'
+                height={height}
+                remotePaging={true}
+                ellipsis={false}
+                saveData={false}
+                onSelectRow={PurSelectedRows}
+                selectedRowKeys={selectedStaffKeys}
+                dataSource={staffData}
+              />
+            }
+          </AutoSizeLayout>
+          <Row>
+            <Col span={20}>
+              <FormItem {...formLayout} label="评审资料">
+                {getFieldDecorator('attachment', {
+                  rules: [
+                    {
+                      required: !isView,
+                      message: '请上传评审资料',
+                    },
+                  ],
+                })(
+                  <UploadFile
+                    title={"附件上传"}
+                    entityId={purchase ? purchase.reviewDataId : null}
+                    type={isView ? "show" : ""}
+                  />
+                )}
+              </FormItem>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={20}>
+              <FormItem {...formLayout} label="初评意见">
+                {getFieldDecorator('ideaStatus', {
+                  initialValue: purchase && purchase.ideaStatus,
+                  rules: [
+                    {
+                      required: !isView,
+                      message: '请选择初评意见',
+                    },
+                  ],
+                })(
+                  <Radio.Group disabled={isView === true} onChange={(e) => opinionChange(e)}>
+                    <Radio value={0}>不需要验证</Radio>
+                    {/* <Radio value={1}>立即执行变更</Radio> */}
+                    <Radio value={2}>需要验证</Radio>
+                  </Radio.Group>
+                )}
+              </FormItem>
+            </Col>
+          </Row>
+        </DetailCard>
+        {
+          opinion === 2 ? <DetailCard title="验证方案">
+            <Header style={{ display: headerInfo === true ? 'none' : 'block', color: 'red' }}
+              left={headerInfo ? '' : verifheaderleft}
+              advanced={false}
+              extra={false}
+            />
+            <AutoSizeLayout>
+              {
+                (height) => <ExtTable
+                  columns={verifColumns}
+                  showSearch={false}
+                  ref={verifformRef}
+                  rowKey={(item) => item.id}
+                  checkbox={{
+                    multiSelect: true
+                  }}
+                  pagination={{
+                    hideOnSinglePage: true,
+                    disabled: false,
+                    pageSize: 100,
+                  }}
+                  allowCancelSelect={true}
+                  size='small'
+                  height={height}
+                  remotePaging={true}
+                  ellipsis={false}
+                  saveData={false}
+                  onSelectRow={handleSelectedRows}
+                  selectedRowKeys={selectRowKeys}
+                  dataSource={dataSource}
                 />
-                <Modal
-                    visible={showAttach}
-                    onCancel={hideAttach}
-                    footer={
-                        <Button type='ghost' onClick={hideAttach}>关闭</Button>
-                    }
-                ></Modal>
-                {/**认定信息 */}
-                <InformationModal
-                  alonedata={editData} 
-                  editData={selectedRows}
-                  determine={handleinfor}  
-                  wrappedComponentRef={getInformation}
-                />
-                {/**客户信息 */}
-                <CustomerinforModal
-                  editData={selectedRows}
-                  customer={handlecustomer} 
-                  wrappedComponentRef={getcustomerinfor} 
-                />
-                {/**审核信息 */}
-                <AuditinforModal
-                  editData={selectedRows}
-                  toexamine={handletoexamine}  
-                  wrappedComponentRef={getauditinfor} 
-                />
-            </div>
-		</div>
-	)
+              }
+            </AutoSizeLayout>
+          </DetailCard> : null
+        }
+
+        {/**员工 */}
+        <StaffModal
+          visible={stafvisible}
+          onCancel={handleCancel}
+          onOk={handleStaff}
+          wrappedComponentRef={StaffFormRef}
+          destroyOnClose
+        />
+        <Modal
+          visible={showAttach}
+          onCancel={hideAttach}
+          footer={
+            <Button type='ghost' onClick={hideAttach}>关闭</Button>
+          }
+        ></Modal>
+        {/**认定信息 */}
+        <InformationModal
+          alonedata={editData}
+          editData={selectedRows}
+          determine={handleinfor}
+          verificationData={verificationData}
+          wrappedComponentRef={getInformation}
+        />
+        {/**客户信息 */}
+        <CustomerinforModal
+          editData={selectedRows}
+          customer={handlecustomer}
+          wrappedComponentRef={getcustomerinfor}
+        />
+        {/**审核信息 */}
+        <AuditinforModal
+          editData={selectedRows}
+          toexamine={handletoexamine}
+          wrappedComponentRef={getauditinfor}
+        />
+      </div>
+    </div>
+  )
 })
 const CommonForm = create()(getconfirmFromRef)
 

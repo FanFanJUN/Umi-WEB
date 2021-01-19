@@ -1,13 +1,13 @@
 import React, { createRef, useState, useRef, useEffect } from 'react';
 import { Button, Modal, message, Spin, Affix, Tabs } from 'antd';
-import { WorkFlow} from 'suid';
+import { WorkFlow } from 'suid';
 import { router } from 'dva';
-import PCNModifyDetail from '../Purchase/commons/PCNModifyDetail' 
-import Confirmation from '../Purchase/commons/Confirmation' 
+import PCNModifyDetail from '../Purchase/commons/PCNModifyDetail'
+import Confirmation from '../Purchase/commons/Confirmation'
 import ResultsIdenDetail from '../Purchase/commons/ResultsIdenDetail'
-import { closeCurrent, isEmpty ,checkToken} from '../../../utils';
+import { closeCurrent, isEmpty, checkToken } from '../../../utils';
 import styles from '../Purchase/index.less';
-import {findPCNSupplierId,saveApprovePurchaseVo} from '../../../services/pcnModifyService'
+import { findPCNSupplierId, saveApprovePurchaseVo } from '../../../services/pcnModifyService'
 const TabPane = Tabs.TabPane;
 function CreateStrategy() {
     const getpcnModifyRef = useRef(null);
@@ -23,7 +23,7 @@ function CreateStrategy() {
     useEffect(() => {
         async function init() {
             await checkToken(query, setIsReady);
-            initsupplierDetai(); 
+            initsupplierDetai();
         }
         init()
     }, []);
@@ -31,7 +31,7 @@ function CreateStrategy() {
     async function initsupplierDetai() {
         triggerLoading(true);
         let id = query.id;
-        const { data, success, message: msg } = await findPCNSupplierId({pcnTitleId:id});
+        const { data, success, message: msg } = await findPCNSupplierId({ pcnTitleId: id });
         if (success) {
             setEditData(data)
             triggerLoading(false);
@@ -42,32 +42,32 @@ function CreateStrategy() {
     }
     // 保存
     const handleSave = async (approved) => {
-        const {getmaterialform} = getResultsIden.current;
+        const { getmaterialform } = getResultsIden.current;
         let materialdata = getmaterialform()
         if (!materialdata) {
-          return false
-        }else {
-          triggerLoading(true)
-          const { success, message: msg } = await saveApprovePurchaseVo(materialdata)
-          triggerLoading(false)
-          return new Promise((resolve, reject) => {
-              if (success) {
-                  resolve({
-                  success,
-                  message: msg
-                  })
-                  message.success(msg)
-                  return;
-              }
-              reject(false)
-              message.error(msg)
-          })
+            return false
+        } else {
+            triggerLoading(true)
+            const { success, message: msg } = await saveApprovePurchaseVo(materialdata)
+            triggerLoading(false)
+            return new Promise((resolve, reject) => {
+                if (success) {
+                    resolve({
+                        success,
+                        message: msg
+                    })
+                    message.success(msg)
+                    return;
+                }
+                reject(false)
+                message.error(msg)
+            })
         }
     }
     function handleSubmitComplete(res) {
         const { success } = res;
         if (success) {
-          closeCurrent();
+            closeCurrent();
         }
     }
     function tabClickHandler(params) {
@@ -82,38 +82,38 @@ function CreateStrategy() {
                 flowMapUrl="flow-web/design/showLook"
                 submitComplete={handleSubmitComplete}
                 beforeSubmit={handleSave}
-                >
-                    <Spin spinning={loading} tip='处理中...'>
-                        <div className={styles.wrapper}>
-                            <Tabs className="tabstext" onTabClick={(params)=>tabClickHandler(params)} style={{ background: '#fff' }}>
-                                <TabPane forceRender tab="PCN变更单" key="1">
-                                    <PCNModifyDetail
-                                        editData={editData}
-                                        wrappedComponentRef={getpcnModifyRef}
-                                        result={false}
-                                    />
-                                </TabPane>
-                                <TabPane forceRender tab="确认方案" key="2">
-                                    <Confirmation
-                                        editData={editData}
-                                        wrappedComponentRef={getconfirmFromRef}
-                                        isView={true}
-                                        headerInfo={true}
-                                    />
-                                </TabPane>
-                                <TabPane forceRender tab="验证结果" key="3">
-                                    <ResultsIdenDetail
-                                        editData={editData}
-                                        isView={false}
-                                        wrappedComponentRef={getResultsIden}
-                                    />
-                                </TabPane>
-                            </Tabs>
-                        </div>
-                    </Spin>
-                </WorkFlow.Approve>
+            >
+                <Spin spinning={loading} tip='处理中...'>
+                    <div className={styles.wrapper}>
+                        <Tabs className="tabstext" onTabClick={(params) => tabClickHandler(params)} style={{ background: '#fff' }}>
+                            <TabPane forceRender tab="PCN变更单" key="1">
+                                <PCNModifyDetail
+                                    editData={editData}
+                                    wrappedComponentRef={getpcnModifyRef}
+                                    result={false}
+                                />
+                            </TabPane>
+                            <TabPane forceRender tab="确认方案" key="2">
+                                <Confirmation
+                                    editData={editData}
+                                    wrappedComponentRef={getconfirmFromRef}
+                                    isView={true}
+                                    headerInfo={true}
+                                />
+                            </TabPane>
+                            <TabPane forceRender tab="实物认定结果" key="3">
+                                <ResultsIdenDetail
+                                    editData={editData}
+                                    isView={false}
+                                    wrappedComponentRef={getResultsIden}
+                                />
+                            </TabPane>
+                        </Tabs>
+                    </div>
+                </Spin>
+            </WorkFlow.Approve>
             ) : null
-            
+
             }
         </>
     )

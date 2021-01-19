@@ -1,11 +1,11 @@
 import React, { forwardRef, useState, useRef, useEffect, useImperativeHandle } from 'react';
-import { ExtTable, ComboList, utils, ToolBar,AuthButton  } from 'suid';
+import { ExtTable, ComboList, utils, ToolBar, AuthButton } from 'suid';
 import { Form, Button, message, Checkbox, Modal } from 'antd';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
 import UploadFile from '../../../../components/Upload/index'
-import {SupplierResulteList} from '../../commonProps'
+import { SupplierResulteList } from '../../commonProps'
 import { dataTransfer2 } from '../../../supplierRegister/CommonUtils'
-import {isEmpty} from '../../../../utils'
+import { isEmpty } from '../../../../utils'
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { create } = Form;
 const FormItem = Form.Item;
@@ -35,8 +35,20 @@ const getCustomerOpin = forwardRef(({
 
   const columns = [
     {
+      title: '原厂名称',
+      dataIndex: 'smOriginalFactoryName',
+      align: 'center',
+      width: 160
+    },
+    {
+      title: '原厂代码',
+      dataIndex: 'smOriginalFactoryCode',
+      align: 'center',
+      width: 160
+    },
+    {
       title: '物料分类',
-      dataIndex: 'materielCategoryId',
+      dataIndex: 'materielCategoryName',
       align: 'center',
       width: 160
     },
@@ -68,13 +80,13 @@ const getCustomerOpin = forwardRef(({
       title: '是否安规件',
       dataIndex: 'smPcnPart',
       align: 'center',
-      width: 180,
+      width: 160,
       render: function (text, record, row) {
         if (text === 0) {
-            return <div>否</div>;
+          return <div>否</div>;
         } else if (text === 1) {
-            return <div className="doingColor">是</div>;
-        } 
+          return <div className="doingColor">是</div>;
+        }
       },
     },
     {
@@ -83,65 +95,65 @@ const getCustomerOpin = forwardRef(({
       align: 'center',
       width: 180,
     },
-      {
-        title: '客户意见',
-        dataIndex: 'smCustomerResultConfirm',
-        align: 'center',
-        width: 220,
-        render: (text, record, index) => {
-          if (isView) {
-              return !isEmpty(record) && !isEmpty(record.smCustomerResultConfirm) ? record.smCustomerResultConfirm === 0 ? '通过' : '不通过' : '';
-          }
-          return <span>
-              {
-                record.smCustomerConfirm === 1 && record.smCustomerConfirmsName === authorizations.userName ?  
-                <FormItem style={{ marginBottom: 0 }}>
+    {
+      title: '客户意见',
+      dataIndex: 'smCustomerResultConfirm',
+      align: 'center',
+      width: 160,
+      render: (text, record, index) => {
+        if (isView) {
+          return !isEmpty(record) && !isEmpty(record.smCustomerResultConfirm) ? record.smCustomerResultConfirm === 0 ? '通过' : '不通过' : '';
+        }
+        return <span>
+          {
+            record.smCustomerConfirm === 1 && record.smCustomerConfirmsName === authorizations.userName ?
+              <FormItem style={{ marginBottom: 0 }}>
                 {
-                    getFieldDecorator(`smCustomerResultConfirm[${index}]`,{initialValue: record ? record.smCustomerResultConfirm : ''}),
-                    getFieldDecorator(`smCustomerResultConfirmName[${index}]`, {
-                        initialValue: record ? record.smCustomerResultConfirmName : '',
-                        rules: [{ required: true, message: '请选择客户结果!', whitespace: true }],
-                    })( 
-                      <ComboList 
-                          form={form}
-                          {...SupplierResulteList}
-                          showSearch={false}
-                          //afterSelect={afterSelect}
-                          name={`smCustomerResultConfirmName[${index}]`}
-                          field={[`smCustomerResultConfirm[${index}]`]}
-                      />
-                    )
+                  getFieldDecorator(`smCustomerResultConfirm[${index}]`, { initialValue: record ? record.smCustomerResultConfirm : '' }),
+                  getFieldDecorator(`smCustomerResultConfirmName[${index}]`, {
+                    initialValue: record ? record.smCustomerResultConfirmName : '',
+                    rules: [{ required: true, message: '请选择客户结果!', whitespace: true }],
+                  })(
+                    <ComboList
+                      form={form}
+                      {...SupplierResulteList}
+                      showSearch={false}
+                      //afterSelect={afterSelect}
+                      name={`smCustomerResultConfirmName[${index}]`}
+                      field={[`smCustomerResultConfirm[${index}]`]}
+                    />
+                  )
                 }
-                </FormItem> : !isEmpty(record) && !isEmpty(record.smCustomerResultConfirm) ? record.smCustomerResultConfirm === 0 ? '通过' : '不通过' : ''
-              }
-          </span>;
+              </FormItem> : !isEmpty(record) && !isEmpty(record.smCustomerResultConfirm) ? record.smCustomerResultConfirm === 0 ? '通过' : '不通过' : ''
+          }
+        </span>;
       }
     },
     {
       title: '附件资料',
       dataIndex: 'customerEnclosure',
       align: 'center',
-      width: 220,
+      width: 160,
       render: (text, record, index) => {
         if (isView) {
-          return <UploadFile type="show" entityId={text}/>
+          return <UploadFile type="show" entityId={text} />
         }
         return <span>
           {
-            record.smCustomerConfirm === 1 && record.smCustomerConfirmsName === authorizations.userName? <FormItem style={{ marginBottom: 0 }}>
+            record.smCustomerConfirm === 1 && record.smCustomerConfirmsName === authorizations.userName ? <FormItem style={{ marginBottom: 0 }}>
               {
                 getFieldDecorator(`customerEnclosure[${index}]`, {
-                    initialValue: record ? record.customerEnclosure : '',
-                    rules: [{ required: true, message: '请上传附件!'}],
-                })( 
+                  initialValue: record ? record.customerEnclosure : '',
+                  rules: [{ required: true, message: '请上传附件!' }],
+                })(
                   <UploadFile
-                      title={"附件上传"}
-                      entityId={record ? record.customerEnclosure : null}
-                      type={isView ? "show" : ""}
+                    title={"附件上传"}
+                    entityId={record ? record.customerEnclosure : null}
+                    type={isView ? "show" : ""}
                   />
                 )
               }
-            </FormItem> : <UploadFile type="show" entityId={text}/>
+            </FormItem> : <UploadFile type="show" entityId={text} />
           }
         </span>
       }
@@ -154,7 +166,7 @@ const getCustomerOpin = forwardRef(({
     const material = tabformRef.current.data;
     if (material.length === 0) {
       return false;
-    }else {
+    } else {
       form.validateFieldsAndScroll((err, values) => {
         let handledata = dataTransfer2(material, values)
         for (let item of handledata) {
@@ -163,13 +175,13 @@ const getCustomerOpin = forwardRef(({
               items.customerAttachments = item.customerEnclosure
               items.smCustomerResultConfirm = item.smCustomerResultConfirm
             }
-            
+
           }
         }
         if (!err) {
           customer.smPcnAnalysisVos = material
           result = customer
-        }else {
+        } else {
           message.error('客户意见不能为空！')
           return false;
         }
@@ -181,8 +193,8 @@ const getCustomerOpin = forwardRef(({
   return (
     <>
       <AutoSizeLayout>
-      {
-        (height) => <ExtTable
+        {
+          (height) => <ExtTable
             columns={columns}
             showSearch={false}
             ref={tabformRef}
@@ -201,7 +213,7 @@ const getCustomerOpin = forwardRef(({
             saveData={false}
             selectedRowKeys={selectRowKeys}
             dataSource={dataSource}
-        />
+          />
         }
       </AutoSizeLayout>
     </>

@@ -456,7 +456,7 @@ let LineInfo = forwardRef((props, ref) => {
               <Button onClick={() => handleBtn('annual')} type='primary'>从年度计划新增</Button>
               <Button onClick={() => handleBtn('recommand')} type='primary'>从准入推荐新增</Button>
               <Button onClick={() => handleBtn('demand')} type='primary'>从审核需求新增</Button>
-              {/*<Button onClick={() => handleBtn('pcnBills')} type='primary'>从PCN单据新增</Button>*/}
+              <Button onClick={() => handleBtn('pcnBills')} type='primary'>从PCN单据新增</Button>
               <Button onClick={() => {
                 handleBtn('edit');
               }} disabled={data.selectRows.length === 0 || checkSelect()}>批量编辑</Button>

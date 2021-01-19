@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ExtTable, WorkFlow, ExtModal, utils, ComboList } from 'suid';
-import { Input, Button, message, Modal, Checkbox } from 'antd';
+import { Input, Button, message, Modal } from 'antd';
 import { openNewTab, getFrameElement, isEmpty } from '@/utils';
 import { StartFlow } from 'seid';
 import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
 import styles from './index.less';
 import { recommendUrl } from '@/utils/commonUrl';
 import RecommendModle from '../Cognizance/commons/recommendModle'
+import PCMModle from '../Cognizance/commons/PCMModle'
 import InfluenceMaterielModal from '../Cognizance/commons/InfluenceMaterielModal'
 import {
     MaterialObjectDelete,
@@ -32,6 +33,7 @@ function SupplierConfigure() {
     const getModelRef = useRef(null)
     const tableRef = useRef(null)
     const headerRef = useRef(null)
+    const getPCNModelRef = useRef(null)
     const getecommendRef = useRef(null)
     const authorizations = storage.sessionStorage.get("Authorization");
     const currentUserId = authorizations?.userId;
@@ -70,9 +72,11 @@ function SupplierConfigure() {
             width: 140,
             render: function (text, record, row) {
                 if (text === 0) {
-                    return <div>手工单</div>;
-                } else {
+                    return <div>合格供应商名录单</div>;
+                } else if (text === 1) {
                     return <div className="successColor">准入单</div>;
+                } else if (text === 2) {
+                    return <div className="successColor">PCN变更单</div>;
                 }
             },
         },
@@ -229,15 +233,24 @@ function SupplierConfigure() {
         sessionStorage.setItem('Admitdata', JSON.stringify(record));
         openNewTab(`material/Cognizance/AdmitAdd/index?admitype=1`, '准入单认定计划新增', false)
     }
-    function selectmanual(record) {
-        sessionStorage.removeItem('Manualdata');
-        sessionStorage.setItem('Manualdata', JSON.stringify(record));
-        openNewTab(`material/Cognizance/ManualAdd/index?admitype=0`, '准入单认定计划新增', false)
+    // PCN变更新增
+    function PcnModel() {
+        getPCNModelRef.current.handleModalVisible(true);
     }
+    function selectPCNmanual(record) {
+        sessionStorage.removeItem('PCNManualdata');
+        sessionStorage.setItem('PCNManualdata', JSON.stringify(record));
+        openNewTab(`material/Cognizance/PCNModifyAdd/index?admitype=2`, 'PCN变更新增', false)
+    }
+
     // 手工新增
     function ManualEditAddModel() {
         getModelRef.current.handleModalVisible(true);
-        //openNewTab(`material/Cognizance/ManualAdd/index?admitype=0`, '手工物料认定计划新增', false)
+    }
+    function selectmanual(record) {
+        sessionStorage.removeItem('Manualdata');
+        sessionStorage.setItem('Manualdata', JSON.stringify(record));
+        openNewTab(`material/Cognizance/ManualAdd/index?admitype=0`, '合格供应商名录新增', false)
     }
     // 编辑
     function handleCheckEdit() {
@@ -246,8 +259,10 @@ function SupplierConfigure() {
         let admitype = selectedRows[0].documentType
         if (admitype === 0) {
             openNewTab(`material/Cognizance/ManualEdit/index?id=${id}&cancel=${cancel}&admitype=${admitype}`, '实物认定计划变更', false)
-        } else {
+        } else if (admitype === 1) {
             openNewTab(`material/Cognizance/AdmitEdit/index?id=${id}&cancel=${cancel}&admitype=${admitype}`, '实物认定计划变更', false)
+        } else if (admitype === 2) {
+            openNewTab(`material/Cognizance/PCNModifyEdit/index?id=${id}&cancel=${cancel}&admitype=${admitype}`, '实物认定计划变更', false)
         }
 
     }
@@ -358,7 +373,7 @@ function SupplierConfigure() {
     }
     // 左侧
     const HeaderLeftButtons = (
-        <div style={{ width: '50%', display: 'flex', height: '100%', alignItems: 'center' }}>
+        <div>
             {
                 authAction(
                     <Button type='primary'
@@ -375,11 +390,23 @@ function SupplierConfigure() {
                 authAction(
                     <Button type='primary'
                         ignore={DEVELOPER_ENV}
+                        key='SRM-SM-LDENTPLAN-SUPPLIER-PCNADD'
+                        className={styles.btn}
+                        onClick={PcnModel}
+                    //disabled={empty}
+                    >PCN变更创建
+                    </Button>
+                )
+            }
+            {
+                authAction(
+                    <Button type='primary'
+                        ignore={DEVELOPER_ENV}
                         key='SRM-SM-LDENTPLAN-SUPPLIER-MANADD'
                         className={styles.btn}
                         onClick={ManualEditAddModel}
                     //disabled={empty}
-                    >手工创建
+                    >从合格供应商名录创建
                     </Button>
                 )
             }
@@ -529,6 +556,11 @@ function SupplierConfigure() {
             <RecommendModle
                 modifyanalysis={selectanalysis}
                 wrappedComponentRef={getecommendRef}
+            />
+            {/****PCN变更 */}
+            <PCMModle
+                modifyanalysis={selectPCNmanual}
+                wrappedComponentRef={getPCNModelRef}
             />
             {/**手工物料 */}
             <InfluenceMaterielModal

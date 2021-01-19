@@ -39,6 +39,10 @@ const BusinessRef = forwardRef(({
         labelCol: { span: 3 },
         wrapperCol: { span: 15 },
     };
+    const otherformItemLayout = {
+        labelCol: { span: 2 },
+        wrapperCol: { span: 22 },
+    };
     // 暂存
     function businerTemporary() {
         let result = false;
@@ -65,7 +69,7 @@ const BusinessRef = forwardRef(({
                 result = endData
             }
         });
-        
+
         return result;
     }
     // 获取表单值
@@ -77,9 +81,9 @@ const BusinessRef = forwardRef(({
             // const { getThreeYear } = ThreeYearRef.current;
             // const getMaSaa = getMainclient();
             // const incomeVal = getThreeYear();
-            
+
             if (!err) {
-                let endData = values,getMaSaa,incomeVal;
+                let endData = values, getMaSaa, incomeVal;
                 businesshide.map((item, index) => {
                     if (item.verifi !== '3' && item.key === "majorCustomersVos") {
                         const { mainTemporary } = MainClientRef.current;
@@ -99,7 +103,7 @@ const BusinessRef = forwardRef(({
                 //let others = values;
                 result = endData
             }
-            
+
         });
         return result;
     }
@@ -130,9 +134,9 @@ const BusinessRef = forwardRef(({
                                                     initialValue: editData && editData.supplierVo ? editData.supplierVo.enterpriseProfile : '',
                                                     rules: [{ required: item.verifi === '0', message: "请输入供应商简介", whitespace: true }]
                                                 })(
-                                                    <Input.TextArea 
-                                                    disabled={item.verifi === '2'}
-                                                    maxLength={250}
+                                                    <Input.TextArea
+                                                        disabled={item.verifi === '2'}
+                                                        maxLength={250}
                                                         placeholder={"请输入供应商简介,主要应包括人数、地址、经营范围、拟准入产品生产能力、资质等信息。"} />
                                                 )
                                         }
@@ -172,12 +176,12 @@ const BusinessRef = forwardRef(({
                                 </Row> : null}
                                 {item.key === "supplierRecentIncomes" ? <Row>
                                     <FormItem
-                                        {...formItemLayout}
+                                        {...otherformItemLayout}
                                         label={<span><label className="ant-form-item-required" title=""></label>近三年收入</span>}
                                     >
                                         {
                                             <ThreeYearIncome
-                                            disabled={item.verifi === '2'}
+                                                disabled={item.verifi === '2'}
                                                 isView={isView}
                                                 editData={editData}
                                                 wrappedComponentRef={ThreeYearRef} />

@@ -1,22 +1,23 @@
 import React, { forwardRef, useState, useRef, useEffect, useImperativeHandle } from 'react';
-import { ExtTable, utils, ToolBar,AuthButton  } from 'suid';
-import { Form, Row, Col, Input, DatePicker,message  } from 'antd';
+import { ExtTable, utils, ToolBar, AuthButton } from 'suid';
+import { Form, Row, Col, Input, DatePicker, message } from 'antd';
 import Header from '@/components/Header';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
 import MaterielModal from './MaterielModal'
 import styles from '../index.less';
 import moment from 'moment';
+import UploadFile from '../../../../components/Upload/index'
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { create } = Form;
 const FormItem = Form.Item;
 const { TextArea } = Input;
 const formLayout = {
-    labelCol: {
-        span: 8,
-    },
-    wrapperCol: {
-        span: 16
-    },
+  labelCol: {
+    span: 8,
+  },
+  wrapperCol: {
+    span: 16
+  },
 };
 const { authAction, storage } = utils;
 const getExecutioninfor = forwardRef(({
@@ -54,20 +55,20 @@ const getExecutioninfor = forwardRef(({
       if (val.smPcnExecutInfoVo) {
         if (val.smPcnExecutInfoVo.smPcnExecutInfoDataVos) {
           let newdata = [];
-          val.smPcnExecutInfoVo.smPcnExecutInfoDataVos.map((item,index) => {
+          val.smPcnExecutInfoVo.smPcnExecutInfoDataVos.map((item, index) => {
             newdata.push({
               key: index,
               ...item
             })
           })
-          
+
           setMateriel(newdata)
         }
-       
+
       }
       if (val.smPcnAnalysisVos) {
         let newdata = []; let matid = [];
-        val.smPcnAnalysisVos.map((item,index) => {
+        val.smPcnAnalysisVos.map((item, index) => {
           newdata.push(item.companyCode)
           matid.push(item.materielCategoryCode)
         })
@@ -89,16 +90,16 @@ const getExecutioninfor = forwardRef(({
   );
   const columns = [
     {
-        title: '物料代码',
-        dataIndex: 'materielTypeCode',
-        align: 'center',
-        width: 180
+      title: '物料代码',
+      dataIndex: 'materielTypeCode',
+      align: 'center',
+      width: 180
     },
     {
-        title: '物料描述',
-        dataIndex: 'materielTypeName',
-        align: 'center',
-        width: 280,
+      title: '物料描述',
+      dataIndex: 'materielTypeName',
+      align: 'center',
+      width: 280,
     },
 
     {
@@ -107,24 +108,24 @@ const getExecutioninfor = forwardRef(({
       align: 'center',
       width: 240,
       render: (text, record, index) => {
-          if (isView) {
-              return record.batch;
-          }
-          return <span>
-              <FormItem style={{ marginBottom: 0 }}>
-                  {
-                      getFieldDecorator(`batch[${index}]`, {
-                        initialValue: record ? record.batch : '',
-                        rules: [{ required: true, message: '请填写批次!'}],
-                      })( 
-                          <Input 
-                            placeholder='请输入批次'
-                            onBlur={onInput(record, index)}
-                          /> 
-                      )
-                  }
-              </FormItem>
-          </span>;
+        if (isView) {
+          return record.batch;
+        }
+        return <span>
+          <FormItem style={{ marginBottom: 0 }}>
+            {
+              getFieldDecorator(`batch[${index}]`, {
+                initialValue: record ? record.batch : '',
+                rules: [{ required: true, message: '请填写批次!' }],
+              })(
+                <Input
+                  placeholder='请输入批次'
+                  onBlur={onInput(record, index)}
+                />
+              )
+            }
+          </FormItem>
+        </span>;
       }
     }
   ].map(_ => ({ ..._, align: 'center' }))
@@ -146,7 +147,7 @@ const getExecutioninfor = forwardRef(({
   }
   function handleMateriel(val) {
     let newdata = [];
-    val.map( (item,index)=> {
+    val.map((item, index) => {
       newdata.push({
         key: index,
         materielTypeCode: item.materialCode || item.materielTypeCode,
@@ -171,74 +172,94 @@ const getExecutioninfor = forwardRef(({
     let result = false;
     const tabledata = tabformRef.current.data;
     form.validateFieldsAndScroll((err, values) => {
-        if (!err) {
-            delete values.batch
-            values.executDate = moment(values.resultEnclosure).format('YYYY-MM-DD HH:mm:ss')
-            implement.smPcnExecutInfoVo = {...implement.smPcnExecutInfoVo, ...values}
-            implement.smPcnExecutInfoVo.smPcnExecutInfoDataVos = tabledata
-            result = implement
-            
-        }else {
-          message.error('请将执行信息填写完全！')
-        }
+      if (!err) {
+        delete values.batch
+        values.executDate = moment(values.resultEnclosure).format('YYYY-MM-DD HH:mm:ss')
+        implement.smPcnExecutInfoVo = { ...implement.smPcnExecutInfoVo, ...values }
+        implement.smPcnExecutInfoVo.smPcnExecutInfoDataVos = tabledata
+        result = implement
+
+      } else {
+        message.error('请将执行信息填写完全！')
+      }
     })
     return result;
   }
   return (
     <>
-        <Row style={{paddingTop:50}}>
-            <Col span={16}>
-                <FormItem {...formLayout} label="PCN变更执行日期">
+      <Row style={{ paddingTop: 50 }}>
+        <Col span={16}>
+          <FormItem {...formLayout} label="PCN变更执行日期">
+            {
+              isView ? <span>{dataSource && dataSource.executDate ? (dataSource.executDate).substring(0, 10) : ''}</span> :
+                getFieldDecorator('executDate', {
+                  initialValue: dataSource ? dataSource.executDate : '',
+                  rules: [
                     {
-                      isView ? <span>{dataSource && dataSource.executDate ? (dataSource.executDate).substring(0, 10): ''}</span> :
-                      getFieldDecorator('executDate', {
-                        initialValue: dataSource ? dataSource.executDate : '',
-                        rules: [
-                            {
-                                required: true,
-                                message: '请选择PCN变更执行日期',
-                            },
-                        ],
-                      })(
-                          <DatePicker 
-                            format="YYYY-MM-DD"
-                            disabledDate={disabledDate}
-                            disabled={isView}
-                            style={{ width: '100%' }}
-                          />
-                      )
-                    }
-                </FormItem>
-            </Col>
-        </Row>
-        <Row>
-            <Col span={16}>
-                <FormItem {...formLayout} label="备注">
-                    {
-                      isView ? <span>{dataSource ? dataSource.remark : ''}</span> :
-                      getFieldDecorator('remark', {
-                        initialValue: dataSource ? dataSource.remark : '',
-                      })(
-                          <TextArea  disabled={isView}/>
-                      )
-                    }
-                </FormItem>
-            </Col>
-        </Row>
-        <Header  style={{ display: headerInfo === true ? 'none' : 'block',color: 'red' }}
-            left={ headerInfo ? '' : headerleft}
-            advanced={false}
-            extra={false}
-        />
+                      required: true,
+                      message: '请选择PCN变更执行日期',
+                    },
+                  ],
+                })(
+                  <DatePicker
+                    format="YYYY-MM-DD"
+                    disabledDate={disabledDate}
+                    disabled={isView}
+                    style={{ width: '100%' }}
+                  />
+                )
+            }
+          </FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={16}>
+          <FormItem {...formLayout} label={"附件"}
+          >
+            {
+              getFieldDecorator("executAttachments", {
+                initialValue: dataSource && dataSource.executAttachments,
+              })(
+                <UploadFile
+                  title={"附件上传"}
+                  accessType={['pdf', 'jpg', 'png']}
+                  warning={'仅支持pdf,jpg,png格式，文件大小不超过10M'}
+                  entityId={dataSource ? dataSource.executEnclosure : null}
+                  type={isView ? "show" : ""}
+                />
+              )
+            }
+          </FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={16}>
+          <FormItem {...formLayout} label="备注">
+            {
+              isView ? <span>{dataSource ? dataSource.remark : ''}</span> :
+                getFieldDecorator('remark', {
+                  initialValue: dataSource ? dataSource.remark : '',
+                })(
+                  <TextArea disabled={isView} />
+                )
+            }
+          </FormItem>
+        </Col>
+      </Row>
+      <Header style={{ display: headerInfo === true ? 'none' : 'block', color: 'red' }}
+        left={headerInfo ? '' : headerleft}
+        advanced={false}
+        extra={false}
+      />
       <AutoSizeLayout>
-      {
-        (height) => <ExtTable
+        {
+          (height) => <ExtTable
             columns={columns}
             showSearch={false}
             ref={tabformRef}
             rowKey={(item) => item.key}
             checkbox={{
-                multiSelect: false
+              multiSelect: false
             }}
             pagination={{
               hideOnSinglePage: true,
@@ -254,16 +275,16 @@ const getExecutioninfor = forwardRef(({
             onSelectRow={handleSelectedRows}
             selectedRowKeys={selectRowKeys}
             dataSource={materiel}
-        />
+          />
         }
       </AutoSizeLayout>
       <MaterielModal
-        companyCode={companyCode} 
+        companyCode={companyCode}
         materselect={handleMateriel}
         implement={true}
         materielCategoryCode={materielid}
         tabledata={Tabledata}
-        wrappedComponentRef={getMatermodRef} 
+        wrappedComponentRef={getMatermodRef}
       />
     </>
   )

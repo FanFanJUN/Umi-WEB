@@ -1,11 +1,11 @@
 import React, { forwardRef, useState, useRef, useEffect, useImperativeHandle } from 'react';
-import { ExtTable,utils, ComboList  } from 'suid';
-import { Form, Button, message, Checkbox, Modal } from 'antd';
+import { ExtTable, utils, ComboList, AuthALink } from 'suid';
+import { Form, Button, message, } from 'antd';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
 import UploadFile from '../../../../components/Upload/index'
-import {SupplierResulteList} from '../../commonProps'
+import { SupplierResulteList } from '../../commonProps'
 import { dataTransfer2 } from '../../../supplierRegister/CommonUtils'
-import {isEmpty} from '../../../../utils'
+import { openNewTab, isEmpty } from '../../../../utils'
 import Input from 'antd/es/input';
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { create } = Form;
@@ -35,8 +35,20 @@ const getResultsIden = forwardRef(({
   }, [editData])
   const columns = [
     {
+      title: '原厂名称',
+      dataIndex: 'smOriginalFactoryName',
+      align: 'center',
+      width: 160
+    },
+    {
+      title: '原厂代码',
+      dataIndex: 'smOriginalFactoryCode',
+      align: 'center',
+      width: 160
+    },
+    {
       title: '物料分类',
-      dataIndex: 'materielCategoryId',
+      dataIndex: 'materielCategoryName',
       align: 'center',
       width: 160
     },
@@ -71,10 +83,10 @@ const getResultsIden = forwardRef(({
       width: 180,
       render: function (text, record, row) {
         if (text === 0) {
-            return <div>否</div>;
+          return <div>否</div>;
         } else if (text === 1) {
-            return <div className="doingColor">是</div>;
-        } 
+          return <div className="doingColor">是</div>;
+        }
       },
     },
     {
@@ -84,10 +96,10 @@ const getResultsIden = forwardRef(({
       width: 160,
       render: function (text, record, row) {
         if (text === 0) {
-            return <div>否</div>;
+          return <div>否</div>;
         } else if (text === 1) {
-            return <div className="doingColor">是</div>;
-        } 
+          return <div className="doingColor">是</div>;
+        }
       },
     },
     // {
@@ -102,76 +114,101 @@ const getResultsIden = forwardRef(({
     //   align: 'center',
     //   width: 180
     // },
+    // {
+    //   title: '实物认定确认人',
+    //   dataIndex: 'smInKindManName',
+    //   align: 'center',
+    //   width: 180,
+    // },
     {
-      title: '实物认定确认人',
-      dataIndex: 'smInKindManName',
+      title: '是否信任',
+      dataIndex: 'trustOrNot',
       align: 'center',
-      width: 180,
+      width: 160,
+      render: function (text, record, row) {
+        if (text === 0) {
+          return <div>否</div>;
+        } else if (text === 1) {
+          return <div className="doingColor">是</div>;
+        }
+      },
     },
     {
       title: '实物认定结果',
       dataIndex: 'smInKindResultStatus',
       align: 'center',
-      width: 220,
+      width: 160,
       render: (text, record, index) => {
-          if (isView) {
-            return !isEmpty(record) && !isEmpty(record.smInKindResultStatus) ? record.smInKindResultStatus === 0 ? '通过' : '不通过' : '';
-          }
-          return <span>
-            {
-              record.smInKindStatus === 1 && record.smInKindManName === authorizations.userName ? <FormItem style={{ marginBottom: 0 }}>
-                {
-                    getFieldDecorator(`smInKindResultStatus[${index}]`,{initialValue: record ? record.smInKindResultStatus : ''}),
-                    getFieldDecorator(`smInKindResultStatusName[${index}]`, {
-                        initialValue: record ? record.smInKindResultStatusName : '',
-                        rules: [{ required: true, message: '请选择实物认定结果!', whitespace: true }],
-                    })( 
-                        <ComboList 
-                            form={form}
-                            {...SupplierResulteList}
-                            showSearch={false}
-                            //afterSelect={afterSelect}
-                            name={`smInKindResultStatusName[${index}]`}
-                            field={[`smInKindResultStatus[${index}]`]}
-                        />
-                    )
-                }
+        if (isView) {
+          return !isEmpty(record) && !isEmpty(record.smInKindResultStatus) ? record.smInKindResultStatus === 0 ? '通过' : '不通过' : '';
+        }
+        return <span>
+          {
+            record.smInKindStatus === 1 && record.smInKindManName === authorizations.userName ? <FormItem style={{ marginBottom: 0 }}>
+              {
+                getFieldDecorator(`smInKindResultStatus[${index}]`, { initialValue: record ? record.smInKindResultStatus : '' }),
+                getFieldDecorator(`smInKindResultStatusName[${index}]`, {
+                  initialValue: record ? record.smInKindResultStatusName : '',
+                  rules: [{ required: true, message: '请选择实物认定结果!', whitespace: true }],
+                })(
+                  <ComboList
+                    form={form}
+                    {...SupplierResulteList}
+                    showSearch={false}
+                    //afterSelect={afterSelect}
+                    name={`smInKindResultStatusName[${index}]`}
+                    field={[`smInKindResultStatus[${index}]`]}
+                  />
+                )
+              }
             </FormItem> : !isEmpty(record) && !isEmpty(record.smInKindResultStatus) ? record.smInKindResultStatus === 0 ? '通过' : '不通过' : ''
           }
-              
-          </span>;
+
+        </span>;
       }
     },
     {
-        title: '附件资料',
-        dataIndex: 'kindManEnclosure',
-        align: 'center',
-        width: 220,
-        //render: (value, record) => <UploadFile type="show" entityId={value}/>
-        render: (text, record, index) => {
-          if (isView) {
-            return <UploadFile type="show" entityId={text}/>
-          }
-          return <span>
-            {
-              record.smInKindStatus === 1 && record.smInKindManName === authorizations.userName ? <FormItem style={{ marginBottom: 0 }}>
-                {
-                  getFieldDecorator(`kindManEnclosure[${index}]`, {
-                      initialValue: record ? record.kindManEnclosure : '',
-                      rules: [{ required: true, message: '请上传附件!'}],
-                  })( 
-                    <UploadFile
-                        title={"附件上传"}
-                        entityId={record ? record.kindManEnclosure : null}
-                        type={isView ? "show" : ""}
-                    />
-                  )
-                }
-              </FormItem> : <UploadFile type="show" entityId={text}/>
-            }
-            
-          </span>
+      title: '实物认定报告',
+      dataIndex: 'smPcnStrategicId',
+      align: 'center',
+      width: 160,
+      render: function (text, record, row) {
+        if (isView) {
+          return <AuthALink onClick={() => handleAdmit(record)}>{record.smKindNo}</AuthALink>
         }
+        <AuthALink onClick={() => handleAdmit(Othersdata.smPcnStrategicId)}>{'实物认定报告'}</AuthALink>
+      },
+    },
+    {
+      title: '附件资料',
+      dataIndex: 'kindManEnclosure',
+      align: 'center',
+      width: 220,
+      //render: (value, record) => <UploadFile type="show" entityId={value}/>
+      render: (text, record, index) => {
+        if (isView) {
+          return <UploadFile type="show" entityId={text} />
+        }
+        return <span>
+          {
+            record.smInKindStatus === 1 && record.smInKindManName === authorizations.userName ? <FormItem style={{ marginBottom: 0 }}>
+              {
+                getFieldDecorator(`kindManEnclosure[${index}]`, {
+                  initialValue: record ? record.kindManEnclosure : '',
+                  rules: [{ required: true, message: '请上传附件!' }],
+                })(
+                  <UploadFile
+                    title={"附件上传"}
+                    entityId={record ? record.kindManEnclosure : null}
+                    type={isView ? "show" : ""}
+                  />
+                )
+              }
+            </FormItem> : <UploadFile type="show" entityId={text} />
+          }
+
+        </span>
+      }
     }
   ].map(_ => ({ ..._, align: 'center' }))
   // 获取表单
@@ -180,7 +217,7 @@ const getResultsIden = forwardRef(({
     const material = tabformRef.current.data;
     if (material.length === 0) {
       return false;
-    }else {
+    } else {
       form.validateFieldsAndScroll((err, values) => {
         let handledata = dataTransfer2(material, values)
         for (let item of handledata) {
@@ -189,13 +226,13 @@ const getResultsIden = forwardRef(({
               items.kindManAttachments = item.kindManEnclosure
               items.smInKindResultStatus = item.smInKindResultStatus
             }
-            
+
           }
         }
         if (!err) {
           cognizance.smPcnAnalysisVos = material
           result = cognizance
-        }else {
+        } else {
           message.error('实物认定结果不能为空！')
           return false;
         }
@@ -203,13 +240,17 @@ const getResultsIden = forwardRef(({
     }
     return result;
   }
-  
+  // 实物认定计划
+  function handleAdmit(val) {
+    let id = val.smKindId;
+    openNewTab(`material/Cognizance/ManualDetail/index?id=${id}&alone=true`, '实物认定计划明细', false)
+  }
 
   return (
     <>
       <AutoSizeLayout>
-      {
-        (height) => <ExtTable
+        {
+          (height) => <ExtTable
             columns={columns}
             showSearch={false}
             ref={tabformRef}
@@ -228,7 +269,7 @@ const getResultsIden = forwardRef(({
             saveData={false}
             selectedRowKeys={selectRowKeys}
             dataSource={dataSource}
-        />
+          />
         }
       </AutoSizeLayout>
     </>

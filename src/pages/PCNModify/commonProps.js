@@ -31,9 +31,9 @@ export const ChangecontentList = {
     url: `${smBaseUrl}/api/smPcnChangesService/findByPage`,
     params: {
       filters: [{
-        fieldName:'changeTypeCode',
+        fieldName: 'changeTypeCode',
         value: '02',
-        operator:'EQ'
+        operator: 'EQ'
       }],
     },
     type: 'POST'
@@ -68,7 +68,7 @@ export const Strategicprocurementlist = {
   },
   reader: {
     name: 'name',
-    field: ['id','code'],
+    field: ['id', 'code'],
     description: 'code'
   },
   // remotePaging: true,
@@ -216,4 +216,27 @@ export const seniorStrategypurchase = {
   },
   // remotePaging: true,
   placeholder: '选择战略采购'
+}
+
+// 供应商审核确认
+export const SupplierToexamine = {
+  allowClear: true,
+  dataSource: [
+    {
+      code: '0',
+      name: '否',
+    },
+    {
+      code: '1',
+      name: '是',
+    },
+  ],
+  reader: {
+    name: 'name',
+    field: ['code'],
+  },
+  style: {
+    width: '100%',
+  },
+  placeholder: '选择供应商审核确认',
 }

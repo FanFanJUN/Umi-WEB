@@ -84,6 +84,10 @@ export const Tasktypelist = {
 export const Identification = {
   remotePaging: true,
   rowKey: 'code',
+  store: {
+    url: `${recommendUrl}/api/samPhysicalIdentificationStageService/findByPage`,
+    type: 'POST'
+  },
   reader: {
     field: ['id', 'stageCode', 'changeSort'],
     name: 'identificationStage',
@@ -345,4 +349,19 @@ export const ExecutorList = {
     description: 'code',
   },
   placeholder: '请选择执行人'
+}
+
+// PCN变更主数据
+export const PCNMasterdatalist = {
+  store: {
+    url: `${smBaseUrl}/pubController/findDataDictionaryItemListByTypeCode?typeCode=PCNBGLX`,
+    type: 'POST'
+  },
+  reader: {
+    name: 'name',
+    field: ['value'],
+    description: 'value'
+  },
+  // remotePaging: true,
+  placeholder: '选择变更类型'
 }

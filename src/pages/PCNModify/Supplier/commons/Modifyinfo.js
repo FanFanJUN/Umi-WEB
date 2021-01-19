@@ -1,7 +1,7 @@
 import React, { forwardRef, useState, useRef, useEffect, useImperativeHandle } from 'react';
-import { ExtTable, WorkFlow, ExtModal, utils, ToolBar,AuthButton  } from 'suid';
+import { ExtTable, WorkFlow, ExtModal, utils, ToolBar, AuthButton } from 'suid';
 import { Form, Button, message, Checkbox, Modal } from 'antd';
-import { openNewTab, getFrameElement ,isEmpty} from '@/utils';
+import { openNewTab, getFrameElement, isEmpty } from '@/utils';
 import Header from '@/components/Header';
 import ModifyForm from './ModifyForm';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
@@ -42,6 +42,19 @@ const ModifyinfoRef = forwardRef(({
 
   const columns = [
     {
+      title: '是否供应商审核确认',
+      dataIndex: 'supplierConfirm',
+      align: 'center',
+      width: 180,
+      render: function (text, record, row) {
+        if (text === 0) {
+          return <div>否</div>;
+        } else if (text === 1) {
+          return <div className="successColor">是</div>;
+        }
+      },
+    },
+    {
       title: '变更内容',
       dataIndex: 'smChangeValue',
       align: 'center',
@@ -76,7 +89,7 @@ const ModifyinfoRef = forwardRef(({
       dataIndex: 'attachmentId',
       align: 'center',
       width: 90,
-      render: (value, record) => <UploadFile type="show" entityId={value}/>
+      render: (value, record) => <UploadFile type="show" entityId={value} />
     }
   ].map(_ => ({ ..._, align: 'center' }))
   const empty = selectRowKeys.length === 0;
@@ -84,12 +97,12 @@ const ModifyinfoRef = forwardRef(({
   //const contype = isEmpty(modifytype);
   // 编辑处理数据
   function hanldModify(val) {
-    keys ++ ;
+    keys++;
     let newsdata = [];
     val.map((item, index) => {
       newsdata.push({
-          ...item,
-          key: keys ++ 
+        ...item,
+        key: keys++
       })
       setDataSource(newsdata);
     })
@@ -98,7 +111,7 @@ const ModifyinfoRef = forwardRef(({
   function handleSelectedRows(rowKeys, rows) {
     setRowKeys(rowKeys);
     setRows(rows);
-     
+
   }
   // 清除选中项
   function cleanSelectedRecord() {
@@ -110,13 +123,13 @@ const ModifyinfoRef = forwardRef(({
     if (isEmpty(modifytype)) {
       message.error('请先选择变更类型')
       return false
-    }else {
+    } else {
       setTitle('新增变更详情')
       setVisible(true)
       setModalType(false)
       uploadTable()
     }
-    
+
   }
   // 编辑
   function handleEdit() {
@@ -145,11 +158,11 @@ const ModifyinfoRef = forwardRef(({
     if (!modalType) {
       [...newsdata] = dataSource;
       newsdata.push({
-          ...val,
-          key: keys ++ 
+        ...val,
+        key: keys++
       })
       setDataSource(newsdata);
-    }else {
+    } else {
       dataSource.map((item, index) => {
         if (item.key === val.key) {
           const copyData = dataSource.slice(0)
@@ -177,7 +190,7 @@ const ModifyinfoRef = forwardRef(({
     keys--;
     setDataSource(filterData)
   }
-  
+
   // 获取表单值
   function getmodifyform() {
     const changeinfor = tabformRef.current.data;
@@ -202,8 +215,8 @@ const ModifyinfoRef = forwardRef(({
   );
   return (
     <>
-      <Header  style={{ display: headerInfo === true ? 'none' : 'block',color: 'red' }}
-        left={ headerInfo ? '' : headerleft}
+      <Header style={{ display: headerInfo === true ? 'none' : 'block', color: 'red' }}
+        left={headerInfo ? '' : headerleft}
         advanced={false}
         extra={false}
       />
@@ -231,7 +244,7 @@ const ModifyinfoRef = forwardRef(({
             onSelectRow={handleSelectedRows}
             selectedRowKeys={selectRowKeys}
             dataSource={dataSource}
-            //{...dataSource}
+          //{...dataSource}
           />
         }
       </AutoSizeLayout>

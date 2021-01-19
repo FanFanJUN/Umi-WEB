@@ -30,7 +30,6 @@ const ModifyinfoRef = forwardRef(({
   const [dataSource, setDataSource] = useState([]);
   const [selectRowKeys, setRowKeys] = useState([]);
   const [selectedRows, setRows] = useState([]);
-  const [visible, setVisible] = useState(false);
   const [initialValue, setInitialValue] = useState({});
   const [modalType, setModalType] = useState(false);
   const [showAttach, triggerShowAttach] = useState(false);
@@ -38,7 +37,7 @@ const ModifyinfoRef = forwardRef(({
   const [title, setTitle] = useState('新增变更详情');
   const empty = selectRowKeys.length === 0;
   const [signleRow = {}] = selectedRows;
-  const { key: defaultype, executionStatus: implement } = signleRow;
+  const { defaultRequired: defaultype, executionStatus: implement } = signleRow;
   // 认定方案
   const isdelete = defaultype === 1;
   // 执行状态
@@ -139,12 +138,14 @@ const ModifyinfoRef = forwardRef(({
         stageName: val.identificationStage,
         stageCode: val.stageCode,
         stageSort: val.changeSort,
+        stageId: val.id,
         taskName: data[0].taskDesc,
         taskCode: data[0].taskCode,
         taskTypeName: '判断型任务',
         taskTypeCode: '01',
         sort: 1,
-        executionStatus: 0
+        executionStatus: 0,
+        defaultRequired: data[0].defaultRequired
       }];
       setDataSource(defaulted);
     }
@@ -171,34 +172,34 @@ const ModifyinfoRef = forwardRef(({
   function cleanSelectedRecord() {
     setRowKeys([]);
     setRows([]);
+    setInitialValue({})
   }
   // 新增
   function showModal() {
     setTitle('新增分配计划详情')
-    setVisible(true)
     setModalType(false)
     setAttachId(1)
+    ModifyfromRef.current.handleModalVisible(true)
     uploadTable()
   }
   // 编辑
   function handleEdit() {
+    setInitialValue('')
     setTitle('编辑分配计划详情')
-    setVisible(true)
     setModalType(true)
     setAttachId(2)
     const [row] = selectedRows;
     setInitialValue({ ...row })
-
+    ModifyfromRef.current.handleModalVisible(true)
   }
   // 清空列选择并刷新
   function uploadTable() {
     cleanSelectedRecord()
+    tabformRef.current.remoteDataRefresh()
     tabformRef.current.manualSelectedRows();
   }
   // 取消编辑或新增
   function handleCancel() {
-    //const { resetFields } = commonFormRef.current.form;
-    //resetFields()
     setVisible(false)
     uploadTable()
   }
@@ -227,7 +228,7 @@ const ModifyinfoRef = forwardRef(({
             const copyData = dataSource.slice(0)
             copyData[index] = val;
             setDataSource(copyData)
-            setRows(copyData)
+            //setRows(copyData)
           }
         })
       }
@@ -237,7 +238,7 @@ const ModifyinfoRef = forwardRef(({
   }
   // 关闭弹窗
   function hideModal() {
-    setVisible(false)
+    ModifyfromRef.current.handleModalVisible(false)
     setInitialValue({})
   }
   // 删除
@@ -314,27 +315,25 @@ const ModifyinfoRef = forwardRef(({
           />
         }
       </AutoSizeLayout>
-      <div>
-        <ModifyForm
-          visible={visible}
-          onCancel={handleCancel}
-          onOk={handleSubmit}
-          type={modalType}
-          attachId={attachId}
-          dataSource={initialValue}
-          title={title}
-          wrappedComponentRef={ModifyfromRef}
-          modifytype={modifytype}
-          destroyOnClose
-        />
-        <Modal
-          visible={showAttach}
-          onCancel={handleCancel}
-          footer={
-            <Button type='ghost' onClick={handleCancel}>关闭</Button>
-          }
-        ></Modal>
-      </div>
+      {/* <ModifyForm
+        onCancel={handleCancel}
+        onOk={handleSubmit}
+        type={modalType}
+        attachId={attachId}
+        editData={selectedRows}
+        title={title}
+        wrappedComponentRef={ModifyfromRef}
+        destroyOnClose
+      /> */}
+      <ModifyForm
+        type={modalType}
+        attachId={attachId}
+        editData={initialValue}
+        seltaskid={initialValue.stageId}
+        title={title}
+        onOk={handleSubmit}
+        wrappedComponentRef={ModifyfromRef}
+      />
     </>
   )
 })

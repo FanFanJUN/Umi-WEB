@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ExtTable, WorkFlow, ExtModal, utils, ComboList } from 'suid';
 import { Input, Button, message, Modal, Checkbox } from 'antd';
 import { openNewTab, getFrameElement, isEmpty } from '@/utils';
-import { StartFlow } from 'seid';
 import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
 import styles from './index.less';
 import { smBaseUrl } from '@/utils/commonUrl';
@@ -13,7 +12,7 @@ import { router } from 'dva';
 const { Search } = Input
 const confirm = Modal.confirm;
 const { authAction, storage } = utils;
-const { FlowHistoryButton } = WorkFlow;
+const { StartFlow, FlowHistoryButton } = WorkFlow;
 let dataSource
 function SupplierConfigure() {
     const tableRef = useRef(null)
@@ -62,6 +61,8 @@ function SupplierConfigure() {
                     return <div className="successColor">变更通过</div>;
                 } else if (text === 4) {
                     return <div className="successColor">变更完成</div>;
+                } else if (text === -1) {
+                    return <div className="successColor">确认中</div>;
                 }
             },
         },
@@ -102,12 +103,12 @@ function SupplierConfigure() {
         },
         {
             title: '联系人',
-            width: 220,
+            width: 160,
             dataIndex: 'smContacts',
         },
         {
             title: '联系电话',
-            width: 220,
+            width: 160,
             dataIndex: 'smContactNumber',
         },
         {
@@ -253,7 +254,7 @@ function SupplierConfigure() {
     }
     // 左侧
     const HeaderLeftButtons = (
-        <div style={{ width: '50%', display: 'flex', height: '100%', alignItems: 'center' }}>
+        <div style={{ width: '70%', display: 'flex', height: '100%', alignItems: 'center' }}>
             {
                 authAction(
                     <Button
@@ -281,14 +282,22 @@ function SupplierConfigure() {
             {
                 authAction(
                     <StartFlow
-                        className={styles.btn}
-                        ignore={DEVELOPER_ENV}
-                        businessKey={flowId}
-                        callBack={handleComplete}
-                        disabled={empty || underWay || !Toexamine || !isSelf}
                         businessModelCode='com.ecmp.srm.sm.entity.pcn.SmPcnTitle'
+                        businessKey={flowId}
                         key='SRM-SM-PCNPURCHASE-EXAMINE'
-                    >提交审核</StartFlow>
+                        startComplete={handleComplete}
+                        ignore={DEVELOPER_ENV}
+                    >
+                        {
+                            loading => (
+                                <Button
+                                    className={styles.btn}
+                                    loading={loading}
+                                    disabled={empty || underWay || !Toexamine || !isSelf}
+                                >提交审核</Button>
+                            )
+                        }
+                    </StartFlow>
                 )
             }
             {/* {

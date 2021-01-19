@@ -1,16 +1,13 @@
-import React, { forwardRef, useImperativeHandle, useEffect, useState, useCallback } from 'react';
-import { Modal, Form, Row, Col, Input, InputNumber } from 'antd';
-import { smBaseUrl } from '../../../../utils/commonUrl';
-import { Fieldclassification } from '@/utils/commonProps'
-import { ComboGrid, ComboList } from 'suid';
+import React, { forwardRef, useImperativeHandle, useEffect, useState } from 'react';
+import { Modal, Form, Row, Col, Input } from 'antd';
+import { ComboList } from 'suid';
 import { recommendUrl, basicServiceUrl, gatewayUrl } from '../../../../utils/commonUrl';
-import UserSelect from '../../../PCNModify/UserSelect/index'
+import { isEmpty } from '@/utils'
 import {
     Tasktypelist, Identification,
     Identificationtask, PersonliableList
 } from '../../commonProps'
-import { onlyNumber, isEmpty } from '../../../../utils'
-const { create, Item } = Form;
+const { create, Item } = Form
 const { TextArea } = Input;
 const formLayout = {
     labelCol: {
@@ -20,106 +17,116 @@ const formLayout = {
         span: 16
     },
 };
-const ModifyForm = forwardRef(
-    (
-        {
-            visible,
-            form,
-            onCancel = () => null,
-            onOk = () => null,
-            type,
-            loading,
-            dataSource,
-            title,
-            attachId
-        },
-        ref,
-    ) => {
-        useImperativeHandle(ref, () => ({ form }));
-        const { getFieldDecorator, validateFieldsAndScroll, getFieldValue, setFieldsValue } = form;
-        const [initialValue, setInitialValue] = useState({});
-        const [taskid, setTaskid] = useState({});
-        const [edit, setEdit] = useState(false);
-        const [others, setOthers] = useState(true);
-        useEffect(() => {
-            handleDate(dataSource)
-        }, [dataSource, visible]);
-        // 处理认定任务
-        function handleDate(value) {
-            if (type && attachId === 2) {
-                setInitialValue(value)
-                setOthers(false)
-                setTaskid(value.stageId)
-            } else {
-                setOthers(true)
-                setInitialValue({})
-            }
-            if (type && value.key === 1) {
-                setEdit(true)
-            } else {
-                setEdit(false)
-            }
+const getInformation = forwardRef(({
+    form,
+    title,
+    editData,
+    attachId,
+    onOk = () => null,
+    seltaskid,
+    type
+}, ref,) => {
+    useImperativeHandle(ref, () => ({
+        handleModalVisible,
+        form
+    }));
+    const { getFieldDecorator, validateFieldsAndScroll, getFieldValue, setFieldsValue } = form;
+    const [visible, setvisible] = useState(false);
+    const [taskid, setTaskid] = useState('');
+    const [edit, setEdit] = useState(false);
+    const [others, setOthers] = useState(true);
+    const [selectype, setSelectype] = useState('');
+    useEffect(() => {
+        handleDate(editData)
+    }, [editData]);
+    function handleDate(value) {
+        if (type && attachId === 2) {
+            setOthers(false)
+            setTaskid(seltaskid)
+        } else {
+            setOthers(true)
         }
-        // 表单值
-        function handleSubmit() {
-            validateFieldsAndScroll(async (err, val) => {
-                if (!err) {
-                    onOk({ ...initialValue, ...val });
+        if (type && value.key === 1) {
+            setEdit(true)
+        } else {
+            setEdit(false)
+        }
+    }
+    function handleModalVisible(flag) {
+        setvisible(!!flag)
+    };
+
+    function handleSubmit() {
+        validateFieldsAndScroll((err, val) => {
+            let params;
+            if (!err) {
+                if (attachId === 2) {
+                    params = { ...editData, ...val }
+                } else {
+                    val.defaultRequired = selectype
+                    params = val
                 }
+                onOk(params);
+            }
+        });
+    }
+    // 变更内容
+    function changevalue(val) {
+        setOthers(false)
+        setTaskid(val.id)
+        form.setFieldsValue({
+            'taskCode': '',
+            'taskName': '',
+        })
+    }
+    // 执行部门
+    function handlExecutor(val) {
+        form.setFieldsValue({
+            'executiveDepartmentName': val.organization.name,
+            'executiveDepartmentId': val.organization.id,
+        })
+    }
+    // 排序号
+    function changeSort(val) {
+        if (!isEmpty(editData.stageId)) {
+            form.setFieldsValue({
+                stageId: editData.stageId,
+                stageCode: editData.stageCode,
+                stageSort: editData.stageSort,
             });
         }
-        // 变更内容
-        function changevalue(val) {
-            setOthers(false)
-            setTaskid(val.id)
-            form.setFieldsValue({
-                'taskCode': '',
-                'taskName': '',
-            })
-        }
-        // 执行部门
-        function handlExecutor(val) {
-            form.setFieldsValue({
-                'executiveDepartmentName': val.organization.name,
-                'executiveDepartmentId': val.organization.id,
-            })
-        }
-        // 排序号
-        function changeSort(val) {
-            form.setFieldsValue({
-                'sort': val.changeSort,
-            })
-        }
-        return (
+        form.setFieldsValue({
+            'sort': val.changeSort,
+        })
+        setSelectype(val.defaultRequired)
+    }
+    return (
+        <>
             <Modal
-                confirmLoading={loading}
                 visible={visible}
                 title={title}
-                onCancel={onCancel}
+                onCancel={() => handleModalVisible(false)}
                 destroyOnClose={true}
                 width="60vw"
                 maskClosable={false}
                 onOk={handleSubmit}
             >
+
                 <Row>
                     <Col span={12}>
                         <Item {...formLayout} label="认定阶段">
                             {
-                                getFieldDecorator('stageId', { initialValue: dataSource ? dataSource.stageId : '' }),
-                                getFieldDecorator('stageCode', { initialValue: dataSource ? dataSource.stageCode : '' }),
-                                getFieldDecorator('stageSort', { initialValue: dataSource ? dataSource.stageSort : '' }),
+                                getFieldDecorator('stageId', { initialValue: editData ? editData.stageId : '' }),
+                                getFieldDecorator('stageCode', { initialValue: editData ? editData.stageCode : '' }),
+                                getFieldDecorator('stageSort', { initialValue: editData ? editData.stageSort : '' }),
                                 getFieldDecorator('stageName', {
-                                    initialValue: initialValue ? initialValue.stageName : '',
+                                    initialValue: editData ? editData.stageName : '',
                                     rules: [{ required: true, message: '请选择认定阶段' }],
                                 })(
                                     <ComboList
                                         showSearch={false}
                                         style={{ width: '100%' }}
                                         name={'stageName'}
-                                        store={{
-                                            url: `${recommendUrl}/api/samPhysicalIdentificationStageService/findByPage`,
-                                            type: 'POST'
-                                        }}
                                         field={['stageId', 'stageCode', 'stageSort']}
                                         form={form}
                                         afterSelect={changevalue}
@@ -133,9 +140,9 @@ const ModifyForm = forwardRef(
                     <Col span={12}>
                         <Item {...formLayout} label="认定任务">
                             {
-                                getFieldDecorator(`taskCode`, { initialValue: initialValue ? initialValue.taskCode : '' }),
+                                getFieldDecorator(`taskCode`, { initialValue: editData ? editData.taskCode : '' }),
                                 getFieldDecorator('taskName', {
-                                    initialValue: initialValue ? initialValue.taskName : '',
+                                    initialValue: editData ? editData.taskName : '',
                                     rules: [
                                         {
                                             required: true,
@@ -166,9 +173,9 @@ const ModifyForm = forwardRef(
                     <Col span={12}>
                         <Item {...formLayout} label="任务类型">
                             {
-                                getFieldDecorator('taskTypeCode', { initialValue: initialValue ? initialValue.taskTypeCode : '' }),
+                                getFieldDecorator('taskTypeCode', { initialValue: editData ? editData.taskTypeCode : '' }),
                                 getFieldDecorator('taskTypeName', {
-                                    initialValue: initialValue ? initialValue.taskTypeName : '',
+                                    initialValue: editData ? editData.taskTypeName : '',
                                     rules: [
                                         {
                                             required: true,
@@ -191,7 +198,7 @@ const ModifyForm = forwardRef(
                     <Col span={12}>
                         <Item {...formLayout} label="排序号">
                             {getFieldDecorator('sort', {
-                                initialValue: initialValue ? initialValue.sort : '',
+                                initialValue: editData ? editData.sort : '',
                                 rules: [
                                     { required: true, message: '请填写排序号' },
                                     { pattern: RegExp(/^[1-9]\d*$/, "g"), message: '只能是数字' },
@@ -214,9 +221,9 @@ const ModifyForm = forwardRef(
                     <Col span={12}>
                         <Item {...formLayout} label="执行责任人">
                             {
-                                getFieldDecorator('responsiblePartyId', { initialValue: initialValue ? initialValue.responsiblePartyId : '' }),
+                                getFieldDecorator('responsiblePartyId', { initialValue: editData ? editData.responsiblePartyId : '' }),
                                 getFieldDecorator('responsiblePartyName', {
-                                    initialValue: initialValue ? initialValue.responsiblePartyName : '',
+                                    initialValue: editData ? editData.responsiblePartyName : '',
                                     rules: [
                                         {
                                             required: true,
@@ -252,10 +259,10 @@ const ModifyForm = forwardRef(
                         <Item {...formLayout} label="执行部门">
                             {
                                 getFieldDecorator('executiveDepartmentId', {
-                                    initialValue: initialValue ? initialValue.executiveDepartmentId : ''
+                                    initialValue: editData ? editData.executiveDepartmentId : ''
                                 }),
                                 getFieldDecorator('executiveDepartmentName', {
-                                    initialValue: initialValue ? initialValue.executiveDepartmentName : '',
+                                    initialValue: editData ? editData.executiveDepartmentName : '',
                                     rules: [
                                         {
                                             required: true,
@@ -273,7 +280,7 @@ const ModifyForm = forwardRef(
                     <Col span={12}>
                         <Item {...formLayout} label="计划完成天数">
                             {getFieldDecorator('writeDay', {
-                                initialValue: initialValue ? initialValue.writeDay : '',
+                                initialValue: editData ? editData.writeDay : '',
                                 rules: [
                                     { required: true, message: '请输入计划完成天数' },
                                     { pattern: RegExp(/^[1-9]\d*$/, "g"), message: '只能是数字' },
@@ -286,7 +293,7 @@ const ModifyForm = forwardRef(
                     <Col span={12}>
                         <Item {...formLayout} label="备注信息">
                             {getFieldDecorator('remark', {
-                                initialValue: initialValue ? initialValue.remark : '',
+                                initialValue: editData ? editData.remark : '',
                             })(
                                 <TextArea placeholder="请输入备注信息" maxLength={100} />
                             )}
@@ -294,8 +301,9 @@ const ModifyForm = forwardRef(
                     </Col>
                 </Row>
             </Modal>
-        );
-    },
+        </>
+    );
+},
 );
 
-export default create()(ModifyForm);
+export default create()(getInformation);

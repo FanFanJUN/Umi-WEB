@@ -5,7 +5,7 @@ import { AutoSizeLayout, Header, AdvancedForm } from '@/components';
 import styles from './index.less';
 import { smBaseUrl } from '@/utils/commonUrl';
 import EditFrom from './EdItFrom'
-import {MasterDeleted,MasterdataSave,Importvalidity,MasterfrozenList} from '../../../services/pcnModifyService' 
+import { MasterDeleted, MasterdataSave, Importvalidity, MasterfrozenList } from '../../../services/pcnModifyService'
 import { onLineTarget } from '../../../../config/proxy.config';
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const host = process.env.NODE_ENV === 'production' ? '' : onLineTarget;
@@ -26,7 +26,7 @@ function SupplierConfigure() {
     const [tabtitle, setTabtitle] = useState(false);
     const [loading, triggerLoading] = useState(false);
     const [signleRow = {}] = selectedRows;
-    const { frozen: flowStatus} = signleRow;
+    const { frozen: flowStatus } = signleRow;
     // 未选中数据的状态
     const empty = selectedRowKeys.length === 0;
     // 冻结
@@ -50,6 +50,18 @@ function SupplierConfigure() {
             dataIndex: 'changeRequiredSubmission',
         },
         {
+            title: '供应商审核确认',
+            width: 160,
+            dataIndex: 'supplierConfirm',
+            render: function (text, record, row) {
+                if (text === 0) {
+                    return <div>否</div>;
+                } else {
+                    return <div>是</div>;
+                }
+            },
+        },
+        {
             title: '排序码',
             width: 100,
             dataIndex: 'changeSort',
@@ -58,7 +70,7 @@ function SupplierConfigure() {
             title: '冻结',
             width: 120,
             dataIndex: 'frozen',
-            render: function(text, record, row) {
+            render: function (text, record, row) {
                 if (text === '1') {
                     return <div>已冻结</div>;
                 } else {
@@ -84,7 +96,7 @@ function SupplierConfigure() {
             type: 'POST'
         }
     }
-   
+
     useEffect(() => {
         window.parent.frames.addEventListener('message', listenerParentClose, false);
         return () => window.parent.frames.removeEventListener('message', listenerParentClose, false);
@@ -132,14 +144,14 @@ function SupplierConfigure() {
         confirm({
             title: `请确认是否${type === 'thaw' ? '解冻' : '冻结'}`,
             onOk: async () => {
-                let id = selectedRows[0].id,frozen;
+                let id = selectedRows[0].id, frozen;
                 if (type === 'thaw') {
                     frozen = 0
-                }else {
+                } else {
                     frozen = 1
                 }
                 triggerLoading(true)
-                const { success, message: msg } = await MasterfrozenList({id:id,frozen:frozen});
+                const { success, message: msg } = await MasterfrozenList({ id: id, frozen: frozen });
                 if (success) {
                     message.success(`${type === 'thaw' ? '解冻' : '冻结'}成功！`);
                     uploadTable();
@@ -194,13 +206,13 @@ function SupplierConfigure() {
                     <>
                         {
                             authAction(
-                                <Button type='primary' 
-                                    ignore={DEVELOPER_ENV} 
-                                    key='SRM-SM-PCNMASTERDATA-ADD' 
-                                    className={styles.btn} 
+                                <Button type='primary'
+                                    ignore={DEVELOPER_ENV}
+                                    key='SRM-SM-PCNMASTERDATA-ADD'
+                                    className={styles.btn}
                                     onClick={AddModel}
-                                    //disabled={empty}
-                                    >新增
+                                //disabled={empty}
+                                >新增
                                 </Button>
                             )
                         }
@@ -218,25 +230,25 @@ function SupplierConfigure() {
                         }
                         {
                             authAction(
-                                <Button 
-                                    ignore={DEVELOPER_ENV} 
-                                    key='SRM-SM-PCNMASTERDATA-FROZEN' 
-                                    className={styles.btn} 
+                                <Button
+                                    ignore={DEVELOPER_ENV}
+                                    key='SRM-SM-PCNMASTERDATA-FROZEN'
+                                    className={styles.btn}
                                     onClick={() => handleFrozen('freeze')}
                                     disabled={empty || frozenStatus}
-                                    >冻结
+                                >冻结
                                 </Button>
                             )
                         }
                         {
                             authAction(
-                                <Button 
-                                    ignore={DEVELOPER_ENV} 
-                                    key='SRM-SM-PCNMASTERDATA-THAW' 
-                                    className={styles.btn} 
+                                <Button
+                                    ignore={DEVELOPER_ENV}
+                                    key='SRM-SM-PCNMASTERDATA-THAW'
+                                    className={styles.btn}
                                     onClick={() => handleFrozen('thaw')}
                                     disabled={empty || frozenthaw}
-                                    >解冻
+                                >解冻
                                 </Button>
                             )
                         }
@@ -256,7 +268,7 @@ function SupplierConfigure() {
                                     ignore={DEVELOPER_ENV}
                                 />
                             )
-                           
+
                         }
                         {
                             authAction(
@@ -298,13 +310,13 @@ function SupplierConfigure() {
                     />
                 }
             </AutoSizeLayout>
-            <EditFrom  
+            <EditFrom
                 title={tabtitle}
                 modifydata={selectedRows[0]}
                 type={setSelectType}
                 onOk={masterSave}
                 wrappedComponentRef={commonFormRef}
-            />    
+            />
         </>
     )
 }

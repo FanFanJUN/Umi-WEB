@@ -1,7 +1,6 @@
 
 import React, { Fragment, useRef, useState } from 'react';
-import { Form, Button, message, Modal, Row, Col, Card, Empty } from 'antd';
-//import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
+import { Form, Button, message, Modal, Row, Col, Card, Empty, Checkbox } from 'antd';
 import { samBaseUrl, recommendUrl } from '../../../utils/commonUrl';
 import { ExtTable, utils } from 'suid';
 import { AutoSizeLayout } from '../../../components';
@@ -38,9 +37,19 @@ const Index = () => {
 
   // 任务表格
   const columnsforRight = [
-    { title: '代码', dataIndex: 'taskCode', width: 120 },
-    { title: '认定任务', dataIndex: 'taskDesc', width: 200 },
-    { title: '排序号', dataIndex: 'changeSort', width: 120 },
+    { title: '代码', dataIndex: 'taskCode', width: 100 },
+    { title: '认定任务', dataIndex: 'taskDesc', width: 180 },
+    { title: '排序号', dataIndex: 'changeSort', width: 100 },
+    {
+      title: '默认必选', dataIndex: 'defaultRequired', width: 120,
+      render: function (text, record, row) {
+        if (text === 1) {
+          return <Checkbox checked={true} disabled />;
+        } else {
+          return <Checkbox disabled />;
+        }
+      },
+    },
   ].map(_ => ({ ..._, align: 'center' }));
 
   // 阶段新增
@@ -78,6 +87,7 @@ const Index = () => {
   async function handleRightAdd() {
     setRightTabtitle('新增')
     setTaaskType(false)
+    setRightSelectRows({ defaultRequired: 1 });
     tableRightRef.current.manualSelectedRows([])
     commonRightFormRef.current.handleModalVisible(true)
   }
@@ -111,6 +121,7 @@ const Index = () => {
     setLeftSelectedRowKeys(value);
     if (tableRightRef.current) {
       tableRightRef.current.remoteDataRefresh()
+      tableRightRef.current.manualSelectedRows([])
     }
   }
   function rightonSelectRow(value, rows) {
@@ -263,7 +274,9 @@ const Index = () => {
                     {
                       (h) => <ExtTable
                         columns={columnsforRight}
-                        checkbox={true}
+                        checkbox={{
+                          multiSelect: false,
+                        }}
                         remotePaging={true}
                         store={{
                           url: `${recommendUrl}/api/samPhysicalIdentificationTaskService/findByStageId?stageId=` + leftselectRows[0].id,
