@@ -2,11 +2,12 @@ import { useRef, useState, useEffect } from 'react';
 import styles from './index.less';
 import { Button, Affix, Tabs } from 'antd';
 import { ExtTable, utils } from 'suid';
-import { closeCurrent, sendResize, DELAY } from '../../../utils';
+import { closeCurrent, sendResize, DELAY, formatYMDHmsToYMD } from '../../../utils';
 import { useLocation } from 'dva/router';
 import CommonForm from '../CommonForm';
 import { AutoSizeLayout } from '../../../components'
 import { findScoreById } from '../../../services/appraise';
+import { recommendUrl } from '../../../utils/commonUrl';
 const { TabPane } = Tabs;
 function Detail() {
   const { query } = useLocation();
@@ -50,7 +51,88 @@ function Detail() {
       },
       width: 200
     }
-  ]
+  ];
+  const detailProps = {
+    store: {
+      url: `${recommendUrl}/api/seSubEvaluationProjectService/findByPage`,
+      type: 'POST',
+      params: {
+        filters: [
+          {
+            fieldName: 'seEvaluationProject.id',
+            operator: 'EQ',
+            value: query?.id
+          }
+        ]
+      }
+    },
+    remotePaging: true,
+    rowKey: (item) => item.id,
+    columns: [
+      {
+        title: '评审状态',
+        dataIndex: 'evaluationStatusRemark'
+      },
+      {
+        title: '审核状态',
+        dataIndex: 'flowStatus',
+        render(text) {
+          switch (text) {
+            case 'INIT':
+              return '未提交审核'
+            case 'INPROCESS':
+              return '审核中'
+            case 'COMPLETED':
+              return '审核完成'
+            default:
+              return ''
+          }
+        },
+      },
+      {
+        title: '评审单号',
+        dataIndex: 'docNumber',
+        width: 200
+      },
+      {
+        title: '评审项目名称',
+        dataIndex: 'seEvaluationProject.projectName'
+      },
+      {
+        title: '评审体系',
+        dataIndex: 'seEvaluationProject.mainDataEvlSystemName'
+      },
+      {
+        title: '要求完成时间',
+        dataIndex: 'seEvaluationProject.askCompleteTime',
+        render(text) {
+          return formatYMDHmsToYMD(text)
+        }
+      },
+      {
+        title: '组织部门',
+        dataIndex: 'seEvaluationProject.orgName'
+      },
+      {
+        title: '评审期间类型',
+        dataIndex: 'seEvaluationProject.evlPeriodTypeEnumRemark'
+      },
+      {
+        title: '评审期间',
+        dataIndex: 'rangeTime',
+        render(text, record) {
+          const st = formatYMDHmsToYMD(record.seEvaluationProject.evlPeriodStartTime);
+          const et = formatYMDHmsToYMD(record.seEvaluationProject.evlPeriodEndTime);
+          return `${st}~${et}`
+        },
+        width: 200
+      },
+      {
+        title: '评审人',
+        dataIndex: 'scorerName'
+      },
+    ]
+  }
   function renderTabBar(props, DefaultTabBar) {
     return (
       <Affix offsetTop={62}>
@@ -91,6 +173,7 @@ function Detail() {
       <Tabs
         renderTabBar={renderTabBar}
         animated={false}
+        onChange={sendResize}
       >
         <TabPane tab='基本信息' key='base-info'>
           <CommonForm wrappedComponentRef={formRef} type='detail' />
@@ -104,9 +187,25 @@ function Detail() {
                   showSearch={false}
                   rowKey={(item) => item?.key}
                   dataSource={dataSource}
-                  height={h}
+                  height={h - 72}
                   columns={columns}
                   loading={loading}
+                />
+            }
+          </AutoSizeLayout>
+        </TabPane>
+        <TabPane
+          tab='人工评审详情'
+          key='maual-evaluate-detail'
+          forceRender
+        >
+          <AutoSizeLayout>
+            {
+              h =>
+                <ExtTable
+                  {...detailProps}
+                  height={h - 72}
+                  showSearch={false}
                 />
             }
           </AutoSizeLayout>
