@@ -66,6 +66,18 @@ const BatchEditModal = (props) => {
     });
   }
 
+  const hideFormItem = (name, initialValue) => (
+    <FormItem>
+      {
+        getFieldDecorator(name, {
+          initialValue: initialValue,
+        })(
+          <Input type={'hidden'} />,
+        )
+      }
+    </FormItem>
+  );
+
   return (
     <ExtModal
       width={'60vw'}
@@ -206,13 +218,23 @@ const BatchEditModal = (props) => {
           </Col>
         </Row>
         <Row>
-          <Col span={24}>
-            <FormItem {...formItemLayout} label={'生产厂地址'} style={{ marginBottom: '0px' }}>
+          <Col span={0}>
+            {hideFormItem('countryId', originData.countryId ? originData.countryId : '')}
+          </Col>
+          <Col span={0}>
+            {hideFormItem('provinceId', originData.provinceId ? originData.provinceId : '')}
+          </Col>
+          <Col span={0}>
+            {hideFormItem('cityId', originData.cityId ? originData.cityId : '')}
+          </Col>
+          <Col span={0}>
+            {hideFormItem('countyId', originData.countyId ? originData.countyId : '')}
+          </Col>
+          <Col span={8}>
+            <FormItem labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} label={'生产厂地址'} style={{marginBottom: '0px'}}>
               {
-                (getFieldDecorator('countryId', { initialValue: originData.countryId }),
-                getFieldDecorator('countryCode', { initialValue: originData.countryCode }),
                 getFieldDecorator('countryName', {
-                  initialValue: originData.countryName,
+                  initialValue: originData.countryName ? originData.countryName : '',
                   rules: [
                     {
                       required,
@@ -221,32 +243,42 @@ const BatchEditModal = (props) => {
                   ],
                 })(
                   <ComboList
-                    allowClear={true}
-                    style={{ width: '15%' }}
+                    style={{ width: '100%' }}
                     width={width}
                     form={form}
                     name={'countryName'}
-                    field={['countryId', 'countryCode']}
+                    field={['countryId']}
+                    afterSelect={() => {
+                      setFieldsValue({
+                        provinceId: '',
+                        provinceName: '',
+                        cityId: '',
+                        cityName: '',
+                        countyId: '',
+                        countyName: '',
+                        address: '',
+                      });
+                    }}
                     store={{
                       params: {
-                        filters: [
-                          { fieldName: 'code', fieldType: 'string', operator: 'EQ', value: 'CN' },
-                        ],
+                        filters: [{ fieldName: 'code', fieldType: 'string', operator: 'EQ', value: 'CN' }],
                       },
                       type: 'POST',
                       autoLoad: false,
                       url: `${gatewayUrl}${basicServiceUrl}/region/findByPage`,
                     }}
-                    placeholder={'国家'}
+                    placeholder={'选择国家'}
                     {...CountryIdConfig}
                   />,
-                ))
+                )
               }
+            </FormItem>
+          </Col>
+          <Col span={4}>
+            <FormItem labelCol={{ span: 0 }} wrapperCol={{ span: 24 }} style={{marginBottom: '0px'}}>
               {
-                (getFieldDecorator('provinceId', { initialValue: originData.provinceId }),
-                getFieldDecorator('provinceCode', { initialValue: originData.provinceCode }),
                 getFieldDecorator('provinceName', {
-                  initialValue: originData.provinceName,
+                  initialValue: originData.provinceName ? originData.provinceName : '',
                   rules: [
                     {
                       required,
@@ -255,12 +287,20 @@ const BatchEditModal = (props) => {
                   ],
                 })(
                   <ComboList
-                    allowClear={true}
-                    style={{ width: '15%' }}
+                    style={{ width: '100%' }}
                     width={width}
                     form={form}
+                    afterSelect={() => {
+                      setFieldsValue({
+                        cityId: '',
+                        cityName: '',
+                        countyId: '',
+                        countyName: '',
+                        address: '',
+                      });
+                    }}
                     name={'provinceName'}
-                    field={['provinceId', 'provinceCode']}
+                    field={['provinceId']}
                     cascadeParams={{
                       countryId: getFieldValue('countryId'),
                     }}
@@ -272,25 +312,38 @@ const BatchEditModal = (props) => {
                       autoLoad: false,
                       url: `${gatewayUrl}${basicServiceUrl}/region/getProvinceByCountry`,
                     }}
-                    placeholder={'省'}
+                    placeholder={'选择省'}
                     {...AreaConfig}
                   />,
-                ))
+                )
               }
+            </FormItem>
+          </Col>
+          <Col span={4}>
+            <FormItem labelCol={{ span: 0 }} wrapperCol={{ span: 24 }} style={{marginBottom: '0px'}}>
               {
-                (getFieldDecorator('cityId', { initialValue: originData.cityId }),
-                getFieldDecorator('cityCode', { initialValue: originData.cityCode }),
                 getFieldDecorator('cityName', {
-                  initialValue: originData.cityName,
-                  rules: [{ required, message: '市不能为空' }],
+                  initialValue: originData.cityName ? originData.cityName : '',
+                  rules: [
+                    {
+                      required,
+                      message: '市不能为空',
+                    },
+                  ],
                 })(
                   <ComboList
-                    allowClear={true}
-                    style={{ width: '15%' }}
+                    style={{ width: '100%' }}
                     width={width}
                     form={form}
+                    afterSelect={() => {
+                      setFieldsValue({
+                        countyId: '',
+                        countyName: '',
+                        address: '',
+                      });
+                    }}
                     name={'cityName'}
-                    field={['cityId', 'cityCode']}
+                    field={['cityId']}
                     cascadeParams={{
                       provinceId: getFieldValue('provinceId'),
                     }}
@@ -302,27 +355,38 @@ const BatchEditModal = (props) => {
                       autoLoad: false,
                       url: `${gatewayUrl}${basicServiceUrl}/region/getCityByProvince`,
                     }}
-                    placeholder={'市'}
+                    placeholder={'选择市'}
                     {...AreaConfig}
                   />,
-                ))
+                )
               }
+            </FormItem>
+          </Col>
+          <Col span={4}>
+            <FormItem labelCol={{ span: 0 }} wrapperCol={{ span: 24 }} style={{marginBottom: '0px'}}>
               {
-                (getFieldDecorator('countyId', { initialValue: originData.countyId }),
-                getFieldDecorator('countyCode', { initialValue: originData.countyCode }),
                 getFieldDecorator('countyName', {
-                  initialValue: originData.countyName,
-                  rules: [{ required, message: '区/县不能为空' }],
+                  initialValue: originData.countyName ? originData.countyName : '',
+                  rules: [
+                    {
+                      required,
+                      message: '区/县不能为空',
+                    },
+                  ],
                 })(
                   <ComboList
-                    allowClear={true}
-                    style={{ width: '15%' }}
+                    style={{ width: '100%' }}
                     width={width}
                     form={form}
+                    afterSelect={() => {
+                      setFieldsValue({
+                        address: '',
+                      });
+                    }}
                     name={'countyName'}
-                    field={['countyId', 'countyCode']}
+                    field={['countyId']}
                     cascadeParams={{
-                      nodeId: getFieldValue('cityId'),
+                      countryId: getFieldValue('cityId'),
                     }}
                     store={{
                       params: {
@@ -333,15 +397,28 @@ const BatchEditModal = (props) => {
                       autoLoad: false,
                       url: `${gatewayUrl}${basicServiceUrl}/region/getChildrenNodes`,
                     }}
-                    placeholder={'区/县'}
+                    placeholder={'选择区/县'}
                     {...AreaConfig}
                   />,
-                ))
+                )
               }
-              {getFieldDecorator('address', {
-                initialValue: originData.address,
-                rules: [{ required, message: '详细地址不能为空' }],
-              })(<Input style={{ width: '40%' }} />)}
+            </FormItem>
+          </Col>
+          <Col span={4}>
+            <FormItem labelCol={{ span: 0 }} wrapperCol={{ span: 24 }} style={{marginBottom: '0px'}}>
+              {
+                getFieldDecorator('address', {
+                  initialValue: originData.address ? originData.address : '',
+                  rules: [
+                    {
+                      required,
+                      message: '详细地址不能为空',
+                    },
+                  ],
+                })(
+                  <Input style={{ width: '100%' }} placeholder={'请输入详细地址'} />,
+                )
+              }
             </FormItem>
           </Col>
         </Row>

@@ -182,7 +182,7 @@ export const AreaConfig = {
   remotePaging: false,
   rowKey: 'code',
   reader: {
-    field: ['id', 'code'],
+    field: ['id'],
     name: 'name',
     description: 'code',
   },
@@ -193,7 +193,7 @@ export const CountryIdConfig = {
   remotePaging: false,
   rowKey: 'code',
   reader: {
-    field: ['countryId', 'code'],
+    field: ['countryId'],
     name: 'name',
     description: 'code',
   },
