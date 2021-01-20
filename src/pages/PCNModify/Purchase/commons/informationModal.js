@@ -159,7 +159,6 @@ const getInformation = forwardRef(({
         });
     }
     function ChangRadio(e) {
-        console.log(screen)
         if (e.target.value === 1) {
             settrust(true)
         } else if (screen && e.target.value === 0) {

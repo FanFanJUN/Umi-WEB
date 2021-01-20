@@ -254,7 +254,7 @@ function SupplierConfigure() {
     }
     // 左侧
     const HeaderLeftButtons = (
-        <div style={{ width: '70%', display: 'flex', height: '100%', alignItems: 'center' }}>
+        <div style={{ width: '90%', display: 'flex', height: '100%', alignItems: 'center' }}>
             {
                 authAction(
                     <Button
@@ -351,7 +351,7 @@ function SupplierConfigure() {
                 className={styles.btn}
                 onSearch={handleQuickSerach}
                 allowClear
-                style={{ width: '240px' }}
+                style={{ width: '200px' }}
             />
         </div>
     )

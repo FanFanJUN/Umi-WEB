@@ -179,37 +179,6 @@ const getResultsIden = forwardRef(({
         <AuthALink onClick={() => handleAdmit(Othersdata.smPcnStrategicId)}>{'实物认定报告'}</AuthALink>
       },
     },
-    {
-      title: '附件资料',
-      dataIndex: 'kindManEnclosure',
-      align: 'center',
-      width: 220,
-      //render: (value, record) => <UploadFile type="show" entityId={value}/>
-      render: (text, record, index) => {
-        if (isView) {
-          return <UploadFile type="show" entityId={text} />
-        }
-        return <span>
-          {
-            record.smInKindStatus === 1 && record.smInKindManName === authorizations.userName ? <FormItem style={{ marginBottom: 0 }}>
-              {
-                getFieldDecorator(`kindManEnclosure[${index}]`, {
-                  initialValue: record ? record.kindManEnclosure : '',
-                  rules: [{ required: true, message: '请上传附件!' }],
-                })(
-                  <UploadFile
-                    title={"附件上传"}
-                    entityId={record ? record.kindManEnclosure : null}
-                    type={isView ? "show" : ""}
-                  />
-                )
-              }
-            </FormItem> : <UploadFile type="show" entityId={text} />
-          }
-
-        </span>
-      }
-    }
   ].map(_ => ({ ..._, align: 'center' }))
   // 获取表单
   function getmaterialform() {

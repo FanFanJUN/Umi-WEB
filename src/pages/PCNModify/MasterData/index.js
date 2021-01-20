@@ -135,6 +135,11 @@ function SupplierConfigure() {
     }
     // 编辑
     function handleCheckEdit() {
+        if (selectedRows[0].supplierConfirm === 1) {
+            selectedRows[0].supplierConfirmName = '是'
+        } else if (selectedRows[0].supplierConfirm === 0) {
+            selectedRows[0].supplierConfirmName = '否'
+        }
         setTabtitle('编辑PCN变更内容')
         setSelectType(true)
         commonFormRef.current.handleModalVisible(true)

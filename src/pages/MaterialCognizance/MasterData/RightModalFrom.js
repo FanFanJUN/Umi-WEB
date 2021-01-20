@@ -34,11 +34,14 @@ const commonRightFormRef = forwardRef(({
     }, [modifydata]);
 
     function handledetermine(modifydata) {
-        if (modifydata.defaultRequired === 0) {
-            setdefaultsel(false)
-        } else {
-            setdefaultsel(true)
+        if (modifydata) {
+            if (modifydata.defaultRequired === 0) {
+                setdefaultsel(false)
+            } else if (modifydata.defaultRequired === 1) {
+                setdefaultsel(true)
+            }
         }
+
     }
     function handleModalVisible(flag) {
         setvisible(!!flag)
@@ -74,7 +77,6 @@ const commonRightFormRef = forwardRef(({
         }
     }
     function handlechange(e) {
-        console.log(e.target.checked)
         setdefaultsel(e.target.checked)
     }
     return (

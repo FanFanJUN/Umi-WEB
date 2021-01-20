@@ -7,8 +7,8 @@ import Modifyinfluence from '../commons/Modifyinfluence'
 import ModifyinfluenceForm from '../commons/ModifyinfluenceForm'
 import classnames from 'classnames';
 import styles from '../index.less';
-import { closeCurrent ,isEmpty} from '../../../../utils';
-import {findPCNSupplierId,saveBatchVo} from '../../../../services/pcnModifyService'
+import { closeCurrent, isEmpty } from '../../../../utils';
+import { findPCNSupplierId, saveBatchVo } from '../../../../services/pcnModifyService'
 function CreateStrategy() {
   const BaseinfoRef = useRef(null);
   const ModifyinfoRef = useRef(null);
@@ -16,12 +16,11 @@ function CreateStrategy() {
   const modifyinfluenceFormRef = useRef(null);
   const [editData, setEditData] = useState([]);
   const [loading, triggerLoading] = useState(false);
-  const [visible, setvisible] = useState(false);
   const [modifytype, setModifytype] = useState('');
   const { query } = router.useLocation();
   const { frameElementId, frameElementSrc = "", Opertype = "" } = query;
 
-    // 获取配置列表项
+  // 获取配置列表项
   useEffect(() => {
     infoPCNdetails()
   }, []);
@@ -29,7 +28,7 @@ function CreateStrategy() {
   async function infoPCNdetails() {
     triggerLoading(true);
     let id = query.id;
-    const { data, success, message: msg } = await findPCNSupplierId({pcnTitleId:id});
+    const { data, success, message: msg } = await findPCNSupplierId({ pcnTitleId: id });
     if (success) {
       setEditData(data)
       setModifytype(data.smPcnChangeTypeCode)
@@ -37,15 +36,15 @@ function CreateStrategy() {
       return
     }
     triggerLoading(false);
-    message.error(msg) 
+    message.error(msg)
   }
   // 保存
   async function handleSave() {
-    let baseinfo,modifyVal,modifyanalysisVal,scienceEnviron;
+    let baseinfo, modifyVal, modifyanalysisVal, scienceEnviron;
     const { basefrom } = BaseinfoRef.current;
-    const {getmodifyform} = ModifyinfoRef.current;
-    const {getmodifyanalyform} = ModifyinfluenceRef.current;
-    const {modifyinfo} = modifyinfluenceFormRef.current;
+    const { getmodifyform } = ModifyinfoRef.current;
+    const { getmodifyanalyform } = ModifyinfluenceRef.current;
+    const { modifyinfo } = modifyinfluenceFormRef.current;
     baseinfo = basefrom();
     if (!baseinfo) {
       message.error('基础信息不能为空！');
@@ -72,24 +71,24 @@ function CreateStrategy() {
       smPcnAnalysisVos: modifyanalysisVal,
       ...scienceEnviron
     }
-    let editparams = {...editData, ...params}
+    let editparams = { ...editData, ...params }
     console.log(editparams)
     triggerLoading(true)
-    const {success, message: msg } = await saveBatchVo(editparams)
+    const { success, message: msg } = await saveBatchVo(editparams)
     if (success) {
-        triggerLoading(false)
-        closeCurrent()
+      triggerLoading(false)
+      closeCurrent()
     } else {
-        triggerLoading(false)
-        message.error(msg);
+      triggerLoading(false)
+      message.error(msg);
     }
   }
   // 返回
   function handleBack() {
     closeCurrent()
   }
-  function handleCancel() {
-    setvisible(false)
+  function handleSetup(val) {
+    setModifytype(val)
   }
   return (
     <Spin spinning={loading} tip='处理中...'>
@@ -108,41 +107,42 @@ function CreateStrategy() {
 
       <div className={styles.wrapper}>
         <div className={styles.bgw}>
-            <div className={styles.title}>基本信息</div>
-            <div >
+          <div className={styles.title}>基本信息</div>
+          <div >
             <BaseInfo
-                editformData={editData}
-                wrappedComponentRef={BaseinfoRef}
+              onOk={handleSetup}
+              editformData={editData}
+              wrappedComponentRef={BaseinfoRef}
             />
-            </div>
+          </div>
         </div>
         <div className={styles.bgw}>
-            <div className={styles.title}>变更信息</div>
-            <div >
+          <div className={styles.title}>变更信息</div>
+          <div >
             <Modifyinfo
-                editformData={editData.smPcnDetailVos}
-                wrappedComponentRef={ModifyinfoRef}
-                modifytype={modifytype}
-                isEdit={true}
+              editformData={editData.smPcnDetailVos}
+              wrappedComponentRef={ModifyinfoRef}
+              modifytype={modifytype}
+              isEdit={true}
             />
-            </div>
+          </div>
         </div>
         <div className={styles.bgw}>
-            <div className={styles.title}>变更影响分析</div>
-            <div >
+          <div className={styles.title}>变更影响分析</div>
+          <div >
             <Modifyinfluence
-                editformData={editData.smPcnAnalysisVos}
-                wrappedComponentRef={ModifyinfluenceRef}
-                isEdit={true}
-                isView={false}
+              editformData={editData.smPcnAnalysisVos}
+              wrappedComponentRef={ModifyinfluenceRef}
+              isEdit={true}
+              isView={false}
             />
-            </div>
+          </div>
         </div>
         <div className={styles.bgw}>
-            <ModifyinfluenceForm
-                editformData={editData}  
-                wrappedComponentRef={modifyinfluenceFormRef}
-            />
+          <ModifyinfluenceForm
+            editformData={editData}
+            wrappedComponentRef={modifyinfluenceFormRef}
+          />
         </div>
       </div>
     </Spin>
