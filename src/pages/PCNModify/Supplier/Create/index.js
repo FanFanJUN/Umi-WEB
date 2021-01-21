@@ -14,7 +14,6 @@ function CreateStrategy() {
   const ModifyinfoRef = useRef(null);
   const ModifyinfluenceRef = useRef(null);
   const modifyinfluenceFormRef = useRef(null);
-  const [againdata, setAgaindata] = useState({});
   const [loading, triggerLoading] = useState(false);
   const [visible, setvisible] = useState(false);
   const [modifytype, setModifytype] = useState('');

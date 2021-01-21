@@ -109,12 +109,19 @@ const ModifyinfluenceRef = forwardRef(({
         },
         {
             title: '是否安规件',
-            dataIndex: 'smPcnPartName',
+            dataIndex: 'smPcnPart',
             align: 'center',
             width: 160,
             render: (text, record, index) => {
                 if (isView) {
-                    return record.smPcnPartName;
+                    //return record.smPcnPartName;
+                    if (text === 0) {
+                        return <div>否</div>;
+                    } else if (text === 1) {
+                        return <div className="successColor">是</div>;
+                    } else {
+                        return <div></div>;
+                    }
                 }
                 return <span>
                     <FormItem style={{ marginBottom: 0 }}>

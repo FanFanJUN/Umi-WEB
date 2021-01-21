@@ -152,36 +152,6 @@ const getToexamine = forwardRef(({
         }
       },
     },
-    {
-      title: '附件资料',
-      dataIndex: 'smSupplierAuditConfirmerEnclosure',
-      align: 'center',
-      width: 160,
-      render: (text, record, index) => {
-        if (isView) {
-          return <UploadFile type="show" entityId={text} />
-        }
-        return <span>
-          {
-            record.smSupplierAuditStatus === 1 && record.smSupplierAuditConfirmerName === authorizations.userName ? <FormItem style={{ marginBottom: 0 }}>
-              {
-                getFieldDecorator(`smSupplierAuditConfirmerEnclosure[${index}]`, {
-                  initialValue: record ? record.smSupplierAuditConfirmerEnclosure : '',
-                  rules: [{ required: true, message: '请上传附件!' }],
-                })(
-                  <UploadFile
-                    title={"附件上传"}
-                    entityId={record ? record.smSupplierAuditConfirmerEnclosure : null}
-                    type={isView ? "show" : ""}
-                  />
-                )
-              }
-            </FormItem> : <UploadFile type="show" entityId={text} />
-          }
-
-        </span>
-      }
-    }
   ].map(_ => ({ ..._, align: 'center' }))
 
   // 获取表单

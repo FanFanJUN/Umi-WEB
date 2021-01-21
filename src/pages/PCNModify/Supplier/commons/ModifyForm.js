@@ -1,11 +1,11 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useState } from 'react';
 import { Modal, Form, Row, Col, Input, } from 'antd';
-import { smBaseUrl} from '../../../../utils/commonUrl';
+import { smBaseUrl } from '../../../../utils/commonUrl';
 import { Fieldclassification } from '@/utils/commonProps'
 import { ComboGrid, ComboList } from 'suid';
 import UploadFile from '../../../../components/Upload/index'
-import {ChangecontentList} from '../../commonProps'
-import {getRelationDocId} from '../../../../services/pcnModifyService'
+import { ChangecontentList } from '../../commonProps'
+import { getRelationDocId } from '../../../../services/pcnModifyService'
 // import { baseUrl } from '../../../utils/commonUrl';
 const { create, Item } = Form;
 const { TextArea } = Input;
@@ -36,32 +36,35 @@ const ModifyForm = forwardRef(
         useImperativeHandle(ref, () => ({ form }));
         const { getFieldDecorator, validateFieldsAndScroll, getFieldValue, setFieldsValue } = form;
         const [initialValue, setInitialValue] = useState({});
+        const [examine, setExamine] = useState('');
         useEffect(() => {
             if (type) {
                 setInitialValue(dataSource)
-            }else {
+            } else {
                 setInitialValue({})
             }
         }, [visible]);
 
         function handleSubmit() {
-            validateFieldsAndScroll(async(err, val) => {
+            validateFieldsAndScroll(async (err, val) => {
                 if (!err) {
                     if (val.attachment && val.attachment.length > 0 && !val.attachmentId) {
                         await RelationDocId(val.attachment, val.attachmentId).then(id => {
                             val.attachmentId = id;
                         })
                     }
+                    val.supplierConfirm = examine
                     onOk({ ...initialValue, ...val });
                 }
             });
         }
         // 变更内容
         function changevalue(val) {
-            form.setFieldsValue({ smChangeProve: val.changeRequiredSubmission})
+            form.setFieldsValue({ smChangeProve: val.changeRequiredSubmission })
+            setExamine(val.supplierConfirm)
         }
         async function RelationDocId(ids, docId) {
-            const { data, success, message: msg } = await getRelationDocId({json: JSON.stringify(ids), docId: docId});
+            const { data, success, message: msg } = await getRelationDocId({ json: JSON.stringify(ids), docId: docId });
             if (success) {
                 return data;
             }
@@ -99,14 +102,14 @@ const ModifyForm = forwardRef(
                                         params: {
                                             filters: [
                                                 {
-                                                    fieldName:'changeTypeCode',
+                                                    fieldName: 'changeTypeCode',
                                                     value: modifytype,
-                                                    operator:'EQ'
+                                                    operator: 'EQ'
                                                 },
                                                 {
-                                                    fieldName:'frozen',
+                                                    fieldName: 'frozen',
                                                     value: 0,
-                                                    operator:'EQ'
+                                                    operator: 'EQ'
                                                 }
                                             ],
                                         },

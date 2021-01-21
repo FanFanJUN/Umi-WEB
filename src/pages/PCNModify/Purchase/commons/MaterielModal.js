@@ -28,7 +28,7 @@ const getMatermodRef = forwardRef(({
     const headerRef = useRef(null)
     const { getFieldDecorator, validateFieldsAndScroll, getFieldValue, setFieldsValue } = form;
     const [loading, triggerLoading] = useState(false);
-    const [searchValue, setSearchValue] = useState('');
+    const [searchValue, setSearchValue] = useState({});
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [visible, setvisible] = useState(false);
@@ -47,7 +47,7 @@ const getMatermodRef = forwardRef(({
                 search: {
                     pageInfo: { page: current, rows: 30 },
                     quickSearchProperties: ["materialCode", "materialDesc"],
-                    quickSearchValue: searchValue
+                    ...searchValue
                 },
                 sortOrders: [
                     {
@@ -110,10 +110,8 @@ const getMatermodRef = forwardRef(({
         }
     }
     // 查询
-    function handleQuickSerach() {
-        let search = "";
-        setSearchValue(search);
-        setSearchValue(searchValue)
+    function handleQuickSerach(value) {
+        setSearchValue(v => ({ ...v, quickSearchValue: value.trim() }));
         uploadTable();
     }
     function uploadTable() {
@@ -152,14 +150,13 @@ const getMatermodRef = forwardRef(({
     // 右侧搜索
     const searchBtnCfg = (
         <>
-            <Input
-                style={{ width: 260 }}
+            <Search
                 placeholder='请输入物料代码或描述'
                 className={styles.btn}
-                onChange={SerachValue}
+                onSearch={handleQuickSerach}
                 allowClear
+                style={{ width: '240px' }}
             />
-            <Button type='primary' onClick={handleQuickSerach}>查询</Button>
         </>
     )
     return (

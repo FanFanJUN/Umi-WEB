@@ -184,7 +184,7 @@ const AddModal = (props) => {
           },
           {
             title: '供应商', dataIndex: 'smSupplierName', ellipsis: true, width: 180, render: (text, item) => {
-              return item.smSupplierName && item.smSupplierCode + ' ' + item.smSupplierName;
+              return item.smOriginalFactoryName ? (item.smOriginalFactoryName && item.smOriginalFactoryCode + ' ' + item.smOriginalFactoryName) : (item.smSupplierName && item.smSupplierCode + ' ' + item.smSupplierName)
             },
           },
           {
@@ -194,7 +194,7 @@ const AddModal = (props) => {
           },
           {
             title: '代理商', dataIndex: 'smOriginalFactoryName', ellipsis: true, width: 140, render: (text, item) => {
-              return item.smOriginalFactoryName && item.smOriginalFactoryCode + ' ' + item.smOriginalFactoryName;
+              return item.smOriginalFactoryName ? (item.smSupplierName && item.smSupplierCode + ' ' + item.smSupplierName) : (item.smOriginalFactoryName && item.smOriginalFactoryCode + ' ' + item.smOriginalFactoryName);
             },
           },
         ];

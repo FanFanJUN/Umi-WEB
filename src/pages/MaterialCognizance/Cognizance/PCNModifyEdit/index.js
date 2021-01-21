@@ -97,7 +97,7 @@ function CreateStrategy() {
 
       <div className={styles.wrapper}>
         <div className={styles.bgw}>
-          <div className={styles.title}>基本信息</div>
+          <div className={styles.pcntitle}>基本信息</div>
           <div >
             <BaseInfo
               editformData={editData}
@@ -107,7 +107,7 @@ function CreateStrategy() {
           </div>
         </div>
         <div className={styles.bgw}>
-          <div className={styles.title}>认定计划信息</div>
+          <div className={styles.pcntitle}>认定计划信息</div>
           <div >
             <PCNPlanInfo
               wrappedComponentRef={ModifyinfoRef}
@@ -121,7 +121,7 @@ function CreateStrategy() {
           </div>
         </div>
         <div className={styles.bgw}>
-          <div className={styles.title}>分配计划详情</div>
+          <div className={styles.pcntitle}>分配计划详情</div>
           <div >
             <Distributioninfo
               editformData={editData.detailsVos}

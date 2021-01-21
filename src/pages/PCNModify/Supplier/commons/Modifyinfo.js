@@ -147,13 +147,12 @@ const ModifyinfoRef = forwardRef(({
   }
   // 取消编辑或新增
   function handleCancel() {
-    //const { resetFields } = commonFormRef.current.form;
-    //resetFields()
     setVisible(false)
     uploadTable()
   }
   // 新增或编辑保存
   function handleSubmit(val) {
+    console.log(val)
     let newsdata = [];
     if (!modalType) {
       [...newsdata] = dataSource;

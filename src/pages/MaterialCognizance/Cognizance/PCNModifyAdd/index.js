@@ -74,7 +74,7 @@ function CreateStrategy() {
     <Spin spinning={loading} tip='处理中...'>
       <Affix offsetTop={0}>
         <div className={classnames([styles.header, styles.flexBetweenStart])}>
-          <span className={styles.title}>物料认定计划新增</span>
+          <span className={styles.pcntitle}>物料认定计划新增</span>
           <div className={styles.flexCenter}>
             <Button className={styles.btn} onClick={handleBack}>返回</Button>
             <Button type='primary' className={styles.btn} onClick={handleSave}>保存</Button>
@@ -85,7 +85,7 @@ function CreateStrategy() {
 
       <div className={styles.wrapper}>
         <div className={styles.bgw}>
-          <div className={styles.title}>基本信息</div>
+          <div className={styles.pcntitle}>基本信息</div>
           <div >
             <BaseInfo
               wrappedComponentRef={BaseinfoRef}
@@ -93,7 +93,7 @@ function CreateStrategy() {
           </div>
         </div>
         <div className={styles.bgw}>
-          <div className={styles.title}>认定计划信息</div>
+          <div className={styles.pcntitle}>认定计划信息</div>
           <div >
             <PCNPlanInfo
               wrappedComponentRef={ModifyinfoRef}
@@ -105,7 +105,7 @@ function CreateStrategy() {
           </div>
         </div>
         <div className={styles.bgw}>
-          <div className={styles.title}>分配计划详情</div>
+          <div className={styles.pcntitle}>分配计划详情</div>
           <div >
             <Distributioninfo
               wrappedComponentRef={DistributionRef}

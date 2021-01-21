@@ -172,6 +172,8 @@ let LineInfo = forwardRef((props, ref) => {
             return '准入推荐';
           case 'RECOMMENDATION_REQUIREMENTS':
             return '审核需求';
+          case 'PCN_CHANGE':
+            return 'PCN变更';
         }
       },
     },
