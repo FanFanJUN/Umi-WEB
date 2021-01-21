@@ -394,7 +394,7 @@ function SupplierConfigure() {
                         className={styles.btn}
                         onClick={PcnModel}
                     //disabled={empty}
-                    >PCN变更创建
+                    >从PCN变更创建
                     </Button>
                 )
             }

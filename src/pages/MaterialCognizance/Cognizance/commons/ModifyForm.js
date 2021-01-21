@@ -38,6 +38,7 @@ const getInformation = forwardRef(({
     const [selectype, setSelectype] = useState('');
     useEffect(() => {
         handleDate(editData)
+        console.log(editData)
     }, [editData]);
     function handleDate(value) {
         if (type && attachId === 2) {
@@ -81,6 +82,7 @@ const getInformation = forwardRef(({
     }
     // 执行部门
     function handlExecutor(val) {
+        handleRepeat()
         form.setFieldsValue({
             'executiveDepartmentName': val.organization.name,
             'executiveDepartmentId': val.organization.id,
@@ -88,6 +90,13 @@ const getInformation = forwardRef(({
     }
     // 排序号
     function changeSort(val) {
+        handleRepeat()
+        form.setFieldsValue({
+            'sort': val.changeSort,
+        })
+        setSelectype(val.defaultRequired)
+    }
+    function handleRepeat() {
         if (!isEmpty(editData.stageId)) {
             form.setFieldsValue({
                 stageId: editData.stageId,
@@ -95,10 +104,6 @@ const getInformation = forwardRef(({
                 stageSort: editData.stageSort,
             });
         }
-        form.setFieldsValue({
-            'sort': val.changeSort,
-        })
-        setSelectype(val.defaultRequired)
     }
     return (
         <>
