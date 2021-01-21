@@ -3,12 +3,15 @@ import Header from '../../components/Header';
 import ModalFields from '../../components/ModalFields';
 import AutoSizeLayout from '../../components/AutoSizeLayout';
 import { Button, message, Modal } from 'antd'
-import { ExtTable } from 'suid';
+import { ExtTable, utils } from 'suid';
 import styles from './index.less';
 import { useTableProps } from '../../utils/hooks';
 import { recommendUrl } from '../../utils/commonUrl';
 import { materialLevelProps } from '../../utils/commonProps';
 import { savePassStandard, removePassStandard } from '../../services/passStandard';
+
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
+const { authAction } = utils;
 
 function PassStandard() {
   const tableRef = useRef(null);
@@ -117,21 +120,39 @@ function PassStandard() {
   }
   const left = (
     <>
-      <Button
-        type='primary'
-        className={styles.btn}
-        onClick={handleCreate}
-      >新增</Button>
-      <Button
-        disabled={empty}
-        className={styles.btn}
-        onClick={handleEditor}
-      >编辑</Button>
-      <Button
-        disabled={empty}
-        className={styles.btn}
-        onClick={handleRemove}
-      >删除</Button>
+      {
+        authAction(
+          <Button
+            key='SAM_BAF_PASS_STANDARD_CREATE'
+            type='primary'
+            className={styles.btn}
+            ignore={DEVELOPER_ENV}
+            onClick={handleCreate}
+          >新增</Button>
+        )
+      }
+      {
+        authAction(
+          <Button
+            key='SAM_BAF_PASS_STANDARD_EDITOR'
+            disabled={empty}
+            className={styles.btn}
+            ignore={DEVELOPER_ENV}
+            onClick={handleEditor}
+          >编辑</Button>
+        )
+      }
+      {
+        authAction(
+          <Button
+            key='SAM_BAF_PASS_STANDARD_REMOVE'
+            disabled={empty}
+            className={styles.btn}
+            ignore={DEVELOPER_ENV}
+            onClick={handleRemove}
+          >删除</Button>
+        )
+      }
     </>
   );
   const fields = [
