@@ -76,7 +76,6 @@ class UploadFile extends React.Component {
       const flsRequestes = this.entityId.map(item => {
         return request.get(`${baseUrl}/getDocumentByRefIdOrDocId?paramId=${item}`)
       })
-      console.log(`uploadfile: ${this.entityId}`)
       const values = await Promise.all(flsRequestes);
       const fls = values.map(({ data }) => {
         const [f] = data;

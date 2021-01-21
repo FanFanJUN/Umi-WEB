@@ -414,6 +414,11 @@ export default [
       },
       /**供应商推荐准入 begin */
       {
+        path: '/supplier/recommend/pass/standard',
+        component: './PassStandard',
+        title: '准入标准主数据'
+      },
+      {
         path: '/supplier/recommend/admittance/manage',
         component: './SupplierRAM',
         title: '供应商推荐准入管理'

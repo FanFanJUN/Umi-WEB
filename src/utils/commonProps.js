@@ -1257,6 +1257,24 @@ export const purchaseOrgConfig = {
   remotePaging: true,
   placeholder: '选择采购组织'
 }
+
+// 物料级别数据字典
+export const materialLevelProps = {
+  store: {
+    url: `${baseUrl}/dataDictionaryItem/getDictByTypeCode`,
+    params: {
+      dictTypeCode: 'material_level'
+    },
+    type: 'get'
+  },
+  style: { width: '100%' },
+  reader: {
+    name: 'value',
+    field: ['value']
+  },
+  placeholder: '选择物料级别'
+}
+
 // 数据字典
 export const getListByTypeId = (id) => {
   return {

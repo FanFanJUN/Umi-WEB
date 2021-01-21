@@ -478,5 +478,31 @@ export const downloadPDFFile = (data, name) => {
     navigator.msSaveBlob(blob, fileName);
   }
 };
+
+export function formatFieldsOptions(fields) {
+  const formatFields = fields.map(item => {
+    return {
+      ...item,
+      options: {
+        ...item.options,
+        rules: item?.options?.rules ? item.options.concat(
+          [
+            {
+              required: true,
+              message: `${item.label}不能为空`
+            }
+          ]
+        ) : [
+            {
+              required: true,
+              message: `${item.label}不能为空`
+            }
+          ]
+      }
+    }
+  })
+  return formatFields
+}
+
 export { default as request } from './request';
 export { constants, userAuth as userUtils, commonProps, commonUrl };
