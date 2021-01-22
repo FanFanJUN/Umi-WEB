@@ -20,9 +20,6 @@ const ScoreOverview = (props) => {
       },
     },
     { title: '类别', dataIndex: 'systemName', width: 150, required: true },
-    { title: '指标名称', dataIndex: 'ruleName', ellipsis: true, width: 100 },
-    { title: '指标定义', dataIndex: 'definition', ellipsis: true, width: 150 },
-    { title: '评分标准', dataIndex: 'scoringStandard', ellipsis: true, width: 150 },
     {
       title: '标准分',
       dataIndex: 'highestScore',
@@ -66,6 +63,9 @@ const ScoreOverview = (props) => {
       width: 80,
       render: (v, data) => (data.parentId || data.reviewImplementPlanId) && v,
     },
+    { title: '指标名称', dataIndex: 'ruleName', ellipsis: true, width: 100 },
+    { title: '指标定义', dataIndex: 'definition', ellipsis: true, width: 150 },
+    { title: '评分标准', dataIndex: 'scoringStandard', ellipsis: true, width: 150 },
   ].map(item => ({ ...item, align: 'center' }));
 
   const [data, setData] = useState({
