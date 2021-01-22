@@ -15,7 +15,7 @@ const checkModal = forwardRef(({ form, supplierCode, materialCode }, ref) => {
     const [selectedRows, setRows] = useState([]);
     const columns = [
         {
-            title: '提交状态', dataIndex: 'submitStatus', width: 70, align: 'center', render: (text) => {
+            title: '提交状态', dataIndex: 'submitStatus', width: 100, align: 'center', render: (text) => {
                 switch(text){
                     case "SUBMITTED": return '已提交';
                     case "NOTSUBMITTED": return '未提交';
@@ -31,6 +31,9 @@ const checkModal = forwardRef(({ form, supplierCode, materialCode }, ref) => {
                     default: return '';
                 }
             }
+        },
+        {
+            title: '是否撤回', dataIndex: 'withdraw', width: 100, align: 'center', render: (text) => text? '是' : '否'
         },
         { title: '复核状态', dataIndex: 'reviewResults', ellipsis: true, align: 'center', render: (text) => {
             switch(text){
