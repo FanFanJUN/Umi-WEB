@@ -43,14 +43,30 @@ const ShuttleBoxNew = (props) => {
 
   useEffect(() => {
     leftData = [];
-    setData(v => ({ ...v, rightCheckedKeys: [], leftCheckedKeys: [] }));
+    setData(v => ({ ...v, rightCheckedKeys: []}));
     let arr = recursion(props.rightTreeData);
-    setData(v => ({ ...v, rightTreeData: arr }));
+    const leftKeys = getLeftCheckKeys(arr)
+    setData(v => ({ ...v, rightTreeData: arr, leftCheckedKeys: leftKeys }));
   }, [props.rightTreeData]);
+
+  const getLeftCheckKeys = (arr) => {
+    let leftKeys = []
+    const tiled = (arr) => {
+      arr.map(item => {
+        if (item.children && item.children.length !== 0) {
+          tiled(item.children)
+        } else {
+          leftKeys.push(item.systemId)
+        }
+      })
+    }
+    tiled(arr)
+    return leftKeys
+  }
 
   useEffect(() => {
     console.log(leftTreeData, 'leftTreeData');
-    setData(v => ({ ...v, rightCheckedKeys: [], leftCheckedKeys: [] }));
+    setData(v => ({ ...v, rightCheckedKeys: []}));
     if (leftTreeData) {
       if (leftTreeData.children) {
         console.log('触发');
@@ -95,7 +111,6 @@ const ShuttleBoxNew = (props) => {
       ...v,
       rightTreeData: arr,
       leftSelectData: [],
-      leftCheckedKeys: [],
       rightCheckedKeys: [],
       rightCheck: [],
     }));
@@ -108,11 +123,12 @@ const ShuttleBoxNew = (props) => {
       let arr = JSON.parse(JSON.stringify(data.rightCheck));
       arr = duplicateRemoval(arr, 'systemId');
       arr = recursion(arr);
+      const leftKeys = getLeftCheckKeys(arr)
       setData(v => ({
         ...v,
+        leftCheckedKeys: leftKeys,
         rightTreeData: arr,
         leftSelectData: [],
-        leftCheckedKeys: [],
         rightCheckedKeys: [],
         rightCheck: [],
       }));
