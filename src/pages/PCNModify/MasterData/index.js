@@ -124,7 +124,6 @@ function SupplierConfigure() {
     function uploadTable() {
         cleanSelectedRecord()
         tableRef.current.remoteDataRefresh()
-        console.log(23123)
     }
     // 新增
     function AddModel() {
@@ -236,6 +235,7 @@ function SupplierConfigure() {
                         {
                             authAction(
                                 <Button
+                                    loading={loading}
                                     ignore={DEVELOPER_ENV}
                                     key='SRM-SM-PCNMASTERDATA-FROZEN'
                                     className={styles.btn}
@@ -248,6 +248,7 @@ function SupplierConfigure() {
                         {
                             authAction(
                                 <Button
+                                    loading={loading}
                                     ignore={DEVELOPER_ENV}
                                     key='SRM-SM-PCNMASTERDATA-THAW'
                                     className={styles.btn}

@@ -5,6 +5,8 @@ import { openNewTab, getFrameElement, isEmpty } from '@/utils';
 import Header from '@/components/Header';
 import ModifyForm from './ModifyForm';
 import AutoSizeLayout from '../../../../components/AutoSizeLayout';
+import StageModle from './StageModle'
+import DeleteModle from './DeleteModle'
 import styles from '../index.less';
 import { map } from 'lodash';
 import { QueryMasterdata, TaskqueryMasterdata } from '../../../../services/MaterialService'
@@ -12,7 +14,7 @@ import { QueryMasterdata, TaskqueryMasterdata } from '../../../../services/Mater
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { create } = Form;
 const { authAction, storage } = utils;
-let keys = 1;
+let keys = 1, defaultData = [];
 const ModifyinfoRef = forwardRef(({
   form,
   editformData = [],
@@ -27,14 +29,18 @@ const ModifyinfoRef = forwardRef(({
   }));
   const tabformRef = useRef(null)
   const ModifyfromRef = useRef(null)
+  const StagefromRef = useRef(null)
+  const DeletefromRef = useRef(null)
   const [dataSource, setDataSource] = useState([]);
   const [selectRowKeys, setRowKeys] = useState([]);
   const [selectedRows, setRows] = useState([]);
   const [initialValue, setInitialValue] = useState({});
   const [modalType, setModalType] = useState(false);
-  const [showAttach, triggerShowAttach] = useState(false);
   const [attachId, setAttachId] = useState('1')
   const [title, setTitle] = useState('新增变更详情');
+  const [handlestage, setHandlestage] = useState([]);
+  const [deletedata, setDeletedata] = useState([]);
+  const [addtask, setAddtask] = useState([]);
   const empty = selectRowKeys.length === 0;
   const [signleRow = {}] = selectedRows;
   const { defaultRequired: defaultype, executionStatus: implement } = signleRow;
@@ -116,43 +122,76 @@ const ModifyinfoRef = forwardRef(({
   ].map(_ => ({ ..._, align: 'center' }))
 
   async function hanldcreate() {
-    if (isAdd) {
-      let params = {}
-      const { data, success, message: msg } = await QueryMasterdata(params);
-      if (success) {
+    let params = {}
+    const { data, success, message: msg } = await QueryMasterdata(params);
+    if (success) {
+      setHandlestage(data.rows)
+      if (isAdd) {
         data.rows.map(item => {
           if (item.identificationStage === "认定方案") {
             handleTask(item)
+          } else if (item.identificationStage === "认定结果") {
+            setTimeout(() => {
+              hanleResult(item)
+            }, 1000);
           }
         })
-        return
       }
+      return
     }
-
   }
   async function handleTask(val) {
     const { data, success, message: msg } = await TaskqueryMasterdata({ stageId: val.id });
     if (success) {
-      let defaulted = [{
-        key: keys,
-        stageName: val.identificationStage,
-        stageCode: val.stageCode,
-        stageSort: val.changeSort,
-        stageId: val.id,
-        taskName: data[0].taskDesc,
-        taskCode: data[0].taskCode,
-        taskTypeName: '判断型任务',
-        taskTypeCode: '01',
-        sort: 1,
-        executionStatus: 0,
-        defaultRequired: data[0].defaultRequired
-      }];
-      setDataSource(defaulted);
+      let defaulted;
+      data.map(item => {
+        defaulted = {
+          key: keys,
+          stageName: val.identificationStage,
+          stageCode: val.stageCode,
+          stageSort: val.changeSort,
+          stageId: val.id,
+          taskName: item.taskDesc,
+          taskCode: item.taskCode,
+          taskTypeName: '判断型任务',
+          taskTypeCode: '01',
+          sort: item.changeSort,
+          executionStatus: 0,
+          defaultRequired: item.defaultRequired
+        }
+      })
+      defaultData.push(defaulted)
+    }
+  }
+  async function hanleResult(val) {
+    const { data, success, message: msg } = await TaskqueryMasterdata({ stageId: val.id });
+    if (success) {
+      keys++;
+      let defaulted;
+      data.map(item => {
+        defaulted = {
+          key: keys++,
+          stageName: val.identificationStage,
+          stageCode: val.stageCode,
+          stageSort: val.changeSort,
+          stageId: val.id,
+          taskName: item.taskDesc,
+          taskCode: item.taskCode,
+          taskTypeName: '判断型任务',
+          taskTypeCode: '01',
+          sort: item.changeSort,
+          executionStatus: 0,
+          defaultRequired: item.defaultRequired
+        }
+      })
+      defaultData.push(defaulted)
+      setDataSource(defaultData);
     }
   }
   async function hanldModify(val) {
     if (isEdit && val.length !== 0) {
       let newsdata = [];
+      keys++;
       val.map((item, index) => {
         newsdata.push({
           ...item,
@@ -176,11 +215,22 @@ const ModifyinfoRef = forwardRef(({
   }
   // 新增
   function showModal() {
-    setTitle('新增分配计划详情')
-    setModalType(false)
-    setAttachId(1)
-    ModifyfromRef.current.handleModalVisible(true)
-    uploadTable()
+    let newsdata = dataSource.filter(item => item.stageName !== '认定方案' && item.stageName !== '认定结果');
+    let obj = {};
+    newsdata = newsdata.reduce(function (item, next) {
+      obj[next.stageName] ? '' : obj[next.stageName] = true && item.push(next);
+      return item;
+    }, []);
+    setAddtask(newsdata)
+    if (newsdata.length === 0) {
+      message.error('请先新增任务阶段后在新增任务！')
+    } else {
+      setTitle('新增分配计划详情')
+      setModalType(false)
+      setAttachId(1)
+      ModifyfromRef.current.handleModalVisible(true)
+      uploadTable()
+    }
   }
   // 编辑
   function handleEdit() {
@@ -210,12 +260,12 @@ const ModifyinfoRef = forwardRef(({
     if (newsdata.length > 0) {
       for (let item of newsdata) {
         if (item.stageCode === val.stageCode && item.taskCode === val.taskCode && !modalType) {
-          message.error('当前数据已存在，请重新新增！')
+          message.error('当前阶段任务已存在，请重新新增！')
           return false;
         }
       }
       if (!modalType) {
-        keys = keys + 1;
+        keys = keys++;
         newsdata.push({
           ...val,
           key: keys,
@@ -228,7 +278,6 @@ const ModifyinfoRef = forwardRef(({
             const copyData = dataSource.slice(0)
             copyData[index] = val;
             setDataSource(copyData)
-            //setRows(copyData)
           }
         })
       }
@@ -268,16 +317,73 @@ const ModifyinfoRef = forwardRef(({
 
     }
   }
+  // 新增阶段
+  function showstageModal() {
+    uploadTable()
+    StagefromRef.current.handleModalVisible(true)
+  }
+  function handleAddStage(val) {
+    let odddata = [];
+    [...odddata] = dataSource;
+    for (let item of odddata) {
+      if (item.stageCode === val[0].stageCode && item.taskCode === val[0].taskCode) {
+        message.error('当前阶段已存在，请重新新增！')
+        return false;
+      }
+    }
+    val.map(item => {
+      odddata.push({
+        ...item,
+        key: keys++,
+      })
+    })
+    setDataSource(odddata)
+    StagefromRef.current.handleModalVisible(false)
+  }
+  // 删除阶段
+  function handleDeletecogn() {
+    let newsdata = [], obj = {};
+    dataSource.map(item => {
+      newsdata.push({
+        ...item,
+        identificationStage: item.stageName,
+        stageCode: item.stageCode,
+        executionStatus: item.executionStatus
+      })
+    })
+    newsdata = newsdata.reduce(function (item, next) {
+      obj[next.identificationStage] ? '' : obj[next.identificationStage] = true && item.push(next);
+      return item;
+    }, []);
+    setDeletedata(newsdata)
+    DeletefromRef.current.handleModalVisible(true)
+  }
+  async function handleDeleteStage(val) {
+    if (val.executionStatus !== 0) {
+      message.error('该阶段的认定任务已执行，不可删除！')
+    } else {
+      const filterData = dataSource.filter(item => item.stageName !== val.identificationStage);
+      keys--
+      setDataSource(filterData)
+    }
+    DeletefromRef.current.handleModalVisible(false)
+  }
   const headerleft = (
     <>
       {
-        <AuthButton type="primary" className={styles.btn} onClick={() => showModal()}>新增</AuthButton>
+        <AuthButton type="primary" className={styles.btn} onClick={() => showstageModal()}>新增阶段</AuthButton>
+      }
+      {
+        <AuthButton className={styles.btn} onClick={() => handleDeletecogn()}>删除阶段</AuthButton>
+      }
+      {
+        <AuthButton type="primary" className={styles.btn} onClick={() => showModal()}>新增任务</AuthButton>
+      }
+      {
+        <AuthButton className={styles.btn} disabled={empty || isdelete || !isimple} onClick={handleRemove}>删除任务</AuthButton>
       }
       {
         <AuthButton className={styles.btn} disabled={empty || !isimple} onClick={() => handleEdit()}>编辑</AuthButton>
-      }
-      {
-        <AuthButton className={styles.btn} disabled={empty || isdelete || !isimple} onClick={handleRemove}>删除</AuthButton>
       }
     </>
   );
@@ -305,7 +411,7 @@ const ModifyinfoRef = forwardRef(({
             }}
             allowCancelSelect={true}
             size='small'
-            height={height}
+            height={600}
             ellipsis={false}
             saveData={false}
             onSelectRow={handleSelectedRows}
@@ -315,17 +421,20 @@ const ModifyinfoRef = forwardRef(({
           />
         }
       </AutoSizeLayout>
-      {/* <ModifyForm
-        onCancel={handleCancel}
-        onOk={handleSubmit}
-        type={modalType}
-        attachId={attachId}
-        editData={selectedRows}
-        title={title}
-        wrappedComponentRef={ModifyfromRef}
-        destroyOnClose
-      /> */}
+      {/****阶段 */}
+      <StageModle
+        data={handlestage}
+        onOk={handleAddStage}
+        wrappedComponentRef={StagefromRef}
+      />
+      <DeleteModle
+        deletedata={deletedata}
+        onOk={handleDeleteStage}
+        wrappedComponentRef={DeletefromRef}
+      />
+      {/***编辑 */}
       <ModifyForm
+        addtask={addtask}
         type={modalType}
         attachId={attachId}
         editData={initialValue}

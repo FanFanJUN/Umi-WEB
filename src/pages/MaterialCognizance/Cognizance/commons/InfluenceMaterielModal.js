@@ -8,6 +8,7 @@ import Header from '@/components/Header';
 import styles from '../index.less';
 import { findCanChooseSupplier } from '@/services/SupplierModifyService'
 const { create } = Form;
+const { Search } = Input
 const getAgentregRef = forwardRef(({
     form,
     modifyanalysis = () => null,
@@ -80,10 +81,8 @@ const getAgentregRef = forwardRef(({
 
     }
     // 查询
-    function handleQuickSerach() {
-        let search = "";
-        setSearchValue(search);
-        setSearchValue(searchValue)
+    function handleQuickSerach(value) {
+        setSearchValue(value.trim());
         uploadTable();
     }
     function uploadTable() {
@@ -195,14 +194,21 @@ const getAgentregRef = forwardRef(({
     // 右侧搜索
     const searchBtnCfg = (
         <>
-            <Input
+            {/* <Input
                 style={{ width: 260 }}
                 placeholder='请输入供应商代码或名称查询'
                 className={styles.btn}
                 onChange={SerachValue}
                 allowClear
             />
-            <Button type='primary' onClick={handleQuickSerach}>查询</Button>
+            <Button type='primary' onClick={handleQuickSerach}>查询</Button> */}
+            <Search
+                placeholder='请输入供应商代码或名称查询'
+                className={styles.btn}
+                onSearch={handleQuickSerach}
+                allowClear
+                style={{ width: '240px' }}
+            />
         </>
     )
     return (

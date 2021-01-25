@@ -319,7 +319,7 @@ function SupplierConfigure() {
                         ignore={DEVELOPER_ENV}
                         key='SRM-SM-PCNPURCHASE-HISTORY'
                     >
-                        <Button className={styles.btn} disabled={empty || !underWay}>审核历史</Button>
+                        <Button className={styles.btn} disabled={empty}>审核历史</Button>
                     </FlowHistoryButton>
                 )
             }

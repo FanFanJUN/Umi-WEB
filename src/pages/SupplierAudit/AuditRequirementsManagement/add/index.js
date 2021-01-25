@@ -56,7 +56,9 @@ const Index = (props) => {
     getAuditType();
     const { id, pageState, reviewRequirementCode = undefined, _s } = query;
     let state = pageState;
-    await checkToken(query);
+    if (_s) {
+      await checkToken(query);
+    }
     if (!state) {
       state = 'flowDetail';
     }

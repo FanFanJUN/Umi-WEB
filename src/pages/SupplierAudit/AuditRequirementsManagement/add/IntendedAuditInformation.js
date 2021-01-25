@@ -45,11 +45,17 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
       render: (v, value) => <div>
         {
           (value.treeData && value.treeData.length !== 0) &&
-          <a onClick={() => showContent(value.treeData, 'detail')}>内容</a>
+          <a onClick={(e) => {
+            e.stopPropagation()
+            showContent(value.treeData, 'detail')
+          }}>内容</a>
         }
         {
           (value.reviewTeamGroupBoList && value.reviewTeamGroupBoList.length !== 0) &&
-          <a onClick={() => showTeam(value.reviewTeamGroupBoList, 'detail')}> 小组</a>
+          <a onClick={(e) => {
+            e.stopPropagation()
+            showTeam(value.reviewTeamGroupBoList, 'detail')
+          }}> 小组</a>
         }
       </div>,
     },
@@ -149,9 +155,7 @@ let IntendedAuditInformation = React.forwardRef((props, ref) => {
   // 打开内容界面
   const showContent = (value = undefined, type = 'add') => {
     if (value) {
-      setTimeout(() => {
-        setData(v => ({ ...v, treeData: value }));
-      }, 300);
+      setData(v => ({ ...v, treeData: value }));
     }
     setData(v => ({ ...v, contentVisible: true, type }));
   };
