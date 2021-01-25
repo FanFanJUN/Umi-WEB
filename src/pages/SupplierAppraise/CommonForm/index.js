@@ -28,7 +28,7 @@ import {
 import { useLocation } from 'dva/router';
 import moment from 'moment';
 import { commonProps, getUserAccount } from '../../../utils';
-import { findListById, findByBuCodeOrBgCode, findAppraiseById } from '../../../services/appraise';
+import { findListById, findByBuCodeOrBgCode, findAppraiseById, findDateForBuCodeOrBgCode } from '../../../services/appraise';
 import { useTableProps } from '../../../utils/hooks';
 const {
   corporationProps,
@@ -174,6 +174,14 @@ const CommonForm = forwardRef(({
     })
     if (success) {
       tableCommonSets.setDataSource(data)
+    }
+    const { data: d, success: s } = await findDateForBuCodeOrBgCode({
+      [paramsName]: evlValue === 'BG' ? item.code : item.buCode
+    })
+    if (s) {
+      setFieldsValue({
+        applicationPeriodEndTime: !!d ? moment(d) : null
+      })
     }
   }
   // 清除选中项
@@ -607,7 +615,7 @@ const CommonForm = forwardRef(({
                         <DatePicker
                           style={{ width: '100%' }}
                           placeholder='结束日期'
-                          disabled={!apt || type === 'detail'}
+                          disabled
                           disabledDate={disabledDateApt}
                         />
                       )

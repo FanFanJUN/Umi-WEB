@@ -59,6 +59,14 @@ export const findByBuCodeOrBgCode = params => createServiceRequest({
   base: '/srm-baf-web'
 })
 
+// 通过业务单元或业务板块code获取结束时间
+export const findDateForBuCodeOrBgCode = params => createServiceRequest({
+  path: '/api/bmBuContactService/findEffectiveEndDateByBuOrBgCode',
+  params,
+  method: 'GET',
+  base: '/srm-baf-web'
+})
+
 // 通过id获取评价项目
 export const findAppraiseById = params => createServiceRequest({
   path: '/api/seEvaluationProjectService/findEvaluationProjectById',
