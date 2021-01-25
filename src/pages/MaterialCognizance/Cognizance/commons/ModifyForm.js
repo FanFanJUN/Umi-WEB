@@ -24,7 +24,8 @@ const getInformation = forwardRef(({
     attachId,
     onOk = () => null,
     seltaskid,
-    type
+    type,
+    addtask
 }, ref,) => {
     useImperativeHandle(ref, () => ({
         handleModalVisible,
@@ -38,16 +39,14 @@ const getInformation = forwardRef(({
     const [selectype, setSelectype] = useState('');
     useEffect(() => {
         handleDate(editData)
-        console.log(editData)
     }, [editData]);
     function handleDate(value) {
         if (type && attachId === 2) {
-            setOthers(false)
             setTaskid(seltaskid)
-        } else {
+        } else if (!type && attachId === 2) {
             setOthers(true)
         }
-        if (type && value.key === 1) {
+        if (type && value.key === 1 || type && value.key === 2) {
             setEdit(true)
         } else {
             setEdit(false)
@@ -74,10 +73,11 @@ const getInformation = forwardRef(({
     // 变更内容
     function changevalue(val) {
         setOthers(false)
-        setTaskid(val.id)
+        setTaskid(val.stageId)
         form.setFieldsValue({
-            'taskCode': '',
-            'taskName': '',
+            stageId: val.stageId,
+            stageCode: val.stageCode,
+            stageSort: val.stageSort,
         })
     }
     // 执行部门
@@ -102,6 +102,7 @@ const getInformation = forwardRef(({
                 stageId: editData.stageId,
                 stageCode: editData.stageCode,
                 stageSort: editData.stageSort,
+                taskCode: editData.taskCode
             });
         }
     }
@@ -131,11 +132,16 @@ const getInformation = forwardRef(({
                                     <ComboList
                                         showSearch={false}
                                         style={{ width: '100%' }}
-                                        name={'stageName'}
+                                        afterSelect={changevalue}
+                                        dataSource={addtask}
+                                        reader={{
+                                            name: 'stageName',
+                                            field: ['code'],
+
+                                        }}
+                                        name='stageName'
                                         field={['stageId', 'stageCode', 'stageSort']}
                                         form={form}
-                                        afterSelect={changevalue}
-                                        {...Identification}
                                         disabled={edit}
                                     />
                                 )

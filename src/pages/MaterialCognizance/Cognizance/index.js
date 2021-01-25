@@ -43,6 +43,7 @@ function SupplierConfigure() {
     const [visible, setvisible] = useState(false);
     const [tasktype, setTasktype] = useState('');
     const [seniorSearchvalue, setSeniorsearchvalue] = useState('');
+    const [loading, triggerLoading] = useState(false);
     /** 按钮可用性判断变量集合 BEGIN*/
     const [signleRow = {}] = selectedRows;
     const { planningStatus: signleFlowStatus, id: flowId, creatorId } = signleRow;
@@ -292,6 +293,7 @@ function SupplierConfigure() {
     }
     // 发布
     async function handleRelease() {
+        triggerLoading(true)
         let status = selectedRows[0].planningStatus;
         let id = selectedRows[0].id;
         let statustype = false;
@@ -309,6 +311,7 @@ function SupplierConfigure() {
         } else {
             message.error(msg);
         }
+        triggerLoading(false)
     }
     // 确认认定结果
     async function handleConfirm() {
@@ -449,6 +452,7 @@ function SupplierConfigure() {
             {
                 authAction(
                     <Button
+                        loading={loading}
                         ignore={DEVELOPER_ENV}
                         key='SRM-SM-LDENTPLAN-SUPPLIER-RELEASE'
                         className={styles.btn}
@@ -461,6 +465,7 @@ function SupplierConfigure() {
             {
                 authAction(
                     <Button
+                        loading={loading}
                         ignore={DEVELOPER_ENV}
                         key='SRM-SM-LDENTPLAN-SUPPLIER-CANCEL'
                         className={styles.btn}
@@ -473,6 +478,7 @@ function SupplierConfigure() {
             {
                 authAction(
                     <Button
+                        loading={loading}
                         ignore={DEVELOPER_ENV}
                         key='SRM-SM-LDENTPLAN-SUPPLIER-RESULT'
                         className={styles.btn}

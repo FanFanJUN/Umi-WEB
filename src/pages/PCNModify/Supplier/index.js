@@ -23,8 +23,7 @@ function SupplierConfigure() {
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setRows] = useState([]);
     const [searchValue, setSearchValue] = useState({});
-    // const [loading, triggerLoading] = useState(true);
-    const [attachId, setAttachId] = useState('');
+    const [loading, triggerLoading] = useState(false);
     const [seniorSearchvalue, setSeniorsearchvalue] = useState('');
     /** 按钮可用性判断变量集合 BEGIN*/
     const [signleRow = {}] = selectedRows;
@@ -177,6 +176,7 @@ function SupplierConfigure() {
     }
     // 提交
     async function handleSubmit() {
+        triggerLoading(true)
         let status = selectedRows[0].smDocunmentStatus;
         let id = selectedRows[0].id;
         let statustype = false;
@@ -191,8 +191,10 @@ function SupplierConfigure() {
         if (success) {
             message.success(`${statustype ? '提交' : '撤回'}成功！`);
             uploadTable();
+            triggerLoading(false)
         } else {
             message.error(msg);
+            triggerLoading(false)
         }
     }
     // 快速查询
@@ -275,6 +277,7 @@ function SupplierConfigure() {
             {
                 authAction(
                     <Button
+                        loading={loading}
                         ignore={DEVELOPER_ENV}
                         key='SRM-SM-PCNSUPPLIER-SUBMIT'
                         className={styles.btn}
@@ -287,6 +290,7 @@ function SupplierConfigure() {
             {
                 authAction(
                     <Button
+                        loading={loading}
                         ignore={DEVELOPER_ENV}
                         key='SRM-SM-PCNSUPPLIER-WITHDRAW'
                         className={styles.btn}
