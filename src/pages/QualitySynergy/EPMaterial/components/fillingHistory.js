@@ -28,6 +28,7 @@ const checkModal = forwardRef(({ form, supplierCode, materialCode }, ref) => {
                 switch(text){
                     case "FIT": return '符合';
                     case "NOTFIT": return '不符合';
+                    case "REVIEW_FIT": return '抽检不符合';
                     default: return '';
                 }
             }

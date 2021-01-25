@@ -38,6 +38,7 @@ const checkModal = forwardRef(({ form, selectedRow = {}, checkModalType }, ref) 
                     case "FIT": return '符合';
                     case "NOTFIT": return '不符合';
                     case "NOTCOMPLETED": return '复核不符合';
+                    case "REVIEW_FIT": return '抽检不符合';
                     default: return '';
                 }
             }
