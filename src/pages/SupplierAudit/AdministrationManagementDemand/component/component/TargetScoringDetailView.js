@@ -90,6 +90,7 @@ const TargetScoringDetailView = (props) => {
             highestScore: res.data.highestScore,
             score: res.data.score,
             scoringStandard: res.data.scoringStandard,
+            whetherCalculation: res.data.whetherCalculation
           });
           setDataSource(res.data.lineList);
         }
@@ -211,7 +212,7 @@ const TargetScoringDetailView = (props) => {
                 <FormItem {...formLongLayout} label={'审核得分'}>
                   {
                     getFieldDecorator('score', {
-                      initialValue: editData.score,
+                      initialValue: editData.whetherCalculation ? editData.score : '不适用',
                     })(
                       <Input disabled={true} placeholder="请输入审核得分" style={{ width: '100' }}/>,
                     )
