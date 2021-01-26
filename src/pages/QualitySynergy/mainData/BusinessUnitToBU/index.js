@@ -34,13 +34,13 @@ const Index = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   const columns = [
-    { title: '业务板块代码', dataIndex: 'bmCode', width: 300 },
-    { title: '业务板块名称', dataIndex: 'bmName', ellipsis: true, width: 350 },
-    { title: '业务单元代码', dataIndex: 'buCode', ellipsis: true, width: 300 },
-    { title: '业务单元名称', dataIndex: 'buName', ellipsis: true },
-    { title: '排序号', dataIndex: 'orderNo', ellipsis: true, width: 350 },
-    { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (value) => value ? '是' : '否' },
-    { title: '有效截止日期', dataIndex: 'effectiveEndDate', width: 300 },
+    { title: '业务板块代码', dataIndex: 'bmCode', width: '17%' },
+    { title: '业务板块名称', dataIndex: 'bmName', ellipsis: true, width: '17%' },
+    { title: '业务单元代码', dataIndex: 'buCode', ellipsis: true, width: '17%' },
+    { title: '业务单元名称', dataIndex: 'buName', ellipsis: true, width: '17%' },
+    { title: '排序号', dataIndex: 'orderNo', ellipsis: true, width: '8%' },
+    { title: '冻结', dataIndex: 'frozen', ellipsis: true, width: '8%', render: (value) => value ? '是' : '否' },
+    { title: '有效截止日期', dataIndex: 'effectiveEndDate', width: '15%' },
   ].map(item => ({ ...item, align: 'center' }));
 
   const buttonClick = async (type) => {
