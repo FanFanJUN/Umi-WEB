@@ -41,6 +41,8 @@ const ModifyinfoRef = forwardRef(({
                 if (item.samIdentifyPlanImplementationVo) {
                     newsdata.push({
                         ...item.samIdentifyPlanImplementationVo,
+                        remark: item.remark,
+                        planDay: item.writeDay,
                         key: keys++
                     })
                 } else {
@@ -52,8 +54,9 @@ const ModifyinfoRef = forwardRef(({
                         executorName: item.responsiblePartyName,
                         departmentName: item.executiveDepartmentName,
                         planTime: item.publishTime,
-                        planDay: item.planDay,
-                        planDescription: ''
+                        planDay: item.writeDay,
+                        planDescription: '',
+                        remark: item.remark
                     })
 
                 }
@@ -162,7 +165,7 @@ const ModifyinfoRef = forwardRef(({
         ...overurging,
         {
             title: '备注',
-            dataIndex: 'planDescription',
+            dataIndex: 'remark',
             align: 'center',
             width: 180
         }
