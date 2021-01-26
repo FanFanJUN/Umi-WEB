@@ -431,6 +431,16 @@ export async function AddBusinessUnitToBUt(params) {
   });
 }
 
+//业务模块对业务单元有效截止日期
+export async function SaveBmBuContact(params) {
+  const url = `${baseUrl}/bmBuContact/saveBmBuContact`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+}
+
 // BU与公司采购组织对应关系新增
 export async function AddBUCompanyOrganizationRelation(params) {
   const url = `${baseUrl}/buCompanyPurchasingOrganization/addBuCompanyPurchasingOrganization`;
