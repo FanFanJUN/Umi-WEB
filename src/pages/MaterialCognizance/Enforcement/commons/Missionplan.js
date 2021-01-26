@@ -6,7 +6,7 @@ import classnames from 'classnames';
 import { router } from 'dva';
 import BaseInfo from '../../Cognizance/commons/BaseInfo';
 import PlanInfo from '../../Cognizance/commons/PlanInfo';
-import Distributioninfo from '../../Cognizance/commons/Distributioninfo'
+import DetailsFrom from '../../Cognizance/commons/DetailsFrom'
 import { ImplementDetailsVo } from '../../../../services/MaterialService'
 const { create } = Form;
 const FormItem = Form.Item;
@@ -28,7 +28,7 @@ const getpcnModifyRef = forwardRef(({
     const { getFieldDecorator, setFieldsValue, getFieldValue, validateFieldsAndScroll } = form;
     const BaseinfoRef = useRef(null);
     const ModifyinfoRef = useRef(null);
-    const ModifyinfluenceRef = useRef(null);
+    const DistributionRef = useRef(null);
     const { query } = router.useLocation();
     const [editData, setEditData] = useState([]);
     useEffect(() => {
@@ -63,13 +63,20 @@ const getpcnModifyRef = forwardRef(({
                     isEdit={true}
                 />
             </DetailCard>
-            <DetailCard title="分配计划详情">
-                <Distributioninfo
+            <DetailCard title="认定明细">
+                {/* <Distributioninfo
                     editformData={editData.detailsVos}
                     wrappedComponentRef={ModifyinfluenceRef}
                     isView={true}
                     isEdit={true}
                     headerInfo={true}
+                /> */}
+                <DetailsFrom
+                    editformData={editData.detailsVos}
+                    wrappedComponentRef={DistributionRef}
+                    isEdit={true}
+                    headerInfo={true}
+                    isView={true}
                 />
             </DetailCard>
         </div>
