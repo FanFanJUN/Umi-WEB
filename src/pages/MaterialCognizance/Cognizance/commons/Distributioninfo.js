@@ -298,9 +298,17 @@ const ModifyinfoRef = forwardRef(({
   }
   // 删除
   async function handleRemove() {
-    const filterData = dataSource.filter(item => item.key !== selectedRows[0].key);
-    keys--;
-    setDataSource(filterData)
+    Modal.confirm({
+      title: '删除数据',
+      content: '是否要删除当前所选数据？',
+      okText: '删除',
+      cancelText: '取消',
+      onOk: async () => {
+        const filterData = dataSource.filter(item => item.key !== selectedRows[0].key);
+        keys--;
+        setDataSource(filterData)
+      }
+    })
   }
 
   // 获取表单值
