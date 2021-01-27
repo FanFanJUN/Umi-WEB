@@ -24,7 +24,8 @@ function EditorTable({
   validateFunc = () => null,
   setDataSource = () => null,
   fields = [],
-  mode = 'create'
+  mode = 'create',
+  beforeEditor = () => null
 }) {
   const formRef = useRef(null);
   const tableRef = useRef(null);
@@ -62,6 +63,7 @@ function EditorTable({
     setRowKeys([])
   }
   async function handleEditor() {
+    await beforeEditor()
     const [row] = selectedRows;
     await setVisible(true)
     await setType('editor')
@@ -78,7 +80,6 @@ function EditorTable({
       cancelText: '取消',
       onOk: async () => {
         const [key] = selectedRowKeys;
-        console.log(key, dataSource)
         const filterDataSource = dataSource.filter(item => item.guid !== key)
         await setDataSource(filterDataSource)
         cleanSelectedRecord()
@@ -107,7 +108,8 @@ function EditorTable({
       if (item.guid === sk) {
         return {
           ...item,
-          ...val
+          ...val,
+          filled: true
         }
       }
       return item
