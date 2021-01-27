@@ -20,7 +20,6 @@ const BusinessRef = forwardRef(({
     useImperativeHandle(ref, () => ({
         getALLbusinCheck,
         businerTemporary,
-        setHeaderFields,
         form
     }));
     const MainClientRef = useRef(null);
@@ -65,7 +64,6 @@ const BusinessRef = forwardRef(({
                         }
                     }
                 })
-                console.log(endData)
                 result = endData
             }
         });
@@ -75,43 +73,36 @@ const BusinessRef = forwardRef(({
     // 获取表单值
     function getALLbusinCheck() {
         let result = false;
-        console.log(form)
         form.validateFieldsAndScroll((err, values) => {
-            // const { getMainclient } = MainClientRef.current;
-            // const { getThreeYear } = ThreeYearRef.current;
-            // const getMaSaa = getMainclient();
-            // const incomeVal = getThreeYear();
-
             if (!err) {
                 let endData = values, getMaSaa, incomeVal;
-                businesshide.map((item, index) => {
+                for (let item of businesshide) {
                     if (item.verifi !== '3' && item.key === "majorCustomersVos") {
-                        const { mainTemporary } = MainClientRef.current;
-                        getMaSaa = mainTemporary();
+                        const { getMainclient } = MainClientRef.current;
+                        getMaSaa = getMainclient();
                         if (getMaSaa) {
                             endData.extendVo = getMaSaa;
+                        } else {
+                            return false;
                         }
+
                     }
+
                     if (item.verifi !== '3' && item.key === "supplierRecentIncomes") {
-                        const { ThreeTemporary } = ThreeYearRef.current;
-                        incomeVal = ThreeTemporary();
+                        const { getThreeYear } = ThreeYearRef.current;
+                        incomeVal = getThreeYear();
                         if (incomeVal) {
                             endData.supplierRecentIncomes = incomeVal;
+                        } else {
+                            return false;
                         }
                     }
-                })
-                //let others = values;
+                }
                 result = endData
             }
 
         });
         return result;
-    }
-    // 设置所有表格参数
-    const setHeaderFields = (fields) => {
-        //const { attachmentId = null, ...fs } = fields;
-        // setAttachment(attachmentId)
-        // setFieldsValue(fs)
     }
     editData = editformData;
     return (
@@ -163,13 +154,18 @@ const BusinessRef = forwardRef(({
                                 {item.key === "majorCustomersVos" ? <Row>
                                     <FormItem
                                         {...formItemLayout}
-                                        label={<span><label className="ant-form-item-required" title=""></label>主要客户</span>}
+                                        label={<span>
+                                            {
+                                                item.verifi === '0' ? <label className="ant-form-item-required" title=""></label> : ''
+                                            }
+                                            主要客户</span>}
                                     >
                                         {
                                             <MainClient
                                                 disabled={item.verifi === '2'}
                                                 isView={isView}
                                                 editData={editData}
+                                                maintype={item.verifi}
                                                 wrappedComponentRef={MainClientRef} />
                                         }
                                     </FormItem>
@@ -177,13 +173,18 @@ const BusinessRef = forwardRef(({
                                 {item.key === "supplierRecentIncomes" ? <Row>
                                     <FormItem
                                         {...otherformItemLayout}
-                                        label={<span><label className="ant-form-item-required" title=""></label>近三年收入</span>}
+                                        label={<span>
+                                            {
+                                                item.verifi === '0' ? <label className="ant-form-item-required" title=""></label> : ''
+                                            }
+                                            近三年收入</span>}
                                     >
                                         {
                                             <ThreeYearIncome
                                                 disabled={item.verifi === '2'}
                                                 isView={isView}
                                                 editData={editData}
+                                                maintype={item.verifi}
                                                 wrappedComponentRef={ThreeYearRef} />
                                         }
                                     </FormItem>
