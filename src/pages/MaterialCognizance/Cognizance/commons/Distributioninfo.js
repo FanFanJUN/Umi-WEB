@@ -419,33 +419,28 @@ const ModifyinfoRef = forwardRef(({
         advanced={false}
         extra={false}
       />
-      <AutoSizeLayout>
-        {
-          (height) => <ExtTable
-            columns={columns}
-            showSearch={false}
-            ref={tabformRef}
-            rowKey={(item) => item.key}
-            checkbox={{
-              multiSelect: false
-            }}
-            pagination={{
-              hideOnSinglePage: true,
-              disabled: false,
-              pageSize: 100,
-            }}
-            allowCancelSelect={true}
-            size='small'
-            height={600}
-            ellipsis={false}
-            saveData={false}
-            onSelectRow={handleSelectedRows}
-            selectedRowKeys={selectRowKeys}
-            dataSource={dataSource}
-          //{...dataSource}
-          />
-        }
-      </AutoSizeLayout>
+      <ExtTable
+        columns={columns}
+        showSearch={false}
+        ref={tabformRef}
+        rowKey={(item) => item.key}
+        checkbox={{
+          multiSelect: false
+        }}
+        pagination={{
+          hideOnSinglePage: true,
+          disabled: false,
+          pageSize: 100,
+        }}
+        allowCancelSelect={true}
+        size='small'
+        height={600}
+        ellipsis={false}
+        saveData={false}
+        onSelectRow={handleSelectedRows}
+        selectedRowKeys={selectRowKeys}
+        dataSource={dataSource}
+      />
       {/****阶段 */}
       <StageModle
         data={handlestage}
