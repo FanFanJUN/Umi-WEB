@@ -236,6 +236,25 @@ export const queryFilterOpinion = params => createServiceRequest({
   method: 'GET'
 })
 
+// 筛选意见导入
+export const filterOptionImport = params => createServiceRequest({
+  path: '/srdController/importCompareResult',
+  params,
+  method: 'POST',
+  headers: {
+    'Content-Type': 'multipart/form-data'
+  }
+})
+
+// 筛选意见导出
+export const filterOptionExport = params => createServiceRequest({
+  path: '/srdController/exportCompareResult',
+  params,
+  method: 'POST',
+  hack: true,
+  responseType: 'blob'
+})
+
 // 推荐需求评审-保存采购小组筛选意见数据
 export const saveFilterOpinion = params => createServiceRequest({
   path: '/api/compareResultService/saveCompareResult',

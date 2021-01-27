@@ -44,7 +44,6 @@ function ModalFields({
   fields = [],
   ...modalProps
 }, ref) {
-  console.log(fields)
   const {
     getFieldDecorator,
     getFieldsValue,
@@ -55,7 +54,7 @@ function ModalFields({
     setValue,
     validateFieldsAndScroll
   }))
-  function setValue(v) { 
+  function setValue(v) {
     const { guid, ...otherValue } = v
     setFieldsValue(otherValue)
   }
@@ -132,11 +131,12 @@ function ModalFields({
           </Col>
         )
       case 'comboList' || 'comboGrid':
+        const { field = [] } = props;
         return (
           <Col key={`${name}-field-item`} span={12}>
             <Item label={label}>
               {
-                props.field.map(f => getFieldDecorator(f)),
+                field.map(f => getFieldDecorator(f)),
                 getFieldDecorator(name, opt)(
                   <FieldItem
                     {...props}

@@ -329,8 +329,13 @@ const ModifyinfoRef = forwardRef(({
   }
   // 新增阶段
   function showstageModal() {
-    uploadTable()
-    StagefromRef.current.handleModalVisible(true)
+    if (dataSource[0].stageName === '认定方案' && dataSource[0].executionStatus !== 2) {
+      message.error('认定方案任务状态为已执行才能新增认定阶段，请确认')
+    } else {
+      uploadTable()
+      StagefromRef.current.handleModalVisible(true)
+    }
+
   }
   function handleAddStage(val) {
     keys++

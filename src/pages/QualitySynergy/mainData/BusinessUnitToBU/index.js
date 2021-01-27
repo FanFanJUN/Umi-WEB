@@ -4,10 +4,12 @@ import styles from '../../TechnicalDataSharing/DataSharingList/index.less';
 import { baseUrl, smBaseUrl } from '../../../../utils/commonUrl';
 import { ExtTable, utils } from 'suid';
 import EventModal from './component/EventModal';
+import ExpiryDateModal from './component/ExpiryDateModal';
 import {
-  AddBusinessUnitToBUt, DeleteBusinessUnitToBUt, FrozenBusinessUnitToBUt, judgeButtonDisabled,
+  AddBusinessUnitToBUt, DeleteBusinessUnitToBUt, FrozenBusinessUnitToBUt, judgeButtonDisabled, SaveBmBuContact
 } from '../../commonProps';
 import { AutoSizeLayout } from '../../../../components';
+import moment from 'moment';
 
 const { authAction } = utils;
 
@@ -23,17 +25,22 @@ const Index = () => {
     type: 'add',
   });
 
+  const [expiryDate, setExpiryDate] = useState({
+    visible: false,
+  });
+
   const [selectRows, setSelectRows] = useState([]);
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   const columns = [
-    { title: '业务板块代码', dataIndex: 'bmCode', width: 300 },
-    { title: '业务板块名称', dataIndex: 'bmName', ellipsis: true, width: 350 },
-    { title: '业务单元代码', dataIndex: 'buCode', ellipsis: true, width: 300 },
-    { title: '业务单元名称', dataIndex: 'buName', ellipsis: true },
-    { title: '排序号', dataIndex: 'orderNo', ellipsis: true, width: 350 },
-    { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (value) => value ? '是' : '否' },
+    { title: '业务板块代码', dataIndex: 'bmCode', width: '17%' },
+    { title: '业务板块名称', dataIndex: 'bmName', ellipsis: true, width: '17%' },
+    { title: '业务单元代码', dataIndex: 'buCode', ellipsis: true, width: '17%' },
+    { title: '业务单元名称', dataIndex: 'buName', ellipsis: true, width: '17%' },
+    { title: '排序号', dataIndex: 'orderNo', ellipsis: true, width: '8%' },
+    { title: '冻结', dataIndex: 'frozen', ellipsis: true, width: '8%', render: (value) => value ? '是' : '否' },
+    { title: '有效截止日期', dataIndex: 'effectiveEndDate', width: '15%' },
   ].map(item => ({ ...item, align: 'center' }));
 
   const buttonClick = async (type) => {
@@ -49,6 +56,9 @@ const Index = () => {
         break;
       case 'frost':
         await editData();
+        break;
+      case 'expiryDate':
+        setExpiryDate((value) => ({ ...value, visible: true }));
         break;
     }
   };
@@ -84,7 +94,6 @@ const Index = () => {
   };
 
   const onSelectRow = (value, rows) => {
-    console.log(value, rows);
     setSelectRows(rows);
     setSelectedRowKeys(value);
   };
@@ -126,6 +135,15 @@ const Index = () => {
         disabled={selectRows.length === 0 || judgeButtonDisabled(selectRows)}
       >{selectRows[0]?.frozen ? '解冻' : '冻结'}</Button>)
     }
+    {
+      authAction(<Button
+        onClick={() => buttonClick('expiryDate')}
+        className={styles.btn}
+        ignore={DEVELOPER_ENV}
+        disabled={selectedRowKeys.length === 0 || selectedRowKeys.length > 1}
+        key='QUALITYSYNERGY_BUTB_EXPIRY_DATE'
+      >有效截止日期</Button>)
+    }
   </div>;
 
   const handleOk = (value) => {
@@ -153,8 +171,22 @@ const Index = () => {
         }
       });
     }
-    console.log(value, 'save');
   };
+
+  const handleExpiryDateModalOk = (value) =>{
+    const params = { ...value, effectiveEndDate: value.effectiveEndDate ? moment(value.effectiveEndDate).format('YYYY-MM-DD') : ''}
+    SaveBmBuContact([{...params}]).then(res=>{
+      if (res.success) {
+        setExpiryDate((value) => ({ ...value, visible: false }));
+        setSelectRows([]);
+        setSelectedRowKeys([]);
+        tableRef.current.manualSelectedRows();
+        tableRef.current.remoteDataRefresh();
+      } else {
+        message.error(res.message);
+      }
+    })
+  }
 
 
   return (
@@ -189,7 +221,13 @@ const Index = () => {
         type={data.type}
         data={selectRows[selectRows.length - 1]}
         onCancel={() => setData((value) => ({ ...value, visible: false }))}
-        title='业务板块对业务单元主数据新增'
+        title={data.title}
+      />
+      <ExpiryDateModal
+        visible={expiryDate.visible}
+        onOk={handleExpiryDateModalOk}
+        data={selectRows[selectRows.length - 1]}
+        onCancel={() => setExpiryDate((value) => ({ ...value, visible: false }))}
       />
     </Fragment>
   );

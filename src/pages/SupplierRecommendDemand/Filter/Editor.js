@@ -201,7 +201,14 @@ const Editor = forwardRef(({
               </Col> : <Col span={24}>
                 <Form.Item label='是否拟淘汰供应商' {...formLayoutAlone}>
                   {
-                    getFieldDecorator('weedOut')(
+                    getFieldDecorator('weedOut',{
+                      rules: [
+                        {
+                          required: true,
+                          message: '请选择是否拟淘汰供应商'
+                        }
+                      ]
+                    })(
                       <Radio.Group>
                         <Radio value={true}>是</Radio>
                         <Radio value={false}>否</Radio>
