@@ -43,7 +43,8 @@ const ScoreOverview = (props) => {
       dataIndex: 'reviewScore',
       width: 80,
       render: (v, data) => (data.parentId || data.reviewImplementPlanId) && (data.ruleId ?
-        <a onClick={() => targetScoringDetail(data)}>{v}</a> : v),
+        <a style={data.whetherCalculation ? {} : { color: 'red' }}
+           onClick={() => targetScoringDetail(data)}>{data.whetherCalculation ? v : '不适用'}</a> : v),
     },
     {
       title: '百分比',

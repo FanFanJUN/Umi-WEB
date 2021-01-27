@@ -10,9 +10,8 @@ import DeleteModle from './DeleteModle'
 import styles from '../index.less';
 import { map } from 'lodash';
 import { QueryMasterdata, TaskqueryMasterdata } from '../../../../services/MaterialService'
-
-const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString()
 const { create } = Form;
+const confirm = Modal.confirm;
 const { authAction, storage } = utils;
 let keys = 1, defaultData = [];
 const ModifyinfoRef = forwardRef(({
@@ -234,6 +233,13 @@ const ModifyinfoRef = forwardRef(({
   }
   // 编辑
   function handleEdit() {
+    let newsdata = dataSource.filter(item => item.stageName !== '认定方案' && item.stageName !== '认定结果');
+    let obj = {};
+    newsdata = newsdata.reduce(function (item, next) {
+      obj[next.stageName] ? '' : obj[next.stageName] = true && item.push(next);
+      return item;
+    }, []);
+    setAddtask(newsdata)
     setInitialValue('')
     setTitle('编辑分配计划详情')
     setModalType(true)
@@ -265,7 +271,7 @@ const ModifyinfoRef = forwardRef(({
         }
       }
       if (!modalType) {
-        keys = keys++;
+        keys++;
         newsdata.push({
           ...val,
           key: keys,
@@ -292,37 +298,47 @@ const ModifyinfoRef = forwardRef(({
   }
   // 删除
   async function handleRemove() {
-    const filterData = dataSource.filter(item => item.key !== selectedRows[0].key);
-    keys--;
-    setDataSource(filterData)
+    Modal.confirm({
+      title: '删除数据',
+      content: '是否要删除当前所选数据？',
+      okText: '删除',
+      cancelText: '取消',
+      onOk: async () => {
+        const filterData = dataSource.filter(item => item.key !== selectedRows[0].key);
+        keys--;
+        setDataSource(filterData)
+      }
+    })
   }
 
   // 获取表单值
   function displanfrom() {
     const changeinfor = tabformRef.current.data;
+    let params = false;
     if (changeinfor.length > 0) {
-      if (changeinfor[0].key === 1 && changeinfor[0].responsiblePartyName === undefined &&
-        changeinfor[0].executiveDepartmentName === undefined && changeinfor[0].writeDay === undefined) {
-        return false;
-      } else {
-        let newdata = [];
-        changeinfor.map(item => {
-          newdata.push({
-            responsiblePartyId: item.responsiblePartyId[0],
-            ...item
-          })
-        })
-        return newdata;
+      for (let item of changeinfor) {
+        if (isEmpty(item.responsiblePartyName) || isEmpty(item.executiveDepartmentName) || isEmpty(item.writeDay)) {
+          params = false
+          return params;
+        } else {
+          params = changeinfor
+        }
       }
-
+      return params
     }
   }
   // 新增阶段
   function showstageModal() {
-    uploadTable()
-    StagefromRef.current.handleModalVisible(true)
+    if (dataSource[0].stageName === '认定方案' && dataSource[0].executionStatus !== 2) {
+      message.error('认定方案任务状态为已执行才能新增认定阶段，请确认')
+    } else {
+      uploadTable()
+      StagefromRef.current.handleModalVisible(true)
+    }
+
   }
   function handleAddStage(val) {
+    keys++
     let odddata = [];
     [...odddata] = dataSource;
     for (let item of odddata) {
@@ -362,9 +378,18 @@ const ModifyinfoRef = forwardRef(({
     if (val.executionStatus !== 0) {
       message.error('该阶段的认定任务已执行，不可删除！')
     } else {
-      const filterData = dataSource.filter(item => item.stageName !== val.identificationStage);
-      keys--
-      setDataSource(filterData)
+      Modal.confirm({
+        title: '删除数据',
+        content: '是否要删除当前所选数据？',
+        okText: '删除',
+        cancelText: '取消',
+        onOk: async () => {
+          const filterData = dataSource.filter(item => item.stageName !== val.identificationStage);
+          keys--
+          setDataSource(filterData)
+        }
+      })
+
     }
     DeletefromRef.current.handleModalVisible(false)
   }

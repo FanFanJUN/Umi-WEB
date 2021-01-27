@@ -32,6 +32,38 @@ const ModifyinfoRef = forwardRef(({
     useEffect(() => {
         setModaldata(modaldata)
     }, [])
+
+    // 明细处理数据
+    async function hanldModify(val) {
+        if (val) {
+            let newsdata = [];
+            val.map((item, index) => {
+                if (item.samIdentifyPlanImplementationVo) {
+                    newsdata.push({
+                        ...item.samIdentifyPlanImplementationVo,
+                        remark: item.remark,
+                        planDay: item.writeDay,
+                        key: keys++
+                    })
+                } else {
+                    newsdata.push({
+                        key: keys++,
+                        taskStatus: '',
+                        identificationStageName: item.stageName,
+                        identificationTaskName: item.taskName,
+                        executorName: item.responsiblePartyName,
+                        departmentName: item.executiveDepartmentName,
+                        planTime: item.publishTime,
+                        planDay: item.writeDay,
+                        planDescription: '',
+                        remark: item.remark
+                    })
+
+                }
+                setDataSource(newsdata);
+            })
+        }
+    }
     // 是非超期、催办
     let overurging = [];
     if (nodetype) {
@@ -70,7 +102,9 @@ const ModifyinfoRef = forwardRef(({
             align: 'center',
             width: 100,
             render: (text, record, index) => {
-                return <a onClick={() => showRecommend(record)}>明细</a>
+                if (!isEmpty(record.taskStatus)) {
+                    return <a onClick={() => showRecommend(record)}>明细</a>
+                }
             }
         },
         {
@@ -85,8 +119,10 @@ const ModifyinfoRef = forwardRef(({
                     return <div>已执行</div>;
                 } else if (text === 2) {
                     return <div>已提交</div>;
-                } else {
+                } else if (text === 3) {
                     return <div>已终止</div>;
+                } else {
+                    return <div>未执行</div>;
                 }
             },
         },
@@ -129,7 +165,7 @@ const ModifyinfoRef = forwardRef(({
         ...overurging,
         {
             title: '备注',
-            dataIndex: 'planDescription',
+            dataIndex: 'remark',
             align: 'center',
             width: 180
         }
@@ -176,21 +212,6 @@ const ModifyinfoRef = forwardRef(({
         }
     ].map(_ => ({ ..._, align: 'center' }))
 
-    // 明细处理数据
-    async function hanldModify(val) {
-        if (val) {
-            let newsdata = [];
-            val.map((item, index) => {
-                if (item.samIdentifyPlanImplementationVo) {
-                    newsdata.push({
-                        ...item.samIdentifyPlanImplementationVo,
-                        key: keys++
-                    })
-                }
-                setDataSource(newsdata);
-            })
-        }
-    }
     // 记录列表选中
     function handleSelectedRows(rowKeys, rows) {
         setRowKeys(rowKeys);

@@ -41,6 +41,7 @@ const getInformation = forwardRef(({
         handleDate(editData)
     }, [editData]);
     function handleDate(value) {
+        setOthers(true)
         if (type && attachId === 2) {
             setTaskid(seltaskid)
         } else if (!type && attachId === 2) {
@@ -174,7 +175,7 @@ const getInformation = forwardRef(({
                                         field={['taskCode']}
                                         form={form}
                                         afterSelect={changeSort}
-                                        disabled={edit || others}
+                                        disabled={others}
                                     />
                                 )}
                         </Item>
