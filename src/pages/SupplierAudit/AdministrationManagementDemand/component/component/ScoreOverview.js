@@ -137,8 +137,8 @@ const ScoreOverview = (props) => {
           });
           arr = buildTree(arr);
           if (minLine.systemId) {
-            console.log(minLine, 'minLine');
-            minLine.reviewScore = arr[0].percentage;
+            console.log(minLine, arr, 'minLine');
+            minLine.reviewScore = minLine.percentage;
             props.setAuditOpinionData(minLine);
           }
         }

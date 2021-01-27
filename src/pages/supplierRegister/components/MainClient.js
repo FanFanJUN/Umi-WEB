@@ -13,12 +13,11 @@ const MainClientRef = forwardRef(({
     form,
     editData = {},
     isView = false,
-    isOverseas = null
+    maintype
 }, ref) => {
     useImperativeHandle(ref, () => ({
         getMainclient,
         mainTemporary,
-        setHeaderFields,
         form
     }));
     const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
@@ -28,7 +27,7 @@ const MainClientRef = forwardRef(({
 
     useEffect(() => {
         let initData = [{ key: keys }];
-        if (editData&& editData.extendVo && editData.extendVo.majorCustomersVos&&editData.extendVo.majorCustomersVos.length > 0) {
+        if (editData && editData.extendVo && editData.extendVo.majorCustomersVos && editData.extendVo.majorCustomersVos.length > 0) {
             initData = editData.extendVo.majorCustomersVos.map((item, index) => ({ key: index, ...item }));
             keys = initData.length - 1;
         }
@@ -41,7 +40,7 @@ const MainClientRef = forwardRef(({
                 title: '操作',
                 align: 'center',
                 width: 100,
-                dataIndex:'operation',
+                dataIndex: 'operation',
                 render: (text, record, index) => {
                     return <div>
                         {
@@ -59,7 +58,11 @@ const MainClientRef = forwardRef(({
     const tableProps = [
         ...columns,
         {
-            title: <span><label className="ant-form-item-required" title=""></label>客户名称</span>,
+            title: <span>
+                {
+                    maintype === '0' ? <label className="ant-form-item-required" title=""></label> : ''
+                }
+                客户名称</span>,
             dataIndex: 'majorCustomers',
             width: 500,
             render: (text, record, index) => {
@@ -71,7 +74,7 @@ const MainClientRef = forwardRef(({
                         {
                             getFieldDecorator(`majorCustomers[${record.key}]`, {
                                 initialValue: record.majorCustomers,
-                                rules: [{ required: true, message: '请输入客户名称!', whitespace: true }],
+                                rules: [{ required: maintype === '0', message: '请输入客户名称!', whitespace: true }],
                             })(
                                 <Input
                                     maxLength={30}
@@ -109,31 +112,25 @@ const MainClientRef = forwardRef(({
     }
     // 暂存
     function mainTemporary() {
-        let majorCustomersVos={};
+        let majorCustomersVos = {};
         form.validateFieldsAndScroll((err, values) => {
-        if (values) {
-            majorCustomersVos={majorCustomersVos:dataTransfer2(dataSource, values)}
-        }
+            if (values) {
+                majorCustomersVos = { majorCustomersVos: dataTransfer2(dataSource, values) }
+            }
         });
         return majorCustomersVos;
     }
     // 获取表单值
     function getMainclient() {
         let result = false;
-        let majorCustomersVos={};
+        let majorCustomersVos = {};
         form.validateFieldsAndScroll((err, values) => {
-        if (!err) {
-            majorCustomersVos={majorCustomersVos:dataTransfer2(dataSource, values)}
-            result = majorCustomersVos;
-        }
+            if (!err) {
+                majorCustomersVos = { majorCustomersVos: dataTransfer2(dataSource, values) }
+                result = majorCustomersVos;
+            }
         });
         return result;
-    }
-    // 设置所有表格参数
-    const setHeaderFields = (fields) => {
-        //const { attachmentId = null, ...fs } = fields;
-        // setAttachment(attachmentId)
-        // setFieldsValue(fs)
     }
     return (
         <>

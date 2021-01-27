@@ -1,5 +1,5 @@
-import React, { forwardRef,useImperativeHandle, useState, useRef, useEffect } from 'react';
-import { Form,Button, Modal, message, Spin, Affix } from 'antd';
+import React, { forwardRef, useImperativeHandle, useState, useRef, useEffect } from 'react';
+import { Form, Button, Modal, message, Spin, Affix } from 'antd';
 import { router } from 'dva';
 import BaseInfo from '../components/BaseInfo'
 import Account from '../components/Account'
@@ -23,7 +23,8 @@ const SupplierEditRef = forwardRef(({
   isView,
   form,
   wholeData,
-  configuredata
+  configuredata,
+  ApproveSupplier = () => null,
 }, ref) => {
   useImperativeHandle(ref, () => ({
     handleSave,
@@ -46,19 +47,19 @@ const SupplierEditRef = forwardRef(({
   const [editData, setEditData] = useState([]);
   const [loading, triggerLoading] = useState(false);
   const [accountVo, setaccountVo] = useState(false);
-  const [configure, setConfigure] = useState([ ]);
+  const [configure, setConfigure] = useState([]);
   const [supplierName, setsupplierName] = useState();
   useEffect(() => {
-    
+
     setInitialValue(wholeData.supplierInfoVo)
     setEditData(wholeData.supplierInfoVo)
     configurelist(configuredata)
     setConfigure(configuredata)
     //setsupplierName(wholeData.supplierInfoVo.supplierVo.name)
-  }, [wholeData,configuredata])
+  }, [wholeData, configuredata])
   // 
   function configurelist(configure) {
-    let handlebase = [],handleaccount = [],handbusiness = [];
+    let handlebase = [], handleaccount = [], handbusiness = [];
     configure.map(item => {
       if (item.smMsgTypeCode === '1') {
         handlebase.push({
@@ -88,9 +89,9 @@ const SupplierEditRef = forwardRef(({
   }
   // 保存
   function handleSave() {
-    let baseVal,accountVal,authorizedClientVal,businessInfoVal,bankVal,rangeVal,
-    agentVal,qualifications,proCertVos;
-    for(let item of configure){
+    let baseVal, accountVal, authorizedClientVal, businessInfoVal, bankVal, rangeVal,
+      agentVal, qualifications, proCertVos;
+    for (let item of configure) {
       if (item.operationCode !== '3' && item.fieldCode === 'name') {
         const { getBaseInfo } = BaseinfoRef.current; // 基本信息
         baseVal = getBaseInfo();
@@ -98,7 +99,7 @@ const SupplierEditRef = forwardRef(({
           message.error('请将供应商基本信息填写完全！');
           return false;
         }
-      }else if (item.operationCode !== '3' && item.fieldCode === 'mobile') {
+      } else if (item.operationCode !== '3' && item.fieldCode === 'mobile') {
         const { getAccountinfo } = AccountRef.current; //帐号
         accountVal = getAccountinfo();
         if (!accountVal) {
@@ -155,8 +156,8 @@ const SupplierEditRef = forwardRef(({
         proCertVos = getspecialpurpose() || [];
       }
     }
-    let enclosurelist = [],basedata,accountData,baseexten,automaticdata,automaticincome,
-    automThreeYear,rangeValinfo,othersatt = [];
+    let enclosurelist = [], basedata, accountData, baseexten, automaticdata, automaticincome,
+      automThreeYear, rangeValinfo, othersatt = [];
     if (baseVal && baseVal.supplierVo) {
       baseVal.supplierVo.id = editData.supplierVo.id;
       baseVal.extendVo.id = editData.extendVo.id;
@@ -174,23 +175,23 @@ const SupplierEditRef = forwardRef(({
     }
     if (qualifications) {
       enclosurelist = [...othersatt, ...qualifications.proCertVos];
-    }else {
+    } else {
       enclosurelist = othersatt
     }
     if (businessInfoVal && businessInfoVal.supplierVo) {
       automaticdata = businessInfoVal.supplierVo
     }
-    if (businessInfoVal&&businessInfoVal.supplierRecentIncomes) {
+    if (businessInfoVal && businessInfoVal.supplierRecentIncomes) {
       automaticincome = businessInfoVal.supplierRecentIncomes
     }
-    if (businessInfoVal &&businessInfoVal.extendVo) {
+    if (businessInfoVal && businessInfoVal.extendVo) {
       automThreeYear = businessInfoVal.extendVo
     }
     if (rangeVal && rangeVal.extendVo) {
       rangeValinfo = rangeVal.extendVo
     }
     let supplierInfoVo = {
-      supplierVo: { ...basedata, ...accountData ,...automaticdata},
+      supplierVo: { ...basedata, ...accountData, ...automaticdata },
       extendVo: { ...baseexten, ...automThreeYear, ...rangeValinfo },
       contactVos: authorizedClientVal,
       genCertVos: enclosurelist,
@@ -210,7 +211,7 @@ const SupplierEditRef = forwardRef(({
 
       }
     }
-    
+
     if (wholeData) {
       wholeData.supplierInfoVo = supplierInfoVo;
     }
@@ -219,10 +220,13 @@ const SupplierEditRef = forwardRef(({
   function setSuppliername(name) {
     setsupplierName(name)
   }
+  function ficationInfo(id) {
+    ApproveSupplier(id)
+  }
   return (
     <Spin spinning={loading} tip='处理中...'>
 
-      <div className={styles.wrapper}>      
+      <div className={styles.wrapper}>
         {
           configure.map((item, index) => {
             if (item.smMsgTypeCode !== '3' && item.fieldCode === 'name') {
@@ -238,11 +242,12 @@ const SupplierEditRef = forwardRef(({
                       wrappedComponentRef={BaseinfoRef}
                       approve={true}
                       wholeData={wholeData}
+                      onClickfication={ficationInfo}
                     />
                   </div>
                 </div>
               )
-            } 
+            }
             if (item.operationCode !== '3' && item.fieldCode === 'mobile') {
               return (
                 <div className={styles.bgw}>
@@ -305,7 +310,7 @@ const SupplierEditRef = forwardRef(({
                         isView={false}
                         headerInfo={false}
                       />
-                   </myContext.Provider>
+                    </myContext.Provider>
                   </div>
                 </div>
               );

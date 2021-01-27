@@ -62,6 +62,7 @@ const ModifyinfoRef = forwardRef(({
                 }
                 setDataSource(newsdata);
             })
+
         }
     }
     // 是非超期、催办
@@ -254,31 +255,27 @@ const ModifyinfoRef = forwardRef(({
     }
     return (
         <>
-            <AutoSizeLayout>
-                {
-                    (height) => <ExtTable
-                        columns={columns}
-                        showSearch={false}
-                        ref={tabformRef}
-                        rowKey={(item) => item.key}
-                        checkbox={false}
-                        pagination={{
-                            hideOnSinglePage: true,
-                            disabled: false,
-                            pageSize: 100,
-                        }}
-                        allowCancelSelect={true}
-                        size='small'
-                        height={height}
-                        remotePaging={true}
-                        ellipsis={false}
-                        saveData={false}
-                        onSelectRow={handleSelectedRows}
-                        selectedRowKeys={selectRowKeys}
-                        dataSource={dataSource}
-                    />
-                }
-            </AutoSizeLayout>
+            <ExtTable
+                columns={columns}
+                showSearch={false}
+                ref={tabformRef}
+                rowKey={(item) => item.key}
+                checkbox={false}
+                pagination={{
+                    hideOnSinglePage: true,
+                    disabled: false,
+                    pageSize: 100,
+                }}
+                allowCancelSelect={true}
+                size='small'
+                //height={400}
+                remotePaging={true}
+                ellipsis={false}
+                saveData={false}
+                onSelectRow={handleSelectedRows}
+                selectedRowKeys={selectRowKeys}
+                dataSource={dataSource}
+            />
             <ExtModal
                 destroyOnClose
                 onCancel={handleCancel}
