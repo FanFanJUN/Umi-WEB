@@ -79,6 +79,13 @@ const SelfAssessment = forwardRef(({
       title: '百分比',
       dataIndex: 'percent',
       width: 150
+    },
+    {
+      title: '是否符合标准',
+      dataIndex: 'pass',
+      render(text) {
+        return Object.is(null, text) ? '' : text ? '符合' : '不符合'
+      },
     }
   ]
   useEffect(() => {

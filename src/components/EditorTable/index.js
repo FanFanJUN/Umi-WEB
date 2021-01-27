@@ -63,13 +63,22 @@ function EditorTable({
     setRowKeys([])
   }
   async function handleEditor() {
-    await beforeEditor()
     const [row] = selectedRows;
+    const transferKeys = fields.filter(item => item?.fieldType === ('datePicker' || 'yearPicker')).map(item => item.name);
+    const rkeys = Object.keys(row)
+    const fieldsValues = rkeys.reduce((prev, cur) => {
+      if (transferKeys.includes(cur)) {
+        return {
+          ...prev,
+          [cur]: !!row[cur] ? moment(row[cur]) : null
+        }
+      }
+      return { ...prev, [cur]: row[cur] }
+    }, {})
+    await beforeEditor(row)
     await setVisible(true)
     await setType('editor')
-    await formRef.current.setValue({
-      ...row
-    })
+    await formRef.current.setValue(fieldsValues)
   }
   async function handleExport() { }
   function handleRemove() {

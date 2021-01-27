@@ -93,15 +93,18 @@ function LeaderApprove() {
           </div>
         </div>
         <Tabs animated={false}>
-          <TabPane tab='评价项目' key='base-info'>
-            {
-              isReady ? <CommonForm wrappedComponentRef={formRef} type='detail' /> : <Skeleton loading={true} />
-            }
-          </TabPane>
-          <TabPane tab='评价结果' key='evaluate-result'>
+          <TabPane
+            tab='评价结果'
+            key='evaluate-result'
+          >
             {
               isReady ?
                 <CommonTable columns={tableColumns} type='leader' /> : <Skeleton loading={true} />
+            }
+          </TabPane>
+          <TabPane tab='评价项目' key='base-info'>
+            {
+              isReady ? <CommonForm wrappedComponentRef={formRef} type='detail' /> : <Skeleton loading={true} />
             }
           </TabPane>
         </Tabs>
