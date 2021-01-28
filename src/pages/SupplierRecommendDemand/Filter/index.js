@@ -61,10 +61,10 @@ const SelfAssessment = forwardRef(({
       dataIndex: 'originName'
     },
     {
-      title: '拟推荐',
+      title: '状态',
       dataIndex: 'recommend',
       render(text) {
-        return text ? '是' : '否'
+        return text ? '拟推荐' : '合格供应商'
       }
     },
     {
@@ -169,16 +169,6 @@ const SelfAssessment = forwardRef(({
     {
       title: '采购组织',
       dataIndex: 'purchaseOrgName',
-      width: 100
-    },
-    {
-      title: '拟推荐',
-      dataIndex: 'recommend',
-      render(text) {
-        return typeof text === 'boolean' ?
-          !!text ? '是' : '否' : null
-      },
-      align: 'center',
       width: 100
     },
     {
@@ -462,7 +452,7 @@ const SelfAssessment = forwardRef(({
         size='small'
         rowKey='id'
         scroll={{
-          x: 1200
+          x: 1000
         }}
       />
       {

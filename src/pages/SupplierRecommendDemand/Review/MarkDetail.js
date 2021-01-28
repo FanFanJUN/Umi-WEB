@@ -33,19 +33,23 @@ const SelfAssessment = forwardRef(({
   const columns = [
     {
       title: '类别',
-      dataIndex: 'systemName'
+      dataIndex: 'systemName',
+      width: 150
     },
     {
       title: '指标名称',
-      dataIndex: 'ruleName'
+      dataIndex: 'ruleName',
+      width: 200
     },
     {
       title: '指标定义',
-      dataIndex: 'definition'
+      dataIndex: 'definition',
+      width: 200
     },
     {
       title: '评分标准',
-      dataIndex: 'scoringStandard'
+      dataIndex: 'scoringStandard',
+      width: 200
     },
     {
       title: '最高分',
@@ -86,6 +90,7 @@ const SelfAssessment = forwardRef(({
       render(text) {
         return Object.is(null, text) ? '' : text ? '符合' : '不符合'
       },
+      width: 100
     }
   ]
   useEffect(() => {
@@ -112,6 +117,7 @@ const SelfAssessment = forwardRef(({
         columns={columns}
         bordered
         rowKey={item => item.key}
+        scroll={{ x: 1600 }}
       />
     </div>
   )
