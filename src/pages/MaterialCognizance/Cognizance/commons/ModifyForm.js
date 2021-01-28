@@ -43,15 +43,11 @@ const getInformation = forwardRef(({
         handleDate(editData)
     }, [editData]);
     function handleDate(value) {
-        console.log(value)
-        console.log(type)
-        //setOthers(true)
         if (type && attachId === 2 && value.stageName === '认定结果' || type && attachId === 2 && value.stageName === '认定方案') {
             setTaskid(seltaskid)
             setDefaulted(true)
             setOthers(true)
         } else if (!type && attachId === 1) {
-            console.log(3)
             setEdit(false)
             setDefaulted(false)
             setOtheredit(false)
@@ -63,11 +59,6 @@ const getInformation = forwardRef(({
             setOthers(false)
             setTaskid(seltaskid)
         }
-        // if (type && value.key === 1 || type && value.key === 2) {
-        //     setEdit(true)
-        // } else {
-        //     setEdit(false)
-        // }
     }
     function handleModalVisible(flag) {
         setvisible(!!flag)
