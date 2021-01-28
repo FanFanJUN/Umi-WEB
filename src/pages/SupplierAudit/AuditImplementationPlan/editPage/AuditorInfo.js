@@ -159,11 +159,12 @@ const AuditorInfo = forwardRef((props, ref) => {
   };
 
   const contentAdd = (value) => {
-    if (contentData.dataSource.some(item => item.memberName + item.memberTel === value.memberName + value.memberTel)) {
-      message.error('成员重复!');
-      return;
-    }
     if (contentData.type === 'add') {
+      // 判断组员重复
+      if (contentData.dataSource.some(item => item.memberName + item.memberTel === value.memberName + value.memberTel)) {
+        message.error('成员重复!');
+        return;
+      }
       // 新增时均校验只能有一个组长
       if (value.memberRole === 'GROUP_LEADER') {
         if (contentData.dataSource.some(item => item.memberRole === 'GROUP_LEADER')) {
@@ -175,17 +176,22 @@ const AuditorInfo = forwardRef((props, ref) => {
       value.memberRuleBoList = [];
       setContentData(v => ({ ...v, dataSource: [...contentData.dataSource, ...[value]], visible: false }));
     } else {
+      let newArr = contentData.dataSource.filter(item => {
+        if (item.lineNum !== value.lineNum) {
+          return item;
+        }
+      });
       // 编辑时均校验只能有一个组长
       if (value.memberRole === 'GROUP_LEADER') {
-        let newArr = contentData.dataSource.filter(item => {
-          if (item.lineNum !== value.lineNum) {
-            return item;
-          }
-        });
         if (newArr.some(item => item.memberRole === 'GROUP_LEADER')) {
           message.error('每个组只能有一个组长!');
           return;
         }
+      }
+      // 判断组员重复
+      if (newArr.some(item => item.memberName + item.memberTel === value.memberName + value.memberTel)) {
+        message.error('成员重复!');
+        return;
       }
       let newDataSource = JSON.parse(JSON.stringify(contentData.dataSource));
       newDataSource.map((item, index) => {
