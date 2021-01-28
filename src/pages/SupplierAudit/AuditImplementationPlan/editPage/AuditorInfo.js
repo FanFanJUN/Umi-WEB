@@ -159,6 +159,10 @@ const AuditorInfo = forwardRef((props, ref) => {
   };
 
   const contentAdd = (value) => {
+    if (contentData.dataSource.some(item => item.memberName + item.memberTel === value.memberName + value.memberTel)) {
+      message.error('成员重复!');
+      return;
+    }
     if (contentData.type === 'add') {
       // 新增时均校验只能有一个组长
       if (value.memberRole === 'GROUP_LEADER') {
