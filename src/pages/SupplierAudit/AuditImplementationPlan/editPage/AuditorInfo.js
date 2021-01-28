@@ -10,8 +10,8 @@
 import React, { useState, useRef, useEffect, useImperativeHandle, forwardRef } from 'react';
 import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/edit/BaseInfo.less';
 import { Col, Form, Row, Input, Button, message } from 'antd';
-import { ExtTable } from "suid";
-import ShuttleBoxNew from "../../common/ShuttleBoxNew";
+import { ExtTable } from 'suid';
+import ShuttleBoxNew from '../../common/ShuttleBoxNew';
 import EventModal from '../../common/EventModal';
 import { getRandom } from '../../../QualitySynergy/commonProps';
 import ContentModal from '../../AuditRequirementsManagement/add/component/contentModal';
@@ -49,13 +49,13 @@ const fieldsConfig = [
     name: '排序号',
     code: 'rank',
     min: 0,
-    type: "inputNumber"
+    type: 'inputNumber',
   },
 ];
 const AuditorInfo = forwardRef((props, ref) => {
 
   useImperativeHandle(ref, () => ({
-    getTableList: () => teamData.dataSource
+    getTableList: () => teamData.dataSource,
   }));
 
   // 解构的tree
@@ -94,24 +94,24 @@ const AuditorInfo = forwardRef((props, ref) => {
 
   useEffect(() => {
     let lineList = [];
-    if(type === 'add') {
+    if (type === 'add') {
       lineList = JSON.parse(sessionStorage.getItem('selectedMonthLIne'));
     } else {
       lineList = props.originData?.reviewImplementPlanLineBos || [];
     }
     const reviewTypeCode = lineList.length !== 0 && lineList[0].reviewTypeCode;
     props.treeData &&
-      GetDefaultSystem({
-        reviewTypeCode,
-        sonList: props.treeData,
+    GetDefaultSystem({
+      reviewTypeCode,
+      sonList: props.treeData,
+    })
+      .then(res => {
+        console.log(res);
+        if (res.success) {
+          setData(v => ({ ...v, defaultSystem: res.data }));
+        }
       })
-        .then(res => {
-          console.log(res);
-          if (res.success) {
-            setData(v => ({ ...v, defaultSystem: res.data }));
-          }
-        })
-        .catch(err => message.error(err.message));
+      .catch(err => message.error(err.message));
     setTeamData(v => ({
       ...v,
       dataSource: reviewTeamGroupBoList.map(item => ({ ...item, lineNum: getRandom(10) })),
@@ -159,18 +159,30 @@ const AuditorInfo = forwardRef((props, ref) => {
   };
 
   const contentAdd = (value) => {
-    // 新增&& 编辑时均校验只能有一个组长
-    if (value.memberRole === 'GROUP_LEADER') {
-      if (contentData.dataSource.some(item => item.memberRole === 'GROUP_LEADER')) {
-        message.error('每个组只能有一个组长!');
-        return;
-      }
-    }
     if (contentData.type === 'add') {
+      // 新增时均校验只能有一个组长
+      if (value.memberRole === 'GROUP_LEADER') {
+        if (contentData.dataSource.some(item => item.memberRole === 'GROUP_LEADER')) {
+          message.error('每个组只能有一个组长!');
+          return;
+        }
+      }
       value.lineNum = getRandom(10);
       value.memberRuleBoList = [];
       setContentData(v => ({ ...v, dataSource: [...contentData.dataSource, ...[value]], visible: false }));
     } else {
+      // 编辑时均校验只能有一个组长
+      if (value.memberRole === 'GROUP_LEADER') {
+        let newArr = contentData.dataSource.filter(item => {
+          if (item.lineNum !== value.lineNum) {
+            return item;
+          }
+        });
+        if (newArr.some(item => item.memberRole === 'GROUP_LEADER')) {
+          message.error('每个组只能有一个组长!');
+          return;
+        }
+      }
       let newDataSource = JSON.parse(JSON.stringify(contentData.dataSource));
       newDataSource.map((item, index) => {
         if (item.lineNum === value.lineNum) {
@@ -216,7 +228,7 @@ const AuditorInfo = forwardRef((props, ref) => {
     }));
     setData(v => ({ ...v, leftTreeData: undefined, treeData: treeData }));
     setContentData(v => ({ ...v, selectedRows: values, selectedRowKeys: keys }));
-    if(keys && keys.length > 0) {
+    if (keys && keys.length > 0) {
       getLeftTreeData(keys);
     }
   };
@@ -395,11 +407,12 @@ const AuditorInfo = forwardRef((props, ref) => {
     <div className={styles.wrapper}>
       <div className={styles.bgw}>
         <div className={styles.title}>审核人员</div>
-        <div className={styles.content} style={{ paddingLeft: "10vw" }}>
+        <div className={styles.content} style={{ paddingLeft: '10vw' }}>
           <Row>
             <Col span={8}>
               <FormItem label="审核小组组长" {...formLayout}>
-                <Input disabled={true} value={type === "add" ? JSON.parse(sessionStorage.getItem('selectedMonthLIne'))[0].leaderName : orgLeaderName} />
+                <Input disabled={true}
+                       value={type === 'add' ? JSON.parse(sessionStorage.getItem('selectedMonthLIne'))[0].leaderName : orgLeaderName} />
               </FormItem>
             </Col>
           </Row>
@@ -429,7 +442,8 @@ const AuditorInfo = forwardRef((props, ref) => {
                 />
               </div>
             </div>
-            <div style={{ width: '70%', height: '100%', marginLeft: '10px', border: '1px solid #e8e8e8', padding: '5px'}}>
+            <div
+              style={{ width: '70%', height: '100%', marginLeft: '10px', border: '1px solid #e8e8e8', padding: '5px' }}>
               <span style={{ fontSize: '15px', fontWeight: 'bold', marginLeft: '15px' }}>成员</span>
               {
                 props.type !== 'detail' && <div style={{ marginTop: '10px' }}>
@@ -454,7 +468,7 @@ const AuditorInfo = forwardRef((props, ref) => {
                   dataSource={contentData.dataSource}
                 />
               </div>
-              <div style={{ height: '230px', borderTop: '1px solid #e8e8e8', padding: '5px', margin: '20px'}}>
+              <div style={{ height: '230px', borderTop: '1px solid #e8e8e8', padding: '5px', margin: '20px' }}>
                 <span style={{ fontSize: '15px', fontWeight: 'bold', marginLeft: '15px' }}>成员审核内容管理</span>
                 <ShuttleBoxNew
                   rightTreeData={data.treeData}
@@ -492,8 +506,8 @@ const AuditorInfo = forwardRef((props, ref) => {
           />
         </div>
       </div>
-    </div >
-  )
+    </div>
+  );
 });
 
 export default Form.create()(AuditorInfo);
