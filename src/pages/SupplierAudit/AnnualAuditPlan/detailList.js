@@ -1,6 +1,6 @@
 /*
  * @Description:  年度度审核计划明细
- * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/detailList.js
+ * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/detailList.js
  */
 import React, { useState, useRef, useEffect, Fragment } from 'react';
 import Header from '../../../components/Header';
@@ -130,7 +130,9 @@ export default function () {
         { title: '审核类型', dataIndex: 'reviewTypeName', ellipsis: true, width: 140 },
         { title: '审核原因', dataIndex: 'reviewReasonName', ellipsis: true, width: 140 },
 
-        { title: '预计审核月度', dataIndex: 'reviewMonth', ellipsis: true, width: 102, align: 'center' },
+        { title: '预计审核月度', dataIndex: 'reviewMonth', ellipsis: true, width: 102, align: 'center', render: (text) => {
+            return text && moment(text).format('YYYY-MM');
+        } },
         { title: '审核方式', dataIndex: 'reviewWayName', ellipsis: true, width: 140 },
         { title: '专业组', dataIndex: 'specialtyTeamName', ellipsis: true, width: 140 },
         { title: '物料分类代码', dataIndex: 'materialGroupCode', ellipsis: true, width: 102, align: 'center' },
