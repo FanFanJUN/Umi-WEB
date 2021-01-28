@@ -262,20 +262,17 @@ const ModifyinfoRef = forwardRef(({
   // 新增或编辑保存
   function handleSubmit(val) {
     console.log(val)
-    console.log(dataSource)
     let newsdata = [];
     [...newsdata] = dataSource;
-    console.log(newsdata)
-    console.log(modalType)
     if (newsdata.length > 0) {
       for (let item of newsdata) {
-        if (item.stageCode === val.stageCode && item.taskCode === val.taskCode) {
+        if (item.stageCode === val.stageCode && item.taskCode === val.taskCode &&
+          item.stageName !== '认定结果' && item.stageName !== '认定方案') {
           message.error('当前阶段任务已存在，请重新新增！')
           return false;
         }
       }
       if (!modalType) {
-        console.log(1)
         keys++;
         newsdata.push({
           ...val,
@@ -285,16 +282,12 @@ const ModifyinfoRef = forwardRef(({
         setDataSource(newsdata);
       } else {
         dataSource.map((item, index) => {
-          console.log(3)
           if (item.key === val.key) {
-            console.log(4)
             const copyData = dataSource.slice(0)
             copyData[index] = val;
-            console.log(copyData)
             setDataSource(copyData)
           }
         })
-        console.log(dataSource)
       }
       hideModal()
       uploadTable()
