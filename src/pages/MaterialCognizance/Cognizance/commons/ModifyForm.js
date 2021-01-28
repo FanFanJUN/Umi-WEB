@@ -70,8 +70,10 @@ const getInformation = forwardRef(({
             if (!err) {
                 val.defaultRequired = selectype
                 if (attachId === 2) {
+                    val.isedit = true
                     params = { ...editData, ...val }
                 } else {
+                    val.isedit = false
                     params = val
                 }
                 onOk(params);
@@ -109,22 +111,21 @@ const getInformation = forwardRef(({
         setSelectype(val.defaultRequired)
     }
     function handleRepeat() {
-        // if (!isEmpty(editData.stageId)) {
-        //     form.setFieldsValue({
-        //         stageId: editData.stageId,
-        //         stageCode: editData.stageCode,
-        //         stageSort: editData.stageSort,
-        //         taskCode: editData.taskCode
-        //     });
-        // }
-        let aaa = form.getFieldValue('stageId');
-        console.log(aaa)
-        form.setFieldsValue({
-            stageId: form.getFieldValue('stageId'),
-            stageCode: form.getFieldValue('stageCode'),
-            stageSort: form.getFieldValue('stageSort'),
-            taskCode: form.getFieldValue('taskCode')
-        });
+        if (!isEmpty(editData.stageId) && editData.stageName === '认定方案' || editData.stageName === '认定结果') {
+            form.setFieldsValue({
+                stageId: editData.stageId,
+                stageCode: editData.stageCode,
+                stageSort: editData.stageSort,
+                taskCode: editData.taskCode
+            });
+        } else {
+            form.setFieldsValue({
+                stageId: form.getFieldValue('stageId'),
+                stageCode: form.getFieldValue('stageCode'),
+                stageSort: form.getFieldValue('stageSort'),
+                taskCode: form.getFieldValue('taskCode')
+            });
+        }
     }
     return (
         <>
