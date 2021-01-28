@@ -8,6 +8,7 @@ import BaseInfo from '../../Cognizance/commons/BaseInfo';
 import PlanInfo from '../../Cognizance/commons/PlanInfo';
 import DetailsFrom from '../../Cognizance/commons/DetailsFrom'
 import { ImplementDetailsVo } from '../../../../services/MaterialService'
+import styles from '../index.less';
 const { create } = Form;
 const FormItem = Form.Item;
 const formLayout = {
@@ -45,40 +46,42 @@ const getpcnModifyRef = forwardRef(({
         message.error(msg)
     }
     return (
-        <div>
-            <DetailCard title="基本信息">
-                <BaseInfo
-                    editformData={editData}
-                    wrappedComponentRef={BaseinfoRef}
-                    isView={true}
-                    isEdit={true}
-                />
-            </DetailCard>
-            <DetailCard title="认定计划信息">
-                <PlanInfo
-                    editformData={editData}
-                    wrappedComponentRef={ModifyinfoRef}
-                    isView={true}
-                    headerInfo={true}
-                    isEdit={true}
-                />
-            </DetailCard>
-            <DetailCard title="认定明细">
-                {/* <Distributioninfo
-                    editformData={editData.detailsVos}
-                    wrappedComponentRef={ModifyinfluenceRef}
-                    isView={true}
-                    isEdit={true}
-                    headerInfo={true}
-                /> */}
-                <DetailsFrom
-                    editformData={editData.detailsVos}
-                    wrappedComponentRef={DistributionRef}
-                    isEdit={true}
-                    headerInfo={true}
-                    isView={true}
-                />
-            </DetailCard>
+        <div className={styles.wrapper}>
+            <div className={styles.bgw}>
+                <div className={styles.pcntitle}>基本信息</div>
+                <div >
+                    <BaseInfo
+                        editformData={editData}
+                        wrappedComponentRef={BaseinfoRef}
+                        isView={true}
+                        isEdit={true}
+                    />
+                </div>
+            </div>
+            <div className={styles.bgw}>
+                <div className={styles.pcntitle}>认定计划信息</div>
+                <div >
+                    <PlanInfo
+                        editformData={editData}
+                        wrappedComponentRef={ModifyinfoRef}
+                        isView={true}
+                        headerInfo={true}
+                        isEdit={true}
+                    />
+                </div>
+            </div>
+            <div className={styles.bgw}>
+                <div className={styles.pcntitle}>认定明细</div>
+                <div >
+                    <DetailsFrom
+                        editformData={editData.detailsVos}
+                        wrappedComponentRef={DistributionRef}
+                        isEdit={true}
+                        headerInfo={true}
+                        isView={true}
+                    />
+                </div>
+            </div>
         </div>
     )
 })
