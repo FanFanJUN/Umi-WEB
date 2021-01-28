@@ -32,7 +32,7 @@ const ProblemTable = (props) => {
       dataIndex: 'reviewScore',
       width: 100,
       render: (v, data) => type ? v : <InputNumber
-        disabled={data.whetherApply}
+        disabled={JSON.parse(data.whetherApply)}
         onBlur={refreshTable}
         value={v} max={data.highestScore}
         precision={1}

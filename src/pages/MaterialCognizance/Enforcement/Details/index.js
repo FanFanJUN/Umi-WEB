@@ -42,7 +42,7 @@ function CreateStrategy() {
         <Spin spinning={loading} tip='处理中...'>
             <Affix offsetTop={0}>
                 <div className={classnames([styles.header, styles.flexBetweenStart])}>
-                    <span className={styles.title}>物料认定执行明细</span>
+                    <span className={styles.pcntitle}>物料认定执行明细</span>
                     <div className={styles.flexCenter}>
                         <Button className={styles.btn} onClick={handleBack}>返回</Button>
                     </div>
@@ -52,7 +52,7 @@ function CreateStrategy() {
 
             <div className={styles.wrapper}>
                 <div className={styles.bgw}>
-                    <div className={styles.title}>基本信息</div>
+                    <div className={styles.pcntitle}>基本信息</div>
                     <div >
                         <BaseInfo
                             editformData={editData}
@@ -62,7 +62,7 @@ function CreateStrategy() {
                     </div>
                 </div>
                 <div className={styles.bgw}>
-                    <div className={styles.title}>认定计划信息</div>
+                    <div className={styles.pcntitle}>认定计划信息</div>
                     <div >
                         <PlanInfo
                             editformData={editData}
@@ -75,7 +75,7 @@ function CreateStrategy() {
                     </div>
                 </div>
                 <div className={styles.bgw}>
-                    <div className={styles.title}>认定明细</div>
+                    <div className={styles.pcntitle}>认定明细</div>
                     <div >
                         <DetailsFrom
                             editformData={editData.detailsVos}

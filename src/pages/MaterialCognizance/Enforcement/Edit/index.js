@@ -73,7 +73,7 @@ function CreateStrategy() {
     <Spin spinning={loading} tip='处理中...'>
       <Affix offsetTop={0}>
         <div className={classnames([styles.header, styles.flexBetweenStart])}>
-          <span className={styles.title}>实物认定任务执行</span>
+          <span className={styles.pcntitle}>实物认定任务执行</span>
           <div className={styles.flexCenter}>
             <Button className={styles.btn} onClick={handleBack}>返回</Button>
             <Button type='primary' className={styles.btn} onClick={handleSave}>保存并提交</Button>

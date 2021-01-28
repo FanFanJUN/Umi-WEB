@@ -265,10 +265,16 @@ const ModifyinfoRef = forwardRef(({
     [...newsdata] = dataSource;
     if (newsdata.length > 0) {
       for (let item of newsdata) {
-        if (item.stageCode === val.stageCode && item.taskCode === val.taskCode && !modalType) {
-          message.error('当前阶段任务已存在，请重新新增！')
-          return false;
+        if (val.stageName != '认定结果' && val.stageName != '认定方案') {
+          if (item.stageCode === val.stageCode && item.taskCode === val.taskCode && !modalType) {
+            message.error('当前阶段任务已存在，请重新新增！')
+            return false;
+          } else if (item.stageCode === val.stageCode && item.taskCode === val.taskCode && modalType && val.isedit) {
+            message.error('当前阶段任务已存在，请重新新增！')
+            return false;
+          }
         }
+
       }
       if (!modalType) {
         keys++;

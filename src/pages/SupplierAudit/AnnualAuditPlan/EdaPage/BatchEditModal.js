@@ -3,7 +3,7 @@
  * @LastEditors  : LiCai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-23 17:00:19
- * @LastEditTime : 2020-12-21 14:24:59
+ * @LastEditTime : 2021-01-28 15:55:02
  * @Description: 批量编辑页面
  * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BatchEditModal.js
  */
@@ -239,7 +239,7 @@ const BatchEditModal = (props) => {
                     width={width}
                     form={form}
                     name={'countryName'}
-                    field={['countryId', 'countryCode']}
+                    field={['countryId']}
                     store={{
                       params: {
                         filters: [
@@ -276,7 +276,7 @@ const BatchEditModal = (props) => {
                     width={width}
                     form={form}
                     name={'provinceName'}
-                    field={['provinceId', 'provinceCode']}
+                    field={['provinceId']}
                     cascadeParams={{
                       countryId: getFieldValue('countryId'),
                     }}
@@ -316,7 +316,7 @@ const BatchEditModal = (props) => {
                     width={width}
                     form={form}
                     name={'cityName'}
-                    field={['cityId', 'cityCode']}
+                    field={['cityId']}
                     cascadeParams={{
                       provinceId: getFieldValue('provinceId'),
                     }}
@@ -356,7 +356,7 @@ const BatchEditModal = (props) => {
                     width={width}
                     form={form}
                     name={'countyName'}
-                    field={['countyId', 'countyCode']}
+                    field={['countyId']}
                     cascadeParams={{
                       nodeId: getFieldValue('cityId'),
                     }}

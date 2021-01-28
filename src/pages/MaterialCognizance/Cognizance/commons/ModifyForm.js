@@ -36,21 +36,28 @@ const getInformation = forwardRef(({
     const [taskid, setTaskid] = useState('');
     const [edit, setEdit] = useState(false);
     const [others, setOthers] = useState(true);
+    const [defaulted, setDefaulted] = useState(true);
+    const [otheredit, setOtheredit] = useState(false);
     const [selectype, setSelectype] = useState('');
     useEffect(() => {
         handleDate(editData)
     }, [editData]);
     function handleDate(value) {
-        setOthers(true)
-        if (type && attachId === 2) {
+        if (type && attachId === 2 && value.stageName === '认定结果' || type && attachId === 2 && value.stageName === '认定方案') {
             setTaskid(seltaskid)
-        } else if (!type && attachId === 2) {
+            setDefaulted(true)
             setOthers(true)
-        }
-        if (type && value.key === 1 || type && value.key === 2) {
-            setEdit(true)
-        } else {
+        } else if (!type && attachId === 1) {
             setEdit(false)
+            setDefaulted(false)
+            setOtheredit(false)
+            setOthers(true)
+        } else if (type && attachId === 2 && value.stageName !== '认定结果' && value.stageName !== '认定方案') {
+            setEdit(false)
+            setDefaulted(false)
+            setOtheredit(true)
+            setOthers(false)
+            setTaskid(seltaskid)
         }
     }
     function handleModalVisible(flag) {
@@ -61,10 +68,12 @@ const getInformation = forwardRef(({
         validateFieldsAndScroll((err, val) => {
             let params;
             if (!err) {
+                val.defaultRequired = selectype
                 if (attachId === 2) {
+                    val.isedit = true
                     params = { ...editData, ...val }
                 } else {
-                    val.defaultRequired = selectype
+                    val.isedit = false
                     params = val
                 }
                 onOk(params);
@@ -80,6 +89,10 @@ const getInformation = forwardRef(({
             stageCode: val.stageCode,
             stageSort: val.stageSort,
         })
+        // form.setFieldsValue({
+        //     taskCode: '',
+        //     taskName: ''
+        // })
     }
     // 执行部门
     function handlExecutor(val) {
@@ -98,12 +111,19 @@ const getInformation = forwardRef(({
         setSelectype(val.defaultRequired)
     }
     function handleRepeat() {
-        if (!isEmpty(editData.stageId)) {
+        if (!isEmpty(editData.stageId) && editData.stageName === '认定方案' || editData.stageName === '认定结果') {
             form.setFieldsValue({
                 stageId: editData.stageId,
                 stageCode: editData.stageCode,
                 stageSort: editData.stageSort,
                 taskCode: editData.taskCode
+            });
+        } else {
+            form.setFieldsValue({
+                stageId: form.getFieldValue('stageId'),
+                stageCode: form.getFieldValue('stageCode'),
+                stageSort: form.getFieldValue('stageSort'),
+                taskCode: form.getFieldValue('taskCode')
             });
         }
     }
@@ -143,7 +163,7 @@ const getInformation = forwardRef(({
                                         name='stageName'
                                         field={['stageId', 'stageCode', 'stageSort']}
                                         form={form}
-                                        disabled={edit}
+                                        disabled={edit || defaulted || otheredit}
                                     />
                                 )
                             }
@@ -202,7 +222,7 @@ const getInformation = forwardRef(({
                                         name='taskTypeName'
                                         field={['taskTypeCode']}
                                         form={form}
-                                        disabled={edit}
+                                        disabled={edit || defaulted}
                                     />
                                 )}
                         </Item>

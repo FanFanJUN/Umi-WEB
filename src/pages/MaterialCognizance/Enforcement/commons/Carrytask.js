@@ -46,7 +46,7 @@ const getpcnModifyRef = forwardRef(({
     <div>
       <div className={styles.wrapper}>
         <div className={styles.bgw}>
-          <div className={styles.title}>信息任务</div>
+          <div className={styles.pcntitle}>信息任务</div>
           <div >
             <TaskInfo
               editformData={editData}
@@ -56,7 +56,7 @@ const getpcnModifyRef = forwardRef(({
           </div>
         </div>
         <div className={styles.bgw}>
-          <div className={styles.title}>任务实际执行</div>
+          <div className={styles.pcntitle}>任务实际执行</div>
           <div >
             <Brasstacks
               editformData={editData}
@@ -65,7 +65,7 @@ const getpcnModifyRef = forwardRef(({
           </div>
         </div>
         <div className={styles.bgw}>
-          <div className={styles.title}>任务执行历史</div>
+          <div className={styles.pcntitle}>任务执行历史</div>
           <div >
             <Taskhistory
               editformData={editData}
