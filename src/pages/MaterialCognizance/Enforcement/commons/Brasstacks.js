@@ -228,6 +228,12 @@ const HeadFormRef = forwardRef(({
                         {
                             getFieldDecorator('attachment', {
                                 initialValue: [],
+                                rules: [
+                                    {
+                                        required: true,
+                                        message: '请上传附件',
+                                    },
+                                ],
                             })(
                                 <UploadFile
                                     title={"附件上传"}

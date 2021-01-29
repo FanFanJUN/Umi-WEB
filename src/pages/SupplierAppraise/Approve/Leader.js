@@ -2,9 +2,9 @@ import { useRef, useEffect, useState } from 'react';
 import styles from './index.less';
 import CommonForm from '../CommonForm';
 import CommonTable from '../CommonTable';
-import { Affix, Tabs, Skeleton } from 'antd';
+import { Affix, Tabs, Skeleton, Button } from 'antd';
 import { WorkFlow } from 'suid';
-import { closeCurrent, checkToken } from '../../../utils';
+import { closeCurrent, checkToken, openNewTab } from '../../../utils';
 import { useLocation } from 'dva/router';
 const { TabPane } = Tabs;
 const { Approve } = WorkFlow;
@@ -39,7 +39,17 @@ function LeaderApprove() {
     },
     {
       title: '综合得分',
-      dataIndex: 'totalScore'
+      dataIndex: 'totalScore',
+      render(text, record) {
+        if (!!text && text > 0) {
+          return (
+            <Button type='link' onClick={() => handleCheckScoreDetail(record.id)}>{text}</Button>
+          )
+        }
+        return (
+          <Button type='link' onClick={() => handleCheckScoreDetail(record.id)}>未供货</Button>
+        )
+      }
     },
     {
       title: '等级',
@@ -66,12 +76,8 @@ function LeaderApprove() {
       dataIndex: 'leaderAdviceName'
     }
   ]
-  function renderTabBar(props, DefaultTabBar) {
-    return (
-      <Affix offsetTop={62}>
-        <DefaultTabBar {...props} style={{ background: '#fff' }} />
-      </Affix>
-    )
+  function handleCheckScoreDetail(evaluationResultId) {
+    openNewTab(`supplier/appraise/project/evaluate/result/score/details?evaluationProjectId=${query?.id}&evaluationResultId=${evaluationResultId}`, '综合得分', false)
   }
   useEffect(() => {
     checkToken(query, setIsReady)
@@ -93,15 +99,18 @@ function LeaderApprove() {
           </div>
         </div>
         <Tabs animated={false}>
-          <TabPane tab='评价项目' key='base-info'>
-            {
-              isReady ? <CommonForm wrappedComponentRef={formRef} type='detail' /> : <Skeleton loading={true} />
-            }
-          </TabPane>
-          <TabPane tab='评价结果' key='evaluate-result'>
+          <TabPane
+            tab='评价结果'
+            key='evaluate-result'
+          >
             {
               isReady ?
                 <CommonTable columns={tableColumns} type='leader' /> : <Skeleton loading={true} />
+            }
+          </TabPane>
+          <TabPane tab='评价项目' key='base-info'>
+            {
+              isReady ? <CommonForm wrappedComponentRef={formRef} type='detail' /> : <Skeleton loading={true} />
             }
           </TabPane>
         </Tabs>

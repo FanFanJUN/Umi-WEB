@@ -10,7 +10,10 @@ import {
   Table,
   message,
   Upload,
-  Modal
+  Modal,
+  Row,
+  Col,
+  Form
 } from 'antd';
 import { router } from 'dva';
 import styles from './index.less';
@@ -22,7 +25,16 @@ import {
 import Editor from './Editor';
 import RecommendEditor from './RecommendEditor'
 import { downloadBlobFile } from '../../../utils';
+const formLayout = {
+  labelCol: {
+    span: 8,
+  },
+  wrapperCol: {
+    span: 16,
+  }
+};
 
+const { Item: FormItem } = Form;
 const { useLocation } = router;
 const DEVELOPER_ENV = process.env.NODE_ENV === 'development';
 const SelfAssessment = forwardRef(({
@@ -35,6 +47,7 @@ const SelfAssessment = forwardRef(({
   const recommendEditorRef = useRef(null);
   const [dataSource, setDataSource] = useState([]);
   const [compareDataSource, setCompareDataSource] = useState([]);
+  const [recommendDemand, setRecommendDemand] = useState({});
   const [compareRecommendDataSource, setCompareRecommendDataSource] = useState([]);
   const [loading, toggleLoading] = useState(false);
   const { query } = useLocation();
@@ -48,10 +61,10 @@ const SelfAssessment = forwardRef(({
       dataIndex: 'originName'
     },
     {
-      title: '拟推荐',
+      title: '状态',
       dataIndex: 'recommend',
       render(text) {
-        return text ? '是' : '否'
+        return text ? '拟推荐' : '合格供应商'
       }
     },
     {
@@ -112,6 +125,14 @@ const SelfAssessment = forwardRef(({
       width: 100
     },
     {
+      title: '符合准入标准',
+      dataIndex: 'pass',
+      render(text) {
+        return Object.is(null, text) ? '' : text ? '符合' : '不符合'
+      },
+      width: 100
+    },
+    {
       title: '是否拟淘汰',
       dataIndex: 'weedOut',
       width: 100,
@@ -148,16 +169,6 @@ const SelfAssessment = forwardRef(({
     {
       title: '采购组织',
       dataIndex: 'purchaseOrgName',
-      width: 100
-    },
-    {
-      title: '拟推荐',
-      dataIndex: 'recommend',
-      render(text) {
-        return typeof text === 'boolean' ?
-          !!text ? '是' : '否' : null
-      },
-      align: 'center',
       width: 100
     },
     {
@@ -365,13 +376,15 @@ const SelfAssessment = forwardRef(({
     if (success) {
       const {
         compareSuppliers,
-        compareResults
+        compareResults,
+        supplierRecommendDemand
       } = data;
       const rd = compareResults.filter(item => item.recommend);
       const nrd = compareResults.filter(item => !item.recommend);
-      setDataSource(compareSuppliers)
-      setCompareRecommendDataSource(nrd)
-      setCompareDataSource(rd)
+      await setRecommendDemand(supplierRecommendDemand)
+      await setDataSource(compareSuppliers)
+      await setCompareRecommendDataSource(nrd)
+      await setCompareDataSource(rd)
       return
     }
     message.error(msg)
@@ -381,6 +394,26 @@ const SelfAssessment = forwardRef(({
   }, [])
   return (
     <div>
+      <div className={styles.commonTitle}>推荐物料信息</div>
+      <Form {...formLayout}>
+        <Row>
+          <Col span={12}>
+            <FormItem label='物料分类名称'>
+              {recommendDemand?.materialCategoryName}
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem label='物料分类代码'>
+              {recommendDemand?.materialCategoryCode}
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem label='物料级别'>
+              {recommendDemand?.materialGrade}
+            </FormItem>
+          </Col>
+        </Row>
+      </Form>
       <div className={styles.commonTitle}>对比筛选的供应商</div>
       <Header right={right}></Header>
       <Table
@@ -419,7 +452,7 @@ const SelfAssessment = forwardRef(({
         size='small'
         rowKey='id'
         scroll={{
-          x: 1200
+          x: 1000
         }}
       />
       {

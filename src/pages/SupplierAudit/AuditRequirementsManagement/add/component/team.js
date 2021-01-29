@@ -151,6 +151,17 @@ const Team = (props) => {
       value.memberRuleBoList = [];
       setContentData(v => ({ ...v, dataSource: [...contentData.dataSource, ...[value]], visible: false }));
     } else {
+      if (value.memberRole === 'GROUP_LEADER') {
+        let newArr = contentData.dataSource.filter(item => {
+          if (item.lineNum !== value.lineNum) {
+            return item;
+          }
+        });
+        if (newArr.some(item => item.memberRole === 'GROUP_LEADER')) {
+          message.error('每个组只能有一个组长!');
+          return;
+        }
+      }
       let newDataSource = JSON.parse(JSON.stringify(contentData.dataSource));
       newDataSource.map((item, index) => {
         if (item.lineNum === value.lineNum) {

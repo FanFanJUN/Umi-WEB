@@ -10,7 +10,8 @@ const FormItem = Form.Item;
 const ThreeYearRef = forwardRef(({
     form,
     editData = {},
-    isView
+    isView,
+    maintype
 }, ref) => {
     useImperativeHandle(ref, () => ({
         getThreeYear,
@@ -32,7 +33,11 @@ const ThreeYearRef = forwardRef(({
             width: 100,
         },
         {
-            title: <span><label className="ant-form-item-required" title=""></label>含税销售金额(万元)</span>,
+            title: <span>
+                {
+                    maintype === '0' ? <label className="ant-form-item-required" title=""></label> : ''
+                }
+                含税销售金额(万元)</span>,
             dataIndex: 'operatingVolume',
             width: 200,
             align: 'center',
@@ -45,7 +50,7 @@ const ThreeYearRef = forwardRef(({
                         {
                             getFieldDecorator(`operatingVolume[${index}]`, {
                                 initialValue: record.operatingVolume,
-                                rules: [{ required: true, message: '请输入收入!' }],
+                                rules: [{ required: maintype === '0', message: '请输入收入!' }],
                             })(
                                 <InputNumber
                                     style={{ width: '100%' }}
