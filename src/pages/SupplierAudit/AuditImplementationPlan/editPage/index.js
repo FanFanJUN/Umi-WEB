@@ -311,6 +311,13 @@ const Index = (props) => {
       isView={data.isView}
       originData={editData}
     />
+    {/* 审核计划 */}
+    <AuditPlan
+      type={data.type}
+      isView={data.isView}
+      form={form}
+      originData={editData}
+    />
     {/* 拟审核信息 */}
     <AuditInfo
       type={data.type}
@@ -331,13 +338,6 @@ const Index = (props) => {
     />
     {/* 协同人员 */}
     <PersonTable originData={editData.coordinationMemberBoList} />
-    {/* 审核计划 */}
-    <AuditPlan
-      type={data.type}
-      isView={data.isView}
-      form={form}
-      originData={editData}
-    />
   </Spin>;
 };
 
