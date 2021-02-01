@@ -46,9 +46,14 @@ const Index = (props) => {
   const tableRef = useRef(null);
   const [editData, setEditData] = useState({});
   const [loading, setLoading] = useState(false);
+  const [applyCorporationData, setApplyCorporationData] = useState({
+    applyCorporationId: '',
+    applyCorporationName: '',
+    applyCorporationCode: '',
+  });
   const [data, setData] = useState({
     type: 'detail',
-    isView: true,
+    isView: false,
     title: '审核实施计划',
   });
 
@@ -85,7 +90,12 @@ const Index = (props) => {
         setData({ type: pageState, isView: false, title: '新增审核实施计划' });
         break;
       case 'edit':
-        setData({ type: pageState, id, isView: false, title: `编辑审核实施计划: ${resData && resData.reviewImplementPlanCode}` });
+        setData({
+          type: pageState,
+          id,
+          isView: false,
+          title: `编辑审核实施计划: ${resData && resData.reviewImplementPlanCode}`,
+        });
         break;
       case 'detail':
         setData({ type: pageState, isView: true, title: `审核实施计划明细: ${resData && resData.reviewImplementPlanCode}` });
@@ -100,7 +110,7 @@ const Index = (props) => {
         setData({ type: pageState, isView: false, title: '审核实施计划管理-新增' });
         break;
     }
-  }
+  };
 
   // 编辑和明细时构造treeData
   const buildTreeData = (sonList) => {
@@ -121,22 +131,30 @@ const Index = (props) => {
 
   // 新增时获取初始数据
   async function getOriginData() {
+    setLoading(true);
     let res = {};
+    const { reviewPlanMonthId } = query;
     const ids = query.ids && query.ids.split(',');
     if (query.pageState === 'add') {
-      res = await mergeContent({ lineId: ids });
+      res = await mergeContent({ lineId: ids, id: reviewPlanMonthId });
       if (res.success) {
+        setLoading(false);
         let resData = { ...res.data };
         resData.treeData = buildTreeData(resData.sonList);
         resData.reviewTeamGroupBoList = Object.values(resData.reviewTeamGroupBoMap);
         console.log('整合的数据', resData);
+        setApplyCorporationData({
+          applyCorporationId: resData.applyCorporationId,
+          applyCorporationName: resData.applyCorporationName,
+          applyCorporationCode: resData.applyCorporationCode,
+        });
         setEditData(resData);
-        await getData(resData)
+        await getData(resData);
       } else {
         message.error(res.message);
       }
     } else {
-      await getData()
+      await getData();
     }
   }
 
@@ -149,7 +167,7 @@ const Index = (props) => {
       resData.treeData = buildTreeData(resData.sonList);
       console.log('获取到的数据res', resData);
       setEditData(resData);
-      await getData(resData)
+      await getData(resData);
     } else {
       message.error(res.message);
     }
@@ -308,6 +326,7 @@ const Index = (props) => {
     <BaseInfo
       form={form}
       type={data.type}
+      applyCorporationData={applyCorporationData}
       isView={data.isView}
       originData={editData}
     />

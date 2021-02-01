@@ -488,7 +488,7 @@ export const reviewPlanMonthConfig = {
   rowKey: 'reviewPlanMonthCode',
   reader: {
     name: 'reviewPlanMonthName',
-    field: ['reviewPlanMonthCode'],
+    field: ['reviewPlanMonthCode', 'id'],
     description: 'reviewPlanMonthCode',
   },
 };
