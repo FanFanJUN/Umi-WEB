@@ -24,7 +24,7 @@ import {
   saveSupplierRegister,
   ValiditySupplierRegister
 } from '@/services/SupplierModifyService'
-import styles from '../../supplierRegister/components/index.less';
+import styles from '../index.less';
 import { closeCurrent, isEmpty } from '../../../utils';
 const { storage } = utils;
 function CreateStrategy() {
@@ -646,7 +646,8 @@ function CreateStrategy() {
           onOk={handleSupplierOk}
           onCancel={handleSupplierCancel}
         >
-          <p>根据管理要求供应商无法对供应商信息变更单提交审核，请联系与您对接的人员代提交审核，否则变更无法生效！</p>
+          <p>根据管理要求供应商无法对供应商信息变更单提交审核，请联系与您对接的人员代提交审核，
+            <span className={styles.otherTitle}>否则变更无法生效！</span></p>
         </Modal>
       </div>
     </Spin>
