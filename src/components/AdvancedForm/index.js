@@ -62,6 +62,7 @@ function AdvancedForm({
 
   function handleReset() {
     resetFields();
+    onOk({});
   }
 
   return (
