@@ -150,6 +150,14 @@ export default function() {
 
   const columns = [
     {
+      title: '已创建审核实施计划',
+      dataIndex: 'whetherOccupied',
+      ellipsis: true,
+      width: 140,
+      render: (text) => text ? '是' : '否',
+    },
+    { title: '已创建产生报告', dataIndex: 'whetherReported', ellipsis: true, width: 140, render: (text) => text ? '是' : '否' },
+    {
       title: '状态', dataIndex: 'state', width: 80, render: (text) => {
         switch (text) {
           case 'DRAFT':
@@ -220,14 +228,6 @@ export default function() {
     { title: '供应商联系人', dataIndex: 'contactUserName', ellipsis: true, width: 100 },
     { title: '供应商联系方式', dataIndex: 'contactUserTel', ellipsis: true, width: 140 },
     { title: '备注', dataIndex: 'remark', ellipsis: true, width: 140 },
-    {
-      title: '已创建审核实施计划',
-      dataIndex: 'whetherOccupied',
-      ellipsis: true,
-      width: 140,
-      render: (text) => text ? '是' : '否',
-    },
-    { title: '是否产生报告', dataIndex: 'whetherReported', ellipsis: true, width: 140, render: (text) => text ? '是' : '否' },
   ];
 
   // 导出
