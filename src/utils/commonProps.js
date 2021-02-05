@@ -76,6 +76,24 @@ export const thatTypeProps = {
   // remotePaging: true,
   placeholder: '选择认定类型'
 }
+// 环保检测项目数据字典
+export const environmentProps = {
+  store: {
+    url: `${baseUrl}/dataDictionaryItem/getDictByTypeCode`,
+    params: {
+      dictTypeCode: 'HBJCXM'
+    },
+    type: 'get'
+  },
+  style: { width: 300 },
+  reader: {
+    name: 'name',
+    field: ['name', 'value'],
+    description: 'value'
+  },
+  // remotePaging: true,
+  placeholder: '选择检测项目'
+}
 
 // 处理建议
 export const dealAdviceProps = {
@@ -238,7 +256,6 @@ export const currencyNoFrozenProps = {
   reader: {
     name: 'name',
   },
-  // height: 150,
   width: 220,
   remotePaging: true,
   searchPlaceHolder: '请输入查询关键字',

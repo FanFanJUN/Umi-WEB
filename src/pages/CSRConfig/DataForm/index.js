@@ -19,7 +19,17 @@ const DataForm = forwardRef(({
     setAllFieldsValue
   }))
   const [opts, setOpts] = useState(['']);
-  const { getFieldDecorator, setFieldsValue, validateFieldsAndScroll } = form;
+  const {
+    getFieldDecorator,
+    setFieldsValue,
+    validateFieldsAndScroll,
+    getFieldsValue,
+  } = form;
+  const {
+    attachmentConfig,
+    remarkConfig
+  } = getFieldsValue()
+  const emptyOpts = opts.every(item => !!item);
   function handleAddOption() {
     const newOpts = [...opts, '']
     setOpts(newOpts)
@@ -40,7 +50,9 @@ const DataForm = forwardRef(({
       remarkConfig,
       attachmentConfig,
       csrConfigEnum,
-      rank
+      rank,
+      attachmentRequiredField = null,
+      remarkRequiredField = null
     } = fields;
     return {
       item,
@@ -48,7 +60,9 @@ const DataForm = forwardRef(({
       attachmentConfig,
       csrConfigEnum,
       rank,
-      selectConfigList: opts
+      selectConfigList: opts,
+      attachmentRequiredField,
+      remarkRequiredField
     }
   }
   function handleOptionChange(key, value) {
@@ -74,30 +88,6 @@ const DataForm = forwardRef(({
           })(<Input placeholder='调查项目名称' />)
         }
       </FormItem>
-      <FormItem label='是否包含备注' {...formLayout}>
-        {
-          getFieldDecorator('remarkConfig', {
-            initialValue: true
-          })(
-            <Radio.Group>
-              <Radio value={true}>是</Radio>
-              <Radio value={false}>否</Radio>
-            </Radio.Group>
-          )
-        }
-      </FormItem>
-      <FormItem label='是否包含附件' {...formLayout}>
-        {
-          getFieldDecorator('attachmentConfig', {
-            initialValue: true
-          })(
-            <Radio.Group>
-              <Radio value={true}>是</Radio>
-              <Radio value={false}>否</Radio>
-            </Radio.Group>
-          )
-        }
-      </FormItem>
       <FormItem label='类型' {...formLayout}>
         {
           getFieldDecorator('csrConfigEnum', {
@@ -113,6 +103,11 @@ const DataForm = forwardRef(({
               <Select.Option value={'PRODUCTION_ENVIRONMENT'}>企业生产环境</Select.Option>
             </Select>
           )
+        }
+      </FormItem>
+      <FormItem label='排序号' {...formLayout}>
+        {
+          getFieldDecorator('rank')(<InputNumber placeholder='请设置排序号' style={{ width: 200 }} />)
         }
       </FormItem>
       {
@@ -135,6 +130,7 @@ const DataForm = forwardRef(({
                 onChange={(e) => {
                   handleOptionChange(key, e.target.value)
                 }}
+                placeholder='填写选项描述'
               />
             )
           }
@@ -143,11 +139,94 @@ const DataForm = forwardRef(({
       <FormItem label=' ' colon={false} {...formLayout}>
         <Button type='primary' onClick={handleAddOption}>新增选项</Button>
       </FormItem>
-      <FormItem label='排序号' {...formLayout}>
+      <FormItem label='备注' {...formLayout}>
         {
-          getFieldDecorator('rank')(<InputNumber />)
+          getFieldDecorator('remarkConfig', {
+            rules: [
+              {
+                required: true,
+                message: '选择是否包含备注'
+              }
+            ]
+          })(
+            <Radio.Group>
+              <Radio value={true}>有</Radio>
+              <Radio value={false}>无</Radio>
+            </Radio.Group>
+          )
         }
       </FormItem>
+      {
+        remarkConfig ?
+          <FormItem label='备注必填选项' {...formLayout}>
+            {
+              getFieldDecorator('remarkRequiredField', {
+                rules: [
+                  {
+                    required: true,
+                    message: '请选择调查项目类型'
+                  }
+                ]
+              })(
+                <Select placeholder='选择备注必填选项'
+                  disabled={!emptyOpts}
+                >
+                  <Select.Option value='无'>无</Select.Option>
+                  {
+                    opts.map(item => (
+                      <Select.Option value={item}>{item}</Select.Option>
+                    ))
+                  }
+                  <Select.Option value='全部'>全部</Select.Option>
+                </Select>
+              )
+            }
+          </FormItem> : null
+      }
+      <FormItem label='附件' {...formLayout}>
+        {
+          getFieldDecorator('attachmentConfig', {
+            rules: [
+              {
+                required: true,
+                message: '选择是否包含附件'
+              }
+            ]
+          })(
+            <Radio.Group>
+              <Radio value={true}>有</Radio>
+              <Radio value={false}>无</Radio>
+            </Radio.Group>
+          )
+        }
+      </FormItem>
+      {
+        attachmentConfig ?
+          <FormItem label='附件必填选项' {...formLayout}>
+            {
+              getFieldDecorator('attachmentRequiredField', {
+                rules: [
+                  {
+                    required: true,
+                    message: '附件必填选项'
+                  }
+                ]
+              })(
+                <Select placeholder='选择附件必填选项'
+                  disabled={!emptyOpts}
+                >
+                  <Select.Option value='无'>无</Select.Option>
+                  {
+                    opts.map(item => (
+                      <Select.Option value={item}>{item}</Select.Option>
+                    ))
+                  }
+                  <Select.Option value='全部'>全部</Select.Option>
+                </Select>
+              )
+            }
+          </FormItem> : null
+      }
     </Form>
   )
 })

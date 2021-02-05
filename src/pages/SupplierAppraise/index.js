@@ -332,7 +332,7 @@ function SupplierRevaluate() {
           <Button
             className={styles.btn}
             onClick={handleRemove}
-            disabled={empty || !allowRemove || !isSelf}
+            disabled={empty || !isSelf || flowing || (!allowRemove && !resultGener) || flowComplete}
             ignore={DEVELOPER_ENV}
             key='SUPPLIER_APPRAISE_REMOVE'
           >删除</Button>

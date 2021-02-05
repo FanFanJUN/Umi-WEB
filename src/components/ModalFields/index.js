@@ -6,7 +6,7 @@ import {
   Input,
   Select,
   DatePicker,
-  InputNumber,
+  InputNumber
 } from 'antd';
 import moment from 'moment';
 import {
@@ -42,14 +42,18 @@ function ModalFields({
   type = 'create',
   form,
   fields = [],
+  copyLine = false,
+  copyFields = [],
   ...modalProps
 }, ref) {
   const {
     getFieldDecorator,
     getFieldsValue,
     setFieldsValue,
-    validateFieldsAndScroll
+    validateFieldsAndScroll,
+    resetFields
   } = form;
+  const fieldNames = fields.map(item => item.name)
   useImperativeHandle(ref, () => ({
     setValue,
     validateFieldsAndScroll
@@ -67,6 +71,9 @@ function ModalFields({
       return v
     }
   }
+  function handleSelectChange(rds) {
+    resetFields(rds)
+  }
   function getFieldComponent(field) {
     const {
       name = '',
@@ -77,6 +84,7 @@ function ModalFields({
       disabledDate = () => null,
       disabledTarget = name,
       disabledTargetValue = null,
+      changeResetFields = [],
       selectOptions = [
         {
           value: true,
@@ -176,6 +184,7 @@ function ModalFields({
                   <FieldItem
                     {...props}
                     allowClear
+                    onSelect={() => handleSelectChange(changeResetFields)}
                     style={{ width: '100%' }}
                     disabled={formatDisabled}
                   >
@@ -198,8 +207,8 @@ function ModalFields({
               {
                 getFieldDecorator(name, opt)(
                   <FieldItem
-                    entityId={v}
                     {...props}
+                    entityId={v}
                     disabled={formatDisabled}
                     style={{ width: '100%' }}
 
@@ -208,6 +217,31 @@ function ModalFields({
               }
             </Item>
           </Col>
+        )
+      case 'textArea':
+        return (
+          <Col key={`${name}-field-item`} span={12}>
+            <Item label={label}>
+              {
+                getFieldDecorator(name, opt)(
+                  <FieldItem
+                    entityId={v}
+                    {...props}
+                    style={{ width: '100%' }}
+
+                  />
+                )
+              }
+            </Item>
+          </Col>
+        )
+      case 'hide':
+        return (
+          <>
+            {
+              getFieldDecorator(name, opt)
+            }
+          </>
         )
       default:
         return (
@@ -243,6 +277,14 @@ function ModalFields({
       {...modalProps}
     >
       <Form {...formLayout}>
+        {
+          copyFields.map(cfs => {
+            if (fieldNames.includes(cfs)) {
+              return null
+            }
+            return getFieldDecorator(cfs)
+          })
+        }
         <Row>
           {
             fields.map(field => {

@@ -74,7 +74,7 @@ export const saveCsrConfig = params => createServiceRequest({
 })
 // 删除
 export const removeCsrConfig = params => createServiceRequest({
-  path: '/api/csrConfigService/delete',
+  path: '/api/csrConfigService/deleteOne',
   params,
   method: 'DELETE',
   hack: true
@@ -117,8 +117,8 @@ export const queryCSRorEPEData = params => createServiceRequest({
 })
 
 // 保存企业社会责任填报
-export const saveCSRorEPEData = params => createServiceRequest({
-  path: '/api/csrProductionEnvironmentService/saveCsrProductionEnvironment',
+export const saveCSRorEPEData = (params, ds = false) => createServiceRequest({
+  path: `/api/csrProductionEnvironmentService/saveCsrProductionEnvironment?tempSave=${ds}`,
   params,
   method: 'POST'
 })
@@ -275,4 +275,34 @@ export const withdrawSupplierFilledInfo = params => createServiceRequest({
   params,
   method: 'post',
   hack: true
+})
+
+
+// 关键生产设备导出
+export const keyProductEquipementsExport = params => createServiceRequest({
+  path: '/srdController/exportKeyProductEquipmentVo',
+  params,
+  method: 'POST',
+  responseType: 'blob'
+})
+
+// 关键生产设备导入检查数据
+export const keyProductEquipementsCheckData = params => createServiceRequest({
+  path: '/api/productionCapacityService/checkImportKeyProductEquipment',
+  params,
+  method: 'POST'
+})
+// 关键检测设备导出
+export const keyTestingEquipmentExport = params => createServiceRequest({
+  path: '/srdController/exportKeyTestingEquipmentVo',
+  params,
+  method: 'POST',
+  responseType: 'blob'
+})
+
+// 关键检测设备导入检查数据
+export const keyTestingEquipmentCheckData = params => createServiceRequest({
+  path: '/api/qualityControlService/checkImportKeyTestingEquipment',
+  params,
+  method: 'POST'
 })

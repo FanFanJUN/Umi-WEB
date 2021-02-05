@@ -30,6 +30,11 @@ class UploadFile extends React.Component {
     /**
      * 请求的entityId未找到文件数组，没有更新completeFileList，每次都会触发update
      */
+    if (Array.isArray(nextProps.entityId) && Array.isArray(this.props.entityId)) {
+      const [nid] = nextProps.entityId;
+      const [cid] = this.entityId;
+      if (nid === cid) return
+    }
     if (
       (nextProps.entityId && (typeof nextProps.entityId === 'string' || Array.isArray(nextProps.entityId)) && nextProps.entityId !== this.props.entityId)
       || nextProps.refresh

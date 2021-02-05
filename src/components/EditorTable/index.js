@@ -1,8 +1,8 @@
 import { useState, useRef } from 'react';
 import Header from '../Header';
 import ModalFields from '../ModalFields';
-import { ExtTable, utils, DataExport, DataImport, message } from 'suid';
-import { Button, Modal } from 'antd';
+import { ExtTable, utils, DataExport, DataImport } from 'suid';
+import { Button, Modal, message } from 'antd';
 import { useTableProps } from '../../utils/hooks';
 import styles from './index.less';
 import UploadFile from '../Upload';
@@ -11,6 +11,8 @@ import moment from 'moment';
 const { getUUID } = utils;
 
 function EditorTable({
+  okText = '确定',
+  cancelText = '取消',
   columns = [],
   dataSource = [],
   allowCreate = true,
@@ -22,6 +24,8 @@ function EditorTable({
   copyLine = false,
   copyFields = ['productCode', 'productName'],
   validateFunc = () => null,
+  validateLoading = false,
+  exportFunc = () => null,
   setDataSource = () => null,
   fields = [],
   mode = 'create',
@@ -80,7 +84,6 @@ function EditorTable({
     await setType('editor')
     await formRef.current.setValue(fieldsValues)
   }
-  async function handleExport() { }
   function handleRemove() {
     Modal.confirm({
       title: '删除数据',
@@ -88,6 +91,10 @@ function EditorTable({
       okText: '删除',
       cancelText: '取消',
       onOk: async () => {
+        if (copyLine && dataSource.length === 1) {
+          message.error('当前列表至少需要保留一条数据')
+          return
+        }
         const [key] = selectedRowKeys;
         const filterDataSource = dataSource.filter(item => item.guid !== key)
         await setDataSource(filterDataSource)
@@ -98,6 +105,7 @@ function EditorTable({
   async function handleConfirm() {
     toggleLoading(true)
     const val = await formRef.current.validateFieldsAndScroll((err, values) => {
+      console.log(values)
       if (err) {
         toggleLoading(false)
       }
@@ -106,7 +114,7 @@ function EditorTable({
     if (type === 'create') {
       const gid = getUUID();
       await setDataSource(
-        [...d, { ...val, guid: gid }]
+        [...d, { ...val, guid: gid, filled: true }]
       )
       await setVisible(false)
       toggleLoading(false)
@@ -121,14 +129,14 @@ function EditorTable({
           filled: true
         }
       }
-      return item
+      return { ...item, filled: true }
     })
     await setDataSource(nd)
     await setVisible(false)
     toggleLoading(false)
     cleanSelectedRecord()
   }
-  function importFunc(ims) {
+  async function importFunc(ims) {
     const formatIms = ims.map(item => ({
       ...item,
       guid: !!item.guid ? item?.guid : !!item?.id ? item?.id : getUUID()
@@ -170,6 +178,7 @@ function EditorTable({
             validateAll={false}
             tableProps={{ columns }}
             validateFunc={validateFunc}
+            okButtonProps={{ loading: validateLoading }}
             importFunc={importFunc}
           /> : null
       }
@@ -177,7 +186,7 @@ function EditorTable({
         allowExport ?
           <Button
             className={styles.btn}
-            onClick={handleExport}
+            onClick={exportFunc}
           >导出</Button> : null
       }
     </>
@@ -187,13 +196,13 @@ function EditorTable({
       <Button
         className={styles.btn}
         onClick={() => setVisible(false)}
-      >取消</Button>
+      >{cancelText}</Button>
       <Button
         className={styles.btn}
         type='primary'
         loading={loading}
         onClick={handleConfirm}
-      >确定</Button>
+      >{okText}</Button>
     </>
   );
   const formatColumns = columns.map(item => {
@@ -201,7 +210,7 @@ function EditorTable({
     if (type === 'uploadFile') {
       return ({
         ...item,
-        render: (text) => {
+        render(text) {
           return <UploadFile entityId={text} type='show' />
         }
       })
@@ -241,6 +250,8 @@ function EditorTable({
         wrappedComponentRef={formRef}
         onCancel={() => setVisible(false)}
         onOk={handleConfirm}
+        copyLine={copyLine}
+        copyFields={copyFields}
       />
     </div>
   )

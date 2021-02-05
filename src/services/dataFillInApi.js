@@ -32,12 +32,13 @@ export async function findrBaseInfoById(params) {
  * @param {type} 
  * @return {type} 
  */
-export async function saveBaseInfo(params) {
+export async function saveBaseInfo(params, d) {
   const url = `${recommendUrl}/api/samSupplierBaseInfoService/saveSupplierBaseInfo`;
   return request({
     url,
     method: 'POST',
     data: params,
+    params: d
   }).catch(error => ({ message: '请求异常，请联系管理员', ...error }));
 }
 
@@ -59,12 +60,13 @@ export async function findSalesSituationById(params) {
  * @param {type} 
  * @return {type} 
  */
-export async function saveSupplierSalesSituation(params) {
+export async function saveSupplierSalesSituation(params, d) {
   const url = `${recommendUrl}/api/supplierSalesSituationService/saveSupplierSalesSituation`;
   return request({
     url,
     method: 'POST',
     data: params,
+    params: d
   }).catch(error => ({ message: '请求异常，请联系管理员', ...error }));
 }
 /**
@@ -120,7 +122,7 @@ export async function requestGetApi(params) {
  * @param {type} 
  * @return {type} 
  */
-export async function requestPostApi(params) {
+export async function requestPostApi(params, d) {
   let requestApi = '';
   switch (params.tabKey) {
     // 研发能力
@@ -161,5 +163,6 @@ export async function requestPostApi(params) {
     url,
     method: 'POST',
     data: params,
+    params: d
   }).catch(error => ({ message: '请求异常，请联系管理员', ...error }));
 }

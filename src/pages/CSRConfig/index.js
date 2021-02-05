@@ -55,7 +55,8 @@ function CSRConfig() {
     columns: [
       {
         title: '调查项目',
-        dataIndex: 'item'
+        dataIndex: 'item',
+        width: 280
       },
       {
         title: '选项配置',
@@ -66,18 +67,26 @@ function CSRConfig() {
         width: 200
       },
       {
-        title: '是否包含备注',
+        title: '备注',
         dataIndex: 'remarkConfig',
         render(text) {
-          return text ? '是' : '否'
+          return text ? '有' : '无'
         }
       },
       {
-        title: '是否包含附件',
+        title: '备注必填选项',
+        dataIndex: 'remarkRequiredField'
+      },
+      {
+        title: '附件',
         dataIndex: 'attachmentConfig',
         render(text) {
-          return text ? '是' : '否'
+          return text ? '有' : '无'
         }
+      },
+      {
+        title: '附件必填选项',
+        dataIndex: 'attachmentRequiredField'
       },
       {
         title: '类型',
