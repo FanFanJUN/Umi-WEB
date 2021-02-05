@@ -23,6 +23,7 @@ import { WithdrawResultsEntryApi } from './commonApi';
 import { openNewTab } from '../../../utils';
 import { getUserId } from '../../../components/utils/CommonUtils';
 import { BASE_URL } from '../../../utils/constants';
+import { router } from 'dva';
 
 const { authAction } = utils;
 const { Search } = Input;
@@ -68,7 +69,9 @@ export default function() {
     selectedRows: [],
   });
 
-  const [managementState, setManagementState] = useState(true);
+  const { query } = router.useLocation();
+
+  const [managementState, setManagementState] = useState(query.managementState != 'false');
 
   const [unManagementState, setUnManagementState] = useState(true);
 

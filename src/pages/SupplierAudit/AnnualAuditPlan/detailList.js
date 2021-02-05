@@ -94,6 +94,7 @@ export default function () {
     ];
 
     const columns = [
+        { title: '已使用', dataIndex: 'whetherOccupied', ellipsis: true, width: 80, render: (text) => text ? "是" : "否", align: 'center' },
         {
             title: '状态', dataIndex: 'state', width: 80, render: (text) => {
                 switch (text) {
@@ -149,7 +150,6 @@ export default function () {
         { title: '供应商联系人', dataIndex: 'contactUserName', ellipsis: true, width: 140 },
         { title: '供应商联系方式', dataIndex: 'contactUserTel', ellipsis: true, width: 140 },
         { title: '备注', dataIndex: 'remark', ellipsis: true, width: 140 },
-        { title: '已使用', dataIndex: 'whetherOccupied', ellipsis: true, width: 140, render: (text) => text ? "是" : "否", align: 'center' },
     ];
 
     // 导出
@@ -157,6 +157,7 @@ export default function () {
         let arr = [];
         res.data.rows.map(item => {
             arr.push({
+                '已使用': item.whetherOccupied ? "是" : "否",
                 '状态': item.state === "DRAFT" ? "草稿" : item.state === "EFFECT" ? "生效" : "变更中",
                 '审批状态': item.flowStatus === "INIT" ? "未进入流程" : item.flowStatus === "INPROCESS" ? "流程中" : "流程处理完成",
                 '年度审核需求号': item.reviewPlanYearCode,
@@ -184,7 +185,6 @@ export default function () {
                 '供应商联系人': item.contactUserName,
                 '供应商联系方式': item.contactUserTel,
                 '备注': item.remark,
-                '已使用': item.whetherOccupied ? "是" : "否",
             });
         });
         if (res.success) {

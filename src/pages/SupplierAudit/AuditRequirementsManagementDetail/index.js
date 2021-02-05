@@ -91,6 +91,7 @@ export default function() {
   ];
 
   const columns = [
+    { title: '已使用', dataIndex: 'whetherOccupied', width: 200, render: v => v ? '是' : '否' },
     {
       title: '状态', dataIndex: 'state', width: 80, render: (v, data) => stateConfig[data.reviewRequirementVo.state],
     },
@@ -158,7 +159,6 @@ export default function() {
     { title: '供应商联系人', dataIndex: 'contactUserName', width: 200 },
     { title: '供应商联系方式', dataIndex: 'contactUserTel', width: 200 },
     { title: '备注', dataIndex: 'remark', width: 200 },
-    { title: '已使用', dataIndex: 'whetherOccupied', width: 200, render: v => v ? '是' : '否' },
   ].map(item => ({ ...item, align: 'center' }));
 
   const requestParams = {

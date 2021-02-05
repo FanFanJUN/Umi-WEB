@@ -262,8 +262,8 @@ export default function() {
               params: {
                 stateList: [managementState ? 'COMPLETED' : '', unManagementState ? 'NOT_COMPLETED' : ''],
                 quickSearchValue: data.quickSearchValue,
-                ...data.epTechnicalShareDemandSearchBo,
                 usedType: '2',
+                ...data.epTechnicalShareDemandSearchBo,
               },
               url: `${recommendUrl}/api/reviewImplementManagementService/findByPage`,
               type: 'POST',

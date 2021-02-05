@@ -31,7 +31,7 @@ const AuditComments = React.forwardRef(({ form, isView, editData, type }, ref) =
             <Col span={12}>
               <FormItem  {...formLayout} label={'审核综合评审得分'}>
                 {
-                  <span>{editData.reviewScore}</span>
+                  <span>{editData.reviewScore+'%'}</span>
                 }
               </FormItem>
             </Col>

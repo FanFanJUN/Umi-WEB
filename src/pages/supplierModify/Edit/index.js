@@ -1,5 +1,6 @@
 import React, { createRef, useState, useRef, useEffect } from 'react';
 import { Button, Modal, message, Spin, Affix } from 'antd';
+import { utils } from 'suid';
 import { router } from 'dva';
 import BaseInfo from '../../supplierRegister/components/BaseInfo'
 import Account from '../../supplierRegister/components/Account'
@@ -23,9 +24,9 @@ import {
   saveSupplierRegister,
   ValiditySupplierRegister
 } from '@/services/SupplierModifyService'
-import styles from '../../supplierRegister/components/index.less';
+import styles from '../index.less';
 import { closeCurrent, isEmpty } from '../../../utils';
-
+const { storage } = utils;
 function CreateStrategy() {
   const BaseinfoRef = useRef(null);
   const AccountRef = useRef(null);
@@ -47,7 +48,9 @@ function CreateStrategy() {
   const [visible, setvisible] = useState(false);
   const [configure, setConfigure] = useState([]);
   const [supplierName, setsupplierName] = useState();
+  const [suppliervisible, setSuppliervisible] = useState(false);
   const { query } = router.useLocation();
+  const authorizations = storage.sessionStorage.get("Authorization");
   // 获取配置列表项
   useEffect(() => {
     initsupplierDetai(); // 获取详情
@@ -422,7 +425,12 @@ function CreateStrategy() {
     if (success) {
       message.success(msg);
       triggerLoading(false)
-      closeCurrent()
+      if (authorizations.userType === 'Supplier') {
+        getModelRef.current.handleModalVisible(false);
+        setSuppliervisible(true)
+      } else {
+        closeCurrent()
+      }
       return
     } else {
       message.error(msg);
@@ -449,6 +457,14 @@ function CreateStrategy() {
   }
   function handleCancel() {
     setvisible(false)
+  }
+  function handleSupplierOk() {
+    setSuppliervisible(false)
+    closeCurrent()
+  }
+  function handleSupplierCancel() {
+    setSuppliervisible(false)
+    closeCurrent()
   }
   return (
     <Spin spinning={loading} tip='处理中...'>
@@ -623,6 +639,15 @@ function CreateStrategy() {
           onCancel={handleCancel}
         >
           <p>请先到供应商账号的个人设置中绑定手机和邮箱，再变更其他信息，否则无法保存变更信息</p>
+        </Modal>
+        <Modal
+          title="提示"
+          visible={suppliervisible}
+          onOk={handleSupplierOk}
+          onCancel={handleSupplierCancel}
+        >
+          <p>根据管理要求供应商无法对供应商信息变更单提交审核，请联系与您对接的人员代提交审核，
+            <span className={styles.otherTitle}>否则变更无法生效！</span></p>
         </Modal>
       </div>
     </Spin>
