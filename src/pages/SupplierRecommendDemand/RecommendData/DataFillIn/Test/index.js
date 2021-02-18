@@ -63,6 +63,58 @@ export default () => {
         return ct && ct < tv
       },
       disabledTarget: 'year'
+    },
+    {
+      name: 'sales',
+      label: '当月销量',
+      fieldType: 'inputNumber',
+      option: {
+        rules: [
+          {
+            required: true,
+            message: '清填写当月销量'
+          },
+          {
+            validator: (_, val, cb, targetValue) => {
+              if (targetValue < val) {
+                cb('当月销量不能大于总销量')
+                return
+              }
+              cb()
+            }
+          },
+          {
+            min: 0,
+            type: 'number',
+            message: '当月销量不能为负数'
+          }
+        ]
+      },
+      disabledTarget: 'countSales'
+    },
+    {
+      name: 'countSales',
+      label: '总销量',
+      fieldType: 'inputNumber',
+      option: {
+        rules: [
+          {
+            required: true,
+            message: '不能为空'
+          },
+          {
+            validator: (_, val, cb, targetValue) => {
+              if (targetValue > val) {
+                cb('总销量不能小于当月销量')
+                return
+              }
+              cb()
+            }
+          }
+        ],
+        validateFirst: true
+      },
+      disabledTarget: 'sales'
     }
   ]
   return (
@@ -71,6 +123,12 @@ export default () => {
       dataSource={dataSource}
       setDataSource={setDataSource}
       columns={columns}
+      allowOperation={false}
+      allowCreate={false}
+      allowEditor={false}
+      allowRemove={false}
+      allowExport
+      allowImport
     />
   )
 }

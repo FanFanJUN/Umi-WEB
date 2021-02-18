@@ -7,64 +7,140 @@
  * @Description: 销售收入及利润 Table
  * @Connect: 1981824361@qq.com
  */
-import { useState, useEffect } from 'react';
 import { Form } from 'antd';
-import EditTable from '../CommonUtil/EditTable';
+import EditorTable from '../../../../../components/EditorTable';
 import moment from 'moment';
+import { currencyTableProps } from '../../../../../utils/commonProps';
 
-const SalesProfit = ({ data=[], type, setTableData }) => {
-  useEffect(() => {
-    setDataSource(data)
-  }, [data])
-  const [dataSource, setDataSource] = useState([]);
+const SalesProfit = ({ data = [], type, setTableData }) => {
   const columns = [
     {
       title: "年度",
-      dataIndex: "year",
-      ellipsis: true,
-      editable: true,
-      inputType: 'YearPicker',
-      props: {
-        disabledDate: (current) => current && current > moment()
-        // mode: 'year'
-      }
+      dataIndex: "year"
     },
     {
-      title: "含税销售金额（万元）",
+      title: "含税销售金额(万元)",
       dataIndex: "salesAmount",
-      ellipsis: true,
-      editable: true,
-      inputType: 'InputNumber',
-      width: 220
     },
     {
-      title: "利润（万元）",
+      title: "利润(万元)",
       dataIndex: "profit",
-      ellipsis: true,
-      editable: true,
-      inputType: 'InputNumber',
     },
     {
       title: "币种",
       dataIndex: "currencyName",
-      ellipsis: true,
-      editable: true,
-      inputType: 'selectwithService',
     }
   ];
 
-  function setNewData(newData) {
-    setDataSource(newData);
-    setTableData(newData, 'supplierSalesProceeds');
-  }
+  const fields = [
+    {
+      name: 'year',
+      label: '年度',
+      fieldType: 'yearPicker',
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '请选择年度信息'
+          },
+          {
+            validator: (_, v, cb) => {
+              const cm = + moment().format('YYYY');
+              if (v > cm) {
+                cb('所选年度不能大于当前时间')
+              }
+              cb()
+            }
+          }
+        ]
+      },
+      props: {
+        placeholder: '请选择年度'
+      }
+    },
+    {
+      name: 'salesAmount',
+      label: '含税销售金额(万元)',
+      fieldType: 'inputNumber',
+      disabledTarget: 'profit',
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '销售金额不能为空'
+          },
+          {
+            validator: (_,val, cb, tg) => {
+              if(val < tg) {
+                cb('含税销售金额应大于利润')
+                return
+              }
+              cb()
+            }
+          }
+        ]
+      },
+      props: {
+        min: 0,
+        placeholder: '请填写含税销售金额'
+      }
+    },
+    {
+      name: 'profit',
+      label: '利润(万元)',
+      fieldType: 'inputNumber',
+      disabledTarget: 'salesAmount',
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '利润不能为空'
+          },
+          {
+            validator: (_, val, cb, tg) => {
+              if(val >= tg) {
+                cb('利润应小于含税销售金额')
+                return
+              }
+              cb()
+            }
+          }
+        ]
+      },
+      props: {
+        min: 0,
+        placeholder: '请填写利润'
+      }
+    },
+    {
+      name: 'currencyName',
+      label: '币种',
+      fieldType: 'comboList',
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '币种不能为空'
+          }
+        ]
+      },
+      props: {
+        name: 'currencyName',
+        field: ['currencyId'],
+        placeholder: '请选择币种',
+        ...currencyTableProps
+      }
+    },
+  ]
+
   return (
-    <EditTable
-      dataSource={dataSource}
+    <EditorTable
+      dataSource={data}
       columns={columns}
       rowKey='guid'
-      setNewData={setNewData}
-      isEditTable={type === 'add'}
-      isToolBar={type === 'add'}
+      setDataSource={setTableData}
+      fields={fields}
+      mode={type}
     />
   )
 }

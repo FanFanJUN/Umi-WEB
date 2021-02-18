@@ -4,7 +4,16 @@
  * @date 2020.4.3
  */
 import React, { useState, useEffect } from 'react';
-import { Table, PageHeader, Button, Input, Radio, message, Spin, Form } from 'antd';
+import {
+  Table,
+  PageHeader,
+  Button,
+  Input,
+  Radio,
+  message,
+  Spin,
+  Form
+} from 'antd';
 import styles from '../index.less';
 import { queryCSRorEPEData, saveCSRorEPEData } from '../../../../../services/recommend';
 import { router } from 'dva';
@@ -20,7 +29,11 @@ function CSRQuestionnaire({
   const [dataSource, setDataSource] = useState([]);
   const [loading, toggleLoading] = useState(false);
   const { query } = useLocation();
-  const { getFieldDecorator, validateFieldsAndScroll } = form;
+  const {
+    getFieldDecorator,
+    validateFieldsAndScroll,
+    getFieldValue
+  } = form;
   const { id = null, type = 'create' } = query;
   const headerExtra = type === 'detail' ? null : [
     <Button
@@ -29,7 +42,13 @@ function CSRQuestionnaire({
       key='save'
       onClick={handleSave}
       disabled={loading}
-    >保存</Button>
+    >保存</Button>,
+    <Button
+      className={styles.btn}
+      key='hold'
+      onClick={handleHoldData}
+      disabled={loading}
+    >暂存</Button>
   ];
   const columns = [
     {
@@ -43,7 +62,7 @@ function CSRQuestionnaire({
     },
     {
       title: '实际情况',
-      dataIndex: 'selectValue',
+      dataIndex: 'selectName',
       render(text, record, index) {
         const { selectConfigList } = record;
         return (
@@ -52,7 +71,7 @@ function CSRQuestionnaire({
             padding: 0
           }}>
             {
-              getFieldDecorator(`${index}-selectValue`, {
+              getFieldDecorator(`${index}-selectName`, {
                 rules: [
                   {
                     required: true,
@@ -63,11 +82,11 @@ function CSRQuestionnaire({
               })(
                 <RadioGroup
                   disabled={type === 'detail'}
-                  onChange={(e) => handleLineChange(e, index, 'selectValue')}
+                  onChange={(e) => handleLineChange(e, index, 'selectName')}
                 >
                   {
                     selectConfigList.map(
-                      (item, k) => <Radio value={k} key={`${k}-value-key`}>{item}</Radio>
+                      (item, k) => <Radio value={item} key={`${k}-value-key`}>{item}</Radio>
                     )
                   }
                 </RadioGroup>
@@ -84,9 +103,28 @@ function CSRQuestionnaire({
         if (type === 'detail') {
           return text
         }
-        const { remarkConfig } = record;
+        const selectName = getFieldValue(`${index}-selectName`);
+        const { remarkConfig, remarkRequiredField } = record;
         if (remarkConfig) {
-          return <Input className={styles.input} value={text} onChange={(event) => handleLineChange(event, index, 'remarkValue')} />
+          return (
+            <Form.Item
+              style={{ padding: 0, margin: 0 }}
+            >
+              {
+                getFieldDecorator(`${index}-remarkValue`, {
+                  initialValue: text,
+                  rules: [
+                    {
+                      required: (remarkRequiredField === selectName || remarkRequiredField === '全部') && !Object.is(null, selectName),
+                      message: '请添加备注'
+                    }
+                  ]
+                })(
+                  <Input className={styles.input} onChange={(event) => handleLineChange(event, index, 'remarkValue')} />
+                )
+              }
+            </Form.Item>
+          )
         }
         return text
       }
@@ -108,12 +146,23 @@ function CSRQuestionnaire({
   }
   async function handleSave() {
     const v = await validateFieldsAndScroll();
-    console.log(v)
     toggleLoading(true)
     const { success, message: msg } = await saveCSRorEPEData(dataSource);
     toggleLoading(false)
     if (success) {
       message.success(msg)
+      updateGlobalStatus()
+      return
+    }
+    message.error(msg)
+  }
+  async function handleHoldData() {
+    // const v = await validateFieldsAndScroll();
+    toggleLoading(true)
+    const { success, message: msg } = await saveCSRorEPEData(dataSource, true);
+    toggleLoading(false)
+    if (success) {
+      message.success('数据暂存成功')
       updateGlobalStatus()
       return
     }

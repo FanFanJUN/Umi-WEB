@@ -19,6 +19,8 @@ import { findrBaseInfoById, saveBaseInfo } from '../../../../../services/dataFil
 import { filterEmptyFileds } from '../CommonUtil/utils';
 import moment from 'moment';
 
+const { create } = Form;
+
 const BaseCondition = ({ form, updateGlobalStatus }) => {
 
   const [data, setData] = useState({});
@@ -27,21 +29,31 @@ const BaseCondition = ({ form, updateGlobalStatus }) => {
   const [otherData, setOtherData] = useState([]);
   const [manageData, setManageData] = useState([]);
   const { query: { id, type = 'add' } } = router.useLocation();
-  (proData, otherData)
+  const { getFieldsValue, setFieldsValue, validateFieldsAndScroll } = form;
+  const { setUpTime } = getFieldsValue();
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       const { success, data, message: msg } = await findrBaseInfoById({ supplierRecommendDemandId: id });
       if (success) {
-        // const { productCertifications, otherCertifications, ...other } = data
-        await setData({ ...data });
-        await form.setFieldsValue({
-          ...data,
-          setUpTime: !!data?.setUpTime ? moment(data.setUpTime) : undefined
+        const {
+          productCertifications,
+          otherCertifications,
+          managementSystems,
+          setUpTime = null,
+          ...other
+        } = data
+        await setData({ ...other });
+        await setFieldsValue({
+          ...other,
+          setUpTime: !!setUpTime ? moment(setUpTime) : undefined
         })
-        await setProData(data.productCertifications)
-        await setOtherData(data.otherCertifications)
-        await setManageData(data.managementSystems)
+        await setProData(productCertifications.map(item => ({
+          ...item,
+          planObtainTime: !!item.planObtainTime ? moment(item?.planObtainTime) : null
+        })))
+        await setOtherData(otherCertifications)
+        await setManageData(managementSystems)
       } else {
         message.error(msg);
       }
@@ -51,7 +63,7 @@ const BaseCondition = ({ form, updateGlobalStatus }) => {
   }, []);
 
   async function handleSave() {
-    const value = await form.validateFieldsAndScroll();
+    const value = await validateFieldsAndScroll();
     const {
       manager = 0, // 管理人员
       salesman = 0, // 销售人员
@@ -88,21 +100,46 @@ const BaseCondition = ({ form, updateGlobalStatus }) => {
     }
     message.error(msg);
   }
-
-  function setTableData(newData, type) {
-    switch (type) {
-      case 'pro':
-        setProData(newData)
-        break;
-      case 'other':
-        setOtherData(newData)
-        break;
-      case 'manage':
-        setManageData(newData)
-        break;
+  async function handleHoldData() {
+    const value = getFieldsValue();
+    const {
+      manager = 0, // 管理人员
+      salesman = 0, // 销售人员
+      qualityControl = 0, // 质量控制
+      technicist = 0, // 技术人员
+      supportStaff = 0, // 客服人员
+      otherStaff = 0, // 其他人员
+      headCount = 0, // 总人数
+    } = value;
+    const count = manager + salesman + qualityControl + technicist + supportStaff + otherStaff;
+    if (count > headCount) {
+      message.error(`各部门人数总和超过公司总人数${headCount}人，请检查。`)
+      return
     }
+    const saveParams = {
+      ...value,
+      supplierCertificates: data.supplierCertificates,
+      supplierContacts: data.supplierContacts,
+      managementSystems: manageData,
+      recommendDemandId: id,
+      id: data.id,
+      actualCapacityFactor: (value.designCapability / value.actualCapacity).toFixed(2), // 现有产能利用率 设计产能/实际产能
+      productCertifications: proData,
+      otherCertifications: otherData,
+    };
+    const params = filterEmptyFileds(saveParams);
+    setLoading(true)
+    const { success, message: msg } = await saveBaseInfo(params, {
+      tempSave: true
+    });
+    setLoading(false)
+    if (success) {
+      message.success('基本情况暂存成功');
+      updateGlobalStatus();
+      return
+    }
+    message.error(msg);
   }
-
   return (
     <div>
       <Spin spinning={loading}>
@@ -119,7 +156,13 @@ const BaseCondition = ({ form, updateGlobalStatus }) => {
               style={{ marginRight: '12px' }}
               onClick={handleSave}
               disabled={loading}
-            >保存</Button>
+            >保存</Button>,
+            <Button
+              key='hold'
+              style={{ marginRight: 12 }}
+              disabled={loading}
+              onClick={handleHoldData}
+            >暂存</Button>
           ] : null}
         >
           <BaseInfo
@@ -147,7 +190,16 @@ const BaseCondition = ({ form, updateGlobalStatus }) => {
             <div className={styles.bgw}>
               <div className={styles.title}>管理体系及产品认证</div>
               <div className={styles.content}>
-                <MproCertification data={data} type={type} setTableData={setTableData} />
+                <MproCertification
+                  proData={proData}
+                  otherData={otherData}
+                  manageData={manageData}
+                  setProData={setProData}
+                  setOtherData={setOtherData}
+                  setManageData={setManageData}
+                  setUpTime={setUpTime}
+                  type={type}
+                />
               </div>
             </div>
           </div>
@@ -157,4 +209,4 @@ const BaseCondition = ({ form, updateGlobalStatus }) => {
   )
 };
 
-export default Form.create()(BaseCondition);
+export default create()(BaseCondition);

@@ -13,7 +13,6 @@ import moment from 'moment';
 import UploadFile from '../../../../../components/Upload';
 
 export default function ({ tableData }) {
-  const tableRef = useRef(null);
   const columns = [
     {
       title: '资质文件类型',
@@ -21,7 +20,7 @@ export default function ({ tableData }) {
       ellipsis: true,
     },
     {
-      title: '证照编号',
+      title: '证件编号',
       dataIndex: 'certificateNo',
       ellipsis: true,
     },
@@ -56,8 +55,6 @@ export default function ({ tableData }) {
         allowCancelSelect
         showSearch={false}
         remotePaging
-        checkbox={{ multiSelect: false }}
-        ref={tableRef}
         rowKey={(item) => item.id}
         size='small'
         dataSource={tableData}

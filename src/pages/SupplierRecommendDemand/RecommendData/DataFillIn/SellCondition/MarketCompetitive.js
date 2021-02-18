@@ -8,11 +8,28 @@
  * @Connect: 1981824361@qq.com
  */
 import React from 'react';
-import { useState } from 'react';
 import { Divider, Form, Row, Col, Input, Radio } from 'antd';
-import EditableFormTable from '../CommonUtil/EditTable';
-import { useEffect } from 'react';
-
+import EditorTable from '../../../../../components/EditorTable';
+import { currencyTableProps } from '../../../../../utils/commonProps';
+const currencyOpt = {
+  name: 'currencyName',
+  label: '币种',
+  fieldType: 'comboList',
+  props: {
+    name: 'currencyName',
+    field: ['currencyId'],
+    placeholder: '请选择币种',
+    ...currencyTableProps
+  },
+  options: {
+    rules: [
+      {
+        required: true,
+        message: '请选择币种'
+      }
+    ]
+  }
+}
 const FormItem = Form.Item;
 const formLayout = {
   labelCol: {
@@ -23,99 +40,194 @@ const formLayout = {
   },
 };
 
-const MarketCompetitive = React.forwardRef(({ form, data, type, setTableData }, ref) => {
+const MarketCompetitive = ({
+  form,
+  setSupplierMajorCompetitors,
+  supplierMajorCompetitors = [],
+  marketPositions = [],
+  setMarketPositions,
+  type = 'create'
+}) => {
   const DISABLED = type === 'detail';
-  const [supplierMajorCompetitors, setsupplierMajorCompetitors] = useState([]);
-  const [marketPositions, setmarketPositions] = useState([])
   const { getFieldDecorator } = form;
-
+  const marketFields = [
+    {
+      name: 'productName',
+      label: '产品',
+      props: {
+        disabled: true
+      }
+    },
+    {
+      name: 'yearAnnualValue',
+      label: '年产值(万元)',
+      fieldType: 'inputNumber',
+      props: {
+        min: 0,
+        placeholder: '请填写年产值'
+      },
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '年产值不能为空'
+          }
+        ]
+      }
+    },
+    {
+      ...currencyOpt
+    },
+    {
+      label: '市场占有率(%)',
+      name: 'marketShare',
+      fieldType: 'inputNumber',
+      props: {
+        min: 0,
+        max: 100,
+        placeholder: '请填写市场占有率'
+      }
+    }
+  ]
   const columnsForMarket = [
     {
       title: '产品',
       dataIndex: 'productName',
-      ellipsis: true,
-      editable: false
+
     },
     {
       title: '年产值',
       dataIndex: 'yearAnnualValue',
-      ellipsis: true,
-      inputType: 'InputNumber'
     },
     {
       title: '币种',
-      dataIndex: 'currencyName',
-      ellipsis: true,
-      inputType: 'selectwithService'
+      dataIndex: 'currencyName'
     },
     {
-      title: '市场占有率',
-      dataIndex: 'marketShare',
-      ellipsis: true,
-      inputType: 'percentInput'
+      title: '市场占有率%',
+      dataIndex: 'marketShare'
     },
   ].map(item => ({ ...item, align: 'center' }));
+  const rankFields = [
+    {
+      label: '产品',
+      name: 'productName',
+      props: {
+        disabled: true
+      },
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '产品不能为空'
+          }
+        ]
+      }
+    },
+    {
+      label: '竞争对手',
+      name: 'competitor',
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '竞争对手名称不能为空'
+          }
+        ]
+      },
+      props: {
+        placeholder: '请填写竞争对手'
+      }
+    },
+    {
+      label: '年销售额(万元)',
+      name: 'annualTurnover',
+      fieldType: 'inputNumber',
+      props: {
+        min: 0,
+        placeholder: '请填写年销售额'
+      },
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '年产值不能为空'
+          }
+        ]
+      }
+    },
+    {
+      ...currencyOpt
+    },
+    {
+      label: '年销量(万)',
+      name: 'annualSales',
+      fieldType: 'inputNumber',
+      props: {
+        min: 0,
+        placeholder: '请填写年销量'
+      },
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '年销量不能为空'
+          }
+        ]
+      }
+    },
+    {
+      label: '市场占有率%',
+      name: 'marketShare',
+      fieldType: 'inputNumber',
+      props: {
+        min: 0,
+        max: 100,
+        placeholder: '请填写市场占有率'
+      },
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '市场占有率不能为空'
+          }
+        ]
+      }
+    }
+  ]
   const columnsForRank = [
     {
       title: '产品',
-      dataIndex: 'productName',
-      ellipsis: true,
-      editable: false
+      dataIndex: 'productName'
     },
     {
       title: '竞争对手',
-      dataIndex: 'competitor',
-      ellipsis: true,
+      dataIndex: 'competitor'
     },
     {
       title: '年销售额',
-      dataIndex: 'annualTurnover',
-      ellipsis: true,
-      inputType: 'InputNumber'
+      dataIndex: 'annualTurnover'
     },
     {
       title: '币种',
-      dataIndex: 'currencyName',
-      ellipsis: true,
-      inputType: 'selectwithService'
+      dataIndex: 'currencyName'
     },
     {
       title: '年销量',
-      dataIndex: 'annualSales',
-      ellipsis: true,
-      inputType: 'InputNumber'
+      dataIndex: 'annualSales'
     },
     {
       title: '市场占有率',
-      dataIndex: 'marketShare',
-      ellipsis: true,
-      inputType: 'percentInput'
+      dataIndex: 'marketShare'
     },
   ].map(item => ({ ...item, align: 'center' }));
-
-  function setNewData(newData, type) {
-    switch (type) {
-      case 'supplierMajorCompetitors':
-        setsupplierMajorCompetitors(newData);
-        break;
-      case 'marketPositions':
-        setmarketPositions(newData)
-        break;
-    }
-    setTableData(newData, type);
-  }
-  useEffect(() => {
-    const { supplierMajorCompetitors = [], marketPositions = [] } = data;
-    setsupplierMajorCompetitors(supplierMajorCompetitors?.map(item => ({ ...item, guid: !!item.id ? item.id : item.guid })))
-    setmarketPositions(marketPositions?.map(item => ({ ...item, guid: !!item.id ? item.id : item.guid })))
-  }, [data])
   return (
     <div>
       <Row>
         <Col span={24}>
           <FormItem label="行业知名度" {...formLayout}>
             {getFieldDecorator('industryVisibilityEnum', {
-              initialValue: type === 'add' ? 'JOINT_VENTURES_INTERNATIONA_FAMOUS' : data.industryVisibilityEnum,
+              // initialValue: type === 'add' ? 'JOINT_VENTURES_INTERNATIONA_FAMOUS' : formData.industryVisibilityEnum,
             })(<Radio.Group disabled={DISABLED}>
               <Radio value={'INTERNATIONAL_FAMOUS'}>行业内的国际知名企业</Radio>
               <Radio value={'JOINT_VENTURES_INTERNATIONA_FAMOUS'}>行业内国际知名企业在中国的合资企业</Radio>
@@ -129,7 +241,7 @@ const MarketCompetitive = React.forwardRef(({ form, data, type, setTableData }, 
         <Col span={24}>
           <FormItem label="企业的主要竞争优势" {...formLayout}>
             {getFieldDecorator('competitiveEdge', {
-              initialValue: type === 'add' ? '' : data.competitiveEdge,
+              // initialValue: type === 'add' ? '' : formData.competitiveEdge,
               rules: [
                 {
                   required: true,
@@ -141,30 +253,28 @@ const MarketCompetitive = React.forwardRef(({ form, data, type, setTableData }, 
         </Col>
       </Row>
       <Divider orientation='left' orientation='left'>市场地位</Divider>
-      <EditableFormTable
+      <EditorTable
         columns={columnsForMarket}
         rowKey='guid'
-        bordered
-        isEditTable={type === 'add'}
         allowRemove={false}
+        allowCreate={false}
         dataSource={marketPositions}
-        setNewData={setNewData}
-        tableType='marketPositions'
+        setDataSource={setMarketPositions}
+        fields={marketFields}
+        mode={type}
       />
       <Divider orientation='left' orientation='left'>主要竞争对手排名</Divider>
-      <EditableFormTable
+      <EditorTable
         columns={columnsForRank}
         copyLine={true}
-        bordered
         rowKey='guid'
-        isEditTable={type === 'add'}
-        isToolBar={type === 'add'}
         dataSource={supplierMajorCompetitors}
-        setNewData={setNewData}
-        tableType='supplierMajorCompetitors'
+        setDataSource={setSupplierMajorCompetitors}
+        fields={rankFields}
+        mode={type}
       />
     </div>
   )
-})
+}
 
 export default MarketCompetitive;
