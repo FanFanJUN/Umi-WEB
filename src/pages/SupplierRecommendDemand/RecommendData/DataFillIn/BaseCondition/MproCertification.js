@@ -7,375 +7,147 @@
  * @Description: 管理体系及产品认证
  * @Connect: 1981824361@qq.com
  */
-import { Fragment } from 'react';
-import { Divider, message } from 'antd';
-import EditorTable from '../../../../../components/EditorTable';
+import { useState, useRef, Fragment, useEffect } from 'react';
+import { Divider } from 'antd';
+import moment from 'moment';
+import EditableFormTable from '../CommonUtil/EditTable';
 
-const MproCertification = ({
-  type,
-  setUpTime = null,
-  proData = [],
-  setProData = () => null,
-  otherData = [],
-  setOtherData = () => null,
-  manageData = [],
-  setManageData = () => null
-}) => {
-  const manFields = [
-    {
-      label: '是否取得',
-      name: 'obtained',
-      fieldType: 'select',
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '请选择是否取得'
-          }
-        ]
-      },
-      props: {
-        placeholder: '请选择是否取得'
-      }
-    },
-    {
-      label: '管理体系',
-      name: 'certificateName',
-      props: {
-        disabled: true
-      },
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '管理体系不能为空'
-          }
-        ]
-      }
-    },
-    {
-      label: '认证类型',
-      name: 'certificateType',
-      options: {
-        rules: [
-          {
-            required: (tv) => !!tv,
-            message: '认证类型不能为空'
-          }
-        ]
-      },
-      disabledTarget: 'obtained',
-      props: {
-        disabled: (tv) => !tv
-      }
-    },
-    {
-      label: '执行标准',
-      name: 'executiveStandard',
-      options: {
-        rules: [
-          {
-            required: (tv) => !!tv,
-            message: '执行标准不能为空'
-          }
-        ]
-      },
-      disabledTarget: 'obtained',
-      props: {
-        disabled: (tv) => !tv
-      }
-    },
-    {
-      label: '证件编号',
-      name: 'certificateNumber',
-      options: {
-        rules: [
-          {
-            required: (tv) => !!tv,
-            message: '证件编号不能为空'
-          }
-        ]
-      },
-      disabledTarget: 'obtained',
-      props: {
-        disabled: (tv) => !tv
-      }
-    },
-    {
-      label: '发证机构',
-      name: 'certifyingAuthority',
-      options: {
-        rules: [
-          {
-            required: (tv) => !!tv,
-            message: '发证机构不能为空'
-          }
-        ]
-      },
-      disabledTarget: 'obtained',
-      props: {
-        disabled: (tv) => !tv
-      }
-    },
-    {
-      label: '首次获证时间',
-      name: 'firstObtainTime',
-      fieldType: 'datePicker',
-      options: {
-        rules: [
-          {
-            required: (tv) => !!tv,
-            message: '请选择首次获证时间'
-          }
-        ]
-      },
-      disabledDate: (ct) => {
-        return ct < setUpTime
-      },
-      disabledTarget: 'obtained',
-      props: {
-        disabled: (tv) => !tv
-      }
-    },
-    {
-      label: '有效期间',
-      name: 'validDate',
-      disabledTarget: 'obtained',
-      props: {
-        disabled: (tv) => !tv
-      },
-      options: {
-        rules: [
-          {
-            required: (tv) => !!tv,
-            message: '有效期间不能为空'
-          }
-        ]
-      }
-    },
-    {
-      label: '附件',
-      name: 'attachmentIds',
-      fieldType: 'uploadFile',
-      disabledTarget: 'obtained',
-      props: {
-        disabled: (tv) => !tv
-      },
-      options: {
-        rules: [
-          {
-            required: (tv) => !!tv,
-            message: '附件不能为空'
-          }
-        ]
-      }
-    },
-    {
+const MproCertification = ({ type, data, setTableData }) => {
+  const { productCertifications, otherCertifications, managementSystems } = data;
+  const [proData, setProData] = useState([]);
+  const [otherData, setOtherData] = useState([]);
+  const [manageData, setManageData] = useState([]);
+  const tableRef = useRef(null);
 
-      label: '计划取得时间',
-      name: 'planObtainTime',
-      fieldType: 'datePicker',
-      disabledTarget: 'obtained',
-      props: {
-        disabled: (tv) => tv
-      },
-      options: {
-        rules: [
-          {
-            required: (tv) => !tv,
-            message: '计划取得时间不能为空'
-          }
-        ]
-      },
-      width: 150
-    },
-  ]
   const columnsForMan = [
     {
-      title: '是否取得',
-      dataIndex: 'obtained',
-      render(text) {
-        return Object.is(null, text) ? '' : text ? '是' : '否'
-      }
-    },
-    {
       title: '管理体系',
-      dataIndex: 'certificateName'
+      dataIndex: 'certificateName',
+      ellipsis: true,
     },
     {
       title: '认证类型',
-      dataIndex: 'certificateType'
+      dataIndex: 'certificateType',
+      ellipsis: true,
+      editable: true
     },
     {
       title: '执行标准',
-      dataIndex: 'executiveStandard'
+      dataIndex: 'executiveStandard',
+      ellipsis: true,
     },
     {
-      title: '证件编号',
-      dataIndex: 'certificateNumber'
+      title: '证照编号',
+      dataIndex: 'certificateNumber',
+      ellipsis: true,
     },
     {
       title: '发证机构',
-      dataIndex: 'certifyingAuthority'
+      dataIndex: 'certifyingAuthority',
+      ellipsis: true,
     },
     {
 
       title: '首次获证时间',
       dataIndex: 'firstObtainTime',
-      type: 'date',
+      ellipsis: true,
+      render: (text) => {
+        return text && moment(text).format('YYYY-MM-DD');
+      },
+      inputType: 'DatePicker',
       width: 150
     },
     {
       title: '有效期间',
-      dataIndex: 'validDate'
+      dataIndex: 'validDate',
+      ellipsis: true,
     },
     {
       title: '附件',
       dataIndex: 'attachmentIds',
-      type: 'uploadFile'
+      ellipsis: true,
+      editable: true,
+      inputType: 'UploadFile'
     },
     {
 
       title: '计划取得时间',
       dataIndex: 'planObtainTime',
-      type: 'date',
+      ellipsis: true,
+      render: (text) => {
+        return text && moment(text).format('YYYY-MM-DD');
+      },
       width: 150
     },
   ].map(item => ({
     ...item,
     align: 'center'
   }));
-  const proFields = [
-    {
-      label: '产品',
-      name: 'productName',
-      props: {
-        disabled: true
-      },
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '产品不能为空'
-          }
-        ]
-      }
-    },
-    {
-      label: '是否取得',
-      name: 'obtained',
-      props: {
-        placeholder: '请选择是否取得'
-      },
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '请确认是否取得'
-          }
-        ]
-      },
-      fieldType: 'select'
-    },
-    {
-      label: '认证类型',
-      name: 'certificateType',
-      fieldType: 'select',
-      selectOptions: [
-        {
-          value: '安规认证',
-          name: '安规认证'
-        },
-        {
-          value: 'EMC认证',
-          name: 'EMC认证'
-        }
-      ],
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '认证类型不能为空'
-          }
-        ]
-      }
-    },
-    {
-      label: '执行标准',
-      name: 'executiveStandard'
-    },
-    {
-      label: '证件编号',
-      name: 'certificateNumber'
-    },
-    {
-      label: '发证机构',
-      name: 'certifyingAuthority'
-    },
-    {
-      label: '首次获证时间',
-      name: 'firstObtainTime',
-      type: 'date',
-      fieldType: 'datePicker'
-    },
-    {
-      label: '最新年审',
-      name: 'newestAnnualReview',
-      type: 'date',
-      fieldType: 'datePicker'
-    },
-    {
-      label: '附件',
-      name: 'attachmentIds',
-      fieldType: 'uploadFile'
-    },
-    {
-      label: '计划取得时间',
-      name: 'planObtainTime'
-    }
-  ]
+
   const columnsForPro = [
     {
       title: '产品',
-      dataIndex: 'productName'
+      dataIndex: 'productName',
+      ellipsis: true,
+      editable: false
     },
     {
       title: '认证类型',
-      dataIndex: 'certificateType'
+      dataIndex: 'certificateType',
+      ellipsis: true,
+      editable: true
     },
     {
       title: '执行标准',
-      dataIndex: 'executiveStandard'
+      dataIndex: 'executiveStandard',
+      ellipsis: true,
+      editable: true
     },
     {
-      title: '证件编号',
-      dataIndex: 'certificateNumber'
+      title: '证照编号',
+      dataIndex: 'certificateNumber',
+      ellipsis: true,
+      editable: true
     },
     {
       title: '发证机构',
-      dataIndex: 'certifyingAuthority'
+      dataIndex: 'certifyingAuthority',
+      ellipsis: true,
+      editable: true
     },
     {
       title: '首次获证时间',
       dataIndex: 'firstObtainTime',
-      type: 'date',
-      inputType: 'DatePicker'
+      ellipsis: true,
+      render: (text) => {
+        return text && moment(text).format('YYYY-MM-DD');
+      },
+      inputType: 'DatePicker',
+      editable: true
     },
     {
       title: '最新年审',
       dataIndex: 'newestAnnualReview',
-      type: 'date',
-      inputType: 'DatePicker'
+      ellipsis: true,
+      render: (text) => {
+        return text && moment(text).format('YYYY-MM-DD');
+      },
+      inputType: 'DatePicker',
+      editable: true
     },
     {
       title: '附件',
       dataIndex: 'attachmentIds',
+      ellipsis: true,
+      editable: true,
       inputType: 'UploadFile'
     },
     {
 
       title: '计划取得时间',
-      dataIndex: 'planObtainTime'
+      dataIndex: 'planObtainTime',
+      ellipsis: true,
+      editable: true
     },
   ].map(item => ({
     ...item,
@@ -385,89 +157,152 @@ const MproCertification = ({
   const columnsForOther = [
     {
       title: '产品',
-      dataIndex: 'productName'
+      dataIndex: 'productName',
+      ellipsis: true,
+      editable: false
     },
     {
       title: '认证类型',
-      dataIndex: 'certificateType'
+      dataIndex: 'certificateType',
+      ellipsis: true,
+      editable: true,
     },
     {
       title: '执行标准',
-      dataIndex: 'executiveStandard'
+      dataIndex: 'executiveStandard',
+      ellipsis: true,
+      editable: true
     },
     {
-      title: '证件编号',
-      dataIndex: 'certificateNumber'
+      title: '证照编号',
+      dataIndex: 'certificateNumber',
+      ellipsis: true,
+      editable: true
     },
     {
       title: '发证机构',
-      dataIndex: 'certifyingAuthority'
+      dataIndex: 'certifyingAuthority',
+      ellipsis: true,
+      editable: true
     },
     {
 
       title: '首次获证时间',
       dataIndex: 'firstObtainTime',
+      ellipsis: true,
+      editable: true,
       width: 150
     },
     {
       title: '最新年审',
       dataIndex: 'newestAnnualReview',
-      type: 'date',
+      ellipsis: true,
+      render: (text) => {
+        return text && moment(text).format('YYYY-MM-DD')
+      },
       inputType: 'DatePicker',
+      editable: true
     },
     {
       title: '附件',
       dataIndex: 'attachmentIds',
-      type: 'uploadFile'
+      ellipsis: true,
+      editable: true,
+      inputType: 'UploadFile'
     },
     {
 
       title: '计划取得时间',
       dataIndex: 'planObtainTime',
-      type: 'date',
-      width: 150
+      ellipsis: true,
+      render: (text) => {
+        return text && moment(text).format('YYYY-MM-DD');
+      },
+      inputType: 'DatePicker',
+      editable: true, width: 150
     },
   ].map(item => ({ ...item, align: 'center' }));
-  function handleManTableEditor() {
-    return new Promise((resolve, reject) => {
-      if (!!setUpTime) {
-        resolve()
-        return
-      }
-      message.error('请先在基本信息中填写成立时间')
-      reject('未填写成立时间')
-    })
+
+  function setProNewData(newData) {
+    setProData(newData);
+    setTableData(newData, 'pro');
   }
+
+  function setOtherNewData(newData) {
+    setOtherData(newData);
+    setTableData(newData, 'other');
+  }
+
+  function setManageNewData(newData) {
+    setManageData(newData)
+    setTableData(newData, 'manage')
+  }
+
+  useEffect(() => {
+    if (!otherCertifications || !productCertifications || !managementSystems) return
+    const o = otherCertifications.map(item => ({
+      ...item,
+      guid: item?.id
+    }))
+    const p = productCertifications.map(item => ({
+      ...item,
+      guid: item?.id
+    }))
+    const m = managementSystems.map(item => ({
+      ...item,
+      guid: item?.id
+    }))
+    setManageData(m)
+    setOtherData(o)
+    setProData(p)
+  }, [productCertifications, otherCertifications, managementSystems])
   return <Fragment>
     <div>
       <Divider orientation='left'>管理体系</Divider>
-      <EditorTable
+      <EditableFormTable
         columns={columnsForMan}
-        fields={manFields}
+        bordered
+        allowCancelSelect
+        showSearch={false}
+        remotePaging
+        isToolBar={false}
         allowRemove={false}
-        allowCreate={false}
-        beforeEditor={handleManTableEditor}
+        isEditTable={type === 'add'}
+        // rowKey={(item) => item.id}
         rowKey='guid'
-        setDataSource={setManageData}
+        size='small'
+        setNewData={setManageNewData}
         dataSource={manageData}
       />
-      <Divider orientation='left'>产品安规或EMC认证</Divider>
-      <EditorTable
-        fields={proFields}
+      <Divider orientation='left'>产品认证</Divider>
+      <EditableFormTable
         columns={columnsForPro}
+        bordered
+        allowCancelSelect
+        showSearch={false}
         allowRemove={false}
+        remotePaging
         rowKey='guid'
-        setDataSource={setProData}
-        copyLine={true}
-        dataSource={proData}
+        size='small'
+        isEditTable={type === 'add'}
+        isToolBar={false}
+        setNewData={setProNewData}
+        dataSource={proData || []}
       />
       <Divider orientation='left'>其他认证</Divider>
-      <EditorTable
+      <EditableFormTable
         columns={columnsForOther}
+        bordered
         copyLine={true}
+        allowCancelSelect
+        showSearch={false}
+        remotePaging
         rowKey='guid'
-        dataSource={otherData}
-        setDataSource={setOtherData}
+        size='small'
+        isEditTable={type === 'add'}
+        isToolBar={type === 'add'}
+        dataSource={otherData || []}
+        setNewData={setOtherNewData}
       />
     </div>
   </Fragment>

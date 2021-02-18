@@ -24,13 +24,12 @@ import {
 import { utils } from 'suid';
 import styles from '../../DataFillIn/index.less';
 import UploadFile from '../../../../../components/Upload';
-import { currencyOpt } from '../CommonUtil/utils'
-import EditorTable from '../../../../../components/EditorTable';
+import EditableFormTable from '../CommonUtil/EditTable';
 import { requestPostApi, requestGetApi } from '../../../../../services/dataFillInApi';
 import { filterEmptyFileds } from '../CommonUtil/utils';
 import { router } from 'dva';
 
-const { Item: FormItem, create } = Form;
+const FormItem = Form.Item;
 const formLayout = {
   labelCol: {
     span: 14,
@@ -69,11 +68,10 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
     getFieldsValue,
     setFieldsValue
   } = form;
+
   const {
     haveAirLiftDelivery,
-    dangerousChemicalShipper,
-    reduceCostEvaluation,
-    costAccountingOrganization
+    dangerousChemicalShipper
   } = getFieldsValue();
   useEffect(() => {
     const fetchData = async () => {
@@ -92,352 +90,157 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
     };
     fetchData();
   }, []);
-  const carTransportFields = [
-    {
-      label: "运输方式",
-      name: "deliveryType",
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '运输方式不能为空'
-          }
-        ]
-      },
-      props: {
-        placeholder: '请输入运输方式',
-        disabled: true
-      }
-    },
-    {
-      label: "运输距离（公里）",
-      name: "deliveryDistance",
-      fieldType: 'inputNumber',
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '运输距离不能为空'
-          }
-        ]
-      },
-      props: {
-        min: 0,
-        placeholder: '请输入运输距离',
-      }
-    },
-    {
-      label: "运输时间（小时）",
-      name: "deliveryTime",
-      fieldType: 'inputNumber',
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '运输时间不能为空'
-          }
-        ]
-      },
-      props: {
-        min: 0,
-        placeholder: '请输入运输时间',
-      }
-    },
-    {
-      label: "发运频率（次/周）",
-      name: "deliveryFrequency",
-      fieldType: 'inputNumber',
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '发运频率不能为空'
-          }
-        ]
-      },
-      props: {
-        min: 0,
-        placeholder: '请输入发运频率',
-      }
-    },
-    {
-      label: "正常情况交货期（天）",
-      name: "normalDeliveryTime",
-      fieldType: 'inputNumber',
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '正常情况交货期不能为空'
-          }
-        ]
-      },
-      props: {
-        min: 0,
-        placeholder: '请输入正常情况交货期',
-      }
-    },
-    {
-      label: "紧急情况交货期（天）",
-      name: "urgencyDeliveryTime",
-      fieldType: 'inputNumber',
-      disabledTarget: 'normalDeliveryTime',
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '紧急情况交货期不能为空'
-          },
-          {
-            validator: (_, val, cb, targetValue) => {
-              if (val > targetValue) {
-                cb('紧急情况交货期不能大于正常情况交货期')
-                return
-              }
-              cb()
-            }
-          }
-        ]
-      },
-      props: {
-        min: 0,
-        placeholder: '请输入紧急情况交货期',
-      }
-    }
-  ]
+
   const columnsForCarTransport = [
     {
       title: "运输方式",
-      dataIndex: "deliveryType"
+      dataIndex: "deliveryType",
+      ellipsis: true,
+      editable: true,
     },
     {
       title: "运输距离（公里）",
       dataIndex: "deliveryDistance",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
       width: 150,
     },
     {
       title: "运输时间（小时）",
       dataIndex: "deliveryTime",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
       width: 130,
     },
     {
       title: "发运频率（次/周）",
       dataIndex: "deliveryFrequency",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
       width: 140
     },
     {
       title: "正常情况交货期（天）",
       dataIndex: "normalDeliveryTime",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
       width: 160
     },
     {
       title: "紧急情况交货期（天）",
       dataIndex: "urgencyDeliveryTime",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
       width: 170
     },
   ];
   // 关键原材料及供应商名单
-  const keyMatFields = [
-    {
-      label: "产品",
-      name: "productName",
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '产品不能为空'
-          }
-        ]
-      },
-      props: {
-        placeholder: '请输入产品',
-        disabled: true
-      }
-    },
-    {
-      label: "原材料名称及规格型号/牌号",
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '原材料名称及规格型号/牌号不能为空'
-          }
-        ]
-      },
-      props: {
-        placeholder: '请输入原材料名称及规格型号/牌号'
-      },
-      name: "modelBrand",
-    },
-    {
-      label: "用途",
-      name: "useTo",
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '用途不能为空'
-          }
-        ]
-      },
-      props: {
-        placeholder: '请输入用途'
-      }
-    },
-    {
-      label: "品牌及供应商名称（自制可写“自制”）",
-      name: "supplierName",
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '品牌及供应商名称不能为空'
-          }
-        ]
-      },
-      props: {
-        placeholder: '请输入品牌及供应商名称'
-      }
-    },
-    {
-      label: "材料采购周期（天）",
-      name: "procurementCycle",
-      fieldType: 'inputNumber',
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '材料采购周期不能为空'
-          }
-        ]
-      },
-      props: {
-        min: 0,
-        placeholder: '请输入材料采购周期',
-      }
-    },
-    {
-      label: "年采购金额",
-      name: "purchaseAmount",
-      fieldType: 'inputNumber',
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '年采购金额不能为空'
-          }
-        ]
-      },
-      props: {
-        min: 0,
-        placeholder: '请输入年采购金额',
-      }
-    },
-    {
-      ...currencyOpt
-    },
-    {
-      label: "备注",
-      name: "remark",
-      fieldType: 'textArea',
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '备注不能为空'
-          }
-        ]
-      },
-      props: {
-        placeholder: '请输入备注'
-      }
-    }
-  ]
   const columnsForKeyMat = [
     {
       title: "产品",
-      dataIndex: "productName"
+      dataIndex: "productName",
+      ellipsis: true,
+      editable: false,
     },
     {
       title: "原材料名称及规格型号/牌号",
       dataIndex: "modelBrand",
+      ellipsis: true,
+      editable: true,
       width: 200
     },
     {
       title: "用途",
       dataIndex: "useTo",
+      ellipsis: true,
+      editable: true,
     },
     {
       title: "品牌及供应商名称（自制可写“自制”）",
       dataIndex: "supplierName",
+      ellipsis: true,
+      editable: true,
       width: 280
     },
     {
       title: "材料采购周期（天）",
       dataIndex: "procurementCycle",
+      ellipsis: true,
+      editable: true,
       width: 150,
+      inputType: 'InputNumber',
     },
     {
       title: "年采购金额",
       dataIndex: "purchaseAmount",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
     },
     {
       title: "币种",
       dataIndex: "currencyName",
+      ellipsis: true,
+      editable: true,
+      inputType: 'selectwithService',
       width: 120
     },
     {
       title: "备注",
       dataIndex: "remark",
+      ellipsis: true,
+      editable: true,
+      inputType: 'TextArea',
+      width: 150
     },
   ];
 
-  async function handleSave() {
+  function handleSave() {
     if (getFieldValue('haveEnvironmentalTestingEquipment')) {
       // if (isEmptyArray(tableTata)) {
       //     message.info('列表至少填写一条设备信息！');
       //     return;
       // }
     }
-    const value = await validateFieldsAndScroll()
-    const saveParams = {
-      ...value,
-      tabKey: 'managerAbilityTab',
-      rohsFileId: value.rohsFileId ? (value.rohsFileId)[0] : null,
-      recommendDemandId: id,
-      id: data?.id,
-      logisticsBusTransports: logisticsBusTransports,
-      keyMaterialSuppliers: keyMaterialSuppliers,
-    };
-    const formatParmas = filterEmptyFileds(saveParams)
-    const { success, message: msg } = await requestPostApi(formatParmas)
-    if (success) {
-      message.success('保存数据成功');
-      updateGlobalStatus();
-      return
-    }
-    message.error(msg);
+    form.validateFieldsAndScroll((error, value) => {
+      (value);
+      if (error) return;
+      const saveParams = {
+        ...value,
+        tabKey: 'managerAbilityTab',
+        rohsFileId: value.rohsFileId ? (value.rohsFileId)[0] : null,
+        recommendDemandId: id,
+        id: data?.id,
+        logisticsBusTransports: logisticsBusTransports,
+        keyMaterialSuppliers: keyMaterialSuppliers,
+      };
+      requestPostApi(filterEmptyFileds(saveParams)).then((res) => {
+        if (res && res.success) {
+          message.success('保存数据成功');
+          updateGlobalStatus();
+        } else {
+          message.error(res.message);
+        }
+      })
+    })
   }
-  async function handleHoldData() {
-    const value = getFieldsValue()
-    const saveParams = {
-      ...value,
-      tabKey: 'managerAbilityTab',
-      rohsFileId: value.rohsFileId ? (value.rohsFileId)[0] : null,
-      recommendDemandId: id,
-      id: data?.id,
-      logisticsBusTransports: logisticsBusTransports,
-      keyMaterialSuppliers: keyMaterialSuppliers,
-    };
-    const formatParmas = filterEmptyFileds(saveParams)
-    const { success, message: msg } = await requestPostApi(formatParmas, { tempSave: true })
-    if (success) {
-      message.success('保存数据成功');
-      updateGlobalStatus();
-      return
+
+  function setNewData(newData, type) {
+    switch (type) {
+      case 'logisticsBusTransports':
+        setlogisticsBusTransports(newData)
+        break;
+      case 'keyMaterialSuppliers':
+        setkeyMaterialSuppliers(newData);
+        break;
     }
-    message.error(msg);
   }
+
   return (
     <div>
       <Spin spinning={loading}>
@@ -449,7 +252,6 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
           title="供应链管理能力"
           extra={type === 'add' ? [
             <Button key="save" type="primary" style={{ marginRight: '12px' }} onClick={handleSave}>保存</Button>,
-            <Button key="hold" style={{ marginRight: '12px' }} onClick={handleHoldData}>暂存</Button>,
           ] : null}
         >
           <div className={styles.wrapper}>
@@ -477,13 +279,12 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="成本控制计划书" {...formLayout}>
                       {getFieldDecorator('costControlPlanFileIds', {
                         initialValue: type === 'add' ? '' : data.costControlPlanFileIds,
-                        rules: [
-                          {
-                            required: reduceCostEvaluation,
-                            message: '请上传成本控制计划书',
-                            type: 'array'
-                          },
-                        ],
+                        // rules: [
+                        //     {
+                        //         required: true,
+                        //         message: '自主技术开发能力不能为空',
+                        //     },
+                        // ],
                       })(<UploadFile
                         showColor={type !== 'add' ? true : false}
                         type={type !== 'add'}
@@ -514,13 +315,12 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="成本核算表单" {...formLayout}>
                       {getFieldDecorator('costAccountingListFileIds', {
                         initialValue: type === 'add' ? '' : data.costAccountingListFileIds,
-                        rules: [
-                          {
-                            required: costAccountingOrganization,
-                            type: 'array',
-                            message: '请上传成本核算表单',
-                          },
-                        ],
+                        // rules: [
+                        //     {
+                        //         required: true,
+                        //         message: '自主技术开发能力不能为空',
+                        //     },
+                        // ],
                       })(<UploadFile
                         showColor={type !== 'add' ? true : false}
                         type={type !== 'add'}
@@ -846,13 +646,14 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
               <div className={styles.title}>物流</div>
               <div className={styles.content}>
                 <Divider orientation='left'>汽运</Divider>
-                <EditorTable
+                <EditableFormTable
                   dataSource={logisticsBusTransports}
                   columns={columnsForCarTransport}
-                  fields={carTransportFields}
+                  rowKey='guid'
+                  isEditTable={type === 'add'}
                   allowRemove={false}
-                  allowCreate={false}
-                  setDataSource={setlogisticsBusTransports}
+                  setNewData={setNewData}
+                  tableType='logisticsBusTransports'
                 />
                 <Divider orientation='left'>空运</Divider>
                 <Row>
@@ -964,12 +765,15 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
             <div className={styles.bgw}>
               <div className={styles.title}>供应商管控</div>
               <div className={styles.content}>
-                <EditorTable
+                <EditableFormTable
                   dataSource={keyMaterialSuppliers}
-                  fields={keyMatFields}
                   columns={columnsForKeyMat}
-                  setDataSource={setkeyMaterialSuppliers}
+                  rowKey='guid'
+                  isEditTable={type === 'add'}
+                  isToolBar={type === 'add'}
+                  setNewData={setNewData}
                   copyLine={true}
+                  tableType='keyMaterialSuppliers'
                 />
               </div>
             </div>
@@ -980,4 +784,4 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
   )
 };
 
-export default create()(ManagerAbility);
+export default Form.create()(ManagerAbility);
