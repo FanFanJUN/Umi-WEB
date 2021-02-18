@@ -8,17 +8,7 @@
  * @Connect: 1981824361@qq.com
  */
 import React, { useState, useRef, Fragment } from 'react';
-import {
-  Input,
-  InputNumber,
-  Popconfirm,
-  Form,
-  Divider,
-  Button,
-  DatePicker,
-  Select,
-  message
-} from 'antd';
+import { Input, InputNumber, Popconfirm, Form, Divider, Button, DatePicker, Select, message } from 'antd';
 import { ExtTable, ComboList, ComboGrid, YearPicker } from 'suid';
 import PropTypes from 'prop-types';
 import AutoSizeLayout from '../../../../supplierRegister/SupplierAutoLayout';
@@ -130,6 +120,7 @@ const EditableCell = (config) => {
       } else if (inputType === 'UploadFile') {
         const idKey = dataIndex.substr(0, dataIndex.length - 1);
         const entityId = !!a ? a : record[idKey]
+        console.log(entityId)
         return <UploadFile type='show' entityId={entityId} />
       } else if (inputType === 'Select' && props?.mode === 'multiple') {
         return Array.isArray(a) ? a.join(',') : a

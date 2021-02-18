@@ -4,18 +4,11 @@
  * @date 2020.4.3
  */
 import React, { useState, useEffect } from 'react';
-import {
-  Table,
-  PageHeader,
-  Button,
-  Input,
-  Radio,
-  message,
-  Form
-} from 'antd';
+import { Table, PageHeader, Button, Input, Radio, message, Form } from 'antd';
 import styles from '../index.less';
 import { queryCSRorEPEData, saveCSRorEPEData } from '../../../../../services/recommend';
 import { Upload } from '../../../../../components';
+// import {  } from 'seid';
 import { router } from 'dva';
 const { useLocation } = router;
 const { Group: RadioGroup } = Radio;
@@ -27,8 +20,9 @@ function CSRQuestionnaire({
   form
 }) {
   const [dataSource, setDataSource] = useState([]);
+  const [loading, toggleLoading] = useState(false);
   const [confirmLoading, toggleConfirmLoading] = useState(false);
-  const { getFieldDecorator, validateFieldsAndScroll, getFieldValue } = form;
+  const { getFieldDecorator, validateFieldsAndScroll } = form;
   const { query } = useLocation();
   const { id = null, type = 'create' } = query;
   const headerExtra = type === 'detail' ? null : [
@@ -38,13 +32,7 @@ function CSRQuestionnaire({
       key='save'
       onClick={handleSave}
       loading={confirmLoading}
-    >保存</Button>,
-    <Button
-      className={styles.btn}
-      key='hold'
-      onClick={handleHoldData}
-      loading={confirmLoading}
-    >暂存</Button>
+    >保存</Button>
   ];
   const columns = [
     {
@@ -58,13 +46,13 @@ function CSRQuestionnaire({
     },
     {
       title: '实际情况',
-      dataIndex: 'selectName',
+      dataIndex: 'selectValue',
       render(text, record, index) {
         const { selectConfigList } = record;
         return (
           <Form.Item style={{ margin: 0, padding: 0 }}>
             {
-              getFieldDecorator(`${index}-selectName`, {
+              getFieldDecorator(`${index}-selectValue`, {
                 rules: [
                   {
                     required: true,
@@ -76,10 +64,10 @@ function CSRQuestionnaire({
                 <RadioGroup
                   disabled={type === 'detail'}
                   onChange={(e) =>
-                    handleLineChange(e, index, 'selectName')}
+                    handleLineChange(e, index, 'selectValue')}
                 >
                   {
-                    selectConfigList.map((item, k) => <Radio value={item} key={`${k}-value-key`}>{item}</Radio>)
+                    selectConfigList.map((item, k) => <Radio value={k} key={`${k}-value-key`}>{item}</Radio>)
                   }
                 </RadioGroup>
               )
@@ -92,8 +80,7 @@ function CSRQuestionnaire({
       title: '附件',
       dataIndex: 'attachmentId',
       render(text, record, index) {
-        const { attachmentConfig, attachmentRequiredField } = record;
-        const selectName = getFieldValue(`${index}-selectName`);
+        const { attachmentConfig } = record;
         if (attachmentConfig) {
           return (
             <Form.Item>
@@ -101,7 +88,7 @@ function CSRQuestionnaire({
                 getFieldDecorator(`${index}-attachmentId`, {
                   rules: [
                     {
-                      required: (attachmentRequiredField === selectName || attachmentRequiredField === '全部') && !Object.is(null, selectName),
+                      required: true,
                       message: '附件不能为空'
                     }
                   ]
@@ -118,31 +105,12 @@ function CSRQuestionnaire({
       title: '备注',
       dataIndex: 'remarkValue',
       render(text, record, index) {
-        const selectName = getFieldValue(`${index}-selectName`);
-        const { remarkConfig, remarkRequiredField } = record;
+        const { remarkConfig } = record;
         if (type === 'detail') {
           return text
         }
         if (remarkConfig) {
-          return (
-            <Form.Item
-              style={{ padding: 0, margin: 0 }}
-            >
-              {
-                getFieldDecorator(`${index}-remarkValue`, {
-                  initialValue: text,
-                  rules: [
-                    {
-                      required: (remarkRequiredField === selectName || remarkRequiredField === '全部') && !Object.is(null, selectName),
-                      message: '请添加备注'
-                    }
-                  ]
-                })(
-                  <Input className={styles.input} onChange={(event) => handleLineChange(event, index, 'remarkValue')} />
-                )
-              }
-            </Form.Item>
-          )
+          return <Input className={styles.input} value={text} onChange={(event) => handleLineChange(event, index, 'remarkValue')} />
         }
         return text
       }
@@ -181,17 +149,6 @@ function CSRQuestionnaire({
     toggleConfirmLoading(false)
     if (success) {
       message.success(msg)
-      updateGlobalStatus()
-      return
-    }
-    message.error(msg)
-  }
-  async function handleHoldData() {
-    toggleConfirmLoading(true)
-    const { success, message: msg } = await saveCSRorEPEData(dataSource, true);
-    toggleConfirmLoading(false)
-    if (success) {
-      message.success('数据暂存成功')
       updateGlobalStatus()
       return
     }

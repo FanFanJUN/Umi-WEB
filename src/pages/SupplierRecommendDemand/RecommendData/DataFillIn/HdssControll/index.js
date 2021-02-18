@@ -8,26 +8,16 @@
  * @Connect: 1981824361@qq.com
  */
 import React, { useState, useEffect } from 'react';
-import {
-  Form,
-  Button,
-  Spin,
-  PageHeader,
-  Radio,
-  Row,
-  Col,
-  Input,
-  Divider,
-  message
-} from 'antd';
+import { Form, Button, Spin, PageHeader, Radio, Row, Col, Input, InputNumber, Divider, message } from 'antd';
 import styles from '../../DataFillIn/index.less';
-import EditorTable from '../../../../../components/EditorTable';
+import EditableFormTable from '../CommonUtil/EditTable';
 import UploadFile from '../../../../../components/Upload';
 import { router } from 'dva';
 import { requestGetApi, requestPostApi } from '../../../../../services/dataFillInApi';
-import { filterEmptyFileds } from '../CommonUtil/utils';
-import { environmentProps } from '../../../../../utils/commonProps';
-const { Item: FormItem, create } = Form;
+import { filterEmptyFileds, checkNull, isEmptyArray } from '../CommonUtil/utils';
+
+const InputGroup = Input.Group;
+const FormItem = Form.Item;
 const formLayout = {
   labelCol: {
     span: 8,
@@ -45,12 +35,7 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
 
   const { query: { id, type = 'add' } } = router.useLocation();
 
-  const {
-    getFieldDecorator,
-    setFieldsValue,
-    getFieldsValue,
-    validateFieldsAndScroll
-  } = form;
+  const { getFieldDecorator, getFieldValue, setFieldsValue, getFieldsValue } = form;
   const {
     haveEnvironmentalTestingEquipment,
     haveRohs,
@@ -72,89 +57,32 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
     };
     fetchData();
   }, []);
-  const fields = [
-    {
-      label: "设备名称",
-      name: "equipmentName",
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '设备名称不能为空'
-          }
-        ]
-      },
-      props: {
-        placeholder: '请输入设备名称'
-      }
-    },
-    {
-      label: "设备型号",
-      name: "equipmentModel",
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '设备型号不能为空'
-          }
-        ]
-      },
-      props: {
-        placeholder: '请输入设备型号'
-      }
-    },
-    {
-      label: "检测项目（元素）",
-      name: "testingItem",
-      fieldType: 'comboList',
-      props: {
-        name: 'testingItem',
-        field: ['testingItemValue'],
-        ...environmentProps
-      },
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '检测项目不能为空'
-          }
-        ]
-      }
-    },
-    {
-      label: "备注",
-      name: "remark",
-      fieldType: 'textArea',
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '备注不能为空'
-          }
-        ]
-      },
-      props: {
-        placeholder: '请输入备注'
-      }
-    }
-  ]
+
   const columns = [
     {
       title: "设备名称",
       dataIndex: "equipmentName",
+      ellipsis: true,
+      editable: true,
     },
     {
       title: "设备型号",
       dataIndex: "equipmentModel",
+      ellipsis: true,
+      editable: true,
     },
     {
       title: "检测项目（元素）",
       dataIndex: "testingItem",
+      ellipsis: true,
+      editable: true,
       width: 150
     },
     {
       title: "备注",
       dataIndex: "remark",
+      ellipsis: true,
+      editable: true,
       inputType: 'TextArea',
     },
   ];
@@ -171,7 +99,7 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
         return;
       }
     }
-    const value = await validateFieldsAndScroll();
+    const value = await form.validateFieldsAndScroll();
     const saveParams = {
       ...value,
       tabKey: 'hdssControllTab',
@@ -191,26 +119,9 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
     }
     message.error(msg);
   }
-  async function handleHoldData() {
-    const value = getFieldsValue();
-    const saveParams = {
-      ...value,
-      tabKey: 'hdssControllTab',
-      rohsFileId: value.rohsFileId ? (value.rohsFileId)[0] : null,
-      recommendDemandId: id,
-      environmentalTestingEquipments: tableData,
-      id: data.id
-    };
-    const params = filterEmptyFileds(saveParams);
-    setLoading(true)
-    const { success, message: msg } = await requestPostApi(params, { tempSave: true })
-    setLoading(false)
-    if (success) {
-      message.success('数据暂存成功');
-      updateGlobalStatus();
-      return
-    }
-    message.error(msg);
+
+  function setNewData(newData) {
+    setTableData(newData);
   }
 
   return (
@@ -232,14 +143,6 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
               disabled={loading}
               onClick={handleSave}
             >保存</Button>,
-            <Button
-              key="hold"
-              style={{
-                marginRight: '12px'
-              }}
-              disabled={loading}
-              onClick={handleHoldData}
-            >暂存</Button>,
           ] : null}
         >
           <div className={styles.wrapper}>
@@ -265,11 +168,14 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                     </FormItem>
                   </Col>
                 </Row>
-                <EditorTable
-                  dataSource={tableData}
+                <EditableFormTable
+                  dataSource={tableData || []}
                   columns={columns}
-                  fields={fields}
-                  setDataSource={setTableData}
+                  rowKey='guid'
+                  setNewData={setNewData}
+                  isEditTable={type === 'add'}
+                  isToolBar={type === 'add'}
+                  recommendDemandId={id}
                 />
                 <Divider orientation='left'>RoHS</Divider>
                 <Row>
@@ -402,4 +308,4 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
   )
 };
 
-export default create()(HdssControll);
+export default Form.create()(HdssControll);

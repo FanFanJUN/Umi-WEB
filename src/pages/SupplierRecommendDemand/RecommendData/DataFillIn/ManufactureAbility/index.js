@@ -8,36 +8,24 @@
  * @Connect: 1981824361@qq.com
  */
 import React, { useState, useEffect } from 'react';
-import {
-  Form,
-  Button,
-  Spin,
-  PageHeader,
-  Row,
-  Col,
-  message,
-  Modal
-} from 'antd';
+import { Form, Button, Spin, PageHeader, Row, Col, message } from 'antd';
 import styles from '../../DataFillIn/index.less';
-import EditorTable from '../../../../../components/EditorTable';
+import EditableFormTable from '../CommonUtil/EditTable';
 import UploadFile from '../../../../../components/Upload';
 import { router } from 'dva';
 import { requestGetApi, requestPostApi } from '../../../../../services/dataFillInApi';
 import { filterEmptyFileds } from '../CommonUtil/utils';
-import { keyProductEquipementsExport, keyProductEquipementsCheckData } from '../../../../../services/recommend';
-import { downloadBlobFile } from '../../../../../utils';
-import { utils } from 'suid';
+import moment from 'moment';
+import { standardUnitProps } from '../../../../../utils/commonProps';
 
-const { getUUID } = utils;
-
-const { Item: FormItem, create } = Form;
+const FormItem = Form.Item;
 const formLayout = {
   labelCol: {
     span: 8,
   },
   wrapperCol: {
     span: 16,
-  }
+  },
 };
 
 const ManufactureAbility = ({ form, updateGlobalStatus }) => {
@@ -49,8 +37,9 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
   const [currentProductionSituations, setcurrentProductionSituations] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const { query: { id, type = 'add', unitName, unitCode } } = router.useLocation();
-  const { getFieldDecorator, getFieldValue, setFieldsValue, validateFieldsAndScroll, getFieldsValue } = form;
+  const { query: { id, type = 'add' } } = router.useLocation();
+
+  const { getFieldDecorator, getFieldValue, setFieldsValue } = form;
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -67,268 +56,121 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
         } = data;
         setData(data);
         setFieldsValue(other)
-        setproductionCapacities(productionCapacities);
-        setkeyProductEquipments(keyProductEquipments);
-        setkeyTechnologyEquipments(keyTechnologyEquipments);
+        setproductionCapacities(productionCapacities.map(item => ({ ...item, guid: item.id })));
+        setkeyProductEquipments(keyProductEquipments.map(item => ({ ...item, guid: item.id })));
+        setkeyTechnologyEquipments(keyTechnologyEquipments.map(item => ({ ...item, guid: item.id })));
         setcurrentProductionSituations(currentProductionSituations.map(item => ({ ...item, guid: item.id, offSeasonMonth: item.offSeasonMonth?.split(',') })));
-        setproductManufacturingIntroductions(productManufacturingIntroductions);
-        return
+        setproductManufacturingIntroductions(productManufacturingIntroductions.map(item => ({ ...item, guid: item.id })));
+      } else {
+        message.error(msg);
       }
-      message.error(msg);
+
     };
     fetchData();
   }, []);
-  function handleKeyProductEquipementsExport() {
-    Modal.confirm({
-      title: '导出关键生产设备',
-      content: '是否导出当前已填写的关键生产设备',
-      okText: '导出',
-      cancelText: '取消',
-      onOk: async () => {
-        const { data, success } = await keyProductEquipementsExport(keyProductEquipments)
-        if (success) {
-          downloadBlobFile(data, '关键生产设备.xlsx')
-          message.success('导出成功')
-          return
-        }
-        message.error('导出失败')
-      }
-    })
-  }
-  async function handleKeyProductEquipementsValidate(ds) {
-    const { data, success, message: msg } = await keyProductEquipementsCheckData(ds);
-    if (success) {
-      return new Promise((resolve) => {
-        resolve(data.map(item => ({ ...item, key: getUUID() })))
-      })
-    }
-    message.error(msg)
-  }
+
   // 生产能力
-  const proCapacity = [
-    {
-      label: "名称",
-      name: "name",
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '名称不能为空'
-          }
-        ]
-      },
-      props: {
-        placeholder: '请输入名称'
-      }
-    },
-    {
-      label: "规格型号",
-      name: "modelBrand",
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '规格型号不能为空'
-          }
-        ]
-      },
-      props: {
-        placeholder: '请输入规格型号'
-      }
-    },
-    {
-      label: '计量单位',
-      name: 'unitName',
-      options: {
-        initialValue: unitName,
-        rules: [
-          {
-            required: true,
-            message: '计量单位不能为空'
-          }
-        ]
-      },
-      props: {
-        disabled: true
-      }
-    },
-    {
-      label: '计量单位代码',
-      name: 'unitCode',
-      options: {
-        initialValue: unitCode
-      },
-      fieldType: 'hide'
-    },
-    {
-      label: "月最大产量（万）",
-      name: "monthMaxYield",
-      fieldType: 'inputNumber',
-      disabledTarget: 'nowMonthYield',
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '月最大产量不能为空'
-          },
-          {
-            validator: (_, val, cb, targetValue) => {
-              if (targetValue > val) {
-                cb('月最大产量不能小于现在月产量')
-                return
-              }
-              cb()
-            }
-          }
-        ]
-      },
-      props: {
-        min: 0,
-        placeholder: '请输入月最大产量',
-      }
-    },
-    {
-      label: "现在月产量（万）",
-      name: "nowMonthYield",
-      fieldType: 'inputNumber',
-      disabledTarget: 'monthMaxYield',
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '现在月产量不能为空'
-          },
-          {
-            validator: (_, val, cb, targetValue) => {
-              if (val > targetValue) {
-                cb('现在月产量不能大于月最大产量')
-                return
-              }
-              cb()
-            }
-          }
-        ]
-      },
-      props: {
-        min: 0,
-        placeholder: '请输入现在月产量',
-      }
-    },
-    {
-      label: "上年度销售总额（万元）",
-      name: "preYearSaleroom",
-      fieldType: 'inputNumber',
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '上年度销售总额不能为空'
-          }
-        ]
-      },
-      props: {
-        min: 0,
-        placeholder: '请输入上年度销售总额',
-      }
-    }
-  ]
   const columnsForProCapacity = [
     {
       title: "名称",
       dataIndex: "name",
+      ellipsis: true,
+      editable: true,
     },
     {
       title: "规格型号",
       dataIndex: "modelBrand",
+      ellipsis: true,
+      editable: true,
     },
     {
-      title: "月最大产量（万）",
+      title: "计量单位",
+      dataIndex: "unitName",
+      ellipsis: true,
+      editable: true,
+      inputType: 'comboList',
+      props: {
+        ...standardUnitProps,
+        name: 'unitName',
+        field: ['unitCode']
+      }
+    },
+    {
+      title: "月最大产量",
       dataIndex: "monthMaxYield",
-      width: 200
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
     },
     {
-      title: "现在月产量（万）",
+      title: "现在月产量",
       dataIndex: "nowMonthYield",
-      width: 200
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
     },
     {
-      title: "上年度销售总额（万元）",
+      title: "上年度销售总额",
       dataIndex: "preYearSaleroom",
-      width: 200
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
     }
   ];
 
   // 现有生产情况
-  const proSituFields = [
+  const columnsForProSitu = [
     {
-      label: "产品",
-      name: "productName",
+      title: "产品",
+      dataIndex: "productName",
+      ellipsis: true,
+      editable: false
+    },
+    {
+      title: "月生产能力",
+      dataIndex: "monthProductCapacity",
+      ellipsis: true,
+      inputType: 'InputNumber',
+    },
+    {
+      title: "计量单位",
+      dataIndex: "unitName",
+      ellipsis: true,
+      editable: true,
+      inputType: 'comboList',
       props: {
-        disabled: true
-      },
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '产品不能为空'
-          }
-        ]
+        ...standardUnitProps,
+        name: 'unitName',
+        field: ['unitCode']
       }
     },
     {
-      label: "月生产能力（万）",
-      name: "monthProductCapacity",
-      fieldType: 'inputNumber',
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '月生产能力不能为空'
-          }
-        ]
-      },
+      title: "占总产量％",
+      dataIndex: "rateWithTotal",
+      ellipsis: true,
+      inputType: 'InputNumber',
       props: {
-        placeholder: '请输入月生产能力'
+        max: 100
       }
     },
     {
-      label: "占总产量(％)",
-      name: "rateWithTotal",
-      fieldType: 'inputNumber',
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '占总产量不能为空'
-          }
-        ]
-      },
-      props: {
-        min: 0,
-        max: 100,
-        placeholder: '请输入占总产量（%）',
-      }
+      title: "产品交付周期(天）",
+      dataIndex: "productDeliveryCycle",
+      ellipsis: true,
+      inputType: 'InputNumber',
+      width: 150
     },
+    // {
+    //     title: "产品直通率",
+    //     dataIndex: "offSeasonMonth",
+    //     ellipsis: true,
+    //     inputType: 'Input',
+    // },
     {
-      label: "产品交付周期(天）",
-      name: "productDeliveryCycle",
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '产品交付周期不能为空'
-          }
-        ]
-      },
-      props: {
-        placeholder: '请输入产品交付周期'
-      },
-      fieldType: 'inputNumber'
-    },
-    {
-      label: "旺季月份",
-      name: "offSeasonMonth",
-      fieldType: 'select',
+      title: "旺季月份",
+      dataIndex: "offSeasonMonth",
+      ellipsis: true,
+      inputType: 'Select',
       selectOptions: Array.from({ length: 12 }).map((_, index) => ({ value: `${index + 1}`, name: `${index + 1}月` })),
       props: {
         mode: "multiple",
@@ -336,395 +178,101 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
           width: 200
         },
         defaultValue: [],
-      }
-    }
-  ]
-  const columnsForProSitu = [
-    {
-      title: "产品",
-      dataIndex: "productName"
-    },
-    {
-      title: "月生产能力（万）",
-      dataIndex: "monthProductCapacity",
-    },
-    {
-      title: "占总产量(％)",
-      dataIndex: "rateWithTotal",
-    },
-    {
-      title: "产品交付周期(天）",
-      dataIndex: "productDeliveryCycle",
-      width: 150
-    },
-    {
-      title: "旺季月份",
-      dataIndex: "offSeasonMonth",
-      render(text) {
-        return Array.isArray(text) ? text.join('，') : ''
       },
       width: 220
     },
   ];
 
   // 关键生产设备
-  const equFields = [
-    {
-      label: "工厂名称",
-      name: "factoryName",
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '工厂名称不能为空'
-          }
-        ]
-      },
-      props: {
-        placeholder: '请输入工厂名称'
-      },
-    },
-    {
-      label: "生产设备、在线检测设备名称",
-      name: "equipmentName",
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '设备名称不能为空'
-          }
-        ]
-      },
-      props: {
-        placeholder: '请输入设备名称'
-      },
-    },
-    {
-      label: "规格型号",
-      name: "model",
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '规格型号不能为空'
-          }
-        ]
-      },
-      props: {
-        placeholder: '请输入规格型号'
-      },
-    },
-    {
-      label: "生产厂家",
-      name: "productFactory",
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '生产厂家不能为空'
-          }
-        ]
-      },
-      props: {
-        placeholder: '请输入生产厂家'
-      },
-    },
-    {
-      label: "产地",
-      name: "productArea",
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '产地不能为空'
-          }
-        ]
-      },
-      props: {
-        placeholder: '请输入产地'
-      },
-    },
-    {
-      label: "购买时间",
-      name: "buyTime",
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '购买时间不能为空'
-          }
-        ]
-      },
-      props: {
-        placeholder: '请选择购买时间'
-      },
-      fieldType: 'datePicker',
-      disabledDate: (current, mn) => current && current > mn()
-    },
-    {
-      label: "数量",
-      name: "number",
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '数量不能为空'
-          }
-        ]
-      },
-      props: {
-        min: 0,
-        placeholder: '请输入数量'
-      },
-      fieldType: 'inputNumber',
-    },
-    {
-      label: "用于何工序及生产哪类配件",
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '用于何工序及生产哪类配件不能为空'
-          }
-        ]
-      },
-      props: {
-        placeholder: '请输入用于何工序及生产哪类配件'
-      },
-      name: "useTo",
-    },
-    {
-      label: "单班产量",
-      name: "singleClassProduction",
-      fieldType: 'inputNumber',
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '单班产量不能为空'
-          }
-        ]
-      },
-      props: {
-        min: 0,
-        placeholder: '请输入单班产量'
-      },
-      fieldType: 'inputNumber',
-    },
-    {
-      label: '计量单位',
-      name: 'unitName',
-      options: {
-        initialValue: unitName,
-        rules: [
-          {
-            required: true,
-            message: '计量单位不能为空'
-          }
-        ]
-      },
-      props: {
-        disabled: true
-      }
-    },
-    {
-      label: '计量单位代码',
-      name: 'unitCode',
-      options: {
-        initialValue: unitCode
-      },
-      fieldType: 'hide'
-    },
-    {
-      label: "目前状态",
-      name: "currentStatus",
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '工序名称不能为空'
-          }
-        ]
-      },
-      props: {
-        placeholder: '请输入工序名称'
-      },
-    }
-  ];
   const columnsForEqu = [
     {
       title: "工厂名称",
-      dataIndex: "factoryName"
+      dataIndex: "factoryName",
+      ellipsis: true,
+      editable: true,
     },
     {
       title: "生产设备、在线检测设备名称",
-      dataIndex: "equipmentName"
+      dataIndex: "equipmentName",
+      ellipsis: true,
+      editable: true,
     },
     {
       title: "规格型号",
-      dataIndex: "model"
+      dataIndex: "model",
+      ellipsis: true,
+      editable: true,
     },
     {
       title: "生产厂家",
-      dataIndex: "productFactory"
+      dataIndex: "productFactory",
+      ellipsis: true,
+      editable: true,
+      inputType: 'Input',
     },
     {
       title: "产地",
-      dataIndex: "productArea"
+      dataIndex: "productArea",
+      ellipsis: true,
+      editable: true,
+      inputType: 'Input',
     },
     {
       title: "购买时间",
       dataIndex: "buyTime",
-      type: 'date'
-    },
-    {
-      title: "数量",
-      dataIndex: "number"
-    },
-    {
-      title: "用于何工序及生产哪类配件",
-      dataIndex: "useTo"
-    },
-    {
-      title: "单班产量",
-      dataIndex: "singleClassProduction"
-    },
-    {
-      title: '计量单位',
-      dataIndex: 'unitName',
-      render() {
-        return unitName
+      ellipsis: true,
+      editable: true,
+      inputType: 'DatePicker',
+      props: {
+        disabledDate: (current) => current && current > moment()
       }
     },
     {
+      title: "数量",
+      dataIndex: "number",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
+    },
+    {
+      title: "用于何工序及生产哪类配件",
+      dataIndex: "useTo",
+      ellipsis: true,
+      editable: true,
+    },
+    {
+      title: "单班产量",
+      dataIndex: "singleClassProduction",
+      ellipsis: true,
+      editable: true,
+      inputType: 'InputNumber',
+    },
+    {
       title: "目前状态",
-      dataIndex: "currentStatus"
+      dataIndex: "currentStatus",
+      ellipsis: true,
+      editable: true,
     },
   ];
 
   // 产品制造工艺流程简介
-  const otherFields = [
-    {
-      label: "产品",
-      name: "productName",
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '不能为空'
-          }
-        ]
-      },
-      props: {
-        disabled: true
-      }
-    },
-    {
-      label: "流程及材料说明",
-      name: "attachmentIds",
-      fieldType: 'uploadFile',
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '流程及材料说明不能为空'
-          }
-        ]
-      }
-    }
-  ]
   const columnsForOther = [
     {
       title: "产品",
-      dataIndex: "productName"
+      dataIndex: "productName",
+      ellipsis: true,
+      editable: false
     },
     {
       title: "流程及材料说明",
       dataIndex: "attachmentIds",
-      type: 'uploadFile'
+      ellipsis: true,
+      inputType: 'UploadFile',
+      editable: true
     },
   ];
 
   // 关键工艺及关键工艺设备情况
-  const keyProcessFields = [
-    {
-      label: "产品",
-      name: "productName",
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '产品不能为空'
-          }
-        ]
-      },
-      props: {
-        disabled: true,
-        placeholder: '请输入产品'
-      }
-    },
-    {
-      label: "关键工序/工艺名称",
-      name: "keyTechnologyName",
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '关键工序/工艺名称不能为空'
-          }
-        ]
-      },
-      props: {
-        placeholder: '请输入关键工序/工艺名称'
-      }
-    },
-    {
-      label: "工艺、技术要求",
-      name: "technicalRequirement",
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '工艺、技术要求不能为空'
-          }
-        ]
-      },
-      props: {
-        placeholder: '请输入工艺、技术要求'
-      }
-    },
-    {
-      label: "设备精度、工艺水平",
-      name: "technologicalLevel",
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '设备精度、工艺水平不能为空'
-          }
-        ]
-      },
-      props: {
-        placeholder: '请输入设备精度、工艺水平'
-      }
-    },
-    {
-      label: "备注",
-      name: "remark",
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '备注不能为空'
-          }
-        ]
-      },
-      props: {
-        placeholder: '请输入备注'
-      },
-      fieldType: 'textArea',
-    }
-  ]
   const columnsForKeyProcess = [
     {
       title: "产品",
@@ -761,61 +309,60 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
     },
   ];
 
-  async function handleSave() {
+  function handleSave() {
     if (getFieldValue('haveEnvironmentalTestingEquipment')) {
       // if (isEmptyArray(tableTata)) {
       //     message.info('列表至少填写一条设备信息！');
       //     return;
       // }
     }
-    const value = await validateFieldsAndScroll();
-    const saveParams = {
-      ...value,
-      tabKey: 'manufactureAbilityTab',
-      productionCapacities: productionCapacities,
-      currentProductionSituations: currentProductionSituations.map(item => ({
-        ...item,
-        offSeasonMonth: item.offSeasonMonth?.join(',')
-      })),
-      productManufacturingIntroductions: productManufacturingIntroductions,
-      keyProductEquipments: keyProductEquipments,
-      keyTechnologyEquipments: keyTechnologyEquipments,
-      recommendDemandId: id,
-      id: data.id
-    };
-    const formatParams = filterEmptyFileds(saveParams)
-    const { success, message: msg } = await requestPostApi(formatParams)
-    if (success) {
-      message.success('保存数据成功');
-      updateGlobalStatus();
-      return
-    }
-    message.error(msg);
+    form.validateFieldsAndScroll((error, value) => {
+      if (error) return;
+      const saveParams = {
+        ...value,
+        tabKey: 'manufactureAbilityTab',
+        productionCapacities: productionCapacities,
+        currentProductionSituations: currentProductionSituations.map(item => ({
+          ...item,
+          offSeasonMonth: item.offSeasonMonth?.join(',')
+        })),
+        productManufacturingIntroductions: productManufacturingIntroductions,
+        keyProductEquipments: keyProductEquipments,
+        keyTechnologyEquipments: keyTechnologyEquipments,
+        recommendDemandId: id,
+        id: data.id
+      };
+      requestPostApi(filterEmptyFileds(saveParams)).then((res) => {
+        if (res && res.success) {
+          message.success('保存数据成功');
+          updateGlobalStatus();
+        } else {
+          message.error(res.message);
+        }
+      })
+    })
   }
-  async function handleHoldData() {
-    const value = getFieldsValue();
-    const saveParams = {
-      ...value,
-      tabKey: 'manufactureAbilityTab',
-      productionCapacities: productionCapacities,
-      currentProductionSituations: currentProductionSituations.map(item => ({
-        ...item,
-        offSeasonMonth: item.offSeasonMonth?.join(',')
-      })),
-      productManufacturingIntroductions: productManufacturingIntroductions,
-      keyProductEquipments: keyProductEquipments,
-      keyTechnologyEquipments: keyTechnologyEquipments,
-      recommendDemandId: id,
-      id: data.id
-    };
-    const formatParams = filterEmptyFileds(saveParams)
-    const { success, message: msg } = await requestPostApi(formatParams, { tempSave: true })
-    if (success) {
-      message.success('数据暂存成功');
-      updateGlobalStatus();
-      return
+
+  function setNewData(newData, type) {
+    switch (type) {
+      case 'productionCapacities':
+        setproductionCapacities(newData);
+        break;
+      case 'keyProductEquipments':
+        setkeyProductEquipments(newData);
+        break;
+      case 'keyTechnologyEquipments':
+        setkeyTechnologyEquipments(newData);
+        break;
+      case 'currentProductionSituations':
+        setcurrentProductionSituations(newData)
+        break;
+      case 'productManufacturingIntroductions':
+        setproductManufacturingIntroductions(newData)
+        break;
+      default:
+        break;
     }
-    messge.error(msg)
   }
 
   return (
@@ -828,19 +375,21 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
           }}
           title="制造能力"
           extra={type === 'add' ? [
-            <Button key="save" type="primary" style={{ marginRight: '12px' }} onClick={handleSave}>保存</Button>,
-            <Button key="hold" style={{ marginRight: '12px' }} onClick={handleHoldData}>暂存</Button>,
+            <Button key="save" type="primary" style={{ marginRight: '12px' }} onClick={() => handleSave()}>保存</Button>,
           ] : null}
         >
           <div className={styles.wrapper}>
             <div className={styles.bgw}>
               <div className={styles.title}>生产能力</div>
               <div className={styles.content}>
-                <EditorTable
+                <EditableFormTable
                   dataSource={productionCapacities}
                   columns={columnsForProCapacity}
-                  fields={proCapacity}
-                  setDataSource={setproductionCapacities}
+                  rowKey='guid'
+                  setNewData={setNewData}
+                  isEditTable={type === 'add'}
+                  isToolBar={type === 'add'}
+                  tableType='productionCapacities'
                 />
               </div>
             </div>
@@ -849,12 +398,14 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
             <div className={styles.bgw}>
               <div className={styles.title}>现有生产情况</div>
               <div className={styles.content}>
-                <EditorTable
+                <EditableFormTable
                   dataSource={currentProductionSituations}
                   columns={columnsForProSitu}
-                  fields={proSituFields}
-                  setDataSource={setcurrentProductionSituations}
-                  copyLine={true}
+                  rowKey='guid'
+                  allowRemove={false}
+                  isEditTable={type === 'add'}
+                  setNewData={setNewData}
+                  tableType='currentProductionSituations'
                 />
               </div>
             </div>
@@ -866,22 +417,29 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
                 <Row>
                   <Col span={24}>
                     <FormItem label="设备清单" {...formLayout}>
-                      {getFieldDecorator('keyProductEquipmentFileIds')(<UploadFile showColor={type !== 'add' ? true : false}
+                      {getFieldDecorator('keyProductEquipmentFileIds', {
+                        initialValue: '',
+                        // rules: [
+                        //     {
+                        //         required: true,
+                        //         message: '自主技术开发能力不能为空',
+                        //     },
+                        // ],
+                      })(<UploadFile showColor={type !== 'add' ? true : false}
                         type={type !== 'add'}
                         disabled={type === 'detail'}
                         entityId={data.keyProductEquipmentFileId} />)}
                     </FormItem>
                   </Col>
                 </Row>
-                <EditorTable
+                <EditableFormTable
                   dataSource={keyProductEquipments}
                   columns={columnsForEqu}
-                  fields={equFields}
-                  setDataSource={setkeyProductEquipments}
-                  allowExport
-                  allowImport
-                  exportFunc={handleKeyProductEquipementsExport}
-                  validateFunc={handleKeyProductEquipementsValidate}
+                  rowKey='guid'
+                  setNewData={setNewData}
+                  isEditTable={type === 'add'}
+                  isToolBar={type === 'add'}
+                  tableType='keyProductEquipments'
                 />
               </div>
             </div>
@@ -890,14 +448,14 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
             <div className={styles.bgw}>
               <div className={styles.title}>产品制造工艺流程简介</div>
               <div className={styles.content}>
-                <EditorTable
+                <EditableFormTable
                   dataSource={productManufacturingIntroductions}
                   columns={columnsForOther}
-                  fields={otherFields}
-                  copyLine={true}
-                  setDataSource={setproductManufacturingIntroductions}
-                  allowCreate={false}
+                  rowKey='guid'
+                  setNewData={setNewData}
+                  isEditTable={type === 'add'}
                   allowRemove={false}
+                  tableType='productManufacturingIntroductions'
                 />
               </div>
             </div>
@@ -907,14 +465,17 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
               <div className={styles.title}>
                 关键工艺及关键工艺设备情况
                 <span className={styles.hint}>（至少填写3行）</span>
-              </div>
+                </div>
               <div className={styles.content}>
-                <EditorTable
+                <EditableFormTable
                   dataSource={keyTechnologyEquipments}
                   columns={columnsForKeyProcess}
-                  fields={keyProcessFields}
-                  setDataSource={setkeyTechnologyEquipments}
+                  rowKey='guid'
+                  isEditTable={type === 'add'}
+                  isToolBar={type === 'add'}
                   copyLine={true}
+                  setNewData={setNewData}
+                  tableType='keyTechnologyEquipments'
                 />
               </div>
             </div>
@@ -925,4 +486,4 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
   )
 };
 
-export default create()(ManufactureAbility);
+export default Form.create()(ManufactureAbility);

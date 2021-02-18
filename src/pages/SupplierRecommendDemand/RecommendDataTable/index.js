@@ -21,7 +21,7 @@ function RecommendDataTable() {
   const [searchValue, setSearchValue] = useState({});
   const FRAMELEEMENT = getFrameElement();
   const [signleRow = {}] = selectedRows;
-  const { supplierRecommendDemandStatus = '', unitCode = null, unitName = null } = signleRow;
+  const { supplierRecommendDemandStatus = '' } = signleRow;
   // 未选中数据状态
   const empty = selectedRowKeys.length === 0;
   const complete = supplierRecommendDemandStatus === 'FILLED';
@@ -184,7 +184,7 @@ function RecommendDataTable() {
     const { id = '' } = FRAMELEEMENT;
     const [key] = selectedRowKeys;
     const { pathname } = window.location;
-    openNewTab(`supplier/recommend/fillIn/data?id=${key}&unitCode=${unitCode}&unitName=${unitName}&frameElementId=${id}&frameElementSrc=${pathname}`, '推荐资料填报', false)
+    openNewTab(`supplier/recommend/fillIn/data?id=${key}&frameElementId=${id}&frameElementSrc=${pathname}`, '推荐资料填报', false)
   }
   // 记录列表选中项
   function handleSelectedRows(rowKeys, rows) {
