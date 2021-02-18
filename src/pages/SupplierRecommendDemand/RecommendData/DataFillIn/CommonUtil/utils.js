@@ -9,7 +9,6 @@
  */
 import React from 'react';
 import { Form, Input } from 'antd';
-import { currencyTableProps } from '../../../../../utils/commonProps';
 
 const FormItem = Form.Item;
 
@@ -147,22 +146,3 @@ export function getDocId(list) {
     return '';
   }
 };
-export const currencyOpt = {
-  name: 'currencyName',
-  label: '币种',
-  fieldType: 'comboList',
-  props: {
-    name: 'currencyName',
-    field: ['currencyId'],
-    placeholder: '请选择币种',
-    ...currencyTableProps
-  },
-  options: {
-    rules: [
-      {
-        required: true,
-        message: '请选择币种'
-      }
-    ]
-  }
-}
