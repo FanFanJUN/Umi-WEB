@@ -18,14 +18,30 @@ const { create, Item: FormItem } = Form;
 const { Group: RadioGroup } = Radio;
 const columns = [
   {
-    title: '采购组织代码',
-    dataIndex: 'code'
+    title: '采购组织名称',
+    dataIndex: 'purchaseOrgName',
+    width: 250
   },
   {
-    title: '采购组织名称',
-    dataIndex: 'name',
-    width: 200
-  }
+    title: '采购组织代码',
+    dataIndex: 'purchaseOrgCode'
+  },
+  {
+    title: '公司名称',
+    dataIndex: 'corporationName'
+  },
+  {
+    title: '公司代码',
+    dataIndex: 'corporationCode'
+  },
+  {
+    title: '业务单元名称',
+    dataIndex: 'buName'
+  },
+  {
+    title: '业务单元代码',
+    dataIndex: 'buCode'
+  },
 ]
 const Ctx = forwardRef(({
   onOk = () => null,
@@ -45,6 +61,7 @@ const Ctx = forwardRef(({
   const [selectedRows, setRows] = useState([]);
   const [selectedRowKeys, setKeys] = useState([]);
   const [corporation, setCorporation] = useState({});
+  console.log(selectedRows)
   const tableRef = useRef(null);
   const allowTrust = initialDataSource.some(item=> item.objectRecognition);
   const {
@@ -52,9 +69,22 @@ const Ctx = forwardRef(({
   } = getFieldsValue();
   const tableProps = {
     store: {
-      url: `${baseUrl}/corporationPurchaseOrg/findPurOrgsByCorpCode?corpCode=${corporation?.code}`,
+      url: `${baseUrl}/api/buCompanyPurchasingOrganizationService/findBySearch`,
       params: {
-        corpCode: corporation?.code
+        filters: [
+          {
+            fieldName: 'frozen',
+            operator: 'EQ',
+            value: false,
+            fieldType: 'Boolean'
+          },
+          {
+            fieldName: 'whetherDelete',
+            operator: 'EQ',
+            value: false,
+            fieldType: 'Boolean'
+          }
+        ]
       },
       type: 'post'
     },
@@ -88,20 +118,21 @@ const Ctx = forwardRef(({
     } = values;
     const ids = initialDataSource.map(item => `${item.purchaseOrgCode}-${item.corporationCode}`);
     const filterSelectedRows = selectedRows
-      .filter(item => !ids.includes(`${item.code}-${item.corporationCode}`))
+      .filter(item => !ids.includes(`${item.purchaseOrgCode}-${item.corporationCode}`))
       .map(item => ({
         ...item,
         id: null,
         identifyTypeCode,
         identifyTypeName,
-        corporationCode,
-        corporationName,
-        purchaseOrgCode: item.code,
-        purchaseOrgName: item.name,
+        corporationCode: item.corporationCode,
+        corporationName: item.corporationName,
+        purchaseOrgCode: item.purchaseOrgCode,
+        purchaseOrgName: item.purchaseOrgName,
         trust,
         objectRecognition,
         guid: getUUID()
       }))
+      console.log(filterSelectedRows, initialDataSource)
     return [
       ...filterSelectedRows,
       ...initialDataSource,
@@ -135,46 +166,16 @@ const Ctx = forwardRef(({
       }
     >
       <Form>
-        <FormItem
-          label={
-            <span className={styles.title}>选择公司</span>
-          }
-          colon={false}
-        >
-          {
-            getFieldDecorator('corporationCode'),
-            getFieldDecorator('corporationName', {
-              rules: [
-                {
-                  required: true,
-                  message: '公司不能为空'
-                }
-              ]
-            })(
-              <ComboList
-                {...corporationProps}
-                style={{ width: '300px' }}
-                afterSelect={async (item) => {
-                  await setCorporation({ ...item })
-                  uploadTable()
-                }}
-                name='corporationName'
-                field={['corporationCode']}
-                form={form}
-                placeholder='选择公司'
-              />
-            )
-          }
-        </FormItem>
         <div className={styles.title}>选择采购组织</div>
         <ExtTable
           {...tableProps}
           columns={columns}
           ref={tableRef}
+          remotePaging
           checkbox={{ multiSelect: true }}
           onSelectRow={handleSelectedRows}
           selectedRowKeys={selectedRowKeys}
-          rowKey={item => `${item.code}-${item.corporationCode}`}
+          rowKey={item => `${item.purchaseOrgCode}-${item.corporationCode}`}
         />
         <FormItem
           label={

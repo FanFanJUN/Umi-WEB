@@ -1,5 +1,4 @@
 import { useState, forwardRef, useImperativeHandle, useRef } from 'react';
-import styles from './index.less';
 import {
   ExtModal,
   ExtTable,
@@ -15,7 +14,6 @@ import {
   Col,
   Button
 } from 'antd';
-import { Header } from '../../components';
 import { useTableProps } from '../../utils/hooks';
 import { commonUrl } from '../../utils';
 import { materialClassProps } from '../../utils/commonProps';
