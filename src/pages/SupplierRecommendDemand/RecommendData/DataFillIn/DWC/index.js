@@ -26,7 +26,7 @@ import { requestGetApi, requestPostApi } from '../../../../../services/dataFillI
 import { filterEmptyFileds } from '../CommonUtil/utils';
 
 
-const FormItem = Form.Item;
+const { Item: FormItem, create } = Form;
 const formLayout = {
   labelCol: {
     span: 8,
@@ -50,8 +50,15 @@ const DWC = ({ form, updateGlobalStatus }) => {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
   const { query: { id, type = 'add' } } = router.useLocation();
-  const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
-  const PCE = getFieldValue('payConditionEnum');
+  const {
+    getFieldDecorator,
+    setFieldsValue,
+    getFieldsValue,
+    validateFieldsAndScroll
+  } = form;
+  const {
+    payConditionEnum
+  } = getFieldsValue();
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -68,7 +75,7 @@ const DWC = ({ form, updateGlobalStatus }) => {
   }, []);
 
   async function handleSave() {
-    const value = await form.validateFieldsAndScroll();
+    const value = await validateFieldsAndScroll();
     const params = filterEmptyFileds({
       ...value,
       recommendDemandId: id,
@@ -80,6 +87,24 @@ const DWC = ({ form, updateGlobalStatus }) => {
     setLoading(false)
     if (success) {
       message.success(msg);
+      updateGlobalStatus();
+      return
+    }
+    message.error(msg);
+  }
+  async function handleHoldData() {
+    const value = getFieldsValue();
+    const params = filterEmptyFileds({
+      ...value,
+      recommendDemandId: id,
+      id: data.id,
+      tabKey: 'DWCTab',
+    })
+    setLoading(true)
+    const { success, message: msg } = await requestPostApi(params, { tempSave: true })
+    setLoading(false)
+    if (success) {
+      message.success('数据暂存成功');
       updateGlobalStatus();
       return
     }
@@ -111,6 +136,14 @@ const DWC = ({ form, updateGlobalStatus }) => {
               }}
               onClick={handleSave}
             >保存</Button>,
+            <Button
+              key="hold"
+              disabled={loading}
+              style={{
+                marginRight: '12px'
+              }}
+              onClick={handleHoldData}
+            >暂存</Button>,
           ] : null}
         >
           <div className={styles.wrapper}>
@@ -233,14 +266,21 @@ const DWC = ({ form, updateGlobalStatus }) => {
                 <Row>
                   <Col span={24}>
                     <FormItem label="付款条件" {...formLayoutCol}>
-                      {getFieldDecorator('payConditionEnum')(
+                      {getFieldDecorator('payConditionEnum', {
+                        rules: [
+                          {
+                            required: true,
+                            message: '请选择付款条件'
+                          }
+                        ]
+                      })(
                         <Radio.Group onChange={handleChange} disabled={type === 'detail'}>
                           <Radio value={'RMB'}>月结90天6个月银行承兑(人民币)</Radio>
                           <Radio value={'FOREIGN_CURRENCY'}>月结60天现汇(外币结算)</Radio>
                           <Radio value={'OTHER'}>
                             <span>其他：</span>
                             {getFieldDecorator('otherPayCondition')(
-                              <Input disabled={PCE !== 'OTHER'} />
+                              <Input disabled={payConditionEnum !== 'OTHER'} />
                             )}
                           </Radio>
                         </Radio.Group>)}
@@ -256,4 +296,4 @@ const DWC = ({ form, updateGlobalStatus }) => {
   )
 };
 
-export default Form.create()(DWC);
+export default create()(DWC);

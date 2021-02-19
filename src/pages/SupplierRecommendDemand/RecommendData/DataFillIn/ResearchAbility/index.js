@@ -8,15 +8,28 @@
  * @Connect: 1981824361@qq.com
  */
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Spin, PageHeader, Radio, Row, Col, Input, InputNumber, Divider, message } from 'antd';
+import {
+  Form,
+  Button,
+  Spin,
+  PageHeader,
+  Radio,
+  Row,
+  Col,
+  Input,
+  InputNumber,
+  Divider,
+  message
+} from 'antd';
 import styles from '../../DataFillIn/index.less';
-import EditableFormTable from '../CommonUtil/EditTable';
+import EditorTable from '../../../../../components/EditorTable';
 import { router } from 'dva';
 import moment from 'moment';
 import { requestGetApi, requestPostApi } from '../../../../../services/dataFillInApi';
 import { filterEmptyFileds } from '../CommonUtil/utils';
+import { currencyTableProps } from '../../../../../utils/commonProps';
 
-const FormItem = Form.Item;
+const { Item: FormItem, create } = Form;
 const formLayout = {
   labelCol: {
     span: 8,
@@ -39,7 +52,8 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
   const {
     getFieldDecorator,
     setFieldsValue,
-    getFieldsValue
+    getFieldsValue,
+    validateFieldsAndScroll
   } = form;
   const {
     devMaxCycle = 0,
@@ -71,23 +85,17 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
       title: "专利号/获奖证书",
       dataIndex: "patentsAwardsCertificate",
       ellipsis: true,
-      editable: true,
     },
     {
       title: "成果说明",
       dataIndex: "resultDescription",
       ellipsis: true,
-      editable: true,
-      inputType: 'Input',
     },
     {
       title: "时间",
       dataIndex: "date",
-      ellipsis: true,
-      editable: true,
-      inputType: 'DatePicker',
-      props: {
-        disabledDate: (current) => current && current > moment()
+      render(text) {
+        return text && moment(text).format('YYYY-MM-DD')
       },
       width: 160,
     },
@@ -95,64 +103,243 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
       title: "专利所有者",
       dataIndex: "possessor",
       ellipsis: true,
-      editable: true,
     },
     {
       title: "是否涉及提供给长虹的产品",
       dataIndex: "involveChanghong",
-      ellipsis: true,
-      editable: true,
-      inputType: 'Select',
+      render(text) {
+        return Object.is(null, text) ? '' : text ? '是' : '否'
+      },
       width: 168,
     }
   ];
-
+  const fields = [
+    {
+      label: "专利号/获奖证书",
+      name: "patentsAwardsCertificate",
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '专利号/获奖证书不能为空'
+          }
+        ]
+      },
+      props: {
+        placeholder: '请输入专利号或获奖证书'
+      }
+    },
+    {
+      label: "成果说明",
+      name: "resultDescription",
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '成果说明不能为空'
+          }
+        ]
+      },
+      props: {
+        placeholder: '请填写成果说明'
+      }
+    },
+    {
+      label: "时间",
+      name: "date",
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '时间不能为空'
+          }
+        ]
+      },
+      fieldType: 'datePicker',
+      disabledDate: (current, mn) => current && current > mn(),
+      props: {
+        placeholder: '请选择获得时间'
+      },
+    },
+    {
+      label: "专利所有者",
+      name: "possessor",
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '专利所有者不能为空'
+          }
+        ]
+      },
+      props: {
+        placeholder: '请填写专利所有者'
+      },
+      ellipsis: true,
+    },
+    {
+      label: "是否涉及提供给长虹的产品",
+      name: "involveChanghong",
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '请选择是否涉及提供给长虹的产品'
+          }
+        ]
+      },
+      props: {
+        placeholder: '选择是否涉及提供给长虹的产品'
+      },
+      fieldType: 'select',
+    }
+  ];
+  const finishFields = [
+    {
+      label: "产品名称",
+      name: "productName",
+      props: {
+        disabled: true
+      }
+    },
+    {
+      label: "产品特点",
+      name: "productFeature",
+      ellipsis: true,
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '产品特点不能为空'
+          }
+        ]
+      },
+      props: {
+        placeholder: '请填写产品特点'
+      }
+    },
+    {
+      label: "新品销售金额(万元)",
+      name: "salesPrice",
+      fieldType: 'inputNumber',
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '新品销售金额不能为空'
+          }
+        ]
+      },
+      props: {
+        min: 0,
+        placeholder: '请填写新品销售金额'
+      }
+    },
+    {
+      label: "总销售金额(万元)",
+      name: "totalSalesMoney",
+      disabledTarget: 'salesPrice',
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '总销售金额不能为空'
+          },
+          {
+            validator: (_, val, cb, targetValue) => {
+              if (val > targetValue) {
+                cb('总销售金额不能高于新品销售金额')
+                return
+              }
+              cb()
+            }
+          }
+        ]
+      },
+      props: {
+        min: 0,
+        placeholder: '请填写总销售金额'
+      },
+      fieldType: 'inputNumber',
+    },
+    {
+      name: 'currencyName',
+      label: '币种',
+      fieldType: 'comboList',
+      props: {
+        name: 'currencyName',
+        field: ['currencyId'],
+        placeholder: '请选择币种',
+        ...currencyTableProps
+      },
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '币种不能为空'
+          }
+        ]
+      }
+    },
+    {
+      label: "获奖情况",
+      name: "awardSituation",
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '获奖情况不能为空'
+          }
+        ]
+      },
+      props: {
+        placeholder: '请填写获奖情况'
+      }
+    },
+    {
+      label: "设计定型日期",
+      name: "designFinalizeDate",
+      fieldType: 'datePicker',
+      disabledDate: (current, mn) => current && current > mn(),
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '设计定型日期不能为空'
+          }
+        ]
+      }
+    }
+  ];
   // 已完成的新产品开发
   const columnsForFinish = [
     {
       title: "产品名称",
       dataIndex: "productName",
-      ellipsis: true,
     },
     {
       title: "产品特点",
       dataIndex: "productFeature",
-      ellipsis: true,
     },
     {
-      title: "新品销售金额",
+      title: "新品销售金额(万元)",
       dataIndex: "salesPrice",
-      inputType: 'InputNumber',
-      ellipsis: true,
-      editable: true,
     },
     {
-      title: "总销售金额",
+      title: "总销售金额(万元)",
       dataIndex: "totalSalesMoney",
-      ellipsis: true,
-      editable: true,
-      inputType: 'InputNumber',
     },
     {
       title: "币种",
       dataIndex: "currencyName",
-      ellipsis: true,
-      editable: true,
-      inputType: 'selectwithService',
     },
     {
       title: "获奖情况",
       dataIndex: "awardSituation",
-      ellipsis: true,
-      editable: true,
-      inputType: 'Input',
     },
     {
       title: "设计定型日期",
       dataIndex: "designFinalizeDate",
-      ellipsis: true,
-      editable: true,
-      inputType: 'DatePicker',
       render: function (text, context) {
         return text && moment(text).format('YYYY-MM-DD');
       }
@@ -160,86 +347,194 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
   ];
 
   // 正在进行和计划进行的设计开发
+  const processFields = [
+    {
+      label: "项目名称",
+      name: "projectName",
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '项目名称不能为空'
+          }
+        ]
+      },
+      props: {
+        placeholder: '请填写项目名称'
+      }
+    },
+    {
+      label: "项目内容",
+      name: "projectContent",
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '项目内容不能为空'
+          }
+        ]
+      },
+      props: {
+        placeholder: '请填写项目内容'
+      }
+    },
+    {
+      label: "项目人员构成",
+      name: "projectStaff",
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '项目人员构成不能为空'
+          }
+        ]
+      },
+      props: {
+        placeholder: '请填写项目人员构成'
+      }
+    },
+    {
+      label: "时间安排",
+      name: "datePlan",
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '时间安排不能为空'
+          }
+        ]
+      },
+      props: {
+        placeholder: '请填写时间安排'
+      }
+    },
+    {
+      label: "项目成果",
+      name: "projectResult",
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '项目成果不能为空'
+          }
+        ]
+      },
+      props: {
+        placeholder: '请填写项目成果'
+      }
+    }
+  ]
   const columnsForProcess = [
     {
       title: "项目名称",
       dataIndex: "projectName",
-      ellipsis: true,
-      editable: true,
     },
     {
       title: "项目内容",
       dataIndex: "projectContent",
-      ellipsis: true,
-      editable: true,
     },
     {
       title: "项目人员构成",
       dataIndex: "projectStaff",
-      ellipsis: true,
-      editable: true,
     },
     {
       title: "时间安排",
       dataIndex: "datePlan",
-      ellipsis: true,
-      editable: true,
     },
     {
       title: "项目成果",
       dataIndex: "projectResult",
-      ellipsis: true,
-      editable: true,
     }
   ];
-  // 
+
+  const proStaFields = [
+    {
+      label: "使用标准名称/编号",
+      name: "standardName",
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '使用标准名称/编号不能为空'
+          }
+        ]
+      },
+      props: {
+        placeholder: '请填写使用标准名称/编号'
+      }
+    },
+    {
+      label: "国家/行业标准名称、编号",
+      name: "countryIndustryStandard",
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '国家/行业标准名称、编号不能为空'
+          }
+        ]
+      },
+      props: {
+        placeholder: '请填写国家/行业标准名称、编号'
+      }
+    },
+    {
+      label: "先进指标",
+      name: "advancedIndicator",
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '先进指标不能为空'
+          }
+        ]
+      },
+      props: {
+        placeholder: '请填写先进指标'
+      }
+    },
+    {
+      label: "低于国家/行业标准的指标",
+      name: "lowerIndicator",
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '低于国家/行业标准的指标不能为空'
+          }
+        ]
+      },
+      props: {
+        placeholder: '请填写低于国家/行业标准的指标'
+      }
+    }
+  ]
+  // 产品执行标准
   const columnsForProSta = [
     {
       title: "使用标准名称/编号",
       dataIndex: "standardName",
       ellipsis: true,
-      editable: true,
     },
     {
       title: "国家/行业标准名称、编号",
       dataIndex: "countryIndustryStandard",
       ellipsis: true,
-      editable: true,
     },
     {
       title: "先进指标",
       dataIndex: "advancedIndicator",
       ellipsis: true,
-      editable: true,
     },
     {
       title: "低于国家/行业标准的指标",
       dataIndex: "lowerIndicator",
       ellipsis: true,
-      editable: true,
     },
   ];
 
-  function setNewData(newData, type) {
-    switch (type) {
-      case 'patentsAwards':
-        setpatentsAwards(newData);
-        break;
-      case 'processingDesigns':
-        setprocessingDesigns(newData);
-        break;
-      case 'productStandards':
-        setproductStandards(newData);
-        break;
-      case 'newProducts':
-        setnewProducts(newData)
-      default:
-        break;
-    }
-  }
-
   async function handleSave() {
-    const value = await form.validateFieldsAndScroll();
+    const value = await validateFieldsAndScroll();
     const saveParams = {
       ...value,
       patentsAwards: patentsAwards,
@@ -260,7 +555,51 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
     }
     message.error(msg);
   }
+  async function handleHodeData() {
+    const value = getFieldsValue();
+    const saveParams = {
+      ...value,
+      patentsAwards: patentsAwards,
+      processingDesigns: processingDesigns,
+      productStandards: productStandards,
+      newProducts: newProducts,
+      recommendDemandId: id,
+      id: data.id
+    };
+    const params = filterEmptyFileds({ tabKey: 'researchAbilityTab', ...saveParams });
+    setLoading(true)
+    const { success, message: msg } = await requestPostApi(params, { tempSave: true });
+    setLoading(false)
+    if (success) {
+      message.success('研发能力暂存成功');
+      updateGlobalStatus();
+      return
+    }
+    message.error(msg);
+  }
 
+  async function handleSave() {
+    const value = await validateFieldsAndScroll();
+    const saveParams = {
+      ...value,
+      patentsAwards: patentsAwards,
+      processingDesigns: processingDesigns,
+      productStandards: productStandards,
+      newProducts: newProducts,
+      recommendDemandId: id,
+      id: data.id
+    };
+    const params = filterEmptyFileds({ tabKey: 'researchAbilityTab', ...saveParams });
+    setLoading(true)
+    const { success, message: msg } = await requestPostApi(params);
+    setLoading(false)
+    if (success) {
+      message.success('保存研发能力成功');
+      updateGlobalStatus();
+      return
+    }
+    message.error(msg);
+  }
   return (
     <div>
       <Spin spinning={loading}>
@@ -272,6 +611,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
           title="研发能力"
           extra={type === 'add' ? [
             <Button key="save" type="primary" style={{ marginRight: '12px' }} disabled={loading} onClick={handleSave}>保存</Button>,
+            <Button key="hold" style={{ marginRight: '12px' }} disabled={loading} onClick={handleHodeData}>暂存</Button>,
           ] : null}
         >
           <div className={styles.wrapper}>
@@ -320,14 +660,12 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
             <div className={styles.bgw}>
               <div className={styles.title}>专利/获奖情况</div>
               <div className={styles.content}>
-                <EditableFormTable
-                  dataSource={patentsAwards || []}
+                <EditorTable
+                  dataSource={patentsAwards}
                   columns={columns}
+                  fields={fields}
                   rowKey='guid'
-                  setNewData={setNewData}
-                  isEditTable={type === 'add'}
-                  isToolBar={type === 'add'}
-                  tableType='patentsAwards'
+                  setDataSource={setpatentsAwards}
                 />
               </div>
             </div>
@@ -355,11 +693,18 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                     </FormItem>
                   </Col>
                 </Row>
+                <Divider orientation='left'>已完成的新产品开发</Divider>
                 <Row>
                   <Col span={24}>
                     <FormItem label="前一年新产品的个数占总产品个数的比重" {...formLayout}>
                       {getFieldDecorator('numberRate', {
                         initialValue: type === 'add' ? '' : data.numberRate,
+                        rules: [
+                          {
+                            required: true,
+                            message: '比重不能为空'
+                          }
+                        ]
                       })(
                         <InputNumber
                           min={0}
@@ -372,12 +717,17 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                     </FormItem>
                   </Col>
                 </Row>
-                <Divider orientation='left'>已完成的新产品开发</Divider>
                 <Row>
                   <Col span={24}>
                     <FormItem label="前一年新产品的销售额占总销售额的比重" {...formLayout}>
                       {getFieldDecorator('saleMoneyRate', {
                         initialValue: type === 'add' ? '' : data.saleMoneyRate,
+                        rules: [
+                          {
+                            required: true,
+                            message: '不能为空'
+                          }
+                        ]
                       })(
                         <InputNumber
                           min={0}
@@ -410,6 +760,10 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                               }
                               cb()
                             }
+                          },
+                          {
+                            required: true,
+                            message: '不能为空'
                           }
                         ]
                       })(
@@ -430,6 +784,10 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                                 }
                                 cb()
                               }
+                            },
+                            {
+                              required: true,
+                              messge: '不能为空'
                             }
                           ]
                         })(
@@ -451,6 +809,10 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                                 }
                                 cb()
                               }
+                            },
+                            {
+                              required: true,
+                              message: '不能为空'
                             }
                           ]
                         })(
@@ -460,24 +822,23 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                     </FormItem>
                   </Col>
                 </Row>
-                <EditableFormTable
-                  dataSource={newProducts || []}
+                <EditorTable
+                  dataSource={newProducts}
                   columns={columnsForFinish}
+                  fields={finishFields}
                   rowKey='guid'
-                  setNewData={setNewData}
-                  tableType='newProducts'
-                  isEditTable={type === 'add'}
+                  setDataSource={setnewProducts}
+                  copyLine
                   allowRemove={false}
+                  allowCreate={false}
                 />
                 <Divider orientation='left'>正在进行和计划进行的设计开发</Divider>
-                <EditableFormTable
-                  dataSource={processingDesigns || []}
+                <EditorTable
+                  dataSource={processingDesigns}
                   columns={columnsForProcess}
+                  fields={processFields}
                   rowKey='guid'
-                  setNewData={setNewData}
-                  isEditTable={type === 'add'}
-                  isToolBar={type === 'add'}
-                  tableType='processingDesigns'
+                  setDataSource={setprocessingDesigns}
                 />
               </div>
             </div>
@@ -486,14 +847,12 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
             <div className={styles.bgw}>
               <div className={styles.title}>产品执行标准</div>
               <div className={styles.content}>
-                <EditableFormTable
-                  dataSource={productStandards || []}
+                <EditorTable
+                  dataSource={productStandards}
                   columns={columnsForProSta}
+                  fields={proStaFields}
                   rowKey='guid'
-                  setNewData={setNewData}
-                  isEditTable={type === 'add'}
-                  isToolBar={type === 'add'}
-                  tableType='productStandards'
+                  setDataSource={setproductStandards}
                 />
               </div>
             </div>
@@ -504,4 +863,4 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
   )
 };
 
-export default Form.create()(ResearchAbility);
+export default create()(ResearchAbility);

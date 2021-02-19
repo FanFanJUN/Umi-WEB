@@ -13,30 +13,14 @@ import { baseUrl } from '../../../../utils/commonUrl';
 const { corporationProps, thatTypeProps } = commonProps;
 const columns = [
   {
-    title: '采购组织名称',
-    dataIndex: 'purchaseOrgName',
-    width: 250
-  },
-  {
     title: '采购组织代码',
-    dataIndex: 'purchaseOrgCode'
+    dataIndex: 'code'
   },
   {
-    title: '公司名称',
-    dataIndex: 'corporationName'
-  },
-  {
-    title: '公司代码',
-    dataIndex: 'corporationCode'
-  },
-  {
-    title: '业务单元名称',
-    dataIndex: 'buName'
-  },
-  {
-    title: '业务单元代码',
-    dataIndex: 'buCode'
-  },
+    title: '采购组织名称',
+    dataIndex: 'name',
+    width: 250
+  }
 ]
 const Ctx = forwardRef(({
   onContinue = () => null,
@@ -55,22 +39,9 @@ const Ctx = forwardRef(({
   const tableRef = useRef(null);
   const tableProps = {
     store: {
-      url: `${baseUrl}/api/buCompanyPurchasingOrganizationService/findBySearch`,
+      url: `${baseUrl}/corporationPurchaseOrg/findPurOrgsByCorpCode?corpCode=${corporation?.code}`,
       params: {
-        filters: [
-          {
-            fieldName: 'frozen',
-            operator: 'EQ',
-            value: false,
-            fieldType: 'Boolean'
-          },
-          {
-            fieldName: 'whetherDelete',
-            operator: 'EQ',
-            value: false,
-            fieldType: 'Boolean'
-          }
-        ]
+        corpCode: corporation?.code
       },
       type: 'post'
     },
@@ -84,6 +55,7 @@ const Ctx = forwardRef(({
   }
   // 更新列表数据
   function uploadTable() {
+    // cleanSelectedRecord()
     tableRef.current.remoteDataRefresh()
   }
   // 记录列表选中
@@ -95,19 +67,50 @@ const Ctx = forwardRef(({
   function formatModalSelectedRows() {
     const ids = initialDataSource.map(item => `${item.purchaseOrgCode}-${item.corporationCode}`);
     const filterSelectedRows = selectedRows
-      .filter(item => !ids.includes(`${item.purchaseOrgCode}-${item.corporationCode}`))
+      .filter(item => !ids.includes(`${item.code}-${item.corporationCode}`))
       .map(item => ({
         ...item,
         id: null,
         identifyTypeCode: thatType.value,
         identifyTypeName: thatType.name,
-        purchaseOrgCode: item.purchaseOrgCode,
-        purchaseOrgName: item.purchaseOrgName,
-        corporationCode: item.corporationCode,
-        corporationName: item.corporationName
+        purchaseOrgCode: item.code,
+        purchaseOrgName: item.name,
+        corporationCode: corporation.code,
+        corporationName: corporation.name
       }))
+    //   console.log(ids, selectedRows)
+    // console.log(filterSelectedRows, initialDataSource)
+    console.log(filterSelectedRows)
     return [...filterSelectedRows, ...initialDataSource]
   }
+  /**
+   * 
+   * corporationCode: "A000"
+  corporationName: "广东长虹电子有限公司"
+  display: null
+  id: "7E7254C4-35FA-11EB-8021-0242C0A8441B"
+  identifyTypeCode: "0001"
+  identifyTypeName: "全新供应商"
+  materialCategoryCode: null
+  materialCategoryName: null
+  purchaseOrgCode: "A000"
+  purchaseOrgName: "广东长虹采购组织"
+  recommendDemandId: "7B457E78-35FA-11EB-8021-0242C0A8441B"
+  tenantCode: "10000028"
+  unitCode: null
+  unitName: null
+  
+  
+  code: "A000"
+  corporationCode: "A000"
+  corporationName: "广东长虹电子有限公司"
+  frozen: false
+  id: "48F10491-878B-11EA-9385-0242C0A84405"
+  name: "广东长虹采购组织"
+  rank: 0
+  tenantCode: "10000028"
+  virtual: false
+   */
   function handleContinue() {
     if (!thatType) {
       message.error('请选择认定类型')
@@ -155,6 +158,19 @@ const Ctx = forwardRef(({
       }
     >
       <div className={styles.title}>
+        选择公司
+      </div>
+      <ComboList
+        {...corporationProps}
+        style={{ width: '300px' }}
+        afterSelect={(item) => {
+          setCorporation({ ...item })
+          uploadTable()
+        }}
+        value={corporation?.name}
+        placeholder='选择公司'
+      />
+      <div className={styles.title}>
         认定类型
       </div>
       <ComboList value={thatType?.name} {...thatTypeProps} afterSelect={handleThatTypeSelect}></ComboList>
@@ -165,11 +181,10 @@ const Ctx = forwardRef(({
         {...tableProps}
         columns={columns}
         ref={tableRef}
-        remotePaging
         checkbox={{ multiSelect: true }}
         onSelectRow={handleSelectedRows}
         selectedRowKeys={selectedRowKeys}
-        rowKey={item => `${item.purchaseOrgCode}-${item.corporationCode}`}
+        rowKey={item => `${item.code}-${item.corporationCode}`}
       />
     </ExtModal>
   )

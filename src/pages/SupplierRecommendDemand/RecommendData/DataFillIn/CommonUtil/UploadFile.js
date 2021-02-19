@@ -1,5 +1,15 @@
 import React from 'react';
-import { Upload, Icon, Button, List, Avatar, Skeleton, Modal, message, Tooltip } from 'antd';
+import {
+  Upload,
+  Icon,
+  Button,
+  List,
+  Avatar,
+  Skeleton,
+  Modal,
+  message,
+  Tooltip
+} from 'antd';
 import PropTypes from 'prop-types';
 import request from '../../../../../utils/request';
 import { baseUrl } from '../../../../../utils/commonUrl';
@@ -24,13 +34,9 @@ class UploadFile extends React.Component {
 
     this.entityId = props.entityId
   }
-
-
   componentDidMount() {
     this.updateFile(this.props.entityId)
   }
-
-
   componentWillReceiveProps(nextProps) {
     if ((nextProps.entityId && nextProps.entityId !== this.props.entityId)
       || nextProps.refresh) {
@@ -89,29 +95,29 @@ class UploadFile extends React.Component {
     } else if (value && value.length > 0 && value[0] && !value[0].id) {  // 只有附件 idList 的情况
       value.map(valueItem => {
         request.get(baseUrl + '/getDocumentByRefIdOrDocId?paramId=' + valueItem)
-        .then(res => {
-          if (res.success && res.data && res.data[0] && res.data[0].id) {
-            res.data.map((item, index) => {
-              fileList.push({
-                uid: res.data[index].id, // 文件唯一标识，建议设置为负数，防止和内部产生的 id 冲突
-                name: res.data[index].fileName, // 文件名
-                status: 'done', // 状态有：uploading done error removed
-                response: [res.data[index].id], // 服务端响应内容
-                url: host + baseUrl + '/supplierRegister/download?docId=' + res.data[index].id, // 下载链接额外的 HTML 属性
-                thumbUrl: window._previewUrl + res.data[index].id,
-                uploadedTime: res.data[index].uploadedTime,
-                uploadUserName: res.data[index].uploadUserName
+          .then(res => {
+            if (res.success && res.data && res.data[0] && res.data[0].id) {
+              res.data.map((item, index) => {
+                fileList.push({
+                  uid: res.data[index].id, // 文件唯一标识，建议设置为负数，防止和内部产生的 id 冲突
+                  name: res.data[index].fileName, // 文件名
+                  status: 'done', // 状态有：uploading done error removed
+                  response: [res.data[index].id], // 服务端响应内容
+                  url: host + baseUrl + '/supplierRegister/download?docId=' + res.data[index].id, // 下载链接额外的 HTML 属性
+                  thumbUrl: window._previewUrl + res.data[index].id,
+                  uploadedTime: res.data[index].uploadedTime,
+                  uploadUserName: res.data[index].uploadUserName
+                });
+                completeUploadFile.push(res.data[index].id);
               });
-              completeUploadFile.push(res.data[index].id);
-            });
-            this.setState({ fileList, completeUploadFile })
-            if (this.props.onChange) {
-              this.props.onChange(completeUploadFile.length === 0 ? null : completeUploadFile)
+              this.setState({ fileList, completeUploadFile })
+              if (this.props.onChange) {
+                this.props.onChange(completeUploadFile.length === 0 ? null : completeUploadFile)
+              }
+            } else {
+              this.setState({ completeUploadFile: [], fileList: [] })
             }
-          } else {
-            this.setState({ completeUploadFile: [], fileList: [] })
-          }
-        })
+          })
       })
     }
     else {

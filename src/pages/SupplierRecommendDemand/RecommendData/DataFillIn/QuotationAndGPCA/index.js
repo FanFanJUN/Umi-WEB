@@ -7,16 +7,23 @@
  * @Description: 报价单及成分分析表 Tab
  * @Connect: 1981824361@qq.com
  */
-import React, { useState, useRef, useEffect } from 'react';
-import { Form, Button, Spin, PageHeader, Radio, Row, message } from 'antd';
+import React, { useState, useEffect } from 'react';
+import {
+  Form,
+  Button,
+  Spin,
+  PageHeader,
+  Radio,
+  Row,
+  message
+} from 'antd';
 import styles from '../../DataFillIn/index.less';
-import EditTable from '../CommonUtil/EditTable';
+import EditorTable from '../../../../../components/EditorTable';
 import { router } from 'dva';
 import { requestPostApi, requestGetApi } from '../../../../../services/dataFillInApi';
-import { filterEmptyFileds } from '../CommonUtil/utils';
+import { filterEmptyFileds, currencyOpt } from '../CommonUtil/utils';
 
 const QuotationAndGPCA = ({ updateGlobalStatus }) => {
-
   const [data, setData] = useState({});
   const [dataSource, setDataSource] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -40,75 +47,200 @@ const QuotationAndGPCA = ({ updateGlobalStatus }) => {
     };
     fetchData();
   }, []);
-
+  const fields = [
+    {
+      label: "产品名称",
+      name: "productName",
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '产品不能为空'
+          }
+        ]
+      },
+      props: {
+        disabled: true
+      }
+    },
+    {
+      label: "型号/规格",
+      name: "model",
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '型号/规格不能为空'
+          }
+        ]
+      },
+      props: {
+        placeholder: '请输入型号/规格'
+      },
+    },
+    {
+      label: "原材料成本(元)",
+      name: "rawMaterialCost",
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '原材料成本不能为空'
+          }
+        ]
+      },
+      props: {
+        min: 0,
+        placeholder: '请输入原材料成本',
+      },
+      fieldType: 'inputNumber',
+    },
+    {
+      label: "包装材料成本(元)",
+      name: "packageMaterialCost",
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '包装材料成本不能为空'
+          }
+        ]
+      },
+      props: {
+        min: 0,
+        placeholder: '请输入包装材料成本',
+      },
+      fieldType: 'inputNumber',
+    },
+    {
+      label: "设备使用成本(元)",
+      name: "requirementCost",
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '设备使用成本不能为空'
+          }
+        ]
+      },
+      props: {
+        min: 0,
+        placeholder: '请输入设备使用成本',
+      },
+      fieldType: 'inputNumber',
+    },
+    {
+      label: "厂房使用成本(元)",
+      name: "plantUtilizationCost",
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '厂房使用成本不能为空'
+          }
+        ]
+      },
+      props: {
+        min: 0,
+        placeholder: '请输入厂房使用成本',
+      },
+      fieldType: 'inputNumber',
+    },
+    {
+      label: "工厂人工费用(元)",
+      name: "laborCost",
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '工厂人工费用不能为空'
+          }
+        ]
+      },
+      props: {
+        min: 0,
+        placeholder: '请输入工厂人工费用',
+      },
+      fieldType: 'inputNumber',
+    },
+    {
+      label: "管理费用(元)",
+      name: "manageCost",
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '管理费用不能为空'
+          }
+        ]
+      },
+      props: {
+        min: 0,
+        placeholder: '请输入管理费用',
+      },
+      fieldType: 'inputNumber',
+    },
+    {
+      label: "运费(元)",
+      name: "transportCost",
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '运费不能为空'
+          }
+        ]
+      },
+      props: {
+        min: 0,
+        placeholder: '请输入运费',
+      },
+      fieldType: 'inputNumber',
+    },
+    {
+      ...currencyOpt
+    }
+  ]
   const columns = [
     {
       title: "产品名称",
-      dataIndex: "productName",
-      ellipsis: true,
-      editable: false,
+      dataIndex: "productName"
     },
     {
       title: "型号/规格",
-      dataIndex: "model",
-      ellipsis: true,
-      editable: true,
+      dataIndex: "model"
     },
     {
       title: "原材料成本",
-      dataIndex: "rawMaterialCost",
-      ellipsis: true,
-      editable: true,
-      inputType: 'InputNumber',
+      dataIndex: "rawMaterialCost"
     },
     {
       title: "包装材料成本",
-      dataIndex: "packageMaterialCost",
-      ellipsis: true,
-      editable: true,
-      inputType: 'InputNumber',
+      dataIndex: "packageMaterialCost"
     },
     {
       title: "设备用成本",
-      dataIndex: "requirementCost",
-      ellipsis: true,
-      editable: true,
-      inputType: 'InputNumber',
+      dataIndex: "requirementCost"
     },
     {
       title: "厂房使用成本",
-      dataIndex: "plantUtilizationCost",
-      ellipsis: true,
-      editable: true,
-      inputType: 'InputNumber',
+      dataIndex: "plantUtilizationCost"
     },
     {
       title: "工厂人工费用",
-      dataIndex: "laborCost",
-      ellipsis: true,
-      editable: true,
-      inputType: 'InputNumber',
+      dataIndex: "laborCost"
     },
     {
       title: "管理费用",
-      dataIndex: "manageCost",
-      ellipsis: true,
-      editable: true,
-      inputType: 'InputNumber',
+      dataIndex: "manageCost"
     },
     {
       title: "运费",
-      dataIndex: "transportCost",
-      ellipsis: true,
-      editable: true,
-      inputType: 'InputNumber',
+      dataIndex: "transportCost"
     },
     {
       title: "币种",
-      dataIndex: "currencyName",
-      ellipsis: true,
-      editable: true,
-      inputType: 'selectwithService',
+      dataIndex: "currencyName"
     },
   ];
 
@@ -116,7 +248,7 @@ const QuotationAndGPCA = ({ updateGlobalStatus }) => {
     setSupplyCostStructure(value);
   }
 
-  function handleSave() {
+  async function handleSave() {
     const saveParams = {
       recommendDemandId: id,
       tabKey: 'quotationAndGPCATab',
@@ -124,20 +256,36 @@ const QuotationAndGPCA = ({ updateGlobalStatus }) => {
       costAnalyses: dataSource,
       id: data.id
     };
-    requestPostApi(filterEmptyFileds(saveParams)).then((res) => {
-      if (res && res.success) {
-        message.success('保存数据成功');
-        updateGlobalStatus();
-      } else {
-        message.error(res.message);
-      }
-    });
+    const formatParams = filterEmptyFileds(saveParams)
+    setLoading(true)
+    const { success, message: msg } = await requestPostApi(formatParams)
+    setLoading(false)
+    if (success) {
+      message.success('保存数据成功');
+      updateGlobalStatus();
+      return
+    }
+    message.error(msg);
   }
-
-  function setNewData(newData) {
-    setDataSource(newData);
+  async function handleHoldData() {
+    const saveParams = {
+      recommendDemandId: id,
+      tabKey: 'quotationAndGPCATab',
+      supplyCostStructure,
+      costAnalyses: dataSource,
+      id: data.id
+    };
+    const formatParams = filterEmptyFileds(saveParams)
+    setLoading(true)
+    const { success, message: msg } = await requestPostApi(formatParams, { tempSave: true })
+    setLoading(false)
+    if (success) {
+      message.success('数据暂存成功');
+      updateGlobalStatus();
+      return
+    }
+    message.error(msg);
   }
-  console.log(data)
   return (
     <div>
       <Spin spinning={loading}>
@@ -149,6 +297,7 @@ const QuotationAndGPCA = ({ updateGlobalStatus }) => {
           title="报价单及成分分析表"
           extra={type === 'add' ? [
             <Button key="save" type="primary" style={{ marginRight: '12px' }} onClick={handleSave}>保存</Button>,
+            <Button key="save" type="primary" style={{ marginRight: '12px' }} onClick={handleHoldData}>暂存</Button>,
           ] : null}
         >
           <div className={styles.wrapper}>
@@ -162,15 +311,16 @@ const QuotationAndGPCA = ({ updateGlobalStatus }) => {
                     <Radio value={false}>否</Radio>
                   </Radio.Group>
                 </Row>
-                <EditTable
-                  dataSource={dataSource}
-                  columns={columns}
-                  rowKey='guid'
-                  copyLine={true}
-                  setNewData={setNewData}
-                  isEditTable={type === 'add'}
-                  isToolBar={type === 'add'}
-                />
+                {
+                  supplyCostStructure ?
+                    <EditorTable
+                      dataSource={dataSource}
+                      columns={columns}
+                      fields={fields}
+                      setDataSource={setDataSource}
+                      copyLine={true}
+                    /> : null
+                }
               </div>
             </div>
           </div>

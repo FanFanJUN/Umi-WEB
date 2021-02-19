@@ -11,8 +11,16 @@ import React, { useState } from 'react';
 import styles from './index.less';
 import { Tabs, Checkbox, BackTop, Tooltip } from 'antd';
 import {
-  BaseCondition, SellCondition, ResearchAbility, QualityAbility,
-  ManagerAbility, ManufactureAbility, HdssControll, DWC, Other, QuotationAndGPCA,
+  BaseCondition,
+  SellCondition,
+  ResearchAbility,
+  QualityAbility,
+  ManagerAbility,
+  ManufactureAbility,
+  HdssControll,
+  DWC,
+  Other,
+  QuotationAndGPCA,
 } from './Tabs';
 import CSRQuestionnaire from './CSRQuestionnaire';
 import EPEQuestionnaire from './EPEQuestionnaire'
@@ -127,7 +135,12 @@ function DataFillIn({
       <Tooltip title="返回顶部">
         <BackTop visibilityHeight={400} />
       </Tooltip>
-      <Tabs tabPosition='left' onChange={(activeKey) => handleChange(activeKey)} animated={false}>
+      <Tabs
+        tabPosition='left'
+        onChange={(activeKey) => handleChange(activeKey)}
+        animated={false}
+        defaultActiveKey='baseCondition'
+      >
         {/* 基本情况 */}
         <TabPane key='baseCondition' tab={baseConditionTab}>
           <BaseCondition updateGlobalStatus={updateGlobalStatus} />

@@ -17,31 +17,22 @@ import { findSalesSituationById, saveSupplierSalesSituation } from '../../../../
 import { router } from 'dva';
 import { filterEmptyFileds } from '../CommonUtil/utils';
 
-const { create } = Form;
-
 const SellCondition = ({ form, updateGlobalStatus }) => {
+  const customerRef = useRef(null);
   const [data, setData] = useState({});
-  // 销售收入及利润
-  const [supplierSalesProceeds, setsupplierSalesProceeds] = useState([]);
-  const [supplierCertificates, setSupplierCertificates] = useState([]);
-  // 长虹集团
-  const [changhongSaleInfos, setChanghongSaleInfos] = useState([]);
-  // 其他主要客户情况
-  const [mainCustomers, setMainCustomers] = useState([]);
-  // 出口情况
-  const [exportSituations, setExportSituations] = useState([]);
-  // 主要客户近半年内的订单或合同及证明材料
-  const [supplierOrderInfos, setSupplierOrderInfos] = useState([]);
-  // 未来三年发展规划
-  const [threeYearPlans, setThreeYearPlans] = useState([]);
-  // 主要竞争对手排名
-  const [supplierMajorCompetitors, setSupplierMajorCompetitors] = useState([]);
-  // 市场地位
-  const [marketPositions, setMarketPositions] = useState([])
+  const [supplierSalesProceeds, setsupplierSalesProceeds] = useState([]); // 销售收入及利润
+  const [supplierCertificates, setsupplierCertificates] = useState([]);
+  const [changhongSaleInfos, setchanghongSaleInfos] = useState([]);
+  const [mainCustomers, setmainCustomers] = useState([]);
+  const [exportSituations, setexportSituations] = useState([]);
+  const [supplierOrderInfos, setsupplierOrderInfos] = useState([]);
+  const [threeYearPlans, setthreeYearPlans] = useState([]);
+  const [supplierMajorCompetitors, setsupplierMajorCompetitors] = useState([]);
+  const [marketPositions, setmarketPositions] = useState([])
   const [loading, setLoading] = useState(false);
 
   const { query: { id, type = 'add' } } = router.useLocation();
-  const { getFieldsValue, setFieldsValue, validateFieldsAndScroll } = form;
+
   useEffect(() => {
     const fetchData = async () => {
       await setLoading(true);
@@ -57,20 +48,19 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
           supplierMajorCompetitors,
           threeYearPlans,
           exportSituations,
-          marketPositions,
-          ...formFields
+          marketPositions
         } = data
-        await setData({ ...formFields });
-        await form.setFieldsValue({ ...formFields })
+        await setData({ ...data });
+        await form.setFieldsValue({ ...data })
         await setsupplierSalesProceeds(supplierSalesProceeds.map(item => ({ ...item, guid: item.id })));
-        await setSupplierCertificates(supplierCertificates.map(item => ({ ...item, guid: item.id })));
-        await setThreeYearPlans(threeYearPlans.map(item => ({ ...item, guid: item.id })))
-        await setExportSituations(exportSituations.map(item => ({ ...item, guid: item.id })))
-        await setSupplierMajorCompetitors(supplierMajorCompetitors.map(item => ({ ...item, guid: item.id })));
-        await setMarketPositions(marketPositions.map(item => ({ ...item, guid: item.id })));
-        await setSupplierOrderInfos(supplierOrderInfos.map(item => ({ ...item, guid: item.id })))
-        await setChanghongSaleInfos(changhongSaleInfos.map(item => ({ ...item, guid: item.id })))
-        await setMainCustomers(mainCustomers.map(item => ({ ...item, guid: item.id })))
+        await setsupplierCertificates(supplierCertificates.map(item => ({ ...item, guid: item.id })));
+        await setthreeYearPlans(threeYearPlans.map(item => ({ ...item, guid: item.id })))
+        await setexportSituations(exportSituations.map(item => ({ ...item, guid: item.id })))
+        await setsupplierMajorCompetitors(supplierMajorCompetitors.map(item => ({ ...item, guid: item.id })));
+        await setmarketPositions(marketPositions.map(item => ({ ...item, guid: item.id })));
+        await setsupplierOrderInfos(supplierOrderInfos.map(item => ({ ...item, guid: item.id })))
+        await setchanghongSaleInfos(changhongSaleInfos.map(item => ({ ...item, guid: item.id })))
+        await setmainCustomers(mainCustomers.map(item => ({ ...item, guid: item.id })))
         return
       }
       message.error(msg);
@@ -107,36 +97,39 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
     }
     message.error(msg);
   }
-  async function handleHoldData() {
-    const value = getFieldsValue()
-    const saveParams = {
-      ...value,
-      supplierCertificates: supplierCertificates,
-      supplierContacts: data.supplierContacts,
-      managementSystems: data.managementSystems,
-      changhongSaleInfos: changhongSaleInfos || [],
-      mainCustomers: mainCustomers || [],
-      supplierOrderInfos: supplierOrderInfos || [],
-      threeYearPlans: threeYearPlans || [],
-      recommendDemandId: id,
-      exportSituations: exportSituations,
-      marketPositions: marketPositions,
-      id: data.id,
-      supplierMajorCompetitors: supplierMajorCompetitors || [],
-      supplierSalesProceeds
-    };
-    const params = filterEmptyFileds(saveParams);
-    await setLoading(true)
-    const { success, message: msg } = await saveSupplierSalesSituation(params, {
-      tempSave: true
-    })
-    await setLoading(false)
-    if (success) {
-      message.success('销售情况暂存成功');
-      updateGlobalStatus();
-      return
+
+  function setTableData(newData, type) {
+    switch (type) {
+      case 'changhongSaleInfos':
+        setchanghongSaleInfos(newData);
+        break;
+      case 'mainCustomers':
+        setmainCustomers(newData);
+        break;
+      case 'supplierOrderInfos':
+        setsupplierOrderInfos(newData);
+        break;
+      case 'threeYearPlans':
+        setthreeYearPlans(newData);
+        break;
+      case 'supplierMajorCompetitors':
+        setsupplierMajorCompetitors(newData);
+        break;
+      case 'supplierSalesProceeds':
+        setsupplierSalesProceeds(newData);
+        break;
+      case 'exportSituations':
+        setexportSituations(newData)
+        break;
+      case 'marketPositions':
+        setmarketPositions(newData)
+        break;
+      case 'supplierCertificates':
+        setsupplierCertificates(newData)
+        break;
+      default:
+        break;
     }
-    message.error(msg);
   }
 
   return (
@@ -156,12 +149,6 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
               onClick={handleSave}
               disabled={loading}
             >保存</Button>,
-            <Button
-              key="hold"
-              style={{ marginRight: '12px' }}
-              onClick={handleHoldData}
-              disabled={loading}
-            >暂存</Button>,
           ] : null}
         >
           <div className={styles.wrapper}>
@@ -171,29 +158,22 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
                 <SalesProfit
                   type={type}
                   data={supplierSalesProceeds}
-                  setTableData={setsupplierSalesProceeds}
+                  form={form}
+                  setTableData={setTableData}
                 />
               </div>
             </div>
-          </div>0
+          </div>
           <div className={styles.wrapper}>
             <div className={styles.bgw}>
               <div className={styles.title}>客户</div>
               <div className={styles.content}>
                 <Customer
                   type={type}
-                  form={form}
                   data={data}
-                  changhongSaleInfos={changhongSaleInfos}
-                  setChanghongSaleInfos={setChanghongSaleInfos}
-                  mainCustomers={mainCustomers}
-                  setMainCustomers={setMainCustomers}
-                  exportSituations={exportSituations}
-                  setExportSituations={setExportSituations}
-                  supplierOrderInfos={supplierOrderInfos}
-                  setSupplierOrderInfos={setSupplierOrderInfos}
-                  threeYearPlans={threeYearPlans}
-                  setThreeYearPlans={setThreeYearPlans}
+                  form={form}
+                  setTableData={setTableData}
+                  wrappedComponentRef={customerRef}
                 />
               </div>
             </div>
@@ -204,11 +184,9 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
               <div className={styles.content}>
                 <MarketCompetitive
                   type={type}
-                  supplierMajorCompetitors={supplierMajorCompetitors}
-                  setSupplierMajorCompetitors={setSupplierMajorCompetitors}
-                  marketPositions={marketPositions}
-                  setMarketPositions={setMarketPositions}
+                  data={data}
                   form={form}
+                  setTableData={setTableData}
                 />
               </div>
             </div>

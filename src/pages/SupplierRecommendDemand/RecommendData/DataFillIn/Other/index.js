@@ -8,17 +8,14 @@
  * @Connect: 1981824361@qq.com
  */
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Spin, PageHeader, Row, Col, Input, message } from 'antd';
+import { Form, Button, Spin, PageHeader, Row, Col, message } from 'antd';
 import styles from '../../DataFillIn/index.less';
-import EditableFormTable from '../CommonUtil/EditTable';
+import EditorTable from '../../../../../components/EditorTable';
 import UploadFile from '../../../../../components/Upload';
 import { router } from 'dva';
 import { requestPostApi, requestGetApi } from '../../../../../services/dataFillInApi';
-import { filterEmptyFileds } from '../CommonUtil/utils';
-
-
-const InputGroup = Input.Group;
-const FormItem = Form.Item;
+import { filterEmptyFileds, currencyOpt } from '../CommonUtil/utils';
+const { Item: FormItem, create } = Form;
 const formLayout = {
   labelCol: {
     span: 8,
@@ -36,7 +33,7 @@ const Other = ({ form, updateGlobalStatus }) => {
 
   const { query: { id, type = 'add' } } = router.useLocation();
 
-  const { getFieldDecorator, setFieldsValue } = form;
+  const { getFieldDecorator, getFieldsValue, validateFieldsAndScroll } = form;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,7 +52,7 @@ const Other = ({ form, updateGlobalStatus }) => {
   }, []);
 
   async function handleSave() {
-    const value = await form.validateFieldsAndScroll()
+    const value = await validateFieldsAndScroll()
     const params = filterEmptyFileds({
       ...value,
       tabKey: 'otherTab',
@@ -73,52 +70,135 @@ const Other = ({ form, updateGlobalStatus }) => {
     }
     message.error(msg);
   }
-
-  function setNewData(newData) {
-    setequityStructures(newData);
+  async function handleHoldData() {
+    const value = getFieldsValue()
+    const params = filterEmptyFileds({
+      ...value,
+      tabKey: 'otherTab',
+      recommendDemandId: id,
+      equityStructures,
+      id: data.id
+    })
+    setLoading(true)
+    const { success, message: msg } = await requestPostApi(params, { tempSave: true })
+    setLoading(false)
+    if (success) {
+      message.success('数据暂存成功');
+      updateGlobalStatus();
+      return
+    }
+    message.error(msg);
   }
-
+  const fields = [
+    {
+      label: "投资方",
+      name: "investor",
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '投资方不能为空'
+          }
+        ]
+      },
+      props: {
+        placeholder: '请输入投资方'
+      }
+    },
+    {
+      label: "出资额(万元)",
+      name: "capitalContribution",
+      fieldType: 'inputNumber',
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '出资额不能为空'
+          }
+        ]
+      },
+      props: {
+        min: 0,
+        placeholder: '请输入出资额'
+      }
+    },
+    {
+      ...currencyOpt
+    },
+    {
+      label: "出资比例(%)",
+      name: "capitalKey",
+      fieldType: 'inputNumber',
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '出资比例不能为空'
+          }
+        ]
+      },
+      props: {
+        min: 0,
+        max: 100,
+        placeholder: '请输入出资比例'
+      }
+    },
+    {
+      label: "出资方式",
+      name: "capitalMethod",
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '出资方式不能为空'
+          }
+        ]
+      },
+      props: {
+        placeholder: '请输入出资方式'
+      }
+    },
+    {
+      label: "备注",
+      name: "remark",
+      fieldType: 'textArea',
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '备注不能为空'
+          }
+        ]
+      },
+      props: {
+        placeholder: '请输入备注'
+      }
+    }
+  ]
   const columns = [
     {
       title: "投资方 ",
       dataIndex: "investor",
-      ellipsis: true,
-      editable: true,
     },
     {
       title: "出资额",
-      dataIndex: "capitalContribution",
-      ellipsis: true,
-      editable: true,
-      inputType: 'InputNumber',
+      dataIndex: "capitalContribution"
     },
     {
       title: "币种",
       dataIndex: "currencyName",
-      ellipsis: true,
-      editable: true,
-      inputType: 'selectwithService',
     },
     {
       title: "出资比例",
       dataIndex: "capitalKey",
-      ellipsis: true,
-      editable: true,
-      inputType: 'percentInput',
     },
     {
       title: "出资方式",
-      dataIndex: "capitalMethod",
-      ellipsis: true,
-      editable: true,
-      inputType: 'Input',
+      dataIndex: "capitalMethod"
     },
     {
       title: "备注",
       dataIndex: "remark",
-      ellipsis: true,
-      editable: true,
-      inputType: 'TextArea',
     }
   ];
   return (
@@ -138,6 +218,12 @@ const Other = ({ form, updateGlobalStatus }) => {
               disabled={loading}
               onClick={handleSave}
             >保存</Button>,
+            <Button
+              key="hold"
+              style={{ marginRight: '12px' }}
+              disabled={loading}
+              onClick={handleHoldData}
+            >暂存</Button>
           ] : null}
         >
           <div className={styles.wrapper}>
@@ -293,13 +379,11 @@ const Other = ({ form, updateGlobalStatus }) => {
                     </FormItem>
                   </Col>
                 </Row>
-                <EditableFormTable
-                  dataSource={equityStructures || []}
+                <EditorTable
+                  dataSource={equityStructures}
                   columns={columns}
-                  rowKey='guid'
-                  setNewData={setNewData}
-                  isEditTable={type === 'add'}
-                  isToolBar={type === 'add'}
+                  setDataSource={setequityStructures}
+                  fields={fields}
                 />
               </div>
             </div>
@@ -310,4 +394,4 @@ const Other = ({ form, updateGlobalStatus }) => {
   )
 };
 
-export default Form.create()(Other);
+export default create()(Other);
