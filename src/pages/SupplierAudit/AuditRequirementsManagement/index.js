@@ -5,15 +5,12 @@ import { Button, Input, message, Modal, Spin } from 'antd';
 import styles from '../../QualitySynergy/TechnicalDataSharing/DataSharingList/index.less';
 import { ExtTable, utils, WorkFlow } from 'suid';
 import {
-  ApplyOrganizationProps, AuditCauseManagementByReviewTypeCodeConfig,
-  AuditCauseManagementConfig,
-  AuditTypeManagementConfig, AuditTypeManagementUnfrozenConfig,
+  AuditCauseManagementByReviewTypeCodeConfig, AuditTypeManagementUnfrozenConfig,
   CompanyConfig, DeleteAuditRequirementsManagement, EndFlow,
   FindByFiltersConfig, HeightSearchApplyOrganizationProps, SupplierConfig,
 } from '../mainData/commomService';
 import {
   flowProps, judge, managementStateProps,
-  stateProps,
 } from '../../QualitySynergy/commonProps';
 import AutoSizeLayout from '../../../components/AutoSizeLayout';
 import { recommendUrl } from '../../../utils/commonUrl';
