@@ -13,14 +13,30 @@ import { baseUrl } from '../../../../utils/commonUrl';
 const { corporationProps, thatTypeProps } = commonProps;
 const columns = [
   {
-    title: '采购组织代码',
-    dataIndex: 'code'
+    title: '采购组织名称',
+    dataIndex: 'purchaseOrgName',
+    width: 250
   },
   {
-    title: '采购组织名称',
-    dataIndex: 'name',
-    width: 250
-  }
+    title: '采购组织代码',
+    dataIndex: 'purchaseOrgCode'
+  },
+  {
+    title: '公司名称',
+    dataIndex: 'corporationName'
+  },
+  {
+    title: '公司代码',
+    dataIndex: 'corporationCode'
+  },
+  {
+    title: '业务单元名称',
+    dataIndex: 'buName'
+  },
+  {
+    title: '业务单元代码',
+    dataIndex: 'buCode'
+  },
 ]
 const Ctx = forwardRef(({
   onContinue = () => null,
@@ -39,9 +55,22 @@ const Ctx = forwardRef(({
   const tableRef = useRef(null);
   const tableProps = {
     store: {
-      url: `${baseUrl}/corporationPurchaseOrg/findPurOrgsByCorpCode?corpCode=${corporation?.code}`,
+      url: `${baseUrl}/api/buCompanyPurchasingOrganizationService/findBySearch`,
       params: {
-        corpCode: corporation?.code
+        filters: [
+          {
+            fieldName: 'frozen',
+            operator: 'EQ',
+            value: false,
+            fieldType: 'Boolean'
+          },
+          {
+            fieldName: 'whetherDelete',
+            operator: 'EQ',
+            value: false,
+            fieldType: 'Boolean'
+          }
+        ]
       },
       type: 'post'
     },
@@ -67,20 +96,17 @@ const Ctx = forwardRef(({
   function formatModalSelectedRows() {
     const ids = initialDataSource.map(item => `${item.purchaseOrgCode}-${item.corporationCode}`);
     const filterSelectedRows = selectedRows
-      .filter(item => !ids.includes(`${item.code}-${item.corporationCode}`))
+      .filter(item => !ids.includes(`${item.purchaseOrgCode}-${item.corporationCode}`))
       .map(item => ({
         ...item,
         id: null,
         identifyTypeCode: thatType.value,
         identifyTypeName: thatType.name,
-        purchaseOrgCode: item.code,
-        purchaseOrgName: item.name,
-        corporationCode: corporation.code,
-        corporationName: corporation.name
+        purchaseOrgCode: item.purchaseOrgCode,
+        purchaseOrgName: item.purchaseOrgName,
+        corporationCode: item.corporationCode,
+        corporationName: item.corporationName
       }))
-    //   console.log(ids, selectedRows)
-    // console.log(filterSelectedRows, initialDataSource)
-    console.log(filterSelectedRows)
     return [...filterSelectedRows, ...initialDataSource]
   }
   /**
@@ -158,19 +184,6 @@ const Ctx = forwardRef(({
       }
     >
       <div className={styles.title}>
-        选择公司
-      </div>
-      <ComboList
-        {...corporationProps}
-        style={{ width: '300px' }}
-        afterSelect={(item) => {
-          setCorporation({ ...item })
-          uploadTable()
-        }}
-        value={corporation?.name}
-        placeholder='选择公司'
-      />
-      <div className={styles.title}>
         认定类型
       </div>
       <ComboList value={thatType?.name} {...thatTypeProps} afterSelect={handleThatTypeSelect}></ComboList>
@@ -184,7 +197,7 @@ const Ctx = forwardRef(({
         checkbox={{ multiSelect: true }}
         onSelectRow={handleSelectedRows}
         selectedRowKeys={selectedRowKeys}
-        rowKey={item => `${item.code}-${item.corporationCode}`}
+        rowKey={item => `${item.purchaseOrgCode}-${item.corporationCode}`}
       />
     </ExtModal>
   )

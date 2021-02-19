@@ -61,7 +61,6 @@ const Ctx = forwardRef(({
   const [selectedRows, setRows] = useState([]);
   const [selectedRowKeys, setKeys] = useState([]);
   const [corporation, setCorporation] = useState({});
-  console.log(selectedRows)
   const tableRef = useRef(null);
   const allowTrust = initialDataSource.some(item=> item.objectRecognition);
   const {
