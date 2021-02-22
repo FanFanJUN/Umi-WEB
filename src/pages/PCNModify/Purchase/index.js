@@ -29,7 +29,8 @@ function SupplierConfigure() {
     const [singleRow = {}] = selectedRows;
     /** 按钮可用性判断变量集合 BEGIN*/
     const [signleRow = {}] = selectedRows;
-    const { flowStatus: signleFlowStatus, id: flowId, smPcnStrategicCode, smDocunmentStatus: typeStatus } = signleRow;
+    const { flowStatus: signleFlowStatus, id: flowId, smPcnStrategicCode,
+        smDocunmentStatus: typeStatus, smSubmitStatus: terminatype } = signleRow;
     // 已提交审核状态
     const underWay = signleFlowStatus !== 'INIT';
     // 审核完成状态
@@ -42,6 +43,8 @@ function SupplierConfigure() {
     const isdelete = signleFlowStatus === 'INIT'
     // 提交审核
     const Toexamine = signleFlowStatus === 'INIT' && typeStatus === 1;
+    // 终止审核
+    const Termination = signleFlowStatus === 'INPROCESS' && terminatype === -1;
     const columns = [
         {
             title: '单据状态',
@@ -300,17 +303,17 @@ function SupplierConfigure() {
                     </StartFlow>
                 )
             }
-            {/* {
+            {
                 authAction(
                     <Button
                         className={styles.btn}
-                        disabled={empty || !underWay || !isSelf || completed}
+                        disabled={empty || !Termination || !isSelf || completed}
                         onClick={stopApprove}
                         ignore={DEVELOPER_ENV}
-                        key='SRM-SM-SUPPLIERMODEL_STOP_APPROVAL'
+                        key='SRM-SM-PCNPURCHASE-STOP-APPROVAL'
                     >终止审核</Button>
                 )
-            } */}
+            }
             {
                 authAction(
                     <FlowHistoryButton
