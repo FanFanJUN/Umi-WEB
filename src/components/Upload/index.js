@@ -18,6 +18,7 @@ class UploadFile extends React.Component {
       modalVisible: false,
       fileList: [],
       completeUploadFile: [],
+      initialFiles: false
     };
     this.entityId = props.entityId
   }
@@ -30,6 +31,7 @@ class UploadFile extends React.Component {
     /**
      * 请求的entityId未找到文件数组，没有更新completeFileList，每次都会触发update
      */
+    if(this.state.initialFiles) return
     if (Array.isArray(nextProps.entityId) && Array.isArray(this.props.entityId)) {
       const [nid] = nextProps.entityId;
       const [cid] = this.entityId;
@@ -97,7 +99,7 @@ class UploadFile extends React.Component {
         uploadUserName: f.uploadUserName
       }))
       completeUploadFile = fls.map(f => f.id)
-      this.setState({ fileList, completeUploadFile })
+      this.setState({ fileList, completeUploadFile, initialFiles: true })
       if (this.props.onChange) {
         this.props.onChange(completeUploadFile.length === 0 ? null : completeUploadFile)
       }
@@ -123,7 +125,7 @@ class UploadFile extends React.Component {
               });
               completeUploadFile.push(item.id);
             })
-            this.setState({ fileList, completeUploadFile })
+            this.setState({ fileList, completeUploadFile, initialFiles: true })
             if (this.props.onChange) {
               this.props.onChange(completeUploadFile.length === 0 ? null : completeUploadFile)
             }

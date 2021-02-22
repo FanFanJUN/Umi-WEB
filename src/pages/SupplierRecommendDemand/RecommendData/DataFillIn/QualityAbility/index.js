@@ -21,7 +21,7 @@ import {
   message,
   Modal
 } from 'antd';
-import styles from '../../DataFillIn/index.less';
+import styles from '../index.less';
 import EditorTable from '../../../../../components/EditorTable';
 import UploadFile from '../../../../../components/Upload';
 import { router } from 'dva';
@@ -47,6 +47,7 @@ const { getUUID } = utils;
 const QualityAbility = ({ form, updateGlobalStatus }) => {
   const [data, setData] = useState({});
   const [keyControlProcesses, setkeyControlProcesses] = useState([]);
+  const [processesEpiboly, setProcessesEpiboly] = useState([]);
   const [keyTestingEquipments, setkeyTestingEquipments] = useState([]);
   const [cannotTestItems, setcannotTestItems] = useState([]);
   const [finishedProductTestingItems, setfinishedProductTestingItems] = useState([]);
@@ -61,9 +62,10 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
     getFieldDecorator,
     getFieldValue,
     setFieldsValue,
-    getFieldsValue
+    getFieldsValue,
+    validateFieldsAndScroll
   } = form;
-  const { haveCannotTestItem } = getFieldsValue()
+  const { haveCannotTestItem, haveProcessOutsourcing } = getFieldsValue()
   useEffect(() => {
     const fetchData = async () => {
       await setLoading(true);
@@ -563,6 +565,61 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
       ]
     }
   ]
+  const epibolyColumns = [
+    {
+      title: '外包工序名称',
+      dataIndex: 'processName'
+    },
+    {
+      title: '外包方公司名称',
+      dataIndex: 'outsourcingCompany'
+    },
+    {
+      title: '管控方式',
+      dataIndex: 'controlMode'
+    }
+  ];
+  const epibolyFields = [
+    {
+      label: '外包工序名称',
+      name: 'processName',
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '外包工序名称不能为空'
+          }
+        ]
+      },
+      placeholder: '请输入外包工序名称'
+    },
+    {
+      label: '外包方公司名称',
+      name: 'outsourcingCompany',
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '外包方公司名称不能为空'
+          }
+        ]
+      },
+      placeholder: '请输入外包方公司名称'
+    },
+    {
+      label: '管控方式',
+      name: 'controlMode',
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '管控方式不能为空'
+          }
+        ]
+      },
+      placeholder: '请输入管控方式'
+    }
+  ]
   const columnsForFinishPro = [
     {
       title: "产品",
@@ -972,13 +1029,44 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                     </FormItem>
                   </Col>
                 </Row>
-                <Divider orientation='left'>重点控制工序</Divider>
+                <Divider orientation='left'>重点控制工序<span className={styles.hint}>(至少提供一项，如确实没有填无)</span></Divider>
                 <EditorTable
                   dataSource={keyControlProcesses}
                   setDataSource={setkeyControlProcesses}
                   columns={columnsForKeyControl}
                   fields={keyControlFields}
                 />
+                <Divider orientation='left'>工序外包<span className={styles.hint}>(如存在工序外包，至少提供一项)</span></Divider>
+                <Row>
+                  <Col>
+                    <FormItem label='是否存在外包工序' {...formLayout}>
+                      {
+                        getFieldDecorator('haveProcessOutsourcing', {
+                          rules: [
+                            {
+                              required: true,
+                              message: '请选择是否存在外包工序'
+                            }
+                          ]
+                        })(
+                          <Radio.Group>
+                            <Radio value={true}>是</Radio>
+                            <Radio value={false}>否</Radio>
+                          </Radio.Group>
+                        )
+                      }
+                    </FormItem>
+                  </Col>
+                </Row>
+                {
+                  haveProcessOutsourcing ?
+                    <EditorTable
+                      dataSource={processesEpiboly}
+                      setDataSource={setProcessesEpiboly}
+                      columns={epibolyColumns}
+                      fields={epibolyFields}
+                    /> : null
+                }
                 <Row>
                   <Col span={12}>
                     <FormItem label="关键工序是否实行了SPC控制" {...formLayout}>
@@ -1212,7 +1300,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                     </FormItem>
                   </Col>
                 </Row>
-                <Divider orientation='left'>成品检验项目</Divider>
+                <Divider orientation='left'>成品检验项目<span className={styles.hint}>(至少提供两个检验项目的信息)</span></Divider>
                 <EditorTable
                   dataSource={finishedProductTestingItems}
                   columns={columnsForFinishPro}
@@ -1227,6 +1315,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                   fields={qualityFields}
                   copyLine={true}
                   setDataSource={setmaterialQualities}
+                  allowRemove={true}
                 />
                 <Divider orientation='left'>成品质量状况</Divider>
                 <EditorTable

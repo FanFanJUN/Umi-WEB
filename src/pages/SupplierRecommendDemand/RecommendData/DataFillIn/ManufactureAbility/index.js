@@ -542,12 +542,12 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
         rules: [
           {
             required: true,
-            message: '工序名称不能为空'
+            message: '目前状态不能为空'
           }
         ]
       },
       props: {
-        placeholder: '请输入工序名称'
+        placeholder: '请输入目前状态'
       },
     }
   ];

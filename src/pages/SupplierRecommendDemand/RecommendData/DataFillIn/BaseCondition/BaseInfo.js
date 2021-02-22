@@ -7,11 +7,12 @@
  * @Description:  基本概况
  * @Connect: 1981824361@qq.com
  */
-import React, { useEffect, useImperativeHandle, forwardRef, useRef, useState } from 'react';
+import React, { useEffect } from 'react';
 import styles from '../../DataFillIn/index.less';
-import { Col, Form, Button, Row, Input, DatePicker, InputNumber, Affix, PageHeader } from 'antd';
+import { Col, Form, Row, Input, DatePicker, InputNumber } from 'antd';
+import { router } from 'dva';
 import moment from 'moment/moment';
-import { hideFormItem, checkNull } from '../CommonUtil/utils';
+import { hideFormItem, } from '../CommonUtil/utils';
 
 const FormItem = Form.Item;
 
@@ -35,7 +36,8 @@ const formLayoutCol = {
 
 const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
   const DISABLED = type === 'detail';
-  const { getFieldDecorator, setFieldsValue, getFieldsValue, resetFields } = form;
+  const { getFieldDecorator, setFieldsValue, getFieldsValue } = form;
+  const { query: { unitName='' } } = router.useLocation();
   const HideFormItem = hideFormItem(getFieldDecorator);
   const {
     bachelorDegree = 0,
@@ -49,7 +51,8 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
     technicist = 0, // 技术人员
     supportStaff = 0, // 客服人员
     // otherStaff = 0, // 其他人员
-    headCount = 0, // 总人数
+    headCount = 0, // 总人数,
+
   } = getFieldsValue()
   useEffect(() => {
     const total = bachelorDegree + juniorCollege + technicalSecondary;
@@ -243,7 +246,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
             </Row>
             <Row>
               <Col span={12}>
-                <FormItem label="设计产能" {...formLayout}>
+                <FormItem label={`设计产能（${unitName}）`} {...formLayout}>
                   {getFieldDecorator('designCapability', {
                     initialValue: type === 'add' ? '' : data.designCapability,
                     rules: [
@@ -258,7 +261,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                 </FormItem>
               </Col>
               <Col span={12}>
-                <FormItem label="实际产能" {...formLayout}>
+                <FormItem label={`实际产能（${unitName}）`} {...formLayout}>
                   {getFieldDecorator('actualCapacity', {
                     initialValue: type === 'add' ? '' : data.actualCapacity,
                     validateFirst: true,
@@ -267,6 +270,15 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                         required: true,
                         message: '实际产能不能为空',
                       },
+                      {
+                        validator(_, value, cb) {
+                          if (value > designCapability) {
+                            cb('实际产能不能超过设计产能')
+                            return
+                          }
+                          cb()
+                        }
+                      }
                     ],
                   })(<InputNumber placeholder='请输入实际产能' style={{ width: '100%' }} disabled={DISABLED} />)}
                 </FormItem>
@@ -287,7 +299,11 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                 </FormItem>
               </Col>
             </Row>
-            <div className={styles.title}>人力资源</div>
+          </Form>
+        </div>
+        <div className={styles.title}>人力资源</div>
+        <div className={styles.content}>
+          <Form>
             <Row>
               <Col span={12}>
                 <FormItem label="公司总人数" {...formLayout}>

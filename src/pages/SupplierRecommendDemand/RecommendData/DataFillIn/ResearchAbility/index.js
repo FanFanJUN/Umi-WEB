@@ -672,7 +672,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
           </div>
           <div className={styles.wrapper}>
             <div className={styles.bgw}>
-              <div className={styles.title}>产品开发情况</div>
+              <div className={styles.title}>产品开发情况<span className={styles.hint}>(至少填写一个项目的信息，如确实没有填无)</span></div>
               <div className={styles.content}>
                 <Row>
                   <Col span={24}>
@@ -747,7 +747,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                     }}>样品开发周期</div>
                   </Col>
                   <Col span={16}>
-                    <FormItem label="最长" {...formLayout} labelCol={{
+                    <FormItem label="最长(天)" {...formLayout} labelCol={{
                       span: 4
                     }} wrapperCol={{ span: 20 }}>
                       {getFieldDecorator('devMaxCycle', {
@@ -763,14 +763,15 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                           },
                           {
                             required: true,
-                            message: '不能为空'
+                            message: '不能为空',
+                            type:'number'
                           }
                         ]
                       })(
                         <InputNumber disabled={type === 'detail'} style={{ width: '20%' }} />
                       )}
                     </FormItem>
-                    <FormItem label='最短' {...formLayout} labelCol={{
+                    <FormItem label='最短(天)' {...formLayout} labelCol={{
                       span: 4
                     }} wrapperCol={{ span: 20 }}>
                       {
@@ -787,7 +788,8 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                             },
                             {
                               required: true,
-                              messge: '不能为空'
+                              message: '不能为空',
+                              type: 'number'
                             }
                           ]
                         })(
@@ -795,7 +797,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                         )
                       }
                     </FormItem>
-                    <FormItem label='平均' {...formLayout} labelCol={{
+                    <FormItem label='平均(天)' {...formLayout} labelCol={{
                       span: 4
                     }} wrapperCol={{ span: 20 }}>
                       {
@@ -845,7 +847,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
           </div>
           <div className={styles.wrapper}>
             <div className={styles.bgw}>
-              <div className={styles.title}>产品执行标准</div>
+              <div className={styles.title}>产品执行标准<span className={styles.hint}>(至少填写一个项目的信息，如确实没有填无)</span></div>
               <div className={styles.content}>
                 <EditorTable
                   dataSource={productStandards}

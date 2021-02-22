@@ -9,7 +9,9 @@
  */
 import React from 'react';
 import { Divider, Form, Row, Col, Input, Radio } from 'antd';
+import { router } from 'dva';
 import EditorTable from '../../../../../components/EditorTable';
+import styles from '../index.less';
 import { currencyTableProps } from '../../../../../utils/commonProps';
 const currencyOpt = {
   name: 'currencyName',
@@ -48,6 +50,7 @@ const MarketCompetitive = ({
   setMarketPositions,
   type = 'create'
 }) => {
+  const { query: { unitName, unitCode } } = router.useLocation();
   const DISABLED = type === 'detail';
   const { getFieldDecorator } = form;
   const marketFields = [
@@ -177,6 +180,30 @@ const MarketCompetitive = ({
       }
     },
     {
+      label: '计量单位',
+      name: 'unitName',
+      options: {
+        initialValue: unitName,
+        rules: [
+          {
+            required: true,
+            message: '计量单位不能为空'
+          }
+        ]
+      },
+      props: {
+        disabled: true
+      }
+    },
+    {
+      label: '计量单位代码',
+      name: 'unitCode',
+      options: {
+        initialValue: unitCode
+      },
+      fieldType: 'hide'
+    },
+    {
       label: '市场占有率%',
       name: 'marketShare',
       fieldType: 'inputNumber',
@@ -215,6 +242,10 @@ const MarketCompetitive = ({
     {
       title: '年销量',
       dataIndex: 'annualSales'
+    },
+    {
+      title: '计量单位',
+      dataIndex: 'unitName'
     },
     {
       title: '市场占有率',
@@ -263,7 +294,7 @@ const MarketCompetitive = ({
         fields={marketFields}
         mode={type}
       />
-      <Divider orientation='left' orientation='left'>主要竞争对手排名</Divider>
+      <Divider orientation='left' orientation='left'>主要竞争对手排名<span className={styles.hint}>(至少提供三个竞争对手的信息)</span></Divider>
       <EditorTable
         columns={columnsForRank}
         copyLine={true}

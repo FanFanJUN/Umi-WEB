@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import Header from '../Header';
 import ModalFields from '../ModalFields';
-import { ExtTable, utils, DataExport, DataImport } from 'suid';
+import { ExtTable, utils, DataImport } from 'suid';
 import { Button, Modal, message } from 'antd';
 import { useTableProps } from '../../utils/hooks';
 import styles from './index.less';
@@ -96,7 +96,7 @@ function EditorTable({
           return
         }
         const [key] = selectedRowKeys;
-        const filterDataSource = dataSource.filter(item => item.guid !== key)
+        const filterDataSource = d.filter(item => item.guid !== key)
         await setDataSource(filterDataSource)
         cleanSelectedRecord()
       }
@@ -105,7 +105,6 @@ function EditorTable({
   async function handleConfirm() {
     toggleLoading(true)
     const val = await formRef.current.validateFieldsAndScroll((err, values) => {
-      console.log(values)
       if (err) {
         toggleLoading(false)
       }

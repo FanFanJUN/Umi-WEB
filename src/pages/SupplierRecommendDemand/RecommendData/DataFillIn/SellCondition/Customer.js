@@ -10,8 +10,10 @@
 import React from 'react';
 import { Divider, Form, InputNumber, Row, Col, Input } from 'antd';
 import moment from 'moment';
+import { router } from 'dva';
 import EditorTable from '../../../../../components/EditorTable';
 import UploadFile from '../../../../../components/Upload';
+import styles from '../index.less'
 import { stateInfoPorps, businessMainPropsNoAuth, currencyTableProps } from '../../../../../utils/commonProps';
 
 const FormItem = Form.Item;
@@ -105,7 +107,6 @@ const Customer = ({
   form,
   type,
   data,
-  setTableData,
   changhongSaleInfos = [],
   mainCustomers = [],
   exportSituations = [],
@@ -119,6 +120,7 @@ const Customer = ({
 }) => {
   const DISABLED = type === 'detail';
   const { getFieldDecorator } = form;
+  const { query: { unitName, unitCode } } = router.useLocation();
   const groupFields = [
     {
       label: '供货BU名称',
@@ -208,6 +210,30 @@ const Customer = ({
       }
     },
     {
+      label: '计量单位',
+      name: 'unitName',
+      options: {
+        initialValue: unitName,
+        rules: [
+          {
+            required: true,
+            message: '计量单位不能为空'
+          }
+        ]
+      },
+      props: {
+        disabled: true
+      }
+    },
+    {
+      label: '计量单位代码',
+      name: 'unitCode',
+      options: {
+        initialValue: unitCode
+      },
+      fieldType: 'hide'
+    },
+    {
       label: '占该BU该配件比例(%)',
       name: 'buRate',
       fieldType: 'inputNumber',
@@ -246,6 +272,10 @@ const Customer = ({
     {
       title: '年供货量',
       dataIndex: 'annualOutput'
+    },
+    {
+      title: '计量单位',
+      dataIndex: 'unitName'
     },
     {
       title: '占该BU该配件比例(%)',
@@ -304,7 +334,7 @@ const Customer = ({
     {
       label: '开始供货时间',
       name: 'startSupplyTime',
-      inputType: 'datePicker',
+      fieldType: 'datePicker',
       disabledDate: (current, mn) => current && current > mn(),
       options: {
         rules: [
@@ -334,6 +364,30 @@ const Customer = ({
           }
         ]
       }
+    },
+    {
+      label: '计量单位',
+      name: 'unitName',
+      options: {
+        initialValue: unitName,
+        rules: [
+          {
+            required: true,
+            message: '计量单位不能为空'
+          }
+        ]
+      },
+      props: {
+        disabled: true
+      }
+    },
+    {
+      label: '计量单位代码',
+      name: 'unitCode',
+      options: {
+        initialValue: unitCode
+      },
+      fieldType: 'hide'
     },
     {
       label: '企业在该客户的销售额(万元)',
@@ -458,6 +512,10 @@ const Customer = ({
       dataIndex: 'supplyNumber',
       ellipsis: true,
       inputType: 'InputNumber'
+    },
+    {
+      title: '计量单位',
+      dataIndex: 'unitName'
     },
     {
       title: '企业在该客户的销售额（万元）',
@@ -728,7 +786,7 @@ const Customer = ({
         dataSource={changhongSaleInfos}
         setDataSource={setChanghongSaleInfos}
       />
-      <Divider orientation='left'>其他主要客户情况</Divider>
+      <Divider orientation='left'>其他主要客户情况<span className={styles.hint}>(至少填写前3名客户，如不足可填无，请提供近三年数据)</span></Divider>
       <EditorTable
         columns={columnsForMajorcustomers}
         bordered
@@ -738,7 +796,7 @@ const Customer = ({
         dataSource={mainCustomers}
         setDataSource={setMainCustomers}
       />
-      <Divider orientation='left'>出口情况</Divider>
+      <Divider orientation='left'>出口情况<span className={styles.hint}>（请提供上一年度数据）</span></Divider>
       <EditorTable
         columns={columnsForExpSitu}
         bordered

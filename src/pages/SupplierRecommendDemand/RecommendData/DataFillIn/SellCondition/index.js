@@ -7,7 +7,7 @@
  * @Description: 销售情况 Tab
  * @Connect: 1981824361@qq.com
  */
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Button, Spin, PageHeader, message } from 'antd';
 import styles from '../../DataFillIn/index.less';
 import SalesProfit from './SalesProfit';
@@ -16,8 +16,6 @@ import MarketCompetitive from './MarketCompetitive';
 import { findSalesSituationById, saveSupplierSalesSituation } from '../../../../../services/dataFillInApi';
 import { router } from 'dva';
 import { filterEmptyFileds } from '../CommonUtil/utils';
-
-const { create } = Form;
 
 const SellCondition = ({ form, updateGlobalStatus }) => {
   const [data, setData] = useState({});
@@ -41,7 +39,7 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
   const [loading, setLoading] = useState(false);
 
   const { query: { id, type = 'add' } } = router.useLocation();
-  const { getFieldsValue, setFieldsValue, validateFieldsAndScroll } = form;
+  const { getFieldsValue } = form;
   useEffect(() => {
     const fetchData = async () => {
       await setLoading(true);
@@ -166,7 +164,7 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
         >
           <div className={styles.wrapper}>
             <div className={styles.bgw}>
-              <div className={styles.title}>销售收入及利润 <span className={styles.hint}>（至少提供近三年）</span></div>
+              <div className={styles.title}>销售收入及利润 <span className={styles.hint}>（提供近三年）</span></div>
               <div className={styles.content}>
                 <SalesProfit
                   type={type}
@@ -175,7 +173,7 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
                 />
               </div>
             </div>
-          </div>0
+          </div>
           <div className={styles.wrapper}>
             <div className={styles.bgw}>
               <div className={styles.title}>客户</div>
@@ -200,7 +198,7 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
           </div>
           <div className={styles.wrapper}>
             <div className={styles.bgw}>
-              <div className={styles.title}>市场地位及竞争状况</div>
+              <div className={styles.title}>市场地位及竞争状况<span className={styles.hint}>(请提供上一年度数据)</span></div>
               <div className={styles.content}>
                 <MarketCompetitive
                   type={type}

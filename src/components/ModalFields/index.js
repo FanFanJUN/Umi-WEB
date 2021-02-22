@@ -107,7 +107,7 @@ function ModalFields({
       rules: rules.map(item => {
         if (item.validator) {
           return {
-            validator: (r, v, c) => item.validator(r, v, c, tv)
+            validator: (r, v, c) => item.validator(r, v, c, tv, getFieldsValue)
           }
         }
         if (!Object.is(undefined, item.required) && typeof item.required === 'function') {

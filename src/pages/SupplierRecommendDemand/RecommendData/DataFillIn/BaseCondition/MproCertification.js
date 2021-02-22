@@ -291,53 +291,154 @@ const MproCertification = ({
           name: 'EMC认证'
         }
       ],
+      disabledTarget: 'obtained',
       options: {
         rules: [
           {
-            required: true,
-            message: '认证类型不能为空'
+            required: tv => !!tv,
+            message: '请选择认证类型'
           }
         ]
+      },
+      props: {
+        disabled: (tv) => !tv
       }
     },
     {
       label: '执行标准',
-      name: 'executiveStandard'
+      name: 'executiveStandard',
+      disabledTarget: 'obtained',
+      options: {
+        rules: [
+          {
+            required: tv => !!tv,
+            message: '执行标准不能为空'
+          }
+        ]
+      },
+      props: {
+        disabled: (tv) => !tv
+      }
     },
     {
       label: '证件编号',
-      name: 'certificateNumber'
+      name: 'certificateNumber',
+      disabledTarget: 'obtained',
+      options: {
+        rules: [
+          {
+            required: tv => !!tv,
+            message: '证件编号不能为空'
+          }
+        ]
+      },
+      props: {
+        disabled: (tv) => !tv
+      }
     },
     {
       label: '发证机构',
-      name: 'certifyingAuthority'
+      name: 'certifyingAuthority',
+      disabledTarget: 'obtained',
+      options: {
+        rules: [
+          {
+            required: tv => !!tv,
+            message: '发证机构不能为空'
+          }
+        ]
+      },
+      props: {
+        disabled: (tv) => !tv
+      }
     },
     {
       label: '首次获证时间',
       name: 'firstObtainTime',
       type: 'date',
-      fieldType: 'datePicker'
+      fieldType: 'datePicker',
+      disabledTarget: 'obtained',
+      options: {
+        rules: [
+          {
+            required: tv => !!tv,
+            message: '首次获证时间不能为空'
+          }
+        ]
+      },
+      disabledDate: (ct) => {
+        return ct < setUpTime
+      },
+      props: {
+        disabled: (tv) => !tv
+      }
     },
     {
       label: '最新年审',
       name: 'newestAnnualReview',
       type: 'date',
-      fieldType: 'datePicker'
+      fieldType: 'datePicker',
+      disabledTarget: 'obtained',
+      options: {
+        rules: [
+          {
+            required: tv => !!tv,
+            message: '最新年审不能为空'
+          }
+        ]
+      },
+      disabledDate: (ct) => {
+        return ct < setUpTime
+      },
+      props: {
+        disabled: (tv) => !tv
+      }
     },
     {
       label: '附件',
       name: 'attachmentIds',
-      fieldType: 'uploadFile'
+      fieldType: 'uploadFile',
+      disabledTarget: 'obtained',
+      options: {
+        rules: [
+          {
+            required: tv => !!tv,
+            message: '附件不能为空'
+          }
+        ]
+      },
+      props: {
+        disabled: (tv) => !tv
+      }
     },
     {
       label: '计划取得时间',
-      name: 'planObtainTime'
+      name: 'planObtainTime',
+      disabledTarget: 'obtained',
+      options: {
+        rules: [
+          {
+            required: tv => !!tv,
+            message: '计划取得时间不能为空'
+          }
+        ]
+      },
+      props: {
+        disabled: (tv) => !tv
+      }
     }
   ]
   const columnsForPro = [
     {
       title: '产品',
       dataIndex: 'productName'
+    },
+    {
+      title: '是否取得',
+      dataIndex: 'obtained',
+      render(text) {
+        return Object.is(null, text) ? '' : text ? '是' : '否'
+      }
     },
     {
       title: '认证类型',
@@ -376,12 +477,139 @@ const MproCertification = ({
 
       title: '计划取得时间',
       dataIndex: 'planObtainTime'
-    },
+    }
   ].map(item => ({
     ...item,
     align: 'center'
   }));
-
+  const otherFields = [
+    {
+      label: '产品',
+      name: 'productName'
+    },
+    {
+      label: '认证类型',
+      name: 'certificateType',
+      fieldType: 'select',
+      selectOptions: [
+        {
+          value: '安规认证',
+          name: '安规认证'
+        },
+        {
+          value: 'EMC认证',
+          name: 'EMC认证'
+        }
+      ],
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '请选择认证类型'
+          }
+        ]
+      }
+    },
+    {
+      label: '执行标准',
+      name: 'executiveStandard',
+      disabledTarget: 'obtained',
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '执行标准不能为空'
+          }
+        ]
+      }
+    },
+    {
+      label: '证件编号',
+      name: 'certificateNumber',
+      disabledTarget: 'obtained',
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '证件编号不能为空'
+          }
+        ]
+      }
+    },
+    {
+      label: '发证机构',
+      name: 'certifyingAuthority',
+      disabledTarget: 'obtained',
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '发证机构不能为空'
+          }
+        ]
+      }
+    },
+    {
+      label: '首次获证时间',
+      name: 'firstObtainTime',
+      type: 'date',
+      fieldType: 'datePicker',
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '首次获证时间不能为空'
+          }
+        ]
+      },
+      disabledDate: (ct) => {
+        return ct < setUpTime
+      }
+    },
+    {
+      label: '最新年审',
+      name: 'newestAnnualReview',
+      type: 'date',
+      fieldType: 'datePicker',
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '最新年审不能为空'
+          }
+        ]
+      },
+      disabledDate: (ct) => {
+        return ct < setUpTime
+      }
+    },
+    {
+      label: '附件',
+      name: 'attachmentIds',
+      fieldType: 'uploadFile',
+      disabledTarget: 'obtained',
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '附件不能为空'
+          }
+        ]
+      }
+    },
+    {
+      label: '计划取得时间',
+      name: 'planObtainTime',
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '计划取得时间不能为空'
+          }
+        ]
+      }
+    }
+  ]
   const columnsForOther = [
     {
       title: '产品',
@@ -440,7 +668,7 @@ const MproCertification = ({
   }
   return <Fragment>
     <div>
-      <Divider orientation='left'>管理体系</Divider>
+      <Divider orientation='left'>管理体系（至少填写质量管理体系）</Divider>
       <EditorTable
         columns={columnsForMan}
         fields={manFields}
@@ -455,7 +683,6 @@ const MproCertification = ({
       <EditorTable
         fields={proFields}
         columns={columnsForPro}
-        allowRemove={false}
         rowKey='guid'
         setDataSource={setProData}
         copyLine={true}
@@ -463,6 +690,7 @@ const MproCertification = ({
       />
       <Divider orientation='left'>其他认证</Divider>
       <EditorTable
+        fields={otherFields}
         columns={columnsForOther}
         copyLine={true}
         rowKey='guid'

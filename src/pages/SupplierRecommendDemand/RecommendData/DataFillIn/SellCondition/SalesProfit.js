@@ -55,7 +55,8 @@ const SalesProfit = ({ data = [], type, setTableData }) => {
         ]
       },
       props: {
-        placeholder: '请选择年度'
+        placeholder: '请选择年度',
+        disabled: true
       }
     },
     {
@@ -70,8 +71,8 @@ const SalesProfit = ({ data = [], type, setTableData }) => {
             message: '销售金额不能为空'
           },
           {
-            validator: (_,val, cb, tg) => {
-              if(val < tg) {
+            validator: (_, val, cb, tg) => {
+              if (val < tg) {
                 cb('含税销售金额应大于利润')
                 return
               }
@@ -98,7 +99,7 @@ const SalesProfit = ({ data = [], type, setTableData }) => {
           },
           {
             validator: (_, val, cb, tg) => {
-              if(val >= tg) {
+              if (val >= tg) {
                 cb('利润应小于含税销售金额')
                 return
               }
@@ -137,6 +138,8 @@ const SalesProfit = ({ data = [], type, setTableData }) => {
     <EditorTable
       dataSource={data}
       columns={columns}
+      allowRemove={false}
+      allowCreate={false}
       rowKey='guid'
       setDataSource={setTableData}
       fields={fields}

@@ -67,7 +67,8 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
     getFieldDecorator,
     getFieldValue,
     getFieldsValue,
-    setFieldsValue
+    setFieldsValue,
+    validateFieldsAndScroll
   } = form;
   const {
     haveAirLiftDelivery,
@@ -845,7 +846,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
             <div className={styles.bgw}>
               <div className={styles.title}>物流</div>
               <div className={styles.content}>
-                <Divider orientation='left'>汽运</Divider>
+                <Divider orientation='left'>汽运<span className={styles.hint}>(至少填一行)</span></Divider>
                 <EditorTable
                   dataSource={logisticsBusTransports}
                   columns={columnsForCarTransport}
