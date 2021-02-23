@@ -61,7 +61,6 @@ const formItemLayout = {
 const CommonconfigRef = forwardRef(({
   formItems = [],
   form,
-  initialValues = {},
   isView,
   editData = [],
   wholeData = [],
@@ -77,10 +76,11 @@ const CommonconfigRef = forwardRef(({
   const [companycode, setcompanycode] = useState([]);
   const [supplierName, setsupplierName] = useState('');
   const [companyid, setCompanyid] = useState('');
-
+  const [iscountry, setiscountry] = useState(false);
   useEffect(() => {
     setother(editData)
     entityIdObj = getEntityId(editData);
+    countryEdit(editData)
   }, [editData])
 
   function setother(val) {
@@ -167,22 +167,6 @@ const CommonconfigRef = forwardRef(({
   function handletypeSelect(item) {
     selectfication(item.id)
   }
-  function sendSupplierName() {
-    setName(supplierName);
-  }
-  // 泛虹公司选择
-  // function RainbowChange(value, record) {
-  //   if (record) {
-  //     setcompanycode(record.code)
-  //     setsupplierName(record.name)
-  //     form.setFieldsValue({
-  //       'supplierVo.name': record.name,
-  //       'supplierVo.bukrName': record.name
-  //     });
-  //     sendSupplierName();
-  //   }
-
-  // }
   function changevalue(val) {
     setsupplierName(val.name)
     setCompanyid(val.code)
@@ -197,24 +181,21 @@ const CommonconfigRef = forwardRef(({
       'supplierVo.name': supplierName + '(' + value.code + '工厂' + ')'
     });
   }
-  // 拟合作公司
-  function cooperationChange(value, record) {
-    if (record) {
-      form.setFieldsValue({
-        'supplierVo.companyName': record.name,
-        'supplierVo.companyCode': record.code
-      });
+  function countryEdit(val) {
+    if (val.extendVo.countryName === '中国') {
+      setiscountry(false)
+    } else {
+      setiscountry(true)
     }
   }
-  function deleteSelect(record) {
-    if (record) {
-      form.setFieldsValue({
-        'supplierVo.workName': '',
-        'supplierVo.name': supplierName
-      });
+  // 国家限制
+  function CountryChange(val) {
+    if (val.name === '中国' && val.code === 'CN') {
+      setiscountry(false)
+    } else {
+      setiscountry(true)
     }
   }
-
   return (
     <Row type="flex">
       {
@@ -763,6 +744,7 @@ const CommonconfigRef = forwardRef(({
                               form={form}
                               name="extendVo.countryName"
                               field={["extendVo.countryId"]}
+                              afterSelect={CountryChange}
                             />,
                           )}
                       </FormItem>
@@ -975,6 +957,7 @@ const CommonconfigRef = forwardRef(({
                                 cityConfig={cityListConfig}
                                 areaConfig={areaListConfig}
                                 isView={true}
+                                iscountry={iscountry}
                               />,
                             )
                         }
@@ -1019,6 +1002,7 @@ const CommonconfigRef = forwardRef(({
                                 cityConfig={cityListConfig}
                                 areaConfig={areaListConfig}
                                 isView={true}
+                                iscountry={iscountry}
                               />,
                             )
                         }

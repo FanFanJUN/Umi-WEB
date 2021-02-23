@@ -3,8 +3,8 @@
  * @Author: CHEHSHUANG
  * @Date: 2018/12/6
  */
-import React, {Component} from 'react';
-import {Input} from "antd";
+import React, { Component } from 'react';
+import { Input } from "antd";
 import SelectWithService from "./SelectWithService";
 
 class CascadeAddressSelect extends Component {
@@ -25,39 +25,40 @@ class CascadeAddressSelect extends Component {
       city: value.city,
       area: value.area,
       street: value.street,
-      id:'',
-      disabled:value.disabled
+      id: '',
+      disabled: value.disabled,
+      iscountry: value.iscountry
     };
   }
 
   handleStreetChange = (e) => {
     const street = e.target.value;
     if (!('value' in this.props)) {
-      this.setState({street});
+      this.setState({ street });
     }
-    this.triggerChange({street});
+    this.triggerChange({ street });
   }
 
   handleProvinceChange = (province) => {
     if (!('value' in this.props)) {
-      this.setState({province});
+      this.setState({ province });
     }
-    this.triggerChange({province});
+    this.triggerChange({ province });
   }
 
   handleCityChange = (city) => {
     if (!('value' in this.props)) {
-      this.setState({city});
+      this.setState({ city });
     }
 
-    this.triggerChange({city});
+    this.triggerChange({ city });
   }
 
   handleAreaChange = (area) => {
     if (!('value' in this.props)) {
-      this.setState({area});
+      this.setState({ area });
     }
-    this.triggerChange({area});
+    this.triggerChange({ area });
   }
 
   triggerChange = (changedValue) => {
@@ -69,46 +70,47 @@ class CascadeAddressSelect extends Component {
 
 
   render() {
-    const {size, placeholder, provinceConfig, cityConfig, areaConfig,isView,disabled} = this.props;
-    const {province, city, area,street} = this.state;
+    const { size, placeholder, provinceConfig, cityConfig,
+      areaConfig, isView, disabled, iscountry } = this.props;
+    const { province, city, area, street } = this.state;
     const provinceId = province ? province.key : null;
     const Id = city ? city.key : null;
     return (
       <span>
-          <SelectWithService
-            labelInValue={true}
-            config={provinceConfig}
-            value={province}
-            size={size}
-            placeholder={"请选择省"}
-            style={{width: '14%', marginRight: "1%"}}
-            onChange={this.handleProvinceChange}
-            disabled={disabled === '2'}
+        <SelectWithService
+          labelInValue={true}
+          config={provinceConfig}
+          value={province}
+          size={size}
+          placeholder={"请选择省"}
+          style={{ width: '14%', marginRight: "1%" }}
+          onChange={this.handleProvinceChange}
+          disabled={disabled === '2' || iscountry}
 
-          />
-          <SelectWithService
-            labelInValue={true}
-            config={cityConfig}
-            params={{provinceId}}
-            value={city}
-            size={size}
-            placeholder={"请选择城市"}
-            style={{width: '14%', marginRight: "1%"}}
-            onChange={this.handleCityChange}
-            disabled={disabled === '2'}
-          />
-           <SelectWithService
-              labelInValue={true}
-              config={areaConfig}
-              params={{provinceId:Id}}
-              value={area}
-              size={size}
-              placeholder={"请选择区县"}
-              style={{width: '15%', marginRight: "1%"}}
-              onChange={this.handleAreaChange}
-              disabled={disabled === '2'}
-            />
-            {/* {
+        />
+        <SelectWithService
+          labelInValue={true}
+          config={cityConfig}
+          params={{ provinceId }}
+          value={city}
+          size={size}
+          placeholder={"请选择城市"}
+          style={{ width: '14%', marginRight: "1%" }}
+          onChange={this.handleCityChange}
+          disabled={disabled === '2' || iscountry}
+        />
+        <SelectWithService
+          labelInValue={true}
+          config={areaConfig}
+          params={{ provinceId: Id }}
+          value={area}
+          size={size}
+          placeholder={"请选择区县"}
+          style={{ width: '15%', marginRight: "1%" }}
+          onChange={this.handleAreaChange}
+          disabled={disabled === '2' || iscountry}
+        />
+        {/* {
               isView === true &&
               <SelectWithService
                 labelInValue={true}
@@ -121,15 +123,15 @@ class CascadeAddressSelect extends Component {
                 onChange={this.handleAreaChange}
               />
             } */}
-          <Input
-            maxLength={35}
-            size={'60'}
-            value={street}
-            onChange={this.handleStreetChange}
-            style={{width: '54%'}}
-            placeholder={placeholder || "详细地址"}
-            disabled={disabled === '2'}
-          />
+        <Input
+          maxLength={35}
+          size={'60'}
+          value={street}
+          onChange={this.handleStreetChange}
+          style={{ width: '54%' }}
+          placeholder={placeholder || "详细地址"}
+          disabled={disabled === '2' || iscountry}
+        />
       </span>
     );
   }
