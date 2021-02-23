@@ -963,7 +963,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
           </div>
           <div className={styles.wrapper}>
             <div className={styles.bgw}>
-              <div className={styles.title}>供应商管控</div>
+              <div className={styles.title}>供应商管控<span className={styles.hint}>（至少填写一行数据）</span></div>
               <div className={styles.content}>
                 <EditorTable
                   dataSource={keyMaterialSuppliers}

@@ -875,7 +875,7 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
           </div>
           <div className={styles.wrapper}>
             <div className={styles.bgw}>
-              <div className={styles.title}>现有生产情况</div>
+              <div className={styles.title}>现有生产情况<span className={styles.hint}>（至少填写一行数据）</span></div>
               <div className={styles.content}>
                 <EditorTable
                   dataSource={currentProductionSituations}
@@ -916,7 +916,7 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
           </div>
           <div className={styles.wrapper}>
             <div className={styles.bgw}>
-              <div className={styles.title}>产品制造工艺流程简介</div>
+              <div className={styles.title}>产品制造工艺流程简介<span className={styles.hint}>（至少填写一行数据）</span></div>
               <div className={styles.content}>
                 <EditorTable
                   dataSource={productManufacturingIntroductions}

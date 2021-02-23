@@ -863,7 +863,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
       //     return;
       // }
     }
-    if(keyControlProcesses.length === 0) {
+    if (keyControlProcesses.length === 0) {
       message.error('至少需要填写一条重点控制工序信息')
       return
     }
@@ -1315,7 +1315,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                   copyLine={true}
                   setDataSource={setfinishedProductTestingItems}
                 />
-                <Divider orientation='left'>原材料质量状况（至少提供一种原材料的数据）</Divider>
+                <Divider orientation='left'>原材料质量状况<span className={styles.hint}>（至少提供一种原材料的数据）</span></Divider>
                 <EditorTable
                   dataSource={materialQualities}
                   columns={columnsForQuality}
@@ -1324,7 +1324,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                   setDataSource={setmaterialQualities}
                   allowRemove={true}
                 />
-                <Divider orientation='left'>成品质量状况</Divider>
+                <Divider orientation='left'>成品质量状况<span className={styles.hint}>（至少填写一行数据）</span></Divider>
                 <EditorTable
                   dataSource={finishedProductQualities}
                   columns={columnsForFinishQua}

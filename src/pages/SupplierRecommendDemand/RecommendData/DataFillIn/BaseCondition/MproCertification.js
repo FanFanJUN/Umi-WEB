@@ -10,6 +10,7 @@
 import { Fragment } from 'react';
 import { Divider, message } from 'antd';
 import EditorTable from '../../../../../components/EditorTable';
+import styles from '../index.less'
 
 const MproCertification = ({
   type,
@@ -715,7 +716,7 @@ const MproCertification = ({
         setDataSource={setManageData}
         dataSource={manageData}
       />
-      <Divider orientation='left'>产品安规或EMC认证</Divider>
+      <Divider orientation='left'>产品安规或EMC认证<span className={styles.hint}>(至少填写一行数据)</span></Divider>
       <EditorTable
         fields={proFields}
         columns={columnsForPro}
