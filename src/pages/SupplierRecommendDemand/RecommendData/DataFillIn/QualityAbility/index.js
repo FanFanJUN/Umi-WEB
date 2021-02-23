@@ -79,6 +79,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
           cannotTestItems = [],
           materialQualities = [],
           finishedProductTestingItems = [],
+          processOutsourcingList = [],
           ...other
         } = data;
         await setData(data);
@@ -89,6 +90,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
         await setfinishedProductQualities(finishedProductQualities);
         await setmaterialQualities(materialQualities);
         await setfinishedProductTestingItems(finishedProductTestingItems);
+        await setProcessesEpiboly(processOutsourcingList)
         return
       }
       message.error(msg);
@@ -861,6 +863,10 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
       //     return;
       // }
     }
+    if(keyControlProcesses.length === 0) {
+      message.error('至少需要填写一条重点控制工序信息')
+      return
+    }
     const value = await validateFieldsAndScroll();
     const saveParams = {
       ...value,
@@ -874,6 +880,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
       cannotTestItems,
       materialQualities,
       finishedProductTestingItems,
+      processOutsourcingList: processesEpiboly
       // environmentalTestingEquipments: tableTata || [],
     };
     const params = filterEmptyFileds(saveParams)
@@ -1324,7 +1331,6 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                   fields={finishQuaFields}
                   setDataSource={setfinishedProductQualities}
                   copyLine={true}
-                  allowRemove={false}
                 />
               </div>
             </div>

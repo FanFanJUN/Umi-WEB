@@ -37,7 +37,7 @@ const MarketCompetitive = React.forwardRef(({ form, data, type, setTableData }, 
       editable: false
     },
     {
-      title: '年产值',
+      title: '年产值（万元）',
       dataIndex: 'yearAnnualValue',
       ellipsis: true,
       inputType: 'InputNumber'
@@ -49,7 +49,7 @@ const MarketCompetitive = React.forwardRef(({ form, data, type, setTableData }, 
       inputType: 'selectwithService'
     },
     {
-      title: '市场占有率',
+      title: '市场占有率（%）',
       dataIndex: 'marketShare',
       ellipsis: true,
       inputType: 'percentInput'
@@ -68,7 +68,7 @@ const MarketCompetitive = React.forwardRef(({ form, data, type, setTableData }, 
       ellipsis: true,
     },
     {
-      title: '年销售额',
+      title: '年销售额（万元）',
       dataIndex: 'annualTurnover',
       ellipsis: true,
       inputType: 'InputNumber'
@@ -80,13 +80,13 @@ const MarketCompetitive = React.forwardRef(({ form, data, type, setTableData }, 
       inputType: 'selectwithService'
     },
     {
-      title: '年销量',
+      title: '年销量（万）',
       dataIndex: 'annualSales',
       ellipsis: true,
       inputType: 'InputNumber'
     },
     {
-      title: '市场占有率',
+      title: '市场占有率（%）',
       dataIndex: 'marketShare',
       ellipsis: true,
       inputType: 'percentInput'

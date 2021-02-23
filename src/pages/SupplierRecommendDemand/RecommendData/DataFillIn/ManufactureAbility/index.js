@@ -292,6 +292,30 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
       }
     },
     {
+      label: '计量单位',
+      name: 'unitName',
+      options: {
+        initialValue: unitName,
+        rules: [
+          {
+            required: true,
+            message: '计量单位不能为空'
+          }
+        ]
+      },
+      props: {
+        disabled: true
+      }
+    },
+    {
+      label: '计量单位代码',
+      name: 'unitCode',
+      options: {
+        initialValue: unitCode
+      },
+      fieldType: 'hide'
+    },
+    {
       label: "占总产量(％)",
       name: "rateWithTotal",
       fieldType: 'inputNumber',
@@ -347,6 +371,10 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
     {
       title: "月生产能力（万）",
       dataIndex: "monthProductCapacity",
+    },
+    {
+      title: '计量单位',
+      dataIndex: 'unitName'
     },
     {
       title: "占总产量(％)",

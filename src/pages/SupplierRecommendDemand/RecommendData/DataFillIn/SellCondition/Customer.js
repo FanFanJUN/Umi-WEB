@@ -193,7 +193,7 @@ const Customer = ({
       }
     },
     {
-      label: '年供货量',
+      label: '年供货量(万)',
       name: 'annualOutput',
       fieldType: 'inputNumber',
       props: {
@@ -270,7 +270,7 @@ const Customer = ({
       width: 120
     },
     {
-      title: '年供货量',
+      title: '年供货量(万)',
       dataIndex: 'annualOutput'
     },
     {
@@ -349,7 +349,7 @@ const Customer = ({
       }
     },
     {
-      label: '供货数量',
+      label: '供货数量（万）',
       name: 'supplyNumber',
       fieldType: 'inputNumber',
       props: {
@@ -508,7 +508,7 @@ const Customer = ({
       }
     },
     {
-      title: '供货数量',
+      title: '供货数量（万）',
       dataIndex: 'supplyNumber',
       ellipsis: true,
       inputType: 'InputNumber'
@@ -698,6 +698,9 @@ const Customer = ({
     {
       title: '关键件/重要件',
       dataIndex: 'importantPart',
+      render(text) {
+        return Object.is(null, text) ? '' : text ? '是' : '否'
+      },
       width: 172
     },
     {

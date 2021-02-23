@@ -221,7 +221,7 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
           style={{
             padding: '0px'
           }}
-          title="研发能力"
+          title="产品有害物质管控"
           extra={type === 'add' ? [
             <Button
               key="save"
@@ -244,7 +244,7 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
         >
           <div className={styles.wrapper}>
             <div className={styles.bgw}>
-              <div className={styles.title}>产品有害物质管控</div>
+              <div className={styles.title}>环保检测设备</div>
               <div className={styles.content}>
                 <Row>
                   <Col span={24}>
@@ -265,12 +265,16 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                     </FormItem>
                   </Col>
                 </Row>
-                <EditorTable
-                  dataSource={tableData}
-                  columns={columns}
-                  fields={fields}
-                  setDataSource={setTableData}
-                />
+                {
+                  haveEnvironmentalTestingEquipment ?
+                    <EditorTable
+                      dataSource={tableData}
+                      columns={columns}
+                      fields={fields}
+                      setDataSource={setTableData}
+                    />
+                    : null
+                }
                 <Divider orientation='left'>RoHS</Divider>
                 <Row>
                   <Col span={24}>

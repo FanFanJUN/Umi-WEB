@@ -36,7 +36,17 @@ const MproCertification = ({
       },
       props: {
         placeholder: '请选择是否取得'
-      }
+      },
+      changeResetFields: [
+        'certificateType',
+        'executiveStandard',
+        'certificateNumber',
+        'certifyingAuthority',
+        'firstObtainTime',
+        'validDate',
+        'planObtainTime',
+        'attachmentIds'
+      ]
     },
     {
       label: '管理体系',
@@ -174,18 +184,9 @@ const MproCertification = ({
 
       label: '计划取得时间',
       name: 'planObtainTime',
-      fieldType: 'datePicker',
       disabledTarget: 'obtained',
       props: {
         disabled: (tv) => tv
-      },
-      options: {
-        rules: [
-          {
-            required: (tv) => !tv,
-            message: '计划取得时间不能为空'
-          }
-        ]
       },
       width: 150
     },
@@ -259,7 +260,17 @@ const MproCertification = ({
             message: '产品不能为空'
           }
         ]
-      }
+      },
+      changeResetFields: [
+        'certificateType',
+        'executiveStandard',
+        'certificateNumber',
+        'certifyingAuthority',
+        'firstObtainTime',
+        'newestAnnualReview',
+        'attachmentIds',
+        'planObtainTime'
+      ]
     },
     {
       label: '是否取得',
@@ -415,16 +426,8 @@ const MproCertification = ({
       label: '计划取得时间',
       name: 'planObtainTime',
       disabledTarget: 'obtained',
-      options: {
-        rules: [
-          {
-            required: tv => !!tv,
-            message: '计划取得时间不能为空'
-          }
-        ]
-      },
       props: {
-        disabled: (tv) => !tv
+        disabled: (tv) => !!tv
       }
     }
   ]
@@ -485,7 +488,44 @@ const MproCertification = ({
   const otherFields = [
     {
       label: '产品',
-      name: 'productName'
+      name: 'productName',
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '产品不能为空'
+          }
+        ]
+      },
+      props: {
+        disabled: true
+      }
+    },
+    {
+      label: '是否取得',
+      name: 'obtained',
+      props: {
+        placeholder: '请选择是否取得'
+      },
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '请确认是否取得'
+          }
+        ]
+      },
+      fieldType: 'select',
+      changeResetFields: [
+        'certificateType',
+        'executiveStandard',
+        'certificateNumber',
+        'certifyingAuthority',
+        'firstObtainTime',
+        'newestAnnualReview',
+        'attachmentIds',
+        'planObtainTime'
+      ]
     },
     {
       label: '认证类型',
@@ -530,7 +570,7 @@ const MproCertification = ({
       options: {
         rules: [
           {
-            required: true,
+            required: tv => !!tv,
             message: '证件编号不能为空'
           }
         ]
@@ -543,7 +583,7 @@ const MproCertification = ({
       options: {
         rules: [
           {
-            required: true,
+            required: tv => !!tv,
             message: '发证机构不能为空'
           }
         ]
@@ -557,7 +597,7 @@ const MproCertification = ({
       options: {
         rules: [
           {
-            required: true,
+            required: tv => !!tv,
             message: '首次获证时间不能为空'
           }
         ]
@@ -574,7 +614,7 @@ const MproCertification = ({
       options: {
         rules: [
           {
-            required: true,
+            required: tv => !!tv,
             message: '最新年审不能为空'
           }
         ]
@@ -591,7 +631,7 @@ const MproCertification = ({
       options: {
         rules: [
           {
-            required: true,
+            required: tv => !!tv,
             message: '附件不能为空'
           }
         ]
@@ -600,14 +640,11 @@ const MproCertification = ({
     {
       label: '计划取得时间',
       name: 'planObtainTime',
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '计划取得时间不能为空'
-          }
-        ]
-      }
+      disabledTarget: 'obtained',
+      props: {
+        disabled: (tv) => tv
+      },
+      width: 150
     }
   ]
   const columnsForOther = [
@@ -641,7 +678,6 @@ const MproCertification = ({
       title: '最新年审',
       dataIndex: 'newestAnnualReview',
       type: 'date',
-      inputType: 'DatePicker',
     },
     {
       title: '附件',

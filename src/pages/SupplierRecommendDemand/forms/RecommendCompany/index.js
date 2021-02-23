@@ -72,8 +72,10 @@ const Ctx = forwardRef(({
           }
         ]
       },
-      type: 'post'
+      type: 'post',
     },
+    searchProperties: ['buName', 'buCode'],
+    searchPlaceHolder: '请输入业务单元代码或名称查询'
   }
   function cancel() {
     setCorporation({})
@@ -109,34 +111,6 @@ const Ctx = forwardRef(({
       }))
     return [...filterSelectedRows, ...initialDataSource]
   }
-  /**
-   * 
-   * corporationCode: "A000"
-  corporationName: "广东长虹电子有限公司"
-  display: null
-  id: "7E7254C4-35FA-11EB-8021-0242C0A8441B"
-  identifyTypeCode: "0001"
-  identifyTypeName: "全新供应商"
-  materialCategoryCode: null
-  materialCategoryName: null
-  purchaseOrgCode: "A000"
-  purchaseOrgName: "广东长虹采购组织"
-  recommendDemandId: "7B457E78-35FA-11EB-8021-0242C0A8441B"
-  tenantCode: "10000028"
-  unitCode: null
-  unitName: null
-  
-  
-  code: "A000"
-  corporationCode: "A000"
-  corporationName: "广东长虹电子有限公司"
-  frozen: false
-  id: "48F10491-878B-11EA-9385-0242C0A84405"
-  name: "广东长虹采购组织"
-  rank: 0
-  tenantCode: "10000028"
-  virtual: false
-   */
   function handleContinue() {
     if (!thatType) {
       message.error('请选择认定类型')
@@ -193,6 +167,7 @@ const Ctx = forwardRef(({
       <ExtTable
         {...tableProps}
         columns={columns}
+        remotePaging
         ref={tableRef}
         checkbox={{ multiSelect: true }}
         onSelectRow={handleSelectedRows}

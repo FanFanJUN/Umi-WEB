@@ -99,7 +99,7 @@ const MarketCompetitive = ({
 
     },
     {
-      title: '年产值',
+      title: '年产值（万元）',
       dataIndex: 'yearAnnualValue',
     },
     {
@@ -107,7 +107,7 @@ const MarketCompetitive = ({
       dataIndex: 'currencyName'
     },
     {
-      title: '市场占有率%',
+      title: '市场占有率（%）',
       dataIndex: 'marketShare'
     },
   ].map(item => ({ ...item, align: 'center' }));
@@ -204,7 +204,7 @@ const MarketCompetitive = ({
       fieldType: 'hide'
     },
     {
-      label: '市场占有率%',
+      label: '市场占有率（%）',
       name: 'marketShare',
       fieldType: 'inputNumber',
       props: {
@@ -232,7 +232,7 @@ const MarketCompetitive = ({
       dataIndex: 'competitor'
     },
     {
-      title: '年销售额',
+      title: '年销售额（万元）',
       dataIndex: 'annualTurnover'
     },
     {
@@ -240,7 +240,7 @@ const MarketCompetitive = ({
       dataIndex: 'currencyName'
     },
     {
-      title: '年销量',
+      title: '年销量（万）',
       dataIndex: 'annualSales'
     },
     {
@@ -248,7 +248,7 @@ const MarketCompetitive = ({
       dataIndex: 'unitName'
     },
     {
-      title: '市场占有率',
+      title: '市场占有率（%）',
       dataIndex: 'marketShare'
     },
   ].map(item => ({ ...item, align: 'center' }));

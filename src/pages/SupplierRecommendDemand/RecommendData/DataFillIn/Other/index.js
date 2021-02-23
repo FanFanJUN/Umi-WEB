@@ -181,7 +181,7 @@ const Other = ({ form, updateGlobalStatus }) => {
       dataIndex: "investor",
     },
     {
-      title: "出资额",
+      title: "出资额（万元）",
       dataIndex: "capitalContribution"
     },
     {
@@ -364,12 +364,6 @@ const Other = ({ form, updateGlobalStatus }) => {
                     <FormItem label="工商局加盖公章的验资报告" {...formLayout}>
                       {getFieldDecorator('capitalVerificationReportFileIds', {
                         initialValue: type === 'add' ? '' : data.capitalVerificationReportFileIds,
-                        rules: [
-                          {
-                            required: true,
-                            message: '工商局加盖公章的验资报告不能为空',
-                          },
-                        ],
                       })(
                         <UploadFile
                           disabled={type === 'detail'}
