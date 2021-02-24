@@ -370,6 +370,7 @@ const MproCertification = ({
       type: 'date',
       fieldType: 'datePicker',
       disabledTarget: 'obtained',
+      changeResetFields: ['newestAnnualReview'],
       options: {
         rules: [
           {
@@ -391,6 +392,7 @@ const MproCertification = ({
       type: 'date',
       fieldType: 'datePicker',
       disabledTarget: 'obtained',
+      otherTargetFields: ['firstObtainTime'],
       options: {
         rules: [
           {
@@ -399,8 +401,8 @@ const MproCertification = ({
           }
         ]
       },
-      disabledDate: (ct) => {
-        return ct < setUpTime
+      disabledDate: (ct, mn, tv, otherTv) => {
+        return ct < otherTv['firstObtainTime']
       },
       props: {
         disabled: (tv) => !tv
@@ -475,7 +477,7 @@ const MproCertification = ({
     {
       title: '附件',
       dataIndex: 'attachmentIds',
-      inputType: 'UploadFile'
+      type: 'uploadFile'
     },
     {
 

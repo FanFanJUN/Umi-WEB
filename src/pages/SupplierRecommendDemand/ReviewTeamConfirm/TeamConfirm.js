@@ -174,7 +174,8 @@ function TeamConfirm({
   async function uploadTableDataSource() {
     toggleLoading(true)
     const { success, message: msg, data } = await queryTeamConfirmHistoryList({
-      supplierRecommendDemandId: query.id
+      supplierRecommendDemandId: query.id,
+      editStatus: true
     })
     toggleLoading(false)
     if (success) {

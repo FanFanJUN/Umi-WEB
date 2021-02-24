@@ -62,12 +62,12 @@ function ModalFields({
     const { guid, ...otherValue } = v
     setFieldsValue(otherValue)
   }
-  function getDisabledValue(ds, tv) {
+  function getDisabledValue(ds, tv, otherTv) {
     if (Object.is(null, ds)) {
       return ds
     }
     if (typeof ds === 'function') {
-      const v = ds(tv)
+      const v = ds(tv, otherTv)
       return v
     }
   }
@@ -85,6 +85,7 @@ function ModalFields({
       disabledTarget = name,
       disabledTargetValue = null,
       changeResetFields = [],
+      otherTargetFields = [],
       selectOptions = [
         {
           value: true,
@@ -98,8 +99,14 @@ function ModalFields({
     } = field;
     const fieldsValue = getFieldsValue();
     const tv = fieldsValue[disabledTarget];
+    const otherTv = otherTargetFields.reduce((prev, cur) => {
+      return {
+        ...prev,
+        [cur]: fieldsValue[cur]
+      }
+    }, {})
     const { disabled = null } = props;
-    const formatDisabled = typeof disabled === 'boolean' ? disabled : getDisabledValue(disabled, disabledTargetValue ? disabledTargetValue : tv);
+    const formatDisabled = typeof disabled === 'boolean' ? disabled : getDisabledValue(disabled, disabledTargetValue ? disabledTargetValue : tv, otherTv);
     const FieldItem = fieldTypes[fieldType] || Input;
     const { rules = [], ...other } = options
     const opt = {
@@ -130,7 +137,8 @@ function ModalFields({
                     {...props}
                     disabled={formatDisabled}
                     allowClear
-                    disabledDate={(ct) => disabledDate(ct, moment, tv)}
+                    disabledDate={(ct) => disabledDate(ct, moment, tv, otherTv)}
+                    onChange={() => handleSelectChange(changeResetFields)}
                     style={{ width: '100%' }}
                   />
                 )
