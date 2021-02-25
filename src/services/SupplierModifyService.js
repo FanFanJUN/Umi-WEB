@@ -1,7 +1,7 @@
 import { request } from '@/utils';
-import { smBaseUrl,baseUrl,gatewayUrl} from '@/utils/commonUrl';
-import { BASE_URL,FLOW_HOST } from '../utils/constants';
-import {convertDataToFormData} from '../utils'
+import { smBaseUrl, baseUrl, gatewayUrl } from '@/utils/commonUrl';
+import { BASE_URL, FLOW_HOST } from '../utils/constants';
+import { convertDataToFormData } from '../utils'
 import httpUtils from '../utils/FeatchUtils'
 function createServiceRequest(option) {
   const {
@@ -31,26 +31,26 @@ function createServiceRequest(option) {
 // 变更新增列表
 
 export const findCanChooseSupplier = (params) => {
-    return request({
-      headers:{'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-      url: `${smBaseUrl}/supplierModify/findCanChooseSupplier`,
-      params,
-      method: 'POST',
-    })
-  };
+  return request({
+    headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+    url: `${smBaseUrl}/supplierModify/findCanChooseSupplier`,
+    params,
+    method: 'POST',
+  })
+};
 // 删除
 export const deleteSupplierModify = (params) => {
-    return request({
-      headers:{'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-      url: `${smBaseUrl}/supplierModify/deleteSupplierModify`,
-      params,
-      method: 'POST',
-    })
-  };
+  return request({
+    headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+    url: `${smBaseUrl}/supplierModify/deleteSupplierModify`,
+    params,
+    method: 'POST',
+  })
+};
 // 供应商变更暂存
 export const TemporarySupplierRegister = params => createServiceRequest({
-    path: '/api/supplierChangeService/saveRequest',
-    params
+  path: '/api/supplierChangeService/saveRequest',
+  params
 })
 // 供应商变更保存效验
 // export const checkExistUnfinishedValidity = (params) => {
@@ -61,10 +61,10 @@ export const TemporarySupplierRegister = params => createServiceRequest({
 //       method: 'POST',
 //     })
 //   };
-  export const checkExistUnfinishedValidity = params => createServiceRequest({
-    path: '/api/supplierChangeService/checkExistUnfinished',
-    params,
-    method: 'GET',
+export const checkExistUnfinishedValidity = params => createServiceRequest({
+  path: '/api/supplierChangeService/checkExistUnfinished',
+  params,
+  method: 'GET',
 })
 // // 供应商变更保存
 // export const saveSupplierRegister = params => createServiceRequest({
@@ -74,7 +74,7 @@ export const TemporarySupplierRegister = params => createServiceRequest({
 // 查询供应商变更信息明细  
 export const findByRequestIdForModify = (params) => {
   return request({
-    headers:{'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+    headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
     url: `${smBaseUrl}/supplierModify/findByRequestId`,
     params,
     method: 'POST',
@@ -83,24 +83,24 @@ export const findByRequestIdForModify = (params) => {
 // 变更明细 
 export const findSupplierModifyHistroyList = (params) => {
   return request({
-    headers:{'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+    headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
     url: `${smBaseUrl}/supplierModifyHistroy/findSupplierModifyHistroyList`,
     params,
     method: 'POST',
   })
 };
- // 变更审批供应商流程保存
- export const saveLietInFlow = params => {
+// 变更审批供应商流程保存
+export const saveLietInFlow = params => {
   return request({
-   //headers:{'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-   url: `${smBaseUrl}/supplierAgentBackups/saveAgentBackupInFlow`,
-   data: convertDataToFormData(params),
-   method: 'POST',
- })
+    //headers:{'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+    url: `${smBaseUrl}/supplierAgentBackups/saveAgentBackupInFlow`,
+    data: convertDataToFormData(params),
+    method: 'POST',
+  })
 }
 // 选择可变更的供应商列表
 export const findCanModifySupplierList = params => createServiceRequest({
-  path: '/supplierModify/findCanChooseSupplier',
+  path: '/supplierModify/findCanChooseSupplierWithData',
   params
 })
 // 保存效验
