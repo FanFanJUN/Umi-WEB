@@ -252,6 +252,10 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
       width: 200
     },
     {
+      title: '计量单位',
+      dataIndex: 'unitName',
+    },
+    {
       title: "上年度销售总额（万元）",
       dataIndex: "preYearSaleroom",
       width: 200

@@ -87,6 +87,7 @@ const Ctx = forwardRef(({
       },
       type: 'post'
     },
+    searchProperties: ['buName', 'buCode']
   }
   function cancel() {
     setCorporation({})
