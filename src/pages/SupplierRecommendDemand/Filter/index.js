@@ -177,6 +177,14 @@ const SelfAssessment = forwardRef(({
       width: 150
     },
     {
+      title: '符合准入标准',
+      dataIndex: 'pass',
+      render(text) {
+        return typeof text === 'boolean' ?
+          !!text ? '是' : '否' : null
+      },
+    },
+    {
       title: '是否准入推荐',
       dataIndex: 'recommendConfirm',
       render(text) {
@@ -204,16 +212,6 @@ const SelfAssessment = forwardRef(({
     {
       title: '是否信任',
       dataIndex: 'trust',
-      render(text) {
-        return typeof text === 'boolean' ?
-          !!text ? '是' : '否' : null
-      },
-      align: 'center',
-      width: 100
-    },
-    {
-      title: '是否拟淘汰',
-      dataIndex: 'weedOut',
       render(text) {
         return typeof text === 'boolean' ?
           !!text ? '是' : '否' : null

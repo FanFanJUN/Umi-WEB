@@ -393,7 +393,7 @@ const Customer = React.forwardRef(({
       />
       <Divider orientation='left'>客户合作情况介绍和资料</Divider>
       <CustermerInfo type={type} data={data} DISABLED={DISABLED} getFieldDecorator={getFieldDecorator} />
-      <Divider orientation='left'>主要客户近半年内的订单或合同及证明材料</Divider>
+      {/* <Divider orientation='left'>主要客户近半年内的订单或合同及证明材料</Divider>
       <EditableFormTable
         columns={columnsForOrder}
         bordered
@@ -404,7 +404,7 @@ const Customer = React.forwardRef(({
         dataSource={supplierOrderInfos || []}
         setNewData={setNewData}
         tableType='supplierOrderInfos'
-      />
+      /> */}
       <Divider orientation='left'>未来三年发展规划</Divider>
       <EditableFormTable
         columns={columnsForDevPlan}

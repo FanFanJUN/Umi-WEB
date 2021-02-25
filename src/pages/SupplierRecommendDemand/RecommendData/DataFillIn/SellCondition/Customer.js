@@ -110,12 +110,12 @@ const Customer = ({
   changhongSaleInfos = [],
   mainCustomers = [],
   exportSituations = [],
-  supplierOrderInfos = [],
+  // supplierOrderInfos = [],
   threeYearPlans = [],
   setChanghongSaleInfos,
   setMainCustomers,
   setExportSituations,
-  setSupplierOrderInfos,
+  // setSupplierOrderInfos,
   setThreeYearPlans
 }) => {
   const DISABLED = type === 'detail';
@@ -624,91 +624,6 @@ const Customer = ({
       dataIndex: 'currencyName'
     },
   ].map(item => ({ ...item, align: 'center' }));
-  const orderFields = [
-    {
-      label: '客户',
-      name: 'customer',
-      props: {
-        placeholder: '请输入客户名称'
-      },
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '客户不能为空'
-          }
-        ]
-      }
-    },
-    {
-      label: '订单或合同号',
-      name: 'orderContract',
-      props: {
-        placeholder: '请输入订单或合同号'
-      },
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '订单或合同号不能为空'
-          }
-        ]
-      }
-    },
-    {
-      label: '关键件/重要件',
-      name: 'importantPart',
-      fieldType: 'select',
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '请选择是否关键/重要件'
-          }
-        ]
-      },
-      props: {
-        placeholder: '选择是否关键/重要件'
-      }
-    },
-    {
-      label: '应用经验证明材料',
-      name: 'applicationExperienceFileIds',
-      fieldType: 'uploadFile',
-      options: {
-        rules: [
-          {
-            required: true,
-            message: '证明材料不能为空',
-            type: 'array'
-          }
-        ]
-      }
-    }
-  ]
-  const columnsForOrder = [
-    {
-      title: '客户',
-      dataIndex: 'customer',
-    },
-    {
-      title: '订单或合同号',
-      dataIndex: 'orderContract',
-    },
-    {
-      title: '关键件/重要件',
-      dataIndex: 'importantPart',
-      render(text) {
-        return Object.is(null, text) ? '' : text ? '是' : '否'
-      },
-      width: 172
-    },
-    {
-      title: '应用经验证明材料',
-      dataIndex: 'applicationExperienceFileIds',
-      type: 'uploadFile'
-    },
-  ].map(item => ({ ...item, align: 'center' }));
   const devPlanFields = [
     {
       label: '项目（方案）',
@@ -811,7 +726,7 @@ const Customer = ({
       />
       <Divider orientation='left'>客户合作情况介绍和资料</Divider>
       <CustermerInfo type={type} data={data} DISABLED={DISABLED} getFieldDecorator={getFieldDecorator} />
-      <Divider orientation='left'>主要客户近半年内的订单或合同及证明材料</Divider>
+      {/* <Divider orientation='left'>主要客户近半年内的订单或合同及证明材料</Divider>
       <EditorTable
         columns={columnsForOrder}
         bordered
@@ -820,7 +735,7 @@ const Customer = ({
         mode={type}
         dataSource={supplierOrderInfos}
         setDataSource={setSupplierOrderInfos}
-      />
+      /> */}
       <Divider orientation='left'>未来三年发展规划</Divider>
       <EditorTable
         fields={devPlanFields}
