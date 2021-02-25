@@ -59,7 +59,7 @@ function ModalFields({
     validateFieldsAndScroll
   }))
   function setValue(v) {
-    const { guid, ...otherValue } = v
+    const { guid, unitName, unitCode, ...otherValue } = v
     setFieldsValue(otherValue)
   }
   function getDisabledValue(ds, tv, otherTv) {
