@@ -274,7 +274,7 @@ const ModifyinfoRef = forwardRef(({
         keys++;
         newsdata.push({
           ...val,
-          key: keys,
+          key: keys++,
           executionStatus: 0,
         })
         setDataSource(newsdata);
