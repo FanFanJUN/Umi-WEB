@@ -244,7 +244,7 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
         >
           <div className={styles.wrapper}>
             <div className={styles.bgw}>
-              <div className={styles.title}>环保检测设备</div>
+              <div className={styles.title}>环保检测设备<span className={styles.hint}>（如有则至少填一行，检测项目主数据中选）</span></div>
               <div className={styles.content}>
                 <Row>
                   <Col span={24}>

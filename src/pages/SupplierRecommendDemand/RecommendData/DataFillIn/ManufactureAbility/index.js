@@ -866,7 +866,7 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
         >
           <div className={styles.wrapper}>
             <div className={styles.bgw}>
-              <div className={styles.title}>生产能力</div>
+              <div className={styles.title}>生产能力<span className={styles.hint}>（至少填写一行数据）</span></div>
               <div className={styles.content}>
                 <EditorTable
                   dataSource={productionCapacities}
@@ -893,7 +893,7 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
           </div>
           <div className={styles.wrapper}>
             <div className={styles.bgw}>
-              <div className={styles.title}>关键生产设备</div>
+              <div className={styles.title}>关键生产设备<span className={styles.hint}>（至少提供三种设备的信息）</span></div>
               <div className={styles.content}>
                 <Row>
                   <Col span={24}>
@@ -938,7 +938,7 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
             <div className={styles.bgw}>
               <div className={styles.title}>
                 关键工艺及关键工艺设备情况
-                <span className={styles.hint}>（至少填写3行）</span>
+                <span className={styles.hint}>（至少提供三行数据）</span>
               </div>
               <div className={styles.content}>
                 <EditorTable

@@ -981,7 +981,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
         >
           <div className={styles.wrapper}>
             <div className={styles.bgw}>
-              <div className={styles.title}>企业质量保证能力</div>
+              <div className={styles.title}>企业质量保证能力<span className={styles.hint}>（以下检验、质量控制需要查看程序文件及文档记录，资料不全会影响质保能力的确认）</span></div>
               <div className={styles.content}>
                 <Divider orientation='left'>检测范围</Divider>
                 <Row>
@@ -1194,7 +1194,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                     </FormItem>
                   </Col>
                 </Row>
-                <Divider orientation='left'>关键检测、实验设备（仪器、仪表、可靠性实验设备等）（至少提供三种设备的信息）</Divider>
+                <Divider orientation='left'>关键检测、实验设备<span className={styles.hint}>（仪器、仪表、可靠性实验设备等）（至少提供三种设备的信息）</span></Divider>
                 <EditorTable
                   dataSource={keyTestingEquipments}
                   columns={columnsForProKeyPro}
@@ -1224,6 +1224,9 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                     </FormItem>
                   </Col>
                 </Row>
+                <div>
+                  <span className={styles.hint}>（如选有，至少提供一项）</span>
+                </div>
                 {
                   haveCannotTestItem ?
                     <EditorTable

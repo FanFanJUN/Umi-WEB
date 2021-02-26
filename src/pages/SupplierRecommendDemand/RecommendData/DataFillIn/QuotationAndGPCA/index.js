@@ -302,7 +302,7 @@ const QuotationAndGPCA = ({ updateGlobalStatus }) => {
         >
           <div className={styles.wrapper}>
             <div className={styles.bgw}>
-              <div className={styles.title}>报价单及成分分析表</div>
+              <div className={styles.title}>报价单及成分分析表<span className={styles.hint}>（愿意提供选是，则至少填两行数据）</span></div>
               <div className={styles.content}>
                 <Row style={{ marginBottom: '10px' }}>
                   <span style={{ marginRight: '18px' }}>能够且愿意向长虹提供完整的成本结构:</span>

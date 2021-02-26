@@ -457,6 +457,9 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
             <div className={styles.bgw}>
               <div className={styles.title}>成本控制</div>
               <div className={styles.content}>
+                <div>
+                <span className={styles.hint}>（如选“是”则对应附件必填）</span>
+                </div>
                 <Row>
                   <Col span={12}>
                     <FormItem label="每年制定成本降低目标并对执行情况进行评价" {...formLayout}>
@@ -963,7 +966,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
           </div>
           <div className={styles.wrapper}>
             <div className={styles.bgw}>
-              <div className={styles.title}>供应商管控<span className={styles.hint}>（至少填写一行数据）</span></div>
+              <div className={styles.title}>供应商管控<span className={styles.hint}>（关键原材料及供应商名单至少提供一种原材料的信息）</span></div>
               <div className={styles.content}>
                 <EditorTable
                   dataSource={keyMaterialSuppliers}

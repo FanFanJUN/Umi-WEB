@@ -240,7 +240,6 @@ const MproCertification = ({
 
       title: '计划取得时间',
       dataIndex: 'planObtainTime',
-      type: 'date',
       width: 150
     },
   ].map(item => ({
@@ -691,7 +690,6 @@ const MproCertification = ({
 
       title: '计划取得时间',
       dataIndex: 'planObtainTime',
-      type: 'date',
       width: 150
     },
   ].map(item => ({ ...item, align: 'center' }));
@@ -707,7 +705,7 @@ const MproCertification = ({
   }
   return <Fragment>
     <div>
-      <Divider orientation='left'>管理体系（至少填写质量管理体系）</Divider>
+      <Divider orientation='left'>管理体系<span className={styles.hint}>（至少填写质量管理体系）</span></Divider>
       <EditorTable
         columns={columnsForMan}
         fields={manFields}
@@ -718,7 +716,7 @@ const MproCertification = ({
         setDataSource={setManageData}
         dataSource={manageData}
       />
-      <Divider orientation='left'>产品安规或EMC认证<span className={styles.hint}>(至少填写一行数据)</span></Divider>
+      <Divider orientation='left'>产品安规或EMC认证</Divider>
       <EditorTable
         fields={proFields}
         columns={columnsForPro}
@@ -727,7 +725,8 @@ const MproCertification = ({
         copyLine={true}
         dataSource={proData}
       />
-      <Divider orientation='left'>其他认证</Divider>
+      <Divider orientation='left'>其他产品认证</Divider>
+      <div><span className={styles.hint}>（涉及生产和销售项目所需要的强制认证/许可证：如：无线模块需取得SRRC认证或销售地区要求的认证；纸箱需通过FSC森林认证体系，邮政快递包装生产许可资格认证）</span></div>
       <EditorTable
         fields={otherFields}
         columns={columnsForOther}

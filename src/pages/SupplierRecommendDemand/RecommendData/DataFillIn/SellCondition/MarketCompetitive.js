@@ -283,7 +283,7 @@ const MarketCompetitive = ({
           </FormItem>
         </Col>
       </Row>
-      <Divider orientation='left' orientation='left'>市场地位</Divider>
+      <Divider orientation='left' orientation='left'>市场地位<span className={styles.hint}>（请提供上一年度数据）</span></Divider>
       <EditorTable
         columns={columnsForMarket}
         rowKey='guid'
