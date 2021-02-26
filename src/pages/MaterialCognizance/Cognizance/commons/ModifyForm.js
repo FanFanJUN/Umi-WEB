@@ -43,6 +43,12 @@ const getInformation = forwardRef(({
         handleDate(editData)
     }, [editData]);
     function handleDate(value) {
+        form.setFieldsValue({
+            'stageId': value.stageId,
+            'stageCode': value.stageCode,
+            'stageSort': value.stageSort,
+            'taskCode': value.taskCode,
+        });
         if (type && attachId === 2 && value.stageName === '认定结果' || type && attachId === 2 && value.stageName === '认定方案') {
             setTaskid(seltaskid)
             setDefaulted(true)
@@ -117,13 +123,6 @@ const getInformation = forwardRef(({
                 stageCode: editData.stageCode,
                 stageSort: editData.stageSort,
                 taskCode: editData.taskCode
-            });
-        } else {
-            form.setFieldsValue({
-                stageId: form.getFieldValue('stageId'),
-                stageCode: form.getFieldValue('stageCode'),
-                stageSort: form.getFieldValue('stageSort'),
-                taskCode: form.getFieldValue('taskCode')
             });
         }
     }
