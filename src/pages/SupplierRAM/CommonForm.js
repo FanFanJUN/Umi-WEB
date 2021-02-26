@@ -11,7 +11,8 @@ import {
   Input,
   Table,
   Button,
-  Modal
+  Modal,
+  Radio
 } from 'antd';
 import styles from './index.less';
 import { ComboList, ExtTable, ComboTree } from 'suid';
@@ -201,7 +202,8 @@ function CommonForm({
       identifyMaterialLevelValue,
       identifyMaterialLevelName,
       recommendAccessLines = [],
-      accessRelateDemands = []
+      accessRelateDemands = [],
+      needExamine = null,
     } = values;
     await setFieldsValue({
       orgCode,
@@ -219,6 +221,7 @@ function CommonForm({
       materialCategoryCode,
       identifyMaterialLevelValue,
       identifyMaterialLevelName,
+      needExamine
     })
     const addLineNumberDemands = accessRelateDemands.map((item, index) => ({
       ...item,
@@ -443,6 +446,26 @@ function CommonForm({
           rowKey='recommendDemandId'
         />
       </div>
+      {
+        type === 'detail' ?
+          <>
+            <div className={styles.commonTitle}>供应商审核确认</div>
+            <Row>
+              <Col span={12}>
+                <FormItem label='是否需要供应商审核'>
+                  {
+                    getFieldDecorator('needExamine')(
+                      <Radio.Group disabled>
+                        <Radio value={true}>是</Radio>
+                        <Radio value={false}>否</Radio>
+                      </Radio.Group>
+                    )
+                  }
+                </FormItem>
+              </Col>
+            </Row>
+          </> : null
+      }
     </Form>
   )
 }
