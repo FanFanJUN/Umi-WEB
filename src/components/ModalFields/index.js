@@ -78,7 +78,7 @@ function ModalFields({
     const {
       name = '',
       label = '',
-      fieldType = '',
+      fieldType = 'input',
       options = {},
       props = {},
       disabledDate = () => null,
@@ -250,6 +250,24 @@ function ModalFields({
               getFieldDecorator(name, opt)
             }
           </>
+        )
+      case 'input':
+        return (
+          <Col key={`${name}-field-item`} span={12}>
+            <Item label={label}>
+              {
+                getFieldDecorator(name, opt)(
+                  <FieldItem
+                    {...props}
+                    disabled={formatDisabled}
+                    allowClear
+                    style={{ width: '100%' }}
+                    maxLength={100}
+                  />
+                )
+              }
+            </Item>
+          </Col>
         )
       default:
         return (

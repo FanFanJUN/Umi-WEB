@@ -895,16 +895,6 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
             <div className={styles.bgw}>
               <div className={styles.title}>关键生产设备<span className={styles.hint}>（至少提供三种设备的信息）</span></div>
               <div className={styles.content}>
-                <Row>
-                  <Col span={24}>
-                    <FormItem label="设备清单" {...formLayout}>
-                      {getFieldDecorator('keyProductEquipmentFileIds')(<UploadFile showColor={type !== 'add' ? true : false}
-                        type={type !== 'add'}
-                        disabled={type === 'detail'}
-                        entityId={data.keyProductEquipmentFileId} />)}
-                    </FormItem>
-                  </Col>
-                </Row>
                 <EditorTable
                   dataSource={keyProductEquipments}
                   columns={columnsForEqu}
