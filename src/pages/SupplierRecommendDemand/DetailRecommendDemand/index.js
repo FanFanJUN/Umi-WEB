@@ -8,6 +8,7 @@ import styles from './index.less';
 import classnames from 'classnames';
 import { router } from 'dva';
 import { Button, Affix, Spin, message } from 'antd';
+import moment from 'moment';
 import RecommendForm from '../forms/RecommendForm';
 import { saveSupplierRecommendDemand, querySupplierRecommendDemand } from '../../../services/recommend';
 import { closeCurrent } from '../../../utils';
@@ -53,7 +54,7 @@ export default ({
           orgPath,
           ...fields
         } = data;
-        formRef.current.setAllFormatValues({ fields, treeData: selfEvlSystem })
+        formRef.current.setAllFormatValues({ fields: { ...fields, dateTime: moment(createdDate).format("YYYY-MM-DD") }, treeData: selfEvlSystem, })
         formRef.current.setRecommendCompany(supplierRecommendDemandLines)
       }
     }

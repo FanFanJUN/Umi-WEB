@@ -67,7 +67,6 @@ export default () => {
           orgPath,
           ...fields
         } = data;
-        console.log(formRef)
         formRef.current.setAllFormatValues({ fields, treeData: selfEvlSystem })
         formRef.current.setRecommendCompany(supplierRecommendDemandLines)
       }
