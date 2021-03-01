@@ -514,7 +514,7 @@ export async function EditTheListOfRestrictedMaterials (params) {
 
 // 限用物质清单删除
 export async function DeleteTheListOfRestrictedMaterials (params) {
-  const url = `${baseUrl}/limitSubstanceListData/delete_limitSubstanceListData`;
+  const url = `${baseUrl}/limitSubstanceListData/deleteLimitSubstanceListAndAliasData`;
   return request({
     url,
     method: 'POST',
@@ -522,9 +522,19 @@ export async function DeleteTheListOfRestrictedMaterials (params) {
   });
 }
 
+// 限用物质清单详情
+export async function findByIdTheListOfRestrictedMaterials (params) {
+  const url = `${baseUrl}/limitSubstanceListData/findById`;
+  return request({
+    url,
+    method: 'get',
+    params: params,
+  });
+}
+
 // 限用物质清单解冻冻结
 export async function FrostTheListOfRestrictedMaterials (params) {
-  const url = `${baseUrl}/limitSubstanceListData/batchWhetherFrozen`;
+  const url = `${baseUrl}/limitSubstanceListData/batchFrozen`;
   return request({
     url,
     method: 'POST',

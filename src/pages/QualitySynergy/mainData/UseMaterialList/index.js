@@ -135,6 +135,7 @@ const Index = () => {
         onClick={() => buttonClick('add')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
+        disabled={!!selectedRowKeys.length}
         key='QUALITYSYNERGY_UML_ADD'
       >新增</Button>)
     }
