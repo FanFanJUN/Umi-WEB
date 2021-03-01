@@ -164,7 +164,7 @@ const SellCondition = ({ form, updateGlobalStatus }) => {
         >
           <div className={styles.wrapper}>
             <div className={styles.bgw}>
-              <div className={styles.title}>销售收入及利润 <span className={styles.hint}>（提供近三年）</span></div>
+              <div className={styles.title}>销售收入及利润 <span className={styles.hint}>（请提供近3年数据，没有填0）</span></div>
               <div className={styles.content}>
                 <SalesProfit
                   type={type}
