@@ -73,7 +73,7 @@ const Index = () => {
       cancelText: '否',
       async onOk () {
         const data = await DeleteTheListOfRestrictedMaterials({
-          id: selectedRowKeys.toString(),
+          ids: selectedRowKeys.toString(),
         });
         if (data.success) {
           tableRef.current.manualSelectedRows();
