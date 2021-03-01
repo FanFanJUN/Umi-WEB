@@ -455,11 +455,8 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
         >
           <div className={styles.wrapper}>
             <div className={styles.bgw}>
-              <div className={styles.title}>成本控制</div>
+              <div className={styles.title}>成本控制<span className={styles.hint}>（如选“是”则对应附件必填）</span></div>
               <div className={styles.content}>
-                <div>
-                <span className={styles.hint}>（如选“是”则对应附件必填）</span>
-                </div>
                 <Row>
                   <Col span={12}>
                     <FormItem label="每年制定成本降低目标并对执行情况进行评价" {...formLayout}>

@@ -672,7 +672,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
           </div>
           <div className={styles.wrapper}>
             <div className={styles.bgw}>
-              <div className={styles.title}>产品开发情况<span className={styles.hint}>(至少填写一个项目的信息，如确实没有填无)</span></div>
+              <div className={styles.title}>产品开发情况</div>
               <div className={styles.content}>
                 <Row>
                   <Col span={24}>
@@ -834,7 +834,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                   allowRemove={false}
                   allowCreate={false}
                 />
-                <Divider orientation='left'>正在进行和计划进行的设计开发</Divider>
+                <Divider orientation='left'>正在进行和计划进行的设计开发<span className={styles.hint}>(至少填写一个项目的信息，如确实没有填无)</span></Divider>
                 <EditorTable
                   dataSource={processingDesigns}
                   columns={columnsForProcess}

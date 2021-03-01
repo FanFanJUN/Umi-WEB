@@ -42,8 +42,10 @@ function ModalFields({
   type = 'create',
   form,
   fields = [],
-  copyLine = false,
+  // copyLine = false,
   copyFields = [],
+  createTitle = '新增数据',
+  editorTitle = '编辑数据',
   ...modalProps
 }, ref) {
   const {
@@ -120,7 +122,7 @@ function ModalFields({
         if (!Object.is(undefined, item.required) && typeof item.required === 'function') {
           return {
             ...item,
-            required: item.required(tv)
+            required: item.required(tv, getFieldsValue)
           }
         }
         return item
@@ -288,7 +290,7 @@ function ModalFields({
         )
     }
   }
-  const typeName = type === 'create' ? '新增数据' : '编辑数据';
+  const typeName = type === 'create' ? createTitle : editorTitle;
   return (
     <ExtModal
       destroyOnClose
