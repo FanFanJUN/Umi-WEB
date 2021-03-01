@@ -33,6 +33,7 @@ const Index = () => {
     { title: '限用物质代码', dataIndex: 'limitMaterialCode', width: 200 },
     { title: '限用物质名称', dataIndex: 'limitMaterialName', ellipsis: true },
     { title: 'CAS.NO', dataIndex: 'casNo', ellipsis: true },
+    { title: '限用物质别名', dataIndex: 'aliasNames', ellipsis: true, width: 250 },
     // { title: '基本单位代码', dataIndex: 'basicUnitCode', ellipsis: true },
     // { title: '基本单位名称', dataIndex: 'basicUnitName', ellipsis: true },
     {
@@ -70,9 +71,9 @@ const Index = () => {
       okText: '是',
       okType: 'danger',
       cancelText: '否',
-      async onOk() {
+      async onOk () {
         const data = await DeleteTheListOfRestrictedMaterials({
-          id: selectedRowKeys.toString(),
+          ids: selectedRowKeys.toString(),
         });
         if (data.success) {
           tableRef.current.manualSelectedRows();
@@ -100,7 +101,7 @@ const Index = () => {
   };
 
   const validateItem = (data) => {
-    data = data.map(item => ({...item, recordCheckList: item.recordCheckList === '是'}))
+    data = data.map(item => ({ ...item, recordCheckList: item.recordCheckList === '是' }))
     return new Promise((resolve, reject) => {
       JudgeTheListOfRestrictedMaterials(data).then(res => {
         const response = res.data.map(item => ({
@@ -134,6 +135,7 @@ const Index = () => {
         onClick={() => buttonClick('add')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
+        disabled={!!selectedRowKeys.length}
         key='QUALITYSYNERGY_UML_ADD'
       >新增</Button>)
     }
@@ -187,8 +189,17 @@ const Index = () => {
   </div>;
 
   const handleOk = (value) => {
+
+    let { aliasName, casNo, limitMaterialCode, limitMaterialName, orderNo, recordCheckList } = value;
+    let limitSubstanceListData = { casNo, limitMaterialCode, limitMaterialName, orderNo, recordCheckList };
+
+    // 别名数据
+    let aliasDataList = aliasName.map((item, index) => {
+      return { aliasName: item.aliasName, limitMaterialCode, limitMaterialName, limitMaterialLine: index + 1 }
+    })
+
     if (data.type === 'add') {
-      AddTheListOfRestrictedMaterials(value).then(res => {
+      AddTheListOfRestrictedMaterials({ limitSubstanceListData, aliasDataList }).then(res => {
         if (res.success) {
           setData((value) => ({ ...value, visible: false }));
           tableRef.current.remoteDataRefresh();
@@ -198,7 +209,7 @@ const Index = () => {
       });
     } else {
       const id = selectRows[selectRows.length - 1].id;
-      const params = { ...value, id };
+      const params = { limitSubstanceListData: { ...limitSubstanceListData, id }, aliasDataList };
       EditTheListOfRestrictedMaterials(params).then(res => {
         if (res.success) {
           setData((value) => ({ ...value, visible: false }));
@@ -222,7 +233,7 @@ const Index = () => {
             columns={columns}
             height={h}
             store={{
-              url: `${baseUrl}/limitSubstanceListData/find_by_page_all`,
+              url: `${baseUrl}/limitSubstanceListData/findByPageAll`,
               type: 'POST',
             }}
             searchPlaceHolder='输入限用物质名称或CAS.NO关键字'
@@ -240,14 +251,16 @@ const Index = () => {
           />
         }
       </AutoSizeLayout>
-      <EventModal
-        visible={data.visible}
-        onOk={handleOk}
-        type={data.type}
-        data={selectRows[selectRows.length - 1]}
-        onCancel={() => setData((value) => ({ ...value, visible: false }))}
-        title={data.title}
-      />
+      {data.visible &&
+        <EventModal
+          visible={data.visible}
+          onOk={handleOk}
+          type={data.type}
+          data={selectRows[selectRows.length - 1]}
+          onCancel={() => setData((value) => ({ ...value, visible: false }))}
+          title={data.title}
+        />
+      }
     </Fragment>
   );
 

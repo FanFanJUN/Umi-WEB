@@ -330,7 +330,7 @@ export const DistributionSupplierSave = async params => {
 };
 
 // 技术资料分享撤回
-export async function RecallDataSharingList(params) {
+export async function RecallDataSharingList (params) {
   const url = `${recommendUrl}/api/epTechnicalShareDemandService/revoke`;
   return request({
     url,
@@ -340,7 +340,7 @@ export async function RecallDataSharingList(params) {
 }
 
 //技术资料分享战略指派
-export async function StrategyAssignedDataSharingList(params) {
+export async function StrategyAssignedDataSharingList (params) {
   const url = `${recommendUrl}/api/epTechnicalShareDemandService/designateStrategy`;
   return request({
     url,
@@ -350,7 +350,7 @@ export async function StrategyAssignedDataSharingList(params) {
 }
 
 //技术资料分享提交
-export async function SubmitDataSharingList(params) {
+export async function SubmitDataSharingList (params) {
   const url = `${recommendUrl}/api/epTechnicalShareDemandService/submit`;
   return request({
     url,
@@ -360,7 +360,7 @@ export async function SubmitDataSharingList(params) {
 }
 
 //技术资料分享删除
-export async function DeleteDataSharingList(params) {
+export async function DeleteDataSharingList (params) {
   const url = `${recommendUrl}/api/epTechnicalShareDemandService/delete`;
   return request({
     url,
@@ -370,7 +370,7 @@ export async function DeleteDataSharingList(params) {
 }
 
 //技术资料分享编辑
-export async function UpdateDataSharingList(params) {
+export async function UpdateDataSharingList (params) {
   const url = `${recommendUrl}/api/epTechnicalShareDemandService/update`;
   return request({
     url,
@@ -381,7 +381,7 @@ export async function UpdateDataSharingList(params) {
 
 
 //技术资料分享新增
-export async function AddDataSharingList(params) {
+export async function AddDataSharingList (params) {
   const url = `${recommendUrl}/api/epTechnicalShareDemandService/insert`;
   return request({
     url,
@@ -392,7 +392,7 @@ export async function AddDataSharingList(params) {
 
 
 //业务模块对业务单元查询单条数据
-export async function DataSharingFindOne(params) {
+export async function DataSharingFindOne (params) {
   const url = `${recommendUrl}/api/epTechnicalShareDemandService/findOne`;
   return request({
     url,
@@ -402,7 +402,7 @@ export async function DataSharingFindOne(params) {
 }
 
 //业务模块对业务单元删除
-export async function DeleteBusinessUnitToBUt(params) {
+export async function DeleteBusinessUnitToBUt (params) {
   const url = `${baseUrl}/bmBuContact/whetherDelete`;
   return request({
     url,
@@ -412,7 +412,7 @@ export async function DeleteBusinessUnitToBUt(params) {
 }
 
 //业务模块对业务单元解冻冻结
-export async function FrozenBusinessUnitToBUt(params) {
+export async function FrozenBusinessUnitToBUt (params) {
   const url = `${baseUrl}/bmBuContact/frozen`;
   return request({
     url,
@@ -422,7 +422,7 @@ export async function FrozenBusinessUnitToBUt(params) {
 }
 
 //业务模块对业务单元新增
-export async function AddBusinessUnitToBUt(params) {
+export async function AddBusinessUnitToBUt (params) {
   const url = `${baseUrl}/bmBuContact/addBmBuContact`;
   return request({
     url,
@@ -432,7 +432,7 @@ export async function AddBusinessUnitToBUt(params) {
 }
 
 //业务模块对业务单元有效截止日期
-export async function SaveBmBuContact(params) {
+export async function SaveBmBuContact (params) {
   const url = `${baseUrl}/bmBuContact/saveBmBuContact`;
   return request({
     url,
@@ -442,7 +442,7 @@ export async function SaveBmBuContact(params) {
 }
 
 // BU与公司采购组织对应关系新增
-export async function AddBUCompanyOrganizationRelation(params) {
+export async function AddBUCompanyOrganizationRelation (params) {
   const url = `${baseUrl}/buCompanyPurchasingOrganization/addBuCompanyPurchasingOrganization`;
   return request({
     url,
@@ -452,7 +452,7 @@ export async function AddBUCompanyOrganizationRelation(params) {
 }
 
 // BU与公司采购组织对应关系冻结解冻
-export async function FrostBUCompanyOrganizationRelation(params) {
+export async function FrostBUCompanyOrganizationRelation (params) {
   const url = `${baseUrl}/buCompanyPurchasingOrganization/frozen`;
   return request({
     url,
@@ -462,7 +462,7 @@ export async function FrostBUCompanyOrganizationRelation(params) {
 }
 
 // BU与公司采购组织对应关系删除
-export async function DeleteBUCompanyOrganizationRelation(params) {
+export async function DeleteBUCompanyOrganizationRelation (params) {
   const url = `${baseUrl}/buCompanyPurchasingOrganization/whetherDelete`;
   return request({
     url,
@@ -472,7 +472,7 @@ export async function DeleteBUCompanyOrganizationRelation(params) {
 }
 
 // 限用物质适用范围删除
-export async function DeleteLimitSuppliesScope(params) {
+export async function DeleteLimitSuppliesScope (params) {
   const url = `${baseUrl}/LimitMaterialUnitScopeData/delete`;
   return request({
     url,
@@ -482,7 +482,7 @@ export async function DeleteLimitSuppliesScope(params) {
 }
 
 // 限用物质适用范围新增编辑
-export async function AddAndEditLimitSuppliesScope(params) {
+export async function AddAndEditLimitSuppliesScope (params) {
   const url = `${baseUrl}/LimitMaterialUnitScopeData/addLimitMaterialUnitScopeData`;
   return request({
     url,
@@ -493,7 +493,7 @@ export async function AddAndEditLimitSuppliesScope(params) {
 
 
 // 限用物质适用范围冻结解冻
-export async function FrostLimitSuppliesScope(params) {
+export async function FrostLimitSuppliesScope (params) {
   const url = `${baseUrl}/LimitMaterialUnitScopeData/frozen`;
   return request({
     url,
@@ -503,8 +503,18 @@ export async function FrostLimitSuppliesScope(params) {
 }
 
 // 限用物质清单编辑
-export async function EditTheListOfRestrictedMaterials(params) {
-  const url = `${baseUrl}/limitSubstanceListData/update_limitSubstanceListData`;
+export async function EditTheListOfRestrictedMaterials (params) {
+  const url = `${baseUrl}/limitSubstanceListData/update`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+}
+
+// 限用物质清单删除
+export async function DeleteTheListOfRestrictedMaterials (params) {
+  const url = `${baseUrl}/limitSubstanceListData/deleteLimitSubstanceListAndAliasData`;
   return request({
     url,
     method: 'POST',
@@ -512,19 +522,19 @@ export async function EditTheListOfRestrictedMaterials(params) {
   });
 }
 
-// 限用物质清单删除
-export async function DeleteTheListOfRestrictedMaterials(params) {
-  const url = `${baseUrl}/limitSubstanceListData/delete_limitSubstanceListData`;
+// 限用物质清单详情
+export async function findByIdTheListOfRestrictedMaterials (params) {
+  const url = `${baseUrl}/limitSubstanceListData/findById`;
   return request({
     url,
-    method: 'POST',
+    method: 'get',
     params: params,
   });
 }
 
 // 限用物质清单解冻冻结
-export async function FrostTheListOfRestrictedMaterials(params) {
-  const url = `${baseUrl}/limitSubstanceListData/batchWhetherFrozen`;
+export async function FrostTheListOfRestrictedMaterials (params) {
+  const url = `${baseUrl}/limitSubstanceListData/batchFrozen`;
   return request({
     url,
     method: 'POST',
@@ -533,7 +543,7 @@ export async function FrostTheListOfRestrictedMaterials(params) {
 }
 
 // 限用物质清单批导验证
-export async function JudgeTheListOfRestrictedMaterials(params) {
+export async function JudgeTheListOfRestrictedMaterials (params) {
   const url = `${baseUrl}/limitSubstanceListData/importExcel`;
   console.log();
   return request({
@@ -544,7 +554,7 @@ export async function JudgeTheListOfRestrictedMaterials(params) {
 }
 
 // 限用物质清单批导验证
-export async function SaveTheListOfRestrictedMaterials(params) {
+export async function SaveTheListOfRestrictedMaterials (params) {
   const url = `${baseUrl}/limitSubstanceListData/add_limitSubstanceListDataList `;
   console.log();
   return request({
@@ -555,17 +565,17 @@ export async function SaveTheListOfRestrictedMaterials(params) {
 }
 
 // 限用物质清单新增
-export async function AddTheListOfRestrictedMaterials(params) {
-  const url = `${baseUrl}/limitSubstanceListData/add_limitSubstanceListData`;
+export async function AddTheListOfRestrictedMaterials (params) {
+  const url = `${baseUrl}/limitSubstanceListData/add`;
   return request({
     url,
     method: 'POST',
-    params: params,
+    data: params,
   });
 }
 
 // 限用物质基本单位新增和编辑
-export async function AddAndEditBasicMaterials(params) {
+export async function AddAndEditBasicMaterials (params) {
   const url = `${baseUrl}/limitMaterialUnitData/addLimitMaterialUnitData`;
   return request({
     url,
@@ -575,7 +585,7 @@ export async function AddAndEditBasicMaterials(params) {
 }
 
 // 限用物质基本单位冻结
-export async function FrostBasicMaterials(params) {
+export async function FrostBasicMaterials (params) {
   const url = `${baseUrl}/limitMaterialUnitData/frozen`;
   return request({
     url,
@@ -585,7 +595,7 @@ export async function FrostBasicMaterials(params) {
 }
 
 // 限用物质基本单位删除
-export async function DeleteBasicMaterials(params) {
+export async function DeleteBasicMaterials (params) {
   const url = `${baseUrl}/limitMaterialUnitData/delete`;
   return request({
     url,
