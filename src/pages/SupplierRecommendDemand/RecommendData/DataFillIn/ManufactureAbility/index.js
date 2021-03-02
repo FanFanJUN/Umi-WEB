@@ -869,6 +869,7 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
               <div className={styles.title}>生产能力<span className={styles.hint}>（至少填写一行数据）</span></div>
               <div className={styles.content}>
                 <EditorTable
+                  mode={type}
                   dataSource={productionCapacities}
                   columns={columnsForProCapacity}
                   fields={proCapacity}
@@ -883,6 +884,7 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
               <div className={styles.content}>
                 <EditorTable
                   dataSource={currentProductionSituations}
+                  mode={type}
                   columns={columnsForProSitu}
                   fields={proSituFields}
                   setDataSource={setcurrentProductionSituations}
@@ -900,6 +902,7 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
                   columns={columnsForEqu}
                   fields={equFields}
                   setDataSource={setkeyProductEquipments}
+                  mode={type}
                   allowExport
                   allowImport
                   exportFunc={handleKeyProductEquipementsExport}
@@ -916,6 +919,7 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
                   dataSource={productManufacturingIntroductions}
                   columns={columnsForOther}
                   fields={otherFields}
+                  mode={type}
                   copyLine={true}
                   setDataSource={setproductManufacturingIntroductions}
                   allowCreate={false}
@@ -934,6 +938,7 @@ const ManufactureAbility = ({ form, updateGlobalStatus }) => {
                 <EditorTable
                   dataSource={keyTechnologyEquipments}
                   columns={columnsForKeyProcess}
+                  mode={type}
                   fields={keyProcessFields}
                   setDataSource={setkeyTechnologyEquipments}
                   copyLine={true}

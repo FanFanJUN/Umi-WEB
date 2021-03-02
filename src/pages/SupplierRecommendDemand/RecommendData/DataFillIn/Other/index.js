@@ -375,6 +375,7 @@ const Other = ({ form, updateGlobalStatus }) => {
                 </Row>
                 <EditorTable
                   dataSource={equityStructures}
+                  mode={type}
                   columns={columns}
                   setDataSource={setequityStructures}
                   fields={fields}

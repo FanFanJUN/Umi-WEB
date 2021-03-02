@@ -699,6 +699,7 @@ const Customer = ({
         columns={columnsForGroup}
         rowKey='guid'
         size='small'
+        mode={type}
         fields={groupFields}
         mode={type}
         dataSource={changhongSaleInfos}
@@ -709,6 +710,7 @@ const Customer = ({
         columns={columnsForMajorcustomers}
         bordered
         rowKey='guid'
+        mode={type}
         fields={majorcustomersFields}
         mode={type}
         dataSource={mainCustomers}
@@ -719,6 +721,7 @@ const Customer = ({
         columns={columnsForExpSitu}
         bordered
         rowKey='guid'
+        mode={type}
         fields={expSituFields}
         mode={type}
         dataSource={exportSituations}

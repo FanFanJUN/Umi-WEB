@@ -852,6 +852,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                   columns={columnsForCarTransport}
                   fields={carTransportFields}
                   allowRemove={false}
+                  mode={type}
                   allowCreate={false}
                   setDataSource={setlogisticsBusTransports}
                 />
@@ -970,6 +971,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                   fields={keyMatFields}
                   columns={columnsForKeyMat}
                   setDataSource={setkeyMaterialSuppliers}
+                  mode={type}
                   copyLine={true}
                 />
               </div>

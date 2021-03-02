@@ -664,6 +664,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                   dataSource={patentsAwards}
                   columns={columns}
                   fields={fields}
+                  mode={type}
                   rowKey='guid'
                   setDataSource={setpatentsAwards}
                 />
@@ -764,7 +765,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                           {
                             required: true,
                             message: '不能为空',
-                            type:'number'
+                            type: 'number'
                           }
                         ]
                       })(
@@ -830,6 +831,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                   fields={finishFields}
                   rowKey='guid'
                   setDataSource={setnewProducts}
+                  mode={type}
                   copyLine
                   allowRemove={false}
                   allowCreate={false}
@@ -840,6 +842,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                   columns={columnsForProcess}
                   fields={processFields}
                   rowKey='guid'
+                  mode={type}
                   setDataSource={setprocessingDesigns}
                 />
               </div>
@@ -854,6 +857,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                   columns={columnsForProSta}
                   fields={proStaFields}
                   rowKey='guid'
+                  mode={type}
                   setDataSource={setproductStandards}
                 />
               </div>

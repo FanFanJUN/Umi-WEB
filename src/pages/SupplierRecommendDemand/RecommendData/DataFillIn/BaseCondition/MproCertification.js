@@ -713,6 +713,7 @@ const MproCertification = ({
         allowCreate={false}
         beforeEditor={handleManTableEditor}
         rowKey='guid'
+        mode={type}
         setDataSource={setManageData}
         dataSource={manageData}
       />
@@ -721,6 +722,7 @@ const MproCertification = ({
         fields={proFields}
         columns={columnsForPro}
         rowKey='guid'
+        mode={type}
         setDataSource={setProData}
         copyLine={true}
         dataSource={proData}
@@ -731,7 +733,9 @@ const MproCertification = ({
         fields={otherFields}
         columns={columnsForOther}
         copyLine={true}
+        mode={type}
         rowKey='guid'
+        type={type}
         dataSource={otherData}
         setDataSource={setOtherData}
       />
