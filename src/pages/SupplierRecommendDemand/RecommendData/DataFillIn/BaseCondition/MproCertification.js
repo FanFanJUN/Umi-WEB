@@ -735,7 +735,6 @@ const MproCertification = ({
         copyLine={true}
         mode={type}
         rowKey='guid'
-        type={type}
         dataSource={otherData}
         setDataSource={setOtherData}
       />
