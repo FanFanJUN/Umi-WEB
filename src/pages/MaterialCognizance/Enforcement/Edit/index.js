@@ -48,6 +48,7 @@ function CreateStrategy() {
       implementationId: query.id,
       ...taskinfo
     }
+    console.log(JSON.stringify(SamIdentifyPlanImplementationDetailsVo))
     //console.log(params)
     triggerLoading(true)
     const { success, message: msg } = await CarrytaskSaveVo(SamIdentifyPlanImplementationDetailsVo)
