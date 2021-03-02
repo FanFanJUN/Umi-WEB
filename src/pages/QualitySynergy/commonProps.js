@@ -604,6 +604,47 @@ export async function DeleteBasicMaterials (params) {
   });
 }
 
+
+// 均质材料分类主数据列表-添加
+export async function AddHomogeneousMaterialType (params) {
+  const url = `${baseUrl}/homogeneousMaterialType/add`;
+  return request({
+    url,
+    method: 'post',
+    data: params,
+  });
+}
+
+// 均质材料分类主数据列表-编辑
+export async function UpdateHomogeneousMaterialType (params) {
+  const url = `${baseUrl}/homogeneousMaterialType/update`;
+  return request({
+    url,
+    method: 'post',
+    data: params,
+  });
+}
+
+// 均质材料分类主数据列表-删除
+export async function DeleteTypeHomogeneousMaterialType (params) {
+  const url = `${baseUrl}/homogeneousMaterialType/deleteType`;
+  return request({
+    url,
+    method: 'get',
+    params: params,
+  });
+}
+
+// 均质材料分类主数据列表-冻结/解冻
+export async function FrozenTypeHomogeneousMaterialType (params) {
+  const url = `${baseUrl}/homogeneousMaterialType/frozen`;
+  return request({
+    url,
+    method: 'get',
+    params: params,
+  });
+}
+
 // 战略采购列表
 export const StrategicPurchaseConfig = {
   allowClear: true,
