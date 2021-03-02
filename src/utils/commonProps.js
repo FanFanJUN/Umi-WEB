@@ -3,7 +3,8 @@ import {
   baseUrl,
   supplierManagerBaseUrl,
   commonsUrl,
-  gatewayUrl
+  gatewayUrl,
+  purchaseApplyBaseUrl
 } from './commonUrl';
 import {
   listChineseProvinces,
@@ -41,6 +42,31 @@ export const standardUnitProps = {
   remotePaging: true,
   placeholder: '选择单位'
 }
+
+export const purchaseMaterialClassifyProps = {
+  store: {
+    url: `${purchaseApplyBaseUrl}/purchaseMaterialCategory/findByPage?frozen=false`,
+    params: {
+      filters: [
+        {
+          fieldName: 'frozen',
+          operator: 'EQ',
+          value: false
+        }
+      ]
+    },
+    type: 'post'
+  },
+  style: { width: '100%' },
+  reader: {
+    name: 'purchaseMaterialCategoryName',
+    field: ['purchaseMaterialCategoryCode'],
+    description: 'purchaseMaterialCategoryCode',
+    childKey: 'childrenList'
+  },
+  placeholder: '选择采购物料类别'
+}
+
 // 认定物料类别数据字典
 export const fimlyMaterialClassifyProps = {
   store: {
@@ -58,6 +84,7 @@ export const fimlyMaterialClassifyProps = {
   },
   placeholder: '选择认定物料类别'
 }
+
 // 认定类型数据字典
 export const thatTypeProps = {
   store: {

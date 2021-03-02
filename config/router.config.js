@@ -43,6 +43,11 @@ export default [
     title: '系统打分主数据',
     routes: [
       {
+        path: '/gradeSystem/purchase/materials/firmly/type',
+        component: './PurchasedMaterialsFirmlyType',
+        title: '采购物料类别与认定物料类别关系'
+      },
+      {
         path: '/gradeSystem/evaluation/main/quality',
         component: './SystemEvaluationMainData/Quality',
         title: '质量主数据'
