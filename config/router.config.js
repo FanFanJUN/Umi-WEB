@@ -267,6 +267,7 @@ export default [
       { path: '/qualitySynergy/BU', component: './QualitySynergy/mainData/BU', title: '业务单元主数据-主数据' },
       { path: '/qualitySynergy/EPStatement', component: './QualitySynergy/mainData/EPStatement', title: '环保数据字典表' },
       { path: '/qualitySynergy/HomogeneousMaterialType/index', component: './QualitySynergy/mainData/HomogeneousMaterialType/index', title: '均质材料分类主数据' },
+      { path: '/qualitySynergy/EnvironmentalAndHomogeneousMaterial/index', component: './QualitySynergy/mainData/EnvironmentalAndHomogeneousMaterial/index', title: '环保标准与均质材料分类限用物质测试项配置表主数据' },
     ]
   },
   {

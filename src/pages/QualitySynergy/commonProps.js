@@ -645,6 +645,66 @@ export async function FrozenTypeHomogeneousMaterialType (params) {
   });
 }
 
+// 环保标准与均质材料分类限用物质测试项配置表主数据-新增
+export async function AddEnvironmentalProtectionMaterialType (params) {
+  const url = `${baseUrl}/environmentalProtectionMaterialType/add`;
+  return request({
+    url,
+    method: 'post',
+    data: params,
+  });
+}
+
+// 环保标准与均质材料分类限用物质测试项配置表主数据-编辑
+export async function UpdateEnvironmentalProtectionMaterialType (params) {
+  const url = `${baseUrl}/environmentalProtectionMaterialType/update`;
+  return request({
+    url,
+    method: 'post',
+    data: params,
+  });
+}
+
+// 环保标准与均质材料分类限用物质测试项配置表主数据-删除
+export async function DeleteTypeEnvironmentalProtectionMaterialType (params) {
+  const url = `${baseUrl}/environmentalProtectionMaterialType/deleteType`;
+  return request({
+    url,
+    method: 'get',
+    params: params,
+  });
+}
+
+// 环保标准与均质材料分类限用物质测试项配置表主数据-冻结/解冻
+export async function FrozenEnvironmentalProtectionMaterialType (params) {
+  const url = `${baseUrl}/environmentalProtectionMaterialType/frozen`;
+  return request({
+    url,
+    method: 'get',
+    params: params,
+  });
+}
+
+// 环保标准与均质材料分类限用物质测试项配置表主数据-导入验证
+export async function ImportExcelEnvironmentalProtectionMaterialTypeService (params) {
+  const url = `${baseUrl}/api/environmentalProtectionMaterialTypeService/importExcel`;
+  return request({
+    url,
+    method: 'post',
+    data: params,
+  });
+}
+
+// 环保标准与均质材料分类限用物质测试项配置表主数据-导入
+export async function AddImportAllEnvironmentalProtectionMaterialTypeService (params) {
+  const url = `${baseUrl}/api/environmentalProtectionMaterialTypeService/addImportAll`;
+  return request({
+    url,
+    method: 'post',
+    data: params,
+  });
+}
+
 // 战略采购列表
 export const StrategicPurchaseConfig = {
   allowClear: true,
@@ -982,6 +1042,38 @@ export const findByIsRecordCheckListTrue = {
     description: 'limitMaterialCode',
   },
   placeholder: '选择限用物质列表',
+};
+
+// 均质材料分类代码/名称
+export const findAllByPageNotFrozenHomogeneousMaterialType = {
+  remotePaging: true,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${baseUrl}/homogeneousMaterialType/findAllByPageNotFrozen`,
+  },
+  rowKey: 'homogeneousMaterialTypeCode',
+  reader: {
+    name: 'homogeneousMaterialTypeCode',
+    field: ['id', 'limitMaterialCode', 'casNo'],
+    description: 'homogeneousMaterialTypeName',
+  },
+};
+
+// 环保标准代码
+export const findPageEnvironmentalProtectionData = {
+  remotePaging: true,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${baseUrl}/environmentalProtectionData/findPage`,
+  },
+  rowKey: 'environmentalProtectionCode',
+  reader: {
+    name: 'environmentalProtectionCode',
+    field: ['id', 'limitMaterialCode', 'casNo'],
+    description: 'environmentalProtectionName',
+  },
 };
 
 // 适用范围-非冻结
