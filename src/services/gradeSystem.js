@@ -1,5 +1,5 @@
 import { request } from '../utils';
-import { recommendUrl } from '../utils/commonUrl';
+import { recommendUrl, baseUrl } from '../utils/commonUrl';
 function createServiceRequest(option) {
   const {
     path: url,
@@ -821,3 +821,21 @@ export const batchSaveBusinessData = params => createServiceRequest({
   method: 'POST'
 })
 // 批量导入技术主数据
+
+// 保存、编辑采购物料类别与认定物料类别对应关系
+export const savePurchaseMaterialsData = params => createServiceRequest({
+  path: '/api/buyIdentifyMaterialCategoryService/save',
+  params,
+  method: 'post',
+  base: baseUrl
+})
+// 冻结采购物料类别与认定物料类别对应关系
+export const frozenPurchaseMaterialsData = params => createServiceRequest({
+  path: '/api/buyIdentifyMaterialCategoryService/freeze',
+  params,
+  method: 'post',
+  hack: true,
+  base: baseUrl
+})
+
+// 

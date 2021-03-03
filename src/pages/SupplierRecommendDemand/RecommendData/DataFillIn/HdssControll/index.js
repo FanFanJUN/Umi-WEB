@@ -272,6 +272,7 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                       columns={columns}
                       fields={fields}
                       setDataSource={setTableData}
+                      mode={type}
                     />
                     : null
                 }

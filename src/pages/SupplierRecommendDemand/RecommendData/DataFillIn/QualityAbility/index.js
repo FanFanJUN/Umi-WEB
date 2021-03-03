@@ -1039,6 +1039,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                 <Divider orientation='left'>重点控制工序<span className={styles.hint}>(至少提供一项，如确实没有填无)</span></Divider>
                 <EditorTable
                   dataSource={keyControlProcesses}
+                  mode={type}
                   setDataSource={setkeyControlProcesses}
                   columns={columnsForKeyControl}
                   fields={keyControlFields}
@@ -1070,6 +1071,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                     <EditorTable
                       dataSource={processesEpiboly}
                       setDataSource={setProcessesEpiboly}
+                      mode={type}
                       columns={epibolyColumns}
                       fields={epibolyFields}
                     /> : null
@@ -1200,6 +1202,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                   columns={columnsForProKeyPro}
                   fields={proKeyFields}
                   setDataSource={setkeyTestingEquipments}
+                  mode={type}
                   allowExport
                   allowImport
                   exportFunc={handleExportKeyTestingEquipments}
@@ -1233,6 +1236,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                       dataSource={cannotTestItems}
                       columns={columnsForProject}
                       setDataSource={setcannotTestItems}
+                      mode={type}
                       fields={projectFields}
                     />
                     :
@@ -1314,6 +1318,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                 <EditorTable
                   dataSource={finishedProductTestingItems}
                   columns={columnsForFinishPro}
+                  mode={type}
                   fields={finishProFields}
                   copyLine={true}
                   setDataSource={setfinishedProductTestingItems}
@@ -1325,6 +1330,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                   fields={qualityFields}
                   copyLine={true}
                   setDataSource={setmaterialQualities}
+                  mode={type}
                   allowRemove={true}
                 />
                 <Divider orientation='left'>成品质量状况<span className={styles.hint}>（至少填写一行数据）</span></Divider>
@@ -1333,6 +1339,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                   columns={columnsForFinishQua}
                   fields={finishQuaFields}
                   setDataSource={setfinishedProductQualities}
+                  mode={type}
                   copyLine={true}
                 />
               </div>

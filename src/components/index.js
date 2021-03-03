@@ -2,6 +2,7 @@ import AdvancedForm from './AdvancedForm';
 import AutoSizeLayout from './AutoSizeLayout';
 import Header from './Header';
 import Loader from './Loader';
+import ModalFields from './ModalFields';
 import UserSelect from './UserSelect';
 import ComboSelect from './ComboSelect';
 import { ComboGrid, ComboList, ComboTree, MixinSelect, ComboAttachment } from './MixinCombo';
@@ -27,5 +28,6 @@ export {
   ComboDatePicker,
   Upload,
   UserModal,
-  ModalForm
+  ModalForm,
+  ModalFields
 }

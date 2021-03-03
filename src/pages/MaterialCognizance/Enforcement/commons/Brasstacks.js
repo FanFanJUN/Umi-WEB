@@ -50,9 +50,18 @@ const HeadFormRef = forwardRef(({
     const { getFieldDecorator, setFieldsValue, getFieldValue } = form;
     const [data, setData] = useState([]);
     const [rectif, setRectif] = useState(false);
+    const [adopt, setAdopt] = useState(false);
     useEffect(() => {
         handledata()
-    }, [])
+        handleSelect(editformData)
+    }, [editformData])
+    // 认定方案选中
+    function handleSelect(val) {
+        if (val.identificationStageName === '认定方案' && val.identificationStageCode === '04') {
+            editformData.passStatus = 1
+            setAdopt(true)
+        }
+    }
     // 默认任务完成日期
     function handledata() {
         setData(moment().format('YYYY-MM-DD'))
@@ -95,7 +104,7 @@ const HeadFormRef = forwardRef(({
                                     ],
                                 })(
                                     <Group
-                                        disabled={isView === true}
+                                        disabled={isView || adopt}
                                         options={confirmRadioOptions}
                                         onChange={(value) => handleadopt(value)}
                                     />

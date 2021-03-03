@@ -75,10 +75,13 @@ export default function () {
                 Cookies.remove('_p');
                 closeCurrent()
                 window.open(`/react-basic-web/index?_s=` + data)
+                triggerLoading(false)
                 //window.open(`/srm-se-web/NewHomePageView?_s=` + data)
             } else {
                 message.error(msg);
+                triggerLoading(false)
             }
+
         }
     }
     // 选择供应商注册类型
@@ -130,13 +133,16 @@ export default function () {
         let strcookie = Cookies.get();
         if (resultData) {
             resultData.openId = strcookie._o
+            triggerLoading(true)
             const { data, success, message: msg } = await bindingEmail(resultData)
             if (success) {
                 accounts.email = resultData.email
                 setEmail(resultData.email)
                 next()
+                triggerLoading(false)
             } else {
                 message.error(msg);
+                triggerLoading(false)
             }
         } else {
             message.error('邮箱绑定后才可进行下一步！');
@@ -179,6 +185,7 @@ export default function () {
             <footer className="footer" >
                 <Button onClick={handlePre} hidden={current !== 2}>上一步</Button>
                 <Button style={{ marginLeft: 8 }} hidden={current !== 2}
+                    loading={loading}
                     onClick={supplierPayment}
                     type={"primary"}>提交</Button>
 
@@ -192,6 +199,7 @@ export default function () {
                     我已阅读并同意此协议，并将在注册后上传盖章文件
                  </Checkbox>
                 <Button style={{ marginLeft: 8 }}
+                    loading={loading}
                     className="buttonname"
                     onClick={handleNext}
                     type={"primary"}>下一步</Button>
@@ -201,6 +209,7 @@ export default function () {
                 !classtype ? <footer className="regfooter" hidden={current !== 1}>
                     <Button onClick={handlePre}>上一步</Button>
                     <Button style={{ marginLeft: 8 }}
+                        loading={loading}
                         className="buttonname"
                         onClick={handleSupplier}
                         type={"primary"}>下一步</Button>
@@ -212,6 +221,7 @@ export default function () {
                 classtype ? <footer className="regfooter" hidden={current !== 1}>
                     <Button onClick={handleBack}>上一步</Button>
                     <Button style={{ marginLeft: 8 }}
+                        loading={loading}
                         className="buttonname"
                         onClick={handleEmail}
                         type={"primary"}>下一步</Button>

@@ -13,6 +13,7 @@ import {
   ExtModal,
   ComboList,
   ComboGrid,
+  ComboTree,
   YearPicker
 } from 'suid';
 import UploadFile from '../Upload'
@@ -22,6 +23,7 @@ const fieldTypes = {
   'textArea': TextArea,
   'comboList': ComboList,
   'comboGrid': ComboGrid,
+  'comboTree': ComboTree,
   'datePicker': DatePicker,
   'yearPicker': YearPicker,
   'uploadFile': UploadFile,
@@ -63,6 +65,19 @@ function ModalFields({
   function setValue(v) {
     const { guid, unitName, unitCode, ...otherValue } = v
     setFieldsValue(otherValue)
+  }
+  function handleComboTreeSelect(item, reader, name, field = []) {
+    const { name: readerName, field: readerField } = reader
+    const fieldValue = field.reduce((prev, cur, index) => {
+      return {
+        ...prev,
+        [cur]: item[readerField[index]]
+      }
+    }, {})
+    setFieldsValue({
+      [name]: item[readerName],
+      ...fieldValue
+    })
   }
   function getDisabledValue(ds, tv, otherTv) {
     if (Object.is(null, ds)) {
@@ -107,7 +122,7 @@ function ModalFields({
         [cur]: fieldsValue[cur]
       }
     }, {})
-    const { disabled = null } = props;
+    const { field: fd = [], reader, name: treename, disabled } = props;
     const formatDisabled = typeof disabled === 'boolean' ? disabled : getDisabledValue(disabled, disabledTargetValue ? disabledTargetValue : tv, otherTv);
     const FieldItem = fieldTypes[fieldType] || Input;
     const { rules = [], ...other } = options
@@ -149,15 +164,34 @@ function ModalFields({
           </Col>
         )
       case 'comboList' || 'comboGrid':
-        const { field = [] } = props;
         return (
           <Col key={`${name}-field-item`} span={12}>
             <Item label={label}>
               {
-                field.map(f => getFieldDecorator(f)),
+                fd.map(f => getFieldDecorator(f)),
                 getFieldDecorator(name, opt)(
                   <FieldItem
                     {...props}
+                    disabled={formatDisabled}
+                    allowClear
+                    form={form}
+                    style={{ width: '100%' }}
+                  />
+                )
+              }
+            </Item>
+          </Col>
+        )
+      case 'comboTree':
+        return (
+          <Col key={`${name}-field-item`} span={12}>
+            <Item label={label}>
+              {
+                fd.map(f => getFieldDecorator(f)),
+                getFieldDecorator(name, opt)(
+                  <FieldItem
+                    {...props}
+                    afterSelect={(item) => handleComboTreeSelect(item, reader, treename, fd)}
                     disabled={formatDisabled}
                     allowClear
                     form={form}

@@ -316,6 +316,7 @@ const QuotationAndGPCA = ({ updateGlobalStatus }) => {
                     <EditorTable
                       dataSource={dataSource}
                       columns={columns}
+                      mode={type}
                       fields={fields}
                       setDataSource={setDataSource}
                       copyLine={true}

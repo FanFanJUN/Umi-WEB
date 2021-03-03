@@ -43,6 +43,7 @@ const getInformation = forwardRef(({
         handleDate(editData)
     }, [editData]);
     function handleDate(value) {
+        console.log(value)
         form.setFieldsValue({
             'stageId': value.stageId,
             'stageCode': value.stageCode,
@@ -58,11 +59,17 @@ const getInformation = forwardRef(({
             setDefaulted(false)
             setOtheredit(false)
             setOthers(true)
-        } else if (type && attachId === 2 && value.stageName !== '认定结果' && value.stageName !== '认定方案') {
+        } else if (type && attachId === 2 && value.stageName !== '认定结果' && value.stageName !== '认定方案' && value.defaultRequired === 0) {
             setEdit(false)
             setDefaulted(false)
             setOtheredit(true)
             setOthers(false)
+            setTaskid(seltaskid)
+        } else if (type && attachId === 2 && value.stageName !== '认定结果' && value.stageName !== '认定方案' && value.defaultRequired === 1) {
+            setEdit(false)
+            setDefaulted(false)
+            setOtheredit(true)
+            setOthers(true)
             setTaskid(seltaskid)
         }
     }
@@ -77,6 +84,7 @@ const getInformation = forwardRef(({
                 val.defaultRequired = selectype
                 if (attachId === 2) {
                     val.isedit = true
+                    val.defaultRequired = editData.defaultRequired
                     params = { ...editData, ...val }
                 } else {
                     val.isedit = false
