@@ -12,6 +12,7 @@ import Upload from './Upload';
 import UserModal from './UserModal';
 import ModalForm from './ModalForm';
 import EditorTable from './EditorTable';
+import DataExportButton from './DataExportButton';
 
 export {
   AdvancedForm,
@@ -31,5 +32,6 @@ export {
   UserModal,
   ModalForm,
   ModalFields,
-  EditorTable
+  EditorTable,
+  DataExportButton
 }

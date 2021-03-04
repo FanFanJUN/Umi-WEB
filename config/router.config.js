@@ -256,6 +256,7 @@ export default [
       { path: '/qualitySynergy/EPMaterial/detailForm', component: './QualitySynergy/EPMaterial/MaterialManagement/detailForm', title: '环保资料物料-明细' },
       { path: '/qualitySynergy/EPMaterial/suppliersToFill', component: './QualitySynergy/EPMaterial/SuppliersToFill', title: '环保资料填报' },
       { path: '/qualitySynergy/EPMaterial/suppliersFillForm', component: './QualitySynergy/EPMaterial/SuppliersToFill/editForm', title: '环保资料填报-填报页面' },
+      { path: '/qualitySynergy/EPMaterial/MaterialDistributionSupplierList', component: './QualitySynergy/EPMaterial/MaterialDistributionSupplierList', title: '环保资料物料分配供应商明细表' },
       { path: '/qualitySynergy/DataSharingList', component: './QualitySynergy/TechnicalDataSharing/DataSharingList', title: '技术资料分享' },
       { path: '/qualitySynergy/DataSharingDetailList', component: './QualitySynergy/TechnicalDataSharing/DataSharingDetailList', title: '技术资料分享明细' },
       { path: '/qualitySynergy/DataSharingAdd', component: './QualitySynergy/TechnicalDataSharing/DataSharingList/edit', title: '技术资料分享-新增' },
@@ -272,6 +273,7 @@ export default [
       { path: '/qualitySynergy/BU', component: './QualitySynergy/mainData/BU', title: '业务单元主数据-主数据' },
       { path: '/qualitySynergy/EPStatement', component: './QualitySynergy/mainData/EPStatement', title: '环保数据字典表' },
       { path: '/qualitySynergy/HomogeneousMaterialType/index', component: './QualitySynergy/mainData/HomogeneousMaterialType/index', title: '均质材料分类主数据' },
+      { path: '/qualitySynergy/EnvironmentalAndHomogeneousMaterial/index', component: './QualitySynergy/mainData/EnvironmentalAndHomogeneousMaterial/index', title: '环保标准与均质材料分类限用物质测试项配置表主数据' },
     ]
   },
   {

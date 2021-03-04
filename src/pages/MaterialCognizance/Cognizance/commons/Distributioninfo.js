@@ -395,12 +395,12 @@ const ModifyinfoRef = forwardRef(({
   }
   const headerleft = (
     <>
-      {
+      {/* {
         <AuthButton type="primary" className={styles.btn} onClick={() => showstageModal()}>新增阶段</AuthButton>
       }
       {
         <AuthButton className={styles.btn} onClick={() => handleDeletecogn()}>删除阶段</AuthButton>
-      }
+      } */}
       {
         <AuthButton type="primary" className={styles.btn} onClick={() => showModal()}>新增任务</AuthButton>
       }

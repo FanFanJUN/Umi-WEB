@@ -40,7 +40,7 @@ const formLayout = {
   },
 };
 
-function AdvancedForm({
+function AdvancedForm ({
   formItems = [],
   onOk = () => null,
   form = {},
@@ -52,7 +52,7 @@ function AdvancedForm({
     validateFields,
   } = form;
 
-  function handleSubmit() {
+  function handleSubmit () {
     validateFields((err, val) => {
       if (!err) {
         onOk(val);
@@ -60,7 +60,7 @@ function AdvancedForm({
     });
   }
 
-  function handleReset() {
+  function handleReset () {
     resetFields();
     onOk({});
   }
