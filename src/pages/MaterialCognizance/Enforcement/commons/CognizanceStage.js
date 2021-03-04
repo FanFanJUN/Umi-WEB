@@ -60,7 +60,6 @@ const HeadFormRef = forwardRef(({
         } else {
             setIsshow(true)
         }
-        console.log(val)
     }
     function onChange(val) {
         setCognizance(val)
@@ -71,7 +70,8 @@ const HeadFormRef = forwardRef(({
                 <Col span={9}>
                     <Item label='认定阶段' {...formLayout}>
                         {
-                            getFieldDecorator('recommendReasons', {
+                            getFieldDecorator('codeList', {
+                                initialValue: editformData ? editformData.codeList : '',
                             })(
                                 <Checkbox.Group options={handlestage} onChange={onChange}
                                     disabled={isshow}
