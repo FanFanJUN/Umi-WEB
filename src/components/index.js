@@ -11,6 +11,7 @@ import ComboDatePicker from './ComboDatePicker';
 import Upload from './Upload';
 import UserModal from './UserModal';
 import ModalForm from './ModalForm';
+import DataExportButton from './DataExportButton';
 
 export {
   AdvancedForm,
@@ -29,5 +30,6 @@ export {
   Upload,
   UserModal,
   ModalForm,
-  ModalFields
+  ModalFields,
+  DataExportButton
 }

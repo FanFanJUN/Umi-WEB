@@ -1295,3 +1295,38 @@ export const sourcelist = {
   placeholder: '选择来源',
   ...commonProps,
 };
+
+// 复核状态
+export const checkReviewList = {
+  dataSource: [
+    { code: true, name: '复核' },
+    { code: false, name: '未复核' },
+  ],
+  ...commonProps,
+};
+
+// 复核结果
+export const reviewResultsList = {
+  dataSource: [
+    { code: 'PASS', name: '通过' },
+    { code: 'NOPASS', name: '不通过' },
+  ],
+  ...commonProps,
+};
+
+// 环保资料物料分配供应商明细-来源
+export const SourceTypeEnuList = {
+  allowClear: true,
+  dataSource: [
+    {
+      code: 'SRM',
+      name: 'SRM来源',
+    },
+    {
+      code: 'PDM',
+      name: 'PDM来源',
+    },
+  ],
+  placeholder: '选择来源',
+  ...commonProps,
+};
