@@ -205,17 +205,11 @@ export default () => {
           >终止审核</Button>
         )
       }
-      {
-        authAction(
-          <Checkbox
-            className={styles.btn}
-            ignore={DEVELOPER_ENV}
-            onChange={handleOnlyMeChange}
-            checked={onlyMe}
-            key='SUPPLIER_RECOMMEND_DEMAND_ONLYME'
-          >仅我的</Checkbox>
-        )
-      }
+      <Checkbox
+        className={styles.btn}
+        onChange={handleOnlyMeChange}
+        checked={onlyMe}
+      >仅我的</Checkbox>
     </>
   )
   const right = (
