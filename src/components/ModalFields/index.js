@@ -214,6 +214,7 @@ function ModalFields({
                     allowClear
                     min={0}
                     max={999999999}
+                    precision={2}
                     style={{ width: '100%' }}
                   />
                 )

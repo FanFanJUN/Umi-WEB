@@ -120,7 +120,7 @@ function CSRQuestionnaire({
                     }
                   ]
                 })(
-                  <Input className={styles.input} onChange={(event) => handleLineChange(event, index, 'remarkValue')} />
+                  <Input maxLength={100} className={styles.input} onChange={(event) => handleLineChange(event, index, 'remarkValue')} />
                 )
               }
             </Form.Item>

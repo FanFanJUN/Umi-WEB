@@ -648,7 +648,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                           },
                         ],
                       })(
-                        <Input.TextArea disabled={type === 'detail'}></Input.TextArea>
+                        <Input.TextArea disabled={type === 'detail'} maxLength={500}></Input.TextArea>
                       )}
                     </FormItem>
                   </Col>
@@ -710,6 +710,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                         <InputNumber
                           min={0}
                           max={100}
+                          precision={2}
                           disabled={type === 'detail'}
                           formatter={value => `${value}%`}
                           parser={value => value && value.replace('%', '')}
@@ -733,6 +734,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                         <InputNumber
                           min={0}
                           max={100}
+                          precision={2}
                           disabled={type === 'detail'}
                           formatter={value => `${value}%`}
                           parser={value => value && value.replace('%', '')}
@@ -769,7 +771,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                           }
                         ]
                       })(
-                        <InputNumber min={1} max={999999999} disabled={type === 'detail'} style={{ width: '20%' }} />
+                        <InputNumber precision={2} min={1} max={999999999} disabled={type === 'detail'} style={{ width: '20%' }} />
                       )}
                     </FormItem>
                     <FormItem label='最短(天)' {...formLayout} labelCol={{
@@ -794,7 +796,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                             }
                           ]
                         })(
-                          <InputNumber min={1} max={999999999} disabled={type === 'detail'} style={{ width: '20%' }} />
+                          <InputNumber precision={2} min={1} max={999999999} disabled={type === 'detail'} style={{ width: '20%' }} />
                         )
                       }
                     </FormItem>
@@ -819,7 +821,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                             }
                           ]
                         })(
-                          <InputNumber min={1} max={999999999} disabled={type === 'detail'} style={{ width: '20%' }} />
+                          <InputNumber precision={2} min={1} max={999999999} disabled={type === 'detail'} style={{ width: '20%' }} />
                         )
                       }
                     </FormItem>

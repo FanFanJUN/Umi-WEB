@@ -209,7 +209,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                       },
                     ],
                   })(
-                    <Input placeholder='请输入企业邮箱' disabled={DISABLED} />
+                    <Input maxLength={100} placeholder='请输入企业邮箱' disabled={DISABLED} />
                   )}
                 </FormItem>
               </Col>
@@ -225,7 +225,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                         message: '法定代表人不能为空',
                       },
                     ],
-                  })(<Input placeholder='请输入法定代表人' disabled={DISABLED} />)}
+                  })(<Input maxLength={100} placeholder='请输入法定代表人' disabled={DISABLED} />)}
                 </FormItem>
               </Col>
               <Col span={12}>
@@ -239,7 +239,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                       },
                     ],
                   })(
-                    <Input placeholder='可以与企业、销售分公司、代理商同名' disabled={DISABLED} />
+                    <Input maxLength={100} placeholder='可以与企业、销售分公司、代理商同名' disabled={DISABLED} />
                   )}
                 </FormItem>
               </Col>
