@@ -136,7 +136,7 @@ const MarketCompetitive = React.forwardRef(({ form, data, type, setTableData }, 
                   message: '企业的主要竞争优势不能为空',
                 },
               ],
-            })(<Input.TextArea placeholder="请输入主要竞争优势" style={{ width: '100%' }} disabled={DISABLED} />)}
+            })(<Input.TextArea placeholder="请输入主要竞争优势" maxLength={500} style={{ width: '100%' }} disabled={DISABLED} />)}
           </FormItem>
         </Col>
       </Row>

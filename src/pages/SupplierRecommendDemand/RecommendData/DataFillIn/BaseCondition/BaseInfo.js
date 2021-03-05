@@ -95,7 +95,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                 <FormItem label="供应商名称" {...formLayout}>
                   {getFieldDecorator('supplierName', {
                     initialValue: data && data.supplierName,
-                  })(<Input disabled style={{ width: '100%' }} />)}
+                  })(<Input disabled style={{ width: '100%' }} maxLength={100} />)}
                 </FormItem>
               </Col>
               <Col span={12}>
@@ -130,7 +130,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                 <FormItem label="注册资金" {...formLayout}>
                   {getFieldDecorator('registeredFund', {
                     initialValue: data.registeredFund
-                  })(<Input disabled style={{ width: '100%' }} addonAfter="万 RMB" />)}
+                  })(<Input disabled style={{ width: '100%' }} maxLength={100} addonAfter="万 RMB" />)}
                 </FormItem>
               </Col>
             </Row>

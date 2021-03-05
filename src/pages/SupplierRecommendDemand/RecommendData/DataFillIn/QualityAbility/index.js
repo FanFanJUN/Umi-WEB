@@ -1248,7 +1248,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="例举" {...formLayout}>
                       {getFieldDecorator('noTestItem', {
                         initialValue: type === 'add' ? '' : data.noTestItem
-                      })(<Input.TextArea disabled={type === 'detail'} />)}
+                      })(<Input.TextArea disabled={type === 'detail'} maxLength={500} />)}
                     </FormItem>
                   </Col>
                 </Row>
@@ -1258,7 +1258,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="从硬件上计划进哪些检测设备（仪表仪器）" {...formLayout}>
                       {getFieldDecorator('planBuyEquipment', {
                         initialValue: type === 'add' ? '' : data.planBuyEquipment
-                      })(<Input.TextArea disabled={type === 'detail'} />)}
+                      })(<Input.TextArea disabled={type === 'detail'} maxLength={500} />)}
                     </FormItem>
                   </Col>
                 </Row>
@@ -1267,7 +1267,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="从软件上有何措施" {...formLayout}>
                       {getFieldDecorator('softwareStep', {
                         initialValue: type === 'add' ? '' : data.softwareStep
-                      })(<Input.TextArea disabled={type === 'detail'} />)}
+                      })(<Input.TextArea disabled={type === 'detail'} maxLength={500} />)}
                     </FormItem>
                   </Col>
                 </Row>
@@ -1277,7 +1277,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="产品质量控制流程简介" {...formLayout}>
                       {getFieldDecorator('qualityControlBrief', {
                         initialValue: type === 'add' ? '' : data.qualityControlBrief
-                      })(<Input.TextArea disabled={type === 'detail'} />)}
+                      })(<Input.TextArea disabled={type === 'detail'} maxLength={500} />)}
                     </FormItem>
                   </Col>
                   <Col span={12}>
@@ -1298,7 +1298,7 @@ const QualityAbility = ({ form, updateGlobalStatus }) => {
                     <FormItem label="成品检验规范" {...formLayout}>
                       {getFieldDecorator('finishedProductTestNorm', {
                         initialValue: type === 'add' ? '' : data.finishedProductTestNorm
-                      })(<Input.TextArea disabled={type === 'detail'} />)}
+                      })(<Input.TextArea disabled={type === 'detail'} maxLength={500} />)}
                     </FormItem>
                   </Col>
                   <Col span={12}>

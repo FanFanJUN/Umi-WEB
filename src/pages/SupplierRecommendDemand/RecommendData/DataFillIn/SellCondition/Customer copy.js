@@ -85,7 +85,7 @@ const CustermerInfo = ({
         <FormItem label="情况介绍" {...formLayout}>
           {getFieldDecorator('situationDescription', {
             initialValue: type === 'add' ? '' : data.situationDescription,
-          })(<Input.TextArea placeholder="请输入情况介绍" style={{ width: '100%' }} disabled={DISABLED} />)}
+          })(<Input.TextArea placeholder="请输入情况介绍" style={{ width: '100%' }} maxLength={500} disabled={DISABLED} />)}
         </FormItem>
       </Col>
       <Col span={12}>

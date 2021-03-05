@@ -65,7 +65,7 @@ const OverallSit = ({
               }
             ]
           })(
-            <InputNumber precision={2} min={1} max={999999999} style={{ width: '100%' }} disabled={DISABLED} min={0} max={100} />,
+            <InputNumber precision={2} min={1} max={999999999} style={{ width: '100%' }} disabled={DISABLED} min={0} max={100} />
           )}
         </FormItem>
       </Col>

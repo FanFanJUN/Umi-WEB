@@ -372,7 +372,7 @@ const HdssControll = ({ form, updateGlobalStatus }) => {
                             message: '备注不能为空'
                           }
                         ]
-                      })(<Input.TextArea disabled={type === 'detail'} />)}
+                      })(<Input.TextArea disabled={type === 'detail'} maxLength={500} />)}
                     </FormItem>
                   </Col>
                 </Row>

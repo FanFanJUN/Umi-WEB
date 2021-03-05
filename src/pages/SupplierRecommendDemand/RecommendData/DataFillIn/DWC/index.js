@@ -280,7 +280,7 @@ const DWC = ({ form, updateGlobalStatus }) => {
                           <Radio value={'OTHER'}>
                             <span>其他：</span>
                             {getFieldDecorator('otherPayCondition')(
-                              <Input disabled={payConditionEnum !== 'OTHER'} />
+                              <Input maxLength={100} disabled={payConditionEnum !== 'OTHER'} />
                             )}
                           </Radio>
                         </Radio.Group>)}
