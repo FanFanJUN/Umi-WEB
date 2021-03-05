@@ -79,7 +79,7 @@ const AuditScoreForm = React.forwardRef(({ form, isView, editData, type }, ref) 
             rowKey={(v) => v.id}
             showSearch={false}
             height={'500px'}
-            defaultExpandAllRows={true}
+            defaultExpandAllRows={false}
             lineNumber={false}
             columns={columns}
             dataSource={dataSource}
