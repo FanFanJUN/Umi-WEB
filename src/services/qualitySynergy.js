@@ -412,7 +412,7 @@ export async function checkReview (params) {
 }
 // 供应商-填报环保资料-获取填报数据
 export async function supplerFindVoById (params) {
-  const url = `${recommendUrl}/api/epDataFillService/findVoById`;
+  const url = `${recommendUrl}/api/epDataFillService/newFindVoById`;
   return request({
     url,
     method: 'GET',
@@ -422,7 +422,7 @@ export async function supplerFindVoById (params) {
 
 // 供应商-填报环保资料-填报
 export async function epDemandUpdate (params) {
-  const url = `${recommendUrl}/api/epDataFillService/update`;
+  const url = `${recommendUrl}/api/epDataFillService/newUpdate`;
   return request({
     url,
     method: 'POST',

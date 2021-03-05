@@ -106,7 +106,7 @@ const EventModal = (props) => {
                   ],
                 })(
                   <ComboList form={props.form}
-                    {...findAllByPageNotFrozenHomogeneousMaterialType}
+                    {...findAllByPageNotFrozenHomogeneousMaterialType()}
                     name='materialName'
                     field={['materialId', 'materialCode', 'casNo']}
                     afterSelect={(item) => {
