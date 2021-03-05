@@ -29,7 +29,15 @@ function EditorTable({
   setDataSource = () => null,
   fields = [],
   mode = 'create',
-  beforeEditor = () => null
+  beforeEditor = () => null,
+  formLayout = {
+    labelCol: {
+      span: 12,
+    },
+    wrapperCol: {
+      span: 12,
+    }
+  }
 }) {
   const formRef = useRef(null);
   const tableRef = useRef(null);
@@ -245,12 +253,13 @@ function EditorTable({
         visible={visible}
         fields={fields}
         footer={footer}
+        formLayout={formLayout}
         type={type}
         wrappedComponentRef={formRef}
         onCancel={() => setVisible(false)}
         onOk={handleConfirm}
         copyLine={copyLine}
-        copyFields={copyFields}
+        copyFields={copyLine ? copyFields : []}
       />
     </div>
   )

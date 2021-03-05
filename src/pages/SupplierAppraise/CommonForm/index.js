@@ -23,9 +23,12 @@ import {
   Select,
   Modal,
   message,
-  Spin
+  Spin,
+  Button
 } from 'antd';
 import { useLocation } from 'dva/router';
+import { Header } from '../../../components';
+import SupplierSelect from './SupplierSelect';
 import moment from 'moment';
 import { commonProps, getUserAccount } from '../../../utils';
 import { findListById, findByBuCodeOrBgCode, findAppraiseById, findDateForBuCodeOrBgCode } from '../../../services/appraise';
@@ -76,6 +79,57 @@ const columns = [
     width: 250
   }
 ];
+const tempColumns = [
+  {
+    title: '供应商代码',
+    dataIndex: 'supplierCode'
+  },
+  {
+    title: '供应商名称',
+    dataIndex: 'supplierName'
+  },
+  {
+    title: '原厂代码',
+    dataIndex: 'originSupplierCode'
+  },
+  {
+    title: '原厂名称',
+    dataIndex: 'originSupplierName'
+  },
+  {
+    title: '物料分类代码',
+    dataIndex: 'materielCategoryCode'
+  },
+  {
+    title: '物料分类名称',
+    dataIndex: 'materielCategoryName'
+  },
+  {
+    title: '业务单元代码',
+    dataIndex: 'buCode'
+  },
+  {
+    title: '业务单元名称',
+    dataIndex: 'buName'
+  },
+  {
+    title: '公司代码',
+    dataIndex: 'corporationCode'
+  },
+  {
+    title: '公司名称',
+    dataIndex: 'corporationName'
+  },
+  {
+    title: '采购组织代码',
+    dataIndex: 'purchaseOrgCode'
+  },
+  {
+    title: '采购组织名称',
+    dataIndex: 'purchaseOrgName'
+  }
+]
+
 const businessColumns = [
   {
     title: '业务单元代码',
@@ -118,7 +172,8 @@ const CommonForm = forwardRef(({
     getFieldValue,
     getFieldDecorator,
     setFieldsValue,
-    validateFieldsAndScroll
+    validateFieldsAndScroll,
+    getFieldsValue
   } = form;
   const [systemView, setSystemView] = useState(null);
   const [expandedKeys, setExpandedKeys] = useState([]);
@@ -129,13 +184,79 @@ const CommonForm = forwardRef(({
   const [dataSource, setDataSource] = useState([]);
   const [treeSelected, setTreeSelected] = useState([]);
   const tableRef = useRef(null)
+  const supplierRef = useRef(null)
   const useAccount = getUserAccount();
-  const evlValue = getFieldValue('evlLevel');
-  const corpCode = getFieldValue('corporationCode');
-  const est = getFieldValue('evlPeriodStartTime');
-  const apt = getFieldValue('applicationPeriodStartTime');
+  // const evlValue = getFieldValue('evlLevel');
+  // const corpCode = getFieldValue('corporationCode');
+  // const est = getFieldValue('evlPeriodStartTime');
+  const {
+    evlLevel: evlValue,
+    corporationCode: corpCode,
+    evlPeriodStartTime: est,
+    evlPeriodEndTime: ent,
+    evlPeriodType,
+    businessGroupCode = null,
+    businessUnitCode = null,
+    applicationPeriodEndTime
+  } = getFieldsValue()
+  const tempHeaderLeft = (
+    <>
+      <Button
+        className={styles.btn}
+        disabled={!est || !ent || type === 'detail' || !applicationPeriodEndTime}
+        type='primary'
+        onClick={handleShowSupplierSelect}
+      >新增</Button>
+      <Button
+        className={styles.btn}
+        disabled={type === 'detail'}
+        onClick={handleRemoveSupplier}
+      >删除</Button>
+    </>
+  )
+
+  function handleShowSupplierSelect() {
+    supplierRef.current.showModal()
+  }
+  function handleRemoveSupplier() {
+    const { selectedRowKeys } = supplierCommonProps;
+    const [key] = selectedRowKeys;
+    const filterData = supplierCommonProps.dataSource.filter(item => item.supplierSupplyId !== key);
+    console.log(filterData)
+  }
+  function handleSupplierSelectOk(_, items) {
+    // 格式化选中的合格供应商数据准备筛重
+    const formatItems = items.map((item) => ({
+      supplierId: item.supplier.id,
+      supplierCode: item.supplier.code,
+      supplierName: item.supplier.name,
+      corporationCode: item.corporationCode,
+      corporationName: item.corporationName,
+      purchaseOrgCode: item.purchaseOrg.code,
+      purchaseOrgName: item.purchaseOrg.name,
+      materielCategoryCode: item.materielCategory.code,
+      materielCategoryName: item.materielCategory.name,
+      startDate: item.startDate,
+      endDate: item.endDate,
+      originSupplierCode: item.originSupplierCode,
+      originSupplierName: item.originSupplierName,
+      buyMaterialCategoryCode: item.buyMaterialCategoryCode,
+      buyMaterialCategoryName: item.buyMaterialCategoryName,
+      buCode: item.buCode,
+      buName: item.buName,
+      supplierSupplyId: item.id
+    }))
+    // 将选中数据与已新增数据对比筛重
+    const filterItems = formatItems.filter(fitem => {
+      return supplierCommonProps.dataSource.findIndex(data => data.supplierSupplyId === fitem.supplierSupplyId) === -1
+    })
+    // 合并未重复数据与已有数据
+    const concatItems = filterItems.concat(supplierCommonProps.dataSource);
+    setSupplierCommonProps.setDataSource(concatItems)
+  }
   const { query } = useLocation();
   const [tableCommonProps, tableCommonSets] = useTableProps();
+  const [supplierCommonProps, setSupplierCommonProps] = useTableProps()
   function formatSystemTree(arr) {
     const formatArray = arr.map(item => {
       const hasChildren = Array.isArray(item.children);
@@ -186,6 +307,9 @@ const CommonForm = forwardRef(({
   }
   // 清除选中项
   function cleanSelectedRecord() {
+    if (evlPeriodType === 'TEMP') {
+      return
+    }
     tableCommonSets.setRowKeys([])
     tableRef.current.manualSelectedRows([])
   }
@@ -299,7 +423,8 @@ const CommonForm = forwardRef(({
       businessUnitName,
       businessUnitCode,
       seCorporationPurchaseOrgList,
-      selectedEvlSystemIds
+      selectedEvlSystemIds,
+      seSupplierSupplyLists
     } = v;
     await setFieldsValue({
       projectName,
@@ -324,6 +449,7 @@ const CommonForm = forwardRef(({
     await setSystemView(sv)
     await setCheckedKeys(selectedEvlSystemIds)
     await setExpandedKeys(selectedEvlSystemIds)
+    await setSupplierCommonProps.setDataSource(seSupplierSupplyLists)
     await setFieldsValue({
       // BG业务板块
       businessGroupCode,
@@ -348,6 +474,7 @@ const CommonForm = forwardRef(({
       const formatFields = {
         ...fds,
         seCorporationPurchaseOrgList: tableCommonProps.dataSource,
+        seSupplierSupplyLists: evlPeriodType === 'TEMP' ? supplierCommonProps.dataSource : [],
         selectedEvlSystems: ses
       }
       resolve(formatFields)
@@ -788,18 +915,51 @@ const CommonForm = forwardRef(({
             }
           </Col>
         </Row>
-        <div>
-          <ExtTable
-            {...tableCommonProps}
-            showSearch={false}
-            onSelectRow={tableCommonSets.handleSelectedRows}
-            columns={businessColumns}
-            ellipsis={false}
-            ref={tableRef}
-          />
-        </div>
+        {
+          evlPeriodType === 'TEMP' ?
+            (
+              <>
+                <div className={styles.commonTitle}>合格供应商数据</div>
+                <Header
+                  left={tempHeaderLeft}
+                />
+                <ExtTable
+                  dataSource={supplierCommonProps.dataSource}
+                  columns={tempColumns}
+                  rowKey="supplierSupplyId"
+                  showSearch={false}
+                  onSelectRow={setSupplierCommonProps.handleSelectedRows}
+                  checkbox={{
+                    multiSelect: false
+                  }}
+                />
+                <SupplierSelect
+                  startTime={est}
+                  endTime={ent}
+                  buCode={businessUnitCode}
+                  bgCode={businessGroupCode}
+                  onOk={handleSupplierSelectOk}
+                  wrappedComponentRef={supplierRef}
+                />
+              </>
+            )
+            :
+            (<>
+              <div>
+                <div className={styles.commonTitle}>公司采购组织数据</div>
+                <ExtTable
+                  {...tableCommonProps}
+                  showSearch={false}
+                  onSelectRow={tableCommonSets.handleSelectedRows}
+                  columns={businessColumns}
+                  ellipsis={false}
+                  ref={tableRef}
+                />
+              </div>
+            </>)
+        }
       </Form>
-    </Spin>
+    </Spin >
   )
 })
 

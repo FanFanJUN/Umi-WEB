@@ -172,6 +172,40 @@ export const supplierProps = {
   remotePaging: true,
   placeholder: '选择供应商'
 }
+// 供应商forName
+export const supplierPropsForName = {
+  store: {
+    url: `${smBaseUrl}/api/supplierService/findByPage`,
+    params: {
+      Q_EQ_frozen__Boolean: false,
+      filters: [
+        {
+          fieldName: 'supplierStatus',
+          fieldType: 'Integer',
+          operator: 'EQ',
+          value: 0
+        },
+        {
+          fieldName: 'code',
+          fieldType: 'String',
+          operator: 'EQ',
+          value: 'NONULL'
+        }
+      ]
+    },
+    type: 'post'
+  },
+  style: {
+    width: '100%'
+  },
+  reader: {
+    name: 'name',
+    field: ['code'],
+    description: 'code'
+  },
+  remotePaging: true,
+  placeholder: '选择供应商'
+}
 
 // 供应商不筛选code为空数据
 
@@ -384,6 +418,10 @@ export const evlPeriodEmu = [
   {
     value: 'MONTH',
     label: '月度'
+  },
+  {
+    value: 'TEMP',
+    label: '临时'
   }
 ];
 

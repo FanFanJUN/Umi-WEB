@@ -315,22 +315,31 @@ function SupplierConfigure() {
     }
     // 确认认定结果
     async function handleConfirm() {
-        let id = selectedRows[0].id;
-        const { success, data, message: msg } = await ConfirmBilltype({ planId: id });
-        if (success) {
-            if (data.executeStatus === 0) {
-                setTasktype('认定不合格')
+        if (selectedRows.length > 0 && selectedRows[0].creatorId === currentUserId && selectedRows[0].planningStatus === 1) {
+            let id = selectedRows[0].id;
+            const { success, data, message: msg } = await ConfirmBilltype({ planId: id });
+            if (success) {
+                if (data.executeStatus === 0) {
+                    setTasktype('认定不合格')
+                }
+                if (data.executeStatus === 1 && data.taskStatus === 0) {
+                    setTasktype('认定不合格')
+                }
+                if (data.executeStatus === 1 && data.taskStatus === 1) {
+                    setTasktype('认定合格')
+                }
+                setvisible(true)
+            } else {
+                message.error(msg);
             }
-            if (data.executeStatus === 1 && data.taskStatus === 0) {
-                setTasktype('认定不合格')
-            }
-            if (data.executeStatus === 1 && data.taskStatus === 1) {
-                setTasktype('认定合格')
-            }
-            setvisible(true)
+        } else if (selectedRows.length > 0 && selectedRows[0].creatorId === currentUserId && selectedRows[0].planningStatus !== 1) {
+            message.error('当前状态不能确认结果！');
+        } else if (selectedRows.length > 0 && selectedRows[0].creatorId !== currentUserId) {
+            message.error('只能处理自己的单据！');
         } else {
-            message.error(msg);
+            message.error('请选择一条数据！');
         }
+
     }
     // 
     async function handleOk() {
@@ -478,12 +487,13 @@ function SupplierConfigure() {
             {
                 authAction(
                     <Button
+                        type='primary'
                         loading={loading}
                         ignore={DEVELOPER_ENV}
                         key='SRM-SM-LDENTPLAN-SUPPLIER-RESULT'
                         className={styles.btn}
                         onClick={handleConfirm}
-                        disabled={empty || !isSelf || !iscogn}
+                    //disabled={!isSelf}
                     >确认认定结果
                     </Button>
                 )

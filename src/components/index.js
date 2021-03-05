@@ -11,6 +11,7 @@ import ComboDatePicker from './ComboDatePicker';
 import Upload from './Upload';
 import UserModal from './UserModal';
 import ModalForm from './ModalForm';
+import EditorTable from './EditorTable';
 import DataExportButton from './DataExportButton';
 
 export {
@@ -31,5 +32,6 @@ export {
   UserModal,
   ModalForm,
   ModalFields,
+  EditorTable,
   DataExportButton
 }
