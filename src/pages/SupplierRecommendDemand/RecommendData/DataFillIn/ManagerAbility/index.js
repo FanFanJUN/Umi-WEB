@@ -600,7 +600,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                             message: '不能为空'
                           }
                         ]
-                      })(<InputNumber min={1} max={999999999} disabled={type === 'detail'} />)}
+                      })(<InputNumber precision={2} min={1} max={999999999} disabled={type === 'detail'} />)}
                     </FormItem>
                   </Col>
                   <Col span={8}>
@@ -613,7 +613,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                             message: '不能为空'
                           }
                         ]
-                      })(<InputNumber min={1} max={999999999} disabled={type === 'detail'} />)}
+                      })(<InputNumber precision={2} min={1} max={999999999} disabled={type === 'detail'} />)}
                     </FormItem>
                   </Col>
                 </Row>
@@ -886,7 +886,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                             message: '正常情况交货期不能为空',
                           },
                         ],
-                      })(<InputNumber min={1} max={999999999} disabled={type === 'detail'} />)}
+                      })(<InputNumber precision={2} min={1} max={999999999} disabled={type === 'detail'} />)}
                     </FormItem>
                   </Col>
                   <Col span={12}>
@@ -899,7 +899,7 @@ const ManagerAbility = ({ form, updateGlobalStatus }) => {
                             message: '紧急情况交货期不能为空',
                           },
                         ],
-                      })(<InputNumber min={1} max={999999999} disabled={type === 'detail'} />)}
+                      })(<InputNumber precision={2} min={1} max={999999999} disabled={type === 'detail'} />)}
                     </FormItem>
                   </Col>
                 </Row>

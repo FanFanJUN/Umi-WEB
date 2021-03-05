@@ -157,6 +157,7 @@ function ModalFields({
                 getFieldDecorator(name, opt)(
                   <FieldItem
                     {...props}
+                    precision={2}
                     disabled={formatDisabled}
                     allowClear
                     style={{ width: '100%' }}
