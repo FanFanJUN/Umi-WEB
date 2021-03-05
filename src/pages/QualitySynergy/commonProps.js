@@ -1045,19 +1045,26 @@ export const findByIsRecordCheckListTrue = {
 };
 
 // 均质材料分类代码/名称
-export const findAllByPageNotFrozenHomogeneousMaterialType = {
-  remotePaging: true,
-  store: {
-    type: 'POST',
-    autoLoad: false,
-    url: `${baseUrl}/homogeneousMaterialType/findAllByPageNotFrozen`,
-  },
-  rowKey: 'homogeneousMaterialTypeCode',
-  reader: {
-    name: 'homogeneousMaterialTypeCode',
-    field: ['id', 'limitMaterialCode', 'casNo'],
-    description: 'homogeneousMaterialTypeName',
-  },
+export const findAllByPageNotFrozenHomogeneousMaterialType = (isReversal) => {
+  let name = 'homogeneousMaterialTypeCode';
+  let description = 'homogeneousMaterialTypeName';
+  if (isReversal) {
+    [name, description] = [description, name]
+  }
+  return {
+    remotePaging: true,
+    store: {
+      type: 'POST',
+      autoLoad: false,
+      url: `${baseUrl}/homogeneousMaterialType/findAllByPageNotFrozen`,
+    },
+    rowKey: 'homogeneousMaterialTypeCode',
+    reader: {
+      name,
+      field: ['id', 'limitMaterialCode', 'casNo'],
+      description,
+    },
+  }
 };
 
 // 环保标准代码
