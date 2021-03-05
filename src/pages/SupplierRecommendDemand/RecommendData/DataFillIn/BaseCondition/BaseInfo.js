@@ -37,7 +37,7 @@ const formLayoutCol = {
 const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
   const DISABLED = type === 'detail';
   const { getFieldDecorator, setFieldsValue, getFieldsValue } = form;
-  const { query: { unitName='' } } = router.useLocation();
+  const { query: { unitName = '' } } = router.useLocation();
   const HideFormItem = hideFormItem(getFieldDecorator);
   const {
     bachelorDegree = 0,
@@ -309,7 +309,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                 <FormItem label="公司总人数" {...formLayout}>
                   {getFieldDecorator('headCount', {
                     initialValue: type === 'add' ? '' : data.headCount,
-                  })(<InputNumber placeholder='请输入公司总人数' style={{ width: '100%' }} disabled />)}
+                  })(<InputNumber min={1} max={999999999} placeholder='请输入公司总人数' style={{ width: '100%' }} disabled />)}
                 </FormItem>
               </Col>
               <Col span={12}>
@@ -323,7 +323,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                       }
                     ]
                   })(
-                    <InputNumber placeholder='请输入本科以上学历人数' style={{ width: '100%' }} disabled={DISABLED} min={0} />
+                    <InputNumber min={1} max={999999999} placeholder='请输入本科以上学历人数' style={{ width: '100%' }} disabled={DISABLED} min={0} />
                   )}
                 </FormItem>
               </Col>
@@ -339,7 +339,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                         message: '人数不能为空'
                       }
                     ]
-                  })(<InputNumber placeholder='请输入大专人数' style={{ width: '100%' }} disabled={DISABLED} min={0} />)}
+                  })(<InputNumber min={1} max={999999999} placeholder='请输入大专人数' style={{ width: '100%' }} disabled={DISABLED} min={0} />)}
                 </FormItem>
               </Col>
               <Col span={12}>
@@ -353,7 +353,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                       }
                     ]
                   })(
-                    <InputNumber placeholder='请输入中专及以下人数' style={{ width: '100%' }} disabled={DISABLED} min={0} />
+                    <InputNumber min={1} max={999999999} placeholder='请输入中专及以下人数' style={{ width: '100%' }} disabled={DISABLED} min={0} />
                   )}
                 </FormItem>
               </Col>
@@ -369,7 +369,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                         message: '人数不能为空'
                       }
                     ]
-                  })(<InputNumber placeholder='请输入管理人员人数' style={{ width: '100%' }} disabled={DISABLED} min={0} />)}
+                  })(<InputNumber min={1} max={999999999} placeholder='请输入管理人员人数' style={{ width: '100%' }} disabled={DISABLED} min={0} />)}
                 </FormItem>
               </Col>
               <Col span={12}>
@@ -383,7 +383,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                       }
                     ]
                   })(
-                    <InputNumber placeholder='请输入销售人员人数' style={{ width: '100%' }} disabled={DISABLED} min={0} />
+                    <InputNumber min={1} max={999999999} placeholder='请输入销售人员人数' style={{ width: '100%' }} disabled={DISABLED} min={0} />
                   )}
                 </FormItem>
               </Col>
@@ -399,7 +399,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                         message: '人数不能为空'
                       }
                     ]
-                  })(<InputNumber placeholder='请输入质量控制人数' style={{ width: '100%' }} disabled={DISABLED} min={0} />)}
+                  })(<InputNumber min={1} max={999999999} placeholder='请输入质量控制人数' style={{ width: '100%' }} disabled={DISABLED} min={0} />)}
                 </FormItem>
               </Col>
               <Col span={12}>
@@ -413,7 +413,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                       }
                     ]
                   })(
-                    <InputNumber placeholder='请输入技术人员人数' style={{ width: '100%' }} disabled={DISABLED} min={0} />
+                    <InputNumber min={1} max={999999999} placeholder='请输入技术人员人数' style={{ width: '100%' }} disabled={DISABLED} min={0} />
                   )}
                 </FormItem>
               </Col>
@@ -429,7 +429,7 @@ const BaseInfo = ({ form, baseInfo: data, type }, ref) => {
                         message: '人数不能为空'
                       }
                     ]
-                  })(<InputNumber placeholder='请输入客服人员人数' style={{ width: '100%' }} disabled={DISABLED} min={0} />)}
+                  })(<InputNumber min={1} max={999999999} placeholder='请输入客服人员人数' style={{ width: '100%' }} disabled={DISABLED} min={0} />)}
                 </FormItem>
               </Col>
               <Col span={12}>

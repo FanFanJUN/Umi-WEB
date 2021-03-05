@@ -769,7 +769,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                           }
                         ]
                       })(
-                        <InputNumber disabled={type === 'detail'} style={{ width: '20%' }} />
+                        <InputNumber min={1} max={999999999} disabled={type === 'detail'} style={{ width: '20%' }} />
                       )}
                     </FormItem>
                     <FormItem label='最短(天)' {...formLayout} labelCol={{
@@ -794,7 +794,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                             }
                           ]
                         })(
-                          <InputNumber disabled={type === 'detail'} style={{ width: '20%' }} />
+                          <InputNumber min={1} max={999999999} disabled={type === 'detail'} style={{ width: '20%' }} />
                         )
                       }
                     </FormItem>
@@ -819,7 +819,7 @@ const ResearchAbility = ({ form, updateGlobalStatus }) => {
                             }
                           ]
                         })(
-                          <InputNumber disabled={type === 'detail'} style={{ width: '20%' }} />
+                          <InputNumber min={1} max={999999999} disabled={type === 'detail'} style={{ width: '20%' }} />
                         )
                       }
                     </FormItem>

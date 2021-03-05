@@ -51,7 +51,7 @@ const OverallSit = ({
                 message: '客户数量不能为空'
               }
             ]
-          })(<InputNumber placeholder="请输入现在所有客户数量" style={{ width: '100%' }} disabled={DISABLED} />)}
+          })(<InputNumber min={1} max={999999999} placeholder="请输入现在所有客户数量" style={{ width: '100%' }} disabled={DISABLED} />)}
         </FormItem>
       </Col>
       <Col span={12}>
