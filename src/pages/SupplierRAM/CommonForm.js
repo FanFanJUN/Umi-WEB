@@ -389,6 +389,25 @@ function CommonForm({
             }
           </FormItem>
         </Col>
+        <Col span={12}>
+          <FormItem label='有无应用经验'>
+            {
+              getFieldDecorator('haveApplicationExperience',{
+                rules: [
+                  {
+                    required: true,
+                    message: '请选择有无应用经验'
+                  }
+                ]
+              })(
+                <Radio.Group disabled={type === 'detail'}>
+                  <Radio value={true}>有</Radio>
+                  <Radio value={false}>无</Radio>
+                </Radio.Group>
+              )
+            }
+          </FormItem>
+        </Col>
       </Row>
       <div className={styles.tableWrapper}>
         {
