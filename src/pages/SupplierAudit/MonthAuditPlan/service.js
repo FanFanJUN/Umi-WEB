@@ -9,7 +9,7 @@ export const fuzzySearch = (data, value, key = undefined) => {
       data.forEach(v => {
         key.forEach(i => {
           if (v[i].indexOf(value) >= 0) {
-            if (!arr.includes(v)) {
+            if (!arr.some(s => s.id === v.id)) {
               arr.push(v);
             }
           }
