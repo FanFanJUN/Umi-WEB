@@ -2,14 +2,14 @@ import request from '@/utils/request';
 import { recommendUrl, baseUrl } from '@/utils/commonUrl';
 
 // 前端模糊查询
-export const fuzzySearch = (data, value, key = undefined) => {
+export const fuzzySearch = (data, value, searchKey = undefined, key='id') => {
   const arr = [];
   if (data && data instanceof Array) {
-    if (key && key instanceof Array) {
+    if (searchKey && searchKey instanceof Array) {
       data.forEach(v => {
-        key.forEach(i => {
+        searchKey.forEach(i => {
           if (v[i].indexOf(value) >= 0) {
-            if (!arr.some(s => s.id === v.id)) {
+            if (!arr.some(s => s[key] === v[key])) {
               arr.push(v);
             }
           }
@@ -17,7 +17,7 @@ export const fuzzySearch = (data, value, key = undefined) => {
       });
     } else {
       data.forEach(v => {
-        if (v['id'].indexOf(value) >= 0) {
+        if (v[key].indexOf(value) >= 0) {
           arr.push(v);
         }
       });

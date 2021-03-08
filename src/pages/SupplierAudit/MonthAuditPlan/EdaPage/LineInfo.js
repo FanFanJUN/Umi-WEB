@@ -458,7 +458,7 @@ let LineInfo = forwardRef((props, ref) => {
   // table模糊查询
   const lineSearch = (value) => {
     const searchData = JSON.parse(JSON.stringify(dataSource));
-    const arr = fuzzySearch(searchData, value, ['supplierName', 'supplierCode', 'materialGroupName', 'materialGroupCode']);
+    const arr = fuzzySearch(searchData, value, ['supplierName', 'supplierCode', 'materialGroupName', 'materialGroupCode'], 'lineNum');
     setSearchDataSource(arr);
   };
 
