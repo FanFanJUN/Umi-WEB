@@ -8,7 +8,7 @@
  * @FilePath: /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
 import React, { useEffect, useRef, useState, useImperativeHandle, forwardRef } from 'react';
-import { Form, Button, Modal, message } from 'antd';
+import { Form, Button, Modal, message, Input } from 'antd';
 import { ExtTable } from 'suid';
 import { openNewTab } from '@/utils';
 import AddModal from './AddModal';
@@ -17,7 +17,9 @@ import BatchEditModal from './BatchEditModal';
 import AuditContentModal from '../../AuditRequirementsManagement/add/component/content';
 import PersonManage from './PersonManage';
 import Team from '../../AuditRequirementsManagement/add/component/team';
+import lineInfoStyle from './LineInfo.css';
 import { getRandom } from '../../../QualitySynergy/commonProps';
+import { fuzzySearch } from '../service';
 
 let LineInfo = forwardRef((props, ref) => {
 
@@ -31,6 +33,7 @@ let LineInfo = forwardRef((props, ref) => {
     selectRows: [],
     selectedRowKeys: [],
   });
+  const [searchDataSource, setSearchDataSource] = useState(undefined);
   const [operation, setOperation] = useState(0);//
   const [dataSource, setDataSource] = useState([]);
   const [deleteLine, setDeleteLine] = useState([]);//删除的行数据
@@ -253,6 +256,10 @@ let LineInfo = forwardRef((props, ref) => {
     tableRef.current.manualSelectedRows();
   };
 
+  useEffect(() => {
+    setSearchDataSource(undefined)
+  }, [dataSource])
+
   // 编辑和明细时构造treeData
   const buildTreeData = (sonList) => {
     if (!sonList || sonList.length === 0) return [];
@@ -448,6 +455,13 @@ let LineInfo = forwardRef((props, ref) => {
     return data.selectRows.some(item => item.whetherOccupied);
   }
 
+  // table模糊查询
+  const lineSearch = (value) => {
+    const searchData = JSON.parse(JSON.stringify(dataSource));
+    const arr = fuzzySearch(searchData, value, ['supplierName', 'supplierCode', 'materialGroupName', 'materialGroupCode']);
+    setSearchDataSource(arr);
+  };
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.bgw}>
@@ -476,6 +490,10 @@ let LineInfo = forwardRef((props, ref) => {
               }} disabled={data.selectRows.length === 0 || checkSelect()}>协同人员管理</Button>
             </div>
           }
+          <div
+            className={(!isView || props.type === 'change') ? lineInfoStyle.lineSearch : lineInfoStyle.lineSearchNoPosition}>
+            <Input.Search style={{ width: '15vw' }} placeholder='请输入供应商名称或代码，物料分类名称或代码查询' onSearch={lineSearch} allowClear={true} />
+          </div>
           <ExtTable
             style={{ marginTop: '10px' }}
             rowKey='lineNum'
@@ -490,7 +508,7 @@ let LineInfo = forwardRef((props, ref) => {
             selectedRowKeys={data.selectedRowKeys}
             columns={columns}
             ref={tableRef}
-            dataSource={dataSource}
+            dataSource={searchDataSource ? searchDataSource : dataSource}
           />
         </div>
       </div>

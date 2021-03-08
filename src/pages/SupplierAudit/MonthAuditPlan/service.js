@@ -1,6 +1,31 @@
 import request from '@/utils/request';
 import { recommendUrl, baseUrl } from '@/utils/commonUrl';
 
+// 前端模糊查询
+export const fuzzySearch = (data, value, key = undefined) => {
+  const arr = [];
+  if (data && data instanceof Array) {
+    if (key && key instanceof Array) {
+      data.forEach(v => {
+        key.forEach(i => {
+          if (v[i].indexOf(value) >= 0) {
+            if (!arr.includes(v)) {
+              arr.push(v);
+            }
+          }
+        });
+      });
+    } else {
+      data.forEach(v => {
+        if (v['id'].indexOf(value) >= 0) {
+          arr.push(v);
+        }
+      });
+    }
+  }
+  return arr;
+};
+
 // 从审核需求新增-确定
 export async function findRequirementLine(params) {
     const requestUrl = `${recommendUrl}/api/reviewPlanMonthLineService/findRequirementLine`;

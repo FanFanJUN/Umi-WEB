@@ -1,0 +1,13 @@
+.lineSearch {
+  position: absolute;
+  width: 15vw;
+  right: 70px;
+  top: 0;
+}
+
+.lineSearchNoPosition {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 70px;
+}
