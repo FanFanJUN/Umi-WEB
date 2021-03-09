@@ -412,7 +412,7 @@ export async function checkReview (params) {
 }
 // 供应商-填报环保资料-获取填报数据
 export async function supplerFindVoById (params) {
-  const url = `${recommendUrl}/api/epDataFillService/newFindVoById`;
+  const url = `${recommendUrl}/api/epDataFillService/findVoById`;
   return request({
     url,
     method: 'GET',
@@ -422,7 +422,7 @@ export async function supplerFindVoById (params) {
 
 // 供应商-填报环保资料-填报
 export async function epDemandUpdate (params) {
-  const url = `${recommendUrl}/api/epDataFillService/newUpdate`;
+  const url = `${recommendUrl}/api/epDataFillService/update`;
   return request({
     url,
     method: 'POST',
@@ -560,16 +560,6 @@ export async function checkEnvironmentalProtectionData (params) {
   return request({
     url,
     method: 'POST',
-    params: params,
-  });
-}
-
-// 均质材料成分名称验证(是否重复)
-export async function checkLimitSubstanceListAliasData (params) {
-  const url = `${baseUrl}/limitSubstanceListAliasData/check`;
-  return request({
-    url,
-    method: 'get',
     params: params,
   });
 }

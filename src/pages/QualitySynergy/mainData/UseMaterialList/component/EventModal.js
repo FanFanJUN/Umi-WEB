@@ -3,7 +3,6 @@ import { ComboList, ExtModal } from 'suid';
 import { Checkbox, Col, Form, Input, Row } from 'antd';
 import { BasicUnitList } from '../../../commonProps';
 import { baseUrl } from '../../../../../utils/commonUrl';
-import AnotherName from './AnotherName';
 
 const FormItem = Form.Item;
 
@@ -111,17 +110,6 @@ const EventModal = (props) => {
               }
             </FormItem>
           </Col>
-
-          <Col span={24}>
-            <FormItem {...formItemLayoutLong} label={'限用物质别名'}>
-              {
-                getFieldDecorator('aliasName')(
-                  <AnotherName type={type} data={type === 'add' ? '' : data.aliasNames} />,
-                )
-              }
-            </FormItem>
-          </Col>
-
           {/*<Col span={0}>*/}
           {/*  {hideFormItem('basicUnitName', type === 'add' ? '' : data.basicUnitName)}*/}
           {/*</Col>*/}

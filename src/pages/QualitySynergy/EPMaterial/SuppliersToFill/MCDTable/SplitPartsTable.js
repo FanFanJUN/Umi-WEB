@@ -1,24 +1,19 @@
-import { useImperativeHandle, forwardRef, useState, useRef, Fragment } from 'react';
+import { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment } from 'react';
 import { ExtTable, ExtModal, DataImport, ComboList } from 'suid';
-import { Button, Form, Modal, Row, Input } from 'antd'
+import { Button, DatePicker, Form, Modal, Row, Input, Select } from 'antd'
 import Upload from '../../../compoent/Upload';
 import classnames from 'classnames'
 import styles from '../index.less'
 import moment from 'moment';
-import { splitCheckImport } from '../../../../../services/qualitySynergy';
-import TestReportInfos from './TestReportInfos';
-import { findAllByPageNotFrozenHomogeneousMaterialType } from '../../../commonProps';
+import { splitCheckImport } from '../../../../../services/qualitySynergy'
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 const { confirm } = Modal;
 const { create, Item: FormItem } = Form;
-
+const { Option } = Select;
 const formLayout = {
   labelCol: { span: 8, },
   wrapperCol: { span: 14, },
 };
-
-const Format = 'YYYY-MM-DD';
-
 const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDataList, isView, isImport }, ref) => {
   useImperativeHandle(ref, () => ({
     setVisible,
@@ -35,7 +30,10 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
   const columns = [
     { title: '拆分部位名称', dataIndex: 'splitPartsName', align: 'center' },
     { title: '均质材料名称', dataIndex: 'homogeneousMaterialName', ellipsis: true, align: 'center' },
-    { title: '有效开始日期', dataIndex: 'reportDate', ellipsis: true, align: 'center', render: (text) => text ? text.slice(0, 10) : '' },
+    { title: '测试机构', dataIndex: 'testOrganization', ellipsis: true, align: 'center', },
+    { title: '测试结论', dataIndex: 'reportResult', ellipsis: true, align: 'center', render: (text) => (text === true || text === 'true') ? '通过' : '不通过' },
+    { title: '报告编号', dataIndex: 'reportNumber', ellipsis: true, align: 'center', },
+    { title: '报告日期', dataIndex: 'reportDate', ellipsis: true, align: 'center', render: (text) => text ? text.slice(0, 10) : '' },
     { title: '有效截止日期 ', dataIndex: 'effectiveEndDate', ellipsis: true, align: 'center', render: (text) => text ? text.slice(0, 10) : '' },
     {
       title: '报告附件', dataIndex: 'documentInfoList', ellipsis: true, align: 'center', render: (text) => {
@@ -65,12 +63,10 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
   function handleAdd () {
     validateFields((errors, values) => {
       if (!errors) {
-        values.uploadAttachmentIds = values.documentInfoList;
-        values.testReportAttachmentId = values.documentInfoList ? values.documentInfoList.join() : '';
-        values.testReportInfos = values.testReportInfos.map(item => {
-          delete item.uuid
-          return item
-        })
+        console.log('编辑数据', values)
+        values.reportDate = moment(values.reportDate).format('YYYY-MM-DD');
+        // values.uploadAttachmentIds = values.documentInfoList;
+        // values.testReportAttachmentId = values.documentInfoList ? values.documentInfoList.join() : '';
         let newList = [].concat(dataList);
         if (modalType === 'edit') {
           newList = newList.map(item => {
@@ -137,14 +133,11 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
     tableRef.current.manualSelectedRows();
   };
   function setEndDate (date) {
-    let reportDateArr = date.map(item => moment(item.reportDate).valueOf())
-    let reportDate = moment(Math.max(...reportDateArr)).format(Format)
-    let pickDate = reportDate;
+    let pickDate = date.format('YYYY-MM-DD');
     let list = pickDate.split('-');
     list[0] = Number(list[0]) + 1;
     let effectiveEndDate = list.join('-');
     setFieldsValue({
-      reportDate,
       effectiveEndDate
     });
   }
@@ -185,6 +178,7 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
       rowKey={(item) => item.rowKey}
       size='small'
       onSelectRow={(rowKeys, rows) => {
+        console.log('拆分部件选中', rows);
         setRowKeys(rowKeys);
         setRows(rows);
         setSelectedSpilt(rows.length === 1 ? rows[0] : {});
@@ -193,7 +187,6 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
       dataSource={dataList}
     />
     {visible && <ExtModal
-      width={'50%'}
       centered
       destroyOnClose
       maskClosable={false}
@@ -218,71 +211,63 @@ const supplierModal = forwardRef(({ form, dataList, setSelectedSpilt, setSplitDa
             {
               getFieldDecorator('homogeneousMaterialName', {
                 initialValue: modalType === 'edit' ? selectedRows[0].homogeneousMaterialName : '',
-                rules: [{ required: true, message: '请填写均质材料名称' }],
+                rules: [{ required: true, message: '请填写均质材料名称' }]
               })(<Input />)
             }
           </FormItem>
         </Row>
-
         <Row>
-          <FormItem label='均质材料分类名称' {...formLayout}>
+          <FormItem label='测试机构' {...formLayout}>
             {
-              getFieldDecorator('homogeneousMaterialTypeName', {
-                initialValue: modalType === 'edit' ? selectedRows[0].homogeneousMaterialName : '',
-                rules: [{ required: true, message: '请填选择均质材料分类名称' }],
-              })(<ComboList form={form}
-                {...findAllByPageNotFrozenHomogeneousMaterialType(true)}
-                name='materialName'
-                field={['materialId', 'materialCode', 'casNo']}
-                afterSelect={(item) => {
-                  setFieldsValue({ homogeneousMaterialTypeName: item.homogeneousMaterialTypeName, homogeneousMaterialTypeCode: item.homogeneousMaterialTypeCode })
-                }}
-                placeholder={'请填选择均质材料分类名称'}
-              />)
+              getFieldDecorator('testOrganization', {
+                initialValue: modalType === 'edit' ? selectedRows[0].testOrganization : '',
+                rules: [{ required: true, message: '请填写测试机构名称' }]
+              })(<Input />)
             }
           </FormItem>
         </Row>
-
-        <Row style={{ 'display': 'none' }}>
-          <FormItem label='均质材料分类代码' {...formLayout}>
+        <Row>
+          <FormItem label='测试结论' {...formLayout}>
             {
-              getFieldDecorator('homogeneousMaterialTypeCode', {
-                initialValue: modalType === 'edit' ? selectedRows[0].homogeneousMaterialTypeCode : '',
-              })(<Input disabled />)
+              getFieldDecorator('reportResult', {
+                initialValue: modalType === 'edit' ? selectedRows[0].reportResult : true,
+                rules: [{ required: true, message: '请选择供应商代码' }]
+              })(<Select style={{ width: '100%' }}>
+                <Option value={true}>通过</Option>
+                <Option value={false}>不通过</Option>
+              </Select>)
             }
           </FormItem>
         </Row>
-
         <Row>
-          <FormItem label='测试报告信息' {...formLayout}>
+          <FormItem label='报告编号' {...formLayout}>
             {
-              getFieldDecorator('testReportInfos', {
-                rules: [{ required: true, message: '请选择测试报告信息' }]
-              })(<TestReportInfos data={modalType === 'edit' ? selectedRows[0].testReportInformationVos : ''} type={modalType} onChange={setEndDate} />)
+              getFieldDecorator('reportNumber', {
+                initialValue: modalType === 'edit' ? selectedRows[0].reportNumber : '',
+                rules: [{ required: true, message: '请输入报告编号' }]
+              })(<Input />)
             }
           </FormItem>
         </Row>
-
         <Row>
-          <FormItem label='有效开始日期' {...formLayout}>
+          <FormItem label='报告日期' {...formLayout}>
             {
               getFieldDecorator('reportDate', {
-              })(
-                <Input disabled />
-              )
+                initialValue: modalType === 'edit' ? moment(selectedRows[0].reportDate) : null,
+                rules: [{ required: true, message: '请选择报告日期' }]
+              })(<DatePicker style={{ width: '100%' }} onChange={setEndDate} format="YYYY-MM-DD" />)
             }
           </FormItem>
         </Row>
-
         <Row>
           <FormItem label='有效截止日期' {...formLayout}>
             {
               getFieldDecorator('effectiveEndDate', {
+                initialValue: modalType === 'edit' && selectedRows[0].effectiveEndDate ? selectedRows[0].effectiveEndDate.slice(0, 10) : '',
               })(<Input disabled />)
             }
           </FormItem>
         </Row>
-
         <Row>
           <FormItem label='报告附件' {...formLayout}>
             {
