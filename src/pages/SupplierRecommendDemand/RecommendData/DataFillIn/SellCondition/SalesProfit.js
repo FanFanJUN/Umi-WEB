@@ -99,7 +99,7 @@ const SalesProfit = ({ data = [], type, setTableData }) => {
           },
           {
             validator: (_, val, cb, tg) => {
-              if (val >= tg) {
+              if (val > tg) {
                 cb('利润应小于含税销售金额')
                 return
               }
