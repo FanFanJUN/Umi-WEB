@@ -136,7 +136,7 @@ function EditorTable({
           filled: true
         }
       }
-      return { ...item, filled: true }
+      return item
     })
     await setDataSource(nd)
     await setVisible(false)
