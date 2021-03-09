@@ -492,7 +492,7 @@ let LineInfo = forwardRef((props, ref) => {
           }
           <div
             className={(!isView || props.type === 'change') ? lineInfoStyle.lineSearch : lineInfoStyle.lineSearchNoPosition}>
-            <Input.Search style={{ width: '15vw' }} placeholder='请输入供应商名称或代码，物料分类名称或代码查询' onSearch={lineSearch} allowClear={true} />
+            <Input.Search style={{ width: '22vw' }} placeholder='请输入供应商名称或代码，物料分类名称或代码查询' onSearch={lineSearch} allowClear={true} />
           </div>
           <ExtTable
             style={{ marginTop: '10px' }}
