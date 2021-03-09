@@ -41,15 +41,17 @@ const Index = (props) => {
     return res;
   }
 
-  useEffect(async () => {
-    if (query.pageState !== 'add') {
-      await getDetail();
-    } else {
-      await getData()
-    }
+  useEffect(() => {
+    (async () => {
+      if (query.pageState !== 'add') {
+        await getDetail();
+      } else {
+        await getData();
+      }
+    })();
   }, []);
 
-  const getData = async(resData) => {
+  const getData = async (resData) => {
     const { id, pageState } = query;
     switch (pageState) {
       case 'add':
@@ -94,7 +96,7 @@ const Index = (props) => {
         setData((value) => ({ ...value, type: pageState, isView: false, title: '月度审核计划管理-新增' }));
         break;
     }
-  }
+  };
 
   const getDetail = async () => {
     setLoading(true);
@@ -104,7 +106,7 @@ const Index = (props) => {
     setLoading(false);
     if (res) {
       setEditData(res.data);
-      await getData(res.data)
+      await getData(res.data);
     } else {
       message.error(res.message);
     }
@@ -124,7 +126,7 @@ const Index = (props) => {
   const getAllData = () => {
     let saveData = { ...editData };
     let lineData = tableRef.current.getTableList();
-    console.log("获取到的表格数据", lineData);
+    console.log('获取到的表格数据', lineData);
     let deleteArr = tableRef.current.getDeleteArr();
     if (lineData.length === 0) {
       message.info('请至少添加一条行信息');
@@ -133,7 +135,7 @@ const Index = (props) => {
       // 校验审核原因，审核方式，审核组织形式不能为空
       let reviewPlanMonthLinenum = '';
       let tag = lineData.some(item => {
-        console.log(item, 'item')
+        console.log(item, 'item');
         // 记录行号
         if ((!item.reviewWayId || !item.reviewOrganizedWayId || !item.reviewReasonId) && !item.whetherDeleted) {
           reviewPlanMonthLinenum = item.reviewPlanMonthLinenum;
