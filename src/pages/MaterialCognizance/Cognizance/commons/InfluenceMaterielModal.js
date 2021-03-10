@@ -47,6 +47,7 @@ const getAgentregRef = forwardRef(({
         }
     }
     function handleModalVisible(flag) {
+        setSearchValue('')
         setvisible(!!flag)
     };
     function handleSelectedRows(rowKeys, rows) {
