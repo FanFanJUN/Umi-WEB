@@ -88,6 +88,7 @@ function WhetherCheck({
         <CommonForm
           wrappedComponentRef={commonFormRef}
           type='detail'
+          hasNeedExamine={false}
         />
         <div
           className={styles.commonTitle}

@@ -35,6 +35,7 @@ const formLayout = {
 function CommonForm({
   form,
   type,
+  hasNeedExamine = true,
   columns = [
     {
       title: '是否准入',
@@ -392,7 +393,7 @@ function CommonForm({
         <Col span={12}>
           <FormItem label='有无应用经验'>
             {
-              getFieldDecorator('haveApplicationExperience',{
+              getFieldDecorator('haveApplicationExperience', {
                 rules: [
                   {
                     required: true,
@@ -466,7 +467,7 @@ function CommonForm({
         />
       </div>
       {
-        type === 'detail' ?
+        hasNeedExamine ?
           <>
             <div className={styles.commonTitle}>供应商审核确认</div>
             <Row>

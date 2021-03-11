@@ -154,7 +154,9 @@ function WhetherCheck({
   const commonFormRef = useRef(null);
   const { query } = useLocation();
   const { id = null, taskId = null, instanceId = null } = query;
-  async function beforeSubmit() {
+  async function beforeSubmit({
+    approved
+  }) {
     const v = await validateFields();
     const { needExamine, ...vs } = v;
     const ks = Object.keys(vs);
@@ -166,6 +168,18 @@ function WhetherCheck({
       ...item,
       access: kvs[index]
     }))
+    if (!approved) {
+      const { success, message: msg } = await updateAccess(paramsDataSource);
+      return new Promise((resolve) => {
+        resolve({
+          success,
+          message: msg,
+          data: {
+            businessKey: id,
+          },
+        });
+      });
+    }
     if (needExamine) {
       pass = paramsDataSource.every(item => {
         return !!item.examineResult && (!!item.objectRecognition ? typeof item.physicalPass === 'boolean' : true)
@@ -243,6 +257,7 @@ function WhetherCheck({
         <CommonForm
           wrappedComponentRef={commonFormRef}
           type='detail'
+          hasNeedExamine={false}
           columns={recommendColumns}
         />
         <div
