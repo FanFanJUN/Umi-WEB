@@ -205,6 +205,7 @@ function CommonForm({
       recommendAccessLines = [],
       accessRelateDemands = [],
       needExamine = null,
+      haveApplicationExperience
     } = values;
     await setFieldsValue({
       orgCode,
@@ -222,7 +223,8 @@ function CommonForm({
       materialCategoryCode,
       identifyMaterialLevelValue,
       identifyMaterialLevelName,
-      needExamine
+      needExamine,
+      haveApplicationExperience
     })
     const addLineNumberDemands = accessRelateDemands.map((item, index) => ({
       ...item,
