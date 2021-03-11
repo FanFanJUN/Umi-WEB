@@ -121,6 +121,11 @@ const getRecommendRef = forwardRef(({
                         value: !!isName ? undefined : v[item]
                     }
                 }).filter(item => !!item.value)
+                filters.map((item, index) => {
+                    if (item.fieldName === undefined && item.operator === undefined) {
+                        filters.splice(index, 1)
+                    }
+                })
                 setSeniorsearchvalue(filters)
                 tableRef.current.remoteDataRefresh()
             }

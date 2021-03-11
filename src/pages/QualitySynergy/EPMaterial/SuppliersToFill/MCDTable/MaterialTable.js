@@ -2,7 +2,7 @@ import { useImperativeHandle, forwardRef, useEffect, useState, useRef, Fragment 
 import { ExtTable, ExtModal, DataImport, ComboList } from 'suid';
 import { Button, InputNumber, Form, Modal, Row, Input, Select, message } from 'antd';
 import { limitMaterialNameList, limitScopeList, exemptionClauseDataList } from '../../../commonProps';
-import { materialCompositionVerification, findByProtectionCodeAndMaterialCodeAndRangeCode, checkLimitSubstanceListAliasData } from '../../../../../services/qualitySynergy';
+import { materialCompositionVerification, findByProtectionCodeAndMaterialCodeAndRangeCode } from '../../../../../services/qualitySynergy';
 import classnames from 'classnames'
 import styles from '../index.less'
 import moment from 'moment';
@@ -265,18 +265,7 @@ const supplierModal = forwardRef(({ form, selectedSplitData, handleSplitDataList
                   }}
                 />) : getFieldDecorator('substanceName', {
                   initialValue: modalType === 'edit' ? selectedRows[0].substanceName : '',
-                  rules: [{ required: true, message: '请填写均质材料成分名称', whitespace: true }, {
-                    validator: async (rule, value, callback) => {
-                      let data = await checkLimitSubstanceListAliasData({ name: value })
-                      if (data.success) {
-                        data.data ? callback('您填报的均质材料成分属于限用物质，请重新选择是否限制物质') : callback()
-                      } else {
-                        callback((data && data.message) || '请求失败，请重试')
-                      }
-                    }
-                  }],
-                  validateFirst: true,
-                  validateTrigger: 'onBlur',
+                  rules: [{ required: true, message: '请填写均质材料成分名称' }]
                 })(<Input placeholder="请输入" />)
             }
           </FormItem>
