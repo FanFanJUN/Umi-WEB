@@ -120,6 +120,7 @@ const ForWard = forwardRef(((props, ref) => {
   }
   function hideModal() {
     toggleVisible(false)
+    setSearchValue({})
   }
   async function handleSearch() {
     const { buCode, materialCategoryCode, supplierCode } = getFieldsValue();
