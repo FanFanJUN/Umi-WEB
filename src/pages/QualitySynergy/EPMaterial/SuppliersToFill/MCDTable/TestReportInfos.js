@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Icon, Form, Input, Row, Modal, DatePicker, Select } from 'antd';
+import { Icon, Form, Input, Row, Modal, DatePicker, Select } from 'antd';
 import { ExtModal, utils, ExtTable } from 'suid';
 import moment from 'moment';
 
@@ -52,7 +52,7 @@ class TestReportInfos extends React.Component {
     const dataSource = [...this.state.dataSource];
     Modal.confirm({
       title: '删除',
-      content: `请确认是否删除限用物质别名${record.aliasName}`,
+      content: `请确认是否删除该测试报告信息`,
       onOk: () => {
         let index = dataSource.findIndex(item => item.uuid === record.uuid);
         dataSource.splice(index, 1)
@@ -69,13 +69,14 @@ class TestReportInfos extends React.Component {
   }
 
   columns = () => {
-    return [
-      {
-        title: <Icon type="plus" onClick={() => this.setVisible(true)} />,
-        width: 50,
-        dataIndex: 'delete',
-        render: (text, record) => <Icon type="delete" onClick={() => this.handleDelete(record)} />,
-      },
+
+    let deleteData = [{
+      title: <Icon type="plus" onClick={() => this.setVisible(true)} />,
+      width: 50,
+      dataIndex: 'delete',
+      render: (text, record) => <Icon type="delete" onClick={() => this.handleDelete(record)} />,
+    }]
+    let data = [
       {
         title: '测试机构',
         width: 100,
@@ -94,7 +95,10 @@ class TestReportInfos extends React.Component {
         dataIndex: 'reportDate',
         ellipsis: true,
       }
-    ].map(item => ({ ...item, align: 'center' }))
+    ]
+
+    let columnsData = this.props.isView ? data : deleteData.concat(data)
+    return columnsData.map(item => ({ ...item, align: 'center' }))
   }
 
 

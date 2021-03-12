@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, Fragment } from 'react';
 import { ExtTable, utils } from 'suid';
 import { Input, Modal } from 'antd';
-import { samBaseUrl } from '@/utils/commonUrl';
+import { commonUrl } from '@/utils';
 import { openNewTab, downloadBlobFile } from '@/utils';
 import { AutoSizeLayout, Header, AdvancedForm, DataExportButton } from '@/components';
 import {
@@ -14,6 +14,7 @@ import {
 } from '../../commonProps';
 import styles from './index.less';
 
+const { recommendUrl } = commonUrl;
 const { authAction } = utils;
 const { Search } = Input;
 const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
@@ -166,7 +167,7 @@ export default function () {
 
   // 获取导出的数据
   const requestParams = {
-    url: `${samBaseUrl}/api/epDataFillService/findAllMaterialByPage`,
+    url: `${recommendUrl}/api/epDataFillService/findAllMaterialByPage`,
     data: {
       pageInfo: { page: 1, rows: 100000 },
     },
@@ -254,7 +255,7 @@ export default function () {
           rowKey={(item) => item.id}
           showSearch={false}
           store={{
-            url: `${samBaseUrl}/api/epDataFillService/findAllMaterialByPage`,
+            url: `${recommendUrl}/api/epDataFillService/findAllMaterialByPage`,
             params: {
               ...searchValue,
               quickSearchProperties: [],

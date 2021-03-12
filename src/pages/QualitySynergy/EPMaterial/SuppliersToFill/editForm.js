@@ -9,6 +9,9 @@ import SubjectMatterForm from '../components/edit/SubjectMatterForm';
 import SupplierInfo from '../components/edit/supplierInfo';
 import MCDTable from './MCDTable';
 import { supplerFindVoById, epDemandUpdate, getNotes } from '../../../../services/qualitySynergy'
+import { ExtModal } from 'suid';
+import SaveErrTable from './MCDTable/SaveErrTable';
+import { fromPairs } from 'lodash';
 export default function () {
   const [loading, toggleLoading] = useState(false);
   const [originData, setOriginData] = useState({})
@@ -16,6 +19,12 @@ export default function () {
   const mcdRef = useRef(null);
   const [notesList, setNotesList] = useState([]);
   const [statement, setStatement] = useState([]);
+
+  const [isSaveErrTableMsg, setSaveErrTableMsg] = useState({
+    show: false,
+    data: []
+  });
+
   const { query } = router.useLocation();
   const handleBack = () => {
     closeCurrent();
@@ -36,9 +45,19 @@ export default function () {
       }
     })
   }, [])
+
+  const saveErrMsg = (data = []) => {
+    setSaveErrTableMsg({
+      show: true,
+      data
+    })
+  }
+
   const handleSave = (publish) => {
+
     let saveData = { ...originData }
     supplierRef.current.validateFieldsAndScroll(async (error, values) => {
+
       if (!error) {
         const macData = mcdRef.current.getSplitDataList();
         if (!macData.tag) return;
@@ -47,26 +66,41 @@ export default function () {
         values.reachEnvironmentId = values.uploadAttachmentIds.join();
         saveData = { ...saveData, ...values, commit: !!publish, ...macData }
         saveData.epDataFillSplitPartsBoList = macData.epDataFillSplitPartsVoList;
+
         delete saveData.epDataFillSplitPartsVoList;
         delete saveData.tag;
         const res = await epDemandUpdate(saveData);
+
         toggleLoading(false);
-        if (res.statusCode === 200) {
+        if (res.success) {
           message.success('操作成功');
           setTimeout(() => {
             handleBack();
           }, 1000)
         } else {
+          if (res.data && res.data instanceof Array) {
+            return saveErrMsg(res.data)
+          }
           message.error(res.message);
         }
       }
     })
   }
+
+
+
   useEffect(() => {
     (async function () {
       toggleLoading(true);
       const res = await supplerFindVoById({ id: query.id });
       if (res.statusCode === 200) {
+        res.data.epDataFillSplitPartsVoList = res.data.epDataFillSplitPartsVoList.map(item => {
+          item.testReportInfos = item.testReportInformationVos
+          delete item.testReportInformationVos;
+          return {
+            ...item
+          }
+        })
         setOriginData(res.data)
       } else {
         message.error(res.message);
@@ -141,6 +175,19 @@ export default function () {
           </div>
         </div>
       </Spin>
+
+      <ExtModal
+        width={'50%'}
+        centered
+        destroyOnClose
+        maskClosable={false}
+        visible={isSaveErrTableMsg.show}
+        onCancel={() => { setSaveErrTableMsg({ data: [], show: false }) }}
+        onOk={() => { setSaveErrTableMsg({ data: [], show: false }) }}
+        title={`错误提示信息`}
+      >
+        <SaveErrTable data={isSaveErrTableMsg.data} />
+      </ExtModal>
     </div>
   )
 }
