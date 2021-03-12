@@ -405,6 +405,10 @@ const CommonForm = forwardRef(({
     setSupplierCommonProps.setDataSource([])
     cleanSelectedRecord()
   }
+  // 清除选中合格供应商
+  function clearnSelectedSupplierList() {
+    setSupplierCommonProps.setDataSource([])
+  }
   // 回填数据
   async function setAllValues(v) {
     const {
@@ -667,6 +671,7 @@ const CommonForm = forwardRef(({
                           disabled={type === 'detail'}
                           placeholder='开始日期'
                           disabledDate={disabledDateSt}
+                          onChange={clearnSelectedSupplierList}
                         />
                       )
                     }
@@ -688,6 +693,7 @@ const CommonForm = forwardRef(({
                           placeholder='结束日期'
                           disabled={!est || type === 'detail'}
                           disabledDate={disabledDate}
+                          onChange={clearnSelectedSupplierList}
                         />
                       )
                     }
