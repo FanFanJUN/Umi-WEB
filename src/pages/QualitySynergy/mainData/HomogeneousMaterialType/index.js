@@ -95,7 +95,7 @@ const Index = () => {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={!!selectedRowKeys.length}
-        key='HOMOGENEOUSMATERIALTYPE_SM_ADD'
+        key='HOMOGENEOUSMATERIALTYPE_SRM_SM_ADD'
       >新增</Button>)
     }
     {
@@ -104,7 +104,7 @@ const Index = () => {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={selectedRowKeys.length === 0 || selectedRowKeys.length > 1}
-        key='HOMOGENEOUSMATERIALTYPE_SM_EDIT'
+        key='HOMOGENEOUSMATERIALTYPE_SRM_SM_EDIT'
       >编辑</Button>)
     }
     {
@@ -113,7 +113,7 @@ const Index = () => {
         className={styles.btn}
         ignore={DEVELOPER_ENV}
         disabled={selectRows.length === 0}
-        key='HOMOGENEOUSMATERIALTYPE_SM_DELETE'
+        key='HOMOGENEOUSMATERIALTYPE_SRM_SM_DELETE'
       >删除</Button>)
     }
     {
@@ -121,7 +121,7 @@ const Index = () => {
         onClick={() => buttonClick('frost')}
         className={styles.btn}
         ignore={DEVELOPER_ENV}
-        key='HOMOGENEOUSMATERIALTYPE_SM_FROST'
+        key='HOMOGENEOUSMATERIALTYPE_SRM_SM_FROST'
         disabled={selectRows.length === 0 || judgeButtonDisabled(selectRows)}
       >{selectRows[0]?.frozen ? '解冻' : '冻结'}</Button>)
     }

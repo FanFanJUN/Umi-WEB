@@ -504,7 +504,17 @@ export async function FrostLimitSuppliesScope (params) {
 
 // 限用物质清单编辑
 export async function EditTheListOfRestrictedMaterials (params) {
-  const url = `${baseUrl}/limitSubstanceListData/update_limitSubstanceListData`;
+  const url = `${baseUrl}/limitSubstanceListData/update`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+}
+
+// 限用物质清单删除
+export async function DeleteTheListOfRestrictedMaterials (params) {
+  const url = `${baseUrl}/limitSubstanceListData/deleteLimitSubstanceListAndAliasData`;
   return request({
     url,
     method: 'POST',
@@ -512,19 +522,19 @@ export async function EditTheListOfRestrictedMaterials (params) {
   });
 }
 
-// 限用物质清单删除
-export async function DeleteTheListOfRestrictedMaterials (params) {
-  const url = `${baseUrl}/limitSubstanceListData/delete_limitSubstanceListData`;
+// 限用物质清单详情
+export async function findByIdTheListOfRestrictedMaterials (params) {
+  const url = `${baseUrl}/limitSubstanceListData/findById`;
   return request({
     url,
-    method: 'POST',
+    method: 'get',
     params: params,
   });
 }
 
 // 限用物质清单解冻冻结
 export async function FrostTheListOfRestrictedMaterials (params) {
-  const url = `${baseUrl}/limitSubstanceListData/batchWhetherFrozen`;
+  const url = `${baseUrl}/limitSubstanceListData/batchFrozen`;
   return request({
     url,
     method: 'POST',
@@ -556,11 +566,11 @@ export async function SaveTheListOfRestrictedMaterials (params) {
 
 // 限用物质清单新增
 export async function AddTheListOfRestrictedMaterials (params) {
-  const url = `${baseUrl}/limitSubstanceListData/add_limitSubstanceListData`;
+  const url = `${baseUrl}/limitSubstanceListData/add`;
   return request({
     url,
     method: 'POST',
-    params: params,
+    data: params,
   });
 }
 
@@ -591,6 +601,107 @@ export async function DeleteBasicMaterials (params) {
     url,
     method: 'get',
     params: params,
+  });
+}
+
+
+// 均质材料分类主数据列表-添加
+export async function AddHomogeneousMaterialType (params) {
+  const url = `${baseUrl}/homogeneousMaterialType/add`;
+  return request({
+    url,
+    method: 'post',
+    data: params,
+  });
+}
+
+// 均质材料分类主数据列表-编辑
+export async function UpdateHomogeneousMaterialType (params) {
+  const url = `${baseUrl}/homogeneousMaterialType/update`;
+  return request({
+    url,
+    method: 'post',
+    data: params,
+  });
+}
+
+// 均质材料分类主数据列表-删除
+export async function DeleteTypeHomogeneousMaterialType (params) {
+  const url = `${baseUrl}/homogeneousMaterialType/deleteType`;
+  return request({
+    url,
+    method: 'get',
+    params: params,
+  });
+}
+
+// 均质材料分类主数据列表-冻结/解冻
+export async function FrozenTypeHomogeneousMaterialType (params) {
+  const url = `${baseUrl}/homogeneousMaterialType/frozen`;
+  return request({
+    url,
+    method: 'get',
+    params: params,
+  });
+}
+
+// 环保标准与均质材料分类限用物质测试项配置表主数据-新增
+export async function AddEnvironmentalProtectionMaterialType (params) {
+  const url = `${baseUrl}/environmentalProtectionMaterialType/add`;
+  return request({
+    url,
+    method: 'post',
+    data: params,
+  });
+}
+
+// 环保标准与均质材料分类限用物质测试项配置表主数据-编辑
+export async function UpdateEnvironmentalProtectionMaterialType (params) {
+  const url = `${baseUrl}/environmentalProtectionMaterialType/update`;
+  return request({
+    url,
+    method: 'post',
+    data: params,
+  });
+}
+
+// 环保标准与均质材料分类限用物质测试项配置表主数据-删除
+export async function DeleteTypeEnvironmentalProtectionMaterialType (params) {
+  const url = `${baseUrl}/environmentalProtectionMaterialType/deleteType`;
+  return request({
+    url,
+    method: 'get',
+    params: params,
+  });
+}
+
+// 环保标准与均质材料分类限用物质测试项配置表主数据-冻结/解冻
+export async function FrozenEnvironmentalProtectionMaterialType (params) {
+  const url = `${baseUrl}/environmentalProtectionMaterialType/frozen`;
+  return request({
+    url,
+    method: 'get',
+    params: params,
+  });
+}
+
+// 环保标准与均质材料分类限用物质测试项配置表主数据-导入验证
+export async function ImportExcelEnvironmentalProtectionMaterialTypeService (params) {
+  const url = `${baseUrl}/api/environmentalProtectionMaterialTypeService/importExcel`;
+  return request({
+    url,
+    method: 'post',
+    data: params,
+  });
+}
+
+// 环保标准与均质材料分类限用物质测试项配置表主数据-导入
+export async function AddImportAllEnvironmentalProtectionMaterialTypeService (params) {
+  const url = `${baseUrl}/api/environmentalProtectionMaterialTypeService/addImportAll`;
+  return request({
+    url,
+    method: 'post',
+    data: params,
   });
 }
 
@@ -933,6 +1044,45 @@ export const findByIsRecordCheckListTrue = {
   placeholder: '选择限用物质列表',
 };
 
+// 均质材料分类代码/名称
+export const findAllByPageNotFrozenHomogeneousMaterialType = (isReversal) => {
+  let name = 'homogeneousMaterialTypeCode';
+  let description = 'homogeneousMaterialTypeName';
+  if (isReversal) {
+    [name, description] = [description, name]
+  }
+  return {
+    remotePaging: true,
+    store: {
+      type: 'POST',
+      autoLoad: false,
+      url: `${baseUrl}/homogeneousMaterialType/findAllByPageNotFrozen`,
+    },
+    rowKey: 'homogeneousMaterialTypeCode',
+    reader: {
+      name,
+      field: ['id', 'limitMaterialCode', 'casNo'],
+      description,
+    },
+  }
+};
+
+// 环保标准代码
+export const findPageEnvironmentalProtectionData = {
+  remotePaging: true,
+  store: {
+    type: 'POST',
+    autoLoad: false,
+    url: `${baseUrl}/environmentalProtectionData/findPage`,
+  },
+  rowKey: 'environmentalProtectionCode',
+  reader: {
+    name: 'environmentalProtectionCode',
+    field: ['id', 'limitMaterialCode', 'casNo'],
+    description: 'environmentalProtectionName',
+  },
+};
+
 // 适用范围-非冻结
 export const limitScopeList = {
   remotePaging: true,
@@ -1058,6 +1208,7 @@ export const needToFillList = {
 };
 // 填报状态
 export const fillStatusList = {
+  allowClear: true,
   dataSource: [
     { code: 'NOTCOMPLETED', name: '未填报' },
     { code: 'COMPLETED', name: '已填报' },
@@ -1147,6 +1298,43 @@ export const sourcelist = {
     {
       code: 'PLM',
       name: 'PLM',
+    },
+  ],
+  placeholder: '选择来源',
+  ...commonProps,
+};
+
+// 复核状态
+export const checkReviewList = {
+  allowClear: true,
+  dataSource: [
+    { code: true, name: '复核' },
+    { code: false, name: '未复核' },
+  ],
+  ...commonProps,
+};
+
+// 复核结果
+export const reviewResultsList = {
+  allowClear: true,
+  dataSource: [
+    { code: 'PASS', name: '通过' },
+    { code: 'NOPASS', name: '不通过' },
+  ],
+  ...commonProps,
+};
+
+// 环保资料物料分配供应商明细-来源
+export const SourceTypeEnuList = {
+  allowClear: true,
+  dataSource: [
+    {
+      code: 'SRM',
+      name: 'SRM来源',
+    },
+    {
+      code: 'PDM',
+      name: 'PDM来源',
     },
   ],
   placeholder: '选择来源',

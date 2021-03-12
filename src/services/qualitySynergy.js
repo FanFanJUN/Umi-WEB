@@ -403,7 +403,7 @@ export async function syncPdm (params) {
 }
 // 填报环保资料物料-抽检复核
 export async function checkReview (params) {
-  const url = `${recommendUrl}/api/epDataFillService/checkReview`;
+  const url = `${recommendUrl}/api/epDataFillService/newCheckReview`;
   return request({
     url,
     method: 'POST',
@@ -412,7 +412,7 @@ export async function checkReview (params) {
 }
 // 供应商-填报环保资料-获取填报数据
 export async function supplerFindVoById (params) {
-  const url = `${recommendUrl}/api/epDataFillService/findVoById`;
+  const url = `${recommendUrl}/api/epDataFillService/newFindVoById`;
   return request({
     url,
     method: 'GET',
@@ -422,7 +422,7 @@ export async function supplerFindVoById (params) {
 
 // 供应商-填报环保资料-填报
 export async function epDemandUpdate (params) {
-  const url = `${recommendUrl}/api/epDataFillService/update`;
+  const url = `${recommendUrl}/api/epDataFillService/newUpdate`;
   return request({
     url,
     method: 'POST',
@@ -440,7 +440,7 @@ export async function epDemandSubmit (params) {
 }
 // 供应商-填报环保资料-撤回
 export async function epDemandRecall (params) {
-  const url = `${recommendUrl}/api/epDataFillService/recall`;
+  const url = `${recommendUrl}/api/epDataFillService/newRecall`;
   return request({
     url,
     method: 'GET',
@@ -458,7 +458,7 @@ export async function epDemandCopyAll (params) {
 }
 // 供应商-填报环保资料-复制-多行
 export async function epDemandCopyAllList (params) {
-  const url = `${recommendUrl}/api/epDataFillService/copyFilledToNotFilledList`;
+  const url = `${recommendUrl}/api/epDataFillService/newCopyFilledToNotFilledList`;
   return request({
     url,
     method: 'GET',
@@ -509,9 +509,21 @@ export async function findByProtectionCodeAndMaterialCodeAndRangeCode (params) {
     data: params,
   });
 }
+
+// 根据环保标准代码+均质材料分类代码检查[环保标准与均质材料分类限用物质测试项配置表]
+export async function findByEnCodeAndHomCode (params) {
+  const url = `${baseUrl}/environmentalProtectionMaterialType/findByEnCodeAndHomCode`;
+  return request({
+    url,
+    method: 'get',
+    params: params,
+  });
+}
+
+
 // 批导拆分部件验证
 export async function splitCheckImport (params) {
-  const url = `${recommendUrl}/api/epDataFillSplitPartsService/checkImport`;
+  const url = `${recommendUrl}/api/epDataFillSplitPartsService/checkOnlySplitImport`;
   return request({
     url,
     method: 'POST',
@@ -560,6 +572,16 @@ export async function checkEnvironmentalProtectionData (params) {
   return request({
     url,
     method: 'POST',
+    params: params,
+  });
+}
+
+// 均质材料成分名称验证(是否重复)
+export async function checkLimitSubstanceListAliasData (params) {
+  const url = `${baseUrl}/limitSubstanceListAliasData/check`;
+  return request({
+    url,
+    method: 'get',
     params: params,
   });
 }

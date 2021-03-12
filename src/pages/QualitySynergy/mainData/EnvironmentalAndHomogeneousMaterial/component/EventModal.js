@@ -75,7 +75,10 @@ const EventModal = (props) => {
                     name='materialName'
                     field={['materialId', 'materialCode', 'casNo']}
                     afterSelect={(item) => {
-                      setFieldsValue({ [environmentalProtectionCode.code]: item[environmentalProtectionCode.code] })
+                      setFieldsValue({
+                        [environmentalProtectionCode.code]: item[environmentalProtectionCode.code],
+                        [environmentalProtectionName.code]: item[environmentalProtectionName.code],
+                      })
                     }}
                     placeholder={placeholderAutocomplete(environmentalProtectionCode.name, true)}
                   />,
@@ -89,7 +92,7 @@ const EventModal = (props) => {
                 getFieldDecorator(environmentalProtectionName.code, {
                   initialValue: type === 'add' ? '' : data[environmentalProtectionName.code],
                 })(
-                  <Input placeholder={placeholderAutocomplete(environmentalProtectionName.name)} />,
+                  <Input disabled placeholder={placeholderAutocomplete(environmentalProtectionName.name)} />,
                 )
               }
             </FormItem>
@@ -110,7 +113,10 @@ const EventModal = (props) => {
                     name='materialName'
                     field={['materialId', 'materialCode', 'casNo']}
                     afterSelect={(item) => {
-                      setFieldsValue({ [homogeneousMaterialTypeCode.code]: item[homogeneousMaterialTypeCode.code] })
+                      setFieldsValue({
+                        [homogeneousMaterialTypeCode.code]: item[homogeneousMaterialTypeCode.code],
+                        [homogeneousMaterialTypeName.code]: item[homogeneousMaterialTypeName.code],
+                      })
                     }}
                     placeholder={placeholderAutocomplete(homogeneousMaterialTypeCode.name, true)}
                   />,
@@ -124,7 +130,7 @@ const EventModal = (props) => {
                 getFieldDecorator(homogeneousMaterialTypeName.code, {
                   initialValue: type === 'add' ? '' : data[homogeneousMaterialTypeName.code],
                 })(
-                  <Input placeholder={placeholderAutocomplete(homogeneousMaterialTypeName.name)} />,
+                  <Input disabled placeholder={placeholderAutocomplete(homogeneousMaterialTypeName.name)} />,
                 )
               }
             </FormItem>
@@ -145,7 +151,10 @@ const EventModal = (props) => {
                     name='materialName'
                     field={['materialId', 'materialCode', 'casNo']}
                     afterSelect={(item) => {
-                      setFieldsValue({ [limitMaterialCode.code]: item.limitMaterialCode })
+                      setFieldsValue({
+                        [limitMaterialCode.code]: item.limitMaterialCode,
+                        [limitMaterialName.code]: item.limitMaterialName,
+                      })
                     }}
                     placeholder={placeholderAutocomplete(limitMaterialCode.name, true)}
                   />
@@ -159,7 +168,7 @@ const EventModal = (props) => {
                 getFieldDecorator(limitMaterialName.code, {
                   initialValue: type === 'add' ? '' : data[limitMaterialName.code],
                 })(
-                  <Input placeholder={placeholderAutocomplete(limitMaterialName.name)} />,
+                  <Input disabled placeholder={placeholderAutocomplete(limitMaterialName.name)} />,
                 )
               }
             </FormItem>
