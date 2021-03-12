@@ -219,10 +219,18 @@ const CommonForm = forwardRef(({
     supplierRef.current.showModal()
   }
   function handleRemoveSupplier() {
-    const { selectedRowKeys } = supplierCommonProps;
-    const [key] = selectedRowKeys;
-    const filterData = supplierCommonProps.dataSource.filter(item => item.supplierSupplyId !== key);
-    console.log(filterData)
+    Modal.confirm({
+      title: '删除数据',
+      content: '是否确认删除选中的数据？',
+      okText: '删除',
+      cancelText: '取消',
+      onOk: () => {
+        const { selectedRowKeys } = supplierCommonProps;
+        const [key] = selectedRowKeys;
+        const filterData = supplierCommonProps.dataSource.filter(item => item.supplierSupplyId !== key);
+        setSupplierCommonProps.setDataSource(filterData)
+      }
+    })
   }
   function handleSupplierSelectOk(_, items) {
     // 格式化选中的合格供应商数据准备筛重
@@ -296,6 +304,7 @@ const CommonForm = forwardRef(({
     if (success) {
       tableCommonSets.setDataSource(data)
     }
+    setSupplierCommonProps.setDataSource([])
     const { data: d, success: s } = await findDateForBuCodeOrBgCode({
       [paramsName]: evlValue === 'BG' ? item.code : item.buCode
     })
@@ -393,6 +402,7 @@ const CommonForm = forwardRef(({
   // 评价层级选中后清除
   function handleEvlLevelSelect() {
     tableCommonSets.setDataSource([]);
+    setSupplierCommonProps.setDataSource([])
     cleanSelectedRecord()
   }
   // 回填数据
