@@ -21,7 +21,7 @@ import {
 } from '@/services/supplierRegister';
 import { offlistChineseProvinces, offlistCityByProvince, offlistAreaByCity } from "../../../services/supplierConfig"
 import styles from '../components/index.less';
-import { closeCurrent } from '../../../utils';
+import { closeCurrent, isEmpty } from '../../../utils';
 import { openNewTab, getFrameElement } from '@/utils';
 import queryString from "query-string";
 function CreateStrategy() {
@@ -120,7 +120,10 @@ function CreateStrategy() {
       if (item.operationCode !== '3' && item.fieldCode === 'name') {
         const { getTemporaryBaseInfo } = BaseinfoRef.current; // 基本信息
         baseVal = getTemporaryBaseInfo();
-
+        if (isEmpty(baseVal.supplierVo.name)) {
+          message.error('供应商名称不能为空，请重新输入');
+          return false
+        }
       }
       if (item.operationCode !== '3' && item.fieldCode === 'mobile') {
         //accountVal = ObtainAccount();
