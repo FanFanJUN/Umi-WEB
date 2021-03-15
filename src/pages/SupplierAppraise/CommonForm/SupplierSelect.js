@@ -93,9 +93,11 @@ const ForWard = forwardRef(((props, ref) => {
     endTime,
     form,
     buCode,
-    bgCode
+    bgCode,
+    level = 'BG'
   } = props;
-  const { getFieldDecorator, getFieldsValue } = form;
+  const { getFieldDecorator, getFieldsValue, resetFields } = form;
+  const { buCode: buc } = getFieldsValue()
   const tableProps = {
     store: {
       url: `${smBaseUrl}/api/supplierSupplyListExtService/findByValidDate`,
@@ -104,7 +106,7 @@ const ForWard = forwardRef(((props, ref) => {
         endDate: endTime,
         ...searchValue,
         bgCode,
-        buCode
+        buCode: level === 'BG' ? buc : buCode
       },
       type: 'post'
     },
@@ -118,9 +120,10 @@ const ForWard = forwardRef(((props, ref) => {
   function showModal() {
     toggleVisible(true)
   }
-  function hideModal() {
+  async function hideModal() {
     toggleVisible(false)
     setSearchValue({})
+    await resetFields()
   }
   async function handleSearch() {
     const { buCode, materialCategoryCode, supplierCode } = getFieldsValue();
@@ -129,7 +132,7 @@ const ForWard = forwardRef(((props, ref) => {
       materialCategoryCode,
       supplierCode
     })
-    tableRef.current.remoteDataRefresh()
+    await tableRef.current.remoteDataRefresh()
   }
   return (
     <ExtModal
@@ -149,7 +152,13 @@ const ForWard = forwardRef(((props, ref) => {
               {
                 getFieldDecorator(['supplierCode']),
                 getFieldDecorator('supplierName')(
-                  <ComboList form={form} {...supplierPropsForName} name='supplierName' field={['supplierCode']} />
+                  <ComboList
+                    form={form}
+                    {...supplierPropsForName}
+                    name='supplierName'
+                    field={['supplierCode']}
+                    allowClear
+                  />
                 )
               }
             </FormItem>
@@ -159,7 +168,13 @@ const ForWard = forwardRef(((props, ref) => {
               {
                 getFieldDecorator(['materialCategoryCode']),
                 getFieldDecorator('materialCategoryName')(
-                  <ComboTree form={form} {...materialClassProps} name='materialCategoryName' field={['materialCategoryCode']} />
+                  <ComboTree
+                    form={form}
+                    {...materialClassProps}
+                    name='materialCategoryName'
+                    field={['materialCategoryCode']}
+                    allowClear
+                  />
                 )
               }
             </FormItem>
@@ -171,7 +186,13 @@ const ForWard = forwardRef(((props, ref) => {
                   {
                     getFieldDecorator(['buCode']),
                     getFieldDecorator('buName')(
-                      <ComboList form={form} {...businessMainProps} name='buName' field={['buCode']} />
+                      <ComboList
+                        form={form}
+                        {...businessMainProps}
+                        name='buName'
+                        field={['buCode']}
+                        allowClear
+                      />
                     )
                   }
                 </FormItem>
