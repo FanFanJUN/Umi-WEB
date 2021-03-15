@@ -100,13 +100,16 @@ const CommonconfigRef = forwardRef(({
     setsupplierName(name)
     setName(name);
     name.trim()
-
     if (name) {
       const { success, message: msg } = await checkSupplierName({ supplierName: name, supplierId: '' });
       if (success) {
         message.success('供应商名称可以使用');
       } else {
         message.error('供应商名称已存在，请重新输入');
+        form.setFieldsValue({
+          'supplierVo.name': ''
+        })
+        return false
       }
     }
   }
