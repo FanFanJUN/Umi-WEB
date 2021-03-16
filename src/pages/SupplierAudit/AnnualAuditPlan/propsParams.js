@@ -177,6 +177,17 @@ export const reviewOrganizeProps = {
   },
 };
 
+// 审核组织方式
+export const AuditOrganizationConfig = {
+  remotePaging: false,
+  rowKey: 'code',
+  reader: {
+    field: ['id', 'code'],
+    name: 'name',
+    description: 'code',
+  },
+};
+
 // 区域
 export const AreaConfig = {
   remotePaging: false,

@@ -42,6 +42,7 @@ const pickpropertys = [
   'contactUserName', 'contactUserTel', 'leaderId', 'leaderName', 'leaderEmployeeNo',
 ];
 const Index = (props) => {
+  let auditInfoRef = useRef(null);
   const { form, onRef } = props;
   const tableRef = useRef(null);
   const [editData, setEditData] = useState({});
@@ -71,12 +72,14 @@ const Index = (props) => {
   }
 
 
-  useEffect(async () => {
-    if (query.pageState !== 'add') {
-      await getDetail();
-    } else {
-      await getOriginData();
-    }
+  useEffect(() => {
+    (async () => {
+      if (query.pageState !== 'add') {
+        await getDetail();
+      } else {
+        await getOriginData();
+      }
+    })();
   }, []);
 
   const getData = async (resData) => {
@@ -208,10 +211,28 @@ const Index = (props) => {
         // delete saveData.reviewTeamGroupBoMap
         // delete saveData.treeData;
         delete saveData.selected;
+
         console.log('保存的数据saveData', saveData);
       }
     });
+    auditInfoRef.current.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        saveData.address = values.address;
+        saveData.countryId = values.countryId;
+        saveData.countryName = values.countryName;
+        saveData.provinceId = values.provinceId;
+        saveData.provinceName = values.provinceName;
+        saveData.cityId = values.cityId;
+        saveData.cityName = values.cityName;
+        saveData.countyId = values.countyId;
+        saveData.countyName = values.countyName;
+      } else {
+        saveData = false
+      }
+    });
+
     return saveData;
+
   };
 
   const handleSave = async (handleType) => {
@@ -339,6 +360,7 @@ const Index = (props) => {
     />
     {/* 拟审核信息 */}
     <AuditInfo
+      ref={auditInfoRef}
       type={data.type}
       isView={data.isView}
       originData={editData}

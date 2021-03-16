@@ -841,9 +841,39 @@ export const AuditOrganizationManagementFrozen = async (params) => {
   });
 };
 
+// 审核组织方式管理删除审核组织方式
+export const AuditOrganizationManagementDeleteAuditOrganization = async (params) => {
+  const url = `${baseUrl}/reviewOrganizedWaySon/batchDelete`;
+  return request({
+    url,
+    method: 'post',
+    data: params
+  });
+};
+
+// 根据审核组织方式管理id查询审核组织方式
+export const AuditOrganizationManagementByAuditOrganization = async (params) => {
+  const url = `${baseUrl}/reviewOrganizedWaySon/findByParentIds`;
+  return request({
+    url,
+    method: 'post',
+    data: params
+  });
+};
+
 // 审核组织方式管理新增
 export const AuditOrganizationManagementAdd = async (params) => {
   const url = `${baseUrl}/reviewOrganizedWay/addReviewOrganizedWay`;
+  return request({
+    url,
+    method: 'POST',
+    data: params,
+  });
+};
+
+// 审核组织方式管理新增审核组织方式
+export const AuditOrganizationManagementAddAuditOrganization = async (params) => {
+  const url = `${baseUrl}/reviewOrganizedWaySon/saveSonList`;
   return request({
     url,
     method: 'POST',

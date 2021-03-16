@@ -51,50 +51,52 @@ const Index = (props) => {
     innerFn: flowSave,
   }));
 
-  useEffect(async () => {
-    // 获取所有审核类型
-    getAuditType();
-    const { id, pageState, reviewRequirementCode = undefined, _s } = query;
-    let state = pageState;
-    if (_s) {
-      await checkToken(query);
-    }
-    if (!state) {
-      state = 'flowDetail';
-    }
-    if (props.isInFlow === 1) {
-      state = 'detail';
-    } else if (props.isInFlow === 2) {
-      state = 'edit';
-    }
-    switch (state) {
-      case 'add':
-        getUser();
-        setData((value) => ({ ...value, type: state, isView: false, title: '新增审核需求' }));
-        break;
-      case 'edit':
-        findOne(id);
-        setData((value) => ({
-          ...value,
-          type: state,
-          isView: false,
-          title: `编辑审核需求  ${reviewRequirementCode ? reviewRequirementCode : ''}`,
-        }));
-        break;
-      case 'detail':
-        findOne(id);
-        setData((value) => ({
-          ...value,
-          type: state,
-          isView: true,
-          title: `审核需求明细  ${reviewRequirementCode ? reviewRequirementCode : ''}`,
-        }));
-        break;
-      case 'flowDetail':
-        findOne(id);
-        setData((value) => ({ ...value, type: 'detail', isView: true, title: `审核需求审核` }));
-        break;
-    }
+  useEffect( () => {
+    (async () => {
+      // 获取所有审核类型
+      getAuditType();
+      const { id, pageState, reviewRequirementCode = undefined, _s } = query;
+      let state = pageState;
+      if (_s) {
+        await checkToken(query);
+      }
+      if (!state) {
+        state = 'flowDetail';
+      }
+      if (props.isInFlow === 1) {
+        state = 'detail';
+      } else if (props.isInFlow === 2) {
+        state = 'edit';
+      }
+      switch (state) {
+        case 'add':
+          getUser();
+          setData((value) => ({ ...value, type: state, isView: false, title: '新增审核需求' }));
+          break;
+        case 'edit':
+          findOne(id);
+          setData((value) => ({
+            ...value,
+            type: state,
+            isView: false,
+            title: `编辑审核需求  ${reviewRequirementCode ? reviewRequirementCode : ''}`,
+          }));
+          break;
+        case 'detail':
+          findOne(id);
+          setData((value) => ({
+            ...value,
+            type: state,
+            isView: true,
+            title: `审核需求明细  ${reviewRequirementCode ? reviewRequirementCode : ''}`,
+          }));
+          break;
+        case 'flowDetail':
+          findOne(id);
+          setData((value) => ({ ...value, type: 'detail', isView: true, title: `审核需求审核` }));
+          break;
+      }
+    })()
   }, []);
 
   const findOne = (id) => {

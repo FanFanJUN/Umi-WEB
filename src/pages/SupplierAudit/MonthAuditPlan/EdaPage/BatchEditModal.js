@@ -369,7 +369,7 @@ const BatchEditModal = (props) => {
                   initialValue: originData.countyName ? originData.countyName : '',
                   rules: [
                     {
-                      required,
+                      // required,
                       message: '区/县不能为空',
                     },
                   ],
@@ -411,7 +411,7 @@ const BatchEditModal = (props) => {
                   initialValue: originData.address ? originData.address : '',
                   rules: [
                     {
-                      required,
+                      // required,
                       message: '详细地址不能为空',
                     },
                   ],
