@@ -5,12 +5,15 @@ import { baseUrl } from '../../../../utils/commonUrl';
 import { ExtTable, utils } from 'suid';
 import {
   DeleteBUCompanyOrganizationRelation,
-  FrostBUCompanyOrganizationRelation,
   judgeButtonDisabled,
 } from '../../../QualitySynergy/commonProps';
-import { AutoSizeLayout } from '../../../../components';
 import EventModal from '../../common/EventModal';
-import { AuditOrganizationManagementAdd, AuditOrganizationManagementFrozen } from '../commomService';
+import {
+  AuditOrganizationManagementAdd, AuditOrganizationManagementAddAuditOrganization,
+  AuditOrganizationManagementByAuditOrganization, AuditOrganizationManagementDeleteAuditOrganization,
+  AuditOrganizationManagementFrozen,
+} from '../commomService';
+import AddModal from './addModal';
 
 const { authAction } = utils;
 
@@ -18,6 +21,7 @@ const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
 
 const Index = () => {
 
+  const addModalRef = useRef(null);
   const tableRef = useRef(null);
 
   const [data, setData] = useState({
@@ -26,15 +30,29 @@ const Index = () => {
     type: 'add',
   });
 
+  const [rightData, setRightData] = useState({
+    dataSource: [],
+    selectRows: [],
+    selectedRowKeys: [],
+    visible: false,
+  });
+
   const [selectRows, setSelectRows] = useState([]);
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+
+  const organizationColumns = [
+    { title: '审核组织方式名称', dataIndex: 'reviewOrganizedWayName', width: 250 },
+    { title: '审核组织方式代码', dataIndex: 'reviewOrganizedWayCode', width: 250, ellipsis: true },
+    { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (value) => value ? '是' : '否' },
+  ];
 
   const columns = [
     { title: '代码', dataIndex: 'code', width: 200 },
     { title: '名称', dataIndex: 'name', ellipsis: true },
     { title: '排序号', dataIndex: 'rank', ellipsis: true },
     { title: '冻结', dataIndex: 'frozen', ellipsis: true, render: (value) => value ? '是' : '否' },
+    { title: '是否为子表', dataIndex: 'whetherSon', ellipsis: true, render: (value) => value ? '是' : '否' },
   ].map(item => ({ ...item, align: 'center' }));
 
   const buttonClick = async (type) => {
@@ -84,11 +102,75 @@ const Index = () => {
     });
   };
 
-  const onSelectRow = (value, rows) => {
+  const onSelectRow = async (value, rows) => {
     console.log(value, rows);
+    if (rows[0] && !rows[0].whetherSon) {
+      await getOrganizationData(value);
+    } else {
+      if (rightData.dataSource.length !== 0) {
+        setRightData(v => ({...v, dataSource: []}))
+      }
+      message.warning('该行没有子表');
+    }
     setSelectRows(rows);
     setSelectedRowKeys(value);
   };
+
+  const onRightSelectRow = (keys, rows) => {
+    setRightData(v => ({ ...v, selectRows: rows, selectedRowKeys: keys }));
+  };
+
+  const getOrganizationData = async (id) => {
+    const res = await AuditOrganizationManagementByAuditOrganization(id);
+    if (res.success) {
+      setRightData(v => ({...v, dataSource: res.data ? res.data : []}))
+    } else {
+      message.error(res.message)
+    }
+  };
+
+  const deleteRightData = () => {
+    Modal.confirm({
+      title: '删除',
+      content: '是否删除审核组织方式',
+      okText: '确定',
+      cancelText: '取消',
+      onOk: () => {
+        AuditOrganizationManagementDeleteAuditOrganization(rightData.selectedRowKeys).then(async res => {
+          if(res.success) {
+            message.success('删除成功')
+            await getOrganizationData(selectedRowKeys);
+          } else {
+            message.error(res.message)
+          }
+        }).catch(err => {
+          message.error(err)
+        })
+      }
+    })
+  }
+
+  const organizationLeft = <div style={{ width: '100%', display: 'flex', height: '100%', alignItems: 'center' }}>
+    {
+      authAction(<Button
+        type='primary'
+        onClick={() => setRightData(v => ({ ...v, visible: true }))}
+        className={styles.btn}
+        ignore={DEVELOPER_ENV}
+        disabled={!(selectRows[0] && !selectRows[0].whetherSon)}
+        key='SUPPLIER_AUDIT_ORGANIZATION_ADD'
+      >新增</Button>)
+    }
+    {
+      authAction(<Button
+        onClick={deleteRightData}
+        className={styles.btn}
+        ignore={DEVELOPER_ENV}
+        disabled={rightData.selectedRowKeys.length === 0}
+        key='SUPPLIER_AUDIT_ORGANIZATION_EDIT'
+      >删除</Button>)
+    }
+  </div>;
 
   const headerLeft = <div style={{ width: '100%', display: 'flex', height: '100%', alignItems: 'center' }}>
     {
@@ -156,33 +238,80 @@ const Index = () => {
     console.log(value, 'save');
   };
 
+  const rightModalCancel = () => {
+    setRightData(v => ({ ...v, visible: false }));
+  };
+
+  const rightModalOk = () => {
+    addModalRef.current.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        values.parentId = selectedRowKeys[0];
+        saveReviewOrganizedWay(values);
+      }
+    });
+  };
+
+  const saveReviewOrganizedWay = (values) => {
+    AuditOrganizationManagementAddAuditOrganization([values]).then(async res => {
+      if (res.success) {
+        setRightData(v => ({ ...v, visible: false }));
+        await getOrganizationData([values.parentId])
+      } else {
+        message.error(res.message);
+      }
+    }).catch(err => {
+      message.error(err);
+    });
+  };
 
   return (
     <Fragment>
-      <AutoSizeLayout>
-        {
-          (h) => <ExtTable
-            rowKey={(v) => v.id}
-            height={h}
-            columns={columns}
-            store={{
-              url: `${baseUrl}/reviewOrganizedWay/findBySearchPage`,
-              type: 'POST',
-            }}
-            allowCancelSelect={true}
-            remotePaging={true}
-            checkbox={{
-              multiSelect: true,
-            }}
-            ref={tableRef}
-            onSelectRow={onSelectRow}
-            selectedRowKeys={selectedRowKeys}
-            toolBar={{
-              left: headerLeft,
-            }}
-          />
-        }
-      </AutoSizeLayout>
+      <div style={{ float: 'left', width: '50%', borderRight: '1px solid #aaaaaa' }}>
+        <ExtTable
+          rowKey={(v) => v.id}
+          columns={columns}
+          height={window.innerHeight}
+          store={{
+            url: `${baseUrl}/reviewOrganizedWay/findBySearchPage`,
+            type: 'POST',
+          }}
+          allowCancelSelect={true}
+          remotePaging={true}
+          checkbox={{
+            multiSelect: false,
+          }}
+          ref={tableRef}
+          onSelectRow={onSelectRow}
+          selectedRowKeys={selectedRowKeys}
+          toolBar={{
+            left: headerLeft,
+          }}
+        />
+      </div>
+      <div style={{ float: 'right', width: '50%' }}>
+        <ExtTable
+          rowKey={(v) => v.id}
+          columns={organizationColumns}
+          dataSource={rightData.dataSource}
+          height={window.innerHeight}
+          allowCancelSelect={true}
+          remotePaging={true}
+          checkbox={{
+            multiSelect: true,
+          }}
+          onSelectRow={onRightSelectRow}
+          selectedRowKeys={rightData.selectedRowKeys}
+          toolBar={{
+            left: organizationLeft,
+          }}
+        />
+      </div>
+      <AddModal
+        visible={rightData.visible}
+        onOk={rightModalOk}
+        ref={addModalRef}
+        onCancel={rightModalCancel}
+      />
       <EventModal
         onCancel={() => setData((value) => ({ ...value, visible: false }))}
         onOk={handleOk}
@@ -191,7 +320,7 @@ const Index = () => {
           {
             name: '名称',
             code: 'name',
-            unlimited: 100
+            unlimited: 100,
           },
           {
             name: '代码',
@@ -201,7 +330,7 @@ const Index = () => {
             name: '序列号',
             code: 'rank',
             min: 0,
-            type: "inputNumber"
+            type: 'inputNumber',
           },
         ]}
         propData={{

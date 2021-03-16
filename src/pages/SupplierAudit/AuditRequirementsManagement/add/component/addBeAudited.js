@@ -577,7 +577,7 @@ const AddBeAudited = (props) => {
                   initialValue: editData.countyName ? editData.countyName : '',
                   rules: [
                     {
-                      required: true,
+                      // required: true,
                       message: '区/县不能为空',
                     },
                   ],
@@ -619,7 +619,7 @@ const AddBeAudited = (props) => {
                   initialValue: editData.address ? editData.address : '',
                   rules: [
                     {
-                      required: true,
+                      // required: true,
                       message: '详细地址不能为空',
                     },
                   ],
