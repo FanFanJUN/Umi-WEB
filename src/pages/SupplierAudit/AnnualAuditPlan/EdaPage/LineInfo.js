@@ -3,7 +3,7 @@
  * @LastEditors  : LiCai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime : 2021-03-15 15:48:23
+ * @LastEditTime : 2021-03-16 14:58:30
  * @Description: 行信息
  * @FilePath     : /basic-web/Users/licai/ChangHong/srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
@@ -13,7 +13,7 @@ import { Form, Button, message, Modal } from 'antd';
 import { ExtTable } from 'suid';
 import AddModal from './AddModal';
 import BatchEditModal from './BatchEditModal';
-import { isEmptyArray, isEmptyObject } from '../../../../utils/utilTool';
+import { filterEmptyFileds, isEmptyArray, isEmptyObject } from '../../../../utils/utilTool';
 import moment from 'moment';
 import { reviewTypesProps } from '../propsParams';
 import { GetSupplierAreaByCode, GetSupplierContact } from '../../mainData/commomService';
@@ -399,7 +399,26 @@ let LineInfo = (props, ref) => {
     const newDataSource = JSON.parse(JSON.stringify(dataSource));
     const newList = newDataSource.map(item => {
       if (data.selectedRowKeys.includes(item.reviewPlanYearLinenum)) {
-        return { ...item, ...formValue };
+        if(formValue.type === 'one') {
+          return { ...item, ...formValue };
+        } else {
+          return filterEmptyFileds({
+            ...item, ...formValue,
+            countryId : formValue.countryId || '',
+            countryName : formValue.countryName || '',
+            countryCode : formValue.countryCode || '',
+            provinceId : formValue.provinceId || '',
+            provinceName : formValue.provinceName || '',
+            provinceCode : formValue.provinceCode || '',
+            cityId : formValue.cityId || '',
+            cityName : formValue.cityName || '',
+            cityCode : formValue.cityCode || '',
+            countyId : formValue.countyId || '',
+            countyName : formValue.countyName || '',
+            countyCode : formValue?.countyCode || '',
+            address : formValue.address || ''
+          })
+        }
       }
       return item;
     });

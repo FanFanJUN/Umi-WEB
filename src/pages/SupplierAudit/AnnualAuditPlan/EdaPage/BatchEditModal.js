@@ -3,7 +3,7 @@
  * @LastEditors  : LiCai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-23 17:00:19
- * @LastEditTime : 2021-03-15 15:44:55
+ * @LastEditTime : 2021-03-16 14:35:10
  * @Description: 批量编辑页面
  * @FilePath     : /basic-web/Users/licai/ChangHong/srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BatchEditModal.js
  */
@@ -65,7 +65,11 @@ const BatchEditModal = (props) => {
       if (values.reviewMonth) {
         values.reviewMonth = moment(values.reviewMonth).format('YYYY-MM-DD').toString();
       }
-      props.onOk(values);
+      if(required) {
+        props.onOk({...values, type: 'one'});
+      } else {
+        props.onOk({...filterEmptyFileds(values), type: 'batch'});
+      }
     });
   }
 
@@ -230,7 +234,7 @@ const BatchEditModal = (props) => {
                   initialValue: originData.countryName,
                   rules: [
                     {
-                      required: true,
+                      required,
                       message: '国家不能为空',
                     },
                   ],
@@ -266,7 +270,7 @@ const BatchEditModal = (props) => {
                   initialValue: originData.provinceName,
                   rules: [
                     {
-                      required: true,
+                      required,
                       message: '省不能为空',
                     },
                   ],
@@ -306,7 +310,7 @@ const BatchEditModal = (props) => {
                   initialValue: originData.cityName,
                   rules: [
                     {
-                      required: true,
+                      required,
                       message: '市不能为空',
                     },
                   ],
