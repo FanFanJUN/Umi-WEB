@@ -3,9 +3,9 @@
  * @LastEditors  : LiCai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:06:54
- * @LastEditTime : 2021-01-08 09:53:21
+ * @LastEditTime : 2021-03-15 15:48:23
  * @Description: 行信息
- * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
+ * @FilePath     : /basic-web/Users/licai/ChangHong/srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/LineInfo.js
  */
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import styles from '../../../QualitySynergy/TechnicalDataSharing/DataSharingList/edit/BaseInfo.less';
@@ -118,11 +118,11 @@ let LineInfo = (props, ref) => {
       width: 200,
       render: (v, data) => {
         return (
-          `${data.countryName +
-            data.provinceName +
-            data.cityName +
-            data.countyName +
-            data.address}`.replace(/\s+/g, '')
+          `${(data.countryName || '') +
+            (data.provinceName || '') +
+            (data.cityName || '') +
+            (data.countyName || '') +
+            (data.address || '')}`.replace(/\s+/g, '')
         );
       },
     },

@@ -26,5 +26,11 @@ export default {
     changeOrigin: true,
     secure: false,
     pathRewrite: { '^/service.api/edm-service': '' },
+  },
+  '/srm-baf-web': {
+    target: `${onLineTarget}/srm-baf-web`,
+    changeOrigin: true,
+    secure: false,
+    pathRewrite: { '^/srm-baf-web': '' },
   }
 };
