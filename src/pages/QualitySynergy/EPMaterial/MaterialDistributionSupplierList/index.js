@@ -1,13 +1,12 @@
 import { useEffect, useState, useRef, Fragment } from 'react';
 import { ExtTable, utils } from 'suid';
-import { Input, Modal } from 'antd';
+import { Input } from 'antd';
 import { commonUrl } from '@/utils';
-import { openNewTab, downloadBlobFile } from '@/utils';
+import { openNewTab } from '@/utils';
 import { AutoSizeLayout, Header, AdvancedForm, DataExportButton } from '@/components';
 import {
   MaterialConfig,
   fillStatusList,
-  findAllMaterialByPage as EXPORT_METHOD,
   checkReviewList,
   reviewResultsList,
   SourceTypeEnuList,
@@ -47,29 +46,6 @@ export default function () {
       setSearchValue({});
       tableRef.current.remoteDataRefresh();
     }
-  }
-
-  // 导出
-  function handleExport () {
-    Modal.confirm({
-      title: '导出数据',
-      content: '是否导出当前查询条件下数据？',
-      okText: '导出',
-      cancelText: '取消',
-      onOk: async () => {
-        const search = {
-          ...searchValue,
-          pageInfo: { page: 1, rows: 100000 },
-        }
-        const { success, message: msg, data } = await EXPORT_METHOD(search)
-        if (success) {
-          downloadBlobFile(data, DOWNLOADNAME);
-          message.success('导出成功')
-          return
-        }
-        message.error(msg)
-      }
-    })
   }
 
   const columns = [
@@ -170,6 +146,8 @@ export default function () {
     url: `${recommendUrl}/api/epDataFillService/findAllMaterialByPage`,
     data: {
       pageInfo: { page: 1, rows: 100000 },
+      ...searchValue,
+      quickSearchProperties: [],
     },
     method: 'POST',
   };
