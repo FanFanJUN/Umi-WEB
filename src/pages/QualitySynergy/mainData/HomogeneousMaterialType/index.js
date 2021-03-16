@@ -12,7 +12,7 @@ import { AutoSizeLayout } from '../../../../components';
 
 const { authAction } = utils;
 
-const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development');
 
 const Index = () => {
 
@@ -188,7 +188,7 @@ const Index = () => {
           type={data.type}
           data={selectRows[selectRows.length - 1]}
           onCancel={() => setData((value) => ({ ...value, visible: false }))}
-          title={'均质材料分类主数据' + data.title}
+          title={data.title + '均质材料分类主数据'}
         />
       }
     </Fragment>

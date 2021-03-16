@@ -16,7 +16,7 @@ import styles from './index.less';
 const { recommendUrl } = commonUrl;
 const { authAction } = utils;
 const { Search } = Input;
-const DEVELOPER_ENV = (process.env.NODE_ENV === 'development').toString();
+const DEVELOPER_ENV = (process.env.NODE_ENV === 'development');
 const DOWNLOADNAME = '环保资料物料分配供应商明细表';
 export default function () {
   const headerRef = useRef(null);
