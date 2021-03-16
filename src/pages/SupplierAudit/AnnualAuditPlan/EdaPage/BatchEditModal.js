@@ -3,9 +3,9 @@
  * @LastEditors  : LiCai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-23 17:00:19
- * @LastEditTime : 2021-01-28 15:55:02
+ * @LastEditTime : 2021-03-15 15:44:55
  * @Description: 批量编辑页面
- * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BatchEditModal.js
+ * @FilePath     : /basic-web/Users/licai/ChangHong/srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/BatchEditModal.js
  */
 import React, { useEffect, useState } from 'react';
 import { ComboGrid, ComboList, ExtModal } from 'suid';
@@ -65,7 +65,7 @@ const BatchEditModal = (props) => {
       if (values.reviewMonth) {
         values.reviewMonth = moment(values.reviewMonth).format('YYYY-MM-DD').toString();
       }
-      props.onOk(filterEmptyFileds(values));
+      props.onOk(values);
     });
   }
 
@@ -230,7 +230,7 @@ const BatchEditModal = (props) => {
                   initialValue: originData.countryName,
                   rules: [
                     {
-                      required,
+                      required: true,
                       message: '国家不能为空',
                     },
                   ],
@@ -266,7 +266,7 @@ const BatchEditModal = (props) => {
                   initialValue: originData.provinceName,
                   rules: [
                     {
-                      required,
+                      required: true,
                       message: '省不能为空',
                     },
                   ],
@@ -306,7 +306,7 @@ const BatchEditModal = (props) => {
                   initialValue: originData.cityName,
                   rules: [
                     {
-                      required,
+                      required: true,
                       message: '市不能为空',
                     },
                   ],
@@ -346,7 +346,7 @@ const BatchEditModal = (props) => {
                   initialValue: originData.countyName,
                   rules: [
                     {
-                      required,
+                      required: false,
                       message: '区/县不能为空',
                     },
                   ],
@@ -384,7 +384,7 @@ const BatchEditModal = (props) => {
                 initialValue: originData.address,
                 rules: [
                   {
-                    required,
+                    required: false,
                     message: '详细地址不能为空',
                   },
                 ],

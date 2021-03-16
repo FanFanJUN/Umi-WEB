@@ -3,9 +3,9 @@
  * @connect      : 1981824361@qq.com
  * @Date         : 2020-12-28 10:14:41
  * @LastEditors  : LiCai
- * @LastEditTime : 2020-12-31 10:30:25
+ * @LastEditTime : 2021-03-16 11:03:20
  * @Description  : 批量导入
- * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/BatchImport/index.js
+ * @FilePath     : /basic-web/Users/licai/ChangHong/srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/BatchImport/index.js
  */
 
 import { Button, message, Modal, Popover, Row, Upload } from "antd";
@@ -37,11 +37,11 @@ import moment from 'moment';
       width: 200,
       render: (v, data) => {
         return (
-          `${data.countryName +
-            data.provinceName +
-            data.cityName +
-            data.countyName +
-            data.address}`.replace(/\s+/g, '')
+          `${(data.countryName || '') +
+            (data.provinceName || '') +
+            (data.cityName || '') +
+            (data.countyName || '') +
+            (data.address || '')}`.replace(/\s+/g, '')
         );
       },
     },

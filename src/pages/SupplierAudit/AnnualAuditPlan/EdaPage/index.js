@@ -3,9 +3,9 @@
  * @LastEditors  : LiCai
  * @Connect: 1981824361@qq.com
  * @Date: 2020-10-21 16:04:51
- * @LastEditTime : 2021-01-13 11:22:20
+ * @LastEditTime : 2021-03-15 15:20:59
  * @Description: 新增  编辑  详情 page
- * @FilePath     : /srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/index.js
+ * @FilePath     : /basic-web/Users/licai/ChangHong/srm-sm-web/src/pages/SupplierAudit/AnnualAuditPlan/EdaPage/index.js
  */
 import React, { Fragment, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Affix, Button, Form, message, Spin } from 'antd';
@@ -149,8 +149,8 @@ const Index = (props) => {
                   !item.contactUserTel ||
                   !item.countryName ||
                   !item.provinceName ||
-                  !item.cityName ||
-                  !item.countyName
+                  !item.cityName
+                //   !item.countyName
                 ) {
                   if (buttonType === 'onlySave') {
                     message.error(`${item.reviewPlanYearLinenum}行上必填项为空, 请完善`);
