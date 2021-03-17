@@ -1,5 +1,5 @@
 {
-  "name": "react-srm-sm-web",
-  "entry": "/react-srm-sm-web",
-  "base": "/react-srm-sm-web"
+  "name": "umi-react",
+  "entry": "/umi-react",
+  "base": "/umi-react"
 }

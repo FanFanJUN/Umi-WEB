@@ -1,3 +1,12 @@
+/*
+ * @Author       : LiCai
+ * @connect      : 1981824361@qq.com
+ * @Date         : 2020-12-14 22:46:34
+ * @LastEditors  : LiCai
+ * @LastEditTime : 2021-03-17 13:37:26
+ * @Description  : TODO
+ * @FilePath     : /Umi-WEB/config/config.js
+ */
 import path, { resolve } from 'path';
 import webpackPlugin from './plugin.config';
 import pageRoutes from './router.config';
@@ -10,11 +19,11 @@ const { base } = require(appConfigPath);
 const { name, title } = require(pkg);
 
 export default {
-  history: 'hash',
+  history: 'browser',
   treeShaking: true,
   ignoreMomentLocale: true,
   targets: { ie: 11 },
-  base: `${base}/`,
+  // base: `${base}/`,
   publicPath: `${base}/`,
   mountElementId: name,
   hash: true,
