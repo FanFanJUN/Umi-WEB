@@ -3,7 +3,7 @@
  * @connect      : 1981824361@qq.com
  * @Date         : 2021-03-19 09:36:46
  * @LastEditors  : LiCai
- * @LastEditTime : 2021-03-19 10:40:12
+ * @LastEditTime : 2021-03-19 13:37:13
  * @Description  : 
  * @FilePath     : /Umi-WEB/src/pages/Hooks/useEffect/index.js
  */
@@ -39,15 +39,15 @@ import React, { useState, useEffect } from 'react';
 function Example() {
   const [count, setCount] = useState(0);
 
-  async function doSomeThinf() {
-
-  }
   // Similar to componentDidMount and componentDidUpdate:
-  useEffect( async() => {
-    await doSomeThinf();
+  useEffect( () => {
     // Update the document title using the browser API
+    console.log('执行');
     document.title = `You clicked ${count} times`;
-  });
+    return () => {
+      console.log('离开卸载');
+    }
+  }, [count]);
 
   return (
     <div>

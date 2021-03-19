@@ -3,7 +3,7 @@
  * @connect      : 1981824361@qq.com
  * @Date         : 2021-03-08 14:14:55
  * @LastEditors  : LiCai
- * @LastEditTime : 2021-03-19 09:40:00
+ * @LastEditTime : 2021-03-19 15:03:11
  * @Description  : 路由配置
  * @FilePath     : /Umi-WEB/config/router.config.js
  */
@@ -31,6 +31,31 @@ export default [
         path: '/hooks/useEffect',
         component: './Hooks/useEffect',
         title: "useEffect"
+      },
+      {
+        path: '/hooks/test1',
+        component: './Hooks/useEffect/test1',
+        title: "useEffect测试"
+      },
+      {
+        path: '/hooks/useContext',
+        component: './Hooks/useContext',
+        title: "useContext测试"
+      },
+      {
+        path: '/hooks/useReducer',
+        component: './Hooks/useReducer',
+        title: "useReducer测试"
+      },
+      {
+        path: '/hooks/useReducerTest1',
+        component: './Hooks/useReducer/Test',
+        title: "useReducer复杂实例"
+      },
+      {
+        path: '/hooks/useMemo',
+        component: './Hooks/useMemo',
+        title: "useMemo"
       },
     ]
   },
