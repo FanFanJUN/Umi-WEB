@@ -3,7 +3,7 @@
  * @connect      : 1981824361@qq.com
  * @Date         : 2021-03-08 14:14:55
  * @LastEditors  : LiCai
- * @LastEditTime : 2021-03-17 13:34:09
+ * @LastEditTime : 2021-03-19 09:40:00
  * @Description  : 路由配置
  * @FilePath     : /Umi-WEB/config/router.config.js
  */
@@ -26,6 +26,11 @@ export default [
         path: '/hooks/useState',
         component: './Hooks/useState',
         title: "useState"
+      },
+      {
+        path: '/hooks/useEffect',
+        component: './Hooks/useEffect',
+        title: "useEffect"
       },
     ]
   },
