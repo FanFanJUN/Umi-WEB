@@ -3,7 +3,7 @@
  * @connect      : 1981824361@qq.com
  * @Date         : 2021-03-08 14:14:55
  * @LastEditors  : LiCai
- * @LastEditTime : 2021-03-22 12:05:31
+ * @LastEditTime : 2021-03-24 17:00:27
  * @Description  : 路由配置
  * @FilePath     : /Umi-WEB/config/router.config.js
  */
@@ -38,6 +38,11 @@ export default [
         title: "useEffect测试"
       },
       {
+        path: '/hooks/useEffectTest2',
+        component: './Hooks/useEffect/test2',
+        title: "useEffect测试2"
+      },
+      {
         path: '/hooks/useContext',
         component: './Hooks/useContext',
         title: "useContext测试"
@@ -61,6 +66,28 @@ export default [
         path: '/hooks/useMemo',
         component: './Hooks/useMemo',
         title: "useMemo"
+      },
+    ]
+  },
+  {
+    path: '/comps',
+    component: '../layouts/AuthLayout',
+    title: '组件测试',
+    routes: [
+      {
+        path: '/comps/virtable',
+        component: './TestComps/test1',
+        title: "虚表"
+      },
+      {
+        path: '/comps/DragModal',
+        component: './TestComps/ModalDrag',
+        title: "可拖拽Modal"
+      },
+      {
+        path: '/comps/DragModal2',
+        component: './TestComps/ModalDrag/test1',
+        title: "可拖拽Modal2"
       },
     ]
   },

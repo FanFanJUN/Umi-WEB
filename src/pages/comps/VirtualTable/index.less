@@ -1,0 +1,69 @@
+.headerCell {
+  padding: 4px;
+  background: rgba(39, 174, 255, 0.2);
+  white-space: nowrap;
+  word-break: keep-all;
+}
+
+.headerCell + .headerCell {
+  border-left: 1px solid #ddd;
+}
+
+.headerCell .center {
+  text-align: center;
+}
+
+.headerCell .left {
+  text-align: left;
+}
+
+.headerCell .right {
+  text-align: right;
+}
+
+.headerCell .container {
+    background: rgba(39, 174, 255, 0);
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.headerCell .container .text {
+  top: 50%;
+  transform: translateY(-50%);
+  position: absolute;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+/*// ======= cell ==========*/
+.cell {
+  border-left: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  padding: 4px;
+}
+
+.cell .container {
+  height: 100%;
+  width: 100%;
+  position: relative;
+    background: rgba(39, 174, 255, 0);
+}
+
+.contentText {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  max-height: 100%;
+}
+
+/*.cell.odd {*/
+/*  background: #f5f5f5;*/
+/*}*/
+.cell.selected {
+  background: #e6f7ff;
+}

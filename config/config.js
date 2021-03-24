@@ -3,7 +3,7 @@
  * @connect      : 1981824361@qq.com
  * @Date         : 2020-12-14 22:46:34
  * @LastEditors  : LiCai
- * @LastEditTime : 2021-03-17 13:37:26
+ * @LastEditTime : 2021-03-24 13:45:33
  * @Description  : TODO
  * @FilePath     : /Umi-WEB/config/config.js
  */
@@ -98,4 +98,26 @@ export default {
     basePath: `/`,
   },
   chainWebpack: webpackPlugin,
+  // cssLoaderOptions: {
+  //   modules: true,
+  //   getLocalIdent: (context, localIdentName, localName) => {
+  //     if (
+  //       context.resourcePath.includes('node_modules') ||
+  //       context.resourcePath.includes('ant.design.pro.less') ||
+  //       context.resourcePath.includes('global.less')
+  //     ) {
+  //       return localName;
+  //     }
+  //     const match = context.resourcePath.match(/src(.*)/);
+  //     if (match && match[1]) {
+  //       const antdProPath = match[1].replace('.less', '');
+  //       const arr = slash(antdProPath)
+  //         .split('/')
+  //         .map(a => a.replace(/([A-Z])/g, '-$1'))
+  //         .map(a => a.toLowerCase());
+  //       return `antd-pro${arr.join('-')}-${localName}`.replace(/--/g, '-');
+  //     }
+  //     return localName;
+  //   },
+  // },
 };
